@@ -235,7 +235,7 @@ class CMakeTransform(Transform):
         if title is None:
             fname = os.path.join(env.srcdir, docname+'.rst')
             try:
-                f = open(fname, 'r')
+                f = open(fname, 'r', encoding='utf-8')
             except IOError:
                 title = False
             else:

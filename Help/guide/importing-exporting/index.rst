@@ -1,56 +1,31 @@
-Importing and Exporting Guide
+导入导出指南
 *****************************
 
 .. only:: html
 
    .. contents::
 
-Introduction
+引言
 ============
 
-In this guide, we will present the concept of :prop_tgt:`IMPORTED` targets
-and demonstrate how to import existing executable or library files from disk
-into a CMake project. We will then show how CMake supports exporting targets
-from one CMake-based project and importing them into another. Finally, we
-will demonstrate how to package a project with a configuration file to allow
-for easy integration into other CMake projects. This guide and the complete
-example source code can be found in the ``Help/guide/importing-exporting``
-directory of the CMake source code tree.
+在本指南中, 我们将介绍 :prop_tgt:`IMPORTED` 目标的概念，并演示如何将现有的可执行文件或库文件从磁盘导入到CMake项目中。然后，我们将展示CMake如何支持从一个基于CMake的项目导出目标，并将其导入到另一个项目中。最后，我们将演示如何用配置文件打包一个项目，以方便集成到其他CMake项目中。本指南和完整的示例源代码可以在CMake源码树的 ``Help/guide/importing-exporting`` 目录中找到。
 
 
-Importing Targets
+导入目标
 =================
 
-:prop_tgt:`IMPORTED` targets are used to convert files outside of a CMake
-project into logical targets inside of the project. :prop_tgt:`IMPORTED`
-targets are created using the ``IMPORTED`` option of the
-:command:`add_executable` and :command:`add_library` commands. No build
-files are generated for :prop_tgt:`IMPORTED` targets. Once imported,
-:prop_tgt:`IMPORTED` targets may be referenced like any other target within
-the project and provide a convenient, flexible reference to outside
-executables and libraries.
+:prop_tgt:`IMPORTED` 目标用于将CMake项目外部的文件转换为项目内部的逻辑目标。:prop_tgt:`IMPORTED` 目标可以由 :command:`add_executable` 和 :command:`add_library` 的 ``IMPORTED`` 选项创建。:prop_tgt:`IMPORTED` 目标不会生成构建文件。一旦导入，:prop_tgt:`IMPORTED` 目标可以像项目中的任何其他目标一样被引用，并提供对外部可执行文件和库的方便、灵活的引用。
 
-By default, the :prop_tgt:`IMPORTED` target name has scope in the directory in
-which it is created and below. We can use the ``GLOBAL`` option to extended
-visibility so that the target is accessible globally in the build system.
+默认情况下，:prop_tgt:`IMPORTED` 目标变量在创建它的目录及其下方具有作用域。可以使用 ``GLOBAL`` 选项来扩展可见性，这样就可以在构建系统中全局访问目标。
 
-Details about the :prop_tgt:`IMPORTED` target are specified by setting
-properties whose names begin in ``IMPORTED_`` and ``INTERFACE_``. For example,
-:prop_tgt:`IMPORTED_LOCATION` contains the full path to the target on
-disk.
+:prop_tgt:`IMPORTED` 目标的详细信息可以通过设置名称以 ``IMPORTED_`` 及 ``INTERFACE_`` 开头的属性来指定。例如，:prop_tgt:`IMPORTED_LOCATION` 包含到磁盘上目标的完整路径。
 
-Importing Executables
+导入可执行文件
 ---------------------
 
-To start, we will walk through a simple example that creates an
-:prop_tgt:`IMPORTED` executable target and then references it from the
-:command:`add_custom_command` command.
+首先，我们将介绍一个简单的示例，该示例创建一个 :prop_tgt:`IMPORTED` 的可执行目标，然后从 :command:`add_custom_command` 命令引用它。
 
-We'll need to do some setup to get started. We want to create an executable
-that when run creates a basic ``main.cc`` file in the current directory. The
-details of this project are not important. Navigate to
-``Help/guide/importing-exporting/MyExe``, create a build directory, run
-:manual:`cmake <cmake(1)>` and build and install the project.
+我们需要做一些准备工作来开始。我们希望创建一个可执行文件，在运行时在当前目录中创建一个基本的 ``main.cc`` 文件。这个项目的细节并不重要。导航到 ``Help/guide/importing-exporting/MyExe`` 目录，运行 :manual:`cmake <cmake(1)>` 构建并安装项目。
 
 .. code-block:: console
 
@@ -64,60 +39,43 @@ details of this project are not important. Navigate to
   $ ls
   [...] main.cc [...]
 
-Now we can import this executable into another CMake project. The source code
-for this section is available in ``Help/guide/importing-exporting/Importing``.
-In the CMakeLists file, use the :command:`add_executable` command to create a
-new target called ``myexe``. Use the ``IMPORTED`` option to tell CMake that
-this target references an executable file located outside of the project. No
-rules will be generated to build it and the :prop_tgt:`IMPORTED` target
-property will be set  to ``true``.
+现在我们可以将这个可执行文件导入到另一个CMake项目中。本节的源代码可以在 ``Help/guide/importing-exporting/Importing`` 中找到。在CMakeLists文件中，使用 :command:`add_executable` 命令创建一个名为 ``myexe`` 的新目标。使用 ``IMPORTED`` 选项告诉CMake这个目标引用了位于项目外部的一个可执行文件。不要生成任何规则来构建它，并且 :prop_tgt:`IMPORTED` 目标属性将被设置为 ``true``。
 
 .. literalinclude:: Importing/CMakeLists.txt
   :language: cmake
   :start-after: # Add executable
   :end-before: # Set imported location
 
-Next, set the :prop_tgt:`IMPORTED_LOCATION` property of the target using
-the :command:`set_property` command. This will tell CMake the location of the
-target on disk. The location may need to be adjusted to the
-``<install location>`` specified in the previous step.
+接下来，使用 :command:`set_property` 命令设置目标的 :prop_tgt:`IMPORTED_LOCATION` 属性。这将告诉CMake目标在磁盘上的位置。该位置可能需要调整到上一步中指定的 ``<install location>``。
 
 .. literalinclude:: Importing/CMakeLists.txt
   :language: cmake
   :start-after: # Set imported location
   :end-before: # Add custom command
 
-We can now reference this :prop_tgt:`IMPORTED` target just like any target
-built within the project. In this instance, let's imagine that we want to use
-the generated source file in our project. Use the :prop_tgt:`IMPORTED`
-target in the :command:`add_custom_command` command:
+现在我们可以引用这个 :prop_tgt:`IMPORTED` 目标，就像项目中构建的任何目标一样。在这个例子中，让我们假设我们想要在我们的项目中使用生成的源文件。在 :command:`add_custom_command` 命令中使用 :prop_tgt:`IMPORTED` 目标：
 
 .. literalinclude:: Importing/CMakeLists.txt
   :language: cmake
   :start-after: # Add custom command
   :end-before: # Use source file
 
-As ``COMMAND`` specifies an executable target name, it will automatically be
-replaced by the location of the executable given by the
-:prop_tgt:`IMPORTED_LOCATION` property above.
+由于 ``COMMAND`` 指定了一个可执行的目标名称，它将自动被上面的 :prop_tgt:`IMPORTED_LOCATION` 属性给出的可执行文件的位置所替换。
 
-Finally, use the output from :command:`add_custom_command`:
+最后，使用 :command:`add_custom_command` 的输出：
 
 .. literalinclude:: Importing/CMakeLists.txt
   :language: cmake
   :start-after: # Use source file
 
-Importing Libraries
+导入库
 -------------------
 
-In a similar manner, libraries from other projects may be accessed through
-:prop_tgt:`IMPORTED` targets.
+以类似的方式，可以通过 :prop_tgt:`IMPORTED` 目标访问其他项目的库。
 
-Note: The full source code for the examples in this section is not provided
-and is left as an exercise for the reader.
+注意：本节没有提供示例的完整源代码，仅作为读者的练习。
 
-In the CMakeLists file, add an :prop_tgt:`IMPORTED` library and specify its
-location on disk:
+在CMakeLists文件中，添加一个 :prop_tgt:`IMPORTED` 库，并指定它在磁盘上的位置：
 
 .. code-block:: cmake
 
@@ -125,7 +83,7 @@ location on disk:
   set_property(TARGET foo PROPERTY
                IMPORTED_LOCATION "/path/to/libfoo.a")
 
-Then use the :prop_tgt:`IMPORTED` library inside of our project:
+然后在我们的项目中使用 :prop_tgt:`IMPORTED` 库：
 
 .. code-block:: cmake
 
@@ -133,7 +91,7 @@ Then use the :prop_tgt:`IMPORTED` library inside of our project:
   target_link_libraries(myexe PRIVATE foo)
 
 
-On Windows, a .dll and its .lib import library may be imported together:
+在Windows上，.dll文件可以和它的.lib导入库一起导入：
 
 .. code-block:: cmake
 
@@ -145,7 +103,7 @@ On Windows, a .dll and its .lib import library may be imported together:
   add_executable(myexe src1.c src2.c)
   target_link_libraries(myexe PRIVATE bar)
 
-A library with multiple configurations may be imported with a single target:
+带有多个配置的库可以通过单个目标导入：
 
 .. code-block:: cmake
 
@@ -160,120 +118,70 @@ A library with multiple configurations may be imported with a single target:
   add_executable(myexe src1.c src2.c)
   target_link_libraries(myexe PRIVATE math)
 
-The generated build system will link ``myexe`` to ``m.lib`` when built in the
-release configuration, and ``md.lib`` when built in the debug configuration.
+生成的构建系统将在发布配置中链接 ``myexe`` 到 ``m.lib``，在调试配置中链接到 ``md.lib``。
 
-Exporting Targets
+导出目标
 =================
 
-While :prop_tgt:`IMPORTED` targets on their own are useful, they still
-require that the project that imports them knows the locations of the target
-files on disk. The real power of :prop_tgt:`IMPORTED`  targets is when the
-project providing the target files also provides a CMake file to help import
-them. A project can be setup to produce the necessary information so that it
-can easily be used by other CMake projects be it from a build directory, a
-local install or when packaged.
+虽然 :prop_tgt:`IMPORTED` 目标本身很有用，但它们仍然需要导入它们的项目知道目标文件在磁盘上的位置。 :prop_tgt:`IMPORTED` 目标真正的强大之处在于，提供目标文件的项目还提供了一个CMake文件来帮助导入目标文件。可以通过设置一个项目来生成必要的信息，以便其他CMake项目可以很容易地从构建目录、本地安装或打包使用它。
 
-In the remaining sections, we will walk through a set of example projects
-step-by-step. The first project will create and install a library and
-corresponding CMake configuration and package files. The second project will
-use the generated package.
+在其余部分中，我们将逐步介绍一组示例项目。第一个项目将创建并安装一个库以及相应的CMake配置和包文件。第二个项目将使用生成的包。
 
-Let's start by looking at the ``MathFunctions`` project in the
-``Help/guide/importing-exporting/MathFunctions`` directory. Here we have a
-header file ``MathFunctions.h`` that declares a ``sqrt`` function:
+让我们从 ``Help/guide/importing-exporting/MathFunctions`` 目录的 ``MathFunctions`` 项目开始。这里有一个 ``MathFunctions.h`` 头文件，里面声明了一个 ``sqrt`` 函数：
 
 .. literalinclude:: MathFunctions/MathFunctions.h
   :language: c++
 
-And a corresponding source file ``MathFunctions.cxx``:
+以及相关的源文件 ``MathFunctions.cxx``：
 
 .. literalinclude:: MathFunctions/MathFunctions.cxx
   :language: c++
 
-Don't worry too much about the specifics of the C++ files, they are just meant
-to be a simple example that will compile and run on many build systems.
+不要担心C++文件的细节，这只是一个简单的示例，可在许多构建系统上编译和运行。
 
-Now we can create a ``CMakeLists.txt`` file for the ``MathFunctions``
-project. Start by specifying the :command:`cmake_minimum_required` version and
-:command:`project` name:
+现在我们可以为 ``MathFunctions`` 项目创建一个 ``CMakeLists.txt`` 文件。首先分别使用 :command:`cmake_minimum_required` 和 :command:`project` 指定版本号和名称：
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :end-before: # create library
 
-Create a library called ``MathFunctions`` with the :command:`add_library`
-command:
+使用 :command:`add_library` 命令命令创建一个名为 ``MathFunctions`` 的库：
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # create library
   :end-before: # add include directories
 
-And then use the :command:`target_include_directories` command to specify the
-include directories for the target:
+然后使用 :command:`target_include_directories` 命令为目标指定包含的目录：
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # add include directories
   :end-before: # install the target and create export-set
 
-We need to tell CMake that we want to use different include directories
-depending on if we're building the library or using it from an installed
-location. If we don't do this, when CMake creates the export information it
-will export a path that is specific to the current build directory
-and will not be valid for other projects. We can use
-:manual:`generator expressions <cmake-generator-expressions(7)>` to specify
-that if we're building the library include the current source directory.
-Otherwise, when installed, include the ``include`` directory. See the `Creating
-Relocatable Packages`_ section for more details.
+我们需要告诉CMake，我们想要使用不同的包含目录，这取决于我们是在构建库还是在安装位置使用它。如果我们不这样做，当CMake创建导出信息时，它将导出一个特定于当前构建目录的路径，对其他项目无效。我们可以使用 :manual:`generator expressions <cmake-generator-expressions(7)>` 指定在构建库时包含当前源目录。否则，在安装时包含 ``include`` 目录。更多有关细节，请参阅 `创建可重定位包`_。
 
-The :command:`install(TARGETS)` and :command:`install(EXPORT)` commands
-work together to install both targets (a library in our case) and a CMake
-file designed to make it easy to import the targets into another CMake project.
+:command:`install(TARGETS)` 命令和 :command:`install(EXPORT)` 命令一起工作，安装两个目标（在我们的例子中是一个库）和一个CMake文件，该文件旨在方便地将目标导入到另一个CMake项目中。
 
-First, in the :command:`install(TARGETS)` command we will specify the target,
-the ``EXPORT`` name and the destinations that tell CMake where to install the
-targets.
+首先，在 :command:`install(TARGETS)` 命令中，我们将指定目标、 ``EXPORT`` 名称和告诉CMake在何处安装这些目标。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # install the target and create export-set
   :end-before: # install header file
 
-Here, the ``EXPORT`` option tells CMake to create an export called
-``MathFunctionsTargets``. The generated :prop_tgt:`IMPORTED` targets have
-appropriate properties set to define their
-:ref:`usage requirements <Target Usage Requirements>`, such as
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` and other relevant built-in
-``INTERFACE_`` properties.  The ``INTERFACE`` variant of user-defined
-properties listed in :prop_tgt:`COMPATIBLE_INTERFACE_STRING` and other
-:ref:`Compatible Interface Properties` are also propagated to the
-generated :prop_tgt:`IMPORTED` targets. For example, in this case, the
-:prop_tgt:`IMPORTED` target will have its
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` property populated with
-the directory specified by the ``INCLUDES DESTINATION`` property. As a
-relative path was given, it is treated as relative to the
-:variable:`CMAKE_INSTALL_PREFIX`.
+这里，``EXPORT`` 选项告诉CMake创建一个名为 ``MathFunctionsTargets`` 的导出。生成的 :prop_tgt:`IMPORTED` 目标设置了适当的属性来定义它们的 :ref:`usage requirements <Target Usage Requirements>`，例如 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` 和其他相关的内置 ``INTERFACE_`` 属性。在 :prop_tgt:`COMPATIBLE_INTERFACE_STRING` 中列出的用户定义属性的 ``INTERFACE`` 变体和其他 :ref:`Compatible Interface Properties` 也会传播到生成的 :prop_tgt:`IMPORTED` 目标。例如，在本例中，:prop_tgt:`IMPORTED` 目标将使用 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` 属性指定的目录填充其 ``INCLUDES DESTINATION`` 属性。由于给出了一个相对路径，它被视为相对于 :variable:`CMAKE_INSTALL_PREFIX`。
 
-Note, we have *not* asked CMake to install the export yet.
+注意，我们还 *没有* 要求CMake安装导出。
 
-We don't want to forget to install the ``MathFunctions.h`` header file with the
-:command:`install(FILES)` command. The header file should be installed to the
-``include`` directory, as specified by the
-:command:`target_include_directories` command above.
+我们不希望忘记使用 :command:`install(FILES)` 命令安装 ``MathFunctions.h`` 头文件。头文件应该安装到 ``include`` 目录中，如上面的 :command:`target_include_directories` 命令所指定的那样。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # install header file
   :end-before: # generate and install export file
 
-Now that the ``MathFunctions`` library and header file are installed, we also
-need to explicitly install the ``MathFunctionsTargets``  export details. Use
-the :command:`install(EXPORT)` command to export the targets in
-``MathFunctionsTargets``, as defined by the  :command:`install(TARGETS)`
-command.
+现在 ``MathFunctions`` 库和头文件已经安装好了，我们还需要显式安装 ``MathFunctionsTargets`` 导出详细信息。按照 :command:`install(TARGETS)` 命令的定义，使用 :command:`install(EXPORT)` 命令导出 ``MathFunctionsTargets`` 中的目标。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
@@ -303,7 +211,7 @@ The generated export file contains code that creates an :prop_tgt:`IMPORTED` lib
   )
 
 This code is very similar to the example we created by hand in the
-`Importing Libraries`_ section. Note that ``${_IMPORT_PREFIX}`` is computed
+`导入库`_ section. Note that ``${_IMPORT_PREFIX}`` is computed
 relative to the file location.
 
 An outside project may load this file with the :command:`include` command and
@@ -534,7 +442,7 @@ Now install the project:
 
     $ cmake --install . --prefix "/home/myuser/installdir"
 
-Creating Relocatable Packages
+创建可重定位包
 =============================
 
 Packages created by :command:`install(EXPORT)` are designed to be relocatable,
