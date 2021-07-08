@@ -188,18 +188,11 @@
   :start-after: # generate and install export file
   :end-before: # include CMakePackageConfigHelpers macro
 
-This command generates the ``MathFunctionsTargets.cmake`` file and arranges
-to install it to ``lib/cmake``. The file contains code suitable for
-use by downstreams to import all targets listed in the install command from
-the installation tree.
+这些命令生成 ``MathFunctionsTargets.cmake`` 文件并被计划安装在 ``lib/cmake``。该文件包含适合下游使用的代码，用于从安装树中导入安装命令中列出的所有目标。
 
-The ``NAMESPACE`` option will prepend ``MathFunctions::`` to  the target names
-as they are written to the export file. This convention of double-colons
-gives CMake a hint that the name is an  :prop_tgt:`IMPORTED` target when it
-is used by downstream projects. This way, CMake can issue a diagnostic
-message if the package providing it was not found.
+在写入导出文件时， ``NAMESPACE`` 选项可以在这些目标名前添加 ``MathFunctions::``。双冒号约定会提示CMake当下游项目使用该名称时，该名称是一个 :prop_tgt:`IMPORTED` 的目标。这样，若无法找到提供它的包，CMake可以作出提示。
 
-The generated export file contains code that creates an :prop_tgt:`IMPORTED` library.
+生成的导出文件包含创建 :prop_tgt:`IMPORTED` 库的代码。
 
 .. code-block:: cmake
 
@@ -210,13 +203,9 @@ The generated export file contains code that creates an :prop_tgt:`IMPORTED` lib
     INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
   )
 
-This code is very similar to the example we created by hand in the
-`导入库`_ section. Note that ``${_IMPORT_PREFIX}`` is computed
-relative to the file location.
+这段代码与我们在 `导入库`_ 一节中手工创建的示例非常相似。注意 ``${_IMPORT_PREFIX}`` 是相对于文件位置计算的。
 
-An outside project may load this file with the :command:`include` command and
-reference the ``MathFunctions`` library from the installation tree as if it
-were built in its own tree. For example:
+外部项目可以使用 :command:`include` 命令加载该文件，并从安装目录中引用 ``MathFunctions`` 库，就像在自己的目录中构建一样。例如：
 
 .. code-block:: cmake
   :linenos:
@@ -225,20 +214,11 @@ were built in its own tree. For example:
    add_executable(myexe src1.c src2.c )
    target_link_libraries(myexe PRIVATE MathFunctions::MathFunctions)
 
-Line 1 loads the target CMake file. Although we only exported a single
-target, this file may import any number of targets. Their locations are
-computed relative to the file location so that the install tree may be
-easily moved. Line 3 references the imported ``MathFunctions`` library. The
-resulting build system will link to the library from its installed location.
+第1行加载目标CMake文件。尽管我们只导出了一个目标，但该文件可以导入任意数量的目标。它们的位置是相对于文件位置计算的，以便可以容易地移动安装树。第3行引用了导入的 ``MathFunctions`` 库。生成的构建系统将从库的安装位置链接到库。
 
-Executables may also be exported and imported using the same process.
+可执行文件也可以使用相同的过程导出和导入。
 
-Any number of target installations may be associated with the same
-export name. Export names are considered global so any directory may
-contribute a target installation. The :command:`install(EXPORT)` command only
-needs to be called once to install a file that references all targets. Below
-is an example of how multiple exports may be combined into a single
-export file, even if they are in different subdirectories of the project.
+任意数量的目标安装都可以与相同的导出名称相关联。导出名称被认为是全局的，因此任何目录都可以提供目标安装。:command:`install(EXPORT)` 命令只需要调用一次，就可以安装一个引用所有目标的文件。下面是一个示例，演示了如何将多个导出组合成一个导出文件，即使它们位于项目的不同子目录中。
 
 .. code-block:: cmake
 
@@ -256,146 +236,86 @@ export file, even if they are in different subdirectories of the project.
   add_subdirectory (B)
   install(EXPORT myproj-targets DESTINATION lib/myproj)
 
-Creating Packages
+创建包
 -----------------
 
-At this point, the ``MathFunctions`` project is exporting the target
-information required to be used by other projects. We can make this project
-even easier for other projects to use by generating a configuration file so
-that the CMake :command:`find_package` command can find our project.
+与此同时， ``MathFunctions`` 项目正在导出其他项目需要使用的目标信息。我们可以通过生成一个配置文件使这个项目更容易被其他项目使用，这样CMake的 :command:`find_package` 命令就可以找到我们的项目。
 
-To start, we will need to make a few additions to the ``CMakeLists.txt``
-file. First, include the :module:`CMakePackageConfigHelpers` module to get
-access to some helper functions for creating config files.
+一开始，我们需要向 ``CMakeLists.txt`` 文件添加一些内容。首先，包含 :module:`CMakePackageConfigHelpers` 模块，以访问一些用于创建配置文件的helper函数。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # include CMakePackageConfigHelpers macro
   :end-before: # set version
 
-Then we will create a package configuration file and a package version file.
+然后，我们将创建一个包配置文件和一个包版本文件。
 
-Creating a Package Configuration File
+创建包配置文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Use the :command:`configure_package_config_file` command provided by the
-:module:`CMakePackageConfigHelpers` to generate the package configuration
-file. Note that this command should be used instead of the plain
-:command:`configure_file` command. It helps to ensure that the resulting
-package is relocatable by avoiding hardcoded paths in the installed
-configuration file. The path given to ``INSTALL_DESTINATION`` must  be the
-destination where the ``MathFunctionsConfig.cmake`` file will be installed.
-We will examine the contents of the package configuration file in the next
-section.
+使用 :module:`CMakePackageConfigHelpers` 提供的  :command:`configure_package_config_file` 命令来生成包配置文件。注意，应该使用这个命令而不是普通的 :command:`configure_file` 命令。通过避免安装的配置文件中的硬编码路径，它有助于确保生成的包是可重定位的。提供给 ``INSTALL_DESTINATION`` 的路径必须是 ``MathFunctionsConfig.cmake`` 文件将安装的目标。我们将在下一节中研究包配置文件的内容。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # create config file
   :end-before: # install config files
 
-Install the generated configuration files with the :command:`INSTALL(files)`
-command. Both ``MathFunctionsConfigVersion.cmake`` and
-``MathFunctionsConfig.cmake`` are installed to the same location, completing
-the package.
+使用 :command:`INSTALL(files)` 命令安装生成的配置文件。``MathFunctionsConfigVersion.cmake`` 和 ``MathFunctionsConfig.cmake`` 都安装在相同的位置，组成一个包。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # install config files
   :end-before: # generate the export targets for the build tree
 
-Now we need to create the package configuration file itself. In this case, the
-``Config.cmake.in`` file is very simple but sufficient to allow downstreams
-to use the :prop_tgt:`IMPORTED` targets.
+现在我们需要创建包配置文件本身。在本例中，``Config.cmake.in`` 文件非常简单，但足以允许下游使用 :prop_tgt:`IMPORTED` 目标。
 
 .. literalinclude:: MathFunctions/Config.cmake.in
 
-The first line of the file contains only the string ``@PACKAGE_INIT@``. This
-expands when the file is configured and allows the use of relocatable paths
-prefixed with ``PACKAGE_``. It also provides the ``set_and_check()`` and
-``check_required_components()`` macros.
+文件的第一行只包含字符串 ``@PACKAGE_INIT@``。这将在配置文件时展开，并允许使用以 ``@PACKAGE_INIT@`` 为前缀的可重定位路径。它还提供了 ``set_and_check()`` 和 ``check_required_components()`` 两个宏。
 
-The ``check_required_components`` helper macro ensures that all requested,
-non-optional components have been found by checking the
-``<Package>_<Component>_FOUND`` variables for all required components. This
-macro should be called at the end of the package configuration file even if the
-package does not have any components. This way, CMake can make sure that the
-downstream project hasn't specified any non-existent components. If
-``check_required_components`` fails, the ``<Package>_FOUND`` variable is set to
-FALSE, and the package is considered to be not found.
+``check_required_components`` 帮助宏通过检查所有必需的组件的 ``<Package>_<Component>_FOUND`` 变量来确保所有被请求的、非可选的组件都已经找到。这个宏应该在包配置文件的末尾调用，即使包没有任何组件。通过这种方式，CMake可以确保下游项目没有指定任何不存在的组件。如果 ``check_required_components`` 失败，``<Package>_FOUND`` 变量被设置为FALSE，就表明这个包没有找到。
 
-The ``set_and_check()`` macro should be used in configuration files instead
-of the normal ``set()`` command for setting directories and file locations.
-If a referenced file or directory does not exist, the macro will fail.
+宏 ``set_and_check()`` 应该在配置文件中使用，而不是用于设置目录和文件位置的常规 ``set()`` 命令。如果引用的文件或目录不存在，宏将失败。
 
-If any macros should be provided by the ``MathFunctions`` package, they should
-be in a separate file which is installed to the same location as the
-``MathFunctionsConfig.cmake`` file, and included from there.
+如果 ``MathFunctions`` 包应该提供任何宏，那么这些宏应该放在单独的文件中，该文件安装在与 ``MathFunctionsConfig.cmake`` 文件相同的位置，并包含在该文件中。
 
-**All required dependencies of a package must also be found in the package
-configuration file.** Let's imagine that we require the ``Stats`` library in
-our project. In the CMakeLists file, we would add:
+**包的所有必需依赖项也必须在包配置文件中找到。** 假设项目中需要 ``Stats`` 库。在CMakeLists文件中，我们将添加：
 
 .. code-block:: cmake
 
   find_package(Stats 2.6.4 REQUIRED)
   target_link_libraries(MathFunctions PUBLIC Stats::Types)
 
-As the ``Stats::Types`` target is a ``PUBLIC`` dependency of ``MathFunctions``,
-downstreams must also find the ``Stats`` package and link to the
-``Stats::Types`` library.  The ``Stats`` package should be found in the
-configuration file to ensure this.
+由于 ``Stats::Types`` 目标是 ``MathFunctions`` 的 ``PUBLIC`` 依赖项，下流也必须找到 ``Stats`` 包并链接到 ``Stats::Types`` 库。应该在配置文件中找到 ``Stats`` 包以确保这一点。
 
 .. code-block:: cmake
 
   include(CMakeFindDependencyMacro)
   find_dependency(Stats 2.6.4)
 
-The ``find_dependency`` macro from the :module:`CMakeFindDependencyMacro`
-module helps by propagating  whether the package is ``REQUIRED``, or
-``QUIET``, etc. The ``find_dependency`` macro also sets
-``MathFunctions_FOUND`` to ``False`` if the dependency is not found, along
-with a diagnostic that the ``MathFunctions`` package cannot be used without
-the ``Stats`` package.
+:module:`CMakeFindDependencyMacro` 模块中的  ``find_dependency`` 宏可以传播这个包是 ``REQUIRED`` 还是 ``QUIET``， 等等。如果没有找到依赖项，``find_dependency`` 宏还将 ``MathFunctions_FOUND`` 设置为 ``False``。并提示 ``MathFunctions`` 包不能在没有 ``Stats`` 包的情况下使用。
 
-**Exercise:** Add a required library to the ``MathFunctions`` project.
+**练习：** 向 ``MathFunctions`` 项目添加所需的库。
 
-Creating a Package Version File
+创建包版本文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The :module:`CMakePackageConfigHelpers` module provides the
-:command:`write_basic_package_version_file` command for creating a simple
-package version file.  This file is read by CMake when :command:`find_package`
-is called to determine the compatibility with the requested version, and to set
-some version-specific variables such as ``<PackageName>_VERSION``,
-``<PackageName>_VERSION_MAJOR``, ``<PackageName>_VERSION_MINOR``, etc. See
-:manual:`cmake-packages <cmake-packages(7)>` documentation for more details.
+:module:`CMakePackageConfigHelpers` 模块提供了 :command:`write_basic_package_version_file` 命令来创建一个简单的包版本文件。当调用 :command:`find_package` 来确定与请求版本的兼容性，并设置一些特定于版本的变量，如 ``<PackageName>_VERSION``、``<PackageName>_VERSION_MAJOR``、``<PackageName>_VERSION_MINOR``，等等时，CMake将读取该文件。更多细节请参阅 :manual:`cmake-packages <cmake-packages(7)>` 文档。
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # set version
   :end-before: # create config file
 
-In our example, ``MathFunctions_MAJOR_VERSION`` is defined as a
-:prop_tgt:`COMPATIBLE_INTERFACE_STRING` which means that it must be
-compatible among the dependencies of any depender. By setting this
-custom defined user property in this version and in the next version of
-``MathFunctions``, :manual:`cmake <cmake(1)>` will issue a diagnostic if
-there is an attempt to use version 3 together with version 4.  Packages can
-choose to employ such a pattern if different major versions of the package
-are designed to be incompatible.
+在我们的示例中，``MathFunctions_MAJOR_VERSION`` 被定义为一个 :prop_tgt:`COMPATIBLE_INTERFACE_STRING`，这意味着它必须在任何依赖项的依赖项之间兼容。通过在这个版本和下一个版本的 ``MathFunctions`` 中设置这个自定义的user属性，如果试图使用版本3和版本4，:manual:`cmake <cmake(1)>` 将发出诊断。如果包的不同主要版本被设计成不兼容的，那么包可以选择使用这种模式。
 
 
-Exporting Targets from the Build Tree
+从构建目录导出目标
 -------------------------------------
 
-Typically, projects are built and installed before being used by an outside
-project. However, in some cases, it is desirable to export targets directly
-from a build tree. The targets may then be used by an outside project that
-references the build tree with no installation involved. The :command:`export`
-command is used to generate a file exporting targets from a project build tree.
+通常，在由外部项目使用之前，先构建和安装项目。但是，在某些情况下，最好直接从构建树导出目标。然后，这些目标可以由引用构建树的外部项目使用，而不涉及安装。:command:`export` 命令用于从项目构建树生成导出目标的文件。
 
-If we want our example project to also be used from a build directory we only
-have to add the following to ``CMakeLists.txt``:
+如果我们想要我们的示例项目也从一个构建目录使用，我们只需要添加以下至  ``CMakeLists.txt``：
 
 .. literalinclude:: MathFunctions/CMakeLists.txt
   :language: cmake
