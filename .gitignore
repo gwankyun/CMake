@@ -12,3 +12,5 @@ CMakeUserPresets.json
 
 # Visual Studio Code
 .vscode/
+
+build/
