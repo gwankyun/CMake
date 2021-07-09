@@ -321,30 +321,16 @@
   :language: cmake
   :start-after: # generate the export targets for the build tree
 
-Here we use the :command:`export` command to generate the export targets for
-the build tree. In this case, we'll create a file called
-``MathFunctionsTargets.cmake`` in the ``cmake`` subdirectory of the build
-directory. The generated file contains the required code to import the target
-and may be loaded by an outside project that is aware of the project build
-tree. This file is specific to the build-tree, and **is not relocatable**.
+这里，我们使用 :command:`export` 命令为构建树生成导出目标。在本例中，我们将在构建目录的 ``cmake`` 子目录中创建一个名为 ``MathFunctionsTargets.cmake`` 的文件。生成的文件包含导入目标所需的代码，并且可以由知道项目构建树的外部项目加载。这个文件是特定于构建树的，并且 **是不可重定位的**。
 
-It is possible to create a suitable package configuration file and package
-version file to define a package for the build tree which may be used without
-installation.  Consumers of the build tree can simply ensure that the
-:variable:`CMAKE_PREFIX_PATH` contains the build directory, or set the
-``MathFunctions_DIR`` to ``<build_dir>/MathFunctions`` in the cache.
+可以创建一个合适的包配置文件和包版本文件，为构建树定义一个包，可以在不安装的情况下使用。构建树的使用者可以简单地确保 :variable:`CMAKE_PREFIX_PATH` 包含构建目录，或者将缓存中的 ``MathFunctions_DIR`` 设置为 ``<build_dir>/MathFunctions``。
 
-An example application of this feature is for building an executable on a host
-platform when cross-compiling. The project containing the executable may be
-built on the host platform and then the project that is being cross-compiled
-for another platform may load it.
+该特性的一个应用示例是在交叉编译时在宿主平台上构建可执行文件。包含可执行文件的项目可以在宿主平台上构建，然后正在为另一个平台交叉编译的项目可以加载它。
 
-Building and Installing a Package
+构建并安装一个包
 ---------------------------------
 
-At this point, we have generated a relocatable CMake configuration for our
-project that can be used after the project has been installed. Let's try to
-build the ``MathFunctions`` project:
+至此，我们已经为我们的项目生成了一个可重定位的CMake配置，可以在项目安装后使用。让我们尝试构建 ``MathFunctions`` 项目：
 
 .. code-block:: console
 
@@ -353,10 +339,9 @@ build the ``MathFunctions`` project:
   cmake ../MathFunctions
   cmake --build .
 
-In the build directory, notice that the file ``MathFunctionsTargets.cmake``
-has been created in the ``cmake`` subdirectory.
+在构建目录中，注意已经在 ``cmake`` 子目录中创建了 ``MathFunctionsTargets.cmake`` 文件。
 
-Now install the project:
+现在安装项目：
 
 .. code-block:: console
 
@@ -365,15 +350,9 @@ Now install the project:
 创建可重定位包
 =============================
 
-Packages created by :command:`install(EXPORT)` are designed to be relocatable,
-using paths relative to the location of the package itself. They must not
-reference absolute paths of files on the machine where the package is built
-that will not exist on the machines where the package may be installed.
+由 :command:`install(EXPORT)` 创建的包被设计为可重定位的，使用相对于包本身位置的路径。它们不能引用构建包的机器上的文件的绝对路径，这些文件在可能安装包的机器上不存在。
 
-When defining the interface of a target for ``EXPORT``, keep in mind that the
-include directories should be specified as relative paths to the
-:variable:`CMAKE_INSTALL_PREFIX` but should not explicitly include the
-:variable:`CMAKE_INSTALL_PREFIX`:
+当定义 ``EXPORT`` 目标的接口时，请记住，include目录应该指定为 :variable:`CMAKE_INSTALL_PREFIX` 的相对路径，但不应该显式包含 :variable:`CMAKE_INSTALL_PREFIX`：
 
 .. code-block:: cmake
 
@@ -387,10 +366,8 @@ include directories should be specified as relative paths to the
     $<INSTALL_INTERFACE:include/TgtName>
   )
 
-The ``$<INSTALL_PREFIX>``
-:manual:`generator expression <cmake-generator-expressions(7)>` may be used as
-a placeholder for the install prefix without resulting in a non-relocatable
-package.  This is necessary if complex generator expressions are used:
+``$<INSTALL_PREFIX>`` :manual:`generator expression <cmake-generator-expressions(7)>` 可以用作安装前缀的占位符，而不会导致不可重定位的包。
+如果使用复杂的生成器表达式，这是必要的：
 
 .. code-block:: cmake
 
@@ -399,11 +376,7 @@ package.  This is necessary if complex generator expressions are used:
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include/TgtName>
   )
 
-This also applies to paths referencing external dependencies.
-It is not advisable to populate any properties which may contain
-paths, such as :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` or
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`, with paths relevant to dependencies.
-For example, this code may not work well for a relocatable package:
+这也适用于引用外部依赖项的路径。不建议使用与依赖项相关的路径填充任何可能包含路径的属性，例如 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` 或者 :prop_tgt:`INTERFACE_LINK_LIBRARIES`。例如，这段代码可能不适用于可重定位的包：
 
 .. code-block:: cmake
 
@@ -414,70 +387,51 @@ For example, this code may not work well for a relocatable package:
     "$<INSTALL_INTERFACE:${Foo_INCLUDE_DIRS};${Bar_INCLUDE_DIRS}>"
     )
 
-The referenced variables may contain the absolute paths to libraries
-and include directories **as found on the machine the package was made on**.
-This would create a package with hard-coded paths to dependencies not
-suitable for relocation.
+引用的变量可能包含到库的绝对路径及包含 **生成包的机器上** 的引用目录。这将创建一个包，其中包含指向不适合重定位的依赖项的硬编码路径。
 
-Ideally such dependencies should be used through their own
-:ref:`IMPORTED targets <Imported Targets>` that have their own
-:prop_tgt:`IMPORTED_LOCATION` and usage requirement properties
-such as :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` populated
-appropriately.  Those imported targets may then be used with
-the :command:`target_link_libraries` command for ``MathFunctions``:
+理想情况下，这些依赖项应该通过它们自己的 :ref:`IMPORTED targets <Imported Targets>` 来使用，这些导入目标具有自己的 :prop_tgt:`IMPORTED_LOCATION` 和使用需求属性，如适当填充的 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`。可以用  :command:`target_link_libraries` 命令让这些导入的目标和  ``MathFunctions`` 一起使用：
 
 .. code-block:: cmake
 
   target_link_libraries(MathFunctions INTERFACE Foo::Foo Bar::Bar)
 
-With this approach the package references its external dependencies
-only through the names of :ref:`IMPORTED targets <Imported Targets>`.
-When a consumer uses the installed package, the consumer will run the
-appropriate :command:`find_package` commands (via the ``find_dependency``
-macro described above) to find the dependencies and populate the
-imported targets with appropriate paths on their own machine.
+使用这种方法，包仅通过 :ref:`IMPORTED targets <Imported Targets>` 目标的名称引用其外部依赖项。当使用者使用已安装的包时，使用者将运行适当的 :command:`find_package` 命令（通过上面描述的 ``find_dependency`` 宏）来查找依赖项，并在自己的机器上用适当的路径填充导入的目标。
 
-Using the Package Configuration File
+使用包配置文件
 ====================================
 
-Now we're ready to create a project to use the installed ``MathFunctions``
-library. In this section we will be using source code from
-``Help\guide\importing-exporting\Downstream``. In this directory, there is a
-source file called ``main.cc`` that uses the ``MathFunctions`` library to
-calculate the square root of a given number and then prints the results:
+现在，我们准备创建一个项目来使用已安装的 ``MathFunctions`` 库。在本节中，我们将使用来自 ``Help\guide\importing-exporting\Downstream`` 的源代码。在这个目录中，有一个名为 ``main.cc`` 的源文件，它使用 ``MathFunctions`` 库计算给定数字的平方根，然后打印结果：
 
 .. literalinclude:: Downstream/main.cc
   :language: c++
 
-As before, we'll start with the :command:`cmake_minimum_required` and
-:command:`project` commands in the ``CMakeLists.txt`` file. For this project,
-we'll also specify the C++ standard.
+与前面一样，我们将从 ``CMakeLists.txt`` 文件中的 :command:`cmake_minimum_required` 命令和 :command:`project` 命令开始。对于这个项目，我们还将指定c++标准。
 
 .. literalinclude:: Downstream/CMakeLists.txt
   :language: cmake
   :end-before: # find MathFunctions
 
-We can use the :command:`find_package` command:
+我们可以使用 :command:`find_package` 命令：
 
 .. literalinclude:: Downstream/CMakeLists.txt
   :language: cmake
   :start-after: # find MathFunctions
   :end-before: # create executable
 
-Create an exectuable:
+创建一个可执行文件：
 
 .. literalinclude:: Downstream/CMakeLists.txt
   :language: cmake
   :start-after: # create executable
   :end-before: # use MathFunctions library
 
-And link to the ``MathFunctions`` library:
+并链接 ``MathFunctions`` 库：
 
 .. literalinclude:: Downstream/CMakeLists.txt
   :language: cmake
   :start-after: # use MathFunctions library
 
-That's it! Now let's try to build the ``Downstream`` project.
+就是这样！现在让我们来构建 ``Downstream`` 项目：
 
 .. code-block:: console
 
@@ -486,7 +440,7 @@ That's it! Now let's try to build the ``Downstream`` project.
   cmake ../Downstream
   cmake --build .
 
-A warning may have appeared during CMake configuration:
+CMake配置过程中可能会出现警告：
 
 .. code-block:: console
 
@@ -506,79 +460,62 @@ A warning may have appeared during CMake configuration:
     "MathFunctions" provides a separate development package or SDK, be sure it
     has been installed.
 
-Set the ``CMAKE_PREFIX_PATH`` to where MathFunctions was installed previously
-and try again. Ensure that the newly created executable runs as expected.
+将 ``CMAKE_PREFIX_PATH`` 设置为先前安装MathFunctions的位置，然后再试一次。确保新创建的可执行文件按预期运行。
 
-Adding Components
+添加组件
 =================
 
-Let's edit the ``MathFunctions`` project to use components. The source code for
-this section can be found in
-``Help\guide\importing-exporting\MathFunctionsComponents``. The CMakeLists file
-for this project adds two subdirectories: ``Addition`` and ``SquareRoot``.
+让我们编辑 ``MathFunctions`` 项目以使用组件。本节的源代码可以在 ``Help\guide\importing-exporting\MathFunctionsComponents`` 中找到。这个项目的CMakeLists文件添加了两个子目录：``Addition`` 和 ``SquareRoot``。
 
 .. literalinclude:: MathFunctionsComponents/CMakeLists.txt
   :language: cmake
   :end-before: # include CMakePackageConfigHelpers macro
 
-Generate and install the package configuration and package version files:
+生成并安装包配置文件和包版本文件：
 
 .. literalinclude:: MathFunctionsComponents/CMakeLists.txt
   :language: cmake
   :start-after: # include CMakePackageConfigHelpers macro
 
-If ``COMPONENTS`` are specified when the downstream uses
-:command:`find_package`, they are listed in the
-``<PackageName>_FIND_COMPONENTS`` variable. We can use this variable to verify
-that all necessary component targets are included in ``Config.cmake.in``. At
-the same time, this function will act as a custom ``check_required_components``
-macro to ensure that the downstream only attempts to use supported components.
+如果在下游使用 :command:`find_package` 时指定了 ``COMPONENTS`` ，则它们将列在 ``<PackageName>_FIND_COMPONENTS`` 变量中。我们可以使用这个变量来验证所有必要的组件目标都包含在 ``Config.cmake.in`` 中。同时，这个函数将充当一个自定义的 ``check_required_components`` 宏，以确保下游只尝试使用受支持的组件。
 
 .. literalinclude:: MathFunctionsComponents/Config.cmake.in
 
-Here, the ``MathFunctions_NOT_FOUND_MESSAGE`` is set to a diagnosis that the
-package could not be found because an invalid component was specified. This
-message variable can be set for any case where the ``_FOUND`` variable is set
-to ``False``, and will be displayed to the user.
+在这里， ``MathFunctions_NOT_FOUND_MESSAGE`` 被设置为由于指定了无效组件而无法找到包的诊断。当 ``_FOUND`` 变量设置为 ``False`` 时，可以设置此消息变量，并将其显示给用户。
 
-The ``Addition`` and ``SquareRoot`` directories are similar. Let's look at one
-of the CMakeLists files:
+``Addition`` 和 ``SquareRoot`` 目录是类似的。让我们看看其中一个CMakeLists文件：
 
 .. literalinclude:: MathFunctionsComponents/SquareRoot/CMakeLists.txt
   :language: cmake
 
-Now we can build the project as described in earlier sections. To test using
-this package, we can use the project in
-``Help\guide\importing-exporting\DownstreamComponents``. There's two
-differences from the previous ``Downstream`` project. First, we need to find
-the package components. Change the ``find_package`` line from:
+现在我们可以按照前面章节中描述的方式构建项目。要使用这个包进行测试，我们可以在 ``Help\guide\importing-exporting\DownstreamComponents`` 中使用这个项目。与之前的 ``Downstream`` 项目有两点不同。首先，我们需要找到包组件。将 ``find_package`` 行从：
 
 .. literalinclude:: Downstream/CMakeLists.txt
   :language: cmake
   :start-after: # find MathFunctions
   :end-before: # create executable
 
-To:
+改为：
 
 .. literalinclude:: DownstreamComponents/CMakeLists.txt
   :language: cmake
   :start-after: # find MathFunctions
   :end-before: # create executable
 
-and the ``target_link_libraries`` line from:
+并将 ``target_link_libraries`` 行从：
 
 .. literalinclude:: Downstream/CMakeLists.txt
   :language: cmake
   :start-after: # use MathFunctions library
 
-To:
+改为：
 
 .. literalinclude:: DownstreamComponents/CMakeLists.txt
   :language: cmake
   :start-after: # use MathFunctions library
   :end-before: # Workaround for GCC on AIX to avoid -isystem
 
-In ``main.cc``, replace ``#include MathFunctions.h`` with:
+将 ``main.cc`` 文件中的 ``#include MathFunctions.h`` 替换为：
 
 .. literalinclude:: DownstreamComponents/main.cc
   :language: c
@@ -592,5 +529,4 @@ Finally, use the ``Addition`` library:
   :start-after: // calculate sum
   :end-before: return 0;
 
-Build the ``Downstream`` project and confirm that it can find and use the
-package components.
+构建 ``Downstream`` 项目，并确认它能够找到并使用包组件。

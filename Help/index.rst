@@ -21,7 +21,7 @@ how to complete the build.
 The :guide:`Using Dependencies Guide` is aimed at developers
 wishing to get started using a third-party library.
 
-For developers starting a project using CMake, the :guide:`CMake Tutorial`
+For developers starting a project using CMake, the :guide:`CMake教程`
 is a suitable starting point.  The :manual:`cmake-buildsystem(7)`
 manual is aimed at developers expanding their knowledge of maintaining
 a buildsystem and becoming familiar with the build targets that
