@@ -121,23 +121,14 @@ CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的�
 
 现在我们将向我们的项目添加一个库。这个库将包含我们自己的计算数字平方根的实现。可执行文件可以使用这个库，而不是编译器提供的标准平方根函数。
 
-For this tutorial we will put the library into a subdirectory
-called ``MathFunctions``. This directory already contains a header file,
-``MathFunctions.h``, and a source file ``mysqrt.cxx``. The source file has one
-function called ``mysqrt`` that provides similar functionality to the
-compiler's ``sqrt`` function.
+在本教程中，我们将把这个库放入名为 ``MathFunctions`` 的子目录中。这个目录已经包含了一个头文件 ``MathFunctions.h`` 和一个源文件 ``mysqrt.cxx``。源文件有一个名为 ``mysqrt`` 的函数，功能类似于自带的 ``sqrt`` 函数。
 
-Add the following one line ``CMakeLists.txt`` file to the ``MathFunctions``
-directory:
+将以下这个一行的 ``CMakeLists.txt`` 文件添加到 ``MathFunctions`` 目录：
 
 .. literalinclude:: Step3/MathFunctions/CMakeLists.txt
   :language: cmake
 
-To make use of the new library we will add an :command:`add_subdirectory`
-call in the top-level ``CMakeLists.txt`` file so that the library will get
-built. We add the new library to the executable, and add ``MathFunctions`` as
-an include directory so that the ``mysqrt.h`` header file can be found. The
-last few lines of the top-level ``CMakeLists.txt`` file should now look like:
+为了使用这个新库，我们将在顶层的 ``CMakeLists.txt`` 文件中添加一个 :command:`add_subdirectory` 调用，以便构建这个库。我们将新库添加到可执行文件中，并将  ``MathFunctions`` 作为包含目录添加，以便能够找到 ``mysqrt.h`` 头文件。顶层  ``CMakeLists.txt`` 文件的最后几行现在应该是这样的：
 
 .. code-block:: cmake
 
@@ -156,25 +147,16 @@ last few lines of the top-level ``CMakeLists.txt`` file should now look like:
                                   "${PROJECT_SOURCE_DIR}/MathFunctions"
                                   )
 
-Now let us make the MathFunctions library optional. While for the tutorial
-there really isn't any need to do so, for larger projects this is a common
-occurrence. The first step is to add an option to the top-level
-``CMakeLists.txt`` file.
+现在让我们使MathFunctions库成为可选的。虽然在本教程中没有必要这样做，但对于大型项目来说，这是很常见的情况。第一步是向顶层 ``CMakeLists.txt`` 文件添加一个选项。
 
 .. literalinclude:: Step3/CMakeLists.txt
   :language: cmake
   :start-after: # should we use our own math functions
   :end-before: # add the MathFunctions library
 
-This option will be displayed in the :manual:`cmake-gui <cmake-gui(1)>` and
-:manual:`ccmake <ccmake(1)>`
-with a default value of ON that can be changed by the user. This setting will
-be stored in the cache so that the user does not need to set the value each
-time they run CMake on a build directory.
+这个选项将在 :manual:`cmake-gui <cmake-gui(1)>` 和 :manual:`ccmake <ccmake(1)>` 中显示，默认值ON可以由用户更改。该设置将存储在缓存中，这样用户在每次在构建目录上运行CMake时就不需要设置该值。
 
-The next change is to make building and linking the MathFunctions library
-conditional. To do this we change the end of the top-level ``CMakeLists.txt``
-file to look like the following:
+下一个更改是使构建和链接MathFunctions库成为有条件的。为此，我们将顶层 ``CMakeLists.txt`` 文件的结尾修改为如下所示：
 
 .. literalinclude:: Step3/CMakeLists.txt
   :language: cmake
