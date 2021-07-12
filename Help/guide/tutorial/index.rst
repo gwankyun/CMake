@@ -162,259 +162,179 @@ CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的�
   :language: cmake
   :start-after: # add the MathFunctions library
 
-Note the use of the variable ``EXTRA_LIBS`` to collect up any optional
-libraries to later be linked into the executable. The variable
-``EXTRA_INCLUDES`` is used similarly for optional header files. This is a
-classic approach when dealing with many optional components, we will cover
-the modern approach in the next step.
+注意，这里用了变量 ``EXTRA_LIBS`` 来收集任何可选库，以便稍后链接到可执行文件中。变量 ``EXTRA_INCLUDES`` 类似地用于可选头文件。在处理许多可选组件时，这是一种传统方法，我们将在下一步讨论现代方法。
 
-The corresponding changes to the source code are fairly straightforward.
-First, in ``tutorial.cxx``, include the ``MathFunctions.h`` header if we
-need it:
+对源代码的相应更改相当简单。首先，在 ``tutorial.cxx`` 中，在需要的时候包含 ``MathFunctions.h`` 头文件：
 
 .. literalinclude:: Step3/tutorial.cxx
   :language: c++
   :start-after: // should we include the MathFunctions header
   :end-before: int main
 
-Then, in the same file, make ``USE_MYMATH`` control which square root
-function is used:
+然后，在同一个文件中，让 ``USE_MYMATH`` 控制使用哪个平方根函数：
 
 .. literalinclude:: Step3/tutorial.cxx
   :language: c++
   :start-after: // which square root function should we use?
   :end-before: std::cout << "The square root of
 
-Since the source code now requires ``USE_MYMATH`` we can add it to
-``TutorialConfig.h.in`` with the following line:
+由于源代码现在需要 ``USE_MYMATH`` ，我们可以通过以下一行把它添加到 ``TutorialConfig.h.in`` 中：
 
 .. literalinclude:: Step3/TutorialConfig.h.in
   :language: c
   :lines: 4
 
-**Exercise**: Why is it important that we configure ``TutorialConfig.h.in``
-after the option for ``USE_MYMATH``? What would happen if we inverted the two?
+**练习**：为什么在 ``USE_MYMATH`` 选项后面配置 ``TutorialConfig.h.in`` 很重要？如果我们把这两个颠倒过来会发生什么？
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool. Then run the built Tutorial executable.
+运行 :manual:`cmake  <cmake(1)>` 可执行文件或 :manual:`cmake-gui <cmake-gui(1)>` 来配置项目，用你选择的构建工具构建它。然后运行Tutorial可执行文件。
 
-Now let's update the value of ``USE_MYMATH``. The easiest way is to use the
-:manual:`cmake-gui <cmake-gui(1)>` or  :manual:`ccmake <ccmake(1)>` if you're
-in the terminal. Or, alternatively, if you want to change the option from the
-command-line, try:
+现在让我们更新 ``USE_MYMATH`` 的值。最简单的方法是使用 :manual:`cmake-gui <cmake-gui(1)>` 或者终端环境上的 :manual:`ccmake <ccmake(1)>`。如果你想从命令行更改选项，试试：
 
 .. code-block:: console
 
   cmake ../Step2 -DUSE_MYMATH=OFF
 
-Rebuild and run the tutorial again.
+重新生成并再次运行。
 
-Which function gives better results, sqrt or mysqrt?
+哪个函数给出了更好的结果，sqrt还是mysqrt？
 
-Adding Usage Requirements for Library (Step 3)
+添加库的使用需求（第3步）
 ==============================================
 
-Usage requirements allow for far better control over a library or executable's
-link and include line while also giving more control over the transitive
-property of targets inside CMake. The primary commands that leverage usage
-requirements are:
+使用需求允许对库或可执行文件的链接和include行进行更好的控制，同时也允许对CMake内部目标的传递属性进行更多的控制。利用使用需求的主要命令是：
 
   - :command:`target_compile_definitions`
   - :command:`target_compile_options`
   - :command:`target_include_directories`
   - :command:`target_link_libraries`
 
-Let's refactor our code from `添加库（第2步）`_ to use the modern
-CMake approach of usage requirements. We first state that anybody linking to
-MathFunctions needs to include the current source directory, while
-MathFunctions itself doesn't. So this can become an ``INTERFACE`` usage
-requirement.
+让我们从 `添加库（第2步）`_ 开始重构代码，以使用现代的CMake方法满足使用需求。我们首先声明，任何链接到MathFunctions的人都需要包括当前的源目录，而MathFunctions本身不需要。因此，这可以成为一个 ``INTERFACE`` 使用要求。
 
-Remember ``INTERFACE`` means things that consumers require but the producer
-doesn't. Add the following lines to the end of
-``MathFunctions/CMakeLists.txt``:
+记住 ``INTERFACE`` 指的是消费者需要但生产者不需要的东西。在 ``MathFunctions/CMakeLists.txt`` 的末尾添加以下几行：
 
 .. literalinclude:: Step4/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # to find MathFunctions.h
 
-Now that we've specified usage requirements for MathFunctions we can safely
-remove our uses of the ``EXTRA_INCLUDES`` variable from the top-level
-``CMakeLists.txt``, here:
+现在我们已经指定了MathFunctions的使用要求，我们可以安全地从顶层的 ``CMakeLists.txt`` 中删除 ``EXTRA_INCLUDES`` 变量的使用，这里：
 
 .. literalinclude:: Step4/CMakeLists.txt
   :language: cmake
   :start-after: # add the MathFunctions library
   :end-before: # add the executable
 
-And here:
+和这里：
 
 .. literalinclude:: Step4/CMakeLists.txt
   :language: cmake
   :start-after: # so that we will find TutorialConfig.h
 
-Once this is done, run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool or by using ``cmake --build .`` from the build
-directory.
+一旦完成，运行 :manual:`cmake  <cmake(1)>` 命令或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置项目，然后用你选择的构建工具或使用 ``cmake --build .`` 在构建目录来构建它。
 
-Installing and Testing (Step 4)
+安装和测试（第4步）
 ===============================
 
-Now we can start adding install rules and testing support to our project.
+现在我们可以开始向我们的项目添加安装规则和测试支持了。
 
-Install Rules
+安装规则
 -------------
 
-The install rules are fairly simple: for MathFunctions we want to install the
-library and header file and for the application we want to install the
-executable and configured header.
+安装规则相当简单：对于MathFunctions，我们希望安装库和头文件，对于应用程序，我们希望安装可执行和配置的头文件。
 
-So to the end of ``MathFunctions/CMakeLists.txt`` we add:
+所以在 ``MathFunctions/CMakeLists.txt`` 的末尾添加：
 
 .. literalinclude:: Step5/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # install rules
 
-And to the end of the top-level ``CMakeLists.txt`` we add:
+顶层 ``CMakeLists.txt`` 的末尾添加：
 
 .. literalinclude:: Step5/CMakeLists.txt
   :language: cmake
   :start-after: # add the install targets
   :end-before: # enable testing
 
-That is all that is needed to create a basic local install of the tutorial.
+这就是创建基本本地安装的全部内容。
 
-Now run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+现在可以运行 :manual:`cmake  <cmake(1)>` 或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置并用构建工具来构建它。
 
-Then run the install step by using the ``install`` option of the
-:manual:`cmake  <cmake(1)>` command (introduced in 3.15, older versions of
-CMake must use ``make install``) from the command line. For
-multi-configuration tools, don't forget to use the ``--config`` argument to
-specify the configuration. If using an IDE, simply build the ``INSTALL``
-target. This step will install the appropriate header files, libraries, and
-executables. For example:
+接着使用 :manual:`cmake  <cmake(1)>` 命令的 ``install`` 选项（3.15版本开始，之前版本的CMake必须使用 ``make install``）在命令行安装。对于多配置的工具，记得用 ``--config`` 来指定配置。若使用IDE，只需构建 ``INSTALL`` 目标。这一步将安装相应的头文件、库和可执行文件，例子：
 
 .. code-block:: console
 
   cmake --install .
 
-The CMake variable :variable:`CMAKE_INSTALL_PREFIX` is used to determine the
-root of where the files will be installed. If using the ``cmake --install``
-command, the installation prefix can be overridden via the ``--prefix``
-argument. For example:
+:variable:`CMAKE_INSTALL_PREFIX` 变量用于指定安装目录。在运行 ``cmake --install`` 命令的时候，会被 ``--prefix`` 参数覆盖。例如：
 
 .. code-block:: console
 
   cmake --install . --prefix "/home/myuser/installdir"
 
-Navigate to the install directory and verify that the installed Tutorial runs.
+导航到安装目录并验证程序能否运行。
 
-Testing Support
+测试支持
 ---------------
 
-Next let's test our application. At the end of the top-level ``CMakeLists.txt``
-file we can enable testing and then add a number of basic tests to verify that
-the application is working correctly.
+接下来测试一下我们的程序。可以在顶层的 ``CMakeLists.txt`` 文件末尾启用测试，然后添加一些基本的测试用例来验证程序是否正常。
 
 .. literalinclude:: Step5/CMakeLists.txt
   :language: cmake
   :start-after: # enable testing
 
-The first test simply verifies that the application runs, does not segfault or
-otherwise crash, and has a zero return value. This is the basic form of a
-CTest test.
+第一个测试只是验证程序能否运行，是否出现段错误或者崩溃，返回值是否为0。这就是基本的CMake测试。
 
-The next test makes use of the :prop_test:`PASS_REGULAR_EXPRESSION` test
-property to verify that the output of the test contains certain strings. In
-this case, verifying that the usage message is printed when an incorrect number
-of arguments are provided.
+下一个测试使用 :prop_test:`PASS_REGULAR_EXPRESSION` 测试属性来验证测试输出是否包含某些字符串。这个例子中，验证当提供的参数数量不正确时，是否输出相关信息。
 
-Lastly, we have a function called ``do_test`` that runs the application and
-verifies that the computed square root is correct for given input. For each
-invocation of ``do_test``, another test is added to the project with a name,
-input, and expected results based on the passed arguments.
+最后，有一个 ``do_test`` 函数，它运行程序并验证计算出来的平方根对于给定的输入是否正确。对于每次调用 ``do_test``，都会将另一个测试添加到项目中，并通过的参数传递名称、输入及预期结果。
 
-Rebuild the application and then cd to the binary directory and run the
-:manual:`ctest <ctest(1)>` executable: ``ctest -N`` and ``ctest -VV``. For
-multi-config generators (e.g. Visual Studio), the configuration type must be
-specified. To run tests in Debug mode, for example, use ``ctest -C Debug -VV``
-from the build directory (not the Debug subdirectory!). Alternatively, build
-the ``RUN_TESTS`` target from the IDE.
+重新构建程序并进入程序目录，运行 :manual:`ctest <ctest(1)>` 命令：``ctest -N`` 和 ``ctest -VV``。对于多配置生成器（例如Visual Studio），必须指定配置类型。例如，要在调试模式下运行测试，可以在构建目录（而不是Debug目录！）中运行  ``ctest -C Debug -VV``。或者，在IDE构建 ``RUN_TESTS`` 目标。
 
-Adding System Introspection (Step 5)
+添加系统自省（第5步）
 ====================================
 
-Let us consider adding some code to our project that depends on features the
-target platform may not have. For this example, we will add some code that
-depends on whether or not the target platform has the ``log`` and ``exp``
-functions. Of course almost every platform has these functions but for this
-tutorial assume that they are not common.
+考虑向项目中添加一些依赖目标平台可能没有的特性代码。对于本例，我们将添加一些代码，这将取决于目标平台是否有 ``log`` 和 ``exp`` 函數。当然，几乎每个平台都有这些函数，但本教程假设它们并不常见。
 
-If the platform has ``log`` and ``exp`` then we will use them to compute the
-square root in the ``mysqrt`` function. We first test for the availability of
-these functions using the :module:`CheckSymbolExists` module in
-``MathFunctions/CMakeLists.txt``. On some platforms, we will need to link to
-the m library. If ``log`` and ``exp`` are not initially found, require the m
-library and try again.
+如果平台有 ``log`` 和 ``exp`` ，那么我们将使用它们在 ``mysqrt`` 中计算平方根。首先在 ``MathFunctions/CMakeLists.txt`` 中使用  :module:`CheckSymbolExists` 模块判断这些函数是否可用。在一些平台上，需要链接到m库。如果 ``log`` 和 ``exp`` 不可用，则使用m库并重试。
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # does this system provide the log and exp functions?
   :end-before: # add compile definitions
 
-If available, use :command:`target_compile_definitions` to specify
-``HAVE_LOG`` and ``HAVE_EXP`` as ``PRIVATE`` compile definitions.
+如果可以的话，使用 :command:`target_compile_definitions` 指定 ``HAVE_LOG`` 和 ``HAVE_EXP`` 为 ``PRIVATE`` 编译器定义。
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # add compile definitions
   :end-before: # install rules
 
-If ``log`` and ``exp`` are available on the system, then we will use them to
-compute the square root in the ``mysqrt`` function. Add the following code to
-the ``mysqrt`` function in ``MathFunctions/mysqrt.cxx`` (don't forget the
-``#endif`` before returning the result!):
+如果 ``log`` 和 ``exp`` 在系统上可用，那么我们将在 ``mysqrt`` 函数中用来计算平方根。将以下代码添加到 ``MathFunctions/mysqrt.cxx`` 中的 ``mysqrt`` 函数中（返回結果前不要忘了 ``#endif``！）：
 
 .. literalinclude:: Step6/MathFunctions/mysqrt.cxx
   :language: c++
   :start-after: // if we have both log and exp then use them
   :end-before: // do ten iterations
 
-We will also need to modify ``mysqrt.cxx`` to include ``cmath``.
+同时还要修改 ``mysqrt.cxx`` 以包含 ``cmath``：
 
 .. literalinclude:: Step6/MathFunctions/mysqrt.cxx
   :language: c++
   :end-before: #include <iostream>
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool and run the Tutorial executable.
+运行 :manual:`cmake  <cmake(1)>` 命令或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置并用构建工具构建它，然后运行Tutorial程序。
 
-Which function gives better results now, sqrt or mysqrt?
+哪个函数给了更好的结果？sqrt还是mysqrt？
 
-Adding a Custom Command and Generated File (Step 6)
+添加自定义命令和生成的文件（第6步）
 ===================================================
 
-Suppose, for the purpose of this tutorial, we decide that we never want to use
-the platform ``log`` and ``exp`` functions and instead would like to
-generate a table of precomputed values to use in the ``mysqrt`` function.
-In this section, we will create the table as part of the build process,
-and then compile that table into our application.
+假设，出于教学目的，我们决定不使用自带的 ``log`` 和 ``exp`` 函数，而希望生成一个包含预计算值的表，以便在 ``mysqrt`` 中使用。本节中，我们将创建表作为构建过程的一部分，并且将表编译到我们的程序中。
 
-First, let's remove the check for the ``log`` and ``exp`` functions in
-``MathFunctions/CMakeLists.txt``. Then remove the check for ``HAVE_LOG`` and
-``HAVE_EXP`` from ``mysqrt.cxx``. At the same time, we can remove
-:code:`#include <cmath>`.
+首先，删除 ``MathFunctions/CMakeLists.txt`` 中对 ``log`` 和 ``exp`` 的检查。然后删除 ``mysqrt.cxx`` 中对 ``HAVE_LOG`` 和 ``HAVE_EXP`` 的检查，与此同时可以删除 :code:`#include <cmath>`。
 
-In the ``MathFunctions`` subdirectory, a new source file named
-``MakeTable.cxx`` has been provided to generate the table.
+``MathFunctions`` 目录中有一個名为 ``MakeTable.cxx`` 的源文件来提供生成表。
 
-After reviewing the file, we can see that the table is produced as valid C++
-code and that the output filename is passed in as an argument.
+检视这个文件后，可以看到这个表以C++代码展现，输出文件名通过参数传达。
 
 The next step is to add the appropriate commands to the
 ``MathFunctions/CMakeLists.txt`` file to build the MakeTable executable and
@@ -478,7 +398,7 @@ Building an Installer (Step 7)
 Next suppose that we want to distribute our project to other people so that
 they can use it. We want to provide both binary and source distributions on a
 variety of platforms. This is a little different from the install we did
-previously in `Installing and Testing (Step 4)`_ , where we were
+previously in `安装和测试（第4步）`_ , where we were
 installing the binaries that we had built from the source code. In this
 example we will be building installation packages that support binary
 installations and package management features. To accomplish this we will use
@@ -532,7 +452,7 @@ Adding Support for a Dashboard (Step 8)
 =======================================
 
 Adding support for submitting our test results to a dashboard is simple. We
-already defined a number of tests for our project in `Testing Support`_. Now we
+already defined a number of tests for our project in `测试支持`_. Now we
 just have to run those tests and submit them to a dashboard. To include support
 for dashboards we include the :module:`CTest` module in our top-level
 ``CMakeLists.txt``.
@@ -722,7 +642,7 @@ a :command:`target_link_libraries` call to ``tutorial_compiler_flags``.
 Adding Export Configuration (Step 11)
 =====================================
 
-During `Installing and Testing (Step 4)`_ of the tutorial we added the ability
+During `安装和测试（第4步）`_ of the tutorial we added the ability
 for CMake to install the library and headers of the project. During
 `Building an Installer (Step 7)`_ we added the ability to package up this
 information so it could be distributed to other people.
