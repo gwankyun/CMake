@@ -522,7 +522,7 @@ CMake配置过程中可能会出现警告：
   :start-after: #include <string>
   :end-before: int main
 
-Finally, use the ``Addition`` library:
+最后，使用 ``Addition`` 库：
 
 .. literalinclude:: DownstreamComponents/main.cc
   :language: c

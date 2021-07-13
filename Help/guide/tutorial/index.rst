@@ -336,177 +336,126 @@ CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的�
 
 检视这个文件后，可以看到这个表以C++代码展现，输出文件名通过参数传达。
 
-The next step is to add the appropriate commands to the
-``MathFunctions/CMakeLists.txt`` file to build the MakeTable executable and
-then run it as part of the build process. A few commands are needed to
-accomplish this.
+下一步是将适当的命令添加文件中，以构建 ``MathFunctions/CMakeLists.txt`` 文件中以构建MakeTable程序并作为构建过程的一部分运行。需要一些命令来完成这一点。
 
-First, at the top of ``MathFunctions/CMakeLists.txt``, the executable for
-``MakeTable`` is added as any other executable would be added.
+首先在 ``MathFunctions/CMakeLists.txt`` 开头将 ``MakeTable`` 添加为其他可执行文件。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # first we add the executable that generates the table
   :end-before: # add the command to generate the source code
 
-Then we add a custom command that specifies how to produce ``Table.h``
-by running MakeTable.
+然后，我们添加一个自定义命令，指定如何通过运行MakeTable生成 ``Table.h``。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # add the command to generate the source code
   :end-before: # add the main library
 
-Next we have to let CMake know that ``mysqrt.cxx`` depends on the generated
-file ``Table.h``. This is done by adding the generated ``Table.h`` to the list
-of sources for the library MathFunctions.
+接下来需要让CMake知道 ``mysqrt.cxx`` 依赖于那个生成的 ``Table.h``。这是通过将 ``Table.h`` 添加到MathFunctions的源码列表达到的。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # add the main library
   :end-before: # state that anybody linking
 
-We also have to add the current binary directory to the list of include
-directories so that ``Table.h`` can be found and included by ``mysqrt.cxx``.
+我们必须将当前目录加入引入目录列表，令 ``Table.h`` 能够被 ``mysqrt.cxx`` 找到并引用。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # state that we depend on our bin
   :end-before: # install rules
 
-Now let's use the generated table. First, modify ``mysqrt.cxx`` to include
-``Table.h``. Next, we can rewrite the mysqrt function to use the table:
+现在我们使用已生成的表。首先，修改 ``mysqrt.cxx`` 以引用 ``Table.h``。接着，我们重构mysqrt函数使用这个表：
 
 .. literalinclude:: Step7/MathFunctions/mysqrt.cxx
   :language: c++
   :start-after: // a hack square root calculation using simple operations
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+运行 :manual:`cmake  <cmake(1)>` 或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置并构建此项目。
 
-When this project is built it will first build the ``MakeTable`` executable.
-It will then run ``MakeTable`` to produce ``Table.h``. Finally, it will
-compile ``mysqrt.cxx`` which includes ``Table.h`` to produce the MathFunctions
-library.
+当程序构建时会先构建 ``MakeTable`` 程序。它会运行 ``MakeTable`` 产生 ``Table.h``。最终，它会编译包括 ``Table.h`` 的 ``mysqrt.cxx`` 以产生MathFunctions库。
 
-Run the Tutorial executable and verify that it is using the table.
+运行Tutorial程序以验证是否产生使用了这个表。
 
-Building an Installer (Step 7)
+构建安装程序（第7步）
 ==============================
 
-Next suppose that we want to distribute our project to other people so that
-they can use it. We want to provide both binary and source distributions on a
-variety of platforms. This is a little different from the install we did
-previously in `安装和测试（第4步）`_ , where we were
-installing the binaries that we had built from the source code. In this
-example we will be building installation packages that support binary
-installations and package management features. To accomplish this we will use
-CPack to create platform specific installers. Specifically we need to add a
-few lines to the bottom of our top-level ``CMakeLists.txt`` file.
+我们下个愿望是分发工程走让别人使用它。我们想同时分发源码和二进制在不同的平台。这里我们之前讨论的 `安装和测试（第4步）`_ 不同的是，必须要在源码中编译。在此例子中，我们会构建一个安装包以支持二进制安装及包管理。为了达到这个目标我们应该使用CPack创建不同平台的安装包。应该在顶层 ``CMakeLists.txt`` 开头添加几行。
 
 .. literalinclude:: Step8/CMakeLists.txt
   :language: cmake
   :start-after: # setup installer
 
-That is all there is to it. We start by including
-:module:`InstallRequiredSystemLibraries`. This module will include any runtime
-libraries that are needed by the project for the current platform. Next we set
-some CPack variables to where we have stored the license and version
-information for this project. The version information was set earlier in this
-tutorial and the ``license.txt`` has been included in the top-level source
-directory for this step.
+这就是我们对它的所有修改。我们在开始包含 :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt`` 已经添加在源码目录的最高层。
 
-Finally we include the :module:`CPack module <CPack>` which will use these
-variables and some other properties of the current system to setup an
-installer.
+最终我们引用 :module:`CPack module <CPack>` 以使用这些变量或者其他属性以我于安装包。
 
-The next step is to build the project in the usual manner and then run the
-:manual:`cpack <cpack(1)>` executable. To build a binary distribution, from the
-binary directory run:
+下一步就是按照通常习惯构建程序并运行 :manual:`cpack <cpack(1)>` 命令。生成一个二进制包，你需要在二进制目录运行：
 
 .. code-block:: console
 
   cpack
 
-To specify the generator, use the ``-G`` option. For multi-config builds, use
-``-C`` to specify the configuration. For example:
+若想指定生成器，使用 ``-G`` 选项。对于多配置的构建，使用 ``-C`` 指定配置，如下所示：
 
 .. code-block:: console
 
   cpack -G ZIP -C Debug
 
-To create a source distribution you would type:
+如果想创建一个源码分发包你应该输入：
 
 .. code-block:: console
 
   cpack --config CPackSourceConfig.cmake
 
-Alternatively, run ``make package`` or right click the ``Package`` target and
-``Build Project`` from an IDE.
+作为替代，运行 ``make package`` 命令或者在IDE中右击 ``Package`` 目标并 ``Build Project``。
 
-Run the installer found in the binary directory. Then run the installed
-executable and verify that it works.
+运行在二进制目录找的安装包，验证是否如预期。
 
-Adding Support for a Dashboard (Step 8)
+添加对仪表板的支持（第8步）
 =======================================
 
-Adding support for submitting our test results to a dashboard is simple. We
-already defined a number of tests for our project in `测试支持`_. Now we
-just have to run those tests and submit them to a dashboard. To include support
-for dashboards we include the :module:`CTest` module in our top-level
-``CMakeLists.txt``.
+将测试结果添加到仪表板很简单。在 `测试支持`_ 我们已经添加了一系列测试到项目中。现在我们必须运行这些测试并将结果添加到仪表板中。为与做到这点，在顶层 ``CMakeLists.txt`` 
+中引用 :module:`CTest` 模块。
 
-Replace:
+替换：
 
 .. code-block:: cmake
 
   # enable testing
   enable_testing()
 
-With:
+为：
 
 .. code-block:: cmake
 
   # enable dashboard scripting
   include(CTest)
 
-The :module:`CTest` module will automatically call ``enable_testing()``, so we
-can remove it from our CMake files.
+:module:`CTest` 模块可以自动调用 ``enable_testing()``，所以我们可以将它将CMake文件中删掉。
 
-We will also need to create a ``CTestConfig.cmake`` file in the top-level
-directory where we can specify the name of the project and where to submit the
-dashboard.
+我们同样需要创建一个 ``CTestConfig.cmake`` 文件在顶层目录以提交到仪表板。
 
 .. literalinclude:: Step9/CTestConfig.cmake
   :language: cmake
 
-The :manual:`ctest <ctest(1)>` executable will read in this file when it runs.
-To create a simple dashboard you can run the :manual:`cmake <cmake(1)>`
-executable or the :manual:`cmake-gui <cmake-gui(1)>` to configure the project,
-but do not build it yet. Instead, change directory to the binary tree, and then
-run:
+:manual:`ctest <ctest(1)>` 命令运行时会读取此文件。你可以运行 :manual:`cmake <cmake(1)>` 命令或者用 :manual:`cmake-gui <cmake-gui(1)>` 去配置这项目，但没去构建它。相应替代的，修改二进制树目录，并运行：
 
   ctest [-VV] -D Experimental
 
-Remember, for multi-config generators (e.g. Visual Studio), the configuration
-type must be specified::
+不要忘了，对于多配置的生成器（比如Visual Studio），配置必须指定：
 
   ctest [-VV] -C Debug -D Experimental
 
-Or, from an IDE, build the ``Experimental`` target.
+或者直接在IDE中编译 ``Experimental`` 目标。
 
-The :manual:`ctest <ctest(1)>` executable will build and test the project and
-submit the results to Kitware's public dashboard:
-https://my.cdash.org/index.php?project=CMakeTutorial.
+:manual:`ctest <ctest(1)>` 命令将构建并将结果提交到Kitware的公共仪表板：https://my.cdash.org/index.php?project=CMakeTutorial。
 
-Mixing Static and Shared (Step 9)
+混合使用静态库和共享库（第9步）
 =================================
 
-In this section we will show how the :variable:`BUILD_SHARED_LIBS` variable can
-be used to control the default behavior of :command:`add_library`,
-and allow control over how libraries without an explicit type (``STATIC``,
-``SHARED``, ``MODULE`` or ``OBJECT``) are built.
+在本节中，我们将展示如何使用 :variable:`BUILD_SHARED_LIBS` 变量来控制 :command:`add_library` 的默认行为，并允许控制没有显式类型的库（``STATIC``、``SHARED``、``MODULE`` 或者 ``OBJECT``）是如何构建的。
 
 To accomplish this we need to add :variable:`BUILD_SHARED_LIBS` to the
 top-level ``CMakeLists.txt``. We use the :command:`option` command as it allows
@@ -644,7 +593,7 @@ Adding Export Configuration (Step 11)
 
 During `安装和测试（第4步）`_ of the tutorial we added the ability
 for CMake to install the library and headers of the project. During
-`Building an Installer (Step 7)`_ we added the ability to package up this
+`构建安装程序（第7步）`_ we added the ability to package up this
 information so it could be distributed to other people.
 
 The next step is to add the necessary information so that other CMake projects

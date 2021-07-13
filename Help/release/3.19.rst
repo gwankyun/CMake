@@ -295,7 +295,7 @@ Documentation
 The following guides have been added:
 
 * :guide:`IDE Integration Guide`
-* :guide:`Importing and Exporting Guide`
+* :guide:`导入导出指南`
 
 Other Changes
 =============
