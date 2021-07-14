@@ -13,7 +13,7 @@ build source code of other languages too.
 
 People encountering CMake for the first time may have different initial
 goals.  To learn how to build a source code package downloaded from the
-internet, start with the :guide:`User Interaction Guide`.
+internet, start with the :guide:`用户交互指南`.
 This will detail the steps needed to run the :manual:`cmake(1)` or
 :manual:`cmake-gui(1)` executable and how to choose a generator, and
 how to complete the build.

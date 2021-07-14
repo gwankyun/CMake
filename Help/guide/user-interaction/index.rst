@@ -1,56 +1,27 @@
-User Interaction Guide
+用户交互指南
 **********************
 
 .. only:: html
 
    .. contents::
 
-Introduction
+引言
 ============
 
-Where a software package supplies a CMake-based buildsystem
-with the source of their software, the consumer of the
-software is required to run a CMake user interaction tool
-in order to build it.
+当软件包为基于CMake的构建系统提供了软件的源代码时，软件的消费者需要运行一个CMake用户交互工具来构建它。
 
-Well-behaved CMake-based buildsystems do not create any
-output in the source directory, so typically, the user
-performs an out-of-source build and performs the build
-there.  First, CMake must be instructed to generate a
-suitable buildsystem, then the user invokes a build tool
-to process that generated buildsystem.  The generated
-buildsystem is specific to the machine used to generate
-it and is not redistributable.  Each consumer of a provided
-source software package is required to use CMake to
-generate a buildsystem specific to their system.
+行为良好的基于cmake的构建系统不会在源目录中创建任何输出，所以通常情况下，用户执行一个源外构建并在那里执行构建。首先，必须指示CMake生成一个合适的构建系统，然后用户调用构建工具来处理生成的构建系统。生成的构建系统是特定于用来生成它的机器的，并且是不可再分布的。提供的源软件包的每个消费者都需要使用CMake来生成特定于他们系统的构建系统。
 
-Generated buildsystems should generally be treated as
-read-only. The CMake files as a primary artifact should
-completely specify the buildsystem and there should be no
-reason to populate properties manually in an IDE for
-example after generating the buildsystem.  CMake will
-periodically rewrite the generated buildsystem, so
-modifications by users will be overwritten.
+生成的构建系统通常应该被视为只读的。作为主要构件的CMake文件应该完全指定构建系统，并且应该没有理由在IDE中手动填充属性，例如在生成构建系统之后。CMake会定期重写生成的构建系统，因此用户的修改会被覆盖。
 
-The features and user interfaces described in this manual
-are available for all CMake-based build systems by virtue
-of providing CMake files.
+通过提供CMake文件，本手册中描述的功能和用户界面可用于所有基于CMake的构建系统。
 
-The CMake tooling may report errors to the user when
-processing provided CMake files, such as reporting that
-the compiler is not supported, or the compiler does not
-support a required compile option, or a dependency can
-not be found.  These errors must be resolved by the user
-by choosing a different compiler,
-:guide:`installing dependencies <Using Dependencies Guide>`,
-or instructing CMake where to find them, etc.
+当处理提供的CMake文件时，CMake工具可能会向用户报告错误，比如报告编译器不受支持，或者编译器不支持必需的编译选项，或者无法找到依赖项。这些错误必须由用户通过选择不同的编译器、:guide:`installing dependencies <Using Dependencies Guide>` 或指示CMake在哪里找到它们来解决。
 
-Command Line cmake tool
+cmake命令行工具
 -----------------------
 
-A simple but typical use of :manual:`cmake(1)` with a fresh
-copy of software source code is to create a build directory
-and invoke cmake there:
+:manual:`cmake(1)` 的一个简单但典型的用法是创建一个build目录并在那里调用cmake：
 
 .. code-block:: console
 
@@ -61,96 +32,48 @@ and invoke cmake there:
   $ cmake --build .
   $ cmake --build . --target install
 
-It is recommended to build in a separate directory to the
-source because that keeps the source directory pristine,
-allows for building a single source with multiple
-toolchains, and allows easy clearing of build artifacts by
-simply deleting the build directory.
+建议在到源的单独目录中构建，因为这样可以保持源目录的原始状态，允许使用多个工具链构建单个源，并允许通过简单地删除构建目录轻松地清除构建工件。
 
-The CMake tooling may report warnings which are intended
-for the provider of the software, not intended for the
-consumer of the software.  Such warnings end with "This
-warning is for project developers".  Users may disable
-such warnings by passing the ``-Wno-dev`` flag to
-:manual:`cmake(1)`.
+CMake工具可能会报告针对软件提供商的警告，而不是针对软件消费者的警告。这样的警告以“此警告是给项目开发人员的”结尾。用户可以通过向 :manual:`cmake(1)` 传递 ``-Wno-dev`` 标志来禁用此类警告。
 
-cmake-gui tool
+cmake-gui工具
 --------------
 
-Users more accustomed to GUI interfaces may use the
-:manual:`cmake-gui(1)` tool to invoke CMake and generate
-a buildsystem.
+更习惯GUI界面的用户可以使用 :manual:`cmake-gui(1)` 工具来调用CMake并生成构建系统。
 
-The source and binary directories must first be
-populated.  It is always advised to use different
-directories for the source and the build.
+必须首先填充源目录和二进制目录。总是建议为源文件和构建文件使用不同的目录。
 
 .. image:: GUI-Source-Binary.png
-   :alt: Choosing source and binary directories
+   :alt: 选择源码及二进制目录
 
-Generating a Buildsystem
+生成一个构建系统
 ========================
 
-There are several user interface tools which may be used
-to generate a buildsystem from CMake files.  The
-:manual:`ccmake(1)` and :manual:`cmake-gui(1)` tools guide
-the user through setting the various necessary options.
-The :manual:`cmake(1)` tool can be invoked to specify
-options on the command line.  This manual describes options
-which may be set using any of the user interface tools,
-though the mode of setting an option is different for each
-tool.
+有一些用户界面工具可以用来从CMake文件生成构建系统。:manual:`ccmake(1)` 和 :manual:`cmake-gui(1)` 工具通过设置各种必要的选项指导用户。可以调用 :manual:`cmake(1)` 工具来在命令行上指定选项。本手册描述了可以使用任何用户界面工具设置的选项，尽管每种工具设置选项的方式不同。
 
-Command line environment
+命令行环境
 ------------------------
 
-When invoking :manual:`cmake(1)` with a command line
-buildsystem such as ``Makefiles`` or ``Ninja``, it is
-necessary to use the correct build environment to
-ensure that build tools are available. CMake must be
-able to find the appropriate
-:variable:`build tool <CMAKE_MAKE_PROGRAM>`,
-compiler, linker and other tools as needed.
+当使用命令行构建系统(如 ``Makefiles`` 或 ``Ninja``)调用 :manual:`cmake(1)` 时，有必要使用正确的构建环境以确保构建工具可用。CMake必须能够根据需要找到合适的 :variable:`build tool <CMAKE_MAKE_PROGRAM>`、编译器、链接器和其他必要工具。
 
-On Linux systems, the appropriate tools are often
-provided in system-wide locations and may be readily
-installed through the system package manager. Other
-toolchains provided by the user or installed in
-non-default locations can also be used.
+在Linux系统上，适当的工具通常在系统范围内的位置提供，并且可以通过系统包管理器随时安装。用户提供的或安装在非默认位置的其他工具链也可以使用。
 
-When cross-compiling, some platforms may require
-environment variables to be set or may provide
-scripts to set the environment.
+在交叉编译时，一些平台可能需要设置环境变量，或者可能提供设置环境的脚本。
 
-Visual Studio ships multiple command prompts and
-``vcvarsall.bat`` scripts for setting up the
-correct environments for command line buildsystems. While
-not strictly necessary to use a corresponding
-command line environment when using a Visual Studio
-generator, doing so has no disadvantages.
+Visual Studio提供了多个命令提示符和 ``vcvarsall.bat`` 脚本，用于为命令行构建系统设置正确的环境。虽然在使用Visual Studio生成器时并不一定需要使用相应的命令行环境，但这样做无坏处。
 
-When using Xcode, there can be more than one Xcode
-version installed.  Which one to use can be selected
-in a number of different ways, but the most common
-methods are:
+当使用Xcode时，可以安装多个Xcode版本。使用哪种方法可以有很多不同的选择，但最常见的方法是：
 
-* Setting the default version in the preferences
-  of the Xcode IDE.
-* Setting the default version via the ``xcode-select``
-  command line tool.
-* Overriding the default version by setting the
-  ``DEVELOPER_DIR`` environment variable when running
-  CMake and the build tool.
+* 在Xcode IDE的首选项中设置默认版本。
+* 通过 ``xcode-select`` 命令行工具设置默认版本。
+* 在运行CMake和构建工具时，通过设置 ``DEVELOPER_DIR`` 环境变量来覆盖默认版本。
 
-For convenience, :manual:`cmake-gui(1)` provides an
-environment variable editor.
+为了方便起见，:manual:`cmake-gui(1)` 提供了一个环境变量编辑器。
 
-Command line ``-G`` option
+命令行 ``-G`` 选项
 --------------------------
 
-CMake chooses a generator by default based on the
-platform.  Usually, the default generator is sufficient
-to allow the user to proceed to build the software.
+CMake根据平台默认选择一个生成器。通常，默认生成器足以允许用户继续构建软件。
 
 The user may override the default generator with
 the ``-G`` option:
