@@ -457,111 +457,72 @@ CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的�
 
 在本节中，我们将展示如何使用 :variable:`BUILD_SHARED_LIBS` 变量来控制 :command:`add_library` 的默认行为，并允许控制没有显式类型的库（``STATIC``、``SHARED``、``MODULE`` 或者 ``OBJECT``）是如何构建的。
 
-To accomplish this we need to add :variable:`BUILD_SHARED_LIBS` to the
-top-level ``CMakeLists.txt``. We use the :command:`option` command as it allows
-users to optionally select if the value should be ON or OFF.
+为此，我们需要将 :variable:`BUILD_SHARED_LIBS` 添加到顶层 ``CMakeLists.txt`` 中。我们使用 :command:`option` 命令，因为它能用户选择值为ON或者OFF。
 
-Next we are going to refactor MathFunctions to become a real library that
-encapsulates using ``mysqrt`` or ``sqrt``, instead of requiring the calling
-code to do this logic. This will also mean that ``USE_MYMATH`` will not control
-building MathFunctions, but instead will control the behavior of this library.
+接下来，我们将重构MathFunctions，使其成为一个使用 ``mysqrt`` 或 ``sqrt`` 封装的真正的库，而不是要求在代码处理这些逻辑。这也意味着 ``USE_MYMATH`` 将不再控制构建MathFunctions，而是控制这个库的行为。
 
-The first step is to update the starting section of the top-level
-``CMakeLists.txt`` to look like:
+第一步是像下面那样更新顶层 ``CMakeLists.txt``：
 
 .. literalinclude:: Step10/CMakeLists.txt
   :language: cmake
   :end-before: # add the binary tree
 
-Now that we have made MathFunctions always be used, we will need to update
-the logic of that library. So, in ``MathFunctions/CMakeLists.txt`` we need to
-create a SqrtLibrary that will conditionally be built and installed when
-``USE_MYMATH`` is enabled. Now, since this is a tutorial, we are going to
-explicitly require that SqrtLibrary is built statically.
+现在我们已经使MathFunctions始终被使用，需要更新这个库的逻辑。因此，在 ``MathFunctions/CMakeLists.txt`` 中需要创建一个当 ``USE_MYMATH`` 被启用时有条件构建和安装的SqrtLibrary。现在，由于这是一个教程，我们明确要求SqrtLibrary是静态构建的。
 
-The end result is that ``MathFunctions/CMakeLists.txt`` should look like:
+``MathFunctions/CMakeLists.txt`` 最终应该像下面那样：
 
 .. literalinclude:: Step10/MathFunctions/CMakeLists.txt
   :language: cmake
   :lines: 1-36,42-
 
-Next, update ``MathFunctions/mysqrt.cxx`` to use the ``mathfunctions`` and
-``detail`` namespaces:
+接下来使用 ``mathfunctions`` 函数及 ``detail`` 命名空间修改 ``MathFunctions/mysqrt.cxx``：
 
 .. literalinclude:: Step10/MathFunctions/mysqrt.cxx
   :language: c++
 
-We also need to make some changes in ``tutorial.cxx``, so that it no longer
-uses ``USE_MYMATH``:
+我们还需要在 ``tutorial.cxx`` 中做一些修改，使它不再使用 ``USE_MYMATH``：
 
-#. Always include ``MathFunctions.h``
-#. Always use ``mathfunctions::sqrt``
-#. Don't include cmath
+#. 总是包含 ``MathFunctions.h``
+#. 总是使用 ``mathfunctions::sqrt``
+#. 不要包含cmath
 
-Finally, update ``MathFunctions/MathFunctions.h`` to use dll export defines:
+最后，更新 ``MathFunctions/MathFunctions.h`` 以使用dll导出的定义：
 
 .. literalinclude:: Step10/MathFunctions/MathFunctions.h
   :language: c++
 
-At this point, if you build everything, you may notice that linking fails
-as we are combining a static library without position independent code with a
-library that has position independent code. The solution to this is to
-explicitly set the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property of
-SqrtLibrary to be True no matter the build type.
+此时，如果您构建了所有内容，您可能会注意到，当我们将一个没有位置独立代码的静态库与一个有位置独立代码的库组合在一起时，链接会失败。解决这个问题的方法是显式地将SqrtLibrary的 
 
 .. literalinclude:: Step10/MathFunctions/CMakeLists.txt
   :language: cmake
   :lines: 37-42
 
-**Exercise**: We modified ``MathFunctions.h`` to use dll export defines.
-Using CMake documentation can you find a helper module to simplify this?
+**练习**：我们修改了 ``MathFunctions.h`` 以使用dll导出的定义。使用CMake文档你能找到一个帮助模块来简化这个吗?
 
 
-Adding Generator Expressions (Step 10)
+添加生成器表达式（第10步）
 ======================================
 
-:manual:`Generator expressions <cmake-generator-expressions(7)>` are evaluated
-during build system generation to produce information specific to each build
-configuration.
+:manual:`Generator expressions <cmake-generator-expressions(7)>` 在生成生成系统期间计算，以生成特定于每个生成配置的信息。
 
-:manual:`Generator expressions <cmake-generator-expressions(7)>` are allowed in
-the context of many target properties, such as :prop_tgt:`LINK_LIBRARIES`,
-:prop_tgt:`INCLUDE_DIRECTORIES`, :prop_tgt:`COMPILE_DEFINITIONS` and others.
-They may also be used when using commands to populate those properties, such as
-:command:`target_link_libraries`, :command:`target_include_directories`,
-:command:`target_compile_definitions` and others.
+:manual:`Generator expressions <cmake-generator-expressions(7)>` 可以在许多目标属性的上下文中使用，比如 :prop_tgt:`LINK_LIBRARIES`、:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS` 等等。它们也可以在使用命令填充那些属性时使用，比如 :command:`target_link_libraries`、:command:`target_include_directories`、:command:`target_compile_definitions` 等等。
 
-:manual:`Generator expressions <cmake-generator-expressions(7)>`  may be used
-to enable conditional linking, conditional definitions used when compiling,
-conditional include directories and more. The conditions may be based on the
-build configuration, target properties, platform information or any other
-queryable information.
+:manual:`Generator expressions <cmake-generator-expressions(7)>` 可用于启用条件链接、编译时使用的条件定义、条件包含目录等等。这些条件可能基于构建配置、目标属性、平台信息或任何其他可查询的信息。
 
-There are different types of
-:manual:`generator expressions <cmake-generator-expressions(7)>` including
-Logical, Informational, and Output expressions.
+:manual:`generator expressions <cmake-generator-expressions(7)>` 有不同的类型，包括逻辑表达式、信息表达式和输出表达式。
 
-Logical expressions are used to create conditional output. The basic
-expressions are the 0 and 1 expressions. A ``$<0:...>`` results in the empty
-string, and ``<1:...>`` results in the content of "...".  They can also be
-nested.
+逻辑表达式用于创建条件输出。基本表达式是0和1表达式。``$<0:...>`` 结果为空字符串，而 ``<1:...>`` 则会生成“…”。可以互相嵌套。
 
-A common usage of
-:manual:`generator expressions <cmake-generator-expressions(7)>` is to
-conditionally add compiler flags, such as those for language levels or
-warnings. A nice pattern is to associate this information to an ``INTERFACE``
-target allowing this information to propagate. Let's start by constructing an
-``INTERFACE`` target and specifying the required C++ standard level of ``11``
-instead of using :variable:`CMAKE_CXX_STANDARD`.
+:manual:`generator expressions <cmake-generator-expressions(7)>` 的常见用法是有条件地添加编译器标志，例如用于语言级别或警告的标志。一个不错的模式是将此信息关联到允许传播此信息的 ``INTERFACE`` 接口目标。让我们首先构造一个 ``INTERFACE`` 目标，并指定所需的C++标准级别为 ``11``，而非用 :variable:`CMAKE_CXX_STANDARD`。
 
-So the following code:
+所以下面的代码：
 
 .. literalinclude:: Step10/CMakeLists.txt
   :language: cmake
   :start-after: project(Tutorial VERSION 1.0)
   :end-before: # control where the static and shared libraries are built so that on windows
 
-Would be replaced with:
+会被替换成：
 
 .. literalinclude:: Step11/CMakeLists.txt
   :language: cmake
@@ -569,59 +530,40 @@ Would be replaced with:
   :end-before: # add compiler warning flags just when building this project via
 
 
-Next we add the desired compiler warning flags that we want for our project. As
-warning flags vary based on the compiler we use the ``COMPILE_LANG_AND_ID``
-generator expression to control which flags to apply given a language and a set
-of compiler ids as seen below:
+接下来，我们为项目添加所需的编译器警告标志。由于警告标志会根据编译器的不同而变化，因此我们使用 ``COMPILE_LANG_AND_ID`` 生成器表达式来控制在给定的语言和一组编译器id中应用哪些标志，如下所示：
 
 .. literalinclude:: Step11/CMakeLists.txt
   :language: cmake
   :start-after: # the BUILD_INTERFACE genex
   :end-before: # control where the static and shared libraries are built so that on windows
 
-Looking at this we see that the warning flags are encapsulated inside a
-``BUILD_INTERFACE`` condition. This is done so that consumers of our installed
-project will not inherit our warning flags.
+我们看到警告标志被封装在 ``BUILD_INTERFACE`` 条件中。这样做是为了使已安装项目的使用者不会继承我们的警告标志。
 
 
-**Exercise**: Modify ``MathFunctions/CMakeLists.txt`` so that all targets have
-a :command:`target_link_libraries` call to ``tutorial_compiler_flags``.
+**练习**：修改 ``MathFunctions/CMakeLists.txt`` ，使所有目标都有一个 :command:`target_link_libraries` 调用 ``tutorial_compiler_flags``。
 
 
-Adding Export Configuration (Step 11)
+添加导出配置（第11步）
 =====================================
 
-During `安装和测试（第4步）`_ of the tutorial we added the ability
-for CMake to install the library and headers of the project. During
-`构建安装程序（第7步）`_ we added the ability to package up this
-information so it could be distributed to other people.
+在 `安装和测试（第4步）`_ 教程中，我们增加了CMake安装项目库和头文件的能力。在 `构建安装程序（第7步）`_ 期间，我们添加了打包这些信息的功能，以便将其分发给其他人。
 
-The next step is to add the necessary information so that other CMake projects
-can use our project, be it from a build directory, a local install or when
-packaged.
+下一步是添加必要的信息，以便其他CMake项目可以使用我们的项目，无论是在构建目录、本地安装还是打包时。
 
-The first step is to update our :command:`install(TARGETS)` commands to not
-only specify a ``DESTINATION`` but also an ``EXPORT``. The ``EXPORT`` keyword
-generates and installs a CMake file containing code to import all targets
-listed in the install command from the installation tree. So let's go ahead and
-explicitly ``EXPORT`` the MathFunctions library by updating the ``install``
-command in ``MathFunctions/CMakeLists.txt`` to look like:
+第一步是更新我们的 :command:`install(TARGETS)` 命令，不仅指定 ``DESTINATION``，还指定 ``EXPORT``。 ``EXPORT`` 关键字生成并安装一个CMake文件，其中包含从安装树导入安装命令中列出的所有目标的代码。所以让我们继续，通过更新 ``MathFunctions/CMakeLists.txt`` 中的 ``install`` 命令来显式 ``EXPORT`` MathFunctions库，如下所示：
 
 .. literalinclude:: Complete/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # install rules
 
-Now that we have MathFunctions being exported, we also need to explicitly
-install the generated ``MathFunctionsTargets.cmake`` file. This is done by
-adding the following to the bottom of the top-level ``CMakeLists.txt``:
+现在我们已经导出了MathFunctions，我们还需要显式安装生成的 ``MathFunctionsTargets.cmake`` 文件。这是通过在顶层 ``CMakeLists.txt`` 的底部添加以下内容来实现的：
 
 .. literalinclude:: Complete/CMakeLists.txt
   :language: cmake
   :start-after: # install the configuration targets
   :end-before: include(CMakePackageConfigHelpers)
 
-At this point you should try and run CMake. If everything is setup properly
-you will see that CMake will generate an error that looks like:
+此时，你应该尝试运行CMake。如果一切都设置正确，你会看到CMake将产生一个错误，看起来像：
 
 .. code-block:: console
 
@@ -632,92 +574,65 @@ you will see that CMake will generate an error that looks like:
 
   which is prefixed in the source directory.
 
-What CMake is trying to say is that during generating the export information
-it will export a path that is intrinsically tied to the current machine and
-will not be valid on other machines. The solution to this is to update the
-MathFunctions :command:`target_include_directories` to understand that it needs
-different ``INTERFACE`` locations when being used from within the build
-directory and from an install / package. This means converting the
-:command:`target_include_directories` call for MathFunctions to look like:
+CMake试图说明的是，在生成导出信息的过程中，它将导出一个本质上与当前机器相关联的路径，该路径在其他机器上无效。解决这个问题的方法是更新MathFunctions   :command:`target_include_directories` ，以理解在构建目录和安装/包中使用它时需要不同的 ``INTERFACE`` 位置。这意味着将MathFunctions的 :command:`target_include_directories` 调用转换成如下所示：
 
 .. literalinclude:: Step12/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # to find MathFunctions.h, while we don't.
   :end-before: # should we use our own math functions
 
-Once this has been updated, we can re-run CMake and verify that it doesn't
-warn anymore.
+一旦它被更新，我们可以重新运行CMake并验证它不再发出警告。
 
-At this point, we have CMake properly packaging the target information that is
-required but we will still need to generate a ``MathFunctionsConfig.cmake`` so
-that the CMake :command:`find_package` command can find our project. So let's go
-ahead and add a new file to the top-level of the project called
-``Config.cmake.in`` with the following contents:
+此时，我们已经让CMake正确地打包了所需的目标信息，但我们仍然需要生成  ``MathFunctionsConfig.cmake``。让CMake的 :command:`find_package` 命令可以找到我们的项目。因此，让我们继续往项目的顶层添加一个名为 ``Config.cmake.in`` 的新文件。内附以下内容：
 
 .. literalinclude:: Step12/Config.cmake.in
 
-Then, to properly configure and install that file, add the following to the
-bottom of the top-level ``CMakeLists.txt``:
+然后，为了正确地配置和安装该文件，将以下文件添加到顶层 ``CMakeLists.txt`` 的底部：
 
 .. literalinclude:: Step12/CMakeLists.txt
   :language: cmake
   :start-after: # install the configuration targets
   :end-before: # generate the export
 
-At this point, we have generated a relocatable CMake Configuration for our
-project that can be used after the project has been installed or packaged. If
-we want our project to also be used from a build directory we only have to add
-the following to the bottom of the top level ``CMakeLists.txt``:
+至此，我们已经为我们的项目生成了一个可重定位的CMake配置，可以在安装或打包项目之后使用。如果我们想要我们的项目也从一个构建目录中使用，我们只需要添加以下顶层 ``CMakeLists.txt`` 的底部：
 
 .. literalinclude:: Step12/CMakeLists.txt
   :language: cmake
   :start-after: # needs to be after the install(TARGETS ) command
 
-With this export call we now generate a ``Targets.cmake``, allowing the
-configured ``MathFunctionsConfig.cmake`` in the build directory to be used by
-other projects, without needing it to be installed.
+使用这个导出调用，我们现在生成一个 ``Targets.cmake``，允许配置 ``MathFunctionsConfig.cmake`` 文件，以供其他项目使用，而无需安装。
 
-Packaging Debug and Release (Step 12)
+打包调试和发布（第12步）
 =====================================
 
-**Note:** This example is valid for single-configuration generators and will
-not work for multi-configuration generators (e.g. Visual Studio).
+**注意**：这个例子只适用于单配置生成器，而不适用于多配置生成器(例如Visual Studio)。
 
-By default, CMake's model is that a build directory only contains a single
-configuration, be it Debug, Release, MinSizeRel, or RelWithDebInfo. It is
-possible, however, to setup CPack to bundle multiple build directories and
-construct a package that contains multiple configurations of the same project.
+默认情况下，CMake的模型是一个构建目录只包含一个配置，可以是Debug、Release、MinSizeRel或RelWithDebInfo。但是，可以通过安装CPack来捆绑多个构建目录，并构建一个包含同一项目的多个配置的包。
 
-First, we want to ensure that the debug and release builds use different names
-for the executables and libraries that will be installed. Let's use `d` as the
-postfix for the debug executable and libraries.
+首先，我们希望确保调试版本和发布版本对将要安装的可执行文件和库使用不同的名称。让我们使用 `d` 作为调试可执行文件和库的后缀。
 
-Set :variable:`CMAKE_DEBUG_POSTFIX` near the beginning of the top-level
-``CMakeLists.txt`` file:
+在顶层 ``CMakeLists.txt`` 文件的开头设置 :variable:`CMAKE_DEBUG_POSTFIX`：
 
 .. literalinclude:: Complete/CMakeLists.txt
   :language: cmake
   :start-after: project(Tutorial VERSION 1.0)
   :end-before: target_compile_features(tutorial_compiler_flags
 
-And the :prop_tgt:`DEBUG_POSTFIX` property on the tutorial executable:
+还有tutorial可执行文件的 :prop_tgt:`DEBUG_POSTFIX` 属性：
 
 .. literalinclude:: Complete/CMakeLists.txt
   :language: cmake
   :start-after: # add the executable
   :end-before: # add the binary tree to the search path for include files
 
-Let's also add version numbering to the MathFunctions library. In
-``MathFunctions/CMakeLists.txt``, set the :prop_tgt:`VERSION` and
-:prop_tgt:`SOVERSION` properties:
+让我们再向MathFunctions库添加版本号。在 ``MathFunctions/CMakeLists.txt`` 设置  :prop_tgt:`VERSION` 和 :prop_tgt:`SOVERSION` 属性：
 
 .. literalinclude:: Complete/MathFunctions/CMakeLists.txt
   :language: cmake
   :start-after: # setup the version numbering
   :end-before: # install rules
 
-From the ``Step12`` directory, create ``debug`` and ``release``
-subbdirectories. The layout will look like:
+在 ``Step12`` 目录中，创建 ``debug`` 和 ``release`` 子目录。布局将看起来像：
 
 .. code-block:: none
 
@@ -725,8 +640,7 @@ subbdirectories. The layout will look like:
      - debug
      - release
 
-Now we need to setup debug and release builds. We can use
-:variable:`CMAKE_BUILD_TYPE` to set the configuration type:
+现在我们需要设置调试和发布构建。我们可以使用 :variable:`CMAKE_BUILD_TYPE` 来设置配置类型：
 
 .. code-block:: console
 
@@ -737,20 +651,14 @@ Now we need to setup debug and release builds. We can use
   cmake -DCMAKE_BUILD_TYPE=Release ..
   cmake --build .
 
-Now that both the debug and release builds are complete, we can use a custom
-configuration file to package both builds into a single release. In the
-``Step12`` directory, create a file called ``MultiCPackConfig.cmake``. In this
-file, first include the default configuration file that was created by the
-:manual:`cmake  <cmake(1)>` executable.
+现在调试版本和发布版本都已经完成了，我们可以使用一个定制的配置文件将这两个版本打包到一个版本中。在 ``Step12`` 目录中，创建一个名为 ``MultiCPackConfig.cmake`` 的文件。在这个文件中，首先包含 :manual:`cmake  <cmake(1)>` 可执行文件创建的默认配置文件。
 
-Next, use the ``CPACK_INSTALL_CMAKE_PROJECTS`` variable to specify which
-projects to install. In this case, we want to install both debug and release.
+接下来，使用 ``CPACK_INSTALL_CMAKE_PROJECTS`` 变量来指定要安装哪些项目。在这种情况下，我们希望同时安装调试和发布。
 
 .. literalinclude:: Complete/MultiCPackConfig.cmake
   :language: cmake
 
-From the ``Step12`` directory, run :manual:`cpack <cpack(1)>` specifying our
-custom configuration file with the ``config`` option:
+在 ``Step12`` 目录下，运行 :manual:`cpack <cpack(1)>` ，指定我们的配置文件  ``config`` 选项：
 
 .. code-block:: console
 
