@@ -75,42 +75,19 @@ Visual Studio提供了多个命令提示符和 ``vcvarsall.bat`` 脚本，用于
 
 CMake根据平台默认选择一个生成器。通常，默认生成器足以允许用户继续构建软件。
 
-The user may override the default generator with
-the ``-G`` option:
+用户可以使用 ``-G`` 选项覆盖默认生成器：
 
 .. code-block:: console
 
   $ cmake .. -G Ninja
 
-The output of ``cmake --help`` includes a list of
-:manual:`generators <cmake-generators(7)>` available
-for the user to choose from.  Note that generator
-names are case sensitive.
+``cmake --help`` 的输出包括一个可供用户选择的 :manual:`generators <cmake-generators(7)>` 列表。注意，生成器名称是区分大小写的。
 
-On Unix-like systems (including Mac OS X), the
-:generator:`Unix Makefiles` generator is used by
-default.  A variant of that generator can also be used
-on Windows in various environments, such as the
-:generator:`NMake Makefiles` and
-:generator:`MinGW Makefiles` generator.  These generators
-generate a ``Makefile`` variant which can be executed
-with ``make``, ``gmake``, ``nmake`` or similar tools.
-See the individual generator documentation for more
-information on targeted environments and tools.
+在类Unix系统（包括Mac OS X）上，默认情况下使用 :generator:`Unix Makefiles` 生成器。该生成器的一个变体也可以在各种环境的Windows上使用，比如 :generator:`NMake Makefiles` 和 :generator:`MinGW Makefiles` 生成器。这些生成器生成一个 ``Makefile`` 变体，可以用 ``make``、``gmake``、 ``nmake`` 或类似工具执行。有关目标环境和工具的更多信息，请参见单个生成器文档。
 
-The :generator:`Ninja` generator is available on all
-major platforms. ``ninja`` is a build tool similar
-in use-cases to ``make``, but with a focus on
-performance and efficiency.
+:generator:`Ninja` 生成器适用于所有主要平台。``ninja`` 是一个用法类似于 ``make`` 的构建工具，但侧重于性能和效率。
 
-On Windows, :manual:`cmake(1)` can be used to generate
-solutions for the Visual Studio IDE.  Visual Studio
-versions may be specified by the product name of the
-IDE, which includes a four-digit year.  Aliases are
-provided for other means by which Visual Studio
-versions are sometimes referred to, such as two
-digits which correspond to the product version of the
-VisualC++ compiler, or a combination of the two:
+在Windows平台上，可以使用 :manual:`cmake(1)` 为Visual Studio IDE生成解决方案。Visual Studio版本可以通过IDE的产品名来指定，其中包含一个四位数字的年份。别名也可以用来表示Visual Studio版本，比如两个数字对应于VisualC++编译器的产品版本，或者两者的组合：
 
 .. code-block:: console
 
@@ -118,8 +95,7 @@ VisualC++ compiler, or a combination of the two:
   $ cmake .. -G "Visual Studio 16"
   $ cmake .. -G "Visual Studio 16 2019"
 
-Visual Studio generators can target different architectures.
-One can specify the target architecture using the `-A` option:
+Visual Studio生成器可以针对不同的架构。可以使用 `-A` 选项指定目标架构：
 
 .. code-block:: console
 
@@ -127,26 +103,15 @@ One can specify the target architecture using the `-A` option:
   cmake .. -G "Visual Studio 16" -A ARM
   cmake .. -G "Visual Studio 16 2019" -A ARM64
 
-On Apple, the :generator:`Xcode` generator may be used to
-generate project files for the Xcode IDE.
+在苹果平台上，:generator:`Xcode` 生成器可能被用来为Xcode IDE生成项目文件。
 
-Some IDEs such as KDevelop4, QtCreator and CLion have
-native support for CMake-based buildsystems.  Those IDEs
-provide user interface for selecting an underlying
-generator to use, typically a choice between a ``Makefile``
-or a ``Ninja`` based generator.
+一些IDE，如KDevelop4, QtCreator和CLion，对基于CMake的构建系统有本地支持。这些IDE提供了选择要使用的底层生成器的用户界面，通常是在 ``Makefile`` 或基于 ``Ninja`` 的生成器之间进行选择。
 
-Note that it is not possible to change the generator
-with ``-G`` after the first invocation of CMake.  To
-change the generator, the build directory must be
-deleted and the build must be started from scratch.
+注意，在第一次调用CMake之后，不能用 ``-G`` 来更改生成器。要更改生成器，必须删除构建目录，并且必须从头开始构建。
 
-When generating Visual Studio project and solutions
-files several other options are available to use when
-initially running :manual:`cmake(1)`.
+当生成Visual Studio项目和解决方案文件时，在最初运行 :manual:`cmake(1)` 时，可以使用其他几个选项。
 
-The Visual Studio toolset can be specified with the
-``-T`` option:
+Visual Studio工具集可以通过 ``-T`` 选项来指定：
 
 .. code-block:: console
 
@@ -155,96 +120,57 @@ The Visual Studio toolset can be specified with the
     $ # Build targeting Windows XP
     $ cmake.exe .. -G "Visual Studio 16 2019" -A x64 -T v120_xp
 
-Whereas the ``-A`` option specifies the _target_
-architecture, the ``-T`` option can be used to specify
-details of the toolchain used.  For example, `-Thost=x64`
-can be given to select the 64-bit version of the host
-tools.  The following demonstrates how to use 64-bit
-tools and also build for a 64-bit target architecture:
+``-A`` 选项指定 _target_ 体系结构，而 ``-T`` 选项可用于指定所使用的工具链的详细信息。例如，可以使用 `-Thost=x64` 来选择64位版本的主机工具。下面演示了如何使用64位工具，以及如何构建64位目标体系结构：
 
 .. code-block:: console
 
     $ cmake .. -G "Visual Studio 16 2019" -A x64 -Thost=x64
 
-Choosing a generator in cmake-gui
+在cmake-gui选择生成器
 ---------------------------------
 
-The "Configure" button triggers a new dialog to
-select the CMake generator to use.
+“Configure”按钮会触发一个新的对话框来选择要使用的CMake生成器。
 
 .. image:: GUI-Configure-Dialog.png
-   :alt: Configuring a generator
+   :alt: 配置一个生成器
 
-All generators available on the command line are also
-available in :manual:`cmake-gui(1)`.
+命令行中可用的所有生成器在 :manual:`cmake-gui(1)` 中也可用。
 
 .. image:: GUI-Choose-Generator.png
-   :alt: Choosing a generator
+   :alt: 选择一个生成器
 
-When choosing a Visual Studio generator, further options
-are available to set an architecture to generate for.
+当选择生成器时，可以使用更多选项来设置要生成的体系结构。
 
 .. image:: VS-Choose-Arch.png
-   :alt: Choosing an architecture for Visual Studio generators
+   :alt: 选择Visual Studio生成器的体系结构
 
 .. _`Setting Build Variables`:
 
-Setting Build Variables
+设置构建变量
 =======================
 
-Software projects often require variables to be
-set on the command line when invoking CMake.  Some of
-the most commonly used CMake variables are listed in
-the table below:
+软件项目在调用CMake时通常需要在命令行上设置变量。下表列出了一些最常用的CMake变量：
 
 ========================================== ============================================================
- Variable                                   Meaning
+ 变量                                       意义
 ========================================== ============================================================
- :variable:`CMAKE_PREFIX_PATH`              Path to search for
-                                            :guide:`dependent packages <Using Dependencies Guide>`
- :variable:`CMAKE_MODULE_PATH`              Path to search for additional CMake modules
- :variable:`CMAKE_BUILD_TYPE`               Build configuration, such as
-                                            ``Debug`` or ``Release``, determining
-                                            debug/optimization flags.  This is only
-                                            relevant for single-configuration buildsystems such
-                                            as ``Makefile`` and ``Ninja``.  Multi-configuration
-                                            buildsystems such as those for Visual Studio and Xcode
-                                            ignore this setting.
- :variable:`CMAKE_INSTALL_PREFIX`           Location to install the
-                                            software to with the
-                                            ``install`` build target
- :variable:`CMAKE_TOOLCHAIN_FILE`           File containing cross-compiling
-                                            data such as
-                                            :manual:`toolchains and sysroots <cmake-toolchains(7)>`.
- :variable:`BUILD_SHARED_LIBS`              Whether to build shared
-                                            instead of static libraries
-                                            for :command:`add_library`
-                                            commands used without a type
- :variable:`CMAKE_EXPORT_COMPILE_COMMANDS`  Generate a ``compile_commands.json``
-                                            file for use with clang-based tools
+ :variable:`CMAKE_PREFIX_PATH`              :guide:`dependent packages <Using Dependencies Guide>` 搜索路径
+ :variable:`CMAKE_MODULE_PATH`              额外的CMake模块搜索路径
+ :variable:`CMAKE_BUILD_TYPE`               构建配置，如 ``Debug`` 或 ``Release`` 确定调试/优化标志。这只与单配置构建系统相关，比如 ``Makefile`` 和 ``Ninja``。Visual Studio和Xcode等多配置构建系统忽略了这个设置。
+ :variable:`CMAKE_INSTALL_PREFIX`           使用 ``install`` 构建目标安装软件的位置
+ :variable:`CMAKE_TOOLCHAIN_FILE`           包含交叉编译数据的文件，例如 :manual:`toolchains and sysroots <cmake-toolchains(7)>`。
+ :variable:`BUILD_SHARED_LIBS`              是否为未指定类型的 :command:`add_library` 命令构建共享库而非静态库
+ :variable:`CMAKE_EXPORT_COMPILE_COMMANDS`  使用基于clang的工具生成一个 ``compile_commands.json`` 文件
 ========================================== ============================================================
 
-Other project-specific variables may be available
-to control builds, such as enabling or disabling
-components of the project.
+其他特定于项目的变量可以用于控制构建，例如启用或禁用项目的组件。
 
-There is no convention provided by CMake for how
-such variables are named between different
-provided buildsystems, except that variables with
-the prefix ``CMAKE_`` usually refer to options
-provided by CMake itself and should not be used
-in third-party options, which should use
-their own prefix instead.  The
-:manual:`cmake-gui(1)` tool can display options
-in groups defined by their prefix, so it makes
-sense for third parties to ensure that they use a
-self-consistent prefix.
+对于这些变量如何在不同的构建系统之间命名，CMake没有约定，除了前缀为 ``CMAKE_`` 的变量通常引用CMake本身提供的选项，不应该在第三方选项中使用，第三方选项应该使用自己的前缀。:manual:`cmake-gui(1)` 工具可以显示由前缀定义的组中的选项，因此第三方确保使用自一致的前缀是有意义的。
 
-Setting variables on the command line
+在命令行设置变量
 -------------------------------------
 
-CMake variables can be set on the command line either
-when creating the initial build:
+CMake变量可以在创建初始构建时在命令行中设置：
 
 .. code-block:: console
 
@@ -252,66 +178,40 @@ when creating the initial build:
     $ cd build
     $ cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Debug
 
-or later on a subsequent invocation of
-:manual:`cmake(1)`:
+或者稍后调用 :manual:`cmake(1)`：
 
 .. code-block:: console
 
     $ cd build
     $ cmake . -DCMAKE_BUILD_TYPE=Debug
 
-The ``-U`` flag may be used to unset variables
-on the :manual:`cmake(1)` command line:
+``-U`` 标志可以用来在 :manual:`cmake(1)` 命令行中取消变量的设置：
 
 .. code-block:: console
 
     $ cd build
     $ cmake . -UMyPackage_DIR
 
-A CMake buildsystem which was initially created
-on the command line can be modified using the
-:manual:`cmake-gui(1)` and vice-versa.
+最初在命令行上创建的CMake构建系统可以使用 :manual:`cmake-gui(1)` 进行修改，反之亦然。
 
-The :manual:`cmake(1)` tool allows specifying a
-file to use to populate the initial cache using
-the ``-C`` option.  This can be useful to simplify
-commands and scripts which repeatedly require the
-same cache entries.
+:manual:`cmake(1)` 工具允许使用 ``-C`` 选项指定一个用来填充初始缓存的文件。这对于简化重复需要相同缓存项的命令和脚本非常有用。
 
-Setting variables with cmake-gui
+在cmake-gui设置变量
 --------------------------------
 
-Variables may be set in the cmake-gui using the "Add Entry"
-button.  This triggers a new dialog to set the value of
-the variable.
+变量可以在cmake-gui中使用“Add Entry”按钮进行设置。这会触发一个新的对话框来设置变量的值。
 
 .. image:: GUI-Add-Entry.png
-   :alt: Editing a cache entry
+   :alt: 编辑一个缓存项
 
-The main view of the :manual:`cmake-gui(1)` user interface
-can be used to edit existing variables.
+:manual:`cmake-gui(1)` 用户界面的主视图可以用来编辑现有的变量。
 
-The CMake Cache
+CMake缓存
 ---------------
 
-When CMake is executed, it needs to find the locations of
-compilers, tools and dependencies.  It also needs to be
-able to consistently re-generate a buildsystem to use the
-same compile/link flags and paths to dependencies.  Such
-parameters are also required to be configurable by the
-user because they are paths and options specific to the
-users system.
+当CMake执行时，它需要找到编译器、工具和依赖项的位置。它还需要能够一致地重新生成构建系统，以使用相同的编译/链接标志和依赖项路径。用户还需要配置这些参数，因为它们是特定于用户系统的路径和选项。
 
-When it is first executed, CMake generates a
-``CMakeCache.txt`` file in the build directory containing
-key-value pairs for such artifacts.  The cache file can be
-viewed or edited by the user by running the
-:manual:`cmake-gui(1)` or :manual:`ccmake(1)` tool.  The
-tools provide an interactive interface for re-configuring
-the provided software and re-generating the buildsystem,
-as is needed after editing cached values.  Each cache
-entry may have an associated short help text which is
-displayed in the user interface tools.
+当它第一次被执行时，CMake会在构建目录中生成一个 ``CMakeCache.txt`` 文件，其中包含此类工件的键值对。用户可以通过运行 :manual:`cmake-gui(1)` 或 :manual:`ccmake(1)` 工具查看或编辑缓存文件。这些工具提供了一个交互界面，用于重新配置所提供的软件并重新生成构建系统，这是在编辑缓存值之后所需要的。每个缓存条目可能都有一个相关的简短帮助文本，显示在用户界面工具中。
 
 The cache entries may also have a type to signify how it
 should be presented in the user interface.  For example,

@@ -27,7 +27,7 @@ If a required dependency is not found by
 which contains a ``NOTFOUND`` value.  This value can be
 replaced by specifying it on the command line, or in
 the :manual:`ccmake(1)` or :manual:`cmake-gui(1)` tool.
-See the :guide:`User Interaction Guide` for
+See the :guide:`用户交互指南` for
 more about setting cache entries.
 
 Libraries providing Config-file packages
@@ -71,7 +71,7 @@ enforce any naming convention for these
 files.  They are related to the primary ``Config`` file by
 use of the CMake :command:`include` command.
 
-:guide:`Invoking CMake <User Interaction Guide>` with the
+:guide:`Invoking CMake <用户交互指南>` with the
 intent of using a package of third party binaries requires
 that cmake :command:`find_package` commands succeed in finding
 the package.  If the location of the package is in a directory
