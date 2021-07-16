@@ -213,48 +213,19 @@ CMake缓存
 
 当它第一次被执行时，CMake会在构建目录中生成一个 ``CMakeCache.txt`` 文件，其中包含此类工件的键值对。用户可以通过运行 :manual:`cmake-gui(1)` 或 :manual:`ccmake(1)` 工具查看或编辑缓存文件。这些工具提供了一个交互界面，用于重新配置所提供的软件并重新生成构建系统，这是在编辑缓存值之后所需要的。每个缓存条目可能都有一个相关的简短帮助文本，显示在用户界面工具中。
 
-The cache entries may also have a type to signify how it
-should be presented in the user interface.  For example,
-a cache entry of type ``BOOL`` can be edited by a
-checkbox in a user interface, a ``STRING`` can be edited
-in a text field, and a ``FILEPATH`` while similar to a
-``STRING`` should also provide a way to locate filesystem
-paths using a file dialog.  An entry of type ``STRING``
-may provide a restricted list of allowed values which are
-then provided in a drop-down menu in the
-:manual:`cmake-gui(1)` user interface (see the
-:prop_cache:`STRINGS` cache property).
+缓存项也可以有一种类型来表示它应该如何在用户界面中显示。例如，``BOOL`` 类型的缓存条目可以通过用户界面中的复选框进行编辑，``STRING`` 可以在文本字段中进行编辑，而与 ``STRING`` 类似的 ``FILEPATH`` 也应该提供一种使用文件对话框定位文件系统路径的方法。一个 ``STRING`` 类型的条目可以提供一个允许值的限制列表，然后在 :manual:`cmake-gui(1)` 用户界面的下拉菜单中提供(参见 :prop_cache:`STRINGS` 缓存属性)。
 
-The CMake files shipped with a software package may also
-define boolean toggle options using the :command:`option`
-command.  The command creates a cache entry which has a
-help text and a default value.  Such cache entries are
-typically specific to the provided software and affect
-the configuration of the build, such as whether tests
-and examples are built, whether to build with exceptions
-enabled etc.
+软件包附带的CMake文件也可以使用 :command:`option` 命令定义布尔切换选项。该命令创建一个缓存条目，该条目具有帮助文本和默认值。这类缓存条目通常特定于所提供的软件，并影响构建的配置，例如是否构建测试和示例，是否启用异常构建等。
 
-Presets
+预设
 =======
 
-CMake understands a file, ``CMakePresets.json``, and its
-user-specific counterpart, ``CMakeUserPresets.json``, for
-saving presets for commonly-used configure settings. These
-presets can set the build directory, generator, cache
-variables, environment variables, and other command-line
-options. All of these options can be overridden by the
-user. The full details of the ``CMakePresets.json`` format
-are listed in the :manual:`cmake-presets(7)` manual.
+CMake理解一个文件，``CMakePresets.json``，以及它的用户特定对等体 ``CMakeUserPresets.json``，用于保存常用配置设置的预设。这些预设可以设置构建目录、生成器、缓存变量、环境变量和其他命令行选项。所有这些选项都可以被用户覆盖。``CMakePresets.json`` 格式的详细信息在 :manual:`cmake-presets(7)` 手册中列出。
 
-Using presets on the command-line
+在命令行使用预设
 ---------------------------------
 
-When using the :manual:`cmake(1)` command line tool, a
-preset can be invoked by using the ``--preset`` option. If
-``--preset`` is specified, the generator and build
-directory are not required, but can be specified to
-override them. For example, if you have the following
-``CMakePresets.json`` file:
+当使用 :manual:`cmake(1)` 命令行工具时，可以使用 ``--preset`` 选项来调用预置。如果指定了 ``--preset```，则不需要生成器和构建目录，但可以指定以覆盖它们。例如，如果你有以下 ``CMakePresets.json`` 文件:
 
 .. code-block:: json
 
@@ -272,122 +243,70 @@ override them. For example, if you have the following
     ]
   }
 
-and you run the following:
+然后运行以下命令:
 
 .. code-block:: console
 
   cmake -S /path/to/source --preset=ninja-release
 
-This will generate a build directory in
-``/path/to/source/build/ninja-release`` with the
-:generator:`Ninja` generator, and with
-:variable:`CMAKE_BUILD_TYPE` set to ``Release``.
+这将使用 :generator:`Ninja` 生成器在 ``/path/to/source/build/ninja-release`` 中生成一个构建目录，并将 :variable:`CMAKE_BUILD_TYPE` 设置为 ``Release``。
 
-If you want to see the list of available presets, you can
-run:
+如果你想查看可用预设的列表，你可以运行:
 
 .. code-block:: console
 
   cmake -S /path/to/source --list-presets
 
-This will list the presets available in
-``/path/to/source/CMakePresets.json`` and
-``/path/to/source/CMakeUsersPresets.json`` without
-generating a build tree.
+这将列出 ``/path/to/source/CMakePresets.json`` 及 ``/path/to/source/CMakeUsersPresets.json`` 中可用的预设，而不是生成构建树。
 
-Using presets in cmake-gui
+在cmake-gui使用预设
 --------------------------
 
-If a project has presets available, either through
-``CMakePresets.json`` or ``CMakeUserPresets.json``, the
-list of presets will appear in a drop-down menu in
-:manual:`cmake-gui(1)` between the source directory and
-the binary directory. Choosing a preset sets the binary
-directory, generator, environment variables, and cache
-variables, but all of these options can be overridden after
-a preset is selected.
+如果一个项目有可用的预设，包括 ``CMakePresets.json`` 或 ``CMakeUserPresets.json``，预设列表将出现在 :manual:`cmake-gui(1)` 的下拉菜单中，在源目录和二进制目录之间。选择预置会设置二进制目录、生成器、环境变量和缓存变量，但是在选择预置之后，可以覆盖所有这些选项。
 
-Invoking the Buildsystem
+调用构建系统
 ========================
 
-After generating the buildsystem, the software can be
-built by invoking the particular build tool.  In the
-case of the IDE generators, this can involve loading
-the generated project file into the IDE to invoke the
-build.
+生成构建系统之后，可以通过调用特定的构建工具来构建软件。在IDE生成器的情况下，这可能涉及将生成的项目文件加载到IDE中以调用构建。
 
-CMake is aware of the specific build tool needed to invoke
-a build so in general, to build a buildsystem or project
-from the command line after generating, the following
-command may be invoked in the build directory:
+CMake知道调用构建所需的特定构建工具，所以一般来说，要在生成后从命令行构建构建系统或项目，可以在构建目录中调用以下命令：
 
 .. code-block:: console
 
   $ cmake --build .
 
-The ``--build`` flag enables a particular mode of
-operation for the :manual:`cmake(1)` tool.  It invokes
-the  :variable:`CMAKE_MAKE_PROGRAM` command associated
-with the :manual:`generator <cmake-generators(7)>`, or
-the build tool configured by the user.
+``--build`` 标志为 :manual:`cmake(1)` 工具启用特定的操作模式。它调用与 :manual:`generator <cmake-generators(7)>` 相关的 :variable:`CMAKE_MAKE_PROGRAM` 命令，或者用户配置的构建工具。
 
-The ``--build`` mode also accepts the parameter
-``--target`` to specify a particular target to build,
-for example a particular library, executable or
-custom target, or a particular special target like
-``install``:
+``--build`` 模式还接受参数 ``--target`` 来指定要构建的特定目标，例如特定库、可执行或自定义目标，或特定的特殊目标，如 ``install``：
 
 .. code-block:: console
 
   $ cmake --build . --target myexe
 
-The ``--build`` mode also accepts a ``--config`` parameter
-in the case of multi-config generators to specify which
-particular configuration to build:
+在多配置生成器的情况下，``--build`` 模式也接受 ``--config`` 参数来指定要构建的特定配置：
 
 .. code-block:: console
 
   $ cmake --build . --target myexe --config Release
 
-The ``--config`` option has no effect if the generator
-generates a buildsystem specific to a configuration which
-is chosen when invoking cmake with the
-:variable:`CMAKE_BUILD_TYPE` variable.
+如果生成器生成一个特定于使用 :variable:`CMAKE_BUILD_TYPE` 变量调用cmake时所选择的配置的构建系统，则 ``--config`` 选项无效。
 
-Some buildsystems omit details of command lines invoked
-during the build.  The ``--verbose`` flag can be used to
-cause those command lines to be shown:
+一些构建系统忽略了构建过程中调用的命令行细节。``--verbose`` 标志可以用来显示这些命令行：
 
 .. code-block:: console
 
   $ cmake --build . --target myexe --verbose
 
-The ``--build`` mode can also pass particular command
-line options to the underlying build tool by listing
-them after ``--``.  This can be useful to specify
-options to the build tool, such as to continue the
-build after a failed job, where CMake does not
-provide a high-level user interface.
+通过在 ``--`` 之后列出特定的命令行选项，``--build`` 模式还可以将特定的命令行选项传递给底层构建工具。这对于为构建工具指定选项很有用，比如在作业失败后继续构建，而CMake不提供高级用户界面。
 
-For all generators, it is possible to run the underlying
-build tool after invoking CMake.  For example, ``make``
-may be executed after generating with the
-:generator:`Unix Makefiles` generator to invoke the build,
-or ``ninja`` after generating with the :generator:`Ninja`
-generator etc.  The IDE buildsystems usually provide
-command line tooling for building a project which can
-also be invoked.
+对于所有生成器，在调用CMake之后都可以运行底层构建工具。例如，``make`` 可能在使用 :generator:`Unix Makefiles` 生成器生成后执行，以调用构建，或者 ``ninja`` 在使用 :generator:`Ninja` 生成器生成后执行。IDE构建系统通常为构建项目提供命令行工具，该项目也可以被调用。
 
-Selecting a Target
+选择一个目标
 ------------------
 
-Each executable and library described in the CMake files
-is a build target, and the buildsystem may describe
-custom targets, either for internal use, or for user
-consumption, for example to create documentation.
+CMake文件中描述的每个可执行文件和库都是一个构建目标，构建系统可以描述定制的目标，要么供内部使用，要么供用户使用，例如用于创建文档。
 
-CMake provides some built-in targets for all buildsystems
-providing CMake files.
+CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 
 ``all``
   The default target used by ``Makefile`` and ``Ninja``
