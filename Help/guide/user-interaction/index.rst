@@ -16,7 +16,7 @@
 
 通过提供CMake文件，本手册中描述的功能和用户界面可用于所有基于CMake的构建系统。
 
-当处理提供的CMake文件时，CMake工具可能会向用户报告错误，比如报告编译器不受支持，或者编译器不支持必需的编译选项，或者无法找到依赖项。这些错误必须由用户通过选择不同的编译器、:guide:`installing dependencies <Using Dependencies Guide>` 或指示CMake在哪里找到它们来解决。
+当处理提供的CMake文件时，CMake工具可能会向用户报告错误，比如报告编译器不受支持，或者编译器不支持必需的编译选项，或者无法找到依赖项。这些错误必须由用户通过选择不同的编译器、:guide:`安装依赖 <使用依赖项指南>` 或指示CMake在哪里找到它们来解决。
 
 cmake命令行工具
 -----------------------
@@ -154,7 +154,7 @@ Visual Studio工具集可以通过 ``-T`` 选项来指定：
 ========================================== ============================================================
  变量                                       意义
 ========================================== ============================================================
- :variable:`CMAKE_PREFIX_PATH`              :guide:`dependent packages <Using Dependencies Guide>` 搜索路径
+ :variable:`CMAKE_PREFIX_PATH`              :guide:`依赖包 <使用依赖项指南>` 搜索路径
  :variable:`CMAKE_MODULE_PATH`              额外的CMake模块搜索路径
  :variable:`CMAKE_BUILD_TYPE`               构建配置，如 ``Debug`` 或 ``Release`` 确定调试/优化标志。这只与单配置构建系统相关，比如 ``Makefile`` 和 ``Ninja``。Visual Studio和Xcode等多配置构建系统忽略了这个设置。
  :variable:`CMAKE_INSTALL_PREFIX`           使用 ``install`` 构建目标安装软件的位置

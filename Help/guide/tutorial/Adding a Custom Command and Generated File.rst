@@ -1,30 +1,17 @@
-Step 6: Adding a Custom Command and Generated File
+步骤6：添加自定义命令和生成的文件
 ==================================================
 
-Suppose, for the purpose of this tutorial, we decide that we never want to use
-the platform ``log`` and ``exp`` functions and instead would like to
-generate a table of precomputed values to use in the ``mysqrt`` function.
-In this section, we will create the table as part of the build process,
-and then compile that table into our application.
+假设，出于教学目的，我们决定不使用自带的 ``log`` 和 ``exp`` 函数，而希望生成一个包含预计算值的表，以便在 ``mysqrt`` 中使用。本节中，我们将创建表作为构建过程的一部分，并且将表编译到我们的程序中。
 
-First, let's remove the check for the ``log`` and ``exp`` functions in
-``MathFunctions/CMakeLists.txt``. Then remove the check for ``HAVE_LOG`` and
-``HAVE_EXP`` from ``mysqrt.cxx``. At the same time, we can remove
-:code:`#include <cmath>`.
+首先，删除 ``MathFunctions/CMakeLists.txt`` 中对 ``log`` 和 ``exp`` 的检查。然后删除 ``mysqrt.cxx`` 中对 ``HAVE_LOG`` 和 ``HAVE_EXP`` 的检查，与此同时可以删除 :code:`#include <cmath>`。
 
-In the ``MathFunctions`` subdirectory, a new source file named
-``MakeTable.cxx`` has been provided to generate the table.
+``MathFunctions`` 目录中有一個名为 ``MakeTable.cxx`` 的源文件来提供生成表。
 
-After reviewing the file, we can see that the table is produced as valid C++
-code and that the output filename is passed in as an argument.
+检视这个文件后，可以看到这个表以C++代码展现，输出文件名通过参数传达。
 
-The next step is to add the appropriate commands to the
-``MathFunctions/CMakeLists.txt`` file to build the MakeTable executable and
-then run it as part of the build process. A few commands are needed to
-accomplish this.
+下一步是将适当的命令添加文件中，以构建 ``MathFunctions/CMakeLists.txt`` 文件中以构建MakeTable程序并作为构建过程的一部分运行。需要一些命令来完成这一点。
 
-First, at the top of ``MathFunctions/CMakeLists.txt``, the executable for
-``MakeTable`` is added as any other executable would be added.
+首先在 ``MathFunctions/CMakeLists.txt`` 开头将 ``MakeTable`` 添加为其他可执行文件。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -33,8 +20,7 @@ First, at the top of ``MathFunctions/CMakeLists.txt``, the executable for
   :start-after: # first we add the executable that generates the table
   :end-before: # add the command to generate the source code
 
-Then we add a custom command that specifies how to produce ``Table.h``
-by running MakeTable.
+然后，我们添加一个自定义命令，指定如何通过运行MakeTable生成 ``Table.h``。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -43,9 +29,7 @@ by running MakeTable.
   :start-after: # add the command to generate the source code
   :end-before: # add the main library
 
-Next we have to let CMake know that ``mysqrt.cxx`` depends on the generated
-file ``Table.h``. This is done by adding the generated ``Table.h`` to the list
-of sources for the library MathFunctions.
+接下来需要让CMake知道 ``mysqrt.cxx`` 依赖于那个生成的 ``Table.h``。这是通过将 ``Table.h`` 添加到MathFunctions的源码列表达到的。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -54,8 +38,7 @@ of sources for the library MathFunctions.
   :start-after: # add the main library
   :end-before: # state that anybody linking
 
-We also have to add the current binary directory to the list of include
-directories so that ``Table.h`` can be found and included by ``mysqrt.cxx``.
+我们必须将当前目录加入引入目录列表，令 ``Table.h`` 能够被 ``mysqrt.cxx`` 找到并引用。
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -64,8 +47,7 @@ directories so that ``Table.h`` can be found and included by ``mysqrt.cxx``.
   :start-after: # state that we depend on our bin
   :end-before: # install rules
 
-Now let's use the generated table. First, modify ``mysqrt.cxx`` to include
-``Table.h``. Next, we can rewrite the ``mysqrt`` function to use the table:
+现在我们使用已生成的表。首先，修改 ``mysqrt.cxx`` 以引用 ``Table.h``。接着，我们重构 ``mysqrt`` 函数使用这个表：
 
 .. literalinclude:: Step7/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
@@ -73,13 +55,8 @@ Now let's use the generated table. First, modify ``mysqrt.cxx`` to include
   :language: c++
   :start-after: // a hack square root calculation using simple operations
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+运行 :manual:`cmake  <cmake(1)>` 或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置并构建此项目。
 
-When this project is built it will first build the ``MakeTable`` executable.
-It will then run ``MakeTable`` to produce ``Table.h``. Finally, it will
-compile ``mysqrt.cxx`` which includes ``Table.h`` to produce the
-``MathFunctions`` library.
+当程序构建时会先构建 ``MakeTable`` 程序。它会运行 ``MakeTable`` 产生 ``Table.h``。最终，它会编译包括 ``Table.h`` 的 ``mysqrt.cxx`` 以产生MathFunctions库。
 
-Run the Tutorial executable and verify that it is using the table.
+运行Tutorial程序以验证是否产生使用了这个表。

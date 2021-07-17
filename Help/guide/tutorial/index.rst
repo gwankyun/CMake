@@ -1,21 +1,15 @@
-CMake Tutorial
+CMake教程
 **************
 
-Introduction
+引言
 ============
 
-The CMake tutorial provides a step-by-step guide that covers common build
-system issues that CMake helps address. Seeing how various topics all
-work together in an example project can be very helpful.
+CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的常见构建系统问题。看各种各样的话题在一个示例项目中一起工作是非常有用的。
 
-Steps
+步骤
 =====
 
-The tutorial documentation and source code for examples can be found in
-the ``Help/guide/tutorial`` directory of the CMake source code tree.
-Each step has its own subdirectory containing code that may be used as a
-starting point. The tutorial examples are progressive so that each step
-provides the complete solution for the previous step.
+教程文档和示例的源代码可以在CMake源代码树的 ``Help/guide/tutorial`` 目录中找到。每个步骤都有自己的子目录，其中包含可以用作起点的代码。教程示例是渐进的，因此每个步骤都为前一个步骤提供完整的解决方案。
 
 .. toctree::
   :maxdepth: 2

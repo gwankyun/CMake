@@ -1,16 +1,14 @@
-Step 4: Installing and Testing
+步骤4：安装和测试
 ==============================
 
-Now we can start adding install rules and testing support to our project.
+现在我们可以开始向我们的项目添加安装规则和测试支持了。
 
-Install Rules
+安装规则
 -------------
 
-The install rules are fairly simple: for ``MathFunctions`` we want to install
-the library and header file and for the application we want to install the
-executable and configured header.
+安装规则相当简单：对于 ``MathFunctions``，我们希望安装库和头文件，对于应用程序，我们希望安装可执行和配置的头文件。
 
-So to the end of ``MathFunctions/CMakeLists.txt`` we add:
+所以在 ``MathFunctions/CMakeLists.txt`` 的末尾添加：
 
 .. literalinclude:: Step5/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -18,7 +16,7 @@ So to the end of ``MathFunctions/CMakeLists.txt`` we add:
   :language: cmake
   :start-after: # install rules
 
-And to the end of the top-level ``CMakeLists.txt`` we add:
+顶层 ``CMakeLists.txt`` 的末尾添加：
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -27,43 +25,30 @@ And to the end of the top-level ``CMakeLists.txt`` we add:
   :start-after: # add the install targets
   :end-before: # enable testing
 
-That is all that is needed to create a basic local install of the tutorial.
+这就是创建基本本地安装的全部内容。
 
-Now run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+现在可以运行 :manual:`cmake  <cmake(1)>` 或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置并用构建工具来构建它。
 
-Then run the install step by using the ``install`` option of the
-:manual:`cmake  <cmake(1)>` command (introduced in 3.15, older versions of
-CMake must use ``make install``) from the command line. For
-multi-configuration tools, don't forget to use the ``--config`` argument to
-specify the configuration. If using an IDE, simply build the ``INSTALL``
-target. This step will install the appropriate header files, libraries, and
-executables. For example:
+接着使用 :manual:`cmake  <cmake(1)>` 命令的 ``install`` 选项（3.15版本开始，之前版本的CMake必须使用 ``make install``）在命令行安装。对于多配置的工具，记得用 ``--config`` 来指定配置。若使用IDE，只需构建 ``INSTALL`` 目标。这一步将安装相应的头文件、库和可执行文件，例子：
 
 .. code-block:: console
 
   cmake --install .
 
-The CMake variable :variable:`CMAKE_INSTALL_PREFIX` is used to determine the
-root of where the files will be installed. If using the ``cmake --install``
-command, the installation prefix can be overridden via the ``--prefix``
-argument. For example:
+:variable:`CMAKE_INSTALL_PREFIX` 变量用于指定安装目录。在运行 ``cmake --install`` 命令的时候，会被 ``--prefix`` 参数覆盖。例如：
 
 .. code-block:: console
 
   cmake --install . --prefix "/home/myuser/installdir"
 
-Navigate to the install directory and verify that the installed Tutorial runs.
+导航到安装目录并验证程序能否运行。
 
 .. _`Tutorial Testing Support`:
 
-Testing Support
+测试支持
 ---------------
 
-Next let's test our application. At the end of the top-level ``CMakeLists.txt``
-file we can enable testing and then add a number of basic tests to verify that
-the application is working correctly.
+接下来测试一下我们的程序。可以在顶层的 ``CMakeLists.txt`` 文件末尾启用测试，然后添加一些基本的测试用例来验证程序是否正常。
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -71,23 +56,10 @@ the application is working correctly.
   :language: cmake
   :start-after: # enable testing
 
-The first test simply verifies that the application runs, does not segfault or
-otherwise crash, and has a zero return value. This is the basic form of a
-CTest test.
+第一个测试只是验证程序能否运行，是否出现段错误或者崩溃，返回值是否为0。这就是基本的CMake测试。
 
-The next test makes use of the :prop_test:`PASS_REGULAR_EXPRESSION` test
-property to verify that the output of the test contains certain strings. In
-this case, verifying that the usage message is printed when an incorrect number
-of arguments are provided.
+下一个测试使用 :prop_test:`PASS_REGULAR_EXPRESSION` 测试属性来验证测试输出是否包含某些字符串。这个例子中，验证当提供的参数数量不正确时，是否输出相关信息。
 
-Lastly, we have a function called ``do_test`` that runs the application and
-verifies that the computed square root is correct for given input. For each
-invocation of ``do_test``, another test is added to the project with a name,
-input, and expected results based on the passed arguments.
+最后，有一个 ``do_test`` 函数，它运行程序并验证计算出来的平方根对于给定的输入是否正确。对于每次调用 ``do_test``，都会将另一个测试添加到项目中，并通过的参数传递名称、输入及预期结果。
 
-Rebuild the application and then cd to the binary directory and run the
-:manual:`ctest <ctest(1)>` executable: ``ctest -N`` and ``ctest -VV``. For
-multi-config generators (e.g. Visual Studio), the configuration type must be
-specified. To run tests in Debug mode, for example, use ``ctest -C Debug -VV``
-from the build directory (not the Debug subdirectory!). Alternatively, build
-the ``RUN_TESTS`` target from the IDE.
+重新构建程序并进入程序目录，运行 :manual:`ctest <ctest(1)>` 命令：``ctest -N`` 和 ``ctest -VV``。对于多配置生成器（例如Visual Studio），必须指定配置类型。例如，要在调试模式下运行测试，可以在构建目录（而不是Debug目录！）中运行  ``ctest -C Debug -VV``。或者，在IDE构建 ``RUN_TESTS`` 目标。

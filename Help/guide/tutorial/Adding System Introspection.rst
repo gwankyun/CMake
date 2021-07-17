@@ -1,18 +1,9 @@
-Step 5: Adding System Introspection
+步骤5：添加系统自省
 ===================================
 
-Let us consider adding some code to our project that depends on features the
-target platform may not have. For this example, we will add some code that
-depends on whether or not the target platform has the ``log`` and ``exp``
-functions. Of course almost every platform has these functions but for this
-tutorial assume that they are not common.
+考虑向项目中添加一些依赖目标平台可能没有的特性代码。对于本例，我们将添加一些代码，这将取决于目标平台是否有 ``log`` 和 ``exp`` 函数。当然，几乎每个平台都有这些函数，但本教程假设它们并不常见。
 
-If the platform has ``log`` and ``exp`` then we will use them to compute the
-square root in the ``mysqrt`` function. We first test for the availability of
-these functions using the :module:`CheckSymbolExists` module in
-``MathFunctions/CMakeLists.txt``. On some platforms, we will need to link to
-the ``m`` library. If ``log`` and ``exp`` are not initially found, require the
-``m`` library and try again.
+如果平台有 ``log`` 和 ``exp`` ，那么我们将使用它们在 ``mysqrt`` 中计算平方根。首先在 ``MathFunctions/CMakeLists.txt`` 中使用  :module:`CheckSymbolExists` 模块判断这些函数是否可用。在一些平台上，需要链接到 ``m`` 库。如果 ``log`` 和 ``exp`` 不可用，则使用 ``m`` 库并重试。
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -21,8 +12,7 @@ the ``m`` library. If ``log`` and ``exp`` are not initially found, require the
   :start-after: # does this system provide the log and exp functions?
   :end-before: # add compile definitions
 
-If available, use :command:`target_compile_definitions` to specify
-``HAVE_LOG`` and ``HAVE_EXP`` as ``PRIVATE`` compile definitions.
+如果可以的话，使用 :command:`target_compile_definitions` 指定 ``HAVE_LOG`` 和 ``HAVE_EXP`` 为 ``PRIVATE`` 编译器定义。
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -31,10 +21,7 @@ If available, use :command:`target_compile_definitions` to specify
   :start-after: # add compile definitions
   :end-before: # install rules
 
-If ``log`` and ``exp`` are available on the system, then we will use them to
-compute the square root in the ``mysqrt`` function. Add the following code to
-the ``mysqrt`` function in ``MathFunctions/mysqrt.cxx`` (don't forget the
-``#endif`` before returning the result!):
+如果 ``log`` 和 ``exp`` 在系统上可用，那么我们将在 ``mysqrt`` 函数中用来计算平方根。将以下代码添加到 ``MathFunctions/mysqrt.cxx`` 中的 ``mysqrt`` 函数中（返回結果前不要忘了 ``#endif``！）：
 
 .. literalinclude:: Step6/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
@@ -43,7 +30,7 @@ the ``mysqrt`` function in ``MathFunctions/mysqrt.cxx`` (don't forget the
   :start-after: // if we have both log and exp then use them
   :end-before: // do ten iterations
 
-We will also need to modify ``mysqrt.cxx`` to include ``cmath``.
+同时还要修改 ``mysqrt.cxx`` 以包含 ``cmath``：
 
 .. literalinclude:: Step6/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
@@ -51,8 +38,6 @@ We will also need to modify ``mysqrt.cxx`` to include ``cmath``.
   :language: c++
   :end-before: #include <iostream>
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool and run the Tutorial executable.
+运行 :manual:`cmake  <cmake(1)>` 命令或者 :manual:`cmake-gui <cmake-gui(1)>` 来配置并用构建工具构建它，然后运行Tutorial程序。
 
-Which function gives better results now, ``sqrt`` or ``mysqrt``?
+哪个函数给了更好的结果？``sqrt`` 还是 ``mysqrt``？

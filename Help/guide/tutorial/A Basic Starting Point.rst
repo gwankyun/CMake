@@ -1,10 +1,7 @@
-Step 1: A Basic Starting Point
+步骤1：一个基本的起点
 ==============================
 
-The most basic project is an executable built from source code files.
-For simple projects, a three line ``CMakeLists.txt`` file is all that is
-required. This will be the starting point for our tutorial. Create a
-``CMakeLists.txt`` file in the ``Step1`` directory that looks like:
+最基本的项目是由源代码文件构建的可执行文件。对于简单的项目，只需要一个三行 ``CMakeLists.txt`` 文件。这将是我们教程的起点。在 ``Step1`` 目录创建一个 ``CMakeLists.txt`` 文件，如下所示：
 
 .. code-block:: cmake
   :caption: CMakeLists.txt
@@ -19,20 +16,14 @@ required. This will be the starting point for our tutorial. Create a
   add_executable(Tutorial tutorial.cxx)
 
 
-Note that this example uses lower case commands in the ``CMakeLists.txt`` file.
-Upper, lower, and mixed case commands are supported by CMake. The source
-code for ``tutorial.cxx`` is provided in the ``Step1`` directory and can be
-used to compute the square root of a number.
+注意，这个例子在 ``CMakeLists.txt`` 文件中使用了小写命令。CMake支持大小写混合命令。 ``tutorial.cxx`` 的源代码在 ``Step1`` 目录中提供，可以用来计算一个数字的平方根。
 
-Adding a Version Number and Configured Header File
+添加版本号和配置的头文件
 --------------------------------------------------
 
-The first feature we will add is to provide our executable and project with a
-version number. While we could do this exclusively in the source code, using
-``CMakeLists.txt`` provides more flexibility.
+我们要添加的第一个特性是为我们的可执行文件和项目提供一个版本号。虽然在源码就能做到，但 ``CMakeLists.txt`` 更灵活。
 
-First, modify the ``CMakeLists.txt`` file to use the :command:`project` command
-to set the project name and version number.
+首先，修改 ``CMakeLists.txt`` 文件，使用 :command:`project` 命令设置项目名称和版本号。
 
 .. literalinclude:: Step2/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -40,8 +31,7 @@ to set the project name and version number.
   :language: cmake
   :end-before: # specify the C++ standard
 
-Then, configure a header file to pass the version number to the source
-code:
+然后，配置一个头文件来将版本号传递给源代码：
 
 .. literalinclude:: Step2/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -50,9 +40,7 @@ code:
   :start-after: # to the source code
   :end-before: # add the executable
 
-Since the configured file will be written into the binary tree, we
-must add that directory to the list of paths to search for include
-files. Add the following lines to the end of the ``CMakeLists.txt`` file:
+由于配置的文件将被写入到二进制目录中，所以我们必须将该目录添加到搜索包含文件的路径列表中。在 ``CMakeLists.txt`` 文件的末尾添加以下行：
 
 .. literalinclude:: Step2/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -60,23 +48,18 @@ files. Add the following lines to the end of the ``CMakeLists.txt`` file:
   :language: cmake
   :start-after: # so that we will find TutorialConfig.h
 
-Using your favorite editor, create ``TutorialConfig.h.in`` in the source
-directory with the following contents:
+用你喜欢的编辑器，在源目录中创建 ``TutorialConfig.h.in``，内容如下:
 
 .. literalinclude:: Step2/TutorialConfig.h.in
   :caption: TutorialConfig.h.in
   :name: TutorialConfig.h.in
   :language: c++
 
-When CMake configures this header file the values for
-``@Tutorial_VERSION_MAJOR@`` and ``@Tutorial_VERSION_MINOR@`` will be
-replaced.
+当CMake配置这个头文件时，``@Tutorial_VERSION_MAJOR@`` 和 ``@Tutorial_VERSION_MINOR@`` 的值将被替换。
 
-Next modify ``tutorial.cxx`` to include the configured header file,
-``TutorialConfig.h``.
+下一步，修改 ``tutorial.cxx`` 以包含已配置的头文件 ``TutorialConfig.h``。
 
-Finally, let's print out the executable name and version number by updating
-``tutorial.cxx`` as follows:
+最后，让我们通过更新 ``tutorial.cxx`` 来打印出可执行文件的名称和版本号，如下：
 
 .. literalinclude:: Step2/tutorial.cxx
   :caption: tutorial.cxx
@@ -85,12 +68,10 @@ Finally, let's print out the executable name and version number by updating
   :start-after: {
   :end-before: // convert input to double
 
-Specify the C++ Standard
+指定c++标准
 -------------------------
 
-Next let's add some C++11 features to our project by replacing ``atof`` with
-``std::stod`` in ``tutorial.cxx``.  At the same time, remove
-``#include <cstdlib>``.
+接下来，让我们通过替换 ``tutorial.cxx`` 中的 ``atof`` 为 ``std::stod``，为我们的项目添加一些c++ 11特性。同时，删除 ``#include <cstdlib>``。
 
 .. literalinclude:: Step2/tutorial.cxx
   :caption: tutorial.cxx
@@ -99,13 +80,7 @@ Next let's add some C++11 features to our project by replacing ``atof`` with
   :start-after: // convert input to double
   :end-before: // calculate square root
 
-We will need to explicitly state in the CMake code that it should use the
-correct flags. The easiest way to enable support for a specific C++ standard
-in CMake is by using the :variable:`CMAKE_CXX_STANDARD` variable. For this
-tutorial, set the :variable:`CMAKE_CXX_STANDARD` variable in the
-``CMakeLists.txt`` file to ``11`` and :variable:`CMAKE_CXX_STANDARD_REQUIRED`
-to ``True``. Make sure to add the ``CMAKE_CXX_STANDARD`` declarations above the
-call to ``add_executable``.
+我们需要在CMake代码中明确声明它应该使用正确的标志。在CMake中启用对特定C++标准的支持的最简单方法是使用 :variable:`CMAKE_CXX_STANDARD` 变量。对于本教程，将 ``CMakeLists.txt`` 文件中的 :variable:`CMAKE_CXX_STANDARD` 变量设置为11， :variable:`CMAKE_CXX_STANDARD_REQUIRED` 设置为True。确保 ``CMAKE_CXX_STANDARD`` 在调用 ``add_executable`` 前声明。
 
 .. literalinclude:: Step2/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -113,36 +88,31 @@ call to ``add_executable``.
   :language: cmake
   :end-before: # configure a header file to pass some of the CMake settings
 
-Build and Test
+构建和测试
 --------------
 
-Run the :manual:`cmake <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+运行 :manual:`cmake <cmake(1)>` 可执行文件或 :manual:`cmake-gui <cmake-gui(1)>` 来配置项目，然后用你选择的构建工具构建它。
 
-For example, from the command line we could navigate to the
-``Help/guide/tutorial`` directory of the CMake source code tree and create a
-build directory:
+例如，我们可以从命令行导航到CMake源代码树的 ``Help/guide/tutorial`` 目录，并创建一个构建目录：
 
 .. code-block:: console
 
   mkdir Step1_build
 
-Next, navigate to the build directory and run CMake to configure the project
-and generate a native build system:
+接下来，导航到build目录，运行CMake来配置项目并生成一个本地构建系统：
 
 .. code-block:: console
 
   cd Step1_build
   cmake ../Step1
 
-Then call that build system to actually compile/link the project:
+然后调用构建系统来实际编译/链接项目：
 
 .. code-block:: console
 
   cmake --build .
 
-Finally, try to use the newly built ``Tutorial`` with these commands:
+最后，尝试用以下命令来使用新构建的 ``Tutorial``：
 
 .. code-block:: console
 

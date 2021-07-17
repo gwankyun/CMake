@@ -1,15 +1,7 @@
-Step 7: Packaging an Installer
+步骤7：构建安装程序
 ==============================
 
-Next suppose that we want to distribute our project to other people so that
-they can use it. We want to provide both binary and source distributions on a
-variety of platforms. This is a little different from the install we did
-previously in :guide:`tutorial/Installing and Testing`, where we were
-installing the binaries that we had built from the source code. In this
-example we will be building installation packages that support binary
-installations and package management features. To accomplish this we will use
-CPack to create platform specific installers. Specifically we need to add a
-few lines to the bottom of our top-level ``CMakeLists.txt`` file.
+我们下个愿望是分发工程走让别人使用它。我们想同时分发源码和二进制在不同的平台。这里我们之前讨论的 :guide:`安装和测试 <tutorial/Installing and Testing>` 不同的是，必须要在源码中编译。在此例子中，我们会构建一个安装包以支持二进制安装及包管理。为了达到这个目标我们应该使用CPack创建不同平台的安装包。应该在顶层 ``CMakeLists.txt`` 开头添加几行。
 
 .. literalinclude:: Step8/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -17,41 +9,28 @@ few lines to the bottom of our top-level ``CMakeLists.txt`` file.
   :language: cmake
   :start-after: # setup installer
 
-That is all there is to it. We start by including
-:module:`InstallRequiredSystemLibraries`. This module will include any runtime
-libraries that are needed by the project for the current platform. Next we set
-some CPack variables to where we have stored the license and version
-information for this project. The version information was set earlier in this
-tutorial and the ``license.txt`` has been included in the top-level source
-directory for this step.
+这就是我们对它的所有修改。我们在开始包含 :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt`` 已经添加在源码目录的最高层。
 
-Finally we include the :module:`CPack module <CPack>` which will use these
-variables and some other properties of the current system to setup an
-installer.
+最终我们引用 :module:`CPack module <CPack>` 以使用这些变量或者其他属性以我于安装包。
 
-The next step is to build the project in the usual manner and then run the
-:manual:`cpack <cpack(1)>` executable. To build a binary distribution, from the
-binary directory run:
+下一步就是按照通常习惯构建程序并运行 :manual:`cpack <cpack(1)>` 命令。生成一个二进制包，你需要在二进制目录运行：
 
 .. code-block:: console
 
   cpack
 
-To specify the generator, use the ``-G`` option. For multi-config builds, use
-``-C`` to specify the configuration. For example:
+若想指定生成器，使用 ``-G`` 选项。对于多配置的构建，使用 ``-C`` 指定配置，如下所示：
 
 .. code-block:: console
 
   cpack -G ZIP -C Debug
 
-To create a source distribution you would type:
+如果想创建一个源码分发包你应该输入：
 
 .. code-block:: console
 
   cpack --config CPackSourceConfig.cmake
 
-Alternatively, run ``make package`` or right click the ``Package`` target and
-``Build Project`` from an IDE.
+作为替代，运行 ``make package`` 命令或者在IDE中右击 ``Package`` 目标并 ``Build Project``。
 
-Run the installer found in the binary directory. Then run the installed
-executable and verify that it works.
+运行在二进制目录找到的安装包，验证是否如预期。

@@ -1,30 +1,18 @@
-Step 2: Adding a Library
+步骤2：添加库
 ========================
 
-Now we will add a library to our project. This library will contain our own
-implementation for computing the square root of a number. The executable can
-then use this library instead of the standard square root function provided by
-the compiler.
+现在我们将向我们的项目添加一个库。这个库将包含我们自己的计算数字平方根的实现。可执行文件可以使用这个库，而不是编译器提供的标准平方根函数。
 
-For this tutorial we will put the library into a subdirectory
-called ``MathFunctions``. This directory already contains a header file,
-``MathFunctions.h``, and a source file ``mysqrt.cxx``. The source file has one
-function called ``mysqrt`` that provides similar functionality to the
-compiler's ``sqrt`` function.
+在本教程中，我们将把这个库放入名为 ``MathFunctions`` 的子目录中。这个目录已经包含了一个头文件 ``MathFunctions.h`` 和一个源文件 ``mysqrt.cxx``。源文件有一个名为 ``mysqrt`` 的函数，功能类似于自带的 ``sqrt`` 函数。
 
-Add the following one line ``CMakeLists.txt`` file to the ``MathFunctions``
-directory:
+将以下这个一行的 ``CMakeLists.txt`` 文件添加到 ``MathFunctions`` 目录：
 
 .. literalinclude:: Step3/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt
   :language: cmake
 
-To make use of the new library we will add an :command:`add_subdirectory`
-call in the top-level ``CMakeLists.txt`` file so that the library will get
-built. We add the new library to the executable, and add ``MathFunctions`` as
-an include directory so that the ``mysqrt.h`` header file can be found. The
-last few lines of the top-level ``CMakeLists.txt`` file should now look like:
+为了使用这个新库，我们将在顶层的 ``CMakeLists.txt`` 文件中添加一个 :command:`add_subdirectory` 调用，以便构建这个库。我们将新库添加到可执行文件中，并将  ``MathFunctions`` 作为包含目录添加，以便能够找到 ``mysqrt.h`` 头文件。顶层  ``CMakeLists.txt`` 文件的最后几行现在应该是这样的：
 
 .. code-block:: cmake
         :caption: CMakeLists.txt
@@ -45,10 +33,7 @@ last few lines of the top-level ``CMakeLists.txt`` file should now look like:
                                   "${PROJECT_SOURCE_DIR}/MathFunctions"
                                   )
 
-Now let us make the ``MathFunctions`` library optional. While for the tutorial
-there really isn't any need to do so, for larger projects this is a common
-occurrence. The first step is to add an option to the top-level
-``CMakeLists.txt`` file.
+现在让我们使MathFunctions库成为可选的。虽然在本教程中没有必要这样做，但对于大型项目来说，这是很常见的情况。第一步是向顶层 ``CMakeLists.txt`` 文件添加一个选项。
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -57,15 +42,9 @@ occurrence. The first step is to add an option to the top-level
   :start-after: # should we use our own math functions
   :end-before: # add the MathFunctions library
 
-This option will be displayed in the :manual:`cmake-gui <cmake-gui(1)>` and
-:manual:`ccmake <ccmake(1)>`
-with a default value of ``ON`` that can be changed by the user. This setting
-will be stored in the cache so that the user does not need to set the value
-each time they run CMake on a build directory.
+这个选项将在 :manual:`cmake-gui <cmake-gui(1)>` 和 :manual:`ccmake <ccmake(1)>` 中显示，默认值ON可以由用户更改。该设置将存储在缓存中，这样用户在每次在构建目录上运行CMake时就不需要设置该值。
 
-The next change is to make building and linking the ``MathFunctions`` library
-conditional. To do this we change the end of the top-level ``CMakeLists.txt``
-file to look like the following:
+下一个更改是使构建和链接MathFunctions库成为有条件的。为此，我们将顶层 ``CMakeLists.txt`` 文件的结尾修改为如下所示：
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -73,15 +52,9 @@ file to look like the following:
   :language: cmake
   :start-after: # add the MathFunctions library
 
-Note the use of the variable ``EXTRA_LIBS`` to collect up any optional
-libraries to later be linked into the executable. The variable
-``EXTRA_INCLUDES`` is used similarly for optional header files. This is a
-classic approach when dealing with many optional components, we will cover
-the modern approach in the next step.
+注意，这里用了变量 ``EXTRA_LIBS`` 来收集任何可选库，以便稍后链接到可执行文件中。变量 ``EXTRA_INCLUDES`` 类似地用于可选头文件。在处理许多可选组件时，这是一种传统方法，我们将在下一步讨论现代方法。
 
-The corresponding changes to the source code are fairly straightforward.
-First, in ``tutorial.cxx``, include the ``MathFunctions.h`` header if we
-need it:
+对源代码的相应更改相当简单。首先，在 ``tutorial.cxx`` 中，在需要的时候包含 ``MathFunctions.h`` 头文件：
 
 .. literalinclude:: Step3/tutorial.cxx
   :caption: tutorial.cxx
@@ -90,8 +63,7 @@ need it:
   :start-after: // should we include the MathFunctions header
   :end-before: int main
 
-Then, in the same file, make ``USE_MYMATH`` control which square root
-function is used:
+然后，在同一个文件中，让 ``USE_MYMATH`` 控制使用哪个平方根函数：
 
 .. literalinclude:: Step3/tutorial.cxx
   :caption: tutorial.cxx
@@ -100,8 +72,7 @@ function is used:
   :start-after: // which square root function should we use?
   :end-before: std::cout << "The square root of
 
-Since the source code now requires ``USE_MYMATH`` we can add it to
-``TutorialConfig.h.in`` with the following line:
+由于源代码现在需要 ``USE_MYMATH`` ，我们可以通过以下一行把它添加到 ``TutorialConfig.h.in`` 中：
 
 .. literalinclude:: Step3/TutorialConfig.h.in
   :caption: TutorialConfig.h.in
@@ -109,22 +80,16 @@ Since the source code now requires ``USE_MYMATH`` we can add it to
   :language: c++
   :lines: 4
 
-**Exercise**: Why is it important that we configure ``TutorialConfig.h.in``
-after the option for ``USE_MYMATH``? What would happen if we inverted the two?
+**练习**：为什么在 ``USE_MYMATH`` 选项后面配置 ``TutorialConfig.h.in`` 很重要？如果我们把这两个颠倒过来会发生什么？
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool. Then run the built Tutorial executable.
+运行 :manual:`cmake  <cmake(1)>` 可执行文件或 :manual:`cmake-gui <cmake-gui(1)>` 来配置项目，用你选择的构建工具构建它。然后运行Tutorial可执行文件。
 
-Now let's update the value of ``USE_MYMATH``. The easiest way is to use the
-:manual:`cmake-gui <cmake-gui(1)>` or  :manual:`ccmake <ccmake(1)>` if you're
-in the terminal. Or, alternatively, if you want to change the option from the
-command-line, try:
+现在让我们更新 ``USE_MYMATH`` 的值。最简单的方法是使用 :manual:`cmake-gui <cmake-gui(1)>` 或者终端环境上的 :manual:`ccmake <ccmake(1)>`。如果你想从命令行更改选项，试试：
 
 .. code-block:: console
 
   cmake ../Step2 -DUSE_MYMATH=OFF
 
-Rebuild and run the tutorial again.
+重新生成并再次运行。
 
-Which function gives better results, ``sqrt`` or ``mysqrt``?
+哪个函数给出了更好的结果，``sqrt`` 还是 ``mysqrt``？
