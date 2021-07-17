@@ -18,7 +18,7 @@ This will detail the steps needed to run the :manual:`cmake(1)` or
 :manual:`cmake-gui(1)` executable and how to choose a generator, and
 how to complete the build.
 
-The :guide:`Using Dependencies Guide` is aimed at developers
+The :guide:`使用依赖项指南` is aimed at developers
 wishing to get started using a third-party library.
 
 For developers starting a project using CMake, the :guide:`CMake教程`
