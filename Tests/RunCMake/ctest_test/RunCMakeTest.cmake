@@ -18,6 +18,7 @@ run_ctest_test(TestQuiet QUIET)
 #
 # Spoof a load average value to make these tests more reliable.
 set(ENV{__CTEST_FAKE_LOAD_AVERAGE_FOR_TESTING} 5)
+set(RunCTest_VERBOSE_FLAG -VV)
 
 # Verify that new tests are started when the load average falls below
 # our threshold.
@@ -53,6 +54,7 @@ run_ctest_test(TestLoadOrder TEST_LOAD "ERR4")
 
 unset(ENV{__CTEST_FAKE_LOAD_AVERAGE_FOR_TESTING})
 unset(CASE_CTEST_TEST_LOAD)
+unset(RunCTest_VERBOSE_FLAG)
 
 function(run_TestChangeId)
   set(CASE_TEST_PREFIX_CODE [[
@@ -144,3 +146,63 @@ set_property(TEST RunCMakeVersion PROPERTY ENVIRONMENT "ENV1=env1;ENV2=env2")
   run_ctest(TestEnvironment)
 endfunction()
 run_environment()
+
+# test for OUTPUT_JUNIT
+run_ctest_test(OutputJUnit OUTPUT_JUNIT junit.xml REPEAT UNTIL_FAIL:2)
+
+# Verify that extra measurements get reported.
+function(run_measurements)
+  set(CASE_CMAKELISTS_SUFFIX_CODE [[
+add_test(
+  NAME double_measurement
+  COMMAND ${CMAKE_COMMAND} -E
+  echo <DartMeasurement type="numeric/double" name="my_custom_value">1.4847</DartMeasurement>)
+add_test(
+  NAME double_measurement2
+  COMMAND ${CMAKE_COMMAND} -E
+  echo <CTestMeasurement type="numeric/double" name="another_custom_value">1.8474</CTestMeasurement>)
+add_test(
+  NAME img_measurement
+  COMMAND ${CMAKE_COMMAND} -E
+  echo <DartMeasurementFile name="TestImage" type="image/png">]] ${IMAGE_DIR}/cmake-logo-16.png [[</DartMeasurementFile>)
+add_test(
+  NAME img_measurement2
+  COMMAND ${CMAKE_COMMAND} -E
+  echo <CTestMeasurementFile name="TestImage2" type="image/png">]] ${IMAGE_DIR}/cmake-logo-16.png [[</CTestMeasurementFile>)
+add_test(
+  NAME file_measurement
+  COMMAND ${CMAKE_COMMAND} -E
+  echo <DartMeasurementFile name="my_test_input_data" type="file">]] ${IMAGE_DIR}/cmake-logo-16.png [[</DartMeasurementFile>)
+add_test(
+  NAME file_measurement2
+  COMMAND ${CMAKE_COMMAND} -E
+  echo <CTestMeasurementFile name="another_test_input_data" type="file">]] ${IMAGE_DIR}/cmake-logo-16.png [[</CTestMeasurementFile>)
+  ]])
+  run_ctest(TestMeasurements)
+endfunction()
+run_measurements()
+
+# Verify that test output can override the Completion Status.
+function(run_completion_status)
+  set(CASE_CMAKELISTS_SUFFIX_CODE [[
+add_test(
+  NAME custom_details
+  COMMAND ${CMAKE_COMMAND} -E
+  echo test output\n<CTestDetails>CustomDetails</CTestDetails>\nmore output)
+  ]])
+  run_ctest(TestCompletionStatus)
+endfunction()
+run_completion_status()
+
+# Verify that test output can add additional labels
+function(run_extra_labels)
+  set(CASE_CMAKELISTS_SUFFIX_CODE [[
+add_test(
+  NAME custom_labels
+  COMMAND ${CMAKE_COMMAND} -E
+  echo before\n<CTestLabel>label2</CTestLabel>\n<CTestLabel>label1</CTestLabel>\n<CTestLabel>label3</CTestLabel>\n<CTestLabel>label2</CTestLabel>\nafter)
+set_tests_properties(custom_labels PROPERTIES LABELS "label1")
+  ]])
+  run_ctest(TestExtraLabels)
+endfunction()
+run_extra_labels()

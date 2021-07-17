@@ -72,7 +72,8 @@ protected:
                              std::string const& mod_dir,
                              std::string const& stamp_dir,
                              std::ostream& makeDepends,
-                             std::ostream& internalDepends);
+                             std::ostream& internalDepends,
+                             bool buildingIntrinsics);
 
   // The source file from which to start scanning.
   std::string SourceFile;
@@ -85,8 +86,4 @@ protected:
 
   // Internal implementation details.
   std::unique_ptr<cmDependsFortranInternals> Internal;
-
-private:
-  std::string MaybeConvertToRelativePath(std::string const& base,
-                                         std::string const& path);
 };

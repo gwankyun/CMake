@@ -14,6 +14,7 @@
 #include <utility>
 
 #include <cm/iterator>
+#include <cm/optional>
 #include <cm/string_view>
 #include <cm/vector>
 #include <cmext/algorithm>
@@ -23,6 +24,7 @@
 #include "cmsys/String.h"
 
 #include "cmAlgorithms.h"
+#include "cmComputeLinkInformation.h"
 #include "cmGeneratorExpression.h"
 #include "cmGeneratorExpressionContext.h"
 #include "cmGeneratorExpressionDAGChecker.h"
@@ -716,7 +718,7 @@ struct CompilerIdNode : public cmGeneratorExpressionNode
 static const CompilerIdNode cCompilerIdNode("C"), cxxCompilerIdNode("CXX"),
   cudaCompilerIdNode("CUDA"), objcCompilerIdNode("OBJC"),
   objcxxCompilerIdNode("OBJCXX"), fortranCompilerIdNode("Fortran"),
-  ispcCompilerIdNode("ISPC");
+  hipCompilerIdNode("HIP"), ispcCompilerIdNode("ISPC");
 
 struct CompilerVersionNode : public cmGeneratorExpressionNode
 {
@@ -781,7 +783,8 @@ struct CompilerVersionNode : public cmGeneratorExpressionNode
 static const CompilerVersionNode cCompilerVersionNode("C"),
   cxxCompilerVersionNode("CXX"), cudaCompilerVersionNode("CUDA"),
   objcCompilerVersionNode("OBJC"), objcxxCompilerVersionNode("OBJCXX"),
-  fortranCompilerVersionNode("Fortran"), ispcCompilerVersionNode("ISPC");
+  fortranCompilerVersionNode("Fortran"), ispcCompilerVersionNode("ISPC"),
+  hipCompilerVersionNode("HIP");
 
 struct PlatformIdNode : public cmGeneratorExpressionNode
 {
@@ -1627,8 +1630,8 @@ static const struct TargetObjectsNode : public cmGeneratorExpressionNode
         type != cmStateEnums::OBJECT_LIBRARY) {
       std::ostringstream e;
       e << "Objects of target \"" << tgtName
-        << "\" referenced but is not an allowed library types (EXECUTABLE, "
-        << "STATIC, SHARED, MODULE, OBJECT).";
+        << "\" referenced but is not one of the allowed target types "
+        << "(EXECUTABLE, STATIC, SHARED, MODULE, OBJECT).";
       reportError(context, content->GetOriginalExpression(), e.str());
       return std::string();
     }
@@ -1679,13 +1682,61 @@ static const struct TargetObjectsNode : public cmGeneratorExpressionNode
 
     // Create the cmSourceFile instances in the referencing directory.
     cmMakefile* mf = context->LG->GetMakefile();
-    for (std::string& o : objects) {
+    for (std::string const& o : objects) {
       mf->AddTargetObject(tgtName, o);
     }
 
     return cmJoin(objects, ";");
   }
 } targetObjectsNode;
+
+static const struct TargetRuntimeDllsNode : public cmGeneratorExpressionNode
+{
+  TargetRuntimeDllsNode() {} // NOLINT(modernize-use-equals-default)
+
+  std::string Evaluate(
+    const std::vector<std::string>& parameters,
+    cmGeneratorExpressionContext* context,
+    const GeneratorExpressionContent* content,
+    cmGeneratorExpressionDAGChecker* /*dagChecker*/) const override
+  {
+    std::string tgtName = parameters.front();
+    cmGeneratorTarget* gt = context->LG->FindGeneratorTargetToUse(tgtName);
+    if (!gt) {
+      std::ostringstream e;
+      e << "Objects of target \"" << tgtName
+        << "\" referenced but no such target exists.";
+      reportError(context, content->GetOriginalExpression(), e.str());
+      return std::string();
+    }
+    cmStateEnums::TargetType type = gt->GetType();
+    if (type != cmStateEnums::EXECUTABLE &&
+        type != cmStateEnums::SHARED_LIBRARY &&
+        type != cmStateEnums::MODULE_LIBRARY) {
+      std::ostringstream e;
+      e << "Objects of target \"" << tgtName
+        << "\" referenced but is not one of the allowed target types "
+        << "(EXECUTABLE, SHARED, MODULE).";
+      reportError(context, content->GetOriginalExpression(), e.str());
+      return std::string();
+    }
+
+    if (auto* cli = gt->GetLinkInformation(context->Config)) {
+      std::vector<std::string> dllPaths;
+      auto const& dlls = cli->GetRuntimeDLLs();
+
+      for (auto const& dll : dlls) {
+        if (auto loc = dll->MaybeGetLocation(context->Config)) {
+          dllPaths.emplace_back(*loc);
+        }
+      }
+
+      return cmJoin(dllPaths, ";");
+    }
+
+    return "";
+  }
+} targetRuntimeDllsNode;
 
 static const struct CompileFeaturesNode : public cmGeneratorExpressionNode
 {
@@ -2547,6 +2598,7 @@ const cmGeneratorExpressionNode* cmGeneratorExpressionNode::GetNode(
     { "OBJCXX_COMPILER_ID", &objcxxCompilerIdNode },
     { "CUDA_COMPILER_ID", &cudaCompilerIdNode },
     { "Fortran_COMPILER_ID", &fortranCompilerIdNode },
+    { "HIP_COMPILER_ID", &hipCompilerIdNode },
     { "VERSION_GREATER", &versionGreaterNode },
     { "VERSION_GREATER_EQUAL", &versionGreaterEqNode },
     { "VERSION_LESS", &versionLessNode },
@@ -2558,6 +2610,7 @@ const cmGeneratorExpressionNode* cmGeneratorExpressionNode::GetNode(
     { "OBJC_COMPILER_VERSION", &objcCompilerVersionNode },
     { "OBJCXX_COMPILER_VERSION", &objcxxCompilerVersionNode },
     { "Fortran_COMPILER_VERSION", &fortranCompilerVersionNode },
+    { "HIP_COMPILER_VERSION", &hipCompilerVersionNode },
     { "PLATFORM_ID", &platformIdNode },
     { "COMPILE_FEATURES", &compileFeaturesNode },
     { "CONFIGURATION", &configurationNode },
@@ -2603,6 +2656,7 @@ const cmGeneratorExpressionNode* cmGeneratorExpressionNode::GetNode(
     { "TARGET_EXISTS", &targetExistsNode },
     { "TARGET_NAME_IF_EXISTS", &targetNameIfExistsNode },
     { "TARGET_GENEX_EVAL", &targetGenexEvalNode },
+    { "TARGET_RUNTIME_DLLS", &targetRuntimeDllsNode },
     { "GENEX_EVAL", &genexEvalNode },
     { "BUILD_INTERFACE", &buildInterfaceNode },
     { "INSTALL_INTERFACE", &installInterfaceNode },

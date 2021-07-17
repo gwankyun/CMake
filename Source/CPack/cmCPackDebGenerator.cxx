@@ -2,6 +2,7 @@
    file Copyright.txt or https://cmake.org/licensing for details.  */
 #include "cmCPackDebGenerator.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <map>
@@ -130,11 +131,6 @@ DebGenerator::DebGenerator(
                   "Unrecognized number of threads: " << numThreads
                                                      << std::endl);
   }
-
-  if (this->NumThreads < 0) {
-    cmCPackLogger(cmCPackLog::LOG_ERROR,
-                  "Number of threads cannot be negative" << std::endl);
-  }
 }
 
 bool DebGenerator::generate() const
@@ -172,7 +168,6 @@ void DebGenerator::generateControlFile() const
 
   unsigned long totalSize = 0;
   {
-    std::string dirName = cmStrCat(this->TemporaryDir, '/');
     for (std::string const& file : this->PackageFiles) {
       totalSize += cmSystemTools::FileLength(file);
     }
@@ -531,6 +526,8 @@ int cmCPackDebGenerator::PackageOnePack(std::string const& initialTopLevel,
       return 0;
     }
     this->packageFiles = gl.GetFiles();
+    // Sort files so that they have a reproducible order
+    std::sort(this->packageFiles.begin(), this->packageFiles.end());
   }
 
   int res = this->createDeb();
@@ -557,6 +554,8 @@ int cmCPackDebGenerator::PackageOnePack(std::string const& initialTopLevel,
       return 0;
     }
     this->packageFiles = gl.GetFiles();
+    // Sort files so that they have a reproducible order
+    std::sort(this->packageFiles.begin(), this->packageFiles.end());
 
     res = this->createDbgsymDDeb();
     if (res != 1) {
@@ -678,6 +677,8 @@ int cmCPackDebGenerator::PackageComponentsAllInOne(
     return 0;
   }
   this->packageFiles = gl.GetFiles();
+  // Sort files so that they have a reproducible order
+  std::sort(this->packageFiles.begin(), this->packageFiles.end());
 
   int res = this->createDeb();
   if (res != 1) {

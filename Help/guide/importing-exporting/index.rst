@@ -145,6 +145,8 @@
   :language: cmake
   :end-before: # create library
 
+包含 :module:`GNUInstallDirs` 模块是为了通过将目录作为缓存变量提供给项目，使其能够灵活地安装到不同的平台布局中。
+
 使用 :command:`add_library` 命令命令创建一个名为 ``MathFunctions`` 的库：
 
 .. literalinclude:: MathFunctions/CMakeLists.txt

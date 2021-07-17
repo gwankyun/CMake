@@ -92,6 +92,8 @@ static void cmFortran_yyerror(yyscan_t yyscanner, const char* message)
 %token SUBMODULE
 %token USE
 
+%destructor { free($$); } WORD STRING CPP_INCLUDE_ANGLE
+
 /*-------------------------------------------------------------------------*/
 /* grammar */
 %%
@@ -148,6 +150,10 @@ stmt:
     if (cmsysString_strcasecmp($3, "non_intrinsic") == 0) {
       cmFortranParser* parser = cmFortran_yyget_extra(yyscanner);
       cmFortranParser_RuleUse(parser, $5);
+    }
+    if (cmsysString_strcasecmp($3, "intrinsic") == 0) {
+      cmFortranParser* parser = cmFortran_yyget_extra(yyscanner);
+      cmFortranParser_RuleUseIntrinsic(parser, $5);
     }
     free($3);
     free($5);

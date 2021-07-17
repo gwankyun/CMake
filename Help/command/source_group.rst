@@ -11,6 +11,9 @@ There are two different signatures to create source groups.
 
 Defines a group into which sources will be placed in project files.
 This is intended to set up file tabs in Visual Studio.
+The group is scoped in the directory where the command is called,
+and applies to sources in targets created in that directory.
+
 The options are:
 
 ``TREE``
@@ -19,7 +22,8 @@ The options are:
  CMake will automatically detect, from ``<src>`` files paths, source groups
  it needs to create, to keep structure of source groups analogically to the
  actual files and directories structure in the project. Paths of ``<src>``
- files will be cut to be relative to ``<root>``.
+ files will be cut to be relative to ``<root>``. The command fails if the
+ paths within ``src`` do not start with ``root``.
 
 ``PREFIX``
  .. versionadded:: 3.8

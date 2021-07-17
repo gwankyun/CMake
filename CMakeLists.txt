@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file Copyright.txt or https://cmake.org/licensing for details.
 
-cmake_minimum_required(VERSION 3.1...3.18 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1...3.20 FATAL_ERROR)
 set(CMAKE_USER_MAKE_RULES_OVERRIDE_C ${CMAKE_CURRENT_SOURCE_DIR}/Source/Modules/OverrideC.cmake)
 set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/Source/Modules/OverrideCXX.cmake)
 project(CMake)
@@ -579,6 +579,7 @@ macro (CMAKE_BUILD_UTILITIES)
       set(LIBLZMA_INCLUDE_DIR
         "${CMAKE_CURRENT_SOURCE_DIR}/Utilities/cmliblzma/liblzma/api")
       set(LIBLZMA_LIBRARY cmliblzma)
+      set(HAVE_LZMA_STREAM_ENCODER_MT 1)
     endif()
   endif()
 
@@ -643,7 +644,11 @@ macro (CMAKE_BUILD_UTILITIES)
   #---------------------------------------------------------------------
   # Build libuv library.
   if(CMAKE_USE_SYSTEM_LIBUV)
-    find_package(LibUV 1.10.0)
+    if(WIN32)
+      find_package(LibUV 1.38.0)
+    else()
+      find_package(LibUV 1.10.0)
+    endif()
     if(NOT LIBUV_FOUND)
       message(FATAL_ERROR
         "CMAKE_USE_SYSTEM_LIBUV is ON but a libuv is not found!")
@@ -807,8 +812,12 @@ CMAKE_SETUP_TESTING()
 
 if(NOT CMake_TEST_EXTERNAL_CMAKE)
   if(NOT CMake_VERSION_IS_RELEASE)
-    if(CMAKE_C_COMPILER_ID STREQUAL "GNU" AND
-        NOT "${CMAKE_C_COMPILER_VERSION}" VERSION_LESS 4.2)
+    if((CMAKE_C_COMPILER_ID STREQUAL "GNU" AND
+        NOT "${CMAKE_C_COMPILER_VERSION}" VERSION_LESS 4.2) OR
+       (CMAKE_C_COMPILER_ID STREQUAL "Clang" AND
+        NOT "${CMAKE_C_COMPILER_VERSION}" VERSION_LESS 3.0 AND
+        NOT "x${CMAKE_C_SIMULATE_ID}" STREQUAL "xMSVC") OR
+       CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
       set(C_FLAGS_LIST -Wcast-align -Werror-implicit-function-declaration -Wchar-subscripts
                        -Wall -W -Wpointer-arith -Wwrite-strings -Wformat-security
                        -Wmissing-format-attribute -fno-common -Wundef

@@ -800,7 +800,7 @@ void cmMakefile::RunListFile(cmListFile const& listFile,
     for (size_t i = 0; i < defer->Commands.size(); ++i) {
       DeferCommand& d = defer->Commands[i];
       if (d.Id.empty()) {
-        // Cancelled.
+        // Canceled.
         continue;
       }
       // Mark as executed.
@@ -1222,7 +1222,7 @@ void cmMakefile::AddCustomCommandOldStyle(
 
   // Each output must get its own copy of this rule.
   cmsys::RegularExpression sourceFiles(
-    "\\.(C|M|c|c\\+\\+|cc|cpp|cxx|mpp|cu|m|mm|"
+    "\\.(C|M|c|c\\+\\+|cc|cpp|cxx|mpp|ixx|cppm|cu|m|mm|"
     "rc|def|r|odl|idl|hpj|bat|h|h\\+\\+|"
     "hm|hpp|hxx|in|txx|inl)$");
 
@@ -1962,8 +1962,27 @@ void cmMakefile::AddCacheDefinition(const std::string& name, const char* value,
     }
   }
   this->GetCMakeInstance()->AddCacheEntry(name, value, doc, type);
-  // if there was a definition then remove it
-  this->StateSnapshot.RemoveDefinition(name);
+  switch (this->GetPolicyStatus(cmPolicies::CMP0126)) {
+    case cmPolicies::WARN:
+      if (this->PolicyOptionalWarningEnabled("CMAKE_POLICY_WARNING_CMP0126") &&
+          this->IsNormalDefinitionSet(name)) {
+        this->IssueMessage(
+          MessageType::AUTHOR_WARNING,
+          cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0126),
+                   "\nFor compatibility with older versions of CMake, normal "
+                   "variable \"",
+                   name, "\" will be removed from the current scope."));
+      }
+      CM_FALLTHROUGH;
+    case cmPolicies::OLD:
+      // if there was a definition then remove it
+      this->StateSnapshot.RemoveDefinition(name);
+      break;
+    case cmPolicies::NEW:
+    case cmPolicies::REQUIRED_IF_USED:
+    case cmPolicies::REQUIRED_ALWAYS:
+      break;
+  }
 }
 
 void cmMakefile::MarkVariableAsUsed(const std::string& var)
@@ -2479,7 +2498,7 @@ const std::string& cmMakefile::GetRequiredDefinition(
   const std::string& name) const
 {
   static std::string const empty;
-  const std::string* def = this->GetDefinition(name);
+  cmProp def = this->GetDefinition(name);
   if (!def) {
     cmSystemTools::Error("Error required internal CMake variable not "
                          "set, cmake may not be built correctly.\n"
@@ -2496,6 +2515,20 @@ bool cmMakefile::IsDefinitionSet(const std::string& name) const
   if (!def) {
     def = this->GetState()->GetInitializedCacheValue(name);
   }
+#ifndef CMAKE_BOOTSTRAP
+  if (cmVariableWatch* vv = this->GetVariableWatch()) {
+    if (!def) {
+      vv->VariableAccessed(
+        name, cmVariableWatch::UNKNOWN_VARIABLE_DEFINED_ACCESS, nullptr, this);
+    }
+  }
+#endif
+  return def != nullptr;
+}
+
+bool cmMakefile::IsNormalDefinitionSet(const std::string& name) const
+{
+  cmProp def = this->StateSnapshot.GetDefinition(name);
 #ifndef CMAKE_BOOTSTRAP
   if (cmVariableWatch* vv = this->GetVariableWatch()) {
     if (!def) {
@@ -2539,7 +2572,7 @@ cmProp cmMakefile::GetDefinition(const std::string& name) const
 const std::string& cmMakefile::GetSafeDefinition(const std::string& name) const
 {
   static std::string const empty;
-  const std::string* def = this->GetDefinition(name);
+  cmProp def = this->GetDefinition(name);
   if (!def) {
     return empty;
   }
@@ -3053,7 +3086,7 @@ MessageType cmMakefile::ExpandVariablesInStringNew(
             if (filename && variable == lineVar) {
               varresult = std::to_string(line);
             } else {
-              const std::string* def = this->GetDefinition(variable);
+              cmProp def = this->GetDefinition(variable);
               if (def) {
                 varresult = *def;
               } else if (!this->SuppressSideEffects) {
@@ -3147,6 +3180,23 @@ void cmMakefile::RemoveVariablesInString(std::string& source,
   while (var2.find(source)) {
     source.erase(var2.start(), var2.end() - var2.start());
   }
+}
+
+void cmMakefile::InitCMAKE_CONFIGURATION_TYPES(std::string const& genDefault)
+{
+  if (this->GetDefinition("CMAKE_CONFIGURATION_TYPES")) {
+    return;
+  }
+  std::string initConfigs;
+  if (!cmSystemTools::GetEnv("CMAKE_CONFIGURATION_TYPES", initConfigs)) {
+    initConfigs = genDefault;
+  }
+  this->AddCacheDefinition(
+    "CMAKE_CONFIGURATION_TYPES", initConfigs,
+    "Semicolon separated list of supported configuration types, "
+    "only supports Debug, Release, MinSizeRel, and RelWithDebInfo, "
+    "anything else will be ignored.",
+    cmStateEnums::STRING);
 }
 
 std::string cmMakefile::GetDefaultConfiguration() const
@@ -3438,7 +3488,8 @@ void cmMakefile::CreateGeneratedOutputs(
 void cmMakefile::AddTargetObject(std::string const& tgtName,
                                  std::string const& objFile)
 {
-  cmSourceFile* sf = this->GetOrCreateSource(objFile, true);
+  cmSourceFile* sf =
+    this->GetOrCreateSource(objFile, true, cmSourceFileLocationKind::Known);
   sf->SetObjectLibrary(tgtName);
   sf->SetProperty("EXTERNAL_OBJECT", "1");
 #if !defined(CMAKE_BOOTSTRAP)
@@ -4117,6 +4168,7 @@ cmTarget* cmMakefile::AddImportedTarget(const std::string& name,
   // Add to the set of available imported targets.
   this->ImportedTargets[name] = target.get();
   this->GetGlobalGenerator()->IndexTarget(target.get());
+  this->GetStateSnapshot().GetDirectory().AddImportedTargetName(name);
 
   // Transfer ownership to this cmMakefile object.
   this->ImportedTargetsOwned.push_back(std::move(target));
@@ -4391,13 +4443,12 @@ bool cmMakefile::SetPolicy(cmPolicies::PolicyID id,
     return false;
   }
 
-  // Deprecate old policies, especially those that require a lot
-  // of code to maintain the old behavior.
-  if (status == cmPolicies::OLD && id <= cmPolicies::CMP0075 &&
+  // Deprecate old policies.
+  if (status == cmPolicies::OLD && id <= cmPolicies::CMP0088 &&
       !(this->GetCMakeInstance()->GetIsInTryCompile() &&
         (
           // Policies set by cmCoreTryCompile::TryCompileCode.
-          id == cmPolicies::CMP0065))) {
+          id == cmPolicies::CMP0065 || id == cmPolicies::CMP0083))) {
     this->IssueMessage(MessageType::DEPRECATION_WARNING,
                        cmPolicies::GetPolicyDeprecatedWarning(id));
   }
