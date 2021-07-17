@@ -309,53 +309,23 @@ CMake文件中描述的每个可执行文件和库都是一个构建目标，构
 CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 
 ``all``
-  The default target used by ``Makefile`` and ``Ninja``
-  generators.  Builds all targets in the buildsystem,
-  except those which are excluded by their
-  :prop_tgt:`EXCLUDE_FROM_ALL` target property or
-  :prop_dir:`EXCLUDE_FROM_ALL` directory property.  The
-  name ``ALL_BUILD`` is used for this purpose for the
-  Xcode and Visual Studio generators.
+  ``Makefile`` 和 ``Ninja`` 生成器使用的默认目标。构建构建系统中的所有目标，除了那些被它们的 :prop_tgt:`EXCLUDE_FROM_ALL` 目标属性或 :prop_dir:`EXCLUDE_FROM_ALL` 目录属性排除的目标。名称`ALL_BUILD`用于Xcode和Visual Studio生成器。
 ``help``
-  Lists the targets available for build.  This target is
-  available when using the :generator:`Unix Makefiles` or
-  :generator:`Ninja` generator, and the exact output is
-  tool-specific.
+  列出可用于生成的目标。当使用 :generator:`Unix Makefiles` 或 :generator:`Ninja` 生成器时，可以使用此目标，并且确切的输出是特定于工具的。
 ``clean``
-  Delete built object files and other output files.  The
-  ``Makefile`` based generators create a ``clean`` target
-  per directory, so that an individual directory can be
-  cleaned.  The ``Ninja`` tool provides its own granular
-  ``-t clean`` system.
+  删除已构建的目标文件和其他输出文件。基于 ``Makefile`` 的生成器为每个目录创建一个 ``clean`` 目标，以便可以清理单个目录。``Ninja`` 工具提供了自己的颗粒 ``-t clean``  系统。
 ``test``
-  Runs tests.  This target is only automatically available
-  if the CMake files provide CTest-based tests.  See also
-  `Running Tests`_.
+  运行测试。只有在CMake文件提供基于CTest的测试时，此目标才自动可用。请参见 `运行测试`_。
 ``install``
-  Installs the software.  This target is only automatically
-  available if the software defines install rules with the
-  :command:`install` command.  See also
-  `Software Installation`_.
+  安装软件。这个目标只有在软件使用 :command:`install` 命令定义安装规则时才自动可用。请参见 `软件安装`_。
 ``package``
-  Creates a binary package.  This target is only
-  automatically available if the CMake files provide
-  CPack-based packages.
+  创建一个二进制包。这个目标只有在CMake文件提供基于CPack的包时才自动可用。
 ``package_source``
-  Creates a source package.  This target is only
-  automatically available if the CMake files provide
-  CPack-based packages.
+  创建源包。这个目标只有在CMake文件提供基于CPack的包时才自动可用。
 
-For ``Makefile`` based systems, ``/fast`` variants of binary
-build targets are provided. The ``/fast`` variants are used
-to build the specified target without regard for its
-dependencies.  The dependencies are not checked and
-are not rebuilt if out of date.  The :generator:`Ninja`
-generator is sufficiently fast at dependency checking that
-such targets are not provided for that generator.
+对于基于 ``Makefile`` 的系统，提供了二进制构建目标的 ``/fast`` 变体。 ``/fast`` 变体用于构建指定的目标，而不考虑其依赖关系。不检查依赖项，如果过期也不会重新生成依赖项。:generator:`Ninja` 生成器在检查依赖项时速度足够快，以确保没有为该生成器提供此类目标。
 
-``Makefile`` based systems also provide build-targets to
-preprocess, assemble and compile individual files in a
-particular directory.
+基于 ``Makefile`` 的系统还提供构建目标来预处理、组装和编译特定目录中的单个文件。
 
 .. code-block:: console
 
@@ -363,10 +333,7 @@ particular directory.
   $ make foo.cpp.s
   $ make foo.cpp.o
 
-The file extension is built into the name of the target
-because another file with the same name but a different
-extension may exist.  However, build-targets without the
-file extension are also provided.
+文件扩展名内置到目标名称中，因为可能存在另一个具有相同名称但扩展名不同的文件。但是，还提供了没有文件扩展名的构建目标。
 
 .. code-block:: console
 
@@ -374,19 +341,15 @@ file extension are also provided.
   $ make foo.s
   $ make foo.o
 
-In buildsystems which contain ``foo.c`` and ``foo.cpp``,
-building the ``foo.i`` target will preprocess both files.
+在包含 ``foo.c`` 和 ``foo.cpp`` 的构建系统中，构建 ``foo.i`` 将预处理这两个文件。
 
-Specifying a Build Program
+指定一个构建程序
 --------------------------
 
-The program invoked by the ``--build`` mode is determined
-by the :variable:`CMAKE_MAKE_PROGRAM` variable.  For most
-generators, the particular program does not need to be
-configured.
+``--build`` 模式调用的程序由 :variable:`CMAKE_MAKE_PROGRAM` 变量决定。对于大多数生成器，不需要配置特定的程序。
 
 ===================== =========================== ===========================
-      Generator           Default make program           Alternatives
+      生成器              默认构建程序                    其他替代     
 ===================== =========================== ===========================
  XCode                 ``xcodebuild``
  Unix Makefiles        ``make``
@@ -399,46 +362,18 @@ configured.
  Watcom WMake          ``wmake``
 ===================== =========================== ===========================
 
-The ``jom`` tool is capable of reading makefiles of the
-``NMake`` flavor and building in parallel, while the
-``nmake`` tool always builds serially.  After generating
-with the :generator:`NMake Makefiles` generator a user
-can run ``jom`` instead of ``nmake``.  The ``--build``
-mode would also use ``jom`` if the
-:variable:`CMAKE_MAKE_PROGRAM` was set to ``jom`` while
-using the :generator:`NMake Makefiles` generator, and
-as a convenience, the :generator:`NMake Makefiles JOM`
-generator is provided to find ``jom`` in the normal way
-and use it as the :variable:`CMAKE_MAKE_PROGRAM`. For
-completeness, ``nmake`` is an alternative tool which
-can process the output of the
-:generator:`NMake Makefiles JOM` generator, but doing
-so would be a pessimisation.
+``jom`` 工具能够读取 ``NMake`` 风格的makefile并并行构建，而 ``nmake`` 工具总是串行构建。在使用 :generator:`NMake Makefiles` 生成器生成后，用户可以运行 ``jom`` 而不是 ``nmake``。如果在使用 :generator:`NMake Makefiles` 生成器时将 :variable:`CMAKE_MAKE_PROGRAM` 设置为 ``jom``，``--build`` 模式也将使用 ``jom``，为了方便起见，提供了 :generator:`NMake Makefiles JOM` 生成器以正常方式查找 ``jom``，并将其作为 :variable:`CMAKE_MAKE_PROGRAM` 使用。为了完整起见，``nmake`` 是一种替代工具，它可以处理 :generator:`NMake Makefiles JOM` 生成器的输出，但这会造就悲观。
 
-Software Installation
+软件安装
 =====================
 
-The :variable:`CMAKE_INSTALL_PREFIX` variable can be
-set in the CMake cache to specify where to install the
-provided software.  If the provided software has install
-rules, specified using the :command:`install` command,
-they will install artifacts into that prefix.  On Windows,
-the default installation location corresponds to the
-``ProgramFiles`` system directory which may be
-architecture specific.  On Unix hosts, ``/usr/local`` is
-the default installation location.
+可以在CMake缓存中设置 :variable:`CMAKE_INSTALL_PREFIX` 变量，以指定在何处安装所提供的软件。如果提供的软件具有使用 :command:`install` 命令指定的安装规则，它们将把工件安装到该前缀中。在Windows上，默认安装位置对应于 ``ProgramFiles`` 系统目录，该目录可能是特定于体系结构的。在Unix主机上，``/usr/local`` 是默认的安装位置。
 
-The :variable:`CMAKE_INSTALL_PREFIX` variable always
-refers to the installation prefix on the target
-filesystem.
+:variable:`CMAKE_INSTALL_PREFIX` 变量总是指向目标文件系统上的安装前缀。
 
-In cross-compiling or packaging scenarios where the
-sysroot is read-only or where the sysroot should otherwise
-remain pristine, the :variable:`CMAKE_STAGING_PREFIX`
-variable can be set to a location to actually install
-the files.
+在交叉编译或打包的场景中，sysroot是只读的，或者sysroot应该保持原始状态，可以将  :variable:`CMAKE_STAGING_PREFIX` 变量设置为实际安装文件的位置。
 
-The commands:
+这些命令：
 
 .. code-block:: console
 
@@ -448,62 +383,37 @@ The commands:
   $ cmake --build .
   $ cmake --build . --target install
 
-result in files being installed to paths such
-as ``/tmp/package/lib/libfoo.so`` on the host machine.
-The ``/usr/local`` location on the host machine is
-not affected.
+导致文件被安装到机器的 ``/tmp/package/lib/libfoo.so`` 等路径下。机器上的 ``/usr/local`` 位置不受影响。
 
-Some provided software may specify ``uninstall`` rules,
-but CMake does not generate such rules by default itself.
+一些提供的软件可能会指定 ``uninstall`` 规则，但CMake本身默认不生成这样的规则。
 
-Running Tests
+运行测试
 =============
 
-The :manual:`ctest(1)` tool is shipped with the CMake
-distribution to execute provided tests and report
-results.  The ``test`` build-target is provided to run
-all available tests, but the :manual:`ctest(1)` tool
-allows granular control over which tests to run, how to
-run them, and how to report results.  Executing
-:manual:`ctest(1)` in the build directory is equivalent
-to running the ``test`` target:
+:manual:`ctest(1)` 工具随CMake发行版一起提供，用于执行所提供的测试并报告结果。尽管提供了 ``test`` 构建目标以运行所有可用的测试，但 :manual:`ctest(1)` 工具也允许对运行哪些测试、如何运行它们以及如何报告结果进行细粒度控制。在构建目录中执行 :manual:`ctest(1)` 相当于运行 ``test`` 目标：
 
 .. code-block:: console
 
   $ ctest
 
-A regular expression can be passed to run only tests
-which match the expression.  To run only tests with
-``Qt`` in their name:
+可以传递正则表达式来只运行与该表达式匹配的测试。只运行以 ``Qt`` 命名的测试：
 
 .. code-block:: console
 
   $ ctest -R Qt
 
-Tests can be excluded by regular expression too.  To
-run only tests without ``Qt`` in their name:
+正则表达式也可以排除测试。只运行名称中没有 ``Qt`` 的测试：
 
 .. code-block:: console
 
   $ ctest -E Qt
 
-Tests can be run in parallel by passing ``-j`` arguments
-to :manual:`ctest(1)`:
+通过向 :manual:`ctest(1)` 传递 ``-j`` 参数，测试可以并行运行：
 
 .. code-block:: console
 
   $ ctest -R Qt -j8
 
-The environment variable :envvar:`CTEST_PARALLEL_LEVEL`
-can alternatively be set to avoid the need to pass
-``-j``.
+也可以设置环境变量 :envvar:`CTEST_PARALLEL_LEVEL` 以避免传递 ``-j``。
 
-By default :manual:`ctest(1)` does not print the output
-from the tests. The command line argument ``-V`` (or
-``--verbose``) enables verbose mode to print the
-output from all tests.
-The ``--output-on-failure`` option prints the test
-output for failing tests only.  The environment variable
-:envvar:`CTEST_OUTPUT_ON_FAILURE`
-can be set to ``1`` as an alternative to passing the
-``--output-on-failure`` option to :manual:`ctest(1)`.
+默认情况下，:manual:`ctest(1)` 不打印测试的输出。命令行参数 ``-V`` (或 ``--verbose``)启用verbose模式以打印所有测试的输出。``--output-on-failure`` 选项仅打印失败测试的测试输出。可以将环境变量 :envvar:`CTEST_OUTPUT_ON_FAILURE` 设置为 ``1``，作为将 ``--output-on-failure`` 选项传递给 :manual:`ctest(1)` 的替代方法。
