@@ -1,20 +1,13 @@
-Step 12: Packaging Debug and Release
+步骤12：打包调试和发布
 ====================================
 
-**Note:** This example is valid for single-configuration generators and will
-not work for multi-configuration generators (e.g. Visual Studio).
+**注意**：这个例子只适用于单配置生成器，而不适用于多配置生成器（例如Visual Studio）。
 
-By default, CMake's model is that a build directory only contains a single
-configuration, be it Debug, Release, MinSizeRel, or RelWithDebInfo. It is
-possible, however, to setup CPack to bundle multiple build directories and
-construct a package that contains multiple configurations of the same project.
+默认情况下，CMake的模型是一个构建目录只包含一个配置，可以是Debug、Release、MinSizeRel或RelWithDebInfo。但是，可以通过安装CPack来捆绑多个构建目录，并构建一个包含同一项目的多个配置的包。
 
-First, we want to ensure that the debug and release builds use different names
-for the executables and libraries that will be installed. Let's use `d` as the
-postfix for the debug executable and libraries.
+首先，我们希望确保调试版本和发布版本对将要安装的可执行文件和库使用不同的名称。让我们使用 `d` 作为调试可执行文件和库的后缀。
 
-Set :variable:`CMAKE_DEBUG_POSTFIX` near the beginning of the top-level
-``CMakeLists.txt`` file:
+在顶层 ``CMakeLists.txt`` 文件的开头设置 :variable:`CMAKE_DEBUG_POSTFIX`：
 
 .. literalinclude:: Complete/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -23,7 +16,7 @@ Set :variable:`CMAKE_DEBUG_POSTFIX` near the beginning of the top-level
   :start-after: project(Tutorial VERSION 1.0)
   :end-before: target_compile_features(tutorial_compiler_flags
 
-And the :prop_tgt:`DEBUG_POSTFIX` property on the tutorial executable:
+还有tutorial可执行文件的 :prop_tgt:`DEBUG_POSTFIX` 属性：
 
 .. literalinclude:: Complete/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -32,9 +25,7 @@ And the :prop_tgt:`DEBUG_POSTFIX` property on the tutorial executable:
   :start-after: # add the executable
   :end-before: # add the binary tree to the search path for include files
 
-Let's also add version numbering to the ``MathFunctions`` library. In
-``MathFunctions/CMakeLists.txt``, set the :prop_tgt:`VERSION` and
-:prop_tgt:`SOVERSION` properties:
+让我们再向 ``MathFunctions`` 库添加版本号。在 ``MathFunctions/CMakeLists.txt`` 设置  :prop_tgt:`VERSION` 和 :prop_tgt:`SOVERSION` 属性：
 
 .. literalinclude:: Complete/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -43,8 +34,7 @@ Let's also add version numbering to the ``MathFunctions`` library. In
   :start-after: # setup the version numbering
   :end-before: # install rules
 
-From the ``Step12`` directory, create ``debug`` and ``release``
-subbdirectories. The layout will look like:
+在 ``Step12`` 目录中，创建 ``debug`` 和 ``release`` 子目录。布局将看起来像：
 
 .. code-block:: none
 
@@ -52,8 +42,7 @@ subbdirectories. The layout will look like:
      - debug
      - release
 
-Now we need to setup debug and release builds. We can use
-:variable:`CMAKE_BUILD_TYPE` to set the configuration type:
+现在我们需要设置调试和发布构建。我们可以使用 :variable:`CMAKE_BUILD_TYPE` 来设置配置类型：
 
 .. code-block:: console
 
@@ -64,22 +53,16 @@ Now we need to setup debug and release builds. We can use
   cmake -DCMAKE_BUILD_TYPE=Release ..
   cmake --build .
 
-Now that both the debug and release builds are complete, we can use a custom
-configuration file to package both builds into a single release. In the
-``Step12`` directory, create a file called ``MultiCPackConfig.cmake``. In this
-file, first include the default configuration file that was created by the
-:manual:`cmake  <cmake(1)>` executable.
+现在调试版本和发布版本都已经完成了，我们可以使用一个定制的配置文件将这两个版本打包到一个版本中。在 ``Step12`` 目录中，创建一个名为 ``MultiCPackConfig.cmake`` 的文件。在这个文件中，首先包含 :manual:`cmake  <cmake(1)>` 可执行文件创建的默认配置文件。
 
-Next, use the ``CPACK_INSTALL_CMAKE_PROJECTS`` variable to specify which
-projects to install. In this case, we want to install both debug and release.
+接下来，使用 ``CPACK_INSTALL_CMAKE_PROJECTS`` 变量来指定要安装哪些项目。在这种情况下，我们希望同时安装调试和发布。
 
 .. literalinclude:: Complete/MultiCPackConfig.cmake
   :caption: MultiCPackConfig.cmake
   :name: MultiCPackConfig.cmake
   :language: cmake
 
-From the ``Step12`` directory, run :manual:`cpack <cpack(1)>` specifying our
-custom configuration file with the ``config`` option:
+在 ``Step12`` 目录下，运行 :manual:`cpack <cpack(1)>` ，指定我们的配置文件  ``config`` 选项：
 
 .. code-block:: console
 

@@ -1,23 +1,13 @@
-Step 9: Selecting Static or Shared Libraries
+步骤9：选择使用静态库和共享库
 ============================================
 
-In this section we will show how the :variable:`BUILD_SHARED_LIBS` variable can
-be used to control the default behavior of :command:`add_library`,
-and allow control over how libraries without an explicit type (``STATIC``,
-``SHARED``, ``MODULE`` or ``OBJECT``) are built.
+在本节中，我们将展示如何使用 :variable:`BUILD_SHARED_LIBS` 变量来控制 :command:`add_library` 的默认行为，并允许控制没有显式类型的库（``STATIC``、``SHARED``、``MODULE`` 或者 ``OBJECT``）是如何构建的。
 
-To accomplish this we need to add :variable:`BUILD_SHARED_LIBS` to the
-top-level ``CMakeLists.txt``. We use the :command:`option` command as it allows
-users to optionally select if the value should be ``ON`` or ``OFF``.
+为此，我们需要将 :variable:`BUILD_SHARED_LIBS` 添加到顶层 ``CMakeLists.txt`` 中。我们使用 :command:`option` 命令，因为它能用户选择值为ON或者OFF。
 
-Next we are going to refactor ``MathFunctions`` to become a real library that
-encapsulates using ``mysqrt`` or ``sqrt``, instead of requiring the calling
-code to do this logic. This will also mean that ``USE_MYMATH`` will not control
-building ``MathFunctions``, but instead will control the behavior of this
-library.
+接下来，我们将重构MathFunctions，使其成为一个使用 ``mysqrt`` 或 ``sqrt`` 封装的真正的库，而不是要求在代码处理这些逻辑。这也意味着 ``USE_MYMATH`` 将不再控制构建MathFunctions，而是控制这个库的行为。
 
-The first step is to update the starting section of the top-level
-``CMakeLists.txt`` to look like:
+第一步是像下面那样更新顶层 ``CMakeLists.txt``：
 
 .. literalinclude:: Step10/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -25,13 +15,9 @@ The first step is to update the starting section of the top-level
   :language: cmake
   :end-before: # add the binary tree
 
-Now that we have made ``MathFunctions`` always be used, we will need to update
-the logic of that library. So, in ``MathFunctions/CMakeLists.txt`` we need to
-create a SqrtLibrary that will conditionally be built and installed when
-``USE_MYMATH`` is enabled. Now, since this is a tutorial, we are going to
-explicitly require that SqrtLibrary is built statically.
+现在我们已经使 ``MathFunctions`` 始终被使用，需要更新这个库的逻辑。因此，在 ``MathFunctions/CMakeLists.txt`` 中需要创建一个当 ``USE_MYMATH`` 被启用时有条件构建和安装的SqrtLibrary。现在，由于这是一个教程，我们明确要求SqrtLibrary是静态构建的。
 
-The end result is that ``MathFunctions/CMakeLists.txt`` should look like:
+``MathFunctions/CMakeLists.txt`` 最终应该像下面那样：
 
 .. literalinclude:: Step10/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -39,33 +25,27 @@ The end result is that ``MathFunctions/CMakeLists.txt`` should look like:
   :language: cmake
   :lines: 1-36,42-
 
-Next, update ``MathFunctions/mysqrt.cxx`` to use the ``mathfunctions`` and
-``detail`` namespaces:
+接下来使用 ``mathfunctions`` 函数及 ``detail`` 命名空间修改 ``MathFunctions/mysqrt.cxx``：
 
 .. literalinclude:: Step10/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-namespace
   :language: c++
 
-We also need to make some changes in ``tutorial.cxx``, so that it no longer
-uses ``USE_MYMATH``:
+我们还需要在 ``tutorial.cxx`` 中做一些修改，使它不再使用 ``USE_MYMATH``：
 
-#. Always include ``MathFunctions.h``
-#. Always use ``mathfunctions::sqrt``
-#. Don't include ``cmath``
+#. 总是包含 ``MathFunctions.h``
+#. 总是使用 ``mathfunctions::sqrt``
+#. 不再引用 ``cmath``
 
-Finally, update ``MathFunctions/MathFunctions.h`` to use dll export defines:
+最后，更新 ``MathFunctions/MathFunctions.h`` 以使用dll导出的定义：
 
 .. literalinclude:: Step10/MathFunctions/MathFunctions.h
   :caption: MathFunctions/MathFunctions.h
   :name: MathFunctions/MathFunctions.h
   :language: c++
 
-At this point, if you build everything, you may notice that linking fails
-as we are combining a static library without position independent code with a
-library that has position independent code. The solution to this is to
-explicitly set the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property of
-SqrtLibrary to be ``True`` no matter the build type.
+此时，如果您构建了所有内容，您可能会注意到，当我们将一个没有位置独立代码的静态库与一个有位置独立代码的库组合在一起时，链接会失败。解决这个问题的方法是不管构建类型，显式地将SqrtLibrary的 :prop_tgt:`POSITION_INDEPENDENT_CODE` 属性设置为  ``True``。
 
 .. literalinclude:: Step10/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -73,5 +53,4 @@ SqrtLibrary to be ``True`` no matter the build type.
   :language: cmake
   :lines: 37-42
 
-**Exercise**: We modified ``MathFunctions.h`` to use dll export defines.
-Using CMake documentation can you find a helper module to simplify this?
+**练习**：我们修改了 ``MathFunctions.h`` 以使用dll导出的定义。使用CMake文档你能找到一个帮助模块来简化这个吗?
