@@ -19,5 +19,3 @@ out/
 .idea/
 # CLion build directories
 cmake-build-*/
-
-build/
