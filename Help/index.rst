@@ -1,35 +1,20 @@
-.. title:: CMake Reference Documentation
+.. title:: CMake参考文档
 
-Introduction
+引言
 ############
 
-CMake is a tool to manage building of source code.  Originally, CMake was
-designed as a generator for various dialects of ``Makefile``, today
-CMake generates modern buildsystems such as ``Ninja`` as well as project
-files for IDEs such as Visual Studio and Xcode.
+CMake是一个管理源代码构建的工具。
+最初，CMake被设计为 ``Makefile`` 各种方言的生成器，现在CMake可以生成像 ``Ninja`` 这样的现代构建系统，也可以生成像Visual Studio和Xcode这样的IDE项目文件。
 
-CMake is widely used for the C and C++ languages, but it may be used to
-build source code of other languages too.
+CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代码。
 
-People encountering CMake for the first time may have different initial
-goals.  To learn how to build a source code package downloaded from the
-internet, start with the :guide:`用户交互指南`.
-This will detail the steps needed to run the :manual:`cmake(1)` or
-:manual:`cmake-gui(1)` executable and how to choose a generator, and
-how to complete the build.
+第一次接触CMake的人可能有会不同的初始目标。学习如何建立一个从互联网上下载的源代码包，从 :guide:`用户交互指南` 开始。这将详细说明运行 :manual:`cmake(1)` 或  :manual:`cmake-gui(1)` 可执行文件所需的步骤，以及如何选择生成器、如何完成构建。
 
-The :guide:`使用依赖项指南` is aimed at developers
-wishing to get started using a third-party library.
+:guide:`使用依赖项指南` 针对的是希望使用第三方库的开发人员。
 
-For developers starting a project using CMake, the :guide:`CMake教程`
-is a suitable starting point.  The :manual:`cmake-buildsystem(7)`
-manual is aimed at developers expanding their knowledge of maintaining
-a buildsystem and becoming familiar with the build targets that
-can be represented in CMake.  The :manual:`cmake-packages(7)` manual
-explains how to create packages which can easily be consumed by
-third-party CMake-based buildsystems.
+对于使用CMake启动项目的开发人员来说，:guide:`CMake教程` 是一个合适的起点。:manual:`cmake-buildsystem(7)` 手册的目标是开发人员扩展他们维护构建系统的知识，并熟悉可以用CMake表示的构建目标。:manual:`cmake-packages(7)` 手册解释了如何创建可以被基于cmake的第三方构建系统轻松使用的包。
 
-Command-Line Tools
+命令行工具
 ##################
 
 .. toctree::
@@ -39,7 +24,7 @@ Command-Line Tools
    /manual/ctest.1
    /manual/cpack.1
 
-Interactive Dialogs
+交互式对话框
 ###################
 
 .. toctree::
@@ -48,7 +33,7 @@ Interactive Dialogs
    /manual/cmake-gui.1
    /manual/ccmake.1
 
-Reference Manuals
+参考手册
 #################
 
 .. toctree::
@@ -76,7 +61,7 @@ Reference Manuals
 
 .. only:: not man
 
- Guides
+ 指南
  ######
 
  .. toctree::
@@ -90,7 +75,7 @@ Reference Manuals
 
 .. only:: html or text
 
- Release Notes
+ 发行说明
  #############
 
  .. toctree::
@@ -100,7 +85,7 @@ Reference Manuals
 
 .. only:: html
 
- Index and Search
+ 索引和搜索
  ################
 
  * :ref:`genindex`
