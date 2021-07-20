@@ -294,7 +294,7 @@ Documentation
 
 The following guides have been added:
 
-* :guide:`IDE Integration Guide`
+* :guide:`IDE集成指南`
 * :guide:`导入导出指南`
 
 Other Changes
