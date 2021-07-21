@@ -1,7 +1,7 @@
 cmake_minimum_required
 ----------------------
 
-Require a minimum version of cmake.
+cmake版本的最低要求。
 
 .. code-block:: cmake
 

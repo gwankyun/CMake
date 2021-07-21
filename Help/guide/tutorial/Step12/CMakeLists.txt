@@ -93,21 +93,21 @@ install(EXPORT MathFunctionsTargets
 )
 
 include(CMakePackageConfigHelpers)
-# generate the config file that is includes the exports
+# 生成包含导出的配置文件
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
   "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfig.cmake"
   INSTALL_DESTINATION "lib/cmake/example"
   NO_SET_AND_CHECK_MACRO
   NO_CHECK_REQUIRED_COMPONENTS_MACRO
   )
-# generate the version file for the config file
+# 生成配置文件的版本文件
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfigVersion.cmake"
   VERSION "${Tutorial_VERSION_MAJOR}.${Tutorial_VERSION_MINOR}"
   COMPATIBILITY AnyNewerVersion
 )
 
-# install the configuration file
+# 安装配置文件
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfigVersion.cmake

@@ -1,7 +1,7 @@
 endfunction
 -----------
 
-Ends a list of commands in a function block.
+在foreach块中结束命令列表。
 
 .. code-block:: cmake
 

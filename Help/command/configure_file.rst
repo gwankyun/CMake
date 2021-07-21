@@ -1,7 +1,7 @@
 configure_file
 --------------
 
-Copy a file to another location and modify its contents.
+将文件复制到另一个位置并修改其内容。
 
 .. code-block:: cmake
 

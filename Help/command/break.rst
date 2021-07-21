@@ -1,7 +1,7 @@
 break
 -----
 
-Break from an enclosing foreach or while loop.
+从一个封闭的foreach或者while循环中跳出。
 
 .. code-block:: cmake
 

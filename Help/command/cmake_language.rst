@@ -3,7 +3,7 @@ cmake_language
 
 .. versionadded:: 3.18
 
-Call meta-operations on CMake commands.
+通过命令调用元操作。
 
 Synopsis
 ^^^^^^^^

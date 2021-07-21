@@ -1,7 +1,7 @@
 cmake_host_system_information
 -----------------------------
 
-Query host system specific information.
+查询主机系统相关信息。
 
 .. code-block:: cmake
 

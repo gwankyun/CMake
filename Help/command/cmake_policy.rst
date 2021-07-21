@@ -1,8 +1,7 @@
 cmake_policy
 ------------
 
-Manage CMake Policy settings.  See the :manual:`cmake-policies(7)`
-manual for defined policies.
+管理CMake Policy设置。请参考 :manual:`cmake-policies(7)` 手册了解已定义的策略。
 
 As CMake evolves it is sometimes necessary to change existing behavior
 in order to fix bugs or improve implementations of existing features.

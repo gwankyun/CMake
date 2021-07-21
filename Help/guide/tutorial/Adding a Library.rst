@@ -18,16 +18,16 @@
         :caption: CMakeLists.txt
         :name: CMakeLists.txt-add_subdirectory
 
-        # add the MathFunctions library
+        # 添加MathFunctions库
         add_subdirectory(MathFunctions)
 
-        # add the executable
+        # 添加可执行文件
         add_executable(Tutorial tutorial.cxx)
 
         target_link_libraries(Tutorial PUBLIC MathFunctions)
 
-        # add the binary tree to the search path for include files
-        # so that we will find TutorialConfig.h
+        # 添加二进制树到引用目录的搜索路径
+        # 这让我们能找到TutorialConfig.h
         target_include_directories(Tutorial PUBLIC
                                   "${PROJECT_BINARY_DIR}"
                                   "${PROJECT_SOURCE_DIR}/MathFunctions"

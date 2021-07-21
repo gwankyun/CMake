@@ -3,7 +3,7 @@ continue
 
 .. versionadded:: 3.2
 
-Continue to the top of enclosing foreach or while loop.
+跳到foreach或者while循环的开头。
 
 .. code-block:: cmake
 

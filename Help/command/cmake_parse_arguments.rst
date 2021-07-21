@@ -1,7 +1,7 @@
 cmake_parse_arguments
 ---------------------
 
-Parse function or macro arguments.
+解析函数或者宏的参数。
 
 .. code-block:: cmake
 

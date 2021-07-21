@@ -9,10 +9,10 @@
 
   cmake_minimum_required(VERSION 3.10)
 
-  # set the project name
+  # 设置工程名
   project(Tutorial)
 
-  # add the executable
+  # 添加可执行文件
   add_executable(Tutorial tutorial.cxx)
 
 
@@ -29,7 +29,7 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-project-VERSION
   :language: cmake
-  :end-before: # specify the C++ standard
+  :end-before: # 指定C++标准
 
 然后，配置一个头文件来将版本号传递给源代码：
 

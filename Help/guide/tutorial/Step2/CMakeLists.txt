@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
-# set the project name and version
+# 设置工程名和版本号
 project(Tutorial VERSION 1.0)
 
-# specify the C++ standard
+# 指定C++标准
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 

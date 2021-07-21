@@ -1,7 +1,7 @@
 elseif
 ------
 
-Starts an elseif portion of an if block.
+开始if块的elseif部分。
 
 .. code-block:: cmake
 

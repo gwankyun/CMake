@@ -3,12 +3,7 @@ cmake_path
 
 .. versionadded:: 3.20
 
-This command is for the manipulation of paths.  Only syntactic aspects of
-paths are handled, there is no interaction of any kind with any underlying
-file system.  The path may represent a non-existing path or even one that
-is not allowed to exist on the current file system or platform.
-For operations that do interact with the filesystem, see the :command:`file`
-command.
+此命令用于操作路径。只处理路径的语法方面，不与任何底层文件系统进行任何类型的交互。该路径可能表示当前文件或平台上不存在的路径，甚至不允许存在的路径。对于与文件系统交互的操作，请参考 the :command:`file` 命令。
 
 .. note::
 

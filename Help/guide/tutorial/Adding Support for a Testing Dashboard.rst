@@ -10,7 +10,7 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-enable_testing-remove
 
-  # enable testing
+  # 启用测试
   enable_testing()
 
 为：
@@ -19,7 +19,7 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-include-CTest
 
-  # enable dashboard scripting
+  # 启用仪表板脚本
   include(CTest)
 
 :module:`CTest` 模块可以自动调用 ``enable_testing()``，所以我们可以将它将CMake文件中删掉。

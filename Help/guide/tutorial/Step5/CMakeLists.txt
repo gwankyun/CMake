@@ -39,16 +39,16 @@ install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
 # enable testing
 enable_testing()
 
-# does the application run
+# 程序是否运行
 add_test(NAME Runs COMMAND Tutorial 25)
 
-# does the usage message work?
+# 用例输出有效吗？
 add_test(NAME Usage COMMAND Tutorial)
 set_tests_properties(Usage
   PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*number"
   )
 
-# define a function to simplify adding tests
+# 定义一个函数来简化添加测试
 function(do_test target arg result)
   add_test(NAME Comp${arg} COMMAND ${target} ${arg})
   set_tests_properties(Comp${arg}
@@ -56,7 +56,7 @@ function(do_test target arg result)
     )
 endfunction(do_test)
 
-# do a bunch of result based tests
+# 跑一些基于结果的测试
 do_test(Tutorial 4 "4 is 2")
 do_test(Tutorial 9 "9 is 3")
 do_test(Tutorial 5 "5 is 2.236")

@@ -10,8 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # should we use our own math functions
 option(USE_MYMATH "Use tutorial provided math implementation" ON)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
+# 配置一个头文件，将一些CMake设置
+# 传递到源代码
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
 # add the MathFunctions library
@@ -21,13 +21,13 @@ if(USE_MYMATH)
   list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/MathFunctions")
 endif()
 
-# add the executable
+# 添加可执行文件
 add_executable(Tutorial tutorial.cxx)
 
 target_link_libraries(Tutorial PUBLIC ${EXTRA_LIBS})
 
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
+# 添加二进制树到引用目录的搜索路径
+# 这让我们能找到TutorialConfig.h
 target_include_directories(Tutorial PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            ${EXTRA_INCLUDES}

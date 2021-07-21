@@ -1,27 +1,27 @@
 cmake_minimum_required(VERSION 3.10)
 
-# set the project name and version
+# 设置工程名和版本号
 project(Tutorial VERSION 1.0)
 
-# specify the C++ standard
+# 指定C++标准
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# control where the static and shared libraries are built so that on windows
-# we don't need to tinker with the path to run the executable
+# 控制静态库和共享库的构建位置
+# 这样在Windows上就不用修改可执行文件的运行路径
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-# configure a header file to pass the version number only
+# 配置头文件，只传递版本号
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
-# add the MathFunctions library
+# 添加MathFunctions库
 add_subdirectory(MathFunctions)
 
-# add the executable
+# 添加可执行文件
 add_executable(Tutorial tutorial.cxx)
 target_link_libraries(Tutorial PUBLIC MathFunctions)
 

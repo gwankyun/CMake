@@ -20,7 +20,7 @@
   :name: CMakeLists.txt-CXX_STANDARD-variable-remove
   :language: cmake
   :start-after: project(Tutorial VERSION 1.0)
-  :end-before: # control where the static and shared libraries are built so that on windows
+  :end-before: # 控制静态库和共享库的构建位置
 
 会被替换成：
 
