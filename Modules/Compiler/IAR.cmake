@@ -41,7 +41,7 @@
 include_guard()
 
 macro(__compiler_iar_ilink lang)
-  set(CMAKE_EXECUTABLE_SUFFIX ".elf")
+  set(CMAKE_EXECUTABLE_SUFFIX_${lang} ".elf")
   set(CMAKE_${lang}_OUTPUT_EXTENSION ".o")
   if (${lang} STREQUAL "C" OR ${lang} STREQUAL "CXX")
     set(CMAKE_${lang}_COMPILE_OBJECT             "<CMAKE_${lang}_COMPILER> ${CMAKE_IAR_${lang}_FLAG} --silent <SOURCE> <DEFINES> <INCLUDES> <FLAGS> -o <OBJECT>")
@@ -71,13 +71,10 @@ macro(__compiler_iar_ilink lang)
   set(CMAKE_${lang}_ARCHIVE_CREATE "<CMAKE_AR> <TARGET> --create <LINK_FLAGS> <OBJECTS>")
   set(CMAKE_${lang}_ARCHIVE_APPEND "<CMAKE_AR> <TARGET> --replace <LINK_FLAGS> <OBJECTS>")
   set(CMAKE_${lang}_ARCHIVE_FINISH "")
-
-  set(CMAKE_LINKER "${CMAKE_IAR_LINKER}" CACHE FILEPATH "The IAR linker" FORCE)
-  set(CMAKE_AR "${CMAKE_IAR_ARCHIVE}" CACHE FILEPATH "The IAR archiver" FORCE)
 endmacro()
 
 macro(__compiler_iar_xlink lang)
-  set(CMAKE_EXECUTABLE_SUFFIX ".bin")
+  set(CMAKE_EXECUTABLE_SUFFIX_${lang} ".bin")
   if (${lang} STREQUAL "C" OR ${lang} STREQUAL "CXX")
 
     set(CMAKE_${lang}_COMPILE_OBJECT             "<CMAKE_${lang}_COMPILER> ${CMAKE_IAR_${lang}_FLAG} --silent <SOURCE> <DEFINES> <INCLUDES> <FLAGS> -o <OBJECT>")
@@ -109,7 +106,4 @@ macro(__compiler_iar_xlink lang)
   set(CMAKE_${lang}_ARCHIVE_FINISH "")
 
   set(CMAKE_LIBRARY_PATH_FLAG "-I")
-
-  set(CMAKE_LINKER "${CMAKE_IAR_LINKER}" CACHE FILEPATH "The IAR linker" FORCE)
-  set(CMAKE_AR "${CMAKE_IAR_AR}" CACHE FILEPATH "The IAR archiver" FORCE)
 endmacro()
