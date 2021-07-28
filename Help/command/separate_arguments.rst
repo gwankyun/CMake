@@ -1,7 +1,7 @@
 separate_arguments
 ------------------
 
-Parse command-line arguments into a semicolon-separated list.
+将命令行参数解析为一个由分号分隔的列表。
 
 .. code-block:: cmake
 

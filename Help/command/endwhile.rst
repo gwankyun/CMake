@@ -1,7 +1,7 @@
 endwhile
 --------
 
-Ends a list of commands in a while block.
+在while块中结束命令列表。
 
 .. code-block:: cmake
 

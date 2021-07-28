@@ -1,7 +1,7 @@
 get_filename_component
 ----------------------
 
-Get a specific component of a full filename.
+获取完整文件名的特定组件。
 
 .. versionchanged:: 3.19
   This command been superseded by :command:`cmake_path` command, except

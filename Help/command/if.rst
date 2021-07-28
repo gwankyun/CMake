@@ -1,7 +1,7 @@
 if
 --
 
-Conditionally execute a group of commands.
+有条件地执行一组命令。
 
 Synopsis
 ^^^^^^^^

@@ -1,7 +1,7 @@
 math
 ----
 
-Evaluate a mathematical expression.
+计算数学表达式的值。
 
 .. code-block:: cmake
 

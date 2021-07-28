@@ -1,7 +1,7 @@
 site_name
 ---------
 
-Set the given variable to the name of the computer.
+将给定的变量设置为计算机的名称。
 
 .. code-block:: cmake
 

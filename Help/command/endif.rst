@@ -1,7 +1,7 @@
 endif
 -----
 
-Ends a list of commands in an if block.
+在if块中结束命令列表。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 set_property
 ------------
 
-Set a named property in a given scope.
+在给定的范围内设置命名属性。
 
 .. code-block:: cmake
 

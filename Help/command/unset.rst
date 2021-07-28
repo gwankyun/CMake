@@ -1,7 +1,7 @@
 unset
 -----
 
-Unset a variable, cache variable, or environment variable.
+取消变量、缓存变量或者环境变量的值。
 
 Unset Normal Variable or Cache Entry
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

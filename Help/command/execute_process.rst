@@ -1,7 +1,7 @@
 execute_process
 ---------------
 
-Execute one or more child processes.
+执行一个或多个子进程。
 
 .. code-block:: cmake
 

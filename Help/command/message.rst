@@ -1,7 +1,7 @@
 message
 -------
 
-Log a message.
+输出一条日志。
 
 Synopsis
 ^^^^^^^^

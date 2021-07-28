@@ -3,7 +3,7 @@ include_guard
 
 .. versionadded:: 3.10
 
-Provides an include guard for the file currently being processed by CMake.
+为CMake正在处理的文件提交包含保护。
 
 .. code-block:: cmake
 

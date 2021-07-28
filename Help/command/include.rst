@@ -1,7 +1,7 @@
 include
 -------
 
-Load and run CMake code from a file or module.
+从文件或者模块中加载并执行CMake代码。
 
 .. code-block:: cmake
 

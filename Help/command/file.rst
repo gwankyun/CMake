@@ -1,7 +1,7 @@
 file
 ----
 
-File manipulation command.
+文件操作命令。
 
 This command is dedicated to file and path manipulation requiring access to the
 filesystem.

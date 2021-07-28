@@ -1,7 +1,7 @@
 mark_as_advanced
 ----------------
 
-Mark cmake cached variables as advanced.
+将cmke缓存变量标记为高级。
 
 .. code-block:: cmake
 

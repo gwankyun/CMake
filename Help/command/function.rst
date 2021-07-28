@@ -1,7 +1,7 @@
 function
 --------
 
-Start recording a function for later invocation as a command.
+开始记录一个函数以便以后作为命令调用。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 get_property
 ------------
 
-Get a property.
+获取属性。
 
 .. code-block:: cmake
 

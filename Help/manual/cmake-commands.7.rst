@@ -7,10 +7,10 @@ cmake-commands(7)
 
    .. contents::
 
-Scripting Commands
+脚本命令
 ==================
 
-These commands are always available.
+这些命令随时可用。
 
 .. toctree::
    :maxdepth: 1
@@ -64,10 +64,10 @@ These commands are always available.
    /command/variable_watch
    /command/while
 
-Project Commands
+项目命令
 ================
 
-These commands are available only in CMake projects.
+这些命令只能在CMake项目中使用。
 
 .. toctree::
    :maxdepth: 1
@@ -121,10 +121,10 @@ These commands are available only in CMake projects.
 
 .. _`CTest Commands`:
 
-CTest Commands
+CTest命令
 ==============
 
-These commands are available only in CTest scripts.
+这些命令仅可用于CTest脚本。
 
 .. toctree::
    :maxdepth: 1
@@ -143,13 +143,10 @@ These commands are available only in CTest scripts.
    /command/ctest_update
    /command/ctest_upload
 
-Deprecated Commands
+弃用命令
 ===================
 
-These commands are deprecated and are only made available to maintain
-backward compatibility.  The documentation of each command states the
-CMake version in which it was deprecated.  Do not use these commands
-in new code.
+这些命令已弃用，仅为了向后兼容而留存。每个命令的文档都说明了从哪个CMake版本开始弃用该命令。不要在新代码中使用这些命令。
 
 .. toctree::
    :maxdepth: 1

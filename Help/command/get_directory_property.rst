@@ -1,7 +1,7 @@
 get_directory_property
 ----------------------
 
-Get a property of ``DIRECTORY`` scope.
+获取 ``DIRECTORY`` 范围的属性。
 
 .. code-block:: cmake
 

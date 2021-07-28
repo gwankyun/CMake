@@ -1,7 +1,7 @@
 foreach
 -------
 
-Evaluate a group of commands for each value in a list.
+为列表中的每个值执行一组命令。
 
 .. code-block:: cmake
 

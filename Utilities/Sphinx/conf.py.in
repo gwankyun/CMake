@@ -38,7 +38,7 @@ for fpath in cmake_manuals:
     try:
         name, sec, rst = os.path.basename(fpath).split('.')
         desc = None
-        f = open(fpath, 'r')
+        f = open(fpath, 'r', encoding='utf-8')
         for l in f:
             m = cmake_manual_description.match(l)
             if m:

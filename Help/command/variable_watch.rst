@@ -1,7 +1,7 @@
 variable_watch
 --------------
 
-Watch the CMake variable for change.
+监控CMake变量变动。
 
 .. code-block:: cmake
 

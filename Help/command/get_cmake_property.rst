@@ -1,7 +1,7 @@
 get_cmake_property
 ------------------
 
-Get a global property of the CMake instance.
+获取CMake实例的全局属性。
 
 .. code-block:: cmake
 

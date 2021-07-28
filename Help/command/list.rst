@@ -1,7 +1,7 @@
 list
 ----
 
-List operations.
+列表操作。
 
 Synopsis
 ^^^^^^^^

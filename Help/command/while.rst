@@ -1,7 +1,7 @@
 while
 -----
 
-Evaluate a group of commands while a condition is true
+当条件为真时执行一组命令。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 option
 ------
 
-Provide an option that the user can optionally select.
+提供一个可供用户选择的选项。
 
 .. code-block:: cmake
 

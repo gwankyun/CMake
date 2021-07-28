@@ -1,7 +1,7 @@
 return
 ------
 
-Return from a file, directory or function.
+从文件、目录或函数中返回。
 
 .. code-block:: cmake
 

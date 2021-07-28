@@ -1,10 +1,7 @@
 set
 ---
 
-Set a normal, cache, or environment variable to a given value.
-See the :ref:`cmake-language(7) variables <CMake Language Variables>`
-documentation for the scopes and interaction of normal variables
-and cache entries.
+将一个普通变量、缓存变量或环境变量设置为给定值。请参考 :ref:`cmake-language(7) variables <CMake Language Variables>` ，了解普通变量和缓存项的作用域和交互。
 
 Signatures of this command that specify a ``<value>...`` placeholder
 expect zero or more arguments.  Multiple arguments will be joined as

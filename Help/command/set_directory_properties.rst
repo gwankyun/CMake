@@ -1,7 +1,7 @@
 set_directory_properties
 ------------------------
 
-Set properties of the current directory and subdirectories.
+设置当前目录和子目录的属性。
 
 .. code-block:: cmake
 

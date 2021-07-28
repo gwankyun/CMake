@@ -1,7 +1,7 @@
 endmacro
 --------
 
-Ends a list of commands in a macro block.
+在macro块中结束命令列表。
 
 .. code-block:: cmake
 

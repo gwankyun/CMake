@@ -1,7 +1,7 @@
 macro
 -----
 
-Start recording a macro for later invocation as a command
+开始记录宏，以便之后作命令调用。
 
 .. code-block:: cmake
 
