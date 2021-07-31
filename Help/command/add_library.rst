@@ -5,7 +5,7 @@ add_library
 
    .. contents::
 
-Add a library to the project using the specified source files.
+使用特定的源文件向项目添加库。
 
 Normal Libraries
 ^^^^^^^^^^^^^^^^

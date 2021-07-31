@@ -1,7 +1,7 @@
 export
 ------
 
-Export targets from the build tree for use by outside projects.
+从构建树中导出目标供外部项目使用。
 
 .. code-block:: cmake
 

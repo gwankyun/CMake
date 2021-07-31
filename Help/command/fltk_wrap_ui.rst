@@ -1,7 +1,7 @@
 fltk_wrap_ui
 ------------
 
-Create FLTK user interfaces Wrappers.
+创建FLTK用户界面包装器。
 
 .. code-block:: cmake
 

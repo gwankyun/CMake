@@ -1,7 +1,7 @@
 get_test_property
 -----------------
 
-Get a property of the test.
+获取测试的属性。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 enable_testing
 --------------
 
-Enable testing for current directory and below.
+启用当前及以下目录的测试。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 get_source_file_property
 ------------------------
 
-Get a property for a source file.
+获取源文件的属性。
 
 .. code-block:: cmake
 

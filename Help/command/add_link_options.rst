@@ -3,9 +3,7 @@ add_link_options
 
 .. versionadded:: 3.13
 
-Add options to the link step for executable, shared library or module
-library targets in the current directory and below that are added after
-this command is invoked.
+为调用此命令后添加的当前目录及以下的可执行文件、共享库或者模块库目标的链接步骤添加选项。
 
 .. code-block:: cmake
 

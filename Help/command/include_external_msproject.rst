@@ -1,7 +1,7 @@
 include_external_msproject
 --------------------------
 
-Include an external Microsoft project file in a workspace.
+在工作区中包含一个外部Microsoft项目文件。
 
 .. code-block:: cmake
 

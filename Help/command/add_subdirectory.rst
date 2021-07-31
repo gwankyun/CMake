@@ -1,7 +1,7 @@
 add_subdirectory
 ----------------
 
-Add a subdirectory to the build.
+向构建添加一个子目录。
 
 .. code-block:: cmake
 

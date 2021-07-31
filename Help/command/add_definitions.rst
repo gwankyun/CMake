@@ -1,7 +1,7 @@
 add_definitions
 ---------------
 
-Add -D define flags to the compilation of source files.
+在编译源文件时添加-D定义标志。
 
 .. code-block:: cmake
 

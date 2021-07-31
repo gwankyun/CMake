@@ -1,7 +1,7 @@
 add_compile_options
 -------------------
 
-Add options to the compilation of source files.
+向源文件的编译添加选项。
 
 .. code-block:: cmake
 

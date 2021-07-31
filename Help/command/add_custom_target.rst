@@ -1,7 +1,7 @@
 add_custom_target
 -----------------
 
-Add a target with no output so it will always be built.
+添加一个没有输出的目标，这可以让它始终被构建。
 
 .. code-block:: cmake
 

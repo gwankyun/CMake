@@ -1,7 +1,7 @@
 add_test
 --------
 
-Add a test to the project to be run by :manual:`ctest(1)`.
+向由 :manual:`ctest(1)` 运行的项目添加一个测试。
 
 .. code-block:: cmake
 

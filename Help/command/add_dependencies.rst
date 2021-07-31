@@ -1,7 +1,7 @@
 add_dependencies
 ----------------
 
-Add a dependency between top-level targets.
+添加顶层目标之间的依赖关系。
 
 .. code-block:: cmake
 

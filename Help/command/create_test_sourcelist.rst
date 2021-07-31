@@ -1,7 +1,7 @@
 create_test_sourcelist
 ----------------------
 
-Create a test driver and source list for building test programs.
+为构建测试程序创建一个测试载体和源代码列表。
 
 .. code-block:: cmake
 

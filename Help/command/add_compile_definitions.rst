@@ -3,7 +3,7 @@ add_compile_definitions
 
 .. versionadded:: 3.12
 
-Add preprocessor definitions to the compilation of source files.
+将预处理器定义添加到源文件的编译中。
 
 .. code-block:: cmake
 

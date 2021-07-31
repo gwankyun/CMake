@@ -1,7 +1,7 @@
 define_property
 ---------------
 
-Define and document custom properties.
+自定义属性及添加相应文档。
 
 .. code-block:: cmake
 

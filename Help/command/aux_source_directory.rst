@@ -1,7 +1,7 @@
 aux_source_directory
 --------------------
 
-Find all source files in a directory.
+查找一个目录中的所有源文件。
 
 .. code-block:: cmake
 

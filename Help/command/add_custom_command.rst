@@ -1,7 +1,7 @@
 add_custom_command
 ------------------
 
-Add a custom build rule to the generated build system.
+给生成系统添加自定义生成规则。
 
 There are two main signatures for ``add_custom_command``.
 

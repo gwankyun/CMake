@@ -1,6 +1,6 @@
 enable_language
 ---------------
-Enable a language (CXX/C/OBJC/OBJCXX/Fortran/etc)
+启用语言（CXX/C/OBJC/OBJCXX/Fortran/等）
 
 .. code-block:: cmake
 

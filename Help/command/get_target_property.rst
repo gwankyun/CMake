@@ -1,7 +1,7 @@
 get_target_property
 -------------------
 
-Get a property from a target.
+从目标获取属性。
 
 .. code-block:: cmake
 

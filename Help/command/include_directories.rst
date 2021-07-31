@@ -1,7 +1,7 @@
 include_directories
 -------------------
 
-Add include directories to the build.
+将包括目录添加到构建中。
 
 .. code-block:: cmake
 

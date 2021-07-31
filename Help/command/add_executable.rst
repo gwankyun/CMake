@@ -5,7 +5,7 @@ add_executable
 
   .. contents::
 
-Add an executable to the project using the specified source files.
+使用指定的源文件向项目添加可执行文件。
 
 Normal Executables
 ^^^^^^^^^^^^^^^^^^
