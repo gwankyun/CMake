@@ -3,7 +3,7 @@ target_compile_features
 
 .. versionadded:: 3.1
 
-Add expected compiler features to a target.
+向目标添加期望的编译器特性。
 
 .. code-block:: cmake
 

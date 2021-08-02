@@ -1,7 +1,7 @@
 set_source_files_properties
 ---------------------------
 
-Source files can have properties that affect how they are built.
+源文件可以具有影响其构建方式的属性。
 
 .. code-block:: cmake
 

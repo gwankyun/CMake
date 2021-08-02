@@ -1,7 +1,7 @@
 target_compile_definitions
 --------------------------
 
-Add compile definitions to a target.
+向目标添加编译定义。
 
 .. code-block:: cmake
 

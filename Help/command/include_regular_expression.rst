@@ -1,7 +1,7 @@
 include_regular_expression
 --------------------------
 
-Set the regular expression used for dependency checking.
+设置依赖项检查的正则表达式。
 
 .. code-block:: cmake
 

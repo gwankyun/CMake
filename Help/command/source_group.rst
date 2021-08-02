@@ -1,8 +1,7 @@
 source_group
 ------------
 
-Define a grouping for source files in IDE project generation.
-There are two different signatures to create source groups.
+在IDE中定义一个源码分组。有两个不同的签名来创建源码分组。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 install
 -------
 
-Specify rules to run at install time.
+指定安装时运行的规则。
 
 Synopsis
 ^^^^^^^^

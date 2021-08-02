@@ -3,7 +3,7 @@ target_link_directories
 
 .. versionadded:: 3.13
 
-Add link directories to a target.
+向目标添加链接目录。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 link_directories
 ----------------
 
-Add directories in which the linker will look for libraries.
+添加链接器查找库的目录。
 
 .. code-block:: cmake
 

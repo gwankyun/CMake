@@ -1,7 +1,7 @@
 target_include_directories
 --------------------------
 
-Add include directories to a target.
+将包含目录添加到目标。
 
 .. code-block:: cmake
 

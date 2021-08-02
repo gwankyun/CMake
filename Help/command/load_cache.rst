@@ -1,7 +1,7 @@
 load_cache
 ----------
 
-Load in the values from another project's CMake cache.
+从另一个项目的CMake缓存中加载值。
 
 .. code-block:: cmake
 

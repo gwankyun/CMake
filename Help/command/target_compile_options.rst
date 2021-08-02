@@ -1,7 +1,7 @@
 target_compile_options
 ----------------------
 
-Add compile options to a target.
+向目标添加编译选项。
 
 .. code-block:: cmake
 

@@ -1,7 +1,7 @@
 project
 -------
 
-Set the name of the project.
+设置项目名。
 
 Synopsis
 ^^^^^^^^

@@ -1,7 +1,7 @@
 remove_definitions
 ------------------
 
-Remove -D define flags added by :command:`add_definitions`.
+删除 :command:`add_definitions` 添加的-D定义标志。
 
 .. code-block:: cmake
 

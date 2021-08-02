@@ -1,7 +1,7 @@
 set_target_properties
 ---------------------
 
-Targets can have properties that affect how they are built.
+目标可以具有影响其构建方式的属性。
 
 .. code-block:: cmake
 

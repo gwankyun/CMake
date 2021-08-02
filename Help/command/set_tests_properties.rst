@@ -1,7 +1,7 @@
 set_tests_properties
 --------------------
 
-Set a property of the tests.
+设置测试的属性。
 
 .. code-block:: cmake
 

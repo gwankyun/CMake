@@ -1,7 +1,7 @@
 link_libraries
 --------------
 
-Link libraries to all targets added later.
+将库链接到之后添加的所有目标。
 
 .. code-block:: cmake
 
