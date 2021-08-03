@@ -3,7 +3,7 @@ target_sources
 
 .. versionadded:: 3.1
 
-Add sources to a target.
+向目标添加源文件。
 
 .. code-block:: cmake
 

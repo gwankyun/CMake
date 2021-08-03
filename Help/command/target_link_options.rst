@@ -3,8 +3,7 @@ target_link_options
 
 .. versionadded:: 3.13
 
-Add options to the link step for an executable, shared library or module
-library target.
+向可执行文件、共享库或者模块库目标的链接步骤添加可选项。
 
 .. code-block:: cmake
 

@@ -5,7 +5,7 @@ try_compile
 
    .. contents::
 
-Try building some code.
+尝试构建一些代码。
 
 Try Compiling Whole Projects
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

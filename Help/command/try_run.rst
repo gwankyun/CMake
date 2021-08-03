@@ -5,7 +5,7 @@ try_run
 
    .. contents::
 
-Try compiling and then running some code.
+尝试编译并运行一些代码。
 
 Try Compiling and Running Source Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

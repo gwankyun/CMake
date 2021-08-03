@@ -5,10 +5,7 @@ target_link_libraries
 
    .. contents::
 
-Specify libraries or flags to use when linking a given target and/or
-its dependents.  :ref:`Usage requirements <Target Usage Requirements>`
-from linked library targets will be propagated.  Usage requirements
-of a target's dependencies affect compilation of its own sources.
+指定在链接给定目标或者其依赖项时要使用的库和标志。来自链接库目标的 :ref:`使用需求 <Target Usage Requirements>` 将被传递下去。目标依赖项的使用需求会影响其自身源代码的编译。
 
 Overview
 ^^^^^^^^

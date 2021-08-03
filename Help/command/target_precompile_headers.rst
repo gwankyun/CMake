@@ -3,7 +3,7 @@ target_precompile_headers
 
 .. versionadded:: 3.16
 
-Add a list of header files to precompile.
+添加要预编译的头文件列表。
 
 Precompiling header files can speed up compilation by creating a partially
 processed version of some header files, and then using that version during
