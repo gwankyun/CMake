@@ -7,22 +7,15 @@ cmake-packages(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-Packages provide dependency information to CMake based buildsystems.  Packages
-are found with the :command:`find_package` command.  The result of
-using :command:`find_package` is either a set of :prop_tgt:`IMPORTED` targets, or
-a set of variables corresponding to build-relevant information.
+包为基于CMake的构建系统提供依赖信息。包可以通过 :command:`find_package` 命令找到。:command:`find_package` 找到的结果要么是一组 :prop_tgt:`IMPORTED` 目标，要么是一组构建相关信息的对应变量。
 
-Using Packages
+使用包
 ==============
 
-CMake provides direct support for two forms of packages,
-`Config-file Packages`_ and `Find-module Packages`_.
-Indirect support for ``pkg-config`` packages is also provided via
-the :module:`FindPkgConfig` module.  In all cases, the basic form
-of :command:`find_package` calls is the same:
+CMake直接支持 `Config-file Packages`_ 和 `Find-module Packages`_ 这两种形式的包。还可以通过 :module:`FindPkgConfig` 模块提供对 ``pkg-config`` 包的间接支持。所有情况下调用 :command:`find_package` 的方法都是一样的：
 
 .. code-block:: cmake
 
