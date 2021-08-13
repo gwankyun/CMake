@@ -23,38 +23,34 @@ CMake直接支持 `Config-file Packages`_ 和 `Find-module Packages`_ 这两种�
   find_package(Qt5Core 5.1.0 REQUIRED) # Qt provides a Qt5 package config file.
   find_package(LibXml2 REQUIRED) # Use pkg-config via the LibXml2 find-module
 
-In cases where it is known that a package configuration file is provided by
-upstream, and only that should be used, the ``CONFIG`` keyword may be passed
-to :command:`find_package`:
+如果已知upstream提供了一个包配置文件，并且只应该使用这个包配置文件，则 ``CONFIG`` 关键字可以传递给 :command:`find_package`：
 
 .. code-block:: cmake
 
   find_package(Qt5Core 5.1.0 CONFIG REQUIRED)
   find_package(Qt5Gui 5.1.0 CONFIG)
 
-Similarly, the ``MODULE`` keyword says to use only a find-module:
+类似地，``MODULE`` 关键字要求只使用find-module：
 
 .. code-block:: cmake
 
   find_package(Qt4 4.7.0 MODULE REQUIRED)
 
-Specifying the type of package explicitly improves the error message shown to
-the user if it is not found.
+如果找不到包，显式指定包类型可以改进显示给用户的错误消息。
 
-Both types of packages also support specifying components of a package,
-either after the ``REQUIRED`` keyword:
+这两种类型的包还支持指定包的组件，可以列在 ``REQUIRED`` 关键字的后面：
 
 .. code-block:: cmake
 
   find_package(Qt5 5.1.0 CONFIG REQUIRED Widgets Xml Sql)
 
-or as a separate ``COMPONENTS`` list:
+或者作为单独的 ``COMPONENTS`` 列表：
 
 .. code-block:: cmake
 
   find_package(Qt5 5.1.0 COMPONENTS Widgets Xml Sql)
 
-or as a separate ``OPTIONAL_COMPONENTS`` list:
+或者作为单独的 ``OPTIONAL_COMPONENTS`` 列表：
 
 .. code-block:: cmake
 
@@ -62,12 +58,9 @@ or as a separate ``OPTIONAL_COMPONENTS`` list:
                          OPTIONAL_COMPONENTS Xml Sql
   )
 
-Handling of ``COMPONENTS`` and ``OPTIONAL_COMPONENTS`` is defined by the
-package.
+``COMPONENTS`` 和 ``OPTIONAL_COMPONENTS`` 的处理由包定义。
 
-By setting the :variable:`CMAKE_DISABLE_FIND_PACKAGE_<PackageName>` variable to
-``TRUE``, the ``<PackageName>`` package will not be searched, and will always
-be ``NOTFOUND``.
+通过将 :variable:`CMAKE_DISABLE_FIND_PACKAGE_<PackageName>` 变量设置为 ``TRUE``，``<PackageName>`` 包将不会被搜索，并且始终为 ``NOTFOUND``。
 
 .. _`Config File Packages`:
 
