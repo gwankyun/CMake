@@ -15,7 +15,7 @@ cmake-packages(7)
 使用包
 ==============
 
-CMake直接支持 `Config-file Packages`_ 和 `Find-module Packages`_ 这两种形式的包。还可以通过 :module:`FindPkgConfig` 模块提供对 ``pkg-config`` 包的间接支持。所有情况下调用 :command:`find_package` 的方法都是一样的：
+CMake直接支持 `配置文件包`_ 和 `Find-module Packages`_ 这两种形式的包。还可以通过 :module:`FindPkgConfig` 模块提供对 ``pkg-config`` 包的间接支持。所有情况下调用 :command:`find_package` 的方法都是一样的：
 
 .. code-block:: cmake
 
@@ -64,24 +64,14 @@ CMake直接支持 `Config-file Packages`_ 和 `Find-module Packages`_ 这两种�
 
 .. _`Config File Packages`:
 
-Config-file Packages
+配置文件包
 --------------------
 
-A config-file package is a set of files provided by upstreams for downstreams
-to use. CMake searches in a number of locations for package configuration files, as
-described in the :command:`find_package` documentation.  The most simple way for
-a CMake user to tell :manual:`cmake(1)` to search in a non-standard prefix for
-a package is to set the ``CMAKE_PREFIX_PATH`` cache variable.
+配置文件包是上游提供给下游使用的一组文件。如 :command:`find_package` 文档所述，CMake会在多个位置搜索包配置文件。若想让 :manual:`cmake(1)` 在非标准前缀中搜索包，最简单方法是设置 ``CMAKE_PREFIX_PATH`` 缓存变量。
 
-Config-file packages are provided by upstream vendors as part of development
-packages, that is, they belong with the header files and any other files
-provided to assist downstreams in using the package.
+配置文件包由上游供应提供，作为开发包的一部分，也就是说，它们由头文件或者其他为帮助下游使用包而提供的任何文件组成。
 
-A set of variables which provide package status information are also set
-automatically when using a config-file package.  The ``<PackageName>_FOUND``
-variable is set to true or false, depending on whether the package was
-found.  The ``<PackageName>_DIR`` cache variable is set to the location of the
-package configuration file.
+当使用配置文件包时，还会自动设置一组提供包状态信息的变量。根据是否找到了包，``<PackageName>_FOUND`` 变量被设置为true或者false。而 ``<PackageName>_DIR`` 缓存变量则被设置为包配置文件的位置。
 
 Find-module Packages
 --------------------
