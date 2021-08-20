@@ -78,37 +78,28 @@ Find模块包
 
 find模块是一个包含一组规则的文件，用于查找依赖项所需的部分，主要是头文件和库。通常，当上游不是用CMake构建的，或者没有足够的CMake感知来提供包配置文件时，就需要一个find模块。与包配置文件不同，它不是由上游提供的，而是由下游使用特定于平台的提示来猜测文件的位置。
 
-Unlike the case of an upstream-provided package configuration file, no single point
-of reference identifies the package as being found, so the ``<PackageName>_FOUND``
-variable is not automatically set by the :command:`find_package` command.  It
-can still be expected to be set by convention however and should be set by
-the author of the Find-module.  Similarly there is no ``<PackageName>_DIR`` variable,
-but each of the artifacts such as library locations and header file locations
-provide a separate cache variable.
+与上游提供的包配置文件的情况不同，没有单个引用点标识正在找到的包，因此 :command:`find_package` 命令不会自动设置 ``<PackageName>_FOUND`` 变量。但是，它仍然可以依约定设置，并且应该由Find模块的作者设置。类似地，没有 ``<PackageName>_DIR`` 变量，但是每个构件，例如库位置和头文件位置，将提供一个单独的缓存变量。
 
-See the :manual:`cmake-developer(7)` manual for more information about creating
-Find-module files.
+有关创建Find模块文件的更多信息，请参考 :manual:`cmake-developer(7)` 手册。
 
-Package Layout
+包布局
 ==============
 
-A config-file package consists of a `Package Configuration File`_ and
-optionally a `Package Version File`_ provided with the project distribution.
+配置文件包由 `包配置文件`_ 和可选的由项目分发方提供的 `包版本文件`_ 组成。
 
-Package Configuration File
+包配置文件
 --------------------------
 
-Consider a project ``Foo`` that installs the following files::
+考虑一个安装了以下文件的项目 ``Foo``： ::
 
   <prefix>/include/foo-1.2/foo.h
   <prefix>/lib/foo-1.2/libfoo.a
 
-It may also provide a CMake package configuration file::
+它还可以提供一个CMake包配置文件： ::
 
   <prefix>/lib/cmake/foo-1.2/FooConfig.cmake
 
-with content defining :prop_tgt:`IMPORTED` targets, or defining variables, such
-as:
+内容是定义  :prop_tgt:`IMPORTED` 目标，或定义变量，如：
 
 .. code-block:: cmake
 
@@ -118,29 +109,17 @@ as:
   set(Foo_INCLUDE_DIRS ${PREFIX}/include/foo-1.2)
   set(Foo_LIBRARIES ${PREFIX}/lib/foo-1.2/libfoo.a)
 
-If another project wishes to use ``Foo`` it need only to locate the ``FooConfig.cmake``
-file and load it to get all the information it needs about package content
-locations.  Since the package configuration file is provided by the package
-installation it already knows all the file locations.
+如果另一个项目希望使用 ``Foo``，它只需要找到 ``FooConfig.cmake`` 文件，并加载它以获得它所需要的关于包内容位置的所有信息。因为包配置文件是由包安装提供的，所以它已经知道所有文件的位置。
 
-The :command:`find_package` command may be used to search for the package
-configuration file.  This command constructs a set of installation prefixes
-and searches under each prefix in several locations.  Given the name ``Foo``,
-it looks for a file called ``FooConfig.cmake`` or ``foo-config.cmake``.
-The full set of locations is specified in the :command:`find_package` command
-documentation. One place it looks is::
+可以用 :command:`find_package` 命令搜索包配置文件。该命令构造一组安装前缀，并在几个位置的每个前缀下搜索。给定名称 ``Foo``，它查找名为 ``FooConfig.cmake`` 或 ``foo-config.cmake`` 的文件。完整的位置集合在 :command:`find_package` 命令文档中指定。其中一个地方是： ::
 
  <prefix>/lib/cmake/Foo*/
 
-where ``Foo*`` is a case-insensitive globbing expression.  In our example the
-globbing expression will match ``<prefix>/lib/cmake/foo-1.2`` and the package
-configuration file will be found.
+其中 ``Foo*`` 是不区分大小写的通配符表达式。在我们的示例中，通配符表达式将匹配 ``<prefix>/lib/cmake/foo-1.2``，并将找到包配置文件。
 
-Once found, a package configuration file is immediately loaded.  It, together
-with a package version file, contains all the information the project needs to
-use the package.
+一旦找到，立即加载包配置文件。它和一个包版本文件一起包含了项目使用该包所需的所有信息。
 
-Package Version File
+包版本文件
 --------------------
 
 When the :command:`find_package` command finds a candidate package configuration
@@ -551,8 +530,8 @@ non-standard install locations or directly in their own build trees.
 A project may populate either the user or system registry (using its own
 means, see below) to refer to its location.
 In either case the package should store at the registered location a
-`Package Configuration File`_ (``<PackageName>Config.cmake``) and optionally a
-`Package Version File`_ (``<PackageName>ConfigVersion.cmake``).
+`包配置文件`_ (``<PackageName>Config.cmake``) and optionally a
+`包版本文件`_ (``<PackageName>ConfigVersion.cmake``).
 
 The :command:`find_package` command searches the two package registries
 as two of the search steps specified in its documentation.  If it has
