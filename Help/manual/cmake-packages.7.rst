@@ -15,7 +15,7 @@ cmake-packages(7)
 使用包
 ==============
 
-CMake直接支持 `配置文件包`_ 和 `Find-module Packages`_ 这两种形式的包。还可以通过 :module:`FindPkgConfig` 模块提供对 ``pkg-config`` 包的间接支持。所有情况下调用 :command:`find_package` 的方法都是一样的：
+CMake直接支持 `配置文件包`_ 和 `Find模块包`_ 这两种形式的包。还可以通过 :module:`FindPkgConfig` 模块提供对 ``pkg-config`` 包的间接支持。所有情况下调用 :command:`find_package` 的方法都是一样的：
 
 .. code-block:: cmake
 
@@ -73,15 +73,10 @@ CMake直接支持 `配置文件包`_ 和 `Find-module Packages`_ 这两种形式
 
 当使用配置文件包时，还会自动设置一组提供包状态信息的变量。根据是否找到了包，``<PackageName>_FOUND`` 变量被设置为true或者false。而 ``<PackageName>_DIR`` 缓存变量则被设置为包配置文件的位置。
 
-Find-module Packages
+Find模块包
 --------------------
 
-A find module is a file with a set of rules for finding the required pieces of
-a dependency, primarily header files and libraries.  Typically, a find module
-is needed when the upstream is not built with CMake, or is not CMake-aware
-enough to otherwise provide a package configuration file.  Unlike a package configuration
-file, it is not shipped with upstream, but is used by downstream to find the
-files by guessing locations of files with platform-specific hints.
+find模块是一个包含一组规则的文件，用于查找依赖项所需的部分，主要是头文件和库。通常，当上游不是用CMake构建的，或者没有足够的CMake感知来提供包配置文件时，就需要一个find模块。与包配置文件不同，它不是由上游提供的，而是由下游使用特定于平台的提示来猜测文件的位置。
 
 Unlike the case of an upstream-provided package configuration file, no single point
 of reference identifies the package as being found, so the ``<PackageName>_FOUND``
