@@ -122,29 +122,21 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 包版本文件
 --------------------
 
-When the :command:`find_package` command finds a candidate package configuration
-file it looks next to it for a version file. The version file is loaded to test
-whether the package version is an acceptable match for the version requested.
-If the version file claims compatibility the configuration file is accepted.
-Otherwise it is ignored.
+当 :command:`find_package` 命令找到一个候选包配置文件时，它会在它旁边查找版本文件。加载版本文件以测试包版本是否与所请求的版本匹配。如果版本文件有版本要求，则接受配置文件。否则将被忽略。
 
-The name of the package version file must match that of the package configuration
-file but has either ``-version`` or ``Version`` appended to the name before
-the ``.cmake`` extension.  For example, the files::
+包版本文件的名称必须与包配置文件的名称匹配，但是在扩展名 ``.cmake`` 之前附加 ``-version`` 或 ``Version``。例如，文件： ::
 
  <prefix>/lib/cmake/foo-1.3/foo-config.cmake
  <prefix>/lib/cmake/foo-1.3/foo-config-version.cmake
 
-and::
+和： ::
 
  <prefix>/lib/cmake/bar-4.2/BarConfig.cmake
  <prefix>/lib/cmake/bar-4.2/BarConfigVersion.cmake
 
-are each pairs of package configuration files and corresponding package version
-files.
+是每对包配置文件和对应的包版本文件。
 
-When the :command:`find_package` command loads a version file it first sets the
-following variables:
+当 :command:`find_package` 命令加载一个版本文件时，会首先设置以下变量：
 
 ``PACKAGE_FIND_NAME``
  The ``<PackageName>``
