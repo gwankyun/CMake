@@ -139,70 +139,61 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 当 :command:`find_package` 命令加载一个版本文件时，会首先设置以下变量：
 
 ``PACKAGE_FIND_NAME``
- The ``<PackageName>``
+ ``<包名>``
 
 ``PACKAGE_FIND_VERSION``
- Full requested version string
+ 获取的完整版本字符串
 
 ``PACKAGE_FIND_VERSION_MAJOR``
- Major version if requested, else 0
+ 获取成功时为主版本号，失败则为0
 
 ``PACKAGE_FIND_VERSION_MINOR``
- Minor version if requested, else 0
+ 获取成功时为次版本号，失败则为0
 
 ``PACKAGE_FIND_VERSION_PATCH``
- Patch version if requested, else 0
+ 获取成功时为补丁版本号，失败则为0
 
 ``PACKAGE_FIND_VERSION_TWEAK``
- Tweak version if requested, else 0
+ 获取成功时为修订版本号，失败则为0
 
 ``PACKAGE_FIND_VERSION_COUNT``
- Number of version components, 0 to 4
+ 版本号数量，取值范围0至4
 
-The version file must use these variables to check whether it is compatible or
-an exact match for the requested version and set the following variables with
-results:
+版本文件必须使用这些变量来检查它是否与请求的版本兼容或完全匹配，并设置以下变量：
 
 ``PACKAGE_VERSION``
- Full provided version string
+ 完整提供的版本字符串
 
 ``PACKAGE_VERSION_EXACT``
- True if version is exact match
+ 如果版本完全匹配则为True
 
 ``PACKAGE_VERSION_COMPATIBLE``
- True if version is compatible
+ 如果版本兼容则为True
 
 ``PACKAGE_VERSION_UNSUITABLE``
- True if unsuitable as any version
+ 如果不适配任何版本，则为True
 
-Version files are loaded in a nested scope so they are free to set any variables
-they wish as part of their computation. The find_package command wipes out the
-scope when the version file has completed and it has checked the output
-variables. When the version file claims to be an acceptable match for the
-requested version the find_package command sets the following variables for
-use by the project:
+版本文件被加载在一个嵌套的作用域中，因此他们可以自由地设置任何他们想要的变量作为计算的一部分。当版本文件完成并检查了输出变量后，find_package命令会清空作用域。当版本文件声明与请求的版本匹配可接受时，find_package命令设置以下变量供项目使用：
 
-``<PackageName>_VERSION``
- Full provided version string
+``<包名>_VERSION``
+ 完整的版本字符串
 
-``<PackageName>_VERSION_MAJOR``
- Major version if provided, else 0
+``<包名>_VERSION_MAJOR``
+ 主版本号，若未提供，则为0
 
-``<PackageName>_VERSION_MINOR``
- Minor version if provided, else 0
+``<包名>_VERSION_MINOR``
+ 次版本号，若未提供，则为0
 
-``<PackageName>_VERSION_PATCH``
- Patch version if provided, else 0
+``<包名>_VERSION_PATCH``
+ 补丁版本号，若未提供，则为0
 
-``<PackageName>_VERSION_TWEAK``
- Tweak version if provided, else 0
+``<包名>_VERSION_TWEAK``
+ 修订版本号，若未提供，则为0
 
-``<PackageName>_VERSION_COUNT``
- Number of version components, 0 to 4
+``<包名>_VERSION_COUNT``
+ 提供的版本号数量，取值范围0至4
 
-The variables report the version of the package that was actually found.
-The ``<PackageName>`` part of their name matches the argument given to the
-:command:`find_package` command.
+这些变量报告实际找到的包的版本。其名称中的 ``<包名>`` 部分与 :command:`find_package` 命令的参数相匹配。
 
 .. _`Creating Packages`:
 
