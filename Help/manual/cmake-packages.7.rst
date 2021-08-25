@@ -197,12 +197,10 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 
 .. _`Creating Packages`:
 
-Creating Packages
+创建包
 =================
 
-Usually, the upstream depends on CMake itself and can use some CMake facilities
-for creating the package files. Consider an upstream which provides a single
-shared library:
+通常，上游依赖于CMake本身，可以使用一些CMake工具来创建包文件。譬如一个提供单个共享库的上流：
 
 .. code-block:: cmake
 
@@ -276,19 +274,7 @@ shared library:
       Devel
   )
 
-The :module:`CMakePackageConfigHelpers` module provides a macro for creating
-a simple ``ConfigVersion.cmake`` file.  This file sets the version of the
-package.  It is read by CMake when :command:`find_package` is called to
-determine the compatibility with the requested version, and to set some
-version-specific variables ``<PackageName>_VERSION``, ``<PackageName>_VERSION_MAJOR``,
-``<PackageName>_VERSION_MINOR`` etc.  The :command:`install(EXPORT)` command is
-used to export the targets in the ``ClimbingStatsTargets`` export-set, defined
-previously by the :command:`install(TARGETS)` command. This command generates
-the ``ClimbingStatsTargets.cmake`` file to contain :prop_tgt:`IMPORTED`
-targets, suitable for use by downstreams and arranges to install it to
-``lib/cmake/ClimbingStats``.  The generated ``ClimbingStatsConfigVersion.cmake``
-and a ``cmake/ClimbingStatsConfig.cmake`` are installed to the same location,
-completing the package.
+:module:`CMakePackageConfigHelpers` 模块提供了一个宏来创建一个简单的 ``ConfigVersion.cmake`` 文件，作用是设置包的版本。当调用 :command:`find_package` 时，CMake读取它，以确定与请求版本的兼容性，并设置一些版本特定变量如 ``<PackageName>_VERSION``、``<PackageName>_VERSION_MAJOR``、``<PackageName>_VERSION_MINOR`` 等。:command:`install(EXPORT)` 命令用于导出 ``ClimbingStatsTargets.cmake`` 导出集中的目标，该导出集之前由 :command:`install(TARGETS)` 命令定义。这个命令生成的 ``ClimbingStatsTargets.cmake`` 文件包含适用于下游的 :prop_tgt:`IMPORTED` 目标，并会安装到 ``lib/cmake/ClimbingStats``。生成的 ``ClimbingStatsConfigVersion.cmake`` 和 ``cmake/ClimbingStatsConfig.cmake`` 会安装到相同的位置以完成包的安装。
 
 The generated :prop_tgt:`IMPORTED` targets have appropriate properties set
 to define their :ref:`usage requirements <Target Usage Requirements>`, such as
