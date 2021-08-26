@@ -753,10 +753,6 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkStatements(
     const std::string cubin =
       cmStrCat(ninjaOutputDir, "/sm_", architecture, ".cubin");
 
-    fatbinary.Variables["PROFILES"] +=
-      cmStrCat(" -im=profile=sm_", architecture, ",file=", cubin);
-    fatbinary.ExplicitDeps.emplace_back(cubin);
-
     cmNinjaBuild dlink(this->LanguageLinkerCudaDeviceRule(config));
     dlink.ExplicitDeps = explicitDeps;
     dlink.Outputs = { cubin };
@@ -766,10 +762,14 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkStatements(
     // the device routines. Because the routines are the same for all
     // architectures the register file will be the same too. Thus generate it
     // only on the first invocation to reduce overhead.
-    if (fatbinary.ExplicitDeps.size() == 1) {
+    if (fatbinary.ExplicitDeps.empty()) {
       dlink.Variables["REGISTER"] = cmStrCat(
         "--register-link-binaries=", ninjaOutputDir, "/cmake_cuda_register.h");
     }
+
+    fatbinary.Variables["PROFILES"] +=
+      cmStrCat(" -im=profile=sm_", architecture, ",file=", cubin);
+    fatbinary.ExplicitDeps.emplace_back(cubin);
 
     this->GetGlobalGenerator()->WriteBuild(this->GetCommonFileStream(), dlink);
   }
@@ -1156,7 +1156,10 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
 
   this->AddModuleDefinitionFlag(linkLineComputer.get(), vars["LINK_FLAGS"],
                                 config);
-  if (gt->GetPropertyAsBool("LINK_WHAT_YOU_USE")) {
+  if (gt->GetPropertyAsBool("LINK_WHAT_YOU_USE") &&
+      (gt->GetType() == cmStateEnums::TargetType::EXECUTABLE ||
+       gt->GetType() == cmStateEnums::TargetType::SHARED_LIBRARY ||
+       gt->GetType() == cmStateEnums::TargetType::MODULE_LIBRARY)) {
     vars["LINK_FLAGS"] += " -Wl,--no-as-needed";
   }
   vars["LINK_FLAGS"] = globalGen->EncodeLiteral(vars["LINK_FLAGS"]);
