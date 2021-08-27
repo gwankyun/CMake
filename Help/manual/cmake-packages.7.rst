@@ -276,34 +276,11 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 
 :module:`CMakePackageConfigHelpers` 模块提供了一个宏来创建一个简单的 ``ConfigVersion.cmake`` 文件，作用是设置包的版本。当调用 :command:`find_package` 时，CMake读取它，以确定与请求版本的兼容性，并设置一些版本特定变量如 ``<PackageName>_VERSION``、``<PackageName>_VERSION_MAJOR``、``<PackageName>_VERSION_MINOR`` 等。:command:`install(EXPORT)` 命令用于导出 ``ClimbingStatsTargets.cmake`` 导出集中的目标，该导出集之前由 :command:`install(TARGETS)` 命令定义。这个命令生成的 ``ClimbingStatsTargets.cmake`` 文件包含适用于下游的 :prop_tgt:`IMPORTED` 目标，并会安装到 ``lib/cmake/ClimbingStats``。生成的 ``ClimbingStatsConfigVersion.cmake`` 和 ``cmake/ClimbingStatsConfig.cmake`` 会安装到相同的位置以完成包的安装。
 
-The generated :prop_tgt:`IMPORTED` targets have appropriate properties set
-to define their :ref:`usage requirements <Target Usage Requirements>`, such as
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` and other relevant built-in
-``INTERFACE_`` properties.  The ``INTERFACE`` variant of user-defined
-properties listed in :prop_tgt:`COMPATIBLE_INTERFACE_STRING` and
-other :ref:`Compatible Interface Properties` are also propagated to the
-generated :prop_tgt:`IMPORTED` targets.  In the above case,
-``ClimbingStats_MAJOR_VERSION`` is defined as a string which must be
-compatible among the dependencies of any depender.  By setting this custom
-defined user property in this version and in the next version of
-``ClimbingStats``, :manual:`cmake(1)` will issue a diagnostic if there is an
-attempt to use version 3 together with version 4.  Packages can choose to
-employ such a pattern if different major versions of the package are designed
-to be incompatible.
+生成的 :prop_tgt:`IMPORTED` 目标设置了适当的属性来定义它们的 :ref:`使用需求 <Target Usage Requirements>`，例如 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` 及其他相关的内置 ``INTERFACE_`` 属性。在 :prop_tgt:`COMPATIBLE_INTERFACE_STRING` 和其他 :ref:`Compatible Interface Properties` 中列出的自定义属性的 ``INTERFACE`` 变体也会传播到生成的 :prop_tgt:`IMPORTED` 目标。在上面的例子中，``ClimbingStats_MAJOR_VERSION`` 被定义为一个字符串，它必须在任何依赖的依赖项之间兼容。在 ``ClimbingStats`` 的这个和下一个版本中都设置这个自定义属性的情况下，如果试图同时使用版本3和版本4，:manual:`cmake(1)` 将发出诊断。如果包的不同主要版本互不兼容，就可以选择使用这种模式。
 
-A ``NAMESPACE`` with double-colons is specified when exporting the targets
-for installation.  This convention of double-colons gives CMake a hint that
-the name is an :prop_tgt:`IMPORTED` target when it is used by downstreams
-with the :command:`target_link_libraries` command.  This way, CMake can
-issue a diagnostic if the package providing it has not yet been found.
+导出用于安装的目标时指定一个带双冒号的 ``NAMESPACE`` 。当下游使用 :command:`target_link_libraries` 命令时，这种双冒号的约定给CMake一个提示：该名称是一个 :prop_tgt:`IMPORTED` 目标。这样，如果找不到相应的包，CMake就可以发出诊断。
 
-In this case, when using :command:`install(TARGETS)` the ``INCLUDES DESTINATION``
-was specified.  This causes the ``IMPORTED`` targets to have their
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` populated with the ``include``
-directory in the :variable:`CMAKE_INSTALL_PREFIX`.  When the ``IMPORTED``
-target is used by downstream, it automatically consumes the entries from
-that property.
+在本例中，当使用 :command:`install(TARGETS)` 时指定了 ``INCLUDES DESTINATION``。这将会令 ``IMPORTED`` 目标的 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` 属性被 :variable:`CMAKE_INSTALL_PREFIX` 中的 ``include`` 目录填充。当下游使用 ``IMPORTED`` 目标时，它会自动使用来自该属性的项。
 
 Creating a Package Configuration File
 -------------------------------------
