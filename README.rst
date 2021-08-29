@@ -4,11 +4,6 @@ CMake
 简介
 ============
 
-CMake is a cross-platform, open-source build system generator.
-For full documentation visit the `CMake Home Page`_ and the
-`CMake Documentation Page`_. The `CMake Community Wiki`_ also
-references useful guides and recipes.
-
 CMake是一个跨平台、开源的构建系统生成器。完整的文档请访问 `CMake Home Page`_ 和 
 `CMake Documentation Page`_。也可以去 `CMake Community Wiki`_ 参考有用的资料。
 
@@ -16,25 +11,24 @@ CMake是一个跨平台、开源的构建系统生成器。完整的文档请访
 .. _`CMake Documentation Page`: https://cmake.org/documentation
 .. _`CMake Community Wiki`: https://gitlab.kitware.com/cmake/community/-/wikis/home
 
-CMake is maintained and supported by `Kitware`_ and developed in
-collaboration with a productive community of contributors.
-
 `Kitware`_ 维护和支持CMake，与此同时也和与富有成效的贡献者社区合作。
 
 .. _`Kitware`: http://www.kitware.com/cmake
 
-License
+许可
 =======
 
 CMake is distributed under the OSI-approved BSD 3-clause License.
 See `Copyright.txt`_ for details.
 
+CMake是在OSI认证BSD 3条款许可下发布的。详情见 `Copyright.txt`_。
+
 .. _`Copyright.txt`: Copyright.txt
 
-Building CMake
+构建CMake
 ==============
 
-Supported Platforms
+支持的平台
 -------------------
 
 * Microsoft Windows
@@ -50,9 +44,11 @@ it should not be a major problem to port CMake to this platform.
 Please post to the `CMake Discourse Forum`_ to ask if others have
 had experience with the platform.
 
+其他类UNIX操作系统应该也能开箱即用，如果不是的话，将CMake移植到这个平台应该不是什么大问题。请发帖到 `CMake Discourse Forum`_ 询问其他人是否有该平台的相关经验。
+
 .. _`CMake Discourse Forum`: https://discourse.cmake.org
 
-Building CMake from Scratch
+从头开始建造CMake
 ---------------------------
 
 UNIX/Mac OSX/MinGW/MSYS/Cygwin
@@ -65,13 +61,20 @@ You may use the ``--prefix=<install_prefix>`` option to specify a custom
 installation directory for CMake.  Once this has finished successfully,
 run ``make`` and ``make install``.
 
+你需要有一个支持c++ 11的C++编译器和一个 ``make``。运行你在CMake的源目录中找到的 ``bootstrap`` 脚本。可以使用 ``--help`` 选项来查看支持的选项。可以使用 ``--prefix=<install_prefix>`` 选项指定CMake的自定义安装目录。执行无误后，运行 ``make`` 和 ``make install``。
+
 For example, if you simply want to build and install CMake from source,
-you can build directly in the source tree::
+you can build directly in the source tree
+
+例如，如果你只是想从源代码构建和安装CMake，你可以直接在源代码树中构建： ::
 
   $ ./bootstrap && make && sudo make install
 
 Or, if you plan to develop CMake or otherwise run the test suite, create
-a separate build tree::
+a separate build tree
+
+或者，如果你计划开发CMake或以其他方式运行测试套件，创建
+一个单独的构建树： ::
 
   $ mkdir cmake-build && cd cmake-build
   $ ../cmake-source/bootstrap && make
@@ -80,6 +83,8 @@ Windows
 ^^^^^^^
 
 There are two ways for building CMake under Windows:
+
+在Windows下有两种构建CMake的方法：
 
 1. Compile with MSVC from VS 2015 or later.
    You need to download and install a binary release of CMake.  You can get
