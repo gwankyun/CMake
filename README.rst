@@ -1,7 +1,7 @@
 CMake
 *****
 
-Introduction
+简介
 ============
 
 CMake is a cross-platform, open-source build system generator.
@@ -9,12 +9,17 @@ For full documentation visit the `CMake Home Page`_ and the
 `CMake Documentation Page`_. The `CMake Community Wiki`_ also
 references useful guides and recipes.
 
+CMake是一个跨平台、开源的构建系统生成器。完整的文档请访问 `CMake Home Page`_ 和 
+`CMake Documentation Page`_。也可以去 `CMake Community Wiki`_ 参考有用的资料。
+
 .. _`CMake Home Page`: https://cmake.org
 .. _`CMake Documentation Page`: https://cmake.org/documentation
 .. _`CMake Community Wiki`: https://gitlab.kitware.com/cmake/community/-/wikis/home
 
 CMake is maintained and supported by `Kitware`_ and developed in
 collaboration with a productive community of contributors.
+
+`Kitware`_ 维护和支持CMake，与此同时也和与富有成效的贡献者社区合作。
 
 .. _`Kitware`: http://www.kitware.com/cmake
 
