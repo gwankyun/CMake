@@ -69,11 +69,17 @@ Windows
    instructions below for `Building CMake with CMake`_.
 
 2. Bootstrap with MinGW under MSYS2.
-   Download and install `MSYS2`_.  Then install the required build tools::
+   Download and install `MSYS2`_.  Then install the required build tools
 
      $ pacman -S --needed git base-devel mingw-w64-x86_64-gcc
 
    and bootstrap as above.
+   
+3. 使用VS 2015或更高版本VS的MSVC编译器。
+   你需要下载并安装CMake的二进制版本。可以从 `CMake Download Page`_ 获得这些版本。然后继续 `Building CMake with CMake`_ 的步骤。
+   
+4. 使用MSYS2下的MinGW。
+   下载并安装 `MSYS2`_。然后安装所需的构建工具： ::
 
 .. _`CMake Download Page`: https://cmake.org/download
 .. _`MSYS2`: https://www.msys2.org/
@@ -81,19 +87,9 @@ Windows
 使用CMake构建CMake
 -------------------------
 
-You can build CMake as any other project with a CMake-based build system:
-run the installed CMake on the sources of this CMake with your preferred
-options and generators. Then build it and install it.
-For instructions how to do this, see documentation on `Running CMake`_.
-
 您可以使用基于CMake的构建系统像构建任何其他项目一样构建CMake：使用你喜欢的选项和生成器在这个CMake的源代码上运行已安装的CMake。然后构建并安装它。有关如何操作的说明，请参阅有关 `Running CMake`_ 文档。
 
 .. _`Running CMake`: https://cmake.org/runningcmake
-
-To build the documentation, install `Sphinx`_ and configure CMake with
-``-DSPHINX_HTML=ON`` and/or ``-DSPHINX_MAN=ON`` to enable the "html" or
-"man" builder.  Add ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build`` if the
-tool is not found automatically.
 
 要构建文档，请使用``-DSPHINX_HTML=ON`` 或者 ``-DSPHINX_MAN=ON`` 安装 `Sphinx`_ 并配置CMake，以启用“html”或“man”构建器。
 如果没有自动找到该工具，则将添加 ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build``。
@@ -102,8 +98,6 @@ tool is not found automatically.
 
 报告错误
 ==============
-
-If you have found a bug:
 
 如果你发现了错误：
 
@@ -115,13 +109,17 @@ If you have found a bug:
 
 3. Finally, if the issue is not resolved by the above steps, open
    an entry in the `CMake Issue Tracker`_.
+   
+4. 如果您有补丁，请阅读 `CONTRIBUTING.rst`_ 文档。
+
+5. 否则，请发布到 `CMake Discourse Forum`_，询问预期和观察到的行为，以确定它是否是一个真正的错误。
+
+6. 最后，如果上述步骤不能解决问题，在 `CMake Issue Tracker`_ 中新开一个条目。
 
 .. _`CMake Issue Tracker`: https://gitlab.kitware.com/cmake/cmake/-/issues
 
 贡献
 ============
-
-See `CONTRIBUTING.rst`_ for instructions to contribute.
 
 请参阅 `CONTRIBUTING.rst`_，了解如何贡献。
 
