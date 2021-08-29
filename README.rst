@@ -62,24 +62,16 @@ Windows
 ^^^^^^^
 
 在Windows下有两种构建CMake的方法：
-
-1. Compile with MSVC from VS 2015 or later.
-   You need to download and install a binary release of CMake.  You can get
-   these releases from the `CMake Download Page`_.  Then proceed with the
-   instructions below for `Building CMake with CMake`_.
-
-2. Bootstrap with MinGW under MSYS2.
-   Download and install `MSYS2`_.  Then install the required build tools
-
-     $ pacman -S --needed git base-devel mingw-w64-x86_64-gcc
-
-   and bootstrap as above.
    
-3. 使用VS 2015或更高版本VS的MSVC编译器。
+1. 使用VS 2015或更高版本VS的MSVC编译器。
    你需要下载并安装CMake的二进制版本。可以从 `CMake Download Page`_ 获得这些版本。然后继续 `Building CMake with CMake`_ 的步骤。
    
-4. 使用MSYS2下的MinGW。
+2. 使用MSYS2下的MinGW。
    下载并安装 `MSYS2`_。然后安装所需的构建工具： ::
+
+     $ pacman -S --needed git base-devel mingw-w64-x86_64-gcc
+     
+   然后和上面一样引导。
 
 .. _`CMake Download Page`: https://cmake.org/download
 .. _`MSYS2`: https://www.msys2.org/
@@ -100,21 +92,12 @@ Windows
 ==============
 
 如果你发现了错误：
-
-1. If you have a patch, please read the `CONTRIBUTING.rst`_ document.
-
-2. Otherwise, please post to the `CMake Discourse Forum`_ and ask about
-   the expected and observed behaviors to determine if it is really
-   a bug.
-
-3. Finally, if the issue is not resolved by the above steps, open
-   an entry in the `CMake Issue Tracker`_.
    
-4. 如果您有补丁，请阅读 `CONTRIBUTING.rst`_ 文档。
+1. 如果您有补丁，请阅读 `CONTRIBUTING.rst`_ 文档。
 
-5. 否则，请发布到 `CMake Discourse Forum`_，询问预期和观察到的行为，以确定它是否是一个真正的错误。
+2. 否则，请发布到 `CMake Discourse Forum`_，询问预期和观察到的行为，以确定它是否是一个真正的错误。
 
-6. 最后，如果上述步骤不能解决问题，在 `CMake Issue Tracker`_ 中新开一个条目。
+3. 最后，如果上述步骤不能解决问题，在 `CMake Issue Tracker`_ 中新开一个条目。
 
 .. _`CMake Issue Tracker`: https://gitlab.kitware.com/cmake/cmake/-/issues
 
