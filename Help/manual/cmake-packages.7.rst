@@ -282,21 +282,18 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 
 在本例中，当使用 :command:`install(TARGETS)` 时指定了 ``INCLUDES DESTINATION``。这将会令 ``IMPORTED`` 目标的 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` 属性被 :variable:`CMAKE_INSTALL_PREFIX` 中的 ``include`` 目录填充。当下游使用 ``IMPORTED`` 目标时，它会自动使用来自该属性的项。
 
-Creating a Package Configuration File
+创建包配置文件
 -------------------------------------
 
-In this case, the ``ClimbingStatsConfig.cmake`` file could be as simple as:
+在这种情况下，``ClimbingStatsConfig.cmake`` 文件可以像下面那样简单：
 
 .. code-block:: cmake
 
   include("${CMAKE_CURRENT_LIST_DIR}/ClimbingStatsTargets.cmake")
 
-As this allows downstreams to use the ``IMPORTED`` targets.  If any macros
-should be provided by the ``ClimbingStats`` package, they should
-be in a separate file which is installed to the same location as the
-``ClimbingStatsConfig.cmake`` file, and included from there.
+因为这允许下游使用 ``IMPORTED`` 的目标。如果 ``ClimbingStats`` 包需要提供任何宏，那么它们应该在一个单独的文件中，该文件与 ``ClimbingStatsConfig.cmake`` 安装在相同的位置，并在那里被引用。
 
-This can also be extended to cover dependencies:
+这也可以扩展到覆盖的依赖项：
 
 .. code-block:: cmake
 
@@ -307,13 +304,7 @@ This can also be extended to cover dependencies:
   find_package(Stats 2.6.4 REQUIRED)
   target_link_libraries(ClimbingStats PUBLIC Stats::Types)
 
-As the ``Stats::Types`` target is a ``PUBLIC`` dependency of ``ClimbingStats``,
-downstreams must also find the ``Stats`` package and link to the ``Stats::Types``
-library.  The ``Stats`` package should be found in the ``ClimbingStatsConfig.cmake``
-file to ensure this.  The ``find_dependency`` macro from the
-:module:`CMakeFindDependencyMacro` helps with this by propagating
-whether the package is ``REQUIRED``, or ``QUIET`` etc.  All ``REQUIRED``
-dependencies of a package should be found in the ``Config.cmake`` file:
+由于 ``Stats::Types`` 目标是 ``ClimbingStats`` 的 ``PUBLIC`` 依赖项，下游也必须找到 ``Stats`` 包并链接到 ``Stats::Types`` 库。 ``Stats`` 包应该在 ``ClimbingStatsConfig.cmake`` 文件中找到，以此确保这一点。来自 :module:`CMakeFindDependencyMacro`  的 ``find_dependency`` 宏可以通过传播包是 ``REQUIRED`` 还是 ``QUIET`` 等来帮助解决这个问题。一个包的所有 ``REQUIRED`` 依赖项都应该在 ``Config.cmake`` 文件中找到：
 
 .. code-block:: cmake
 
@@ -323,14 +314,9 @@ dependencies of a package should be found in the ``Config.cmake`` file:
   include("${CMAKE_CURRENT_LIST_DIR}/ClimbingStatsTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/ClimbingStatsMacros.cmake")
 
-The ``find_dependency`` macro also sets ``ClimbingStats_FOUND`` to ``False`` if
-the dependency is not found, along with a diagnostic that the ``ClimbingStats``
-package can not be used without the ``Stats`` package.
+如果没有找到依赖项，``find_dependency`` 宏还会将 ``ClimbingStats_FOUND`` 设置为 ``False`` ，并同时抛出一个诊断：没有 ``Stats`` 包就不能使用 ``ClimbingStats`` 包。
 
-If ``COMPONENTS`` are specified when the downstream uses :command:`find_package`,
-they are listed in the ``<PackageName>_FIND_COMPONENTS`` variable. If a particular
-component is non-optional, then the ``<PackageName>_FIND_REQUIRED_<comp>`` will
-be true. This can be tested with logic in the package configuration file:
+如果在下游使用 :command:`find_package` 时指定了 ``COMPONENTS`` ，它们将在 ``<PackageName>_FIND_COMPONENTS`` 变量中列出。如果一个特定的组件是非可选的，那么 ``<PackageName>_FIND_REQUIRED_<comp>``  将为真。这可以通过包配置文件中的逻辑进行测试：
 
 .. code-block:: cmake
 
@@ -350,10 +336,7 @@ be true. This can be tested with logic in the package configuration file:
     include("${CMAKE_CURRENT_LIST_DIR}/ClimbingStats${_comp}Targets.cmake")
   endforeach()
 
-Here, the ``ClimbingStats_NOT_FOUND_MESSAGE`` is set to a diagnosis that the package
-could not be found because an invalid component was specified.  This message
-variable can be set for any case where the ``_FOUND`` variable is set to ``False``,
-and will be displayed to the user.
+此处，``ClimbingStats_NOT_FOUND_MESSAGE`` 被设置为一个诊断，意思是由于指定了无效组件而无法找到包。在 ``_FOUND`` 变量设置为 ``False`` 的任何情况下，都可以设置此消息变量，并显示给用户。
 
 Creating a Package Configuration File for the Build Tree
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
