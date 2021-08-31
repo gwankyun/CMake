@@ -46,7 +46,7 @@ CMake是在OSI认证BSD 3条款许可下发布的。详情见 `Copyright.txt`_�
 UNIX/Mac OSX/MinGW/MSYS/Cygwin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-你需要有一个支持c++ 11的C++编译器和一个 ``make``。运行你在CMake的源目录中找到的 ``bootstrap`` 脚本。可以使用 ``--help`` 选项来查看支持的选项。可以使用 ``--prefix=<install_prefix>`` 选项指定CMake的自定义安装目录。执行无误后，运行 ``make`` 和 ``make install``。
+你需要有一个支持C++11的C++编译器和一个 ``make``。运行你在CMake的源目录中找到的 ``bootstrap`` 脚本。可以使用 ``--help`` 选项来查看支持的选项。可以使用 ``--prefix=<install_prefix>`` 选项指定CMake的自定义安装目录。执行无误后，运行 ``make`` 和 ``make install``。
 
 例如，如果你只是想从源代码构建和安装CMake，你可以直接在源代码树中构建： ::
 
@@ -83,7 +83,7 @@ Windows
 
 .. _`Running CMake`: https://cmake.org/runningcmake
 
-要构建文档，请使用``-DSPHINX_HTML=ON`` 或者 ``-DSPHINX_MAN=ON`` 安装 `Sphinx`_ 并配置CMake，以启用“html”或“man”构建器。
+要构建文档，请使用 ``-DSPHINX_HTML=ON`` 或者 ``-DSPHINX_MAN=ON`` 安装 `Sphinx`_ 并配置CMake，以启用“html”或“man”构建器。
 如果没有自动找到该工具，则将添加 ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build``。
 
 .. _`Sphinx`: http://sphinx-doc.org
