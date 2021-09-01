@@ -338,31 +338,19 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 
 此处，``ClimbingStats_NOT_FOUND_MESSAGE`` 被设置为一个诊断，意思是由于指定了无效组件而无法找到包。在 ``_FOUND`` 变量设置为 ``False`` 的任何情况下，都可以设置此消息变量，并显示给用户。
 
-Creating a Package Configuration File for the Build Tree
+为构建树创建包配置文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The :command:`export(EXPORT)` command creates an :prop_tgt:`IMPORTED` targets
-definition file which is specific to the build-tree, and is not relocatable.
-This can similarly be used with a suitable package configuration file and
-package version file to define a package for the build tree which may be used
-without installation.  Consumers of the build tree can simply ensure that the
-:variable:`CMAKE_PREFIX_PATH` contains the build directory, or set the
-``ClimbingStats_DIR`` to ``<build_dir>/ClimbingStats`` in the cache.
+:command:`export(EXPORT)` 命令创建一个特定于构建树的 :prop_tgt:`IMPORTED` 目标定义文件，并且不可重定位。你可以和适当的包配置文件及包版本文件一起使用，以定义无需安装即可使用的构建树包。构建树的消费者可以简单地确保 :variable:`CMAKE_PREFIX_PATH` 包含构建目录，或者在缓存中将 ``ClimbingStats_DIR`` 设置为 ``<build_dir>/ClimbingStats``。
 
 .. _`Creating Relocatable Packages`:
 
-Creating Relocatable Packages
+创建浮动包
 -----------------------------
 
-A relocatable package must not reference absolute paths of files on
-the machine where the package is built that will not exist on the
-machines where the package may be installed.
+可重定位的包不能引用构建包所在机器上的文件的绝对路径，因为它们在安装的机器上并不存在。
 
-Packages created by :command:`install(EXPORT)` are designed to be relocatable,
-using paths relative to the location of the package itself.  When defining
-the interface of a target for ``EXPORT``, keep in mind that the include
-directories should be specified as relative paths which are relative to the
-:variable:`CMAKE_INSTALL_PREFIX`:
+由 :command:`install(EXPORT)` 创建的包被设计为可重定位的，使用包的相对路径。在为 ``EXPORT`` 定义目标的接口时，请记住include目录应该指定为相对于 :variable:`CMAKE_INSTALL_PREFIX` 的相对路径：
 
 .. code-block:: cmake
 
@@ -376,10 +364,7 @@ directories should be specified as relative paths which are relative to the
     $<INSTALL_INTERFACE:include/TgtName>
   )
 
-The ``$<INSTALL_PREFIX>``
-:manual:`generator expression <cmake-generator-expressions(7)>` may be used as
-a placeholder for the install prefix without resulting in a non-relocatable
-package.  This is necessary if complex generator expressions are used:
+``$<INSTALL_PREFIX>`` :manual:`generator expression <cmake-generator-expressions(7)>` 可以用作安装前缀的占位符，而不会导致不可重定位的包。如果使用复杂的生成器表达式，这是必须的：
 
 .. code-block:: cmake
 
@@ -388,11 +373,7 @@ package.  This is necessary if complex generator expressions are used:
     $<INSTALL_INTERFACE:$<$<CONFIG:Debug>:$<INSTALL_PREFIX>/include/TgtName>>
   )
 
-This also applies to paths referencing external dependencies.
-It is not advisable to populate any properties which may contain
-paths, such as :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` and
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`, with paths relevant to dependencies.
-For example, this code may not work well for a relocatable package:
+这也适用于引用外部依赖项的路径。不建议用与依赖相关的路径填充任何可能包含路径的属性，例如 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` 和 :prop_tgt:`INTERFACE_LINK_LIBRARIES`。例如，下面这段代码可能不适用于可重定位包：
 
 .. code-block:: cmake
 
@@ -403,45 +384,21 @@ For example, this code may not work well for a relocatable package:
     "$<INSTALL_INTERFACE:${Foo_INCLUDE_DIRS};${Bar_INCLUDE_DIRS}>"
     )
 
-The referenced variables may contain the absolute paths to libraries
-and include directories **as found on the machine the package was made on**.
-This would create a package with hard-coded paths to dependencies and not
-suitable for relocation.
+被引用的变量可能包含库的绝对路径，并包含 **在生成包的机器上找到的** 目录。这将创建一个带有硬编码的依赖路径的包，不适合重新定位。
 
-Ideally such dependencies should be used through their own
-:ref:`IMPORTED targets <Imported Targets>` that have their own
-:prop_tgt:`IMPORTED_LOCATION` and usage requirement properties
-such as :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` populated
-appropriately.  Those imported targets may then be used with
-the :command:`target_link_libraries` command for ``ClimbingStats``:
+理想情况下，这些依赖项应该通过它们自己的 :ref:`IMPORTED targets <Imported Targets>` 来使用，这些目标有它们自己的 :prop_tgt:`IMPORTED_LOCATION` 和使用需求属性，比如适当填充的 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` 。这些导入的目标可以和 ``ClimbingStats`` 的 :command:`target_link_libraries` 命令一起使用：
 
 .. code-block:: cmake
 
   target_link_libraries(ClimbingStats INTERFACE Foo::Foo Bar::Bar)
 
-With this approach the package references its external dependencies
-only through the names of :ref:`IMPORTED targets <Imported Targets>`.
-When a consumer uses the installed package, the consumer will run the
-appropriate :command:`find_package` commands (via the ``find_dependency``
-macro described above) to find the dependencies and populate the
-imported targets with appropriate paths on their own machine.
+使用这种方法，包仅通过 :ref:`IMPORTED targets <Imported Targets>` 的名称引用其外部依赖项。当使用者使用安装的包时，使用者将运行适当的 :command:`find_package` 命令（通过上面描述的 ``find_dependency`` 宏）来查找依赖项，并在自己的机器上使用适当的路径填充导入的目标。
 
-Unfortunately many :manual:`modules <cmake-modules(7)>` shipped with
-CMake do not yet provide :ref:`IMPORTED targets <Imported Targets>`
-because their development pre-dated this approach.  This may improve
-incrementally over time.  Workarounds to create relocatable packages
-using such modules include:
-
-* When building the package, specify each ``Foo_LIBRARY`` cache
-  entry as just a library name, e.g. ``-DFoo_LIBRARY=foo``.  This
-  tells the corresponding find module to populate the ``Foo_LIBRARIES``
-  with just ``foo`` to ask the linker to search for the library
-  instead of hard-coding a path.
-
-* Or, after installing the package content but before creating the
-  package installation binary for redistribution, manually replace
-  the absolute paths with placeholders for substitution by the
-  installation tool when the package is installed.
+不幸的是，CMake附带的许多 :manual:`modules <cmake-modules(7)>` 还没有提供 :ref:`IMPORTED targets <Imported Targets>`，因为它们的开发早于这种方法。这可能会随着时间的推移而逐渐改善。使用这些模块创建可重定位包的工作包括：
+  
+* 在构建包时，将每个 ``Foo_LIBRARY`` 缓存项指定为库名，例如 ``-DFoo_LIBRARY=foo``。这告诉相应的find模块只使用 ``foo`` 填充 ``Foo_LIBRARIES``，以要求链接器搜索库，而不是硬编码路径。
+  
+* 或者，在安装包内容之后，但在创建用于重新分发的包安装二进制文件之前，使用占位符手动替换绝对路径，以便在安装包时由安装工具替换。
 
 .. _`Package Registry`:
 
