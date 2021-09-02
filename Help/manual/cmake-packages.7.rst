@@ -402,28 +402,17 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 
 .. _`Package Registry`:
 
-Package Registry
+包注册
 ================
 
-CMake provides two central locations to register packages that have
-been built or installed anywhere on a system:
+CMake提供了两个中心位置来注册已经在系统中构建或安装的包：
 
 * `User Package Registry`_
 * `System Package Registry`_
 
-The registries are especially useful to help projects find packages in
-non-standard install locations or directly in their own build trees.
-A project may populate either the user or system registry (using its own
-means, see below) to refer to its location.
-In either case the package should store at the registered location a
-`包配置文件`_ (``<PackageName>Config.cmake``) and optionally a
-`包版本文件`_ (``<PackageName>ConfigVersion.cmake``).
+注册表对于帮助项目在非标准安装位置或直接在它们自己的构建树中找到包特别有用。项目可以填充用户或系统注册表（使用它自己的方法，参见下面）来引用它的位置。在这两种情况下，包都应该在注册位置存储一个 `包配置文件`_ （``<PackageName>Config.cmake``）和一个 `包版本文件`_ （``<PackageName>ConfigVersion.cmake``）。
 
-The :command:`find_package` command searches the two package registries
-as two of the search steps specified in its documentation.  If it has
-sufficient permissions it also removes stale package registry entries
-that refer to directories that do not exist or do not contain a matching
-package configuration file.
+作为其文档中指定的两个搜索步骤，:command:`find_package` 命令会搜索两个包注册中心。如果有足够的权限的话，它还会删除陈旧的包注册表项，这些注册表项引用的目录不存在或不包含匹配的包配置文件。
 
 .. _`User Package Registry`:
 
