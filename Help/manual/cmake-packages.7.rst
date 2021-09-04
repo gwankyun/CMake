@@ -23,7 +23,7 @@ CMake直接支持 `配置文件包`_ 和 `Find模块包`_ 这两种形式的包�
   find_package(Qt5Core 5.1.0 REQUIRED) # Qt provides a Qt5 package config file.
   find_package(LibXml2 REQUIRED) # Use pkg-config via the LibXml2 find-module
 
-如果已知upstream提供了一个包配置文件，并且只应该使用这个包配置文件，则 ``CONFIG`` 关键字可以传递给 :command:`find_package`：
+如果已知上流提供了一个包配置文件，并且只应该使用这个包配置文件，则 ``CONFIG`` 关键字可以传递给 :command:`find_package`：
 
 .. code-block:: cmake
 
@@ -416,33 +416,24 @@ CMake提供了两个中心位置来注册已经在系统中构建或安装的包
 
 .. _`User Package Registry`:
 
-User Package Registry
+用户包注册
 ---------------------
 
-The User Package Registry is stored in a per-user location.
-The :command:`export(PACKAGE)` command may be used to register a project
-build tree in the user package registry.  CMake currently provides no
-interface to add install trees to the user package registry.  Installers
-must be manually taught to register their packages if desired.
+用户包注册表存储在每个用户的位置中。可以使用 :command:`export(PACKAGE)` 命令在用户包注册表中注册项目构建树。CMake目前没有提供将安装树添加到用户包注册表的接口。如果需要，必须手动指定安装程序注册包的方法。
 
-On Windows the user package registry is stored in the Windows registry
-under a key in ``HKEY_CURRENT_USER``.
+在Windows上，用户包注册表存储在Windows注册表 ``HKEY_CURRENT_USER`` 的一个键下。
 
-A ``<PackageName>`` may appear under registry key::
+譬如 ``<PackageName>`` 可能出现在注册表如下位置： ::
 
   HKEY_CURRENT_USER\Software\Kitware\CMake\Packages\<PackageName>
 
-as a ``REG_SZ`` value, with arbitrary name, that specifies the directory
-containing the package configuration file.
+作为一个 ``REG_SZ`` 值，可以使用任意名称，指定包配置文件所在的目录。
 
-On UNIX platforms the user package registry is stored in the user home
-directory under ``~/.cmake/packages``.  A ``<PackageName>`` may appear under
-the directory::
+在UNIX平台上，用户包注册表存储在用户主目录 ``~/.cmake/packages`` 下。``<PackageName>`` 可能的路径是： ::
 
   ~/.cmake/packages/<PackageName>
 
-as a file, with arbitrary name, whose content specifies the directory
-containing the package configuration file.
+作为一个文件，可以使用任意的名称，其内容指定包配置文件所在的目录。
 
 .. _`System Package Registry`:
 
