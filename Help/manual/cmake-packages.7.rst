@@ -407,14 +407,14 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 
 CMake提供了两个中心位置来注册已经在系统中构建或安装的包：
 
-* `User Package Registry`_
-* `System Package Registry`_
+* `用户包注册`_
+* `系统包注册`_
 
 注册表对于帮助项目在非标准安装位置或直接在它们自己的构建树中找到包特别有用。项目可以填充用户或系统注册表（使用它自己的方法，参见下面）来引用它的位置。在这两种情况下，包都应该在注册位置存储一个 `包配置文件`_ （``<PackageName>Config.cmake``）和一个 `包版本文件`_ （``<PackageName>ConfigVersion.cmake``）。
 
 作为其文档中指定的两个搜索步骤，:command:`find_package` 命令会搜索两个包注册中心。如果有足够的权限的话，它还会删除陈旧的包注册表项，这些注册表项引用的目录不存在或不包含匹配的包配置文件。
 
-.. _`User Package Registry`:
+.. _`用户包注册`:
 
 用户包注册
 ---------------------
@@ -435,25 +435,20 @@ CMake提供了两个中心位置来注册已经在系统中构建或安装的包
 
 作为一个文件，可以使用任意的名称，其内容指定包配置文件所在的目录。
 
-.. _`System Package Registry`:
+.. _`系统包注册`:
 
-System Package Registry
+系统包注册
 -----------------------
 
-The System Package Registry is stored in a system-wide location.
-CMake currently provides no interface to add to the system package registry.
-Installers must be manually taught to register their packages if desired.
+系统包注册表存储在系统范围的位置中。CMake目前没有提供添加到系统包注册表的接口。如果需要，必须手动指定安装程序注册包的方法。
 
-On Windows the system package registry is stored in the Windows registry
-under a key in ``HKEY_LOCAL_MACHINE``.  A ``<PackageName>`` may appear under
-registry key::
+在Windows上，系统包注册表存储在Windows注册表 ``HKEY_LOCAL_MACHINE`` 的一个键下。``<PackageName>`` 应该出现在注册表项如下位置： ::
 
   HKEY_LOCAL_MACHINE\Software\Kitware\CMake\Packages\<PackageName>
 
-as a ``REG_SZ`` value, with arbitrary name, that specifies the directory
-containing the package configuration file.
+作为一个 ``REG_SZ`` 值，可以使用任意名称，指定包配置文件所在的目录。
 
-There is no system package registry on non-Windows platforms.
+在非windows平台上没有系统包注册表。
 
 .. _`Disabling the Package Registry`:
 
