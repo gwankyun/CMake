@@ -452,28 +452,15 @@ CMake提供了两个中心位置来注册已经在系统中构建或安装的包
 
 .. _`Disabling the Package Registry`:
 
-Disabling the Package Registry
+禁用包注册表
 ------------------------------
 
-In some cases using the Package Registries is not desirable. CMake
-allows one to disable them using the following variables:
+在某些情况下，不需要使用包注册表。CMake允许你用以下变量禁用它们：
 
-* The :command:`export(PACKAGE)` command does not populate the user
-  package registry when :policy:`CMP0090` is set to ``NEW`` unless the
-  :variable:`CMAKE_EXPORT_PACKAGE_REGISTRY` variable explicitly enables it.
-  When :policy:`CMP0090` is *not* set to ``NEW`` then
-  :command:`export(PACKAGE)` populates the user package registry unless
-  the :variable:`CMAKE_EXPORT_NO_PACKAGE_REGISTRY` variable explicitly
-  disables it.
-* :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY` disables the
-  User Package Registry in all the :command:`find_package` calls when
-  set to ``FALSE``.
-* Deprecated :variable:`CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY` disables the
-  User Package Registry in all the :command:`find_package` calls when set
-  to ``TRUE``. This variable is ignored when
-  :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY` has been set.
-* :variable:`CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY` disables
-  the System Package Registry in all the :command:`find_package` calls.
+* 当 :policy:`CMP0090` 设置为 ``NEW`` 时，:command:`export(PACKAGE)` 命令不会填充用户包注册表，除非 :variable:`CMAKE_EXPORT_PACKAGE_REGISTRY` 变量明确启用它。如果 :policy:`CMP0090`  *没有* 设置为 ``NEW`` ，那么 :command:`export(PACKAGE)` 将填充用户包注册表，除非 :variable:`CMAKE_EXPORT_NO_PACKAGE_REGISTRY` 变量明确禁用它。
+* :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY` 设置为 ``FALSE`` 后，所有 :command:`find_package` 调用中用户包注册表无效。
+* 当被废弃的 :variable:`CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY` 设置为 ``TRUE`` 时，会在所有 :command:`find_package` 调用中禁用用户包注册。但能设置 :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY` 来忽略该变量。
+* :variable:`CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY` 能在所有 :command:`find_package` 调用中禁用系统包注册表。
 
 Package Registry Example
 ------------------------
