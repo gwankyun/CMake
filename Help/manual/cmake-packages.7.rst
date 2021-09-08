@@ -462,42 +462,32 @@ CMake提供了两个中心位置来注册已经在系统中构建或安装的包
 * 当被废弃的 :variable:`CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY` 设置为 ``TRUE`` 时，会在所有 :command:`find_package` 调用中禁用用户包注册。但能设置 :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY` 来忽略该变量。
 * :variable:`CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY` 能在所有 :command:`find_package` 调用中禁用系统包注册表。
 
-Package Registry Example
+包注册例子
 ------------------------
 
-A simple convention for naming package registry entries is to use content
-hashes.  They are deterministic and unlikely to collide
-(:command:`export(PACKAGE)` uses this approach).
-The name of an entry referencing a specific directory is simply the content
-hash of the directory path itself.
+命名包注册表项的一个简单约定是使用内容散列。它们是确定的，不太可能发生冲突（:command:`export(PACKAGE)` 就使用这种方法）。引用特定目录的条目的名称只是目录路径本身的内容散列。
 
-If a project arranges for package registry entries to exist, such as::
+如果项目安排包注册表项存在，例如： ::
 
  > reg query HKCU\Software\Kitware\CMake\Packages\MyPackage
  HKEY_CURRENT_USER\Software\Kitware\CMake\Packages\MyPackage
   45e7d55f13b87179bb12f907c8de6fc4 REG_SZ c:/Users/Me/Work/lib/cmake/MyPackage
   7b4a9844f681c80ce93190d4e3185db9 REG_SZ c:/Users/Me/Work/MyPackage-build
 
-or::
+或者： ::
 
  $ cat ~/.cmake/packages/MyPackage/7d1fb77e07ce59a81bed093bbee945bd
  /home/me/work/lib/cmake/MyPackage
  $ cat ~/.cmake/packages/MyPackage/f92c1db873a1937f3100706657c63e07
  /home/me/work/MyPackage-build
 
-then the ``CMakeLists.txt`` code:
+然后CMakeLists.txt代码：
 
 .. code-block:: cmake
 
   find_package(MyPackage)
 
-will search the registered locations for package configuration files
-(``MyPackageConfig.cmake``).  The search order among package registry
-entries for a single package is unspecified and the entry names
-(hashes in this example) have no meaning.  Registered locations may
-contain package version files (``MyPackageConfigVersion.cmake``) to
-tell :command:`find_package` whether a specific location is suitable
-for the version requested.
+将搜索包配置文件（``MyPackageConfig.cmake``）的注册位置。单个包的包注册表项之间的搜索顺序是未指定的，并且条目名称（本例中的散列）没有任何意义。注册位置可能包含包版本文件（``MyPackageConfigVersion.cmake``）来告诉 :command:`find_package` 某个特定位置是否适合所请求的版本。
 
 Package Registry Ownership
 --------------------------
