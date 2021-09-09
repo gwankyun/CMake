@@ -489,19 +489,9 @@ CMake提供了两个中心位置来注册已经在系统中构建或安装的包
 
 将搜索包配置文件（``MyPackageConfig.cmake``）的注册位置。单个包的包注册表项之间的搜索顺序是未指定的，并且条目名称（本例中的散列）没有任何意义。注册位置可能包含包版本文件（``MyPackageConfigVersion.cmake``）来告诉 :command:`find_package` 某个特定位置是否适合所请求的版本。
 
-Package Registry Ownership
+包注册所有权
 --------------------------
 
-Package registry entries are individually owned by the project installations
-that they reference.  A package installer is responsible for adding its own
-entry and the corresponding uninstaller is responsible for removing it.
+包注册表项由它们所引用的项目安装单独拥有。包安装程序负责添加它自己的条目，相应的卸载程序负责删除它。
 
-The :command:`export(PACKAGE)` command populates the user package registry
-with the location of a project build tree.  Build trees tend to be deleted by
-developers and have no "uninstall" event that could trigger removal of their
-entries.  In order to keep the registries clean the :command:`find_package`
-command automatically removes stale entries it encounters if it has sufficient
-permissions.  CMake provides no interface to remove an entry referencing an
-existing build tree once :command:`export(PACKAGE)` has been invoked.
-However, if the project removes its package configuration file from the build
-tree then the entry referencing the location will be considered stale.
+:command:`export(PACKAGE)` 命令用项目构建树的位置填充用户包注册表。构建树往往由开发人员删除，并且没有可能触发删除其条目的“卸载”事件。为了保持注册表的整洁，如果有足够的权限，:command:`find_package` 命令会自动删除它遇到的过时条目。调用 :command:`export(PACKAGE)` 之后，CMake没有提供接口来删除引用现有构建树的条目。但是，如果项目从构建树中删除了它的包配置文件，那么引用该位置的条目将被认为是过时的。
