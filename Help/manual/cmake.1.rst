@@ -3,20 +3,20 @@
 cmake(1)
 ********
 
-Synopsis
+概要
 ========
 
 .. parsed-literal::
 
- `Generate a Project Buildsystem`_
+ `生成一个项目构建系统`_
   cmake [<options>] <path-to-source>
   cmake [<options>] <path-to-existing-build>
   cmake [<options>] -S <path-to-source> -B <path-to-build>
 
- `Build a Project`_
+ `构建一个项目`_
   cmake --build <dir> [<options>] [-- <build-tool-options>]
 
- `Install a Project`_
+ `安装一个项目`_
   cmake --install <dir> [<options>]
 
  `Open a Project`_
@@ -31,32 +31,21 @@ Synopsis
  `Run the Find-Package Tool`_
   cmake --find-package [<options>]
 
- `View Help`_
+ `查看帮助`_
   cmake --help[-<topic>]
 
-Description
+描述
 ===========
 
-The **cmake** executable is the command-line interface of the cross-platform
-buildsystem generator CMake.  The above `Synopsis`_ lists various actions
-the tool can perform as described in sections below.
+**cmake** 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面的 `概要`_ 列出了工具可以执行的各种操作，如下面的部分所述。
 
-To build a software project with CMake, `Generate a Project Buildsystem`_.
-Optionally use **cmake** to `Build a Project`_, `Install a Project`_ or just
-run the corresponding build tool (e.g. ``make``) directly.  **cmake** can also
-be used to `View Help`_.
+要用CMake构建一个软件项目，请 `生成一个项目构建系统`_。可以选择使用 **cmake** 来 `构建一个项目`_ 及 `安装一个项目`_ ，或者直接运行相应的构建工具（例如 ``make``）。**cmake** 也可以用来 `查看帮助`_。
 
-The other actions are meant for use by software developers writing
-scripts in the :manual:`CMake language <cmake-language(7)>` to support
-their builds.
+其他操作是为了让软件开发人员使用 :manual:`CMake language <cmake-language(7)>` 编写脚本来支持他们的构建。
 
-For graphical user interfaces that may be used in place of **cmake**,
-see :manual:`ccmake <ccmake(1)>` and :manual:`cmake-gui <cmake-gui(1)>`.
-For command-line interfaces to the CMake testing and packaging facilities,
-see :manual:`ctest <ctest(1)>` and :manual:`cpack <cpack(1)>`.
+有关 **cmake** 的图形用户界面替代，请参阅 :manual:`ccmake <ccmake(1)>` 和 :manual:`cmake-gui <cmake-gui(1)>`。有关CMake测试和打包工具的命令行接口，请参考 :manual:`ctest <ctest(1)>` 和 :manual:`cpack <cpack(1)>`。
 
-For more information on CMake at large, `see also`_ the links at the end
-of this manual.
+有关CMake的详细信息，请 `另行参阅`_ 本手册末尾的链接。
 
 
 Introduction to CMake Buildsystems
@@ -105,9 +94,9 @@ Generator
   is already configured in the shell.  When using one of the
   :ref:`IDE Build Tool Generators`, no particular environment is needed.
 
-.. _`Generate a Project Buildsystem`:
+.. _`生成一个项目构建系统`:
 
-Generate a Project Buildsystem
+生成一个项目构建系统
 ==============================
 
 Run CMake with one of the following command signatures to specify the
@@ -160,7 +149,7 @@ build tool to build the project.  For example, after using the
     $ make
     $ make install
 
-Alternatively, one may use **cmake** to `Build a Project`_ by
+Alternatively, one may use **cmake** to `构建一个项目`_ by
 automatically choosing and invoking the appropriate native build tool.
 
 .. _`CMake Options`:
@@ -400,7 +389,7 @@ Options
 
 .. _`Build Tool Mode`:
 
-Build a Project
+构建一个项目
 ===============
 
 CMake provides a command-line signature to build an already-generated
@@ -465,7 +454,7 @@ following options:
 
 Run ``cmake --build`` with no options for quick help.
 
-Install a Project
+安装一个项目
 =================
 
 CMake provides a command-line signature to install an already-generated
@@ -840,7 +829,7 @@ autoconf-based projects (via ``share/aclocal/cmake.m4``).
   It is kept for compatibility but should not be used in new projects.
 
 
-View Help
+查看帮助
 =========
 
 To print selected pages from the CMake documentation, use
@@ -859,7 +848,7 @@ To view the presets available for a project, use
 
   cmake <source-dir> --list-presets
 
-See Also
+另行参阅
 ========
 
 .. include:: LINKS.txt
