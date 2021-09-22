@@ -10,32 +10,19 @@ Synopsis
 
  cpack [<options>]
 
-Description
+描述
 ===========
 
-The **cpack** executable is the CMake packaging program.  It generates
-installers and source packages in a variety of formats.
+**cpack** 可执行文件是CMake打包程序。它以各种格式生成安装程序和源包。
 
-For each installer or package format, **cpack** has a specific backend,
-called "generator". A generator is responsible for generating the required
-inputs and invoking the specific package creation tools. These installer
-or package generators are not to be confused with the makefile generators
-of the :manual:`cmake <cmake(1)>` command.
+对于每个安装程序或包格式，**cpack** 都有一个特定的后端，称为“生成器”。生成器负责生成所需的输入并调用特定的包创建工具。不要将这些安装程序或包生成器与 :manual:`cmake <cmake(1)>` 命令的makefile生成器混淆。
 
-All supported generators are specified in the :manual:`cpack-generators
-<cpack-generators(7)>` manual.  The command ``cpack --help`` prints a
-list of generators supported for the target platform.  Which of them are
-to be used can be selected through the :variable:`CPACK_GENERATOR` variable
-or through the command-line option ``-G``.
+所有支持的生成器在 :manual:`cpack-generators
+<cpack-generators(7)>` 手册中都有详细说明。命令 ``cpack --help`` 打印目标平台支持的生成器列表。可以通过 :variable:`CPACK_GENERATOR` 变量或命令行选项 ``-G`` 选择要使用的选项。
 
-The **cpack** program is steered by a configuration file written in the
-:manual:`CMake language <cmake-language(7)>`. Unless chosen differently
-through the command-line option ``--config``, the file ``CPackConfig.cmake``
-in the current directory is used.
+**cpack** 程序由一个用 :manual:`CMake language <cmake-language(7)>` 编写的配置文件控制。除非通过命令行选项 ``--config`` 进行不同的选择，否则将使用当前目录中的 ``CPackConfig.cmake`` 文件。
 
-In the standard CMake workflow, the file ``CPackConfig.cmake`` is generated
-by the :manual:`cmake <cmake(1)>` executable, provided the :module:`CPack`
-module is included by the project's ``CMakeLists.txt`` file.
+在标准的CMake工作流中，CMake可执行文件 ``CPackConfig.cmake`` 是由 :manual:`cmake <cmake(1)>` 可执行文件生成的，前提是 :module:`CPack` 模块包含在项目的 ``CMakeLists.txt`` 文件中。
 
 Options
 =======

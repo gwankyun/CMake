@@ -94,7 +94,7 @@ Generator
   is already configured in the shell.  When using one of the
   :ref:`IDE Build Tool Generators`, no particular environment is needed.
 
-.. _`生成一个项目构建系统`:
+.. _`Generate a Project Buildsystem`:
 
 生成一个项目构建系统
 ==============================

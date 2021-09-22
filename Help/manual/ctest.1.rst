@@ -17,13 +17,10 @@ Synopsis
  ctest {-D <dashboard> | -M <model> -T <action> | -S <script> | -SP <script>}
        [-- <dashboard-options>...]
 
-Description
+描述
 ===========
 
-The **ctest** executable is the CMake test driver program.
-CMake-generated build trees created for projects that use the
-:command:`enable_testing` and :command:`add_test` commands have testing support.
-This program will run the tests and report results.
+**ctest** 可执行文件是CMake测试驱动程序。使用 :command:`enable_testing` 和 :command:`add_test` 命令创建的CMake生成构建树具有测试支持。该程序将运行测试并报告结果。
 
 .. _`CTest Options`:
 
