@@ -10,19 +10,12 @@ Synopsis
 
  ccmake [<options>] {<path-to-source> | <path-to-existing-build>}
 
-Description
+描述
 ===========
 
-The **ccmake** executable is the CMake curses interface.  Project
-configuration settings may be specified interactively through this
-GUI.  Brief instructions are provided at the bottom of the terminal
-when the program is running.
+**ccmake** 可执行文件是CMake curses接口。项目配置设置可以通过这个GUI交互指定。当程序运行时，在终端的底部会提供简短的指令。
 
-CMake is a cross-platform build system generator.  Projects specify
-their build process with platform-independent CMake listfiles included
-in each directory of a source tree with the name ``CMakeLists.txt``.
-Users build a project by using CMake to generate a build system for a
-native tool on their platform.
+CMake是一个跨平台的构建系统生成器。项目使用与平台无关的CMake列表文件指定构建过程，这些列表文件包含在名为 ``CMakeLists.txt`` 的源代码树的每个目录中。用户通过使用CMake为其平台上的本地工具生成构建系统来构建项目。
 
 Options
 =======

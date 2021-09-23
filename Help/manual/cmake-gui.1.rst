@@ -13,18 +13,12 @@ Synopsis
  cmake-gui [<options>] -S <path-to-source> -B <path-to-build>
  cmake-gui [<options>] --browse-manual
 
-Description
+描述
 ===========
 
-The **cmake-gui** executable is the CMake GUI.  Project configuration
-settings may be specified interactively.  Brief instructions are
-provided at the bottom of the window when the program is running.
+**cmake-gui** 可执行文件就是CMake GUI程序。可以交互设置项目配置。程序运行时，窗口底部会显示简短的说明。
 
-CMake is a cross-platform build system generator.  Projects specify
-their build process with platform-independent CMake listfiles included
-in each directory of a source tree with the name ``CMakeLists.txt``.
-Users build a project by using CMake to generate a build system for a
-native tool on their platform.
+CMake是一个跨平台的构建系统生成器。项目使用与平台无关的CMake列表文件指定构建过程，这些列表文件包含在名为 ``CMakeLists.txt`` 的源代码树的每个目录中。用户通过使用CMake为其平台上的本地工具生成构建系统来构建项目。
 
 Options
 =======
