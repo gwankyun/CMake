@@ -3,14 +3,12 @@
 cmake-modules(7)
 ****************
 
-The modules listed here are part of the CMake distribution.
-Projects may provide further modules; their location(s)
-can be specified in the :variable:`CMAKE_MODULE_PATH` variable.
+这里列出的模块是CMake发行版的一部分。项目可提供进一步的模块；它们的位置可以用 :variable:`CMAKE_MODULE_PATH` 变量指定。
 
-Utility Modules
+工具模块
 ^^^^^^^^^^^^^^^
 
-These modules are loaded using the :command:`include` command.
+这些模块使用 :command:`include` 命令加载。
 
 .. toctree::
    :maxdepth: 1
@@ -99,11 +97,10 @@ These modules are loaded using the :command:`include` command.
    /module/UseSWIG
    /module/UsewxWidgets
 
-Find Modules
+搜寻模块
 ^^^^^^^^^^^^
 
-These modules search for third-party software.
-They are normally called through the :command:`find_package` command.
+这些模块搜索第三方软件。它们通常通过 :command:`find_package` 命令调用。
 
 .. toctree::
    :maxdepth: 1
@@ -263,10 +260,10 @@ They are normally called through the :command:`find_package` command.
    /module/FindXMLRPC
    /module/FindZLIB
 
-Deprecated Modules
+弃用模块
 ^^^^^^^^^^^^^^^^^^^
 
-Deprecated Utility Modules
+弃用工具模块
 ==========================
 
 .. toctree::
@@ -287,7 +284,7 @@ Deprecated Utility Modules
    /module/WriteBasicConfigVersionFile
    /module/WriteCompilerDetectionHeader
 
-Deprecated Find Modules
+弃用搜寻模块
 =======================
 
 .. toctree::
@@ -299,12 +296,10 @@ Deprecated Find Modules
    /module/FindQt
    /module/FindwxWindows
 
-Legacy CPack Modules
+遗留的CPack模块
 ====================
 
-These modules used to be mistakenly exposed to the user, and have been moved
-out of user visibility. They are for CPack internal use, and should never be
-used directly.
+这些模块曾经被错误地暴露给用户，并且现已移出用户视野。它们供CPack内部而非直接使用。
 
 .. toctree::
    :maxdepth: 1

@@ -1,7 +1,7 @@
 .. note::
 
-  CMake reserves identifiers that:
+  CMake保留标识符：
 
-  * begin with ``CMAKE_`` (upper-, lower-, or mixed-case), or
-  * begin with ``_CMAKE_`` (upper-, lower-, or mixed-case), or
-  * begin with ``_`` followed by the name of any :manual:`CMake Command <cmake-commands(7)>`.
+  * 以 ``CMAKE_`` （大写、小写、大小写混合）开头，或者
+  * 以 ``_CMAKE_`` （大写、小写、大小写混合）开头，或者
+  * 走 ``_`` 开头，后面跟着任何 :manual:`CMake Command <cmake-commands(7)>` 名称。

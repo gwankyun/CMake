@@ -7,16 +7,13 @@ cmake-variables(7)
 
    .. contents::
 
-This page documents variables that are provided by CMake
-or have meaning to CMake when set by project code.
+本页面记录了由CMake提供的变量或由项目代码设置的对CMake有意义的变量。
 
-For general information on variables, see the
-:ref:`Variables <CMake Language Variables>`
-section in the cmake-language manual.
+有关变量的一般信息，请参阅cmake语言手册中的 :ref:`Variables <CMake Language Variables>` 部分。
 
 .. include:: ID_RESERVE.txt
 
-Variables that Provide Information
+提供信息的变量
 ==================================
 
 .. toctree::
@@ -150,7 +147,7 @@ Variables that Provide Information
    /variable/PROJECT_VERSION_PATCH
    /variable/PROJECT_VERSION_TWEAK
 
-Variables that Change Behavior
+改变行为的变量
 ==============================
 
 .. toctree::
@@ -273,7 +270,7 @@ Variables that Change Behavior
    /variable/CMAKE_XCODE_SCHEME_ZOMBIE_OBJECTS
    /variable/PackageName_ROOT
 
-Variables that Describe the System
+描述系统的变量
 ==================================
 
 .. toctree::
@@ -326,7 +323,7 @@ Variables that Describe the System
    /variable/XCODE
    /variable/XCODE_VERSION
 
-Variables that Control the Build
+控制构建的变量
 ================================
 
 .. toctree::
@@ -497,7 +494,7 @@ Variables that Control the Build
    /variable/EXECUTABLE_OUTPUT_PATH
    /variable/LIBRARY_OUTPUT_PATH
 
-Variables for Languages
+编程语言相关变量
 =======================
 
 .. toctree::
@@ -585,7 +582,7 @@ Variables for Languages
    /variable/CMAKE_Swift_LANGUAGE_VERSION
    /variable/CMAKE_USER_MAKE_RULES_OVERRIDE_LANG
 
-Variables for CTest
+CTest相关变量
 ===================
 
 .. toctree::
@@ -666,7 +663,7 @@ Variables for CTest
    /variable/CTEST_UPDATE_VERSION_OVERRIDE
    /variable/CTEST_USE_LAUNCHERS
 
-Variables for CPack
+CPack相关变量
 ===================
 
 .. toctree::
@@ -682,7 +679,7 @@ Variables for CPack
    /variable/CPACK_SET_DESTDIR
    /variable/CPACK_WARN_ON_ABSOLUTE_INSTALL_DESTINATION
 
-Variable Expansion Operators
+变量展开操作符
 ============================
 
 .. toctree::
@@ -691,13 +688,10 @@ Variable Expansion Operators
    /variable/CACHE
    /variable/ENV
 
-Internal Variables
+内部变量
 ==================
 
-CMake has many internal variables.  Most of them are undocumented.
-Some of them, however, were at some point described as normal
-variables, and therefore may be encountered in legacy code. They
-are subject to change, and not recommended for use in project code.
+CMake有许多内部变量。它们中的大部分都未公开。然而，其中一些在某种程度上被描述为普通变量，因此你可能会在遗留代码中遇到它们。这些内部变量以后可能会发生变动，因此不建议在项目代码中使用。
 
 .. toctree::
    :maxdepth: 1

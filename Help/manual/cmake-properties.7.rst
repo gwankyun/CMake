@@ -9,7 +9,7 @@ cmake-properties(7)
 
 .. _`Global Properties`:
 
-Properties of Global Scope
+全局属性
 ==========================
 
 .. toctree::
@@ -57,7 +57,7 @@ Properties of Global Scope
 
 .. _`Directory Properties`:
 
-Properties on Directories
+目录属性
 =========================
 
 .. toctree::
@@ -99,7 +99,7 @@ Properties on Directories
 
 .. _`Target Properties`:
 
-Properties on Targets
+目标属性
 =====================
 
 .. toctree::
@@ -439,7 +439,7 @@ Properties on Targets
 
 .. _`Test Properties`:
 
-Properties on Tests
+测试属性
 ===================
 
 .. toctree::
@@ -473,7 +473,7 @@ Properties on Tests
 
 .. _`Source File Properties`:
 
-Properties on Source Files
+源文件属性
 ==========================
 
 .. toctree::
@@ -533,7 +533,7 @@ Properties on Source Files
 
 .. _`Cache Entry Properties`:
 
-Properties on Cache Entries
+缓存项属性
 ===========================
 
 .. toctree::
@@ -548,7 +548,7 @@ Properties on Cache Entries
 
 .. _`Installed File Properties`:
 
-Properties on Installed Files
+已安装文件属性
 =============================
 
 .. toctree::
@@ -562,7 +562,7 @@ Properties on Installed Files
    /prop_inst/CPACK_WIX_ACL.rst
 
 
-Deprecated Properties on Directories
+已弃用目录属性
 ====================================
 
 .. toctree::
@@ -573,7 +573,7 @@ Deprecated Properties on Directories
    /prop_dir/TEST_INCLUDE_FILE
 
 
-Deprecated Properties on Targets
+弃用目标属性
 ================================
 
 .. toctree::
@@ -584,7 +584,7 @@ Deprecated Properties on Targets
    /prop_tgt/PRE_INSTALL_SCRIPT
 
 
-Deprecated Properties on Source Files
+弃用源文件属性
 =====================================
 
 .. toctree::

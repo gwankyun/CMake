@@ -7,14 +7,11 @@ cmake-env-variables(7)
 
    .. contents::
 
-This page lists environment variables that have special
-meaning to CMake.
+这个页面列出了对CMake有特殊意义的环境变量。
 
-For general information on environment variables, see the
-:ref:`Environment Variables <CMake Language Environment Variables>`
-section in the cmake-language manual.
+有关环境变量的一般信息，请参见cmake语言手册中的 :ref:`环境变量 <CMake Language Environment Variables>` 部分。
 
-Environment Variables that Change Behavior
+改变行为的环境变量
 ==========================================
 
 .. toctree::
@@ -22,7 +19,7 @@ Environment Variables that Change Behavior
 
    /envvar/CMAKE_PREFIX_PATH
 
-Environment Variables that Control the Build
+控制构建的环境变量
 ============================================
 
 .. toctree::
@@ -50,7 +47,7 @@ Environment Variables that Control the Build
    /envvar/PackageName_ROOT
    /envvar/VERBOSE
 
-Environment Variables for Languages
+编程语言相关环境变量
 ===================================
 
 .. toctree::
@@ -79,7 +76,7 @@ Environment Variables for Languages
    /envvar/RCFLAGS
    /envvar/SWIFTC
 
-Environment Variables for CTest
+CTest相关环境变量
 ===============================
 
 .. toctree::
@@ -93,7 +90,7 @@ Environment Variables for CTest
    /envvar/CTEST_USE_LAUNCHERS_DEFAULT
    /envvar/DASHBOARD_TEST_FROM_CTEST
 
-Environment Variables for the CMake curses interface
+CMake curses界面相关的环境变量
 ====================================================
 
 .. toctree::

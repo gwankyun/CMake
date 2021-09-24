@@ -3,5 +3,4 @@
 cmake-server(7)
 ***************
 
-The :manual:`cmake(1)` server mode has been removed since CMake 3.20.
-Clients should use the :manual:`cmake-file-api(7)` instead.
+:manual:`cmake(1)` 服务器模式自CMake 3.20起已经移除。客户端应使用 :manual:`cmake-file-api(7)` 代替。
