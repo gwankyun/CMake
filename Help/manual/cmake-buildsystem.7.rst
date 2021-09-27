@@ -7,14 +7,10 @@ cmake-buildsystem(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-A CMake-based buildsystem is organized as a set of high-level logical
-targets.  Each target corresponds to an executable or library, or
-is a custom target containing custom commands.  Dependencies between the
-targets are expressed in the buildsystem to determine the build order
-and the rules for regeneration in response to change.
+基于CMake的构建系统被组织为一组高级逻辑目标。每个目标对应于一个可执行文件或库，或者是包含自定义命令的自定义目标。目标之间的依赖关系在构建系统中表示，以确定构建顺序和响应更改的重新生成规则。
 
 Binary Targets
 ==============
