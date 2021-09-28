@@ -7,19 +7,23 @@ cmake-language(7)
 
    .. contents::
 
-Organization
+结构
 ============
 
 CMake input files are written in the "CMake Language" in source files
 named ``CMakeLists.txt`` or ending in a ``.cmake`` file name extension.
 
+CMake输入文件以“CMake语言”写在名为 ``CMakeLists.txt`` 的源文件中，或者以 ``.cmake`` 文件扩展名结尾。
+
 CMake Language source files in a project are organized into:
 
-* `Directories`_ (``CMakeLists.txt``),
-* `Scripts`_ (``<script>.cmake``), and
-* `Modules`_ (``<module>.cmake``).
+项目中的CMake语言源文件被组织为：
 
-Directories
+* `目录文件`_ (``CMakeLists.txt``),
+* `脚本文件`_ (``<script>.cmake``), and
+* `模块文件`_ (``<module>.cmake``).
+
+目录文件
 -----------
 
 When CMake processes a project source tree, the entry point is
@@ -32,8 +36,8 @@ directory.  For each source directory whose ``CMakeLists.txt`` file
 is processed CMake generates a corresponding directory in the build
 tree to act as the default working and output directory.
 
-Scripts
--------
+脚本文件
+--------
 
 An individual ``<script>.cmake`` source file may be processed
 in *script mode* by using the :manual:`cmake(1)` command-line tool
@@ -42,10 +46,10 @@ the given CMake Language source file and does not generate a
 build system.  It does not allow CMake commands that define build
 targets or actions.
 
-Modules
--------
+模块文件
+--------
 
-CMake Language code in either `Directories`_ or `Scripts`_ may
+CMake Language code in either `目录文件`_ or `脚本文件`_ may
 use the :command:`include` command to load a ``<module>.cmake``
 source file in the scope of the including context.
 See the :manual:`cmake-modules(7)` manual page for documentation
@@ -536,11 +540,11 @@ Function Scope
  any nested calls within it, but not after the function returns.
 
 Directory Scope
- Each of the `Directories`_ in a source tree has its own variable
+ Each of the `目录文件`_ in a source tree has its own variable
  bindings.  Before processing the ``CMakeLists.txt`` file for a
  directory, CMake copies all variable bindings currently defined
  in the parent directory, if any, to initialize the new directory
- scope.  CMake `Scripts`_, when processed with ``cmake -P``, bind
+ scope.  CMake `脚本文件`_, when processed with ``cmake -P``, bind
  variables in one "directory" scope.
 
  A variable "set" or "unset" not inside a function call binds

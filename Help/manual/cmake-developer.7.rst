@@ -7,16 +7,12 @@ cmake-developer(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-This manual is intended for reference by developers working with
-:manual:`cmake-language(7)` code, whether writing their own modules,
-authoring their own build systems, or working on CMake itself.
+本手册旨在供使用 :manual:`cmake-language(7)` 代码的开发人员参考，无论是编写自己的模块，自己的构建系统，还是CMake本身。
 
-See https://cmake.org/get-involved/ to get involved in development of
-CMake upstream.  It includes links to contribution instructions, which
-in turn link to developer guides for CMake itself.
+请参见 https://cmake.org/get-involved/ 参与CMake上游的开发。它包括到贡献说明的链接，而贡献说明又链接到CMake自身的开发指南。
 
 .. _`Find Modules`:
 

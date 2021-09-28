@@ -1,6 +1,6 @@
 :orphan:
 
-CMake Release Notes
+CMake发行说明
 *******************
 
 ..

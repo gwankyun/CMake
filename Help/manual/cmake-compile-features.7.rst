@@ -7,37 +7,21 @@ cmake-compile-features(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-Project source code may depend on, or be conditional on, the availability
-of certain features of the compiler.  There are three use-cases which arise:
-`Compile Feature Requirements`_, `Optional Compile Features`_
-and `Conditional Compilation Options`_.
+项目源代码可能依赖于或有条件地依赖于编译器的某些功能。分别有三种情况：`编译特性需求`_、`可选编译特性`_
+以及 `条件编译选项`_。
 
-While features are typically specified in programming language standards,
-CMake provides a primary user interface based on granular handling of
-the features, not the language standard that introduced the feature.
+虽然特性通常在编程语言标准中指定，但CMake提供了一个基于特性的细粒度处理的主要用户界面，而不是引入相应特性的语言标准。
 
-The :prop_gbl:`CMAKE_C_KNOWN_FEATURES`, :prop_gbl:`CMAKE_CUDA_KNOWN_FEATURES`,
-and :prop_gbl:`CMAKE_CXX_KNOWN_FEATURES` global properties contain all the
-features known to CMake, regardless of compiler support for the feature.
-The :variable:`CMAKE_C_COMPILE_FEATURES`, :variable:`CMAKE_CUDA_COMPILE_FEATURES`
-, and :variable:`CMAKE_CXX_COMPILE_FEATURES` variables contain all features
-CMake knows are known to the compiler, regardless of language standard
-or compile flags needed to use them.
+:prop_gbl:`CMAKE_C_KNOWN_FEATURES`、:prop_gbl:`CMAKE_CUDA_KNOWN_FEATURES` 和 :prop_gbl:`CMAKE_CXX_KNOWN_FEATURES` 全局属性包含CMake已知的所有特性，不管编译器是否支持这些特性。 :variable:`CMAKE_C_COMPILE_FEATURES`、:variable:`CMAKE_CUDA_COMPILE_FEATURES` 和 :variable:`CMAKE_CXX_COMPILE_FEATURES` 变量包含CMake知道的编译器所知道的所有特性，不管使用它们需要的语言标准或编译标志。
 
-Features known to CMake are named mostly following the same convention
-as the Clang feature test macros.  There are some exceptions, such as
-CMake using ``cxx_final`` and ``cxx_override`` instead of the single
-``cxx_override_control`` used by Clang.
+CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有一些例外，比如CMake使用 ``cxx_final`` 和 ``cxx_override`` 而不是Clang使用的单个 ``cxx_override_control``。
 
-Note that there are no separate compile features properties or variables for
-the ``OBJC`` or ``OBJCXX`` languages.  These are based off ``C`` or ``C++``
-respectively, so the properties and variables for their corresponding base
-language should be used instead.
+注意，对于 ``OBJC`` 或 ``OBJCXX`` 语言，没有单独的编译特性、属性或变量。它们分别基于 ``C`` 或 ``C++``，因此应该使用它们对应的基本语言的属性和变量。
 
-Compile Feature Requirements
+编译特性需求
 ============================
 
 Compile feature requirements may be specified with the
@@ -126,7 +110,7 @@ that because most compilers enable extensions by default, this could
 expose cross-platform bugs in user code or in the headers of third-party
 dependencies.
 
-Optional Compile Features
+可选编译特性
 =========================
 
 Compile features may be preferred if available, without creating a hard
@@ -146,7 +130,7 @@ See also policy :policy:`CMP0120` and legacy documentation on
 :ref:`Example Usage <WCDH Example Usage>` of the deprecated
 :module:`WriteCompilerDetectionHeader` module.
 
-Conditional Compilation Options
+条件编译选项
 ===============================
 
 Libraries may provide entirely different header files depending on
