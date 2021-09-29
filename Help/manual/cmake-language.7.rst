@@ -10,18 +10,13 @@ cmake-language(7)
 结构
 ============
 
-CMake input files are written in the "CMake Language" in source files
-named ``CMakeLists.txt`` or ending in a ``.cmake`` file name extension.
-
 CMake输入文件以“CMake语言”写在名为 ``CMakeLists.txt`` 的源文件中，或者以 ``.cmake`` 文件扩展名结尾。
 
-CMake Language source files in a project are organized into:
+项目中的CMake语言源文件被归类为：
 
-项目中的CMake语言源文件被组织为：
-
-* `目录文件`_ (``CMakeLists.txt``),
-* `脚本文件`_ (``<script>.cmake``), and
-* `模块文件`_ (``<module>.cmake``).
+* `目录文件`_ （``CMakeLists.txt``）
+* `脚本文件`_ （``<script>.cmake``）
+* `模块文件`_ （``<module>.cmake``）
 
 目录文件
 -----------

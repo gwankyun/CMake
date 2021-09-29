@@ -7,15 +7,10 @@ cmake-toolchains(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-CMake uses a toolchain of utilities to compile, link libraries and create
-archives, and other tasks to drive the build. The toolchain utilities available
-are determined by the languages enabled. In normal builds, CMake automatically
-determines the toolchain for host builds based on system introspection and
-defaults. In cross-compiling scenarios, a toolchain file may be specified
-with information about compiler and utility paths.
+CMake使用工具链来编译、链接库和创建存档，以及其他任务来驱动构建。可用的工具链实用程序由启用的语言决定。在正常构建中，CMake基于系统自省和默认值自动确定主机构建的工具链。在交叉编译场景中，可以使用编译器和工具程序路径信息指定工具链文件。
 
 Languages
 =========

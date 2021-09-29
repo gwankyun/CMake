@@ -7,18 +7,12 @@ cmake-qt(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-CMake can find and use Qt 4 and Qt 5 libraries.  The Qt 4 libraries are found
-by the :module:`FindQt4` find-module shipped with CMake, whereas the
-Qt 5 libraries are found using "Config-file Packages" shipped with Qt 5. See
-:manual:`cmake-packages(7)` for more information about CMake packages, and
-see `the Qt cmake manual <http://qt-project.org/doc/qt-5/cmake-manual.html>`_
-for your Qt version.
+CMake可以找到并使用Qt 4和Qt 5库。Qt4库可以通过CMake自带的 :module:`FindQt4` 搜寻模块找到，而Qt 5库可以通过Qt 5自带的“配置文件包”找到。有关CMake包的更多信息，请参见 :manual:`cmake-packages(7)`，并查看你所用Qt版本的 `Qt cmake手册 <http://qt-project.org/doc/qt-5/cmake-manual.html>`_。
 
-Qt 4 and Qt 5 may be used together in the same
-:manual:`CMake buildsystem <cmake-buildsystem(7)>`:
+Qt 4和Qt 5可以在同一个 :manual:`CMake buildsystem <cmake-buildsystem(7)>` 中一起使用：
 
 .. code-block:: cmake
 
@@ -36,8 +30,7 @@ Qt 4 and Qt 5 may be used together in the same
   add_executable(subscriber subscriber.cpp)
   target_link_libraries(subscriber Qt4::QtGui Qt4::QtDBus)
 
-A CMake target may not link to both Qt 4 and Qt 5.  A diagnostic is issued if
-this is attempted or results from transitive target dependency evaluation.
+一个CMake目标不应该同时链接到Qt 4和Qt 5。如果尝试执行此操作或从可传递目标依赖项评估得到此结果，则会发出诊断。
 
 Qt Build Tools
 ==============
