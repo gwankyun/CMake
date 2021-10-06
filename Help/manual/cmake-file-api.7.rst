@@ -7,21 +7,13 @@ cmake-file-api(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-CMake provides a file-based API that clients may use to get semantic
-information about the buildsystems CMake generates.  Clients may use
-the API by writing query files to a specific location in a build tree
-to request zero or more `Object Kinds`_.  When CMake generates the
-buildsystem in that build tree it will read the query files and write
-reply files for the client to read.
+CMake提供了一个基于文件的API，客户端可以使用它来获取关于CMake生成的构建系统的语义信息。客户端可以通过将查询文件写入构建树的特定位置来请求零个或多个 `对象类型`_ 来使用API。当CMake在构建树中生成构建系统时，它将读取查询文件并写入应答文件供客户端读取。
 
-The file-based API uses a ``<build>/.cmake/api/`` directory at the top
-of a build tree.  The API is versioned to support changes to the layout
-of files within the API directory.  API file layout versioning is
-orthogonal to the versioning of `Object Kinds`_ used in replies.
-This version of CMake supports only one API version, `API v1`_.
+基于文件的API使用构建树顶级的 ``<build>/.cmake/api/`` 目录。API已版本化，以支持更改API目录中的文件布局。API文件布局的版本控制与响应中使用的 `对象类型`_ 的版本控制是正交的。此版本的CMake只支持一个API版本：`API v1`_.
+。
 
 API v1
 ======
@@ -48,7 +40,7 @@ v1 Shared Stateless Query Files
 -------------------------------
 
 Shared stateless query files allow clients to share requests for
-major versions of the `Object Kinds`_ and get all requested versions
+major versions of the `对象类型`_ and get all requested versions
 recognized by the CMake that runs.
 
 Clients may create shared requests by creating empty files in the
@@ -56,7 +48,7 @@ Clients may create shared requests by creating empty files in the
 
   <build>/.cmake/api/v1/query/<kind>-v<major>
 
-where ``<kind>`` is one of the `Object Kinds`_, ``-v`` is literal,
+where ``<kind>`` is one of the `对象类型`_, ``-v`` is literal,
 and ``<major>`` is the major version number.
 
 Files of this form are stateless shared queries not owned by any specific
@@ -67,7 +59,7 @@ v1 Client Stateless Query Files
 -------------------------------
 
 Client stateless query files allow clients to create owned requests for
-major versions of the `Object Kinds`_ and get all requested versions
+major versions of the `对象类型`_ and get all requested versions
 recognized by the CMake that runs.
 
 Clients may create owned requests by creating empty files in
@@ -76,7 +68,7 @@ client-specific query subdirectories.  The form is::
   <build>/.cmake/api/v1/query/client-<client>/<kind>-v<major>
 
 where ``client-`` is literal, ``<client>`` is a string uniquely
-identifying the client, ``<kind>`` is one of the `Object Kinds`_,
+identifying the client, ``<kind>`` is one of the `对象类型`_,
 ``-v`` is literal, and ``<major>`` is the major version number.
 Each client must choose a unique ``<client>`` identifier via its
 own means.
@@ -88,7 +80,7 @@ v1 Client Stateful Query Files
 ------------------------------
 
 Stateful query files allow clients to request a list of versions of
-each of the `Object Kinds`_ and get only the most recent version
+each of the `对象类型`_ and get only the most recent version
 recognized by the CMake that runs.
 
 Clients may create owned stateful queries by creating ``query.json``
@@ -130,7 +122,7 @@ The members are:
   a JSON object with members:
 
   ``kind``
-    Specifies one of the `Object Kinds`_ to be included in the reply.
+    Specifies one of the `对象类型`_ to be included in the reply.
 
   ``version``
     Indicates the version(s) of the object kind that the client
@@ -278,7 +270,7 @@ The members are:
       this is a string specifying the generator platform name.
 
 ``objects``
-  A JSON array listing all versions of all `Object Kinds`_ generated
+  A JSON array listing all versions of all `对象类型`_ generated
   as part of the reply.  Each array entry is a
   `v1 Reply File Reference`_.
 
@@ -357,7 +349,7 @@ The reply index file represents each reference to another reply file
 using a JSON object with members:
 
 ``kind``
-  A string specifying one of the `Object Kinds`_.
+  A string specifying one of the `对象类型`_.
 ``version``
   A JSON object with members ``major`` and ``minor`` specifying
   integer version components of the object kind.
@@ -368,7 +360,7 @@ using a JSON object with members:
 v1 Reply Files
 --------------
 
-Reply files containing specific `Object Kinds`_ are written by CMake.
+Reply files containing specific `对象类型`_ are written by CMake.
 The names of these files are unspecified and must not be interpreted
 by clients.  Clients must first read the `v1 Reply Index File`_ and
 and follow references to the names of the desired response objects.
@@ -385,7 +377,7 @@ reply index file.
 
 .. _`file-api object kinds`:
 
-Object Kinds
+对象类型
 ============
 
 The CMake file-based API reports semantic information about the build
