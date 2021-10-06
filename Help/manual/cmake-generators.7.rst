@@ -7,29 +7,19 @@ cmake-generators(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-A *CMake Generator* is responsible for writing the input files for
-a native build system.  Exactly one of the `CMake Generators`_ must be
-selected for a build tree to determine what native build system is to
-be used.  Optionally one of the `Extra Generators`_ may be selected
-as a variant of some of the `Command-Line Build Tool Generators`_ to
-produce project files for an auxiliary IDE.
+*CMake生成器* 负责为本地构建系统编写输入文件。必须为构建树选择一个 `CMake生成器`_，以确定要使用什么本地构建系统。可以选择一个 `附加生成器`_ 作为一些 `命令行构建工具生成器`_ 的变体，为辅助IDE生成项目文件。
 
-CMake Generators are platform-specific so each may be available only
-on certain platforms.  The :manual:`cmake(1)` command-line tool ``--help``
-output lists available generators on the current platform.  Use its ``-G``
-option to specify the generator for a new build tree.
-The :manual:`cmake-gui(1)` offers interactive selection of a generator
-when creating a new build tree.
+CMake生成器是特定于平台的，所以每个生成器可能只在某些平台上可用。:manual:`cmake(1)` 命令行工具 ``--help`` 输出当前平台上可用的生成器。使用它的 ``-G`` 选项为新的构建树指定生成器。当创建一个新的构建树时， :manual:`cmake-gui(1)` 提供了一个生成器的交互式选择。
 
-CMake Generators
+CMake生成器
 ================
 
 .. _`Command-Line Build Tool Generators`:
 
-Command-Line Build Tool Generators
+命令行构建工具生成器
 ----------------------------------
 
 These generators support command-line build tools.  In order to use them,
@@ -102,10 +92,10 @@ Other Generators
    /generator/Green Hills MULTI
    /generator/Xcode
 
-Extra Generators
+附加生成器
 ================
 
-Some of the `CMake Generators`_ listed in the :manual:`cmake(1)`
+Some of the `CMake生成器`_ listed in the :manual:`cmake(1)`
 command-line tool ``--help`` output may have variants that specify
 an extra generator for an auxiliary IDE tool.  Such generator
 names have the form ``<extra-generator> - <main-generator>``.
