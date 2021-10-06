@@ -7,30 +7,18 @@ cmake-generator-expressions(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-Generator expressions are evaluated during build system generation to produce
-information specific to each build configuration.
+生成器表达式在构建系统生成期间进行计算，以生成特定于每个构建配置的信息。
 
-Generator expressions are allowed in the context of many target properties,
-such as :prop_tgt:`LINK_LIBRARIES`, :prop_tgt:`INCLUDE_DIRECTORIES`,
-:prop_tgt:`COMPILE_DEFINITIONS` and others.  They may also be used when using
-commands to populate those properties, such as :command:`target_link_libraries`,
-:command:`target_include_directories`, :command:`target_compile_definitions`
-and others.
+生成器表达式可以在许多目标属性的语境中使用，例如 :prop_tgt:`LINK_LIBRARIES`、:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS` 等。也可以在使用命令填充这些属性时使用它们，例如 :command:`target_link_libraries`、:command:`target_include_directories`、:command:`target_compile_definitions` 等。
 
-They enable conditional linking, conditional definitions used when compiling,
-conditional include directories, and more.  The conditions may be based on
-the build configuration, target properties, platform information or any other
-queryable information.
+它们支持条件链接、编译时使用条件定义、条件包含目录等等。条件可能基于构建配置、目标属性、平台信息或任何其他可查询的信息。
 
-Generator expressions have the form ``$<...>``.  To avoid confusion, this page
-deviates from most of the CMake documentation in that it omits angular brackets
-``<...>`` around placeholders like ``condition``, ``string``, ``target``,
-among others.
+生成器表达式的形式是 ``$<...>``。为了避免混淆，这个页面与大多数CMake文档不同，它省略了尖括号 ``<...>`` 围绕占位符，如 ``condition``、``string``、``target`` 等。
 
-Generator expressions can be nested, as shown in most of the examples below.
+生成器表达式可以嵌套使用，如下面的大多数示例所示。
 
 .. _`Boolean Generator Expressions`:
 
