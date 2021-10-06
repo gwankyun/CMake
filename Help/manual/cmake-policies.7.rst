@@ -7,30 +7,14 @@ cmake-policies(7)
 
    .. contents::
 
-Introduction
+引言
 ============
 
-Policies in CMake are used to preserve backward compatible behavior
-across multiple releases.  When a new policy is introduced, newer CMake
-versions will begin to warn about the backward compatible behavior.  It
-is possible to disable the warning by explicitly requesting the OLD, or
-backward compatible behavior using the :command:`cmake_policy` command.
-It is also possible to request ``NEW``, or non-backward compatible behavior
-for a policy, also avoiding the warning.  Each policy can also be set to
-either ``NEW`` or ``OLD`` behavior explicitly on the command line with the
-:variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>` variable.
+CMake中的策略用于保持跨多个版本的向后兼容行为。当引入新策略时，新的CMake版本将开始警告向后兼容行为。可以通过使用 :command:`cmake_policy` 命令显式请求OLD或向后兼容行为来禁用警告。也可以请求 ``NEW`` 或策略的非向后兼容行为，这样也可以避免警告。还可以在命令行中用 :variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>` 变量显式地将每个策略设置为 ``NEW`` 或 ``OLD`` 行为。
 
-A policy is a deprecation mechanism and not a reliable feature toggle.
-A policy should almost never be set to ``OLD``, except to silence warnings
-in an otherwise frozen or stable codebase, or temporarily as part of a
-larger migration path. The ``OLD`` behavior of each policy is undesirable
-and will be replaced with an error condition in a future release.
+策略是一种弃用机制，不是可靠的特性切换。策略几乎不应该设置为 ``OLD``，除非在冻结或稳定的代码库中冻结警告，或者暂时作为更大迁移路径的一部分。每个策略的 ``OLD`` 行为都是不可取的，并将在未来的版本中被错误条件替换。
 
-The :command:`cmake_minimum_required` command does more than report an
-error if a too-old version of CMake is used to build a project.  It
-also sets all policies introduced in that CMake version or earlier to
-``NEW`` behavior.  To manage policies without increasing the minimum required
-CMake version, the :command:`if(POLICY)` command may be used:
+如果使用太旧的CMake版本构建项目，:command:`cmake_minimum_required` 命令的作用不仅仅是报告错误。它还将该CMake版本或更早版本中引入的所有策略设置为 ``NEW`` 行为。如果需要管理策略而不增加CMake的最低版本，可以使用 :command:`if(POLICY)` 命令：
 
 .. code-block:: cmake
 
@@ -38,18 +22,11 @@ CMake version, the :command:`if(POLICY)` command may be used:
     cmake_policy(SET CMP0990 NEW)
   endif()
 
-This has the effect of using the ``NEW`` behavior with newer CMake releases which
-users may be using and not issuing a compatibility warning.
+这就产生了在用户可能正在使用的较新的CMake版本中使用 ``NEW`` 行为而不发出兼容性警告的效果。
 
-The setting of a policy is confined in some cases to not propagate to the
-parent scope.  For example, if the files read by the :command:`include` command
-or the :command:`find_package` command contain a use of :command:`cmake_policy`,
-that policy setting will not affect the caller by default.  Both commands accept
-an optional ``NO_POLICY_SCOPE`` keyword to control this behavior.
+在某些情况下，策略的设置被限制为不传播到父作用域。例如，如果 :command:`include` 命令或 :command:`find_package` 命令读取的文件包含使用了 :command:`cmake_policy`，默认情况下，该策略设置不会影响调用者。这两个命令都接受一个可选的 ``NO_POLICY_SCOPE`` 关键字来控制此行为。
 
-The :variable:`CMAKE_MINIMUM_REQUIRED_VERSION` variable may also be used
-to determine whether to report an error on use of deprecated macros or
-functions.
+:variable:`CMAKE_MINIMUM_REQUIRED_VERSION` 变量也可以用来决定是否报告在使用弃用宏或函数时的错误。
 
 Policies Introduced by CMake 3.21
 =================================
