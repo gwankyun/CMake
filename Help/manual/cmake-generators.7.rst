@@ -22,13 +22,11 @@ CMake生成器
 命令行构建工具生成器
 ----------------------------------
 
-These generators support command-line build tools.  In order to use them,
-one must launch CMake from a command-line prompt whose environment is
-already configured for the chosen compiler and build tool.
+这些生成器支持命令行构建工具。为了使用它们，必须从命令行提示符启动CMake，命令行提示符的环境已经为所选的编译器和构建工具配置好了。
 
 .. _`Makefile Generators`:
 
-Makefile Generators
+Makefile生成器
 ^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
@@ -44,7 +42,7 @@ Makefile Generators
 
 .. _`Ninja Generators`:
 
-Ninja Generators
+Ninja生成器
 ^^^^^^^^^^^^^^^^
 
 .. toctree::
@@ -55,16 +53,14 @@ Ninja Generators
 
 .. _`IDE Build Tool Generators`:
 
-IDE Build Tool Generators
+IDE构建工具生成器
 -------------------------
 
-These generators support Integrated Development Environment (IDE)
-project files.  Since the IDEs configure their own environment
-one may launch CMake from any environment.
+这些生成器支持集成开发环境（IDE）项目文件。由于IDE会配置它们自己的环境，所以可以从任何环境启动CMake。
 
 .. _`Visual Studio Generators`:
 
-Visual Studio Generators
+Visual Studio生成器
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
@@ -83,7 +79,7 @@ Visual Studio Generators
    /generator/Visual Studio 16 2019
    /generator/Visual Studio 17 2022
 
-Other Generators
+其他生成器
 ^^^^^^^^^^^^^^^^
 
 .. toctree::
@@ -95,11 +91,7 @@ Other Generators
 附加生成器
 ================
 
-Some of the `CMake生成器`_ listed in the :manual:`cmake(1)`
-command-line tool ``--help`` output may have variants that specify
-an extra generator for an auxiliary IDE tool.  Such generator
-names have the form ``<extra-generator> - <main-generator>``.
-The following extra generators are known to CMake.
+在 :manual:`cmake(1)` 命令行工具 ``--help`` 输出中列出的一些 `CMake生成器`_ 可能具有为辅助IDE工具指定附加生成器的变体。这些生成器名称的格式是 ``<extra-generator> - <main-generator>``。CMake知道以下附加生成器。
 
 .. toctree::
    :maxdepth: 1
