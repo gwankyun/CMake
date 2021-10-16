@@ -48,51 +48,25 @@ cmake(1)
 有关CMake的详细信息，请 `另行参阅`_ 本手册末尾的链接。
 
 
-Introduction to CMake Buildsystems
+介绍CMake构建系统
 ==================================
 
-A *buildsystem* describes how to build a project's executables and libraries
-from its source code using a *build tool* to automate the process.  For
-example, a buildsystem may be a ``Makefile`` for use with a command-line
-``make`` tool or a project file for an Integrated Development Environment
-(IDE).  In order to avoid maintaining multiple such buildsystems, a project
-may specify its buildsystem abstractly using files written in the
-:manual:`CMake language <cmake-language(7)>`.  From these files CMake
-generates a preferred buildsystem locally for each user through a backend
-called a *generator*.
+*构建系统* 描述了如何使用 *构建工具* 从其源代码中构建项目的可执行文件和库的自动化过程。例如，构建系统可能是一个 ``Makefile`` 文件，用于命令行 ``make`` 工具或用于集成开发环境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用 :manual:`CMake语言 <cmake-language(7)>` 编写的文件抽象地指定它的构建系统。从这些文件中，CMake通过一个称为 *生成器* 的后端为每个用户在本地生成一个首选的构建系统。
 
-To generate a buildsystem with CMake, the following must be selected:
+要用CMake生成一个构建系统，必须设置以下选项：
 
-Source Tree
-  The top-level directory containing source files provided by the project.
-  The project specifies its buildsystem using files as described in the
-  :manual:`cmake-language(7)` manual, starting with a top-level file named
-  ``CMakeLists.txt``.  These files specify build targets and their
-  dependencies as described in the :manual:`cmake-buildsystem(7)` manual.
+源代码树
+  包含由项目提供的源文件的顶层目录。该项目使用　:manual:`cmake-language(7)` 手册中描述的文件指定其构建系统，从顶层文件　``CMakeLists.txt``　开始。这些文件指定了 :manual:`cmake-buildsystem(7)` 手册中描述的构建目标及其依赖关系。
 
-Build Tree
-  The top-level directory in which buildsystem files and build output
-  artifacts (e.g. executables and libraries) are to be stored.
-  CMake will write a ``CMakeCache.txt`` file to identify the directory
-  as a build tree and store persistent information such as buildsystem
-  configuration options.
+构建树
+  用于存储构建系统文件和构建输出工件（例如可执行文件和库）的顶层目录。CMake将编写一个 ``CMakeCache.txt`` 文件，将该目录标识为构建树，并存储持久信息，如构建系统配置选项。
 
-  To maintain a pristine source tree, perform an *out-of-source* build
-  by using a separate dedicated build tree.  An *in-source* build in
-  which the build tree is placed in the same directory as the source
-  tree is also supported, but discouraged.
+  要维护原始的源代码树，请使用单独的专用构建树执行 *源代码外* 构建。也支持将构建树放置在与源代码树相同的目录中的 *源代码内* 构建，但不鼓励这样做。
 
-Generator
-  This chooses the kind of buildsystem to generate.  See the
-  :manual:`cmake-generators(7)` manual for documentation of all generators.
-  Run ``cmake --help`` to see a list of generators available locally.
-  Optionally use the ``-G`` option below to specify a generator, or simply
-  accept the default CMake chooses for the current platform.
+生成器
+  它选择要生成的构建系统的类型。有关所有生成器的文档，请参阅 :manual:`cmake-generators(7)` 手册。运行 ``cmake --help`` 查看本地可用的生成器列表。可以选择使用下面的 ``-G`` 选项来指定生成器，或者简单地接受CMake在当前平台的默认选项。
 
-  When using one of the :ref:`Command-Line Build Tool Generators`
-  CMake expects that the environment needed by the compiler toolchain
-  is already configured in the shell.  When using one of the
-  :ref:`IDE Build Tool Generators`, no particular environment is needed.
+  当使用 :ref:`Command-Line Build Tool Generators` 时，CMake期望编译器工具链所需要的环境已经在shell中配置好了。当使用 :ref:`IDE Build Tool Generators` 时，不需要特定的环境。
 
 .. _`Generate a Project Buildsystem`:
 
