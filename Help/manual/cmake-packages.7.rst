@@ -60,7 +60,7 @@ CMake直接支持 `配置文件包`_ 和 `Find模块包`_ 这两种形式的包�
 
 ``COMPONENTS`` 和 ``OPTIONAL_COMPONENTS`` 的处理由包定义。
 
-通过将 :variable:`CMAKE_DISABLE_FIND_PACKAGE_<PackageName>` 变量设置为 ``TRUE``，``<PackageName>`` 包将不会被搜索，并且始终为 ``NOTFOUND``。
+通过将 :variable:`CMAKE_DISABLE_FIND_PACKAGE_<PackageName>` 变量设置为 ``TRUE``，``<PackageName>`` 包将不会被搜索，并且始终为 ``NOTFOUND``。同样地，通过将 :variable:`CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>` 设置为 ``TRUE`` 表明包是必需的。
 
 .. _`Config File Packages`:
 
@@ -329,7 +329,7 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
   set(_supported_components Plot Table)
 
   foreach(_comp ${ClimbingStats_FIND_COMPONENTS})
-    if (NOT ";${_supported_components};" MATCHES _comp)
+    if (NOT ";${_supported_components};" MATCHES ";${_comp};")
       set(ClimbingStats_FOUND False)
       set(ClimbingStats_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
     endif()

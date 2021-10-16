@@ -18,7 +18,46 @@
 
 注意，这个例子在 ``CMakeLists.txt`` 文件中使用了小写命令。CMake支持大小写混合命令。 ``tutorial.cxx`` 的源代码在 ``Step1`` 目录中提供，可以用来计算一个数字的平方根。
 
-添加版本号和配置的头文件
+Build and Run
+-------------
+
+That's all that is needed - we can build and run our project now! First, run
+the :manual:`cmake <cmake(1)>` executable or the
+:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
+with your chosen build tool.
+
+For example, from the command line we could navigate to the
+``Help/guide/tutorial`` directory of the CMake source code tree and create a
+build directory:
+
+.. code-block:: console
+
+  mkdir Step1_build
+
+Next, navigate to the build directory and run CMake to configure the project
+and generate a native build system:
+
+.. code-block:: console
+
+  cd Step1_build
+  cmake ../Step1
+
+Then call that build system to actually compile/link the project:
+
+.. code-block:: console
+
+  cmake --build .
+
+Finally, try to use the newly built ``Tutorial`` with these commands:
+
+.. code-block:: console
+
+  Tutorial 4294967296
+  Tutorial 10
+  Tutorial
+
+
+Adding a Version Number and Configured Header File
 --------------------------------------------------
 
 我们要添加的第一个特性是为我们的可执行文件和项目提供一个版本号。虽然在源码就能做到，但 ``CMakeLists.txt`` 更灵活。
@@ -88,34 +127,24 @@
   :language: cmake
   :end-before: # configure a header file to pass some of the CMake settings
 
-构建和测试
---------------
+Rebuild
+-------
 
-运行 :manual:`cmake <cmake(1)>` 可执行文件或 :manual:`cmake-gui <cmake-gui(1)>` 来配置项目，然后用你选择的构建工具构建它。
-
-例如，我们可以从命令行导航到CMake源代码树的 ``Help/guide/tutorial`` 目录，并创建一个构建目录：
-
-.. code-block:: console
-
-  mkdir Step1_build
-
-接下来，导航到build目录，运行CMake来配置项目并生成一个本地构建系统：
+Let's build our project again. We already created a build directory and ran
+CMake, so we can skip to the build step:
 
 .. code-block:: console
 
   cd Step1_build
-  cmake ../Step1
-
-然后调用构建系统来实际编译/链接项目：
-
-.. code-block:: console
-
   cmake --build .
 
-最后，尝试用以下命令来使用新构建的 ``Tutorial``：
+Now we can try to use the newly built ``Tutorial`` with same commands as before:
 
 .. code-block:: console
 
   Tutorial 4294967296
   Tutorial 10
   Tutorial
+
+Check that the version number is now reported when running the executable without
+any arguments.

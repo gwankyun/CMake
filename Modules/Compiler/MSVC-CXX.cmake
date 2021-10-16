@@ -4,6 +4,7 @@
 include(Compiler/CMakeCommonCompilerMacros)
 
 set(CMAKE_CXX_CLANG_TIDY_DRIVER_MODE "cl")
+set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE_DRIVER_MODE "cl")
 
 if ((CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.0.24215.1 AND
      CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19.10) OR
@@ -70,6 +71,7 @@ elseif (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16.0)
       cxx_std_14
       cxx_std_17
       cxx_std_20
+      cxx_std_23
       )
     _record_compiler_features(CXX "" CMAKE_CXX_COMPILE_FEATURES)
   endmacro()

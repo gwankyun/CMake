@@ -840,6 +840,10 @@ Debuginfo RPM packaging has its own set of variables:
  Binaries must contain debug symbols before packaging so use either ``Debug``
  or ``RelWithDebInfo`` for :variable:`CMAKE_BUILD_TYPE` variable value.
 
+ Additionally, if :variable:`CPACK_STRIP_FILES` is set, the files will be stripped before
+ they get to the RPM generator, so will not contain debug symbols and
+ a debuginfo package will not get built. Do not use with :variable:`CPACK_STRIP_FILES`.
+
 .. note::
 
  Packages generated from packages without binary files, with binary files but
@@ -1035,3 +1039,14 @@ Source RPM packaging has its own set of variables:
  example::
 
   set(CPACK_RPM_BUILDREQUIRES "python >= 2.5.0, cmake >= 2.8")
+
+.. VARIABLE:: CPACK_RPM_REQUIRES_EXCLUDE_FROM
+
+ * Mandatory : NO
+ * Default   : -
+
+ May be used to keep the dependency generator from scanning specific files
+ or directories for dependencies.  Note that you can use a regular
+ expression that matches all of the directories or files, for example::
+
+  set(CPACK_RPM_REQUIRES_EXCLUDE_FROM "bin/libqsqloci.*\\.so.*")

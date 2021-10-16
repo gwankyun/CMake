@@ -24,7 +24,23 @@
 
 :module:`CTest` 模块可以自动调用 ``enable_testing()``，所以我们可以将它将CMake文件中删掉。
 
-我们同样需要创建一个 ``CTestConfig.cmake`` 文件在顶层目录以提交到仪表板。
+We will also need to acquire a ``CTestConfig.cmake`` file to be placed in the
+top-level directory where we can specify information to CTest about the
+project. It contains:
+
+* The project name
+
+* The project "Nightly" start time
+
+  *  The time when a 24 hour "day" starts for this project.
+
+* The URL of the CDash instance where the submission's generated documents
+  will be sent
+
+One has been provided for you in this directory.  It would normally be
+downloaded from the ``Settings`` page of the project on the CDash
+instance that will host and display the test results.  Once downloaded from
+CDash, the file should not be modified locally.
 
 .. literalinclude:: Step9/CTestConfig.cmake
   :caption: CTestConfig.cmake

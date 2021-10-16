@@ -38,12 +38,12 @@
 #include "cmGeneratedFileStream.h"
 #include "cmGlobalGenerator.h"
 #include "cmMakefile.h"
-#include "cmProperty.h"
 #include "cmState.h"
 #include "cmStateSnapshot.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTimestamp.h"
+#include "cmValue.h"
 #include "cmWorkingDirectory.h"
 #include "cmXMLWriter.h"
 #include "cmake.h"
@@ -521,7 +521,7 @@ bool cmCTestTestHandler::ProcessOptions()
   if (cmIsOn(this->GetOption("ScheduleRandom"))) {
     this->CTest->SetScheduleType("Random");
   }
-  if (const char* repeat = this->GetOption("Repeat")) {
+  if (cmValue repeat = this->GetOption("Repeat")) {
     cmsys::RegularExpression repeatRegex(
       "^(UNTIL_FAIL|UNTIL_PASS|AFTER_TIMEOUT):([0-9]+)$");
     if (repeatRegex.find(repeat)) {
@@ -546,7 +546,7 @@ bool cmCTestTestHandler::ProcessOptions()
     }
   }
   if (this->GetOption("ParallelLevel")) {
-    this->CTest->SetParallelLevel(atoi(this->GetOption("ParallelLevel")));
+    this->CTest->SetParallelLevel(std::stoi(this->GetOption("ParallelLevel")));
   }
 
   if (this->GetOption("StopOnFailure")) {
@@ -557,7 +557,7 @@ bool cmCTestTestHandler::ProcessOptions()
                this->IncludeLabelRegularExpressions);
   BuildLabelRE(this->GetMultiOption("ExcludeLabelRegularExpression"),
                this->ExcludeLabelRegularExpressions);
-  const char* val = this->GetOption("IncludeRegularExpression");
+  cmValue val = this->GetOption("IncludeRegularExpression");
   if (val) {
     this->UseIncludeRegExp();
     this->SetIncludeRegExp(val);
@@ -569,19 +569,19 @@ bool cmCTestTestHandler::ProcessOptions()
   }
   val = this->GetOption("ExcludeFixtureRegularExpression");
   if (val) {
-    this->ExcludeFixtureRegExp = val;
+    this->ExcludeFixtureRegExp = *val;
   }
   val = this->GetOption("ExcludeFixtureSetupRegularExpression");
   if (val) {
-    this->ExcludeFixtureSetupRegExp = val;
+    this->ExcludeFixtureSetupRegExp = *val;
   }
   val = this->GetOption("ExcludeFixtureCleanupRegularExpression");
   if (val) {
-    this->ExcludeFixtureCleanupRegExp = val;
+    this->ExcludeFixtureCleanupRegExp = *val;
   }
   val = this->GetOption("ResourceSpecFile");
   if (val) {
-    this->ResourceSpecFile = val;
+    this->ResourceSpecFile = *val;
   }
   this->SetRerunFailed(cmIsOn(this->GetOption("RerunFailed")));
 
@@ -703,6 +703,21 @@ bool cmCTestTestHandler::GenerateXML()
     }
     cmXMLWriter xml(xmlfile);
     this->GenerateCTestXML(xml);
+  }
+
+  if (this->MemCheck) {
+    cmGeneratedFileStream xmlfile;
+    if (!this->StartResultingXML(cmCTest::PartTest, "DynamicAnalysis-Test",
+                                 xmlfile)) {
+      cmCTestLog(this->CTest, ERROR_MESSAGE,
+                 "Cannot create testing XML file" << std::endl);
+      this->LogFile = nullptr;
+      return false;
+    }
+    cmXMLWriter xml(xmlfile);
+    // Explicitly call this class' `GenerateCTestXML` method to make `Test.xml`
+    // as well.
+    this->cmCTestTestHandler::GenerateCTestXML(xml);
   }
 
   return true;
@@ -1814,7 +1829,7 @@ bool cmCTestTestHandler::GetListOfTests()
     // SEND_ERROR or FATAL_ERROR in CTestTestfile or TEST_INCLUDE_FILES
     return false;
   }
-  cmProp specFile = mf.GetDefinition("CTEST_RESOURCE_SPEC_FILE");
+  cmValue specFile = mf.GetDefinition("CTEST_RESOURCE_SPEC_FILE");
   if (this->ResourceSpecFile.empty() && specFile) {
     this->ResourceSpecFile = *specFile;
   }
@@ -2066,26 +2081,26 @@ void cmCTestTestHandler::RecordCustomTestMeasurements(cmXMLWriter& xml,
   }
 }
 
-void cmCTestTestHandler::SetIncludeRegExp(const char* arg)
+void cmCTestTestHandler::SetIncludeRegExp(const std::string& arg)
 {
   this->IncludeRegExp = arg;
 }
 
-void cmCTestTestHandler::SetExcludeRegExp(const char* arg)
+void cmCTestTestHandler::SetExcludeRegExp(const std::string& arg)
 {
   this->ExcludeRegExp = arg;
 }
 
-void cmCTestTestHandler::SetTestsToRunInformation(const char* in)
+void cmCTestTestHandler::SetTestsToRunInformation(cmValue in)
 {
   if (!in) {
     return;
   }
-  this->TestsToRunString = in;
+  this->TestsToRunString = *in;
   // if the argument is a file, then read it and use the contents as the
   // string
   if (cmSystemTools::FileExists(in)) {
-    cmsys::ifstream fin(in);
+    cmsys::ifstream fin(in->c_str());
     unsigned long filelen = cmSystemTools::FileLength(in);
     auto buff = cm::make_unique<char[]>(filelen + 1);
     fin.getline(buff.get(), filelen);
@@ -2165,7 +2180,7 @@ bool cmCTestTestHandler::SetTestsProperties(
 
             // Ensure we have complete triples otherwise the data is corrupt.
             if (triples.size() % 3 == 0) {
-              cmState state;
+              cmState state(cmState::Unknown);
               rt.Backtrace = cmListFileBacktrace(state.CreateBaseSnapshot());
 
               // the first entry represents the top of the trace so we need to
@@ -2245,6 +2260,8 @@ bool cmCTestTestHandler::SetTestsProperties(
             cmExpandList(val, rt.Depends);
           } else if (key == "ENVIRONMENT"_s) {
             cmExpandList(val, rt.Environment);
+          } else if (key == "ENVIRONMENT_MODIFICATION"_s) {
+            cmExpandList(val, rt.EnvironmentModification);
           } else if (key == "LABELS"_s) {
             std::vector<std::string> Labels = cmExpandedList(val);
             rt.Labels.insert(rt.Labels.end(), Labels.begin(), Labels.end());

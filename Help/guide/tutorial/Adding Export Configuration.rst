@@ -5,7 +5,7 @@
 
 下一步是添加必要的信息，以便其他CMake项目可以使用我们的项目，无论是在构建目录、本地安装还是打包时。
 
-第一步是更新我们的 :command:`install(TARGETS)` 命令，不仅指定 ``DESTINATION``，还指定 ``EXPORT``。 ``EXPORT`` 关键字生成并安装一个CMake文件，其中包含从安装树导入安装命令中列出的所有目标的代码。所以让我们继续，通过更新 ``MathFunctions/CMakeLists.txt`` 中的 ``install`` 命令来显式 ``EXPORT`` MathFunctions库，如下所示：
+第一步是更新我们的 :command:`install(TARGETS)` 命令，不仅指定 ``DESTINATION``，还指定 ``EXPORT``。 ``EXPORT`` 关键字生成并安装一个CMake文件，其中包含从安装树导入安装命令中列出的所有目标的代码。所以让我们继续，通过更新 ``MathFunctions/CMakeLists.txt`` 中的 ``install`` 命令来显式 ``EXPORT`` ``MathFunctions`` 库，如下所示：
 
 .. literalinclude:: Complete/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -57,6 +57,46 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :name: CMakeLists.txt-install-Config.cmake
   :language: cmake
   :start-after: # install the configuration targets
+  :end-before: # generate the config file
+
+
+Next, we execute the :command:`configure_package_config_file`.  This command
+will configure a provided file but with a few specific differences from the
+standard :command:`configure_file` way.
+To properly utilize this function, the input file should have a single line
+with the text ``@PACKAGE_INIT@`` in addition to the content that is desired.
+That variable will be replaced with a block of code which turns set values into
+relative paths.  These values which are new can be referenced by the same name
+but prepended with a ``PACKAGE_`` prefix.
+
+.. literalinclude:: Step12/CMakeLists.txt
+  :caption: CMakeLists.txt
+  :name: CMakeLists.txt-configure-package-config.cmake
+  :language: cmake
+  :start-after: # install the configuration targets
+  :end-before: # generate the version file
+
+The :command:`write_basic_package_version_file` is next.  This command writes
+a file which is used by the "find_package" document the version and
+compatibility of the desired package.  Here, we use the ``Tutorial_VERSION_*``
+variables and say that it is compatible with ``AnyNewerVersion``, which
+denotes that this version or any higher one are compatible with the requested
+version.
+
+.. literalinclude:: Step12/CMakeLists.txt
+  :caption: CMakeLists.txt
+  :name: CMakeLists.txt-basic-version-file.cmake
+  :language: cmake
+  :start-after: # generate the version file
+  :end-before: # install the generated configuration files
+
+Finally, set both generated files to be installed:
+
+.. literalinclude:: Step12/CMakeLists.txt
+  :caption: CMakeLists.txt
+  :name: CMakeLists.txt-install-configured-files.cmake
+  :language: cmake
+  :start-after: # install the generated configuration files
   :end-before: # generate the export
 
 至此，我们已经为我们的项目生成了一个可重定位的CMake配置，可以在安装或打包项目之后使用。如果我们想要我们的项目也从一个构建目录中使用，我们只需要添加以下顶层 ``CMakeLists.txt`` 的底部：

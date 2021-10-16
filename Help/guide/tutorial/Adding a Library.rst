@@ -44,7 +44,14 @@
 
 这个选项将在 :manual:`cmake-gui <cmake-gui(1)>` 和 :manual:`ccmake <ccmake(1)>` 中显示，默认值ON可以由用户更改。该设置将存储在缓存中，这样用户在每次在构建目录上运行CMake时就不需要设置该值。
 
-下一个更改是使构建和链接MathFunctions库成为有条件的。为此，我们将顶层 ``CMakeLists.txt`` 文件的结尾修改为如下所示：
+The next change is to make building and linking the ``MathFunctions`` library
+conditional. To do this,  we will create an ``if`` statement which checks the
+value of the option.  Inside the ``if`` block, put the
+:command:`add_subdirectory` command from above with some additional list
+commands to store information needed to link to the library and add the
+subdirectory as an include directory in the ``Tutorial`` target.
+The end of the top-level ``CMakeLists.txt`` file will now look like the
+following:
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: CMakeLists.txt

@@ -7,14 +7,13 @@ CMake发行说明
   This file should include the adjacent "dev.txt" file
   in development versions but not in release versions.
 
-.. include:: dev.txt
-
 Releases
 ========
 
 .. toctree::
    :maxdepth: 1
 
+   3.22 <3.22>
    3.21 <3.21>
    3.20 <3.20>
    3.19 <3.19>

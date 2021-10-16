@@ -245,8 +245,8 @@ void cmGlobalVisualStudio8Generator::WriteProjectConfigurations(
     std::vector<std::string> mapConfig;
     const char* dstConfig = i.c_str();
     if (target.GetProperty("EXTERNAL_MSPROJECT")) {
-      if (cmProp m = target.GetProperty("MAP_IMPORTED_CONFIG_" +
-                                        cmSystemTools::UpperCase(i))) {
+      if (cmValue m = target.GetProperty("MAP_IMPORTED_CONFIG_" +
+                                         cmSystemTools::UpperCase(i))) {
         cmExpandList(*m, mapConfig);
         if (!mapConfig.empty()) {
           dstConfig = mapConfig[0].c_str();
@@ -287,14 +287,14 @@ bool cmGlobalVisualStudio8Generator::NeedsDeploy(
     return false;
   }
 
-  if (cmProp prop = target.GetProperty("VS_SOLUTION_DEPLOY")) {
+  if (cmValue prop = target.GetProperty("VS_SOLUTION_DEPLOY")) {
     // If set, it dictates behavior
     return cmIsOn(
       cmGeneratorExpression::Evaluate(*prop, target.LocalGenerator, config));
   }
 
   // To be deprecated, disable deployment even if target supports it.
-  if (cmProp prop = target.GetProperty("VS_NO_SOLUTION_DEPLOY")) {
+  if (cmValue prop = target.GetProperty("VS_NO_SOLUTION_DEPLOY")) {
     if (cmIsOn(cmGeneratorExpression::Evaluate(*prop, target.LocalGenerator,
                                                config))) {
       // If true, always disable deployment
@@ -370,6 +370,7 @@ static cmVS7FlagTable cmVS8ExtraFlagTable[] = {
     cmVS7FlagTable::UserValueIgnored | cmVS7FlagTable::Continue },
   { "PrecompiledHeaderThrough", "Yu", "Precompiled Header Name", "",
     cmVS7FlagTable::UserValueRequired },
+  { "UsePrecompiledHeader", "Y-", "Don't use precompiled header", "0", 0 },
   // There is no YX option in the VS8 IDE.
 
   // Exception handling mode.  If no entries match, it will be FALSE.

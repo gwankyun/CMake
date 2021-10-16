@@ -25,6 +25,7 @@
 #include "cmProcessOutput.h"
 #include "cmRange.h"
 #include "cmStringAlgorithms.h"
+#include "cmValue.h"
 
 #if !defined(CMAKE_BOOTSTRAP)
 #  include <cm3p/archive.h>
@@ -1592,6 +1593,12 @@ bool cmSystemTools::IsPathToFramework(const std::string& path)
           cmHasLiteralSuffix(path, ".framework"));
 }
 
+bool cmSystemTools::IsPathToMacOSSharedLibrary(const std::string& path)
+{
+  return (cmSystemTools::FileIsFullPath(path) &&
+          cmHasLiteralSuffix(path, ".dylib"));
+}
+
 bool cmSystemTools::CreateTar(const std::string& outFileName,
                               const std::vector<std::string>& files,
                               cmTarCompression compressType, bool verbose,
@@ -1629,7 +1636,10 @@ bool cmSystemTools::CreateTar(const std::string& outFileName,
   cmArchiveWrite a(fout, compress, format.empty() ? "paxr" : format,
                    compressionLevel);
 
-  a.Open();
+  if (!a.Open()) {
+    cmSystemTools::Error(a.GetError());
+    return false;
+  }
   a.SetMTime(mtime);
   a.SetVerbose(verbose);
   bool tarCreatedSuccessfully = true;
@@ -2876,8 +2886,9 @@ bool cmSystemTools::SetRPath(std::string const& file,
   return false;
 }
 
-bool cmSystemTools::VersionCompare(cmSystemTools::CompareOp op,
-                                   const char* lhss, const char* rhss)
+namespace {
+bool VersionCompare(cmSystemTools::CompareOp op, const char* lhss,
+                    const char* rhss)
 {
   const char* endl = lhss;
   const char* endr = rhss;
@@ -2910,26 +2921,37 @@ bool cmSystemTools::VersionCompare(cmSystemTools::CompareOp op,
   // lhs == rhs, so true if operation is EQUAL
   return (op & cmSystemTools::OP_EQUAL) != 0;
 }
+}
+
+bool cmSystemTools::VersionCompare(cmSystemTools::CompareOp op,
+                                   const std::string& lhs,
+                                   const std::string& rhs)
+{
+  return ::VersionCompare(op, lhs.c_str(), rhs.c_str());
+}
+bool cmSystemTools::VersionCompare(cmSystemTools::CompareOp op,
+                                   const std::string& lhs, const char rhs[])
+{
+  return ::VersionCompare(op, lhs.c_str(), rhs);
+}
 
 bool cmSystemTools::VersionCompareEqual(std::string const& lhs,
                                         std::string const& rhs)
 {
-  return cmSystemTools::VersionCompare(cmSystemTools::OP_EQUAL, lhs.c_str(),
-                                       rhs.c_str());
+  return cmSystemTools::VersionCompare(cmSystemTools::OP_EQUAL, lhs, rhs);
 }
 
 bool cmSystemTools::VersionCompareGreater(std::string const& lhs,
                                           std::string const& rhs)
 {
-  return cmSystemTools::VersionCompare(cmSystemTools::OP_GREATER, lhs.c_str(),
-                                       rhs.c_str());
+  return cmSystemTools::VersionCompare(cmSystemTools::OP_GREATER, lhs, rhs);
 }
 
 bool cmSystemTools::VersionCompareGreaterEq(std::string const& lhs,
                                             std::string const& rhs)
 {
-  return cmSystemTools::VersionCompare(cmSystemTools::OP_GREATER_EQUAL,
-                                       lhs.c_str(), rhs.c_str());
+  return cmSystemTools::VersionCompare(cmSystemTools::OP_GREATER_EQUAL, lhs,
+                                       rhs);
 }
 
 static size_t cm_strverscmp_find_first_difference_or_end(const char* lhs,

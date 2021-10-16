@@ -5,11 +5,14 @@
 
 如果平台有 ``log`` 和 ``exp`` ，那么我们将使用它们在 ``mysqrt`` 中计算平方根。首先在 ``MathFunctions/CMakeLists.txt`` 中使用  :module:`CheckSymbolExists` 模块判断这些函数是否可用。在一些平台上，需要链接到 ``m`` 库。如果 ``log`` 和 ``exp`` 不可用，则使用 ``m`` 库并重试。
 
+Add the checks for ``log`` and ``exp`` to ``MathFunctions/CMakeLists.txt``,
+after the call to :command:`target_include_directories`:
+
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-check_symbol_exists
   :language: cmake
-  :start-after: # does this system provide the log and exp functions?
+  :start-after: # to find MathFunctions.h, while we don't.
   :end-before: # add compile definitions
 
 如果可以的话，使用 :command:`target_compile_definitions` 指定 ``HAVE_LOG`` 和 ``HAVE_EXP`` 为 ``PRIVATE`` 编译器定义。

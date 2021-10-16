@@ -22,6 +22,7 @@
 #include "cmCTestResourceSpec.h"
 #include "cmDuration.h"
 #include "cmListFileCache.h"
+#include "cmValue.h"
 
 class cmMakefile;
 class cmXMLWriter;
@@ -65,8 +66,8 @@ public:
   /// them on
   void UseIncludeRegExp();
   void UseExcludeRegExp();
-  void SetIncludeRegExp(const char*);
-  void SetExcludeRegExp(const char*);
+  void SetIncludeRegExp(const std::string&);
+  void SetExcludeRegExp(const std::string&);
 
   void SetMaxIndex(int n) { this->MaxIndex = n; }
   int GetMaxIndex() { return this->MaxIndex; }
@@ -81,7 +82,7 @@ public:
   }
 
   //! pass the -I argument down
-  void SetTestsToRunInformation(const char*);
+  void SetTestsToRunInformation(cmValue);
 
   cmCTestTestHandler();
 
@@ -151,6 +152,7 @@ public:
     // return code of test which will mark test as "not run"
     int SkipReturnCode;
     std::vector<std::string> Environment;
+    std::vector<std::string> EnvironmentModification;
     std::vector<std::string> Labels;
     std::set<std::string> LockedResources;
     std::set<std::string> FixturesSetup;

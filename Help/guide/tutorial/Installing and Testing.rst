@@ -62,4 +62,4 @@
 
 最后，有一个 ``do_test`` 函数，它运行程序并验证计算出来的平方根对于给定的输入是否正确。对于每次调用 ``do_test``，都会将另一个测试添加到项目中，并通过的参数传递名称、输入及预期结果。
 
-重新构建程序并进入程序目录，运行 :manual:`ctest <ctest(1)>` 命令：``ctest -N`` 和 ``ctest -VV``。对于多配置生成器（例如Visual Studio），必须指定配置类型。例如，要在调试模式下运行测试，可以在构建目录（而不是Debug目录！）中运行  ``ctest -C Debug -VV``。或者，在IDE构建 ``RUN_TESTS`` 目标。
+重新构建程序并进入程序目录，运行 :manual:`ctest <ctest(1)>` 命令：``ctest -N`` 和 ``ctest -VV``。对于多配置生成器（例如Visual Studio），必须使用 ``-C <mode>`` 指定配置类型。例如，要在调试模式下运行测试，可以在构建目录（而不是Debug目录！）中运行  ``ctest -C Debug -VV``。或者，在IDE构建 ``RUN_TESTS`` 目标。

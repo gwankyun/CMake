@@ -28,6 +28,15 @@ CMake中的策略用于保持跨多个版本的向后兼容行为。当引入新
 
 :variable:`CMAKE_MINIMUM_REQUIRED_VERSION` 变量也可以用来决定是否报告在使用弃用宏或函数时的错误。
 
+Policies Introduced by CMake 3.22
+=================================
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0128: Selection of language standard and extension flags improved. </policy/CMP0128>
+   CMP0127: cmake_dependent_option() supports full Condition Syntax. </policy/CMP0127>
+
 Policies Introduced by CMake 3.21
 =================================
 

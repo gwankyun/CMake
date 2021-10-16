@@ -215,6 +215,9 @@ cmake-properties(7)
    /prop_tgt/GNUtoMS
    /prop_tgt/HAS_CXX
    /prop_tgt/HIP_ARCHITECTURES
+   /prop_tgt/HIP_EXTENSIONS
+   /prop_tgt/HIP_STANDARD
+   /prop_tgt/HIP_STANDARD_REQUIRED
    /prop_tgt/IMPLICIT_DEPENDS_INCLUDE_TRANSFORM
    /prop_tgt/IMPORTED
    /prop_tgt/IMPORTED_COMMON_LANGUAGE_RUNTIME
@@ -274,8 +277,11 @@ cmake-properties(7)
    /prop_tgt/LANG_COMPILER_LAUNCHER
    /prop_tgt/LANG_CPPCHECK
    /prop_tgt/LANG_CPPLINT
+   /prop_tgt/LANG_EXTENSIONS
    /prop_tgt/LANG_INCLUDE_WHAT_YOU_USE
    /prop_tgt/LANG_LINKER_LAUNCHER
+   /prop_tgt/LANG_STANDARD
+   /prop_tgt/LANG_STANDARD_REQUIRED
    /prop_tgt/LANG_VISIBILITY_PRESET
    /prop_tgt/LIBRARY_OUTPUT_DIRECTORY
    /prop_tgt/LIBRARY_OUTPUT_DIRECTORY_CONFIG
@@ -451,6 +457,7 @@ cmake-properties(7)
    /prop_test/DEPENDS
    /prop_test/DISABLED
    /prop_test/ENVIRONMENT
+   /prop_test/ENVIRONMENT_MODIFICATION
    /prop_test/FAIL_REGULAR_EXPRESSION
    /prop_test/FIXTURES_CLEANUP
    /prop_test/FIXTURES_REQUIRED

@@ -11,12 +11,11 @@
 #include "cmGeneratorTarget.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
-#include "cmProperty.h"
 #include "cmStateDirectory.h"
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
-#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmValue.h"
 #include "cmake.h"
 
 cmGlobalCommonGenerator::cmGlobalCommonGenerator(cmake* cm)
@@ -48,7 +47,7 @@ cmGlobalCommonGenerator::ComputeDirectoryTargets() const
       DirectoryTarget::Target t;
       t.GT = gt.get();
       const std::string EXCLUDE_FROM_ALL("EXCLUDE_FROM_ALL");
-      if (cmProp exclude = gt->GetProperty(EXCLUDE_FROM_ALL)) {
+      if (cmValue exclude = gt->GetProperty(EXCLUDE_FROM_ALL)) {
         for (const std::string& config : configs) {
           cmGeneratorExpressionInterpreter genexInterpreter(lg.get(), config,
                                                             gt.get());
@@ -117,11 +116,11 @@ std::string cmGlobalCommonGenerator::GetEditCacheCommand() const
       editCacheCommand = cmSystemTools::GetCMakeGUICommand();
     }
     if (!editCacheCommand.empty()) {
-      cm->AddCacheEntry("CMAKE_EDIT_COMMAND", editCacheCommand.c_str(),
+      cm->AddCacheEntry("CMAKE_EDIT_COMMAND", editCacheCommand,
                         "Path to cache edit program executable.",
                         cmStateEnums::INTERNAL);
     }
   }
-  cmProp edit_cmd = cm->GetCacheDefinition("CMAKE_EDIT_COMMAND");
+  cmValue edit_cmd = cm->GetCacheDefinition("CMAKE_EDIT_COMMAND");
   return edit_cmd ? *edit_cmd : std::string();
 }

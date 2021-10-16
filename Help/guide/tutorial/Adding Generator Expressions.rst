@@ -31,6 +31,16 @@
   :start-after: project(Tutorial VERSION 1.0)
   :end-before: # add compiler warning flags just when building this project via
 
+**Note**:  This upcoming section will require a change to the
+:command:`cmake_minimum_required` usage in the code.  The Generator Expression
+that is about to be used was introduced in `3.15`.  Update the call to require
+that more recent version:
+
+.. code-block:: cmake
+  :caption: CMakeLists.txt
+  :name: CMakeLists.txt-version-update
+
+  cmake_minimum_required(VERSION 3.15)
 
 接下来，我们为项目添加所需的编译器警告标志。由于警告标志会根据编译器的不同而变化，因此我们使用 ``COMPILE_LANG_AND_ID`` 生成器表达式来控制在给定的语言和一组编译器id中应用哪些标志，如下所示：
 

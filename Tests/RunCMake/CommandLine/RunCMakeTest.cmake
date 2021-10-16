@@ -647,9 +647,10 @@ run_cmake_command(E_cat_directory
 
 file(WRITE "${out}/first_file.txt" "first file to append\n")
 file(WRITE "${out}/second_file.txt" "second file to append\n")
+file(WRITE "${out}/empty_file.txt" "")
 file(WRITE "${out}/unicode_file.txt" "àéùç - 한국어") # Korean in Korean
 run_cmake_command(E_cat_good_cat
-  ${CMAKE_COMMAND} -E cat "${out}/first_file.txt" "${out}/second_file.txt" "${out}/unicode_file.txt")
+  ${CMAKE_COMMAND} -E cat "${out}/first_file.txt" "${out}/second_file.txt" "${out}/empty_file.txt" "${out}/unicode_file.txt")
 unset(out)
 
 run_cmake_command(E_cat_good_binary_cat
@@ -918,3 +919,10 @@ set(ProfilingTestOutput ${RunCMake_TEST_BINARY_DIR}/output.json)
 set(RunCMake_TEST_OPTIONS --profiling-format=google-trace --profiling-output=${ProfilingTestOutput})
 run_cmake(ProfilingTest)
 unset(RunCMake_TEST_OPTIONS)
+
+if(RunCMake_GENERATOR MATCHES "^Visual Studio 10 2010")
+  run_cmake_with_options(DeprecateVS10-WARN-ON -DCMAKE_WARN_VS10=ON)
+  unset(ENV{CMAKE_WARN_VS10})
+  run_cmake(DeprecateVS10-WARN-ON)
+  run_cmake_with_options(DeprecateVS10-WARN-OFF -DCMAKE_WARN_VS10=OFF)
+endif()
