@@ -18,37 +18,31 @@
 
 注意，这个例子在 ``CMakeLists.txt`` 文件中使用了小写命令。CMake支持大小写混合命令。 ``tutorial.cxx`` 的源代码在 ``Step1`` 目录中提供，可以用来计算一个数字的平方根。
 
-Build and Run
+构建和运行
 -------------
 
-That's all that is needed - we can build and run our project now! First, run
-the :manual:`cmake <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+这就是所需要的一切——我们现在就可以构建并运行我们的项目了！首先，运行 :manual:`cmake <cmake(1)>` 可执行文件或 :manual:`cmake-gui <cmake-gui(1)>` 来配置项目，然后使用你选择的构建工具来构建它。
 
-For example, from the command line we could navigate to the
-``Help/guide/tutorial`` directory of the CMake source code tree and create a
-build directory:
+例如，我们可以在命令行中导航到CMake源代码树的 ``Help/guide/tutorial`` 目录，并创建一个构建目录：
 
 .. code-block:: console
 
   mkdir Step1_build
 
-Next, navigate to the build directory and run CMake to configure the project
-and generate a native build system:
+接下来，导航到构建目录并运行CMake来配置项目并生成一个本地构建系统：
 
 .. code-block:: console
 
   cd Step1_build
   cmake ../Step1
 
-Then call that build system to actually compile/link the project:
+然后调用构建系统来实际编译/链接项目：
 
 .. code-block:: console
 
   cmake --build .
 
-Finally, try to use the newly built ``Tutorial`` with these commands:
+最后，试着用以下命令来使用新构建的 ``Tutorial``：
 
 .. code-block:: console
 
@@ -57,7 +51,7 @@ Finally, try to use the newly built ``Tutorial`` with these commands:
   Tutorial
 
 
-Adding a Version Number and Configured Header File
+添加版本号和配置头文件
 --------------------------------------------------
 
 我们要添加的第一个特性是为我们的可执行文件和项目提供一个版本号。虽然在源码就能做到，但 ``CMakeLists.txt`` 更灵活。
@@ -127,18 +121,17 @@ Adding a Version Number and Configured Header File
   :language: cmake
   :end-before: # configure a header file to pass some of the CMake settings
 
-Rebuild
--------
+重新构建
+--------
 
-Let's build our project again. We already created a build directory and ran
-CMake, so we can skip to the build step:
+让我们重新构建我们的项目。我们已经创建了一个构建目录并运行了CMake，所以我们可以跳过构建步骤：
 
 .. code-block:: console
 
   cd Step1_build
   cmake --build .
 
-Now we can try to use the newly built ``Tutorial`` with same commands as before:
+现在，我们可以用之前一样的命令来尝试使用新构建的 ``Tutorial``：
 
 .. code-block:: console
 
@@ -146,5 +139,4 @@ Now we can try to use the newly built ``Tutorial`` with same commands as before:
   Tutorial 10
   Tutorial
 
-Check that the version number is now reported when running the executable without
-any arguments.
+当运行不带任何参数的可执行文件时，检查现在报告的版本号。
