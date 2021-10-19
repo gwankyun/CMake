@@ -31,10 +31,7 @@
   :start-after: project(Tutorial VERSION 1.0)
   :end-before: # add compiler warning flags just when building this project via
 
-**Note**:  This upcoming section will require a change to the
-:command:`cmake_minimum_required` usage in the code.  The Generator Expression
-that is about to be used was introduced in `3.15`.  Update the call to require
-that more recent version:
+**注意**：下一节将要求修改代码中 :command:`cmake_minimum_required` 的用法。即将使用的Generator表达式在 `3.15` 中介绍。更新调用以要求更新的版本：
 
 .. code-block:: cmake
   :caption: CMakeLists.txt

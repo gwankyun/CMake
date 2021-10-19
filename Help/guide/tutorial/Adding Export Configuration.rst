@@ -60,14 +60,7 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :end-before: # generate the config file
 
 
-Next, we execute the :command:`configure_package_config_file`.  This command
-will configure a provided file but with a few specific differences from the
-standard :command:`configure_file` way.
-To properly utilize this function, the input file should have a single line
-with the text ``@PACKAGE_INIT@`` in addition to the content that is desired.
-That variable will be replaced with a block of code which turns set values into
-relative paths.  These values which are new can be referenced by the same name
-but prepended with a ``PACKAGE_`` prefix.
+接下来，我们执行 :command:`configure_package_config_file`。该命令将配置提供的文件，但与标准 :command:`configure_file` 方法有一些特定的区别。为了正确地使用这个函数，除了所需的内容外，输入文件应该有一行文本 ``@PACKAGE_INIT@``。该变量将被一个代码块替换，该代码块将把设置值转换为相对路径。这些新值可以通过相同的名称引用，但可以在其前面加上 ``PACKAGE_`` 前缀。
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -76,12 +69,7 @@ but prepended with a ``PACKAGE_`` prefix.
   :start-after: # install the configuration targets
   :end-before: # generate the version file
 
-The :command:`write_basic_package_version_file` is next.  This command writes
-a file which is used by the "find_package" document the version and
-compatibility of the desired package.  Here, we use the ``Tutorial_VERSION_*``
-variables and say that it is compatible with ``AnyNewerVersion``, which
-denotes that this version or any higher one are compatible with the requested
-version.
+接下来是 :command:`write_basic_package_version_file` 。该命令写入“find_package”文档所使用的文件，以确定所需包的版本和兼容性。在这里，我们使用 ``Tutorial_VERSION_*`` 变量，并说它与 ``AnyNewerVersion`` 兼容，这表示该版本或任何更高版本与请求的版本兼容。
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -90,7 +78,7 @@ version.
   :start-after: # generate the version file
   :end-before: # install the generated configuration files
 
-Finally, set both generated files to be installed:
+最后，将两个生成的文件设置为需安装：
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
