@@ -16,7 +16,7 @@ cmake-developer(7)
 
 .. _`Find Modules`:
 
-Find Modules
+查找模块
 ============
 
 A "find module" is a ``Find<PackageName>.cmake`` file to be loaded by the
@@ -29,7 +29,7 @@ package.  A find module is useful in cases where an upstream library does
 not provide a :ref:`config file package <Config File Packages>`.
 
 The traditional approach is to use variables for everything, including
-libraries and executables: see the `Standard Variable Names`_ section
+libraries and executables: see the `标准变量名`_ section
 below.  This is what most of the existing find modules provided by CMake
 do.
 
@@ -80,7 +80,7 @@ variables starting with underscore are for temporary use only.
 
 .. _`CMake Developer Standard Variable Names`:
 
-Standard Variable Names
+标准变量名
 -----------------------
 
 For a ``FindXxx.cmake`` module that takes the approach of setting
@@ -239,7 +239,7 @@ Make sure you comment them as deprecated, so that no-one starts using
 them.
 
 
-A Sample Find Module
+查找模块示例
 --------------------
 
 We will describe how to create a simple find module for a library ``Foo``.
@@ -410,7 +410,7 @@ traditional variable approach looks like
   endif()
 
 If more than one library was found, all of them should be included in
-these variables (see the `Standard Variable Names`_ section for more
+these variables (see the `标准变量名`_ section for more
 information).
 
 When providing imported targets, these should be namespaced (hence the

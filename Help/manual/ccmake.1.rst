@@ -3,7 +3,7 @@
 ccmake(1)
 *********
 
-Synopsis
+概要
 ========
 
 .. parsed-literal::
@@ -17,14 +17,14 @@ Synopsis
 
 CMake是一个跨平台的构建系统生成器。项目使用与平台无关的CMake列表文件指定构建过程，这些列表文件包含在名为 ``CMakeLists.txt`` 的源代码树的每个目录中。用户通过使用CMake为其平台上的本地工具生成构建系统来构建项目。
 
-Options
+选项
 =======
 
 .. include:: OPTIONS_BUILD.txt
 
 .. include:: OPTIONS_HELP.txt
 
-See Also
+另行参阅
 ========
 
 .. include:: LINKS.txt

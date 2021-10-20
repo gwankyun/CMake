@@ -32,7 +32,7 @@ Qt 4和Qt 5可以在同一个 :manual:`CMake buildsystem <cmake-buildsystem(7)>`
 
 一个CMake目标不应该同时链接到Qt 4和Qt 5。如果尝试执行此操作或从可传递目标依赖项评估得到此结果，则会发出诊断。
 
-Qt Build Tools
+Qt构建工具
 ==============
 
 Qt relies on some bundled tools for code generation, such as ``moc`` for
@@ -206,7 +206,7 @@ overrides options from the :prop_tgt:`AUTORCC_OPTIONS` target property.
 Source files can be excluded from :prop_tgt:`AUTORCC` processing by
 enabling :prop_sf:`SKIP_AUTORCC` or the broader :prop_sf:`SKIP_AUTOGEN`.
 
-The ``<ORIGIN>_autogen`` target
+``<ORIGIN>_autogen`` 目标
 ===============================
 
 The ``moc`` and ``uic`` tools are executed as part of a synthesized
@@ -216,7 +216,7 @@ of the ``<ORIGIN>`` target (see :prop_tgt:`AUTOGEN_ORIGIN_DEPENDS`).
 Target dependencies may be added to the ``<ORIGIN>_autogen`` target by adding
 them to the :prop_tgt:`AUTOGEN_TARGET_DEPENDS` target property.
 
-Visual Studio Generators
+Visual Studio生成器
 ========================
 
 When using the :manual:`Visual Studio generators <cmake-generators(7)>`, CMake
@@ -234,7 +234,7 @@ when either
 - :prop_tgt:`AUTOGEN_TARGET_DEPENDS` lists a source file
 - :variable:`CMAKE_GLOBAL_AUTOGEN_TARGET` is enabled
 
-qtmain.lib on Windows
+Windows上的qtmain.lib
 =====================
 
 The Qt 4 and 5 :prop_tgt:`IMPORTED` targets for the QtGui libraries specify

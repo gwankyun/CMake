@@ -3,7 +3,7 @@
 cpack(1)
 ********
 
-Synopsis
+概要
 ========
 
 .. parsed-literal::
@@ -24,7 +24,7 @@ Synopsis
 
 在标准的CMake工作流中，CMake可执行文件 ``CPackConfig.cmake`` 是由 :manual:`cmake <cmake(1)>` 可执行文件生成的，前提是 :module:`CPack` 模块包含在项目的 ``CMakeLists.txt`` 文件中。
 
-Options
+选项
 =======
 
 ``-G <generators>``
@@ -94,7 +94,7 @@ Options
 
 .. include:: OPTIONS_HELP.txt
 
-See Also
+另行参阅
 ========
 
 .. include:: LINKS.txt

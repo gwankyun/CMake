@@ -75,7 +75,7 @@ transitive behavior of build properties and usage requirements.
 
 .. _`Requiring Language Standards`:
 
-Requiring Language Standards
+要求语言标准
 ----------------------------
 
 In projects that use a large number of commonly available features from
@@ -99,7 +99,7 @@ of at-least C++ 11 (or C++ 14, C++ 17, ...), adding flags such as
 ``-std=gnu++11`` if necessary.  This applies to sources within ``mylib``
 as well as any dependents (that may include headers from ``mylib``).
 
-Availability of Compiler Extensions
+编译器扩展是否可用
 -----------------------------------
 
 The :prop_tgt:`<LANG>_EXTENSIONS` target property defaults to the compiler's
@@ -215,7 +215,7 @@ the feature-appropriate include directory
   add_executable(consumer_no consumer_no.cpp)
   target_link_libraries(consumer_no foo)
 
-Supported Compilers
+支持的编译器
 ===================
 
 CMake is currently aware of the :prop_tgt:`C++ standards <CXX_STANDARD>`

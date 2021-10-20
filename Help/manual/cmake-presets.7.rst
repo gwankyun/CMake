@@ -14,7 +14,7 @@ CMake用户经常面临的一个问题是与他人共享设置，以获取配置
 
 ``CMakePresets.json`` 和 ``CMakeUserPresets.json`` 位于项目的根目录。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了 ``--preset``，则至少必须有一个）。``CMakePresets.json`` 的目的是保存项目范围的构建，而 ``CMakeUserPresets.json`` 的目的是为开发人员保存他们自己的本地构建。``CMakePresets.json`` 可能会被签入版本控制系统，而 ``CMakeUserPresets.json`` 则不应被签入。例如，如果一个项目正在使用Git, ``CMakePresets.json`` 可能会被跟踪，``CMakeUserPresets.json`` 应该被添加到 ``.gitignore`` 中。
 
-Format
+格式
 ======
 
 The files are a JSON document with an object as the root:
@@ -57,20 +57,20 @@ The root object recognizes the following fields:
 
 ``configurePresets``
 
-  An optional array of `Configure Preset`_ objects.
+  An optional array of `配置预设`_ objects.
   This is allowed in preset files specifying version ``1`` or above.
 
 ``buildPresets``
 
-  An optional array of `Build Preset`_ objects.
+  An optional array of `构建预设`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
 ``testPresets``
 
-  An optional array of `Test Preset`_ objects.
+  An optional array of `测试预设`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
-Configure Preset
+配置预设
 ^^^^^^^^^^^^^^^^
 
 Each entry of the ``configurePresets`` array is a JSON object
@@ -109,7 +109,7 @@ that may contain the following fields:
 
 ``condition``
 
-  An optional `Condition`_ object. This is allowed in preset files specifying
+  An optional `条件`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -173,7 +173,7 @@ that may contain the following fields:
 ``toolchainFile``
 
   An optional string representing the path to the toolchain file.
-  This field supports `macro expansion`_. If a relative path is specified,
+  This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the build directory, and if not found,
   relative to the source directory. This field takes precedence over any
   :variable:`CMAKE_TOOLCHAIN_FILE` value. It is allowed in preset files
@@ -182,7 +182,7 @@ that may contain the following fields:
 ``binaryDir``
 
   An optional string representing the path to the output binary directory.
-  This field supports `macro expansion`_. If a relative path is specified,
+  This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the source directory. If ``binaryDir`` is not
   specified, it must be inherited from the ``inherits`` preset (unless this
   preset is ``hidden``). In version ``3`` or above, this field may be
@@ -191,7 +191,7 @@ that may contain the following fields:
 ``installDir``
 
   An optional string representing the path to the installation directory.
-  This field supports `macro expansion`_. If a relative path is specified,
+  This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the source directory. This is allowed in
   preset files specifying version ``3`` or above.
 
@@ -207,7 +207,7 @@ that may contain the following fields:
   may not be an empty string), and the value is either ``null``, a boolean
   (which is equivalent to a value of ``"TRUE"`` or ``"FALSE"`` and a type
   of ``BOOL``), a string representing the value of the variable (which
-  supports `macro expansion`_), or an object with the following fields:
+  supports `宏扩展`_), or an object with the following fields:
 
   ``type``
 
@@ -217,7 +217,7 @@ that may contain the following fields:
 
     A required string or boolean representing the value of the variable.
     A boolean is equivalent to ``"TRUE"`` or ``"FALSE"``. This field
-    supports `macro expansion`_.
+    supports `宏扩展`_.
 
   Cache variables are inherited through the ``inherits`` field, and the
   preset's variables will be the union of its own ``cacheVariables`` and
@@ -232,7 +232,7 @@ that may contain the following fields:
   (which may not be an empty string), and the value is either ``null`` or
   a string representing the value of the variable. Each variable is set
   regardless of whether or not a value was given to it by the process's
-  environment. This field supports `macro expansion`_, and environment
+  environment. This field supports `宏扩展`_, and environment
   variables in this map may reference each other, and may be listed in any
   order, as long as such references do not cause a cycle (for example,
   if ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
@@ -313,7 +313,7 @@ that may contain the following fields:
     An optional boolean. Setting this to ``true`` is equivalent to passing
     ``--debug-find`` on the command line.
 
-Build Preset
+构建预设
 ^^^^^^^^^^^^
 
 Each entry of the ``buildPresets`` array is a JSON object
@@ -352,7 +352,7 @@ that may contain the following fields:
 
 ``condition``
 
-  An optional `Condition`_ object. This is allowed in preset files specifying
+  An optional `条件`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -451,7 +451,7 @@ that may contain the following fields:
   An optional array of strings. Equivalent to passing options after ``--``
   on the command line. The array values support macro expansion.
 
-Test Preset
+测试预设
 ^^^^^^^^^^^
 
 Each entry of the ``testPresets`` array is a JSON object
@@ -489,7 +489,7 @@ that may contain the following fields:
 
 ``condition``
 
-  An optional `Condition`_ object. This is allowed in preset files specifying
+  An optional `条件`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -818,7 +818,7 @@ that may contain the following fields:
 
       Equivalent to passing ``--no-tests=ignore`` on the command line.
 
-Condition
+条件
 ^^^^^^^^^
 
 The ``condition`` field of a preset, allowed in preset files specifying version
@@ -915,7 +915,7 @@ object, it has the following fields:
 
       A required condition object.
 
-Macro Expansion
+宏扩展
 ^^^^^^^^^^^^^^^
 
 As mentioned above, some fields support macro expansion. Macros are
@@ -1002,7 +1002,7 @@ Recognized macros include:
   identifier prefix, followed by a ``.``, followed by the macro name. For
   example, the Example IDE could have ``$vendor{xide.ideInstallDir}``.
 
-Schema
+模式
 ======
 
 :download:`This file </manual/presets/schema.json>` provides a machine-readable
