@@ -53,12 +53,12 @@ Project source trees may also provide their own modules and
 specify their location(s) in the :variable:`CMAKE_MODULE_PATH`
 variable.
 
-Syntax
+语法
 ======
 
 .. _`CMake Language Encoding`:
 
-Encoding
+编码
 --------
 
 A CMake Language source file may be written in 7-bit ASCII text for
@@ -75,12 +75,12 @@ Furthermore, CMake 3.0 and above allow a leading UTF-8
 
 .. _`Byte-Order Mark`: http://en.wikipedia.org/wiki/Byte_order_mark
 
-Source Files
+源文件
 ------------
 
 A CMake Language source file consists of zero or more
 `Command Invocations`_ separated by newlines and optionally
-spaces and `Comments`_:
+spaces and `注释`_:
 
 .. raw:: latex
 
@@ -98,12 +98,12 @@ spaces and `Comments`_:
 
    \end{small}
 
-Note that any source file line not inside `Command Arguments`_ or
+Note that any source file line not inside `命令参数`_ or
 a `Bracket Comment`_ can end in a `Line Comment`_.
 
 .. _`Command Invocations`:
 
-Command Invocations
+命令调用
 -------------------
 
 A *command invocation* is a name followed by paren-enclosed arguments
@@ -151,7 +151,7 @@ For example:
  not separated by any whitespace.  For compatibility, CMake 2.8.12 and
  higher accept such code but produce a warning.
 
-Command Arguments
+命令参数
 -----------------
 
 There are three types of arguments within `Command Invocations`_:
@@ -169,7 +169,7 @@ There are three types of arguments within `Command Invocations`_:
 
 .. _`Bracket Argument`:
 
-Bracket Argument
+括号参数
 ^^^^^^^^^^^^^^^^
 
 A *bracket argument*, inspired by `Lua`_ long bracket syntax,
@@ -227,7 +227,7 @@ For example::
 
 .. _`Quoted Argument`:
 
-Quoted Argument
+引用参数
 ^^^^^^^^^^^^^^^
 
 A *quoted argument* encloses content between opening and closing
@@ -289,7 +289,7 @@ immediately following newline character.  For example:
 
 .. _`Unquoted Argument`:
 
-Unquoted Argument
+反引用参数
 ^^^^^^^^^^^^^^^^^
 
 An *unquoted argument* is not enclosed by any quoting syntax.
@@ -313,7 +313,7 @@ except when escaped by a backslash:
 Unquoted argument content consists of all text in a contiguous block
 of allowed or escaped characters.  Both `Escape Sequences`_ and
 `Variable References`_ are evaluated.  The resulting value is divided
-in the same way `Lists`_ divide into elements.  Each non-empty element
+in the same way `列表`_ divide into elements.  Each non-empty element
 is given to the command invocation as an argument.  Therefore an
 unquoted argument may be given to a command invocation as zero or
 more arguments.
@@ -355,7 +355,7 @@ For example:
 
 .. _`Escape Sequences`:
 
-Escape Sequences
+转义序列
 ----------------
 
 An *escape sequence* is a ``\`` followed by one character:
@@ -377,7 +377,7 @@ An *escape sequence* is a ``\`` followed by one character:
 A ``\`` followed by a non-alphanumeric character simply encodes the literal
 character without interpreting it as syntax.  A ``\t``, ``\r``, or ``\n``
 encodes a tab, carriage return, or newline character, respectively. A ``\;``
-outside of any `Variable References`_  encodes itself but may be used in an
+outside of any `变量引用`_  encodes itself but may be used in an
 `Unquoted Argument`_ to encode the ``;`` without dividing the argument
 value on it.  A ``\;`` inside `Variable References`_ encodes the literal
 ``;`` character.  (See also policy :policy:`CMP0053` documentation for
@@ -385,7 +385,7 @@ historical considerations.)
 
 .. _`Variable References`:
 
-Variable References
+变量引用
 -------------------
 
 A *variable reference* has the form ``${<variable>}`` and is
@@ -401,11 +401,11 @@ may be used to evaluate variables of any name.  See also policy
 :policy:`CMP0053` documentation for historical considerations and reasons why
 the ``$`` is also technically permitted but is discouraged.
 
-The `Variables`_ section documents the scope of variable names
+The `变量`_ section documents the scope of variable names
 and how their values are set.
 
 An *environment variable reference* has the form ``$ENV{<variable>}``.
-See the `Environment Variables`_ section for more information.
+See the `环境变量`_ section for more information.
 
 A *cache variable reference* has the form ``$CACHE{<variable>}``.
 See :variable:`CACHE` for more information.
@@ -416,7 +416,7 @@ instead of ``${<variable>}``.
 However, environment and cache variables always need to be
 referenced as ``$ENV{<variable>}`` or ``$CACHE{<variable>}``.
 
-Comments
+注释
 --------
 
 A comment starts with a ``#`` character that is not inside a
@@ -426,7 +426,7 @@ comments: a `Bracket Comment`_ and a `Line Comment`_.
 
 .. _`Bracket Comment`:
 
-Bracket Comment
+括号注释
 ^^^^^^^^^^^^^^^
 
 A ``#`` immediately followed by a :token:`bracket_open` forms a
@@ -457,7 +457,7 @@ For example:
 
 .. _`Line Comment`:
 
-Line Comment
+行注释
 ^^^^^^^^^^^^
 
 A ``#`` not immediately followed by a :token:`bracket_open` forms a
@@ -483,16 +483,16 @@ For example:
  message("First Argument\n" # This is a line comment :)
          "Second Argument") # This is a line comment.
 
-Control Structures
+控制结构
 ==================
 
-Conditional Blocks
+条件块
 ------------------
 
 The :command:`if`/:command:`elseif`/:command:`else`/:command:`endif`
 commands delimit code blocks to be executed conditionally.
 
-Loops
+循环
 -----
 
 The :command:`foreach`/:command:`endforeach` and
@@ -502,7 +502,7 @@ blocks to be executed in a loop.  Inside such blocks the
 early whereas the :command:`continue` command may be used
 to start with the next iteration immediately.
 
-Command Definitions
+命令定义
 -------------------
 
 The :command:`macro`/:command:`endmacro`, and
@@ -511,7 +511,7 @@ code blocks to be recorded for later invocation as commands.
 
 .. _`CMake Language Variables`:
 
-Variables
+变量
 =========
 
 Variables are the basic unit of storage in the CMake Language.
@@ -528,7 +528,7 @@ Variables have dynamic scope.  Each variable "set" or "unset"
 creates a binding in the current scope:
 
 Function Scope
- `Command Definitions`_ created by the :command:`function` command
+ `命令定义`_ created by the :command:`function` command
  create commands that, when invoked, process the recorded commands
  in a new variable binding scope.  A variable "set" or "unset"
  binds in this scope and is visible for the current function and
@@ -570,10 +570,10 @@ by project code.
 
 .. _`CMake Language Environment Variables`:
 
-Environment Variables
+环境变量
 =====================
 
-Environment Variables are like ordinary `Variables`_, with the
+Environment Variables are like ordinary `变量`_, with the
 following differences:
 
 Scope
@@ -598,7 +598,7 @@ variables that have special meaning to CMake.
 
 .. _`CMake Language Lists`:
 
-Lists
+列表
 =====
 
 Although all values in CMake are stored as strings, a string

@@ -12,7 +12,7 @@ cmake-buildsystem(7)
 
 基于CMake的构建系统被组织为一组高级逻辑目标。每个目标对应于一个可执行文件或库，或者是包含自定义命令的自定义目标。目标之间的依赖关系在构建系统中表示，以确定构建顺序和响应更改的重新生成规则。
 
-Binary Targets
+二进制目标
 ==============
 
 Executables and libraries are defined using the :command:`add_executable`
@@ -33,7 +33,7 @@ is defined as an executable formed by compiling and linking ``zipapp.cpp``.
 When linking the ``zipapp`` executable, the ``archive`` static library is
 linked in.
 
-Binary Executables
+二进制可执行文件
 ------------------
 
 The :command:`add_executable` command defines an executable target:
@@ -47,12 +47,12 @@ run at build time can transparently use an :prop_tgt:`EXECUTABLE <TYPE>`
 target as a ``COMMAND`` executable.  The buildsystem rules will ensure that
 the executable is built before attempting to run the command.
 
-Binary Library Types
+二进制库类型
 --------------------
 
 .. _`Normal Libraries`:
 
-Normal Libraries
+普通库
 ^^^^^^^^^^^^^^^^
 
 By default, the :command:`add_library` command defines a ``STATIC`` library,
@@ -87,7 +87,7 @@ at least one symbol.
 
 .. _`Apple Frameworks`:
 
-Apple Frameworks
+苹果框架
 """"""""""""""""
 
 A ``SHARED`` library may be marked with the :prop_tgt:`FRAMEWORK`
@@ -109,7 +109,7 @@ and it uniquely identifies the bundle.
 
 .. _`Object Libraries`:
 
-Object Libraries
+目标库
 ^^^^^^^^^^^^^^^^
 
 The ``OBJECT`` library type defines a non-archival collection of object files
@@ -153,7 +153,7 @@ Object libraries may not be used as the ``TARGET`` in a use of the
 the list of objects can be used by :command:`add_custom_command(OUTPUT)`
 or :command:`file(GENERATE)` by using ``$<TARGET_OBJECTS:objlib>``.
 
-Build Specification and Usage Requirements
+构建规范和使用要求
 ==========================================
 
 The :command:`target_include_directories`, :command:`target_compile_definitions`
@@ -188,7 +188,7 @@ See the :ref:`Creating Relocatable Packages` section of the
 that must be taken when specifying usage requirements while creating
 packages for redistribution.
 
-Target Properties
+目标属性
 -----------------
 
 The contents of the :prop_tgt:`INCLUDE_DIRECTORIES`,
@@ -250,7 +250,7 @@ targets in multiple different directories convenient through use of the
 
 .. _`Target Usage Requirements`:
 
-Transitive Usage Requirements
+传递使用要求
 -----------------------------
 
 The usage requirements of a target can transitively propagate to dependents.
@@ -323,7 +323,7 @@ command.  See :ref:`Creating Packages` for more.
 
 .. _`Compatible Interface Properties`:
 
-Compatible Interface Properties
+兼容的接口属性
 -------------------------------
 
 Some target properties are required to be compatible between a target and
@@ -468,7 +468,7 @@ Note that for each dependee, the set of properties specified in each
 compatible interface property must not intersect with the set specified in
 any of the other properties.
 
-Property Origin Debugging
+属性起源调试
 -------------------------
 
 Because build specifications can be determined by dependencies, the lack of
@@ -499,7 +499,7 @@ defined the property.  In the case of
 value of the property from each dependency, and whether the value determines
 the new extreme.
 
-Build Specification with Generator Expressions
+使用生成器表达式构建规范
 ----------------------------------------------
 
 Build specifications may use
@@ -596,7 +596,7 @@ exporting see the :manual:`cmake-packages(7)` manual.
 
 .. _`Include Directories and Usage Requirements`:
 
-Include Directories and Usage Requirements
+包含目录和使用要求
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Include directories require some special consideration when specified as usage
@@ -678,7 +678,7 @@ If a binary target is linked transitively to a macOS :prop_tgt:`FRAMEWORK`, the
 This has the same effect as passing the framework directory as an include
 directory.
 
-Link Libraries and Generator Expressions
+链接库和生成器表达式
 ----------------------------------------
 
 Like build specifications, :prop_tgt:`link libraries <LINK_LIBRARIES>` may be
@@ -710,7 +710,7 @@ contains a cycle.  :manual:`cmake(1)` issues an error message.
 
 .. _`Output Artifacts`:
 
-Output Artifacts
+输出构件
 ----------------
 
 The buildsystem targets created by the :command:`add_library` and
@@ -730,7 +730,7 @@ systems including Cygwin are DLL platforms.
 
 .. _`Runtime Output Artifacts`:
 
-Runtime Output Artifacts
+运行时输出构件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 A *runtime* output artifact of a buildsystem target may be:
@@ -748,7 +748,7 @@ and names in the build tree.
 
 .. _`Library Output Artifacts`:
 
-Library Output Artifacts
+库输出构件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 A *library* output artifact of a buildsystem target may be:
@@ -767,7 +767,7 @@ and names in the build tree.
 
 .. _`Archive Output Artifacts`:
 
-Archive Output Artifacts
+档案输出构件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 An *archive* output artifact of a buildsystem target may be:
@@ -793,7 +793,7 @@ The :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`
 target properties may be used to control archive output artifact locations
 and names in the build tree.
 
-Directory-Scoped Commands
+目录作用域命令
 -------------------------
 
 The :command:`target_include_directories`,
@@ -806,7 +806,7 @@ scope for convenience.
 
 .. _`Build Configurations`:
 
-Build Configurations
+构建配置
 ====================
 
 Configurations determine specifications for a certain type of build, such
@@ -849,7 +849,7 @@ In the presence of :prop_tgt:`IMPORTED` targets, the content of
 accounted for by the above ``$<CONFIG:Debug>`` expression.
 
 
-Case Sensitivity
+区分大小写
 ----------------
 
 :variable:`CMAKE_BUILD_TYPE` and :variable:`CMAKE_CONFIGURATION_TYPES` are
@@ -888,7 +888,7 @@ any mixture of upper and lowercase, although there are strong conventions
 always convert the value to upper or lowercase first and adjust the test
 accordingly.
 
-Default And Custom Configurations
+默认和自定义配置
 ---------------------------------
 
 By default, CMake defines a number of standard configurations:
@@ -919,7 +919,7 @@ a custom configuration type, make sure these variables are set appropriately,
 typically as cache variables.
 
 
-Pseudo Targets
+伪目标
 ==============
 
 Some target types do not represent outputs of the buildsystem, but only inputs
@@ -928,7 +928,7 @@ targets are not represented in the generated buildsystem.
 
 .. _`Imported Targets`:
 
-Imported Targets
+导入的目标
 ----------------
 
 An :prop_tgt:`IMPORTED` target represents a pre-existing dependency.  Usually
@@ -965,7 +965,7 @@ with :prop_tgt:`IMPORTED` targets.
 
 .. _`Alias Targets`:
 
-Alias Targets
+别名目标
 -------------
 
 An ``ALIAS`` target is a name which may be used interchangeably with
@@ -1008,7 +1008,7 @@ property from it:
 
 .. _`Interface Libraries`:
 
-Interface Libraries
+接口库
 -------------------
 
 An ``INTERFACE`` library target does not compile sources and does not

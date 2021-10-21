@@ -22,7 +22,7 @@ cmake-generator-expressions(7)
 
 .. _`Boolean Generator Expressions`:
 
-Boolean Generator Expressions
+布尔生成器表达式
 =============================
 
 Boolean expressions evaluate to either ``0`` or ``1``.
@@ -31,7 +31,7 @@ generator expression<Conditional Generator Expressions>`.
 
 Available boolean expressions are:
 
-Logical Operators
+逻辑操作符
 -----------------
 
 .. genex:: $<BOOL:string>
@@ -62,7 +62,7 @@ Logical Operators
 
   ``0`` if ``condition`` is ``1``, else ``1``.
 
-String Comparisons
+字符串比较
 ------------------
 
 .. genex:: $<STREQUAL:string1,string2>
@@ -111,7 +111,7 @@ String Comparisons
 
   ``1`` if ``v1`` is a version greater than or equal to ``v2``, else ``0``.
 
-Variable Queries
+变量查询
 ----------------
 
 .. genex:: $<TARGET_EXISTS:target>
@@ -482,7 +482,7 @@ Variable Queries
   (see ``$<DEVICE_LINK:list>`` generator expression). This expression can only
   be used to specify link options.
 
-String-Valued Generator Expressions
+字符串值生成器表达式
 ===================================
 
 These expressions expand to some string.
@@ -527,7 +527,7 @@ introduce a helper variable to keep the code readable:
 
 The following string-valued generator expressions are available:
 
-Escaped Characters
+转义字符
 ------------------
 
 String literals to escape the special meaning a character would otherwise have:
@@ -546,7 +546,7 @@ String literals to escape the special meaning a character would otherwise have:
 
 .. _`Conditional Generator Expressions`:
 
-Conditional Expressions
+条件表达式
 -----------------------
 
 Conditional generator expressions depend on a boolean condition
@@ -576,7 +576,7 @@ otherwise expands to the empty string.
 
 .. _`String Transforming Generator Expressions`:
 
-String Transformations
+字符串转换
 ----------------------
 
 .. genex:: $<JOIN:list,string>
@@ -650,7 +650,7 @@ String Transformations
         echo $<TARGET_GENEX_EVAL:foo,$<TARGET_PROPERTY:foo,CUSTOM_KEYS>>
     )
 
-Variable Queries
+变量查询
 ----------------
 
 .. genex:: $<CONFIG>
@@ -785,7 +785,7 @@ Variable Queries
 
 .. _`Target-Dependent Queries`:
 
-Target-Dependent Queries
+依赖目标的查询
 ------------------------
 
 These queries refer to a target ``tgt``. This can be any runtime artifact,
@@ -1072,7 +1072,7 @@ which is just the string ``tgt``.
   :prop_tgt:`INSTALL_NAME_DIR` property or the ``INSTALL_NAME_DIR`` argument of
   :command:`install(RUNTIME_DEPENDENCY_SET)`, and empty otherwise.
 
-Output-Related Expressions
+与输出相关的表达式
 --------------------------
 
 .. genex:: $<TARGET_NAME:...>
@@ -1149,7 +1149,7 @@ Output-Related Expressions
   in ``...`` are evaluated using the custom command's "command config".
   With other generators, the content of ``...`` is evaluated normally.
 
-Debugging
+调试
 =========
 
 Since generator expressions are evaluated during generation of the buildsystem,
