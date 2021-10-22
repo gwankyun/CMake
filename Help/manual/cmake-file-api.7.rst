@@ -23,20 +23,20 @@ It has the following subdirectories:
 
 ``query/``
   Holds query files written by clients.
-  These may be `v1 Shared Stateless Query Files`_,
-  `v1 Client Stateless Query Files`_, or `v1 Client Stateful Query Files`_.
+  These may be `v1共享无状态查询文件`_,
+  `v1客户端无状态查询文件`_, or `v1客户端有状态查询文件`_.
 
 ``reply/``
   Holds reply files written by CMake whenever it runs to generate a build
-  system.  These are indexed by a `v1 Reply Index File`_ file that may
-  reference additional `v1 Reply Files`_.  CMake owns all reply files.
+  system.  These are indexed by a `v1应答索引文件`_ file that may
+  reference additional `v1应答文件`_.  CMake owns all reply files.
   Clients must never remove them.
 
   Clients may look for and read a reply index file at any time.
   Clients may optionally create the ``reply/`` directory at any time
   and monitor it for the appearance of a new reply index file.
 
-v1 Shared Stateless Query Files
+v1共享无状态查询文件
 -------------------------------
 
 Shared stateless query files allow clients to share requests for
@@ -55,7 +55,7 @@ Files of this form are stateless shared queries not owned by any specific
 client.  Once created they should not be removed without external client
 coordination or human intervention.
 
-v1 Client Stateless Query Files
+v1客户端无状态查询文件
 -------------------------------
 
 Client stateless query files allow clients to create owned requests for
@@ -76,7 +76,7 @@ own means.
 Files of this form are stateless queries owned by the client ``<client>``.
 The owning client may remove them at any time.
 
-v1 Client Stateful Query Files
+v1客户端有状态查询文件
 ------------------------------
 
 Stateful query files allow clients to request a list of versions of
@@ -137,7 +137,7 @@ The members are:
   ``client``
     Optional member reserved for use by the client.  This value is
     preserved in the reply written for the client in the
-    `v1 Reply Index File`_ but is otherwise ignored.  Clients may use
+    `v1应答索引文件`_ but is otherwise ignored.  Clients may use
     this to pass custom information with a request through to its reply.
 
   For each requested object kind CMake will choose the *first* version
@@ -151,18 +151,18 @@ The members are:
 ``client``
   Optional member reserved for use by the client.  This value is
   preserved in the reply written for the client in the
-  `v1 Reply Index File`_ but is otherwise ignored.  Clients may use
+  `v1应答索引文件`_ but is otherwise ignored.  Clients may use
   this to pass custom information with a query through to its reply.
 
 Other ``query.json`` top-level members are reserved for future use.
 If present they are ignored for forward compatibility.
 
-v1 Reply Index File
+v1应答索引文件
 -------------------
 
 CMake writes an ``index-*.json`` file to the ``v1/reply/`` directory
 whenever it runs to generate a build system.  Clients must read the
-reply index file first and may read other `v1 Reply Files`_ only by
+reply index file first and may read other `v1应答文件`_ only by
 following references.  The form of the reply index file name is::
 
   <build>/.cmake/api/v1/reply/index-<unspecified>.json
@@ -272,7 +272,7 @@ The members are:
 ``objects``
   A JSON array listing all versions of all `对象类型`_ generated
   as part of the reply.  Each array entry is a
-  `v1 Reply File Reference`_.
+  `v1应答文件引用`_.
 
 ``reply``
   A JSON object mirroring the content of the ``query/`` directory
@@ -280,41 +280,41 @@ The members are:
 
   ``<kind>-v<major>``
     A member of this form appears for each of the
-    `v1 Shared Stateless Query Files`_ that CMake recognized as a
+    `v1共享无状态查询文件`_ that CMake recognized as a
     request for object kind ``<kind>`` with major version ``<major>``.
-    The value is a `v1 Reply File Reference`_ to the corresponding
+    The value is a `v1应答文件引用`_ to the corresponding
     reply file for that object kind and version.
 
   ``<unknown>``
     A member of this form appears for each of the
-    `v1 Shared Stateless Query Files`_ that CMake did not recognize.
+    `v1共享无状态查询文件`_ that CMake did not recognize.
     The value is a JSON object with a single ``error`` member
     containing a string with an error message indicating that the
     query file is unknown.
 
   ``client-<client>``
     A member of this form appears for each client-owned directory
-    holding `v1 Client Stateless Query Files`_.
+    holding `v1客户端无状态查询文件`_.
     The value is a JSON object mirroring the content of the
     ``query/client-<client>/`` directory.  The members are of the form:
 
     ``<kind>-v<major>``
       A member of this form appears for each of the
-      `v1 Client Stateless Query Files`_ that CMake recognized as a
+      `v1客户端无状态查询文件`_ that CMake recognized as a
       request for object kind ``<kind>`` with major version ``<major>``.
-      The value is a `v1 Reply File Reference`_ to the corresponding
+      The value is a `v1应答文件引用`_ to the corresponding
       reply file for that object kind and version.
 
     ``<unknown>``
       A member of this form appears for each of the
-      `v1 Client Stateless Query Files`_ that CMake did not recognize.
+      `v1客户端无状态查询文件`_ that CMake did not recognize.
       The value is a JSON object with a single ``error`` member
       containing a string with an error message indicating that the
       query file is unknown.
 
     ``query.json``
       This member appears for clients using
-      `v1 Client Stateful Query Files`_.
+      `v1客户端有状态查询文件`_.
       If the ``query.json`` file failed to read or parse as a JSON object,
       this member is a JSON object with a single ``error`` member
       containing a string with an error message.  Otherwise, this member
@@ -336,13 +336,13 @@ The members are:
 
         * a JSON object with a single ``error`` member containing a string
           with an error message, or
-        * a `v1 Reply File Reference`_ to the corresponding reply file for
+        * a `v1应答文件引用`_ to the corresponding reply file for
           the requested object kind and selected version.
 
 After reading the reply index file, clients may read the other
-`v1 Reply Files`_ it references.
+`v1应答文件`_ it references.
 
-v1 Reply File Reference
+v1应答文件引用
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 The reply index file represents each reference to another reply file
@@ -357,12 +357,12 @@ using a JSON object with members:
   A JSON string specifying a path relative to the reply index file
   to another JSON file containing the object.
 
-v1 Reply Files
+v1应答文件
 --------------
 
 Reply files containing specific `对象类型`_ are written by CMake.
 The names of these files are unspecified and must not be interpreted
-by clients.  Clients must first read the `v1 Reply Index File`_ and
+by clients.  Clients must first read the `v1应答索引文件`_ and
 and follow references to the names of the desired response objects.
 
 Reply files (including the index file) will never be replaced by
@@ -398,7 +398,7 @@ The ``version`` member is a JSON object with ``major`` and ``minor``
 members specifying integer components of the object kind's version.
 Additional top-level members are specific to each object kind.
 
-Object Kind "codemodel"
+“codemodel”对象类型
 -----------------------
 
 The ``codemodel`` object kind describes the build system structure as
@@ -408,7 +408,7 @@ There is only one ``codemodel`` object major version, version 2.
 Version 1 does not exist to avoid confusion with that from
 :manual:`cmake-server(7)` mode.
 
-"codemodel" version 2
+“codemodel”版本2
 ^^^^^^^^^^^^^^^^^^^^^
 
 ``codemodel`` object version 2 is a JSON object:
@@ -566,7 +566,7 @@ The members specific to ``codemodel`` objects are:
     ``jsonFile``
       A JSON string specifying a path relative to the codemodel file
       to another JSON file containing a
-      `"codemodel" version 2 "directory" object`_.
+      `“codemodel”版本2“directory”对象`_.
 
       This field was added in codemodel version 2.3.
 
@@ -632,12 +632,12 @@ The members specific to ``codemodel`` objects are:
     ``jsonFile``
       A JSON string specifying a path relative to the codemodel file
       to another JSON file containing a
-      `"codemodel" version 2 "target" object`_.
+      `“codemodel”版本2“target”对象`_.
 
-"codemodel" version 2 "directory" object
+“codemodel”版本2“directory”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A codemodel "directory" object is referenced by a `"codemodel" version 2`_
+A codemodel "directory" object is referenced by a `“codemodel”版本2`_
 object's ``directories`` array.  Each "directory" object is a JSON object
 with members:
 
@@ -841,13 +841,13 @@ with members:
     index into the ``backtraceGraph`` member's ``nodes`` array.
 
 ``backtraceGraph``
-  A `"codemodel" version 2 "backtrace graph"`_ whose nodes are referenced
+  A `“codemodel”版本2“backtrace graph”对象`_ whose nodes are referenced
   from ``backtrace`` members elsewhere in this "directory" object.
 
-"codemodel" version 2 "target" object
+“codemodel”版本2“target”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A codemodel "target" object is referenced by a `"codemodel" version 2`_
+A codemodel "target" object is referenced by a `“codemodel”版本2`_
 object's ``targets`` array.  Each "target" object is a JSON object
 with members:
 
@@ -1175,14 +1175,14 @@ with members:
       with forward slashes.
 
 ``backtraceGraph``
-  A `"codemodel" version 2 "backtrace graph"`_ whose nodes are referenced
+  A `“codemodel”版本2“backtrace graph”对象`_ whose nodes are referenced
   from ``backtrace`` members elsewhere in this "target" object.
 
-"codemodel" version 2 "backtrace graph"
+“codemodel”版本2“backtrace graph”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``backtraceGraph`` member of a `"codemodel" version 2 "directory" object`_,
-or `"codemodel" version 2 "target" object`_ is a JSON object describing a
+The ``backtraceGraph`` member of a `“codemodel”版本2“directory”对象`_,
+or `“codemodel”版本2“target”对象`_ is a JSON object describing a
 graph of backtraces.  Its nodes are referenced from ``backtrace`` members
 elsewhere in the containing object.  The backtrace graph object members are:
 
@@ -1218,7 +1218,7 @@ elsewhere in the containing object.  The backtrace graph object members are:
   directory then the path is specified relative to that directory.
   Otherwise the path is absolute.
 
-Object Kind "cache"
+“cache”对象类型
 -------------------
 
 The ``cache`` object kind lists cache entries.  These are the
@@ -1229,7 +1229,7 @@ There is only one ``cache`` object major version, version 2.
 Version 1 does not exist to avoid confusion with that from
 :manual:`cmake-server(7)` mode.
 
-"cache" version 2
+“cache”版本2
 ^^^^^^^^^^^^^^^^^
 
 ``cache`` object version 2 is a JSON object:
@@ -1292,7 +1292,7 @@ The members specific to ``cache`` objects are:
     ``value``
       A string specifying the value of the cache entry property.
 
-Object Kind "cmakeFiles"
+“cmakeFiles”对象类型
 ------------------------
 
 The ``cmakeFiles`` object kind lists files used by CMake while
@@ -1301,7 +1301,7 @@ configuring and generating the build system.  These include the
 
 There is only one ``cmakeFiles`` object major version, version 1.
 
-"cmakeFiles" version 1
+“cmakeFiles”版本1
 ^^^^^^^^^^^^^^^^^^^^^^
 
 ``cmakeFiles`` object version 1 is a JSON object:
@@ -1374,7 +1374,7 @@ The members specific to ``cmakeFiles`` objects are:
     Optional member that is present with boolean value ``true``
     if the path specifies a file in the CMake installation.
 
-Object Kind "toolchains"
+“toolchains”对象类型
 ------------------------
 
 The ``toolchains`` object kind lists properties of the toolchains used during
@@ -1382,7 +1382,7 @@ the build.  These include the language, compiler path, ID, and version.
 
 There is only one ``toolchains`` object major version, version 1.
 
-"toolchains" version 1
+“toolchains”版本1
 ^^^^^^^^^^^^^^^^^^^^^^
 
 ``toolchains`` object version 1 is a JSON object:

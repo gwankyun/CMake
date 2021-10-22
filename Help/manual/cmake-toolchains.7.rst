@@ -12,7 +12,7 @@ cmake-toolchains(7)
 
 CMake使用工具链来编译、链接库和创建存档，以及其他任务来驱动构建。可用的工具链实用程序由启用的语言决定。在正常构建中，CMake基于系统自省和默认值自动确定主机构建的工具链。在交叉编译场景中，可以使用编译器和工具程序路径信息指定工具链文件。
 
-Languages
+编程语言
 =========
 
 Languages are enabled by the :command:`project` command.  Language-specific
@@ -49,7 +49,7 @@ etc.
 The :prop_gbl:`ENABLED_LANGUAGES` global property contains the languages which
 are currently enabled.
 
-Variables and Properties
+变量和属性
 ========================
 
 Several variables relate to the language components of a toolchain which are
@@ -68,7 +68,7 @@ which compiler to use to invoke the linker. This is calculated by the
 libraries, the language of the dependent libraries. The choice CMake makes may
 be overridden with the :prop_tgt:`LINKER_LANGUAGE` target property.
 
-Toolchain Features
+工具链特性
 ==================
 
 CMake provides the :command:`try_compile` command and wrapper macros such as
@@ -87,7 +87,7 @@ hidden visibility, if supported by the compiler.
 
 .. _`Cross Compiling Toolchain`:
 
-Cross Compiling
+交叉编译
 ===============
 
 If :manual:`cmake(1)` is invoked with the command line parameter
@@ -104,7 +104,7 @@ cases, where there is a need to evaluate paths inside a toolchain file, the more
 appropriate variable to use would be :variable:`CMAKE_CURRENT_LIST_DIR`, since
 it always has an unambiguous, predictable value.
 
-Cross Compiling for Linux
+Linux交叉编译
 -------------------------
 
 A typical cross-compiling toolchain for Linux has content such
@@ -157,7 +157,7 @@ the ``CMAKE_FIND_ROOT_PATH_MODE_*`` variables.
 
 .. _`Cray Cross-Compile`:
 
-Cross Compiling for the Cray Linux Environment
+Cray Linux环境交叉编译
 ----------------------------------------------
 
 Cross compiling for compute nodes in the Cray Linux Environment can be done
@@ -185,7 +185,7 @@ system compilers in ``/usr/bin`` instead of the Cray wrappers.  If instead
 targeting a compute node is desired, just specify the
 :variable:`CMAKE_SYSTEM_NAME` as mentioned above.
 
-Cross Compiling using Clang
+使用Clang交叉编译
 ---------------------------
 
 Some compilers such as Clang are inherently cross compilers.
@@ -210,7 +210,7 @@ toolchain which will be used by the compiler driver. The
 :variable:`CMAKE_<LANG>_COMPILER_EXTERNAL_TOOLCHAIN` variable can be set in a
 toolchain file to pass the path to the compiler driver.
 
-Cross Compiling for QNX
+QNX交叉编译
 -----------------------
 
 As the Clang compiler the QNX QCC compile is inherently a cross compiler.
@@ -231,7 +231,7 @@ value to those supported compilers when compiling:
   set(CMAKE_SYSROOT $ENV{QNX_TARGET})
 
 
-Cross Compiling for Windows CE
+Windows CE交叉编译
 ------------------------------
 
 Cross compiling for Windows CE requires the corresponding SDK being
@@ -257,7 +257,7 @@ Windows CE to use.  Currently version 8.0 (Windows Embedded Compact 2013) is
 supported out of the box.  Other versions may require one to set
 :variable:`CMAKE_GENERATOR_TOOLSET` to the correct value.
 
-Cross Compiling for Windows 10 Universal Applications
+Windows 10通用应用交叉编译
 -----------------------------------------------------
 
 A toolchain file to configure a Visual Studio generator for a
@@ -274,7 +274,7 @@ to be ``10.0`` to build with the latest available Windows 10 SDK.
 Specify a more specific version (e.g. ``10.0.10240.0`` for RTM)
 to build with the corresponding SDK.
 
-Cross Compiling for Windows Phone
+Windows Phone交叉编译
 ---------------------------------
 
 A toolchain file to configure a Visual Studio generator for
@@ -285,7 +285,7 @@ Windows Phone may look like this:
   set(CMAKE_SYSTEM_NAME WindowsPhone)
   set(CMAKE_SYSTEM_VERSION 8.1)
 
-Cross Compiling for Windows Store
+Windows Store交叉编译
 ---------------------------------
 
 A toolchain file to configure a Visual Studio generator for
@@ -298,7 +298,7 @@ Windows Store may look like this:
 
 .. _`Cross Compiling for Android`:
 
-Cross Compiling for Android
+Android交叉编译
 ---------------------------
 
 A toolchain file may configure cross-compiling for Android by setting the
@@ -360,7 +360,7 @@ CMake uses the following steps to select one of the environments:
 
 .. _`Cross Compiling for Android with the NDK`:
 
-Cross Compiling for Android with the NDK
+使用NDK交叉编译Android
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A toolchain file may configure :ref:`Makefile Generators`,
@@ -444,7 +444,7 @@ Alternatively one may specify the values without a toolchain file:
 
 .. _`Cross Compiling for Android with a Standalone Toolchain`:
 
-Cross Compiling for Android with a Standalone Toolchain
+使用单独工具链交叉编译Android
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A toolchain file may configure :ref:`Makefile Generators` or the
@@ -504,7 +504,7 @@ Alternatively one may specify the values without a toolchain file:
 
 .. _`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio Edition`:
 
-Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio Edition
+使用NVIDIA Nsight Tegra Visual Studio版本交叉编译Android
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A toolchain file to configure one of the :ref:`Visual Studio Generators`
@@ -539,7 +539,7 @@ See also target properties:
 
 .. _`Cross Compiling for iOS, tvOS, or watchOS`:
 
-Cross Compiling for iOS, tvOS, or watchOS
+iOS、tvOS或者watchOS交叉编译
 -----------------------------------------
 
 For cross-compiling to iOS, tvOS, or watchOS, the :generator:`Xcode`
@@ -618,7 +618,7 @@ Check library:
       cmdsize 16
       version 9.3
 
-Code Signing
+代码签名
 ^^^^^^^^^^^^
 
 Some build artifacts for the embedded Apple platforms require mandatory
@@ -631,7 +631,7 @@ configuration phase (i.e compiler ID and feature detection).
 
 .. _`Switching Between Device and Simulator`:
 
-Switching Between Device and Simulator
+在设备和模拟器之间切换
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When configuring for any of the embedded platforms, one can target either
