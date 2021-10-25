@@ -349,16 +349,14 @@ cmake(1)
 构建一个项目
 ===============
 
-CMake provides a command-line signature to build an already-generated
-project binary tree:
+CMake提供了一个命令行签名来构建一个已经生成的项目二进制树：
 
 .. code-block:: shell
 
   cmake --build <dir>             [<options>] [-- <build-tool-options>]
   cmake --build --preset <preset> [<options>] [-- <build-tool-options>]
 
-This abstracts a native build tool's command-line interface with the
-following options:
+这将使用以下选项抽象出一个本机构建工具的命令行界面：
 
 ``--build <dir>``
   Project binary directory to be built.  This is required (unless a preset
@@ -414,16 +412,13 @@ Run ``cmake --build`` with no options for quick help.
 安装一个项目
 =================
 
-CMake provides a command-line signature to install an already-generated
-project binary tree:
+CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
 .. code-block:: shell
 
   cmake --install <dir> [<options>]
 
-This may be used after building a project to run installation without
-using the generated build system or the native build tool.
-The options are:
+这可以在构建项目后使用，以运行安装，而不使用生成的构建系统或本机构建工具。选项如下：
 
 ``--install <dir>``
   Project binary directory to install. This is required and must be first.
@@ -457,8 +452,7 @@ Run ``cmake --install`` with no options for quick help.
 
   cmake --open <dir>
 
-Open the generated project in the associated application.  This is only
-supported by some generators.
+在关联的应用程序中打开生成的项目。只支持部分生成器。
 
 
 .. _`Script Processing Mode`:
@@ -470,27 +464,21 @@ supported by some generators.
 
   cmake [{-D <var>=<value>}...] -P <cmake-script-file> [-- <unparsed-options>...]
 
-Process the given cmake file as a script written in the CMake
-language.  No configure or generate step is performed and the cache
-is not modified.  If variables are defined using ``-D``, this must be
-done before the ``-P`` argument.
+将给定的cmake文件作为CMake语言编写的脚本处理。没有执行配置或生成步骤，也没有修改缓存。如果使用 ``-D`` 定义变量，则必须在 ``-P`` 参数之前完成。
 
-Any options after ``--`` are not parsed by CMake, but they are still included
-in the set of :variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>` variables passed to the
-script (including the ``--`` itself).
+``--`` 后面的任何选项都不会被CMake解析，但它们仍然包含在 :variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>` 传递给脚本的变量（包括 ``--`` 本身）。
 
 
 运行命令行工程
 =======================
 
-CMake provides builtin command-line tools through the signature
+CMake通过签名提供了内置的命令行工具
 
 .. code-block:: shell
 
   cmake -E <command> [<options>]
 
-Run ``cmake -E`` or ``cmake -E help`` for a summary of commands.
-Available commands are:
+执行 ``cmake -E`` 或 ``cmake -E help`` 获取命令摘要。可用的命令是：
 
 ``capabilities``
   Report cmake capabilities in JSON format. The output is a JSON object
@@ -750,7 +738,7 @@ Available commands are:
 Windows特定命令行工程
 -----------------------------------
 
-The following ``cmake -E`` commands are available only on Windows:
+以下 ``cmake -E`` 命令仅在Windows操作系统下可用：
 
 ``delete_regv <key>``
   Delete Windows registry value.
@@ -770,32 +758,28 @@ The following ``cmake -E`` commands are available only on Windows:
 运行包查找工具
 =========================
 
-CMake provides a pkg-config like helper for Makefile-based projects:
+CMake为基于Makefile的项目提供了一个类似于pkg-config的助手：
 
 .. code-block:: shell
 
   cmake --find-package [<options>]
 
-It searches a package using :command:`find_package()` and prints the
-resulting flags to stdout.  This can be used instead of pkg-config
-to find installed libraries in plain Makefile-based projects or in
-autoconf-based projects (via ``share/aclocal/cmake.m4``).
+它使用 :command:`find_package()` 搜索包，并将结果标记打印到stdout。这可以代替pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到已安装的库（通过 ``share/aclocal/cmake.m4``）。
 
 .. note::
-  This mode is not well-supported due to some technical limitations.
-  It is kept for compatibility but should not be used in new projects.
+  由于一些技术限制，这种模式没有得到很好的支持。保留它是为了兼容，但不应该在新项目中使用。
 
 
 查看帮助
 =========
 
-To print selected pages from the CMake documentation, use
+要从CMake文档中打印选定的页面，请使用
 
 .. code-block:: shell
 
   cmake --help[-<topic>]
 
-with one of the following options:
+有下列其中一种选择：
 
 .. include:: OPTIONS_HELP.txt
 

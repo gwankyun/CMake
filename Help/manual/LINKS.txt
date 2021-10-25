@@ -1,4 +1,4 @@
-The following resources are available to get help using CMake:
+使用CMake过程中可以获得以下资源：
 
 Home Page
  https://cmake.org
