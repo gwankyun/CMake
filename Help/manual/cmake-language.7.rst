@@ -21,37 +21,17 @@ CMake输入文件以“CMake语言”写在名为 ``CMakeLists.txt`` 的源文�
 目录文件
 -----------
 
-When CMake processes a project source tree, the entry point is
-a source file called ``CMakeLists.txt`` in the top-level source
-directory.  This file may contain the entire build specification
-or use the :command:`add_subdirectory` command to add subdirectories
-to the build.  Each subdirectory added by the command must also
-contain a ``CMakeLists.txt`` file as the entry point to that
-directory.  For each source directory whose ``CMakeLists.txt`` file
-is processed CMake generates a corresponding directory in the build
-tree to act as the default working and output directory.
+当CMake处理一个项目源码树时，入口点是顶层源目录中名为 ``CMakeLists.txt`` 的源文件。这个文件可以包含整个构建规范，也可以使用 :command:`add_subdirectory` 命令向构建添加子目录。该命令添加的每个子目录还必须包含一个 ``CMakeLists.txt`` 文件，作为该目录的入口点。对于处理 ``CMakeLists.txt`` 文件的每个源目录，CMake在构建树中生成一个相应的目录，作为默认的工作目录和输出目录。
 
 脚本文件
 --------
 
-An individual ``<script>.cmake`` source file may be processed
-in *script mode* by using the :manual:`cmake(1)` command-line tool
-with the ``-P`` option.  Script mode simply runs the commands in
-the given CMake Language source file and does not generate a
-build system.  It does not allow CMake commands that define build
-targets or actions.
+一个单独的 ``<script>.cmake`` 源文件，可以通过使用带有 ``-P`` 选项的 :manual:`cmake(1)` 命令行工具在 *脚本模式* 下处理。脚本模式只是运行给定的CMake语言源文件中的命令，而不生成构建系统。它不允许定义构建目标或操作的CMake命令。
 
 模块文件
 --------
 
-CMake Language code in either `目录文件`_ or `脚本文件`_ may
-use the :command:`include` command to load a ``<module>.cmake``
-source file in the scope of the including context.
-See the :manual:`cmake-modules(7)` manual page for documentation
-of modules included with the CMake distribution.
-Project source trees may also provide their own modules and
-specify their location(s) in the :variable:`CMAKE_MODULE_PATH`
-variable.
+CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`include` 命令加载包含上下文的范围内的 ``<module>.cmake`` 源文件。有关CMake发行版中包含的模块的文档，请参阅 :manual:`cmake-modules(7)` 手册页。项目源码树还可以提供它们自己的模块，并在 :variable:`CMAKE_MODULE_PATH` 变量中指定它们的位置。
 
 语法
 ======
