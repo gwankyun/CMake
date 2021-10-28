@@ -75,8 +75,7 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 命令调用
 -------------------
 
-A *command invocation* is a name followed by paren-enclosed arguments
-separated by whitespace:
+*命令调用* 是一个名称，后面跟着用空格分隔的圆括号括起来的参数：
 
 .. raw:: latex
 
@@ -94,31 +93,22 @@ separated by whitespace:
 
    \end{small}
 
-For example:
+例如：
 
 .. code-block:: cmake
 
  add_executable(hello world.c)
 
-Command names are case-insensitive.
-Nested unquoted parentheses in the arguments must balance.
-Each ``(`` or ``)`` is given to the command invocation as
-a literal `Unquoted Argument`_.  This may be used in calls
-to the :command:`if` command to enclose conditions.
-For example:
+命令名不区分大小写。参数中嵌套的未加引号的圆括号必须匹配。每个 ``(`` 或 ``)`` 都作为 `无引号参数`_ 提供给命令调用。这可以在调用 :command:`if` 命令来封装条件时使用。例如：
 
 .. code-block:: cmake
 
  if(FALSE AND (FALSE OR TRUE)) # evaluates to FALSE
 
 .. note::
- CMake versions prior to 3.0 require command name identifiers
- to be at least 2 characters.
+ 3.0之前的CMake版本要求命令名标识符至少为2个字符。
 
- CMake versions prior to 2.8.12 silently accept an `Unquoted Argument`_
- or a `Quoted Argument`_ immediately following a `Quoted Argument`_ and
- not separated by any whitespace.  For compatibility, CMake 2.8.12 and
- higher accept such code but produce a warning.
+ 在2.8.12之前的版本，CMake静默地接受一个 `无引号参数`_，或者紧接在 `引号参数`_ 后面的 `引号参数`_，不被任何空格分隔。为了兼容性，CMake 2.8.12及更高版本接受这样的代码，但会产生警告。
 
 命令参数
 -----------------
@@ -196,7 +186,7 @@ For example::
 
 .. _`Quoted Argument`:
 
-引用参数
+引号参数
 ^^^^^^^^^^^^^^^
 
 A *quoted argument* encloses content between opening and closing
@@ -258,7 +248,7 @@ immediately following newline character.  For example:
 
 .. _`Unquoted Argument`:
 
-反引用参数
+无引号参数
 ^^^^^^^^^^^^^^^^^
 
 An *unquoted argument* is not enclosed by any quoting syntax.
