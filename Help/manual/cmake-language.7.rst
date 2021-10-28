@@ -41,19 +41,11 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 编码
 --------
 
-A CMake Language source file may be written in 7-bit ASCII text for
-maximum portability across all supported platforms.  Newlines may be
-encoded as either ``\n`` or ``\r\n`` but will be converted to ``\n``
-as input files are read.
+为了在所有支持的平台上实现最大的可移植性，CMake语言源文件可以用7位ASCII文本编写。换行符可以编码为 ``\n`` 或 ``\r\n``，但在读取输入文件时将被转换为 ``\n``。
 
-Note that the implementation is 8-bit clean so source files may
-be encoded as UTF-8 on platforms with system APIs supporting this
-encoding.  In addition, CMake 3.2 and above support source files
-encoded in UTF-8 on Windows (using UTF-16 to call system APIs).
-Furthermore, CMake 3.0 and above allow a leading UTF-8
-`Byte-Order Mark`_ in source files.
+注意，该实现是8位的，若系统API支持，源文件可以被编码为UTF-8。此外，CMake 3.2及以上版本支持Windows上UTF-8编码的源文件（使用UTF-16调用系统API）。此外，CMake 3.0及以上版本允许在源文件中使用开头的UTF-8 `字节序标记`_。
 
-.. _`Byte-Order Mark`: http://en.wikipedia.org/wiki/Byte_order_mark
+.. _`字节序标记`: http://en.wikipedia.org/wiki/Byte_order_mark
 
 源文件
 ------------
