@@ -50,9 +50,7 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 源文件
 ------------
 
-A CMake Language source file consists of zero or more
-`Command Invocations`_ separated by newlines and optionally
-spaces and `注释`_:
+一个CMake源文件由0个或多个 `命令调用`_ 组成，命令调用由换行符、可选的空格和 `注释`_ 分隔：
 
 .. raw:: latex
 
@@ -70,8 +68,7 @@ spaces and `注释`_:
 
    \end{small}
 
-Note that any source file line not inside `命令参数`_ or
-a `Bracket Comment`_ can end in a `Line Comment`_.
+请注意，任何不在 `命令参数`_ 或 `括号注释`_ 中的源文件行都可以以 `行注释`_ 结束。
 
 .. _`Command Invocations`:
 
