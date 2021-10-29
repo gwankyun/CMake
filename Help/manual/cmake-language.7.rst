@@ -113,7 +113,7 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 命令参数
 -----------------
 
-There are three types of arguments within `Command Invocations`_:
+`命令调用`_ 有三种参数：
 
 .. raw:: latex
 
