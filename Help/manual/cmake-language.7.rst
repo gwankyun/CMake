@@ -128,12 +128,10 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 
 .. _`Bracket Argument`:
 
-括号参数
+方括号参数
 ^^^^^^^^^^^^^^^^
 
-A *bracket argument*, inspired by `Lua`_ long bracket syntax,
-encloses content between opening and closing "brackets" of the
-same length:
+受 `Lua`_ 长括号语法启发的 *括号参数*，将内容括在相同长度的开始和结束“括号”之间：
 
 .. raw:: latex
 
@@ -150,24 +148,14 @@ same length:
 
    \end{small}
 
-An opening bracket is written ``[`` followed by zero or more ``=`` followed
-by ``[``.  The corresponding closing bracket is written ``]`` followed
-by the same number of ``=`` followed by ``]``.
-Brackets do not nest.  A unique length may always be chosen
-for the opening and closing brackets to contain closing brackets
-of other lengths.
+开括号写 ``[`` 后面跟着零或多个 ``=`` 后面再跟着 ``[``。对应的闭括号是 ``]``，后面跟着相同数量的 ``=``，后面再跟着 ``]``。括号不嵌套。总是可以为开括号和闭括号选择一个唯一的长度，以包含其他长度组合。
 
-Bracket argument content consists of all text between the opening
-and closing brackets, except that one newline immediately following
-the opening bracket, if any, is ignored.  No evaluation of the
-enclosed content, such as `Escape Sequences`_ or `Variable References`_,
-is performed.  A bracket argument is always given to the command
-invocation as exactly one argument.
+方括号参数内容包含开括号和闭括号之间的所有文本，除了可能存在的紧随着开括号的换行符之外皆被忽略。不会对包含的内容，如 `转义序列`_ 或 `变量引用`_，执行计算。方括号参数总是作为一个参数提供给命令调用。
 
 .. No code-block syntax highlighting in the following example
    (long string literal not supported by our cmake.py)
 
-For example::
+例如： ::
 
  message([=[
  This is the first line in a bracket argument with bracket length 1.
@@ -178,9 +166,7 @@ For example::
  ]=])
 
 .. note::
- CMake versions prior to 3.0 do not support bracket arguments.
- They interpret the opening bracket as the start of an
- `Unquoted Argument`_.
+ 3.0之前的CMake版本不支持方括号参数。它们将左括号解释为 `无引号参数`_ 的开始。
 
 .. _`Lua`: http://www.lua.org/
 
