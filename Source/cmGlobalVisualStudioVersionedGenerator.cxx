@@ -436,6 +436,11 @@ bool cmGlobalVisualStudioVersionedGenerator::MatchesGeneratorName(
 bool cmGlobalVisualStudioVersionedGenerator::SetGeneratorInstance(
   std::string const& i, cmMakefile* mf)
 {
+  if (this->LastGeneratorInstanceString &&
+      i == *(this->LastGeneratorInstanceString)) {
+    return true;
+  }
+
   if (!i.empty()) {
     if (!this->vsSetupAPIHelper.SetVSInstance(i)) {
       std::ostringstream e;
@@ -471,6 +476,11 @@ bool cmGlobalVisualStudioVersionedGenerator::SetGeneratorInstance(
                                        "Generator instance identifier.",
                                        cmStateEnums::INTERNAL);
   }
+
+  // The selected instance may have a different MSBuild than previously found.
+  this->MSBuildCommandInitialized = false;
+
+  this->LastGeneratorInstanceString = i;
 
   return true;
 }
@@ -710,6 +720,17 @@ cmGlobalVisualStudioVersionedGenerator::GetWindows10SDKMaxVersionDefault(
   cmMakefile*) const
 {
   return std::string();
+}
+
+cm::optional<std::string>
+cmGlobalVisualStudioVersionedGenerator::FindMSBuildCommandEarly(cmMakefile* mf)
+{
+  std::string instance = mf->GetSafeDefinition("CMAKE_GENERATOR_INSTANCE");
+  if (!this->SetGeneratorInstance(instance, mf)) {
+    cmSystemTools::SetFatalErrorOccured();
+    return {};
+  }
+  return this->cmGlobalVisualStudio14Generator::FindMSBuildCommandEarly(mf);
 }
 
 std::string cmGlobalVisualStudioVersionedGenerator::FindMSBuildCommand()
