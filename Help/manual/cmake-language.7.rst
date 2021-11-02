@@ -175,8 +175,7 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 引号参数
 ^^^^^^^^^^^^^^^
 
-A *quoted argument* encloses content between opening and closing
-double-quote characters:
+*引号参数* 将内容括在开双引号和闭双引号之间：
 
 .. raw:: latex
 
@@ -193,15 +192,12 @@ double-quote characters:
 
    \end{small}
 
-Quoted argument content consists of all text between opening and
-closing quotes.  Both `Escape Sequences`_ and `Variable References`_
-are evaluated.  A quoted argument is always given to the command
-invocation as exactly one argument.
+引号参数内容包括开引号和闭引号之间的所有文本。`转义序列`_ 和 `变量引用`_ 都被求值。引用参数总是作为一个参数提供给命令调用。
 
 .. No code-block syntax highlighting in the following example
    (escape \" not supported by our cmake.py)
 
-For example:
+例如：
 
 .. code-block:: cmake
 
@@ -215,9 +211,7 @@ For example:
 .. No code-block syntax highlighting in the following example
    (for conformity with the two above examples)
 
-The final ``\`` on any line ending in an odd number of backslashes
-is treated as a line continuation and ignored along with the
-immediately following newline character.  For example:
+以奇数个反斜杠结尾的任何行上的最后一个 ``\`` 将被视为行延续，并与紧接其后的换行符一起被忽略。例如：
 
 .. code-block:: cmake
 
@@ -228,9 +222,7 @@ immediately following newline character.  For example:
   ")
 
 .. note::
- CMake versions prior to 3.0 do not support continuation with ``\``.
- They report errors in quoted arguments containing lines ending in
- an odd number of ``\`` characters.
+ 3.0之前的CMake版本不支持 ``\`` 延续。它们报告用引号括起来的参数错误，这些参数包含以奇数 ``\`` 字符结尾的行。
 
 .. _`Unquoted Argument`:
 
