@@ -274,7 +274,7 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 转义序列
 ----------------
 
-An *escape sequence* is a ``\`` followed by one character:
+所谓 *转义序列* 指的是一个 ``\`` 后面跟着一个字符：
 
 .. raw:: latex
 
@@ -290,14 +290,7 @@ An *escape sequence* is a ``\`` followed by one character:
 
    \end{small}
 
-A ``\`` followed by a non-alphanumeric character simply encodes the literal
-character without interpreting it as syntax.  A ``\t``, ``\r``, or ``\n``
-encodes a tab, carriage return, or newline character, respectively. A ``\;``
-outside of any `变量引用`_  encodes itself but may be used in an
-`Unquoted Argument`_ to encode the ``;`` without dividing the argument
-value on it.  A ``\;`` inside `Variable References`_ encodes the literal
-``;`` character.  (See also policy :policy:`CMP0053` documentation for
-historical considerations.)
+后面跟着非字母数字字符的 ``\`` 只会对字面字符进行编码，而不会将其解释为语法。``\t``、``\r`` 或 ``\n`` 分别编码制表符、回车符或换行符。一个 ``\;`` 在任何 `变量引用`_ 之外编码自身，但也可以在 `无引号参数`_ 中使用 ``;`` 而不需要分割它的值。`变量引用`_ 中的 ``\;`` 编码为 ``;`` 字符。(请参阅策略 :policy:`CMP0053` 文档了解历史考虑。)
 
 .. _`Variable References`:
 
