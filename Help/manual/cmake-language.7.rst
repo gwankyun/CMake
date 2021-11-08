@@ -229,9 +229,7 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 无引号参数
 ^^^^^^^^^^^^^^^^^
 
-An *unquoted argument* is not enclosed by any quoting syntax.
-It may not contain any whitespace, ``(``, ``)``, ``#``, ``"``, or ``\``
-except when escaped by a backslash:
+*无引号参数* 没有被引号语法括起来。它不能包含任何空格、``(``、``)``、``#``、``"`` 和 ``\``，除非用反斜杠转义：
 
 .. raw:: latex
 
@@ -247,15 +245,9 @@ except when escaped by a backslash:
 
    \end{small}
 
-Unquoted argument content consists of all text in a contiguous block
-of allowed or escaped characters.  Both `Escape Sequences`_ and
-`Variable References`_ are evaluated.  The resulting value is divided
-in the same way `列表`_ divide into elements.  Each non-empty element
-is given to the command invocation as an argument.  Therefore an
-unquoted argument may be given to a command invocation as zero or
-more arguments.
+无引号参数内容包含的连续块中的所有文本，允许转义字符。`转义序列`_  和 `变量引用`_ 都会被求值。结果值的划分方式与 `列表`_ 划分元素的方式相同。每个非空元素都作为参数提供给命令调用。因此，一个无引号参数可以作为零个或多个参数提供给命令调用。
 
-For example:
+例如：
 
 .. code-block:: cmake
 
@@ -269,26 +261,13 @@ For example:
  endforeach()
 
 .. note::
- To support legacy CMake code, unquoted arguments may also contain
- double-quoted strings (``"..."``, possibly enclosing horizontal
- whitespace), and make-style variable references (``$(MAKEVAR)``).
+ 为了支持遗留的CMake代码，无引号参数还可能包含双引号字符串（``"..."``，可能包含水平空格）和make风格的变量引用（``$(MAKEVAR)``）。
 
- Unescaped double-quotes must balance, may not appear at the
- beginning of an unquoted argument, and are treated as part of the
- content.  For example, the unquoted arguments ``-Da="b c"``,
- ``-Da=$(v)``, and ``a" "b"c"d`` are each interpreted literally.
- They may instead be written as quoted arguments ``"-Da=\"b c\""``,
- ``"-Da=$(v)"``, and ``"a\" \"b\"c\"d"``, respectively.
+ 未转义的双引号必须保证配对，不能出现在无引号参数的开头，并被视为内容的一部分。例如，无引号参数 ``-Da="b c"``、``-Da=$(v)`` 和 ``a" "b"c"d`` 都是按字面意思解释的。它们可以写成引号参数 ``"-Da=\"b c\""``、``"-Da=$(v)"``、和 ``"a\" \"b\"c\"d"``。
 
- Make-style references are treated literally as part of the content
- and do not undergo variable expansion.  They are treated as part
- of a single argument (rather than as separate ``$``, ``(``,
- ``MAKEVAR``, and ``)`` arguments).
+ Make风格引用字面上被视为内容的一部分，而不进行变量展开。它们被视为单个参数的一部分（而不是作为单独的 ``$``、``(``、``MAKEVAR`` 和 ``)`` 参数）。
 
- The above "unquoted_legacy" production represents such arguments.
- We do not recommend using legacy unquoted arguments in new code.
- Instead use a `Quoted Argument`_ or a `Bracket Argument`_ to
- represent the content.
+ 上面的“unquoted_legacy”形式代表了这种参数。我们不建议在新代码中使用遗留的无引号参数。相反，应该使用 `引号参数`_  或 `方括号参数`_ 来表示内容。
 
 .. _`Escape Sequences`:
 
