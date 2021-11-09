@@ -297,33 +297,17 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 变量引用
 -------------------
 
-A *variable reference* has the form ``${<variable>}`` and is
-evaluated inside a `Quoted Argument`_ or an `Unquoted Argument`_.
-A variable reference is replaced by the value of the variable,
-or by the empty string if the variable is not set.
-Variable references can nest and are evaluated from the
-inside out, e.g. ``${outer_${inner_variable}_variable}``.
+*变量引用* 的形式为 ``${<variable>}``，在 `引号参数`_ 或 `无引号参数`_ 中求值。变量引用将被变量的值替换，如果变量未设置，则被空字符串替换。变量引用可以嵌套并由内到外计算，例如 ``${outer_${inner_variable}_variable}``。
 
-Literal variable references may consist of alphanumeric characters,
-the characters ``/_.+-``, and `Escape Sequences`_.  Nested references
-may be used to evaluate variables of any name.  See also policy
-:policy:`CMP0053` documentation for historical considerations and reasons why
-the ``$`` is also technically permitted but is discouraged.
+字面值变量引用可以由字母数字、 ``/_.+-`` 和 `转义序列`_ 组成。嵌套引用可用于计算任意名称的变量。请参阅策略 :policy:`CMP0053` 文档了解历史考虑因素以及为什么 ``$`` 在技术上允许，却不鼓励使用的原因。
 
-The `变量`_ section documents the scope of variable names
-and how their values are set.
+`变量`_ 章节记录了变量名的作用域以及变量的值是如何设置的。
 
-An *environment variable reference* has the form ``$ENV{<variable>}``.
-See the `环境变量`_ section for more information.
+*环境变量引用* 的格式为 ``$ENV{<variable>}``。有关更多信息，请参阅 `环境变量`_ 一节。
 
-A *cache variable reference* has the form ``$CACHE{<variable>}``.
-See :variable:`CACHE` for more information.
+*缓存变量引用* 的格式为 ``$CACHE{<variable>}``。有关更多信息，请参阅 :variable:`CACHE`。
 
-The :command:`if` command has a special condition syntax that
-allows for variable references in the short form ``<variable>``
-instead of ``${<variable>}``.
-However, environment and cache variables always need to be
-referenced as ``$ENV{<variable>}`` or ``$CACHE{<variable>}``.
+:command:`if` 命令有一个特殊的条件语法，允许以 ``<variable>`` 而不是 ``${<variable>}`` 的简写形式引用变量。然而，环境和缓存变量总是需要被引用为 ``$ENV{<variable>}`` 或 ``$CACHE{<variable>}``。
 
 注释
 --------
