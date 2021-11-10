@@ -376,25 +376,17 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 条件块
 ------------------
 
-The :command:`if`/:command:`elseif`/:command:`else`/:command:`endif`
-commands delimit code blocks to be executed conditionally.
+:command:`if`/:command:`elseif`/:command:`else`/:command:`endif` 命令分隔条件执行的代码块。
 
 循环
 -----
 
-The :command:`foreach`/:command:`endforeach` and
-:command:`while`/:command:`endwhile` commands delimit code
-blocks to be executed in a loop.  Inside such blocks the
-:command:`break` command may be used to terminate the loop
-early whereas the :command:`continue` command may be used
-to start with the next iteration immediately.
+:command:`foreach`/:command:`endforeach` 和 :command:`while`/:command:`endwhile` 命令分隔要在循环中执行的代码块。在这些块中，:command:`break` 命令可用于提前终止循环，而 :command:`continue` 命令可用于立即开始下一次迭代。
 
 命令定义
 -------------------
 
-The :command:`macro`/:command:`endmacro`, and
-:command:`function`/:command:`endfunction` commands delimit
-code blocks to be recorded for later invocation as commands.
+:command:`macro`/:command:`endmacro` 和 :command:`function`/:command:`endfunction` 命令将代码块分隔开来，以便以后作为命令调用。
 
 .. _`CMake Language Variables`:
 
