@@ -312,18 +312,14 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 注释
 --------
 
-A comment starts with a ``#`` character that is not inside a
-`Bracket Argument`_, `Quoted Argument`_, or escaped with ``\``
-as part of an `Unquoted Argument`_.  There are two types of
-comments: a `Bracket Comment`_ and a `Line Comment`_.
+注释以 ``#`` 字符开始，不包含在 `方括号参数`_、`引号参数`_ 或者由 ``\`` 转义作为 `无引号参数`_ 的一部分。注释有两种类型：`括号注释`_ 和 `行注释`_。
 
 .. _`Bracket Comment`:
 
 括号注释
 ^^^^^^^^^^^^^^^
 
-A ``#`` immediately followed by a :token:`bracket_open` forms a
-*bracket comment* consisting of the entire bracket enclosure:
+紧跟在 ``#`` 后面的 :token:`bracket_open` 会形成一个由整个括号框组成的 *括号注释*：
 
 .. raw:: latex
 
@@ -336,7 +332,7 @@ A ``#`` immediately followed by a :token:`bracket_open` forms a
 
    \end{small}
 
-For example:
+例如：
 
 ::
 
@@ -345,16 +341,14 @@ For example:
  message("First Argument\n" #[[Bracket Comment]] "Second Argument")
 
 .. note::
- CMake versions prior to 3.0 do not support bracket comments.
- They interpret the opening ``#`` as the start of a `Line Comment`_.
+ 3.0之前的CMake版本不支持括号注释。他们将开头 ``#`` 解释为 `行注释`_ 的开始。
 
 .. _`Line Comment`:
 
 行注释
 ^^^^^^^^^^^^
 
-A ``#`` not immediately followed by a :token:`bracket_open` forms a
-*line comment* that runs until the end of the line:
+紧跟在 :token:`bracket_open` 后面的 ``#`` 会形成一个 *行注释*，它会一直运行到行尾：
 
 .. raw:: latex
 
@@ -368,7 +362,7 @@ A ``#`` not immediately followed by a :token:`bracket_open` forms a
 
    \end{small}
 
-For example:
+例如：
 
 .. code-block:: cmake
 
