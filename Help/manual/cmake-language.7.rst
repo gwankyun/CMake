@@ -437,27 +437,15 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 列表
 =====
 
-Although all values in CMake are stored as strings, a string
-may be treated as a list in certain contexts, such as during
-evaluation of an `Unquoted Argument`_.  In such contexts, a string
-is divided into list elements by splitting on ``;`` characters not
-following an unequal number of ``[`` and ``]`` characters and not
-immediately preceded by a ``\``.  The sequence ``\;`` does not
-divide a value but is replaced by ``;`` in the resulting element.
+尽管CMake中的所有值都存储为字符串，但字符串在某些上下文中可能被视为列表，例如在 `无引号参数`_ 的求值过程中。在这种上下文中，字符串被拆分成 ``;`` 分割的列表，它们不跟在不同数量的 ``[`` 和 ``]`` 字符之后，且不直接跟在 ``\`` 字符前面。序列 ``\;`` 不参与，但在生成的元素中会被替换成 ``;``。
 
-A list of elements is represented as a string by concatenating
-the elements separated by ``;``.  For example, the :command:`set`
-command stores multiple values into the destination variable
-as a list:
+列表通过用 ``;`` 分隔的字符串来表示。例如，:command:`set` 命令将多个值以列表的形式存储到目标变量中：
 
 .. code-block:: cmake
 
  set(srcs a.c b.c c.c) # sets "srcs" to "a.c;b.c;c.c"
 
-Lists are meant for simple use cases such as a list of source
-files and should not be used for complex data processing tasks.
-Most commands that construct lists do not escape ``;`` characters
-in list elements, thus flattening nested lists:
+列表适用于简单的用例，如源文件列表，不应用于复杂的数据处理任务。大多数构造列表的命令不会转义列表元素中的 ``;`` 字符，从而展平嵌套的列表：
 
 .. code-block:: cmake
 
