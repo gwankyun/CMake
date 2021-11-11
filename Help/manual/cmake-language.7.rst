@@ -419,28 +419,18 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 环境变量
 =====================
 
-Environment Variables are like ordinary `变量`_, with the
-following differences:
+环境变量与普通 `变量`_ 相似，但有以下不同之处：
 
-Scope
- Environment variables have global scope in a CMake process.
- They are never cached.
+作用域
+ 环境变量在CMake进程中具有全局作用域。绝对不会缓存它们。
 
-References
- `Variable References`_ have the form ``$ENV{<variable>}``.
+引用
+ `变量引用`_ 的格式为 ``$ENV{<variable>}``。
 
-Initialization
- Initial values of the CMake environment variables are those of
- the calling process.
- Values can be changed using the :command:`set` and :command:`unset`
- commands.
- These commands only affect the running CMake process,
- not the system environment at large.
- Changed values are not written back to the calling process,
- and they are not seen by subsequent build or test processes.
+初始化
+ CMake环境变量的初始值是调用进程时的初始值。可以使用 :command:`set` 和 :command:`unset` 命令更改值。这些命令只影响CMake进程的运行，不会影响整个系统环境。更改的值不会写回调用进程，后续的构建或测试流程也不会看到它们。
 
-The :manual:`cmake-env-variables(7)` manual documents environment
-variables that have special meaning to CMake.
+:manual:`cmake-env-variables(7)` 手册记录了对CMake有特殊意义的环境变量。
 
 .. _`CMake Language Lists`:
 
