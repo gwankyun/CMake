@@ -393,57 +393,24 @@ CMake语言代码在 `目录文件`_ 或 `脚本文件`_ 可以使用 :command:`
 变量
 =========
 
-Variables are the basic unit of storage in the CMake Language.
-Their values are always of string type, though some commands may
-interpret the strings as values of other types.
-The :command:`set` and :command:`unset` commands explicitly
-set or unset a variable, but other commands have semantics
-that modify variables as well.
-Variable names are case-sensitive and may consist of almost
-any text, but we recommend sticking to names consisting only
-of alphanumeric characters plus ``_`` and ``-``.
+变量是CMake语言中基本的存储单元。它们的值总是字符串类型的，尽管有些命令可能会将字符串解释为其他类型的值。:command:`set` 和 :command:`unset` 命令显式地设置或取消变量的设置，但其他命令也具有修改变量的语义。变量名是区分大小写的，可以包含几乎任何文本，但我们建议只使用字母数字字符加上 ``_`` 和 ``-`` 组成的名称。
 
-Variables have dynamic scope.  Each variable "set" or "unset"
-creates a binding in the current scope:
+变量具有动态作用域。每个变量“set”或“unset”都在当前作用域中创建一个绑定：
 
-Function Scope
- `命令定义`_ created by the :command:`function` command
- create commands that, when invoked, process the recorded commands
- in a new variable binding scope.  A variable "set" or "unset"
- binds in this scope and is visible for the current function and
- any nested calls within it, but not after the function returns.
+函数作用域
+ 由 :command:`function` 命令创建的 `命令定义`_，当调用这些命令时，这些命令将在新的变量绑定范围内处理记录的命令。变量“set”或“unset”在此作用域中绑定，对当前函数及其内嵌调用可见，但在函数返回后不可见。
 
-Directory Scope
- Each of the `目录文件`_ in a source tree has its own variable
- bindings.  Before processing the ``CMakeLists.txt`` file for a
- directory, CMake copies all variable bindings currently defined
- in the parent directory, if any, to initialize the new directory
- scope.  CMake `脚本文件`_, when processed with ``cmake -P``, bind
- variables in one "directory" scope.
+目录作用域
+ 源码树中的每个 `目录文件`_ 都有自己的变量绑定。在处理目录的 ``CMakeLists.txt`` 文件之前，CMake复制当前父目录中定义的所有可能存在的变量绑定，以初始化新的目录作用域。当使用 ``cmake -P`` 处理CMake `脚本文件`_ 时，会将变量绑定在一个“目录”范围内。
 
- A variable "set" or "unset" not inside a function call binds
- to the current directory scope.
+ 不在函数调用内的变量“set”或“unset”绑定到当前目录作用域。
 
-Persistent Cache
- CMake stores a separate set of "cache" variables, or "cache entries",
- whose values persist across multiple runs within a project build
- tree.  Cache entries have an isolated binding scope modified only
- by explicit request, such as by the ``CACHE`` option of the
- :command:`set` and :command:`unset` commands.
+持久缓存
+ CMake存储一组单独的“缓存”变量或“缓存条目”，它们的值在项目构建树的多次运行中保持不变。缓存条目有一个独立的绑定范围，只有通过显式请求才能修改，比如通过 :command:`set` 和 :command:`unset` 命令的 ``CACHE`` 选项。
 
-When evaluating `Variable References`_, CMake first searches the
-function call stack, if any, for a binding and then falls back
-to the binding in the current directory scope, if any.  If a
-"set" binding is found, its value is used.  If an "unset" binding
-is found, or no binding is found, CMake then searches for a
-cache entry.  If a cache entry is found, its value is used.
-Otherwise, the variable reference evaluates to an empty string.
-The ``$CACHE{VAR}`` syntax can be used to do direct cache entry
-lookups.
+当计算 `变量引用`_ 时，CMake首先在可能存在的函数调用堆栈中搜索绑定，然后返回到可能存在的当前目录定义域内的绑定。如果找到了“set”绑定，则使用其值。如果找到了“unset”绑定，或者没有找到绑定，CMake就会搜索一个缓存条目。如果找到缓存条目，则使用其值。否则，变量引用计算为空字符串。``$CACHE{VAR}`` 语法可以用来直接查找缓存条目。
 
-The :manual:`cmake-variables(7)` manual documents the many variables
-that are provided by CMake or have meaning to CMake when set
-by project code.
+:manual:`cmake-variables(7)` 手册记录了许多由CMake提供的变量，或者由项目代码设置的对CMake有意义的变量。
 
 .. include:: ID_RESERVE.txt
 
