@@ -103,9 +103,9 @@ as well as any dependents (that may include headers from ``mylib``).
 -----------------------------------
 
 The :prop_tgt:`<LANG>_EXTENSIONS` target property defaults to the compiler's
-efault. Note that because most compilers enable extensions by default, this
-may expose cross-platform bugs in user code or in the headers of third-party
-dependencies.
+default (see :variable:`CMAKE_<LANG>_EXTENSIONS_DEFAULT`). Note that because
+most compilers enable extensions by default, this may expose portability bugs
+in user code or in the headers of third-party dependencies.
 
 :prop_tgt:`<LANG>_EXTENSIONS` 默认设置为 ``ON``。可查阅 :policy:`CMP0128`。
 

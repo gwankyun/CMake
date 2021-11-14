@@ -2698,8 +2698,8 @@ void cmLocalGenerator::CopyPchCompilePdb(
     cmStrCat(target->GetLocalGenerator()->GetCurrentBinaryDirectory(), "/",
              target->GetName(), ".dir/");
 
-  const std::string copy_script =
-    cmStrCat(target_compile_pdb_dir, "copy_idb_pdb.cmake");
+  const std::string copy_script = cmStrCat(
+    target_compile_pdb_dir, "copy_idb_pdb_", config.c_str(), ".cmake");
   cmGeneratedFileStream file(copy_script);
 
   file << "# CMake generated file\n";
@@ -2754,7 +2754,7 @@ void cmLocalGenerator::CopyPchCompilePdb(
   bool stdPipesUTF8 = true;
 
   auto configGenex = [&](cm::string_view expr) -> std::string {
-    if (this->GetGlobalGenerator()->IsVisualStudio()) {
+    if (this->GetGlobalGenerator()->IsMultiConfig()) {
       return cmStrCat("$<$<CONFIG:", config, ">:", expr, ">");
     }
     return std::string(expr);
@@ -2773,8 +2773,8 @@ void cmLocalGenerator::CopyPchCompilePdb(
   std::vector<std::string> no_byproducts;
 
   std::vector<std::string> outputs;
-  outputs.push_back(
-    cmStrCat(target_compile_pdb_dir, pdb_prefix, ReuseFrom, ".pdb"));
+  outputs.push_back(configGenex(
+    cmStrCat(target_compile_pdb_dir, pdb_prefix, ReuseFrom, ".pdb")));
 
   if (this->GetGlobalGenerator()->IsVisualStudio()) {
     this->AddCustomCommandToTarget(
