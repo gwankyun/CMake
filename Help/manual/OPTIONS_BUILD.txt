@@ -1,25 +1,17 @@
 ``-S <path-to-source>``
- Path to root directory of the CMake project to build.
+ 要构建的CMake项目的根目录路径。
 
 ``-B <path-to-build>``
- Path to directory which CMake will use as the root of build directory.
+ CMake将用作构建目录的根目录路径。
 
- If the directory doesn't already exist CMake will make it.
+ 如果该目录不存在，CMake会创建该它。
 
 ``-C <initial-cache>``
- Pre-load a script to populate the cache.
+ 预加载一个脚本来填充缓存。
 
- When CMake is first run in an empty build tree, it creates a
- ``CMakeCache.txt`` file and populates it with customizable settings for
- the project.  This option may be used to specify a file from which
- to load cache entries before the first pass through the project's
- CMake listfiles.  The loaded entries take priority over the
- project's default values.  The given file should be a CMake script
- containing :command:`set` commands that use the ``CACHE`` option, not a
- cache-format file.
+ 当CMake第一次在一个空的构建树中运行时，它会创建一个 ``CMakeCache.txt`` 文件，并用项目的可定制设置填充它。此选项可用于指定一个文件，在第一次处理项目的CMake列表文件之前从该文件加载缓存项。加载的条目优先于项目的默认值。给定的文件应该是包含使用 ``CACHE`` 选项的 :command:`set` 命令的CMake脚本，而不是缓存格式的文件。
 
- References to :variable:`CMAKE_SOURCE_DIR` and :variable:`CMAKE_BINARY_DIR`
- within the script evaluate to the top-level source and build tree.
+ 脚本中对 :variable:`CMAKE_SOURCE_DIR` 和 :variable:`CMAKE_BINARY_DIR` 的引用将计算到顶层源码和构建树。
 
 ``-D <var>:<type>=<value>, -D <var>=<value>``
  Create or update a CMake ``CACHE`` entry.
