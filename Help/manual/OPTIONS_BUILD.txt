@@ -14,34 +14,20 @@
  脚本中对 :variable:`CMAKE_SOURCE_DIR` 和 :variable:`CMAKE_BINARY_DIR` 的引用将计算到顶层源码和构建树。
 
 ``-D <var>:<type>=<value>, -D <var>=<value>``
- Create or update a CMake ``CACHE`` entry.
+ 创建或更新CMake ``CACHE`` 项。
 
- When CMake is first run in an empty build tree, it creates a
- ``CMakeCache.txt`` file and populates it with customizable settings for
- the project.  This option may be used to specify a setting that
- takes priority over the project's default value.  The option may be
- repeated for as many ``CACHE`` entries as desired.
+ 当CMake第一次在一个空的构建树中运行时，它会创建一个 ``CMakeCache.txt`` 文件，并用项目的可定制设置填充它。此选项可用于指定优先于项目默认值的设置。根据需要，可以对任意多的 ``CACHE`` 条目重复该选项。
 
- If the ``:<type>`` portion is given it must be one of the types
- specified by the :command:`set` command documentation for its
- ``CACHE`` signature.
- If the ``:<type>`` portion is omitted the entry will be created
- with no type if it does not exist with a type already.  If a
- command in the project sets the type to ``PATH`` or ``FILEPATH``
- then the ``<value>`` will be converted to an absolute path.
+ 如果给定 ``:<type>`` 部分，则它必须是 :command:`set` 命令文档为其 ``CACHE`` 签名指定的类型之一。如果省略 ``:<type>`` 部分且条目未指定类型，则创建的条目没有类型。如果项目中的命令将类型设置为 ``PATH`` 或 ``FILEPATH``，那么 ``<value>`` 将被转换为绝对路径。
 
- This option may also be given as a single argument:
- ``-D<var>:<type>=<value>`` or ``-D<var>=<value>``.
+ 该选项也可以作为单个参数使用： ``-D<var>:<type>=<value>`` 或 ``-D<var>=<value>``。
 
 ``-U <globbing_expr>``
- Remove matching entries from CMake ``CACHE``.
+ 从CMake ``CACHE`` 中删除匹配的条目。
 
- This option may be used to remove one or more variables from the
- ``CMakeCache.txt`` file, globbing expressions using ``*`` and ``?`` are
- supported.  The option may be repeated for as many ``CACHE`` entries as
- desired.
+ 这个选项可以用来从 ``CMakeCache.txt`` 文件中删除一个或多个变量，支持 ``*`` 和 ``?`` 通配符。对于多个有需要的 ``CACHE`` 条目，这个选项可以重复。
 
- Use with care, you can make your ``CMakeCache.txt`` non-working.
+ 请小心使用，它可以使你的 ``CMakeCache.txt`` 无效。
 
 ``-G <generator-name>``
  Specify a build system generator.
