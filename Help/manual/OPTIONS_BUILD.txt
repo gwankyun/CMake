@@ -30,15 +30,11 @@
  请小心使用，它可以使你的 ``CMakeCache.txt`` 无效。
 
 ``-G <generator-name>``
- Specify a build system generator.
+ 指定一个构建系统生成器。
 
- CMake may support multiple native build systems on certain
- platforms.  A generator is responsible for generating a particular
- build system.  Possible generator names are specified in the
- :manual:`cmake-generators(7)` manual.
+ CMake可能在某些平台上支持多个本机构建系统。生成器负责生成特定的构建系统。支持的生成器名称在 :manual:`cmake-generators(7)` 手册中指定。
 
- If not specified, CMake checks the :envvar:`CMAKE_GENERATOR` environment
- variable and otherwise falls back to a builtin default selection.
+ 如果没有指定，CMake将检查 :envvar:`CMAKE_GENERATOR` 环境变量，否则返回内置默认选择。
 
 ``-T <toolset-spec>``
  Toolset specification for the generator, if supported.
