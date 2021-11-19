@@ -37,26 +37,20 @@
  如果没有指定，CMake将检查 :envvar:`CMAKE_GENERATOR` 环境变量，否则返回内置默认选择。
 
 ``-T <toolset-spec>``
- Toolset specification for the generator, if supported.
+ 受支持的生成器工具集规范。
 
- Some CMake generators support a toolset specification to tell
- the native build system how to choose a compiler.  See the
- :variable:`CMAKE_GENERATOR_TOOLSET` variable for details.
+ 一些CMake生成器支持一个工具集规范来告诉本地构建系统如何选择编译器。有关详细信息，请参阅 :variable:`CMAKE_GENERATOR_TOOLSET` 变量。
 
 ``-A <platform-name>``
- Specify platform name if supported by generator.
+ 生成器支持的前提下，指定平台名称。
 
- Some CMake generators support a platform name to be given to the
- native build system to choose a compiler or SDK.  See the
- :variable:`CMAKE_GENERATOR_PLATFORM` variable for details.
+ 一些CMake生成器支持通过本地构建系统一个平台名来选择编译器或SDK。详见 :variable:`CMAKE_GENERATOR_PLATFORM` 变量。
 
 ``--toolchain <path-to-file>``
- Specify the cross compiling toolchain file, equivalent to setting
- :variable:`CMAKE_TOOLCHAIN_FILE` variable.
+ 指定交叉编译工具链文件，相当于设置 :variable:`CMAKE_TOOLCHAIN_FILE` 变量。
 
 ``--install-prefix <directory>``
- Specify the installation directory, used by the
- :variable:`CMAKE_INSTALL_PREFIX` variable. Must be an absolute path.
+ 指定安装目录，由 :variable:`CMAKE_INSTALL_PREFIX` 变量使用。必须是绝对路径。
 
 ``-Wno-dev``
  Suppress developer warnings.
