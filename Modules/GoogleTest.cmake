@@ -208,8 +208,11 @@ same as the Google Test name (i.e. ``suite.testcase``); see also
   ``TEST_FILTER expr``
     .. versionadded:: 3.22
 
-    Filter expression to pass to ``--gtest_filter`` argument during test
-    discovery.
+    Filter expression to pass as a ``--gtest_filter`` argument during test
+    discovery.  Note that the expression is a wildcard-based format that
+    matches against the original test names as used by gtest.  For type or
+    value-parameterized tests, these names may be different to the potentially
+    pretty-printed test names that ``ctest`` uses.
 
   ``NO_PRETTY_TYPES``
     By default, the type index of type-parameterized tests is replaced by the
@@ -513,7 +516,8 @@ function(gtest_discover_tests TARGET)
     string(CONCAT ctest_include_content
       "if(EXISTS \"$<TARGET_FILE:${TARGET}>\")"                                    "\n"
       "  if(NOT EXISTS \"${ctest_tests_file}\" OR"                                 "\n"
-      "     NOT \"${ctest_tests_file}\" IS_NEWER_THAN \"$<TARGET_FILE:${TARGET}>\")" "\n"
+      "     NOT \"${ctest_tests_file}\" IS_NEWER_THAN \"$<TARGET_FILE:${TARGET}>\" OR\n"
+      "     NOT \"${ctest_tests_file}\" IS_NEWER_THAN \"\${CMAKE_CURRENT_LIST_FILE}\")\n"
       "    include(\"${_GOOGLETEST_DISCOVER_TESTS_SCRIPT}\")"                      "\n"
       "    gtest_discover_tests_impl("                                             "\n"
       "      TEST_EXECUTABLE"        " [==[" "$<TARGET_FILE:${TARGET}>"   "]==]"   "\n"
