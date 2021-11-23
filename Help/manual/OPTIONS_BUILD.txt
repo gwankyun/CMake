@@ -53,23 +53,19 @@
  指定安装目录，由 :variable:`CMAKE_INSTALL_PREFIX` 变量使用。必须是绝对路径。
 
 ``-Wno-dev``
- Suppress developer warnings.
+ 关闭开发警告。
 
- Suppress warnings that are meant for the author of the
- ``CMakeLists.txt`` files. By default this will also turn off
- deprecation warnings.
+ 关闭针对 ``CMakeLists.txt`` 文件作者的警告。默认情况下，这也将关闭弃用警告。
 
 ``-Wdev``
- Enable developer warnings.
+ 启用开发警告。
 
- Enable warnings that are meant for the author of the ``CMakeLists.txt``
- files. By default this will also turn on deprecation warnings.
+ 启用针对 ``CMakeLists.txt`` 文件作者的警告。默认情况下，这也将打开弃用警告。
 
 ``-Werror=dev``
- Make developer warnings errors.
+ 将开发警告视作错误。
 
- Make warnings that are meant for the author of the ``CMakeLists.txt`` files
- errors. By default this will also turn on deprecated warnings as errors.
+ 对 ``CMakeLists.txt`` 文件的作者发出的警告视作错误。默认情况下，这也会将已弃用警告视作错误。
 
 ``-Wno-error=dev``
  Make developer warnings not errors.
