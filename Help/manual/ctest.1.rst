@@ -5,7 +5,7 @@ ctest(1)
 
 .. contents::
 
-Synopsis
+概要
 ========
 
 .. parsed-literal::
@@ -24,7 +24,7 @@ Synopsis
 
 .. _`CTest Options`:
 
-Options
+选项
 =======
 
 ``--preset <preset>``, ``--preset=<preset>``
@@ -237,7 +237,7 @@ Options
 
  This option tells CTest to act as a CDash client and perform some
  action such as ``start``, ``build``, ``test`` etc. See
- `Dashboard Client Steps`_ for the full list of actions.
+ `仪表客户端步骤`_ for the full list of actions.
  Combining ``-M`` and ``-T`` is similar to ``-D``.
 
  See `Dashboard Client`_.
@@ -414,7 +414,7 @@ Specify the directory in which to look for tests.
 
 .. _`Label Matching`:
 
-Label Matching
+标签匹配
 ==============
 
 Tests may have labels attached to them. Tests may be included
@@ -454,7 +454,7 @@ regular expression that matches either of them, like ``-L "tue|wed"``.
 
 .. _`Label and Subproject Summary`:
 
-Label and Subproject Summary
+标签和子项目摘要
 ============================
 
 CTest prints timing summary information for each ``LABEL`` and subproject
@@ -501,7 +501,7 @@ for ``SubprojectB``).
 
 .. _`Build and Test Mode`:
 
-Build and Test Mode
+构建和测试模式
 ===================
 
 CTest provides a command-line signature to configure (i.e. run cmake on),
@@ -579,7 +579,7 @@ this mode include:
 
 .. _`Dashboard Client`:
 
-Dashboard Client
+仪表客户端
 ================
 
 CTest can operate as a client for the `CDash`_ software quality dashboard
@@ -632,7 +632,7 @@ Options for Dashboard Client include:
  this to maintain compatibility with an older version of CDash which
  doesn't support compressed test output.
 
-Dashboard Client Steps
+仪表客户端步骤
 ----------------------
 
 CTest defines an ordered list of testing steps of which some or all may
@@ -679,7 +679,7 @@ be run as a dashboard client:
   software quality dashboard server.
   See the `CTest Submit Step`_ section below.
 
-Dashboard Client Modes
+仪表客户端模式
 ----------------------
 
 CTest defines three modes of operation as a dashboard client:
@@ -701,7 +701,7 @@ CTest defines three modes of operation as a dashboard client:
   It enables the ``Start``, ``Configure``, ``Build``, ``Test``, ``Coverage``,
   and ``Submit`` steps by default.
 
-Dashboard Client via CTest Command-Line
+通过CTest命令行运行仪表客户端
 ---------------------------------------
 
 CTest can perform testing on an already-generated build tree.
@@ -711,10 +711,10 @@ to the build tree and use one of these signatures::
   ctest -D <mode>[<step>]
   ctest -M <mode> [ -T <step> ]...
 
-The ``<mode>`` must be one of the above `Dashboard Client Modes`_,
-and each ``<step>`` must be one of the above `Dashboard Client Steps`_.
+The ``<mode>`` must be one of the above `仪表客户端模式`_,
+and each ``<step>`` must be one of the above `仪表客户端步骤`_.
 
-CTest reads the `Dashboard Client Configuration`_ settings from
+CTest reads the `仪表客户端配置`_ settings from
 a file in the build tree called either ``CTestConfiguration.ini``
 or ``DartConfiguration.tcl`` (the names are historical).  The format
 of the file is::
@@ -733,7 +733,7 @@ as documented with the settings below.
 
 .. _`CTest Script`:
 
-Dashboard Client via CTest Script
+通过CTest脚本运行仪表客户端
 ---------------------------------
 
 CTest can perform testing driven by a :manual:`cmake-language(7)`
@@ -747,18 +747,18 @@ and use one of these signatures::
 
 The ``<script>`` file must call :ref:`CTest Commands` commands
 to run testing steps explicitly as documented below.  The commands
-obtain `Dashboard Client Configuration`_ settings from their
+obtain `仪表客户端配置`_ settings from their
 arguments or from variables set in the script.
 
-Dashboard Client Configuration
+仪表客户端配置
 ==============================
 
-The `Dashboard Client Steps`_ may be configured by named
+The `仪表客户端步骤`_ may be configured by named
 settings as documented in the following sections.
 
 .. _`CTest Start Step`:
 
-CTest Start Step
+CTest开始步骤
 ----------------
 
 Start a new dashboard submission to be composed of results recorded
@@ -786,7 +786,7 @@ Configuration settings include:
 
 .. _`CTest Update Step`:
 
-CTest Update Step
+CTest更新步骤
 -----------------
 
 In a `CTest Script`_, the :command:`ctest_update` command runs this step.
@@ -974,7 +974,7 @@ Additional configuration settings include:
 
 .. _`CTest Configure Step`:
 
-CTest Configure Step
+CTest配置步骤
 --------------------
 
 In a `CTest Script`_, the :command:`ctest_configure` command runs this step.
@@ -1003,7 +1003,7 @@ Configuration settings include:
 
 .. _`CTest Build Step`:
 
-CTest Build Step
+CTest构建步骤
 ----------------
 
 In a `CTest Script`_, the :command:`ctest_build` command runs this step.
@@ -1060,7 +1060,7 @@ Configuration settings include:
 
 .. _`CTest Test Step`:
 
-CTest Test Step
+CTest测试步骤
 ---------------
 
 In a `CTest Script`_, the :command:`ctest_test` command runs this step.
@@ -1105,7 +1105,7 @@ To report extra test values to CDash, see :ref:`Additional Test Measurements`.
 
 .. _`CTest Coverage Step`:
 
-CTest Coverage Step
+CTest覆盖步骤
 -------------------
 
 In a `CTest Script`_, the :command:`ctest_coverage` command runs this step.
@@ -1131,7 +1131,7 @@ Configuration settings include:
 
 .. _`CTest MemCheck Step`:
 
-CTest MemCheck Step
+CTest内存检查步骤
 -------------------
 
 In a `CTest Script`_, the :command:`ctest_memcheck` command runs this step.
@@ -1233,7 +1233,7 @@ Additional configuration settings include:
 
 .. _`CTest Submit Step`:
 
-CTest Submit Step
+CTest提交步骤
 -----------------
 
 In a `CTest Script`_, the :command:`ctest_submit` command runs this step.
@@ -1359,7 +1359,7 @@ Configuration settings include:
 
 .. _`Show as JSON Object Model`:
 
-Show as JSON Object Model
+显示为JSON对象模型
 =========================
 
 When the ``--show-only=json-v1`` command line option is given, the test
@@ -1418,7 +1418,7 @@ model is defined as follows:
 
 .. _`ctest-resource-allocation`:
 
-Resource Allocation
+资源分配
 ===================
 
 CTest provides a mechanism for tests to specify the resources that they need
@@ -1494,7 +1494,7 @@ properties to indicate a skipped test.
 
 .. _`ctest-resource-specification-file`:
 
-Resource Specification File
+资源规范文件
 ---------------------------
 
 The resource specification file is a JSON file which is passed to CTest, either
@@ -1562,7 +1562,7 @@ The members are:
   lowercase letter or an underscore, and subsequent characters can be a
   lowercase letter, a digit, or an underscore. Uppercase letters are not
   allowed, because certain platforms have case-insensitive environment
-  variables. See the `Environment Variables`_ section below for
+  variables. See the `环境变量`_ section below for
   more information. It is recommended that the resource type name be the plural
   of a noun, such as ``gpus`` or ``crypto_chips`` (and not ``gpu`` or
   ``crypto_chip``.)
@@ -1599,14 +1599,14 @@ In the example file above, there are four GPUs with ID's 0 through 3. GPU 0 has
 2 slots, GPU 1 has 4, GPU 2 has 2, and GPU 3 has a default of 1 slot. There is
 also one cryptography chip with 4 slots.
 
-``RESOURCE_GROUPS`` Property
+``RESOURCE_GROUPS`` 属性
 ----------------------------
 
 See :prop_test:`RESOURCE_GROUPS` for a description of this property.
 
 .. _`ctest-resource-environment-variables`:
 
-Environment Variables
+环境变量
 ---------------------
 
 Once CTest has decided which resources to allocate to a test, it passes this
@@ -1674,7 +1674,7 @@ The following variables are passed to the test process:
   uppercase in the ``CTEST_RESOURCE_GROUP_<num>_<resource-type>`` environment
   variable.
 
-See Also
+另行参阅
 ========
 
 .. include:: LINKS.txt
