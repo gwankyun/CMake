@@ -24,40 +24,20 @@ CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有�
 编译特性需求
 ============================
 
-Compile feature requirements may be specified with the
-:command:`target_compile_features` command.  For example, if a target must
-be compiled with compiler support for the
-:prop_gbl:`cxx_constexpr <CMAKE_CXX_KNOWN_FEATURES>` feature:
+编译特性需求可以通过 :command:`target_compile_features` 命令指定。例如，假设一个目标必须在编译器的 :prop_gbl:`cxx_constexpr <CMAKE_CXX_KNOWN_FEATURES>` 特性支持下编译：
 
 .. code-block:: cmake
 
   add_library(mylib requires_constexpr.cpp)
   target_compile_features(mylib PRIVATE cxx_constexpr)
 
-In processing the requirement for the ``cxx_constexpr`` feature,
-:manual:`cmake(1)` will ensure that the in-use C++ compiler is capable
-of the feature, and will add any necessary flags such as ``-std=gnu++11``
-to the compile lines of C++ files in the ``mylib`` target.  A
-``FATAL_ERROR`` is issued if the compiler is not capable of the
-feature.
+在处理 ``cxx_constexpr`` 特性需求时，:manual:`cmake(1)` 将确保正在使用的C++编译器能够实现该特性，并将在 ``mylib`` 目标中的C++文件的编译命令中添加任何必要的标志，例如 ``-std=gnu++11``。如果编译器不能实现该特性，则引发 ``FATAL_ERROR``。
 
-The exact compile flags and language standard are deliberately not part
-of the user interface for this use-case.  CMake will compute the
-appropriate compile flags to use by considering the features specified
-for each target.
+准确的编译标志和语言标准并不是这个用例的用户界面的一部分。CMake将计算每个目标指定的特性来得出适当编译标志。
 
-Such compile flags are added even if the compiler supports the
-particular feature without the flag. For example, the GNU compiler
-supports variadic templates (with a warning) even if ``-std=gnu++98`` is
-used.  CMake adds the ``-std=gnu++11`` flag if ``cxx_variadic_templates``
-is specified as a requirement.
+即使编译器没有该特定特性的标志，也会添加这样的编译标志。例如，即使使用了 ``-std=gnu++98``, GNU编译器也支持可变参数模板（带有警告）。如果 ``cxx_variadic_templates`` 被指定为需求，CMake会添加 ``-std=gnu++11`` 标志。
 
-In the above example, ``mylib`` requires ``cxx_constexpr`` when it
-is built itself, but consumers of ``mylib`` are not required to use a
-compiler which supports ``cxx_constexpr``.  If the interface of
-``mylib`` does require the ``cxx_constexpr`` feature (or any other
-known feature), that may be specified with the ``PUBLIC`` or
-``INTERFACE`` signatures of :command:`target_compile_features`:
+在上面的例子中，``mylib`` 在自己构建时需要 ``cxx_constexpr``，但是 ``mylib`` 的消费者不需要使用支持 ``cxx_constexpr`` 的编译器。如果 ``mylib`` 的接口确实需要 ``cxx_constexpr`` 特性（或任何其他已知特性），则可以使用 :command:`target_compile_features` 的 ``PUBLIC`` 或 ``INTERFACE`` 签名来指定：
 
 .. code-block:: cmake
 
@@ -69,9 +49,7 @@ known feature), that may be specified with the ``PUBLIC`` or
   add_executable(myexe main.cpp)
   target_link_libraries(myexe mylib)
 
-Feature requirements are evaluated transitively by consuming the link
-implementation.  See :manual:`cmake-buildsystem(7)` for more on
-transitive behavior of build properties and usage requirements.
+特性需求是通过消费链接实现来计算的。请参阅 :manual:`cmake-buildsystem(7)` 了解更多关于构建属性和使用需求的传递行为。
 
 .. _`Requiring Language Standards`:
 
