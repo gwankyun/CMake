@@ -56,34 +56,20 @@ CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有�
 要求语言标准
 ----------------------------
 
-In projects that use a large number of commonly available features from
-a particular language standard (e.g. C++ 11) one may specify a
-meta-feature (e.g. ``cxx_std_11``) that requires use of a compiler mode
-that is at minimum aware of that standard, but could be greater.
-This is simpler than specifying all the features individually, but does
-not guarantee the existence of any particular feature.
-Diagnosis of use of unsupported features will be delayed until compile time.
+在使用大量来自特定语言标准（如C++ 11）的通用特性的项目中，可以指定一个元特性（如  ``cxx_std_11``），该元特性需要使用最低限度但可能更高的知道该标准的编译器模式。这比单独指定所有特性要简单，但这不能保证任何特定特性的存在。对不受支持特性的使用的诊断将延迟到编译时。
 
-For example, if C++ 11 features are used extensively in a project's
-header files, then clients must use a compiler mode that is no less
-than C++ 11.  This can be requested with the code:
+例如，如C++ 11特性在项目的头文件中广泛使用，那么客户端必须使用不低于C++ 11的编译器模式。代码中可以这样指定：
 
 .. code-block:: cmake
 
   target_compile_features(mylib PUBLIC cxx_std_11)
 
-In this example, CMake will ensure the compiler is invoked in a mode
-of at-least C++ 11 (or C++ 14, C++ 17, ...), adding flags such as
-``-std=gnu++11`` if necessary.  This applies to sources within ``mylib``
-as well as any dependents (that may include headers from ``mylib``).
+在这个例子中，CMake将确保编译器以至少C++ 11（或C++ 14、c++ 17等等）的模式调用，并在必要时添加诸如 ``-std=gnu++11`` 的标志。这适用于 ``mylib`` 中的源文件以及任何依赖文件（可能包括来自 ``mylib`` 的头文件）。
 
 编译器扩展是否可用
 -----------------------------------
 
-The :prop_tgt:`<LANG>_EXTENSIONS` target property defaults to the compiler's
-default (see :variable:`CMAKE_<LANG>_EXTENSIONS_DEFAULT`). Note that because
-most compilers enable extensions by default, this may expose portability bugs
-in user code or in the headers of third-party dependencies.
+:prop_tgt:`<LANG>_EXTENSIONS` 目标属性默认为编译器的默认值（参见 :variable:`CMAKE_<LANG>_EXTENSIONS_DEFAULT`）。注意，因为大多数编译器默认启用扩展，这可能会暴露用户代码或第三方依赖项头中的可移植性错误。
 
 :prop_tgt:`<LANG>_EXTENSIONS` 默认设置为 ``ON``。可查阅 :policy:`CMP0128`。
 
