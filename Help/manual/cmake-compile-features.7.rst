@@ -53,7 +53,7 @@ CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有�
 
 .. _`Requiring Language Standards`:
 
-要求语言标准
+指定语言标准
 ----------------------------
 
 在使用大量来自特定语言标准（如C++ 11）的通用特性的项目中，可以指定一个元特性（如  ``cxx_std_11``），该元特性需要使用最低限度但可能更高的知道该标准的编译器模式。这比单独指定所有特性要简单，但这不能保证任何特定特性的存在。对不受支持特性的使用的诊断将延迟到编译时。
@@ -76,22 +76,11 @@ CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有�
 可选编译特性
 =========================
 
-Compile features may be preferred if available, without creating a hard
-requirement.   This can be achieved by *not* specifying features with
-:command:`target_compile_features` and instead checking the compiler
-capabilities with preprocessor conditions in project code.
+如果可以的话，编译特性可能是首选，而不是硬性需求。这可以通过 *不* 使用 :command:`target_compile_features` 指定特性，而是在项目代码中使用预处理器条件检查编译器功能来实现。
 
-In this use-case, the project may wish to establish a particular language
-standard if available from the compiler, and use preprocessor conditions
-to detect the features actually available.  A language standard may be
-established by `Requiring Language Standards`_ using
-:command:`target_compile_features` with meta-features like ``cxx_std_11``,
-or by setting the :prop_tgt:`CXX_STANDARD` target property or
-:variable:`CMAKE_CXX_STANDARD` variable.
+在这个用例中，如果编译器提供，项目可能希望建立一个特定的语言标准，并使用预处理器条件来检测实际可用的特性。语言标准可以通过 `指定语言标准`_ 使用带有 ``cxx_std_11`` 等元特性的 :command:`target_compile_features` 来建立，或者通过设置 :prop_tgt:`CXX_STANDARD` 目标属性或 :variable:`CMAKE_CXX_STANDARD` 变量。
 
-See also policy :policy:`CMP0120` and legacy documentation on
-:ref:`Example Usage <WCDH Example Usage>` of the deprecated
-:module:`WriteCompilerDetectionHeader` module.
+请参考 :policy:`CMP0120` 和已弃用的 :module:`WriteCompilerDetectionHeader` 模块的 :ref:`示例用法 <WCDH Example Usage>` 的遗留文档。
 
 条件编译选项
 ===============================
