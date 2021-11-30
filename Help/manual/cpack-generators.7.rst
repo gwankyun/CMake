@@ -7,7 +7,7 @@ cpack-generators(7)
 
    .. contents::
 
-Generators
+生成器
 ==========
 
 .. toctree::
