@@ -85,10 +85,9 @@ CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有�
 条件编译选项
 ===============================
 
-Libraries may provide entirely different header files depending on
-requested compiler features.
+库可以根据所请求的编译器特性提供完全不同的头文件。
 
-For example, a header at ``with_variadics/interface.h`` may contain:
+例如，``with_variadics/interface.h`` 头文件可能包含：
 
 .. code-block:: c++
 
@@ -113,7 +112,7 @@ For example, a header at ``with_variadics/interface.h`` may contain:
     }
   };
 
-while a header at ``no_variadics/interface.h`` may contain:
+而 ``no_variadics/interface.h`` 头文件可能包含：
 
 .. code-block:: c++
 
@@ -123,8 +122,7 @@ while a header at ``no_variadics/interface.h`` may contain:
     static int accumulate() { return I1 + I2 + I3 + I4; }
   };
 
-It may be possible to write an abstraction ``interface.h`` header
-containing something like:
+可以抽象出一个 ``interface.h`` 头文件，其中包含如下内容：
 
 .. code-block:: c++
 
@@ -134,16 +132,9 @@ containing something like:
   #include "no_variadics/interface.h"
   #endif
 
-However this could be unmaintainable if there are many files to
-abstract. What is needed is to use alternative include directories
-depending on the compiler capabilities.
+然而，如果有许多文件要抽象，这也许难以维护。我们需要的是根据编译器的能力使用替代的include目录。
 
-CMake provides a ``COMPILE_FEATURES``
-:manual:`generator expression <cmake-generator-expressions(7)>` to implement
-such conditions.  This may be used with the build-property commands such as
-:command:`target_include_directories` and :command:`target_link_libraries`
-to set the appropriate :manual:`buildsystem <cmake-buildsystem(7)>`
-properties:
+CMake提供了一个 ``COMPILE_FEATURES`` :manual:`生成器表达式 <cmake-generator-expressions(7)>` 来实现这些条件。这可以与诸如 :command:`target_include_directories` 和 :command:`target_link_libraries` 这样的构建属性命令一起使用，以设置适当的 :manual:`构建系统 <cmake-buildsystem(7)>` 属性：
 
 .. code-block:: cmake
 
@@ -156,8 +147,7 @@ properties:
       "$<$<NOT:$<COMPILE_FEATURES:cxx_variadic_templates>>:${no_variadics}>"
     )
 
-Consuming code then simply links to the ``foo`` target as usual and uses
-the feature-appropriate include directory
+然后使用代码简单地像往常一样链接到 ``foo`` 目标，并使用适合特性的include目录。
 
 .. code-block:: cmake
 
