@@ -161,49 +161,34 @@ CMake提供了一个 ``COMPILE_FEATURES`` :manual:`生成器表达式 <cmake-gen
 支持的编译器
 ===================
 
-CMake is currently aware of the :prop_tgt:`C++ standards <CXX_STANDARD>`
-and :prop_gbl:`compile features <CMAKE_CXX_KNOWN_FEATURES>` available from
-the following :variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>` as of the
-versions specified for each:
+CMake目前知道的 :prop_tgt:`C++ 标准 <CXX_STANDARD>` 和 :prop_gbl:`编译特性 <CMAKE_CXX_KNOWN_FEATURES>`，可以从以下 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>` 中获取，每个编译器相关版本如下：
 
-* ``AppleClang``: Apple Clang for Xcode versions 4.4+.
-* ``Clang``: Clang compiler versions 2.9+.
-* ``GNU``: GNU compiler versions 4.4+.
-* ``MSVC``: Microsoft Visual Studio versions 2010+.
-* ``SunPro``: Oracle SolarisStudio versions 12.4+.
-* ``Intel``: Intel compiler versions 12.1+.
+* ``AppleClang``: Apple Clang for Xcode 版本 4.4+。
+* ``Clang``: Clang 编译器版本 2.9+。
+* ``GNU``: GNU 编译器版本 4.4+。
+* ``MSVC``: Microsoft Visual Studio 版本 2010+。
+* ``SunPro``: Oracle SolarisStudio 版本 12.4+。
+* ``Intel``: Intel 编译器版本 12.1+。
 
-CMake is currently aware of the :prop_tgt:`C standards <C_STANDARD>`
-and :prop_gbl:`compile features <CMAKE_C_KNOWN_FEATURES>` available from
-the following :variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>` as of the
-versions specified for each:
+CMake目前知道的 :prop_tgt:`C 标准 <C_STANDARD>` 和 :prop_gbl:`编译特性 <CMAKE_C_KNOWN_FEATURES>`，可以从以下 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>` 中获取，每个编译器相关版本如下：
 
-* all compilers and versions listed above for C++.
-* ``GNU``: GNU compiler versions 3.4+
+* 以上列出的所有C++编译器及版本。
+* ``GNU``: GNU 编译器版本 3.4+。
 
-CMake is currently aware of the :prop_tgt:`C++ standards <CXX_STANDARD>` and
-their associated meta-features (e.g. ``cxx_std_11``) available from the
-following :variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>` as of the
-versions specified for each:
+CMake目前知道的 :prop_tgt:`C++ 标准 <CXX_STANDARD>` 及其相关的元特性（例如 ``cxx_std_11``），这些元特性可以从以下 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>` 中获得：
 
-* ``Cray``: Cray Compiler Environment version 8.1+.
-* ``Fujitsu``: Fujitsu HPC compiler 4.0+.
-* ``PGI``: PGI version 12.10+.
-* ``NVHPC``: NVIDIA HPC compilers version 11.0+.
-* ``TI``: Texas Instruments compiler.
-* ``XL``: IBM XL version 10.1+.
+* ``Cray``: Cray 编译器环境版本 8.1+。
+* ``Fujitsu``: Fujitsu HPC 编译器 4.0+。
+* ``PGI``: PGI 版本 12.10+。
+* ``NVHPC``: NVIDIA HPC 编译器版本 11.0+。
+* ``TI``: Texas Instruments 编译器。
+* ``XL``: IBM XL 版本 10.1+。
 
-CMake is currently aware of the :prop_tgt:`C standards <C_STANDARD>` and
-their associated meta-features (e.g. ``c_std_99``) available from the
-following :variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>` as of the
-versions specified for each:
+CMake目前知道的 :prop_tgt:`C 标准 <C_STANDARD>` 及其相关的元特性（例如 ``c_std_99``）可以从以下 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>` 中获得，每个编译器相关版本如下：
 
-* all compilers and versions listed above with only meta-features for C++.
+* 上面列的所有编译器及版本，只有C++的元特性。
 
-CMake is currently aware of the :prop_tgt:`CUDA standards <CUDA_STANDARD>` and
-their associated meta-features (e.g. ``cuda_std_11``) available from the
-following :variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>` as of the
-versions specified for each:
+CMake目前知道的 :prop_tgt:`CUDA 标准 <CUDA_STANDARD>` 及其相关的元特性（例如 ``cuda_std_11``），可以从以下 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>` 中获取每个标准相关版本：
 
-* ``Clang``: Clang compiler 5.0+.
-* ``NVIDIA``: NVIDIA nvcc compiler 7.5+.
+* ``Clang``: Clang 编译器 5.0+。
+* ``NVIDIA``: NVIDIA nvcc 编译器 7.5+。
