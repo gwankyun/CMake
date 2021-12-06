@@ -25,42 +25,34 @@ cmake-generator-expressions(7)
 布尔生成器表达式
 =============================
 
-Boolean expressions evaluate to either ``0`` or ``1``.
-They are typically used to construct the condition in a :ref:`conditional
-generator expression<Conditional Generator Expressions>`.
+布尔表达式的值为 ``0`` 或 ``1``。它们通常用于在 :ref:`条件生成器表达式<Conditional Generator Expressions>` 中作为构造条件。
 
-Available boolean expressions are:
+可用的布尔表达式有：
 
 逻辑操作符
 -----------------
 
 .. genex:: $<BOOL:string>
 
-  Converts ``string`` to ``0`` or ``1``. Evaluates to ``0`` if any of the
-  following is true:
+  将 ``string`` 转换为 ``0`` 或 ``1``。如果以下任意一个为真，则计算为 ``0``：
 
-  * ``string`` is empty,
-  * ``string`` is a case-insensitive equal of
-    ``0``, ``FALSE``, ``OFF``, ``N``, ``NO``, ``IGNORE``, or ``NOTFOUND``, or
-  * ``string`` ends in the suffix ``-NOTFOUND`` (case-sensitive).
+  * ``string`` 是空的，
+  * ``string`` 不区分大小写，等价为 ``0``、``FALSE``、``OFF``、``N``、``NO``、``IGNORE`` 或 ``NOTFOUND``，或
+  * ``string`` 以 ``-NOTFOUND`` 后缀结束（区分大小写）。
 
-  Otherwise evaluates to ``1``.
+  否则等于 ``1``。
 
 .. genex:: $<AND:conditions>
 
-  where ``conditions`` is a comma-separated list of boolean expressions.
-  Evaluates to ``1`` if all conditions are ``1``.
-  Otherwise evaluates to ``0``.
+  其中的 ``conditions`` 是一个逗号分隔的布尔表达式列表。如果所有条件都为 ``1``，则返回 ``1``。否则等于 ``0``。
 
 .. genex:: $<OR:conditions>
 
-  where ``conditions`` is a comma-separated list of boolean expressions.
-  Evaluates to ``1`` if at least one of the conditions is ``1``.
-  Otherwise evaluates to ``0``.
+  其中的 ``conditions`` 是一个逗号分隔的布尔表达式列表。如果至少有一个条件是 ``1``，则返回 ``1``。否则等于 ``0``。
 
 .. genex:: $<NOT:condition>
 
-  ``0`` if ``condition`` is ``1``, else ``1``.
+  如果 ``condition`` 是 ``1``，则为 ``0``，否则为 ``1``。
 
 字符串比较
 ------------------
