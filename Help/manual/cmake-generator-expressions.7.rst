@@ -59,10 +59,8 @@ cmake-generator-expressions(7)
 
 .. genex:: $<STREQUAL:string1,string2>
 
-  ``1`` if ``string1`` and ``string2`` are equal, else ``0``.
-  The comparison is case-sensitive.  For a case-insensitive comparison,
-  combine with a :ref:`string transforming generator expression
-  <String Transforming Generator Expressions>`,
+  如果 ``string1`` 和 ``string2`` 相等，则为 ``1``，否则为 ``0``。比较区分大小写。若要进行大小写不敏感的比较，请与 :ref:`字符串转换生成器表达式
+  <String Transforming Generator Expressions>` 结合使用，
 
   .. code-block:: cmake
 
@@ -70,38 +68,37 @@ cmake-generator-expressions(7)
 
 .. genex:: $<EQUAL:value1,value2>
 
-  ``1`` if ``value1`` and ``value2`` are numerically equal, else ``0``.
+  如果 ``value1`` 和 ``value2`` 在数值上相等则为 ``1``，否则为 ``0``。
 
 .. genex:: $<IN_LIST:string,list>
 
   .. versionadded:: 3.12
 
-  ``1`` if ``string`` is member of the semicolon-separated ``list``, else ``0``.
-  Uses case-sensitive comparisons.
+  如果 ``string`` 是分号分隔 ``list`` 的成员，则为 ``1``，否则为 ``0``。区分大小写。
 
 .. genex:: $<VERSION_LESS:v1,v2>
 
-  ``1`` if ``v1`` is a version less than ``v2``, else ``0``.
+  如果 ``v1`` 小于 ``v2``，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<VERSION_GREATER:v1,v2>
 
-  ``1`` if ``v1`` is a version greater than ``v2``, else ``0``.
+  如果 ``v1`` 大于 ``v2`` 则为 ``1``，否则为 ``0``。
 
 .. genex:: $<VERSION_EQUAL:v1,v2>
 
-  ``1`` if ``v1`` is the same version as ``v2``, else ``0``.
+  如果 ``v1`` 和 ``v2`` 是同一个版本，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<VERSION_LESS_EQUAL:v1,v2>
 
   .. versionadded:: 3.7
 
-  ``1`` if ``v1`` is a version less than or equal to ``v2``, else ``0``.
+  如果 ``v1`` 是小于等于 ``v2`` 的版本，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<VERSION_GREATER_EQUAL:v1,v2>
 
   .. versionadded:: 3.7
 
-  ``1`` if ``v1`` is a version greater than or equal to ``v2``, else ``0``.
+  如果 ``v1`` 是大于等于 ``v2`` 的版本，则为 ``1``，否则为 ``0``。
 
 变量查询
 ----------------
