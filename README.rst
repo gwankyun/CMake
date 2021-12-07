@@ -6,7 +6,7 @@ CMake
 
 `中文翻译说明`_
 
-.. _`中文翻译说明`: Help/zh_CN.rst
+.. _`中文翻译说明`: zh_CN.rst
 
 CMake是一个跨平台、开源的构建系统生成器。完整的文档请访问 `CMake Home Page`_ 和 
 `CMake Documentation Page`_。也可以去 `CMake Community Wiki`_ 参考有用的资料。
