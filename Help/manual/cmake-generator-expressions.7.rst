@@ -107,154 +107,105 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.12
 
-  ``1`` if ``target`` exists, else ``0``.
+  如果 ``target`` 存在，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<CONFIG:cfgs>
 
-  ``1`` if config is any one of the entries in comma-separated list
-  ``cfgs``, else ``0``. This is a case-insensitive comparison. The mapping in
-  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>` is also considered by this
-  expression when it is evaluated on a property on an :prop_tgt:`IMPORTED`
-  target.
+  如果配置是逗号分隔列表 ``cfgs`` 中的任何一个条目，则为 ``1``，否则为 ``0``。这是一个不区分大小写的比较。:prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>` 中的映射在对 :prop_tgt:`IMPORTED` 目标的属性求值时也会被该表达式考虑到。
 
 .. genex:: $<PLATFORM_ID:platform_ids>
 
-  where ``platform_ids`` is a comma-separated list.
-  ``1`` if the CMake's platform id matches any one of the entries in
-  ``platform_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_SYSTEM_NAME` variable.
+  其中 ``platform_ids`` 是一个逗号分隔的列表。如果CMake的平台标识匹配 ``platform_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_SYSTEM_NAME` 变量。
 
 .. genex:: $<C_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the C compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果C编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<CXX_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the CXX compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果CXX编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<CUDA_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.15
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the CUDA compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果CUDA编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<OBJC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the Objective-C compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果Objective-C编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<OBJCXX_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the Objective-C++ compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果Objective-C++编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<Fortran_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the Fortran compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果Fortran编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<HIP_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the HIP compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果HIP编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<ISPC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.19
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if the CMake's compiler id of the ISPC compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果ISPC编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
 
 .. genex:: $<C_COMPILER_VERSION:version>
 
-  ``1`` if the version of the C compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果C编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<CXX_COMPILER_VERSION:version>
 
-  ``1`` if the version of the CXX compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果CXX编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<CUDA_COMPILER_VERSION:version>
 
   .. versionadded:: 3.15
 
-  ``1`` if the version of the CXX compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果CUDA编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<OBJC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  ``1`` if the version of the OBJC compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果OBJC编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<OBJCXX_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  ``1`` if the version of the OBJCXX compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果OBJCXX编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<Fortran_COMPILER_VERSION:version>
 
-  ``1`` if the version of the Fortran compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果Fortran编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<HIP_COMPILER_VERSION:version>
 
-  ``1`` if the version of the HIP compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果HIP编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<ISPC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.19
 
-  ``1`` if the version of the ISPC compiler matches ``version``, otherwise ``0``.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  如果ISPC编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
 
 .. genex:: $<TARGET_POLICY:policy>
 
-  ``1`` if the ``policy`` was NEW when the 'head' target was created,
-  else ``0``.  If the ``policy`` was not set, the warning message for the policy
-  will be emitted. This generator expression only works for a subset of
-  policies.
+  如果创建“头”目标时 ``policy`` 为NEW，则为 ``1``，否则为 ``0``。如果未设置该 ``policy``，则将发出该策略的警告消息。这个生成器表达式只适用于部分策略。
 
 .. genex:: $<COMPILE_FEATURES:features>
 
   .. versionadded:: 3.1
 
-  where ``features`` is a comma-spearated list.
-  Evaluates to ``1`` if all of the ``features`` are available for the 'head'
-  target, and ``0`` otherwise. If this expression is used while evaluating
-  the link implementation of a target and if any dependency transitively
-  increases the required :prop_tgt:`C_STANDARD` or :prop_tgt:`CXX_STANDARD`
-  for the 'head' target, an error is reported.  See the
-  :manual:`cmake-compile-features(7)` manual for information on
-  compile features and a list of supported compilers.
+  ``features`` 是一个以逗号分隔的列表。如果所有的 ``features`` 都对“头”目标可用，则计算为 ``1``，否则为 ``0``。如果在计算目标的链接实现时使用该表达式，并且如果有任何依赖项增加了“头”目标所需的 :prop_tgt:`C_STANDARD` 或 :prop_tgt:`CXX_STANDARD`，则会报告错误。参考 :manual:`cmake-compile-features(7)` 手册获取编译特性的信息和支持的编译器列表。
 
 .. _`Boolean COMPILE_LANGUAGE Generator Expression`:
 
