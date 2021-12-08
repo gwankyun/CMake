@@ -2234,8 +2234,9 @@ if(BUILD_TESTING)
     endif()
 
     if(NOT "${CMAKE_GENERATOR}" MATCHES "Visual Studio 9 "
-        AND NOT CMAKE_GENERATOR_TOOLSET)
+        AND NOT CMAKE_GENERATOR_TOOLSET STREQUAL "v90")
       ADD_TEST_MACRO(VSWindowsFormsResx VSWindowsFormsResx)
+      ADD_TEST_MACRO(VSManagedCustomCommand)
     endif()
 
     add_test(VSExternalInclude ${CMAKE_CTEST_COMMAND}
