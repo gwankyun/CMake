@@ -37,36 +37,36 @@ cmake(1)
 描述
 ===========
 
-**cmake** 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面的 `概要`_ 列出了工具可以执行的各种操作，如下面的部分所述。
+**cmake**\ 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面\ `概要`_\ 列出了工具可以执行的各种操作，如下面的部分所述。
 
-要用CMake构建一个软件项目，请 `生成一个项目构建系统`_。可以选择使用 **cmake** 来 `构建一个项目`_ 及 `安装一个项目`_ ，或者直接运行相应的构建工具（例如 ``make``）。**cmake** 也可以用来 `查看帮助`_。
+要用CMake构建一个软件项目，请\ `生成一个项目构建系统`_。可以选择使用\ **cmake**\ 来\ `构建一个项目`_\ 及\ `安装一个项目`_，或者直接运行相应的构建工具（例如\ ``make``）。**cmake**\ 也可以用来\ `查看帮助`_。
 
-其他操作是为了让软件开发人员使用 :manual:`CMake language <cmake-language(7)>` 编写脚本来支持他们的构建。
+其他操作是为了让软件开发人员使用\ :manual:`CMake language <cmake-language(7)>`\ 编写脚本来支持他们的构建。
 
-有关 **cmake** 的图形用户界面替代，请参阅 :manual:`ccmake <ccmake(1)>` 和 :manual:`cmake-gui <cmake-gui(1)>`。有关CMake测试和打包工具的命令行接口，请参考 :manual:`ctest <ctest(1)>` 和 :manual:`cpack <cpack(1)>`。
+有关\ **cmake**\ 的图形用户界面替代，请参阅\ :manual:`ccmake <ccmake(1)>`\ 和\ :manual:`cmake-gui <cmake-gui(1)>`。有关CMake测试和打包工具的命令行接口，请参考\ :manual:`ctest <ctest(1)>`\ 和\ :manual:`cpack <cpack(1)>`。
 
-有关CMake的详细信息，请 `另行参阅`_ 本手册末尾的链接。
+有关CMake的详细信息，请\ `另行参阅`_\ 本手册末尾的链接。
 
 
 介绍CMake构建系统
 ==================================
 
-*构建系统* 描述了如何使用 *构建工具* 从其源代码中构建项目的可执行文件和库的自动化过程。例如，构建系统可能是一个 ``Makefile`` 文件，用于命令行 ``make`` 工具或用于集成开发环境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用 :manual:`CMake语言 <cmake-language(7)>` 编写的文件抽象地指定它的构建系统。从这些文件中，CMake通过一个称为 *生成器* 的后端为每个用户在本地生成一个首选的构建系统。
+*构建系统*\ 描述了如何使用\ *构建工具*\ 从其源代码中构建项目的可执行文件和库的自动化过程。例如，构建系统可能是一个\ ``Makefile``\ 文件，用于命令行\ ``make``\ 工具或用于集成开发环境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用\ :manual:`CMake语言 <cmake-language(7)>`\ 编写的文件抽象地指定它的构建系统。从这些文件中，CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一个首选的构建系统。
 
 要用CMake生成一个构建系统，必须设置以下选项：
 
 源代码树
-  包含由项目提供的源文件的顶层目录。该项目使用　:manual:`cmake-language(7)` 手册中描述的文件指定其构建系统，从顶层文件　``CMakeLists.txt``　开始。这些文件指定了 :manual:`cmake-buildsystem(7)` 手册中描述的构建目标及其依赖关系。
+  包含由项目提供的源文件的顶层目录。该项目使用\ :manual:`cmake-language(7)`\ 手册中描述的文件指定其构建系统，从顶层文件\ ``CMakeLists.txt``\ 开始。这些文件指定了\ :manual:`cmake-buildsystem(7)`\ 手册中描述的构建目标及其依赖关系。
 
 构建树
-  用于存储构建系统文件和构建输出工件（例如可执行文件和库）的顶层目录。CMake将编写一个 ``CMakeCache.txt`` 文件，将该目录标识为构建树，并存储持久信息，如构建系统配置选项。
+  用于存储构建系统文件和构建输出工件（例如可执行文件和库）的顶层目录。CMake将编写一个\ ``CMakeCache.txt``\ 文件，将该目录标识为构建树，并存储持久信息，如构建系统配置选项。
 
-  要维护原始的源代码树，请使用单独的专用构建树执行 *源代码外* 构建。也支持将构建树放置在与源代码树相同的目录中的 *源代码内* 构建，但不鼓励这样做。
+  要维护原始的源代码树，请使用单独的专用构建树执行\ *源代码外*\ 构建。也支持将构建树放置在与源代码树相同的目录中的\ *源代码内*\ 构建，但不鼓励这样做。
 
 生成器
-  它选择要生成的构建系统的类型。有关所有生成器的文档，请参阅 :manual:`cmake-generators(7)` 手册。运行 ``cmake --help`` 查看本地可用的生成器列表。可以选择使用下面的 ``-G`` 选项来指定生成器，或者简单地接受CMake在当前平台的默认选项。
+  它选择要生成的构建系统的类型。有关所有生成器的文档，请参阅\ :manual:`cmake-generators(7)`\ 手册。运行\ ``cmake --help``\ 查看本地可用的生成器列表。可以选择使用下面的\ ``-G``\ 选项来指定生成器，或者简单地接受CMake在当前平台的默认选项。
 
-  当使用 :ref:`Command-Line Build Tool Generators` 时，CMake期望编译器工具链所需要的环境已经在shell中配置好了。当使用 :ref:`IDE Build Tool Generators` 时，不需要特定的环境。
+  当使用\ :ref:`Command-Line Build Tool Generators`\ 时，CMake期望编译器工具链所需要的环境已经在shell中配置好了。当使用\ :ref:`IDE Build Tool Generators`\ 时，不需要特定的环境。
 
 .. _`Generate a Project Buildsystem`:
 
@@ -76,7 +76,7 @@ cmake(1)
 使用以下命令签名之一运行CMake，指定源和构建树，并生成一个构建系统：
 
 ``cmake [<options>] <path-to-source>``
-  使用当前工作目录作为构建树，并使用 ``<path-to-source>`` 作为源树。指定的路径可以是绝对路径，也可以是相对于当前工作目录的路径。源树必须包含 ``CMakeLists.txt`` 文件，但 *不能* 包含 ``CMakeCache.txt`` 文件，因为后者标识了一个现有的构建树。例如：
+  使用当前工作目录作为构建树，并使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝对路径，也可以是相对于当前工作目录的路径。源树必须包含\ ``CMakeLists.txt``\ 文件，但\ *不能*\ 包含\ ``CMakeCache.txt``\ 文件，因为后者标识了一个现有的构建树。例如：
 
   .. code-block:: console
 
@@ -84,7 +84,7 @@ cmake(1)
     $ cmake ../src
 
 ``cmake [<options>] <path-to-existing-build>``
-  使用 ``<path-to-existing-build>`` 作为构建树，并从其 ``CMakeCache.txt`` 文件加载到源树的路径，该文件必须是之前运行CMake时生成的。指定的路径可以是绝对路径，也可以是相对于当前工作目录的路径。例如：
+  使用\ ``<path-to-existing-build>``\ 作为构建树，并从其\ ``CMakeCache.txt``\ 文件加载到源树的路径，该文件必须是之前运行CMake时生成的。指定的路径可以是绝对路径，也可以是相对于当前工作目录的路径。例如：
 
   .. code-block:: console
 
@@ -92,22 +92,22 @@ cmake(1)
     $ cmake .
 
 ``cmake [<options>] -S <path-to-source> -B <path-to-build>``
-  使用 ``<path-to-build>`` 作为构建树，使用 ``<path-to-source>`` 作为源树。指定的路径可以是绝对路径或相对于当前工作目录的路径。源树必须包含一个 ``CMakeLists.txt`` 文件。如果构建树不存在，将自动创建它。例如：
+  使用\ ``<path-to-build>``\ 作为构建树，使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝对路径或相对于当前工作目录的路径。源树必须包含一个\ ``CMakeLists.txt``\ 文件。如果构建树不存在，将自动创建它。例如：
 
   .. code-block:: console
 
     $ cmake -S src -B build
 
-在所有情况下，``<options>`` 可能是下面 `选项`_ 的零或多个。
+在所有情况下，``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
 
-在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用 :generator:`Unix Makefiles` 生成器后，可以直接运行 ``make``：
+在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\ :generator:`Unix Makefiles`\ 生成器后，可以直接运行\ ``make``：
 
   .. code-block:: console
 
     $ make
     $ make install
 
-或者，可以使用 **cmake** 通过自动选择和调用适当的本地构建工具来 `构建一个项目`_。
+或者，可以使用\ **cmake**\ 通过自动选择和调用适当的本地构建工具来\ `构建一个项目`_。
 
 .. _`CMake Options`:
 

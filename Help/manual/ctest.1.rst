@@ -20,7 +20,7 @@ ctest(1)
 描述
 ===========
 
-**ctest** 可执行文件是CMake测试驱动程序。使用 :command:`enable_testing` 和 :command:`add_test` 命令创建的CMake生成构建树具有测试支持。该程序将运行测试并报告结果。
+**ctest**\ 可执行文件是CMake测试驱动程序。使用\ :command:`enable_testing`\ 和\ :command:`add_test`\ 命令创建的CMake生成构建树具有测试支持。该程序将运行测试并报告结果。
 
 .. _`CTest Options`:
 

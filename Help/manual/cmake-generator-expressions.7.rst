@@ -12,11 +12,11 @@ cmake-generator-expressions(7)
 
 生成器表达式在构建系统生成期间进行计算，以生成特定于每个构建配置的信息。
 
-生成器表达式可以在许多目标属性的语境中使用，例如 :prop_tgt:`LINK_LIBRARIES`、:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS` 等。也可以在使用命令填充这些属性时使用它们，例如 :command:`target_link_libraries`、:command:`target_include_directories`、:command:`target_compile_definitions` 等。
+生成器表达式可以在许多目标属性的语境中使用，例如\ :prop_tgt:`LINK_LIBRARIES`、:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\ 等。也可以在使用命令填充这些属性时使用它们，例如\ :command:`target_link_libraries`、:command:`target_include_directories`、:command:`target_compile_definitions` 等。
 
 它们支持条件链接、编译时使用条件定义、条件包含目录等等。条件可能基于构建配置、目标属性、平台信息或任何其他可查询的信息。
 
-生成器表达式的形式是 ``$<...>``。为了避免混淆，这个页面与大多数CMake文档不同，它省略了尖括号 ``<...>`` 围绕占位符，如 ``condition``、``string``、``target`` 等。
+生成器表达式的形式是\ ``$<...>``。为了避免混淆，这个页面与大多数CMake文档不同，它省略了尖括号\ ``<...>``\ 围绕占位符，如\ ``condition``、``string``、``target``\ 等。
 
 生成器表达式可以嵌套使用，如下面的大多数示例所示。
 
@@ -25,7 +25,7 @@ cmake-generator-expressions(7)
 布尔生成器表达式
 =============================
 
-布尔表达式的值为 ``0`` 或 ``1``。它们通常用于在 :ref:`条件生成器表达式<Conditional Generator Expressions>` 中作为构造条件。
+布尔表达式的值为\ ``0``\ 或\ ``1``。它们通常用于在\ :ref:`条件生成器表达式<Conditional Generator Expressions>`\ 中作为构造条件。
 
 可用的布尔表达式有：
 
@@ -34,33 +34,33 @@ cmake-generator-expressions(7)
 
 .. genex:: $<BOOL:string>
 
-  将 ``string`` 转换为 ``0`` 或 ``1``。如果以下任意一个为真，则计算为 ``0``：
+  将\ ``string``\ 转换为\ ``0``\ 或\ ``1``。如果以下任意一个为真，则计算为\ ``0``：
 
-  * ``string`` 是空的，
-  * ``string`` 不区分大小写，等价为 ``0``、``FALSE``、``OFF``、``N``、``NO``、``IGNORE`` 或 ``NOTFOUND``，或
-  * ``string`` 以 ``-NOTFOUND`` 后缀结束（区分大小写）。
+  * ``string``\ 是空的，
+  * ``string``\ 不区分大小写，等价为\ ``0``、``FALSE``、``OFF``、``N``、``NO``、``IGNORE``\ 或\ ``NOTFOUND``，或
+  * ``string``\ 以\ ``-NOTFOUND``\ 后缀结束（区分大小写）。
 
-  否则等于 ``1``。
+  否则等于\ ``1``。
 
 .. genex:: $<AND:conditions>
 
-  其中的 ``conditions`` 是一个逗号分隔的布尔表达式列表。如果所有条件都为 ``1``，则返回 ``1``。否则等于 ``0``。
+  其中的\ ``conditions``\ 是一个逗号分隔的布尔表达式列表。如果所有条件都为\ ``1``，则返回\ ``1``。否则等于\ ``0``。
 
 .. genex:: $<OR:conditions>
 
-  其中的 ``conditions`` 是一个逗号分隔的布尔表达式列表。如果至少有一个条件是 ``1``，则返回 ``1``。否则等于 ``0``。
+  其中的\ ``conditions``\ 是一个逗号分隔的布尔表达式列表。如果至少有一个条件是\ ``1``，则返回\ ``1``。否则等于\ ``0``。
 
 .. genex:: $<NOT:condition>
 
-  如果 ``condition`` 是 ``1``，则为 ``0``，否则为 ``1``。
+  如果\ ``condition``\ 是\ ``1``，则为\ ``0``，否则为\ ``1``。
 
 字符串比较
 ------------------
 
 .. genex:: $<STREQUAL:string1,string2>
 
-  如果 ``string1`` 和 ``string2`` 相等，则为 ``1``，否则为 ``0``。比较区分大小写。若要进行大小写不敏感的比较，请与 :ref:`字符串转换生成器表达式
-  <String Transforming Generator Expressions>` 结合使用，
+  如果\ ``string1``\ 和\ ``string2``\ 相等，则为\ ``1``，否则为\ ``0``。比较区分大小写。若要进行大小写不敏感的比较，请与\ :ref:`字符串转换生成器表达式
+  <String Transforming Generator Expressions>`\ 结合使用，
 
   .. code-block:: cmake
 
@@ -68,37 +68,37 @@ cmake-generator-expressions(7)
 
 .. genex:: $<EQUAL:value1,value2>
 
-  如果 ``value1`` 和 ``value2`` 在数值上相等则为 ``1``，否则为 ``0``。
+  如果\ ``value1``\ 和\ ``value2``\ 在数值上相等则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<IN_LIST:string,list>
 
   .. versionadded:: 3.12
 
-  如果 ``string`` 是分号分隔 ``list`` 的成员，则为 ``1``，否则为 ``0``。区分大小写。
+  如果\ ``string``\ 是分号分隔\ ``list``\ 的成员，则为\ ``1``，否则为\ ``0``。区分大小写。
 
 .. genex:: $<VERSION_LESS:v1,v2>
 
-  如果 ``v1`` 小于 ``v2``，则为 ``1``，否则为 ``0``。
+  如果\ ``v1``\ 小于\ ``v2``，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<VERSION_GREATER:v1,v2>
 
-  如果 ``v1`` 大于 ``v2`` 则为 ``1``，否则为 ``0``。
+  如果\ ``v1``\ 大于\ ``v2``\ 则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<VERSION_EQUAL:v1,v2>
 
-  如果 ``v1`` 和 ``v2`` 是同一个版本，则为 ``1``，否则为 ``0``。
+  如果\ ``v1``\ 和\ ``v2``\ 是同一个版本，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<VERSION_LESS_EQUAL:v1,v2>
 
   .. versionadded:: 3.7
 
-  如果 ``v1`` 是小于等于 ``v2`` 的版本，则为 ``1``，否则为 ``0``。
+  如果\ ``v1``\ 是小于等于\ ``v2``\ 的版本，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<VERSION_GREATER_EQUAL:v1,v2>
 
   .. versionadded:: 3.7
 
-  如果 ``v1`` 是大于等于 ``v2`` 的版本，则为 ``1``，否则为 ``0``。
+  如果\ ``v1``\ 是大于等于\ ``v2``\ 的版本，则为\ ``1``，否则为\ ``0``。
 
 变量查询
 ----------------
@@ -107,105 +107,105 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.12
 
-  如果 ``target`` 存在，则为 ``1``，否则为 ``0``。
+  如果\ ``target``\ 存在，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CONFIG:cfgs>
 
-  如果配置是逗号分隔列表 ``cfgs`` 中的任何一个条目，则为 ``1``，否则为 ``0``。这是一个不区分大小写的比较。:prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>` 中的映射在对 :prop_tgt:`IMPORTED` 目标的属性求值时也会被该表达式考虑到。
+  如果配置是逗号分隔列表\ ``cfgs``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。这是一个不区分大小写的比较。:prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`\ 中的映射在对\ :prop_tgt:`IMPORTED`\ 目标的属性求值时也会被该表达式考虑到。
 
 .. genex:: $<PLATFORM_ID:platform_ids>
 
-  其中 ``platform_ids`` 是一个逗号分隔的列表。如果CMake的平台标识匹配 ``platform_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_SYSTEM_NAME` 变量。
+  其中\ ``platform_ids``\ 是一个逗号分隔的列表。如果CMake的平台标识匹配\ ``platform_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_SYSTEM_NAME`\ 变量。
 
 .. genex:: $<C_COMPILER_ID:compiler_ids>
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果C编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果C编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<CXX_COMPILER_ID:compiler_ids>
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果CXX编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CXX编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<CUDA_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.15
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果CUDA编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CUDA编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<OBJC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果Objective-C编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果Objective-C编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<OBJCXX_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果Objective-C++编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果Objective-C++编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<Fortran_COMPILER_ID:compiler_ids>
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果Fortran编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果Fortran编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<HIP_COMPILER_ID:compiler_ids>
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果HIP编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果HIP编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<ISPC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.19
 
-  其中 ``compiler_ids`` 是一个逗号分隔的列表。如果ISPC编译器的CMake编译器标识匹配 ``compiler_ids`` 中的任何一个条目，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_ID` 变量。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果ISPC编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<C_COMPILER_VERSION:version>
 
-  如果C编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果C编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<CXX_COMPILER_VERSION:version>
 
-  如果CXX编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果CXX编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<CUDA_COMPILER_VERSION:version>
 
   .. versionadded:: 3.15
 
-  如果CUDA编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果CUDA编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<OBJC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  如果OBJC编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果OBJC编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<OBJCXX_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  如果OBJCXX编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果OBJCXX编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<Fortran_COMPILER_VERSION:version>
 
-  如果Fortran编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果Fortran编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<HIP_COMPILER_VERSION:version>
 
-  如果HIP编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果HIP编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<ISPC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.19
 
-  如果ISPC编译器的版本匹配 ``version``，则为 ``1``，否则为 ``0``。参考 :variable:`CMAKE_<LANG>_COMPILER_VERSION` 变量。
+  如果ISPC编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<TARGET_POLICY:policy>
 
-  如果创建“头”目标时 ``policy`` 为NEW，则为 ``1``，否则为 ``0``。如果未设置该 ``policy``，则将发出该策略的警告消息。这个生成器表达式只适用于部分策略。
+  如果创建“头”目标时\ ``policy``\ 为NEW，则为\ ``1``，否则为\ ``0``。如果未设置该\ ``policy``，则将发出该策略的警告消息。这个生成器表达式只适用于部分策略。
 
 .. genex:: $<COMPILE_FEATURES:features>
 
   .. versionadded:: 3.1
 
-  ``features`` 是一个以逗号分隔的列表。如果所有的 ``features`` 都对“头”目标可用，则计算为 ``1``，否则为 ``0``。如果在计算目标的链接实现时使用该表达式，并且如果有任何依赖项增加了“头”目标所需的 :prop_tgt:`C_STANDARD` 或 :prop_tgt:`CXX_STANDARD`，则会报告错误。参考 :manual:`cmake-compile-features(7)` 手册获取编译特性的信息和支持的编译器列表。
+  ``features``\ 是一个以逗号分隔的列表。如果所有的\ ``features``\ 都对“头”目标可用，则计算为\ ``1``，否则为\ ``0``。如果在计算目标的链接实现时使用该表达式，并且如果有任何依赖项增加了“头”目标所需的\ :prop_tgt:`C_STANDARD`\ 或\ :prop_tgt:`CXX_STANDARD`，则会报告错误。参考\ :manual:`cmake-compile-features(7)`\ 手册获取编译特性的信息和支持的编译器列表。
 
 .. _`Boolean COMPILE_LANGUAGE Generator Expression`:
 

@@ -10,9 +10,9 @@ cmake-presets(7)
 引言
 ============
 
-CMake用户经常面临的一个问题是与他人共享设置，以获取配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个文件，``CMakePresets.json`` 和 ``CMakeUserPresets.json``，允许用户指定常用配置选项并与他人共享。
+CMake用户经常面临的一个问题是与他人共享设置，以获取配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个文件，``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``，允许用户指定常用配置选项并与他人共享。
 
-``CMakePresets.json`` 和 ``CMakeUserPresets.json`` 位于项目的根目录。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了 ``--preset``，则至少必须有一个）。``CMakePresets.json`` 的目的是保存项目范围的构建，而 ``CMakeUserPresets.json`` 的目的是为开发人员保存他们自己的本地构建。``CMakePresets.json`` 可能会被签入版本控制系统，而 ``CMakeUserPresets.json`` 则不应被签入。例如，如果一个项目正在使用Git, ``CMakePresets.json`` 可能会被跟踪，``CMakeUserPresets.json`` 应该被添加到 ``.gitignore`` 中。
+``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 位于项目的根目录。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了\ ``--preset``，则至少必须有一个）。``CMakePresets.json``\ 的目的是保存项目范围的构建，而\ ``CMakeUserPresets.json``\ 的目的是为开发人员保存他们自己的本地构建。``CMakePresets.json``\ 可能会被签入版本控制系统，而\ ``CMakeUserPresets.json``\ 则不应被签入。例如，如果一个项目正在使用Git, ``CMakePresets.json``\ 可能会被跟踪，``CMakeUserPresets.json``\ 应该被添加到\ ``.gitignore``\ 中。
 
 格式
 ======
