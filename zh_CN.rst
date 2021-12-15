@@ -52,15 +52,15 @@
 * :manual:`cmake-modules(7)`：完成，不包括子页面
 * :manual:`cmake-packages(7)`：完成，不包括子页面
 * :manual:`cmake-properties(7)`：完成，不包括子页面
-* :manual:`cmake-server(7)`：完成
+* `cmake-server(7) <Help/manual/cmake-server.7.rst>`_\ ：完成
 * :manual:`cmake-variables(7)`：完成，不包括子页面
 * :manual:`cpack-generators(7)`：完成，不包括子页面
 
 指南
 -----
 
-* `CMake教程 <Help/guide/tutorial/index.rst>`_ ：完成
-* :guide:`用户交互指南`：完成
-* :guide:`使用依赖项指南`：完成
-* :guide:`导入导出指南`：完成
-* :guide:`IDE集成指南`：完成
+* `CMake教程 <Help/guide/tutorial/index.rst>`_\ ：完成
+* `用户交互指南 <Help/guide/user-interaction/index.rst>`_\ ：完成
+* `使用依赖项指南 <Help/guide/using-dependencies/index.rst>`_\ ：完成
+* `导入导出指南 <Help/guide/importing-exporting/index.rst>`_\ ：完成
+* `IDE集成指南 <Help/guide/ide-integration/index.rst>`_\ ：完成
