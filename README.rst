@@ -68,7 +68,7 @@ Windows
 在Windows下有两种构建CMake的方法：
    
 1. 使用VS 2015或更高版本VS的MSVC编译器。
-   你需要下载并安装CMake的二进制版本。可以从\ `CMake Download Page`_\ 获得这些版本。然后继续\ `Building CMake with CMake`_\ 的步骤。
+   你需要下载并安装CMake的二进制版本。可以从\ `CMake Download Page`_\ 获得这些版本。然后继续\ `使用CMake构建CMake`_\ 的步骤。
    
 2. 使用MSYS2下的MinGW。
    下载并安装\ `MSYS2`_。然后安装所需的构建工具：\ ::
