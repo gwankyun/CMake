@@ -59,7 +59,7 @@
 指南
 -----
 
-* :guide:`CMake教程`：完成
+* `CMake教程 <Help/guide/tutorial/index.rst>`_ ：完成
 * :guide:`用户交互指南`：完成
 * :guide:`使用依赖项指南`：完成
 * :guide:`导入导出指南`：完成
