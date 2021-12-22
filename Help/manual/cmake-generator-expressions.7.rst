@@ -213,13 +213,7 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.15
 
-  ``1`` when the language used for compilation unit matches ``language`` and
-  the CMake's compiler id of the language compiler matches any one of the
-  entries in ``compiler_ids``, otherwise ``0``. This expression is a short form
-  for the combination of ``$<COMPILE_LANGUAGE:language>`` and
-  ``$<LANG_COMPILER_ID:compiler_ids>``. This expression may be used to specify
-  compile options, compile definitions, and include directories for source files of a
-  particular language and compiler combination in a target. For example:
+  如果用于编译单元的语言与\ ``language``\ 匹配，并且CMake的编译器标识与\ ``compiler_ids``\ 中的任何一个条目匹配，则为\ ``1``，否则为\ ``0``。这个表达式是\ ``$<compile_language:language>``\ 和\ ``$<lang_compiler_id:compiler_ids>``\ 组合的缩写形式。此表达式可用于指定编译选项、编译定义，并目标中特定语言源文件和编译器组合的引用目录。例如：
 
   .. code-block:: cmake
 
@@ -230,15 +224,9 @@ cmake-generator-expressions(7)
               $<$<COMPILE_LANG_AND_ID:C,Clang>:COMPILING_C_WITH_CLANG>
     )
 
-  This specifies the use of different compile definitions based on both
-  the compiler id and compilation language. This example will have a
-  ``COMPILING_CXX_WITH_CLANG`` compile definition when Clang is the CXX
-  compiler, and ``COMPILING_CXX_WITH_INTEL`` when Intel is the CXX compiler.
-  Likewise when the C compiler is Clang it will only see the  ``COMPILING_C_WITH_CLANG``
-  definition.
+  这指定了基于编译器标识和编译语言的不同编译定义的使用。这个例子中，当Clang是CXX编译器时，会有\ ``COMPILING_CXX_WITH_CLANG``\ 编译定义，而当Intel是CXX编译器时，会有\ ``COMPILING_CXX_WITH_INTEL``\ 编译定义。同样地，当C编译器是Clang时，它只会看到\ ``COMPILING_C_WITH_CLANG``\ 的定义。
 
-  Without the ``COMPILE_LANG_AND_ID`` generator expression the same logic
-  would be expressed as:
+  如果没有\ ``COMPILE_LANG_AND_ID``\ 生成器表达式，相同的逻辑将表示为：
 
   .. code-block:: cmake
 
@@ -252,10 +240,7 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.3
 
-  ``1`` when the language used for compilation unit matches any of the entries
-  in ``languages``, otherwise ``0``.  This expression may be used to specify
-  compile options, compile definitions, and include directories for source files of a
-  particular language in a target. For example:
+  当用于编译单元的语言匹配\ ``languages``\ 中的任何条目时，为\ ``1``，否则为\ ``0``。这个表达式可以用来指定编译选项、编译定义，以及在目标中特定语言源文件的引用目录。例如：
 
   .. code-block:: cmake
 
@@ -271,20 +256,9 @@ cmake-generator-expressions(7)
       PRIVATE $<$<COMPILE_LANGUAGE:CXX,CUDA>:/opt/foo/headers>
     )
 
-  This specifies the use of the ``-fno-exceptions`` compile option,
-  ``COMPILING_CXX`` compile definition, and ``cxx_headers`` include
-  directory for C++ only (compiler id checks elided).  It also specifies
-  a ``COMPILING_CUDA`` compile definition for CUDA.
+  这指定了\ ``-fno-exceptions``\ 编译选项的使用、``COMPILING_CXX``\ 编译定义以及\ ``cxx_headers``\ 的C++引用目录（省略了编译器标识检查）。它还为CUDA指定了\ ``COMPILING_CUDA``\ 编译定义。
 
-  Note that with :ref:`Visual Studio Generators` and :generator:`Xcode` there
-  is no way to represent target-wide compile definitions or include directories
-  separately for ``C`` and ``CXX`` languages.
-  Also, with :ref:`Visual Studio Generators` there is no way to represent
-  target-wide flags separately for ``C`` and ``CXX`` languages.  Under these
-  generators, expressions for both C and C++ sources will be evaluated
-  using ``CXX`` if there are any C++ sources and otherwise using ``C``.
-  A workaround is to create separate libraries for each source file language
-  instead:
+  注意，使用\ :ref:`Visual Studio Generators`\ 和\ :generator:`Xcode`\ 时，没有办法表示目标级的编译定义，也没有办法分别设置\ ``C``\ 和\ ``CXX``\ 语言的引用目录。另外，使用\ :ref:`Visual Studio Generators`\ 时，没有办法分别表示\ ``C``\ 语言和\ ``CXX``\ 语言目标范围的标志。在这些生成器下，如果有任意一个C++源文件，C和C++源的表达式将使用\ ``CXX``\ 来求值，否则使用\ ``C``\ 来求值。一个解决办法是为每个源文件语言创建单独的库：
 
   .. code-block:: cmake
 
