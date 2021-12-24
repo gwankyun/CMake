@@ -301,10 +301,7 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.18
 
-  ``1`` when the language used for link step matches any of the entries
-  in ``languages``, otherwise ``0``.  This expression may be used to specify
-  link libraries, link options, link directories and link dependencies of a
-  particular language in a target. For example:
+  当链接步骤使用的语言匹配任何\ ``languages``\ 中的条目时，为\ ``1``，否则为\ ``0``。这个表达式可以用来指定目标中特定语言的链接库、链接选项、链接目录和链接依赖关系。例如：
 
   .. code-block:: cmake
 
@@ -322,25 +319,13 @@ cmake-generator-expressions(7)
     add_executable(myapp2 main.cpp)
     target_link_options(myapp2 PRIVATE api)
 
-  This specifies to use the ``api`` target for linking targets ``myapp1`` and
-  ``myapp2``. In practice, ``myapp1`` will link with target ``api_C`` and
-  option ``-opt_c`` because it will use ``C`` as link language. And ``myapp2``
-  will link with ``api_CXX`` and option ``-opt_cxx`` because ``CXX`` will be
-  the link language.
+  这指定使用 ``api`` 目标来链接 ``myapp1`` 和\ ``myapp2`` 目标。在实践中，``myapp1``\ 将链接\ ``api_C``\ 目标和\ ``-opt_c``\ 选项，因为它将使用\ ``C``\ 作为链接语言。而\ ``myapp2``\ 将链接\ ``api_CXX``\ 和\ ``-opt_cxx``\ 选项，因为\ ``CXX``\ 将是链接语言。
 
   .. _`Constraints LINK_LANGUAGE Generator Expression`:
 
   .. note::
 
-    To determine the link language of a target, it is required to collect,
-    transitively, all the targets which will be linked to it. So, for link
-    libraries properties, a double evaluation will be done. During the first
-    evaluation, ``$<LINK_LANGUAGE:..>`` expressions will always return ``0``.
-    The link language computed after this first pass will be used to do the
-    second pass. To avoid inconsistency, it is required that the second pass
-    do not change the link language. Moreover, to avoid unexpected
-    side-effects, it is required to specify complete entities as part of the
-    ``$<LINK_LANGUAGE:..>`` expression. For example:
+    要确定一个目标的链接语言，需要通过传递的方式收集所有将被链接到该目标的目标。因此，对于链接库属性，将进行双重求值。在第一次求值时，``$<LINK_LANGUAGE:..>``\ 表达式总是返回\ ``0``。在第一次传递之后计算的链接语言将用于第二次传递。为了避免不一致，要求第二次传递不更改链接语言。此外，为了避免意外的副作用，需要将完整的实体指定为\ ``$<LINK_LANGUAGE:..>``\ 表达式。例如：
 
     .. code-block:: cmake
 
@@ -355,31 +340,19 @@ cmake-generator-expressions(7)
       add_executable(myapp2 main.c)
       target_link_libraries(myapp2 PRIVATE $<$<LINK_LANGUAGE:C>:libother>)
 
-    In this example, for ``myapp1``, the first pass will, unexpectedly,
-    determine that the link language is ``CXX`` because the evaluation of the
-    generator expression will be an empty string so ``myapp1`` will depends on
-    target ``lib`` which is ``C++``. On the contrary, for ``myapp2``, the first
-    evaluation will give ``C`` as link language, so the second pass will
-    correctly add target ``libother`` as link dependency.
+    在本例中，对于\ ``myapp1``，第一次传递将意外地确定链接语言是\ ``CXX``，因为生成器表达式的求值将是一个空字符串，所以\ ``myapp1``\ 将依赖于\ ``lib``\ 目标，即\ ``C++``。相反，对于\ ``myapp2``，第一次求值时将\ ``C``\ 作为链接语言，所以第二次求值时将正确地添加\ ``libother``\ 目标作为链接依赖。
 
 .. genex:: $<DEVICE_LINK:list>
 
   .. versionadded:: 3.18
 
-  Returns the list if it is the device link step, an empty list otherwise.
-  The device link step is controlled by :prop_tgt:`CUDA_SEPARABLE_COMPILATION`
-  and :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS` properties and
-  policy :policy:`CMP0105`. This expression can only be used to specify link
-  options.
+  如果是设备链接步骤，则返回列表，否则为空列表。设备链接步骤由\ :prop_tgt:`CUDA_SEPARABLE_COMPILATION`\ 和\ :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS`\ 属性和策略\ :policy:`CMP0105`\ 控制。此表达式只能用于指定链接选项。
 
 .. genex:: $<HOST_LINK:list>
 
   .. versionadded:: 3.18
 
-  Returns the list if it is the normal link step, an empty list otherwise.
-  This expression is mainly useful when a device link step is also involved
-  (see ``$<DEVICE_LINK:list>`` generator expression). This expression can only
-  be used to specify link options.
+  如果是普通的链接步骤，则返回列表，否则为空列表。当还涉及到设备链接步骤时，这个表达式相当有用（参考\ ``$<DEVICE_LINK:list>``\ 生成器表达式）。此表达式只能用于指定链接选项。
 
 字符串值生成器表达式
 ===================================
