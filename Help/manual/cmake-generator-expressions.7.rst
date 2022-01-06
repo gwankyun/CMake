@@ -357,47 +357,38 @@ cmake-generator-expressions(7)
 字符串值生成器表达式
 ===================================
 
-These expressions expand to some string.
-For example,
+这些表达式扩展为某个字符串。例如，
 
 .. code-block:: cmake
 
   include_directories(/usr/include/$<CXX_COMPILER_ID>/)
 
-expands to ``/usr/include/GNU/`` or ``/usr/include/Clang/`` etc, depending on
-the compiler identifier.
+扩展为\ ``/usr/include/GNU/``\ 或\ ``/usr/include/Clang/``\ 等等，这取决于编译器标识符。
 
-String-valued expressions may also be combined with other expressions.
-Here an example for a string-valued expression within a boolean expressions
-within a conditional expression:
+字符串值表达式也可以与其他表达式组合。下面是一个条件表达式中的布尔表达式使用字符串值表达式的例子：
 
 .. code-block:: cmake
 
   $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,4.2.0>:OLD_COMPILER>
 
-expands to ``OLD_COMPILER`` if the
-:variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>` is less
-than 4.2.0.
+如果\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\ 小于4.2.0，则扩展为\ ``OLD_COMPILER``。
 
-And here two nested string-valued expressions:
+这里有两个嵌套的字符串值表达式：
 
 .. code-block:: cmake
 
   -I$<JOIN:$<TARGET_PROPERTY:INCLUDE_DIRECTORIES>, -I>
 
-generates a string of the entries in the :prop_tgt:`INCLUDE_DIRECTORIES` target
-property with each entry preceded by ``-I``.
+生成包含\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 目标属性项的字符串，每个项前面加\ ``-I``。
 
-Expanding on the previous example, if one first wants to check if the
-``INCLUDE_DIRECTORIES`` property is non-empty, then it is advisable to
-introduce a helper variable to keep the code readable:
+展开前面的例子，如果首先要检查\ ``INCLUDE_DIRECTORIES``\ 属性是否为非空，那么建议引入一个helper变量来保持代码的可读性：
 
 .. code-block:: cmake
 
   set(prop "$<TARGET_PROPERTY:INCLUDE_DIRECTORIES>") # helper variable
   $<$<BOOL:${prop}>:-I$<JOIN:${prop}, -I>>
 
-The following string-valued generator expressions are available:
+以下字符串值生成器表达式可供使用：
 
 转义字符
 ------------------
