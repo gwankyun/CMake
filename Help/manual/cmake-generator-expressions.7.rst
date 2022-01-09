@@ -393,49 +393,45 @@ cmake-generator-expressions(7)
 转义字符
 ------------------
 
-String literals to escape the special meaning a character would otherwise have:
+转义字符的特殊含义字符串字面量：
 
 .. genex:: $<ANGLE-R>
 
-  A literal ``>``. Used for example to compare strings that contain a ``>``.
+  ``>``\ 字面量。用于比较包含\ ``>``\ 的字符串。
 
 .. genex:: $<COMMA>
 
-  A literal ``,``. Used for example to compare strings which contain a ``,``.
+  ``,``\ 字面量。用于比较包含\ ``,``\ 的字符串。
 
 .. genex:: $<SEMICOLON>
 
-  A literal ``;``. Used to prevent list expansion on an argument with ``;``.
+  ``;``\ 字面量。用于防止使用\ ``;``\ 的参数展开列表。
 
 .. _`Conditional Generator Expressions`:
 
 条件表达式
 -----------------------
 
-Conditional generator expressions depend on a boolean condition
-that must be ``0`` or ``1``.
+条件生成器表达式依赖于一个必须为 ``0`` 或 ``1`` 的布尔条件。
 
 .. genex:: $<condition:true_string>
 
-  Evaluates to ``true_string`` if ``condition`` is ``1``.
-  Otherwise evaluates to the empty string.
+  如果\ ``condition``\ 为\ ``1``，则计算为\ ``true_string``。否则计算结果为空字符串。
 
 .. genex:: $<IF:condition,true_string,false_string>
 
   .. versionadded:: 3.8
 
-  Evaluates to ``true_string`` if ``condition`` is ``1``.
-  Otherwise evaluates to ``false_string``.
+  如果\ ``condition``\ 为\ ``1``，则计算为\ ``true_string``。否则计算结果为\ ``false_string``。
 
-Typically, the ``condition`` is a :ref:`boolean generator expression
-<Boolean Generator Expressions>`.  For instance,
+通常，``condition``\ 是 :ref:`布尔生成器表达式
+<Boolean Generator Expressions>`。例如，
 
 .. code-block:: cmake
 
   $<$<CONFIG:Debug>:DEBUG_MODE>
 
-expands to ``DEBUG_MODE`` when the ``Debug`` configuration is used, and
-otherwise expands to the empty string.
+当使用\ ``Debug``\ 配置时展开为\ ``DEBUG_MODE``，否则展开为空字符串。
 
 .. _`String Transforming Generator Expressions`:
 
