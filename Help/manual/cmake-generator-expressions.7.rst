@@ -412,7 +412,7 @@ cmake-generator-expressions(7)
 条件表达式
 -----------------------
 
-条件生成器表达式依赖于一个必须为 ``0`` 或 ``1`` 的布尔条件。
+条件生成器表达式依赖于一个必须为\ ``0``\ 或\ ``1``\ 的布尔条件。
 
 .. genex:: $<condition:true_string>
 
@@ -424,7 +424,7 @@ cmake-generator-expressions(7)
 
   如果\ ``condition``\ 为\ ``1``，则计算为\ ``true_string``。否则计算结果为\ ``false_string``。
 
-通常，``condition``\ 是 :ref:`布尔生成器表达式
+通常，``condition``\ 是\ :ref:`布尔生成器表达式
 <Boolean Generator Expressions>`。例如，
 
 .. code-block:: cmake
@@ -440,47 +440,41 @@ cmake-generator-expressions(7)
 
 .. genex:: $<JOIN:list,string>
 
-  Joins the list with the content of ``string``.
+  用\ ``string``\ 内容连接列表。
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
   .. versionadded:: 3.15
 
-  Removes duplicated items in the given ``list``.
+  删除给定\ ``list``\ 中的重复项。
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.15
 
-  Includes or removes items from ``list`` that match the regular expression ``regex``.
+  从\ ``list``\ 中包含或删除匹配正则表达式\ ``regex``\ 的项。
 
 .. genex:: $<LOWER_CASE:string>
 
-  Content of ``string`` converted to lower case.
+  ``string``\ 内容转换成小写字母。
 
 .. genex:: $<UPPER_CASE:string>
 
-  Content of ``string`` converted to upper case.
+  ``string``\ 内容转换成大写字母。
 
 .. genex:: $<GENEX_EVAL:expr>
 
   .. versionadded:: 3.12
 
-  Content of ``expr`` evaluated as a generator expression in the current
-  context. This enables consumption of generator expressions whose
-  evaluation results itself in generator expressions.
+  ``expr``\ 的内容在当前上下文中作为生成器表达式计算。这允许使用生成器表达式中的生成器表达式计算结果本身。
 
 .. genex:: $<TARGET_GENEX_EVAL:tgt,expr>
 
   .. versionadded:: 3.12
 
-  Content of ``expr`` evaluated as a generator expression in the context of
-  ``tgt`` target. This enables consumption of custom target properties that
-  themselves contain generator expressions.
+  ``expr``\ 的内容在\ ``tgt``\ 目标上下文中作为生成器表达式计算。这允许使用本身包含生成器表达式的自定义目标属性。
 
-  Having the capability to evaluate generator expressions is very useful when
-  you want to manage custom properties supporting generator expressions.
-  For example:
+  当你想要管理支持生成器表达式的自定义属性时，具有计算生成器表达式的能力非常有用。例如：
 
   .. code-block:: cmake
 
@@ -494,13 +488,9 @@ cmake-generator-expressions(7)
       COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_PROPERTY:foo,CUSTOM_KEYS>
     )
 
-  This naive implementation of the ``printFooKeys`` custom command is wrong
-  because ``CUSTOM_KEYS`` target property is not evaluated and the content
-  is passed as is (i.e. ``$<$<CONFIG:DEBUG>:FOO_EXTRA_THINGS>``).
+  这个\ ``printFooKeys``\ 自定义命令的简单实现是错误的，因为没有计算\ ``CUSTOM_KEYS``\ 目标属性，内容将按原来的方式传递（例如\ ``$<$<CONFIG:DEBUG>:FOO_EXTRA_THINGS>``）。
 
-  To have the expected result (i.e. ``FOO_EXTRA_THINGS`` if config is
-  ``Debug``), it is required to evaluate the output of
-  ``$<TARGET_PROPERTY:foo,CUSTOM_KEYS>``:
+  为了得到预期的结果（例如，如果配置是\ ``Debug``，则得到\ ``FOO_EXTRA_THINGS``），需要计算\ ``$<TARGET_PROPERTY:foo,CUSTOM_KEYS>``\ 的输出：
 
   .. code-block:: cmake
 
