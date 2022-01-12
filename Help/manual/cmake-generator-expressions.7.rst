@@ -504,133 +504,107 @@ cmake-generator-expressions(7)
 
 .. genex:: $<CONFIG>
 
-  Configuration name.
+  配置名称。
 
 .. genex:: $<CONFIGURATION>
 
-  Configuration name. Deprecated since CMake 3.0. Use ``CONFIG`` instead.
+  配置名称。CMake 3.0后弃用。用\ ``CONFIG``\ 替代。
 
 .. genex:: $<PLATFORM_ID>
 
-  The current system's CMake platform id.
-  See also the :variable:`CMAKE_SYSTEM_NAME` variable.
+  当前系统的CMake平台标识。参考\ :variable:`CMAKE_SYSTEM_NAME`\ 变量。
 
 .. genex:: $<C_COMPILER_ID>
 
-  The CMake's compiler id of the C compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前C编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<CXX_COMPILER_ID>
 
-  The CMake's compiler id of the CXX compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前CXX编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<CUDA_COMPILER_ID>
 
-  The CMake's compiler id of the CUDA compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前CUDA编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<OBJC_COMPILER_ID>
 
   .. versionadded:: 3.16
 
-  The CMake's compiler id of the OBJC compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前OBJC编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<OBJCXX_COMPILER_ID>
 
   .. versionadded:: 3.16
 
-  The CMake's compiler id of the OBJCXX compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前OBJCXX编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<Fortran_COMPILER_ID>
 
-  The CMake's compiler id of the Fortran compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前Fortran编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<HIP_COMPILER_ID>
 
-  The CMake's compiler id of the HIP compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前HIP编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<ISPC_COMPILER_ID>
 
   .. versionadded:: 3.19
 
-  The CMake's compiler id of the ISPC compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable.
+  当前ISPC编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<C_COMPILER_VERSION>
 
-  The version of the C compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前C编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<CXX_COMPILER_VERSION>
 
-  The version of the CXX compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前CXX编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<CUDA_COMPILER_VERSION>
 
-  The version of the CUDA compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前CUDA编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<OBJC_COMPILER_VERSION>
 
   .. versionadded:: 3.16
 
-  The version of the OBJC compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前OBJC编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<OBJCXX_COMPILER_VERSION>
 
   .. versionadded:: 3.16
 
-  The version of the OBJCXX compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前OBJCXX编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<Fortran_COMPILER_VERSION>
 
-  The version of the Fortran compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前Fortran编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<HIP_COMPILER_VERSION>
 
-  The version of the HIP compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前HIP编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<ISPC_COMPILER_VERSION>
 
   .. versionadded:: 3.19
 
-  The version of the ISPC compiler used.
-  See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable.
+  当前ISPC编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<COMPILE_LANGUAGE>
 
   .. versionadded:: 3.3
 
-  The compile language of source files when evaluating compile options.
-  See :ref:`the related boolean expression
-  <Boolean COMPILE_LANGUAGE Generator Expression>`
-  ``$<COMPILE_LANGUAGE:language>``
-  for notes about the portability of this generator expression.
+  计算编译选项时源文件的编译语言。关于生成器表达式的可移植性，请参阅\ :ref:`相关的布尔表达式 <Boolean COMPILE_LANGUAGE Generator Expression>`\ ``$<COMPILE_LANGUAGE:language>``。
 
 .. genex:: $<LINK_LANGUAGE>
 
   .. versionadded:: 3.18
 
-  The link language of target when evaluating link options.
-  See :ref:`the related boolean expression
-  <Boolean LINK_LANGUAGE Generator Expression>` ``$<LINK_LANGUAGE:language>``
-  for notes about the portability of this generator expression.
+  计算链接选项时目标的链接语言。关于生成器表达式的可移植性，请参阅\ :ref:`相关的布尔表达式 <Boolean LINK_LANGUAGE Generator Expression>`\ ``$<LINK_LANGUAGE:language>``。
 
   .. note::
 
-    This generator expression is not supported by the link libraries
-    properties to avoid side-effects due to the double evaluation of
-    these properties.
+    链接库属性不支持此生成器表达式，以避免由于这些属性的双重求值而产生的副作用。
 
 .. _`Target-Dependent Queries`:
 
