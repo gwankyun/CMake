@@ -611,94 +611,75 @@ cmake-generator-expressions(7)
 依赖目标的查询
 ------------------------
 
-These queries refer to a target ``tgt``. This can be any runtime artifact,
-namely:
+这些查询引用目标\ ``tgt``。这可以是任何运行时工件，即：
 
-* an executable target created by :command:`add_executable`
-* a shared library target (``.so``, ``.dll`` but not their ``.lib`` import library)
-  created by :command:`add_library`
-* a static library target created by :command:`add_library`
+* :command:`add_executable`\ 创建的可执行目标
+* 由\ :command:`add_library`\ 创建的共享库目标（``.so``、``.dll``\ 但不包括它们的\ ``.lib``\ 库文件）
+* 由\ :command:`add_library`\ 创建的静态库目标
 
-In the following, "the ``tgt`` filename" means the name of the ``tgt``
-binary file. This has to be distinguished from "the target name",
-which is just the string ``tgt``.
+在下文中，“\ ``tgt``\ 文件名”指的是\ ``tgt``\ 二进制文件的名称。这必须与“目标名称”区别开来，后者只是字符串\ ``tgt``。
 
 .. genex:: $<TARGET_NAME_IF_EXISTS:tgt>
 
   .. versionadded:: 3.12
 
-  The target name ``tgt`` if the target exists, an empty string otherwise.
+  如果目标存在，则目标名称为\ ``tgt``，否则为空字符串。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_FILE:tgt>
 
-  Full path to the ``tgt`` binary file.
+  ``tgt``\ 二进制文件的完整路径。
 
 .. genex:: $<TARGET_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  Base name of ``tgt``, i.e. ``$<TARGET_FILE_NAME:tgt>`` without prefix and
-  suffix.
-  For example, if the ``tgt`` filename is ``libbase.so``, the base name is ``base``.
+  ``tgt``\ 的基本名称，即不带前缀和后缀的\ ``$<TARGET_FILE_NAME:tgt>``。例如，如果\ ``tgt``\ 文件名是\ ``libbase.so``，则它的基本名称是\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  :prop_tgt:`LIBRARY_OUTPUT_NAME` and :prop_tgt:`RUNTIME_OUTPUT_NAME`
-  target properties and their configuration specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>`, :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`.
+  参考\ :prop_tgt:`OUTPUT_NAME`、:prop_tgt:`ARCHIVE_OUTPUT_NAME`、:prop_tgt:`LIBRARY_OUTPUT_NAME`\ 和\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ 目标属性和它们的特定配置变量
+  \ :prop_tgt:`OUTPUT_NAME_<CONFIG>`、:prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`、:prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`\
+  和\ :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Prefix of the ``tgt`` filename (such as ``lib``).
+  ``tgt``\ 文件名的前缀（如\ ``lib``）。
 
-  See also the :prop_tgt:`PREFIX` target property.
+  请参见\ :prop_tgt:`PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Suffix of the ``tgt`` filename (extension such as ``.so`` or ``.exe``).
+  ``tgt``\ 文件名的后缀（扩展名如\ ``.so``\ 或\ ``.exe``）。
 
-  See also the :prop_tgt:`SUFFIX` target property.
+  参考\ :prop_tgt:`SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_FILE_NAME:tgt>
 
-  The ``tgt`` filename.
+  ``tgt``\ 文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_FILE_DIR:tgt>
 
-  Directory of the ``tgt`` binary file.
+  ``tgt``\ 二进制文件所在的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参考策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 
-  File used when linking to the ``tgt`` target.  This will usually
-  be the library that ``tgt`` represents (``.a``, ``.lib``, ``.so``),
-  but for a shared library on DLL platforms, it would be the ``.lib``
-  import library associated with the DLL.
+  链接到\ ``tgt``\ 目标时使用的文件。这通常是\ ``tgt``\ 表示的库（``.a``、``.lib``、``.so``），但对于DLL平台上的共享库，它会是与DLL关联的\ ``.lib``\ 导入库。
 
 .. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt>
 
