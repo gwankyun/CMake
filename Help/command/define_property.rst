@@ -8,8 +8,9 @@ define_property
   define_property(<GLOBAL | DIRECTORY | TARGET | SOURCE |
                    TEST | VARIABLE | CACHED_VARIABLE>
                    PROPERTY <name> [INHERITED]
-                   BRIEF_DOCS <brief-doc> [docs...]
-                   FULL_DOCS <full-doc> [docs...])
+                   [BRIEF_DOCS <brief-doc> [docs...]]
+                   [FULL_DOCS <full-doc> [docs...]]
+                   [INITIALIZE_FROM_VARIABLE <variable>])
 
 Defines one property in a scope for use with the :command:`set_property` and
 :command:`get_property` commands.  This is primarily useful to associate
@@ -57,3 +58,12 @@ The ``BRIEF_DOCS`` and ``FULL_DOCS`` options are followed by strings to be
 associated with the property as its brief and full documentation.
 Corresponding options to the :command:`get_property` command will retrieve
 the documentation.
+
+.. versionchanged:: 3.23
+
+  The ``BRIEF_DOCS`` and ``FULL_DOCS`` options are optional.
+
+The ``INITIALIZE_FROM_VARIABLE`` option is followed by the name of a variable
+from which to initialize the property. The variable name must end with the
+property name, must have a prefix before the property name, and must not begin
+with ``CMAKE_`` or ``_CMAKE_``.

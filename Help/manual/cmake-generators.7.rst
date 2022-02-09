@@ -88,6 +88,8 @@ Visual Studio生成器
    /generator/Green Hills MULTI
    /generator/Xcode
 
+.. _`Extra Generators`:
+
 附加生成器
 ================
 

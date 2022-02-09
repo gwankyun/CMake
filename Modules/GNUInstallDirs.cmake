@@ -52,8 +52,10 @@ where ``<dir>`` is one of:
   .. versionadded:: 3.9
     run-time variable data (``LOCALSTATEDIR/run``)
 ``LIBDIR``
-  object code libraries (``lib`` or ``lib64``
-  or ``lib/<multiarch-tuple>`` on Debian)
+  object code libraries (``lib`` or ``lib64``)
+
+  On Debian, this may be ``lib/<multiarch-tuple>`` when
+  :variable:`CMAKE_INSTALL_PREFIX` is ``/``, ``/usr``, or ``/usr/local``.
 ``INCLUDEDIR``
   C header files (``include``)
 ``OLDINCLUDEDIR``
@@ -271,7 +273,9 @@ if(NOT DEFINED CMAKE_INSTALL_LIBDIR OR (_libdir_set
 
     if(__system_type_for_install STREQUAL "debian")
       if(CMAKE_LIBRARY_ARCHITECTURE)
-        if("${CMAKE_INSTALL_PREFIX}" MATCHES "^/usr/?$")
+        if("${CMAKE_INSTALL_PREFIX}" STREQUAL "/"
+            OR "${CMAKE_INSTALL_PREFIX}" MATCHES "^/usr/?$"
+            OR "${CMAKE_INSTALL_PREFIX}" MATCHES "^/usr/local/?$")
           set(_LIBDIR_DEFAULT "lib/${CMAKE_LIBRARY_ARCHITECTURE}")
         endif()
         if(DEFINED _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX
@@ -328,7 +332,7 @@ else()
     "Info documentation (DATAROOTDIR/info)")
 endif()
 
-if(CMAKE_SYSTEM_NAME MATCHES "^(([^k].*)?BSD|DragonFly)$")
+if(CMAKE_SYSTEM_NAME MATCHES "^(([^k].*)?BSD|DragonFly)$" AND NOT CMAKE_SYSTEM_NAME MATCHES "^(FreeBSD)$")
   _GNUInstallDirs_cache_path_fallback(CMAKE_INSTALL_MANDIR "man"
     "Man documentation (man)")
 else()

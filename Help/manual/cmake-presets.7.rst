@@ -10,9 +10,24 @@ cmake-presets(7)
 引言
 ============
 
-CMake用户经常面临的一个问题是与他人共享设置，以获取配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个文件，``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``，允许用户指定常用配置选项并与他人共享。
+CMake用户经常面临的一个问题是与他人共享设置，以获取配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个文件，``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``，允许用户指定常用配置选项并与他人共享。 CMake also
+supports files included with the ``include`` field.
 
 ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 位于项目的根目录。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了\ ``--preset``，则至少必须有一个）。``CMakePresets.json``\ 的目的是保存项目范围的构建，而\ ``CMakeUserPresets.json``\ 的目的是为开发人员保存他们自己的本地构建。``CMakePresets.json``\ 可能会被签入版本控制系统，而\ ``CMakeUserPresets.json``\ 则不应被签入。例如，如果一个项目正在使用Git, ``CMakePresets.json``\ 可能会被跟踪，``CMakeUserPresets.json``\ 应该被添加到\ ``.gitignore``\ 中。
+
+``CMakePresets.json`` and ``CMakeUserPresets.json`` can include other files
+with the ``include`` field in file version ``4`` and later. Files included by
+these files can also include other files. If a preset file contains presets
+that inherit from presets in another file, the file must include the other file
+either directly or indirectly. Include cycles are not allowed among files (if
+``a.json`` includes ``b.json``, ``b.json`` cannot include ``a.json``). However,
+a file may be included multiple times from the same file or from different
+files. If ``CMakePresets.json`` and ``CMakeUserPresets.json`` are both present,
+``CMakeUserPresets.json`` implicitly includes ``CMakePresets.json``, even with
+no ``include`` field, in all versions of the format. Files directly or
+indirectly included from ``CMakePresets.json`` should be guaranteed to be
+provided by the project. ``CMakeUserPresets.json`` may include files from
+anywhere.
 
 格式
 ======
@@ -27,7 +42,7 @@ The root object recognizes the following fields:
 ``version``
 
   A required integer representing the version of the JSON schema.
-  The supported versions are ``1``, ``2``, and ``3``.
+  The supported versions are ``1``, ``2``, ``3``, and ``4``.
 
 ``cmakeMinimumRequired``
 
@@ -69,6 +84,12 @@ The root object recognizes the following fields:
 
   An optional array of `测试预设`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
+
+``include``
+
+  An optional array of strings representing files to include. If the filenames
+  are not absolute, they are considered relative to the current file.
+  This is allowed in preset files specifying version ``4`` or above.
 
 配置预设
 ^^^^^^^^^^^^^^^^
@@ -440,6 +461,42 @@ that may contain the following fields:
 
   An optional bool. If true, equivalent to passing ``--clean-first`` on
   the command line.
+
+``resolvePackageReferences``
+
+  An optional string that specifies the package resolve mode. This is
+  allowed in preset files specifying version ``4`` or above.
+
+  This field overwrites the ``--resolve-package-references`` command line
+  parameter. If there are no targets that define package references, this
+  option does nothing. Valid values are:
+
+  ``on``
+
+    Causes package references to be resolved before attempting a build.
+
+  ``off``
+
+    Package references will not be resolved. Note that this may cause
+    errors in some build environments, such as .NET SDK style projects.
+
+  ``only``
+
+    Only resolve package references, but do not perform a build.
+
+  .. note::
+
+    If this setting is not specified in a preset, CMake will instead
+    use the setting specified by the ``--resolve-package-references``
+    command line parameter. If the command line parameter is not
+    provided either, an environment-specific cache variable will be
+    evaluated to decide, if package restoration should be performed.
+
+    When using the Visual Studio generator, package references are
+    defined using the :prop_tgt:`VS_PACKAGE_REFERENCES` property.
+    Package references are restored using NuGet. It can be disabled
+    by setting the ``CMAKE_VS_NUGET_PACKAGE_RESTORE`` variable to
+    ``OFF``. This can also be done from within a configure preset.
 
 ``verbose``
 

@@ -40,6 +40,7 @@ class cmSearchPath;
 class cmFindPackageCommand : public cmFindCommon
 {
 public:
+  using cmFindCommon::ComputeIfDebugModeWanted;
   /*! A sorting order strategy to be applied to recovered package folders (see
    * FIND_PACKAGE_SORT_ORDER)*/
   enum /*class*/ SortOrderType
@@ -120,6 +121,7 @@ private:
   bool ReadListFile(const std::string& f, PolicyScopeRule psr);
   void StoreVersionFound();
 
+  bool ComputeIfDebugModeWanted(std::string const& var);
   void ComputePrefixes();
   void FillPrefixesPackageRoot();
   void FillPrefixesCMakeEnvironment();
@@ -203,6 +205,7 @@ private:
   std::vector<std::string> Names;
   std::vector<std::string> Configs;
   std::set<std::string> IgnoredPaths;
+  std::set<std::string> IgnoredPrefixPaths;
   std::string DebugBuffer;
 
   /*! the selected sortOrder (None by default)*/

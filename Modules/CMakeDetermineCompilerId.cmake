@@ -150,7 +150,28 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
     endif()
   endif()
 
-  if (COMPILER_QNXNTO AND CMAKE_${lang}_COMPILER_ID STREQUAL "GNU")
+  # For LCC Fortran we need to explicitly query the version.
+  if(lang STREQUAL "Fortran"
+     AND CMAKE_${lang}_COMPILER_ID STREQUAL "LCC")
+    execute_process(
+      COMMAND "${CMAKE_${lang}_COMPILER}"
+      --version
+      OUTPUT_VARIABLE output ERROR_VARIABLE output
+      RESULT_VARIABLE result
+      TIMEOUT 10
+    )
+    file(APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
+      "Running the ${lang} compiler: \"${CMAKE_${lang}_COMPILER}\" --version\n"
+      "${output}\n"
+      )
+
+    if(output MATCHES [[\(GCC\) ([0-9]+\.[0-9]+(\.[0-9]+)?) compatible]])
+      set(CMAKE_${lang}_SIMULATE_ID "GNU")
+      set(CMAKE_${lang}_SIMULATE_VERSION "${CMAKE_MATCH_1}")
+    endif()
+  endif()
+
+  if (COMPILER_QNXNTO AND (CMAKE_${lang}_COMPILER_ID STREQUAL "GNU" OR CMAKE_${lang}_COMPILER_ID STREQUAL "LCC"))
     execute_process(
       COMMAND "${CMAKE_${lang}_COMPILER}"
       -V
@@ -639,12 +660,8 @@ Id flags: ${testflags} ${CMAKE_${lang}_COMPILER_ID_FLAGS_ALWAYS}
   elseif("${CMAKE_GENERATOR}" MATCHES "Green Hills MULTI")
     set(id_dir ${CMAKE_${lang}_COMPILER_ID_DIR})
     set(id_src "${src}")
-    if (GHS_PRIMARY_TARGET)
-      set(ghs_primary_target "${GHS_PRIMARY_TARGET}")
-    else()
-      set(ghs_primary_target "${CMAKE_GENERATOR_PLATFORM}_${GHS_TARGET_PLATFORM}.tgt")
-    endif()
-    if ("${GHS_TARGET_PLATFORM}" MATCHES "integrity")
+    set(ghs_primary_target "${GHS_PRIMARY_TARGET}")
+    if ("${ghs_primary_target}" MATCHES "integrity")
         set(bsp_name "macro GHS_BSP=${GHS_BSP_NAME}")
         set(os_dir "macro GHS_OS=${GHS_OS_DIR}")
     endif()

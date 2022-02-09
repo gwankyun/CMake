@@ -33,6 +33,7 @@
 #include "cmSystemTools.h"
 #include "cmValue.h"
 #include "cmVersion.h"
+#include "cmake.h"
 
 #if defined(__HAIKU__)
 #  include <FindDirectory.h>
@@ -144,9 +145,6 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
     this->RequiredCMakeVersion = CMake_VERSION_ENCODE(v[0], v[1], v[2]);
   }
 
-  this->DebugMode = this->ComputeIfDebugModeWanted();
-  this->DebugBuffer.clear();
-
   // Lookup target architecture, if any.
   if (cmValue arch =
         this->Makefile->GetDefinition("CMAKE_LIBRARY_ARCHITECTURE")) {
@@ -235,6 +233,10 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
 
   // Always search directly in a generated path.
   this->SearchPathSuffixes.emplace_back();
+
+  // Process debug mode
+  this->DebugMode = this->ComputeIfDebugModeWanted(this->Name);
+  this->DebugBuffer.clear();
 
   // Parse the arguments.
   enum Doing
@@ -619,6 +621,12 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
   return loadedPackage;
 }
 
+bool cmFindPackageCommand::ComputeIfDebugModeWanted(std::string const& var)
+{
+  return this->ComputeIfDebugModeWanted() ||
+    this->Makefile->GetCMakeInstance()->GetDebugFindPkgOutput(var);
+}
+
 bool cmFindPackageCommand::FindPackageUsingModuleMode()
 {
   bool foundModule = false;
@@ -657,6 +665,16 @@ bool cmFindPackageCommand::FindPackageUsingConfigMode()
   this->IgnoredPaths.clear();
   this->IgnoredPaths.insert(ignored.begin(), ignored.end());
 
+  // get igonored prefix paths from vars and reroot them.
+  std::vector<std::string> ignoredPrefixes;
+  this->GetIgnoredPrefixPaths(ignoredPrefixes);
+  this->RerootPaths(ignoredPrefixes);
+
+  // Construct a set of ignored prefix paths
+  this->IgnoredPrefixPaths.clear();
+  this->IgnoredPrefixPaths.insert(ignoredPrefixes.begin(),
+                                  ignoredPrefixes.end());
+
   // Find and load the package.
   return this->HandlePackageMode(HandlePackageModeType::Config);
 }
@@ -671,7 +689,7 @@ void cmFindPackageCommand::SetVersionVariables(
   addDefinition(prefix, version);
 
   char buf[64];
-  sprintf(buf, "%u", major);
+  snprintf(buf, sizeof(buf), "%u", major);
   addDefinition(prefix + "_MAJOR", buf);
   sprintf(buf, "%u", minor);
   addDefinition(prefix + "_MINOR", buf);
@@ -1301,7 +1319,7 @@ inline std::size_t collectPathsForDebug(std::string& buffer,
     return 0;
   }
   for (std::size_t i = startIndex; i < paths.size(); i++) {
-    buffer += "  " + paths[i] + "\n";
+    buffer += "  " + paths[i].Path + "\n";
   }
   return paths.size();
 }
@@ -1338,7 +1356,7 @@ void cmFindPackageCommand::ComputePrefixes()
   }
   this->FillPrefixesUserGuess();
 
-  this->ComputeFinalPaths();
+  this->ComputeFinalPaths(IgnorePaths::No);
 }
 
 void cmFindPackageCommand::FillPrefixesPackageRoot()
@@ -2275,6 +2293,16 @@ bool cmFindPackageCommand::SearchPrefix(std::string const& prefix_in)
 
   // Skip this if the prefix does not exist.
   if (!cmSystemTools::FileIsDirectory(prefix_in)) {
+    return false;
+  }
+
+  // Skip this if it's in ignored paths.
+  std::string prefixWithoutSlash = prefix_in;
+  if (prefixWithoutSlash != "/" && prefixWithoutSlash.back() == '/') {
+    prefixWithoutSlash.erase(prefixWithoutSlash.length() - 1);
+  }
+  if (this->IgnoredPaths.count(prefixWithoutSlash) ||
+      this->IgnoredPrefixPaths.count(prefixWithoutSlash)) {
     return false;
   }
 

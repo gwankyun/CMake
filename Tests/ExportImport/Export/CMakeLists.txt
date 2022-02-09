@@ -1,4 +1,7 @@
 cmake_minimum_required (VERSION 2.7.20090711)
+if(POLICY CMP0129)
+  cmake_policy(SET CMP0129 NEW)
+endif()
 project(Export C CXX)
 
 # Pretend that RelWithDebInfo should link to debug libraries to test
@@ -145,8 +148,31 @@ set_property(TARGET testLibCycleA PROPERTY LINK_INTERFACE_MULTIPLICITY 3)
 add_library(testLibNoSONAME SHARED testLibNoSONAME.c)
 set_property(TARGET testLibNoSONAME PROPERTY NO_SONAME 1)
 
+add_library(testInterfaceIncludeUser INTERFACE)
+target_include_directories(testInterfaceIncludeUser
+  INTERFACE
+    "$<INSTALL_INTERFACE:include/testInterfaceIncludeUser>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/testInterfaceIncludeUser>"
+)
+set_property(TARGET testInterfaceIncludeUser PROPERTY IMPORTED_NO_SYSTEM 1)
+install(
+  FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/testInterfaceIncludeUser/testInterfaceInclude.h"
+  DESTINATION include/testInterfaceIncludeUser
+)
+
 cmake_policy(PUSH)
 cmake_policy(SET CMP0022 NEW)
+
+# Test control over direct linking.
+include(../../InterfaceLinkLibrariesDirect/testStaticLibPlugin.cmake)
+include(../../InterfaceLinkLibrariesDirect/testSharedLibWithHelper.cmake)
+include(../../InterfaceLinkLibrariesDirect/testExeWithPluginHelper.cmake)
+if(NOT maybe_OBJECTS_DESTINATION)
+  target_compile_definitions(testSharedLibHelperObj INTERFACE testSharedLibHelperObj_NO_OBJECT)
+  target_compile_definitions(testExePluginHelperObj INTERFACE testExePluginHelperObj_NO_OBJECT)
+endif()
+
 # Test exporting dependent libraries into different exports
 add_library(testLibRequired testLibRequired.c)
 add_library(testLibDepends testLibDepends.c)
@@ -286,6 +312,7 @@ set_property(TARGET testSharedLibRequired
 set_property(TARGET testSharedLibRequired APPEND PROPERTY
   INTERFACE_COMPILE_OPTIONS
     $<$<CXX_COMPILER_ID:GNU>:-DCUSTOM_COMPILE_OPTION>
+    $<$<CXX_COMPILER_ID:LCC>:-DCUSTOM_COMPILE_OPTION>
 )
 
 add_library(testSharedLibRequiredUser SHARED testSharedLibRequiredUser.cpp)
@@ -527,10 +554,14 @@ install(
   testLibDeprecation
   testLibCycleA testLibCycleB
   testLibNoSONAME
+  testStaticLibWithPlugin testStaticLibPluginExtra testStaticLibPlugin
+  testSharedLibWithHelper testSharedLibHelperObj
+  testExeWithPluginHelper testExePluginHelperObj
   testMod1 testMod2
   cmp0022NEW cmp0022OLD
   TopDirLib SubDirLinkA
   systemlib
+  testInterfaceIncludeUser
   EXPORT exp
   RUNTIME DESTINATION $<1:bin>$<0:/wrong>
   LIBRARY DESTINATION $<1:lib>$<0:/wrong> NAMELINK_SKIP
@@ -590,6 +621,7 @@ export(TARGETS testExe1 testLib1 testLib2 testLib3
   cmp0022NEW cmp0022OLD
   TopDirLib SubDirLinkA
   systemlib
+  testInterfaceIncludeUser
   NAMESPACE bld_
   FILE ExportBuildTree.cmake
   )
@@ -600,6 +632,9 @@ export(TARGETS testExe2 testLib4 testLib5 testLib6 testLib7 testExe3 testExe4 te
   testLib4lib testLib4libdbg testLib4libopt
   testLibCycleA testLibCycleB
   testLibNoSONAME
+  testStaticLibWithPlugin testStaticLibPluginExtra testStaticLibPlugin
+  testSharedLibWithHelper testSharedLibHelperObj
+  testExeWithPluginHelper testExePluginHelperObj
   testMod1 testMod2
   testLibPerConfigDest
   NAMESPACE bld_
