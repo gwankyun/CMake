@@ -685,47 +685,35 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.15
 
-  Base name of file used to link the target ``tgt``, i.e.
-  ``$<TARGET_LINKER_FILE_NAME:tgt>`` without prefix and suffix. For example,
-  if target file name is ``libbase.a``, the base name is ``base``.
+  用于链接目标\ ``tgt``\ 的文件基本名称，即不带前缀和后缀的\ ``$<TARGET_LINKER_FILE_NAME:tgt>``。例如，若目标文件名为\ ``libbase.a``，则基名是\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  and :prop_tgt:`LIBRARY_OUTPUT_NAME` target properties and their configuration
-  specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`.
+  请参考\ :prop_tgt:`OUTPUT_NAME`、:prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性以及它们的特定配置变量\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`、:prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\ 和\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项而添加，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_LINKER_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Prefix of file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的文件前缀。
 
-  See also the :prop_tgt:`PREFIX` and :prop_tgt:`IMPORT_PREFIX` target
-  properties.
+  请参考\ :prop_tgt:`PREFIX`\ 和\ :prop_tgt:`IMPORT_PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项而添加，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_LINKER_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Suffix of file used to link where ``tgt`` is the name of a target.
+  用于链接的文件后缀，其中\ ``tgt``\ 是目标的名称。
 
-  The suffix corresponds to the file extension (such as ".so" or ".lib").
+  后缀对应于文件扩展名（例如“.so”或“.lib”）。
 
-  See also the :prop_tgt:`SUFFIX` and :prop_tgt:`IMPORT_SUFFIX` target
-  properties.
+  请参见\ :prop_tgt:`SUFFIX`\ 和\ :prop_tgt:`IMPORT_SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项而添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_LINKER_FILE_NAME:tgt>
 
