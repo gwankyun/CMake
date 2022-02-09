@@ -9,7 +9,8 @@
   :language: cmake
   :start-after: # setup installer
 
-这就是我们对它的所有修改。我们在开始包含\ :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt``\ 已经添加在源码目录的最高层。
+这就是我们对它的所有修改。我们在开始包含\ :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt``\ 已经添加在源码目录的最高层。  The :variable:`CPACK_SOURCE_GENERATOR` variable
+selects a file format for the source package.
 
 最终我们引用\ :module:`CPack module <CPack>`\ 以使用这些变量或者其他属性以我于安装包。
 
@@ -25,7 +26,11 @@
 
   cpack -G ZIP -C Debug
 
-如果想创建一个源码分发包你应该输入：
+For a list of available generators, see :manual:`cpack-generators(7)` or call
+``cpack --help``. An :cpack_gen:`archive generator <CPack Archive Generator>`
+like ZIP creates a compressed archive of all *installed* files.
+
+如果想创建一个\ *完整的* \源码分发包你应该输入：
 
 .. code-block:: console
 

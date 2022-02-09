@@ -195,6 +195,14 @@ Package
 
  Is ``ON`` for QtIFW less 2.0 tools.
 
+.. variable:: CPACK_IFW_PACKAGE_DISABLE_COMMAND_LINE_INTERFACE
+
+ .. versionadded:: 3.23
+
+ Set to ``ON`` if command line interface features should be disabled.
+
+ Is ``OFF`` by default, but will only have an effect if using QtIFW 4.0 or later.
+
 .. variable:: CPACK_IFW_PACKAGE_ALLOW_SPACE_IN_PATH
 
  .. versionadded:: 3.3
@@ -247,6 +255,89 @@ Package
  If this is ``ON`` all components will be downloaded.
  By default is ``OFF`` or used value
  from ``CPACK_DOWNLOAD_ALL`` if set
+
+.. variable:: CPACK_IFW_PACKAGE_PRODUCT_IMAGES
+
+ .. versionadded:: 3.23
+
+ A list of images to be shown on the ``PerformInstallationPage``.
+
+ This feature is available for QtIFW 4.0.0 or newer.
+
+.. variable:: CPACK_IFW_PACKAGE_RUN_PROGRAM
+
+ .. versionadded:: 3.23
+
+ Command executed after the installer is done if the user accepts the action.
+ Provide the full path to the application.
+
+ This feature is available for QtIFW 4.0.0 and newer.
+
+.. variable:: CPACK_IFW_PACKAGE_RUN_PROGRAM_ARGUMENTS
+
+ .. versionadded:: 3.23
+
+ List of arguments passed to the program specified in
+ :variable:`CPACK_IFW_PACKAGE_RUN_PROGRAM`.
+
+ This feature is available for QtIFW 4.0.0 and newer.
+
+.. variable:: CPACK_IFW_PACKAGE_RUN_PROGRAM_DESCRIPTION
+
+ .. versionadded:: 3.23
+
+ Text shown next to the check box for running the program after the
+ installation. If :variable:`CPACK_IFW_PACKAGE_RUN_PROGRAM` is set but no
+ description provided, the UI will display ``Run <Name> now``. instead.
+
+ This feature is available for QtIFW 4.0.0 and newer.
+
+.. variable:: CPACK_IFW_PACKAGE_SIGNING_IDENTITY
+
+ .. versionadded: 3.23
+
+ Allows specifying a code signing identity to be used for signing the generated
+ app bundle. Only available on macOS.
+
+.. variable:: CPACK_IFW_ARCHIVE_FORMAT
+
+ .. versionadded:: 3.23
+
+ Set the format used when packaging new component data archives. If you omit
+ this option, the ``7z`` format will be used as a default. Supported formats:
+
+ * 7z
+ * zip
+ * tar.gz
+ * tar.bz2
+ * tar.xz
+
+ .. note::
+
+  If the Qt Installer Framework tools were built without libarchive support,
+  only ``7z`` format is supported.
+
+ This feature is available for QtIFW 4.2.0 and newer.
+
+.. variable:: CPACK_IFW_ARCHIVE_COMPRESSION
+
+ .. versionadded:: 3.23
+
+ Archive compression level. Defaults to 5 (*Normal compression*).
+
+  * 0 (*No compression*)
+  * 1 (*Fastest compressing*)
+  * 3 (*Fast compressing*)
+  * 5 (*Normal compressing*)
+  * 7 (*Maximum compressing*)
+  * 9 (*Ultra compressing*)
+
+ .. note::
+
+  Some formats do not support all the possible values. For example ``zip``
+  compression only supports values from 1 to 7.
+
+ This feature is available for QtIFW 4.2.0 and newer.
 
 Components
 """"""""""

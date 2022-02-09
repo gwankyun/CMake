@@ -38,6 +38,12 @@ IDE应该计算\ ``ninja``\ 预设的设置，然后运行：
 
   cmake -S /path/to/source -B /path/to/source/build -G Ninja
 
+In cases where a preset contains lots of cache variables, and passing all of
+them as ``-D`` flags would cause the command line length limit of the platform
+to be exceeded, the IDE should instead construct a temporary cache script and
+pass it with the ``-C`` flag. See :ref:`CMake Options` for details on how the
+``-C`` flag is used.
+
 虽然读取、解析和计算\ ``CMakePresets.json``\ 的内容很容易，但它并不简单。除了文档之外，IDE厂商可能还希望参考CMake源代码和测试用例，以更好地理解如何实现这种格式。:download:`该文件 <../../manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\ 格式提供了一个机器可读的JSON模式，IDE供应商可能会发现该模式对于验证和提供编辑帮助很有用。
 
 配置
@@ -64,3 +70,31 @@ IDE不应该在Makefile或Ninja生成器中使用“额外的生成器”，这�
 :manual:`ctest(1)`\ 支持输出包含可用测试和测试配置信息的JSON格式。想要运行CTest的IDE应该获得此信息，并使用它向用户提供测试列表。
 
 IDE不应调用构建系统生成的\ ``test``\ 目标，而是应该直接调用\ :manual:`ctest(1)`。
+
+IDEs with CMake integration
+===========================
+
+The following IDEs support CMake natively:
+
+* `CLion`_
+* `KDevelop`_
+* `QtCreator`_
+* `Vim`_ (via a plugin)
+* `Visual Studio`_
+* `VSCode`_ (via a plugin)
+
+.. _CLion: https://www.jetbrains.com/clion/
+.. _KDevelop: https://www.kdevelop.org/
+.. _QtCreator: https://www.qt.io/product/development-tools
+.. _Vim: https://www.vim.org/
+.. _Visual Studio: https://visualstudio.microsoft.com/
+.. _VSCode: https://code.visualstudio.com/
+
+Additionally, CMake has builtin support for some IDEs:
+
+* :ref:`IDE Build Tool Generators`:
+  Generate IDE native build systems such as Visual Studio or Xcode.
+* :ref:`Extra Generators`:
+  Extend :ref:`Command-Line Build Tool Generators` to generate IDE
+  project files that hook into the command-line build system.
+  Superseded by the :manual:`File API <cmake-file-api(7)>`.
