@@ -22,7 +22,7 @@ CMake是一个跨平台、开源的构建系统生成器。完整的文档请访
 许可
 =======
 
-CMake是在OSI认证BSD 3条款许可下发布的。详情见 `Copyright.txt`_。
+CMake是在OSI认证BSD 3条款许可下发布的。详情见\ `Copyright.txt`_。
 
 .. _`Copyright.txt`: Copyright.txt
 
