@@ -9,8 +9,7 @@
   :language: cmake
   :start-after: # setup installer
 
-这就是我们对它的所有修改。我们在开始包含\ :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt``\ 已经添加在源码目录的最高层。  The :variable:`CPACK_SOURCE_GENERATOR` variable
-selects a file format for the source package.
+这就是我们对它的所有修改。我们在开始包含\ :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt``\ 已经添加在源码目录的最高层。:variable:`CPACK_SOURCE_GENERATOR`\ 变量可以为源码包选择一种文件格式。 
 
 最终我们引用\ :module:`CPack module <CPack>`\ 以使用这些变量或者其他属性以我于安装包。
 
@@ -26,11 +25,9 @@ selects a file format for the source package.
 
   cpack -G ZIP -C Debug
 
-For a list of available generators, see :manual:`cpack-generators(7)` or call
-``cpack --help``. An :cpack_gen:`archive generator <CPack Archive Generator>`
-like ZIP creates a compressed archive of all *installed* files.
+有关可用生成器的列表，请参阅\ :manual:`cpack-generators(7)`\ 或调用\ ``cpack --help``。像ZIP这样的\ :cpack_gen:`存档生成器 <CPack Archive Generator>`\ 会为所有\ *安装*\ 文件创建一个压缩存档。
 
-如果想创建一个\ *完整的* \源码分发包你应该输入：
+如果想创建一个\ *完整的*\ 源码分发包你应该输入：
 
 .. code-block:: console
 
