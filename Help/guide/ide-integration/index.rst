@@ -38,11 +38,7 @@ IDE应该计算\ ``ninja``\ 预设的设置，然后运行：
 
   cmake -S /path/to/source -B /path/to/source/build -G Ninja
 
-In cases where a preset contains lots of cache variables, and passing all of
-them as ``-D`` flags would cause the command line length limit of the platform
-to be exceeded, the IDE should instead construct a temporary cache script and
-pass it with the ``-C`` flag. See :ref:`CMake Options` for details on how the
-``-C`` flag is used.
+在预置包含大量缓存变量的情况下，将它们全部传递为\ ``-D``\ 标志会导致超出平台的命令行长度限制，IDE应该构造一个临时缓存脚本，并将其与\ ``-C``\ 标志一起传递。有关\ ``-C``\ 标志如何使用的详细信息，请参阅\ :ref:`CMake Options`。
 
 虽然读取、解析和计算\ ``CMakePresets.json``\ 的内容很容易，但它并不简单。除了文档之外，IDE厂商可能还希望参考CMake源代码和测试用例，以更好地理解如何实现这种格式。:download:`该文件 <../../manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\ 格式提供了一个机器可读的JSON模式，IDE供应商可能会发现该模式对于验证和提供编辑帮助很有用。
 
@@ -71,17 +67,17 @@ IDE不应该在Makefile或Ninja生成器中使用“额外的生成器”，这�
 
 IDE不应调用构建系统生成的\ ``test``\ 目标，而是应该直接调用\ :manual:`ctest(1)`。
 
-IDEs with CMake integration
+IDE与CMake的集成
 ===========================
 
-The following IDEs support CMake natively:
+以下IDE原生支持CMake：
 
 * `CLion`_
 * `KDevelop`_
 * `QtCreator`_
-* `Vim`_ (via a plugin)
+* `Vim`_\ （通过插件）
 * `Visual Studio`_
-* `VSCode`_ (via a plugin)
+* `VSCode`_\ （通过插件）
 
 .. _CLion: https://www.jetbrains.com/clion/
 .. _KDevelop: https://www.kdevelop.org/
@@ -90,11 +86,9 @@ The following IDEs support CMake natively:
 .. _Visual Studio: https://visualstudio.microsoft.com/
 .. _VSCode: https://code.visualstudio.com/
 
-Additionally, CMake has builtin support for some IDEs:
+此外，CMake还内置了一些IDE支持：
 
-* :ref:`IDE Build Tool Generators`:
-  Generate IDE native build systems such as Visual Studio or Xcode.
+* :ref:`IDE Build Tool Generators`:  
+  生成IDE本地构建系统，如Visual Studio或Xcode。
 * :ref:`Extra Generators`:
-  Extend :ref:`Command-Line Build Tool Generators` to generate IDE
-  project files that hook into the command-line build system.
-  Superseded by the :manual:`File API <cmake-file-api(7)>`.
+  扩展\ :ref:`Command-Line Build Tool Generators`\ 来生成IDE项目文件，这些文件可以钩子到命令行构建系统中。已被\ :manual:`File API <cmake-file-api(7)>`\ 取代。
