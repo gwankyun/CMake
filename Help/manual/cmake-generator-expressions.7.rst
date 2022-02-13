@@ -717,93 +717,76 @@ cmake-generator-expressions(7)
 
 .. genex:: $<TARGET_LINKER_FILE_NAME:tgt>
 
-  Name of file used to link target ``tgt``.
+  用于链接\ ``tgt``\ 目标的文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_LINKER_FILE_DIR:tgt>
 
-  Directory of file used to link target ``tgt``.
+  用于链接\ ``tgt``\ 目标的文件目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_SONAME_FILE:tgt>
 
-  File with soname (``.so.3``) where ``tgt`` is the name of a target.
+  名字带有so（``.so.3``）的文件，其中\ ``tgt``\ 是目标名称。
 .. genex:: $<TARGET_SONAME_FILE_NAME:tgt>
 
-  Name of file with soname (``.so.3``).
+  带有so（``.so.3``）的文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_SONAME_FILE_DIR:tgt>
 
-  Directory of with soname (``.so.3``).
+  名字带有so (``.so.3``)的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_PDB_FILE:tgt>
 
   .. versionadded:: 3.1
 
-  Full path to the linker generated program database file (.pdb)
-  where ``tgt`` is the name of a target.
-
-  See also the :prop_tgt:`PDB_NAME` and :prop_tgt:`PDB_OUTPUT_DIRECTORY`
-  target properties and their configuration specific variants
-  :prop_tgt:`PDB_NAME_<CONFIG>` and :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`.
+  链接器生成的程序数据库文件（.pdb）的完整路径，其中\ ``tgt``\ 是目标的名称。
+  
+  参阅\ :prop_tgt:`PDB_NAME`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ 目标属性和它们的特定配置变量\ :prop_tgt:`PDB_NAME_<CONFIG>`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`。
 
 .. genex:: $<TARGET_PDB_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  Base name of the linker generated program database file (.pdb)
-  where ``tgt`` is the name of a target.
+  链接器生成的程序数据库文件的基本名称（.pdb），其中\ ``tgt``\ 是目标的名称。
 
-  The base name corresponds to the target PDB file name (see
-  ``$<TARGET_PDB_FILE_NAME:tgt>``) without prefix and suffix. For example,
-  if target file name is ``base.pdb``, the base name is ``base``.
+  基本名称对应于没有前缀和后缀的目标PDB文件名（参阅\ ``$<TARGET_PDB_FILE_NAME:tgt>``）。例如，如果目标文件名为\ ``base.pdb``，则基名是\ ``base``。
 
-  See also the :prop_tgt:`PDB_NAME` target property and its configuration
-  specific variant :prop_tgt:`PDB_NAME_<CONFIG>`.
+  请参见\ :prop_tgt:`PDB_NAME`\ 目标属性及其配置特定变量\ :prop_tgt:`PDB_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_PDB_FILE_NAME:tgt>
 
   .. versionadded:: 3.1
 
-  Name of the linker generated program database file (.pdb).
+  链接器生成的程序数据库文件（.pdb）的名称。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_PDB_FILE_DIR:tgt>
 
   .. versionadded:: 3.1
 
-  Directory of the linker generated program database file (.pdb).
+  链接器生成的程序数据库文件（.pdb）的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_BUNDLE_DIR:tgt>
 
   .. versionadded:: 3.9
 
-  Full path to the bundle directory (``my.app``, ``my.framework``, or
-  ``my.bundle``) where ``tgt`` is the name of a target.
+  bundle目录的完整路径（``my.app``、``my.framework``\ 或\ ``my.bundle``），其中\ ``tgt``\ 是目标的名称。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_BUNDLE_CONTENT_DIR:tgt>
 
