@@ -1,55 +1,44 @@
-.. |file| replace:: The help is printed to a named <f>ile if given.
+.. |file| replace:: 如果有指定，则打印到指定的<f>ile。
 
 ``--help,-help,-usage,-h,-H,/?``
- Print usage information and exit.
+ 打印用例信息并退出。
 
- Usage describes the basic command line interface and its options.
+ 用例描述了基本的命令行接口及其选项。
 
 ``--version,-version,/V [<f>]``
- Show program name/version banner and exit.
+ 显示程序名称/版本横幅并退出。
 
- If a file is specified, the version is written into it.
- |file|
+ 如果指定了文件，则将版本号写入其中。|file|
 
 ``--help-full [<f>]``
- Print all help manuals and exit.
+ 打印所有帮助手册并退出。
 
- All manuals are printed in a human-readable text format.
- |file|
+ 所有手册皆以可读的文本格式打印。|file|
 
 ``--help-manual <man> [<f>]``
- Print one help manual and exit.
+ 打印一个帮助手册并退出。
 
- The specified manual is printed in a human-readable text format.
- |file|
+ 以可读的文本格式打印指定的手册。|file|
 
 ``--help-manual-list [<f>]``
- List help manuals available and exit.
+ 列出可用的帮助手册并退出。
 
- The list contains all manuals for which help may be obtained by
- using the ``--help-manual`` option followed by a manual name.
- |file|
+ 该列表包含所有可以通过使用\ ``--help-manual``\ 选项及手册名称参数获得帮助的手册。|file|
 
 ``--help-command <cmd> [<f>]``
- Print help for one command and exit.
+ 打印一个命令的帮助并退出。
 
- The :manual:`cmake-commands(7)` manual entry for ``<cmd>`` is
- printed in a human-readable text format.
- |file|
+ ``<cmd>``\ 的\ :manual:`cmake-commands(7)`\ 手册条目以可读的文本格式打印。|file|
 
 ``--help-command-list [<f>]``
- List commands with help available and exit.
+ 列出命令并提供帮助，然后退出。
 
- The list contains all commands for which help may be obtained by
- using the ``--help-command`` option followed by a command name.
- |file|
+ 该列表包含所有可以通过使用\ ``--help-command``\ 选项后接命令名获得帮助的命令。|file|
 
 ``--help-commands [<f>]``
- Print cmake-commands manual and exit.
+ 打印cmake-commands手册并退出。
 
- The :manual:`cmake-commands(7)` manual is printed in a
- human-readable text format.
- |file|
+ :manual:`cmake-commands(7)`\ 手册以可读的文本格式打印。|file|
 
 ``--help-module <mod> [<f>]``
  Print help for one module and exit.

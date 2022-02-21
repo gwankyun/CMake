@@ -24,19 +24,18 @@ CMake是一个跨平台的构建系统生成器。项目使用与平台无关的
 =======
 
 ``-S <path-to-source>``
- Path to root directory of the CMake project to build.
+ 待构建CMake项目的根目录路径。
 
 ``-B <path-to-build>``
- Path to directory which CMake will use as the root of build directory.
+ CMake将用作构建目录的根目录路径。
 
- If the directory doesn't already exist CMake will make it.
+ 如果目录不存在，CMake会创建它。
 
 ``--preset=<preset-name>``
- Name of the preset to use from the project's
- :manual:`presets <cmake-presets(7)>` files, if it has them.
+ 如果有的话，将从项目的\ :manual:`presets <cmake-presets(7)>`\ 文件中使用的预设名称。
 
 ``--browse-manual``
- Open the CMake reference manual in a browser and immediately exit.
+ 在浏览器中打开CMake参考手册并立即退出。
 
 .. include:: OPTIONS_HELP.txt
 
