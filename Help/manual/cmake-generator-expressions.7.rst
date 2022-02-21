@@ -792,42 +792,27 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.9
 
-  Full path to the bundle content directory where ``tgt`` is the name of a
-  target. For the macOS SDK it leads to ``my.app/Contents``, ``my.framework``,
-  or ``my.bundle/Contents``. For all other SDKs (e.g. iOS) it leads to
-  ``my.app``, ``my.framework``, or ``my.bundle`` due to the flat bundle
-  structure.
+  bundle内容目录的完整路径，其中\ ``tgt``\ 是目标的名称。对于macOS SDK，它指向\ ``my.app/Contents``、``my.bundle/Contents``\ 或\ ``my.bundle/Contents``。对于所有其他SDK（如iOS），由于bundle结构扁平，它指向\ ``my.app``、``my.framework``\ 或者\ ``my.bundle``\。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_PROPERTY:tgt,prop>
 
-  Value of the property ``prop`` on the target ``tgt``.
+  ``tgt``\ 目标上的\ ``prop``\ 属性值。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，``tgt``\ 不是作为目标的依赖项而添加的，该表达式是在该目标上求值的。
 
 .. genex:: $<TARGET_PROPERTY:prop>
 
-  Value of the property ``prop`` on the target for which the expression
-  is being evaluated. Note that for generator expressions in
-  :ref:`Target Usage Requirements` this is the consuming target rather
-  than the target specifying the requirement.
+  在计算表达式的目标上属性\ ``prop``\ 的值。注意，对于\ :ref:`Target Usage Requirements`\ 中的生成器表达式，这是消费目标，而不是指定需求的目标。
 
 .. genex:: $<TARGET_RUNTIME_DLLS:tgt>
 
   .. versionadded:: 3.21
 
-  List of DLLs that the target depends on at runtime. This is determined by
-  the locations of all the ``SHARED`` and ``MODULE`` targets in the target's
-  transitive dependencies. Using this generator expression on targets other
-  than executables, ``SHARED`` libraries, and ``MODULE`` libraries is an error.
-  On non-DLL platforms, it evaluates to an empty string.
+  运行时目标依赖的DLL列表。这是由所有\ ``SHARED``\ 和\ ``MODULE``\ 目标在目标的传递依赖中的位置决定的。在可执行文件、``SHARED``\ 和\ ``MODULE``\ 库以外的目标上使用此生成器表达式是错误的。在非DLL平台上，它的计算结果为空字符串。
 
-  This generator expression can be used to copy all of the DLLs that a target
-  depends on into its output directory in a ``POST_BUILD`` custom command. For
-  example:
+  这个生成器表达式可以用来将目标依赖的所有DLL复制到\ ``POST_BUILD``\ 自定义命令的输出目录中。例如：
 
   .. code-block:: cmake
 
@@ -842,114 +827,78 @@ cmake-generator-expressions(7)
 
   .. note::
 
-    :ref:`Imported Targets` are supported only if they know the location
-    of their ``.dll`` files.  An imported ``SHARED`` or ``MODULE`` library
-    must have :prop_tgt:`IMPORTED_LOCATION` set to its ``.dll`` file.  See
-    the :ref:`add_library imported libraries <add_library imported libraries>`
-    section for details.  Many :ref:`Find Modules` produce imported targets
-    with the ``UNKNOWN`` type and therefore will be ignored.
+    只有当\ :ref:`Imported Targets`\ 知道它们的\ ``.dll``\ 文件的位置时，才支持它们。导入的\ ``SHARED``\ 或\ ``MODULE``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为它的\ ``.dll``\ 文件。有关详细信息，请参阅\ :ref:`add_library imported libraries <add_library imported libraries>`\ 一节。许多\ :ref:`Find Modules`\ 生成的导入目标类型为\ ``UNKNOWN``，因此会被忽略。
 
 .. genex:: $<INSTALL_PREFIX>
 
-  Content of the install prefix when the target is exported via
-  :command:`install(EXPORT)`, or when evaluated in the
-  :prop_tgt:`INSTALL_NAME_DIR` property or the ``INSTALL_NAME_DIR`` argument of
-  :command:`install(RUNTIME_DEPENDENCY_SET)`, and empty otherwise.
+  当目标通过\ :command:`install(EXPORT)`\ 导出时，或在\ :prop_tgt:`INSTALL_NAME_DIR`\ 属性或\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ 的 \ ``INSTALL_NAME_DIR``\ 参数中求值时，安装前缀的内容，否则为空。
 
 与输出相关的表达式
 --------------------------
 
 .. genex:: $<TARGET_NAME:...>
 
-  Marks ``...`` as being the name of a target.  This is required if exporting
-  targets to multiple dependent export sets.  The ``...`` must be a literal
-  name of a target- it may not contain generator expressions.
+  标记\ ``...``\ 作为目标的名字。如果将目标导出到多个依赖的导出集，则需要这样做。``...``\ 必须是目标的字面名称——不能包含生成器表达式。
 
 .. genex:: $<LINK_ONLY:...>
 
   .. versionadded:: 3.1
 
-  Content of ``...`` except when evaluated in a link interface while
-  propagating :ref:`Target Usage Requirements`, in which case it is the
-  empty string.
-  Intended for use only in an :prop_tgt:`INTERFACE_LINK_LIBRARIES` target
-  property, perhaps via the :command:`target_link_libraries` command,
-  to specify private link dependencies without other usage requirements.
+  \ ``...``\ 的内容，除非在\ :ref:`Target Usage Requirements`\ 时在链接接口中求值，在这种情况下它是空字符串。仅用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 目标属性中，可能通过\ :command:`target_link_libraries`\ 命令来指定私有链接依赖关系，而不需要其他使用要求。
 
 .. genex:: $<INSTALL_INTERFACE:...>
 
-  Content of ``...`` when the property is exported using :command:`install(EXPORT)`,
-  and empty otherwise.
+  使用\ :command:`install(EXPORT)`\ 导出属性时的\ ``...``\ 内容，否则为空。
 
 .. genex:: $<BUILD_INTERFACE:...>
 
-  Content of ``...`` when the property is exported using :command:`export`, or
-  when the target is used by another target in the same buildsystem. Expands to
-  the empty string otherwise.
+  当使用\ :command:`export`\ 导出属性时的\ ``...``\ 内容，或者当目标被同一构建系统中的另一个目标使用时。否则展开为空字符串。
 
 .. genex:: $<MAKE_C_IDENTIFIER:...>
 
-  Content of ``...`` converted to a C identifier.  The conversion follows the
-  same behavior as :command:`string(MAKE_C_IDENTIFIER)`.
+  ``...``\ 内容转换为C标识符。转换遵循与\ :command:`string(MAKE_C_IDENTIFIER)`\ 相同的行为。
 
 .. genex:: $<TARGET_OBJECTS:objLib>
 
   .. versionadded:: 3.1
 
-  List of objects resulting from build of ``objLib``.
+  ``objLib``\ 生成的对象列表。
 
 .. genex:: $<SHELL_PATH:...>
 
   .. versionadded:: 3.4
 
-  Content of ``...`` converted to shell path style. For example, slashes are
-  converted to backslashes in Windows shells and drive letters are converted
-  to posix paths in MSYS shells. The ``...`` must be an absolute path.
+  ``...``\ 内容转换为shell路径样式。例如，在Windows shell中斜杠被转换为反斜杠，而在MSYS shell中盘符被转换为posix路径。``...``\ 必须是绝对路径。
 
   .. versionadded:: 3.14
-    The ``...`` may be a :ref:`semicolon-separated list <CMake Language Lists>`
-    of paths, in which case each path is converted individually and a result
-    list is generated using the shell path separator (``:`` on POSIX and
-    ``;`` on Windows).  Be sure to enclose the argument containing this genex
-    in double quotes in CMake source code so that ``;`` does not split arguments.
+    ``...``\ 可能是一个\ :ref:`分号分隔的路径列表 <CMake Language Lists>`，在这种情况下，每个路径被单独转换，并使用shell路径分隔符（POSIX上的\ ``:``\ 和Windows上的\ ``;``）生成结果列表。在CMake源代码中，确保包含这个生成器表达式的参数皆用双引号括起来，以避免\ ``;``\ 割开参数。
 
 .. genex:: $<OUTPUT_CONFIG:...>
 
   .. versionadded:: 3.20
 
-  Only valid in :command:`add_custom_command` and :command:`add_custom_target`
-  as the outer-most generator expression in an argument.
-  With the :generator:`Ninja Multi-Config` generator, generator expressions
-  in ``...`` are evaluated using the custom command's "output config".
-  With other generators, the content of ``...`` is evaluated normally.
+  仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中有效，作为参数中最外部的生成器表达式。在\ :generator:`Ninja Multi-Config`\ 生成器中，生成器表达式在使用自定义命令的“output config”处理\ ``...``。在其他生成器中，``...``\ 内容正常处理。
 
 .. genex:: $<COMMAND_CONFIG:...>
 
   .. versionadded:: 3.20
 
-  Only valid in :command:`add_custom_command` and :command:`add_custom_target`
-  as the outer-most generator expression in an argument.
-  With the :generator:`Ninja Multi-Config` generator, generator expressions
-  in ``...`` are evaluated using the custom command's "command config".
-  With other generators, the content of ``...`` is evaluated normally.
+  仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中有效，作为参数中最外部的生成器表达式。在\ :generator:`Ninja Multi-Config`\ 生成器中，生成器表达式使用自定义命令的“command config”处理\ ``...``。在其他生成器中，``...``\ 内容正常处理。
 
 调试
 =========
 
-Since generator expressions are evaluated during generation of the buildsystem,
-and not during processing of ``CMakeLists.txt`` files, it is not possible to
-inspect their result with the :command:`message()` command.
+由于生成器表达式是在构建系统的生成过程中计算的，而不是在\ ``CMakeLists.txt``\ 文件的处理过程中，所以不可能使用\ :command:`message()`\ 命令来检查它们的结果。
 
-One possible way to generate debug messages is to add a custom target,
+生成调试消息的一种可能的方法是添加一个自定义目标，
 
 .. code-block:: cmake
 
   add_custom_target(genexdebug COMMAND ${CMAKE_COMMAND} -E echo "$<...>")
 
-The shell command ``make genexdebug`` (invoked after execution of ``cmake``)
-would then print the result of ``$<...>``.
+shell命令\ ``make genexdebug``\ （在执行\ ``cmake``\ 之后调用）将输出\ ``$<...>``\ 的结果。
 
-Another way is to write debug messages to a file:
+另一种方法是将调试消息写入文件：
 
 .. code-block:: cmake
 
