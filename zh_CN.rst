@@ -55,7 +55,8 @@
 * `cmake-server(7) <Help/manual/cmake-server.7.rst>`_\ ：完成
 * `cpack-variables(7) <Help/manual/cpack-variables.7.rst>`_\ ：完成，不包括子页面
 * `cpack-generators(7) <Help/manual/cpack-generators.7.rst>`_\ ：完成，不包括子页面
-* `cmake-generator-expressions(7) <Help/manual/cmake-generator-expressions.7.rst>`_\ ：部分
+* `cmake-generator-expressions(7) <Help/manual/cmake-generator-expressions.7.rst>`_\ ：完成
+* `cmake-gui(1) <Help/manual/cmake-gui.1.rst>`_\ ：完成
 
 指南
 -----
