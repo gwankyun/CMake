@@ -196,16 +196,17 @@ cmake(1)
  See also the :variable:`CMAKE_FIND_DEBUG_MODE` variable for debugging
  a more local part of the project.
 
-``--debug-find=<pkg>[,...]``
+``--debug-find-pkg=<pkg>[,...]``
  Put cmake find commands in a debug mode when running under calls
- to ``find_package(<pkg>)``, where ``<pkg>`` is an entry in the given
- comma-separated list of case-sensitive package names.
+ to :command:`find_package(\<pkg\>) <find_package>`, where ``<pkg>``
+ is an entry in the given comma-separated list of case-sensitive package
+ names.
 
  Like ``--debug-find``, but limiting scope to the specified packages.
 
 ``--debug-find-var=<var>[,...]``
  Put cmake find commands in a debug mode when called with ``<var>``
- as the return variable, where ``<var>`` is an entry in the given
+ as the result variable, where ``<var>`` is an entry in the given
  comma-separated list.
 
  Like ``--debug-find``, but limiting scope to the specified variable names.
@@ -410,21 +411,20 @@ CMake提供了一个命令行签名来构建一个已经生成的项目二进制
 ``--resolve-package-references=<on|off|only>``
   .. versionadded:: 3.23
 
-  Resolve remote package references (e.g. NuGet packages) before build.
-  When set to ``on`` (default), packages will be restored before building a
-  target. When set to ``only``, the packages will be restored, but no build
-  will be performed. When set to ``off``, no packages will be restored.
+  Resolve remote package references from external package managers (e.g. NuGet)
+  before build. When set to ``on`` (default), packages will be restored before
+  building a target. When set to ``only``, the packages will be restored, but no
+  build will be performed. When set to ``off``, no packages will be restored.
 
-  If the target does not define any package references, this option does
-  nothing.
+  If the target does not define any package references, this option does nothing.
 
   This setting can be specified in a build preset (using
-  ``resolvePackageReferences``). In this case, the command line option will
-  be ignored.
+  ``resolvePackageReferences``). The preset setting will be ignored, if this
+  command line option is specified.
 
-  If the no command line parameter or preset option is not provided, an
-  environment-specific cache variable will be evaluated to decide, if package
-  restoration should be performed.
+  If no command line parameter or preset option are provided, an environment-
+  specific cache variable will be evaluated to decide, if package restoration
+  should be performed.
 
   When using the Visual Studio generator, package references are defined
   using the :prop_tgt:`VS_PACKAGE_REFERENCES` property. Package references

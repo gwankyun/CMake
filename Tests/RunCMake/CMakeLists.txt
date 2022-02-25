@@ -84,7 +84,8 @@ endif()
 
 # Test MSVC for older host CMake versions, and test
 # WIN32/CMAKE_C_COMPILER_ID to fix check on Intel for Windows.
-if(MSVC OR (WIN32 AND CMAKE_C_COMPILER_ID MATCHES "MSVC|Intel"))
+if(MSVC OR (WIN32 AND CMAKE_C_COMPILER_ID MATCHES "MSVC|Intel")
+   OR (WIN32 AND CMAKE_C_COMPILER_ID MATCHES "Clang" AND CMAKE_C_SIMULATE_ID MATCHES "MSVC"))
   set(LINKER_SUPPORTS_PDB 1)
 else()
   set(LINKER_SUPPORTS_PDB 0)
@@ -584,12 +585,16 @@ if(NOT WIN32
   add_RunCMake_test(SymlinkTrees)
 endif ()
 
-find_package(Qt4 QUIET)
-find_package(Qt5Core QUIET)
-if (QT4_FOUND AND Qt5Core_FOUND AND NOT Qt5Core_VERSION VERSION_LESS 5.1.0)
+if(CMake_TEST_Qt4)
+  find_package(Qt4 QUIET)
+endif()
+if(CMake_TEST_Qt5)
+  find_package(Qt5Core QUIET)
+endif()
+if (CMake_TEST_Qt4 AND CMake_TEST_Qt5 AND QT4_FOUND AND Qt5Core_FOUND AND NOT Qt5Core_VERSION VERSION_LESS 5.1.0)
   add_RunCMake_test(IncompatibleQt)
 endif()
-if (QT4_FOUND)
+if (CMake_TEST_Qt4 AND QT4_FOUND)
   add_RunCMake_test(ObsoleteQtMacros -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE})
 endif()
 

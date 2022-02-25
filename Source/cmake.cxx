@@ -544,6 +544,10 @@ bool cmake::SetCacheArgs(const std::vector<std::string>& args)
       "-C", "-C must be followed by a file name.",
       CommandArgument::Values::One, CommandArgument::RequiresSeparator::No,
       [&](std::string const& value, cmake* state) -> bool {
+        if (value.empty()) {
+          cmSystemTools::Error("No file name specified for -C");
+          return false;
+        }
         cmSystemTools::Stdout("loading initial cache file " + value + "\n");
         // Resolve script path specified on command line
         // relative to $PWD.
@@ -800,14 +804,30 @@ void cmake::SetArgs(const std::vector<std::string>& args)
   ListPresets listPresets = ListPresets::None;
 #endif
 
+  auto EmptyStringArgLambda = [](std::string const&, cmake* state) -> bool {
+    state->IssueMessage(
+      MessageType::WARNING,
+      "Ignoring empty string (\"\") provided on the command line.");
+    return true;
+  };
+
   auto SourceArgLambda = [](std::string const& value, cmake* state) -> bool {
+    if (value.empty()) {
+      cmSystemTools::Error("No source directory specified for -S");
+      return false;
+    }
     std::string path = cmSystemTools::CollapseFullPath(value);
     cmSystemTools::ConvertToUnixSlashes(path);
-    state->SetHomeDirectory(path);
+
+    state->SetHomeDirectoryViaCommandLine(path, HomeDirArgStyle::Dash_S);
     return true;
   };
 
   auto BuildArgLambda = [&](std::string const& value, cmake* state) -> bool {
+    if (value.empty()) {
+      cmSystemTools::Error("No build directory specified for -B");
+      return false;
+    }
     std::string path = cmSystemTools::CollapseFullPath(value);
     cmSystemTools::ConvertToUnixSlashes(path);
     state->SetHomeOutputDirectory(path);
@@ -836,6 +856,7 @@ void cmake::SetArgs(const std::vector<std::string>& args)
   };
 
   std::vector<CommandArgument> arguments = {
+    CommandArgument{ "", CommandArgument::Values::Zero, EmptyStringArgLambda },
     CommandArgument{ "-S", "No source directory specified for -S",
                      CommandArgument::Values::One,
                      CommandArgument::RequiresSeparator::No, SourceArgLambda },
@@ -1179,8 +1200,8 @@ void cmake::SetArgs(const std::vector<std::string>& args)
 
   if (!extraProvidedPath.empty() && !scriptMode) {
     this->IssueMessage(MessageType::WARNING,
-                       cmStrCat("Ignoring extra path from command line:\n ",
-                                extraProvidedPath));
+                       cmStrCat("Ignoring extra path from command line:\n \"",
+                                extraProvidedPath, "\""));
   }
   if (!possibleUnknownArg.empty() && !scriptMode) {
     cmSystemTools::Error(cmStrCat("Unknown argument ", possibleUnknownArg));
@@ -1466,6 +1487,7 @@ bool cmake::SetDirectoriesFromFile(const std::string& arg)
   // CMakeLists.txt file.
   std::string listPath;
   std::string cachePath;
+  bool is_source_dir = false;
   bool is_empty_directory = false;
   if (cmSystemTools::FileIsDirectory(arg)) {
     std::string path = cmSystemTools::CollapseFullPath(arg);
@@ -1481,6 +1503,7 @@ bool cmake::SetDirectoriesFromFile(const std::string& arg)
     if (cmSystemTools::FileExists(listFile)) {
       listPath = path;
       is_empty_directory = false;
+      is_source_dir = true;
     }
   } else if (cmSystemTools::FileExists(arg)) {
     std::string fullPath = cmSystemTools::CollapseFullPath(arg);
@@ -1525,19 +1548,23 @@ bool cmake::SetDirectoriesFromFile(const std::string& arg)
   const bool passed_same_path = (listPath == this->GetHomeDirectory()) ||
     (listPath == this->GetHomeOutputDirectory());
   bool used_provided_path =
-    (passed_same_path || no_source_tree || no_build_tree);
+    (passed_same_path || is_source_dir || no_build_tree);
 
   // If there is a CMakeLists.txt file, use it as the source tree.
   if (!listPath.empty()) {
     // When invoked with a path that points to an existing CMakeCache
     // This function is called multiple times with the same path
-    if (no_source_tree && no_build_tree) {
+    if (is_source_dir) {
+      this->SetHomeDirectoryViaCommandLine(listPath, HomeDirArgStyle::Plain);
+      if (!no_build_tree) {
+        std::string cwd = cmSystemTools::GetCurrentWorkingDirectory();
+        this->SetHomeOutputDirectory(cwd);
+      }
+    } else if (no_source_tree && no_build_tree) {
       this->SetHomeDirectory(listPath);
 
       std::string cwd = cmSystemTools::GetCurrentWorkingDirectory();
       this->SetHomeOutputDirectory(cwd);
-    } else if (no_source_tree) {
-      this->SetHomeDirectory(listPath);
     } else if (no_build_tree) {
       this->SetHomeOutputDirectory(listPath);
     }
@@ -1752,6 +1779,30 @@ void cmake::PrintPresetList(const cmCMakePresetsGraph& graph) const
   graph.PrintConfigurePresetList(filter);
 }
 #endif
+
+void cmake::SetHomeDirectoryViaCommandLine(std::string const& path,
+                                           HomeDirArgStyle argStyle)
+{
+  bool fromDashS = argStyle == HomeDirArgStyle::Dash_S;
+  static bool homeDirectorySetExplicitly = false;
+  if (path.empty()) {
+    return;
+  }
+
+  auto prev_path = this->GetHomeDirectory();
+  if (prev_path != path && !prev_path.empty()) {
+    const bool ignore_prev_path =
+      (fromDashS || (!fromDashS && !homeDirectorySetExplicitly));
+    const std::string& ignored_path = (ignore_prev_path) ? prev_path : path;
+    this->IssueMessage(MessageType::WARNING,
+                       cmStrCat("Ignoring extra path from command line:\n \"",
+                                ignored_path, "\""));
+  }
+  if (fromDashS || !homeDirectorySetExplicitly) {
+    this->SetHomeDirectory(path);
+  }
+  homeDirectorySetExplicitly = fromDashS;
+}
 
 void cmake::SetHomeDirectory(const std::string& dir)
 {
@@ -3356,7 +3407,8 @@ int cmake::Build(int jobs, std::string dir, std::vector<std::string> targets,
       buildOptions.Clean = *expandedPreset->CleanFirst;
     }
 
-    if (expandedPreset->ResolvePackageReferences) {
+    if (buildOptions.ResolveMode == PackageResolveMode::Default &&
+        expandedPreset->ResolvePackageReferences) {
       buildOptions.ResolveMode = *expandedPreset->ResolvePackageReferences;
     }
 

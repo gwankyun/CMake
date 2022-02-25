@@ -326,10 +326,10 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
   include("${CMAKE_CURRENT_LIST_DIR}/ClimbingStatsTargets.cmake")
   include("${CMAKE_CURRENT_LIST_DIR}/ClimbingStatsMacros.cmake")
 
-  set(_supported_components Plot Table)
+  set(_ClimbingStats_supported_components Plot Table)
 
   foreach(_comp ${ClimbingStats_FIND_COMPONENTS})
-    if (NOT ";${_supported_components};" MATCHES ";${_comp};")
+    if (NOT ";${_ClimbingStats_supported_components};" MATCHES ";${_comp};")
       set(ClimbingStats_FOUND False)
       set(ClimbingStats_NOT_FOUND_MESSAGE "Unsupported component: ${_comp}")
     endif()

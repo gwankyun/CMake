@@ -183,6 +183,29 @@ public:
 #endif
   std::string ReportCapabilities() const;
 
+  enum class HomeDirArgStyle
+  {
+    Plain,
+    Dash_S,
+  };
+
+  /**
+   * Set the home directory from `-S` or from a known location
+   * that contains a CMakeLists.txt. Will generate warnings
+   * when overriding an existing source directory.
+   *
+   *  |    args           | src dir| warning        |
+   *  | ----------------- | ------ | -------------- |
+   *  | `dirA dirA`       | dirA   | N/A            |
+   *  | `-S dirA -S dirA` | dirA   | N/A            |
+   *  | `-S dirA -S dirB` | dirB   | Ignoring dirA  |
+   *  | `-S dirA dirB`    | dirA   | Ignoring dirB  |
+   *  | `dirA -S dirB`    | dirB   | Ignoring dirA  |
+   *  | `dirA dirB`       | dirB   | Ignoring dirA  |
+   */
+  void SetHomeDirectoryViaCommandLine(std::string const& path,
+                                      HomeDirArgStyle argStyle);
+
   //@{
   /**
    * Set/Get the home directory (or output directory) in the project. The
@@ -488,7 +511,7 @@ public:
   //! Do we want debug output from the find commands during the cmake run.
   bool GetDebugFindOutput() const { return this->DebugFindOutput; }
   bool GetDebugFindOutput(std::string const& var) const;
-  bool GetDebugFindPkgOutput(std::string const& var) const;
+  bool GetDebugFindPkgOutput(std::string const& pkg) const;
   void SetDebugFindOutput(bool b) { this->DebugFindOutput = b; }
   void SetDebugFindOutputPkgs(std::string const& args);
   void SetDebugFindOutputVars(std::string const& args);
