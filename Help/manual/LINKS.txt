@@ -1,17 +1,16 @@
 使用CMake过程中可以获得以下资源：
 
-Home Page
+官网
  https://cmake.org
 
- The primary starting point for learning about CMake.
+ 学习CMake的重要起点。
 
-Online Documentation and Community Resources
+在线文档和社区资源
  https://cmake.org/documentation
 
- Links to available documentation and community resources may be
- found on this web page.
+ 在这个网页上可以找到可用文档和社区资源的链接。
 
-Discourse Forum
+论坛
  https://discourse.cmake.org
 
- The Discourse Forum hosts discussion and questions about CMake.
+ 专注CMake的讨论和问题的论坛。
