@@ -68,31 +68,26 @@
  对\ ``CMakeLists.txt``\ 文件的作者发出的警告视作错误。默认情况下，这也会将已弃用警告视作错误。
 
 ``-Wno-error=dev``
- Make developer warnings not errors.
+ 向开发人员发出警告而不是错误。
 
- Make warnings that are meant for the author of the ``CMakeLists.txt`` files not
- errors. By default this will also turn off deprecated warnings as errors.
+ 对\ ``CMakeLists.txt``\ 文件的作者发出警告，而不是错误。默认情况下，这也会将「弃用的警告作为错误」关闭。
 
 ``-Wdeprecated``
- Enable deprecated functionality warnings.
+ 启用弃用功能警告。
 
- Enable warnings for usage of deprecated functionality, that are meant
- for the author of the ``CMakeLists.txt`` files.
+ 启用使用禁用功能时的警告，用于\ ``CMakeLists.txt``\ 文件的作者。
 
 ``-Wno-deprecated``
- Suppress deprecated functionality warnings.
+ 关闭弃用功能警告。
 
- Suppress warnings for usage of deprecated functionality, that are meant
- for the author of the ``CMakeLists.txt`` files.
+ 关闭使用弃用功能时的警告，用于\ ``CMakeLists.txt``\ 文件的作者。
 
 ``-Werror=deprecated``
- Make deprecated macro and function warnings errors.
+ 令已弃用的宏和函数警告报错。
 
- Make warnings for usage of deprecated macros and functions, that are meant
- for the author of the ``CMakeLists.txt`` files, errors.
+ 令已弃用的宏和函数发出警告，对于\ ``CMakeLists.txt``\ 文件的作者而言，则是报错。
 
 ``-Wno-error=deprecated``
- Make deprecated macro and function warnings not errors.
+ 令已弃用的宏和函数发出警告，而不是错误。
 
- Make warnings for usage of deprecated macros and functions, that are meant
- for the author of the ``CMakeLists.txt`` files, not errors.
+ 对已弃用的宏和函数的使用发出警告，对于\ ``CMakeLists.txt``\ 文件的作者而言，而不是错误。

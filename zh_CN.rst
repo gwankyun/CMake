@@ -57,6 +57,7 @@
 * `cpack-generators(7) <Help/manual/cpack-generators.7.rst>`_\ ：完成，不包括子页面
 * `cmake-generator-expressions(7) <Help/manual/cmake-generator-expressions.7.rst>`_\ ：完成
 * `cmake-gui(1) <Help/manual/cmake-gui.1.rst>`_\ ：完成
+* `ccmake(1) <Help/manual/ccmake.1.rst>`_\ ：完成
 
 指南
 -----
