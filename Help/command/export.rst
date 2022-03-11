@@ -1,8 +1,7 @@
 export
 ------
 
-Export targets or packages for outside projects to use them directly
-from the current project's build tree, without installation.
+为外部项目导出目标或包，以便直接从当前项目的构建树中使用它们，而不需要安装。
 
 See the :command:`install(EXPORT)` command to export targets from an
 install tree.

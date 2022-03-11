@@ -15,11 +15,7 @@ cmake-buildsystem(7)
 二进制目标
 ==============
 
-Executables and libraries are defined using the :command:`add_executable`
-and :command:`add_library` commands.  The resulting binary files have
-appropriate :prop_tgt:`PREFIX`, :prop_tgt:`SUFFIX` and extensions for the
-platform targeted. Dependencies between binary targets are expressed using
-the :command:`target_link_libraries` command:
+可执行文件和库使用\ :command:`add_executable`\ 和\ :command:`add_library`\ 命令定义。生成的二进制文件具有针对平台的适当\ :prop_tgt:`PREFIX`、:prop_tgt:`SUFFIX`\ 和扩展名。二进制目标之间的依赖关系使用\ :command:`target_link_libraries`\ 命令表示：
 
 .. code-block:: cmake
 
@@ -27,25 +23,18 @@ the :command:`target_link_libraries` command:
   add_executable(zipapp zipapp.cpp)
   target_link_libraries(zipapp archive)
 
-``archive`` is defined as a ``STATIC`` library -- an archive containing objects
-compiled from ``archive.cpp``, ``zip.cpp``, and ``lzma.cpp``.  ``zipapp``
-is defined as an executable formed by compiling and linking ``zipapp.cpp``.
-When linking the ``zipapp`` executable, the ``archive`` static library is
-linked in.
+``archive``\ 被定义为一个\ ``STATIC``\ 库——一个包含\ ``archive.cpp``、``zip.cpp``\ 和\ ``lzma.cpp``\ 编译对象的存档。``zipapp``\ 被定义为通过编译和链接\ ``zipapp.cpp``\ 而形成的可执行文件。当链接\ ``zipapp``\ 可执行文件时，``archive``\ 静态库会被链接到。
 
 二进制可执行文件
 ------------------
 
-The :command:`add_executable` command defines an executable target:
+:command:`add_executable`\ 命令定义了一个可执行目标：
 
 .. code-block:: cmake
 
   add_executable(mytool mytool.cpp)
 
-Commands such as :command:`add_custom_command`, which generates rules to be
-run at build time can transparently use an :prop_tgt:`EXECUTABLE <TYPE>`
-target as a ``COMMAND`` executable.  The buildsystem rules will ensure that
-the executable is built before attempting to run the command.
+像\ :command:`add_custom_command`\ 这样的命令，它生成要在构建时运行的规则，可以透明地将\ :prop_tgt:`EXECUTABLE <TYPE>`\ 目标作为可执行\ ``COMMAND``\ 文件使用。构建系统规则将确保在尝试运行命令之前构建可执行文件。
 
 二进制库类型
 --------------------
@@ -55,8 +44,7 @@ the executable is built before attempting to run the command.
 普通库
 ^^^^^^^^^^^^^^^^
 
-By default, the :command:`add_library` command defines a ``STATIC`` library,
-unless a type is specified.  A type may be specified when using the command:
+默认情况下，:command:`add_library`\ 命令定义了一个\ ``STATIC``\ 库，除非指定了类型。使用这个命令时，可以指定一个类型：
 
 .. code-block:: cmake
 
@@ -66,20 +54,9 @@ unless a type is specified.  A type may be specified when using the command:
 
   add_library(archive STATIC archive.cpp zip.cpp lzma.cpp)
 
-The :variable:`BUILD_SHARED_LIBS` variable may be enabled to change the
-behavior of :command:`add_library` to build shared libraries by default.
+可以启用\ :variable:`BUILD_SHARED_LIBS`\ 变量来改变\ :command:`add_library`\ 的行为，默认情况下构建共享库。
 
-In the context of the buildsystem definition as a whole, it is largely
-irrelevant whether particular libraries are ``SHARED`` or ``STATIC`` --
-the commands, dependency specifications and other APIs work similarly
-regardless of the library type.  The ``MODULE`` library type is
-dissimilar in that it is generally not linked to -- it is not used in
-the right-hand-side of the :command:`target_link_libraries` command.
-It is a type which is loaded as a plugin using runtime techniques.
-If the library does not export any unmanaged symbols (e.g. Windows
-resource DLL, C++/CLI DLL), it is required that the library not be a
-``SHARED`` library because CMake expects ``SHARED`` libraries to export
-at least one symbol.
+在整个构建系统定义的上下语境中，特定的库是\ ``SHARED``\ 还是\ ``STATIC``\ 在很大程度上是无关紧要的——不管库的类型如何，命令、依赖规范和其他API的工作方式都是类似的。``MODULE``\ 库类型的不同之处在于，它通常不会被链接到——它不会在\ :command:`target_link_libraries`\ 命令的右侧被使用。它是一个使用运行时技术作为插件加载的类型。如果库不导出任何非托管符号（例如Windows资源DLL, C++/CLI DLL），则要求库不是\ ``SHARED``\ 库，因为CMake希望\ ``SHARED``\ 库至少导出一个符号。
 
 .. code-block:: cmake
 
@@ -90,13 +67,7 @@ at least one symbol.
 苹果框架
 """"""""""""""""
 
-A ``SHARED`` library may be marked with the :prop_tgt:`FRAMEWORK`
-target property to create an macOS or iOS Framework Bundle.
-A library with the ``FRAMEWORK`` target property should also set the
-:prop_tgt:`FRAMEWORK_VERSION` target property.  This property is typically
-set to the value of "A" by macOS conventions.
-The ``MACOSX_FRAMEWORK_IDENTIFIER`` sets ``CFBundleIdentifier`` key
-and it uniquely identifies the bundle.
+一个\ ``SHARED``\ 库可以被标记为\ :prop_tgt:`FRAMEWORK`\ 目标属性来创建一个macOS或iOS框架Bundle。带有\ ``FRAMEWORK``\ 目标属性的库还应该设置\ :prop_tgt:`FRAMEWORK_VERSION`\ 目标属性。根据macOS约定，该属性通常设置为“A”。``MACOSX_FRAMEWORK_IDENTIFIER``\ 设置为\ ``CFBundleIdentifier``\ 键，它用作bundle的唯一标识。
 
 .. code-block:: cmake
 
@@ -112,12 +83,7 @@ and it uniquely identifies the bundle.
 目标库
 ^^^^^^^^^^^^^^^^
 
-The ``OBJECT`` library type defines a non-archival collection of object files
-resulting from compiling the given source files.  The object files collection
-may be used as source inputs to other targets by using the syntax
-``$<TARGET_OBJECTS:name>``.  This is a
-:manual:`generator expression <cmake-generator-expressions(7)>` that can be
-used to supply the ``OBJECT`` library content to other targets:
+``OBJECT``\ 库类型定义了由编译给定源文件产生的目标文件的非归档集合。通过使用语法\ ``$<TARGET_OBJECTS:name>``，对象文件集合可以用作其他目标的源输入。这是一个\ :manual:`generator expression <cmake-generator-expressions(7)>`，可以用来向其他目标提供\ ``OBJECT``\ 库内容：
 
 .. code-block:: cmake
 
@@ -127,10 +93,9 @@ used to supply the ``OBJECT`` library content to other targets:
 
   add_executable(test_exe $<TARGET_OBJECTS:archive> test.cpp)
 
-The link (or archiving) step of those other targets will use the object
-files collection in addition to those from their own sources.
+这些其他目标的链接（或归档）步骤将使用对象文件集合以及它们自己的源文件。
 
-Alternatively, object libraries may be linked into other targets:
+或者，对象库可以链接到其他目标：
 
 .. code-block:: cmake
 
@@ -142,16 +107,9 @@ Alternatively, object libraries may be linked into other targets:
   add_executable(test_exe test.cpp)
   target_link_libraries(test_exe archive)
 
-The link (or archiving) step of those other targets will use the object
-files from ``OBJECT`` libraries that are *directly* linked.  Additionally,
-usage requirements of the ``OBJECT`` libraries will be honored when compiling
-sources in those other targets.  Furthermore, those usage requirements
-will propagate transitively to dependents of those other targets.
+其他目标的链接（或归档）步骤将\ *直接*\ 链接的\ ``OBJECT``\ 库中的对象文件。此外，当在其他目标中编译源代码时，``OBJECT``\ 库的使用需求将得到满足。此外，这些使用需求将传递到那些其他目标的依赖项。
 
-Object libraries may not be used as the ``TARGET`` in a use of the
-:command:`add_custom_command(TARGET)` command signature.  However,
-the list of objects can be used by :command:`add_custom_command(OUTPUT)`
-or :command:`file(GENERATE)` by using ``$<TARGET_OBJECTS:objlib>``.
+在使用\ :command:`add_custom_command(TARGET)`\ 命令签名时，对象库不能用作\ ``TARGET``。但是，对象列表可以通过\ :command:`add_custom_command(OUTPUT)`\ 或\ :command:`file(GENERATE)`\ 使用\ ``$<TARGET_OBJECTS:objlib>``。
 
 构建规范和使用要求
 ==========================================
