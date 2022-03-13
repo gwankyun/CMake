@@ -16,6 +16,7 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmPolicies.h"
+#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
@@ -36,6 +37,14 @@ auto const FileSetArgsParser = cmArgumentParser<FileSetArgs>()
                                  .Bind("FILE_SET"_s, &FileSetArgs::FileSet)
                                  .Bind("BASE_DIRS"_s, &FileSetArgs::BaseDirs)
                                  .Bind("FILES"_s, &FileSetArgs::Files);
+
+struct FileSetsArgs
+{
+  std::vector<std::vector<std::string>> FileSets;
+};
+
+auto const FileSetsArgsParser =
+  cmArgumentParser<FileSetsArgs>().Bind("FILE_SET"_s, &FileSetsArgs::FileSets);
 
 class TargetSourcesImpl : public cmTargetPropCommandBase
 {
@@ -78,7 +87,7 @@ private:
                                 bool prepend, bool system) override
   {
     if (!content.empty() && content.front() == "FILE_SET"_s) {
-      return this->HandleFileSetMode(scope, content, prepend, system);
+      return this->HandleFileSetMode(scope, content);
     }
     return this->cmTargetPropCommandBase::PopulateTargetProperties(
       scope, content, prepend, system);
@@ -104,8 +113,9 @@ private:
     IsInterface isInterfaceContent, CheckCMP0076 checkCmp0076);
 
   bool HandleFileSetMode(const std::string& scope,
-                         const std::vector<std::string>& content, bool prepend,
-                         bool system);
+                         const std::vector<std::string>& content);
+  bool HandleOneFileSet(const std::string& scope,
+                        const std::vector<std::string>& content);
 };
 
 std::vector<std::string> TargetSourcesImpl::ConvertToAbsoluteContent(
@@ -185,8 +195,22 @@ std::vector<std::string> TargetSourcesImpl::ConvertToAbsoluteContent(
 }
 
 bool TargetSourcesImpl::HandleFileSetMode(
-  const std::string& scope, const std::vector<std::string>& content,
-  bool /*prepend*/, bool /*system*/)
+  const std::string& scope, const std::vector<std::string>& content)
+{
+  auto args = FileSetsArgsParser.Parse(content);
+
+  for (auto& argList : args.FileSets) {
+    argList.emplace(argList.begin(), "FILE_SET"_s);
+    if (!this->HandleOneFileSet(scope, argList)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool TargetSourcesImpl::HandleOneFileSet(
+  const std::string& scope, const std::vector<std::string>& content)
 {
   std::vector<std::string> unparsed;
   auto args = FileSetArgsParser.Parse(content, &unparsed);
@@ -202,6 +226,11 @@ bool TargetSourcesImpl::HandleFileSetMode(
     return false;
   }
 
+  if (this->Target->GetType() == cmStateEnums::UTILITY) {
+    this->SetError("FILE_SETs may not be added to custom targets");
+    return false;
+  }
+
   bool const isDefault = args.Type == args.FileSet ||
     (args.Type.empty() && args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z');
   std::string type = isDefault ? args.FileSet : args.Type;
@@ -209,9 +238,10 @@ bool TargetSourcesImpl::HandleFileSetMode(
   auto fileSet = this->Target->GetOrCreateFileSet(args.FileSet, type);
   if (fileSet.second) {
     if (!isDefault) {
-      if (args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z') {
-        this->SetError(
-          "Non-default file set name must not start with a capital letter");
+      if (!cmFileSet::IsValidName(args.FileSet)) {
+        this->SetError("Non-default file set name must contain only letters, "
+                       "numbers, and underscores, and must not start with a "
+                       "capital letter or underscore");
         return false;
       }
     }

@@ -7,28 +7,29 @@ cmake-presets(7)
 
    .. contents::
 
-引言
+Introduction
 ============
 
-CMake用户经常面临的一个问题是与他人共享设置，以获取配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个文件，``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``，允许用户指定常用配置选项并与他人共享。CMake还支持包含在\ ``include``\ 字段中的文件。
+One problem that CMake users often face is sharing settings with other people
+for common ways to configure a project. This may be done to support CI builds,
+or for users who frequently use the same build. CMake supports two main files,
+``CMakePresets.json`` and ``CMakeUserPresets.json``, that allow users to
+specify common configure options and share them with others. CMake also
+supports files included with the ``include`` field.
 
-``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 位于项目的根目录。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了\ ``--preset``，则至少必须有一个）。``CMakePresets.json``\ 的目的是保存项目范围的构建，而\ ``CMakeUserPresets.json``\ 的目的是为开发人员保存他们自己的本地构建。``CMakePresets.json``\ 可能会被签入版本控制系统，而\ ``CMakeUserPresets.json``\ 则不应被签入。例如，如果一个项目正在使用Git, ``CMakePresets.json``\ 可能会被跟踪，``CMakeUserPresets.json``\ 应该被添加到\ ``.gitignore``\ 中。
+``CMakePresets.json`` and ``CMakeUserPresets.json`` live in the project's root
+directory. They both have exactly the same format, and both are optional
+(though at least one must be present if ``--preset`` is specified).
+``CMakePresets.json`` is meant to specify project-wide build details, while
+``CMakeUserPresets.json`` is meant for developers to specify their own local
+build details.
 
-``CMakePresets.json`` and ``CMakeUserPresets.json`` can include other files
-with the ``include`` field in file version ``4`` and later. Files included by
-these files can also include other files. If a preset file contains presets
-that inherit from presets in another file, the file must include the other file
-either directly or indirectly. Include cycles are not allowed among files (if
-``a.json`` includes ``b.json``, ``b.json`` cannot include ``a.json``). However,
-a file may be included multiple times from the same file or from different
-files. If ``CMakePresets.json`` and ``CMakeUserPresets.json`` are both present,
-``CMakeUserPresets.json`` implicitly includes ``CMakePresets.json``, even with
-no ``include`` field, in all versions of the format. Files directly or
-indirectly included from ``CMakePresets.json`` should be guaranteed to be
-provided by the project. ``CMakeUserPresets.json`` may include files from
-anywhere.
+``CMakePresets.json`` may be checked into a version control system, and
+``CMakeUserPresets.json`` should NOT be checked in. For example, if a
+project is using Git, ``CMakePresets.json`` may be tracked, and
+``CMakeUserPresets.json`` should be added to the ``.gitignore``.
 
-格式
+Format
 ======
 
 The files are a JSON document with an object as the root:
@@ -60,6 +61,13 @@ The root object recognizes the following fields:
 
     An optional integer representing the patch version.
 
+``include``
+
+  An optional array of strings representing files to include. If the filenames
+  are not absolute, they are considered relative to the current file.
+  This is allowed in preset files specifying version ``4`` or above.
+  See `Includes`_ for discussion of the constraints on included files.
+
 ``vendor``
 
   An optional map containing vendor-specific information. CMake does not
@@ -71,26 +79,40 @@ The root object recognizes the following fields:
 
 ``configurePresets``
 
-  An optional array of `配置预设`_ objects.
+  An optional array of `Configure Preset`_ objects.
   This is allowed in preset files specifying version ``1`` or above.
 
 ``buildPresets``
 
-  An optional array of `构建预设`_ objects.
+  An optional array of `Build Preset`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
 ``testPresets``
 
-  An optional array of `测试预设`_ objects.
+  An optional array of `Test Preset`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
-``include``
+Includes
+^^^^^^^^
 
-  An optional array of strings representing files to include. If the filenames
-  are not absolute, they are considered relative to the current file.
-  This is allowed in preset files specifying version ``4`` or above.
+``CMakePresets.json`` and ``CMakeUserPresets.json`` can include other files
+with the ``include`` field in file version ``4`` and later. Files included
+by these files can also include other files. If ``CMakePresets.json`` and
+``CMakeUserPresets.json`` are both present, ``CMakeUserPresets.json``
+implicitly includes ``CMakePresets.json``, even with no ``include`` field,
+in all versions of the format.
 
-配置预设
+If a preset file contains presets that inherit from presets in another file,
+the file must include the other file either directly or indirectly.
+Include cycles are not allowed among files. If ``a.json`` includes
+``b.json``, ``b.json`` cannot include ``a.json``. However, a file may be
+included multiple times from the same file or from different files.
+
+Files directly or indirectly included from ``CMakePresets.json`` should be
+guaranteed to be provided by the project. ``CMakeUserPresets.json`` may
+include files from anywhere.
+
+Configure Preset
 ^^^^^^^^^^^^^^^^
 
 Each entry of the ``configurePresets`` array is a JSON object
@@ -116,20 +138,24 @@ that may contain the following fields:
 ``inherits``
 
   An optional array of strings representing the names of presets to inherit
-  from. The preset will inherit all of the fields from the ``inherits``
+  from. This field can also be a string, which is equivalent to an array
+  containing one string.
+
+  The preset will inherit all of the fields from the ``inherits``
   presets by default (except ``name``, ``hidden``, ``inherits``,
   ``description``, and ``displayName``), but can override them as
   desired. If multiple ``inherits`` presets provide conflicting values for
   the same field, the earlier preset in the ``inherits`` list will be
-  preferred. Presets in ``CMakePresets.json`` may not inherit from presets
-  in ``CMakeUserPresets.json``.
+  preferred.
 
-  This field can also be a string, which is equivalent to an array
-  containing one string.
+  A preset can only inherit from another preset that is defined in the
+  same file or in one of the files it includes (directly or indirectly).
+  Presets in ``CMakePresets.json`` may not inherit from presets in
+  ``CMakeUserPresets.json``.
 
 ``condition``
 
-  An optional `条件`_ object. This is allowed in preset files specifying
+  An optional `Condition`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -193,7 +219,7 @@ that may contain the following fields:
 ``toolchainFile``
 
   An optional string representing the path to the toolchain file.
-  This field supports `宏扩展`_. If a relative path is specified,
+  This field supports `macro expansion`_. If a relative path is specified,
   it is calculated relative to the build directory, and if not found,
   relative to the source directory. This field takes precedence over any
   :variable:`CMAKE_TOOLCHAIN_FILE` value. It is allowed in preset files
@@ -202,7 +228,7 @@ that may contain the following fields:
 ``binaryDir``
 
   An optional string representing the path to the output binary directory.
-  This field supports `宏扩展`_. If a relative path is specified,
+  This field supports `macro expansion`_. If a relative path is specified,
   it is calculated relative to the source directory. If ``binaryDir`` is not
   specified, it must be inherited from the ``inherits`` preset (unless this
   preset is ``hidden``). In version ``3`` or above, this field may be
@@ -211,7 +237,7 @@ that may contain the following fields:
 ``installDir``
 
   An optional string representing the path to the installation directory.
-  This field supports `宏扩展`_. If a relative path is specified,
+  This field supports `macro expansion`_. If a relative path is specified,
   it is calculated relative to the source directory. This is allowed in
   preset files specifying version ``3`` or above.
 
@@ -227,7 +253,7 @@ that may contain the following fields:
   may not be an empty string), and the value is either ``null``, a boolean
   (which is equivalent to a value of ``"TRUE"`` or ``"FALSE"`` and a type
   of ``BOOL``), a string representing the value of the variable (which
-  supports `宏扩展`_), or an object with the following fields:
+  supports `macro expansion`_), or an object with the following fields:
 
   ``type``
 
@@ -237,7 +263,7 @@ that may contain the following fields:
 
     A required string or boolean representing the value of the variable.
     A boolean is equivalent to ``"TRUE"`` or ``"FALSE"``. This field
-    supports `宏扩展`_.
+    supports `macro expansion`_.
 
   Cache variables are inherited through the ``inherits`` field, and the
   preset's variables will be the union of its own ``cacheVariables`` and
@@ -252,7 +278,7 @@ that may contain the following fields:
   (which may not be an empty string), and the value is either ``null`` or
   a string representing the value of the variable. Each variable is set
   regardless of whether or not a value was given to it by the process's
-  environment. This field supports `宏扩展`_, and environment
+  environment. This field supports `macro expansion`_, and environment
   variables in this map may reference each other, and may be listed in any
   order, as long as such references do not cause a cycle (for example,
   if ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
@@ -333,7 +359,7 @@ that may contain the following fields:
     An optional boolean. Setting this to ``true`` is equivalent to passing
     ``--debug-find`` on the command line.
 
-构建预设
+Build Preset
 ^^^^^^^^^^^^
 
 Each entry of the ``buildPresets`` array is a JSON object
@@ -358,21 +384,25 @@ that may contain the following fields:
 
 ``inherits``
 
-  An optional array of strings representing the names of presets to
-  inherit from. The preset will inherit all of the fields from the
+  An optional array of strings representing the names of presets to inherit
+  from. This field can also be a string, which is equivalent to an array
+  containing one string.
+
+  The preset will inherit all of the fields from the
   ``inherits`` presets by default (except ``name``, ``hidden``,
   ``inherits``, ``description``, and ``displayName``), but can override
   them as desired. If multiple ``inherits`` presets provide conflicting
   values for the same field, the earlier preset in the ``inherits`` list
-  will be preferred. Presets in ``CMakePresets.json`` may not inherit from
-  presets in ``CMakeUserPresets.json``.
+  will be preferred.
 
-  This field can also be a string, which is equivalent to an array
-  containing one string.
+  A preset can only inherit from another preset that is defined in the
+  same file or in one of the files it includes (directly or indirectly).
+  Presets in ``CMakePresets.json`` may not inherit from presets in
+  ``CMakeUserPresets.json``.
 
 ``condition``
 
-  An optional `条件`_ object. This is allowed in preset files specifying
+  An optional `Condition`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -507,7 +537,7 @@ that may contain the following fields:
   An optional array of strings. Equivalent to passing options after ``--``
   on the command line. The array values support macro expansion.
 
-测试预设
+Test Preset
 ^^^^^^^^^^^
 
 Each entry of the ``testPresets`` array is a JSON object
@@ -531,21 +561,25 @@ that may contain the following fields:
 
 ``inherits``
 
-  An optional array of strings representing the names of presets to
-  inherit from. The preset will inherit all of the fields from the
+  An optional array of strings representing the names of presets to inherit
+  from. This field can also be a string, which is equivalent to an array
+  containing one string.
+
+  The preset will inherit all of the fields from the
   ``inherits`` presets by default (except ``name``, ``hidden``,
   ``inherits``, ``description``, and ``displayName``), but can override
   them as desired. If multiple ``inherits`` presets provide conflicting
   values for the same field, the earlier preset in the ``inherits`` list
-  will be preferred. Presets in ``CMakePresets.json`` may not inherit from
-  presets in ``CMakeUserPresets.json``.
+  will be preferred.
 
-  This field can also be a string, which is equivalent to an array
-  containing one string.
+  A preset can only inherit from another preset that is defined in the
+  same file or in one of the files it includes (directly or indirectly).
+  Presets in ``CMakePresets.json`` may not inherit from presets in
+  ``CMakeUserPresets.json``.
 
 ``condition``
 
-  An optional `条件`_ object. This is allowed in preset files specifying
+  An optional `Condition`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -874,7 +908,7 @@ that may contain the following fields:
 
       Equivalent to passing ``--no-tests=ignore`` on the command line.
 
-条件
+Condition
 ^^^^^^^^^
 
 The ``condition`` field of a preset, allowed in preset files specifying version
@@ -971,7 +1005,7 @@ object, it has the following fields:
 
       A required condition object.
 
-宏扩展
+Macro Expansion
 ^^^^^^^^^^^^^^^
 
 As mentioned above, some fields support macro expansion. Macros are
@@ -991,7 +1025,8 @@ Recognized macros include:
 
 ``${sourceDir}``
 
-  Path to the project source directory.
+  Path to the project source directory (i.e. the same as
+  :variable:`CMAKE_SOURCE_DIR`).
 
 ``${sourceParentDir}``
 
@@ -1017,6 +1052,11 @@ Recognized macros include:
   The name of the host operating system. Contains the same value as
   :variable:`CMAKE_HOST_SYSTEM_NAME`. This is allowed in preset files
   specifying version ``3`` or above.
+
+``${fileDir}``
+
+  Path to the directory containing the preset file which contains the macro.
+  This is allowed in preset files specifying version ``4`` or above.
 
 ``${dollar}``
 
@@ -1058,7 +1098,7 @@ Recognized macros include:
   identifier prefix, followed by a ``.``, followed by the macro name. For
   example, the Example IDE could have ``$vendor{xide.ideInstallDir}``.
 
-模式
+Schema
 ======
 
 :download:`This file </manual/presets/schema.json>` provides a machine-readable
