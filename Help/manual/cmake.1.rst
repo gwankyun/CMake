@@ -100,6 +100,33 @@ cmake(1)
 
 在所有情况下，``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
 
+The above styles for specifying the source and build trees may be mixed.
+Paths specified with ``-S`` or ``-B`` are always classified as source or
+build trees, respectively.  Paths specified with plain arguments are
+classified based on their content and the types of paths given earlier.
+If only one type of path is given, the current working directory (cwd)
+is used for the other.  For example:
+
+============================== ============ ===========
+ Command Line                   Source Dir   Build Dir
+============================== ============ ===========
+ ``cmake src``                  ``src``      `cwd`
+ ``cmake build`` (existing)     `loaded`     ``build``
+ ``cmake -S src``               ``src``      `cwd`
+ ``cmake -S src build``         ``src``      ``build``
+ ``cmake -S src -B build``      ``src``      ``build``
+ ``cmake -B build``             `cwd`        ``build``
+ ``cmake -B build src``         ``src``      ``build``
+ ``cmake -B build -S src``      ``src``      ``build``
+============================== ============ ===========
+
+.. versionchanged:: 3.23
+
+  CMake warns when multiple source paths are specified.  This has never
+  been officially documented or supported, but older versions accidentally
+  accepted multiple source paths and used the last path specified.
+  Avoid passing multiple source path arguments.
+
 在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\ :generator:`Unix Makefiles`\ 生成器后，可以直接运行\ ``make``：
 
   .. code-block:: console
