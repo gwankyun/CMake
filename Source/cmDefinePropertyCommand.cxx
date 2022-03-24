@@ -91,26 +91,26 @@ bool cmDefinePropertyCommand(std::vector<std::string> const& args,
                                PropertyName, "\""));
       return false;
     }
-    if (initializeFromVariable == PropertyName) {
-      status.SetError(cmStrCat(
-        "Variable name must have a non-empty prefix before property name \"",
-        PropertyName, "\""));
+    if (PropertyName.find('_') == std::string::npos) {
+      status.SetError(cmStrCat("Property name \"", PropertyName,
+                               "\" defined with INITIALIZE_FROM_VARIABLE does "
+                               "not contain underscore"));
       return false;
     }
-  }
 
-  // Make sure the variable is not reserved.
-  static constexpr const char* reservedPrefixes[] = {
-    "CMAKE_",
-    "_CMAKE_",
-  };
-  if (std::any_of(std::begin(reservedPrefixes), std::end(reservedPrefixes),
-                  [&initializeFromVariable](const char* prefix) {
-                    return cmHasPrefix(initializeFromVariable, prefix);
-                  })) {
-    status.SetError(
-      cmStrCat("variable name \"", initializeFromVariable, "\" is reserved"));
-    return false;
+    // Make sure the variable is not reserved.
+    static constexpr const char* reservedPrefixes[] = {
+      "CMAKE_",
+      "_CMAKE_",
+    };
+    if (std::any_of(std::begin(reservedPrefixes), std::end(reservedPrefixes),
+                    [&initializeFromVariable](const char* prefix) {
+                      return cmHasPrefix(initializeFromVariable, prefix);
+                    })) {
+      status.SetError(cmStrCat("variable name \"", initializeFromVariable,
+                               "\" is reserved"));
+      return false;
+    }
   }
 
   // Actually define the property.
