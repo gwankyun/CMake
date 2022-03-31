@@ -114,19 +114,9 @@ cmake-buildsystem(7)
 构建规范和使用要求
 ==========================================
 
-The :command:`target_include_directories`, :command:`target_compile_definitions`
-and :command:`target_compile_options` commands specify the build specifications
-and the usage requirements of binary targets.  The commands populate the
-:prop_tgt:`INCLUDE_DIRECTORIES`, :prop_tgt:`COMPILE_DEFINITIONS` and
-:prop_tgt:`COMPILE_OPTIONS` target properties respectively, and/or the
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`, :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`
-and :prop_tgt:`INTERFACE_COMPILE_OPTIONS` target properties.
+:command:`target_include_directories`、:command:`target_compile_definitions`\ 和\ :command:`target_compile_options`\ 命令指定二进制目标的构建规范和使用要求。这些命令分别填充了\ :prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\ 和\ :prop_tgt:`COMPILE_OPTIONS`\ 目标属性，可能还有\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标属性。
 
-Each of the commands has a ``PRIVATE``, ``PUBLIC`` and ``INTERFACE`` mode.  The
-``PRIVATE`` mode populates only the non-``INTERFACE_`` variant of the target
-property and the ``INTERFACE`` mode populates only the ``INTERFACE_`` variants.
-The ``PUBLIC`` mode populates both variants of the respective target property.
-Each command may be invoked with multiple uses of each keyword:
+每个命令都有\ ``PRIVATE``、``PUBLIC``\ 和\ ``INTERFACE``\ 模式。``PRIVATE``\ 模式只填充目标属性的非\ ``INTERFACE_``\ 变量，``INTERFACE``\ 模式只填充\ ``INTERFACE_``\ 变量。``PUBLIC``\ 模式填充各自目标属性的各个变量。每个命令一次可以调用多个关键字：
 
 .. code-block:: cmake
 
@@ -135,47 +125,22 @@ Each command may be invoked with multiple uses of each keyword:
     INTERFACE USING_ARCHIVE_LIB
   )
 
-Note that usage requirements are not designed as a way to make downstreams
-use particular :prop_tgt:`COMPILE_OPTIONS` or
-:prop_tgt:`COMPILE_DEFINITIONS` etc for convenience only.  The contents of
-the properties must be **requirements**, not merely recommendations or
-convenience.
+注意，使用要求并不是为了方便而让下游使用特定的\ :prop_tgt:`COMPILE_OPTIONS`\ 或\ :prop_tgt:`COMPILE_OPTIONS`\ 等。属性的内容必须是\ **要求**，而不仅仅是建议或方便。
 
-See the :ref:`Creating Relocatable Packages` section of the
-:manual:`cmake-packages(7)` manual for discussion of additional care
-that must be taken when specifying usage requirements while creating
-packages for redistribution.
+请参阅\ :manual:`cmake-packages(7)`\ 手册的\ :ref:`Creating Relocatable Packages`\ 一节，讨论在为重新分发创建包时指定使用要求时必须注意的其他事项。
 
 目标属性
 -----------------
 
-The contents of the :prop_tgt:`INCLUDE_DIRECTORIES`,
-:prop_tgt:`COMPILE_DEFINITIONS` and :prop_tgt:`COMPILE_OPTIONS` target
-properties are used appropriately when compiling the source files of a
-binary target.
+在编译二进制目标的源文件时，:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\ 和\ :prop_tgt:`COMPILE_OPTIONS`\ 目标属性的内容会被适当地使用。
 
-Entries in the :prop_tgt:`INCLUDE_DIRECTORIES` are added to the compile line
-with ``-I`` or ``-isystem`` prefixes and in the order of appearance in the
-property value.
+:prop_tgt:`INCLUDE_DIRECTORIES`\ 中的条目用\ ``-I``\ 或\ ``-isystem``\ 前缀按照属性值出现的顺序添加到编译行。
 
-Entries in the :prop_tgt:`COMPILE_DEFINITIONS` are prefixed with ``-D`` or
-``/D`` and added to the compile line in an unspecified order.  The
-:prop_tgt:`DEFINE_SYMBOL` target property is also added as a compile
-definition as a special convenience case for ``SHARED`` and ``MODULE``
-library targets.
+:prop_tgt:`COMPILE_DEFINITIONS`\ 中的条目以\ ``-D``\ 或\ ``/D``\ 作为前缀，并以未指定的顺序添加到编译行中。:prop_tgt:`DEFINE_SYMBOL`\ 目标属性也被添加为一个编译定义，作为\ ``SHARED``\ 库和 ``MODULE``\ 库目标的便捷特例。
 
-Entries in the :prop_tgt:`COMPILE_OPTIONS` are escaped for the shell and added
-in the order of appearance in the property value.  Several compile options have
-special separate handling, such as :prop_tgt:`POSITION_INDEPENDENT_CODE`.
+:prop_tgt:`COMPILE_OPTIONS`\ 中的条目被转义为shell，并按照属性值中出现的顺序添加。一些编译选项有特殊的独立处理，如\ :prop_tgt:`POSITION_INDEPENDENT_CODE`。
 
-The contents of the :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` and
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS` target properties are
-*Usage Requirements* -- they specify content which consumers
-must use to correctly compile and link with the target they appear on.
-For any binary target, the contents of each ``INTERFACE_`` property on
-each target specified in a :command:`target_link_libraries` command is
-consumed:
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标属性的内容是\ *使用要求*\ ——它们指定消费者必须使用哪些内容来正确编译和链接它们所出现的目标。对于任何二进制目标，在\ :command:`target_link_libraries`\ 命令中指定的每个目标上的每个\ ``INTERFACE_``\ 属性的内容都会被消耗：
 
 .. code-block:: cmake
 
@@ -195,15 +160,7 @@ consumed:
   # executable sources are compiled with -DUSING_ARCHIVE_LIB.
   target_link_libraries(consumer archive)
 
-Because it is common to require that the source directory and corresponding
-build directory are added to the :prop_tgt:`INCLUDE_DIRECTORIES`, the
-:variable:`CMAKE_INCLUDE_CURRENT_DIR` variable can be enabled to conveniently
-add the corresponding directories to the :prop_tgt:`INCLUDE_DIRECTORIES` of
-all targets.  The variable :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`
-can be enabled to add the corresponding directories to the
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` of all targets.  This makes use of
-targets in multiple different directories convenient through use of the
-:command:`target_link_libraries` command.
+因为通常需要将源目录和相应的构建目录添加到\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中，所以可以启用\ :variable:`CMAKE_INCLUDE_CURRENT_DIR`\ 变量，方便地将相应的目录添加到所有目标的\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中。可以启用 \ :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ 变量，将相应的目录添加到所有目标的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 中。通过使用\ :command:`target_link_libraries`\ 命令，可以方便地使用多个不同目录中的目标。
 
 
 .. _`Target Usage Requirements`:
