@@ -23,7 +23,7 @@ CMake直接支持\ `配置文件包`_\ 和\ `Find模块包`_\ 这两种形式的
   find_package(Qt5Core 5.1.0 REQUIRED) # Qt provides a Qt5 package config file.
   find_package(LibXml2 REQUIRED) # Use pkg-config via the LibXml2 find-module
 
-如果已知上流提供了一个包配置文件，并且只应该使用这个包配置文件，则\ ``CONFIG``\ 关键字可以传递给\ :command:`find_package`：
+如果已知上游提供了一个包配置文件，并且只应该使用这个包配置文件，则\ ``CONFIG``\ 关键字可以传递给\ :command:`find_package`：
 
 .. code-block:: cmake
 
@@ -200,7 +200,7 @@ find模块是一个包含一组规则的文件，用于查找依赖项所需的�
 创建包
 =================
 
-通常，上游依赖于CMake本身，可以使用一些CMake工具来创建包文件。譬如一个提供单个共享库的上流：
+通常，上游依赖于CMake本身，可以使用一些CMake工具来创建包文件。譬如一个提供单个共享库的游：
 
 .. code-block:: cmake
 

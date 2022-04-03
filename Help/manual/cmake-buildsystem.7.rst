@@ -165,12 +165,10 @@ cmake-buildsystem(7)
 
 .. _`Target Usage Requirements`:
 
-传递使用要求
+传播使用要求
 -----------------------------
 
-The usage requirements of a target can transitively propagate to dependents.
-The :command:`target_link_libraries` command has ``PRIVATE``,
-``INTERFACE`` and ``PUBLIC`` keywords to control the propagation.
+目标的使用要求可以传递到依赖项。:command:`target_link_libraries`\ 命令通过\ ``PRIVATE``、``INTERFACE``\ 和\ ``PUBLIC``\ 关键字来控制传播。
 
 .. code-block:: cmake
 
@@ -190,20 +188,9 @@ The :command:`target_link_libraries` command has ``PRIVATE``,
   # consumer is compiled with -DUSING_ARCHIVE_LIB
   target_link_libraries(consumer archiveExtras)
 
-Because ``archive`` is a ``PUBLIC`` dependency of ``archiveExtras``, the
-usage requirements of it are propagated to ``consumer`` too.  Because
-``serialization`` is a ``PRIVATE`` dependency of ``archiveExtras``, the usage
-requirements of it are not propagated to ``consumer``.
+因为\ ``archive``\ 是\ ``archiveExtras``\ 的\ ``PUBLIC``\ 依赖项，所以它的使用要求也会传播给\ ``consumer``。因为\ ``serialization``\ 是\ ``archiveExtras``\ 的\ ``PRIVATE``\ 依赖项，所以它的使用要求不会传播到\ ``consumer``。
 
-Generally, a dependency should be specified in a use of
-:command:`target_link_libraries` with the ``PRIVATE`` keyword if it is used by
-only the implementation of a library, and not in the header files.  If a
-dependency is additionally used in the header files of a library (e.g. for
-class inheritance), then it should be specified as a ``PUBLIC`` dependency.
-A dependency which is not used by the implementation of a library, but only by
-its headers should be specified as an ``INTERFACE`` dependency.  The
-:command:`target_link_libraries` command may be invoked with multiple uses of
-each keyword:
+通常，如果依赖项只在库的实现，而不是头文件中使用，则应该使用\ :command:`target_link_libraries`\ 和\ ``PRIVATE``\ 关键字指定依赖项。如果一个依赖在库的头文件中被额外使用（例如用于类继承），那么它应该被指定为\ ``PUBLIC``\ 依赖。一个库的实现中没有使用的依赖项，只有它的头文件才使用它，则应该被指定为一个\ ``INTERFACE``\ 依赖项。:command:`target_link_libraries`\ 命令可以对每个关键字进行多次调用：
 
 .. code-block:: cmake
 
@@ -212,19 +199,9 @@ each keyword:
     PRIVATE serialization
   )
 
-Usage requirements are propagated by reading the ``INTERFACE_`` variants
-of target properties from dependencies and appending the values to the
-non-``INTERFACE_`` variants of the operand.  For example, the
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` of dependencies is read and
-appended to the :prop_tgt:`INCLUDE_DIRECTORIES` of the operand.  In cases
-where order is relevant and maintained, and the order resulting from the
-:command:`target_link_libraries` calls does not allow correct compilation,
-use of an appropriate command to set the property directly may update the
-order.
+使用要求是通过从依赖项中读取目标属性的\ ``INTERFACE_``\ 变量并将值附加到操作数的非\ ``INTERFACE_``\ 变量来传播的。例如，读取依赖关系的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 并将其附加到操作数的\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中。如果顺序是相关的且被维护，并且\ :command:`target_link_libraries`\ 调用产生的顺序不允许正确的编译，则可以使用适当的命令直接设置属性来更新顺序。
 
-For example, if the linked libraries for a target must be specified
-in the order ``lib1`` ``lib2`` ``lib3`` , but the include directories must
-be specified in the order ``lib3`` ``lib1`` ``lib2``:
+例如，如果一个目标的链接库必须按照\ ``lib1`` ``lib2`` ``lib3``\ 的顺序指定，但是包含目录必须按照\ ``lib3`` ``lib1`` ``lib2``\ 的顺序指定：
 
 .. code-block:: cmake
 
@@ -232,9 +209,7 @@ be specified in the order ``lib3`` ``lib1`` ``lib2``:
   target_include_directories(myExe
     PRIVATE $<TARGET_PROPERTY:lib3,INTERFACE_INCLUDE_DIRECTORIES>)
 
-Note that care must be taken when specifying usage requirements for targets
-which will be exported for installation using the :command:`install(EXPORT)`
-command.  See :ref:`Creating Packages` for more.
+请注意，在指定将使用\ :command:`install(EXPORT)`\ 命令导出以进行安装的目标的使用要求时，必须格外小心。有关更多信息，请参阅\ :ref:`Creating Packages`。
 
 .. _`Compatible Interface Properties`:
 

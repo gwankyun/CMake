@@ -172,7 +172,7 @@
   :start-after: # install the target and create export-set
   :end-before: # install header file
 
-这里，``EXPORT``\ 选项告诉CMake创建一个名为\ ``MathFunctionsTargets``\ 的导出。生成的\ :prop_tgt:`IMPORTED`\ 目标设置了适当的属性来定义它们的\ :ref:`usage requirements <Target Usage Requirements>`，例如\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和其他相关的内置\ ``INTERFACE_``\ 属性。在\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ 中列出的用户定义属性的\ ``INTERFACE``\ 变体和其他\ :ref:`Compatible Interface Properties`\ 也会传播到生成的\ :prop_tgt:`IMPORTED`\ 目标。例如，在本例中，:prop_tgt:`IMPORTED`\ 目标将使用\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 属性指定的目录填充其\ ``INCLUDES DESTINATION``\ 属性。由于给出了一个相对路径，它被视为相对于\ :variable:`CMAKE_INSTALL_PREFIX`。
+这里，``EXPORT``\ 选项告诉CMake创建一个名为\ ``MathFunctionsTargets``\ 的导出。生成的\ :prop_tgt:`IMPORTED`\ 目标设置了适当的属性来定义它们的\ :ref:`使用要求 <Target Usage Requirements>`，例如\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和其他相关的内置\ ``INTERFACE_``\ 属性。在\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ 中列出的用户定义属性的\ ``INTERFACE``\ 变体和其他\ :ref:`Compatible Interface Properties`\ 也会传播到生成的\ :prop_tgt:`IMPORTED`\ 目标。例如，在本例中，:prop_tgt:`IMPORTED`\ 目标将使用\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 属性指定的目录填充其\ ``INCLUDES DESTINATION``\ 属性。由于给出了一个相对路径，它被视为相对于\ :variable:`CMAKE_INSTALL_PREFIX`。
 
 注意，我们还\ *没有*\ 要求CMake安装导出。
 
