@@ -451,13 +451,9 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
  set(x a "b;c") # sets "x" to "a;b;c", not "a;b\;c"
 
-In general, lists do not support elements containing ``;`` characters.
-To avoid problems, consider the following advice:
+通常，列表不支持包含元素\ ``;``\ 字符。为避免出现问题，请考虑以下建议：
 
-* The interfaces of many CMake commands, variables, and properties accept
-  semicolon-separated lists.  Avoid passing lists with elements containing
-  semicolons to these interfaces unless they document either direct support
-  or some way to escape or encode semicolons.
+*  许多CMake命令、变量和属性的接口都接受分号分隔的列表。避免将包含分号元素的列表传递给这些接口，除非它们表明了对分号的直接支持，或者以某种方式转义或编码分号。
 
 * When constructing a list, substitute an otherwise-unused placeholder
   for ``;`` in elements when.  Then substitute ``;`` for the placeholder
