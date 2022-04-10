@@ -455,10 +455,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
 *  许多CMake命令、变量和属性的接口都接受分号分隔的列表。避免将包含分号元素的列表传递给这些接口，除非它们表明了对分号的直接支持，或者以某种方式转义或编码分号。
 
-* When constructing a list, substitute an otherwise-unused placeholder
-  for ``;`` in elements when.  Then substitute ``;`` for the placeholder
-  when processing list elements.
-  For example, the following code uses ``|`` in place of ``;`` characters:
+* 当构造一个列表时，用一个不使用的占位符替换元素中的\ ``;``。然后代替\ ``;``\ 用于处理列表元素时的占位符。例如，下面的代码使用\ ``|``\ 代替\ ``;``\ 字符：
 
   .. code-block:: cmake
 
@@ -468,23 +465,12 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
       # use "${entry}" normally
     endforeach()
 
-  The :module:`ExternalProject` module's ``LIST_SEPARATOR`` option is an
-  example of an interface built using this approach.
+  :module:`ExternalProject`\ 模块的\ ``LIST_SEPARATOR``\ 选项就是使用这种方法构建的接口的一个例子。
 
-* In lists of :manual:`generator expressions <cmake-generator-expressions(7)>`,
-  use the :genex:`$<SEMICOLON>` generator expression.
+* 在\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 列表中，使用\ :genex:`$<SEMICOLON>`\ 生成器表达式。
 
-* In command calls, use `Quoted Argument`_ syntax whenever possible.
-  The called command will receive the content of the argument with
-  semicolons preserved.  An `Unquoted Argument`_ will be split on
-  semicolons.
+* 在命令调用中，尽可能使用\ `Quoted Argument`_\ 语法。被调用的命令将接收保留分号的参数内容。`Unquoted Argument`_\ 将用分号分隔。
 
-* In :command:`function` implementations, avoid ``ARGV`` and ``ARGN``,
-  which do not distinguish semicolons in values from those separating values.
-  Instead, prefer using named positional arguments and the ``ARGC`` and
-  ``ARGV#`` variables.
-  When using :command:`cmake_parse_arguments` to parse arguments, prefer
-  its ``PARSE_ARGV`` signature, which uses the ``ARGV#`` variables.
+* 在\ :command:`function`\ 实现中，避免使用\ ``ARGV``\ 和\ ``ARGN``，它们不能区分值中的分号和分隔值。相反，最好使用命名位置参数和\ ``ARGC``\ 及\ ``ARGV#``\ 变量。当使用\ :command:`cmake_parse_arguments`\ 解析参数时，最好使用它的\ ``PARSE_ARGV``\ 签名，它使用\ ``ARGV#``\ 变量。
 
-  Note that this approach does not apply to :command:`macro` implementations
-  because they reference arguments using placeholders, not real variables.
+  注意，这种方法不适用于\ :command:`macro`\ 实现，因为它们引用的参数是占位符，而不是实际变量。
