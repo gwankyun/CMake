@@ -216,14 +216,7 @@ cmake-buildsystem(7)
 兼容的接口属性
 -------------------------------
 
-Some target properties are required to be compatible between a target and
-the interface of each dependency.  For example, the
-:prop_tgt:`POSITION_INDEPENDENT_CODE` target property may specify a
-boolean value of whether a target should be compiled as
-position-independent-code, which has platform-specific consequences.
-A target may also specify the usage requirement
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE` to communicate that
-consumers must be compiled as position-independent-code.
+一些目标属性需要在目标和每个依赖项的接口之间兼容。例如，:prop_tgt:`POSITION_INDEPENDENT_CODE`\ 目标属性可以指定一个布尔值，表示目标是否应该被编译为位置无关的代码，这具有特定于平台的结果。目标还可以指定使用要求\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\ 来通知消费者必须被编译为位置无关代码。
 
 .. code-block:: cmake
 
@@ -236,10 +229,7 @@ consumers must be compiled as position-independent-code.
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1)
 
-Here, both ``exe1`` and ``exe2`` will be compiled as position-independent-code.
-``lib1`` will also be compiled as position-independent-code because that is the
-default setting for ``SHARED`` libraries.  If dependencies have conflicting,
-non-compatible requirements :manual:`cmake(1)` issues a diagnostic:
+在这里，``exe1``\ 和\ ``exe2``\ 都将被编译为位置无关代码。``lib1``\ 也将被编译为位置无关代码，因为这是\ ``SHARED``\ 库的默认设置。如果依赖关系有冲突的、不兼容的要求，:manual:`cmake(1)`\ 会发出一个诊断：
 
 .. code-block:: cmake
 
@@ -256,32 +246,17 @@ non-compatible requirements :manual:`cmake(1)` issues a diagnostic:
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1 lib2)
 
-The ``lib1`` requirement ``INTERFACE_POSITION_INDEPENDENT_CODE`` is not
-"compatible" with the :prop_tgt:`POSITION_INDEPENDENT_CODE` property of
-the ``exe1`` target.  The library requires that consumers are built as
-position-independent-code, while the executable specifies to not built as
-position-independent-code, so a diagnostic is issued.
+``lib1``\ 要求\ ``INTERFACE_POSITION_INDEPENDENT_CODE``\ 与\ ``exe1``\ 目标的 \ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性不“兼容”。库要求将消费者构建为位置无关代码，而可执行文件指定不构建为位置无关代码，因此会发出诊断。
 
-The ``lib1`` and ``lib2`` requirements are not "compatible".  One of them
-requires that consumers are built as position-independent-code, while
-the other requires that consumers are not built as position-independent-code.
-Because ``exe2`` links to both and they are in conflict, a CMake error message
-is issued::
+``lib1``\ 和\ ``lib2``\ 要求不“兼容”。其中一个要求将消费者构建为与位置无关的代码，而另一个并未要求将消费者构建为与位置无关的代码。因为\ ``exe2``\ 链接到两者，并且它们是冲突的，所以会发出一个CMake错误消息： ::
 
   CMake Error: The INTERFACE_POSITION_INDEPENDENT_CODE property of "lib2" does
   not agree with the value of POSITION_INDEPENDENT_CODE already determined
   for "exe2".
 
-To be "compatible", the :prop_tgt:`POSITION_INDEPENDENT_CODE` property,
-if set must be either the same, in a boolean sense, as the
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE` property of all transitively
-specified dependencies on which that property is set.
+为了“兼容”，如果有设置\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性，在布尔意义上，必须与设置该属性的所有传递指定依赖项的\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\ 属性相同。
 
-This property of "compatible interface requirement" may be extended to other
-properties by specifying the property in the content of the
-:prop_tgt:`COMPATIBLE_INTERFACE_BOOL` target property.  Each specified property
-must be compatible between the consuming target and the corresponding property
-with an ``INTERFACE_`` prefix from each dependency:
+通过在\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ 目标属性的内容中指定该属性，“兼容接口要求”的属性可以扩展到其他属性。每个指定的属性必须在消费目标和对应的属性之间兼容，每个依赖都有一个\ ``INTERFACE_``\ 前缀：
 
 .. code-block:: cmake
 
@@ -300,13 +275,7 @@ with an ``INTERFACE_`` prefix from each dependency:
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1Version2 lib1Version3) # Diagnostic
 
-Non-boolean properties may also participate in "compatible interface"
-computations.  Properties specified in the
-:prop_tgt:`COMPATIBLE_INTERFACE_STRING`
-property must be either unspecified or compare to the same string among
-all transitively specified dependencies. This can be useful to ensure
-that multiple incompatible versions of a library are not linked together
-through transitive requirements of a target:
+非布尔属性也可以参与“兼容接口”计算。在\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ 属性中指定的属性必须是未指定的，或者与所有传递指定的依赖项中的相同字符串相比较。这有助于确保库的多个不兼容版本不会通过目标的传递要求链接在一起：
 
 .. code-block:: cmake
 
@@ -325,9 +294,7 @@ through transitive requirements of a target:
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1Version2 lib1Version3) # Diagnostic
 
-The :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX` target property specifies
-that content will be evaluated numerically and the maximum number among all
-specified will be calculated:
+:prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\ 目标属性指定内容将被数值计算，并且将计算所有指定的最大值：
 
 .. code-block:: cmake
 
@@ -348,15 +315,11 @@ specified will be calculated:
   # CONTAINER_SIZE_REQUIRED will be "1000"
   target_link_libraries(exe2 lib1Version2 lib1Version3)
 
-Similarly, the :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN` may be used to
-calculate the numeric minimum value for a property from dependencies.
+类似地，可以使用\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ 从依赖项中计算属性的最小数值。
 
-Each calculated "compatible" property value may be read in the consumer at
-generate-time using generator expressions.
+每个计算出的“兼容”属性值都可以在生成时使用生成器表达式从消费者中读取。
 
-Note that for each dependee, the set of properties specified in each
-compatible interface property must not intersect with the set specified in
-any of the other properties.
+请注意，对于每个被依赖者，每个兼容接口属性中指定的属性集不能与任何其他属性中指定的属性集相交。
 
 属性起源调试
 -------------------------
