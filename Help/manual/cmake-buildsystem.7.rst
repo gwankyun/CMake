@@ -324,13 +324,7 @@ cmake-buildsystem(7)
 属性起源调试
 -------------------------
 
-Because build specifications can be determined by dependencies, the lack of
-locality of code which creates a target and code which is responsible for
-setting build specifications may make the code more difficult to reason about.
-:manual:`cmake(1)` provides a debugging facility to print the origin of the
-contents of properties which may be determined by dependencies.  The properties
-which can be debugged are listed in the
-:variable:`CMAKE_DEBUG_TARGET_PROPERTIES` variable documentation:
+因为构建规范可以由依赖关系决定，创建目标和负责设置构建规范的代码缺乏本地化可能会使代码更难推理。:manual:`cmake(1)`\ 提供了一个调试工具，打印属性内容的来源，这可能是由依赖关系决定的。可以调试的属性列在\ :variable:`CMAKE_DEBUG_TARGET_PROPERTIES`\ 变量文档中：
 
 .. code-block:: cmake
 
@@ -343,23 +337,12 @@ which can be debugged are listed in the
   )
   add_executable(exe1 exe1.cpp)
 
-In the case of properties listed in :prop_tgt:`COMPATIBLE_INTERFACE_BOOL` or
-:prop_tgt:`COMPATIBLE_INTERFACE_STRING`, the debug output shows which target
-was responsible for setting the property, and which other dependencies also
-defined the property.  In the case of
-:prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX` and
-:prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`, the debug output shows the
-value of the property from each dependency, and whether the value determines
-the new extreme.
+对于在\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ 或\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ 中列出的属性，调试输出显示哪个目标负责设置该属性，以及哪个其他依赖项也定义了该属性。在\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\ 和\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ 的情况下，调试输出显示每个依赖项的属性值，以及该值是否决定了新的极值。
 
 使用生成器表达式构建规范
 ----------------------------------------------
 
-Build specifications may use
-:manual:`generator expressions <cmake-generator-expressions(7)>` containing
-content which may be conditional or known only at generate-time.  For example,
-the calculated "compatible" value of a property may be read with the
-``TARGET_PROPERTY`` expression:
+构建规范可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`，其中包含有条件的或在生成时才知道的内容。例如，计算出的属性“compatible”值可以通过\ ``TARGET_PROPERTY``\ 表达式读取：
 
 .. code-block:: cmake
 
@@ -376,13 +359,9 @@ the calculated "compatible" value of a property may be read with the
       CONTAINER_SIZE=$<TARGET_PROPERTY:CONTAINER_SIZE_REQUIRED>
   )
 
-In this case, the ``exe1`` source files will be compiled with
-``-DCONTAINER_SIZE=200``.
+在本例中，将使用\ ``-DCONTAINER_SIZE=200``\ 编译\ ``exe1``\ 源文件。
 
-The unary ``TARGET_PROPERTY`` generator expression and the ``TARGET_POLICY``
-generator expression are evaluated with the consuming target context.  This
-means that a usage requirement specification may be evaluated differently based
-on the consumer:
+一元\ ``TARGET_PROPERTY``\ 生成器表达式和\ ``TARGET_POLICY``\ 生成器表达式是在消费目标上下文中计算的。这意味着使用要求规范可以根据使用者的不同进行评估：
 
 .. code-block:: cmake
 
@@ -401,17 +380,9 @@ on the consumer:
   add_library(shared_lib shared_lib.cpp)
   target_link_libraries(shared_lib lib1)
 
-The ``exe1`` executable will be compiled with ``-DLIB1_WITH_EXE``, while the
-``shared_lib`` shared library will be compiled with ``-DLIB1_WITH_SHARED_LIB``
-and ``-DCONSUMER_CMP0041_NEW``, because policy :policy:`CMP0041` is
-``NEW`` at the point where the ``shared_lib`` target is created.
+``exe1``\ 可执行文件将使用\ ``-DLIB1_WITH_EXE``\ 编译，而\ ``shared_lib``\ 共享库将使用\ ``-DLIB1_WITH_SHARED_LIB``\ 和\ ``-DCONSUMER_CMP0041_NEW``\ 编译，因为策略\ :policy:`CMP0041`\ 在创建\ ``shared_lib``\ 目标的地方是\ ``NEW``。
 
-The ``BUILD_INTERFACE`` expression wraps requirements which are only used when
-consumed from a target in the same buildsystem, or when consumed from a target
-exported to the build directory using the :command:`export` command.  The
-``INSTALL_INTERFACE`` expression wraps requirements which are only used when
-consumed from a target which has been installed and exported with the
-:command:`install(EXPORT)` command:
+``BUILD_INTERFACE``\ 表达式包装的需求仅在从同一个构建系统中的目标消费时使用，或者在使用\ :command:`export`\ 命令从导出到构建目录的目标消费时使用。``INSTALL_INTERFACE``\ 表达式包装了只在使用\ :command:`install(EXPORT)`\ 命令安装并导出的目标时使用的需求：
 
 .. code-block:: cmake
 
@@ -428,11 +399,7 @@ consumed from a target which has been installed and exported with the
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 ClimbingStats)
 
-In this case, the ``exe1`` executable will be compiled with
-``-DClimbingStats_FROM_BUILD_LOCATION``.  The exporting commands generate
-:prop_tgt:`IMPORTED` targets with either the ``INSTALL_INTERFACE`` or the
-``BUILD_INTERFACE`` omitted, and the ``*_INTERFACE`` marker stripped away.
-A separate project consuming the ``ClimbingStats`` package would contain:
+在这种情况下，``exe1``\ 可执行文件将使用\ ``-DClimbingStats_FROM_BUILD_LOCATION``\ 进行编译。导出命令生成\ :prop_tgt:`IMPORTED`\ 目标，其中省略了\ ``INSTALL_INTERFACE``\ 或\ ``BUILD_INTERFACE``，去掉了\ ``*_INTERFACE``\ 标记。使用\ ``ClimbingStats``\ 包的一个单独项目将包含：
 
 .. code-block:: cmake
 
@@ -441,11 +408,7 @@ A separate project consuming the ``ClimbingStats`` package would contain:
   add_executable(Downstream main.cpp)
   target_link_libraries(Downstream Upstream::ClimbingStats)
 
-Depending on whether the ``ClimbingStats`` package was used from the build
-location or the install location, the ``Downstream`` target would be compiled
-with either ``-DClimbingStats_FROM_BUILD_LOCATION`` or
-``-DClimbingStats_FROM_INSTALL_LOCATION``.  For more about packages and
-exporting see the :manual:`cmake-packages(7)` manual.
+``Downstream``\ 目标将使用\ ``-DClimbingStats_FROM_BUILD_LOCATION``\ 或\ ``-DClimbingStats_FROM_INSTALL_LOCATION``\ 编译，这取决于\ ``ClimbingStats``\ 包是从构建位置还是安装位置使用的。有关包和导出的更多信息，请参阅\ :manual:`cmake-packages(7)`\ 手册。
 
 .. _`Include Directories and Usage Requirements`:
 
