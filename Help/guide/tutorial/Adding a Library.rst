@@ -12,7 +12,7 @@
   :name: MathFunctions/CMakeLists.txt
   :language: cmake
 
-为了使用这个新库，我们将在顶层的\ ``CMakeLists.txt``\ 文件中添加一个\ :command:`add_subdirectory`\ 调用，以便构建这个库。我们将新库添加到可执行文件中，并将\ ``MathFunctions``\ 作为包含目录添加，以便能够找到\ ``mysqrt.h``\ 头文件。顶层\ ``CMakeLists.txt``\ 文件的最后几行现在应该是这样的：
+为了使用这个新库，我们将在顶层的\ ``CMakeLists.txt``\ 文件中添加一个\ :command:`add_subdirectory`\ 调用，以便构建这个库。我们将新库添加到可执行文件中，并将\ ``MathFunctions``\ 作为包含目录添加，以便能够找到\ ``MathFunctions.h``\ 头文件。顶层\ ``CMakeLists.txt``\ 文件的最后几行现在应该是这样的：
 
 .. code-block:: cmake
         :caption: CMakeLists.txt

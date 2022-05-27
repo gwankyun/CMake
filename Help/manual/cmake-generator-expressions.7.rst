@@ -149,6 +149,8 @@ cmake-generator-expressions(7)
 
 .. genex:: $<HIP_COMPILER_ID:compiler_ids>
 
+  .. versionadded:: 3.21
+
   其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果HIP编译器的CMake编译器标识匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<ISPC_COMPILER_ID:compiler_ids>
@@ -188,6 +190,8 @@ cmake-generator-expressions(7)
   如果Fortran编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<HIP_COMPILER_VERSION:version>
+
+  .. versionadded:: 3.21
 
   如果HIP编译器的版本匹配\ ``version``，则为\ ``1``，否则为\ ``0``。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
@@ -544,6 +548,8 @@ cmake-generator-expressions(7)
 
 .. genex:: $<HIP_COMPILER_ID>
 
+  .. versionadded:: 3.21
+
   当前HIP编译器的CMake编译器标识。参考\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量。
 
 .. genex:: $<ISPC_COMPILER_ID>
@@ -581,6 +587,8 @@ cmake-generator-expressions(7)
   当前Fortran编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
 .. genex:: $<HIP_COMPILER_VERSION>
+
+  .. versionadded:: 3.21
 
   当前HIP编译器版本。参考\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量。
 
@@ -810,7 +818,13 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.21
 
-  运行时目标依赖的DLL列表。这是由所有\ ``SHARED``\ 和\ ``MODULE``\ 目标在目标的传递依赖中的位置决定的。在可执行文件、``SHARED``\ 和\ ``MODULE``\ 库以外的目标上使用此生成器表达式是错误的。在非DLL平台上，它的计算结果为空字符串。
+  List of DLLs that the target depends on at runtime. This is determined by
+  the locations of all the ``SHARED`` targets in the target's transitive
+  dependencies. Using this generator expression on targets other than
+  executables, ``SHARED`` libraries, and ``MODULE`` libraries is an error. On
+  non-DLL platforms, it evaluates to an empty string.
+
+  目标在运行时依赖的DLL列表。这是由目标的传递依赖中所有\ ``SHARED``\ 目标的位置决定的。在可执行文件、``SHARED``\ 库和\ ``MODULE``\ 库之外的目标上使用这个生成器表达式是错误的。在非DLL平台上，它的计算结果为空字符串。
 
   这个生成器表达式可以用来将目标依赖的所有DLL复制到\ ``POST_BUILD``\ 自定义命令的输出目录中。例如：
 
@@ -827,7 +841,7 @@ cmake-generator-expressions(7)
 
   .. note::
 
-    只有当\ :ref:`Imported Targets`\ 知道它们的\ ``.dll``\ 文件的位置时，才支持它们。导入的\ ``SHARED``\ 或\ ``MODULE``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为它的\ ``.dll``\ 文件。有关详细信息，请参阅\ :ref:`add_library imported libraries <add_library imported libraries>`\ 一节。许多\ :ref:`Find Modules`\ 生成的导入目标类型为\ ``UNKNOWN``，因此会被忽略。
+    只有当\ :ref:`Imported Targets`\ 知道它们的\ ``.dll``\ 文件的位置时，才支持它们。导入的\ ``SHARED``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为它的\ ``.dll``\ 文件。有关详细信息，请参阅\ :ref:`add_library imported libraries <add_library imported libraries>`\ 一节。许多\ :ref:`Find Modules`\ 生成的导入目标类型为\ ``UNKNOWN``，因此会被忽略。
 
 .. genex:: $<INSTALL_PREFIX>
 
