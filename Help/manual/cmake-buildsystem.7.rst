@@ -512,58 +512,35 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 库输出构件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-A *library* output artifact of a buildsystem target may be:
+构建系统目标的\ *library*\ 输出工件可能是：
 
-* The loadable module file (e.g. ``.dll`` or ``.so``) of a module
-  library target created by the :command:`add_library` command
-  with the ``MODULE`` option.
+* 由\ :command:`add_library`\ 命令使用\ ``MODULE``\ 选项创建的模块库目标的可加载模块文件（例如\ ``.dll``\ 或\ ``.so``）。
 
-* On non-DLL platforms: the shared library file (e.g. ``.so`` or ``.dylib``)
-  of a shared library target created by the :command:`add_library`
-  command with the ``SHARED`` option.
+* 在非DLL平台上：由\ :command:`add_library`\ 命令和\ ``SHARED``\ 选项创建的共享库目标的共享库文件（例如\ ``.so``\ 或\ ``.dylib``）。
 
-The :prop_tgt:`LIBRARY_OUTPUT_DIRECTORY` and :prop_tgt:`LIBRARY_OUTPUT_NAME`
-target properties may be used to control library output artifact locations
-and names in the build tree.
+:prop_tgt:`LIBRARY_OUTPUT_DIRECTORY`\ 和\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性可以用来控制构建树中的库输出工件位置和名称。
 
 .. _`Archive Output Artifacts`:
 
 档案输出构件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-An *archive* output artifact of a buildsystem target may be:
+构建系统目标的\ *归档*\ 输出工件可能是：
 
-* The static library file (e.g. ``.lib`` or ``.a``) of a static
-  library target created by the :command:`add_library` command
-  with the ``STATIC`` option.
+* 由\ :command:`add_library`\ 命令使用\ ``STATIC``\ 选项创建的静态库目标的静态库文件（例如\ ``.lib``\ 或\ ``.a``）。
 
-* On DLL platforms: the import library file (e.g. ``.lib``) of a shared
-  library target created by the :command:`add_library` command
-  with the ``SHARED`` option.  This file is only guaranteed to exist if
-  the library exports at least one unmanaged symbol.
+* 在DLL平台上：由\ :command:`add_library`\ 命令和\ ``SHARED``\ 选项创建的共享库目标的导入库文件（例如\ ``.lib``）。只有当库导出至少一个非托管符号时，才保证此文件存在。
 
-* On DLL platforms: the import library file (e.g. ``.lib``) of an
-  executable target created by the :command:`add_executable` command
-  when its :prop_tgt:`ENABLE_EXPORTS` target property is set.
+* 在DLL平台上：当设置了可执行目标的\ :prop_tgt:`ENABLE_EXPORTS`\ 目标属性时，由\ :command:`add_executable`\ 命令创建的可执行目标的导入库文件（例如\ ``.lib``）。
 
-* On AIX: the linker import file (e.g. ``.imp``) of an executable target
-  created by the :command:`add_executable` command when its
-  :prop_tgt:`ENABLE_EXPORTS` target property is set.
+* 在AIX上：当设置了可执行目标的\ :prop_tgt:`ENABLE_EXPORTS`\ 目标属性时，:command:`add_executable`\ 命令创建的可执行目标的链接器导入文件（例如\ ``.imp``）。
 
-The :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`
-target properties may be used to control archive output artifact locations
-and names in the build tree.
+:prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性可以用于控制构建树中的归档输出工件位置和名称。
 
 目录作用域命令
 -------------------------
 
-The :command:`target_include_directories`,
-:command:`target_compile_definitions` and
-:command:`target_compile_options` commands have an effect on only one
-target at a time.  The commands :command:`add_compile_definitions`,
-:command:`add_compile_options` and :command:`include_directories` have
-a similar function, but operate at directory scope instead of target
-scope for convenience.
+:command:`target_include_directories`、:command:`target_compile_definitions`\ 和\ :command:`target_compile_options`\ 命令一次只能对一个目标产生影响。:command:`add_compile_definitions`、:command:`add_compile_options`\ 和\ :command:`include_directories`\ 命令具有类似的功能，但为了方便起见，它们在目录范围而不是目标范围内操作。
 
 .. _`Build Configurations`:
 
