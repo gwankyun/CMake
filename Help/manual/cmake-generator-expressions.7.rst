@@ -818,12 +818,6 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.21
 
-  List of DLLs that the target depends on at runtime. This is determined by
-  the locations of all the ``SHARED`` targets in the target's transitive
-  dependencies. Using this generator expression on targets other than
-  executables, ``SHARED`` libraries, and ``MODULE`` libraries is an error. On
-  non-DLL platforms, it evaluates to an empty string.
-
   目标在运行时依赖的DLL列表。这是由目标的传递依赖中所有\ ``SHARED``\ 目标的位置决定的。在可执行文件、``SHARED``\ 库和\ ``MODULE``\ 库之外的目标上使用这个生成器表达式是错误的。在非DLL平台上，它的计算结果为空字符串。
 
   这个生成器表达式可以用来将目标依赖的所有DLL复制到\ ``POST_BUILD``\ 自定义命令的输出目录中。例如：
@@ -841,7 +835,7 @@ cmake-generator-expressions(7)
 
   .. note::
 
-    只有当\ :ref:`Imported Targets`\ 知道它们的\ ``.dll``\ 文件的位置时，才支持它们。导入的\ ``SHARED``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为它的\ ``.dll``\ 文件。有关详细信息，请参阅\ :ref:`add_library imported libraries <add_library imported libraries>`\ 一节。许多\ :ref:`Find Modules`\ 生成的导入目标类型为\ ``UNKNOWN``，因此会被忽略。
+    只有当\ :ref:`Imported Targets`\ 知道它们的\ ``.dll``\ 文件的位置时，才支持它们。导入的\ ``SHARED``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为它的\ ``.dll``\ 文件。有关详细信息，请参阅\ :ref:`add_library导入库 <add_library imported libraries>`\ 一节。许多\ :ref:`Find Modules`\ 生成的导入目标类型为\ ``UNKNOWN``，因此会被忽略。
 
 .. genex:: $<INSTALL_PREFIX>
 
