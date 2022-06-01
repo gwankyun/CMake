@@ -512,7 +512,7 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 库输出构件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-构建系统目标的\ *library*\ 输出工件可能是：
+构建系统目标的\ *库*\ 输出工件可能是：
 
 * 由\ :command:`add_library`\ 命令使用\ ``MODULE``\ 选项创建的模块库目标的可加载模块文件（例如\ ``.dll``\ 或\ ``.so``）。
 
@@ -547,20 +547,7 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 构建配置
 ====================
 
-Configurations determine specifications for a certain type of build, such
-as ``Release`` or ``Debug``.  The way this is specified depends on the type
-of :manual:`generator <cmake-generators(7)>` being used.  For single
-configuration generators like  :ref:`Makefile Generators` and
-:generator:`Ninja`, the configuration is specified at configure time by the
-:variable:`CMAKE_BUILD_TYPE` variable. For multi-configuration generators
-like :ref:`Visual Studio <Visual Studio Generators>`, :generator:`Xcode`, and
-:generator:`Ninja Multi-Config`, the configuration is chosen by the user at
-build time and :variable:`CMAKE_BUILD_TYPE` is ignored.  In the
-multi-configuration case, the set of *available* configurations is specified
-at configure time by the :variable:`CMAKE_CONFIGURATION_TYPES` variable,
-but the actual configuration used cannot be known until the build stage.
-This difference is often misunderstood, leading to problematic code like the
-following:
+配置为特定类型的构建确定规范，例如\ ``Release``\ 或\ ``Debug``。指定方法取决于所使用的\ :manual:`generator <cmake-generators(7)>`\ 的类型。对于单个配置生成器，如\ :ref:`Makefile Generators`\ 和\ :generator:`Ninja`，配置是在配置时由\ :variable:`CMAKE_BUILD_TYPE`\ 变量指定的。对于像\ :ref:`Visual Studio <Visual Studio Generators>`、:generator:`Xcode`\ 和\ :generator:`Ninja Multi-Config`\ 这样的多配置生成器，配置是由用户在构建时选择的，:variable:`CMAKE_BUILD_TYPE`\ 会被忽略。在多配置情况下，*可用*\ 配置集在配置时由\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 变量指定，但使用的实际配置直到构建阶段才能知道。这种差异经常被误解，导致出现如下问题代码：
 
 .. code-block:: cmake
 
@@ -571,9 +558,7 @@ following:
     target_compile_definitions(exe1 PRIVATE DEBUG_BUILD)
   endif()
 
-:manual:`Generator expressions <cmake-generator-expressions(7)>` should be
-used instead to handle configuration-specific logic correctly, regardless of
-the generator used.  For example:
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 应该用于正确处理特定于配置的逻辑，而不管使用的生成器是什么。例如：
 
 .. code-block:: cmake
 
@@ -582,19 +567,13 @@ the generator used.  For example:
     $<$<CONFIG:Debug>:DEBUG_BUILD>
   )
 
-In the presence of :prop_tgt:`IMPORTED` targets, the content of
-:prop_tgt:`MAP_IMPORTED_CONFIG_DEBUG <MAP_IMPORTED_CONFIG_<CONFIG>>` is also
-accounted for by the above ``$<CONFIG:Debug>`` expression.
+在\ :prop_tgt:`IMPORTED`\ 目标存在的情况下，:prop_tgt:`MAP_IMPORTED_CONFIG_DEBUG <MAP_IMPORTED_CONFIG_<CONFIG>>`\ 的内容也由上面的\ ``$<CONFIG:Debug>``\ 表达式负责。
 
 
 区分大小写
 ----------------
 
-:variable:`CMAKE_BUILD_TYPE` and :variable:`CMAKE_CONFIGURATION_TYPES` are
-just like other variables in that any string comparisons made with their
-values will be case-sensitive.  The ``$<CONFIG>`` generator expression also
-preserves the casing of the configuration as set by the user or CMake defaults.
-For example:
+:variable:`CMAKE_BUILD_TYPE`\ 和\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 就像其他变量一样，与它们的值进行的任何字符串比较都是区分大小写的。``$<CONFIG>``\ 生成器表达式还保留由用户或CMake默认设置的配置大小写。例如：
 
 .. code-block:: cmake
 
@@ -615,46 +594,23 @@ For example:
     # ... will never get here, "Debug" != "DEBUG"
   endif()
 
-In contrast, CMake treats the configuration type case-insensitively when
-using it internally in places that modify behavior based on the configuration.
-For example, the ``$<CONFIG:Debug>`` generator expression will evaluate to 1
-for a configuration of not only ``Debug``, but also ``DEBUG``, ``debug`` or
-even ``DeBuG``.  Therefore, you can specify configuration types in
-:variable:`CMAKE_BUILD_TYPE` and :variable:`CMAKE_CONFIGURATION_TYPES` with
-any mixture of upper and lowercase, although there are strong conventions
-(see the next section).  If you must test the value in string comparisons,
-always convert the value to upper or lowercase first and adjust the test
-accordingly.
+相比之下，CMake在内部根据配置修改行为的地方使用配置类型时不区分大小写。例如，``$<CONFIG:Debug>``\ 生成器表达式对于不仅是\ ``Debug``，而且是\ ``DEBUG``、``debug``\ 甚至\ ``DeBuG``\ 的配置都将计算为1。因此，您可以在\ :variable:`CMAKE_BUILD_TYPE`\ 和\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 中指定任意大小写混合的配置类型，尽管有严格的约定（请参阅下一节）。如果你必须在字符串比较中测试值，那么首先将值转换为大写或小写，然后再相应地调整测试。
 
 默认和自定义配置
 ---------------------------------
 
-By default, CMake defines a number of standard configurations:
+默认情况下，CMake定义了许多标准配置：
 
 * ``Debug``
 * ``Release``
 * ``RelWithDebInfo``
 * ``MinSizeRel``
 
-In multi-config generators, the :variable:`CMAKE_CONFIGURATION_TYPES` variable
-will be populated with (potentially a subset of) the above list by default,
-unless overridden by the project or user.  The actual configuration used is
-selected by the user at build time.
+在多配置生成器中，默认情况下\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 变量将使用上述列表（可能是其中的一个子集）填充，除非被项目或用户覆盖。使用的实际配置由用户在构建时选择。
 
-For single-config generators, the configuration is specified with the
-:variable:`CMAKE_BUILD_TYPE` variable at configure time and cannot be changed
-at build time.  The default value will often be none of the above standard
-configurations and will instead be an empty string.  A common misunderstanding
-is that this is the same as ``Debug``, but that is not the case.  Users should
-always explicitly specify the build type instead to avoid this common problem.
+对于单配置生成器，配置在配置时使用\ :variable:`CMAKE_BUILD_TYPE`\ 变量指定，不能在构建时更改。默认值通常不是上述标准配置，而是一个空字符串。一个常见的误解是，这与\ ``Debug``\ 相同，但事实并非如此。用户应该始终显式地指定构建类型，以避免此常见问题。
 
-The above standard configuration types provide reasonable behavior on most
-platforms, but they can be extended to provide other types.  Each configuration
-defines a set of compiler and linker flag variables for the language in use.
-These variables follow the convention :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`,
-where ``<CONFIG>`` is always the uppercase configuration name.  When defining
-a custom configuration type, make sure these variables are set appropriately,
-typically as cache variables.
+上述标准配置类型在大多数平台上提供了合理的行为，但它们可以被扩展为提供其他类型。每个配置都为所使用的语言定义了一组编译器和链接器标志变量。这些变量遵循惯例\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`，其中\ ``<CONFIG>``\ 总是大写的配置名称。在定义自定义配置类型时，确保适当地设置了这些变量，通常是缓存变量。
 
 
 伪目标
