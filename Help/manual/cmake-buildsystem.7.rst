@@ -616,57 +616,31 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 伪目标
 ==============
 
-Some target types do not represent outputs of the buildsystem, but only inputs
-such as external dependencies, aliases or other non-build artifacts.  Pseudo
-targets are not represented in the generated buildsystem.
+有些目标类型不表示构建系统的输出，而只表示输入，如外部依赖项、别名或其他非构建构件。生成的构建系统中不表示伪目标。
 
 .. _`Imported Targets`:
 
 导入的目标
 ----------------
 
-An :prop_tgt:`IMPORTED` target represents a pre-existing dependency.  Usually
-such targets are defined by an upstream package and should be treated as
-immutable. After declaring an :prop_tgt:`IMPORTED` target one can adjust its
-target properties by using the customary commands such as
-:command:`target_compile_definitions`, :command:`target_include_directories`,
-:command:`target_compile_options` or :command:`target_link_libraries` just like
-with any other regular target.
+:prop_tgt:`IMPORTED`\ 目标表示预先存在的依赖项。通常这样的由上游包定义的目标，应该被视为不可变的。在声明了一个\ :prop_tgt:`IMPORTED`\ 目标之后，我们可以像使用其他常规目标一样，使用习惯命令\ :command:`target_compile_definitions`、:command:`target_include_directories`、:command:`target_compile_options`\ 或\ :command:`target_link_libraries`\ 来调整它的目标属性。
 
-:prop_tgt:`IMPORTED` targets may have the same usage requirement properties
-populated as binary targets, such as
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`,
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS`,
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`, and
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`.
+:prop_tgt:`IMPORTED`\ 的目标可能有与二进制目标相同的使用需求属性，例如\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`、:prop_tgt:`INTERFACE_COMPILE_OPTIONS`、:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`。
 
-The :prop_tgt:`LOCATION` may also be read from an IMPORTED target, though there
-is rarely reason to do so.  Commands such as :command:`add_custom_command` can
-transparently use an :prop_tgt:`IMPORTED` :prop_tgt:`EXECUTABLE <TYPE>` target
-as a ``COMMAND`` executable.
+:prop_tgt:`LOCATION`\ 也可以从IMPORTED目标读取，尽管这样做的理由很少。:command:`add_custom_command`\ 等命令可以透明地使用\ :prop_tgt:`IMPORTED` :prop_tgt:`EXECUTABLE <TYPE>`\ 目标作为\ ``COMMAND``\ 可执行文件。
 
-The scope of the definition of an :prop_tgt:`IMPORTED` target is the directory
-where it was defined.  It may be accessed and used from subdirectories, but
-not from parent directories or sibling directories.  The scope is similar to
-the scope of a cmake variable.
+:prop_tgt:`IMPORTED`\ 目标定义的范围是定义它的目录。可以从子目录访问和使用它，但不能从父目录或同级目录访问。作用域类似于cmake变量的作用域。
 
-It is also possible to define a ``GLOBAL`` :prop_tgt:`IMPORTED` target which is
-accessible globally in the buildsystem.
+还可以定义一个在构建系统中全局访问的\ ``GLOBAL`` :prop_tgt:`IMPORTED`\ 目标。
 
-See the :manual:`cmake-packages(7)` manual for more on creating packages
-with :prop_tgt:`IMPORTED` targets.
+请参阅\ :manual:`cmake-packages(7)`\ 手册了解更多关于使用\ :prop_tgt:`IMPORTED`\ 目标创建包的信息。
 
 .. _`Alias Targets`:
 
 别名目标
 -------------
 
-An ``ALIAS`` target is a name which may be used interchangeably with
-a binary target name in read-only contexts.  A primary use-case for ``ALIAS``
-targets is for example or unit test executables accompanying a library, which
-may be part of the same buildsystem or built separately based on user
-configuration.
+``ALIAS``\ 目标是在只读上下文中可以与二进制目标名称互换使用的名称。``ALIAS``\ 目标的一个主要用例是伴随一个库的单元测试可执行文件，它可能是相同构建系统的一部分，也可能是基于用户配置单独构建的。
 
 .. code-block:: cmake
 
@@ -676,9 +650,7 @@ configuration.
 
   add_library(Upstream::lib1 ALIAS lib1)
 
-In another directory, we can link unconditionally to the ``Upstream::lib1``
-target, which may be an :prop_tgt:`IMPORTED` target from a package, or an
-``ALIAS`` target if built as part of the same buildsystem.
+在另一个目录中，我们可以无条件地链接到\ ``Upstream::lib1``\ 目标，它可以是来自包的\ :prop_tgt:`IMPORTED`\ 目标，或者是作为相同构建系统的一部分构建的\ ``ALIAS``\ 目标。
 
 .. code-block:: cmake
 
@@ -688,10 +660,7 @@ target, which may be an :prop_tgt:`IMPORTED` target from a package, or an
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 Upstream::lib1)
 
-``ALIAS`` targets are not mutable, installable or exportable.  They are
-entirely local to the buildsystem description.  A name can be tested for
-whether it is an ``ALIAS`` name by reading the :prop_tgt:`ALIASED_TARGET`
-property from it:
+``ALIAS``\ 目标是不可变的、不可安装的或不可导出的。它们完全局限于构建系统描述。一个名称可以通过读取它的\ :prop_tgt:`ALIASED_TARGET`\ 属性来测试它是否是一个\ ``ALIAS``\ 名称：
 
 .. code-block:: cmake
 
@@ -705,29 +674,13 @@ property from it:
 接口库
 -------------------
 
-An ``INTERFACE`` library target does not compile sources and does not
-produce a library artifact on disk, so it has no :prop_tgt:`LOCATION`.
+``INTERFACE``\ 库目标不会编译源代码，也不会在磁盘上生成库工件，因此它没有\ :prop_tgt:`LOCATION`。
 
-It may specify usage requirements such as
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`,
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS`,
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`,
-:prop_tgt:`INTERFACE_SOURCES`,
-and :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`.
-Only the ``INTERFACE`` modes of the :command:`target_include_directories`,
-:command:`target_compile_definitions`, :command:`target_compile_options`,
-:command:`target_sources`, and :command:`target_link_libraries` commands
-may be used with ``INTERFACE`` libraries.
+它可以指定使用要求，如\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`、:prop_tgt:`INTERFACE_COMPILE_OPTIONS`、:prop_tgt:`INTERFACE_LINK_LIBRARIES`、:prop_tgt:`INTERFACE_SOURCES`\ 和\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`。只有\ :command:`target_include_directories`、:command:`target_compile_definitions`、:command:`target_compile_options`、:command:`target_sources`\ 和\ :command:`target_link_libraries`\ 命令的\ ``INTERFACE``\ 模式可以与\ ``INTERFACE``\ 库一起使用。
 
-Since CMake 3.19, an ``INTERFACE`` library target may optionally contain
-source files.  An interface library that contains source files will be
-included as a build target in the generated buildsystem.  It does not
-compile sources, but may contain custom commands to generate other sources.
-Additionally, IDEs will show the source files as part of the target for
-interactive reading and editing.
+自CMake 3.19起，一个\ ``INTERFACE``\ 库目标可以有选择地包含源文件。包含源文件的接口库将作为构建目标包含在生成的构建系统中。它不编译源代码，但可能包含用于生成其他源代码的自定义命令。此外，IDE将把源文件作为目标的一部分显示，以便进行交互式读取和编辑。
 
-A primary use-case for ``INTERFACE`` libraries is header-only libraries.
+``INTERFACE``\ 库的一个主要用例是仅有头文件（header-only）的库。
 
 .. code-block:: cmake
 
@@ -744,11 +697,9 @@ A primary use-case for ``INTERFACE`` libraries is header-only libraries.
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 Eigen)
 
-Here, the usage requirements from the ``Eigen`` target are consumed and used
-when compiling, but it has no effect on linking.
+在这里，来自\ ``Eigen``\ 目标的使用需求在编译时被消耗和使用，但它对链接没有影响。
 
-Another use-case is to employ an entirely target-focussed design for usage
-requirements:
+另一个用例是对使用需求采用完全以目标为中心的设计：
 
 .. code-block:: cmake
 
@@ -765,12 +716,9 @@ requirements:
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 pic_on enable_rtti)
 
-This way, the build specification of ``exe1`` is expressed entirely as linked
-targets, and the complexity of compiler-specific flags is encapsulated in an
-``INTERFACE`` library target.
+这样，``exe1``\ 的构建规范就完全表示为链接的目标，而编译器特定标志的复杂性被封装在\ ``INTERFACE``\ 库目标中。
 
-``INTERFACE`` libraries may be installed and exported.  Any content they refer
-to must be installed separately:
+可以安装和导出\ ``INTERFACE``\ 库。它们所涉及的任何内容都必须单独安装：
 
 .. code-block:: cmake
 

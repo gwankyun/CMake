@@ -44,6 +44,7 @@
 参考手册
 --------
 
+* `cmake-buildsystem(7) <Help/manual/cmake-buildsystem.7.rst>`_\ ：完成
 * `cmake-commands(7) <Help/manual/cmake-commands.7.rst>`_\ ：完成，不包括子页面
 * `cmake-compile-features(7) <Help/manual/cmake-compile-features.7.rst>`_\ ：完成
 * `cmake-env-variables(7) <Help/manual/cmake-env-variables.7.rst>`_\ ：完成，不包括子页面
