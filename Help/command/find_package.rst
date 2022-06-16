@@ -11,7 +11,7 @@ find_package
 
    .. contents::
 
-.. note:: The :guide:`Using Dependencies Guide` provides a high-level
+.. note:: The :guide:`使用依赖项指南` provides a high-level
   introduction to this general topic. It provides a broader overview of
   where the ``find_package()`` command fits into the bigger picture,
   including its relationship to the :module:`FetchContent` module.

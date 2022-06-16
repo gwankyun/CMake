@@ -25,7 +25,7 @@ cmake(1)
  `运行脚本`_
   cmake [{-D <var>=<value>}...] -P <cmake-script-file>
 
- `运行命令行工程`_
+ `运行命令行工具`_
   cmake -E <command> [<options>]
 
  `运行包查找工具`_
