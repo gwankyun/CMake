@@ -19,6 +19,7 @@
 
 #include "cmsys/Directory.hxx"
 #include "cmsys/FStream.hxx"
+#include "cmsys/RegularExpression.hxx"
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #  include <windows.h>
@@ -440,7 +441,7 @@ bool cmGlobalGenerator::FindMakeProgram(cmMakefile* mf)
         << this->GetName() << "\".  CMAKE_MAKE_PROGRAM is not set.  You "
         << "probably need to select a different build tool.";
     cmSystemTools::Error(err.str());
-    cmSystemTools::SetFatalErrorOccured();
+    cmSystemTools::SetFatalErrorOccurred();
     return false;
   }
   std::string makeProgram = mf->GetRequiredDefinition("CMAKE_MAKE_PROGRAM");
@@ -530,7 +531,7 @@ void cmGlobalGenerator::EnableLanguage(
 
   if (languages.empty()) {
     cmSystemTools::Error("EnableLanguage must have a lang specified!");
-    cmSystemTools::SetFatalErrorOccured();
+    cmSystemTools::SetFatalErrorOccurred();
     return;
   }
 
@@ -542,7 +543,7 @@ void cmGlobalGenerator::EnableLanguage(
         << "' is currently being enabled.  "
            "Recursive call not allowed.";
       mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
-      cmSystemTools::SetFatalErrorOccured();
+      cmSystemTools::SetFatalErrorOccurred();
       return;
     }
   }
@@ -559,7 +560,7 @@ void cmGlobalGenerator::EnableLanguage(
             << " which is not enabled.";
           this->TryCompileOuterMakefile->IssueMessage(MessageType::FATAL_ERROR,
                                                       e.str());
-          cmSystemTools::SetFatalErrorOccured();
+          cmSystemTools::SetFatalErrorOccurred();
           return;
         }
       }
@@ -658,28 +659,28 @@ void cmGlobalGenerator::EnableLanguage(
     // Tell the generator about the instance, if any.
     std::string instance = mf->GetSafeDefinition("CMAKE_GENERATOR_INSTANCE");
     if (!this->SetGeneratorInstance(instance, mf)) {
-      cmSystemTools::SetFatalErrorOccured();
+      cmSystemTools::SetFatalErrorOccurred();
       return;
     }
 
     // Tell the generator about the target system.
     std::string system = mf->GetSafeDefinition("CMAKE_SYSTEM_NAME");
     if (!this->SetSystemName(system, mf)) {
-      cmSystemTools::SetFatalErrorOccured();
+      cmSystemTools::SetFatalErrorOccurred();
       return;
     }
 
     // Tell the generator about the platform, if any.
     std::string platform = mf->GetSafeDefinition("CMAKE_GENERATOR_PLATFORM");
     if (!this->SetGeneratorPlatform(platform, mf)) {
-      cmSystemTools::SetFatalErrorOccured();
+      cmSystemTools::SetFatalErrorOccurred();
       return;
     }
 
     // Tell the generator about the toolset, if any.
     std::string toolset = mf->GetSafeDefinition("CMAKE_GENERATOR_TOOLSET");
     if (!this->SetGeneratorToolset(toolset, false, mf)) {
-      cmSystemTools::SetFatalErrorOccured();
+      cmSystemTools::SetFatalErrorOccurred();
       return;
     }
 
@@ -687,7 +688,39 @@ void cmGlobalGenerator::EnableLanguage(
     if (!this->FindMakeProgram(mf)) {
       return;
     }
+
+    // One-time includes of user-provided project setup files
+    mf->GetState()->SetInTopLevelIncludes(true);
+    std::string includes =
+      mf->GetSafeDefinition("CMAKE_PROJECT_TOP_LEVEL_INCLUDES");
+    std::vector<std::string> includesList = cmExpandedList(includes);
+    for (std::string const& setupFile : includesList) {
+      std::string absSetupFile = cmSystemTools::CollapseFullPath(
+        setupFile, mf->GetCurrentSourceDirectory());
+      if (!cmSystemTools::FileExists(absSetupFile)) {
+        cmSystemTools::Error(
+          "CMAKE_PROJECT_TOP_LEVEL_INCLUDES file does not exist: " +
+          setupFile);
+        mf->GetState()->SetInTopLevelIncludes(false);
+        return;
+      }
+      if (cmSystemTools::FileIsDirectory(absSetupFile)) {
+        cmSystemTools::Error(
+          "CMAKE_PROJECT_TOP_LEVEL_INCLUDES file is a directory: " +
+          setupFile);
+        mf->GetState()->SetInTopLevelIncludes(false);
+        return;
+      }
+      if (!mf->ReadListFile(absSetupFile)) {
+        cmSystemTools::Error(
+          "Failed reading CMAKE_PROJECT_TOP_LEVEL_INCLUDES file: " +
+          setupFile);
+        mf->GetState()->SetInTopLevelIncludes(false);
+        return;
+      }
+    }
   }
+  mf->GetState()->SetInTopLevelIncludes(false);
 
   // Check that the languages are supported by the generator and its
   // native build tool found above.
@@ -752,13 +785,15 @@ void cmGlobalGenerator::EnableLanguage(
         cmSystemTools::Error("Could not find cmake module file: " +
                              determineCompiler);
       }
-      if (cmSystemTools::GetFatalErrorOccured()) {
+      if (cmSystemTools::GetFatalErrorOccurred()) {
         return;
       }
       needTestLanguage[lang] = true;
       // Some generators like visual studio should not use the env variables
       // So the global generator can specify that in this variable
-      if (!mf->GetDefinition("CMAKE_GENERATOR_NO_COMPILER_ENV")) {
+      if ((mf->GetPolicyStatus(cmPolicies::CMP0132) == cmPolicies::OLD ||
+           mf->GetPolicyStatus(cmPolicies::CMP0132) == cmPolicies::WARN) &&
+          !mf->GetDefinition("CMAKE_GENERATOR_NO_COMPILER_ENV")) {
         // put ${CMake_(LANG)_COMPILER_ENV_VAR}=${CMAKE_(LANG)_COMPILER
         // into the environment, in case user scripts want to run
         // configure, or sub cmakes
@@ -919,7 +954,7 @@ void cmGlobalGenerator::EnableLanguage(
   }
 
   if (fatalError) {
-    cmSystemTools::SetFatalErrorOccured();
+    cmSystemTools::SetFatalErrorOccurred();
   }
 
   for (std::string const& lang : cur_languages) {
@@ -1122,7 +1157,10 @@ std::string cmGlobalGenerator::GetLanguageFromExtension(const char* ext) const
 {
   // if there is an extension and it starts with . then move past the
   // . because the extensions are not stored with a .  in the map
-  if (ext && *ext == '.') {
+  if (!ext) {
+    return "";
+  }
+  if (*ext == '.') {
     ++ext;
   }
   auto const it = this->ExtensionToLanguage.find(ext);
@@ -1336,7 +1374,7 @@ void cmGlobalGenerator::Configure()
 
   if (this->CMakeInstance->GetWorkingMode() == cmake::NORMAL_MODE) {
     std::ostringstream msg;
-    if (cmSystemTools::GetErrorOccuredFlag()) {
+    if (cmSystemTools::GetErrorOccurredFlag()) {
       msg << "Configuring incomplete, errors occurred!";
       const char* logs[] = { "CMakeOutput.log", "CMakeError.log", nullptr };
       for (const char** log = logs; *log; ++log) {
@@ -1498,6 +1536,11 @@ bool cmGlobalGenerator::Compute()
     return false;
   }
 
+  // Iterate through all targets and add verification targets for header sets
+  if (!this->AddHeaderSetVerification()) {
+    return false;
+  }
+
   // Iterate through all targets and set up AUTOMOC, AUTOUIC and AUTORCC
   if (!this->QtAutoGen()) {
     return false;
@@ -1602,7 +1645,7 @@ void cmGlobalGenerator::Generate()
 
   for (auto& buildExpSet : this->BuildExportSets) {
     if (!buildExpSet.second->GenerateImportFile()) {
-      if (!cmSystemTools::GetErrorOccuredFlag()) {
+      if (!cmSystemTools::GetErrorOccurredFlag()) {
         this->GetCMakeInstance()->IssueMessage(MessageType::FATAL_ERROR,
                                                "Could not write export file.");
       }
@@ -1719,6 +1762,27 @@ bool cmGlobalGenerator::QtAutoGen()
 #endif
 }
 
+bool cmGlobalGenerator::AddHeaderSetVerification()
+{
+  for (auto const& gen : this->LocalGenerators) {
+    // Because AddHeaderSetVerification() adds generator targets, we need to
+    // cache the existing list of generator targets before starting.
+    std::vector<cmGeneratorTarget*> genTargets;
+    genTargets.reserve(gen->GetGeneratorTargets().size());
+    for (auto const& tgt : gen->GetGeneratorTargets()) {
+      genTargets.push_back(tgt.get());
+    }
+
+    for (auto* tgt : genTargets) {
+      if (!tgt->AddHeaderSetVerification()) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 bool cmGlobalGenerator::AddAutomaticSources()
 {
   for (const auto& lg : this->LocalGenerators) {
@@ -1735,6 +1799,7 @@ bool cmGlobalGenerator::AddAutomaticSources()
       if (!gt->GetProperty("PRECOMPILE_HEADERS_REUSE_FROM")) {
         lg->AddPchDependencies(gt.get());
       }
+      lg->AddXCConfigSources(gt.get());
     }
   }
   for (const auto& lg : this->LocalGenerators) {
@@ -2520,6 +2585,47 @@ bool cmGlobalGenerator::NameResolvesToFramework(
   }
 
   return false;
+}
+
+// If the file has no extension it's either a raw executable or might
+// be a direct reference to a binary within a framework (bad practice!).
+// This is where we change the path to point to the framework directory.
+// .tbd files also can be located in SDK frameworks (they are
+// placeholders for actual libraries shipped with the OS)
+cm::optional<std::pair<std::string, std::string>>
+cmGlobalGenerator::SplitFrameworkPath(const std::string& path,
+                                      bool extendedFormat) const
+{
+  // Check for framework structure:
+  //    (/path/to/)?FwName.framework
+  // or (/path/to/)?FwName.framework/FwName(.tbd)?
+  // or (/path/to/)?FwName.framework/Versions/*/FwName(.tbd)?
+  static cmsys::RegularExpression frameworkPath(
+    "((.+)/)?(.+)\\.framework(/Versions/[^/]+)?(/(.+))?$");
+
+  auto ext = cmSystemTools::GetFilenameLastExtension(path);
+  if ((ext.empty() || ext == ".tbd" || ext == ".framework") &&
+      frameworkPath.find(path)) {
+    auto name = frameworkPath.match(3);
+    auto libname =
+      cmSystemTools::GetFilenameWithoutExtension(frameworkPath.match(6));
+    if (!libname.empty() && name != libname) {
+      return cm::nullopt;
+    }
+    return std::pair<std::string, std::string>{ frameworkPath.match(2), name };
+  }
+
+  if (extendedFormat) {
+    // path format can be more flexible: (/path/to/)?fwName(.framework)?
+    auto fwDir = cmSystemTools::GetParentDirectory(path);
+    auto name = cmSystemTools::GetFilenameLastExtension(path) == ".framework"
+      ? cmSystemTools::GetFilenameWithoutExtension(path)
+      : cmSystemTools::GetFilenameName(path);
+
+    return std::pair<std::string, std::string>{ fwDir, name };
+  }
+
+  return cm::nullopt;
 }
 
 bool cmGlobalGenerator::CheckCMP0037(std::string const& targetName,

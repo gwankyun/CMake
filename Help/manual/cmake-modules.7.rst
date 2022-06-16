@@ -312,7 +312,6 @@ cmake-modules(7)
    /module/CPackFreeBSD
    /module/CPackNSIS
    /module/CPackNuGet
-   /module/CPackPackageMaker
    /module/CPackProductBuild
    /module/CPackRPM
    /module/CPackWIX

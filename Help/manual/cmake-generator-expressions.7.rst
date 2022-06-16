@@ -76,6 +76,9 @@ cmake-generator-expressions(7)
 
   如果\ ``string``\ 是分号分隔\ ``list``\ 的成员，则为\ ``1``，否则为\ ``0``。区分大小写。
 
+Version Comparisons
+-------------------
+
 .. genex:: $<VERSION_LESS:v1,v2>
 
   如果\ ``v1``\ 小于\ ``v2``，则为\ ``1``，否则为\ ``0``。
@@ -99,6 +102,84 @@ cmake-generator-expressions(7)
   .. versionadded:: 3.7
 
   如果\ ``v1``\ 是大于等于\ ``v2``\ 的版本，则为\ ``1``，否则为\ ``0``。
+
+Path Comparisons
+----------------
+
+.. genex:: $<PATH_EQUAL:path1,path2>
+
+  .. versionadded:: 3.24
+
+  Compares the lexical representations of two paths. No normalization is
+  performed on either path. Returns ``1`` if the paths are equal, ``0``
+  otherwise.
+
+  See :ref:`cmake_path(COMPARE) <Path COMPARE>` for more details.
+
+.. _GenEx Path Queries:
+
+Path Queries
+------------
+
+The ``$<PATH>`` generator expression offers the same capabilities as the
+:command:`cmake_path` command, for the :ref:`Query <Path Query>` options.
+
+For all ``$<PATH>`` generator expressions, paths are expected in cmake-style
+format. The :ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>` generator
+expression can be used to convert a native path to a cmake-style one.
+
+The ``$<PATH>`` generator expression can also be used for path
+:ref:`Decomposition <GenEx Path Decomposition>` and
+:ref:`Transformations <GenEx Path Transformations>`.
+
+.. genex:: $<PATH:HAS_*,path>
+
+  .. versionadded:: 3.24
+
+  The following operations return ``1`` if the particular path component is
+  present, ``0`` otherwise. See :ref:`Path Structure And Terminology` for the
+  meaning of each path component.
+
+  ::
+
+    $<PATH:HAS_ROOT_NAME,path>
+    $<PATH:HAS_ROOT_DIRECTORY,path>
+    $<PATH:HAS_ROOT_PATH,path>
+    $<PATH:HAS_FILENAME,path>
+    $<PATH:HAS_EXTENSION,path>
+    $<PATH:HAS_STEM,path>
+    $<PATH:HAS_RELATIVE_PART,path>
+    $<PATH:HAS_PARENT_PATH,path>
+
+  Note the following special cases:
+
+  * For ``HAS_ROOT_PATH``, a true result will only be returned if at least one
+    of ``root-name`` or ``root-directory`` is non-empty.
+
+  * For ``HAS_PARENT_PATH``, the root directory is also considered to have a
+    parent, which will be itself.  The result is true except if the path
+    consists of just a :ref:`filename <FILENAME_DEF>`.
+
+.. genex:: $<PATH:IS_ABSOLUTE,path>
+
+  .. versionadded:: 3.24
+
+  Returns ``1`` if the path is :ref:`absolute <IS_ABSOLUTE>`, ``0`` otherwise.
+
+.. genex:: $<PATH:IS_RELATIVE,path>
+
+  .. versionadded:: 3.24
+
+  This will return the opposite of ``IS_ABSOLUTE``.
+
+.. genex:: $<PATH:IS_PREFIX[,NORMALIZE],path,input>
+
+  .. versionadded:: 3.24
+
+  Returns ``1`` if ``path`` is the prefix of ``input``,``0`` otherwise.
+
+  When the ``NORMALIZE`` option is specified, ``path`` and ``input`` are
+  :ref:`normalized <Normalization>` before the check.
 
 变量查询
 ----------------
@@ -346,18 +427,6 @@ cmake-generator-expressions(7)
 
     在本例中，对于\ ``myapp1``，第一次传递将意外地确定链接语言是\ ``CXX``，因为生成器表达式的求值将是一个空字符串，所以\ ``myapp1``\ 将依赖于\ ``lib``\ 目标，即\ ``C++``。相反，对于\ ``myapp2``，第一次求值时将\ ``C``\ 作为链接语言，所以第二次求值时将正确地添加\ ``libother``\ 目标作为链接依赖。
 
-.. genex:: $<DEVICE_LINK:list>
-
-  .. versionadded:: 3.18
-
-  如果是设备链接步骤，则返回列表，否则为空列表。设备链接步骤由\ :prop_tgt:`CUDA_SEPARABLE_COMPILATION`\ 和\ :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS`\ 属性和策略\ :policy:`CMP0105`\ 控制。此表达式只能用于指定链接选项。
-
-.. genex:: $<HOST_LINK:list>
-
-  .. versionadded:: 3.18
-
-  如果是普通的链接步骤，则返回列表，否则为空列表。当还涉及到设备链接步骤时，这个表达式相当有用（参考\ ``$<DEVICE_LINK:list>``\ 生成器表达式）。此表达式只能用于指定链接选项。
-
 字符串值生成器表达式
 ===================================
 
@@ -450,7 +519,9 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.15
 
-  删除给定\ ``list``\ 中的重复项。
+  删除给定\ ``list``\ 中的重复项。 The relative order of items
+  is preserved, but if duplicates are encountered, only the first instance is
+  preserved.
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
 
@@ -502,6 +573,153 @@ cmake-generator-expressions(7)
       COMMAND ${CMAKE_COMMAND} -E
         echo $<TARGET_GENEX_EVAL:foo,$<TARGET_PROPERTY:foo,CUSTOM_KEYS>>
     )
+
+.. _GenEx Path Decomposition:
+
+Path Decomposition
+------------------
+
+The ``$<PATH>`` generator expression offers the same capabilities as the
+:command:`cmake_path` command, for the
+:ref:`Decomposition <Path Decomposition>` options.
+
+For all ``$<PATH>`` generator expressions, paths are expected in cmake-style
+format. The :ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>` generator
+expression can be used to convert a native path to a cmake-style one.
+
+The ``$<PATH>`` generator expression can also be used for path
+:ref:`Queries <GenEx Path Queries>` and
+:ref:`Transformations <GenEx Path Transformations>`.
+
+.. genex:: $<PATH:GET_*,...>
+
+  .. versionadded:: 3.24
+
+  The following operations retrieve a different component or group of
+  components from a path. See :ref:`Path Structure And Terminology` for the
+  meaning of each path component.
+
+  ::
+
+    $<PATH:GET_ROOT_NAME,path>
+    $<PATH:GET_ROOT_DIRECTORY,path>
+    $<PATH:GET_ROOT_PATH,path>
+    $<PATH:GET_FILENAME,path>
+    $<PATH:GET_EXTENSION[,LAST_ONLY],path>
+    $<PATH:GET_STEM[,LAST_ONLY],path>
+    $<PATH:GET_RELATIVE_PART,path>
+    $<PATH:GET_PARENT_PATH,path>
+
+  If a requested component is not present in the path, an empty string is
+  returned.
+
+.. _GenEx Path Transformations:
+
+Path Transformations
+--------------------
+
+The ``$<PATH>`` generator expression offers the same capabilities as the
+:command:`cmake_path` command, for the
+:ref:`Modification <Path Modification>` and
+:ref:`Generation <Path Generation>` options.
+
+For all ``$<PATH>`` generator expressions, paths are expected in cmake-style
+format. The :ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>` generator
+expression can be used to convert a native path to a cmake-style one.
+
+The ``$<PATH>`` generator expression can also be used for path
+:ref:`Queries <GenEx Path Queries>` and
+:ref:`Decomposition <GenEx Path Decomposition>`.
+
+.. _GenEx PATH-CMAKE_PATH:
+
+.. genex:: $<PATH:CMAKE_PATH[,NORMALIZE],path>
+
+  .. versionadded:: 3.24
+
+  Returns ``path``. If ``path`` is a native path, it is converted into a
+  cmake-style path with forward-slashes (``/``). On Windows, the long filename
+  marker is taken into account.
+
+  When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
+  <Normalization>` after the conversion.
+
+.. genex:: $<PATH:APPEND,path,input,...>
+
+  .. versionadded:: 3.24
+
+  Returns all the ``input`` arguments appended to ``path`` using ``/`` as the
+  ``directory-separator``. Depending on the ``input``, the value of ``path``
+  may be discarded.
+
+  See :ref:`cmake_path(APPEND) <APPEND>` for more details.
+
+.. genex:: $<PATH:REMOVE_FILENAME,path>
+
+  .. versionadded:: 3.24
+
+  Returns ``path`` with filename component (as returned by
+  ``$<PATH:GET_FILENAME>``) removed. After removal, any trailing
+  ``directory-separator`` is left alone, if present.
+
+  See :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>` for more details.
+
+.. genex:: $<PATH:REPLACE_FILENAME,path,input>
+
+  .. versionadded:: 3.24
+
+  Returns ``path`` with the filename component replaced by ``input``. If
+  ``path`` has no filename component (i.e. ``$<PATH:HAS_FILENAME>`` returns
+  ``0``), ``path`` is unchanged.
+
+  See :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>` for more details.
+
+.. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path>
+
+  .. versionadded:: 3.24
+
+  Returns ``path`` with the :ref:`extension <EXTENSION_DEF>` removed, if any.
+
+  See :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>` for more details.
+
+.. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path>
+
+  .. versionadded:: 3.24
+
+  Returns ``path`` with the :ref:`extension <EXTENSION_DEF>` replaced by
+  ``input``, if any.
+
+  See :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>` for more details.
+
+.. genex:: $<PATH:NORMAL_PATH,path>
+
+  .. versionadded:: 3.24
+
+  Returns ``path`` normalized according to the steps described in
+  :ref:`Normalization`.
+
+.. genex:: $<PATH:RELATIVE_PATH,path,base_directory>
+
+  .. versionadded:: 3.24
+
+  Returns ``path``, modified to make it relative to the ``base_directory``
+  argument.
+
+  See :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>` for more
+  details.
+
+.. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path,base_directory>
+
+  .. versionadded:: 3.24
+
+  Returns ``path`` as absolute. If ``path`` is a relative path
+  (``$<PATH:IS_RELATIVE>`` returns ``1``), it is evaluated relative to the
+  given base directory specified by ``base_directory`` argument.
+
+  When the ``NORMALIZE`` option is specified, the path is
+  :ref:`normalized <Normalization>` after the path computation.
+
+  See :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>` for more details.
 
 变量查询
 ----------------
@@ -792,7 +1010,19 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.9
 
-  bundle目录的完整路径（``my.app``、``my.framework``\ 或\ ``my.bundle``），其中\ ``tgt``\ 是目标的名称。
+  Full path to the bundle directory (``/path/to/my.app``,
+  ``/path/to/my.framework``, or ``/path/to/my.bundle``),
+  where ``tgt`` is the name of a target.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on (see policy :policy:`CMP0112`).
+
+.. genex:: $<TARGET_BUNDLE_DIR_NAME:tgt>
+
+  .. versionadded:: 3.24
+
+  bundle目录的名字（``my.app``、``my.framework``\ 或\ 
+  ``my.bundle``），其中\ ``tgt``\ 是目标的名称。
 
   注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
@@ -800,7 +1030,7 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.9
 
-  bundle内容目录的完整路径，其中\ ``tgt``\ 是目标的名称。对于macOS SDK，它指向\ ``my.app/Contents``、``my.bundle/Contents``\ 或\ ``my.bundle/Contents``。对于所有其他SDK（如iOS），由于bundle结构扁平，它指向\ ``my.app``、``my.framework``\ 或者\ ``my.bundle``\。
+  bundle内容目录的完整路径，其中\ ``tgt``\ 是目标的名称。对于macOS SDK，它指向\ ``/path/to/my.app/Contents``、``/path/to/my.framework``\ 或\ ``/path/to/my.bundle/Contents``。对于所有其他SDK（如iOS），由于bundle结构扁平，它指向\ ``/path/to/my.app``、``/path/to/my.framework``\ 或者\ ``/path/to/my.bundle``\。
 
   注意，``tgt``\ 不是作为目标的依赖项添加的，这个表达式是在目标上计算的（请参阅策略\ :policy:`CMP0112`）。
 
@@ -852,7 +1082,262 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.1
 
-  \ ``...``\ 的内容，除非在\ :ref:`Target Usage Requirements`\ 时在链接接口中求值，在这种情况下它是空字符串。仅用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 目标属性中，可能通过\ :command:`target_link_libraries`\ 命令来指定私有链接依赖关系，而不需要其他使用要求。
+  Content of ``...``, except while collecting :ref:`Target Usage Requirements`,
+  in which case it is the empty string.  This is intended for use in an
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES` target property, typically populated
+  via the :command:`target_link_libraries` command, to specify private link
+  dependencies without other usage requirements.
+
+  .. versionadded:: 3.24
+    ``LINK_ONLY`` may also be used in a :prop_tgt:`LINK_LIBRARIES` target
+    property.  See policy :policy:`CMP0131`.
+
+.. genex:: $<DEVICE_LINK:list>
+
+  .. versionadded:: 3.18
+
+  Returns the list if it is the device link step, an empty list otherwise.
+  The device link step is controlled by :prop_tgt:`CUDA_SEPARABLE_COMPILATION`
+  and :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS` properties and
+  policy :policy:`CMP0105`. This expression can only be used to specify link
+  options.
+
+.. genex:: $<HOST_LINK:list>
+
+  .. versionadded:: 3.18
+
+  Returns the list if it is the normal link step, an empty list otherwise.
+  This expression is mainly useful when a device link step is also involved
+  (see :genex:`$<DEVICE_LINK:list>` generator expression). This expression can
+  only be used to specify link options.
+
+.. genex:: $<LINK_LIBRARY:feature,library-list>
+
+  .. versionadded:: 3.24
+
+  Manage how libraries are specified during the link step.
+  This expression may be used to specify how to link libraries in a target.
+  For example:
+
+  .. code-block:: cmake
+
+    add_library(lib1 STATIC ...)
+    add_library(lib2 ...)
+    target_link_libraries(lib2 PRIVATE "$<LINK_LIBRARY:load_archive,lib1>")
+
+  This specify to use the ``lib1`` target with feature ``load_archive`` for
+  linking target ``lib2``. The feature must have be defined by
+  :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>` variable or, if
+  :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED` is false,
+  by :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>` variable.
+
+  .. note::
+
+    The evaluation of this generator expression will use, for the following
+    variables, the values defined at the level of the creation of the target:
+
+    * :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`
+    * :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>`
+    * :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`
+    * :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>`
+
+  This expression can only be used to specify link libraries (i.e. part of
+  :command:`link_libraries` or :command:`target_link_libraries` commands and
+  :prop_tgt:`LINK_LIBRARIES` or :prop_tgt:`INTERFACE_LINK_LIBRARIES` target
+  properties).
+
+  .. note::
+
+    If this expression appears in the :prop_tgt:`INTERFACE_LINK_LIBRARIES`
+    property of a target, it will be included in the imported target generated
+    by :command:`install(EXPORT)` command. It is the responsibility of the
+    environment consuming this import to define the link feature used by this
+    expression.
+
+  The ``library-list`` argument can hold CMake targets or external libraries.
+  Any CMake target of type :ref:`OBJECT <Object Libraries>` or
+  :ref:`INTERFACE <Interface Libraries>` will be ignored by this expression and
+  will be handled in the standard way.
+
+  Each target or external library involved in the link step must have only one
+  kind of feature (the absence of feature is also incompatible with any
+  feature). For example:
+
+  .. code-block:: cmake
+
+    add_library(lib1 ...)
+
+    add_library(lib2 ...)
+    target_link_libraries(lib2 PUBLIC "$<LINK_LIBRARY:feature1,lib1>")
+
+    add_library(lib3 ...)
+    target_link_libraries(lib3 PRIVATE lib1 lib2)
+    # an error will be raised here because lib1 has two different features
+
+  To resolve such incompatibilities, the :prop_tgt:`LINK_LIBRARY_OVERRIDE`
+  and  :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>` target properties can be
+  used.
+
+  .. note::
+
+    This expression does not guarantee that the list of specified libraries
+    will be kept grouped. So, to manage constructs like ``start-group`` and
+    ``end-group``, as supported by ``GNU ld``, the :genex:`LINK_GROUP`
+    generator expression can be used.
+
+  CMake pre-defines some features of general interest:
+
+  .. include:: ../variable/LINK_LIBRARY_PREDEFINED_FEATURES.txt
+
+.. genex:: $<LINK_GROUP:feature,library-list>
+
+  .. versionadded:: 3.24
+
+  Manage the grouping of libraries during the link step.
+  This expression may be used to specify how to keep groups of libraries during
+  the link of a target.
+  For example:
+
+  .. code-block:: cmake
+
+    add_library(lib1 STATIC ...)
+    add_library(lib2 ...)
+    target_link_libraries(lib2 PRIVATE "$<LINK_GROUP:cross_refs,lib1,external>")
+
+  This specify to use the ``lib1`` target and ``external`` library  with the
+  group feature ``cross_refs`` for linking target ``lib2``. The feature must
+  have be defined by :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`
+  variable or, if :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
+  is false, by :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>` variable.
+
+  .. note::
+
+    The evaluation of this generator expression will use, for the following
+    variables, the values defined at the level of the creation of the target:
+
+    * :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
+    * :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`
+    * :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
+    * :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>`
+
+  This expression can only be used to specify link libraries (i.e. part of
+  :command:`link_libraries` or :command:`target_link_libraries` commands and
+  :prop_tgt:`LINK_LIBRARIES` or :prop_tgt:`INTERFACE_LINK_LIBRARIES` target
+  properties).
+
+  .. note::
+
+    If this expression appears in the :prop_tgt:`INTERFACE_LINK_LIBRARIES`
+    property of a target, it will be included in the imported target generated
+    by :command:`install(EXPORT)` command. It is the responsibility of the
+    environment consuming this import to define the link feature used by this
+    expression.
+
+  The ``library-list`` argument can hold CMake targets or external libraries.
+  Any CMake target of type :ref:`OBJECT <Object Libraries>` or
+  :ref:`INTERFACE <Interface Libraries>` will be ignored by this expression and
+  will be handled in the standard way.
+
+  .. note::
+
+    This expression is compatible with the :genex:`LINK_LIBRARY` generator
+    expression. The libraries involved in a group can be specified using the
+    :genex:`LINK_LIBRARY` generator expression.
+
+  Each target or external library involved in the link step can be part of
+  different groups as far as these groups use the same feature, so mixing
+  different group features for the same target or library is forbidden. The
+  different groups will be part of the link step.
+
+  .. code-block:: cmake
+
+    add_library(lib1 ...)
+    add_library(lib2 ...)
+
+    add_library(lib3 ...)
+    target_link_libraries(lib3 PUBLIC "$<LINK_GROUP:feature1,lib1,lib2>")
+
+    add_library(lib4 ...)
+    target_link_libraries(lib4 PRIVATE "$<LINK_GROUP:feature1,lib1,lib3>")
+    # lib4 will be linked with the groups {lib1,lib2} and {lib1,lib3}
+
+    add_library(lib5 ...)
+    target_link_libraries(lib5 PRIVATE "$<LINK_GROUP:feature2,lib1,lib3>")
+    # an error will be raised here because lib1 is part of two groups with
+    # different features
+
+  When a target or an external library is involved in the link step as part of
+  a group and also as standalone, any occurrence of the standalone link item
+  will be replaced by the group or groups it belong to.
+
+  .. code-block:: cmake
+
+    add_library(lib1 ...)
+    add_library(lib2 ...)
+
+    add_library(lib3 ...)
+    target_link_libraries(lib3 PUBLIC lib1)
+
+    add_library(lib4 ...)
+    target_link_libraries(lib4 PRIVATE lib3 "$<LINK_GROUP:feature1,lib1,lib2>")
+    # lib4 will only be linked with lib3 and the group {lib1,lib2}
+
+  This example will be "re-written" by CMake in the following form:
+
+  .. code-block:: cmake
+
+    add_library(lib1 ...)
+    add_library(lib2 ...)
+
+    add_library(lib3 ...)
+    target_link_libraries(lib3 PUBLIC "$<LINK_GROUP:feature1,lib1,lib2>")
+
+    add_library(lib4 ...)
+    target_link_libraries(lib4 PRIVATE lib3 "$<LINK_GROUP:feature1,lib1,lib2>")
+    # lib4 will only be linked with lib3 and the group {lib1,lib2}
+
+  Be aware that the precedence of the group over the standalone link item can
+  result in some circular dependency between groups, which will raise an
+  error because circular dependencies are not allowed for groups.
+
+  .. code-block:: cmake
+
+    add_library(lib1A ...)
+    add_library(lib1B ...)
+
+    add_library(lib2A ...)
+    add_library(lib2B ...)
+
+    target_link_libraries(lib1A PUBLIC lib2A)
+    target_link_libraries(lib2B PUBLIC lib1B)
+
+    add_library(lib ...)
+    target_link_libraries(lib3 PRIVATE "$<LINK_GROUP:feat,lib1A,lib1B>"
+                                       "$<LINK_GROUP:feat,lib2A,lib2B>")
+
+  This example will be "re-written" by CMake in the following form:
+
+  .. code-block:: cmake
+
+    add_library(lib1A ...)
+    add_library(lib1B ...)
+
+    add_library(lib2A ...)
+    add_library(lib2B ...)
+
+    target_link_libraries(lib1A PUBLIC "$<LINK_GROUP:feat,lib2A,lib2B>")
+    target_link_libraries(lib2B PUBLIC "$<LINK_GROUP:feat,lib1A,lib1B>")
+
+    add_library(lib ...)
+    target_link_libraries(lib3 PRIVATE "$<LINK_GROUP:feat,lib1A,lib1B>"
+                                       "$<LINK_GROUP:feat,lib2A,lib2B>")
+
+  So, we have a circular dependency between groups ``{lib1A,lib1B}`` and
+  ``{lib2A,lib2B}``.
+
+  CMake pre-defines some features of general interest:
+
+  .. include:: ../variable/LINK_GROUP_PREDEFINED_FEATURES.txt
 
 .. genex:: $<INSTALL_INTERFACE:...>
 

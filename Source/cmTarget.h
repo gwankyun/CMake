@@ -220,6 +220,8 @@ public:
   //! Return whether this target is a GUI executable on Android.
   bool IsAndroidGuiExecutable() const;
 
+  bool HasKnownObjectFileLocation(std::string* reason = nullptr) const;
+
   //! Get a backtrace from the creation of the target.
   cmListFileBacktrace const& GetBacktrace() const;
 
@@ -269,6 +271,8 @@ public:
   cmBTStringRange GetLinkImplementationEntries() const;
 
   cmBTStringRange GetLinkInterfaceEntries() const;
+  cmBTStringRange GetLinkInterfaceDirectEntries() const;
+  cmBTStringRange GetLinkInterfaceDirectExcludeEntries() const;
 
   cmBTStringRange GetHeaderSetsEntries() const;
 
@@ -288,6 +292,7 @@ public:
                                                  const std::string& type,
                                                  cmFileSetVisibility vis);
 
+  std::vector<std::string> GetAllFileSetNames() const;
   std::vector<std::string> GetAllInterfaceFileSets() const;
 
   static std::string GetFileSetsPropertyName(const std::string& type);

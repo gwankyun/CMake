@@ -143,6 +143,13 @@ is used for the other.  For example:
 
 .. include:: OPTIONS_BUILD.txt
 
+``--fresh``
+ .. versionadded:: 3.24
+
+ Perform a fresh configuration of the build tree.
+ This removes any existing ``CMakeCache.txt`` file and associated
+ ``CMakeFiles/`` directory, and recreates them from scratch.
+
 ``-L[A][H]``
  List non-advanced cached variables.
 
@@ -272,7 +279,8 @@ is used for the other.  For example:
          "cmd": "add_executable",
          "args": ["foo", "bar"],
          "time": 1579512535.9687231,
-         "frame": 2
+         "frame": 2,
+         "global_frame": 4
        }
 
      The members are:
@@ -282,7 +290,13 @@ is used for the other.  For example:
        was called.
 
      ``line``
-       The line in ``file`` of the function call.
+       The line in ``file`` where the function call begins.
+
+     ``line_end``
+       If the function call spans multiple lines, this field will
+       be set to the line where the function call ends. If the function
+       calls spans a single line, this field will be unset. This field
+       was added in minor version 2 of the ``json-v1`` format.
 
      ``defer``
        Optional member that is present when the function call was deferred
@@ -299,7 +313,13 @@ is used for the other.  For example:
        Timestamp (seconds since epoch) of the function call.
 
      ``frame``
-       Stack frame depth of the function that was called.
+       Stack frame depth of the function that was called, within the
+       context of the  ``CMakeLists.txt`` being processed currently.
+
+     ``global_frame``
+       Stack frame depth of the function that was called, tracked globally
+       across all ``CMakeLists.txt`` files involved in the trace. This field
+       was added in minor version 2 of the ``json-v1`` format.
 
      Additionally, the first JSON document outputted contains the
      ``version`` key for the current major and minor version of the
@@ -311,7 +331,7 @@ is used for the other.  For example:
        {
          "version": {
            "major": 1,
-           "minor": 1
+           "minor": 2
          }
        }
 
@@ -351,6 +371,11 @@ is used for the other.  For example:
  Normally, unused and uninitialized variables are searched for only
  in :variable:`CMAKE_SOURCE_DIR` and :variable:`CMAKE_BINARY_DIR`.
  This flag tells CMake to warn about other files as well.
+
+``--compile-no-warning-as-error``
+ Ignore target property :prop_tgt:`COMPILE_WARNING_AS_ERROR` and variable
+ :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`, preventing warnings from being
+ treated as errors on compile.
 
 ``--profiling-output=<path>``
  Used in conjunction with ``--profiling-format`` to output to a given path.
@@ -534,7 +559,9 @@ Run ``cmake --install`` with no options for quick help.
 ``--`` 后面的任何选项都不会被CMake解析，但它们仍然包含在 :variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>` 传递给脚本的变量（包括 ``--`` 本身）。
 
 
-运行命令行工程
+.. _`Run a Command-Line Tool`:
+
+运行命令行工具
 =======================
 
 CMake通过签名提供了内置的命令行工具
@@ -607,10 +634,16 @@ CMake通过签名提供了内置的命令行工具
     ``true`` if cmake supports server-mode and ``false`` otherwise.
     Always false since CMake 3.20.
 
-``cat <files>...``
+``cat [--] <files>...``
   .. versionadded:: 3.18
 
   Concatenate files and print on the standard output.
+
+  .. versionadded:: 3.24
+    Added support for the double dash argument ``--``. This basic implementation
+    of ``cat`` does not support any options, so using a option starting with
+    ``-`` will result in an error. Use ``--`` to indicate the end of options, in
+    case a file starts with ``-``.
 
 ``chdir <dir> <cmd> [<arg>...]``
   Change the current working directory and run a command.
@@ -680,10 +713,15 @@ CMake通过签名提供了内置的命令行工具
 ``echo_append [<string>...]``
   Displays arguments as text but no new line.
 
-``env [--unset=NAME]... [NAME=VALUE]... COMMAND [ARG]...``
+``env [--unset=NAME ...] [NAME=VALUE ...] [--] <command> [<arg>...]``
   .. versionadded:: 3.1
 
   Run command in a modified environment.
+
+  .. versionadded:: 3.24
+    Added support for the double dash argument ``--``. Use ``--`` to stop
+    interpreting options/environment variables and treat the next argument as
+    the command, even if it start with ``-`` or contains a ``=``.
 
 ``environment``
   Display the current environment variables.
@@ -777,16 +815,16 @@ CMake通过签名提供了内置的命令行工具
   Rename a file or directory (on one volume). If file with the ``<newname>`` name
   already exists, then it will be silently replaced.
 
-``rm [-rRf] <file> <dir>...``
+``rm [-rRf] [--] <file|dir>...``
   .. versionadded:: 3.17
 
   Remove the files ``<file>`` or directories ``<dir>``.
-
   Use ``-r`` or ``-R`` to remove directories and their contents recursively.
   If any of the listed files/directories do not exist, the command returns a
   non-zero exit code, but no message is logged. The ``-f`` option changes
   the behavior to return a zero exit code (i.e. success) in such
-  situations instead.
+  situations instead. Use ``--`` to stop interpreting options and treat all
+  remaining arguments as paths, even if they start with ``-``.
 
 ``server``
   Launch :manual:`cmake-server(7)` mode.
@@ -857,6 +895,12 @@ CMake通过签名提供了内置的命令行工具
     .. versionadded:: 3.1
 
     Specify modification time recorded in tarball entries.
+
+  ``--touch``
+    .. versionadded:: 3.24
+
+    Use current local timestamp instead of extracting file timestamps
+    from the archive.
 
   ``--``
     .. versionadded:: 3.1
@@ -951,6 +995,18 @@ To view the presets available for a project, use
 .. code-block:: shell
 
   cmake <source-dir> --list-presets
+
+
+.. _`CMake Exit Code`:
+
+Return Value (Exit Code)
+========================
+
+Upon regular termination, the ``cmake`` executable returns the exit code ``0``.
+
+If termination is caused by the command :command:`message(FATAL_ERROR)`,
+or another error condition, then a non-zero exit code is returned.
+
 
 另行参阅
 ========
