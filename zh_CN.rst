@@ -35,6 +35,7 @@
 ----------
 
 * `cmake(1) <Help/manual/ctest.1.rst>`_\ ：部分
+* `cpack(1) <Help/manual/cpack.1.rst>`_\ ：完成
 
 交互式对话框
 ------------
