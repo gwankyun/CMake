@@ -680,9 +680,7 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 
 自CMake 3.19起，一个\ ``INTERFACE``\ 库目标可以有选择地包含源文件。包含源文件的接口库将作为构建目标包含在生成的构建系统中。它不编译源代码，但可能包含用于生成其他源代码的自定义命令。此外，IDE将把源文件作为目标的一部分显示，以便进行交互式读取和编辑。
 
-``INTERFACE``\ 库的一个主要用例是仅有头文件（header-only）的库。
-Since CMake 3.23, header files may be associated with a library by adding
-them to a header set using the :command:`target_sources` command:
+``INTERFACE``\ 库的一个主要用例是仅有头文件（header-only）的库。CMake 3.23起，可以通过使用\ :command:`target_sources`\ 命令将头文件添加到头文件集来将头文件和库关联：
 
 .. code-block:: cmake
 
@@ -697,8 +695,7 @@ them to a header set using the :command:`target_sources` command:
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 Eigen)
 
-When we specify the ``FILE_SET`` here, the ``BASE_DIRS`` we define automatically
-become include directories in the usage requirements for the target ``Eigen``.来自此目标的使用需求在编译时被消耗和使用，但它对链接没有影响。
+当我们在这里指定\ ``FILE_SET``\ 时，我们定义的\ ``BASE_DIRS``\ 自动成为\ ``Eigen``\ 目标使用要求中的包含目录。来自此目标的使用需求在编译时被消耗和使用，但它对链接没有影响。
 
 另一个用例是对使用需求采用完全以目标为中心的设计：
 
@@ -719,8 +716,7 @@ become include directories in the usage requirements for the target ``Eigen``.�
 
 这样，``exe1``\ 的构建规范就完全表示为链接的目标，而编译器特定标志的复杂性被封装在\ ``INTERFACE``\ 库目标中。
 
-可以安装和导出\ ``INTERFACE``\ 库。 We can install the
-default header set along with the target:
+可以安装和导出\ ``INTERFACE``\ 库。我们可以随着目标安装默认的头文件集：
 
 .. code-block:: cmake
 
@@ -738,6 +734,4 @@ default header set along with the target:
     DESTINATION lib/cmake/Eigen
   )
 
-Here, the headers defined in the header set are installed to ``include/Eigen``.
-The install destination automatically becomes an include directory that is a
-usage requirement for consumers.
+在这里，定义在头文件集中的头文件被安装在\ ``include/Eigen``。安装目标自动成为用户使用要求的包含目录。
