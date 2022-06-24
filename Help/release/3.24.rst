@@ -154,6 +154,11 @@ Variables
   were added to enable build rules that verify all headers in header sets
   can be used on their own.
 
+* The :variable:`CMAKE_VS_NO_COMPILE_BATCHING` variable and corresponding
+  :prop_tgt:`VS_NO_COMPILE_BATCHING` target property were added to
+  tell :ref:`Visual Studio Generators` whether to disable compiler
+  parallelism and call the compiler with one source file at a time.
+
 * The :variable:`CMAKE_WATCOM_RUNTIME_LIBRARY` variable and
   :prop_tgt:`WATCOM_RUNTIME_LIBRARY` target property were introduced to
   select the runtime library used by compilers targeting the Watcom ABI.
@@ -185,10 +190,6 @@ Properties
   than one ``static void Main(string[])`` function signature is available
   in a managed .NET project.
 
-* The :prop_tgt:`VS_NO_COMPILE_BATCHING` target property was added to
-  tell :ref:`Visual Studio Generators` whether to disable compiler parallelism
-  and call the compiler with one source file at a time.
-
 Modules
 -------
 
@@ -218,11 +219,6 @@ Modules
 * The :module:`FindMatlab` module :command:`matlab_add_mex` function
   gained a ``NO_IMPLICIT_LINK_TO_MATLAB_LIBRARIES`` option to disable
   automatic linking of MATLAB libraries.
-
-* The :module:`FindPkgConfig` module learned to find static libraries
-  in addition to the default search for shared libraries.
-  :command:`pkg_check_modules` gained a ``STATIC_TARGET`` option
-  to make the imported target reference static libraries.
 
 * The :module:`FindZLIB` gained a new ``ZLIB_USE_STATIC_LIBS`` variable to
   search only for static libraries.
@@ -344,5 +340,7 @@ Other Changes
 * The precompiled macOS binaries provided on `cmake.org`_ no longer attach a
   SLA to the ``.dmg`` packages.  This was removed because macOS 12 deprecated
   the tools used to attach ``.dmg`` resources.
+
+* A precompiled Windows ``arm64`` binary is now provided on `cmake.org`_.
 
 .. _`cmake.org`: https://cmake.org/download/
