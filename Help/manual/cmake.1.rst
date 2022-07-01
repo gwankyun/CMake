@@ -100,15 +100,10 @@ cmake(1)
 
 在所有情况下，``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
 
-The above styles for specifying the source and build trees may be mixed.
-Paths specified with ``-S`` or ``-B`` are always classified as source or
-build trees, respectively.  Paths specified with plain arguments are
-classified based on their content and the types of paths given earlier.
-If only one type of path is given, the current working directory (cwd)
-is used for the other.  For example:
+上面用于指定源树和构建树的样式可以混合使用。用\ ``-S``\ 或\ ``-B``\ 指定的路径总是被分别归类为源树或构建树。用普通参数指定的路径根据它们的内容和前面给出的路径类型进行分类。如果只给出一种路径类型，则使用当前工作目录（cwd）作为另一种。例如：
 
 ============================== ============ ===========
- Command Line                   Source Dir   Build Dir
+ 命令行                          源目录        构建目录
 ============================== ============ ===========
  ``cmake src``                  ``src``      `cwd`
  ``cmake build`` (existing)     `loaded`     ``build``
@@ -122,10 +117,7 @@ is used for the other.  For example:
 
 .. versionchanged:: 3.23
 
-  CMake warns when multiple source paths are specified.  This has never
-  been officially documented or supported, but older versions accidentally
-  accepted multiple source paths and used the last path specified.
-  Avoid passing multiple source path arguments.
+  CMake在指定多个源路径时发出警告。这从来没有正式的文档或支持，但较旧的版本会意外地接受多个源路径，并使用最后指定的路径。避免传递多个源路径参数。
 
 在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\ :generator:`Unix Makefiles`\ 生成器后，可以直接运行\ ``make``：
 
@@ -146,54 +138,36 @@ is used for the other.  For example:
 ``--fresh``
  .. versionadded:: 3.24
 
- Perform a fresh configuration of the build tree.
- This removes any existing ``CMakeCache.txt`` file and associated
- ``CMakeFiles/`` directory, and recreates them from scratch.
+ 执行构建树的新配置。这将删除任何现有的\ ``CMakeCache.txt``\ 文件和相关的\ ``CMakeFiles/``\ 目录，并从头开始重新创建它们。
 
 ``-L[A][H]``
- List non-advanced cached variables.
+ 列出非高级缓存变量。
 
- List ``CACHE`` variables will run CMake and list all the variables from
- the CMake ``CACHE`` that are not marked as ``INTERNAL`` or :prop_cache:`ADVANCED`.
- This will effectively display current CMake settings, which can then be
- changed with ``-D`` option.  Changing some of the variables may result
- in more variables being created.  If ``A`` is specified, then it will
- display also advanced variables.  If ``H`` is specified, it will also
- display help for each variable.
+ 列表\ ``CACHE``\ 变量将运行CMake，并从CMake ``CACHE``\ 中列出所有未标记为\ ``INTERNAL``\ 或\ :prop_cache:`ADVANCED`\ 的变量。这将有效地显示当前的CMake设置，然后可以使用\ ``-D``\ 选项更改。改变一些变量可能会产生更多的变量。如果指定了\ ``A``，那么它还将显示高级变量。如果指定了\ ``H``，它还将为每个变量显示帮助。
 
 ``-N``
- View mode only.
+ 视图模式。
 
- Only load the cache.  Do not actually run configure and generate
- steps.
+ 只加载缓存。不实际运行配置和生成步骤。
 
 ``--graphviz=[file]``
- Generate graphviz of dependencies, see :module:`CMakeGraphVizOptions` for more.
+ 生成依赖的graphviz，参见\ :module:`CMakeGraphVizOptions`\ 获取更多信息。
 
- Generate a graphviz input file that will contain all the library and
- executable dependencies in the project.  See the documentation for
- :module:`CMakeGraphVizOptions` for more details.
+ 生成一个graphviz输入文件，该文件将包含项目中的所有库和可执行依赖项。更多细节请参阅\ :module:`CMakeGraphVizOptions`\ 文档。
 
 ``--system-information [file]``
- Dump information about this system.
+ 转储系统信息。
 
- Dump a wide range of information about the current system.  If run
- from the top of a binary tree for a CMake project it will dump
- additional information such as the cache, log files etc.
+ 转储关于当前系统的各种信息。如果从一个CMake项目的二进制目录顶层运行，它将转储额外的信息，如缓存、日志文件等。
 
 ``--log-level=<ERROR|WARNING|NOTICE|STATUS|VERBOSE|DEBUG|TRACE>``
- Set the log level.
+ 设置日志级别。
 
- The :command:`message` command will only output messages of the specified
- log level or higher.  The default log level is ``STATUS``.
+ :command:`message`\ 命令将只输出指定日志级别或更高级别的消息。默认日志级别为\ ``STATUS``。
 
- To make a log level persist between CMake runs, set
- :variable:`CMAKE_MESSAGE_LOG_LEVEL` as a cache variable instead.
- If both the command line option and the variable are given, the command line
- option takes precedence.
+ 要在CMake运行之间保持日志级别，可以将\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ 设置为缓存变量。如果同时给出了命令行选项和变量，则命令行选项优先。
 
- For backward compatibility reasons, ``--loglevel`` is also accepted as a
- synonym for this option.
+ 出于向后兼容的原因，``--loglevel``\ 也被接受为该选项的同义词。
 
 ``--log-context``
  Enable the :command:`message` command outputting context attached to each
