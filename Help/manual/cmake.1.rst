@@ -170,64 +170,44 @@ cmake(1)
  出于向后兼容的原因，``--loglevel``\ 也被接受为该选项的同义词。
 
 ``--log-context``
- Enable the :command:`message` command outputting context attached to each
- message.
+ 启用\ :command:`message`\ 命令输出附加到每个消息的上下文。
 
- This option turns on showing context for the current CMake run only.
- To make showing the context persistent for all subsequent CMake runs, set
- :variable:`CMAKE_MESSAGE_CONTEXT_SHOW` as a cache variable instead.
- When this command line option is given, :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`
- is ignored.
+ 这个选项打开仅显示当前CMake运行的上下文。为了让所有后续的CMake运行都持续显示上下文，可以将\ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 设置为缓存变量。当给出这个命令行选项时，:variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 将被忽略。
 
 ``--debug-trycompile``
- Do not delete the :command:`try_compile` build tree.
- Only useful on one :command:`try_compile` at a time.
+ 不删除\ :command:`try_compile`\ 构建树。一次只对一个\ :command:`try_compile`\ 有用。
 
- Do not delete the files and directories created for :command:`try_compile`
- calls.  This is useful in debugging failed try_compiles.  It may
- however change the results of the try-compiles as old junk from a
- previous try-compile may cause a different test to either pass or
- fail incorrectly.  This option is best used for one try-compile at a
- time, and only when debugging.
+ 不删除为\ :command:`try_compile`\ 调用创建的文件和目录。这在调试失败的try_compile时很有用。但是，它可能将try-compile的结果更改为以前try-compile的旧数据，可能导致不同的测试错误地通过或失败。这个选项最好一次只用于一个try-compile，并且只在调试时使用。
 
 ``--debug-output``
- Put cmake in a debug mode.
+ 将cmake置于调试模式。
 
- Print extra information during the cmake run like stack traces with
- :command:`message(SEND_ERROR)` calls.
+ 在cmake运行期间打印额外的信息，就像使用\ :command:`message(SEND_ERROR)`\ 调用进行堆栈跟踪一样。
 
 ``--debug-find``
- Put cmake find commands in a debug mode.
+ 将cmake find命令置于调试模式。
 
- Print extra find call information during the cmake run to standard
- error. Output is designed for human consumption and not for parsing.
- See also the :variable:`CMAKE_FIND_DEBUG_MODE` variable for debugging
- a more local part of the project.
+ 在cmake运行到标准错误时打印额外的find调用信息。输出是为人们使用而设计的，而不是为解析设计的。请参阅\ :variable:`CMAKE_FIND_DEBUG_MODE`\ 变量来调试项目中更局部的部分。
 
 ``--debug-find-pkg=<pkg>[,...]``
- Put cmake find commands in a debug mode when running under calls
- to :command:`find_package(\<pkg\>) <find_package>`, where ``<pkg>``
- is an entry in the given comma-separated list of case-sensitive package
- names.
+ 当在调用\ :command:`find_package(\<pkg\>) <find_package>`\ 下运行时，将cmake find命令置于调试模式，其中\ ``<pkg>``\ 是给定的以逗号分隔的包名列表中的一个条目，包名区分大小写。
 
- Like ``--debug-find``, but limiting scope to the specified packages.
+ 类似于\ ``--debug-find``，但将作用域限制为指定的包。
 
 ``--debug-find-var=<var>[,...]``
- Put cmake find commands in a debug mode when called with ``<var>``
- as the result variable, where ``<var>`` is an entry in the given
- comma-separated list.
+ 当使用\ ``<var>``\ 作为结果变量调用时，将cmake find命令置于调试模式，其中\ ``<var>``\ 是给定的逗号分隔列表中的条目。
 
- Like ``--debug-find``, but limiting scope to the specified variable names.
+ 类似于\ ``--debug-find``，但将作用域限制为指定的变量名。
 
 ``--trace``
- Put cmake in trace mode.
+ 将cmake设置为跟踪模式。
 
- Print a trace of all calls made and from where.
+ 打印所有呼叫的轨迹和调用的来源。
 
 ``--trace-expand``
- Put cmake in trace mode.
+ 将cmake设置为跟踪模式。
 
- Like ``--trace``, but with variables expanded.
+ 类似于\ ``--trace``，但是扩展了变量。
 
 ``--trace-format=<format>``
  Put cmake in trace mode and sets the trace output format.
