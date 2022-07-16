@@ -210,18 +210,22 @@ cmake(1)
  类似于\ ``--trace``，但是扩展了变量。
 
 ``--trace-format=<format>``
- Put cmake in trace mode and sets the trace output format.
+ 将cmake设置为跟踪模式并设置跟踪输出格式。
 
- ``<format>`` can be one of the following values.
+ ``<format>``\ 可以是下列值之一。
 
    ``human``
      Prints each trace line in a human-readable format. This is the
      default format.
 
+     以人类可读的格式打印每个跟踪行。这是默认格式。
+
    ``json-v1``
      Prints each line as a separate JSON document. Each document is
      separated by a newline ( ``\n`` ). It is guaranteed that no
      newline characters will be present inside a JSON document.
+
+     将每一行打印为一个单独的JSON文档。每个文档由换行符（``\n``）分隔。可以保证JSON文档中不会出现换行符。
 
      JSON trace format:
 
