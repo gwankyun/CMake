@@ -215,19 +215,12 @@ cmake(1)
  ``<format>``\ 可以是下列值之一。
 
    ``human``
-     Prints each trace line in a human-readable format. This is the
-     default format.
-
      以人类可读的格式打印每个跟踪行。这是默认格式。
 
    ``json-v1``
-     Prints each line as a separate JSON document. Each document is
-     separated by a newline ( ``\n`` ). It is guaranteed that no
-     newline characters will be present inside a JSON document.
-
      将每一行打印为一个单独的JSON文档。每个文档由换行符（``\n``）分隔。可以保证JSON文档中不会出现换行符。
 
-     JSON trace format:
+     JSON跟踪格式：
 
      .. code-block:: json
 
@@ -241,48 +234,38 @@ cmake(1)
          "global_frame": 4
        }
 
-     The members are:
+     成员有：
 
      ``file``
-       The full path to the CMake source file where the function
-       was called.
+       调用函数的CMake源文件的完整路径。
 
      ``line``
-       The line in ``file`` where the function call begins.
+       ``file``\ 中函数调用开始的行。
 
      ``line_end``
-       If the function call spans multiple lines, this field will
-       be set to the line where the function call ends. If the function
-       calls spans a single line, this field will be unset. This field
-       was added in minor version 2 of the ``json-v1`` format.
+       如果函数调用跨越多行，则该字段将设置为函数调用结束的行。如果函数调用跨越单行，这个字段将被取消设置。该字段是在\ ``json-v1``\ 格式的次要版本2中添加的。
 
      ``defer``
-       Optional member that is present when the function call was deferred
-       by :command:`cmake_language(DEFER)`.  If present, its value is a
-       string containing the deferred call ``<id>``.
+       当函数调用被\ :command:`cmake_language(DEFER)`\ 延迟时出现的可选成员。如果存在，它的值是一个包含延迟调用\ ``<id>``\ 的字符串。
 
      ``cmd``
-       The name of the function that was called.
+       被调用的函数的名称。
 
      ``args``
-       A string list of all function parameters.
+       包含所有函数参数的字符串列表。
 
      ``time``
-       Timestamp (seconds since epoch) of the function call.
+       函数调用的时间戳（自epoch以来的秒数）。
 
      ``frame``
-       Stack frame depth of the function that was called, within the
-       context of the  ``CMakeLists.txt`` being processed currently.
+       在当前正在处理的\ ``CMakeLists.txt``\ 的上下文中，被调用函数的堆栈帧深度。
 
      ``global_frame``
-       Stack frame depth of the function that was called, tracked globally
-       across all ``CMakeLists.txt`` files involved in the trace. This field
-       was added in minor version 2 of the ``json-v1`` format.
+       被调用函数的堆栈帧深度，在跟踪涉及的所有\ ``CMakeLists.txt``\ 文件中全局跟踪。该字段是在\ ``json-v1``\ 格式的次要版本2中添加的。
 
-     Additionally, the first JSON document outputted contains the
-     ``version`` key for the current major and minor version of the
+     此外，输出的第一个JSON文档包含当前主要和次要版本的\ ``version``\ 键
 
-     JSON trace format:
+     JSON跟踪格式：
 
      .. code-block:: json
 
@@ -293,11 +276,10 @@ cmake(1)
          }
        }
 
-     The members are:
+     成员有：
 
      ``version``
-       Indicates the version of the JSON format. The version has a
-       major and minor components following semantic version conventions.
+       JSON格式的版本。该版本具有遵循语义版本约定的主要和次要组件。
 
 ``--trace-source=<file>``
  Put cmake in trace mode, but output only lines of a specified file.
