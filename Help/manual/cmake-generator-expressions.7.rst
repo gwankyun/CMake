@@ -519,7 +519,7 @@ in cmake-style format.
 
   See :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>` for more details.
 
-.. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path>
+.. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path,input>
 
   .. versionadded:: 3.24
 

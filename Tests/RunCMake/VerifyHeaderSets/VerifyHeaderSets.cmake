@@ -1,5 +1,7 @@
 enable_language(C CXX)
 
+add_compile_definitions(TEST_ADD_COMPILE_DEFINITIONS)
+
 set_property(SOURCE a.h PROPERTY LANGUAGE C)
 set_property(SOURCE dir/c.h PROPERTY LANGUAGE C)
 set_property(SOURCE dir/cxx.h PROPERTY LANGUAGE CXX)
@@ -58,6 +60,10 @@ target_sources(lang_test_c INTERFACE FILE_SET HEADERS FILES lang_test.h)
 add_library(lang_test_cxx STATIC lib.c lib.cxx)
 target_compile_definitions(lang_test_cxx INTERFACE EXPECT_CXX)
 target_sources(lang_test_cxx INTERFACE FILE_SET HEADERS FILES lang_test.h)
+
+add_library(interface_lang_test_cxx INTERFACE)
+target_compile_definitions(interface_lang_test_cxx INTERFACE EXPECT_CXX)
+target_sources(interface_lang_test_cxx INTERFACE FILE_SET HEADERS FILES lang_test.h)
 
 set_property(SOURCE error.h PROPERTY LANGUAGE C)
 
