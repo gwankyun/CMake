@@ -8,43 +8,27 @@
 引言
 ============
 
-Projects will frequently depend on other projects, assets, and artifacts.
-CMake provides a number of ways to incorporate such things into the build.
-Projects and users have the flexibility to choose between methods that
-best suit their needs.
+项目将经常依赖于其他项目、资产和工件。
+CMake提供了许多方法来将这些内容合并到构建中。
+项目和用户可以灵活地选择最适合他们需求的方法。
 
-The primary methods of bringing dependencies into the build are the
-:command:`find_package` command and the :module:`FetchContent` module.
-The :module:`FindPkgConfig` module is also sometimes used, although it
-lacks some of the integration of the other two and is not discussed any
-further in this guide.
+将依赖项引入构建的主要方法是\ :command:`find_package`\ 命令和\ :module:`FetchContent`\ 模块。
+有时也会使用\ :module:`FindPkgConfig`\ 模块，尽管它缺少其他两个模块的一些集成，在本指南中不会进一步讨论。
 
-Dependencies can also be made available by a custom
-:ref:`dependency provider <dependency_providers>`.
-This might be a third party package manager, or it might be custom code
-implemented by the developer.  Dependency providers co-operate with the
-primary methods mentioned above to extend their flexibility.
+依赖项也可以由自定义\ :ref:`依赖提供器 <dependency_providers>`\ 提供。
+这可能是第三方的包管理器，也可能是由开发人员实现的定制代码。依赖提供器与上面提到的主要方法合作以扩展它们的灵活性。
 
 .. _prebuilt_find_package:
 
-Using Pre-built Packages With ``find_package()``
+利用\ ``find_package()``\ 来使用预构建包
 ================================================
 
-A package needed by the project may already be built and available at some
-location on the user's system.  That package might have also been built by
-CMake, or it could have used a different build system entirely.  It might
-even just be a collection of files that didn't need to be built at all.
-CMake provides the :command:`find_package` command for these scenarios.
-It searches well-known locations, along with additional hints and paths
-provided by the project or user.  It also supports package components and
-packages being optional.  Result variables are provided to allow the project
-to customize its own behavior according to whether the package or specific
-components were found.
+项目所需的包可能已经构建好，并且在用户系统的某些位置可用。这个包可能也是由CMake构建的，也可能使用完全不同的构建系统。
+它甚至可能只是一个根本不需要构建的文件集合。CMake为这些场景提供了\ :command:`find_package`\ 命令。
+它搜索知名的位置，以及项目或用户提供的其他提示和路径。它还支持可选包组件和包。结果变量允许项目根据是否找到包或特定组件来定制其自己的行为。
 
-In most cases, projects should generally use the :ref:`basic signature`.
-Most of the time, this will involve just the package name, maybe a version
-constraint, and the ``REQUIRED`` keyword if the dependency is not optional.
-A set of package components may also be specified.
+在大多数情况下，项目通常应该使用\ :ref:`basic signature`。
+大多数时候，这将只涉及包名，可能是版本约束，如果依赖不是可选的，则需要\ ``REQUIRED``\ 关键字。还可以指定一组包组件。
 
 .. code-block:: cmake
   :caption: Examples of ``find_package()`` basic signature
@@ -53,56 +37,33 @@ A set of package components may also be specified.
   find_package(GTest REQUIRED)
   find_package(Boost 1.79 COMPONENTS date_time)
 
-The :command:`find_package` command supports two main methods for carrying
-out the search:
+:command:`find_package`\ 命令支持两种主要的搜索方法：
 
-**Config mode**
-  With this method, the command looks for files that are typically provided
-  by the package itself.  This is the more reliable method of the two, since
-  the package details should always be in sync with the package.
+**配置模式**
+  使用此方法，该命令将查找包本身通常提供的文件。这是两种方法中更可靠的一种，因为包的详细信息应该始终与包保持同步。
 
-**Module mode**
-  Not all packages are CMake-aware. Many don't provide the files needed to
-  support config mode.  For such cases, a Find module file can be provided
-  separately, either by the project or by CMake.  A Find module is typically
-  a heuristic implementation which knows what the package normally provides
-  and how to present that package to the project.  Since Find modules are
-  usually distributed separately from the package, they are not as reliable.
-  They are typically maintained separately, and they are likely to follow
-  different release schedules, so they can easily become out-of-date.
+**模块模式**
+  不是所有的包都是CMake感知的。许多不提供支持配置模式所需的文件。对于这种情况，Find模块文件可以由项目或CMake单独提供。
+  Find模块通常是一种启发式实现，它知道包通常提供什么以及如何将包呈现给项目。因为Find模块通常是独立于包分发的，所以它们不那么可靠。
+  它们通常是分开维护的，它们可能遵循不同的发布计划，所以它们很容易过时。
 
-Depending on the arguments used, :command:`find_package` may use one or both
-of the above methods.  By restricting the options to just the basic signature,
-both config mode and module mode can be used to satisfy the dependency.
-The presence of other options may restrict the call to using only one of the
-two methods, potentially reducing the command's ability to find the dependency.
-See the :command:`find_package` documentation for full details about this
-complex topic.
+根据所使用的参数，:command:`find_package`\ 可以使用上述方法中的一个或两个。
+通过将选项限制为基本签名，配置模式和模块模式都可以用来满足依赖关系。其他选项的存在可能会限制调用只能使用这两种方法中的一种，这可能会降低命令查找依赖项的能力。
+有关这个复杂主题的详细信息，请参阅\ :command:`find_package`\ 文档。
 
-For both search methods, the user can also set cache variables on the
-:manual:`cmake(1)` command line or in the :manual:`ccmake(1)` or
-:manual:`cmake-gui(1)` UI tools to influence and override where to find
-packages. See the :ref:`User Interaction Guide <Setting Build Variables>`
-for more on how to set cache variables.
+对于这两种搜索方法，用户还可以在\ :manual:`cmake(1)`\ 命令行或\ :manual:`ccmake(1)`\ 或\ :manual:`cmake-gui(1)` UI工具中设置缓存变量，以影响和覆盖查找包的位置。
+有关如何设置缓存变量的更多信息，请参阅\ :ref:`用户交互指南 <Setting Build Variables>`。
 
 .. _Libraries providing Config-file packages:
 
-Config-file packages
+配置文件包
 --------------------
 
-The preferred way for a third party to provide executables, libraries,
-headers, and other files for use with CMake is to provide
-:ref:`config files <Config File Packages>`.  These are text files shipped
-with the package, which define CMake targets, variables, commands, and so on.
-The config file is an ordinary CMake script, which is read in by the
-:command:`find_package` command.
+第三方提供与CMake一起使用的可执行文件、库、头文件和其他文件的首选方式是提供\ :ref:`配置文件 <Config File Packages>`。
+这些是包附带的文本文件，它们定义了CMake目标、变量、命令等。配置文件是一个普通的CMake脚本，由\ :command:`find_package`\ 命令读入。
 
-The config files can usually be found in a directory whose name matches the
-pattern ``lib/cmake/<PackageName>``, although they may be in other locations
-instead (see :ref:`search procedure`).  The ``<PackageName>`` is usually the
-first argument to the :command:`find_package` command, and it may even be the
-only argument.  Alternative names can also be specified with the ``NAMES``
-option:
+配置文件通常可以在名称与模式\ ``lib/cmake/<PackageName>``\ 匹配的目录中找到，尽管它们可能在其他位置（参见\ :ref:`search procedure`）。
+``<PackageName>``\ 通常是\ :command:`find_package`\ 命令的第一个参数，甚至可能是唯一的参数。备选名称也可以用\ ``NAMES``\ 选项指定：
 
 .. code-block:: cmake
   :caption: Providing alternative names when finding a package
