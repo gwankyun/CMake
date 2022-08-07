@@ -364,6 +364,18 @@ Commands
     FetchContent_Declare(other ...)
     FetchContent_MakeAvailable(uses_other other)
 
+  Note that :variable:`CMAKE_VERIFY_INTERFACE_HEADER_SETS` is explicitly set
+  to false upon entry to ``FetchContent_MakeAvailable()``, and is restored to
+  its original value before the command returns.  Developers typically only
+  want to verify header sets from the main project, not those from any
+  dependencies.  This local manipulation of the
+  :variable:`CMAKE_VERIFY_INTERFACE_HEADER_SETS` variable provides that
+  intuitive behavior.  You can use variables like
+  :variable:`CMAKE_PROJECT_INCLUDE` or
+  :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE` to turn verification back
+  on for all or some dependencies.  You can also set the
+  :prop_tgt:`VERIFY_INTERFACE_HEADER_SETS` property of individual targets.
+
 .. command:: FetchContent_Populate
 
   .. note::
@@ -1189,19 +1201,18 @@ function(FetchContent_Declare contentName)
     )
   endif()
 
-  set(options "")
+  # Because we are only looking for a subset of the supported keywords, we
+  # cannot check for multi-value arguments with this method. We will have to
+  # handle the URL keyword differently.
   set(oneValueArgs
     SVN_REPOSITORY
     DOWNLOAD_NO_EXTRACT
     DOWNLOAD_EXTRACT_TIMESTAMP
-    URL
     BINARY_DIR
     SOURCE_DIR
   )
-  set(multiValueArgs "")
 
-  cmake_parse_arguments(PARSE_ARGV 1 ARG
-    "${options}" "${oneValueArgs}" "${multiValueArgs}")
+  cmake_parse_arguments(PARSE_ARGV 1 ARG "" "${oneValueArgs}" "")
 
   string(TOLOWER ${contentName} contentNameLower)
 
@@ -1230,31 +1241,45 @@ function(FetchContent_Declare contentName)
   # explicitly set the relevant option if not already provided. The condition
   # here is essentially an abbreviated version of the logic in
   # ExternalProject's _ep_add_download_command() function.
-  if(ARG_URL AND
-     NOT IS_DIRECTORY "${ARG_URL}" AND
-     NOT ARG_DOWNLOAD_NO_EXTRACT AND
+  if(NOT ARG_DOWNLOAD_NO_EXTRACT AND
      NOT DEFINED ARG_DOWNLOAD_EXTRACT_TIMESTAMP)
-    cmake_policy(GET CMP0135 _FETCHCONTENT_CMP0135
-      PARENT_SCOPE # undocumented, do not use outside of CMake
-    )
-    if(_FETCHCONTENT_CMP0135 STREQUAL "")
-      message(AUTHOR_WARNING
-        "The DOWNLOAD_EXTRACT_TIMESTAMP option was not given and policy "
-        "CMP0135 is not set. The policy's OLD behavior will be used. "
-        "When using a URL download, the timestamps of extracted files "
-        "should preferably be that of the time of extraction, otherwise "
-        "code that depends on the extracted contents might not be "
-        "rebuilt if the URL changes. The OLD behavior preserves the "
-        "timestamps from the archive instead, but this is usually not "
-        "what you want. Update your project to the NEW behavior or "
-        "specify the DOWNLOAD_EXTRACT_TIMESTAMP option with a value of "
-        "true to avoid this robustness issue."
-      )
-      set(ARG_DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    elseif(_FETCHCONTENT_CMP0135 STREQUAL "NEW")
-      set(ARG_DOWNLOAD_EXTRACT_TIMESTAMP FALSE)
-    else()
-      set(ARG_DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    list(FIND ARGN URL urlIndex)
+    if(urlIndex GREATER_EQUAL 0)
+      math(EXPR urlIndex "${urlIndex} + 1")
+      list(LENGTH ARGN numArgs)
+      if(urlIndex GREATER_EQUAL numArgs)
+        message(FATAL_ERROR
+          "URL keyword needs to be followed by at least one URL"
+        )
+      endif()
+      # If we have multiple URLs, none of them are allowed to be local paths.
+      # Therefore, we can test just the first URL, and if it is non-local, so
+      # will be the others if there are more.
+      list(GET ARGN ${urlIndex} firstUrl)
+      if(NOT IS_DIRECTORY "${firstUrl}")
+        cmake_policy(GET CMP0135 _FETCHCONTENT_CMP0135
+          PARENT_SCOPE # undocumented, do not use outside of CMake
+        )
+        if(_FETCHCONTENT_CMP0135 STREQUAL "")
+          message(AUTHOR_WARNING
+            "The DOWNLOAD_EXTRACT_TIMESTAMP option was not given and policy "
+            "CMP0135 is not set. The policy's OLD behavior will be used. "
+            "When using a URL download, the timestamps of extracted files "
+            "should preferably be that of the time of extraction, otherwise "
+            "code that depends on the extracted contents might not be "
+            "rebuilt if the URL changes. The OLD behavior preserves the "
+            "timestamps from the archive instead, but this is usually not "
+            "what you want. Update your project to the NEW behavior or "
+            "specify the DOWNLOAD_EXTRACT_TIMESTAMP option with a value of "
+            "true to avoid this robustness issue."
+          )
+          set(ARG_DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+        elseif(_FETCHCONTENT_CMP0135 STREQUAL "NEW")
+          set(ARG_DOWNLOAD_EXTRACT_TIMESTAMP FALSE)
+        else()
+          set(ARG_DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+        endif()
+      endif()
     endif()
   endif()
 
@@ -1801,6 +1826,13 @@ endfunction()
 # calls will be available to the caller.
 macro(FetchContent_MakeAvailable)
 
+  # We must append an item, even if the variable is unset, so prefix its value.
+  # We will strip that prefix when we pop the value at the end of the macro.
+  list(APPEND __cmake_fcCurrentVarsStack
+    "__fcprefix__${CMAKE_VERIFY_INTERFACE_HEADER_SETS}"
+  )
+  set(CMAKE_VERIFY_INTERFACE_HEADER_SETS FALSE)
+
   get_property(__cmake_providerCommand GLOBAL PROPERTY
     __FETCHCONTENT_MAKEAVAILABLE_SERIAL_PROVIDER
   )
@@ -1952,10 +1984,18 @@ macro(FetchContent_MakeAvailable)
     endif()
   endforeach()
 
+  # Prefix will be "__fcprefix__"
+  list(POP_BACK __cmake_fcCurrentVarsStack __cmake_original_verify_setting)
+  string(SUBSTRING "${__cmake_original_verify_setting}"
+    12 -1 __cmake_original_verify_setting
+  )
+  set(CMAKE_VERIFY_INTERFACE_HEADER_SETS ${__cmake_original_verify_setting})
+
   # clear local variables to prevent leaking into the caller's scope
   unset(__cmake_contentName)
   unset(__cmake_contentNameLower)
   unset(__cmake_contentNameUpper)
   unset(__cmake_providerCommand)
+  unset(__cmake_original_verify_setting)
 
 endmacro()
