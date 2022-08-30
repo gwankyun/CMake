@@ -74,21 +74,9 @@ CMake提供了许多方法来将这些内容合并到构建中。
       SomeThing            # Also still look for its canonical name
   )
 
-The config file must be named either ``<PackageName>Config.cmake`` or
-``<LowercasePackageName>-config.cmake`` (the former is used for the remainder
-of this guide, but both are supported).  This file is the entry point
-to the package for CMake.  A separate optional file named
-``<PackageName>ConfigVersion.cmake`` or
-``<LowercasePackageName>-config-version.cmake`` may also exist in the same
-directory.  This file is used by CMake to determine whether the version of
-the package satisfies any version constraint included in the call to
-:command:`find_package`.  It is optional to specify a version when calling
-:command:`find_package`, even if a ``<PackageName>ConfigVersion.cmake``
-file is present.
+配置文件必须命名为\ ``<PackageName>Config.cmake``\ 或者\ ``<LowercasePackageName>-config.cmake``\ （前者用于本指南的其余部分，但两者都支持）。这个文件是CMake包的入口点。一个名为\ ``<PackageName>ConfigVersion.cmake``\ 的单独可选文件或\ ``<LowercasePackageName>-config-version.cmake``\ 也可能存在于同一个目录中。CMake使用此文件来确定包的版本是否满足调用\ :command:`find_package`\ 中包含的任何版本约束。调用\ :command:`find_package`\ 时指定版本是可选的，即使是\ ``<PackageName>ConfigVersion.cmake``\ 文件存在。
 
-If the ``<PackageName>Config.cmake`` file is found and any version constraint
-is satisfied, the :command:`find_package` command considers the package to be
-found, and the entire package is assumed to be complete as designed.
+如果找到\ ``<PackageName>Config.cmake``\ 配置文件并且满足任何版本约束，:command:`find_package`\ 命令会认为找到的包是完整的，并假定整个包按照设计的那样完整。
 
 There may be additional files providing CMake commands or
 :ref:`imported targets` for you to use.  CMake does not enforce any naming
