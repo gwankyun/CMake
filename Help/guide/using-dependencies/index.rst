@@ -78,13 +78,7 @@ CMake提供了许多方法来将这些内容合并到构建中。
 
 如果找到\ ``<PackageName>Config.cmake``\ 配置文件并且满足任何版本约束，:command:`find_package`\ 命令会认为找到的包是完整的，并假定整个包按照设计的那样完整。
 
-There may be additional files providing CMake commands or
-:ref:`imported targets` for you to use.  CMake does not enforce any naming
-convention for these files.  They are related to the primary
-``<PackageName>Config.cmake`` file by use of the CMake :command:`include`
-command.  The ``<PackageName>Config.cmake`` file would typically include
-these for you, so they won't usually require any additional step other than
-the call to :command:`find_package`.
+可能有其他文件提供CMake命令或\ :ref:`imported targets`\ 供你使用。CMake不强制这些文件的任何命名约定。它们与使用CMake的\ :command:`include`\命令创建的主\ ``<PackageName>Config.cmake``\ 文件相关。``<PackageName>Config.cmake``\ 文件通常会为你包含这些，所以它们通常不需要任何额外的步骤，除了调用\ :command:`find_package`。
 
 If the location of the package is in a
 :ref:`directory known to CMake <search procedure>`, the
