@@ -80,18 +80,9 @@ CMake提供了许多方法来将这些内容合并到构建中。
 
 可能有其他文件提供CMake命令或\ :ref:`imported targets`\ 供你使用。CMake不强制这些文件的任何命名约定。它们与使用CMake的\ :command:`include`\命令创建的主\ ``<PackageName>Config.cmake``\ 文件相关。``<PackageName>Config.cmake``\ 文件通常会为你包含这些，所以它们通常不需要任何额外的步骤，除了调用\ :command:`find_package`。
 
-If the location of the package is in a
-:ref:`directory known to CMake <search procedure>`, the
-:command:`find_package` call should succeed.  The directories known to CMake
-are platform-specific.  For example, packages installed on Linux with a
-standard system package manager will be found in the ``/usr`` prefix
-automatically.  Packages installed in ``Program Files`` on Windows will
-similarly be found automatically.
+如果包的位置在\ :ref:`CMake知道的目录 <search procedure>`\ 中，那么\ :command:`find_package`\ 调用应该会成功。CMake知道的目录是特定于平台的。例如，使用标准系统包管理器在Linux上安装的包将自动在\ ``/usr``\ 前缀中找到。安装在Windows的\ ``Program Files``\ 中的包也会自动找到。
 
-Packages will not be found automatically without help if they are in
-locations not known to CMake, such as ``/opt/mylib`` or ``$HOME/dev/prefix``.
-This is a normal situation, and CMake provides several ways for users to
-specify where to find such libraries.
+如果包在CMake不知道的位置，例如\ ``/opt/mylib``\ 或\ ``$HOME/dev/prefix``，将不会在没有帮助的情况下自动找到它们。这是一种正常的情况，CMake为用户提供了几种方法来指定在哪里找到这样的库。
 
 The :variable:`CMAKE_PREFIX_PATH` variable may be
 :ref:`set when invoking CMake <Setting Build Variables>`.
