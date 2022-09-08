@@ -8,14 +8,14 @@
 引言
 ============
 
-项目将经常依赖于其他项目、资产和工件。
-CMake提供了许多方法来将这些内容合并到构建中。
+项目将经常依赖于其他项目、资产和工件。\
+CMake提供了许多方法来将这些内容合并到构建中。\
 项目和用户可以灵活地选择最适合他们需求的方法。
 
-将依赖项引入构建的主要方法是\ :command:`find_package`\ 命令和\ :module:`FetchContent`\ 模块。
+将依赖项引入构建的主要方法是\ :command:`find_package`\ 命令和\ :module:`FetchContent`\ 模块。\
 有时也会使用\ :module:`FindPkgConfig`\ 模块，尽管它缺少其他两个模块的一些集成，在本指南中不会进一步讨论。
 
-依赖项也可以由自定义\ :ref:`依赖提供器 <dependency_providers>`\ 提供。
+依赖项也可以由自定义\ :ref:`依赖提供器 <dependency_providers>`\ 提供。\
 这可能是第三方的包管理器，也可能是由开发人员实现的定制代码。依赖提供器与上面提到的主要方法合作以扩展它们的灵活性。
 
 .. _prebuilt_find_package:
@@ -23,11 +23,11 @@ CMake提供了许多方法来将这些内容合并到构建中。
 利用\ ``find_package()``\ 来使用预构建包
 ================================================
 
-项目所需的包可能已经构建好，并且在用户系统的某些位置可用。这个包可能也是由CMake构建的，也可能使用完全不同的构建系统。
-它甚至可能只是一个根本不需要构建的文件集合。CMake为这些场景提供了\ :command:`find_package`\ 命令。
+项目所需的包可能已经构建好，并且在用户系统的某些位置可用。这个包可能也是由CMake构建的，也可能使用完全不同的构建系统。\
+它甚至可能只是一个根本不需要构建的文件集合。CMake为这些场景提供了\ :command:`find_package`\ 命令。\
 它搜索知名的位置，以及项目或用户提供的其他提示和路径。它还支持可选包组件和包。结果变量允许项目根据是否找到包或特定组件来定制其自己的行为。
 
-在大多数情况下，项目通常应该使用\ :ref:`basic signature`。
+在大多数情况下，项目通常应该使用\ :ref:`basic signature`。\
 大多数时候，这将只涉及包名，可能是版本约束，如果依赖不是可选的，则需要\ ``REQUIRED``\ 关键字。还可以指定一组包组件。
 
 .. code-block:: cmake
@@ -43,15 +43,15 @@ CMake提供了许多方法来将这些内容合并到构建中。
   使用此方法，该命令将查找包本身通常提供的文件。这是两种方法中更可靠的一种，因为包的详细信息应该始终与包保持同步。
 
 **模块模式**
-  不是所有的包都是CMake感知的。许多不提供支持配置模式所需的文件。对于这种情况，Find模块文件可以由项目或CMake单独提供。
-  Find模块通常是一种启发式实现，它知道包通常提供什么以及如何将包呈现给项目。因为Find模块通常是独立于包分发的，所以它们不那么可靠。
+  不是所有的包都是CMake感知的。许多不提供支持配置模式所需的文件。对于这种情况，Find模块文件可以由项目或CMake单独提供。\
+  Find模块通常是一种启发式实现，它知道包通常提供什么以及如何将包呈现给项目。因为Find模块通常是独立于包分发的，所以它们不那么可靠。\
   它们通常是分开维护的，它们可能遵循不同的发布计划，所以它们很容易过时。
 
-根据所使用的参数，:command:`find_package`\ 可以使用上述方法中的一个或两个。
-通过将选项限制为基本签名，配置模式和模块模式都可以用来满足依赖关系。其他选项的存在可能会限制调用只能使用这两种方法中的一种，这可能会降低命令查找依赖项的能力。
+根据所使用的参数，:command:`find_package`\ 可以使用上述方法中的一个或两个。\
+通过将选项限制为基本签名，配置模式和模块模式都可以用来满足依赖关系。其他选项的存在可能会限制调用只能使用这两种方法中的一种，这可能会降低命令查找依赖项的能力。\
 有关这个复杂主题的详细信息，请参阅\ :command:`find_package`\ 文档。
 
-对于这两种搜索方法，用户还可以在\ :manual:`cmake(1)`\ 命令行或\ :manual:`ccmake(1)`\ 或\ :manual:`cmake-gui(1)` UI工具中设置缓存变量，以影响和覆盖查找包的位置。
+对于这两种搜索方法，用户还可以在\ :manual:`cmake(1)`\ 命令行或\ :manual:`ccmake(1)`\ 或\ :manual:`cmake-gui(1)` UI工具中设置缓存变量，以影响和覆盖查找包的位置。\
 有关如何设置缓存变量的更多信息，请参阅\ :ref:`用户交互指南 <Setting Build Variables>`。
 
 .. _Libraries providing Config-file packages:
@@ -59,10 +59,10 @@ CMake提供了许多方法来将这些内容合并到构建中。
 配置文件包
 --------------------
 
-第三方提供与CMake一起使用的可执行文件、库、头文件和其他文件的首选方式是提供\ :ref:`配置文件 <Config File Packages>`。
+第三方提供与CMake一起使用的可执行文件、库、头文件和其他文件的首选方式是提供\ :ref:`配置文件 <Config File Packages>`。\
 这些是包附带的文本文件，它们定义了CMake目标、变量、命令等。配置文件是一个普通的CMake脚本，由\ :command:`find_package`\ 命令读入。
 
-配置文件通常可以在名称与模式\ ``lib/cmake/<PackageName>``\ 匹配的目录中找到，尽管它们可能在其他位置（参见\ :ref:`search procedure`）。
+配置文件通常可以在名称与模式\ ``lib/cmake/<PackageName>``\ 匹配的目录中找到，尽管它们可能在其他位置（参见\ :ref:`search procedure`）。\
 ``<PackageName>``\ 通常是\ :command:`find_package`\ 命令的第一个参数，甚至可能是唯一的参数。备选名称也可以用\ ``NAMES``\ 选项指定：
 
 .. code-block:: cmake
@@ -74,70 +74,52 @@ CMake提供了许多方法来将这些内容合并到构建中。
       SomeThing            # Also still look for its canonical name
   )
 
-配置文件必须命名为\ ``<PackageName>Config.cmake``\ 或者\ ``<LowercasePackageName>-config.cmake``\ （前者用于本指南的其余部分，但两者都支持）。这个文件是CMake包的入口点。一个名为\ ``<PackageName>ConfigVersion.cmake``\ 的单独可选文件或\ ``<LowercasePackageName>-config-version.cmake``\ 也可能存在于同一个目录中。CMake使用此文件来确定包的版本是否满足调用\ :command:`find_package`\ 中包含的任何版本约束。调用\ :command:`find_package`\ 时指定版本是可选的，即使是\ ``<PackageName>ConfigVersion.cmake``\ 文件存在。
+配置文件必须命名为\ ``<PackageName>Config.cmake``\ 或者\ ``<LowercasePackageName>-config.cmake``\ （前者用于本指南的其余部分，但两者都支持）。\
+这个文件是CMake包的入口点。一个名为\ ``<PackageName>ConfigVersion.cmake``\ 的单独可选文件或\ ``<LowercasePackageName>-config-version.cmake``\ 也可能存在于同一个目录中。\
+CMake使用此文件来确定包的版本是否满足调用\ :command:`find_package`\ 中包含的任何版本约束。\
+调用\ :command:`find_package`\ 时指定版本是可选的，即使是\ ``<PackageName>ConfigVersion.cmake``\ 文件存在。
 
 如果找到\ ``<PackageName>Config.cmake``\ 配置文件并且满足任何版本约束，:command:`find_package`\ 命令会认为找到的包是完整的，并假定整个包按照设计的那样完整。
 
-可能有其他文件提供CMake命令或\ :ref:`imported targets`\ 供你使用。CMake不强制这些文件的任何命名约定。它们与使用CMake的\ :command:`include`\命令创建的主\ ``<PackageName>Config.cmake``\ 文件相关。``<PackageName>Config.cmake``\ 文件通常会为你包含这些，所以它们通常不需要任何额外的步骤，除了调用\ :command:`find_package`。
+可能有其他文件提供CMake命令或\ :ref:`imported targets`\ 供你使用。CMake不强制这些文件的任何命名约定。\
+它们与使用CMake的\ :command:`include`\命令创建的主\ ``<PackageName>Config.cmake``\ 文件相关。\
+``<PackageName>Config.cmake``\ 文件通常会为你包含这些，所以它们通常不需要任何额外的步骤，除了调用\ :command:`find_package`。
 
-如果包的位置在\ :ref:`CMake知道的目录 <search procedure>`\ 中，那么\ :command:`find_package`\ 调用应该会成功。CMake知道的目录是特定于平台的。例如，使用标准系统包管理器在Linux上安装的包将自动在\ ``/usr``\ 前缀中找到。安装在Windows的\ ``Program Files``\ 中的包也会自动找到。
+如果包的位置在\ :ref:`CMake知道的目录 <search procedure>`\ 中，那么\ :command:`find_package`\ 调用应该会成功。\
+CMake知道的目录是特定于平台的。例如，使用标准系统包管理器在Linux上安装的包将自动在\ ``/usr``\ 前缀中找到。安装在Windows的\ ``Program Files``\ 中的包也会自动找到。
 
-如果包在CMake不知道的位置，例如\ ``/opt/mylib``\ 或\ ``$HOME/dev/prefix``，将不会在没有帮助的情况下自动找到它们。这是一种正常的情况，CMake为用户提供了几种方法来指定在哪里找到这样的库。
+如果包在CMake不知道的位置，例如\ ``/opt/mylib``\ 或\ ``$HOME/dev/prefix``，将不会在没有帮助的情况下自动找到它们。\
+这是一种正常的情况，CMake为用户提供了几种方法来指定在哪里找到这样的库。
 
-The :variable:`CMAKE_PREFIX_PATH` variable may be
-:ref:`set when invoking CMake <Setting Build Variables>`.
-It is treated as a list of base paths in which to search for
-:ref:`config files <Config File Packages>`.  A package installed in
-``/opt/somepackage`` will typically install config files such as
-``/opt/somepackage/lib/cmake/somePackage/SomePackageConfig.cmake``.
-In that case, ``/opt/somepackage`` should be added to
-:variable:`CMAKE_PREFIX_PATH`.
+:variable:`CMAKE_PREFIX_PATH`\ 变量可以\ :ref:`在调用CMake时设置 <Setting Build Variables>`。它被视为搜索\ :ref:`配置文件 <Config File Packages>`\ 的基本路径列表。\
+安装在\ ``/opt/somepackage``\ 中的包通常会安装配置文件，如\ ``/opt/somepackage/lib/cmake/somePackage/SomePackageConfig.cmake``。\
+在这种情况下，应该将\ ``/opt/somepackage``\ 添加到\ :variable:`CMAKE_PREFIX_PATH`\ 中。
 
-The environment variable ``CMAKE_PREFIX_PATH`` may also be populated with
-prefixes to search for packages.  Like the ``PATH`` environment variable,
-this is a list, but it needs to use the platform-specific environment variable
-list item separator (``:`` on Unix and ``;`` on Windows).
+环境变量\ ``CMAKE_PREFIX_PATH``\ 也可以用前缀填充，以搜索包。\
+与\ ``PATH``\ 环境变量一样，这是一个列表，但它需要使用特定于平台的环境变量列表项分隔符（``:``\ 在Unix和\ ``;``\ 在Windows上）。
 
-The :variable:`CMAKE_PREFIX_PATH` variable provides convenience in cases
-where multiple prefixes need to be specified, or when multiple packages
-are available under the same prefix.  Paths to packages may also be
-specified by setting variables matching ``<PackageName>_DIR``, such as
-``SomePackage_DIR``.  Note that this is not a prefix, but should be a full
-path to a directory containing a config-style package file, such as
-``/opt/somepackage/lib/cmake/SomePackage`` in the above example.
-See the :command:`find_package` documentation for other CMake variables and
-environment variables that can affect the search.
+:variable:`CMAKE_PREFIX_PATH`\ 变量在需要指定多个前缀的情况下提供了方便，或者在同一个前缀下可以使用多个包。\
+包的路径也可以通过设置匹配\ ``<PackageName>_DIR``\ 的变量来指定，例如\ ``SomePackage_DIR``。\
+注意，这不是一个前缀，而是一个包含配置风格包文件的目录的完整路径，例如上面的例子中的\ ``/opt/somepackage/lib/cmake/SomePackage``。\
+有关可能影响搜索的其他CMake变量和环境变量，请参阅\ :command:`find_package`\ 文档。
 
 .. _Libraries not Providing Config-file Packages:
 
 Find Module Files
 -----------------
 
-Packages which do not provide config files can still be found with the
-:command:`find_package` command, if a ``FindSomePackage.cmake`` file is
-available.  These Find module files are different to config files in that:
+不提供配置文件的包仍然可以通过\ :command:`find_package`\ 命令找到，如果已获取\ ``FindSomePackage.cmake``\ 文件。\
+这些Find模块文件与配置文件不同：
 
-#. Find module files should not be provided by the package itself.
-#. The availability of a ``Find<PackageName>.cmake`` file does not indicate
-   the availability of the package, or any particular part of the package.
-#. CMake does not search the locations specified in the
-   :variable:`CMAKE_PREFIX_PATH` variable for ``Find<PackageName>.cmake``
-   files.  Instead, CMake searches for such files in the locations given
-   by the :variable:`CMAKE_MODULE_PATH` variable.  It is common for users to
-   set the :variable:`CMAKE_MODULE_PATH` when running CMake, and it is common
-   for CMake projects to append to :variable:`CMAKE_MODULE_PATH` to allow use
-   of local Find module files.
-#. CMake ships ``Find<PackageName>.cmake`` files for some
-   :manual:`third party packages <cmake-modules(7)>`.  These files are a
-   maintenance burden for CMake, and it is not unusual for these to fall
-   behind the latest releases of the packages they are associated with.
-   In general, new Find modules are not added to CMake any more.  Projects
-   should encourage the upstream packages to provide a config file where
-   possible.  If that is unsuccessful, the project should provide its own
-   Find module for the package.
+#. 查找模块文件不应该由包本身提供。
+#. ``Find<PackageName>.cmake``\ 文件不指示包的可用性，也不指示包的任何特定部分。
+#. CMake不会搜索在\ :variable:`CMAKE_PREFIX_PATH`\ 变量中为Find指定的\ ``Find<PackageName>.cmake``\ 文件位置。\
+   相反，CMake会在\ :variable:`CMAKE_MODULE_PATH`\ 变量给出的位置中搜索这些文件。\
+   用户在运行CMake时设置\ :variable:`CMAKE_MODULE_PATH`\ 是很常见的，而且CMake项目通常会将\ :variable:`CMAKE_MODULE_PATH`\ 附加到\ :variable:`CMAKE_MODULE_PATH`\ 中，以允许使用本地Find模块文件。
+#. CMake搭载一些\ :manual:`第三方包 <cmake-modules(7)>`\ 的\ ``Find<PackageName>.cmake``
+   文件。这些文件由CMake维护负担，它们落后于与它们相关的包的最新版本是很正常的。一般来说，新的Find模块不再添加到CMake中。\项目应该鼓励上游包在可能的情况下提供配置文件。如果不成功，项目应该为包提供自己的Find模块。
 
-See :ref:`Find Modules` for a detailed discussion of how to write a
-Find module file.
+有关如何编写Find模块文件的详细讨论，请参见\ :ref:`Find Modules`。
 
 .. _Imported Targets from Packages:
 
