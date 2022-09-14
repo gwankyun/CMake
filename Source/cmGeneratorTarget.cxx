@@ -1702,7 +1702,7 @@ void addFileSetEntry(cmGeneratorTarget const* headTarget,
       }
       bool found = false;
       for (auto const& sg : headTarget->Makefile->GetSourceGroups()) {
-        if (sg.MatchesFiles(path)) {
+        if (sg.MatchChildrenFiles(path)) {
           found = true;
           break;
         }
@@ -8622,7 +8622,7 @@ bool cmGeneratorTarget::AddHeaderSetVerification()
             verifyTarget->SetProperty("UNITY_BUILD", "OFF");
             cm::optional<std::map<std::string, cmValue>>
               perConfigCompileDefinitions;
-            verifyTarget->FinalizeTargetCompileInfo(
+            verifyTarget->FinalizeTargetConfiguration(
               this->Makefile->GetCompileDefinitionsEntries(),
               perConfigCompileDefinitions);
 

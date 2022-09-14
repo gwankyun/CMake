@@ -297,7 +297,12 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 变量引用
 -------------------
 
-*变量引用*\ 的形式为\ ``${<variable>}``，在\ `引号参数`_\ 或\ `无引号参数`_\ 中求值。变量引用将被变量的值替换，如果变量未设置，则被空字符串替换。变量引用可以嵌套并由内到外计算，例如\ ``${outer_${inner_variable}_variable}``。
+A *variable reference* has the form ``${<variable>}`` and is
+evaluated inside a `Quoted Argument`_ or an `Unquoted Argument`_.
+A variable reference is replaced by the value of the specified
+variable or cache entry, or if neither is set, by the empty string.
+Variable references can nest and are evaluated from the
+inside out, e.g. ``${outer_${inner_variable}_variable}``.
 
 字面值变量引用可以由字母数字、``/_.+-``\ 和\ `转义序列`_\ 组成。嵌套引用可用于计算任意名称的变量。请参阅策略\ :policy:`CMP0053`\ 文档了解历史考虑因素以及为什么\ ``$``\ 在技术上允许，却不鼓励使用的原因。
 
@@ -305,9 +310,16 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
 *环境变量引用*\ 的格式为\ ``$ENV{<variable>}``。有关更多信息，请参阅\ `环境变量`_\ 一节。
 
-*缓存变量引用*\ 的格式为\ ``$CACHE{<variable>}``。有关更多信息，请参阅\ :variable:`CACHE`。
+A *cache variable reference* has the form ``$CACHE{<variable>}``,
+and is replaced by the value of the specified cache entry without
+checking for a normal variable of the same name.  If the cache
+entry does not exist, it is replaced by the empty string.
+See :variable:`CACHE` for more information.
 
-:command:`if`\ 命令有一个特殊的条件语法，允许以\ ``<variable>``\ 而不是\ ``${<variable>}``\ 的简写形式引用变量。然而，环境和缓存变量总是需要被引用为\ ``$ENV{<variable>}``\ 或\ ``$CACHE{<variable>}``。
+The :command:`if` command has a special condition syntax that
+allows for variable references in the short form ``<variable>``
+instead of ``${<variable>}``.  However, environment variables
+always need to be referenced as ``$ENV{<variable>}``.
 
 注释
 --------

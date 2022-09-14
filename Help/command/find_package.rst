@@ -142,9 +142,9 @@ should find all components, no components or some well-defined subset of the
 available components.
 
 .. versionadded:: 3.24
-  The ``REGISTRY_VIEW`` keyword enables to specify which registry views must be
-  queried. This keyword is only meaningful on ``Windows`` platform and will be
-  ignored on all other ones. Formally, it is up to the target package how to
+  The ``REGISTRY_VIEW`` keyword specifies which registry views should be
+  queried. This keyword is only meaningful on ``Windows`` platforms and will
+  be ignored on all others. Formally, it is up to the target package how to
   interpret the registry view information given to it.
 
 .. versionadded:: 3.24
@@ -412,7 +412,8 @@ enabled.
    package registry.
 
 7. Search cmake variables defined in the Platform files for the
-   current system. The searching of :variable:`CMAKE_INSTALL_PREFIX` can be
+   current system. The searching of :variable:`CMAKE_INSTALL_PREFIX` and
+   :variable:`CMAKE_STAGING_PREFIX` can be
    skipped if ``NO_CMAKE_INSTALL_PREFIX`` is passed or by setting the
    :variable:`CMAKE_FIND_USE_INSTALL_PREFIX` to ``FALSE``. All these locations
    can be skipped if ``NO_CMAKE_SYSTEM_PATH`` is passed or by setting the
