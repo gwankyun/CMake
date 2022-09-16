@@ -25,31 +25,31 @@ add_subdirectory(MathFunctions)
 add_executable(Tutorial tutorial.cxx)
 target_link_libraries(Tutorial PUBLIC MathFunctions)
 
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
+# 添加二进制树到引用目录的搜索路径
+# 以便找到TutorialConfig.h
 target_include_directories(Tutorial PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )
 
-# add the install targets
+# 添加安装目标
 install(TARGETS Tutorial DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
   DESTINATION include
   )
 
-# enable testing
+# 启用测试
 include(CTest)
 
-# does the application run
+# 程序是否运行
 add_test(NAME Runs COMMAND Tutorial 25)
 
-# does the usage message work?
+# 用例输出有效吗？
 add_test(NAME Usage COMMAND Tutorial)
 set_tests_properties(Usage
   PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*number"
   )
 
-# define a function to simplify adding tests
+# 定义一个函数来简化添加测试
 function(do_test target arg result)
   add_test(NAME Comp${arg} COMMAND ${target} ${arg})
   set_tests_properties(Comp${arg}
@@ -57,7 +57,7 @@ function(do_test target arg result)
     )
 endfunction()
 
-# do a bunch of result based tests
+# 跑一些基于结果的测试
 do_test(Tutorial 4 "4 is 2")
 do_test(Tutorial 9 "9 is 3")
 do_test(Tutorial 5 "5 is 2.236")

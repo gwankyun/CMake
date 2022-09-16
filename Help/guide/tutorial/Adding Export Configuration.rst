@@ -39,8 +39,8 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories
   :language: cmake
-  :start-after: # to find MathFunctions.h, while we don't.
-  :end-before: # should we use our own math functions
+  :start-after: # 我们自己除外
+  :end-before: # 是否使用自己的数学函数
 
 一旦它被更新，我们可以重新运行CMake并验证它不再发出警告。
 
@@ -56,8 +56,8 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-install-Config.cmake
   :language: cmake
-  :start-after: # install the configuration targets
-  :end-before: # generate the config file
+  :start-after: # 安装配置目标
+  :end-before: # 生成包含导出的配置文件
 
 
 接下来，我们执行\ :command:`configure_package_config_file`。该命令将配置提供的文件，但与标准\ :command:`configure_file`\ 方法有一些特定的区别。为了正确地使用这个函数，除了所需的内容外，输入文件应该有一行文本\ ``@PACKAGE_INIT@``。该变量将被一个代码块替换，该代码块将把设置值转换为相对路径。这些新值可以通过相同的名称引用，但可以在其前面加上\ ``PACKAGE_``\ 前缀。
@@ -66,8 +66,8 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-configure-package-config.cmake
   :language: cmake
-  :start-after: # install the configuration targets
-  :end-before: # generate the version file
+  :start-after: # 安装配置目标
+  :end-before: # 为配置文件生成版本文件
 
 接下来是\ :command:`write_basic_package_version_file`。该命令写入“find_package”文档所使用的文件，以确定所需包的版本和兼容性。在这里，我们使用\ ``Tutorial_VERSION_*``\ 变量，并说它与\ ``AnyNewerVersion``\ 兼容，这表示该版本或任何更高版本与请求的版本兼容。
 
@@ -75,8 +75,8 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-basic-version-file.cmake
   :language: cmake
-  :start-after: # generate the version file
-  :end-before: # install the generated configuration files
+  :start-after: # 为配置文件生成版本文件
+  :end-before: # 安装生成的配置文件
 
 最后，将两个生成的文件设置为需安装：
 
@@ -84,8 +84,8 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-install-configured-files.cmake
   :language: cmake
-  :start-after: # install the generated configuration files
-  :end-before: # generate the export
+  :start-after: # 安装生成的配置文件
+  :end-before: # 为构建树生成导出目标
 
 至此，我们已经为我们的项目生成了一个可重定位的CMake配置，可以在安装或打包项目之后使用。如果我们想要我们的项目也从一个构建目录中使用，我们只需要添加以下顶层\ ``CMakeLists.txt``\ 的底部：
 
@@ -93,6 +93,6 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-export
   :language: cmake
-  :start-after: # needs to be after the install(TARGETS ) command
+  :start-after: # 需要在install(TARGETS )命令之后
 
 使用这个导出调用，我们现在生成一个\ ``Targets.cmake``，允许配置\ ``MathFunctionsConfig.cmake``\ 文件，以供其他项目使用，而无需安装。

@@ -17,8 +17,8 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_executable-MakeTable
   :language: cmake
-  :start-after: # first we add the executable that generates the table
-  :end-before: # add the command to generate the source code
+  :start-after: # 首先添加一个可执行文件用以生成表
+  :end-before: # 添加命令以生成源码
 
 然后，我们添加一个自定义命令，指定如何通过运行MakeTable生成\ ``Table.h``。
 
@@ -26,8 +26,8 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_custom_command-Table.h
   :language: cmake
-  :start-after: # add the command to generate the source code
-  :end-before: # add the main library
+  :start-after: # 添加命令以生成源码
+  :end-before: # 添加主库
 
 接下来需要让CMake知道\ ``mysqrt.cxx``\ 依赖于那个生成的\ ``Table.h``。这是通过将\ ``Table.h``\ 添加到MathFunctions的源码列表达到的。
 
@@ -35,8 +35,8 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_library-Table.h
   :language: cmake
-  :start-after: # add the main library
-  :end-before: # state that anybody linking
+  :start-after: # 添加主库
+  :end-before: # 说明任何人想链接我们必须包含当前源目录
 
 我们必须将当前目录加入引入目录列表，令\ ``Table.h``\ 能够被\ ``mysqrt.cxx``\ 找到并引用。
 
@@ -44,8 +44,8 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories-Table.h
   :language: cmake
-  :start-after: # state that we depend on our bin
-  :end-before: # install rules
+  :start-after: # 说明我们依赖我们的二进制目录
+  :end-before: # 安装规则
 
 现在我们使用已生成的表。首先，修改\ ``mysqrt.cxx``\ 以引用\ ``Table.h``。接着，我们重构\ ``mysqrt``\ 函数使用这个表：
 

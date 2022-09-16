@@ -16,7 +16,7 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories-INTERFACE
   :language: cmake
-  :start-after: # to find MathFunctions.h
+  :start-after: # 以便查找MathFunctions.h
 
 现在我们已经指定了\ ``MathFunctions``\ 的使用要求，我们可以安全地从顶层的\ ``CMakeLists.txt``\ 中删除\ ``EXTRA_INCLUDES``\ 变量的使用，这里：
 
@@ -24,8 +24,8 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-remove-EXTRA_INCLUDES
   :language: cmake
-  :start-after: # add the MathFunctions library
-  :end-before: # add the executable
+  :start-after: # 添加MathFunctions库
+  :end-before: # 添加可执行文件
 
 和这里：
 
@@ -33,6 +33,6 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-target_include_directories-remove-EXTRA_INCLUDES
   :language: cmake
-  :start-after: # so that we will find TutorialConfig.h
+  :start-after: # 以便找到TutorialConfig.h
 
 一旦完成，运行\ :manual:`cmake  <cmake(1)>`\ 命令或者\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，然后用你选择的构建工具或使用\ ``cmake --build .``\ 在构建目录来构建它。

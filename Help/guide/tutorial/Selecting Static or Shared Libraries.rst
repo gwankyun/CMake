@@ -13,7 +13,7 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-option-BUILD_SHARED_LIBS
   :language: cmake
-  :end-before: # add the binary tree
+  :end-before: # 添加二进制树到引用目录的搜索路径
 
 现在我们已经使\ ``MathFunctions``\ 始终被使用，需要更新这个库的逻辑。因此，在\ ``MathFunctions/CMakeLists.txt``\ 中需要创建一个当\ ``USE_MYMATH``\ 被启用时有条件构建和安装的SqrtLibrary。现在，由于这是一个教程，我们明确要求SqrtLibrary是静态构建的。
 

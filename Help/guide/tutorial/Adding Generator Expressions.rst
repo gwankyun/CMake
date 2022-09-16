@@ -29,7 +29,7 @@
   :name: CMakeLists.txt-cxx_std-feature
   :language: cmake
   :start-after: project(Tutorial VERSION 1.0)
-  :end-before: # add compiler warning flags just when building this project via
+  :end-before: # 添加编译器警告标识
 
 **注意**：下一节将要求修改代码中\ :command:`cmake_minimum_required`\ 的用法。即将使用的生成器表达式在\ `3.15`\ 中介绍。更新调用以要求更新的版本：
 
@@ -45,8 +45,8 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-target_compile_options-genex
   :language: cmake
-  :start-after: # the BUILD_INTERFACE genex
-  :end-before: # control where the static and shared libraries are built so that on windows
+  :start-after: # 只在编译工程时生效，这点通过BUILD_INTERFACE生成器表达式做到
+  :end-before: # 控制静态库和共享库的构建位置
 
 我们看到警告标志被封装在\ ``BUILD_INTERFACE``\ 条件中。这样做是为了使已安装项目的使用者不会继承我们的警告标志。
 

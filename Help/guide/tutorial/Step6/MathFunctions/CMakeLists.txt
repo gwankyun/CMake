@@ -1,12 +1,12 @@
-add_library(MathFunctions mysqrt.cxx)
+﻿add_library(MathFunctions mysqrt.cxx)
 
-# state that anybody linking to us needs to include the current source dir
-# to find MathFunctions.h, while we don't.
+# 说明任何人想链接我们必须包含当前源目录
+# 以便查找MathFunctions.h，尽管我们自己不用。
 target_include_directories(MathFunctions
           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
           )
 
-# does this system provide the log and exp functions?
+# 系统是否有提供log和exp函数？
 include(CheckCXXSourceCompiles)
 check_cxx_source_compiles("
   #include <cmath>
@@ -23,12 +23,12 @@ check_cxx_source_compiles("
   }
 " HAVE_EXP)
 
-# add compile definitions
+# 添加编译器定义
 if(HAVE_LOG AND HAVE_EXP)
   target_compile_definitions(MathFunctions
                              PRIVATE "HAVE_LOG" "HAVE_EXP")
 endif()
 
-# install rules
+# 安装规则
 install(TARGETS MathFunctions DESTINATION lib)
 install(FILES MathFunctions.h DESTINATION include)

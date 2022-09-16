@@ -42,8 +42,8 @@ if(USE_MYMATH)
   target_link_libraries(MathFunctions PRIVATE SqrtLibrary)
 endif()
 
-# 定义在windows构建时
-# 使用使用declspec(dllexport)声明的符号
+# 定义当用declspec(dllexport)声明的符号
+# 在windows构建时
 target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
 
 # 安装规则

@@ -11,8 +11,8 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-check_cxx_source_compiles
   :language: cmake
-  :start-after: # to find MathFunctions.h, while we don't.
-  :end-before: # add compile definitions
+  :start-after: # 以便查找MathFunctions.h，尽管我们自己不用。
+  :end-before: # 添加编译器定义
 
 如果可以的话，使用\ :command:`target_compile_definitions`\ 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 为\ ``PRIVATE``\ 编译器定义。
 
@@ -20,8 +20,8 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_compile_definitions
   :language: cmake
-  :start-after: # add compile definitions
-  :end-before: # install rules
+  :start-after: # 添加编译器定义
+  :end-before: # 安装规则
 
 如果\ ``log``\ 和\ ``exp``\ 在系统上可用，那么我们将在\ ``mysqrt``\ 函数中用来计算平方根。将以下代码添加到\ ``MathFunctions/mysqrt.cxx``\ 中的\ ``mysqrt``\ 函数中（返回結果前不要忘了\ ``#endif``！）：
 

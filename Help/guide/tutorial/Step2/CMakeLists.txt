@@ -7,15 +7,15 @@ project(Tutorial VERSION 1.0)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
+# 配置一个头文件以传递一些CMake设置
+# 到源码中
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
-# add the executable
+# 添加一个可执行文件
 add_executable(Tutorial tutorial.cxx)
 
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
+# 添加二进制目录到引用文件的搜索路径
+# 以便找到TutorialConfig.h
 target_include_directories(Tutorial PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )

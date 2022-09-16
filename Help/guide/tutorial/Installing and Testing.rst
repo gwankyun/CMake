@@ -14,7 +14,7 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-install-TARGETS
   :language: cmake
-  :start-after: # install rules
+  :start-after: # 安装规则
 
 顶层\ ``CMakeLists.txt``\ 的末尾添加：
 
@@ -22,8 +22,8 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-install-TARGETS
   :language: cmake
-  :start-after: # add the install targets
-  :end-before: # enable testing
+  :start-after: # 添加安装目标
+  :end-before: # 启用测试
 
 这就是创建基本本地安装的全部内容。
 
@@ -54,7 +54,7 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-enable_testing
   :language: cmake
-  :start-after: # enable testing
+  :start-after: # 启用测试
 
 第一个测试只是验证程序能否运行，是否出现段错误或者崩溃，返回值是否为0。这就是基本的CMake测试。
 

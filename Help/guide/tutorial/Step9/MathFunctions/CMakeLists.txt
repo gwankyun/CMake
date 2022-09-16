@@ -1,27 +1,27 @@
-# first we add the executable that generates the table
+﻿# 首先添加一个可执行文件用以生成表
 add_executable(MakeTable MakeTable.cxx)
 
-# add the command to generate the source code
+# 添加命令以生成源码
 add_custom_command(
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
   COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
   DEPENDS MakeTable
   )
 
-# add the main library
+# 添加主库
 add_library(MathFunctions
             mysqrt.cxx
             ${CMAKE_CURRENT_BINARY_DIR}/Table.h
             )
 
-# state that anybody linking to us needs to include the current source dir
-# to find MathFunctions.h, while we don't.
-# state that we depend on our binary dir to find Table.h
+# 说明任何人想链接我们必须包含当前源目录
+# 以便查找MathFunctions.h，尽管我们自己不用
+# 说明我们依赖我们的二进制目录以找到Table.h
 target_include_directories(MathFunctions
           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
           PRIVATE   ${CMAKE_CURRENT_BINARY_DIR}
           )
 
-# install rules
+# 安装规则
 install(TARGETS MathFunctions DESTINATION lib)
 install(FILES MathFunctions.h DESTINATION include)
