@@ -7,7 +7,7 @@
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-include-CPack
   :language: cmake
-  :start-after: # setup installer
+  :start-after: # 设置安装程序
 
 这就是我们对它的所有修改。我们在开始包含\ :module:`InstallRequiredSystemLibraries`。这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt``\ 已经添加在源码目录的最高层。:variable:`CPACK_SOURCE_GENERATOR`\ 变量可以为源码包选择一种文件格式。 
 
