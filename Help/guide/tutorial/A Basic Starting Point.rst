@@ -102,7 +102,7 @@ CMake支持大小写混合命令。``tutorial.cxx``\ 的源代码在\ ``Step1``\
   :name: tutorial.cxx-print-version
   :language: c++
   :start-after: {
-  :end-before: // convert input to double
+  :end-before: // 将输入转换为double类型
 
 指定c++标准
 -------------------------
@@ -114,8 +114,8 @@ CMake支持大小写混合命令。``tutorial.cxx``\ 的源代码在\ ``Step1``\
   :caption: tutorial.cxx
   :name: tutorial.cxx-cxx11
   :language: c++
-  :start-after: // convert input to double
-  :end-before: // calculate square root
+  :start-after: // 将输入转换为double类型
+  :end-before: // 计算平方根
 
 我们需要在CMake代码中明确声明它应该使用正确的标志。\
 在CMake中启用对特定C++标准的支持的最简单方法是使用\ :variable:`CMAKE_CXX_STANDARD`\ 变量。\

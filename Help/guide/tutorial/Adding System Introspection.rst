@@ -29,8 +29,8 @@
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-ifdef
   :language: c++
-  :start-after: // if we have both log and exp then use them
-  :end-before: // do ten iterations
+  :start-after: // 如果log和exp都有，那就用它们
+  :end-before: // 迭代十次
 
 同时还要修改\ ``mysqrt.cxx``\ 以包含\ ``cmath``：
 

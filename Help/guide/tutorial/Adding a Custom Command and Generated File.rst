@@ -53,7 +53,7 @@
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx
   :language: c++
-  :start-after: // a hack square root calculation using simple operations
+  :start-after: // 使用简单的操作进行平方根计算
 
 运行\ :manual:`cmake  <cmake(1)>`\ 或者\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置并构建此项目。
 

@@ -2,10 +2,10 @@
 
 #include "MathFunctions.h"
 
-// include the generated table
+// 包括生成的表
 #include "Table.h"
 
-// a hack square root calculation using simple operations
+// 使用简单的操作进行平方根计算
 double mysqrt(double x)
 {
   if (x <= 0) {

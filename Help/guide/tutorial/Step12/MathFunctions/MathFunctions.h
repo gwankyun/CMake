@@ -5,7 +5,7 @@
 #  else
 #    define DECLSPEC __declspec(dllimport)
 #  endif
-#else // non windows
+#else // ·ÇWindows
 #  define DECLSPEC
 #endif
 

@@ -1,4 +1,4 @@
-// A simple program that computes the square root of a number
+// 一个简单的程序，计算一个数的平方根
 #include <iostream>
 #include <string>
 
@@ -8,14 +8,14 @@
 int main(int argc, char* argv[])
 {
   if (argc < 2) {
-    // report version
+    // 报告版本号
     std::cout << argv[0] << " Version " << Tutorial_VERSION_MAJOR << "."
               << Tutorial_VERSION_MINOR << std::endl;
     std::cout << "Usage: " << argv[0] << " number" << std::endl;
     return 1;
   }
 
-  // convert input to double
+  // 将输入转换为double类型
   const double inputValue = std::stod(argv[1]);
 
   const double outputValue = mathfunctions::sqrt(inputValue);

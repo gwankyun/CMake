@@ -1,54 +1,54 @@
-cmake_minimum_required(VERSION 3.10)
+ï»¿cmake_minimum_required(VERSION 3.10)
 
-# ÉèÖÃ¹¤³ÌÃû¼°°æ±¾ºÅ
+# è®¾ç½®å·¥ç¨‹ååŠç‰ˆæœ¬å·
 project(Tutorial VERSION 1.0)
 
-# Ö¸¶¨C++±ê×¼
+# æŒ‡å®šC++æ ‡å‡†
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# ÊÇ·ñÊ¹ÓÃÎÒÃÇ×Ô¼ºµÄÊıÑ§º¯Êı
+# æ˜¯å¦ä½¿ç”¨æˆ‘ä»¬è‡ªå·±çš„æ•°å­¦å‡½æ•°
 option(USE_MYMATH "Use tutorial provided math implementation" ON)
 
-# ÅäÖÃÒ»¸öÍ·ÎÄ¼ş£¬½«Ò»Ğ©CMakeÉèÖÃ
-# ´«µİµ½Ô´´úÂë
+# é…ç½®ä¸€ä¸ªå¤´æ–‡ä»¶ï¼Œå°†ä¸€äº›CMakeè®¾ç½®
+# ä¼ é€’åˆ°æºä»£ç 
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
-# Ìí¼ÓMathFunctions¿â
+# æ·»åŠ MathFunctionsåº“
 if(USE_MYMATH)
   add_subdirectory(MathFunctions)
   list(APPEND EXTRA_LIBS MathFunctions)
 endif()
 
-# Ìí¼Ó¿ÉÖ´ĞĞÎÄ¼ş
+# æ·»åŠ å¯æ‰§è¡Œæ–‡ä»¶
 add_executable(Tutorial tutorial.cxx)
 target_link_libraries(Tutorial PUBLIC ${EXTRA_LIBS})
 
-# Ìí¼Ó¶ş½øÖÆÊ÷µ½ÒıÓÃÄ¿Â¼µÄËÑË÷Â·¾¶
-# ÒÔ±ãÕÒµ½TutorialConfig.h
+# æ·»åŠ äºŒè¿›åˆ¶æ ‘åˆ°å¼•ç”¨ç›®å½•çš„æœç´¢è·¯å¾„
+# ä»¥ä¾¿æ‰¾åˆ°TutorialConfig.h
 target_include_directories(Tutorial PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )
 
-# Ìí¼Ó°²×°Ä¿±ê
+# æ·»åŠ å®‰è£…ç›®æ ‡
 install(TARGETS Tutorial DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
   DESTINATION include
   )
 
-# ÆôÓÃ²âÊÔ
+# å¯ç”¨æµ‹è¯•
 enable_testing()
 
-# ³ÌĞòÊÇ·ñÔËĞĞ
+# ç¨‹åºæ˜¯å¦è¿è¡Œ
 add_test(NAME Runs COMMAND Tutorial 25)
 
-# ÓÃÀıÊä³öÓĞĞ§Âğ£¿
+# ç”¨ä¾‹è¾“å‡ºæœ‰æ•ˆå—ï¼Ÿ
 add_test(NAME Usage COMMAND Tutorial)
 set_tests_properties(Usage
   PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*number"
   )
 
-# ¶¨ÒåÒ»¸öº¯ÊıÀ´¼ò»¯Ìí¼Ó²âÊÔ
+# å®šä¹‰ä¸€ä¸ªå‡½æ•°æ¥ç®€åŒ–æ·»åŠ æµ‹è¯•
 function(do_test target arg result)
   add_test(NAME Comp${arg} COMMAND ${target} ${arg})
   set_tests_properties(Comp${arg}
@@ -56,7 +56,7 @@ function(do_test target arg result)
     )
 endfunction()
 
-# ÅÜÒ»Ğ©»ùÓÚ½á¹ûµÄ²âÊÔ
+# è·‘ä¸€äº›åŸºäºç»“æœçš„æµ‹è¯•
 do_test(Tutorial 4 "4 is 2")
 do_test(Tutorial 9 "9 is 3")
 do_test(Tutorial 5 "5 is 2.236")
@@ -65,7 +65,7 @@ do_test(Tutorial 25 "25 is 5")
 do_test(Tutorial -25 "-25 is (-nan|nan|0)")
 do_test(Tutorial 0.0001 "0.0001 is 0.01")
 
-# ÉèÖÃ°²×°³ÌĞò
+# è®¾ç½®å®‰è£…ç¨‹åº
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 set(CPACK_PACKAGE_VERSION_MAJOR "${Tutorial_VERSION_MAJOR}")

@@ -73,7 +73,7 @@
   :caption: tutorial.cxx
   :name: tutorial.cxx-ifdef-include
   :language: c++
-  :start-after: // should we include the MathFunctions header
+  :start-after: // 是否包括MathFunctions头文件？
   :end-before: int main
 
 然后，在同一个文件中，让\ ``USE_MYMATH``\ 控制使用哪个平方根函数：
@@ -82,7 +82,7 @@
   :caption: tutorial.cxx
   :name: tutorial.cxx-ifdef-const
   :language: c++
-  :start-after: // which square root function should we use?
+  :start-after: // 应该用哪个平方根函数？
   :end-before: std::cout << "The square root of
 
 由于源代码现在需要\ ``USE_MYMATH``，我们可以通过以下一行把它添加到\ ``TutorialConfig.h.in``\ 中：

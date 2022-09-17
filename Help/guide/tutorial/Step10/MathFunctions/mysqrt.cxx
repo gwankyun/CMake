@@ -7,7 +7,7 @@
 
 namespace mathfunctions {
 namespace detail {
-// 一种使用简单操作进行平方根计算的hack
+// 使用简单的操作进行平方根计算
 double mysqrt(double x)
 {
   if (x <= 0) {
