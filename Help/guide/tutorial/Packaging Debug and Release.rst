@@ -3,7 +3,8 @@
 
 **注意**：这个例子只适用于单配置生成器，而不适用于多配置生成器（例如Visual Studio）。
 
-默认情况下，CMake的模型是一个构建目录只包含一个配置，可以是Debug、Release、MinSizeRel或RelWithDebInfo。但是，可以通过安装CPack来捆绑多个构建目录，并构建一个包含同一项目的多个配置的包。
+默认情况下，CMake的模型是一个构建目录只包含一个配置，可以是Debug、Release、MinSizeRel或RelWithDebInfo。\
+但是，可以通过安装CPack来捆绑多个构建目录，并构建一个包含同一项目的多个配置的包。
 
 首先，我们希望确保调试版本和发布版本对将要安装的可执行文件和库使用不同的名称。让我们使用\ `d`\ 作为调试可执行文件和库的后缀。
 
@@ -53,7 +54,9 @@
   cmake -DCMAKE_BUILD_TYPE=Release ..
   cmake --build .
 
-现在调试版本和发布版本都已经完成了，我们可以使用一个定制的配置文件将这两个版本打包到一个版本中。在\ ``Step12``\ 目录中，创建一个名为\ ``MultiCPackConfig.cmake``\ 的文件。在这个文件中，首先包含\ :manual:`cmake  <cmake(1)>`\ 可执行文件创建的默认配置文件。
+现在调试版本和发布版本都已经完成了，我们可以使用一个定制的配置文件将这两个版本打包到一个版本中。\
+在\ ``Step12``\ 目录中，创建一个名为\ ``MultiCPackConfig.cmake``\ 的文件。\
+在这个文件中，首先包含\ :manual:`cmake  <cmake(1)>`\ 可执行文件创建的默认配置文件。
 
 接下来，使用\ ``CPACK_INSTALL_CMAKE_PROJECTS``\ 变量来指定要安装哪些项目。在这种情况下，我们希望同时安装调试和发布。
 

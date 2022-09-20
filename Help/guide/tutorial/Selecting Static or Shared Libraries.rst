@@ -1,11 +1,14 @@
 步骤9：选择使用静态库和共享库
 ============================================
 
-在本节中，我们将展示如何使用\ :variable:`BUILD_SHARED_LIBS`\ 变量来控制\ :command:`add_library`\ 的默认行为，并允许控制没有显式类型的库（``STATIC``、``SHARED``、``MODULE``\ 或者\ ``OBJECT``）是如何构建的。
+在本节中，我们将展示如何使用\ :variable:`BUILD_SHARED_LIBS`\ 变量来控制\ :command:`add_library`\ 的默认行为，\
+并允许控制没有显式类型的库（``STATIC``、``SHARED``、``MODULE``\ 或者\ ``OBJECT``）是如何构建的。
 
-为此，我们需要将\ :variable:`BUILD_SHARED_LIBS`\ 添加到顶层\ ``CMakeLists.txt``\ 中。我们使用\ :command:`option`\ 命令，因为它能用户选择值为\ ``ON``\ 或者\ ``OFF``。
+为此，我们需要将\ :variable:`BUILD_SHARED_LIBS`\ 添加到顶层\ ``CMakeLists.txt``\ 中。\
+我们使用\ :command:`option`\ 命令，因为它能用户选择值为\ ``ON``\ 或者\ ``OFF``。
 
-接下来，我们将重构\ ``MathFunctions``，使其成为一个使用\ ``mysqrt``\ 或\ ``sqrt``\ 封装的真正的库，而不是要求在代码处理这些逻辑。这也意味着\ ``USE_MYMATH``\ 将不再控制构建\ ``MathFunctions``，而是控制这个库的行为。
+接下来，我们将重构\ ``MathFunctions``，使其成为一个使用\ ``mysqrt``\ 或\ ``sqrt``\ 封装的真正的库，而不是要求在代码处理这些逻辑。\
+这也意味着\ ``USE_MYMATH``\ 将不再控制构建\ ``MathFunctions``，而是控制这个库的行为。
 
 第一步是像下面那样更新顶层\ ``CMakeLists.txt``：
 
@@ -15,7 +18,9 @@
   :language: cmake
   :end-before: # 添加二进制树到引用目录的搜索路径
 
-现在我们已经使\ ``MathFunctions``\ 始终被使用，需要更新这个库的逻辑。因此，在\ ``MathFunctions/CMakeLists.txt``\ 中需要创建一个当\ ``USE_MYMATH``\ 被启用时有条件构建和安装的SqrtLibrary。现在，由于这是一个教程，我们明确要求SqrtLibrary是静态构建的。
+现在我们已经使\ ``MathFunctions``\ 始终被使用，需要更新这个库的逻辑。\
+因此，在\ ``MathFunctions/CMakeLists.txt``\ 中需要创建一个当\ ``USE_MYMATH``\ 被启用时有条件构建和安装的SqrtLibrary。\
+现在，由于这是一个教程，我们明确要求SqrtLibrary是静态构建的。
 
 ``MathFunctions/CMakeLists.txt``\ 最终应该像下面那样：
 
@@ -45,7 +50,8 @@
   :name: MathFunctions/MathFunctions.h
   :language: c++
 
-此时，如果您构建了所有内容，您可能会注意到，当我们将一个没有位置独立代码的静态库与一个有位置独立代码的库组合在一起时，链接会失败。解决这个问题的方法是不管构建类型，显式地将SqrtLibrary的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性设置为\ ``True``。
+此时，如果您构建了所有内容，您可能会注意到，当我们将一个没有位置独立代码的静态库与一个有位置独立代码的库组合在一起时，链接会失败。\
+解决这个问题的方法是不管构建类型，显式地将SqrtLibrary的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性设置为\ ``True``。
 
 .. literalinclude:: Step10/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt

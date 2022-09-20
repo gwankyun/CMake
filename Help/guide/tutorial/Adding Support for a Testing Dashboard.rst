@@ -1,7 +1,8 @@
 步骤8：添加对仪表板的支持
 ==============================================
 
-将测试结果添加到仪表板很简单。在\ :ref:`测试支持 <Tutorial Testing Support>`\ 我们已经添加了一系列测试到项目中。现在我们必须运行这些测试并将结果添加到仪表板中。为与做到这点，在顶层\ ``CMakeLists.txt``\ 
+将测试结果添加到仪表板很简单。在\ :ref:`测试支持 <Tutorial Testing Support>`\ 我们已经添加了一系列测试到项目中。\
+现在我们必须运行这些测试并将结果添加到仪表板中。为与做到这点，在顶层\ ``CMakeLists.txt``\ 
 中引用\ :module:`CTest`\ 模块。
 
 替换：
@@ -34,14 +35,17 @@
 
 * 将在其中发送提交生成的文档的CDash实例的URL
 
-在这个目录中已经为你提供了一个。它通常从CDash实例上的项目\ ``Settings``\ 页面下载，该实例将托管并显示测试结果。从CDash下载后，不应该在本地修改该文件。
+在这个目录中已经为你提供了一个。它通常从CDash实例上的项目\ ``Settings``\ 页面下载，该实例将托管并显示测试结果。\
+从CDash下载后，不应该在本地修改该文件。
 
 .. literalinclude:: Step9/CTestConfig.cmake
   :caption: CTestConfig.cmake
   :name: CTestConfig.cmake
   :language: cmake
 
-:manual:`ctest <ctest(1)>`\ 命令运行时会读取此文件。你可以运行\ :manual:`cmake <cmake(1)>`\ 命令或者用\ :manual:`cmake-gui <cmake-gui(1)>`\ 去配置这项目，但没去构建它。相应替代的，修改二进制树目录，并运行：
+:manual:`ctest <ctest(1)>`\ 命令运行时会读取此文件。\
+你可以运行\ :manual:`cmake <cmake(1)>`\ 命令或者用\ :manual:`cmake-gui <cmake-gui(1)>`\ 去配置这项目，但没去构建它。\
+相应替代的，修改二进制树目录，并运行：
 
 .. code-block:: console
 

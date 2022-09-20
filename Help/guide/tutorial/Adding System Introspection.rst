@@ -1,9 +1,12 @@
 步骤5：添加系统自省
 ===================================
 
-考虑向项目中添加一些依赖目标平台可能没有的特性代码。对于本例，我们将添加一些代码，这将取决于目标平台是否有\ ``log``\ 和\ ``exp``\ 函数。当然，几乎每个平台都有这些函数，但本教程假设它们并不常见。
+考虑向项目中添加一些依赖目标平台可能没有的特性代码。\
+对于本例，我们将添加一些代码，这将取决于目标平台是否有\ ``log``\ 和\ ``exp``\ 函数。\
+当然，几乎每个平台都有这些函数，但本教程假设它们并不常见。
 
-如果平台有\ ``log``\ 和\ ``exp``，那么我们将使用它们在\ ``mysqrt``\ 函数中计算平方根。首先在\ ``MathFunctions/CMakeLists.txt``\ 中使用\ :module:`CheckCXXSourceCompiles`\ 模块判断这些函数是否可用。
+如果平台有\ ``log``\ 和\ ``exp``，那么我们将使用它们在\ ``mysqrt``\ 函数中计算平方根。\
+首先在\ ``MathFunctions/CMakeLists.txt``\ 中使用\ :module:`CheckCXXSourceCompiles`\ 模块判断这些函数是否可用。
 
 调用\ :command:`target_include_directories`\ 之后，在\ ``MathFunctions/CMakeLists.txt``\ 添加对\ ``log``\ 和\ ``exp``\ 的检查：
 
@@ -23,7 +26,8 @@
   :start-after: # 添加编译器定义
   :end-before: # 安装规则
 
-如果\ ``log``\ 和\ ``exp``\ 在系统上可用，那么我们将在\ ``mysqrt``\ 函数中用来计算平方根。将以下代码添加到\ ``MathFunctions/mysqrt.cxx``\ 中的\ ``mysqrt``\ 函数中（返回結果前不要忘了\ ``#endif``！）：
+如果\ ``log``\ 和\ ``exp``\ 在系统上可用，那么我们将在\ ``mysqrt``\ 函数中用来计算平方根。\
+将以下代码添加到\ ``MathFunctions/mysqrt.cxx``\ 中的\ ``mysqrt``\ 函数中（返回結果前不要忘了\ ``#endif``！）：
 
 .. literalinclude:: Step6/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
