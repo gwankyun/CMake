@@ -1,55 +1,32 @@
-# 添加运行的库
-add_library(MathFunctions MathFunctions.cxx)
+# first we add the executable that generates the table
+add_executable(MakeTable MakeTable.cxx)
 
-# 声明链接到我们的人都需要包含当前的源目录来查找MathFunctions.h
-# 我们自己除外。
+# add the command to generate the source code
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
+  COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
+  DEPENDS MakeTable
+  )
+
+# add the main library
+add_library(MathFunctions
+            mysqrt.cxx
+            ${CMAKE_CURRENT_BINARY_DIR}/Table.h
+            )
+
+# state that anybody linking to us needs to include the current source dir
+# to find MathFunctions.h, while we don't.
+# state that we depend on our binary dir to find Table.h
 target_include_directories(MathFunctions
-                           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
-                           )
+          INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+          PRIVATE   ${CMAKE_CURRENT_BINARY_DIR}
+          )
 
-# 是否使用自己的数学函数
-option(USE_MYMATH "Use tutorial provided math implementation" ON)
-if(USE_MYMATH)
+# link our compiler flags interface library
+target_link_libraries(MathFunctions tutorial_compiler_flags)
 
-  target_compile_definitions(MathFunctions PRIVATE "USE_MYMATH")
-
-  # 首先添加生成表的可执行文件
-  add_executable(MakeTable MakeTable.cxx)
-
-  # 添加生成源代码的命令
-  add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-    COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-    DEPENDS MakeTable
-    )
-
-  # 只包含sqrt的库
-  add_library(SqrtLibrary STATIC
-              mysqrt.cxx
-              ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-              )
-
-  # 说明依赖于二进制目录查找Table.h
-  target_include_directories(SqrtLibrary PRIVATE
-                             ${CMAKE_CURRENT_BINARY_DIR}
-                             )
-
-  # 说明当默认是共享库时，SqrtLibrary需要PIC
-  set_target_properties(SqrtLibrary PROPERTIES
-                        POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
-                        )
-
-  target_link_libraries(MathFunctions PRIVATE SqrtLibrary)
-endif()
-
-# 定义当用declspec(dllexport)声明的符号
-# 在windows构建时
-target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
-
-# 安装规则
-set(installable_libs MathFunctions)
-if(TARGET SqrtLibrary)
-  list(APPEND installable_libs SqrtLibrary)
-endif()
+# install libs
+set(installable_libs MathFunctions tutorial_compiler_flags)
 install(TARGETS ${installable_libs} DESTINATION lib)
+# install include headers
 install(FILES MathFunctions.h DESTINATION include)

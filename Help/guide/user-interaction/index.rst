@@ -34,7 +34,12 @@ cmake命令行工具
 
 建议在到源的单独目录中构建，因为这样可以保持源目录的原始状态，允许使用多个工具链构建单个源，并允许通过简单地删除构建目录轻松地清除构建工件。
 
-CMake工具可能会报告针对软件提供商的警告，而不是针对软件消费者的警告。这样的警告以“此警告是给项目开发人员的”结尾。用户可以通过向\ :manual:`cmake(1)`\ 传递\ ``-Wno-dev``\ 标志来禁用此类警告。
+The CMake tooling may report warnings which are intended
+for the provider of the software, not intended for the
+consumer of the software.  Such warnings end with "This
+warning is for project developers".  Users may disable
+such warnings by passing the :option:`-Wno-dev <cmake -Wno-dev>`
+flag to :manual:`cmake(1)`.
 
 cmake-gui工具
 --------------
@@ -75,13 +80,17 @@ Visual Studio提供了多个命令提示符和\ ``vcvarsall.bat``\ 脚本，用�
 
 CMake根据平台默认选择一个生成器。通常，默认生成器足以允许用户继续构建软件。
 
-用户可以使用\ ``-G``\ 选项覆盖默认生成器：
+The user may override the default generator with
+the :option:`-G <cmake -G>` option:
 
 .. code-block:: console
 
   $ cmake .. -G Ninja
 
-``cmake --help``\ 的输出包括一个可供用户选择的\ :manual:`generators <cmake-generators(7)>`\ 列表。注意，生成器名称是区分大小写的。
+The output of :option:`cmake --help` includes a list of
+:manual:`generators <cmake-generators(7)>` available
+for the user to choose from.  Note that generator
+names are case sensitive.
 
 在类Unix系统（包括Mac OS X）上，默认情况下使用\ :generator:`Unix Makefiles`\ 生成器。该生成器的一个变体也可以在各种环境的Windows上使用，比如\ :generator:`NMake Makefiles`\ 和\ :generator:`MinGW Makefiles`\ 生成器。这些生成器生成一个\ ``Makefile``\ 变体，可以用\ ``make``、``gmake``、``nmake``\ 或类似工具执行。有关目标环境和工具的更多信息，请参见单个生成器文档。
 
@@ -95,7 +104,9 @@ CMake根据平台默认选择一个生成器。通常，默认生成器足以允
   $ cmake .. -G "Visual Studio 16"
   $ cmake .. -G "Visual Studio 16 2019"
 
-Visual Studio生成器可以针对不同的架构。可以使用\ `-A`\ 选项指定目标架构：
+Visual Studio generators can target different architectures.
+One can specify the target architecture using the
+:option:`-A <cmake -A>` option:
 
 .. code-block:: console
 
@@ -107,11 +118,15 @@ Visual Studio生成器可以针对不同的架构。可以使用\ `-A`\ 选项�
 
 一些IDE，如KDevelop4, QtCreator和CLion，对基于CMake的构建系统有本地支持。这些IDE提供了选择要使用的底层生成器的用户界面，通常是在\ ``Makefile``\ 或基于\ ``Ninja``\ 的生成器之间进行选择。
 
-注意，在第一次调用CMake之后，不能用\ ``-G``\ 来更改生成器。要更改生成器，必须删除构建目录，并且必须从头开始构建。
+Note that it is not possible to change the generator
+with :option:`-G <cmake -G>` after the first invocation of CMake.
+To change the generator, the build directory must be
+deleted and the build must be started from scratch.
 
 当生成Visual Studio项目和解决方案文件时，在最初运行\ :manual:`cmake(1)`\ 时，可以使用其他几个选项。
 
-Visual Studio工具集可以通过 ``-T`` 选项来指定：
+The Visual Studio toolset can be specified with the
+:option:`cmake -T` option:
 
 .. code-block:: console
 
@@ -120,7 +135,12 @@ Visual Studio工具集可以通过 ``-T`` 选项来指定：
     $ # Build targeting Windows XP
     $ cmake.exe .. -G "Visual Studio 16 2019" -A x64 -T v120_xp
 
-``-A``\ 选项指定\ _target_\ 体系结构，而\ ``-T``\ 选项可用于指定所使用的工具链的详细信息。例如，可以使用\ `-Thost=x64`\ 来选择64位版本的主机工具。下面演示了如何使用64位工具，以及如何构建64位目标体系结构：
+Whereas the :option:`-A <cmake -A>` option specifies the _target_
+architecture, the :option:`-T <cmake -T>` option can be used to specify
+details of the toolchain used.  For example, ``-Thost=x64``
+can be given to select the 64-bit version of the host
+tools.  The following demonstrates how to use 64-bit
+tools and also build for a 64-bit target architecture:
 
 .. code-block:: console
 
@@ -185,7 +205,8 @@ CMake变量可以在创建初始构建时在命令行中设置：
     $ cd build
     $ cmake . -DCMAKE_BUILD_TYPE=Debug
 
-``-U``\ 标志可以用来在\ :manual:`cmake(1)`\ 命令行中取消变量的设置：
+The :option:`-U <cmake -U>` flag may be used to unset variables
+on the :manual:`cmake(1)` command line:
 
 .. code-block:: console
 
@@ -194,7 +215,11 @@ CMake变量可以在创建初始构建时在命令行中设置：
 
 最初在命令行上创建的CMake构建系统可以使用\ :manual:`cmake-gui(1)`\ 进行修改，反之亦然。
 
-:manual:`cmake(1)`\ 工具允许使用\ ``-C``\ 选项指定一个用来填充初始缓存的文件。这对于简化重复需要相同缓存项的命令和脚本非常有用。
+The :manual:`cmake(1)` tool allows specifying a
+file to use to populate the initial cache using
+the :option:`-C <cmake -C>` option.  This can be useful to simplify
+commands and scripts which repeatedly require the
+same cache entries.
 
 在cmake-gui设置变量
 --------------------------------
@@ -225,7 +250,12 @@ CMake理解一个文件，``CMakePresets.json``，以及它的用户特定对等
 在命令行使用预设
 ---------------------------------
 
-当使用\ :manual:`cmake(1)`\ 命令行工具时，可以使用\ ``--preset``\ 选项来调用预置。如果指定了\ ``--preset``，则不需要生成器和构建目录，但可以指定以覆盖它们。例如，如果你有以下\ ``CMakePresets.json``\ 文件:
+When using the :manual:`cmake(1)` command line tool, a
+preset can be invoked by using the :option:`--preset <cmake --preset>`
+option. If :option:`--preset <cmake --preset>` is specified,
+the generator and build directory are not required, but can be
+specified to override them. For example, if you have the following
+``CMakePresets.json`` file:
 
 .. code-block:: json
 
@@ -275,29 +305,51 @@ CMake知道调用构建所需的特定构建工具，所以一般来说，要在
 
   $ cmake --build .
 
-``--build``\ 标志为\ :manual:`cmake(1)`\ 工具启用特定的操作模式。它调用与\ :manual:`generator <cmake-generators(7)>`\ 相关的\ :variable:`CMAKE_MAKE_PROGRAM`\ 命令，或者用户配置的构建工具。
+The :option:`--build <cmake --build>` flag enables a
+particular mode of operation for the :manual:`cmake(1)`
+tool.  It invokes the  :variable:`CMAKE_MAKE_PROGRAM`
+command associated with the
+:manual:`generator <cmake-generators(7)>`, or
+the build tool configured by the user.
 
-``--build``\ 模式还接受参数\ ``--target``\ 来指定要构建的特定目标，例如特定库、可执行或自定义目标，或特定的特殊目标，如\ ``install``：
+The :option:`--build <cmake --build>` mode also accepts
+the parameter :option:`--target <cmake--build --target>` to
+specify a particular target to build, for example a
+particular library, executable or custom target, or a
+particular special target like ``install``:
 
 .. code-block:: console
 
   $ cmake --build . --target myexe
 
-在多配置生成器的情况下，``--build``\ 模式也接受\ ``--config``\ 参数来指定要构建的特定配置：
+The :option:`--build <cmake --build>` mode also accepts a
+:option:`--config <cmake--build --config>` parameter
+in the case of multi-config generators to specify which
+particular configuration to build:
 
 .. code-block:: console
 
   $ cmake --build . --target myexe --config Release
 
-如果生成器生成一个特定于使用\ :variable:`CMAKE_BUILD_TYPE`\ 变量调用cmake时所选择的配置的构建系统，则\ ``--config``\ 选项无效。
+The :option:`--config <cmake--build --config>` option has no
+effect if the generator generates a buildsystem specific
+to a configuration which is chosen when invoking cmake
+with the :variable:`CMAKE_BUILD_TYPE` variable.
 
-一些构建系统忽略了构建过程中调用的命令行细节。``--verbose``\ 标志可以用来显示这些命令行：
+Some buildsystems omit details of command lines invoked
+during the build.  The :option:`--verbose <cmake--build --verbose>`
+flag can be used to cause those command lines to be shown:
 
 .. code-block:: console
 
   $ cmake --build . --target myexe --verbose
 
-通过在\ ``--``\ 之后列出特定的命令行选项，``--build``\ 模式还可以将特定的命令行选项传递给底层构建工具。这对于为构建工具指定选项很有用，比如在作业失败后继续构建，而CMake不提供高级用户界面。
+The :option:`--build <cmake --build>` mode can also pass
+particular command line options to the underlying build
+tool by listing them after ``--``.  This can be useful
+to specify options to the build tool, such as to continue the
+build after a failed job, where CMake does not
+provide a high-level user interface.
 
 对于所有生成器，在调用CMake之后都可以运行底层构建工具。例如，``make``\ 可能在使用\ :generator:`Unix Makefiles`\ 生成器生成后执行，以调用构建，或者\ ``ninja``\ 在使用\ :generator:`Ninja`\ 生成器生成后执行。IDE构建系统通常为构建项目提供命令行工具，该项目也可以被调用。
 
@@ -346,7 +398,10 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 指定一个构建程序
 --------------------------
 
-``--build``\ 模式调用的程序由\ :variable:`CMAKE_MAKE_PROGRAM`\ 变量决定。对于大多数生成器，不需要配置特定的程序。
+The program invoked by the :option:`--build <cmake --build>`
+mode is determined by the :variable:`CMAKE_MAKE_PROGRAM` variable.
+For most generators, the particular program does not need to be
+configured.
 
 ===================== =========================== ===========================
       生成器              默认构建程序                    其他替代     
@@ -362,7 +417,22 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
  Watcom WMake          ``wmake``
 ===================== =========================== ===========================
 
-``jom``\ 工具能够读取\ ``NMake``\ 风格的makefile并并行构建，而\ ``nmake``\ 工具总是串行构建。在使用\ :generator:`NMake Makefiles`\ 生成器生成后，用户可以运行\ ``jom``\ 而不是\ ``nmake``。如果在使用\ :generator:`NMake Makefiles`\ 生成器时将\ :variable:`CMAKE_MAKE_PROGRAM`\ 设置为\ ``jom``，``--build``\ 模式也将使用\ ``jom``，为了方便起见，提供了\ :generator:`NMake Makefiles JOM`\ 生成器以正常方式查找\ ``jom``，并将其作为\ :variable:`CMAKE_MAKE_PROGRAM`\ 使用。为了完整起见，``nmake``\ 是一种替代工具，它可以处理\ :generator:`NMake Makefiles JOM`\ 生成器的输出，但这会造就悲观。
+The ``jom`` tool is capable of reading makefiles of the
+``NMake`` flavor and building in parallel, while the
+``nmake`` tool always builds serially.  After generating
+with the :generator:`NMake Makefiles` generator a user
+can run ``jom`` instead of ``nmake``.  The
+:option:`--build <cmake --build>`
+mode would also use ``jom`` if the
+:variable:`CMAKE_MAKE_PROGRAM` was set to ``jom`` while
+using the :generator:`NMake Makefiles` generator, and
+as a convenience, the :generator:`NMake Makefiles JOM`
+generator is provided to find ``jom`` in the normal way
+and use it as the :variable:`CMAKE_MAKE_PROGRAM`. For
+completeness, ``nmake`` is an alternative tool which
+can process the output of the
+:generator:`NMake Makefiles JOM` generator, but doing
+so would be a pessimization.
 
 软件安装
 =====================
@@ -408,12 +478,24 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 
   $ ctest -E Qt
 
-通过向\ :manual:`ctest(1)`\ 传递\ ``-j``\ 参数，测试可以并行运行：
+Tests can be run in parallel by passing :option:`-j <ctest -j>`
+arguments to :manual:`ctest(1)`:
 
 .. code-block:: console
 
   $ ctest -R Qt -j8
 
-也可以设置环境变量\ :envvar:`CTEST_PARALLEL_LEVEL`\ 以避免传递\ ``-j``。
+The environment variable :envvar:`CTEST_PARALLEL_LEVEL`
+can alternatively be set to avoid the need to pass
+:option:`-j <ctest -j>`.
 
-默认情况下，:manual:`ctest(1)`\ 不打印测试的输出。命令行参数\ ``-V``\ (或\ ``--verbose``)启用verbose模式以打印所有测试的输出。``--output-on-failure``\ 选项仅打印失败测试的测试输出。可以将环境变量\ :envvar:`CTEST_OUTPUT_ON_FAILURE`\ 设置为\ ``1``，作为将\ ``--output-on-failure``\ 选项传递给\ :manual:`ctest(1)`\ 的替代方法。
+By default :manual:`ctest(1)` does not print the output
+from the tests. The command line argument :option:`-V <ctest -V>`
+(or ``--verbose``) enables verbose mode to print the
+output from all tests.
+The :option:`--output-on-failure <ctest --output-on-failure>`
+option prints the test output for failing tests only.
+The environment variable :envvar:`CTEST_OUTPUT_ON_FAILURE`
+can be set to ``1`` as an alternative to passing the
+:option:`--output-on-failure <ctest --output-on-failure>`
+option to :manual:`ctest(1)`.

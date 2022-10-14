@@ -29,6 +29,16 @@ CMake中的策略用于保持跨多个版本的向后兼容行为。当引入新
 :variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量也可以用来决定是否报告在使用弃用宏或函数时的错误。
 
 
+Policies Introduced by CMake 3.25
+=================================
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0142: The Xcode generator does not append per-config suffixes to library search paths. </policy/CMP0142>
+   CMP0141: MSVC debug information format flags are selected by an abstraction. </policy/CMP0141>
+   CMP0140: The return() command checks its arguments. </policy/CMP0140>
+
 Policies Introduced by CMake 3.24
 =================================
 

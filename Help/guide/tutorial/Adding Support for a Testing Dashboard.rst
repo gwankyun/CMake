@@ -1,4 +1,4 @@
-步骤8：添加对仪表板的支持
+Step 6: Adding Support for a Testing Dashboard
 ==============================================
 
 将测试结果添加到仪表板很简单。在\ :ref:`测试支持 <Tutorial Testing Support>`\ 我们已经添加了一系列测试到项目中。\
@@ -7,21 +7,21 @@
 
 替换：
 
-.. code-block:: cmake
+.. literalinclude:: Step6/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-enable_testing-remove
-
-  # 启用测试
-  enable_testing()
+  :language: cmake
+  :start-after: # enable testing
+  :end-before: # does the application run
 
 为：
 
-.. code-block:: cmake
+.. literalinclude:: Step7/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-include-CTest
-
-  # 启用仪表板脚本
-  include(CTest)
+  :language: cmake
+  :start-after: # enable testing
+  :end-before: # does the application run
 
 :module:`CTest`\ 模块可以自动调用\ ``enable_testing()``，所以我们可以将它将CMake文件中删掉。
 
@@ -38,7 +38,7 @@
 在这个目录中已经为你提供了一个。它通常从CDash实例上的项目\ ``Settings``\ 页面下载，该实例将托管并显示测试结果。\
 从CDash下载后，不应该在本地修改该文件。
 
-.. literalinclude:: Step9/CTestConfig.cmake
+.. literalinclude:: Step7/CTestConfig.cmake
   :caption: CTestConfig.cmake
   :name: CTestConfig.cmake
   :language: cmake

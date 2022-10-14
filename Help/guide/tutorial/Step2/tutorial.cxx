@@ -5,6 +5,10 @@
 
 #include "TutorialConfig.h"
 
+// TODO 11: Only include MathFunctions if MY_MATH is defined
+
+// TODO 5: Include MathFunctions.h
+
 int main(int argc, char* argv[])
 {
   if (argc < 2) {
@@ -18,7 +22,11 @@ int main(int argc, char* argv[])
   // 将输入转换为double类型
   const double inputValue = std::stod(argv[1]);
 
-  // 计算平方根
+  // TODO 12: Use mysqrt if MY_MATH is defined and sqrt otherwise
+
+  // TODO 6: Replace sqrt with mysqrt
+
+  // calculate square root
   const double outputValue = sqrt(inputValue);
   std::cout << "The square root of " << inputValue << " is " << outputValue
             << std::endl;

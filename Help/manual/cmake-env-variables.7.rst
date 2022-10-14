@@ -18,6 +18,8 @@ cmake-env-variables(7)
    :maxdepth: 1
 
    /envvar/CMAKE_PREFIX_PATH
+   /envvar/SSL_CERT_DIR
+   /envvar/SSL_CERT_FILE
 
 控制构建的环境变量
 ============================================

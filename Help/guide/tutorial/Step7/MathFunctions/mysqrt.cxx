@@ -2,22 +2,14 @@
 
 #include "MathFunctions.h"
 
-// 包括生成的表
-#include "Table.h"
-
-// 使用简单的操作进行平方根计算
+// a hack square root calculation using simple operations
 double mysqrt(double x)
 {
   if (x <= 0) {
     return 0;
   }
 
-  // 使用表格帮助查找初始值
   double result = x;
-  if (x >= 1 && x < 10) {
-    std::cout << "Use the table to help find an initial value " << std::endl;
-    result = sqrtTable[static_cast<int>(x)];
-  }
 
   // 迭代十次
   for (int i = 0; i < 10; ++i) {
@@ -28,6 +20,5 @@ double mysqrt(double x)
     result = result + 0.5 * delta / result;
     std::cout << "Computing sqrt of " << x << " to be " << result << std::endl;
   }
-
   return result;
 }

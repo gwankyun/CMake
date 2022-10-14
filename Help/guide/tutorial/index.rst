@@ -20,13 +20,13 @@ CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的�
   A Basic Starting Point
   Adding a Library
   Adding Usage Requirements for a Library
+  Adding Generator Expressions
   Installing and Testing
+  Adding Support for a Testing Dashboard
   Adding System Introspection
   Adding a Custom Command and Generated File
   Packaging an Installer
-  Adding Support for a Testing Dashboard
   Selecting Static or Shared Libraries
-  Adding Generator Expressions
   Adding Export Configuration
   Packaging Debug and Release
 

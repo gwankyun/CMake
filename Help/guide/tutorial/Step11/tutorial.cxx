@@ -1,5 +1,6 @@
 // 一个简单的程序，计算一个数的平方根
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "MathFunctions.h"

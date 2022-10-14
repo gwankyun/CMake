@@ -9,7 +9,7 @@ cmake-gui(1)
 .. parsed-literal::
 
  cmake-gui [<options>]
- cmake-gui [<options>] {<path-to-source> | <path-to-existing-build>}
+ cmake-gui [<options>] <path-to-source | path-to-existing-build>
  cmake-gui [<options>] -S <path-to-source> -B <path-to-build>
  cmake-gui [<options>] --browse-manual
 
@@ -23,19 +23,26 @@ CMake是一个跨平台的构建系统生成器。项目使用与平台无关的
 选项
 =======
 
-``-S <path-to-source>``
- 待构建CMake项目的根目录路径。
+.. program:: cmake-gui
 
-``-B <path-to-build>``
- CMake将用作构建目录的根目录路径。
+.. option:: -S <path-to-source>
+
+ Path to root directory of the CMake project to build.
+
+.. option:: -B <path-to-build>
+
+ Path to directory which CMake will use as the root of build directory.
 
  如果目录不存在，CMake会创建它。
 
-``--preset=<preset-name>``
- 如果有的话，将从项目的\ :manual:`presets <cmake-presets(7)>`\ 文件中使用的预设名称。
+.. option:: --preset=<preset-name>
 
-``--browse-manual``
- 在浏览器中打开CMake参考手册并立即退出。
+ Name of the preset to use from the project's
+ :manual:`presets <cmake-presets(7)>` files, if it has them.
+
+.. option:: --browse-manual
+
+ Open the CMake reference manual in a browser and immediately exit.
 
 .. include:: OPTIONS_HELP.txt
 

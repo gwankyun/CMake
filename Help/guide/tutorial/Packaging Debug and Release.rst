@@ -6,7 +6,9 @@
 默认情况下，CMake的模型是一个构建目录只包含一个配置，可以是Debug、Release、MinSizeRel或RelWithDebInfo。\
 但是，可以通过安装CPack来捆绑多个构建目录，并构建一个包含同一项目的多个配置的包。
 
-首先，我们希望确保调试版本和发布版本对将要安装的可执行文件和库使用不同的名称。让我们使用\ `d`\ 作为调试可执行文件和库的后缀。
+First, we want to ensure that the debug and release builds use different names
+for the libraries that will be installed. Let's use `d` as the
+postfix for the debug libraries.
 
 在顶层\ ``CMakeLists.txt``\ 文件的开头设置\ :variable:`CMAKE_DEBUG_POSTFIX`：
 
@@ -33,9 +35,10 @@
   :name: MathFunctions/CMakeLists.txt-VERSION-properties
   :language: cmake
   :start-after: # setup the version numbering
-  :end-before: # install rules
+  :end-before: # install libs
 
-在\ ``Step12``\ 目录中，创建\ ``debug``\ 和\ ``release``\ 子目录。布局将看起来像：
+From the ``Step12`` directory, create ``debug`` and ``release``
+subdirectories. The layout will look like:
 
 .. code-block:: none
 

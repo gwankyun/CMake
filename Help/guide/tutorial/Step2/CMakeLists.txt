@@ -7,15 +7,38 @@ project(Tutorial VERSION 1.0)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# 配置一个头文件以传递一些CMake设置
-# 到源码中
+# TODO 7: Create a variable MY_MATH using option and set default to ON
+
+# configure a header file to pass some of the CMake settings
+# to the source code
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
-# 添加一个可执行文件
+# TODO 8: Use list() and APPEND to create a list of optional libraries
+# called  EXTRA_LIBS and a list of optional include directories called
+# EXTRA_INCLUDES. Add the MathFunctions library and source directory to
+# the appropriate lists.
+#
+# Only call add_subdirectory and only add MathFunctions specific values
+# to EXTRA_LIBS and EXTRA_INCLUDES if USE_MYMATH is true.
+
+# TODO 2: Use add_subdirectory() to add MathFunctions to this project
+
+# add the executable
 add_executable(Tutorial tutorial.cxx)
 
-# 添加二进制目录到引用文件的搜索路径
-# 以便找到TutorialConfig.h
+# TODO 9: Use EXTRA_LIBS instead of the MathFunctions specific values
+# in target_link_libraries.
+
+# TODO 3: Use target_link_libraries to link the library to our executable
+
+# TODO 4: Add MathFunctions to Tutorial's target_include_directories()
+# Hint: ${PROJECT_SOURCE_DIR} is a path to the project source. AKA This folder!
+
+# TODO 10: Use EXTRA_INCLUDES instead of the MathFunctions specific values
+# in target_include_directories.
+
+# add the binary tree to the search path for include files
+# so that we will find TutorialConfig.h
 target_include_directories(Tutorial PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )

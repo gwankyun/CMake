@@ -13,7 +13,7 @@ Toolset and Build System Selection
 
 By default Xcode is allowed to select its own default toolchain.
 The :variable:`CMAKE_GENERATOR_TOOLSET` option may be set, perhaps
-via the :manual:`cmake(1)` ``-T`` option, to specify another toolset.
+via the :option:`cmake -T` option, to specify another toolset.
 
 .. versionadded:: 3.19
   This generator supports toolset specification using one of these forms:
@@ -44,3 +44,13 @@ Swift Support
 When using the :generator:`Xcode` generator with Xcode 6.1 or higher,
 one may enable the ``Swift`` language with the :command:`enable_language`
 command or the :command:`project`.
+
+Limitations
+^^^^^^^^^^^
+
+The Xcode generator does not support per-configuration sources.
+Code like the following will result in a generation error:
+
+.. code-block:: cmake
+
+  add_executable(MyApp mymain-$<CONFIG>.cpp)

@@ -10,9 +10,21 @@ cmake-presets(7)
 引言
 ============
 
-CMake用户经常面临的一个问题是与他人共享设置，以获取配置项目的常用方法。这样做可能是为了支持CI构建，或者是为了经常使用相同构建的用户。CMake支持两个主文件，``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``，允许用户指定常用配置选项并与他人共享。CMake还支持包含在\ ``include``\ 字段中的文件。
+.. versionadded:: 3.19
 
-``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 位于项目的根目录。它们都具有完全相同的格式，并且都是可选的（尽管如果指定了\ ``--preset``，则至少必须有一个）。``CMakePresets.json``\ 的目的是保存项目范围的构建，而\ ``CMakeUserPresets.json``\ 的目的是为开发人员保存他们自己的本地构建。
+One problem that CMake users often face is sharing settings with other people
+for common ways to configure a project. This may be done to support CI builds,
+or for users who frequently use the same build. CMake supports two main files,
+``CMakePresets.json`` and ``CMakeUserPresets.json``, that allow users to
+specify common configure options and share them with others. CMake also
+supports files included with the ``include`` field.
+
+``CMakePresets.json`` and ``CMakeUserPresets.json`` live in the project's root
+directory. They both have exactly the same format, and both are optional
+(though at least one must be present if :option:`--preset <cmake --preset>`
+is specified).  ``CMakePresets.json`` is meant to specify project-wide build
+details, while ``CMakeUserPresets.json`` is meant for developers to specify
+their own local build details.
 
 ``CMakePresets.json``\ 可能会被签入版本控制系统，而\ ``CMakeUserPresets.json``\ 则不应被签入。例如，如果一个项目正在使用Git, ``CMakePresets.json``\ 可能会被跟踪，``CMakeUserPresets.json``\ 应该被添加到\ ``.gitignore``\ 中。
 
@@ -27,7 +39,6 @@ The files are a JSON document with an object as the root:
 The root object recognizes the following fields:
 
 ``version``
-
   A required integer representing the version of the JSON schema.
   The supported versions are:
 
@@ -46,32 +57,29 @@ The root object recognizes the following fields:
   ``5``
     .. versionadded:: 3.24
 
-``cmakeMinimumRequired``
+  ``6``
+    .. versionadded:: 3.25
 
+``cmakeMinimumRequired``
   An optional object representing the minimum version of CMake needed to
   build this project. This object consists of the following fields:
 
   ``major``
-
     An optional integer representing the major version.
 
   ``minor``
-
     An optional integer representing the minor version.
 
   ``patch``
-
     An optional integer representing the patch version.
 
 ``include``
-
   An optional array of strings representing files to include. If the filenames
   are not absolute, they are considered relative to the current file.
   This is allowed in preset files specifying version ``4`` or above.
   See `引用`_ for discussion of the constraints on included files.
 
 ``vendor``
-
   An optional map containing vendor-specific information. CMake does not
   interpret the contents of this field except to verify that it is a map if
   it does exist. However, the keys should be a vendor-specific domain name
@@ -80,21 +88,26 @@ The root object recognizes the following fields:
   desired by the vendor, though will typically be a map.
 
 ``configurePresets``
-
-  An optional array of `配置预设`_ objects.
+  An optional array of `Configure Preset`_ objects.
   This is allowed in preset files specifying version ``1`` or above.
 
 ``buildPresets``
-
-  An optional array of `构建预设`_ objects.
+  An optional array of `Build Preset`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
 ``testPresets``
-
-  An optional array of `测试预设`_ objects.
+  An optional array of `Test Preset`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
-引用
+``packagePresets``
+  An optional array of `Package Preset`_ objects.
+  This is allowed in preset files specifying version ``6`` or above.
+
+``workflowPresets``
+  An optional array of `Workflow Preset`_ objects.
+  This is allowed in preset files specifying version ``6`` or above.
+
+Includes
 ^^^^^^^^
 
 ``CMakePresets.json`` and ``CMakeUserPresets.json`` can include other files
@@ -121,15 +134,14 @@ Each entry of the ``configurePresets`` array is a JSON object
 that may contain the following fields:
 
 ``name``
-
   A required string representing the machine-friendly name of the preset.
   This identifier is used in the :ref:`cmake --preset <CMake Options>` option.
   There must not be two configure presets in the union of ``CMakePresets.json``
   and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a configure preset may have the same name as a build or test preset.
+  However, a configure preset may have the same name as a build, test,
+  package, or workflow preset.
 
 ``hidden``
-
   An optional boolean specifying whether or not a preset should be hidden.
   If a preset is hidden, it cannot be used in the ``--preset=`` argument,
   will not show up in the :manual:`CMake GUI <cmake-gui(1)>`, and does not
@@ -138,7 +150,6 @@ that may contain the following fields:
   other presets to inherit via the ``inherits`` field.
 
 ``inherits``
-
   An optional array of strings representing the names of presets to inherit
   from. This field can also be a string, which is equivalent to an array
   containing one string.
@@ -156,12 +167,10 @@ that may contain the following fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-
-  An optional `条件`_ object. This is allowed in preset files specifying
+  An optional `Condition`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
-
   An optional map containing vendor-specific information. CMake does not
   interpret the contents of this field except to verify that it is a map
   if it does exist. However, it should follow the same conventions as the
@@ -170,47 +179,43 @@ that may contain the following fields:
   when appropriate.
 
 ``displayName``
-
   An optional string with a human-friendly name of the preset.
 
 ``description``
-
   An optional string with a human-friendly description of the preset.
 
 ``generator``
-
   An optional string representing the generator to use for the preset. If
   ``generator`` is not specified, it must be inherited from the
   ``inherits`` preset (unless this preset is ``hidden``). In version ``3``
   or above, this field may be omitted to fall back to regular generator
   discovery procedure.
 
-  Note that for Visual Studio generators, unlike in the command line ``-G``
-  argument, you cannot include the platform name in the generator name. Use
-  the ``architecture`` field instead.
+  Note that for Visual Studio generators, unlike in the command line
+  :option:`-G <cmake -G>` argument, you cannot include the platform name
+  in the generator name. Use the ``architecture`` field instead.
 
 ``architecture``, ``toolset``
-
   Optional fields representing the platform and toolset, respectively, for
-  generators that support them. Each may be either a string or an object
-  with the following fields:
+  :manual:`generators <cmake-generators(7)>` that support them.
+
+  See :option:`cmake -A` option for for possible values for ``architecture``
+  and :option:`cmake -T` for ``toolset``.
+
+  Each may be either a string or an object with the following fields:
 
   ``value``
-
     An optional string representing the value.
 
   ``strategy``
-
     An optional string telling CMake how to handle the ``architecture`` or
     ``toolset`` field. Valid values are:
 
     ``"set"``
-
       Set the respective value. This will result in an error for generators
       that do not support the respective field.
 
     ``"external"``
-
       Do not set the value, even if the generator supports it. This is
       useful if, for example, a preset uses the Ninja generator, and an IDE
       knows how to set up the Visual C++ environment from the
@@ -219,7 +224,6 @@ that may contain the following fields:
       before invoking CMake.
 
 ``toolchainFile``
-
   An optional string representing the path to the toolchain file.
   This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the build directory, and if not found,
@@ -228,7 +232,6 @@ that may contain the following fields:
   specifying version ``3`` or above.
 
 ``binaryDir``
-
   An optional string representing the path to the output binary directory.
   This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the source directory. If ``binaryDir`` is not
@@ -237,20 +240,17 @@ that may contain the following fields:
   omitted.
 
 ``installDir``
-
   An optional string representing the path to the installation directory.
   This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the source directory. This is allowed in
   preset files specifying version ``3`` or above.
 
 ``cmakeExecutable``
-
   An optional string representing the path to the CMake executable to use
   for this preset. This is reserved for use by IDEs, and is not used by
   CMake itself. IDEs that use this field should expand any macros in it.
 
 ``cacheVariables``
-
   An optional map of cache variables. The key is the variable name (which
   may not be an empty string), and the value is either ``null``, a boolean
   (which is equivalent to a value of ``"TRUE"`` or ``"FALSE"`` and a type
@@ -258,11 +258,9 @@ that may contain the following fields:
   supports `宏扩展`_), or an object with the following fields:
 
   ``type``
-
     An optional string representing the type of the variable.
 
   ``value``
-
     A required string or boolean representing the value of the variable.
     A boolean is equivalent to ``"TRUE"`` or ``"FALSE"``. This field
     supports `宏扩展`_.
@@ -275,7 +273,6 @@ that may contain the following fields:
   a value was inherited from another preset.
 
 ``environment``
-
   An optional map of environment variables. The key is the variable name
   (which may not be an empty string), and the value is either ``null`` or
   a string representing the value of the variable. Each variable is set
@@ -293,73 +290,68 @@ that may contain the following fields:
   a value was inherited from another preset.
 
 ``warnings``
-
   An optional object specifying the warnings to enable. The object may
   contain the following fields:
 
   ``dev``
-
-    An optional boolean. Equivalent to passing ``-Wdev`` or ``-Wno-dev``
-    on the command line. This may not be set to ``false`` if ``errors.dev``
-    is set to ``true``.
+    An optional boolean. Equivalent to passing :option:`-Wdev <cmake -Wdev>`
+    or :option:`-Wno-dev <cmake -Wno-dev>` on the command line. This may not
+    be set to ``false`` if ``errors.dev`` is set to ``true``.
 
   ``deprecated``
-
-    An optional boolean. Equivalent to passing ``-Wdeprecated`` or
-    ``-Wno-deprecated`` on the command line. This may not be set to
-    ``false`` if ``errors.deprecated`` is set to ``true``.
+    An optional boolean. Equivalent to passing
+    :option:`-Wdeprecated <cmake -Wdeprecated>` or
+    :option:`-Wno-deprecated <cmake -Wno-deprecated>` on the command line.
+    This may not be set to ``false`` if ``errors.deprecated`` is set to
+    ``true``.
 
   ``uninitialized``
-
     An optional boolean. Setting this to ``true`` is equivalent to passing
-    ``--warn-uninitialized`` on the command line.
+    :option:`--warn-uninitialized <cmake --warn-uninitialized>` on the command
+    line.
 
   ``unusedCli``
-
     An optional boolean. Setting this to ``false`` is equivalent to passing
-    ``--no-warn-unused-cli`` on the command line.
+    :option:`--no-warn-unused-cli <cmake --no-warn-unused-cli>` on the command
+    line.
 
   ``systemVars``
-
     An optional boolean. Setting this to ``true`` is equivalent to passing
-    ``--check-system-vars`` on the command line.
+    :option:`--check-system-vars <cmake --check-system-vars>` on the command
+    line.
 
 ``errors``
-
   An optional object specifying the errors to enable. The object may
   contain the following fields:
 
   ``dev``
-
-    An optional boolean. Equivalent to passing ``-Werror=dev`` or
-    ``-Wno-error=dev`` on the command line. This may not be set to ``true``
-    if ``warnings.dev`` is set to ``false``.
+    An optional boolean. Equivalent to passing :option:`-Werror=dev <cmake -Werror>`
+    or :option:`-Wno-error=dev <cmake -Werror>` on the command line.
+    This may not be set to ``true`` if ``warnings.dev`` is set to ``false``.
 
   ``deprecated``
-
-    An optional boolean. Equivalent to passing ``-Werror=deprecated`` or
-    ``-Wno-error=deprecated`` on the command line. This may not be set to
-    ``true`` if ``warnings.deprecated`` is set to ``false``.
+    An optional boolean. Equivalent to passing
+    :option:`-Werror=deprecated <cmake -Werror>` or
+    :option:`-Wno-error=deprecated <cmake -Werror>` on the command line.
+    This may not be set to ``true`` if ``warnings.deprecated`` is set to
+    ``false``.
 
 ``debug``
-
   An optional object specifying debug options. The object may contain the
   following fields:
 
   ``output``
-
     An optional boolean. Setting this to ``true`` is equivalent to passing
-    ``--debug-output`` on the command line.
+    :option:`--debug-output <cmake --debug-output>` on the command line.
 
   ``tryCompile``
-
     An optional boolean. Setting this to ``true`` is equivalent to passing
-    ``--debug-trycompile`` on the command line.
+    :option:`--debug-trycompile <cmake --debug-trycompile>` on the command
+    line.
 
   ``find``
-
     An optional boolean. Setting this to ``true`` is equivalent to passing
-    ``--debug-find`` on the command line.
+    :option:`--debug-find <cmake --debug-find>` on the command line.
 
 构建预设
 ^^^^^^^^^^^^
@@ -368,24 +360,23 @@ Each entry of the ``buildPresets`` array is a JSON object
 that may contain the following fields:
 
 ``name``
-
   A required string representing the machine-friendly name of the preset.
   This identifier is used in the
   :ref:`cmake --build --preset <Build Tool Mode>` option.
   There must not be two build presets in the union of ``CMakePresets.json``
   and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a build preset may have the same name as a configure or test preset.
+  However, a build preset may have the same name as a configure, test,
+  package, or workflow preset.
 
 ``hidden``
-
   An optional boolean specifying whether or not a preset should be hidden.
-  If a preset is hidden, it cannot be used in the ``--preset`` argument
+  If a preset is hidden, it cannot be used in the
+  :option:`--preset <cmake --preset>` argument
   and does not have to have a valid ``configurePreset``, even from
   inheritance. ``hidden`` presets are intended to be used as a base for
   other presets to inherit via the ``inherits`` field.
 
 ``inherits``
-
   An optional array of strings representing the names of presets to inherit
   from. This field can also be a string, which is equivalent to an array
   containing one string.
@@ -403,12 +394,10 @@ that may contain the following fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-
-  An optional `条件`_ object. This is allowed in preset files specifying
+  An optional `Condition`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
-
   An optional map containing vendor-specific information. CMake does not
   interpret the contents of this field except to verify that it is a map
   if it does exist. However, it should follow the same conventions as the
@@ -417,15 +406,12 @@ that may contain the following fields:
   when appropriate.
 
 ``displayName``
-
   An optional string with a human-friendly name of the preset.
 
 ``description``
-
   An optional string with a human-friendly description of the preset.
 
 ``environment``
-
   An optional map of environment variables. The key is the variable name
   (which may not be an empty string), and the value is either ``null`` or
   a string representing the value of the variable. Each variable is set
@@ -456,7 +442,6 @@ that may contain the following fields:
     project.
 
 ``configurePreset``
-
   An optional string specifying the name of a configure preset to
   associate with this build preset. If ``configurePreset`` is not
   specified, it must be inherited from the inherits preset (unless this
@@ -465,36 +450,30 @@ that may contain the following fields:
   configuration did.
 
 ``inheritConfigureEnvironment``
-
   An optional boolean that defaults to true. If true, the environment
   variables from the associated configure preset are inherited after all
   inherited build preset environments, but before environment variables
   explicitly specified in this build preset.
 
 ``jobs``
-
-  An optional integer. Equivalent to passing ``--parallel`` or ``-j`` on
-  the command line.
+  An optional integer. Equivalent to passing
+  :option:`--parallel <cmake--build --parallel>` or ``-j`` on the command line.
 
 ``targets``
-
   An optional string or array of strings. Equivalent to passing
-  ``--target`` or ``-t`` on the command line. Vendors may ignore the
-  targets property or hide build presets that explicitly specify targets.
-  This field supports macro expansion.
+  :option:`--target <cmake--build --target>` or ``-t`` on the command line.
+  Vendors may ignore the targets property or hide build presets that
+  explicitly specify targets. This field supports macro expansion.
 
 ``configuration``
-
-  An optional string. Equivalent to passing ``--config`` on the command
-  line.
+  An optional string. Equivalent to passing
+  :option:`--config <cmake--build --config>` on the command line.
 
 ``cleanFirst``
-
-  An optional bool. If true, equivalent to passing ``--clean-first`` on
-  the command line.
+  An optional bool. If true, equivalent to passing
+  :option:`--clean-first <cmake--build --clean-first>` on the command line.
 
 ``resolvePackageReferences``
-
   An optional string that specifies the package resolve mode. This is
   allowed in preset files specifying version ``4`` or above.
 
@@ -504,24 +483,23 @@ that may contain the following fields:
   package references, this option does nothing. Valid values are:
 
   ``on``
-
     Causes package references to be resolved before attempting a build.
 
   ``off``
-
     Package references will not be resolved. Note that this may cause
     errors in some build environments, such as .NET SDK style projects.
 
   ``only``
-
     Only resolve package references, but do not perform a build.
 
   .. note::
 
-    The command line parameter ``--resolve-package-references`` will take
-    priority over this setting. If the command line parameter is not provided
-    and this setting is not specified, an environment-specific cache variable
-    will be evaluated to decide, if package restoration should be performed.
+    The command line parameter
+    :option:`--resolve-package-references <cmake--build --resolve-package-references>`
+    will take priority over this setting. If the command line parameter is not
+    provided and this setting is not specified, an environment-specific cache
+    variable will be evaluated to decide, if package restoration should be
+    performed.
 
     When using the Visual Studio generator, package references are defined
     using the :prop_tgt:`VS_PACKAGE_REFERENCES` property. Package references
@@ -530,12 +508,10 @@ that may contain the following fields:
     done from within a configure preset.
 
 ``verbose``
-
-  An optional bool. If true, equivalent to passing ``--verbose`` on the
-  command line.
+  An optional bool. If true, equivalent to passing
+  :option:`--verbose <cmake--build --verbose>` on the command line.
 
 ``nativeToolOptions``
-
   An optional array of strings. Equivalent to passing options after ``--``
   on the command line. The array values support macro expansion.
 
@@ -546,23 +522,22 @@ Each entry of the ``testPresets`` array is a JSON object
 that may contain the following fields:
 
 ``name``
-
   A required string representing the machine-friendly name of the preset.
-  This identifier is used in the :ref:`ctest --preset <CTest Options>` option.
+  This identifier is used in the :option:`ctest --preset` option.
   There must not be two test presets in the union of ``CMakePresets.json``
   and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a test preset may have the same name as a configure or build preset.
+  However, a test preset may have the same name as a configure, build,
+  package, or workflow preset.
 
 ``hidden``
-
   An optional boolean specifying whether or not a preset should be hidden.
-  If a preset is hidden, it cannot be used in the ``--preset`` argument
+  If a preset is hidden, it cannot be used in the
+  :option:`--preset <ctest --preset>` argument
   and does not have to have a valid ``configurePreset``, even from
   inheritance. ``hidden`` presets are intended to be used as a base for
   other presets to inherit via the ``inherits`` field.
 
 ``inherits``
-
   An optional array of strings representing the names of presets to inherit
   from. This field can also be a string, which is equivalent to an array
   containing one string.
@@ -580,12 +555,10 @@ that may contain the following fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-
-  An optional `条件`_ object. This is allowed in preset files specifying
+  An optional `Condition`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
-
   An optional map containing vendor-specific information. CMake does not
   interpret the contents of this field except to verify that it is a map
   if it does exist. However, it should follow the same conventions as the
@@ -594,15 +567,12 @@ that may contain the following fields:
   when appropriate.
 
 ``displayName``
-
   An optional string with a human-friendly name of the preset.
 
 ``description``
-
   An optional string with a human-friendly description of the preset.
 
 ``environment``
-
   An optional map of environment variables. The key is the variable name
   (which may not be an empty string), and the value is either ``null`` or
   a string representing the value of the variable. Each variable is set
@@ -620,7 +590,6 @@ that may contain the following fields:
   even if a value was inherited from another preset.
 
 ``configurePreset``
-
   An optional string specifying the name of a configure preset to
   associate with this test preset. If ``configurePreset`` is not
   specified, it must be inherited from the inherits preset (unless this
@@ -629,233 +598,204 @@ that may contain the following fields:
   configuration did and build did.
 
 ``inheritConfigureEnvironment``
-
   An optional boolean that defaults to true. If true, the environment
   variables from the associated configure preset are inherited after all
   inherited test preset environments, but before environment variables
   explicitly specified in this test preset.
 
 ``configuration``
-
-  An optional string. Equivalent to passing ``--build-config`` on the
-  command line.
+  An optional string. Equivalent to passing
+  :option:`--build-config <ctest --build-config>` on the command line.
 
 ``overwriteConfigurationFile``
-
   An optional array of configuration options to overwrite options
   specified in the CTest configuration file. Equivalent to passing
-  ``--overwrite`` for each value in the array. The array values
-  support macro expansion.
+  :option:`--overwrite <ctest --overwrite>` for each value in the array.
+  The array values support macro expansion.
 
 ``output``
-
   An optional object specifying output options. The object may contain the
   following fields.
 
   ``shortProgress``
-
-    An optional bool. If true, equivalent to passing ``--progress`` on the
-    command line.
+    An optional bool. If true, equivalent to passing
+    :option:`--progress <ctest --progress>` on the command line.
 
   ``verbosity``
-
     An optional string specifying verbosity level. Must be one of the
     following:
 
     ``default``
-
       Equivalent to passing no verbosity flags on the command line.
 
     ``verbose``
-
-      Equivalent to passing ``--verbose`` on the command line.
+      Equivalent to passing :option:`--verbose <ctest --verbose>` on
+      the command line.
 
     ``extra``
-
-      Equivalent to passing ``--extra-verbose`` on the command line.
+      Equivalent to passing :option:`--extra-verbose <ctest --extra-verbose>`
+      on the command line.
 
   ``debug``
-
-    An optional bool. If true, equivalent to passing ``--debug`` on the
-    command line.
+    An optional bool. If true, equivalent to passing
+    :option:`--debug <ctest --debug>` on the command line.
 
   ``outputOnFailure``
-
     An optional bool. If true, equivalent to passing
-    ``--output-on-failure`` on the command line.
+    :option:`--output-on-failure <ctest --output-on-failure>` on the command
+    line.
 
   ``quiet``
-
-    An optional bool. If true, equivalent to passing ``--quiet`` on the
-    command line.
+    An optional bool. If true, equivalent to passing
+    :option:`--quiet <ctest --quiet>` on the command line.
 
   ``outputLogFile``
-
     An optional string specifying a path to a log file. Equivalent to
-    passing ``--output-log`` on the command line. This field supports
-    macro expansion.
+    passing :option:`--output-log <ctest --output-log>` on the command line.
+    This field supports macro expansion.
 
   ``labelSummary``
-
     An optional bool. If false, equivalent to passing
-    ``--no-label-summary`` on the command line.
+    :option:`--no-label-summary <ctest --no-label-summary>` on the command
+    line.
 
   ``subprojectSummary``
-
     An optional bool. If false, equivalent to passing
-    ``--no-subproject-summary`` on the command line.
+    :option:`--no-subproject-summary <ctest --no-subproject-summary>`
+    on the command line.
 
   ``maxPassedTestOutputSize``
-
     An optional integer specifying the maximum output for passed tests in
-    bytes. Equivalent to passing ``--test-output-size-passed`` on the
-    command line.
+    bytes. Equivalent to passing
+    :option:`--test-output-size-passed <ctest --test-output-size-passed>`
+    on the command line.
 
   ``maxFailedTestOutputSize``
-
     An optional integer specifying the maximum output for failed tests in
-    bytes. Equivalent to passing ``--test-output-size-failed`` on the
-    command line.
+    bytes. Equivalent to passing
+    :option:`--test-output-size-failed <ctest --test-output-size-failed>`
+    on the command line.
 
   ``testOutputTruncation``
-
     An optional string specifying the test output truncation mode. Equivalent
-    to passing ``--test-output-truncation`` on the command line."
-    This is allowed in preset files specifying version ``5`` or above.
+    to passing
+    :option:`--test-output-truncation <ctest --test-output-truncation>` on
+    the command line. This is allowed in preset files specifying version
+    ``5`` or above.
 
   ``maxTestNameWidth``
-
     An optional integer specifying the maximum width of a test name to
-    output. Equivalent to passing ``--max-width`` on the command line.
+    output. Equivalent to passing :option:`--max-width <ctest --max-width>`
+    on the command line.
 
 ``filter``
-
   An optional object specifying how to filter the tests to run. The object
   may contain the following fields.
 
   ``include``
-
     An optional object specifying which tests to include. The object may
     contain the following fields.
 
     ``name``
-
       An optional string specifying a regex for test names. Equivalent to
-      passing ``--tests-regex`` on the command line. This field supports
-      macro expansion. CMake regex syntax is described under
-      :ref:`string(REGEX) <Regex Specification>`.
-
+      passing :option:`--tests-regex <ctest --tests-regex>` on the command
+      line. This field supports macro expansion. CMake regex syntax is
+      described under :ref:`string(REGEX) <Regex Specification>`.
 
     ``label``
-
       An optional string specifying a regex for test labels. Equivalent to
-      passing ``--label-regex`` on the command line. This field supports
-      macro expansion.
+      passing :option:`--label-regex <ctest --label-regex>` on the command
+      line. This field supports macro expansion.
 
     ``useUnion``
-
-      An optional bool. Equivalent to passing ``--union`` on the command
-      line.
+      An optional bool. Equivalent to passing :option:`--union <ctest --union>`
+      on the command line.
 
     ``index``
-
       An optional object specifying tests to include by test index. The
       object may contain the following fields. Can also be an optional
       string specifying a file with the command line syntax for
-      ``--tests-information``. If specified as a string, this field
-      supports macro expansion.
+      :option:`--tests-information <ctest --tests-information>`.
+      If specified as a string, this field supports macro expansion.
 
       ``start``
-
         An optional integer specifying a test index to start testing at.
 
       ``end``
-
         An optional integer specifying a test index to stop testing at.
 
       ``stride``
-
         An optional integer specifying the increment.
 
       ``specificTests``
-
         An optional array of integers specifying specific test indices to
         run.
 
   ``exclude``
-
     An optional object specifying which tests to exclude. The object may
     contain the following fields.
 
     ``name``
-
       An optional string specifying a regex for test names. Equivalent to
-      passing ``--exclude-regex`` on the command line. This field supports
-      macro expansion.
+      passing :option:`--exclude-regex <ctest --exclude-regex>` on the
+      command line. This field supports macro expansion.
 
     ``label``
-
       An optional string specifying a regex for test labels. Equivalent to
-      passing ``--label-exclude`` on the command line. This field supports
-      macro expansion.
+      passing :option:`--label-exclude <ctest --label-exclude>` on the
+      command line. This field supports macro expansion.
 
     ``fixtures``
-
       An optional object specifying which fixtures to exclude from adding
       tests. The object may contain the following fields.
 
       ``any``
-
         An optional string specifying a regex for text fixtures to exclude
-        from adding any tests. Equivalent to ``--fixture-exclude-any`` on
+        from adding any tests. Equivalent to
+        :option:`--fixture-exclude-any <ctest --fixture-exclude-any>` on
         the command line. This field supports macro expansion.
 
       ``setup``
-
         An optional string specifying a regex for text fixtures to exclude
-        from adding setup tests. Equivalent to ``--fixture-exclude-setup``
+        from adding setup tests. Equivalent to
+        :option:`--fixture-exclude-setup <ctest --fixture-exclude-setup>`
         on the command line. This field supports macro expansion.
 
       ``cleanup``
-
         An optional string specifying a regex for text fixtures to exclude
         from adding cleanup tests. Equivalent to
-        ``--fixture-exclude-cleanup`` on the command line. This field
-        supports macro expansion.
+        :option:`--fixture-exclude-cleanup <ctest --fixture-exclude-cleanup>`
+        on the command line. This field supports macro expansion.
 
 ``execution``
-
   An optional object specifying options for test execution. The object may
   contain the following fields.
 
   ``stopOnFailure``
-
-    An optional bool. If true, equivalent to passing ``--stop-on-failure``
-    on the command line.
-
-  ``enableFailover``
-
-    An optional bool. If true, equivalent to passing ``-F`` on the command
+    An optional bool. If true, equivalent to passing
+    :option:`--stop-on-failure <ctest --stop-on-failure>` on the command
     line.
 
-  ``jobs``
+  ``enableFailover``
+    An optional bool. If true, equivalent to passing :option:`-F <ctest -F>`
+    on the command line.
 
-    An optional integer. Equivalent to passing ``--parallel`` on the
-    command line.
+  ``jobs``
+    An optional integer. Equivalent to passing
+    :option:`--parallel <ctest --parallel>` on the command line.
 
   ``resourceSpecFile``
-
-    An optional string. Equivalent to passing ``--resource-spec-file`` on
+    An optional string. Equivalent to passing
+    :option:`--resource-spec-file <ctest --resource-spec-file>` on
     the command line. This field supports macro expansion.
 
   ``testLoad``
-
-    An optional integer. Equivalent to passing ``--test-load`` on the
-    command line.
+    An optional integer. Equivalent to passing
+    :option:`--test-load <ctest --test-load>` on the command line.
 
   ``showOnly``
-
-    An optional string. Equivalent to passing ``--show-only`` on the
+    An optional string. Equivalent to passing
+    :option:`--show-only <ctest --show-only>` on the
     command line. The string must be one of the following values:
 
     ``human``
@@ -863,13 +803,11 @@ that may contain the following fields:
     ``json-v1``
 
   ``repeat``
-
     An optional object specifying how to repeat tests. Equivalent to
-    passing ``--repeat`` on the command line. The object must have the
-    following fields.
+    passing :option:`--repeat <ctest --repeat>` on the command line.
+    The object must have the following fields.
 
     ``mode``
-
       A required string. Must be one of the following values:
 
       ``until-fail``
@@ -879,42 +817,204 @@ that may contain the following fields:
       ``after-timeout``
 
     ``count``
-
       A required integer.
 
   ``interactiveDebugging``
-
     An optional bool. If true, equivalent to passing
-    ``--interactive-debug-mode 1`` on the command line. If false,
-    equivalent to passing ``--interactive-debug-mode 0`` on the command
-    line.
-
-  ``scheduleRandom``
-
-    An optional bool. If true, equivalent to passing ``--schedule-random``
+    :option:`--interactive-debug-mode 1 <ctest --interactive-debug-mode>`
+    on the command line. If false, equivalent to passing
+    :option:`--interactive-debug-mode 0 <ctest --interactive-debug-mode>`
     on the command line.
 
-  ``timeout``
+  ``scheduleRandom``
+    An optional bool. If true, equivalent to passing
+    :option:`--schedule-random <ctest --schedule-random>` on the command
+    line.
 
-    An optional integer. Equivalent to passing ``--timeout`` on the
-    command line.
+  ``timeout``
+    An optional integer. Equivalent to passing
+    :option:`--timeout <ctest --timeout>` on the command line.
 
   ``noTestsAction``
-
     An optional string specifying the behavior if no tests are found. Must
     be one of the following values:
 
     ``default``
-
       Equivalent to not passing any value on the command line.
 
     ``error``
-
-      Equivalent to passing ``--no-tests=error`` on the command line.
+      Equivalent to passing :option:`--no-tests=error <ctest --no-tests>`
+      on the command line.
 
     ``ignore``
+      Equivalent to passing :option:`--no-tests=ignore <ctest --no-tests>`
+      on the command line.
 
-      Equivalent to passing ``--no-tests=ignore`` on the command line.
+Package Preset
+^^^^^^^^^^^^^^
+
+Package presets may be used in schema version ``6`` or above. Each entry of
+the ``packagePresets`` array is a JSON object that may contain the following
+fields:
+
+``name``
+  A required string representing the machine-friendly name of the preset.
+  This identifier is used in the :option:`cpack --preset` option.
+  There must not be two package presets in the union of ``CMakePresets.json``
+  and ``CMakeUserPresets.json`` in the same directory with the same name.
+  However, a package preset may have the same name as a configure, build,
+  test, or workflow preset.
+
+``hidden``
+  An optional boolean specifying whether or not a preset should be hidden.
+  If a preset is hidden, it cannot be used in the
+  :option:`--preset <cpack --preset>` argument
+  and does not have to have a valid ``configurePreset``, even from
+  inheritance. ``hidden`` presets are intended to be used as a base for
+  other presets to inherit via the ``inherits`` field.
+
+``inherits``
+  An optional array of strings representing the names of presets to inherit
+  from. This field can also be a string, which is equivalent to an array
+  containing one string.
+
+  The preset will inherit all of the fields from the
+  ``inherits`` presets by default (except ``name``, ``hidden``,
+  ``inherits``, ``description``, and ``displayName``), but can override
+  them as desired. If multiple ``inherits`` presets provide conflicting
+  values for the same field, the earlier preset in the ``inherits`` list
+  will be preferred.
+
+  A preset can only inherit from another preset that is defined in the
+  same file or in one of the files it includes (directly or indirectly).
+  Presets in ``CMakePresets.json`` may not inherit from presets in
+  ``CMakeUserPresets.json``.
+
+``condition``
+  An optional `Condition`_ object.
+
+``vendor``
+  An optional map containing vendor-specific information. CMake does not
+  interpret the contents of this field except to verify that it is a map
+  if it does exist. However, it should follow the same conventions as the
+  root-level ``vendor`` field. If vendors use their own per-preset
+  ``vendor`` field, they should implement inheritance in a sensible manner
+  when appropriate.
+
+``displayName``
+  An optional string with a human-friendly name of the preset.
+
+``description``
+  An optional string with a human-friendly description of the preset.
+
+``environment``
+  An optional map of environment variables. The key is the variable name
+  (which may not be an empty string), and the value is either ``null`` or
+  a string representing the value of the variable. Each variable is set
+  regardless of whether or not a value was given to it by the process's
+  environment. This field supports macro expansion, and environment
+  variables in this map may reference each other, and may be listed in any
+  order, as long as such references do not cause a cycle (for example, if
+  ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
+
+  Environment variables are inherited through the ``inherits`` field, and
+  the preset's environment will be the union of its own ``environment``
+  and the ``environment`` from all its parents. If multiple presets in
+  this union define the same variable, the standard rules of ``inherits``
+  are applied. Setting a variable to ``null`` causes it to not be set,
+  even if a value was inherited from another preset.
+
+``configurePreset``
+  An optional string specifying the name of a configure preset to
+  associate with this package preset. If ``configurePreset`` is not
+  specified, it must be inherited from the inherits preset (unless this
+  preset is hidden). The build directory is inferred from the configure
+  preset, so packaging will run in the same ``binaryDir`` that the
+  configuration did and build did.
+
+``inheritConfigureEnvironment``
+  An optional boolean that defaults to true. If true, the environment
+  variables from the associated configure preset are inherited after all
+  inherited package preset environments, but before environment variables
+  explicitly specified in this package preset.
+
+``generators``
+  An optional list of strings representing generators for CPack to use.
+
+``configurations``
+  An optional list of strings representing build configurations for CPack to
+  package.
+
+``variables``
+  An optional map of variables to pass to CPack, equivalent to
+  :option:`-D <cpack -D>` arguments. Each key is the name of a variable, and
+  the value is the string to assign to that variable.
+
+``configFile``
+  An optional string representing the config file for CPack to use.
+
+``output``
+  An optional object specifying output options. Valid keys are:
+
+  ``debug``
+    An optional boolean specifying whether or not to print debug information.
+    A value of ``true`` is equivalent to passing
+    :option:`--debug <cpack --debug>` on the command line.
+
+  ``verbose``
+    An optional boolean specifying whether or not to print verbosely. A value
+    of ``true`` is equivalent to passing :option:`--verbose <cpack --verbose>`
+    on the command line.
+
+``packageName``
+  An optional string representing the package name.
+
+``packageVersion``
+  An optional string representing the package version.
+
+``packageDirectory``
+  An optional string representing the directory in which to place the package.
+
+``vendorName``
+  An optional string representing the vendor name.
+
+.. _`Workflow Preset`:
+
+Workflow Preset
+^^^^^^^^^^^^^^^
+
+Workflow presets may be used in schema version ``6`` or above. Each entry of
+the ``workflowPresets`` array is a JSON object that may contain the following
+fields:
+
+``name``
+  A required string representing the machine-friendly name of the preset.
+  This identifier is used in the
+  :ref:`cmake --workflow --preset <Workflow Mode>` option. There must not be
+  two workflow presets in the union of ``CMakePresets.json`` and
+  ``CMakeUserPresets.json`` in the same directory with the same name. However,
+  a workflow preset may have the same name as a configure, build, test, or
+  package preset.
+
+``displayName``
+  An optional string with a human-friendly name of the preset.
+
+``description``
+  An optional string with a human-friendly description of the preset.
+
+``steps``
+  A required array of objects describing the steps of the workflow. The first
+  step must be a configure preset, and all subsequent steps must be non-
+  configure presets whose ``configurePreset`` field matches the starting
+  configure preset. Each object may contain the following fields:
+
+  ``type``
+    A required string. The first step must be ``configure``. Subsequent steps
+    must be either ``build``, ``test``, or ``package``.
+
+  ``name``
+    A required string representing the name of the configure, build, test, or
+    package preset to run as this workflow step.
 
 条件
 ^^^^^^^^^
@@ -930,65 +1030,53 @@ a ``not``, ``anyOf``, or ``allOf`` condition) may not be ``null``. If it is an
 object, it has the following fields:
 
 ``type``
-
   A required string with one of the following values:
 
   ``"const"``
-
     Indicates that the condition is constant. This is equivalent to using a
     boolean in place of the object. The condition object will have the
     following additional fields:
 
     ``value``
-
       A required boolean which provides a constant value for the condition's
       evaluation.
 
   ``"equals"``
 
   ``"notEquals"``
-
     Indicates that the condition compares two strings to see if they are equal
     (or not equal). The condition object will have the following additional
     fields:
 
     ``lhs``
-
       First string to compare. This field supports macro expansion.
 
     ``rhs``
-
       Second string to compare. This field supports macro expansion.
 
   ``"inList"``
 
   ``"notInList"``
-
     Indicates that the condition searches for a string in a list of strings.
     The condition object will have the following additional fields:
 
     ``string``
-
       A required string to search for. This field supports macro expansion.
 
     ``list``
-
       A required list of strings to search. This field supports macro
       expansion, and uses short-circuit evaluation.
 
   ``"matches"``
 
   ``"notMatches"``
-
     Indicates that the condition searches for a regular expression in a string.
     The condition object will have the following additional fields:
 
     ``string``
-
       A required string to search. This field supports macro expansion.
 
     ``regex``
-
       A required regular expression to search for. This field supports macro
       expansion.
 
@@ -1000,17 +1088,14 @@ object, it has the following fields:
     conditions. The condition object will have the following additional fields:
 
     ``conditions``
-
       A required array of condition objects. These conditions use short-circuit
       evaluation.
 
   ``"not"``
-
     Indicates that the condition is an inversion of another condition. The
     condition object will have the following additional fields:
 
     ``condition``
-
       A required condition object.
 
 宏扩展
@@ -1032,46 +1117,37 @@ interpreted as a literal dollar sign.
 Recognized macros include:
 
 ``${sourceDir}``
-
   Path to the project source directory (i.e. the same as
   :variable:`CMAKE_SOURCE_DIR`).
 
 ``${sourceParentDir}``
-
   Path to the project source directory's parent directory.
 
 ``${sourceDirName}``
-
   The last filename component of ``${sourceDir}``. For example, if
   ``${sourceDir}`` is ``/path/to/source``, this would be ``source``.
 
 ``${presetName}``
-
   Name specified in the preset's ``name`` field.
 
 ``${generator}``
-
   Generator specified in the preset's ``generator`` field. For build and
   test presets, this will evaluate to the generator specified by
   ``configurePreset``.
 
 ``${hostSystemName}``
-
   The name of the host operating system. Contains the same value as
   :variable:`CMAKE_HOST_SYSTEM_NAME`. This is allowed in preset files
   specifying version ``3`` or above.
 
 ``${fileDir}``
-
   Path to the directory containing the preset file which contains the macro.
   This is allowed in preset files specifying version ``4`` or above.
 
 ``${dollar}``
-
   A literal dollar sign (``$``).
 
 ``${pathListSep}``
-
   Native character for separating lists of paths, such as ``:`` or ``;``.
 
   For example, by setting ``PATH`` to
@@ -1082,7 +1158,6 @@ Recognized macros include:
   This is allowed in preset files specifying version ``5`` or above.
 
 ``$env{<variable-name>}``
-
   Environment variable with name ``<variable-name>``. The variable name may
   not be an empty string. If the variable is defined in the ``environment``
   field, that value is used instead of the value from the parent environment.
@@ -1095,7 +1170,6 @@ Recognized macros include:
   the casing of environment variable names consistent.
 
 ``$penv{<variable-name>}``
-
   Similar to ``$env{<variable-name>}``, except that the value only comes from
   the parent environment, and never from the ``environment`` field. This
   allows you to prepend or append values to existing environment variables.
@@ -1105,7 +1179,6 @@ Recognized macros include:
   references.
 
 ``$vendor{<macro-name>}``
-
   An extension point for vendors to insert their own macros. CMake will not
   be able to use presets which have a ``$vendor{<macro-name>}`` macro, and
   effectively ignores such presets. However, it will still be able to use

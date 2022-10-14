@@ -1,20 +1,24 @@
-``-S <path-to-source>``
- 要构建的CMake项目的根目录路径。
+.. option:: -S <path-to-source>
 
-``-B <path-to-build>``
- CMake将用作构建目录的根目录路径。
+ Path to root directory of the CMake project to build.
+
+.. option:: -B <path-to-build>
+
+ Path to directory which CMake will use as the root of build directory.
 
  如果该目录不存在，CMake会创建该它。
 
-``-C <initial-cache>``
- 预加载一个脚本来填充缓存。
+.. option:: -C <initial-cache>
+
+ Pre-load a script to populate the cache.
 
  当CMake第一次在一个空的构建树中运行时，它会创建一个\ ``CMakeCache.txt``\ 文件，并用项目的可定制设置填充它。此选项可用于指定一个文件，在第一次处理项目的CMake列表文件之前从该文件加载缓存项。加载的条目优先于项目的默认值。给定的文件应该是包含使用\ ``CACHE``\ 选项的\ :command:`set`\ 命令的CMake脚本，而不是缓存格式的文件。
 
  脚本中对\ :variable:`CMAKE_SOURCE_DIR`\ 和\ :variable:`CMAKE_BINARY_DIR`\ 的引用将计算到顶层源码和构建树。
 
-``-D <var>:<type>=<value>, -D <var>=<value>``
- 创建或更新CMake\ ``CACHE``\ 项。
+.. option:: -D <var>:<type>=<value>, -D <var>=<value>
+
+ Create or update a CMake ``CACHE`` entry.
 
  当CMake第一次在一个空的构建树中运行时，它会创建一个\ ``CMakeCache.txt``\ 文件，并用项目的可定制设置填充它。此选项可用于指定优先于项目默认值的设置。根据需要，可以对任意多的\ ``CACHE``\ 条目重复该选项。
 
@@ -22,72 +26,111 @@
 
  该选项也可以作为单个参数使用：``-D<var>:<type>=<value>``\ 或\ ``-D<var>=<value>``。
 
-``-U <globbing_expr>``
- 从CMake\ ``CACHE``\ 中删除匹配的条目。
+ It's important to note that the order of ``-C`` and ``-D`` arguments is
+ significant. They will be carried out in the order they are listed, with the
+ last argument taking precedence over the previous ones. For example, if you
+ specify ``-DCMAKE_BUILD_TYPE=Debug``, followed by a ``-C`` argument with a
+ file that calls:
+
+ .. code-block:: cmake
+
+   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+
+ then the ``-C`` argument will take precedence, and ``CMAKE_BUILD_TYPE`` will
+ be set to ``Release``. However, if the ``-D`` argument comes after the ``-C``
+ argument, it will be set to ``Debug``.
+
+ If a ``set(... CACHE ...)`` call in the ``-C`` file does not use ``FORCE``,
+ and a ``-D`` argument sets the same variable, the ``-D`` argument will take
+ precedence regardless of order because of the nature of non-``FORCE``
+ ``set(... CACHE ...)`` calls.
+
+.. option:: -U <globbing_expr>
+
+ Remove matching entries from CMake ``CACHE``.
 
  这个选项可以用来从\ ``CMakeCache.txt``\ 文件中删除一个或多个变量，支持\ ``*``\ 和\ ``?``\ 通配符。对于多个有需要的\ ``CACHE``\ 条目，这个选项可以重复。
 
  请小心使用，它可以使你的\ ``CMakeCache.txt``\ 无效。
 
-``-G <generator-name>``
- 指定一个构建系统生成器。
+.. option:: -G <generator-name>
+
+ Specify a build system generator.
 
  CMake可能在某些平台上支持多个本机构建系统。生成器负责生成特定的构建系统。支持的生成器名称在\ :manual:`cmake-generators(7)`\ 手册中指定。
 
  如果没有指定，CMake将检查\ :envvar:`CMAKE_GENERATOR`\ 环境变量，否则返回内置默认选择。
 
-``-T <toolset-spec>``
- 受支持的生成器工具集规范。
+.. option:: -T <toolset-spec>
+
+ Toolset specification for the generator, if supported.
 
  一些CMake生成器支持一个工具集规范来告诉本地构建系统如何选择编译器。有关详细信息，请参阅\ :variable:`CMAKE_GENERATOR_TOOLSET`\ 变量。
 
-``-A <platform-name>``
- 生成器支持的前提下，指定平台名称。
+.. option:: -A <platform-name>
+
+ Specify platform name if supported by generator.
 
  一些CMake生成器支持通过本地构建系统一个平台名来选择编译器或SDK。详见\ :variable:`CMAKE_GENERATOR_PLATFORM`\ 变量。
 
-``--toolchain <path-to-file>``
- 指定交叉编译工具链文件，相当于设置\ :variable:`CMAKE_TOOLCHAIN_FILE`\ 变量。
+.. option:: --toolchain <path-to-file>
 
-``--install-prefix <directory>``
- 指定安装目录，由\ :variable:`CMAKE_INSTALL_PREFIX`\ 变量使用。必须是绝对路径。
+ Specify the cross compiling toolchain file, equivalent to setting
+ :variable:`CMAKE_TOOLCHAIN_FILE` variable.
 
-``-Wno-dev``
- 关闭开发警告。
+.. option:: --install-prefix <directory>
+
+ Specify the installation directory, used by the
+ :variable:`CMAKE_INSTALL_PREFIX` variable. Must be an absolute path.
+
+.. option:: -Wno-dev
+
+ Suppress developer warnings.
 
  关闭针对\ ``CMakeLists.txt``\ 文件作者的警告。默认情况下，这也将关闭弃用警告。
 
-``-Wdev``
- 启用开发警告。
+.. option:: -Wdev
+
+ Enable developer warnings.
 
  启用针对\ ``CMakeLists.txt``\ 文件作者的警告。默认情况下，这也将打开弃用警告。
 
-``-Werror=dev``
- 将开发警告视作错误。
+.. option:: -Wdeprecated
 
- 对\ ``CMakeLists.txt``\ 文件的作者发出的警告视作错误。默认情况下，这也会将已弃用警告视作错误。
-
-``-Wno-error=dev``
- 向开发人员发出警告而不是错误。
-
- 对\ ``CMakeLists.txt``\ 文件的作者发出警告，而不是错误。默认情况下，这也会将「弃用的警告作为错误」关闭。
-
-``-Wdeprecated``
- 启用弃用功能警告。
+ Enable deprecated functionality warnings.
 
  启用使用禁用功能时的警告，用于\ ``CMakeLists.txt``\ 文件的作者。
 
-``-Wno-deprecated``
- 关闭弃用功能警告。
+.. option:: -Wno-deprecated
+
+ Suppress deprecated functionality warnings.
 
  关闭使用弃用功能时的警告，用于\ ``CMakeLists.txt``\ 文件的作者。
 
-``-Werror=deprecated``
- 令已弃用的宏和函数警告报错。
+.. option:: -Werror=<what>
 
- 令已弃用的宏和函数发出警告，对于\ ``CMakeLists.txt``\ 文件的作者而言，则是报错。
+ Treat CMake warnings as errors. ``<what>`` must be one of the following:
 
-``-Wno-error=deprecated``
- 令已弃用的宏和函数发出警告，而不是错误。
+ ``dev``
+   Make developer warnings errors.
 
- 对已弃用的宏和函数的使用发出警告，对于\ ``CMakeLists.txt``\ 文件的作者而言，而不是错误。
+   Make warnings that are meant for the author of the ``CMakeLists.txt`` files
+   errors. By default this will also turn on deprecated warnings as errors.
+
+ ``deprecated``
+  Make deprecated macro and function warnings errors.
+
+  Make warnings for usage of deprecated macros and functions, that are meant
+  for the author of the ``CMakeLists.txt`` files, errors.
+
+.. option:: -Wno-error=<what>
+
+ Do not treat CMake warnings as errors. ``<what>`` must be one of the following:
+
+ ``dev``
+  Make warnings that are meant for the author of the ``CMakeLists.txt`` files not
+  errors. By default this will also turn off deprecated warnings as errors.
+
+ ``deprecated``
+  Make warnings for usage of deprecated macros and functions, that are meant
+  for the author of the ``CMakeLists.txt`` files, not errors.

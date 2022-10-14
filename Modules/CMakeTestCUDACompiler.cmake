@@ -76,7 +76,7 @@ endif()
 # any makefiles or projects.
 if(NOT CMAKE_CUDA_COMPILER_WORKS)
   PrintTestCompilerStatus("CUDA")
-  file(WRITE ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/main.cu
+  string(CONCAT __TestCompiler_testCudaCompilerSource
     "#ifndef __CUDACC__\n"
     "# error \"The CMAKE_CUDA_COMPILER is set to an invalid CUDA compiler\"\n"
     "#endif\n"
@@ -86,9 +86,10 @@ if(NOT CMAKE_CUDA_COMPILER_WORKS)
   unset(CMAKE_CUDA_COMPILER_WORKS)
 
   # Puts test result in cache variable.
-  try_compile(CMAKE_CUDA_COMPILER_WORKS ${CMAKE_BINARY_DIR}
-    ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/main.cu
+  try_compile(CMAKE_CUDA_COMPILER_WORKS
+    SOURCE_FROM_VAR main.cu __TestCompiler_testCudaCompilerSource
     OUTPUT_VARIABLE __CMAKE_CUDA_COMPILER_OUTPUT)
+  unset(__TestCompiler_testCudaCompilerSource)
 
   # Move result from cache to normal variable.
   set(CMAKE_CUDA_COMPILER_WORKS ${CMAKE_CUDA_COMPILER_WORKS})
@@ -126,10 +127,8 @@ list(REMOVE_ITEM CMAKE_CUDA_IMPLICIT_LINK_LIBRARIES ${CMAKE_CUDA_IMPLICIT_LINK_L
 if(CMAKE_CUDA_COMPILER_ID STREQUAL "NVIDIA")
   # Remove the CUDA Toolkit include directories from the set of
   # implicit system include directories.
-  # This resolves the issue that NVCC doesn't specify these
-  # includes as SYSTEM includes when compiling device code, and sometimes
-  # they contain headers that generate warnings, so let users mark them
-  # as SYSTEM explicitly
+  # CMake will explicitly mark these as SYSTEM to NVCC since it implicitly
+  # adds them as user includes and not system
   if(CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES)
     list(REMOVE_ITEM CMAKE_CUDA_IMPLICIT_INCLUDE_DIRECTORIES
       ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}

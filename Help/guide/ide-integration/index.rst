@@ -24,7 +24,15 @@ IDE集成指南
 
 CMake支持一种名为\ ``CMakePresets.json``\ 的文件格式，以及与之对应的特定于用户的\ ``CMakeUserPresets.json``。这个文件包含用户可能需要的各种配置预设的信息。每个预设可能有一个不同的编译器，构建标志，等等。该格式的细节在\ :manual:`cmake(1)`\ 手册中解释。
 
-我们鼓励IDE厂商像CMake一样阅读和评估这个文件，并向用户提供文件中列出的预设。用户应该能够看到（可能也可以编辑）为给定预设定义的CMake缓存变量、环境变量和命令行选项。IDE应该根据这些设置构造适当的\ :manual:`cmake(1)`\ 命令行参数列表，而不是直接使用\ ``--preset=``\ 选项。``--preset=``\ 选项仅供命令行用户方便使用，而不应该被IDE使用。
+IDE vendors are encouraged to read and evaluate this file the same way CMake
+does, and present the user with the presets listed in the file. Users should be
+able to see (and possibly edit) the CMake cache variables, environment
+variables, and command line options that are defined for a given preset. The
+IDE should then construct the list of appropriate :manual:`cmake(1)` command
+line arguments based on these settings, rather than using the
+:option:`--preset= <cmake --preset>` option directly. The
+:option:`--preset= <cmake --preset>` option is intended only as a convenient
+frontend for command line users, and should not be used by the IDE.
 
 例如，如果一个名为\ ``ninja``\ 的预设值指定\ ``Ninja``\ 为生成器，并指定\ ``${sourceDir}/build``\ 为构建目录，而不是运行目录：
 
@@ -38,7 +46,10 @@ IDE应该计算\ ``ninja``\ 预设的设置，然后运行：
 
   cmake -S /path/to/source -B /path/to/source/build -G Ninja
 
-在预置包含大量缓存变量的情况下，将它们全部传递为\ ``-D``\ 标志会导致超出平台的命令行长度限制，IDE应该构造一个临时缓存脚本，并将其与\ ``-C``\ 标志一起传递。有关\ ``-C``\ 标志如何使用的详细信息，请参阅\ :ref:`CMake Options`。
+In cases where a preset contains lots of cache variables, and passing all of
+them as :option:`-D <cmake -D>` flags would cause the command line length limit
+of the platform to be exceeded, the IDE should instead construct a temporary
+cache script and pass it with the :option:`-C <cmake -C>` flag.
 
 虽然读取、解析和计算\ ``CMakePresets.json``\ 的内容很容易，但它并不简单。除了文档之外，IDE厂商可能还希望参考CMake源代码和测试用例，以更好地理解如何实现这种格式。:download:`该文件 <../../manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\ 格式提供了一个机器可读的JSON模式，IDE供应商可能会发现该模式对于验证和提供编辑帮助很有用。
 
@@ -54,7 +65,11 @@ IDE不应该在Makefile或Ninja生成器中使用“额外的生成器”，这�
 编译
 ========
 
-如果使用Makefile或Ninja生成器生成构建树，不建议直接调用\ ``make``\ 或\ ``ninja``。相反，建议IDE使用\ ``--build``\ 参数调用\ :manual:`cmake(1)`，该参数将反过来调用适当的构建工具。
+If a Makefile or Ninja generator is used to generate the build tree, it is not
+recommended to invoke ``make`` or ``ninja`` directly. Instead, it is
+recommended that the IDE invoke :manual:`cmake(1)` with the
+:option:`--build <cmake --build>` argument, which will in turn invoke the
+appropriate build tool.
 
 如果使用了IDE项目生成器，比如\ :generator:`Xcode`\ 或Visual Studio生成器，并且IDE理解所使用的项目格式，那么IDE应该读取项目文件，并以相同的方式构建它。
 

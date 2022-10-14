@@ -111,6 +111,7 @@ Commands
     FetchContent_Declare(
       <name>
       <contentOptions>...
+      [SYSTEM]
       [OVERRIDE_FIND_PACKAGE |
        FIND_PACKAGE_ARGS args...]
     )
@@ -228,6 +229,16 @@ Commands
       from seeing that call.  Dependency providers always have the opportunity
       to intercept any direct call to :command:`find_package`, except if that
       call contains the ``BYPASS_PROVIDER`` option.
+
+  .. versionadded:: 3.25
+
+    ``SYSTEM``
+      If the ``SYSTEM`` argument is provided, targets created by
+      the dependency will have their :prop_tgt:`SYSTEM` property
+      set to true when populated by :command:`FetchContent_MakeAvailable`.
+      The entries in their  :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
+      will be treated as ``SYSTEM`` include directories when
+      compiling consumers.
 
 .. command:: FetchContent_MakeAvailable
 
@@ -884,9 +895,10 @@ Overriding Where To Find CMakeLists.txt
 
 If the sub-project's ``CMakeLists.txt`` file is not at the top level of its
 source tree, the ``SOURCE_SUBDIR`` option can be used to tell ``FetchContent``
-where to find it.  The following example shows how to use that option and
+where to find it.  The following example shows how to use that option, and
 it also sets a variable which is meaningful to the subproject before pulling
-it into the main build:
+it into the main build (set as an ``INTERNAL`` cache variable to avoid
+problems with policy :policy:`CMP0077`):
 
 .. code-block:: cmake
 
@@ -897,7 +909,7 @@ it into the main build:
     GIT_TAG        ae50d9b9902526efd6c7a1907d09739f959c6297 # v3.15.0
     SOURCE_SUBDIR  cmake
   )
-  set(protobuf_BUILD_TESTS OFF)
+  set(protobuf_BUILD_TESTS OFF CACHE INTERNAL "")
   FetchContent_MakeAvailable(protobuf)
 
 Complex Dependency Hierarchies
@@ -1972,13 +1984,17 @@ macro(FetchContent_MakeAvailable)
       if("${__cmake_contentDetails}" STREQUAL "")
         message(FATAL_ERROR "No details have been set for content: ${__cmake_contentName}")
       endif()
-      cmake_parse_arguments(__cmake_arg "" "SOURCE_SUBDIR" "" ${__cmake_contentDetails})
+      cmake_parse_arguments(__cmake_arg "SYSTEM" "SOURCE_SUBDIR" "" ${__cmake_contentDetails})
       if(NOT "${__cmake_arg_SOURCE_SUBDIR}" STREQUAL "")
         string(APPEND __cmake_srcdir "/${__cmake_arg_SOURCE_SUBDIR}")
       endif()
 
       if(EXISTS ${__cmake_srcdir}/CMakeLists.txt)
-        add_subdirectory(${__cmake_srcdir} ${${__cmake_contentNameLower}_BINARY_DIR})
+        if (__cmake_arg_SYSTEM)
+          add_subdirectory(${__cmake_srcdir} ${${__cmake_contentNameLower}_BINARY_DIR} SYSTEM)
+        else()
+          add_subdirectory(${__cmake_srcdir} ${${__cmake_contentNameLower}_BINARY_DIR})
+        endif()
       endif()
 
       unset(__cmake_srcdir)

@@ -8,9 +8,8 @@ cmake(1)
 
 .. parsed-literal::
 
- `生成一个项目构建系统`_
-  cmake [<options>] <path-to-source>
-  cmake [<options>] <path-to-existing-build>
+ `Generate a Project Buildsystem`_
+  cmake [<options>] <path-to-source | path-to-existing-build>
   cmake [<options>] -S <path-to-source> -B <path-to-build>
 
  `构建一个项目`_
@@ -22,8 +21,8 @@ cmake(1)
  `打开一个项目`_
   cmake --open <dir>
 
- `运行脚本`_
-  cmake [{-D <var>=<value>}...] -P <cmake-script-file>
+ `Run a Script`_
+  cmake [-D <var>=<value>]... -P <cmake-script-file>
 
  `运行命令行工具`_
   cmake -E <command> [<options>]
@@ -31,7 +30,10 @@ cmake(1)
  `运行包查找工具`_
   cmake --find-package [<options>]
 
- `查看帮助`_
+ `Run a Workflow Preset`_
+  cmake --workflow [<options>]
+
+ `View Help`_
   cmake --help[-<topic>]
 
 描述
@@ -63,8 +65,13 @@ cmake(1)
 
   要维护原始的源代码树，请使用单独的专用构建树执行\ *源代码外*\ 构建。也支持将构建树放置在与源代码树相同的目录中的\ *源代码内*\ 构建，但不鼓励这样做。
 
-生成器
-  它选择要生成的构建系统的类型。有关所有生成器的文档，请参阅\ :manual:`cmake-generators(7)`\ 手册。运行\ ``cmake --help``\ 查看本地可用的生成器列表。可以选择使用下面的\ ``-G``\ 选项来指定生成器，或者简单地接受CMake在当前平台的默认选项。
+Generator
+  This chooses the kind of buildsystem to generate.  See the
+  :manual:`cmake-generators(7)` manual for documentation of all generators.
+  Run :option:`cmake --help` to see a list of generators available locally.
+  Optionally use the :option:`-G <cmake -G>` option below to specify a
+  generator, or simply accept the default CMake chooses for the current
+  platform.
 
   当使用\ :ref:`Command-Line Build Tool Generators`\ 时，CMake期望编译器工具链所需要的环境已经在shell中配置好了。当使用\ :ref:`IDE Build Tool Generators`\ 时，不需要特定的环境。
 
@@ -100,7 +107,12 @@ cmake(1)
 
 在所有情况下，``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
 
-上面用于指定源树和构建树的样式可以混合使用。用\ ``-S``\ 或\ ``-B``\ 指定的路径总是被分别归类为源树或构建树。用普通参数指定的路径根据它们的内容和前面给出的路径类型进行分类。如果只给出一种路径类型，则使用当前工作目录（cwd）作为另一种。例如：
+The above styles for specifying the source and build trees may be mixed.
+Paths specified with :option:`-S <cmake -S>` or :option:`-B <cmake -B>`
+are always classified as source or build trees, respectively.  Paths
+specified with plain arguments are classified based on their content
+and the types of paths given earlier.  If only one type of path is given,
+the current working directory (cwd) is used for the other.  For example:
 
 ============================== ============ ===========
  命令行                          源目录        构建目录
@@ -133,84 +145,136 @@ cmake(1)
 选项
 -------
 
+.. program:: cmake
+
 .. include:: OPTIONS_BUILD.txt
 
-``--fresh``
+.. option:: --fresh
+
  .. versionadded:: 3.24
 
  执行构建树的新配置。这将删除任何现有的\ ``CMakeCache.txt``\ 文件和相关的\ ``CMakeFiles/``\ 目录，并从头开始重新创建它们。
 
-``-L[A][H]``
- 列出非高级缓存变量。
+.. option:: -L[A][H]
 
- 列表\ ``CACHE``\ 变量将运行CMake，并从CMake ``CACHE``\ 中列出所有未标记为\ ``INTERNAL``\ 或\ :prop_cache:`ADVANCED`\ 的变量。这将有效地显示当前的CMake设置，然后可以使用\ ``-D``\ 选项更改。改变一些变量可能会产生更多的变量。如果指定了\ ``A``，那么它还将显示高级变量。如果指定了\ ``H``，它还将为每个变量显示帮助。
+ List non-advanced cached variables.
 
-``-N``
- 视图模式。
+ List ``CACHE`` variables will run CMake and list all the variables from
+ the CMake ``CACHE`` that are not marked as ``INTERNAL`` or :prop_cache:`ADVANCED`.
+ This will effectively display current CMake settings, which can then be
+ changed with :option:`-D <cmake -D>` option.  Changing some of the variables
+ may result in more variables being created.  If ``A`` is specified, then it
+ will display also advanced variables.  If ``H`` is specified, it will also
+ display help for each variable.
+
+.. option:: -N
+
+ View mode only.
 
  只加载缓存。不实际运行配置和生成步骤。
 
-``--graphviz=[file]``
- 生成依赖的graphviz，参见\ :module:`CMakeGraphVizOptions`\ 获取更多信息。
+.. option:: --graphviz=<file>
+
+ Generate graphviz of dependencies, see :module:`CMakeGraphVizOptions` for more.
 
  生成一个graphviz输入文件，该文件将包含项目中的所有库和可执行依赖项。更多细节请参阅\ :module:`CMakeGraphVizOptions`\ 文档。
 
-``--system-information [file]``
- 转储系统信息。
+.. option:: --system-information [file]
+
+ Dump information about this system.
 
  转储关于当前系统的各种信息。如果从一个CMake项目的二进制目录顶层运行，它将转储额外的信息，如缓存、日志文件等。
 
-``--log-level=<ERROR|WARNING|NOTICE|STATUS|VERBOSE|DEBUG|TRACE>``
- 设置日志级别。
+.. option:: --log-level=<level>
 
- :command:`message`\ 命令将只输出指定日志级别或更高级别的消息。默认日志级别为\ ``STATUS``。
+ Set the log ``<level>``.
+
+ The :command:`message` command will only output messages of the specified
+ log level or higher.  The valid log levels are ``ERROR``, ``WARNING``,
+ ``NOTICE``, ``STATUS`` (default), ``VERBOSE``, ``DEBUG``, or ``TRACE``.
 
  要在CMake运行之间保持日志级别，可以将\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ 设置为缓存变量。如果同时给出了命令行选项和变量，则命令行选项优先。
 
  出于向后兼容的原因，``--loglevel``\ 也被接受为该选项的同义词。
 
-``--log-context``
- 启用\ :command:`message`\ 命令输出附加到每个消息的上下文。
+ .. versionadded:: 3.25
+   See the :command:`cmake_language` command for a way to
+   :ref:`query the current message logging level <query_message_log_level>`.
+
+.. option:: --log-context
+
+ Enable the :command:`message` command outputting context attached to each
+ message.
 
  这个选项打开仅显示当前CMake运行的上下文。为了让所有后续的CMake运行都持续显示上下文，可以将\ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 设置为缓存变量。当给出这个命令行选项时，:variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 将被忽略。
 
-``--debug-trycompile``
- 不删除\ :command:`try_compile`\ 构建树。一次只对一个\ :command:`try_compile`\ 有用。
+.. option:: --debug-trycompile
 
- 不删除为\ :command:`try_compile`\ 调用创建的文件和目录。这在调试失败的try_compile时很有用。但是，它可能将try-compile的结果更改为以前try-compile的旧数据，可能导致不同的测试错误地通过或失败。这个选项最好一次只用于一个try-compile，并且只在调试时使用。
+ Do not delete the files and directories created for
+ :command:`try_compile` / :command:`try_run` calls.
+ This is useful in debugging failed checks.
 
-``--debug-output``
- 将cmake置于调试模式。
+ Note that some uses of :command:`try_compile` may use the same build tree,
+ which will limit the usefulness of this option if a project executes more
+ than one :command:`try_compile`.  For example, such uses may change results
+ as artifacts from a previous try-compile may cause a different test to either
+ pass or fail incorrectly.  This option is best used only when debugging.
+
+ (With respect to the preceding, the :command:`try_run` command
+ is effectively a :command:`try_compile`.  Any combination of the two
+ is subject to the potential issues described.)
+
+ .. versionadded:: 3.25
+
+   When this option is enabled, every try-compile check prints a log
+   message reporting the directory in which the check is performed.
+
+.. option:: --debug-output
+
+ Put cmake in a debug mode.
 
  在cmake运行期间打印额外的信息，就像使用\ :command:`message(SEND_ERROR)`\ 调用进行堆栈跟踪一样。
 
-``--debug-find``
- 将cmake find命令置于调试模式。
+.. option:: --debug-find
+
+ Put cmake find commands in a debug mode.
 
  在cmake运行到标准错误时打印额外的find调用信息。输出是为人们使用而设计的，而不是为解析设计的。请参阅\ :variable:`CMAKE_FIND_DEBUG_MODE`\ 变量来调试项目中更局部的部分。
 
-``--debug-find-pkg=<pkg>[,...]``
- 当在调用\ :command:`find_package(\<pkg\>) <find_package>`\ 下运行时，将cmake find命令置于调试模式，其中\ ``<pkg>``\ 是给定的以逗号分隔的包名列表中的一个条目，包名区分大小写。
+.. option:: --debug-find-pkg=<pkg>[,...]
 
- 类似于\ ``--debug-find``，但将作用域限制为指定的包。
+ Put cmake find commands in a debug mode when running under calls
+ to :command:`find_package(\<pkg\>) <find_package>`, where ``<pkg>``
+ is an entry in the given comma-separated list of case-sensitive package
+ names.
 
-``--debug-find-var=<var>[,...]``
- 当使用\ ``<var>``\ 作为结果变量调用时，将cmake find命令置于调试模式，其中\ ``<var>``\ 是给定的逗号分隔列表中的条目。
+ Like :option:`--debug-find <cmake --debug-find>`, but limiting scope
+ to the specified packages.
 
- 类似于\ ``--debug-find``，但将作用域限制为指定的变量名。
+.. option:: --debug-find-var=<var>[,...]
 
-``--trace``
- 将cmake设置为跟踪模式。
+ Put cmake find commands in a debug mode when called with ``<var>``
+ as the result variable, where ``<var>`` is an entry in the given
+ comma-separated list.
+
+ Like :option:`--debug-find <cmake --debug-find>`, but limiting scope
+ to the specified variable names.
+
+.. option:: --trace
+
+ Put cmake in trace mode.
 
  打印所有呼叫的轨迹和调用的来源。
 
-``--trace-expand``
- 将cmake设置为跟踪模式。
+.. option:: --trace-expand
 
- 类似于\ ``--trace``，但是扩展了变量。
+ Put cmake in trace mode.
 
-``--trace-format=<format>``
- 将cmake设置为跟踪模式并设置跟踪输出格式。
+ Like :option:`--trace <cmake --trace>`, but with variables expanded.
+
+.. option:: --trace-format=<format>
+
+ Put cmake in trace mode and sets the trace output format.
 
  ``<format>``\ 可以是下列值之一。
 
@@ -281,46 +345,57 @@ cmake(1)
      ``version``
        JSON格式的版本。该版本具有遵循语义版本约定的主要和次要组件。
 
-``--trace-source=<file>``
+.. option:: --trace-source=<file>
+
  Put cmake in trace mode, but output only lines of a specified file.
 
  Multiple options are allowed.
 
-``--trace-redirect=<file>``
+.. option:: --trace-redirect=<file>
+
  Put cmake in trace mode and redirect trace output to a file instead of stderr.
 
-``--warn-uninitialized``
+.. option:: --warn-uninitialized
+
  Warn about uninitialized values.
 
  Print a warning when an uninitialized variable is used.
 
-``--warn-unused-vars``
+.. option:: --warn-unused-vars
+
  Does nothing.  In CMake versions 3.2 and below this enabled warnings about
  unused variables.  In CMake versions 3.3 through 3.18 the option was broken.
  In CMake 3.19 and above the option has been removed.
 
-``--no-warn-unused-cli``
+.. option:: --no-warn-unused-cli
+
  Don't warn about command line options.
 
  Don't find variables that are declared on the command line, but not
  used.
 
-``--check-system-vars``
+.. option:: --check-system-vars
+
  Find problems with variable usage in system files.
 
  Normally, unused and uninitialized variables are searched for only
  in :variable:`CMAKE_SOURCE_DIR` and :variable:`CMAKE_BINARY_DIR`.
  This flag tells CMake to warn about other files as well.
 
-``--compile-no-warning-as-error``
+.. option:: --compile-no-warning-as-error
+
  Ignore target property :prop_tgt:`COMPILE_WARNING_AS_ERROR` and variable
  :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`, preventing warnings from being
  treated as errors on compile.
 
-``--profiling-output=<path>``
- Used in conjunction with ``--profiling-format`` to output to a given path.
+.. option:: --profiling-output=<path>
 
-``--profiling-format=<file>``
+ Used in conjunction with
+ :option:`--profiling-format <cmake --profiling-format>` to output to a
+ given path.
+
+.. option:: --profiling-format=<file>
+
  Enable the output of profiling data of CMake script in the given format.
 
  This can aid performance analysis of CMake scripts executed. Third party
@@ -331,7 +406,8 @@ cmake(1)
  about:tracing tab of Google Chrome or using a plugin for a tool like Trace
  Compass.
 
-``--preset <preset>``, ``--preset=<preset>``
+.. option:: --preset <preset>, --preset=<preset>
+
  Reads a :manual:`preset <cmake-presets(7)>` from
  ``<path-to-source>/CMakePresets.json`` and
  ``<path-to-source>/CMakeUserPresets.json``. The preset may specify the
@@ -347,16 +423,22 @@ cmake(1)
  a variable called ``MYVAR`` to ``1``, but the user sets it to ``2`` with a
  ``-D`` argument, the value ``2`` is preferred.
 
-``--list-presets, --list-presets=<[configure | build | test | all]>``
- Lists the available presets. If no option is specified only configure presets
- will be listed. The current working directory must contain CMake preset files.
+.. option:: --list-presets[=<type>]
+
+ Lists the available presets of the specified ``<type>``.  Valid values for
+ ``<type>`` are ``configure``, ``build``, ``test``, ``package``, or ``all``.
+ If ``<type>`` is omitted, ``configure`` is assumed.  The current working
+ directory must contain CMake preset files.
 
 .. _`Build Tool Mode`:
 
 构建一个项目
 ===============
 
-CMake提供了一个命令行签名来构建一个已经生成的项目二进制树：
+.. program:: cmake
+
+CMake provides a command-line signature to build an already-generated
+project binary tree:
 
 .. code-block:: shell
 
@@ -365,21 +447,27 @@ CMake提供了一个命令行签名来构建一个已经生成的项目二进制
 
 这将使用以下选项抽象出一个本机构建工具的命令行界面：
 
-``--build <dir>``
+.. option:: --build <dir>
+
   Project binary directory to be built.  This is required (unless a preset
   is specified) and must be first.
 
-``--preset <preset>``, ``--preset=<preset>``
+.. program:: cmake--build
+
+.. option:: --preset <preset>, --preset=<preset>
+
   Use a build preset to specify build options. The project binary directory
   is inferred from the ``configurePreset`` key. The current working directory
   must contain CMake preset files.
   See :manual:`preset <cmake-presets(7)>` for more details.
 
-``--list-presets``
+.. option:: --list-presets
+
   Lists the available build presets. The current working directory must
   contain CMake preset files.
 
-``--parallel [<jobs>], -j [<jobs>]``
+.. option:: -j [<jobs>], --parallel [<jobs>]
+
   The maximum number of concurrent processes to use when building.
   If ``<jobs>`` is omitted the native build tool's default number is used.
 
@@ -389,24 +477,29 @@ CMake提供了一个命令行签名来构建一个已经生成的项目二进制
   Some native build tools always build in parallel.  The use of ``<jobs>``
   value of ``1`` can be used to limit to a single job.
 
-``--target <tgt>..., -t <tgt>...``
+.. option:: -t <tgt>..., --target <tgt>...
+
   Build ``<tgt>`` instead of the default target.  Multiple targets may be
   given, separated by spaces.
 
-``--config <cfg>``
+.. option:: --config <cfg>
+
   For multi-configuration tools, choose configuration ``<cfg>``.
 
-``--clean-first``
-  Build target ``clean`` first, then build.
-  (To clean only, use ``--target clean``.)
+.. option:: --clean-first
 
-``--resolve-package-references=<on|off|only>``
+  Build target ``clean`` first, then build.
+  (To clean only, use :option:`--target clean <cmake--build --target>`.)
+
+.. option:: --resolve-package-references=<value>
+
   .. versionadded:: 3.23
 
   Resolve remote package references from external package managers (e.g. NuGet)
-  before build. When set to ``on`` (default), packages will be restored before
-  building a target. When set to ``only``, the packages will be restored, but no
-  build will be performed. When set to ``off``, no packages will be restored.
+  before build. When ``<value>`` is set to ``on`` (default), packages will be
+  restored before building a target.  When ``<value>`` is set to ``only``, the
+  packages will be restored, but no build will be performed.  When
+  ``<value>`` is set to ``off``, no packages will be restored.
 
   If the target does not define any package references, this option does nothing.
 
@@ -423,10 +516,12 @@ CMake提供了一个命令行签名来构建一个已经生成的项目二进制
   are restored using NuGet. It can be disabled by setting the
   ``CMAKE_VS_NUGET_PACKAGE_RESTORE`` variable to ``OFF``.
 
-``--use-stderr``
+.. option:: --use-stderr
+
   Ignored.  Behavior is default in CMake >= 3.0.
 
-``--verbose, -v``
+.. option:: -v, --verbose
+
   Enable verbose output - if supported - including the build commands to be
   executed.
 
@@ -434,15 +529,19 @@ CMake提供了一个命令行签名来构建一个已经生成的项目二进制
   :variable:`CMAKE_VERBOSE_MAKEFILE` cached variable is set.
 
 
-``--``
+.. option:: --
+
   Pass remaining options to the native tool.
 
-Run ``cmake --build`` with no options for quick help.
+Run :option:`cmake --build` with no options for quick help.
 
 安装一个项目
 =================
 
-CMake提供了一个命令行签名来安装已经生成的项目二进制树：
+.. program:: cmake
+
+CMake provides a command-line signature to install an already-generated
+project binary tree:
 
 .. code-block:: shell
 
@@ -450,33 +549,44 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
 这可以在构建项目后使用，以运行安装，而不使用生成的构建系统或本机构建工具。选项如下：
 
-``--install <dir>``
+.. option:: --install <dir>
+
   Project binary directory to install. This is required and must be first.
 
-``--config <cfg>``
+.. program:: cmake--install
+
+.. option:: --config <cfg>
+
   For multi-configuration generators, choose configuration ``<cfg>``.
 
-``--component <comp>``
+.. option:: --component <comp>
+
   Component-based install. Only install component ``<comp>``.
 
-``--default-directory-permissions <permissions>``
+.. option:: --default-directory-permissions <permissions>
+
   Default directory install permissions. Permissions in format ``<u=rwx,g=rx,o=rx>``.
 
-``--prefix <prefix>``
+.. option:: --prefix <prefix>
+
   Override the installation prefix, :variable:`CMAKE_INSTALL_PREFIX`.
 
-``--strip``
+.. option:: --strip
+
   Strip before installing.
 
-``-v, --verbose``
+.. option:: -v, --verbose
+
   Enable verbose output.
 
   This option can be omitted if :envvar:`VERBOSE` environment variable is set.
 
-Run ``cmake --install`` with no options for quick help.
+Run :option:`cmake --install` with no options for quick help.
 
 打开一个项目
 ==============
+
+.. program:: cmake
 
 .. code-block:: shell
 
@@ -490,11 +600,26 @@ Run ``cmake --install`` with no options for quick help.
 运行脚本
 ============
 
+.. program:: cmake
+
 .. code-block:: shell
 
-  cmake [{-D <var>=<value>}...] -P <cmake-script-file> [-- <unparsed-options>...]
+  cmake [-D <var>=<value>]... -P <cmake-script-file> [-- <unparsed-options>...]
 
-将给定的cmake文件作为CMake语言编写的脚本处理。没有执行配置或生成步骤，也没有修改缓存。如果使用 ``-D`` 定义变量，则必须在 ``-P`` 参数之前完成。
+.. program:: cmake-P
+
+.. option:: -D <var>=<value>
+
+ Define a variable for script mode.
+
+.. program:: cmake
+
+.. option:: -P <cmake-script-file>
+
+ Process the given cmake file as a script written in the CMake
+ language.  No configure or generate step is performed and the cache
+ is not modified.  If variables are defined using ``-D``, this must be
+ done before the ``-P`` argument.
 
 ``--`` 后面的任何选项都不会被CMake解析，但它们仍然包含在 :variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>` 传递给脚本的变量（包括 ``--`` 本身）。
 
@@ -504,15 +629,24 @@ Run ``cmake --install`` with no options for quick help.
 运行命令行工具
 =======================
 
-CMake通过签名提供了内置的命令行工具
+.. program:: cmake
+
+CMake provides builtin command-line tools through the signature
 
 .. code-block:: shell
 
   cmake -E <command> [<options>]
 
-执行 ``cmake -E`` 或 ``cmake -E help`` 获取命令摘要。可用的命令是：
+.. option:: -E [help]
 
-``capabilities``
+  Run ``cmake -E`` or ``cmake -E help`` for a summary of commands.
+
+.. program:: cmake-E
+
+Available commands are:
+
+.. option:: capabilities
+
   .. versionadded:: 3.7
 
   Report cmake capabilities in JSON format. The output is a JSON object
@@ -522,7 +656,7 @@ CMake通过签名提供了内置的命令行工具
     A JSON object with version information. Keys are:
 
     ``string``
-      The full version string as displayed by cmake ``--version``.
+      The full version string as displayed by cmake :option:`--version <cmake --version>`.
     ``major``
       The major version number in integer form.
     ``minor``
@@ -549,7 +683,8 @@ CMake通过签名提供了内置的命令行工具
 
       Optional member that may be present when the generator supports
       platform specification via :variable:`CMAKE_GENERATOR_PLATFORM`
-      (``-A ...``).  The value is a list of platforms known to be supported.
+      (:option:`-A ... <cmake -A>`).  The value is a list of platforms known to
+      be supported.
     ``extraGenerators``
       A list of strings with all the extra generators compatible with
       the generator.
@@ -574,30 +709,52 @@ CMake通过签名提供了内置的命令行工具
     ``true`` if cmake supports server-mode and ``false`` otherwise.
     Always false since CMake 3.20.
 
-``cat [--] <files>...``
+  ``tls``
+    .. versionadded:: 3.25
+
+    ``true`` if TLS support is enabled and ``false`` otherwise.
+
+.. option:: cat [--] <files>...
+
   .. versionadded:: 3.18
 
   Concatenate files and print on the standard output.
 
-  .. versionadded:: 3.24
+  .. program:: cmake-E_cat
+
+  .. option:: --
+
+    .. versionadded:: 3.24
+
     Added support for the double dash argument ``--``. This basic implementation
     of ``cat`` does not support any options, so using a option starting with
     ``-`` will result in an error. Use ``--`` to indicate the end of options, in
     case a file starts with ``-``.
 
-``chdir <dir> <cmd> [<arg>...]``
+.. program:: cmake-E
+
+.. option:: chdir <dir> <cmd> [<arg>...]
+
   Change the current working directory and run a command.
 
-``compare_files [--ignore-eol] <file1> <file2>``
+.. option:: compare_files [--ignore-eol] <file1> <file2>
+
   Check if ``<file1>`` is same as ``<file2>``. If files are the same,
   then returns ``0``, if not it returns ``1``.  In case of invalid
   arguments, it returns 2.
 
-  .. versionadded:: 3.14
-    The ``--ignore-eol`` option implies line-wise comparison and ignores
-    LF/CRLF differences.
+  .. program:: cmake-E_compare_files
 
-``copy <file>... <destination>``
+  .. option:: --ignore-eol
+
+    .. versionadded:: 3.14
+
+    The option implies line-wise comparison and ignores LF/CRLF differences.
+
+.. program:: cmake-E
+
+.. option:: copy <file>... <destination>
+
   Copy files to ``<destination>`` (either file or directory).
   If multiple files are specified, the ``<destination>`` must be
   directory and it must exist. Wildcards are not supported.
@@ -607,7 +764,8 @@ CMake通过签名提供了内置的命令行工具
   .. versionadded:: 3.5
     Support for multiple input files.
 
-``copy_directory <dir>... <destination>``
+.. option:: copy_directory <dir>... <destination>
+
   Copy content of ``<dir>...`` directories to ``<destination>`` directory.
   If ``<destination>`` directory does not exist it will be created.
   ``copy_directory`` does follow symlinks.
@@ -619,7 +777,8 @@ CMake通过签名提供了内置的命令行工具
     The command now fails when the source directory does not exist.
     Previously it succeeded by creating an empty destination directory.
 
-``copy_if_different <file>... <destination>``
+.. option:: copy_if_different <file>... <destination>
+
   Copy files to ``<destination>`` (either file or directory) if
   they have changed.
   If multiple files are specified, the ``<destination>`` must be
@@ -629,7 +788,8 @@ CMake通过签名提供了内置的命令行工具
   .. versionadded:: 3.5
     Support for multiple input files.
 
-``create_symlink <old> <new>``
+.. option:: create_symlink <old> <new>
+
   Create a symbolic link ``<new>`` naming ``<old>``.
 
   .. versionadded:: 3.13
@@ -638,7 +798,8 @@ CMake通过签名提供了内置的命令行工具
   .. note::
     Path to where ``<new>`` symbolic link will be created has to exist beforehand.
 
-``create_hardlink <old> <new>``
+.. option:: create_hardlink <old> <new>
+
   .. versionadded:: 3.19
 
   Create a hard link ``<new>`` naming ``<old>``.
@@ -647,31 +808,65 @@ CMake通过签名提供了内置的命令行工具
     Path to where ``<new>`` hard link will be created has to exist beforehand.
     ``<old>`` has to exist beforehand.
 
-``echo [<string>...]``
+.. option:: echo [<string>...]
+
   Displays arguments as text.
 
-``echo_append [<string>...]``
+.. option:: echo_append [<string>...]
+
   Displays arguments as text but no new line.
 
-``env [--unset=NAME ...] [NAME=VALUE ...] [--] <command> [<arg>...]``
+.. option:: env [<options>] [--] <command> [<arg>...]
+
   .. versionadded:: 3.1
 
-  Run command in a modified environment.
+  Run command in a modified environment. Options are:
 
-  .. versionadded:: 3.24
+  .. program:: cmake-E_env
+
+  .. option:: NAME=VALUE
+
+    Replaces the current value of ``NAME`` with ``VALUE``.
+
+  .. option:: --unset=NAME
+
+    Unsets the current value of ``NAME``.
+
+  .. option:: --modify ENVIRONMENT_MODIFICATION
+
+    .. versionadded:: 3.25
+
+    Apply a single :prop_test:`ENVIRONMENT_MODIFICATION` operation to the
+    modified environment.
+
+    The ``NAME=VALUE`` and ``--unset=NAME`` options are equivalent to
+    ``--modify NAME=set:VALUE`` and ``--modify NAME=unset:``, respectively.
+    Note that ``--modify NAME=reset:`` resets ``NAME`` to the value it had
+    when ``cmake`` launched (or unsets it), not to the most recent
+    ``NAME=VALUE`` option.
+
+  .. option:: --
+
+    .. versionadded:: 3.24
+
     Added support for the double dash argument ``--``. Use ``--`` to stop
     interpreting options/environment variables and treat the next argument as
     the command, even if it start with ``-`` or contains a ``=``.
 
-``environment``
+.. program:: cmake-E
+
+.. option:: environment
+
   Display the current environment variables.
 
-``false``
+.. option:: false
+
   .. versionadded:: 3.16
 
   Do nothing, with an exit code of 1.
 
-``make_directory <dir>...``
+.. option:: make_directory <dir>...
+
   Create ``<dir>`` directories.  If necessary, create parent
   directories too.  If a directory already exists it will be
   silently ignored.
@@ -679,13 +874,15 @@ CMake通过签名提供了内置的命令行工具
   .. versionadded:: 3.5
     Support for multiple input directories.
 
-``md5sum <file>...``
+.. option:: md5sum <file>...
+
   Create MD5 checksum of files in ``md5sum`` compatible format::
 
      351abe79cd3800b38cdfb25d45015a15  file1.txt
      052f86c15bbde68af55c7f7b340ab639  file2.txt
 
-``sha1sum <file>...``
+.. option:: sha1sum <file>...
+
   .. versionadded:: 3.10
 
   Create SHA1 checksum of files in ``sha1sum`` compatible format::
@@ -693,7 +890,8 @@ CMake通过签名提供了内置的命令行工具
      4bb7932a29e6f73c97bb9272f2bdc393122f86e0  file1.txt
      1df4c8f318665f9a5f2ed38f55adadb7ef9f559c  file2.txt
 
-``sha224sum <file>...``
+.. option:: sha224sum <file>...
+
   .. versionadded:: 3.10
 
   Create SHA224 checksum of files in ``sha224sum`` compatible format::
@@ -701,7 +899,8 @@ CMake通过签名提供了内置的命令行工具
      b9b9346bc8437bbda630b0b7ddfc5ea9ca157546dbbf4c613192f930  file1.txt
      6dfbe55f4d2edc5fe5c9197bca51ceaaf824e48eba0cc453088aee24  file2.txt
 
-``sha256sum <file>...``
+.. option:: sha256sum <file>...
+
   .. versionadded:: 3.10
 
   Create SHA256 checksum of files in ``sha256sum`` compatible format::
@@ -709,7 +908,8 @@ CMake通过签名提供了内置的命令行工具
      76713b23615d31680afeb0e9efe94d47d3d4229191198bb46d7485f9cb191acc  file1.txt
      15b682ead6c12dedb1baf91231e1e89cfc7974b3787c1e2e01b986bffadae0ea  file2.txt
 
-``sha384sum <file>...``
+.. option:: sha384sum <file>...
+
   .. versionadded:: 3.10
 
   Create SHA384 checksum of files in ``sha384sum`` compatible format::
@@ -717,7 +917,8 @@ CMake通过签名提供了内置的命令行工具
      acc049fedc091a22f5f2ce39a43b9057fd93c910e9afd76a6411a28a8f2b8a12c73d7129e292f94fc0329c309df49434  file1.txt
      668ddeb108710d271ee21c0f3acbd6a7517e2b78f9181c6a2ff3b8943af92b0195dcb7cce48aa3e17893173c0a39e23d  file2.txt
 
-``sha512sum <file>...``
+.. option:: sha512sum <file>...
+
   .. versionadded:: 3.10
 
   Create SHA512 checksum of files in ``sha512sum`` compatible format::
@@ -725,7 +926,8 @@ CMake通过签名提供了内置的命令行工具
      2a78d7a6c5328cfb1467c63beac8ff21794213901eaadafd48e7800289afbc08e5fb3e86aa31116c945ee3d7bf2a6194489ec6101051083d1108defc8e1dba89  file1.txt
      7a0b54896fe5e70cca6dd643ad6f672614b189bf26f8153061c4d219474b05dad08c4e729af9f4b009f1a1a280cb625454bf587c690f4617c27e3aebdf3b7a2d  file2.txt
 
-``remove [-f] <file>...``
+.. option:: remove [-f] <file>...
+
   .. deprecated:: 3.17
 
   Remove the file(s). The planned behavior was that if any of the
@@ -738,7 +940,8 @@ CMake通过签名提供了内置的命令行工具
   The implementation was buggy and always returned 0. It cannot be fixed without
   breaking backwards compatibility. Use ``rm`` instead.
 
-``remove_directory <dir>...``
+.. option:: remove_directory <dir>...
+
   .. deprecated:: 3.17
 
   Remove ``<dir>`` directories and their contents. If a directory does
@@ -751,11 +954,13 @@ CMake通过签名提供了内置的命令行工具
   .. versionadded:: 3.16
     If ``<dir>`` is a symlink to a directory, just the symlink will be removed.
 
-``rename <oldname> <newname>``
+.. option:: rename <oldname> <newname>
+
   Rename a file or directory (on one volume). If file with the ``<newname>`` name
   already exists, then it will be silently replaced.
 
-``rm [-rRf] [--] <file|dir>...``
+.. option:: rm [-rRf] [--] <file|dir>...
+
   .. versionadded:: 3.17
 
   Remove the files ``<file>`` or directories ``<dir>``.
@@ -766,22 +971,29 @@ CMake通过签名提供了内置的命令行工具
   situations instead. Use ``--`` to stop interpreting options and treat all
   remaining arguments as paths, even if they start with ``-``.
 
-``server``
+.. option:: server
+
   Launch :manual:`cmake-server(7)` mode.
 
-``sleep <number>...``
+.. option:: sleep <number>...
+
   .. versionadded:: 3.0
 
   Sleep for given number of seconds.
 
-``tar [cxt][vf][zjJ] file.tar [<options>] [--] [<pathname>...]``
+.. option:: tar [cxt][vf][zjJ] file.tar [<options>] [--] [<pathname>...]
+
   Create or extract a tar or zip archive.  Options are:
 
-  ``c``
+  .. program:: cmake-E_tar
+
+  .. option:: c
+
     Create a new archive containing the specified files.
     If used, the ``<pathname>...`` argument is mandatory.
 
-  ``x``
+  .. option:: x
+
     Extract to disk from the archive.
 
     .. versionadded:: 3.15
@@ -790,33 +1002,40 @@ CMake通过签名提供了内置的命令行工具
       When extracting selected files or directories, you must provide their exact
       names including the path, as printed by list (``-t``).
 
-  ``t``
+  .. option:: t
+
     List archive contents.
 
     .. versionadded:: 3.15
       The ``<pathname>...`` argument could be used to list only selected files
       or directories.
 
-  ``v``
+  .. option:: v
+
     Produce verbose output.
 
-  ``z``
+  .. option:: z
+
     Compress the resulting archive with gzip.
 
-  ``j``
+  .. option:: j
+
     Compress the resulting archive with bzip2.
 
-  ``J``
+  .. option:: J
+
     .. versionadded:: 3.1
 
     Compress the resulting archive with XZ.
 
-  ``--zstd``
+  .. option:: --zstd
+
     .. versionadded:: 3.15
 
     Compress the resulting archive with Zstandard.
 
-  ``--files-from=<file>``
+  .. option:: --files-from=<file>
+
     .. versionadded:: 3.1
 
     Read file names from the given file, one per line.
@@ -824,25 +1043,29 @@ CMake通过签名提供了内置的命令行工具
     except for ``--add-file=<name>`` to add files whose
     names start in ``-``.
 
-  ``--format=<format>``
+  .. option:: --format=<format>
+
     .. versionadded:: 3.3
 
     Specify the format of the archive to be created.
     Supported formats are: ``7zip``, ``gnutar``, ``pax``,
     ``paxr`` (restricted pax, default), and ``zip``.
 
-  ``--mtime=<date>``
+  .. option:: --mtime=<date>
+
     .. versionadded:: 3.1
 
     Specify modification time recorded in tarball entries.
 
-  ``--touch``
+  .. option:: --touch
+
     .. versionadded:: 3.24
 
     Use current local timestamp instead of extracting file timestamps
     from the archive.
 
-  ``--``
+  .. option:: --
+
     .. versionadded:: 3.1
 
     Stop interpreting options and treat all remaining arguments
@@ -857,7 +1080,10 @@ CMake通过签名提供了内置的命令行工具
     ``tar`` tool. The command now also parses all flags, and if an invalid flag
     was provided, a warning is issued.
 
-``time <command> [<args>...]``
+.. program:: cmake-E
+
+.. option:: time <command> [<args>...]
+
   Run command and display elapsed time.
 
   .. versionadded:: 3.5
@@ -865,15 +1091,18 @@ CMake通过签名提供了内置的命令行工具
     through to the child process. This may break scripts that worked around the
     bug with their own extra quoting or escaping.
 
-``touch <file>...``
+.. option:: touch <file>...
+
   Creates ``<file>`` if file do not exist.
   If ``<file>`` exists, it is changing ``<file>`` access and modification times.
 
-``touch_nocreate <file>...``
+.. option:: touch_nocreate <file>...
+
   Touch a file if it exists but do not create it.  If a file does
   not exist it will be silently ignored.
 
-``true``
+.. option:: true
+
   .. versionadded:: 3.16
 
   Do nothing, with an exit code of 0.
@@ -883,29 +1112,35 @@ Windows特定命令行工程
 
 以下 ``cmake -E`` 命令仅在Windows操作系统下可用：
 
-``delete_regv <key>``
+.. option:: delete_regv <key>
+
   Delete Windows registry value.
 
-``env_vs8_wince <sdkname>``
+.. option:: env_vs8_wince <sdkname>
+
   .. versionadded:: 3.2
 
   Displays a batch file which sets the environment for the provided
   Windows CE SDK installed in VS2005.
 
-``env_vs9_wince <sdkname>``
+.. option:: env_vs9_wince <sdkname>
+
   .. versionadded:: 3.2
 
   Displays a batch file which sets the environment for the provided
   Windows CE SDK installed in VS2008.
 
-``write_regv <key> <value>``
+.. option:: write_regv <key> <value>
+
   Write Windows registry value.
 
 
 运行包查找工具
 =========================
 
-CMake为基于Makefile的项目提供了一个类似于pkg-config的助手：
+.. program:: cmake--find-package
+
+CMake provides a pkg-config like helper for Makefile-based projects:
 
 .. code-block:: shell
 
@@ -916,11 +1151,46 @@ CMake为基于Makefile的项目提供了一个类似于pkg-config的助手：
 .. note::
   由于一些技术限制，这种模式没有得到很好的支持。保留它是为了兼容，但不应该在新项目中使用。
 
+.. _`Workflow Mode`:
+
+Run a Workflow Preset
+=====================
+
+.. program:: cmake
+
+:manual:`CMake Presets <cmake-presets(7)>` provides a way to execute multiple
+build steps in order:
+
+.. code-block:: shell
+
+  cmake --workflow [<options>]
+
+The options are:
+
+.. option:: --workflow
+
+  Select a :ref:`Workflow Preset` using one of the following options.
+
+.. program:: cmake--workflow
+
+.. option:: --preset <preset>, --preset=<preset>
+
+  Use a workflow preset to specify a workflow. The project binary directory
+  is inferred from the initial configure preset. The current working directory
+  must contain CMake preset files.
+  See :manual:`preset <cmake-presets(7)>` for more details.
+
+.. option:: --list-presets
+
+  Lists the available workflow presets. The current working directory must
+  contain CMake preset files.
 
 查看帮助
 =========
 
-要从CMake文档中打印选定的页面，请使用
+.. program:: cmake
+
+To print selected pages from the CMake documentation, use
 
 .. code-block:: shell
 

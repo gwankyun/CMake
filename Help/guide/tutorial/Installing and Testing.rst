@@ -1,74 +1,310 @@
-步骤4：安装和测试
+Step 5: Installing and Testing
 ==============================
 
-现在我们可以开始向我们的项目添加安装规则和测试支持了。
+.. _`Tutorial Testing Support`:
 
-安装规则
+Exercise 1 - Install Rules
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Often, it is not enough to only build an executable, it should also be
+installable. With CMake, we can specify install rules using the
+:command:`install` command. Supporting local installations for your builds in
+CMake is often as simple as specifying an install location and the targets and
+files to be installed.
+
+Goal
+----
+
+Install the ``Tutorial`` executable and the ``MathFunctions`` library.
+
+Helpful Materials
+-----------------
+
+* :command:`install`
+
+Files to Edit
 -------------
 
-安装规则相当简单：对于\ ``MathFunctions``，我们希望安装库和头文件，对于应用程序，我们希望安装可执行和配置的头文件。
+* ``MathFunctions/CMakeLists.txt``
+* ``CMakeLists.txt``
 
-所以在\ ``MathFunctions/CMakeLists.txt``\ 的末尾添加：
+Getting Started
+---------------
 
-.. literalinclude:: Step5/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
-  :name: MathFunctions/CMakeLists.txt-install-TARGETS
-  :language: cmake
-  :start-after: # 安装规则
+The starting code is provided in the ``Step5`` directory. In this
+exercise, complete ``TODO 1`` through ``TODO 4``.
 
-顶层\ ``CMakeLists.txt``\ 的末尾添加：
+First, update ``MathFunctions/CMakeLists.txt`` to install the
+``MathFunctions`` and ``tutorial_compiler_flags`` libraries to the ``lib``
+directory. In that same file, specify the install rules needed to install
+``MathFunctions.h`` to the ``include`` directory.
 
-.. literalinclude:: Step5/CMakeLists.txt
-  :caption: CMakeLists.txt
-  :name: CMakeLists.txt-install-TARGETS
-  :language: cmake
-  :start-after: # 添加安装目标
-  :end-before: # 启用测试
+Then, update the top level ``CMakeLists.txt`` to install
+the ``Tutorial`` executable to the ``bin`` directory. Lastly, any header files
+should be installed to the ``include`` directory. Remember that
+``TutorialConfig.h`` is in the :variable:`PROJECT_BINARY_DIR`.
 
-这就是创建基本本地安装的全部内容。
+Build and Run
+-------------
 
-现在可以运行\ :manual:`cmake  <cmake(1)>`\ 或者\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置并用构建工具来构建它。
+Make a new directory called ``Step5_build``. Run the
+:manual:`cmake <cmake(1)>` executable or the
+:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
+with your chosen build tool.
 
-接着使用\ :manual:`cmake  <cmake(1)>`\ 命令的\ ``install``\ 选项（3.15版本开始，\
-之前版本的CMake必须使用\ ``make install``）在命令行安装。\
-对于多配置的工具，记得用\ ``--config``\ 来指定配置。若使用IDE，只需构建\ ``INSTALL``\ 目标。\
-这一步将安装相应的头文件、库和可执行文件，例子：
+Then, run the install step by using the ``install`` option of the
+:manual:`cmake  <cmake(1)>` command (introduced in 3.15, older versions of
+CMake must use ``make install``) from the command line. This step will
+install the appropriate header files, libraries, and executables. For example:
 
 .. code-block:: console
 
   cmake --install .
 
-:variable:`CMAKE_INSTALL_PREFIX`\ 变量用于指定安装目录。\
-在运行\ ``cmake --install``\ 命令的时候，会被\ ``--prefix``\ 参数覆盖。例如：
+For multi-configuration tools, don't forget to use the ``--config`` argument to
+specify the configuration.
+
+.. code-block:: console
+
+  cmake --install . --config Release
+
+If using an IDE, simply build the ``INSTALL`` target. You can build the same
+install target from the command line like the following:
+
+.. code-block:: console
+
+  cmake --build . --target install --config Debug
+
+The CMake variable :variable:`CMAKE_INSTALL_PREFIX` is used to determine the
+root of where the files will be installed. If using the ``cmake --install``
+command, the installation prefix can be overridden via the ``--prefix``
+argument. For example:
 
 .. code-block:: console
 
   cmake --install . --prefix "/home/myuser/installdir"
 
-导航到安装目录并验证程序能否运行。
+Navigate to the install directory and verify that the installed ``Tutorial``
+runs.
 
-.. _`Tutorial Testing Support`:
+Solution
+--------
 
-测试支持
+The install rules for our project are fairly simple:
+
+* For ``MathFunctions``, we want to install the libraries and header file to
+  the ``lib`` and ``include`` directories respectively.
+
+* For the ``Tutorial`` executable, we want to install the executable and
+  configured header file to the ``bin`` and ``include`` directories
+  respectively.
+
+So to the end of ``MathFunctions/CMakeLists.txt`` we add:
+
+.. raw:: html
+
+  <details><summary>TODO 1: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/MathFunctions/CMakeLists.txt
+  :caption: TODO 1: MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-install-TARGETS
+  :language: cmake
+  :start-after: # install libs
+  :end-before: # install include headers
+
+.. raw:: html
+
+  </details>
+
+and
+
+.. raw:: html
+
+  <details><summary>TODO 2: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/MathFunctions/CMakeLists.txt
+  :caption: TODO 2: MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-install-headers
+  :language: cmake
+  :start-after: # install include headers
+
+.. raw:: html
+
+  </details>
+
+The install rules for the ``Tutorial`` executable and configured header file
+are similar. To the end of the top-level ``CMakeLists.txt`` we add:
+
+.. raw:: html
+
+  <details><summary>TODO 3,4: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/CMakeLists.txt
+  :caption: CMakeLists.txt
+  :name: TODO 3,4: CMakeLists.txt-install-TARGETS
+  :language: cmake
+  :start-after: # add the install targets
+  :end-before: # enable testing
+
+.. raw:: html
+
+  </details>
+
+That is all that is needed to create a basic local
+install of the tutorial.
+
+Exercise 2 - Testing Support
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+CTest offers a way to easily manage tests for your project. Tests can be
+added through the :command:`add_test` command. Although it is not
+explicitly covered in this tutorial, there is a lot of compatibility
+between CTest and other testing frameworks such as :module:`GoogleTest`.
+
+Goal
+----
+
+Create unit tests for our executable using CTest.
+
+Helpful Materials
+-----------------
+
+* :command:`enable_testing`
+* :command:`add_test`
+* :command:`function`
+* :command:`set_tests_properties`
+* :manual:`ctest <ctest(1)>`
+
+Files to Edit
+-------------
+
+* ``CMakeLists.txt``
+
+Getting Started
 ---------------
 
-接下来测试一下我们的程序。可以在顶层的\ ``CMakeLists.txt``\ 文件末尾启用测试，然后添加一些基本的测试用例来验证程序是否正常。
+The starting source code is provided in the ``Step5`` directory. In this
+exercise, complete ``TODO 5`` through ``TODO 9``.
 
-.. literalinclude:: Step5/CMakeLists.txt
-  :caption: CMakeLists.txt
+First, we need to enable testing. Next, begin adding tests to our project
+using :command:`add_test`. We will work through adding 3 simple tests and
+then you can add additional testing as you see fit.
+
+Build and Run
+-------------
+
+Navigate to the build directory and rebuild the application. Then, run the
+:manual:`ctest <ctest(1)>` executable: ``ctest -N`` and ``ctest -VV``. For
+multi-config generators (e.g. Visual Studio), the configuration type must be
+specified with the ``-C <mode>`` flag.  For example, to run tests in Debug
+mode use ``ctest -C Debug -VV`` from the build directory
+(not the Debug subdirectory!). Release mode would be executed from the same
+location but with a ``-C Release``. Alternatively, build the ``RUN_TESTS``
+target from the IDE.
+
+Solution
+--------
+
+Let's test our application. At the end of the top-level ``CMakeLists.txt``
+file we first need to enable testing with the
+:command:`enable_testing` command.
+
+.. raw:: html
+
+  <details><summary>TODO 5: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/CMakeLists.txt
+  :caption: TODO 5: CMakeLists.txt
   :name: CMakeLists.txt-enable_testing
   :language: cmake
-  :start-after: # 启用测试
+  :start-after: # enable testing
+  :end-before: # does the application run
 
-第一个测试只是验证程序能否运行，是否出现段错误或者崩溃，返回值是否为0。这就是基本的CMake测试。
+.. raw:: html
 
-下一个测试使用\ :prop_test:`PASS_REGULAR_EXPRESSION`\ 测试属性来验证测试输出是否包含某些字符串。\
-这个例子中，验证当提供的参数数量不正确时，是否输出相关信息。
+  </details>
 
-最后，有一个\ ``do_test``\ 函数，它运行程序并验证计算出来的平方根对于给定的输入是否正确。\
-对于每次调用\ ``do_test``，都会将另一个测试添加到项目中，并通过的参数传递名称、输入及预期结果。
+With testing enabled, we will add a number of basic tests to verify
+that the application is working correctly. First, we create a test using
+:command:`add_test` which runs the ``Tutorial`` executable with the
+parameter 25 passed in. For this test, we are not going to check the
+executable's computed answer. This test will verify that
+application runs, does not segfault or otherwise crash, and has a zero
+return value. This is the basic form of a CTest test.
 
-重新构建程序并进入程序目录，运行\ :manual:`ctest <ctest(1)>`\ 命令：``ctest -N``\ 和\ ``ctest -VV``。\
-对于多配置生成器（例如Visual Studio），必须使用\ ``-C <mode>``\ 指定配置类型。\
-例如，要在调试模式下运行测试，可以在构建目录（而不是Debug目录！）中运行\ ``ctest -C Debug -VV``。\
-或者，在IDE构建\ ``RUN_TESTS``\ 目标。
+.. raw:: html
+
+  <details><summary>TODO 6: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/CMakeLists.txt
+  :caption: TODO 6: CMakeLists.txt
+  :name: CMakeLists.txt-test-runs
+  :language: cmake
+  :start-after: # does the application run
+  :end-before: # does the usage message work
+
+.. raw:: html
+
+  </details>
+
+Next, let's use the :prop_test:`PASS_REGULAR_EXPRESSION` test property to
+verify that the output of the test contains certain strings. In this case,
+verifying that the usage message is printed when an incorrect number of
+arguments are provided.
+
+.. raw:: html
+
+  <details><summary>TODO 7: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/CMakeLists.txt
+  :caption: TODO 7: CMakeLists.txt
+  :name: CMakeLists.txt-test-usage
+  :language: cmake
+  :start-after: # does the usage message work?
+  :end-before: # define a function to simplify adding tests
+
+.. raw:: html
+
+  </details>
+
+The next test we will add verifies the computed value is truly the
+square root.
+
+.. raw:: html
+
+  <details><summary>TODO 8: Click to show/hide answer</summary>
+
+.. code-block:: cmake
+  :caption: TODO 8: CMakeLists.txt
+  :name: CMakeLists.txt-test-standard
+
+  add_test(NAME StandardUse COMMAND Tutorial 4)
+  set_tests_properties(StandardUse
+    PROPERTIES PASS_REGULAR_EXPRESSION "4 is 2"
+    )
+
+.. raw:: html
+
+  </details>
+
+This one test is not enough to give us confidence that it will
+work for all values passed in. We should add more tests to verify this.
+To easily add more tests, we make a function called ``do_test`` that runs the
+application and verifies that the computed square root is correct for
+given input. For each invocation of ``do_test``, another test is added to
+the project with a name, input, and expected results based on the passed
+arguments.
+
+.. raw:: html
+
+  <details><summary>TODO 9: Click to show/hide answer</summary>
+
+.. literalinclude:: Step6/CMakeLists.txt
+  :caption: TODO 9: CMakeLists.txt
+  :name: CMakeLists.txt-generalized-tests
+  :language: cmake
+  :start-after: # define a function to simplify adding tests
+
+.. raw:: html
+
+  </details>

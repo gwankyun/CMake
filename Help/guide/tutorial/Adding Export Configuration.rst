@@ -14,7 +14,7 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-install-TARGETS-EXPORT
   :language: cmake
-  :start-after: # install rules
+  :start-after: # install libs
 
 现在我们已经导出了\ ``MathFunctions``，我们还需要显式安装生成的\ ``MathFunctionsTargets.cmake``\ 文件。\
 这是通过在顶层\ ``CMakeLists.txt``\ 的底部添加以下内容来实现的：

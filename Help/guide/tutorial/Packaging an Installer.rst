@@ -1,4 +1,4 @@
-步骤7：构建安装程序
+Step 9: Packaging an Installer
 ==============================
 
 我们下个愿望是分发工程走让别人使用它。我们想同时分发源码和二进制在不同的平台。\
@@ -6,7 +6,7 @@
 在此例子中，我们会构建一个安装包以支持二进制安装及包管理。为了达到这个目标我们应该使用CPack创建不同平台的安装包。\
 应该在顶层\ ``CMakeLists.txt``\ 开头添加几行。
 
-.. literalinclude:: Step8/CMakeLists.txt
+.. literalinclude:: Step10/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-include-CPack
   :language: cmake
@@ -26,14 +26,16 @@
 
   cpack
 
-若想指定生成器，使用\ ``-G``\ 选项。对于多配置的构建，使用\ ``-C``\ 指定配置，如下所示：
+To specify the generator, use the :option:`-G <cpack -G>` option. For multi-config builds,
+use :option:`-C <cpack -C>` to specify the configuration. For example:
 
 .. code-block:: console
 
   cpack -G ZIP -C Debug
 
-有关可用生成器的列表，请参阅\ :manual:`cpack-generators(7)`\ 或调用\ ``cpack --help``。\
-像ZIP这样的\ :cpack_gen:`存档生成器 <CPack Archive Generator>`\ 会为所有\ *安装*\ 文件创建一个压缩存档。
+For a list of available generators, see :manual:`cpack-generators(7)` or call
+:option:`cpack --help`. An :cpack_gen:`archive generator <CPack Archive Generator>`
+like ZIP creates a compressed archive of all *installed* files.
 
 如果想创建一个\ *完整的*\ 源码分发包你应该输入：
 

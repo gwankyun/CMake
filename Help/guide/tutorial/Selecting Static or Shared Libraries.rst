@@ -1,5 +1,5 @@
-步骤9：选择使用静态库和共享库
-============================================
+Step 10: 选择使用静态库或共享库
+=============================================
 
 在本节中，我们将展示如何使用\ :variable:`BUILD_SHARED_LIBS`\ 变量来控制\ :command:`add_library`\ 的默认行为，\
 并允许控制没有显式类型的库（``STATIC``、``SHARED``、``MODULE``\ 或者\ ``OBJECT``）是如何构建的。
@@ -12,7 +12,7 @@
 
 第一步是像下面那样更新顶层\ ``CMakeLists.txt``：
 
-.. literalinclude:: Step10/CMakeLists.txt
+.. literalinclude:: Step11/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-option-BUILD_SHARED_LIBS
   :language: cmake
@@ -24,7 +24,7 @@
 
 ``MathFunctions/CMakeLists.txt``\ 最终应该像下面那样：
 
-.. literalinclude:: Step10/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step11/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_library-STATIC
   :language: cmake
@@ -32,7 +32,7 @@
 
 接下来使用\ ``mathfunctions``\ 函数及\ ``detail``\ 命名空间修改\ ``MathFunctions/mysqrt.cxx``：
 
-.. literalinclude:: Step10/MathFunctions/mysqrt.cxx
+.. literalinclude:: Step11/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-namespace
   :language: c++
@@ -45,7 +45,7 @@
 
 最后，更新\ ``MathFunctions/MathFunctions.h``\ 以使用dll导出的定义：
 
-.. literalinclude:: Step10/MathFunctions/MathFunctions.h
+.. literalinclude:: Step11/MathFunctions/MathFunctions.h
   :caption: MathFunctions/MathFunctions.h
   :name: MathFunctions/MathFunctions.h
   :language: c++
@@ -53,7 +53,7 @@
 此时，如果您构建了所有内容，您可能会注意到，当我们将一个没有位置独立代码的静态库与一个有位置独立代码的库组合在一起时，链接会失败。\
 解决这个问题的方法是不管构建类型，显式地将SqrtLibrary的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性设置为\ ``True``。
 
-.. literalinclude:: Step10/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step11/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-POSITION_INDEPENDENT_CODE
   :language: cmake

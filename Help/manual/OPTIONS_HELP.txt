@@ -1,120 +1,138 @@
-.. |file| replace:: 如果有指定，则打印到指定的<文>件。
+.. |file| replace:: The output is printed to a named ``<file>`` if given.
 
-``--help,-help,-usage,-h,-H,/?``
- 打印用例信息并退出。
+.. option:: -version [<file>], --version [<file>], /V [<file>]
+
+ Show program name/version banner and exit.
+ |file|
+
+.. option:: -h, -H, --help, -help, -usage, /?
+
+ Print usage information and exit.
 
  用例描述了基本的命令行接口及其选项。
 
-``--version,-version,/V [<文>]``
- 显示程序名称/版本横幅并退出。
+.. option:: --help-full [<file>]
 
- 如果指定了文件，则将版本号写入其中。
- |file|
-
-``--help-full [<文>]``
- 打印所有帮助手册并退出。
+ Print all help manuals and exit.
 
  所有手册皆以可读的文本格式打印。
  |file|
 
-``--help-manual <man> [<文>]``
- 打印一个帮助手册并退出。
+.. option:: --help-manual <man> [<file>]
+
+ Print one help manual and exit.
 
  以可读的文本格式打印指定的手册。
  |file|
 
-``--help-manual-list [<文>]``
- 列出可用的帮助手册并退出。
+.. option:: --help-manual-list [<file>]
+
+ List help manuals available and exit.
 
  该列表包含所有可以通过使用\ ``--help-manual``\ 选项及手册名称参数获得帮助的手册。
  |file|
 
-``--help-command <cmd> [<文>]``
- 打印一个命令的帮助并退出。
+.. option:: --help-command <cmd> [<file>]
+
+ Print help for one command and exit.
 
  ``<cmd>``\ 的\ :manual:`cmake-commands(7)`\ 手册条目以可读的文本格式打印。
  |file|
 
-``--help-command-list [<文>]``
- 列出命令并提供帮助，然后退出。
+.. option:: --help-command-list [<file>]
+
+ List commands with help available and exit.
 
  该列表包含所有可以通过使用\ ``--help-command``\ 选项后接命令名获得帮助的命令。
  |file|
 
-``--help-commands [<文>]``
- 打印cmake-commands手册并退出。
+.. option:: --help-commands [<file>]
+
+ Print cmake-commands manual and exit.
 
  :manual:`cmake-commands(7)`\ 手册以可读的文本格式打印。
  |file|
 
-``--help-module <mod> [<文>]``
- 打印一个模块的帮助并退出。
+.. option:: --help-module <mod> [<file>]
+
+ Print help for one module and exit.
 
  以可读的文本格式打印\ :manual:`cmake-modules(7)`\ 手册的\ ``<mod>``\ 条目。
  |file|
 
-``--help-module-list [<文>]``
- 列出可用的帮助模块并退出。
+.. option:: --help-module-list [<file>]
+
+ List modules with help available and exit.
 
  该列表包含了所有可以通过使用\ ``--help-module``\ 选项后接模块名获得帮助的模块。
  |file|
 
-``--help-modules [<文>]``
- 打印cmake-modules手册并退出。
+.. option:: --help-modules [<file>]
+
+ Print cmake-modules manual and exit.
 
  :manual:`cmake-modules(7)`\ 手册以可读的文本格式打印。
  |file|
 
-``--help-policy <cmp> [<文>]``
- 打印一个策略的帮助并退出。
+.. option:: --help-policy <cmp> [<file>]
+
+ Print help for one policy and exit.
 
  以可读的文本格式打印\ :manual:`cmake-policies(7)`\ 手册的\ ``<cmp>``\条目。
  |file|
 
-``--help-policy-list [<文>]``
- 列出有帮助的策略并退出。
+.. option:: --help-policy-list [<file>]
+
+ List policies with help available and exit.
 
  该列表包含所有可以通过使用\ ``--help-policy``\ 选项后接策略名获得帮助的策略。
  |file|
 
-``--help-policies [<文>]``
- 打印cmake-policies手册并退出。
+.. option:: --help-policies [<file>]
+
+ Print cmake-policies manual and exit.
 
  :manual:`cmake-policies(7)`\ 手册以可读的文本格式打印。
  |file|
 
-``--help-property <prop> [<文>]``
- 打印一个属性的帮助并退出。
+.. option:: --help-property <prop> [<file>]
+
+ Print help for one property and exit.
 
  以可读的文本格式打印\ :manual:`cmake-properties(7)`\ 手册的\ ``<prop>``\ 条目。
  |file|
 
-``--help-property-list [<文>]``
- 列出可用的属性并退出。
+.. option:: --help-property-list [<file>]
+
+ List properties with help available and exit.
 
  该列表包含可以通过使用\ ``--help-property``\ 选项后接属性名获得帮助的所有属性。
  |file|
 
-``--help-properties [<文>]``
- 打印cmake-properties手册并退出。
+.. option:: --help-properties [<file>]
+
+ Print cmake-properties manual and exit.
 
  :manual:`cmake-properties(7)`\ 手册以可读的文本格式打印。
  |file|
 
-``--help-variable <var> [<文>]``
- 打印一个变量的帮助并退出。
+.. option:: --help-variable <var> [<file>]
+
+ Print help for one variable and exit.
 
  以可读的文本格式打印\ :manual:`cmake-variables(7)`\ 手册的\ ``<var>``\ 条目。
  |file|
 
-``--help-variable-list [<文>]``
- 列出可用的变量帮助并退出。
+.. option:: --help-variable-list [<file>]
+
+ List variables with help available and exit.
 
  该列表包含所有可以通过使用\ ``--help-variable``\ 选项后接变量名获得帮助的变量。
  |file|
 
-``--help-variables [<文>]``
- 打印cmake-variables手册并退出。
+.. option:: --help-variables [<file>]
+
+ Print cmake-variables manual and exit.
 
  以可读的文本格式打印\ :manual:`cmake-variables(7)`\ 手册。
  |file|

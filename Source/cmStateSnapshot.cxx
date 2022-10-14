@@ -317,6 +317,25 @@ void cmStateSnapshot::SetDefaultDefinitions()
   this->SetDefinition("CMAKE_HOST_SOLARIS", "1");
 #endif
 
+#if defined(__OpenBSD__)
+  this->SetDefinition("BSD", "OpenBSD");
+  this->SetDefinition("CMAKE_HOST_BSD", "OpenBSD");
+#elif defined(__FreeBSD__)
+  this->SetDefinition("BSD", "FreeBSD");
+  this->SetDefinition("CMAKE_HOST_BSD", "FreeBSD");
+#elif defined(__NetBSD__)
+  this->SetDefinition("BSD", "NetBSD");
+  this->SetDefinition("CMAKE_HOST_BSD", "NetBSD");
+#elif defined(__DragonFly__)
+  this->SetDefinition("BSD", "DragonFlyBSD");
+  this->SetDefinition("CMAKE_HOST_BSD", "DragonFlyBSD");
+#endif
+
+#if defined(__linux__)
+  this->SetDefinition("LINUX", "1");
+  this->SetDefinition("CMAKE_HOST_LINUX", "1");
+#endif
+
   this->SetDefinition("CMAKE_MAJOR_VERSION",
                       std::to_string(cmVersion::GetMajorVersion()));
   this->SetDefinition("CMAKE_MINOR_VERSION",

@@ -109,8 +109,9 @@ The options are:
   While running tests in parallel, try not to start tests when they
   may cause the CPU load to pass above a given threshold.  If not
   specified the :variable:`CTEST_TEST_LOAD` variable will be checked,
-  and then the ``--test-load`` command-line argument to :manual:`ctest(1)`.
-  See also the ``TestLoad`` setting in the :ref:`CTest Test Step`.
+  and then the :option:`--test-load <ctest --test-load>` command-line
+  argument to :manual:`ctest(1)`. See also the ``TestLoad`` setting
+  in the :ref:`CTest Test Step`.
 
 ``REPEAT <mode>:<n>``
   .. versionadded:: 3.17
@@ -176,8 +177,9 @@ See also the :variable:`CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE`,
 :variable:`CTEST_CUSTOM_MAXIMUM_FAILED_TEST_OUTPUT_SIZE` and
 :variable:`CTEST_CUSTOM_TEST_OUTPUT_TRUNCATION` variables, along with their
 corresponding :manual:`ctest(1)` command line options
-``--test-output-size-passed``, ``--test-output-size-failed``, and
-``--test-output-truncation``.
+:option:`--test-output-size-passed <ctest --test-output-size-passed>`,
+:option:`--test-output-size-failed <ctest --test-output-size-failed>`, and
+:option:`--test-output-truncation <ctest --test-output-truncation>`.
 
 .. _`Additional Test Measurements`:
 

@@ -1,4 +1,4 @@
-步骤6：添加自定义命令和生成的文件
+Step 8: Adding a Custom Command and Generated File
 ==================================================
 
 假设，出于教学目的，我们决定不使用自带的\ ``log``\ 和\ ``exp``\ 函数，而希望生成一个包含预计算值的表，以便在\ ``mysqrt``\ 中使用。\
@@ -16,7 +16,7 @@
 
 首先在\ ``MathFunctions/CMakeLists.txt``\ 开头将\ ``MakeTable``\ 添加为其他可执行文件。
 
-.. literalinclude:: Step7/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_executable-MakeTable
   :language: cmake
@@ -25,7 +25,7 @@
 
 然后，我们添加一个自定义命令，指定如何通过运行MakeTable生成\ ``Table.h``。
 
-.. literalinclude:: Step7/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_custom_command-Table.h
   :language: cmake
@@ -35,7 +35,7 @@
 接下来需要让CMake知道\ ``mysqrt.cxx``\ 依赖于那个生成的\ ``Table.h``。\
 这是通过将\ ``Table.h``\ 添加到MathFunctions的源码列表达到的。
 
-.. literalinclude:: Step7/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_library-Table.h
   :language: cmake
@@ -44,16 +44,16 @@
 
 我们必须将当前目录加入引入目录列表，令\ ``Table.h``\ 能够被\ ``mysqrt.cxx``\ 找到并引用。
 
-.. literalinclude:: Step7/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories-Table.h
   :language: cmake
-  :start-after: # 说明我们依赖我们的二进制目录
-  :end-before: # 安装规则
+  :start-after: # state that we depend on our bin
+  :end-before: # install libs
 
 现在我们使用已生成的表。首先，修改\ ``mysqrt.cxx``\ 以引用\ ``Table.h``。接着，我们重构\ ``mysqrt``\ 函数使用这个表：
 
-.. literalinclude:: Step7/MathFunctions/mysqrt.cxx
+.. literalinclude:: Step9/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx
   :language: c++

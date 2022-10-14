@@ -15,6 +15,7 @@
 #include <vector>
 
 #include <cm/memory>
+#include <cm/optional>
 #include <cm/string_view>
 #include <cmext/algorithm>
 #include <cmext/string_view>
@@ -36,6 +37,7 @@
 #include "cmInstallScriptGenerator.h"
 #include "cmInstallTargetGenerator.h"
 #include "cmLinkLineComputer.h"
+#include "cmLinkLineDeviceComputer.h"
 #include "cmMakefile.h"
 #include "cmRange.h"
 #include "cmRulePlaceholderExpander.h"
@@ -1028,10 +1030,14 @@ void cmLocalGenerator::AddCompileOptions(std::vector<BT<std::string>>& flags,
   // Add Warning as errors flags
   if (!this->GetCMakeInstance()->GetIgnoreWarningAsError()) {
     const cmValue wError = target->GetProperty("COMPILE_WARNING_AS_ERROR");
-    const cmValue wErrorFlag = this->Makefile->GetDefinition(
+    const cmValue wErrorOpts = this->Makefile->GetDefinition(
       cmStrCat("CMAKE_", lang, "_COMPILE_OPTIONS_WARNING_AS_ERROR"));
-    if (wError.IsOn() && wErrorFlag.IsSet()) {
-      flags.emplace_back(wErrorFlag);
+    if (wError.IsOn() && wErrorOpts.IsSet()) {
+      std::string wErrorFlags;
+      this->AppendCompileOptions(wErrorFlags, *wErrorOpts);
+      if (!wErrorFlags.empty()) {
+        flags.emplace_back(std::move(wErrorFlags));
+      }
     }
   }
 
@@ -1381,7 +1387,7 @@ std::vector<BT<std::string>> cmLocalGenerator::GetStaticLibraryFlags(
 }
 
 void cmLocalGenerator::GetDeviceLinkFlags(
-  cmLinkLineComputer& linkLineComputer, const std::string& config,
+  cmLinkLineDeviceComputer& linkLineComputer, const std::string& config,
   std::string& linkLibs, std::string& linkFlags, std::string& frameworkPath,
   std::string& linkPath, cmGeneratorTarget* target)
 {
@@ -1389,12 +1395,26 @@ void cmLocalGenerator::GetDeviceLinkFlags(
 
   cmComputeLinkInformation* pcli = target->GetLinkInformation(config);
 
+  auto linklang = linkLineComputer.GetLinkerLanguage(target, config);
+  auto ipoEnabled = target->IsIPOEnabled(linklang, config);
+  if (!ipoEnabled) {
+    ipoEnabled = linkLineComputer.ComputeRequiresDeviceLinkingIPOFlag(*pcli);
+  }
+  if (ipoEnabled) {
+    if (cmValue cudaIPOFlags = this->Makefile->GetDefinition(
+          "CMAKE_CUDA_DEVICE_LINK_OPTIONS_IPO")) {
+      linkFlags += cudaIPOFlags;
+    }
+  }
+
   if (pcli) {
     // Compute the required device link libraries when
     // resolving gpu lang device symbols
     this->OutputLinkLibraries(pcli, &linkLineComputer, linkLibs, frameworkPath,
                               linkPath);
   }
+
+  // iterate link deps and see if any of them need IPO
 
   std::vector<std::string> linkOpts;
   target->GetLinkOptions(linkOpts, config, "CUDA");
@@ -1590,7 +1610,8 @@ std::vector<BT<std::string>> cmLocalGenerator::GetTargetCompileFlags(
   cmMakefile* mf = this->GetMakefile();
 
   // Add language-specific flags.
-  this->AddLanguageFlags(compileFlags, target, lang, config);
+  this->AddLanguageFlags(compileFlags, target, cmBuildStep::Compile, lang,
+                         config);
 
   if (target->IsIPOEnabled(lang, config)) {
     this->AppendFeatureOptions(compileFlags, lang, "IPO");
@@ -1903,6 +1924,7 @@ void cmLocalGenerator::AddArchitectureFlags(std::string& flags,
 
 void cmLocalGenerator::AddLanguageFlags(std::string& flags,
                                         cmGeneratorTarget const* target,
+                                        cmBuildStep compileOrLink,
                                         const std::string& lang,
                                         const std::string& config)
 {
@@ -1926,7 +1948,7 @@ void cmLocalGenerator::AddLanguageFlags(std::string& flags,
       }
     }
   } else if (lang == "CUDA") {
-    target->AddCUDAArchitectureFlags(flags);
+    target->AddCUDAArchitectureFlags(compileOrLink, config, flags);
     target->AddCUDAToolkitFlags(flags);
   } else if (lang == "ISPC") {
     target->AddISPCTargetFlags(flags);
@@ -2023,6 +2045,41 @@ void cmLocalGenerator::AddLanguageFlags(std::string& flags,
       }
     }
   }
+
+  // Add MSVC debug information format flags. This is activated by the presence
+  // of a default selection whether or not it is overridden by a property.
+  cmValue msvcDebugInformationFormatDefault = this->Makefile->GetDefinition(
+    "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT_DEFAULT");
+  if (cmNonempty(msvcDebugInformationFormatDefault)) {
+    cmValue msvcDebugInformationFormatValue =
+      target->GetProperty("MSVC_DEBUG_INFORMATION_FORMAT");
+    if (!msvcDebugInformationFormatValue) {
+      msvcDebugInformationFormatValue = msvcDebugInformationFormatDefault;
+    }
+    std::string const msvcDebugInformationFormat =
+      cmGeneratorExpression::Evaluate(*msvcDebugInformationFormatValue, this,
+                                      config, target);
+    if (!msvcDebugInformationFormat.empty()) {
+      if (cmValue msvcDebugInformationFormatOptions =
+            this->Makefile->GetDefinition(
+              cmStrCat("CMAKE_", lang,
+                       "_COMPILE_OPTIONS_MSVC_DEBUG_INFORMATION_FORMAT_",
+                       msvcDebugInformationFormat))) {
+        this->AppendCompileOptions(flags, *msvcDebugInformationFormatOptions);
+      } else if ((this->Makefile->GetSafeDefinition(
+                    cmStrCat("CMAKE_", lang, "_COMPILER_ID")) == "MSVC"_s ||
+                  this->Makefile->GetSafeDefinition(
+                    cmStrCat("CMAKE_", lang, "_SIMULATE_ID")) == "MSVC"_s) &&
+                 !cmSystemTools::GetErrorOccurredFlag()) {
+        // The compiler uses the MSVC ABI so it needs a known runtime library.
+        this->IssueMessage(MessageType::FATAL_ERROR,
+                           cmStrCat("MSVC_DEBUG_INFORMATION_FORMAT value '",
+                                    msvcDebugInformationFormat,
+                                    "' not known for this ", lang,
+                                    " compiler."));
+      }
+    }
+  }
 }
 
 void cmLocalGenerator::AddLanguageFlagsForLinking(
@@ -2038,7 +2095,7 @@ void cmLocalGenerator::AddLanguageFlagsForLinking(
     this->AddCompilerRequirementFlag(flags, target, lang, config);
   }
 
-  this->AddLanguageFlags(flags, target, lang, config);
+  this->AddLanguageFlags(flags, target, cmBuildStep::Link, lang, config);
 
   if (target->IsIPOEnabled(lang, config)) {
     this->AppendFeatureOptions(flags, lang, "IPO");
@@ -2574,7 +2631,9 @@ void cmLocalGenerator::AddPchDependencies(cmGeneratorTarget* target)
         if (pchSource.empty() || pchHeader.empty()) {
           if (this->GetGlobalGenerator()->IsXcode() && !pchLangSet.empty()) {
             for (auto* sf : sources) {
-              if (pchLangSet.find(sf->GetLanguage()) == pchLangSet.end()) {
+              const auto sourceLanguage = sf->GetLanguage();
+              if (!sourceLanguage.empty() &&
+                  pchLangSet.find(sourceLanguage) == pchLangSet.end()) {
                 sf->SetProperty("SKIP_PRECOMPILE_HEADERS", "ON");
               }
             }
@@ -2667,7 +2726,7 @@ void cmLocalGenerator::AddPchDependencies(cmGeneratorTarget* target)
                   cmStrCat(linkerProperty, configUpper),
                   cmStrCat(" ",
                            this->ConvertToOutputFormat(pchSourceObj, SHELL)),
-                  true);
+                  cm::nullopt, true);
               } else if (reuseTarget->GetType() ==
                          cmStateEnums::OBJECT_LIBRARY) {
                 // FIXME: This can propagate more than one level, unlike

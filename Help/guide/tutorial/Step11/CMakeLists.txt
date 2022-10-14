@@ -3,6 +3,7 @@
 # 设置工程名和版本号
 project(Tutorial VERSION 1.0)
 
+# specify the C++ standard
 add_library(tutorial_compiler_flags INTERFACE)
 target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_11)
 
@@ -31,7 +32,7 @@ add_subdirectory(MathFunctions)
 
 # 添加可执行文件
 add_executable(Tutorial tutorial.cxx)
-target_link_libraries(Tutorial PUBLIC MathFunctions)
+target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
 
 # 添加二进制树到引用目录的搜索路径
 # 以便找到TutorialConfig.h
@@ -46,7 +47,7 @@ install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
   )
 
 # 启用测试
-enable_testing()
+include(CTest)
 
 # 程序是否运行
 add_test(NAME Runs COMMAND Tutorial 25)
@@ -74,6 +75,7 @@ do_test(Tutorial 25 "25 is 5")
 do_test(Tutorial -25 "-25 is (-nan|nan|0)")
 do_test(Tutorial 0.0001 "0.0001 is 0.01")
 
+# setup installer
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
 set(CPACK_PACKAGE_VERSION_MAJOR "${Tutorial_VERSION_MAJOR}")

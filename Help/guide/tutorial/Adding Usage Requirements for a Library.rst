@@ -1,42 +1,147 @@
 步骤3：添加库的使用需求
 ===============================================
 
-使用需求允许对库或可执行文件的链接和include行进行更好的控制，同时也允许对CMake内部目标的传递属性进行更多的控制。利用使用需求的主要命令是：
+Exercise 1 - Adding Usage Requirements for a Library
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  - :command:`target_compile_definitions`
-  - :command:`target_compile_options`
-  - :command:`target_include_directories`
-  - :command:`target_link_libraries`
+:ref:`Usage requirements <Target Usage Requirements>` of a target parameters
+allow for far better control over a library or executable's link and include
+line while also giving more control over the transitive property of targets
+inside CMake. The primary commands that
+leverage usage requirements are:
 
-让我们从\ :guide:`添加库 <tutorial/Adding a Library>`\ 开始重构代码，以使用现代的CMake方法满足使用需求。\
-我们首先声明，任何链接到\ ``MathFunctions``\ 的人都需要包括当前的源目录，而\ ``MathFunctions``\ 本身不需要。\
-因此，这可以成为一个\ ``INTERFACE``\ 使用要求。
+* :command:`target_compile_definitions`
+* :command:`target_compile_options`
+* :command:`target_include_directories`
+* :command:`target_link_directories`
+* :command:`target_link_options`
+* :command:`target_precompile_headers`
+* :command:`target_sources`
 
-记住\ ``INTERFACE``\ 指的是消费者需要但生产者不需要的东西。在\ ``MathFunctions/CMakeLists.txt``\ 的末尾添加以下几行：
+
+Goal
+----
+
+Add usage requirements for a library.
+
+Helpful Materials
+-----------------
+
+* :variable:`CMAKE_CURRENT_SOURCE_DIR`
+
+Files to Edit
+-------------
+
+* ``MathFunctions/CMakeLists.txt``
+* ``CMakeLists.txt``
+
+Getting Started
+---------------
+
+In this exercise, we will refactor our code from
+:guide:`tutorial/Adding a Library` to use the modern CMake approach. We will
+let our library define its own usage requirements so they are passed
+transitively to other targets as necessary. In this case, ``MathFunctions``
+will specify any needed include directories itself. Then, the consuming target
+``Tutorial`` simply needs to link to ``MathFunctions`` and not worry about
+any additional include directories.
+
+The starting source code is provided in the ``Step3`` directory. In this
+exercise, complete ``TODO 1`` through ``TODO 3``.
+
+First, add a call to :command:`target_include_directories` in
+``MathFunctions/CMakeLists``. Remember that
+:variable:`CMAKE_CURRENT_SOURCE_DIR` is the path to the source directory
+currently being processed.
+
+Then, update (and simplify!) the call to
+:command:`target_include_directories` in the top-level ``CMakeLists.txt``.
+
+Build and Run
+-------------
+
+Make a new directory called ``Step3_build``, run the :manual:`cmake
+<cmake(1)>` executable or the :manual:`cmake-gui <cmake-gui(1)>` to
+configure the project and then build it with your chosen build tool or by
+using ``cmake --build .`` from the build directory. Here's a refresher of
+what that looks like from the command line:
+
+.. code-block:: console
+
+  mkdir Step3_build
+  cd Step3_build
+  cmake ../Step3
+  cmake --build .
+
+Next, use the newly built ``Tutorial`` and verify that it is working as
+expected.
+
+Solution
+--------
+
+Let's update the code from the previous step to use the modern CMake
+approach of usage requirements.
+
+We want to state that anybody linking to ``MathFunctions`` needs to include
+the current source directory, while ``MathFunctions`` itself doesn't. This
+can be expressed with an ``INTERFACE`` usage requirement. Remember
+``INTERFACE`` means things that consumers require but the producer doesn't.
+
+At the end of ``MathFunctions/CMakeLists.txt``, use
+:command:`target_include_directories` with the ``INTERFACE`` keyword, as
+follows:
+
+.. raw:: html
+
+  <details><summary>TODO 1: Click to show/hide answer</summary>
 
 .. literalinclude:: Step4/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
+  :caption: TODO 1: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories-INTERFACE
   :language: cmake
-  :start-after: # 以便查找MathFunctions.h
+  :start-after: # to find MathFunctions.h
+  :end-before: # TODO 3: Link to
 
-现在我们已经指定了\ ``MathFunctions``\ 的使用要求，\
-我们可以安全地从顶层的\ ``CMakeLists.txt``\ 中删除\ ``EXTRA_INCLUDES``\ 变量的使用，这里：
+.. raw:: html
+
+  </details>
+
+Now that we've specified usage requirements for ``MathFunctions`` we can
+safely remove our uses of the ``EXTRA_INCLUDES`` variable from the top-level
+``CMakeLists.txt``, here:
+
+.. raw:: html
+
+  <details><summary>TODO 2: Click to show/hide answer</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
-  :caption: CMakeLists.txt
+  :caption: TODO 2: CMakeLists.txt
   :name: CMakeLists.txt-remove-EXTRA_INCLUDES
   :language: cmake
   :start-after: # 添加MathFunctions库
   :end-before: # 添加可执行文件
 
-和这里：
+.. raw:: html
+
+  </details>
+
+And here:
+
+.. raw:: html
+
+  <details><summary>TODO 3: Click to show/hide answer</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
-  :caption: CMakeLists.txt
+  :caption: TODO 3: CMakeLists.txt
   :name: CMakeLists.txt-target_include_directories-remove-EXTRA_INCLUDES
   :language: cmake
   :start-after: # 以便找到TutorialConfig.h
 
-一旦完成，运行\ :manual:`cmake  <cmake(1)>`\ 命令或者\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
-然后用你选择的构建工具或使用\ ``cmake --build .``\ 在构建目录来构建它。
+.. raw:: html
+
+  </details>
+
+Notice that with this technique, the only thing our executable target does to
+use our library is call :command:`target_link_libraries` with the name
+of the library target. In larger projects, the classic method of specifying
+library dependencies manually becomes very complicated very quickly.

@@ -168,7 +168,9 @@ cmake-buildsystem(7)
 传播使用要求
 -----------------------------
 
-目标的使用要求可以传递到依赖项。:command:`target_link_libraries`\ 命令通过\ ``PRIVATE``、``INTERFACE``\ 和\ ``PUBLIC``\ 关键字来控制传播。
+The usage requirements of a target can transitively propagate to the dependents.
+The :command:`target_link_libraries` command has ``PRIVATE``,
+``INTERFACE`` and ``PUBLIC`` keywords to control the propagation.
 
 .. code-block:: cmake
 
@@ -188,7 +190,12 @@ cmake-buildsystem(7)
   # consumer is compiled with -DUSING_ARCHIVE_LIB
   target_link_libraries(consumer archiveExtras)
 
-因为\ ``archive``\ 是\ ``archiveExtras``\ 的\ ``PUBLIC``\ 依赖项，所以它的使用要求也会传播给\ ``consumer``。因为\ ``serialization``\ 是\ ``archiveExtras``\ 的\ ``PRIVATE``\ 依赖项，所以它的使用要求不会传播到\ ``consumer``。
+Because the ``archive`` is a ``PUBLIC`` dependency of ``archiveExtras``, the
+usage requirements of it are propagated to ``consumer`` too.
+
+Because
+``serialization`` is a ``PRIVATE`` dependency of ``archiveExtras``, the usage
+requirements of it are not propagated to ``consumer``.
 
 通常，如果依赖项只在库的实现，而不是头文件中使用，则应该使用\ :command:`target_link_libraries`\ 和\ ``PRIVATE``\ 关键字指定依赖项。如果一个依赖在库的头文件中被额外使用（例如用于类继承），那么它应该被指定为\ ``PUBLIC``\ 依赖。一个库的实现中没有使用的依赖项，只有它的头文件才使用它，则应该被指定为一个\ ``INTERFACE``\ 依赖项。:command:`target_link_libraries`\ 命令可以对每个关键字进行多次调用：
 

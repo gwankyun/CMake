@@ -8,7 +8,7 @@ ccmake(1)
 
 .. parsed-literal::
 
- ccmake [<options>] {<path-to-source> | <path-to-existing-build>}
+ ccmake [<options>] <path-to-source | path-to-existing-build>
 
 描述
 ===========
@@ -19,6 +19,8 @@ CMake是一个跨平台的构建系统生成器。项目使用与平台无关的
 
 选项
 =======
+
+.. program:: ccmake
 
 .. include:: OPTIONS_BUILD.txt
 

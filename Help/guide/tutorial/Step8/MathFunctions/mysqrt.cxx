@@ -1,25 +1,24 @@
+#include <cmath>
 #include <iostream>
 
 #include "MathFunctions.h"
 
-// 包括生成的表
-#include "Table.h"
-
-// 使用简单的操作进行平方根计算
+// a hack square root calculation using simple operations
 double mysqrt(double x)
 {
   if (x <= 0) {
     return 0;
   }
 
-  // 使用表格帮助查找初始值
+  // if we have both log and exp then use them
+#if defined(HAVE_LOG) && defined(HAVE_EXP)
+  double result = std::exp(std::log(x) * 0.5);
+  std::cout << "Computing sqrt of " << x << " to be " << result
+            << " using log and exp" << std::endl;
+#else
   double result = x;
-  if (x >= 1 && x < 10) {
-    std::cout << "Use the table to help find an initial value " << std::endl;
-    result = sqrtTable[static_cast<int>(x)];
-  }
 
-  // 迭代十次
+  // 锟斤拷锟斤拷十锟斤拷
   for (int i = 0; i < 10; ++i) {
     if (result <= 0) {
       result = 0.1;
@@ -28,6 +27,6 @@ double mysqrt(double x)
     result = result + 0.5 * delta / result;
     std::cout << "Computing sqrt of " << x << " to be " << result << std::endl;
   }
-
+#endif
   return result;
 }

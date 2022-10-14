@@ -109,6 +109,7 @@ of the following libraries that are part of the CUDAToolkit:
 - :ref:`CUDA Runtime Library<cuda_toolkit_rt_lib>`
 - :ref:`CUDA Driver Library<cuda_toolkit_driver_lib>`
 - :ref:`cuBLAS<cuda_toolkit_cuBLAS>`
+- :ref:`cuFile<cuda_toolkit_cuFile>`
 - :ref:`cuFFT<cuda_toolkit_cuFFT>`
 - :ref:`cuRAND<cuda_toolkit_cuRAND>`
 - :ref:`cuSOLVER<cuda_toolkit_cuSOLVER>`
@@ -119,8 +120,10 @@ of the following libraries that are part of the CUDAToolkit:
 - :ref:`nvGRAPH<cuda_toolkit_nvGRAPH>`
 - :ref:`nvJPEG<cuda_toolkit_nvJPEG>`
 - :ref:`nvidia-ML<cuda_toolkit_nvML>`
+- :ref:`nvPTX Compiler<cuda_toolkit_nvptx>`
 - :ref:`nvRTC<cuda_toolkit_nvRTC>`
 - :ref:`nvToolsExt<cuda_toolkit_nvToolsExt>`
+- :ref:`nvtx3<cuda_toolkit_nvtx3>`
 - :ref:`OpenCL<cuda_toolkit_opencl>`
 - :ref:`cuLIBOS<cuda_toolkit_cuLIBOS>`
 
@@ -162,6 +165,22 @@ Targets Created:
 - ``CUDA::cublas_static``
 - ``CUDA::cublasLt`` starting in CUDA 10.1
 - ``CUDA::cublasLt_static`` starting in CUDA 10.1
+
+.. _`cuda_toolkit_cuFile`:
+
+cuFile
+""""""
+
+.. versionadded:: 3.25
+
+The NVIDIA GPUDirect Storage `cuFile <https://docs.nvidia.com/cuda/cufile-api/index.html>`_ library.
+
+Targets Created:
+
+- ``CUDA::cuFile`` starting in CUDA 11.4
+- ``CUDA::cuFile_static`` starting in CUDA 11.4
+- ``CUDA::cuFile_rdma`` starting in CUDA 11.4
+- ``CUDA::cuFile_rdma_static`` starting in CUDA 11.4
 
 .. _`cuda_toolkit_cuFFT`:
 
@@ -333,6 +352,22 @@ Targets Created:
 - ``CUDA::nvjpeg``
 - ``CUDA::nvjpeg_static``
 
+.. _`cuda_toolkit_nvPTX`:
+
+nvPTX Compiler
+""""""""""""""
+
+.. versionadded:: 3.25
+
+The `nvPTX <https://docs.nvidia.com/cuda/ptx-compiler-api/index.html>`_ (PTX Compilation) library.
+The PTX Compiler APIs are a set of APIs which can be used to compile a PTX program into GPU assembly code.
+Introduced in CUDA 11.1
+This is a static library only.
+
+Targets Created:
+
+- ``CUDA::nvptxcompiler`` starting in CUDA 11.1
+
 .. _`cuda_toolkit_nvRTC`:
 
 nvRTC
@@ -362,12 +397,28 @@ Targets Created:
 nvToolsExt
 """"""""""
 
+.. deprecated:: 3.25 With CUDA 10.0+, use :ref:`nvtx3 <cuda_toolkit_nvtx3>`.
+
 The `NVIDIA Tools Extension <https://docs.nvidia.com/gameworks/content/gameworkslibrary/nvtx/nvidia_tools_extension_library_nvtx.htm>`_.
 This is a shared library only.
 
 Targets Created:
 
 - ``CUDA::nvToolsExt``
+
+.. _`cuda_toolkit_nvtx3`:
+
+nvtx3
+"""""
+
+.. versionadded:: 3.25
+
+The header-only `NVIDIA Tools Extension Library <https://nvidia.github.io/NVTX/doxygen/index.html>`_.
+Introduced in CUDA 10.0.
+
+Targets created:
+
+- ``CUDA::nvtx3``
 
 .. _`cuda_toolkit_opencl`:
 
@@ -942,6 +993,14 @@ if(CUDAToolkit_FOUND)
     _CUDAToolkit_find_and_add_import_lib(cublas_static DEPS culibos)
   endif()
 
+  if(CUDAToolkit_VERSION VERSION_GREATER_EQUAL 11.4)
+    _CUDAToolkit_find_and_add_import_lib(cuFile DEPS culibos)
+    _CUDAToolkit_find_and_add_import_lib(cuFile_static DEPS culibos)
+
+    _CUDAToolkit_find_and_add_import_lib(cuFile_rdma DEPS cuFile culibos)
+    _CUDAToolkit_find_and_add_import_lib(cuFile_rdma_static DEPS cuFile culibos)
+  endif()
+
   # cuFFTW depends on cuFFT
   _CUDAToolkit_find_and_add_import_lib(cufftw DEPS cufft)
   _CUDAToolkit_find_and_add_import_lib(cufftw_static DEPS cufft_static)
@@ -998,6 +1057,9 @@ if(CUDAToolkit_FOUND)
   endif()
 
   _CUDAToolkit_find_and_add_import_lib(nvrtc DEPS cuda_driver)
+  if(CUDAToolkit_VERSION VERSION_GREATER_EQUAL 11.1.0)
+    _CUDAToolkit_find_and_add_import_lib(nvptxcompiler_static DEPS cuda_driver)
+  endif()
 
   _CUDAToolkit_find_and_add_import_lib(nvml ALT nvidia-ml nvml)
 
@@ -1013,6 +1075,21 @@ if(CUDAToolkit_FOUND)
     )
   endif()
   _CUDAToolkit_find_and_add_import_lib(nvToolsExt ALT nvToolsExt64)
+
+  if(CUDAToolkit_VERSION VERSION_GREATER_EQUAL 10.0)
+    # nvToolsExt is deprecated since nvtx3 introduction.
+    # Warn only if the project requires a sufficiently new CMake to make migration possible.
+    if(CMAKE_MINIMUM_REQUIRED_VERSION VERSION_GREATER_EQUAL 3.25)
+      set_property(TARGET CUDA::nvToolsExt PROPERTY DEPRECATION "nvToolsExt has been superseded by nvtx3 since CUDA 10.0 and CMake 3.25. Use CUDA::nvtx3 and include <nvtx3/nvToolsExt.h> instead.")
+    endif()
+
+    # Header-only variant. Uses dlopen().
+    if(NOT TARGET CUDA::nvtx3)
+      add_library(CUDA::nvtx3 INTERFACE IMPORTED)
+      target_include_directories(CUDA::nvtx3 SYSTEM INTERFACE "${CUDAToolkit_INCLUDE_DIRS}")
+      target_link_libraries(CUDA::nvtx3 INTERFACE ${CMAKE_DL_LIBS})
+    endif()
+  endif()
 
   _CUDAToolkit_find_and_add_import_lib(OpenCL)
 endif()

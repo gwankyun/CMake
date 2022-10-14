@@ -1,4 +1,4 @@
-步骤5：添加系统自省
+Step 7: Adding System Introspection
 ===================================
 
 考虑向项目中添加一些依赖目标平台可能没有的特性代码。\
@@ -10,7 +10,7 @@
 
 调用\ :command:`target_include_directories`\ 之后，在\ ``MathFunctions/CMakeLists.txt``\ 添加对\ ``log``\ 和\ ``exp``\ 的检查：
 
-.. literalinclude:: Step6/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step8/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-check_cxx_source_compiles
   :language: cmake
@@ -19,17 +19,17 @@
 
 如果可以的话，使用\ :command:`target_compile_definitions`\ 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 为\ ``PRIVATE``\ 编译器定义。
 
-.. literalinclude:: Step6/MathFunctions/CMakeLists.txt
+.. literalinclude:: Step8/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_compile_definitions
   :language: cmake
-  :start-after: # 添加编译器定义
-  :end-before: # 安装规则
+  :start-after: # add compile definitions
+  :end-before: # install libs
 
 如果\ ``log``\ 和\ ``exp``\ 在系统上可用，那么我们将在\ ``mysqrt``\ 函数中用来计算平方根。\
 将以下代码添加到\ ``MathFunctions/mysqrt.cxx``\ 中的\ ``mysqrt``\ 函数中（返回結果前不要忘了\ ``#endif``！）：
 
-.. literalinclude:: Step6/MathFunctions/mysqrt.cxx
+.. literalinclude:: Step8/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-ifdef
   :language: c++
@@ -38,7 +38,7 @@
 
 同时还要修改\ ``mysqrt.cxx``\ 以包含\ ``cmath``：
 
-.. literalinclude:: Step6/MathFunctions/mysqrt.cxx
+.. literalinclude:: Step8/MathFunctions/mysqrt.cxx
   :caption: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-include-cmath
   :language: c++

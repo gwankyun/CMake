@@ -185,8 +185,10 @@ public:
   {
     this->SetProperty(prop, cmValue(value));
   }
-  void AppendProperty(const std::string& prop, const std::string& value,
-                      bool asString = false);
+  void AppendProperty(
+    const std::string& prop, const std::string& value,
+    cm::optional<cmListFileBacktrace> const& bt = cm::nullopt,
+    bool asString = false);
   //! Might return a nullptr if the property is not set or invalid
   cmValue GetProperty(const std::string& prop) const;
   //! Always returns a valid pointer
@@ -281,8 +283,12 @@ public:
   cmBTStringRange GetLinkInterfaceDirectExcludeEntries() const;
 
   cmBTStringRange GetHeaderSetsEntries() const;
+  cmBTStringRange GetCxxModuleSetsEntries() const;
+  cmBTStringRange GetCxxModuleHeaderSetsEntries() const;
 
   cmBTStringRange GetInterfaceHeaderSetsEntries() const;
+  cmBTStringRange GetInterfaceCxxModuleSetsEntries() const;
+  cmBTStringRange GetInterfaceCxxModuleHeaderSetsEntries() const;
 
   std::string ImportedGetFullPath(const std::string& config,
                                   cmStateEnums::ArtifactType artifact) const;
