@@ -123,7 +123,7 @@ set the CMake version as follows:
   :caption: TODO 1: CMakeLists.txt
   :name: CMakeLists.txt-cmake_minimum_required
   :language: cmake
-  :end-before: # set the project name and version
+  :end-before: # 设置工程名和版本号
 
 .. raw:: html
 
@@ -237,7 +237,7 @@ the following:
   :caption: TODO 4: tutorial.cxx
   :name: tutorial.cxx-cxx11
   :language: c++
-  :start-after: // convert input to double
+  :start-after: // 将输入转换为double类型
   :end-before: // TODO 12:
 
 .. raw:: html
@@ -262,7 +262,7 @@ add the :variable:`CMAKE_CXX_STANDARD` declarations above the call to
   :caption: TODO 6: CMakeLists.txt
   :name: CMakeLists.txt-CXX_STANDARD
   :language: cmake
-  :start-after: # specify the C++ standard
+  :start-after: # 指定C++标准
   :end-before: # TODO 7:
 
 .. raw:: html
@@ -354,8 +354,8 @@ When the :command:`project` command is called, CMake defines
   :caption: TODO 7: CMakeLists.txt
   :name: CMakeLists.txt-project-VERSION
   :language: cmake
-  :start-after: # set the project name and version
-  :end-before: # specify the C++ standard
+  :start-after: # 设置工程名和版本号
+  :end-before: # 指定C++标准
 
 .. raw:: html
 
@@ -452,7 +452,7 @@ Finally, we print out the executable name and version number by updating
   :name: tutorial.cxx-print-version
   :language: c++
   :start-after: {
-  :end-before: // convert input to double
+  :end-before: // 将输入转换为double类型
 
 .. raw:: html
 

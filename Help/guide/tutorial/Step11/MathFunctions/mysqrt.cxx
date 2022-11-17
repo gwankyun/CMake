@@ -2,26 +2,26 @@
 
 #include "MathFunctions.h"
 
-// °üÀ¨Éú³ÉµÄ±í
+// åŒ…æ‹¬ç”Ÿæˆçš„è¡¨
 #include "Table.h"
 
 namespace mathfunctions {
 namespace detail {
-// Ê¹ÓÃ¼òµ¥µÄ²Ù×÷½øĞĞÆ½·½¸ù¼ÆËã
+// ä½¿ç”¨ç®€å•çš„æ“ä½œè¿›è¡Œå¹³æ–¹æ ¹è®¡ç®—
 double mysqrt(double x)
 {
   if (x <= 0) {
     return 0;
   }
 
-  // Ê¹ÓÃ±í¸ñ°ïÖú²éÕÒ³õÊ¼Öµ
+  // ä½¿ç”¨è¡¨æ ¼å¸®åŠ©æŸ¥æ‰¾åˆå§‹å€¼
   double result = x;
   if (x >= 1 && x < 10) {
     std::cout << "Use the table to help find an initial value " << std::endl;
     result = sqrtTable[static_cast<int>(x)];
   }
 
-  // µü´úÊ®´Î
+  // è¿­ä»£åæ¬¡
   for (int i = 0; i < 10; ++i) {
     if (result <= 0) {
       result = 0.1;

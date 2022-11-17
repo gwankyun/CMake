@@ -99,7 +99,7 @@ follows:
   :caption: TODO 1: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories-INTERFACE
   :language: cmake
-  :start-after: # to find MathFunctions.h
+  :start-after: # 以便查找MathFunctions.h
   :end-before: # TODO 3: Link to
 
 .. raw:: html

@@ -291,8 +291,8 @@ changed by the user.
   :caption: TODO 7: CMakeLists.txt
   :name: CMakeLists.txt-option
   :language: cmake
-  :start-after: # should we use our own math functions
-  :end-before: # configure a header file to pass some of the CMake settings
+  :start-after: # 是否使用我们自己的数学函数
+  :end-before: # 配置一个头文件，将一些CMake设置
 
 .. raw:: html
 
@@ -330,7 +330,7 @@ The top-level CMakeLists.txt file will now look like the following:
   :name: CMakeLists.txt-USE_MYMATH
   :language: cmake
   :start-after: # add the MathFunctions library
-  :end-before: # add the executable
+  :end-before: # 添加可执行文件
 
 .. raw:: html
 
@@ -390,7 +390,7 @@ First, in ``tutorial.cxx``, we include the ``MathFunctions.h`` header if
   :caption: TODO 11 : tutorial.cxx
   :name: tutorial.cxx-ifdef-include
   :language: c++
-  :start-after: // should we include the MathFunctions header
+  :start-after: // 是否包括MathFunctions头文件？
   :end-before: int main
 
 .. raw:: html
@@ -408,7 +408,7 @@ function is used:
   :caption: TODO 12 : tutorial.cxx
   :name: tutorial.cxx-ifdef-const
   :language: c++
-  :start-after: // which square root function should we use?
+  :start-after: // 应该用哪个平方根函数？
   :end-before: std::cout << "The square root of
 
 .. raw:: html

@@ -98,7 +98,7 @@ Visual Studio生成器
 附加生成器
 ================
 
-Some of the `CMake Generators`_ listed in the :manual:`cmake(1)`
+Some of the `CMake生成器`_ listed in the :manual:`cmake(1)`
 command-line tool :option:`--help <cmake --help>` output may have
 variants that specify an extra generator for an auxiliary IDE tool.
 Such generator names have the form ``<extra-generator> - <main-generator>``.

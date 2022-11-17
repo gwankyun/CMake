@@ -143,8 +143,8 @@ are similar. To the end of the top-level ``CMakeLists.txt`` we add:
   :caption: CMakeLists.txt
   :name: TODO 3,4: CMakeLists.txt-install-TARGETS
   :language: cmake
-  :start-after: # add the install targets
-  :end-before: # enable testing
+  :start-after: # 添加安装目标
+  :end-before: # 启用测试
 
 .. raw:: html
 
@@ -217,8 +217,8 @@ file we first need to enable testing with the
   :caption: TODO 5: CMakeLists.txt
   :name: CMakeLists.txt-enable_testing
   :language: cmake
-  :start-after: # enable testing
-  :end-before: # does the application run
+  :start-after: # 启用测试
+  :end-before: # 程序是否运行
 
 .. raw:: html
 
@@ -240,8 +240,8 @@ return value. This is the basic form of a CTest test.
   :caption: TODO 6: CMakeLists.txt
   :name: CMakeLists.txt-test-runs
   :language: cmake
-  :start-after: # does the application run
-  :end-before: # does the usage message work
+  :start-after: # 程序是否运行
+  :end-before: # 用例输出有效吗？
 
 .. raw:: html
 
@@ -260,8 +260,8 @@ arguments are provided.
   :caption: TODO 7: CMakeLists.txt
   :name: CMakeLists.txt-test-usage
   :language: cmake
-  :start-after: # does the usage message work?
-  :end-before: # define a function to simplify adding tests
+  :start-after: # 用例输出有效吗？
+  :end-before: # 定义一个函数来简化添加测试
 
 .. raw:: html
 
@@ -303,7 +303,7 @@ arguments.
   :caption: TODO 9: CMakeLists.txt
   :name: CMakeLists.txt-generalized-tests
   :language: cmake
-  :start-after: # define a function to simplify adding tests
+  :start-after: # 定义一个函数来简化添加测试
 
 .. raw:: html
 

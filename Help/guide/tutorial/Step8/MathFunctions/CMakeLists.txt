@@ -1,7 +1,7 @@
 add_library(MathFunctions mysqrt.cxx)
 
 # state that anybody linking to us needs to include the current source dir
-# to find MathFunctions.h, while we don't.
+# 以便查找MathFunctions.h，尽管我们自己不用。
 target_include_directories(MathFunctions
           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
           )
@@ -26,7 +26,7 @@ check_cxx_source_compiles("
   }
 " HAVE_EXP)
 
-# add compile definitions
+# 添加编译器定义
 if(HAVE_LOG AND HAVE_EXP)
   target_compile_definitions(MathFunctions
                              PRIVATE "HAVE_LOG" "HAVE_EXP")

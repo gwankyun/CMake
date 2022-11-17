@@ -23,7 +23,7 @@ Step 7: Adding System Introspection
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_compile_definitions
   :language: cmake
-  :start-after: # add compile definitions
+  :start-after: # 添加编译器定义
   :end-before: # install libs
 
 如果\ ``log``\ 和\ ``exp``\ 在系统上可用，那么我们将在\ ``mysqrt``\ 函数中用来计算平方根。\

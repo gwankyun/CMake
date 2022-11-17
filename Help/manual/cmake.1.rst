@@ -21,7 +21,7 @@ cmake(1)
  `打开一个项目`_
   cmake --open <dir>
 
- `Run a Script`_
+ `运行脚本`_
   cmake [-D <var>=<value>]... -P <cmake-script-file>
 
  `运行命令行工具`_
@@ -33,7 +33,7 @@ cmake(1)
  `Run a Workflow Preset`_
   cmake --workflow [<options>]
 
- `View Help`_
+ `查看帮助`_
   cmake --help[-<topic>]
 
 描述

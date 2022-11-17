@@ -11,8 +11,8 @@ Step 6: Adding Support for a Testing Dashboard
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-enable_testing-remove
   :language: cmake
-  :start-after: # enable testing
-  :end-before: # does the application run
+  :start-after: # 启用测试
+  :end-before: # 程序是否运行
 
 为：
 
@@ -20,8 +20,8 @@ Step 6: Adding Support for a Testing Dashboard
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-include-CTest
   :language: cmake
-  :start-after: # enable testing
-  :end-before: # does the application run
+  :start-after: # 启用测试
+  :end-before: # 程序是否运行
 
 :module:`CTest`\ 模块可以自动调用\ ``enable_testing()``，所以我们可以将它将CMake文件中删掉。
 

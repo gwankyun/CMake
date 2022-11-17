@@ -14,7 +14,7 @@ add_library(MathFunctions
             ${CMAKE_CURRENT_BINARY_DIR}/Table.h
             )
 
-# state that anybody linking to us needs to include the current source dir
+# 说明任何人想链接我们必须包含当前源目录
 # to find MathFunctions.h, while we don't.
 # state that we depend on Tutorial_BINARY_DIR but consumers don't, as the
 # TutorialConfig.h include is an implementation detail

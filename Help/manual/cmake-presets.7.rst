@@ -77,7 +77,7 @@ The root object recognizes the following fields:
   An optional array of strings representing files to include. If the filenames
   are not absolute, they are considered relative to the current file.
   This is allowed in preset files specifying version ``4`` or above.
-  See `引用`_ for discussion of the constraints on included files.
+  See `Includes`_ for discussion of the constraints on included files.
 
 ``vendor``
   An optional map containing vendor-specific information. CMake does not
@@ -88,15 +88,15 @@ The root object recognizes the following fields:
   desired by the vendor, though will typically be a map.
 
 ``configurePresets``
-  An optional array of `Configure Preset`_ objects.
+  An optional array of `配置预设`_ objects.
   This is allowed in preset files specifying version ``1`` or above.
 
 ``buildPresets``
-  An optional array of `Build Preset`_ objects.
+  An optional array of `构建预设`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
 ``testPresets``
-  An optional array of `Test Preset`_ objects.
+  An optional array of `测试预设`_ objects.
   This is allowed in preset files specifying version ``2`` or above.
 
 ``packagePresets``
@@ -167,7 +167,7 @@ that may contain the following fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-  An optional `Condition`_ object. This is allowed in preset files specifying
+  An optional `条件`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -394,7 +394,7 @@ that may contain the following fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-  An optional `Condition`_ object. This is allowed in preset files specifying
+  An optional `条件`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -555,7 +555,7 @@ that may contain the following fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-  An optional `Condition`_ object. This is allowed in preset files specifying
+  An optional `条件`_ object. This is allowed in preset files specifying
   version ``3`` or above.
 
 ``vendor``
@@ -891,7 +891,7 @@ fields:
   ``CMakeUserPresets.json``.
 
 ``condition``
-  An optional `Condition`_ object.
+  An optional `条件`_ object.
 
 ``vendor``
   An optional map containing vendor-specific information. CMake does not

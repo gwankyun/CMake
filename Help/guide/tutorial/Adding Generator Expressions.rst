@@ -130,7 +130,7 @@ this:
   :name: CMakeLists.txt-target_link_libraries-step4
   :language: cmake
   :start-after: add_executable(Tutorial tutorial.cxx)
-  :end-before: # add the binary tree to the search path for include file
+  :end-before: # 添加二进制树到引用目录的搜索路径
 
 .. raw:: html
 
@@ -225,7 +225,7 @@ version ``3.15``:
   :caption: TODO 4: CMakeLists.txt
   :name: MathFunctions-CMakeLists.txt-minimum-required-step4
   :language: cmake
-  :end-before: # set the project name and version
+  :end-before: # 设置工程名及版本号
 
 .. raw:: html
 
@@ -288,7 +288,7 @@ condition. The resulting full code looks like the following:
   :name: CMakeLists.txt-target_compile_options-genex
   :language: cmake
   :start-after: set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
-  :end-before: # should we use our own math functions
+  :end-before: # 是否使用我们自己的数学函数
 
 .. raw:: html
 
