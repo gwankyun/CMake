@@ -99,6 +99,9 @@ Generator
     $ cmake .
 
 ``cmake [<options>] -S <path-to-source> -B <path-to-build>``
+
+  .. versionadded:: 3.13
+
   使用\ ``<path-to-build>``\ 作为构建树，使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝对路径或相对于当前工作目录的路径。源树必须包含一个\ ``CMakeLists.txt``\ 文件。如果构建树不存在，将自动创建它。例如：
 
   .. code-block:: console
@@ -467,6 +470,8 @@ project binary tree:
   contain CMake preset files.
 
 .. option:: -j [<jobs>], --parallel [<jobs>]
+
+  .. versionadded:: 3.12
 
   The maximum number of concurrent processes to use when building.
   If ``<jobs>`` is omitted the native build tool's default number is used.
@@ -1184,6 +1189,12 @@ The options are:
 
   Lists the available workflow presets. The current working directory must
   contain CMake preset files.
+
+.. option:: --fresh
+
+  Perform a fresh configuration of the build tree.
+  This removes any existing ``CMakeCache.txt`` file and associated
+  ``CMakeFiles/`` directory, and recreates them from scratch.
 
 查看帮助
 =========

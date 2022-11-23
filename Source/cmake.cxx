@@ -787,6 +787,7 @@ enum class ListPresets
   Build,
   Test,
   Package,
+  Workflow,
   All,
 };
 }
@@ -1144,6 +1145,8 @@ void cmake::SetArgs(const std::vector<std::string>& args)
         listPresets = ListPresets::Test;
       } else if (value == "package") {
         listPresets = ListPresets::Package;
+      } else if (value == "workflow") {
+        listPresets = ListPresets::Workflow;
       } else if (value == "all") {
         listPresets = ListPresets::All;
       } else {
@@ -1313,6 +1316,8 @@ void cmake::SetArgs(const std::vector<std::string>& args)
         presetsGraph.PrintTestPresetList();
       } else if (listPresets == ListPresets::Package) {
         presetsGraph.PrintPackagePresetList();
+      } else if (listPresets == ListPresets::Workflow) {
+        presetsGraph.PrintWorkflowPresetList();
       } else if (listPresets == ListPresets::All) {
         presetsGraph.PrintAllPresets();
       }
@@ -3727,7 +3732,8 @@ std::function<int()> cmake::BuildWorkflowStep(
 }
 #endif
 
-int cmake::Workflow(const std::string& presetName, bool listPresets)
+int cmake::Workflow(const std::string& presetName,
+                    WorkflowListPresets listPresets, WorkflowFresh fresh)
 {
 #ifndef CMAKE_BOOTSTRAP
   this->SetHomeDirectory(cmSystemTools::GetCurrentWorkingDirectory());
@@ -3742,7 +3748,7 @@ int cmake::Workflow(const std::string& presetName, bool listPresets)
     return 1;
   }
 
-  if (listPresets) {
+  if (listPresets == WorkflowListPresets::Yes) {
     settingsFile.PrintWorkflowPresetList();
     return 0;
   }
@@ -3809,10 +3815,13 @@ int cmake::Workflow(const std::string& presetName, bool listPresets)
         if (!configurePreset) {
           return 1;
         }
-        steps.emplace_back(
-          stepNumber, "configure"_s, step.PresetName,
-          this->BuildWorkflowStep({ cmSystemTools::GetCMakeCommand(),
-                                    "--preset", step.PresetName }));
+        std::vector<std::string> args{ cmSystemTools::GetCMakeCommand(),
+                                       "--preset", step.PresetName };
+        if (fresh == WorkflowFresh::Yes) {
+          args.emplace_back("--fresh");
+        }
+        steps.emplace_back(stepNumber, "configure"_s, step.PresetName,
+                           this->BuildWorkflowStep(args));
       } break;
       case cmCMakePresetsGraph::WorkflowPreset::WorkflowStep::Type::Build: {
         auto const* buildPreset = this->FindPresetForWorkflow(

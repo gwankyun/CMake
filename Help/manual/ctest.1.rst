@@ -168,6 +168,8 @@ Run Tests
 
 .. option:: --output-junit <file>
 
+ .. versionadded:: 3.21
+
  Write test results in JUnit format.
 
  This option tells CTest to write test results to ``<file>`` in JUnit XML
@@ -182,6 +184,10 @@ Run Tests
  This option tells CTest to list the tests that would be run but not
  actually run them.  Useful in conjunction with the :option:`-R <ctest -R>`
  and :option:`-E <ctest -E>` options.
+
+ .. versionadded:: 3.14
+
+   The ``--show-only`` option accepts a ``<format>`` value.
 
  ``<format>`` can be one of the following values.
 
@@ -1491,6 +1497,8 @@ Configuration settings include:
 Show as JSON Object Model
 =========================
 
+.. versionadded:: 3.14
+
 When the ``--show-only=json-v1`` command line option is given, the test
 information is output in JSON format.  Version 1.0 of the JSON object
 model is defined as follows:
@@ -1627,12 +1635,12 @@ Resource Specification File
 ---------------------------
 
 The resource specification file is a JSON file which is passed to CTest, either
-on the :manual:`ctest(1)` command line as ``--resource-spec-file``, or as the
+on the command line as :option:`ctest --resource-spec-file`, or as the
 ``RESOURCE_SPEC_FILE`` argument of :command:`ctest_test`. If a dashboard script
 is used and ``RESOURCE_SPEC_FILE`` is not specified, the value of
 :variable:`CTEST_RESOURCE_SPEC_FILE` in the dashboard script is used instead.
-If ``--resource-spec-file``, ``RESOURCE_SPEC_FILE``, and
-:variable:`CTEST_RESOURCE_SPEC_FILE` in the dashboard script are not specified,
+If :option:`--resource-spec-file <ctest --resource-spec-file>`, ``RESOURCE_SPEC_FILE``,
+and :variable:`CTEST_RESOURCE_SPEC_FILE` in the dashboard script are not specified,
 the value of :variable:`CTEST_RESOURCE_SPEC_FILE` in the CMake build is used
 instead. If none of these are specified, no resource spec file is used.
 
