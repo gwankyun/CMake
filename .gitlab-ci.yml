@@ -1000,10 +1000,10 @@ t:windows-borland5.8:
     variables:
         CMAKE_CI_JOB_NIGHTLY: "true"
 
-t:windows-clang13.0-cl-ninja:
+t:windows-clang15.0-cl-ninja:
     extends:
         - .windows_clang_ninja
-        - .cmake_test_windows_clang
+        - .cmake_test_windows_external
         - .windows_tags_concurrent
         - .cmake_junit_artifacts
         - .run_dependent
@@ -1012,13 +1012,13 @@ t:windows-clang13.0-cl-ninja:
     needs:
         - t:windows-vs2022-x64-ninja
     variables:
-        CMAKE_CI_BUILD_NAME: windows_clang13.0_cl_ninja
+        CMAKE_CI_BUILD_NAME: windows_clang15.0_cl_ninja
         CMAKE_CI_JOB_NIGHTLY: "true"
 
-t:windows-clang13.0-cl-nmake:
+t:windows-clang15.0-cl-nmake:
     extends:
         - .windows_clang_nmake
-        - .cmake_test_windows_clang
+        - .cmake_test_windows_external
         - .windows_tags_concurrent
         - .cmake_junit_artifacts
         - .run_dependent
@@ -1027,13 +1027,13 @@ t:windows-clang13.0-cl-nmake:
     needs:
         - t:windows-vs2022-x64-ninja
     variables:
-        CMAKE_CI_BUILD_NAME: windows_clang13.0_cl_nmake
+        CMAKE_CI_BUILD_NAME: windows_clang15.0_cl_nmake
         CMAKE_CI_JOB_NIGHTLY: "true"
 
-t:windows-clang13.0-gnu-ninja:
+t:windows-clang15.0-gnu-ninja:
     extends:
         - .windows_clang_ninja
-        - .cmake_test_windows_clang
+        - .cmake_test_windows_external
         - .windows_tags_concurrent
         - .cmake_junit_artifacts
         - .run_dependent
@@ -1042,13 +1042,13 @@ t:windows-clang13.0-gnu-ninja:
     needs:
         - t:windows-vs2022-x64-ninja
     variables:
-        CMAKE_CI_BUILD_NAME: windows_clang13.0_gnu_ninja
+        CMAKE_CI_BUILD_NAME: windows_clang15.0_gnu_ninja
         CMAKE_CI_JOB_NIGHTLY: "true"
 
-t:windows-clang13.0-gnu-nmake:
+t:windows-clang15.0-gnu-nmake:
     extends:
         - .windows_clang_nmake
-        - .cmake_test_windows_clang
+        - .cmake_test_windows_external
         - .windows_tags_concurrent
         - .cmake_junit_artifacts
         - .run_dependent
@@ -1057,7 +1057,7 @@ t:windows-clang13.0-gnu-nmake:
     needs:
         - t:windows-vs2022-x64-ninja
     variables:
-        CMAKE_CI_BUILD_NAME: windows_clang13.0_gnu_nmake
+        CMAKE_CI_BUILD_NAME: windows_clang15.0_gnu_nmake
         CMAKE_CI_JOB_NIGHTLY: "true"
 
 t:windows-msvc-v71-nmake:
@@ -1093,7 +1093,7 @@ b:windows-x86_64-package:
         - .windows_x86_64_package
         - .cmake_build_windows
         - .cmake_build_package_artifacts
-        - .windows_tags_x86_64_package
+        - .windows_tags_nonconcurrent_vs2022
         - .run_only_for_package
     dependencies:
         - p:doc-package
@@ -1107,7 +1107,7 @@ k:windows-x86_64-package:
         - .windows_x86_64_package
         - .cmake_package_windows
         - .cmake_release_artifacts
-        - .windows_tags_x86_64_package
+        - .windows_tags_nonconcurrent_vs2022
         - .run_only_for_package
     dependencies:
         - b:windows-x86_64-package
@@ -1130,7 +1130,7 @@ b:windows-i386-package:
         - .windows_i386_package
         - .cmake_build_windows
         - .cmake_build_package_artifacts
-        - .windows_tags_x86_64_package
+        - .windows_tags_nonconcurrent_vs2022
         - .run_only_for_package
     dependencies:
         - p:doc-package
@@ -1144,7 +1144,7 @@ k:windows-i386-package:
         - .windows_i386_package
         - .cmake_package_windows
         - .cmake_release_artifacts
-        - .windows_tags_x86_64_package
+        - .windows_tags_nonconcurrent_vs2022
         - .run_only_for_package
     dependencies:
         - b:windows-i386-package
@@ -1167,7 +1167,7 @@ b:windows-arm64-package:
         - .windows_arm64_package
         - .cmake_build_windows
         - .cmake_build_package_artifacts
-        - .windows_tags_arm64_package
+        - .windows_tags_nonconcurrent_vs2022_arm64
         - .run_only_for_package
     dependencies:
         - p:doc-package
@@ -1181,7 +1181,7 @@ k:windows-arm64-package:
         - .windows_arm64_package
         - .cmake_package_windows
         - .cmake_release_artifacts
-        - .windows_tags_arm64_package
+        - .windows_tags_nonconcurrent_vs2022_arm64
         - .run_only_for_package
     dependencies:
         - b:windows-arm64-package
