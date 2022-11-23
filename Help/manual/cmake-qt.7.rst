@@ -10,7 +10,7 @@ cmake-qt(7)
 引言
 ============
 
-CMake可以找到并使用Qt 4和Qt 5库。Qt4库可以通过CMake自带的\ :module:`FindQt4`\ 搜寻模块找到，而Qt 5库可以通过Qt 5自带的“配置文件包”找到。有关CMake包的更多信息，请参见\ :manual:`cmake-packages(7)`，并查看你所用Qt版本的\ `Qt cmake手册 <http://qt-project.org/doc/qt-5/cmake-manual.html>`_。
+CMake可以找到并使用Qt 4和Qt 5库。Qt4库可以通过CMake自带的\ :module:`FindQt4`\ 搜寻模块找到，而Qt 5库可以通过Qt 5自带的“配置文件包”找到。有关CMake包的更多信息，请参见\ :manual:`cmake-packages(7)`，并查看你所用Qt版本的\ `Qt cmake手册 <https://contribute.qt-project.org/doc/qt-5/cmake-manual.html>`_。
 
 Qt 4和Qt 5可以在同一个\ :manual:`CMake buildsystem <cmake-buildsystem(7)>`\ 中一起使用：
 

@@ -54,7 +54,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 此外，CMake 3.2及以上版本支持Windows上UTF-8编码的源文件（使用UTF-16调用系统API）。\
 此外，CMake 3.0及以上版本允许在源文件中使用开头的UTF-8\ `字节序标记`_。
 
-.. _`字节序标记`: http://en.wikipedia.org/wiki/Byte_order_mark
+.. _字节序标记: https://en.wikipedia.org/wiki/Byte_order_mark
 
 源文件
 ------------
