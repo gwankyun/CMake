@@ -1,75 +1,55 @@
 步骤1：一个基本的起点
 ==============================
 
-Where do I start with CMake? This step will provide an introduction to some of
-CMake's basic syntax, commands, and variables. As these concepts are
-introduced, we will work through three exercises and create a simple CMake
-project.
+我从哪里开始使用CMake？这一步将介绍CMake的一些基本语法、命令和变量。\
+随着这些概念的介绍，我们将完成三个练习并创建一个简单的CMake项目。
 
-Each exercise in this step will start with some background information. Then, a
-goal and list of helpful resources are provided. Each file in the
-``Files to Edit`` section is in the ``Step1`` directory and contains one or
-more ``TODO`` comments. Each ``TODO`` represents a line or two of code to
-change or add. The ``TODO`` s are intended to be completed in numerical order,
-first complete  ``TODO 1`` then ``TODO 2``, etc. The ``Getting Started``
-section will give some helpful hints and guide you through the exercise. Then
-the ``Build and Run`` section will walk step-by-step through how to build and
-test the exercise. Finally, at the end of each exercise the intended solution
-is discussed.
+这一步中的每个练习都将从一些背景信息开始。然后，提供了一个目标和有用的资源列表。\
+``待编辑的文件``\ 部分中的每个文件都位于\ ``Step1``\ 目录中，并包含一个或多个\ ``TODO``\ 注释。\
+每个\ ``TODO``\ 表示要更改或添加的一到两行代码。这些\ ``TODO``\ 将按数字顺序完成，\
+首先完成\ ``TODO 1``，然后完成\ ``TODO 2``，以此类推。\ ``Getting Started``\ 部分将提供一些有用的提示并指导你完成练习。\
+然后，\ ``Build and Run``\ 部分将逐步介绍如何构建和测试该练习。最后，在每次练习结束时讨论预期的解决方案。
 
-Also note that each step in the tutorial builds on the next. So, for example,
-the starting code for ``Step2`` is the complete solution to ``Step1``.
+还要注意，教程中的每个步骤都是建立在下一个步骤之上的。因此，如 \ ``Step2``\ 的开始代码就是\ ``Step1``\ 的完整解决方案。
 
-Exercise 1 - Building a Basic Project
+练习1 - 创建一个基本项目
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The most basic CMake project is an executable built from a single source code
-file. For simple projects like this, a ``CMakeLists.txt`` file with three
-commands is all that is required.
+最基本的CMake项目是从单个源代码文件构建的可执行文件。对于像这样的简单项目，只需要一个带有三个命令的\ ``CMakeLists.txt``\ 文件。
 
-**Note:** Although upper, lower and mixed case commands are supported by CMake,
-lower case commands are preferred and will be used throughout the tutorial.
+**注意：**\ 尽管CMake支持大写、小写和混合大小写命令，但小写命令是首选，并将在整个教程中使用。
 
-Any project's top most CMakeLists.txt must start by specifying a minimum CMake
-version using the :command:`cmake_minimum_required` command. This establishes
-policy settings and ensures that the following CMake functions are run with a
-compatible version of CMake.
+任何项目的最顶层的CMakeLists.txt必须通过使用\ :command:`cmake_minimum_required`\ 命令指定最小的CMake版本开始。\
+这将建立策略设置，并确保随后的CMake函数在CMake的兼容版本中运行。
 
-To start a project, we use the :command:`project` command to set the project
-name. This call is required with every project and should be called soon after
-:command:`cmake_minimum_required`. As we will see later, this command can
-also be used to specify other project level information such as the language
-or version number.
+要启动一个项目，我们使用\ :command:`project`\ 命令来设置项目名称。每个项目都需要这个调用，应紧随\ :command:`cmake_minimum_required`\ 其后。\
+正如我们稍后将看到的，该命令还可以用于指定其他项目级别的信息，如语言或版本号。
 
-Finally, the :command:`add_executable` command tells CMake to create an
-executable using the specified source code files.
+最后，:command:`add_executable`\ 命令告诉CMake使用指定的源代码文件创建一个可执行文件。
 
-Goal
+目标
 ----
 
-Understand how to create a simple CMake project.
+了解如何创建一个简单的CMake项目。
 
-Helpful Resources
+有用的资源
 -----------------
 
 * :command:`add_executable`
 * :command:`cmake_minimum_required`
 * :command:`project`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始
 ----------------
 
-The source code for ``tutorial.cxx`` is provided in the
-``Help/guide/tutorial/Step1`` directory and can be used to compute the square
-root of a number. This file does not need to be edited in this step.
+``tutorial.cxx``\ 的源代码在\ ``Help/guide/tutorial/Step1``\ 目录中提供，可用于计算一个数的平方根。在此步骤中不需要编辑此文件。
 
-In the same directory is a ``CMakeLists.txt`` file which you will complete.
-Start with ``TODO 1`` and work through ``TODO 3``.
+在同一个目录中有一个待你完成的\ ``CMakeLists.txt``\ 文件。从\ ``TODO 1``\ 开始，真到\ ``TODO 3``。
 
 构建和运行
 -------------
