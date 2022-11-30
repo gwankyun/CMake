@@ -1,32 +1,26 @@
 步骤2：添加库
 ========================
 
-At this point, we have seen how to create a basic project using CMake. In this
-step, we will learn how to create and use a library in our project. We will
-also see how to make the use of our library optional.
+至此，我们已经了解了如何使用CMake创建一个基本项目。在这一步中，我们将学习如何在我们的项目中创建和使用库。\
+我们还将了解如何使库的使用成为可选的。
 
-Exercise 1 - Creating a Library
+练习1 - 创建一个库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To add a library in CMake, use the :command:`add_library` command and specify
-which source files should make up the library.
+要在CMake中添加库，可以使用\ :command:`add_library`\ 命令并指定应该由哪些源文件组成库。
 
-Rather than placing all of the source files in one directory, we can organize
-our project with one or more subdirectories. In this case, we will create a
-subdirectory specifically for our library. Here, we can add a new
-``CMakeLists.txt`` file and one or more source files. In the top level
-``CMakeLists.txt`` file, we will use the :command:`add_subdirectory` command
-to add the subdirectory to the build.
+我们可以用一个或多个子目录来组织项目，而不是将所有源文件放在一个目录中。在本例中，我们将专门为库创建一个子目录。\
+在这里，我们可以添加一个新的\ ``CMakeLists.txt``\ 文件和一个或多个源文件。\
+在顶层\ ``CMakeLists.txt``\ 文件中，我们将使用\ :command:`add_subdirectory`\ 命令将子目录添加到构建中。
 
-Once the library is created, it is connected to our executable target with
-:command:`target_include_directories` and :command:`target_link_libraries`.
+一旦创建了库，它将通过\ :command:`target_include_directories`\ 和\ :command:`target_link_libraries`\ 连接到可执行目标。
 
-Goal
+目标
 ----
 
-Add and use a library.
+添加并使用一个库。
 
-Helpful Resources
+有用的资源
 -----------------
 
 * :command:`add_library`
@@ -35,30 +29,24 @@ Helpful Resources
 * :command:`target_link_libraries`
 * :variable:`PROJECT_SOURCE_DIR`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``CMakeLists.txt``
 * ``tutorial.cxx``
 * ``MathFunctions/CMakeLists.txt``
 
-Getting Started
+开始
 ---------------
 
-In this exercise, we will add a library to our project that contains our own
-implementation for computing the square root of a number. The executable can
-then use this library instead of the standard square root function provided by
-the compiler.
+在这个练习中，我们将向我们的项目中添加一个库，其中包含我们自己的用于计算数字平方根的实现。\
+然后，可执行程序可以使用这个库，而不是编译器提供的标准平方根函数。
 
-For this tutorial we will put the library into a subdirectory called
-``MathFunctions``. This directory already contains a header file,
-``MathFunctions.h``, and a source file ``mysqrt.cxx``. We will not need to
-modify either of these files. The source file has one function called
-``mysqrt`` that provides similar functionality to the compiler's ``sqrt``
-function.
+在本教程中，我们将把库放入名为\ ``MathFunctions``\ 的子目录中。\
+这个目录已经包含了一个头文件\ ``MathFunctions.h``\ 和一个源文件\ ``mysqrt.cxx``。我们不需要修改这些文件。\
+源文件有一个名为\ ``mysqrt``\ 的函数，它提供了与编译器的\ ``sqrt``\ 函数类似的功能。
 
-From the ``Help/guide/tutorial/Step2`` directory, start with ``TODO 1`` and
-complete through ``TODO 6``.
+从\ ``Help/guide/tutorial/Step2``\ 目录中，从\ ``TODO 1``\ 开始，到\ ``TODO 6``\ 完成。
 
 First, fill in the one line ``CMakeLists.txt`` in the ``MathFunctions``
 subdirectory.
