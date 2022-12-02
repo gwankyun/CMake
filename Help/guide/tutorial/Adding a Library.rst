@@ -48,21 +48,19 @@
 
 从\ ``Help/guide/tutorial/Step2``\ 目录中，从\ ``TODO 1``\ 开始，到\ ``TODO 6``\ 完成。
 
-First, fill in the one line ``CMakeLists.txt`` in the ``MathFunctions``
-subdirectory.
+首先，在\ ``MathFunctions``\ 子目录中填写一行的\ ``CMakeLists.txt``。
 
-Next, edit the top level ``CMakeLists.txt``.
+接下来，编辑顶层的\ ``CMakeLists.txt``。
 
-Finally, use the newly created ``MathFunctions`` library in ``tutorial.cxx``
+最后，在\ ``tutorial.cxx``\ 中使用新创建的\ ``MathFunctions``\ 库。
 
-Build and Run
+构建并运行
 -------------
 
-Run the :manual:`cmake  <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+运行\ :manual:`cmake  <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
+然后用你选择的构建工具构建它。
 
-Below is a refresher of what that looks like from the command line:
+下面是命令行中的一个刷新：
 
 .. code-block:: console
 
@@ -71,20 +69,17 @@ Below is a refresher of what that looks like from the command line:
   cmake ../Step2
   cmake --build .
 
-Try to use the newly built ``Tutorial`` and ensure that it is still
-producing accurate square root values.
+尝试使用新构建的\ ``Tutorial``，并确保它仍然产生准确的平方根值。
 
 Solution
 --------
 
-In the ``CMakeLists.txt`` file in the ``MathFunctions`` directory, we create
-a library target called ``MathFunctions`` with :command:`add_library`. The
-source file for the library is passed as an argument to
-:command:`add_library`. This looks like the following line:
+在\ ``MathFunctions``\ 目录下的\ ``CMakeLists.txt``\ 文件中，我们用\ :command:`add_library`\ 创建了一个名为\ ``MathFunctions``\ 的库目标。\
+库的源文件作为参数传递给\ :command:`add_library`。这看起来像下面这行：
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/MathFunctions/CMakeLists.txt
   :caption: TODO 1: MathFunctions/CMakeLists.txt
@@ -102,7 +97,7 @@ built.
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 2: CMakeLists.txt
@@ -119,7 +114,7 @@ Next, the new library target is linked to the executable target using
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 3: CMakeLists.txt
@@ -138,7 +133,7 @@ found.
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 4: CMakeLists.txt
@@ -157,7 +152,7 @@ Now let's use our library. In ``tutorial.cxx``, include ``MathFunctions.h``:
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. code-block:: c++
   :caption: TODO 5 : tutorial.cxx
@@ -173,7 +168,7 @@ Lastly, replace ``sqrt`` with our library function ``mysqrt``.
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. code-block:: c++
   :caption: TODO 6 : tutorial.cxx
