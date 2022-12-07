@@ -91,9 +91,7 @@ Solution
 
   </details>
 
-To make use of the new library we will add an :command:`add_subdirectory`
-call in the top-level ``CMakeLists.txt`` file so that the library will get
-built.
+为了使用新的库，我们将在顶层\ ``CMakeLists.txt``\ 文件中添加一个\ :command:`add_subdirectory`\ 调用，以便构建库。
 
 .. raw:: html
 
@@ -109,8 +107,7 @@ built.
 
   </details>
 
-Next, the new library target is linked to the executable target using
-:command:`target_link_libraries`.
+接下来，使用\ :command:`target_link_libraries`\ 将新的库目标链接到可执行目标。
 
 .. raw:: html
 
@@ -126,10 +123,8 @@ Next, the new library target is linked to the executable target using
 
   </details>
 
-Finally we need to specify the library's header file location. Modify
-:command:`target_include_directories` to add the ``MathFunctions`` subdirectory
-as an include directory so that the ``MathFunctions.h`` header file can be
-found.
+最后，我们需要指定库的头文件位置。修改\ :command:`target_include_directories`\ 以\
+添加\ ``MathFunctions``\ 子目录作为包含目录，以便可以找到\ ``MathFunctions.h``\ 头文件。
 
 .. raw:: html
 
@@ -148,7 +143,7 @@ found.
 
   </details>
 
-Now let's use our library. In ``tutorial.cxx``, include ``MathFunctions.h``:
+现在让我们使用库。在\ ``tutorial.cxx``\ 中，包含 ``MathFunctions.h``：
 
 .. raw:: html
 
@@ -164,7 +159,7 @@ Now let's use our library. In ``tutorial.cxx``, include ``MathFunctions.h``:
 
   </details>
 
-Lastly, replace ``sqrt`` with our library function ``mysqrt``.
+最后，用库函数\ ``mysqrt``\ 替换\ ``sqrt``。
 
 .. raw:: html
 
