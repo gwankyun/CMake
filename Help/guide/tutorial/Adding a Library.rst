@@ -71,7 +71,7 @@
 
 尝试使用新构建的\ ``Tutorial``，并确保它仍然产生准确的平方根值。
 
-Solution
+解决方案
 --------
 
 在\ ``MathFunctions``\ 目录下的\ ``CMakeLists.txt``\ 文件中，我们用\ :command:`add_library`\ 创建了一个名为\ ``MathFunctions``\ 的库目标。\
@@ -175,25 +175,22 @@ Solution
 
   </details>
 
-Exercise 2 - Making Our Library Optional
+练习2 - 令我们的库成为可选
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now let us make the MathFunctions library optional. While for the tutorial
-there really isn't any need to do so, for larger projects this is a common
-occurrence.
+现在让我们将MathFunctions库设置为可选的。虽然对于本教程来说，真的没有必要这样做，\
+但对于较大的项目来说，这是很常见的情况。
 
-CMake can do this using the :command:`option` command. This gives users a
-variable which they can change when configuring their cmake build. This
-setting will be stored in the cache so that the user does not need to set
-the value each time they run CMake on a build directory.
+CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提供了一个变量，\
+他们可以在配置cmake构建时更改该变量。此设置将存储在缓存中，以便用户不需要每次在构建目录上运行CMake时都设置该值。
 
-Goal
+目标
 ----
 
-Add the option to build without ``MathFunctions``.
+添加不使用\ ``MathFunctions``\ 进行构建的选项。
 
 
-Helpful Resources
+有用的资源
 -----------------
 
 * :command:`if`
@@ -201,70 +198,62 @@ Helpful Resources
 * :command:`option`
 * :command:`cmakedefine <configure_file>`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``CMakeLists.txt``
 * ``tutorial.cxx``
 * ``TutorialConfig.h.in``
 
-Getting Started
+开始
 ---------------
 
-Start with the resulting files from Exercise 1. Complete ``TODO 7`` through
-``TODO 13``.
+从练习1中的结果文件开始。完成\ ``TODO 7``\ 至\ ``TODO 13``。
 
-First create a variable ``USE_MYMATH`` using the :command:`option` command
-in the top-level ``CMakeLists.txt`` file. In that same file, use that option
-to determine whether to build and use the ``MathFunctions`` library.
+首先在顶层的\ ``CMakeLists.txt``\ 文件中使用\ :command:`option`\ 命令创建一个变量\ ``USE_MYMATH``。\
+在同一文件中，使用该选项来确定是否构建和使用\ ``MathFunctions``\ 库。
 
-Then, update ``tutorial.cxx`` and ``TutorialConfig.h.in`` to use
-``USE_MYMATH``.
+然后，更新\ ``tutorial.cxx``\ 和\ ``TutorialConfig.h.in``\ 以使用\ ``USE_MYMATH``。
 
-Build and Run
+构建并运行
 -------------
 
-Since we have our build directory already configured from Exercise 1, we can
-rebuild by simply calling the following:
+因为我们已经在练习1中配置了构建目录，我们可以通过简单地调用以下命令来重新构建：
 
 .. code-block:: console
 
   cd ../Step2_build
   cmake --build .
 
-Next, run the ``Tutorial`` executable on a few numbers to verify that it's
-still correct.
+接下来，用几个数字来运行\ ``Tutorial``\ 可执行文件，以验证它仍然正确。
 
-Now let's update the value of ``USE_MYMATH`` to ``OFF``. The easiest way is to
-use the :manual:`cmake-gui <cmake-gui(1)>` or  :manual:`ccmake <ccmake(1)>`
-if you're in the terminal. Or, alternatively, if you want to change the
-option from the command-line, try:
+现在让我们将\ ``USE_MYMATH``\ 的值更新为\ ``OFF``。如果你在终端中，\
+最简单的方法是使用\ :manual:`cmake-gui <cmake-gui(1)>`\ 或\ :manual:`ccmake <ccmake(1)>`。\
+或者，如果你想从命令行更改这个选项，试试：
 
 .. code-block:: console
 
   cmake ../Step2 -DUSE_MYMATH=OFF
 
-Now, rebuild the code with the following:
+现在，用以下代码重新构建代码：
 
 .. code-block:: console
 
   cmake --build .
 
-Then, run the executable again to ensure that it still works with
-``USE_MYMATH`` set to ``OFF``. Which function gives better results, ``sqrt``
-or ``mysqrt``?
+然后，再次运行可执行文件，以确保在\ ``USE_MYMATH``\ 设置为\ ``OFF``\ 时它仍然可以工作。\
+哪个函数的结果更好，\ ``sqrt``\ 还是\ ``mysqrt``？
 
-Solution
+解决方案
 --------
 
-The first step is to add an option to the top-level ``CMakeLists.txt`` file.
-This option will be displayed in the :manual:`cmake-gui <cmake-gui(1)>` and
-:manual:`ccmake <ccmake(1)>` with a default value of ``ON`` that can be
-changed by the user.
+第一步是向顶层\ ``CMakeLists.txt``\ 文件添加一个选项。\
+该选项将显示在\ :manual:`cmake-gui <cmake-gui(1)>`\ 和\ :manual:`ccmake <ccmake(1)>`\ 中，\
+默认值为\ ``ON``，用户可以更改该值。
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: TODO 7: CMakeLists.txt
@@ -277,32 +266,26 @@ changed by the user.
 
   </details>
 
-Next, make building and linking the ``MathFunctions`` library
-conditional.
+接下来，令\ ``MathFunctions``\ 库的构建和链接成为有条件的。
 
-Start by creating a :command:`list` of the optional library targets for our
-project. At the moment, it is just ``MathFunctions``. Let's name our list
-``EXTRA_LIBS``.
+首先为我们的项目创建一个可选库目标\ :command:`list`。目前，它只是\ ``MathFunctions``。\
+我们把这个列表命名为\ ``EXTRA_LIBS``。
 
-Similarly, we need to make a :command:`list` for the optional includes which
-we will call ``EXTRA_INCLUDES``. In this list, we will ``APPEND`` the path of
-the header file needed for our library.
+类似地，我们需要为可选include创建一个\ :command:`list`，我们将其称为\ ``EXTRA_INCLUDES``。\
+在这个列表中，我们将\ ``APPEND``\ 库所需的头文件路径。
 
-Next, create an :command:`if` statement which checks the value of
-``USE_MYMATH``. Inside the :command:`if` block, put the
-:command:`add_subdirectory` command from Exercise 1 with the additional
-:command:`list` commands.
+接下来，创建\ :command:`if`\ 语句，检查\ ``USE_MYMATH``\ 的值。在\ :command:`if`\ 块中，\
+放入练习1中的\ :command:`add_subdirectory`\ 命令和额外的\ :command:`list`\ 命令。
 
-When ``USE_MYMATH`` is ``ON``, the lists will be generated and will be added to
-our project. When ``USE_MYMATH`` is ``OFF``, the lists stay empty. With this
-strategy, we allow users to toggle ``USE_MYMATH`` to manipulate what library is
-used in the build.
+当\ ``USE_MYMATH``\ 为\ ``ON``\ 时，列表将生成并添加到我们的项目中。\
+当\ ``USE_MYMATH``\ 为\ ``OFF``\ 时，列表保持为空。通过这种策略，\
+我们允许用户切换\ ``USE_MYMATH``\ 来操作构建中使用的库。
 
-The top-level CMakeLists.txt file will now look like the following:
+顶层的CMakeLists.txt文件现在看起来如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 8: Click to show/hide answer</summary>
+  <details><summary>TODO 8: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: TODO 8: CMakeLists.txt
@@ -324,7 +307,7 @@ library names with ``EXTRA_LIBS``. This looks like the following:
 
 .. raw:: html
 
-  <details><summary>TODO 9: Click to show/hide answer</summary>
+  <details><summary>TODO 9: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: TODO 9: CMakeLists.txt
@@ -342,7 +325,7 @@ Then, we do the same thing with :command:`target_include_directories` and
 
 .. raw:: html
 
-  <details><summary>TODO 10: Click to show/hide answer</summary>
+  <details><summary>TODO 10: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: TODO 10 : CMakeLists.txt
@@ -363,7 +346,7 @@ First, in ``tutorial.cxx``, we include the ``MathFunctions.h`` header if
 
 .. raw:: html
 
-  <details><summary>TODO 11: Click to show/hide answer</summary>
+  <details><summary>TODO 11: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/tutorial.cxx
   :caption: TODO 11 : tutorial.cxx
@@ -381,7 +364,7 @@ function is used:
 
 .. raw:: html
 
-  <details><summary>TODO 12: Click to show/hide answer</summary>
+  <details><summary>TODO 12: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/tutorial.cxx
   :caption: TODO 12 : tutorial.cxx
@@ -399,7 +382,7 @@ Since the source code now requires ``USE_MYMATH`` we can add it to
 
 .. raw:: html
 
-  <details><summary>TODO 13: Click to show/hide answer</summary>
+  <details><summary>TODO 13: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/TutorialConfig.h.in
   :caption: TODO 13 : TutorialConfig.h.in
@@ -425,7 +408,7 @@ Answer
 
 .. raw:: html
 
-  <details><summary>Click to show/hide answer</summary>
+  <details><summary>点击显示/隐藏答案</summary>
 
 We configure after because ``TutorialConfig.h.in`` uses the value of
 ``USE_MYMATH``. If we configure the file before
