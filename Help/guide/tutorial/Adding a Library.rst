@@ -298,12 +298,11 @@ CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提
 
   </details>
 
-Now that we have these two lists, we need to update
-:command:`target_link_libraries` and :command:`target_include_directories` to
-use them. Changing them is fairly straightforward.
+现在我们有了这两个列表，我们需要更新\ :command:`target_link_libraries`\ 和\ :command:`target_include_directories`\ 来使用它们。\
+改变它们相当简单。
 
-For :command:`target_link_libraries`, we replace the written out
-library names with ``EXTRA_LIBS``. This looks like the following:
+对于\ :command:`target_link_libraries`，我们用\ ``EXTRA_LIBS``\ 替换写出的库名。\
+如下图所示：
 
 .. raw:: html
 
@@ -320,8 +319,7 @@ library names with ``EXTRA_LIBS``. This looks like the following:
 
   </details>
 
-Then, we do the same thing with :command:`target_include_directories` and
-``EXTRA_INCLUDES``.
+然后，我们对\ :command:`target_include_directories`\ 和\ ``EXTRA_INCLUDES``\ 做同样的事情。
 
 .. raw:: html
 
@@ -337,12 +335,10 @@ Then, we do the same thing with :command:`target_include_directories` and
 
   </details>
 
-Note that this is a classic approach when dealing with many components. We
-will cover the modern approach in the Step 3 of the tutorial.
+注意，这是处理许多组件时的经典方法。我们将在本教程的步骤3中介绍现代方法。
 
-The corresponding changes to the source code are fairly straightforward.
-First, in ``tutorial.cxx``, we include the ``MathFunctions.h`` header if
-``USE_MYMATH`` is defined.
+对源代码的相应更改相当简单。首先，在\ ``tutorial.cxx``\ 中，如果定义了\ ``USE_MYMATH``，\
+则包含\ ``MathFunctions.h``\ 头。
 
 .. raw:: html
 
@@ -359,8 +355,7 @@ First, in ``tutorial.cxx``, we include the ``MathFunctions.h`` header if
 
   </details>
 
-Then, in the same file, we make ``USE_MYMATH`` control which square root
-function is used:
+然后，在同一个文件中，我们让\ ``USE_MYMATH``\ 控件使用的是哪个平方根函数：
 
 .. raw:: html
 
@@ -377,8 +372,7 @@ function is used:
 
   </details>
 
-Since the source code now requires ``USE_MYMATH`` we can add it to
-``TutorialConfig.h.in`` with the following line:
+由于源代码现在需要\ ``USE_MYMATH``，我们可以将它添加到\ ``TutorialConfig.h.in``，使用以下行：
 
 .. raw:: html
 
@@ -394,26 +388,23 @@ Since the source code now requires ``USE_MYMATH`` we can add it to
 
   </details>
 
-With these changes, our library is now completely optional to whoever is
-building and using it.
+通过这些更改，我们的库现在对构建和使用它的任何人都是完全可选的。
 
-Bonus Question
+奖励问题
 --------------
 
-Why is it important that we configure ``TutorialConfig.h.in``
-after the option for ``USE_MYMATH``? What would happen if we inverted the two?
+为什么在\ ``USE_MYMATH``\ 选项之后配置\ ``TutorialConfig.h.in``\ 很重要？\
+如果我们把这两个式子倒出来会怎么样？
 
-Answer
+答案
 ------
 
 .. raw:: html
 
   <details><summary>点击显示/隐藏答案</summary>
 
-We configure after because ``TutorialConfig.h.in`` uses the value of
-``USE_MYMATH``. If we configure the file before
-calling :command:`option`, we won't be using the expected value of
-``USE_MYMATH``.
+我们在后面配置，因为\ ``TutorialConfig.h.in``\ 使用\ ``USE_MYMATH``\ 的值。\
+如果在调用\ :command:`option`\ 之前配置文件，就不会使用\ ``USE_MYMATH``\ 的期望值。
 
 .. raw:: html
 

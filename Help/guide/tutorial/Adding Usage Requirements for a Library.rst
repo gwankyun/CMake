@@ -1,14 +1,11 @@
 步骤3：添加库的使用需求
 ===============================================
 
-Exercise 1 - Adding Usage Requirements for a Library
+练习1 - 为库添加使用需求
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:ref:`Usage requirements <Target Usage Requirements>` of a target parameters
-allow for far better control over a library or executable's link and include
-line while also giving more control over the transitive property of targets
-inside CMake. The primary commands that
-leverage usage requirements are:
+目标参数的\ :ref:`Usage requirements <Target Usage Requirements>`\ 允许对库或可执行文件的link和include行进行更好的控制，\
+同时也可以对CMake内部目标的传递属性进行更多的控制。利用使用需求的主要命令有：
 
 * :command:`target_compile_definitions`
 * :command:`target_compile_options`
@@ -19,45 +16,38 @@ leverage usage requirements are:
 * :command:`target_sources`
 
 
-Goal
+目标
 ----
 
-Add usage requirements for a library.
+为库添加使用需求。
 
-Helpful Materials
+有用的材料
 -----------------
 
 * :variable:`CMAKE_CURRENT_SOURCE_DIR`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``MathFunctions/CMakeLists.txt``
 * ``CMakeLists.txt``
 
-Getting Started
+开始
 ---------------
 
-In this exercise, we will refactor our code from
-:guide:`tutorial/Adding a Library` to use the modern CMake approach. We will
-let our library define its own usage requirements so they are passed
-transitively to other targets as necessary. In this case, ``MathFunctions``
-will specify any needed include directories itself. Then, the consuming target
-``Tutorial`` simply needs to link to ``MathFunctions`` and not worry about
-any additional include directories.
+在本练习中，我们将使用现代的CMake方法重构\ :guide:`tutorial/Adding a Library`\ 中的代码。\
+我们将让我们的库定义自己的使用需求，以便在必要时将它们传递给其他目标。\
+在本例中，\ ``MathFunctions``\ 将自己指定任何所需的include目录。\
+然后，消费目标\ ``Tutorial``\ 只需要链接到\ ``MathFunctions``，而不用担心任何额外的包含目录。
 
-The starting source code is provided in the ``Step3`` directory. In this
-exercise, complete ``TODO 1`` through ``TODO 3``.
+在\ ``Step3``\ 目录中提供了起始源代码。在这个练习中，完成\ ``TODO 1``\ 到\ ``TODO 3``。
 
-First, add a call to :command:`target_include_directories` in
-``MathFunctions/CMakeLists``. Remember that
-:variable:`CMAKE_CURRENT_SOURCE_DIR` is the path to the source directory
-currently being processed.
+首先，在\ ``MathFunctions/CMakeLists``\ 中添加对\ :command:`target_include_directories`\ 的调用。\
+请记住，:variable:`CMAKE_CURRENT_SOURCE_DIR`\ 是当前正在处理的源目录的路径。
 
-Then, update (and simplify!) the call to
-:command:`target_include_directories` in the top-level ``CMakeLists.txt``.
+然后，更新（并简化！）顶层\ ``CMakeLists.txt``\ 中对\ :command:`target_include_directories`\ 的调用。
 
-Build and Run
+构建并运行
 -------------
 
 Make a new directory called ``Step3_build``, run the :manual:`cmake
@@ -76,7 +66,7 @@ Here's a refresher of what that looks like from the command line:
 Next, use the newly built ``Tutorial`` and verify that it is working as
 expected.
 
-Solution
+解决方案
 --------
 
 Let's update the code from the previous step to use the modern CMake
