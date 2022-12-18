@@ -50,11 +50,10 @@
 构建并运行
 -------------
 
-Make a new directory called ``Step3_build``, run the :manual:`cmake
-<cmake(1)>` executable or the :manual:`cmake-gui <cmake-gui(1)>` to
-configure the project and then build it with your chosen build tool or by
-using :option:`cmake --build . <cmake --build>` from the build directory.
-Here's a refresher of what that looks like from the command line:
+创建一个名为\ ``Step3_build``\ 的新目录，\
+运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
+然后使用你选择的构建工具或使用\ :option:`cmake --build . <cmake --build>`\ 来从构建目录构建它。\
+下面是命令行的更新：
 
 .. code-block:: console
 
@@ -63,27 +62,23 @@ Here's a refresher of what that looks like from the command line:
   cmake ../Step3
   cmake --build .
 
-Next, use the newly built ``Tutorial`` and verify that it is working as
-expected.
+接下来，使用新构建的\ ``Tutorial``\ 并验证它是否按预期工作。
 
 解决方案
 --------
 
-Let's update the code from the previous step to use the modern CMake
-approach of usage requirements.
+让我们更新上一步中的代码，以使用现代CMake方法来满足使用需求。
 
-We want to state that anybody linking to ``MathFunctions`` needs to include
-the current source directory, while ``MathFunctions`` itself doesn't. This
-can be expressed with an ``INTERFACE`` usage requirement. Remember
-``INTERFACE`` means things that consumers require but the producer doesn't.
+我们想声明的是，任何链接到\ ``MathFunctions``\ 的人都需要包含当前源目录，\
+而\ ``MathFunctions``\ 本身则不需要。这可以用\ ``INTERFACE``\ 使用需求来表示。\
+记住，\ ``INTERFACE``\ 指的是消费者需要但生产者不需要的东西。
 
-At the end of ``MathFunctions/CMakeLists.txt``, use
-:command:`target_include_directories` with the ``INTERFACE`` keyword, as
-follows:
+在\ ``MathFunctions/CMakeLists.txt``\ 的末尾，\
+使用带\ ``INTERFACE``\ 关键字的\ :command:`target_include_directories`，如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/MathFunctions/CMakeLists.txt
   :caption: TODO 1: MathFunctions/CMakeLists.txt
@@ -96,13 +91,12 @@ follows:
 
   </details>
 
-Now that we've specified usage requirements for ``MathFunctions`` we can
-safely remove our uses of the ``EXTRA_INCLUDES`` variable from the top-level
-``CMakeLists.txt``, here:
+既然我们已经指定了\ ``MathFunctions``\ 的使用要求，\
+就可以安全地从顶层文件\ ``CMakeLists.txt``\ 中删除\ ``EXTRA_INCLUDES``\ 变量了，如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: TODO 2: CMakeLists.txt
@@ -115,11 +109,11 @@ safely remove our uses of the ``EXTRA_INCLUDES`` variable from the top-level
 
   </details>
 
-And here:
+及这里：
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: TODO 3: CMakeLists.txt
@@ -131,7 +125,5 @@ And here:
 
   </details>
 
-Notice that with this technique, the only thing our executable target does to
-use our library is call :command:`target_link_libraries` with the name
-of the library target. In larger projects, the classic method of specifying
-library dependencies manually becomes very complicated very quickly.
+注意，使用这种技术，我们的可执行目标要使用库所做的唯一一件事就是调用\ :command:`target_link_libraries`，\
+并指定库目标的名称。在大型项目中，手动指定库依赖关系的经典方法很快就会变得非常复杂。
