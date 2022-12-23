@@ -6,16 +6,13 @@ Step 5: Installing and Testing
 Exercise 1 - Install Rules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Often, it is not enough to only build an executable, it should also be
-installable. With CMake, we can specify install rules using the
-:command:`install` command. Supporting local installations for your builds in
-CMake is often as simple as specifying an install location and the targets and
-files to be installed.
+通常，仅仅构建可执行文件是不够的，它还应该是可安装的。使用CMake，我们可以使用\ :command:`install`\ 命令指定安装规则。\
+在CMake中支持构建的本地安装通常非常简单，只需指定安装位置和要安装的目标和文件。
 
 Goal
 ----
 
-Install the ``Tutorial`` executable and the ``MathFunctions`` library.
+安装\ ``Tutorial``\ 可执行文件和\ ``MathFunctions``\ 库。
 
 Helpful Materials
 -----------------

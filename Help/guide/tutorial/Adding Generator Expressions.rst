@@ -93,7 +93,7 @@
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: TODO 1: CMakeLists.txt
@@ -106,14 +106,12 @@
 
   </details>
 
-Finally, with our interface library set up, we need to link our
-executable ``Target`` and our ``MathFunctions`` library to our new
-``tutorial_compiler_flags`` library. Respectively, the code will look like
-this:
+最后，设置好接口库后，我们需要将可执行\ ``Target``\ 和\ ``MathFunctions``\ 库链接到新的\ ``tutorial_compiler_flags``\ 库。\
+代码分别如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: TODO 2: CMakeLists.txt
@@ -126,11 +124,11 @@ this:
 
   </details>
 
-and this:
+还有：
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/MathFunctions/CMakeLists.txt
   :caption: TODO 3: MathFunctions/CMakeLists.txt
@@ -143,26 +141,21 @@ and this:
 
   </details>
 
-With this, all of our code still requires C++ 11 to build. Notice
-though that with this method, it gives us the ability to be specific about
-which targets get specific requirements. In addition, we create a single
-source of truth in our interface library.
+这样，我们所有的代码仍然需要C++ 11来构建。注意，使用这种方法，我们能够明确哪些目标得到特定的需求。\
+此外，我们在接口库中创建了一个单一的真实源。
 
-Exercise 2 - Adding Compiler Warning Flags with Generator Expressions
+练习2 - 使用生成器表达式添加编译器警告标志
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A common usage of
-:manual:`generator expressions <cmake-generator-expressions(7)>` is to
-conditionally add compiler flags, such as those for language levels or
-warnings. A nice pattern is to associate this information to an ``INTERFACE``
-target allowing this information to propagate.
+:manual:`generator expressions <cmake-generator-expressions(7)>`\ 的一种常见用法是有条件地添加编译器标记，\
+例如用于语言级别或警告的标记。一个很好的模式是将该信息关联到一个\ ``INTERFACE``\ 目标，让该信息传播。
 
-Goal
+目标
 ----
 
-Add compiler warning flags when building but not for installed versions.
+在构建时添加编译器警告标志，但不为已安装的版本添加。
 
-Helpful Resources
+有用的资源
 -----------------
 
 * :manual:`cmake-generator-expressions(7)`
@@ -170,46 +163,40 @@ Helpful Resources
 * :command:`set`
 * :command:`target_compile_options`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始
 ---------------
 
-Start with the resulting files from Exercise 1. Complete ``TODO 4`` through
-``TODO 7``.
+从练习1中的结果文件开始。完成\ ``TODO 4``\ 到\ ``TODO 7``。
 
-First, in the top level ``CMakeLists.txt`` file, we need to set the
-:command:`cmake_minimum_required` to ``3.15``. In this exercise we are going
-to use a generator expression which was introduced in CMake 3.15.
+首先，在顶层的\ ``CMakeLists.txt``\ 文件中，我们需要将\ :command:`cmake_minimum_required`\ 设置为\ ``3.15``。\
+在这个练习中，我们将使用在CMake 3.15中引入的生成器表达式。
 
-Next we add the desired compiler warning flags that we want for our project.
-As warning flags vary based on the compiler, we use the
-``COMPILE_LANG_AND_ID`` generator expression to control which flags to apply
-given a language and a set of compiler ids.
+接下来，我们为项目添加所需的编译器警告标志。由于警告标志因编译器而不同，\
+我们使用\ ``COMPILE_LANG_AND_ID``\ 生成器表达式来控制给定语言和一组编译器id应用哪些标志。
 
-Build and Run
+构建并运行
 -------------
 
-Since we have our build directory already configured from Exercise 1, simply
-rebuild our code by calling the following:
+因为我们已经在练习1中配置了构建目录，只需通过调用以下命令来重建代码：
 
 .. code-block:: console
 
   cd Step4_build
   cmake --build .
 
-Solution
+解决方案
 --------
 
-Update the :command:`cmake_minimum_required` to require at least CMake
-version ``3.15``:
+更新\ :command:`cmake_minimum_required`，至少需要CMake版本\ ``3.15``：
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: TODO 4: CMakeLists.txt
@@ -221,14 +208,13 @@ version ``3.15``:
 
   </details>
 
-Next we determine which compiler our system is currently using to build
-since warning flags vary based on the compiler we use. This is done with
-the ``COMPILE_LANG_AND_ID`` generator expression. We set the result in the
-variables ``gcc_like_cxx`` and ``msvc_cxx`` as follows:
+接下来，我们确定系统当前使用的编译器，因为警告标志会根据所使用的编译器而变化。\
+这是通过\ ``COMPILE_LANG_AND_ID``\ 生成器表达式完成的。\
+我们在变量\ ``gcc_like_cxx``\ 和\ ``msvc_cxx``\ 中设置结果如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: TODO 5: CMakeLists.txt
@@ -241,15 +227,13 @@ variables ``gcc_like_cxx`` and ``msvc_cxx`` as follows:
 
   </details>
 
-Next we add the desired compiler warning flags that we want for our project.
-Using our variables ``gcc_like_cxx`` and ``msvc_cxx``, we can use another
-generator expression to apply the respective flags only when the variables are
-true. We use :command:`target_compile_options` to apply these flags to our
-interface library.
+接下来，我们为项目添加所需的编译器警告标志。使用我们的变量\ ``gcc_like_cxx``\ 和\ ``msvc_cxx``，\
+我们可以使用另一个生成器表达式，仅当变量为真时应用各自的标志。\
+我们使用\ :command:`target_compile_options`\ 将这些标志应用到我们的接口库。
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 6: CMakeLists.txt
@@ -264,14 +248,12 @@ interface library.
 
   </details>
 
-Lastly, we only want these warning flags to be used during builds. Consumers
-of our installed project should not inherit our warning flags. To specify
-this, we wrap our flags in a generator expression using the ``BUILD_INTERFACE``
-condition. The resulting full code looks like the following:
+最后，我们只希望在构建期间使用这些警告标志。已安装项目的使用者不应该继承我们的警告标志。\
+为了指定这一点，我们使用\ ``BUILD_INTERFACE``\ 条件将标记包装在生成器表达式中。生成的完整代码如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: TODO 7: CMakeLists.txt
