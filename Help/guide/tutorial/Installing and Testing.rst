@@ -1,107 +1,92 @@
-Step 5: Installing and Testing
+步骤5: 安装和测试
 ==============================
 
 .. _`Tutorial Testing Support`:
 
-Exercise 1 - Install Rules
+练习1 - 安装规则
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 通常，仅仅构建可执行文件是不够的，它还应该是可安装的。使用CMake，我们可以使用\ :command:`install`\ 命令指定安装规则。\
 在CMake中支持构建的本地安装通常非常简单，只需指定安装位置和要安装的目标和文件。
 
-Goal
+目标
 ----
 
 安装\ ``Tutorial``\ 可执行文件和\ ``MathFunctions``\ 库。
 
-Helpful Materials
+有用的材料
 -----------------
 
 * :command:`install`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``MathFunctions/CMakeLists.txt``
 * ``CMakeLists.txt``
 
-Getting Started
+开始
 ---------------
 
-The starting code is provided in the ``Step5`` directory. In this
-exercise, complete ``TODO 1`` through ``TODO 4``.
+在\ ``Step5``\ 目录中提供了开始代码。在这个练习中，完成\ ``TODO 1``\ 到\ ``TODO 4``。
 
-First, update ``MathFunctions/CMakeLists.txt`` to install the
-``MathFunctions`` and ``tutorial_compiler_flags`` libraries to the ``lib``
-directory. In that same file, specify the install rules needed to install
-``MathFunctions.h`` to the ``include`` directory.
+首先，更新\ ``MathFunctions/CMakeLists.txt``，\
+将\ ``MathFunctions``\ 和\ ``tutorial_compiler_flags``\ 库安装到\ ``lib``\ 目录。\
+在同一文件中，指定将\ ``MathFunctions.h``\ 安装到\ ``include``\ 目录所需的安装规则。
 
-Then, update the top level ``CMakeLists.txt`` to install
-the ``Tutorial`` executable to the ``bin`` directory. Lastly, any header files
-should be installed to the ``include`` directory. Remember that
-``TutorialConfig.h`` is in the :variable:`PROJECT_BINARY_DIR`.
+然后，更新顶层\ ``CMakeLists.txt``，将\ ``Tutorial``\ 可执行文件安装到\ ``bin``\ 目录。\
+最后，任何头文件都应该安装到\ ``include``\ 目录中。\
+记住\ ``TutorialConfig.h``\ 在\ :variable:`PROJECT_BINARY_DIR`\ 中。
 
-Build and Run
+构建并运行
 -------------
 
-Make a new directory called ``Step5_build``. Run the
-:manual:`cmake <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+创建一个名为\ ``Step5_build``\ 的新目录。\
+运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
+然后使用你选择的构建工具构建它。
 
-Then, run the install step by using the :option:`--install <cmake --install>`
-option of the :manual:`cmake  <cmake(1)>` command (introduced in 3.15, older
-versions of CMake must use ``make install``) from the command line. This step
-will install the appropriate header files, libraries, and executables.
-For example:
+然后，在命令行中使用\ :manual:`cmake  <cmake(1)>`\ 命令（在3.15中引入，旧版本的CMake必须使用\ ``make install``）\
+的\ :option:`--install <cmake --install>`\ 选项运行install步骤。这一步将安装适当的头文件、库和可执行文件。例如：
 
 .. code-block:: console
 
   cmake --install .
 
-For multi-configuration tools, don't forget to use the
-:option:`--config <cmake--build --config>` argument to specify the configuration.
+对于多配置工具，不要忘记使用\ :option:`--config <cmake--build --config>`\ 参数来指定配置。
 
 .. code-block:: console
 
   cmake --install . --config Release
 
-If using an IDE, simply build the ``INSTALL`` target. You can build the same
-install target from the command line like the following:
+如果使用IDE，只需构建\ ``INSTALL``\ 目标。你可以从命令行构建相同的安装目标，如下所示：
 
 .. code-block:: console
 
   cmake --build . --target install --config Debug
 
-The CMake variable :variable:`CMAKE_INSTALL_PREFIX` is used to determine the
-root of where the files will be installed. If using the :option:`cmake --install`
-command, the installation prefix can be overridden via the
-:option:`--prefix <cmake--install --prefix>` argument. For example:
+CMake变量\ :variable:`CMAKE_INSTALL_PREFIX`\ 用于确定将安装文件的根目录。\
+如果使用\ :option:`cmake --install`\ 命令，可以通过\ :option:`--prefix <cmake--install --prefix>`\ 参数覆盖安装前缀。例如：
 
 .. code-block:: console
 
   cmake --install . --prefix "/home/myuser/installdir"
 
-Navigate to the install directory and verify that the installed ``Tutorial``
-runs.
+导航到安装目录，并验证已安装的\ ``Tutorial``\ 是否运行。
 
-Solution
+解决方案
 --------
 
-The install rules for our project are fairly simple:
+我们项目的安装规则相当简单：
 
-* For ``MathFunctions``, we want to install the libraries and header file to
-  the ``lib`` and ``include`` directories respectively.
+* 对于\ ``MathFunctions``，我们希望将库和头文件分别安装到\ ``lib``\ 及\ ``include``\ 目录中。
 
-* For the ``Tutorial`` executable, we want to install the executable and
-  configured header file to the ``bin`` and ``include`` directories
-  respectively.
+* 对于\ ``Tutorial``\ 可执行文件，我们希望将可执行文件和配置的头文件分别安装到\ ``bin``\ 和\ ``include``\ 目录中。
 
-So to the end of ``MathFunctions/CMakeLists.txt`` we add:
+因此，在\ ``MathFunctions/CMakeLists.txt``\ 的末尾，我们添加：
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: TODO 1: MathFunctions/CMakeLists.txt
@@ -114,11 +99,11 @@ So to the end of ``MathFunctions/CMakeLists.txt`` we add:
 
   </details>
 
-and
+和
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: TODO 2: MathFunctions/CMakeLists.txt
@@ -130,12 +115,11 @@ and
 
   </details>
 
-The install rules for the ``Tutorial`` executable and configured header file
-are similar. To the end of the top-level ``CMakeLists.txt`` we add:
+``Tutorial``\ 可执行文件和配置头文件的安装规则类似。在顶层\ ``CMakeLists.txt``\ 的末尾，我们添加：
 
 .. raw:: html
 
-  <details><summary>TODO 3,4: Click to show/hide answer</summary>
+  <details><summary>TODO 3,4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -148,23 +132,20 @@ are similar. To the end of the top-level ``CMakeLists.txt`` we add:
 
   </details>
 
-That is all that is needed to create a basic local
-install of the tutorial.
+这就是创建教程的基本本地安装所需要的全部内容。
 
-Exercise 2 - Testing Support
+练习2 - 测试支持
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CTest offers a way to easily manage tests for your project. Tests can be
-added through the :command:`add_test` command. Although it is not
-explicitly covered in this tutorial, there is a lot of compatibility
-between CTest and other testing frameworks such as :module:`GoogleTest`.
+CTest提供了一种轻松管理项目测试的方法。可以通过\ :command:`add_test`\ 命令添加测试。\
+虽然在本教程中没有明确介绍，但CTest和其他测试框架（:module:`GoogleTest`）之间有很多兼容性。
 
-Goal
+目标
 ----
 
-Create unit tests for our executable using CTest.
+使用CTest为我们的可执行文件创建单元测试。
 
-Helpful Materials
+有用的材料
 -----------------
 
 * :command:`enable_testing`
@@ -173,34 +154,28 @@ Helpful Materials
 * :command:`set_tests_properties`
 * :manual:`ctest <ctest(1)>`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始
 ---------------
 
-The starting source code is provided in the ``Step5`` directory. In this
-exercise, complete ``TODO 5`` through ``TODO 9``.
+在\ ``Step5``\ 目录中提供了起始源代码。在这个练习中，完成\ ``TODO 5``\ 到\ ``TODO 9``。
 
-First, we need to enable testing. Next, begin adding tests to our project
-using :command:`add_test`. We will work through adding 3 simple tests and
-then you can add additional testing as you see fit.
+首先，我们需要启用测试。接下来，开始使用\ :command:`add_test`\ 向我们的项目添加测试。\
+我们将添加3个简单的测试，然后你可以根据需要添加额外的测试。
 
-Build and Run
+构建并运行
 -------------
 
-Navigate to the build directory and rebuild the application. Then, run the
-``ctest`` executable: :option:`ctest -N` and :option:`ctest -VV`. For
-multi-config generators (e.g. Visual Studio), the configuration type must be
-specified with the :option:`-C \<mode\> <ctest -C>` flag.  For example, to run tests in Debug
-mode use ``ctest -C Debug -VV`` from the build directory
-(not the Debug subdirectory!). Release mode would be executed from the same
-location but with a ``-C Release``. Alternatively, build the ``RUN_TESTS``
-target from the IDE.
+导航到构建目录并重新构建应用程序。然后，运行\ ``ctest``\ 可执行文件：:option:`ctest -N`\ 和\ :option:`ctest -VV`。\
+对于多配置生成器（例如Visual Studio），配置类型必须用\ :option:`-C \<mode\> <ctest -C>`\ 标志指定。\
+例如，要在调试模式下运行测试，请从构建目录（而不是Debug子目录！）使用\ ``ctest -C Debug -VV``。\
+Release模式将从相同的位置执行，但使用\ ``-C Release``。或者，从IDE构建\ ``RUN_TESTS``\ 目标。
 
-Solution
+解决方案
 --------
 
 Let's test our application. At the end of the top-level ``CMakeLists.txt``
@@ -209,7 +184,7 @@ file we first need to enable testing with the
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/CMakeLists.txt
   :caption: TODO 5: CMakeLists.txt
@@ -232,7 +207,7 @@ return value. This is the basic form of a CTest test.
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/CMakeLists.txt
   :caption: TODO 6: CMakeLists.txt
@@ -252,7 +227,7 @@ arguments are provided.
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/CMakeLists.txt
   :caption: TODO 7: CMakeLists.txt
@@ -270,7 +245,7 @@ square root.
 
 .. raw:: html
 
-  <details><summary>TODO 8: Click to show/hide answer</summary>
+  <details><summary>TODO 8: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 8: CMakeLists.txt
@@ -295,7 +270,7 @@ arguments.
 
 .. raw:: html
 
-  <details><summary>TODO 9: Click to show/hide answer</summary>
+  <details><summary>TODO 9: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/CMakeLists.txt
   :caption: TODO 9: CMakeLists.txt
