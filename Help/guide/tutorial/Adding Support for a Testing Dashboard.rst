@@ -1,4 +1,4 @@
-Step 6: Adding Support for a Testing Dashboard
+步骤6: 添加对测试仪表板的支持
 ==============================================
 
 将测试结果添加到仪表板很简单。在\ :ref:`测试支持 <Tutorial Testing Support>`\ 我们已经添加了一系列测试到项目中。\

@@ -173,14 +173,12 @@ CTest提供了一种轻松管理项目测试的方法。可以通过\ :command:`
 导航到构建目录并重新构建应用程序。然后，运行\ ``ctest``\ 可执行文件：:option:`ctest -N`\ 和\ :option:`ctest -VV`。\
 对于多配置生成器（例如Visual Studio），配置类型必须用\ :option:`-C \<mode\> <ctest -C>`\ 标志指定。\
 例如，要在调试模式下运行测试，请从构建目录（而不是Debug子目录！）使用\ ``ctest -C Debug -VV``。\
-Release模式将从相同的位置执行，但使用\ ``-C Release``。或者，从IDE构建\ ``RUN_TESTS``\ 目标。
+发布模式将从相同的位置执行，但使用\ ``-C Release``。或者，从IDE构建\ ``RUN_TESTS``\ 目标。
 
 解决方案
 --------
 
-Let's test our application. At the end of the top-level ``CMakeLists.txt``
-file we first need to enable testing with the
-:command:`enable_testing` command.
+让我们测试我们的应用程序。在顶层\ ``CMakeLists.txt``\ 文件的末尾，我们首先需要使用\ :command:`enable_testing`\ 命令启用测试。
 
 .. raw:: html
 
@@ -197,13 +195,10 @@ file we first need to enable testing with the
 
   </details>
 
-With testing enabled, we will add a number of basic tests to verify
-that the application is working correctly. First, we create a test using
-:command:`add_test` which runs the ``Tutorial`` executable with the
-parameter 25 passed in. For this test, we are not going to check the
-executable's computed answer. This test will verify that
-application runs, does not segfault or otherwise crash, and has a zero
-return value. This is the basic form of a CTest test.
+启用测试后，我们将添加一些基本测试，以验证应用程序是否正常工作。\
+首先，我们使用\ :command:`add_test`\ 创建一个测试，该测试运行带有传入参数25的\ ``Tutorial``\ 可执行文件。\
+对于这个测试，我们不打算检查可执行文件的计算结果。该测试将验证应用程序运行，没有分段故障或崩溃，并且返回值为零。\
+这是CTest测试的基本形式。
 
 .. raw:: html
 
@@ -220,10 +215,8 @@ return value. This is the basic form of a CTest test.
 
   </details>
 
-Next, let's use the :prop_test:`PASS_REGULAR_EXPRESSION` test property to
-verify that the output of the test contains certain strings. In this case,
-verifying that the usage message is printed when an incorrect number of
-arguments are provided.
+接下来，让我们使用\ :prop_test:`PASS_REGULAR_EXPRESSION`\ 测试属性来验证测试的输出是否包含某些字符串。\
+在本例中，当提供的参数数量不正确时，验证是否打印了usage消息。
 
 .. raw:: html
 
@@ -240,8 +233,7 @@ arguments are provided.
 
   </details>
 
-The next test we will add verifies the computed value is truly the
-square root.
+我们将添加的下一个测试验证计算值确实是平方根。
 
 .. raw:: html
 
@@ -260,13 +252,10 @@ square root.
 
   </details>
 
-This one test is not enough to give us confidence that it will
-work for all values passed in. We should add more tests to verify this.
-To easily add more tests, we make a function called ``do_test`` that runs the
-application and verifies that the computed square root is correct for
-given input. For each invocation of ``do_test``, another test is added to
-the project with a name, input, and expected results based on the passed
-arguments.
+这个测试不足以让我们相信它对所有传入的值都有效。我们应该增加更多的测试来验证这一点。\
+为了方便地添加更多测试，我们创建了一个名为\ ``do_test``\ 的函数，\
+该函数运行应用程序并验证计算的平方根对于给定输入是否正确。对于\ ``do_test``\ 的每次调用，\
+都会向项目中添加另一个测试，其中包含名称、输入和基于传递的参数的预期结果。
 
 .. raw:: html
 

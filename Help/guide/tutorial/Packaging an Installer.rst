@@ -1,4 +1,4 @@
-Step 9: Packaging an Installer
+步骤9: 打包一个安装包
 ==============================
 
 我们下个愿望是分发工程走让别人使用它。我们想同时分发源码和二进制在不同的平台。\
@@ -26,16 +26,15 @@ Step 9: Packaging an Installer
 
   cpack
 
-To specify the generator, use the :option:`-G <cpack -G>` option. For multi-config builds,
-use :option:`-C <cpack -C>` to specify the configuration. For example:
+要指定生成器，请使用\ :option:`-G <cpack -G>`\ 选项。\
+对于多配置版本，使用\ :option:`-C <cpack -C>`\ 来指定配置。例如：
 
 .. code-block:: console
 
   cpack -G ZIP -C Debug
 
-For a list of available generators, see :manual:`cpack-generators(7)` or call
-:option:`cpack --help`. An :cpack_gen:`archive generator <CPack Archive Generator>`
-like ZIP creates a compressed archive of all *installed* files.
+有关可用生成器的列表，请参见\ :manual:`cpack-generators(7)`\ 或调用\ :option:`cpack --help`。\
+像ZIP这样的\ :cpack_gen:`存档生成器 <CPack Archive Generator>`\ 会为所有\ *已安装文件*\ 创建一个压缩存档。
 
 如果想创建一个\ *完整的*\ 源码分发包你应该输入：
 
