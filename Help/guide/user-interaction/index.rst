@@ -10,13 +10,20 @@
 
 当软件包为基于CMake的构建系统提供了软件的源代码时，软件的消费者需要运行一个CMake用户交互工具来构建它。
 
-行为良好的基于CMake的构建系统不会在源目录中创建任何输出，所以通常情况下，用户执行一个源外构建并在那里执行构建。首先，必须指示CMake生成一个合适的构建系统，然后用户调用构建工具来处理生成的构建系统。生成的构建系统是特定于用来生成它的机器的，并且是不可再分布的。提供的源软件包的每个消费者都需要使用CMake来生成特定于他们系统的构建系统。
+行为良好的基于CMake的构建系统不会在源目录中创建任何输出，所以通常情况下，用户执行一个源外构建并在那里执行构建。\
+首先，必须指示CMake生成一个合适的构建系统，然后用户调用构建工具来处理生成的构建系统。\
+生成的构建系统是特定于用来生成它的机器的，并且是不可再分布的。\
+提供的源软件包的每个消费者都需要使用CMake来生成特定于他们系统的构建系统。
 
-生成的构建系统通常应该被视为只读的。作为主要构件的CMake文件应该完全指定构建系统，并且应该没有理由在IDE中手动填充属性，例如在生成构建系统之后。CMake会定期重写生成的构建系统，因此用户的修改会被覆盖。
+生成的构建系统通常应该被视为只读的。作为主要构件的CMake文件应该完全指定构建系统，\
+并且应该没有理由在IDE中手动填充属性，例如在生成构建系统之后。CMake会定期重写生成的构建系统，\
+因此用户的修改会被覆盖。
 
 通过提供CMake文件，本手册中描述的功能和用户界面可用于所有基于CMake的构建系统。
 
-当处理提供的CMake文件时，CMake工具可能会向用户报告错误，比如报告编译器不受支持，或者编译器不支持必需的编译选项，或者无法找到依赖项。这些错误必须由用户通过选择不同的编译器、:guide:`安装依赖 <使用依赖项指南>`\ 或指示CMake在哪里找到它们来解决。
+当处理提供的CMake文件时，CMake工具可能会向用户报告错误，比如报告编译器不受支持，\
+或者编译器不支持必需的编译选项，或者无法找到依赖项。这些错误必须由用户通过选择不同的编译器、\
+:guide:`安装依赖 <使用依赖项指南>`\ 或指示CMake在哪里找到它们来解决。
 
 cmake命令行工具
 -----------------------
@@ -32,14 +39,11 @@ cmake命令行工具
   $ cmake --build .
   $ cmake --build . --target install
 
-建议在到源的单独目录中构建，因为这样可以保持源目录的原始状态，允许使用多个工具链构建单个源，并允许通过简单地删除构建目录轻松地清除构建工件。
+建议在到源的单独目录中构建，因为这样可以保持源目录的原始状态，允许使用多个工具链构建单个源，\
+并允许通过简单地删除构建目录轻松地清除构建工件。
 
-The CMake tooling may report warnings which are intended
-for the provider of the software, not intended for the
-consumer of the software.  Such warnings end with "This
-warning is for project developers".  Users may disable
-such warnings by passing the :option:`-Wno-dev <cmake -Wno-dev>`
-flag to :manual:`cmake(1)`.
+CMake工具可能会报告针对软件提供者的警告，而不是针对软件消费者的警告。此类警告以“此警告针对项目开发人员”结尾。\
+用户可以通过向\ :manual:`cmake(1)`\ 传递\ :option:`-Wno-dev <cmake -Wno-dev>`\ 标志来禁用此类警告。
 
 cmake-gui工具
 --------------
@@ -59,13 +63,16 @@ cmake-gui工具
 命令行环境
 ------------------------
 
-当使用命令行构建系统(如\ ``Makefiles``\ 或\ ``Ninja``)调用\ :manual:`cmake(1)`\ 时，有必要使用正确的构建环境以确保构建工具可用。CMake必须能够根据需要找到合适的\ :variable:`build tool <CMAKE_MAKE_PROGRAM>`、编译器、链接器和其他必要工具。
+当使用命令行构建系统(如\ ``Makefiles``\ 或\ ``Ninja``)调用\ :manual:`cmake(1)`\ 时，\
+有必要使用正确的构建环境以确保构建工具可用。CMake必须能够根据需要找到合适的\ :variable:`build tool <CMAKE_MAKE_PROGRAM>`、编译器、链接器和其他必要工具。
 
-在Linux系统上，适当的工具通常在系统范围内的位置提供，并且可以通过系统包管理器随时安装。用户提供的或安装在非默认位置的其他工具链也可以使用。
+在Linux系统上，适当的工具通常在系统范围内的位置提供，并且可以通过系统包管理器随时安装。\
+用户提供的或安装在非默认位置的其他工具链也可以使用。
 
 在交叉编译时，一些平台可能需要设置环境变量，或者可能提供设置环境的脚本。
 
-Visual Studio提供了多个命令提示符和\ ``vcvarsall.bat``\ 脚本，用于为命令行构建系统设置正确的环境。虽然在使用Visual Studio生成器时并不一定需要使用相应的命令行环境，但这样做无坏处。
+Visual Studio提供了多个命令提示符和\ ``vcvarsall.bat``\ 脚本，用于为命令行构建系统设置正确的环境。\
+虽然在使用Visual Studio生成器时并不一定需要使用相应的命令行环境，但这样做无坏处。
 
 当使用Xcode时，可以安装多个Xcode版本。使用哪种方法可以有很多不同的选择，但最常见的方法是：
 
@@ -80,23 +87,26 @@ Visual Studio提供了多个命令提示符和\ ``vcvarsall.bat``\ 脚本，用�
 
 CMake根据平台默认选择一个生成器。通常，默认生成器足以允许用户继续构建软件。
 
-The user may override the default generator with
-the :option:`-G <cmake -G>` option:
+用户可以使用\ :option:`-G <cmake -G>`\ 选项覆盖默认生成器：
 
 .. code-block:: console
 
   $ cmake .. -G Ninja
 
-The output of :option:`cmake --help` includes a list of
-:manual:`generators <cmake-generators(7)>` available
-for the user to choose from.  Note that generator
-names are case sensitive.
+:option:`cmake --help`\ 的输出包括一个可供用户选择的\ :manual:`生成器 <cmake-generators(7)>`\ 列表。\
+注意，生成器名称是区分大小写的。
 
-在类Unix系统（包括Mac OS X）上，默认情况下使用\ :generator:`Unix Makefiles`\ 生成器。该生成器的一个变体也可以在各种环境的Windows上使用，比如\ :generator:`NMake Makefiles`\ 和\ :generator:`MinGW Makefiles`\ 生成器。这些生成器生成一个\ ``Makefile``\ 变体，可以用\ ``make``、``gmake``、``nmake``\ 或类似工具执行。有关目标环境和工具的更多信息，请参见单个生成器文档。
+在类Unix系统（包括Mac OS X）上，默认情况下使用\ :generator:`Unix Makefiles`\ 生成器。\
+该生成器的一个变体也可以在各种环境的Windows上使用，\
+比如\ :generator:`NMake Makefiles`\ 和\ :generator:`MinGW Makefiles`\ 生成器。\
+这些生成器生成一个\ ``Makefile``\ 变体，可以用\ ``make``、``gmake``、``nmake``\ 或类似工具执行。\
+有关目标环境和工具的更多信息，请参见单个生成器文档。
 
 :generator:`Ninja`\ 生成器适用于所有主要平台。``ninja``\ 是一个用法类似于\ ``make``\ 的构建工具，但侧重于性能和效率。
 
-在Windows平台上，可以使用\ :manual:`cmake(1)`\ 为Visual Studio IDE生成解决方案。Visual Studio版本可以通过IDE的产品名来指定，其中包含一个四位数字的年份。别名也可以用来表示Visual Studio版本，比如两个数字对应于VisualC++编译器的产品版本，或者两者的组合：
+在Windows平台上，可以使用\ :manual:`cmake(1)`\ 为Visual Studio IDE生成解决方案。\
+Visual Studio版本可以通过IDE的产品名来指定，其中包含一个四位数字的年份。\
+别名也可以用来表示Visual Studio版本，比如两个数字对应于VisualC++编译器的产品版本，或者两者的组合：
 
 .. code-block:: console
 
@@ -104,9 +114,7 @@ names are case sensitive.
   $ cmake .. -G "Visual Studio 16"
   $ cmake .. -G "Visual Studio 16 2019"
 
-Visual Studio generators can target different architectures.
-One can specify the target architecture using the
-:option:`-A <cmake -A>` option:
+Visual Studio生成器可以针对不同的体系结构。可以使用\ :option:`-A <cmake -A>`\ 选项指定目标架构：
 
 .. code-block:: console
 
