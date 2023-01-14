@@ -1,8 +1,5 @@
 PROJECT_SOURCE_DIR
 ------------------
 
-This is the source directory of the last call to the
-:command:`project` command made in the current directory scope or one
-of its parents. Note, it is not affected by calls to
-:command:`project` made within a child directory scope (i.e. from
-within a call to :command:`add_subdirectory` from the current scope).
+这是在当前目录作用域或其父目录之一中最后一次调用\ :command:`project`\ 命令的源目录。\
+注意，它不受子目录范围内对\ :command:`project`\ 的调用的影响（即在当前范围内对\ :command:`add_subdirectory`\ 的调用）。

@@ -1,12 +1,10 @@
 CMAKE_CURRENT_SOURCE_DIR
 ------------------------
 
-The path to the source directory currently being processed.
+当前正在处理的源目录的路径。
 
-This is the full path to the source directory that is currently being
-processed by cmake.
+这是cmake当前正在处理的源目录的完整路径。
 
-When run in :option:`cmake -P` script mode, CMake sets the variables
-:variable:`CMAKE_BINARY_DIR`, :variable:`CMAKE_SOURCE_DIR`,
-:variable:`CMAKE_CURRENT_BINARY_DIR` and
-:variable:`CMAKE_CURRENT_SOURCE_DIR` to the current working directory.
+当在\ :option:`cmake -P`\ 脚本模式下运行时，CMake将变量\ :variable:`CMAKE_BINARY_DIR`、
+:variable:`CMAKE_SOURCE_DIR`、\ :variable:`CMAKE_CURRENT_BINARY_DIR`\ 和
+:variable:`CMAKE_CURRENT_SOURCE_DIR`\ 设置为当前工作目录。

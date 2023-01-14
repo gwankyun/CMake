@@ -1,6 +1,6 @@
 PROJECT_BINARY_DIR
 ------------------
 
-Full path to build directory for project.
+项目构建目录的完整路径。
 
-This is the binary directory of the most recent :command:`project` command.
+这是最近调用\ :command:`project`\ 命令的二进制目录。

@@ -4,7 +4,7 @@
 练习1 - 为库添加使用需求
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-目标参数的\ :ref:`Usage requirements <Target Usage Requirements>`\ 允许对库或可执行文件的link和include行进行更好的控制，\
+目标参数的\ :ref:`使用需求 <Target Usage Requirements>`\ 允许对库或可执行文件的link和include行进行更好的控制，\
 同时也可以对CMake内部目标的传递属性进行更多的控制。利用使用需求的主要命令有：
 
 * :command:`target_compile_definitions`
@@ -35,7 +35,7 @@
 开始
 ---------------
 
-在本练习中，我们将使用现代的CMake方法重构\ :guide:`tutorial/Adding a Library`\ 中的代码。\
+在本练习中，我们将使用现代的CMake方法重构\ :guide:`添加库 <tutorial/Adding a Library>`\ 中的代码。\
 我们将让我们的库定义自己的使用需求，以便在必要时将它们传递给其他目标。\
 在本例中，\ ``MathFunctions``\ 将自己指定任何所需的include目录。\
 然后，消费目标\ ``Tutorial``\ 只需要链接到\ ``MathFunctions``，而不用担心任何额外的包含目录。
