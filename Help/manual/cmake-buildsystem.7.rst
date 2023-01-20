@@ -468,7 +468,16 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 
 这相当于在由\ :command:`install(EXPORT)`\ 生成的每个已安装的\ :prop_tgt:`IMPORTED`\ 目标的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 中附加\ ``${CMAKE_INSTALL_PREFIX}/include``。
 
-当一个\ :ref:`导入的目标 <Imported targets>`\ 的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 被使用时，属性中的条目被视为\ ``SYSTEM``\ 包含目录，就像它们列在依赖项的 \ :prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES`\ 中一样。这可能导致在这些目录中找到的头文件的编译器警告被忽略。导入目标的这种行为可以通过在导入目标的\ *消费者*\ 上设置 \ :prop_tgt:`NO_SYSTEM_FROM_IMPORTED`\ 目标属性来控制，或者通过在导入目标本身上设置\ :prop_tgt:`IMPORTED_NO_SYSTEM`\ 目标属性来控制。
+When the :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` of an
+:ref:`imported target <Imported targets>` is consumed, the entries in the
+property may be treated as system include directories.  The effects of that
+are toolchain-dependent, but one common effect is to omit compiler warnings
+for headers found in those directories.  The :prop_tgt:`SYSTEM` property of
+the installed target determines this behavior (see the
+:prop_tgt:`EXPORT_NO_SYSTEM` property for how to modify the installed value
+for a target).  It is also possible to change how consumers interpret the
+system behavior of consumed imported targets by setting the
+:prop_tgt:`NO_SYSTEM_FROM_IMPORTED` target property on the *consumer*.
 
 如果一个二进制目标被传递地链接到一个macOS :prop_tgt:`FRAMEWORK`，框架的\ ``Headers``\ 目录也被视为使用需求。这与将框架目录作为包含目录传递的效果相同。
 
@@ -693,7 +702,7 @@ CMake提供了与包含目录使用需求相关的两个便捷API。变量\ :var
 
   add_library(Eigen INTERFACE)
 
-  target_sources(Eigen INTERFACE
+  target_sources(Eigen PUBLIC
     FILE_SET HEADERS
       BASE_DIRS src
       FILES src/eigen.h src/vector.h src/matrix.h
