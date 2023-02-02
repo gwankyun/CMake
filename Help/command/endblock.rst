@@ -3,8 +3,7 @@ endblock
 
 .. versionadded:: 3.25
 
-Ends a list of commands in a :command:`block` and removes the scopes
-created by the :command:`block` command.
+结束\ :command:`block`\ 的命令列表，并删除\ :command:`block`\ 命令创建的作用域。
 
 .. code-block:: cmake
 

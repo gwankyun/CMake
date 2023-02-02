@@ -3,7 +3,7 @@ block
 
 .. versionadded:: 3.25
 
-Evaluate a group of commands with a dedicated variable and/or policy scope.
+使用专用变量和/或范围策略计算一组命令。
 
 .. code-block:: cmake
 

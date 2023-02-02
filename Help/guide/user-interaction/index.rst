@@ -58,13 +58,15 @@ cmake-gui工具
 生成一个构建系统
 ========================
 
-有一些用户界面工具可以用来从CMake文件生成构建系统。:manual:`ccmake(1)`\ 和\ :manual:`cmake-gui(1)`\ 工具通过设置各种必要的选项指导用户。可以调用\ :manual:`cmake(1)`\ 工具来在命令行上指定选项。本手册描述了可以使用任何用户界面工具设置的选项，尽管每种工具设置选项的方式不同。
+有一些用户界面工具可以用来从CMake文件生成构建系统。:manual:`ccmake(1)`\ 和\ :manual:`cmake-gui(1)`\ 工具通过设置各种必要的选项指导用户。\
+可以调用\ :manual:`cmake(1)`\ 工具来在命令行上指定选项。本手册描述了可以使用任何用户界面工具设置的选项，尽管每种工具设置选项的方式不同。
 
 命令行环境
 ------------------------
 
 当使用命令行构建系统(如\ ``Makefiles``\ 或\ ``Ninja``)调用\ :manual:`cmake(1)`\ 时，\
-有必要使用正确的构建环境以确保构建工具可用。CMake必须能够根据需要找到合适的\ :variable:`build tool <CMAKE_MAKE_PROGRAM>`、编译器、链接器和其他必要工具。
+有必要使用正确的构建环境以确保构建工具可用。\
+CMake必须能够根据需要找到合适的\ :variable:`build tool <CMAKE_MAKE_PROGRAM>`、编译器、链接器和其他必要工具。
 
 在Linux系统上，适当的工具通常在系统范围内的位置提供，并且可以通过系统包管理器随时安装。\
 用户提供的或安装在非默认位置的其他工具链也可以使用。
@@ -124,17 +126,15 @@ Visual Studio生成器可以针对不同的体系结构。可以使用\ :option:
 
 在苹果平台上，:generator:`Xcode`\ 生成器可能被用来为Xcode IDE生成项目文件。
 
-一些IDE，如KDevelop4, QtCreator和CLion，对基于CMake的构建系统有本地支持。这些IDE提供了选择要使用的底层生成器的用户界面，通常是在\ ``Makefile``\ 或基于\ ``Ninja``\ 的生成器之间进行选择。
+一些IDE，如KDevelop4, QtCreator和CLion，对基于CMake的构建系统有本地支持。\
+这些IDE提供了选择要使用的底层生成器的用户界面，通常是在\ ``Makefile``\ 或基于\ ``Ninja``\ 的生成器之间进行选择。
 
-Note that it is not possible to change the generator
-with :option:`-G <cmake -G>` after the first invocation of CMake.
-To change the generator, the build directory must be
-deleted and the build must be started from scratch.
+请注意，在第一次调用CMake之后，不可能再使用\ :option:`-G <cmake -G>`\ 更改生成器。\
+要更改生成器，必须先删除生成目录，并且必须从头开始生成。
 
 当生成Visual Studio项目和解决方案文件时，在最初运行\ :manual:`cmake(1)`\ 时，可以使用其他几个选项。
 
-The Visual Studio toolset can be specified with the
-:option:`cmake -T` option:
+Visual Studio工具集可以通过\ :option:`cmake -T`\ 选项指定：
 
 .. code-block:: console
 
@@ -143,12 +143,10 @@ The Visual Studio toolset can be specified with the
     $ # Build targeting Windows XP
     $ cmake.exe .. -G "Visual Studio 16 2019" -A x64 -T v120_xp
 
-Whereas the :option:`-A <cmake -A>` option specifies the _target_
-architecture, the :option:`-T <cmake -T>` option can be used to specify
-details of the toolchain used.  For example, ``-Thost=x64``
-can be given to select the 64-bit version of the host
-tools.  The following demonstrates how to use 64-bit
-tools and also build for a 64-bit target architecture:
+虽然\ :option:`-A <cmake -A>`\ 选项指定\ _target_\ 体系结构，\
+但\ :option:`-T <cmake -T>`\ 选项可用于指定所使用的工具链的详细信息。\
+例如，\ ``-Thost=x64``\ 可用于选择64位版本的主机工具。\
+下面演示如何使用64位工具，以及如何构建64位目标体系结构:
 
 .. code-block:: console
 
@@ -193,7 +191,9 @@ tools and also build for a 64-bit target architecture:
 
 其他特定于项目的变量可以用于控制构建，例如启用或禁用项目的组件。
 
-对于这些变量如何在不同的构建系统之间命名，CMake没有约定，除了前缀为\ ``CMAKE_``\ 的变量通常引用CMake本身提供的选项，不应该在第三方选项中使用，第三方选项应该使用自己的前缀。:manual:`cmake-gui(1)`\ 工具可以显示由前缀定义的组中的选项，因此第三方确保使用自一致的前缀是有意义的。
+对于这些变量如何在不同的构建系统之间命名，CMake没有约定，除了前缀为\ ``CMAKE_``\ 的变量通常引用CMake本身提供的选项，\
+不应该在第三方选项中使用，第三方选项应该使用自己的前缀。:manual:`cmake-gui(1)`\ 工具可以显示由前缀定义的组中的选项，\
+因此第三方确保使用自一致的前缀是有意义的。
 
 在命令行设置变量
 -------------------------------------
@@ -213,8 +213,7 @@ CMake变量可以在创建初始构建时在命令行中设置：
     $ cd build
     $ cmake . -DCMAKE_BUILD_TYPE=Debug
 
-The :option:`-U <cmake -U>` flag may be used to unset variables
-on the :manual:`cmake(1)` command line:
+:option:`-U <cmake -U>`\ 标志可以用来取消\ :manual:`cmake(1)`\ 命令行的变量设置：
 
 .. code-block:: console
 
@@ -223,11 +222,8 @@ on the :manual:`cmake(1)` command line:
 
 最初在命令行上创建的CMake构建系统可以使用\ :manual:`cmake-gui(1)`\ 进行修改，反之亦然。
 
-The :manual:`cmake(1)` tool allows specifying a
-file to use to populate the initial cache using
-the :option:`-C <cmake -C>` option.  This can be useful to simplify
-commands and scripts which repeatedly require the
-same cache entries.
+:manual:`cmake(1)`\ 工具允许使用\ :option:`-C <cmake -C>`\ 选项指定用于填充初始缓存的文件。\
+这对于简化重复需要相同缓存项的命令和脚本非常有用。
 
 在cmake-gui设置变量
 --------------------------------
@@ -242,28 +238,37 @@ same cache entries.
 CMake缓存
 ---------------
 
-当CMake执行时，它需要找到编译器、工具和依赖项的位置。它还需要能够一致地重新生成构建系统，以使用相同的编译/链接标志和依赖项路径。用户还需要配置这些参数，因为它们是特定于用户系统的路径和选项。
+当CMake执行时，它需要找到编译器、工具和依赖项的位置。它还需要能够一致地重新生成构建系统，以使用相同的编译/链接标志和依赖项路径。\
+用户还需要配置这些参数，因为它们是特定于用户系统的路径和选项。
 
-当它第一次被执行时，CMake会在构建目录中生成一个\ ``CMakeCache.txt``\ 文件，其中包含此类工件的键值对。用户可以通过运行\ :manual:`cmake-gui(1)`\ 或\ :manual:`ccmake(1)`\ 工具查看或编辑缓存文件。这些工具提供了一个交互界面，用于重新配置所提供的软件并重新生成构建系统，这是在编辑缓存值之后所需要的。每个缓存条目可能都有一个相关的简短帮助文本，显示在用户界面工具中。
+当它第一次被执行时，CMake会在构建目录中生成一个\ ``CMakeCache.txt``\ 文件，其中包含此类工件的键值对。\
+用户可以通过运行\ :manual:`cmake-gui(1)`\ 或\ :manual:`ccmake(1)`\ 工具查看或编辑缓存文件。\
+这些工具提供了一个交互界面，用于重新配置所提供的软件并重新生成构建系统，这是在编辑缓存值之后所需要的。\
+每个缓存条目可能都有一个相关的简短帮助文本，显示在用户界面工具中。
 
-缓存项也可以有一种类型来表示它应该如何在用户界面中显示。例如，``BOOL``\ 类型的缓存条目可以通过用户界面中的复选框进行编辑，``STRING``\ 可以在文本字段中进行编辑，而与\ ``STRING``\ 类似的\ ``FILEPATH``\ 也应该提供一种使用文件对话框定位文件系统路径的方法。一个\ ``STRING``\ 类型的条目可以提供一个允许值的限制列表，然后在\ :manual:`cmake-gui(1)`\ 用户界面的下拉菜单中提供(参见\ :prop_cache:`STRINGS`\ 缓存属性)。
+缓存项也可以有一种类型来表示它应该如何在用户界面中显示。\
+例如，``BOOL``\ 类型的缓存条目可以通过用户界面中的复选框进行编辑，``STRING``\ 可以在文本字段中进行编辑，\
+而与\ ``STRING``\ 类似的\ ``FILEPATH``\ 也应该提供一种使用文件对话框定位文件系统路径的方法。\
+一个\ ``STRING``\ 类型的条目可以提供一个允许值的限制列表，\
+然后在\ :manual:`cmake-gui(1)`\ 用户界面的下拉菜单中提供(参见\ :prop_cache:`STRINGS`\ 缓存属性)。
 
-软件包附带的CMake文件也可以使用\ :command:`option`\ 命令定义布尔切换选项。该命令创建一个缓存条目，该条目具有帮助文本和默认值。这类缓存条目通常特定于所提供的软件，并影响构建的配置，例如是否构建测试和示例，是否启用异常构建等。
+软件包附带的CMake文件也可以使用\ :command:`option`\ 命令定义布尔切换选项。\
+该命令创建一个缓存条目，该条目具有帮助文本和默认值。这类缓存条目通常特定于所提供的软件，并影响构建的配置，\
+例如是否构建测试和示例，是否启用异常构建等。
 
 预设
 =======
 
-CMake理解一个文件，``CMakePresets.json``，以及它的用户特定对等体\ ``CMakeUserPresets.json``，用于保存常用配置设置的预设。这些预设可以设置构建目录、生成器、缓存变量、环境变量和其他命令行选项。所有这些选项都可以被用户覆盖。``CMakePresets.json``\ 格式的详细信息在\ :manual:`cmake-presets(7)`\ 手册中列出。
+CMake理解一个文件，``CMakePresets.json``，以及它的用户特定对等体\ ``CMakeUserPresets.json``，\
+用于保存常用配置设置的预设。这些预设可以设置构建目录、生成器、缓存变量、环境变量和其他命令行选项。\
+所有这些选项都可以被用户覆盖。``CMakePresets.json``\ 格式的详细信息在\ :manual:`cmake-presets(7)`\ 手册中列出。
 
 在命令行使用预设
 ---------------------------------
 
-When using the :manual:`cmake(1)` command line tool, a
-preset can be invoked by using the :option:`--preset <cmake --preset>`
-option. If :option:`--preset <cmake --preset>` is specified,
-the generator and build directory are not required, but can be
-specified to override them. For example, if you have the following
-``CMakePresets.json`` file:
+当使用\ :manual:`cmake(1)`\ 命令行工具时，可以使用\ :option:`--preset <cmake --preset>`\ 选项来调用预设。\
+如果指定了\ :option:`--preset <cmake --preset>`，则不需要生成器和生成目录，但可以指定重写它们。\
+例如，如果你有以下\ ``CMakePresets.json``\ 文件：
 
 .. code-block:: json
 
@@ -287,7 +292,8 @@ specified to override them. For example, if you have the following
 
   cmake -S /path/to/source --preset=ninja-release
 
-这将使用\ :generator:`Ninja`\ 生成器在\ ``/path/to/source/build/ninja-release``\ 中生成一个构建目录，并将\ :variable:`CMAKE_BUILD_TYPE`\ 设置为\ ``Release``。
+这将使用\ :generator:`Ninja`\ 生成器在\ ``/path/to/source/build/ninja-release``\ 中生成一个构建目录，\
+并将\ :variable:`CMAKE_BUILD_TYPE`\ 设置为\ ``Release``。
 
 如果你想查看可用预设的列表，你可以运行:
 
@@ -300,7 +306,9 @@ specified to override them. For example, if you have the following
 在cmake-gui使用预设
 --------------------------
 
-如果一个项目有可用的预设，包括\ ``CMakePresets.json``\ 或\ ``CMakeUserPresets.json``，预设列表将出现在 :manual:`cmake-gui(1)`\ 的下拉菜单中，在源目录和二进制目录之间。选择预置会设置二进制目录、生成器、环境变量和缓存变量，但是在选择预置之后，可以覆盖所有这些选项。
+如果一个项目有可用的预设，包括\ ``CMakePresets.json``\ 或\ ``CMakeUserPresets.json``，\
+预设列表将出现在 :manual:`cmake-gui(1)`\ 的下拉菜单中，在源目录和二进制目录之间。\
+选择预置会设置二进制目录、生成器、环境变量和缓存变量，但是在选择预置之后，可以覆盖所有这些选项。
 
 调用构建系统
 ========================
@@ -313,67 +321,59 @@ CMake知道调用构建所需的特定构建工具，所以一般来说，要在
 
   $ cmake --build .
 
-The :option:`--build <cmake --build>` flag enables a
-particular mode of operation for the :manual:`cmake(1)`
-tool.  It invokes the  :variable:`CMAKE_MAKE_PROGRAM`
-command associated with the
-:manual:`generator <cmake-generators(7)>`, or
-the build tool configured by the user.
+:option:`--build <cmake --build>`\ 标志为\ :manual:`cmake(1)`\ 工具启用了一种特定的操作模式。\
+它调用与\ :manual:`生成器 <cmake-generators(7)>`\ 相关联的\ :variable:`CMAKE_MAKE_PROGRAM`\ 命令，\
+或者调用用户配置的构建工具。
 
-The :option:`--build <cmake --build>` mode also accepts
-the parameter :option:`--target <cmake--build --target>` to
-specify a particular target to build, for example a
-particular library, executable or custom target, or a
-particular special target like ``install``:
+:option:`--build <cmake --build>`\ 模式还接受参数\ :option:`--target <cmake--build --target>`\ 来指定要构建的特定目标，\
+例如特定的库、可执行文件或自定义目标，或者特定的特殊目标，如\ ``install``：
 
 .. code-block:: console
 
   $ cmake --build . --target myexe
 
-The :option:`--build <cmake --build>` mode also accepts a
-:option:`--config <cmake--build --config>` parameter
-in the case of multi-config generators to specify which
-particular configuration to build:
+在多配置生成器的情况下，\
+:option:`--build <cmake --build>`\ 模式还接受\ :option:`--config <cmake--build --config>`\ 参数来指定要构建的特定配置：
 
 .. code-block:: console
 
   $ cmake --build . --target myexe --config Release
 
-The :option:`--config <cmake--build --config>` option has no
-effect if the generator generates a buildsystem specific
-to a configuration which is chosen when invoking cmake
-with the :variable:`CMAKE_BUILD_TYPE` variable.
+如果生成器在使用\ :variable:`CMAKE_BUILD_TYPE`\ 变量调用cmake时生成特定于配置的构建系统，\
+则\ :option:`--config <cmake--build --config>`\ 选项无效。
 
-Some buildsystems omit details of command lines invoked
-during the build.  The :option:`--verbose <cmake--build --verbose>`
-flag can be used to cause those command lines to be shown:
+一些构建系统省略了构建期间调用的命令行细节。\
+:option:`--verbose <cmake--build --verbose>`\ 标志可用于显示这些命令行：
 
 .. code-block:: console
 
   $ cmake --build . --target myexe --verbose
 
-The :option:`--build <cmake --build>` mode can also pass
-particular command line options to the underlying build
-tool by listing them after ``--``.  This can be useful
-to specify options to the build tool, such as to continue the
-build after a failed job, where CMake does not
-provide a high-level user interface.
+:option:`--build <cmake --build>`\ 模式还可以通过在\ ``--``\ 之后列出特定的命令行选项，\
+将它们传递给底层的构建工具。这对于为构建工具指定选项非常有用，例如在任务失败后继续构建，当CMake不提供高级用户界面时。
 
-对于所有生成器，在调用CMake之后都可以运行底层构建工具。例如，``make``\ 可能在使用\ :generator:`Unix Makefiles`\ 生成器生成后执行，以调用构建，或者\ ``ninja``\ 在使用\ :generator:`Ninja`\ 生成器生成后执行。IDE构建系统通常为构建项目提供命令行工具，该项目也可以被调用。
+对于所有生成器，在调用CMake之后都可以运行底层构建工具。\
+例如，``make``\ 可能在使用\ :generator:`Unix Makefiles`\ 生成器生成后执行，以调用构建，\
+或者\ ``ninja``\ 在使用\ :generator:`Ninja`\ 生成器生成后执行。IDE构建系统通常为构建项目提供命令行工具，该项目也可以被调用。
 
 选择一个目标
 ------------------
 
-CMake文件中描述的每个可执行文件和库都是一个构建目标，构建系统可以描述定制的目标，要么供内部使用，要么供用户使用，例如用于创建文档。
+CMake文件中描述的每个可执行文件和库都是一个构建目标，构建系统可以描述定制的目标，要么供内部使用，\
+要么供用户使用，例如用于创建文档。
 
 CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 
 ``all``
-  ``Makefile``\ 和\ ``Ninja``\ 生成器使用的默认目标。构建构建系统中的所有目标，除了那些被它们的\ :prop_tgt:`EXCLUDE_FROM_ALL`\ 目标属性或\ :prop_dir:`EXCLUDE_FROM_ALL`\ 目录属性排除的目标。名称\ ``ALL_BUILD``\ 用于Xcode和Visual Studio生成器。
+  ``Makefile``\ 和\ ``Ninja``\ 生成器使用的默认目标。构建构建系统中的所有目标，\
+  除了那些被它们的\ :prop_tgt:`EXCLUDE_FROM_ALL`\ 目标属性或\ :prop_dir:`EXCLUDE_FROM_ALL`\ 目录属性排除的目标。\
+  名称\ ``ALL_BUILD``\ 用于Xcode和Visual Studio生成器。
 ``help``
-  列出可用于生成的目标。当使用\ :generator:`Unix Makefiles`\ 或\ :generator:`Ninja`\ 生成器时，可以使用此目标，并且确切的输出是特定于工具的。
+  列出可用于生成的目标。当使用\ :generator:`Unix Makefiles`\ 或\ :generator:`Ninja`\ 生成器时，\
+  可以使用此目标，并且确切的输出是特定于工具的。
 ``clean``
-  删除已构建的目标文件和其他输出文件。基于\ ``Makefile``\ 的生成器为每个目录创建一个\ ``clean``\ 目标，以便可以清理单个目录。``Ninja``\ 工具提供了自己的颗粒\ ``-t clean``\ 系统。
+  删除已构建的目标文件和其他输出文件。基于\ ``Makefile``\ 的生成器为每个目录创建一个\ ``clean``\ 目标，\
+  以便可以清理单个目录。``Ninja``\ 工具提供了自己的颗粒\ ``-t clean``\ 系统。
 ``test``
   运行测试。只有在CMake文件提供基于CTest的测试时，此目标才自动可用。请参见\ `运行测试`_。
 ``install``
@@ -383,7 +383,9 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 ``package_source``
   创建源包。这个目标只有在CMake文件提供基于CPack的包时才自动可用。
 
-对于基于\ ``Makefile``\ 的系统，提供了二进制构建目标的\ ``/fast``\ 变体。``/fast``\ 变体用于构建指定的目标，而不考虑其依赖关系。不检查依赖项，如果过期也不会重新生成依赖项。:generator:`Ninja`\ 生成器在检查依赖项时速度足够快，以确保没有为该生成器提供此类目标。
+对于基于\ ``Makefile``\ 的系统，提供了二进制构建目标的\ ``/fast``\ 变体。\
+``/fast``\ 变体用于构建指定的目标，而不考虑其依赖关系。不检查依赖项，如果过期也不会重新生成依赖项。\
+:generator:`Ninja`\ 生成器在检查依赖项时速度足够快，以确保没有为该生成器提供此类目标。
 
 基于\ ``Makefile``\ 的系统还提供构建目标来预处理、组装和编译特定目录中的单个文件。
 
@@ -393,7 +395,8 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
   $ make foo.cpp.s
   $ make foo.cpp.o
 
-文件扩展名内置到目标名称中，因为可能存在另一个具有相同名称但扩展名不同的文件。但是，还提供了没有文件扩展名的构建目标。
+文件扩展名内置到目标名称中，因为可能存在另一个具有相同名称但扩展名不同的文件。\
+但是，还提供了没有文件扩展名的构建目标。
 
 .. code-block:: console
 
@@ -406,10 +409,8 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 指定一个构建程序
 --------------------------
 
-The program invoked by the :option:`--build <cmake --build>`
-mode is determined by the :variable:`CMAKE_MAKE_PROGRAM` variable.
-For most generators, the particular program does not need to be
-configured.
+:option:`--build <cmake --build>`\ 模式调用的程序由\ :variable:`CMAKE_MAKE_PROGRAM`\ 变量决定。\
+对于大多数生成器，不需要配置特定的程序。
 
 ===================== =========================== ===========================
       生成器              默认构建程序                    其他替代     
@@ -425,31 +426,25 @@ configured.
  Watcom WMake          ``wmake``
 ===================== =========================== ===========================
 
-The ``jom`` tool is capable of reading makefiles of the
-``NMake`` flavor and building in parallel, while the
-``nmake`` tool always builds serially.  After generating
-with the :generator:`NMake Makefiles` generator a user
-can run ``jom`` instead of ``nmake``.  The
-:option:`--build <cmake --build>`
-mode would also use ``jom`` if the
-:variable:`CMAKE_MAKE_PROGRAM` was set to ``jom`` while
-using the :generator:`NMake Makefiles` generator, and
-as a convenience, the :generator:`NMake Makefiles JOM`
-generator is provided to find ``jom`` in the normal way
-and use it as the :variable:`CMAKE_MAKE_PROGRAM`. For
-completeness, ``nmake`` is an alternative tool which
-can process the output of the
-:generator:`NMake Makefiles JOM` generator, but doing
-so would be a pessimization.
+``jom``\ 工具能够读取\ ``NMake``\ 风格的makefile并并行构建，而\ ``nmake``\ 工具总是串行构建。\
+在使用\ :generator:`NMake Makefiles`\ 生成器生成后，用户可以运行\ ``jom``\ 而不是\ ``nmake``。\
+在使用\ :generator:`NMake Makefiles`\ 生成器时，\
+如果\ :variable:`CMAKE_MAKE_PROGRAM`\ 被设置为\ ``jom``，:option:`--build <cmake --build>`\ 模式也会使用\ ``jom``，\
+为了方便起见，提供了\ :generator:`NMake Makefiles JOM`\ 生成器以正常的方式找到\ ``jom``\ 并将其用作\ :variable:`CMAKE_MAKE_PROGRAM`。\
+为了完整起见，\ ``nmake``\ 是一个替代工具，它可以处理\ :generator:`NMake Makefiles JOM`\ 生成器的输出，但这样做将是一种悲观。
 
 软件安装
 =====================
 
-可以在CMake缓存中设置\ :variable:`CMAKE_INSTALL_PREFIX`\ 变量，以指定在何处安装所提供的软件。如果提供的软件具有使用\ :command:`install`\ 命令指定的安装规则，它们将把工件安装到该前缀中。在Windows上，默认安装位置对应于\ ``ProgramFiles``\ 系统目录，该目录可能是特定于体系结构的。在Unix主机上，``/usr/local``\ 是默认的安装位置。
+可以在CMake缓存中设置\ :variable:`CMAKE_INSTALL_PREFIX`\ 变量，以指定在何处安装所提供的软件。\
+如果提供的软件具有使用\ :command:`install`\ 命令指定的安装规则，它们将把工件安装到该前缀中。\
+在Windows上，默认安装位置对应于\ ``ProgramFiles``\ 系统目录，该目录可能是特定于体系结构的。\
+在Unix主机上，``/usr/local``\ 是默认的安装位置。
 
 :variable:`CMAKE_INSTALL_PREFIX`\ 变量总是指向目标文件系统上的安装前缀。
 
-在交叉编译或打包的场景中，sysroot是只读的，或者sysroot应该保持原始状态，可以将  :variable:`CMAKE_STAGING_PREFIX`\ 变量设置为实际安装文件的位置。
+在交叉编译或打包的场景中，sysroot是只读的，或者sysroot应该保持原始状态，\
+可以将\ :variable:`CMAKE_STAGING_PREFIX`\ 变量设置为实际安装文件的位置。
 
 这些命令：
 
@@ -468,7 +463,10 @@ so would be a pessimization.
 运行测试
 =============
 
-:manual:`ctest(1)`\ 工具随CMake发行版一起提供，用于执行所提供的测试并报告结果。尽管提供了 ``test`` 构建目标以运行所有可用的测试，但\ :manual:`ctest(1)`\ 工具也允许对运行哪些测试、如何运行它们以及如何报告结果进行细粒度控制。在构建目录中执行\ :manual:`ctest(1)`\ 相当于运行\ ``test``\ 目标：
+:manual:`ctest(1)`\ 工具随CMake发行版一起提供，用于执行所提供的测试并报告结果。\
+尽管提供了\ ``test``\ 构建目标以运行所有可用的测试，\
+但\ :manual:`ctest(1)`\ 工具也允许对运行哪些测试、如何运行它们以及如何报告结果进行细粒度控制。\
+在构建目录中执行\ :manual:`ctest(1)`\ 相当于运行\ ``test``\ 目标：
 
 .. code-block:: console
 
@@ -486,24 +484,16 @@ so would be a pessimization.
 
   $ ctest -E Qt
 
-Tests can be run in parallel by passing :option:`-j <ctest -j>`
-arguments to :manual:`ctest(1)`:
+通过向\ :manual:`ctest(1)`\ 传递\ :option:`-j <ctest -j>`\参数，可以并行运行测试：
 
 .. code-block:: console
 
   $ ctest -R Qt -j8
 
-The environment variable :envvar:`CTEST_PARALLEL_LEVEL`
-can alternatively be set to avoid the need to pass
-:option:`-j <ctest -j>`.
+也可以设置环境变量\ :envvar:`CTEST_PARALLEL_LEVEL`，以避免需要传递\ :option:`-j <ctest -j>`。
 
-By default :manual:`ctest(1)` does not print the output
-from the tests. The command line argument :option:`-V <ctest -V>`
-(or ``--verbose``) enables verbose mode to print the
-output from all tests.
-The :option:`--output-on-failure <ctest --output-on-failure>`
-option prints the test output for failing tests only.
-The environment variable :envvar:`CTEST_OUTPUT_ON_FAILURE`
-can be set to ``1`` as an alternative to passing the
-:option:`--output-on-failure <ctest --output-on-failure>`
-option to :manual:`ctest(1)`.
+默认情况下，:manual:`ctest(1)`\ 不打印测试的输出。\
+命令行参数\ :option:`-V <ctest -V>`\ （或\ ``--verbose``）启用verbose模式打印所有测试的输出。\
+:option:`--output-on-failure <ctest --output-on-failure>`\ 选项仅打印失败测试的测试输出。\
+环境变量\ :envvar:`CTEST_OUTPUT_ON_FAILURE`\ 可以设置为\ ``1``，\
+作为将\ :option:`--output-on-failure <ctest --output-on-failure>`\ 选项传递给\ :manual:`ctest(1)`\ 的替代方法。
