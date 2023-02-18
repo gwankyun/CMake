@@ -94,7 +94,7 @@ install(EXPORT MathFunctionsTargets
 )
 
 include(CMakePackageConfigHelpers)
-# generate the config file that includes the exports
+# 生成包含导出的配置文件
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
   "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfig.cmake"
   INSTALL_DESTINATION "lib/cmake/example"
@@ -115,7 +115,7 @@ install(FILES
   DESTINATION lib/cmake/MathFunctions
   )
 
-# generate the export targets for the build tree
+# 为构建树生成导出目标
 # needs to be after the install(TARGETS) command
 export(EXPORT MathFunctionsTargets
   FILE "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsTargets.cmake"

@@ -100,8 +100,8 @@ submissions to CDash by including the :module:`CTest` module in our top-level
   :caption: TODO 1: CMakeLists.txt
   :name: CMakeLists.txt-include-CTest
   :language: cmake
-  :start-after: # enable testing
-  :end-before: # does the application run
+  :start-after: # 启用测试
+  :end-before: # 程序是否运行
 
 .. raw:: html
 

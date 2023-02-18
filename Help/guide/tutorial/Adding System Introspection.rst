@@ -97,7 +97,7 @@ and ``HAVE_EXP`` represent whether those dependencies are available.
   :name: MathFunctions/CMakeLists.txt-check_cxx_source_compiles
   :language: cmake
   :start-after: include(CheckCXXSourceCompiles)
-  :end-before: # add compile definitions
+  :end-before: # 添加编译器定义
 
 .. raw:: html
 
