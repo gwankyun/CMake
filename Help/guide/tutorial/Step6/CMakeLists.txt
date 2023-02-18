@@ -45,7 +45,8 @@ install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
   DESTINATION include
   )
 
-# 启用测试
+# TODO 1: Replace enable_testing() with include(CTest)
+  # 启用测试
 enable_testing()
 
 # 程序是否运行

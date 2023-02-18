@@ -51,7 +51,7 @@
   :language: c++
 
 此时，如果您构建了所有内容，您可能会注意到，当我们将一个没有位置独立代码的静态库与一个有位置独立代码的库组合在一起时，链接会失败。\
-解决这个问题的方法是不管构建类型，显式地将SqrtLibrary的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性设置为\ ``True``。
+解决这个问题的方法是当构建共享库时，显式地将SqrtLibrary的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性设置为\ ``True``。
 
 .. literalinclude:: Step11/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt

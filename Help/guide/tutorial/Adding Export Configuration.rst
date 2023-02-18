@@ -80,7 +80,7 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :start-after: # 安装配置目标
   :end-before: # 为配置文件生成版本文件
 
-接下来是\ :command:`write_basic_package_version_file`。该命令写入“find_package”文档所使用的文件，以确定所需包的版本和兼容性。\
+接下来是\ :command:`write_basic_package_version_file`。该命令写入\ :command:`find_package`\ 文档所使用的文件，以确定所需包的版本和兼容性。\
 在这里，我们使用\ ``Tutorial_VERSION_*``\ 变量，并说它与\ ``AnyNewerVersion``\ 兼容，这表示该版本或任何更高版本与请求的版本兼容。
 
 .. literalinclude:: Step12/CMakeLists.txt
@@ -106,6 +106,6 @@ CMake试图说明的是，在生成导出信息的过程中，它将导出一个
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-export
   :language: cmake
-  :start-after: # 需要在install(TARGETS )命令之后
+  :start-after: # needs to be after the install(TARGETS) command
 
-使用这个导出调用，我们现在生成一个\ ``Targets.cmake``，允许配置\ ``MathFunctionsConfig.cmake``\ 文件，以供其他项目使用，而无需安装。
+使用这个导出调用，我们现在生成一个\ ``MathFunctionsTargets.cmake``，允许配置\ ``MathFunctionsConfig.cmake``\ 文件，以供其他项目使用，而无需安装。

@@ -158,7 +158,6 @@ cmake-modules(7)
    /module/FindICU
    /module/FindImageMagick
    /module/FindIntl
-   /module/FindITK
    /module/FindJasper
    /module/FindJava
    /module/FindJNI
@@ -249,8 +248,6 @@ cmake-modules(7)
    /module/FindTclStub
    /module/FindThreads
    /module/FindTIFF
-   /module/FindUnixCommands
-   /module/FindVTK
    /module/FindVulkan
    /module/FindWget
    /module/FindWish
@@ -293,9 +290,12 @@ cmake-modules(7)
    :maxdepth: 1
 
    /module/FindCUDA
+   /module/FindITK
    /module/FindPythonInterp
    /module/FindPythonLibs
    /module/FindQt
+   /module/FindUnixCommands
+   /module/FindVTK
    /module/FindwxWindows
 
 遗留的CPack模块

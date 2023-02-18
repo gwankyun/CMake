@@ -67,7 +67,7 @@ cmake-buildsystem(7)
 苹果框架
 """"""""""""""""
 
-一个\ ``SHARED``\ 库可以被标记为\ :prop_tgt:`FRAMEWORK`\ 目标属性来创建一个macOS或iOS框架Bundle。带有\ ``FRAMEWORK``\ 目标属性的库还应该设置\ :prop_tgt:`FRAMEWORK_VERSION`\ 目标属性。根据macOS约定，该属性通常设置为“A”。``MACOSX_FRAMEWORK_IDENTIFIER``\ 设置为\ ``CFBundleIdentifier``\ 键，它用作bundle的唯一标识。
+一个\ ``SHARED``\ 库可以被标记为\ :prop_tgt:`FRAMEWORK`\ 目标属性来创建一个macOS或iOS框架Bundle。带有\ ``FRAMEWORK``\ 目标属性的库还应该设置\ :prop_tgt:`FRAMEWORK_VERSION`\ 目标属性。根据macOS约定，该属性通常设置为“A”。\ ``MACOSX_FRAMEWORK_IDENTIFIER``\ 设置为\ the ``CFBundleIdentifier``\ 键，它用作bundle的唯一标识。
 
 .. code-block:: cmake
 
@@ -83,7 +83,7 @@ cmake-buildsystem(7)
 目标库
 ^^^^^^^^^^^^^^^^
 
-``OBJECT``\ 库类型定义了由编译给定源文件产生的目标文件的非归档集合。通过使用语法\ ``$<TARGET_OBJECTS:name>``，对象文件集合可以用作其他目标的源输入。这是一个\ :manual:`generator expression <cmake-generator-expressions(7)>`，可以用来向其他目标提供\ ``OBJECT``\ 库内容：
+``OBJECT``\ 库类型定义了由编译给定源文件产生的目标文件的非归档集合。通过使用语法\ :genex:`$<TARGET_OBJECTS:name>`，对象文件集合可以用作其他目标的源输入。这是一个\ :manual:`generator expression <cmake-generator-expressions(7)>`，可以用来向其他目标提供\ ``OBJECT``\ 库内容：
 
 .. code-block:: cmake
 
@@ -583,13 +583,14 @@ system behavior of consumed imported targets by setting the
     $<$<CONFIG:Debug>:DEBUG_BUILD>
   )
 
-在\ :prop_tgt:`IMPORTED`\ 目标存在的情况下，:prop_tgt:`MAP_IMPORTED_CONFIG_DEBUG <MAP_IMPORTED_CONFIG_<CONFIG>>`\ 的内容也由上面的\ ``$<CONFIG:Debug>``\ 表达式负责。
+在\ :prop_tgt:`IMPORTED`\ 目标存在的情况下，:prop_tgt:`MAP_IMPORTED_CONFIG_DEBUG <MAP_IMPORTED_CONFIG_<CONFIG>>`\ 的内容也由上面的\ :genex:`$<CONFIG:Debug>`\ 表达式负责。
 
 
 区分大小写
 ----------------
 
-:variable:`CMAKE_BUILD_TYPE`\ 和\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 就像其他变量一样，与它们的值进行的任何字符串比较都是区分大小写的。``$<CONFIG>``\ 生成器表达式还保留由用户或CMake默认设置的配置大小写。例如：
+:variable:`CMAKE_BUILD_TYPE`\ 和\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 就像其他变量一样，\
+与它们的值进行的任何字符串比较都是区分大小写的。:genex:`$<CONFIG>`\ 生成器表达式还保留由用户或CMake默认设置的配置大小写。例如：
 
 .. code-block:: cmake
 
@@ -610,7 +611,7 @@ system behavior of consumed imported targets by setting the
     # ... will never get here, "Debug" != "DEBUG"
   endif()
 
-相比之下，CMake在内部根据配置修改行为的地方使用配置类型时不区分大小写。例如，``$<CONFIG:Debug>``\ 生成器表达式对于不仅是\ ``Debug``，而且是\ ``DEBUG``、``debug``\ 甚至\ ``DeBuG``\ 的配置都将计算为1。因此，您可以在\ :variable:`CMAKE_BUILD_TYPE`\ 和\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 中指定任意大小写混合的配置类型，尽管有严格的约定（请参阅下一节）。如果你必须在字符串比较中测试值，那么首先将值转换为大写或小写，然后再相应地调整测试。
+相比之下，CMake在内部根据配置修改行为的地方使用配置类型时不区分大小写。例如，:genex:`$<CONFIG:Debug>`\ 生成器表达式对于不仅是\ ``Debug``，而且是\ ``DEBUG``、``debug``\ 甚至\ ``DeBuG``\ 的配置都将计算为1。因此，您可以在\ :variable:`CMAKE_BUILD_TYPE`\ 和\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 中指定任意大小写混合的配置类型，尽管有严格的约定（请参阅下一节）。如果你必须在字符串比较中测试值，那么首先将值转换为大写或小写，然后再相应地调整测试。
 
 默认和自定义配置
 ---------------------------------

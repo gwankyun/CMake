@@ -39,13 +39,14 @@ cmake(1)
 描述
 ===========
 
-**cmake**\ 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面\ `概要`_\ 列出了工具可以执行的各种操作，如下面的部分所述。
+:program:`cmake`\ 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面\ `概要`_\ 列出了工具可以执行的各种操作，如下面的部分所述。
 
-要用CMake构建一个软件项目，请\ `生成一个项目构建系统`_。可以选择使用\ **cmake**\ 来\ `构建一个项目`_\ 及\ `安装一个项目`_，或者直接运行相应的构建工具（例如\ ``make``）。**cmake**\ 也可以用来\ `查看帮助`_。
+要用CMake构建一个软件项目，请\ `生成一个项目构建系统`_。可以选择使用\ :program:`cmake`\ 来\ `构建一个项目`_\ 及\ `安装一个项目`_，或者直接运行相应的构建工具（例如\ ``make``）。:program:`cmake`\ 也可以用来\ `查看帮助`_。
 
 其他操作是为了让软件开发人员使用\ :manual:`CMake language <cmake-language(7)>`\ 编写脚本来支持他们的构建。
 
-有关\ **cmake**\ 的图形用户界面替代，请参阅\ :manual:`ccmake <ccmake(1)>`\ 和\ :manual:`cmake-gui <cmake-gui(1)>`。有关CMake测试和打包工具的命令行接口，请参考\ :manual:`ctest <ctest(1)>`\ 和\ :manual:`cpack <cpack(1)>`。
+有关\ :program:`cmake`\ 的图形用户界面替代，请参阅\ :manual:`ccmake <ccmake(1)>`\ 和\ :manual:`cmake-gui <cmake-gui(1)>`。\
+有关CMake测试和打包工具的命令行接口，请参考\ :manual:`ctest <ctest(1)>`\ 和\ :manual:`cpack <cpack(1)>`。
 
 有关CMake的详细信息，请\ `另行参阅`_\ 本手册末尾的链接。
 
@@ -141,7 +142,7 @@ the current working directory (cwd) is used for the other.  For example:
     $ make
     $ make install
 
-或者，可以使用\ **cmake**\ 通过自动选择和调用适当的本地构建工具来\ `构建一个项目`_。
+或者，可以使用\ :program:`cmake`\ 通过自动选择和调用适当的本地构建工具来\ `构建一个项目`_。
 
 .. _`CMake Options`:
 
@@ -287,9 +288,8 @@ the current working directory (cwd) is used for the other.  For example:
    ``json-v1``
      将每一行打印为一个单独的JSON文档。每个文档由换行符（``\n``）分隔。可以保证JSON文档中不会出现换行符。
 
-     JSON跟踪格式：
-
      .. code-block:: json
+       :caption: JSON trace format
 
        {
          "file": "/full/path/to/the/CMake/file.txt",
@@ -332,9 +332,8 @@ the current working directory (cwd) is used for the other.  For example:
 
      此外，输出的第一个JSON文档包含当前主要和次要版本的\ ``version``\ 键
 
-     JSON跟踪格式：
-
      .. code-block:: json
+       :caption: JSON version format
 
        {
          "version": {
@@ -758,16 +757,20 @@ Available commands are:
 
 .. program:: cmake-E
 
-.. option:: copy <file>... <destination>
+.. option:: copy <file>... <destination>, copy -t <destination> <file>...
 
   Copy files to ``<destination>`` (either file or directory).
-  If multiple files are specified, the ``<destination>`` must be
-  directory and it must exist. Wildcards are not supported.
-  ``copy`` does follow symlinks. That means it does not copy symlinks,
-  but the files or directories it point to.
+  If multiple files are specified, or if ``-t`` is specified, the
+  ``<destination>`` must be directory and it must exist. If ``-t`` is not
+  specified, the last argument is assumed to be the ``<destination>``.
+  Wildcards are not supported. ``copy`` does follow symlinks. That means it
+  does not copy symlinks, but the files or directories it point to.
 
   .. versionadded:: 3.5
     Support for multiple input files.
+
+  .. versionadded:: 3.26
+    Support for ``-t`` argument.
 
 .. option:: copy_directory <dir>... <destination>
 
@@ -781,6 +784,16 @@ Available commands are:
   .. versionadded:: 3.15
     The command now fails when the source directory does not exist.
     Previously it succeeded by creating an empty destination directory.
+
+.. option:: copy_directory_if_different <dir>... <destination>
+
+  .. versionadded:: 3.26
+
+  Copy changed content of ``<dir>...`` directories to ``<destination>`` directory.
+  If ``<destination>`` directory does not exist it will be created.
+
+  ``copy_directory_if_different`` does follow symlinks.
+  The command fails when the source directory does not exist.
 
 .. option:: copy_if_different <file>... <destination>
 
@@ -847,7 +860,7 @@ Available commands are:
     The ``NAME=VALUE`` and ``--unset=NAME`` options are equivalent to
     ``--modify NAME=set:VALUE`` and ``--modify NAME=unset:``, respectively.
     Note that ``--modify NAME=reset:`` resets ``NAME`` to the value it had
-    when ``cmake`` launched (or unsets it), not to the most recent
+    when :program:`cmake` launched (or unsets it), not to the most recent
     ``NAME=VALUE`` option.
 
   .. option:: --
@@ -1223,7 +1236,7 @@ To view the presets available for a project, use
 Return Value (Exit Code)
 ========================
 
-Upon regular termination, the ``cmake`` executable returns the exit code ``0``.
+Upon regular termination, the :program:`cmake` executable returns the exit code ``0``.
 
 If termination is caused by the command :command:`message(FATAL_ERROR)`,
 or another error condition, then a non-zero exit code is returned.

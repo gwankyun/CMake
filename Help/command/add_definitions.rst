@@ -1,7 +1,7 @@
 add_definitions
 ---------------
 
-在编译源文件时添加-D定义标志。
+在编译源文件时添加\ ``-D``\ 定义标志。
 
 .. code-block:: cmake
 
@@ -31,5 +31,8 @@ backwards compatibility.  See documentation of the
 properties for details on adding preprocessor definitions to specific
 scopes and configurations.
 
-See the :manual:`cmake-buildsystem(7)` manual for more on defining
-buildsystem properties.
+See Also
+^^^^^^^^
+
+* The :manual:`cmake-buildsystem(7)` manual for more on defining
+  buildsystem properties.

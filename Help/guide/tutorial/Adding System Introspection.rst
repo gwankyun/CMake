@@ -5,45 +5,156 @@
 对于本例，我们将添加一些代码，这将取决于目标平台是否有\ ``log``\ 和\ ``exp``\ 函数。\
 当然，几乎每个平台都有这些函数，但本教程假设它们并不常见。
 
-如果平台有\ ``log``\ 和\ ``exp``，那么我们将使用它们在\ ``mysqrt``\ 函数中计算平方根。\
-首先在\ ``MathFunctions/CMakeLists.txt``\ 中使用\ :module:`CheckCXXSourceCompiles`\ 模块判断这些函数是否可用。
+Exercise 1 - Assessing Dependency Availability
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-调用\ :command:`target_include_directories`\ 之后，在\ ``MathFunctions/CMakeLists.txt``\ 添加对\ ``log``\ 和\ ``exp``\ 的检查：
+Goal
+----
+
+Change implementation based on available system dependencies.
+
+Helpful Resources
+-----------------
+
+* :module:`CheckCXXSourceCompiles`
+* :command:`target_compile_definitions`
+
+Files to Edit
+-------------
+
+* ``MathFunctions/CMakeLists.txt``
+* ``MathFunctions/mysqrt.cxx``
+
+Getting Started
+---------------
+
+The starting source code is provided in the ``Step7`` directory. In this
+exercise, complete ``TODO 1`` through ``TODO 5``.
+
+Start by editing ``MathFunctions/CMakeLists.txt``. Include the
+:module:`CheckCXXSourceCompiles` module. Then, use
+``check_cxx_source_compiles`` to determine whether ``log`` and ``exp`` are
+available from ``cmath``. If they are available, use
+:command:`target_compile_definitions` to specify ``HAVE_LOG`` and ``HAVE_EXP``
+as compile definitions.
+
+In the ``MathFunctions/mysqrt.cxx``, include ``cmath``. Then, if the system has
+``log`` and ``exp``, use them to compute the square root.
+
+Build and Run
+-------------
+
+Make a new directory called ``Step7_build``. Run the
+:manual:`cmake  <cmake(1)>` executable or the
+:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
+with your chosen build tool and run the ``Tutorial`` executable.
+
+This can look like the following:
+
+.. code-block:: console
+
+  mkdir Step7_build
+  cd Step7_build
+  cmake ../Step7
+  cmake --build .
+
+Which function gives better results now, ``sqrt`` or ``mysqrt``?
+
+Solution
+--------
+
+In this exercise we will use functions from the
+:module:`CheckCXXSourceCompiles` module so first we must include it in
+``MathFunctions/CMakeLists.txt``.
+
+.. raw:: html
+
+  <details><summary>TODO 1: Click to show/hide answer</summary>
 
 .. literalinclude:: Step8/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
+  :caption: TODO 1: MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-include-check_cxx_source_compiles
+  :language: cmake
+  :start-after: # does this system provide the log and exp functions?
+  :end-before: check_cxx_source_compiles
+
+.. raw:: html
+
+  </details>
+
+Then test for the availability of
+``log`` and ``exp`` using ``check_cxx_compiles_source``. This function
+lets us try compiling simple code with the required dependency prior to
+the true source code compilation. The resulting variables ``HAVE_LOG``
+and ``HAVE_EXP`` represent whether those dependencies are available.
+
+.. raw:: html
+
+  <details><summary>TODO 2: Click to show/hide answer</summary>
+
+.. literalinclude:: Step8/MathFunctions/CMakeLists.txt
+  :caption: TODO 2: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-check_cxx_source_compiles
   :language: cmake
-  :start-after: # 以便查找MathFunctions.h，尽管我们自己不用。
-  :end-before: # 添加编译器定义
+  :start-after: include(CheckCXXSourceCompiles)
+  :end-before: # add compile definitions
 
-如果可以的话，使用\ :command:`target_compile_definitions`\ 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 为\ ``PRIVATE``\ 编译器定义。
+.. raw:: html
+
+  </details>
+
+Next, we need to pass these CMake variables to our source code. This way,
+our source code can tell what resources are available. If both ``log`` and
+``exp`` are available, use :command:`target_compile_definitions` to specify
+``HAVE_LOG`` and ``HAVE_EXP`` as ``PRIVATE`` compile definitions.
+
+.. raw:: html
+
+  <details><summary>TODO 3: Click to show/hide answer</summary>
 
 .. literalinclude:: Step8/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
+  :caption: TODO 3: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_compile_definitions
   :language: cmake
   :start-after: # 添加编译器定义
   :end-before: # install libs
 
-如果\ ``log``\ 和\ ``exp``\ 在系统上可用，那么我们将在\ ``mysqrt``\ 函数中用来计算平方根。\
-将以下代码添加到\ ``MathFunctions/mysqrt.cxx``\ 中的\ ``mysqrt``\ 函数中（返回結果前不要忘了\ ``#endif``！）：
+.. raw:: html
+
+  </details>
+
+Since we may be using ``log`` and ``exp``, we need to modify
+``mysqrt.cxx`` to include ``cmath``.
+
+.. raw:: html
+
+  <details><summary>TODO 4: Click to show/hide answer</summary>
 
 .. literalinclude:: Step8/MathFunctions/mysqrt.cxx
-  :caption: MathFunctions/mysqrt.cxx
+  :caption: TODO 4: MathFunctions/mysqrt.cxx
+  :name: MathFunctions/mysqrt.cxx-include-cmath
+  :language: c++
+  :end-before: #include <iostream>
+
+.. raw:: html
+
+  </details>
+
+If ``log`` and ``exp`` are available on the system, then use them to
+compute the square root in the ``mysqrt`` function. The ``mysqrt`` function in
+``MathFunctions/mysqrt.cxx`` will look as follows:
+
+.. raw:: html
+
+  <details><summary>TODO 5: Click to show/hide answer</summary>
+
+.. literalinclude:: Step8/MathFunctions/mysqrt.cxx
+  :caption: TODO 5: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-ifdef
   :language: c++
   :start-after: // 如果log和exp都有，那就用它们
   :end-before: // 迭代十次
 
-同时还要修改\ ``mysqrt.cxx``\ 以包含\ ``cmath``：
+.. raw:: html
 
-.. literalinclude:: Step8/MathFunctions/mysqrt.cxx
-  :caption: MathFunctions/mysqrt.cxx
-  :name: MathFunctions/mysqrt.cxx-include-cmath
-  :language: c++
-  :end-before: #include <iostream>
-
-运行\ :manual:`cmake  <cmake(1)>`\ 命令或者\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置并用构建工具构建它，然后运行Tutorial程序。
-
-哪个函数给了更好的结果？``sqrt``\ 还是\ ``mysqrt``？
+  </details>

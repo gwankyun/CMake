@@ -1,31 +1,43 @@
 步骤6: 添加对测试仪表板的支持
 ==============================================
 
-将测试结果添加到仪表板很简单。在\ :ref:`测试支持 <Tutorial Testing Support>`\ 我们已经添加了一系列测试到项目中。\
-现在我们必须运行这些测试并将结果添加到仪表板中。为与做到这点，在顶层\ ``CMakeLists.txt``\ 
-中引用\ :module:`CTest`\ 模块。
+Adding support for submitting our test results to a dashboard is simple. We
+already defined a number of tests for our project in
+:ref:`Testing Support <Tutorial Testing Support>`. Now we just have to run
+those tests and submit them to CDash.
 
-替换：
 
-.. literalinclude:: Step6/CMakeLists.txt
-  :caption: CMakeLists.txt
-  :name: CMakeLists.txt-enable_testing-remove
-  :language: cmake
-  :start-after: # 启用测试
-  :end-before: # 程序是否运行
+Exercise 1 - Send Results to a Testing Dashboard
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-为：
+Goal
+----
 
-.. literalinclude:: Step7/CMakeLists.txt
-  :caption: CMakeLists.txt
-  :name: CMakeLists.txt-include-CTest
-  :language: cmake
-  :start-after: # 启用测试
-  :end-before: # 程序是否运行
+Display our CTest results with CDash.
 
-:module:`CTest`\ 模块可以自动调用\ ``enable_testing()``，所以我们可以将它将CMake文件中删掉。
+Helpful Resources
+-----------------
 
-我们还需要获取一个\ ``CTestConfig.cmake``\ 文件，并将其放在顶层目录中，在这里我们可以向CTest指定关于项目的信息。它包含：
+* :manual:`ctest(1)`
+* :command:`include`
+* :module:`CTest`
+
+Files to Edit
+-------------
+
+* ``CMakeLists.txt``
+
+Getting Started
+---------------
+
+For this exercise, complete ``TODO 1`` in the top-level ``CMakeLists.txt`` by
+including the :module:`CTest` module. This will enable testing with CTest as
+well as dashboard submissions to CDash, so we can safely remove the call to
+:command:`enable_testing`.
+
+We will also need to acquire a ``CTestConfig.cmake`` file to be placed in the
+top-level directory. When run, the :manual:`ctest <ctest(1)>` executable will
+read this file to gather information about the testing dashboard. It contains:
 
 * 项目名称
 
@@ -35,17 +47,27 @@
 
 * 将在其中发送提交生成的文档的CDash实例的URL
 
-在这个目录中已经为你提供了一个。它通常从CDash实例上的项目\ ``Settings``\ 页面下载，该实例将托管并显示测试结果。\
-从CDash下载后，不应该在本地修改该文件。
+For this tutorial, a public dashboard server is used and its corresponding
+``CTestConfig.cmake`` file is provided for you in this step's root directory.
+In practice, this file would be downloaded from a project's ``Settings`` page
+on the CDash instance intended to host the test results. Once downloaded from
+CDash, the file should not be modified locally.
 
 .. literalinclude:: Step7/CTestConfig.cmake
   :caption: CTestConfig.cmake
   :name: CTestConfig.cmake
   :language: cmake
 
-:manual:`ctest <ctest(1)>`\ 命令运行时会读取此文件。\
-你可以运行\ :manual:`cmake <cmake(1)>`\ 命令或者用\ :manual:`cmake-gui <cmake-gui(1)>`\ 去配置这项目，但没去构建它。\
-相应替代的，修改二进制树目录，并运行：
+
+Build and Run
+-------------
+
+Note that as part of the CDash submission some information about your
+development system (e.g. site name or full pathnames) may displayed publicly.
+
+To create a simple test dashboard, run the :manual:`cmake <cmake(1)>`
+executable or the :manual:`cmake-gui <cmake-gui(1)>` to configure the project
+but do not build it yet. Instead, navigate to the build directory and run:
 
 .. code-block:: console
 
@@ -59,4 +81,28 @@
 
 或者直接在IDE中编译\ ``Experimental``\ 目标。
 
-:manual:`ctest <ctest(1)>`\ 命令将构建并将结果提交到Kitware的公共仪表板：https://my.cdash.org/index.php?project=CMakeTutorial。
+The :manual:`ctest <ctest(1)>` executable will build the project, run any
+tests, and submit the results to Kitware's public dashboard:
+https://my.cdash.org/index.php?project=CMakeTutorial.
+
+Solution
+--------
+
+The only CMake code changed needed in this step was to enable dashboard
+submissions to CDash by including the :module:`CTest` module in our top-level
+``CMakeLists.txt``:
+
+.. raw:: html
+
+  <details><summary>TODO 1: Click to show/hide answer</summary>
+
+.. literalinclude:: Step7/CMakeLists.txt
+  :caption: TODO 1: CMakeLists.txt
+  :name: CMakeLists.txt-include-CTest
+  :language: cmake
+  :start-after: # enable testing
+  :end-before: # does the application run
+
+.. raw:: html
+
+  </details>

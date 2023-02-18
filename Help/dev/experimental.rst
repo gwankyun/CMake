@@ -18,11 +18,36 @@ C++20 Module APIs
 =================
 
 Variable: ``CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API``
-Value: ``3c375311-a3c9-4396-a187-3227ef642046``
+Value: ``2182bf5c-ef0d-489a-91da-49dbc3090d2a``
 
 In order to support C++20 modules, there are a number of behaviors that have
 CMake APIs to provide the required features to build and export them from a
 project.
+
+Limitations
+-----------
+
+There are a number of known limitations of the current C++20 module support in
+CMake.  This does not document known limitations or bugs in compilers as these
+can change over time.
+
+For all generators:
+
+- Only in-project modules may be used.  While there is some support for
+  exporting module information, there is no mechanism for using it at the
+  moment.
+
+For the Ninja Generators:
+
+- ``ninja`` 1.10 or newer is required.
+
+For the Visual Studio Generators:
+
+- Only Visual Studio 2022 and toolchains newer than 19.34 (Visual Studio
+  17.4).
+- No support for exporting or installing BMI or module information.
+- No diagnosis of using modules provided by ``PRIVATE`` sources from
+  ``PUBLIC`` module sources.
 
 C++20 Module Dependencies
 =========================
@@ -77,9 +102,9 @@ For compilers that generate module maps, tell CMake as follows:
   set(CMAKE_EXPERIMENTAL_CXX_MODULE_MAP_FLAG
     "${compiler_flags_for_module_map} -fmodule-mapper=<MODULE_MAP_FILE>")
 
-Currently, the only supported formats are ``gcc`` and ``msvc``.  The ``gcc``
-format is described in the GCC documentation, but the relevant section for the
-purposes of CMake is:
+Currently, the only supported formats are, ``clang``, ``gcc``, and ``msvc``.
+The ``gcc`` format is described in the GCC documentation, but the relevant
+section for the purposes of CMake is:
 
     A mapping file consisting of space-separated module-name, filename
     pairs, one per line.  Only the mappings for the direct imports and any
@@ -93,6 +118,9 @@ purposes of CMake is:
 The ``msvc`` format is a response file containing flags required to compile
 any module interfaces properly as well as find any required files to satisfy
 ``import`` statements as required for Microsoft's Visual Studio toolchains.
+
+Similarly, the ``clang`` format is a response file containing flags using
+Clang's module flags.
 
 .. _`D1483r1`: https://mathstuf.fedorapeople.org/fortran-modules/fortran-modules.html
 .. _`P1689r5`: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1689r5.html

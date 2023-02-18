@@ -1,8 +1,6 @@
 步骤5: 安装和测试
 ==============================
 
-.. _`Tutorial Testing Support`:
-
 练习1 - 安装规则
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -126,13 +124,15 @@ CMake变量\ :variable:`CMAKE_INSTALL_PREFIX`\ 用于确定将安装文件的根
   :name: TODO 3,4: CMakeLists.txt-install-TARGETS
   :language: cmake
   :start-after: # 添加安装目标
-  :end-before: # 启用测试
+  :end-before: # TODO 1: Replace enable_testing() with include(CTest)
 
 .. raw:: html
 
   </details>
 
 这就是创建教程的基本本地安装所需要的全部内容。
+
+.. _`Tutorial Testing Support`:
 
 练习2 - 测试支持
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -170,7 +170,7 @@ CTest提供了一种轻松管理项目测试的方法。可以通过\ :command:`
 构建并运行
 -------------
 
-导航到构建目录并重新构建应用程序。然后，运行\ ``ctest``\ 可执行文件：:option:`ctest -N`\ 和\ :option:`ctest -VV`。\
+导航到构建目录并重新构建应用程序。然后，运行\ :program:`ctest`\ 可执行文件：:option:`ctest -N`\ 和\ :option:`ctest -VV`。\
 对于多配置生成器（例如Visual Studio），配置类型必须用\ :option:`-C \<mode\> <ctest -C>`\ 标志指定。\
 例如，要在调试模式下运行测试，请从构建目录（而不是Debug子目录！）使用\ ``ctest -C Debug -VV``。\
 发布模式将从相同的位置执行，但使用\ ``-C Release``。或者，从IDE构建\ ``RUN_TESTS``\ 目标。

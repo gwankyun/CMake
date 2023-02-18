@@ -368,7 +368,7 @@
     $<INSTALL_INTERFACE:include/TgtName>
   )
 
-``$<INSTALL_PREFIX>``\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 可以用作安装前缀的占位符，而不会导致不可重定位的包。
+:genex:`$<INSTALL_PREFIX>`\ 生成器表达式可以用作安装前缀的占位符，而不会导致不可重定位的包。
 如果使用复杂的生成器表达式，这是必要的：
 
 .. code-block:: cmake

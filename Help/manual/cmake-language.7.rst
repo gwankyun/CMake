@@ -29,7 +29,7 @@ CMake输入文件以“CMake语言”写在名为\ ``CMakeLists.txt``\ 的源文
 脚本文件
 --------
 
-一个单独的\ ``<script>.cmake``\ 源文件，可以通过使用带有\ ``-P``\ 选项的\ :manual:`cmake(1)`\ 命令行工具在\ *脚本模式*\ 下处理。\
+一个单独的\ ``<script>.cmake``\ 源文件，可以通过使用带有\ :option:`-P <cmake -P>`\ 选项的\ :manual:`cmake(1)`\ 命令行工具在\ *脚本模式*\ 下处理。\
 脚本模式只是运行给定的CMake语言源文件中的命令，而不生成构建系统。它不允许定义构建目标或操作的CMake命令。
 
 模块文件
@@ -166,7 +166,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 方括号参数内容包含开括号和闭括号之间的所有文本，除了可能存在的紧随着开括号的换行符之外皆被忽略。\
 不会对包含的内容，如\ `转义序列`_\ 或\ `变量引用`_，执行计算。方括号参数总是作为一个参数提供给命令调用。
 
-.. No code-block syntax highlighting in the following example
+.. ATTENTION No code-block syntax highlighting in the following example
    (long string literal not supported by our cmake.py)
 
 例如： ::
@@ -208,7 +208,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
 引号参数内容包括开引号和闭引号之间的所有文本。`转义序列`_\ 和\ `变量引用`_\ 都被求值。引用参数总是作为一个参数提供给命令调用。
 
-.. No code-block syntax highlighting in the following example
+.. ATTENTION No code-block syntax highlighting in the following example
    (escape \" not supported by our cmake.py)
 
 例如：
@@ -222,7 +222,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
   It does end in an unescaped double quote.
   ")
 
-.. No code-block syntax highlighting in the following example
+.. ATTENTION No code-block syntax highlighting in the following example
    (for conformity with the two above examples)
 
 以奇数个反斜杠结尾的任何行上的最后一个\ ``\``\ 将被视为行延续，并与紧接其后的换行符一起被忽略。例如：
@@ -436,7 +436,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 目录作用域
  源码树中的每个\ `目录文件`_\ 都有自己的变量绑定。\
  在处理目录的\ ``CMakeLists.txt``\ 文件之前，CMake复制当前父目录中定义的所有可能存在的变量绑定，以初始化新的目录作用域。\
- 当使用\ ``cmake -P``\ 处理CMake\ `脚本文件`_\ 时，会将变量绑定在一个“目录”范围内。
+ 当使用\ :option:`cmake -P`\ 处理CMake\ `脚本文件`_\ 时，会将变量绑定在一个“目录”范围内。
 
  不在函数调用内的变量“set”或“unset”绑定到当前目录作用域。
 
@@ -469,10 +469,10 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
  CMake环境变量的初始值是调用进程时的初始值。可以使用\ :command:`set`\ 和\ :command:`unset`\ 命令更改值。\
  这些命令只影响CMake进程的运行，不会影响整个系统环境。更改的值不会写回调用进程，后续的构建或测试流程也不会看到它们。
  
- 参见\ :ref:`cmake -E env <Run a Command-Line Tool>`\ 命令行工具在修改后的环境运行命令。
+ 参见\ :option:`cmake -E env <cmake-E env>`\ 命令行工具在修改后的环境运行命令。
 
 检查
- 查看\ :ref:`cmake -E environment <Run a Command-Line Tool>`\ 命令行工具以显示当前所有环境变量。
+ 查看\ :option:`cmake -E environment <cmake-E environment>`\ 命令行工具以显示当前所有环境变量。
 
 :manual:`cmake-env-variables(7)`\ 手册记录了对CMake有特殊意义的环境变量。
 

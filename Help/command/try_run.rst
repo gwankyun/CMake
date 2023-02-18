@@ -17,7 +17,9 @@ Try Compiling and Running Source Files
            SOURCE_FROM_CONTENT <name> <content> |
            SOURCE_FROM_VAR <name> <var>         |
            SOURCE_FROM_FILE <name> <path>       >...
+          [LOG_DESCRIPTION <text>]
           [NO_CACHE]
+          [NO_LOG]
           [CMAKE_FLAGS <flags>...]
           [COMPILE_DEFINITIONS <defs>...]
           [LINK_OPTIONS <options>...]
@@ -48,6 +50,11 @@ the test project is constructed to build the source file.
 One or more source files must be provided. Additionally, one of ``SOURCES``
 and/or ``SOURCE_FROM_*`` must precede other keywords.
 
+.. versionadded:: 3.26
+  This command records a
+  :ref:`configure-log try_run event <try_run configure-log event>`
+  if the ``NO_LOG`` option is not specified.
+
 This command also supports an alternate signature
 which was present in older versions of CMake:
 
@@ -55,7 +62,9 @@ which was present in older versions of CMake:
 
   try_run(<runResultVar> <compileResultVar>
           <bindir> <srcfile|SOURCES srcfile...>
+          [LOG_DESCRIPTION <text>]
           [NO_CACHE]
+          [NO_LOG]
           [CMAKE_FLAGS <flags>...]
           [COMPILE_DEFINITIONS <defs>...]
           [LINK_OPTIONS <options>...]
