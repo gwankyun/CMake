@@ -429,8 +429,8 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
 变量具有动态作用域。每个变量“set”或“unset”都在当前作用域中创建一个绑定：
 
-Block Scope
- The :command:`block` command may create a new scope for variable bindings.
+块作用域
+ :command:`block`\ 命令可以为变量绑定创建一个新的作用域。 
 
 函数作用域
  由\ :command:`function`\ 命令创建的\ `命令定义`_，当调用这些命令时，这些命令将在新的变量绑定范围内处理记录的命令。\
