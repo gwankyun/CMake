@@ -22,8 +22,9 @@
 任何项目的最顶层的CMakeLists.txt必须通过使用\ :command:`cmake_minimum_required`\ 命令指定最小的CMake版本开始。\
 这将建立策略设置，并确保随后的CMake函数在CMake的兼容版本中运行。
 
-要启动一个项目，我们使用\ :command:`project`\ 命令来设置项目名称。每个项目都需要这个调用，应紧随\ :command:`cmake_minimum_required`\ 其后。\
-正如我们稍后将看到的，该命令还可以用于指定其他项目级别的信息，如语言或版本号。
+要启动一个项目，我们使用\ :command:`project`\ 命令来设置项目名称。每个项目都需要这个调用，\
+应紧随\ :command:`cmake_minimum_required`\ 其后。正如我们稍后将看到的，\
+该命令还可以用于指定其他项目级别的信息，如语言或版本号。
 
 最后，:command:`add_executable`\ 命令告诉CMake使用指定的源代码文件创建一个可执行文件。
 
@@ -47,7 +48,8 @@
 开始
 ----------------
 
-``tutorial.cxx``\ 的源代码在\ ``Help/guide/tutorial/Step1``\ 目录中提供，可用于计算一个数的平方根。在此步骤中不需要编辑此文件。
+``tutorial.cxx``\ 的源代码在\ ``Help/guide/tutorial/Step1``\ 目录中提供，\
+可用于计算一个数的平方根。在此步骤中不需要编辑此文件。
 
 在同一个目录中有一个待你完成的\ ``CMakeLists.txt``\ 文件。从\ ``TODO 1``\ 开始，真到\ ``TODO 3``。
 
@@ -143,7 +145,8 @@
 
 CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项目代码设置时对CMake有意义。\
 许多这些变量都以\ ``CMAKE_``\ 开头。在为项目创建变量时，要避免这种命名约定。\
-其中两个特殊的用户可设置变量是\ :variable:`CMAKE_CXX_STANDARD`\ 和\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`。这两个变量可以一起使用，以指定构建项目所需的C++标准。
+其中两个特殊的用户可设置变量是\ :variable:`CMAKE_CXX_STANDARD`\ 和\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`。\
+这两个变量可以一起使用，以指定构建项目所需的C++标准。
 
 目标
 ----
@@ -213,7 +216,8 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 
 我们需要在CMake代码中显式地声明它应该使用正确的标志。\
 在CMake中启用对特定C++标准的支持的一种方法是使用\ :variable:`CMAKE_CXX_STANDARD`\ 变量。\
-对于本教程，将\ ``CMakeLists.txt``\ 文件中的\ :variable:`CMAKE_CXX_STANDARD`\ 变量设置为\ ``11``，将\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`\ 设置为\ ``True``。\
+对于本教程，将\ ``CMakeLists.txt``\ 文件中的\ :variable:`CMAKE_CXX_STANDARD`\ 变量设置为\ ``11``，\
+将\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`\ 设置为\ ``True``。\
 确保调用\ :command:`add_executable`\ 之前添加\ :variable:`CMAKE_CXX_STANDARD`\ 声明。
 
 .. raw:: html
@@ -238,7 +242,8 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 在这种情况下，我们想打印项目版本。
 
 实现这一点的一种方法是使用配置好的头文件。我们创建一个输入文件，其中包含一个或多个要替换的变量。\
-这些变量具有类似\ ``@VAR@``\ 的特殊语法。然后，我们使用\ :command:`configure_file`\ 命令将输入文件复制到给定的输出文件，并用\ ``CMakelists.txt``\ 文件中的\ ``VAR``\ 当前值替换这些变量。
+这些变量具有类似\ ``@VAR@``\ 的特殊语法。然后，我们使用\ :command:`configure_file`\ 命令将输入文件复制到给定的输出文件，\
+并用\ ``CMakelists.txt``\ 文件中的\ ``VAR``\ 当前值替换这些变量。
 
 虽然我们可以直接在源代码中编辑版本，但最好使用这个特性，因为它创建了一个真实的单一来源，并避免了重复。
 
@@ -266,7 +271,8 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 
 继续编辑\ ``Step1``\ 中的文件。从\ ``TODO 7``\ 开始，直到\ ``TODO 12``。\
 在这个练习中，我们首先在\ ``CMakeLists.txt``\ 中添加一个项目版本号。\
-在同一个文件中，使用\ :command:`configure_file`\ 将给定的输入文件复制到输出文件中，并在输入文件内容中替换一些变量值。
+在同一个文件中，使用\ :command:`configure_file`\ 将给定的输入文件复制到输出文件中，\
+并在输入文件内容中替换一些变量值。
 
 接下来，在定义版本号时创建一个输入头文件\ ``TutorialConfig.h.in``。\
 它将接受来自\ :command:`configure_file`\ 的变量。
