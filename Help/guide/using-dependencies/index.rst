@@ -105,7 +105,7 @@ CMake知道的目录是特定于平台的。例如，使用标准系统包管理
 
 .. _Libraries not Providing Config-file Packages:
 
-Find Module Files
+Find模块文件
 -----------------
 
 不提供配置文件的包仍然可以通过\ :command:`find_package`\ 命令找到，如果已获取\ ``FindSomePackage.cmake``\ 文件。\
@@ -115,35 +115,29 @@ Find Module Files
 #. ``Find<PackageName>.cmake``\ 文件不指示包的可用性，也不指示包的任何特定部分。
 #. CMake不会搜索在\ :variable:`CMAKE_PREFIX_PATH`\ 变量中为Find指定的\ ``Find<PackageName>.cmake``\ 文件位置。\
    相反，CMake会在\ :variable:`CMAKE_MODULE_PATH`\ 变量给出的位置中搜索这些文件。\
-   用户在运行CMake时设置\ :variable:`CMAKE_MODULE_PATH`\ 是很常见的，而且CMake项目通常会将\ :variable:`CMAKE_MODULE_PATH`\ 附加到\ :variable:`CMAKE_MODULE_PATH`\ 中，以允许使用本地Find模块文件。
+   用户在运行CMake时设置\ :variable:`CMAKE_MODULE_PATH`\ 是很常见的，\
+   而且CMake项目通常会将\ :variable:`CMAKE_MODULE_PATH`\ 附加到\ :variable:`CMAKE_MODULE_PATH`\ 中，以允许使用本地Find模块文件。
 #. CMake搭载一些\ :manual:`第三方包 <cmake-modules(7)>`\ 的\ ``Find<PackageName>.cmake``
-   文件。这些文件由CMake维护负担，它们落后于与它们相关的包的最新版本是很正常的。一般来说，新的Find模块不再添加到CMake中。\项目应该鼓励上游包在可能的情况下提供配置文件。如果不成功，项目应该为包提供自己的Find模块。
+   文件。这些文件由CMake维护负担，它们落后于与它们相关的包的最新版本是很正常的。\
+   一般来说，新的Find模块不再添加到CMake中。项目应该鼓励上游包在可能的情况下提供配置文件。\
+   如果不成功，项目应该为包提供自己的Find模块。
 
 有关如何编写Find模块文件的详细讨论，请参见\ :ref:`Find Modules`。
 
 .. _Imported Targets from Packages:
 
-Imported Targets
+导入目标
 ----------------
 
-Both config files and Find module files can define :ref:`Imported targets`.
-These will typically have names of the form ``SomePrefix::ThingName``.
-Where these are available, the project should prefer to use them instead of
-any CMake variables that may also be provided.  Such targets typically carry
-usage requirements and apply things like header search paths, compiler
-definitions, etc. automatically to other targets that link to them (e.g. using
-:command:`target_link_libraries`).  This is both more robust and more
-convenient than trying to apply the same things manually using variables.
-Check the documentation for the package or Find module to see what imported
-targets it defines, if any.
+配置文件和查找模块文件都可以定义\ :ref:`Imported targets`。它们通常具有\ ``SomePrefix::ThingName``\ 形式的名称。\
+在可用的情况下，项目应该更倾向于使用它们，而不是可能还提供的任何CMake变量。\
+这样的目标通常携带使用需求，并自动将诸如头搜索路径、编译器定义等应用到链接到它们的其他目标（例如使用\ :command:`target_link_libraries`\ ）。\
+这比试图手动使用变量应用相同的东西更健壮，也更方便。检查包或Find模块的文档，查看它定义的导入目标（如果有的话）。
 
-Imported targets should also encapsulate any configuration-specific paths.
-This includes the location of binaries (libraries, executables), compiler
-flags, and any other configuration-dependent quantities.  Find modules may
-be less reliable in providing these details than config files.
+导入的目标还应该封装任何特定于配置的路径。这包括二进制文件（库、可执行文件）、编译器标志和任何其他依赖于配置的数量的位置。\
+在提供这些细节方面，Find模块可能不如配置文件可靠。
 
-A complete example which finds a third party package and uses a library
-from it might look like the following:
+一个完整的找到第三方包并使用其中的库的示例可能如下所示：
 
 .. code-block:: cmake
 
@@ -157,13 +151,10 @@ from it might look like the following:
   add_executable(MyExe main.cpp)
   target_link_libraries(MyExe PRIVATE SomePrefix::LibName)
 
-Note that the above call to :command:`find_package` could be resolved by
-a config file or a Find module.  It uses only the basic arguments supported
-by the :ref:`basic signature`.  A ``FindSomePackage.cmake`` file in the
-``${CMAKE_CURRENT_SOURCE_DIR}/cmake`` directory would allow the
-:command:`find_package` command to succeed using module mode, for example.
-If no such module file is present, the system would be searched for a config
-file.
+注意，上面对\ :command:`find_package`\ 的调用可以通过配置文件或Find模块解析。\
+它只使用\ :ref:`basic signature`\ 支持的基本参数。\
+例如，\ ``${CMAKE_CURRENT_SOURCE_DIR}/cmake``\ 目录中的\ ``FindSomePackage.cmake``\ 文件将允许\ :command:`find_package`\ 命令使用模块模式成功执行。\
+如果不存在这样的模块文件，系统将搜索配置文件。
 
 
 Downloading And Building From Source With ``FetchContent``
