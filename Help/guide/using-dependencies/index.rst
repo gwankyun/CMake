@@ -157,21 +157,15 @@ Find模块文件
 如果不存在这样的模块文件，系统将搜索配置文件。
 
 
-Downloading And Building From Source With ``FetchContent``
+使用\ ``FetchContent``\ 从源代码下载和构建
 ==========================================================
 
-Dependencies do not necessarily have to be pre-built in order to use them
-with CMake.  They can be built from sources as part of the main project.
-The :module:`FetchContent` module provides functionality to download
-content (typically sources, but can be anything) and add it to the main
-project if the dependency also uses CMake.  The dependency's sources will
-be built along with the rest of the project, just as though the sources were
-part of the project's own sources.
+在CMake中使用依赖关系不一定要预先构建。它们可以作为主项目的一部分从源代码构建。\
+:module:`FetchContent`\ 模块提供了下载内容（通常是源代码，但也可以是任何内容）并将其添加到主项目（如果依赖项也使用CMake）的功能。\
+依赖项的源码将与项目的其余部分一起构建，就好像这些源码是项目自己的源码的一部分一样。
 
-The general pattern is that the project should first declare all the
-dependencies it wants to use, then ask for them to be made available.
-The following demonstrates the principle (see :ref:`fetch-content-examples`
-for more):
+一般的模式是，项目应该首先声明它想要使用的所有依赖项，然后要求它们可用。\
+下面演示了原理（更多信息请参见\ :ref:`fetch-content-examples`）：
 
 .. code-block:: cmake
 
@@ -188,25 +182,16 @@ for more):
   )
   FetchContent_MakeAvailable(googletest Catch2)
 
-Various download methods are supported, including downloading and extracting
-archives from a URL (a range of archive formats are supported), and a number
-of repository formats including Git, Subversion, and Mercurial.
-Custom download, update, and patch commands can also be used to support
-arbitrary use cases.
+支持各种下载方法，包括从URL下载和提取存档（支持一系列存档格式），以及许多存储库格式，包括Git、Subversion和Mercurial。\
+还可以使用自定义下载、更新和补丁命令来支持任意用例。
 
-When a dependency is added to the project with :module:`FetchContent`, the
-project links to the dependency's targets just like any other target from the
-project.  If the dependency provides namespaced targets of the form
-``SomePrefix::ThingName``, the project should link to those rather than to
-any non-namespaced targets.  See the next section for why this is recommended.
+当使用\ :module:`FetchContent`\ 将依赖项添加到项目中时，项目将链接到依赖项的目标，就像项目中的任何其他目标一样。\
+如果依赖项提供了\ ``SomePrefix::ThingName``\ 形式的命名空间目标，项目应该链接到这些目标，而不是任何非命名空间目标。\
+请参阅下一节了解为什么推荐这样做。
 
-Not all dependencies can be brought into the project this way.  Some
-dependencies define targets whose names clash with other targets from the
-project or other dependencies.  Concrete executable and library targets
-created by :command:`add_executable` and :command:`add_library` are global,
-so each one must be unique across the whole build.  If a dependency would
-add a clashing target name, it cannot be brought directly into the build
-with this method.
+并不是所有的依赖关系都可以通过这种方式引入项目。一些依赖项定义的目标名称与项目或其他依赖项中的其他目标冲突。\
+由\ :command:`add_executable`\ 和\ :command:`add_library`\ 创建的具体可执行文件和库目标是全局的，\
+因此在整个构建过程中每个目标都必须是唯一的。如果依赖项将添加冲突的目标名称，则不能使用此方法将其直接带入构建中。
 
 ``FetchContent`` And ``find_package()`` Integration
 ===================================================
