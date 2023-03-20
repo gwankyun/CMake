@@ -193,24 +193,18 @@ Find模块文件
 由\ :command:`add_executable`\ 和\ :command:`add_library`\ 创建的具体可执行文件和库目标是全局的，\
 因此在整个构建过程中每个目标都必须是唯一的。如果依赖项将添加冲突的目标名称，则不能使用此方法将其直接带入构建中。
 
-``FetchContent`` And ``find_package()`` Integration
+``FetchContent``\ 和\ ``find_package()``\ 集成
 ===================================================
 
 .. versionadded:: 3.24
 
-Some dependencies support being added by either :command:`find_package` or
-:module:`FetchContent`.  Such dependencies must ensure they define the same
-namespaced targets in both installed and built-from-source scenarios.
-A consuming project then links to those namespaced targets and can handle
-both scenarios transparently, as long as the project does not use anything
-else that isn't provided by both methods.
+一些依赖项支持由\ :command:`find_package`\ 或\ :module:`FetchContent`\ 添加。\
+这样的依赖关系必须确保它们在安装和从源代码构建的场景中定义相同的名称空间目标。\
+然后，消费项目链接到这些名称空间的目标，并且可以透明地处理这两种场景，只要项目不使用这两种方法之外的任何东西。
 
-The project can indicate it is happy to accept a dependency by either method
-using the ``FIND_PACKAGE_ARGS`` option to :command:`FetchContent_Declare`.
-This allows :command:`FetchContent_MakeAvailable` to try satisfying the
-dependency with a call to :command:`find_package` first, using the arguments
-after the ``FIND_PACKAGE_ARGS`` keyword, if any.  If that doesn't find the
-dependency, it is built from source as described previously instead.
+项目可以通过使用\ ``FIND_PACKAGE_ARGS``\ 选项的\ :command:`FetchContent_Declare`\ 来表示它乐意接受依赖项。\
+这允许\ :command:`FetchContent_MakeAvailable`\ 尝试先调用\ :command:`find_package`\ 来满足依赖关系，\
+使用\ ``FIND_PACKAGE_ARGS``\ 关键字后面的参数（如果有的话）。如果没有找到依赖项，则按照前面所述从源代码构建依赖项。
 
 .. code-block:: cmake
 
@@ -226,27 +220,19 @@ dependency, it is built from source as described previously instead.
   add_executable(ThingUnitTest thing_ut.cpp)
   target_link_libraries(ThingUnitTest GTest::gtest_main)
 
-The above example calls
-:command:`find_package(googletest NAMES GTest) <find_package>` first.
-CMake provides a :module:`FindGTest` module, so if that finds a GTest package
-installed somewhere, it will make it available, and the dependency will not be
-built from source.  If no GTest package is found, it *will* be built from
-source.  In either case, the ``GTest::gtest_main`` target is expected to be
-defined, so we link our unit test executable to that target.
+上面的例子首先调用\ :command:`find_package(googletest NAMES GTest) <find_package>`。\
+CMake提供了一个\ :module:`FindGTest`\ 模块，所以如果它发现了一个安装在某处的GTest包，\
+它将使其可用，并且依赖关系不会从源代码构建。如果没有找到GTest包，\ *将*\ 从源代码构建它。\
+在任何一种情况下，\ ``GTest::gtest_main``\ 目标都需要被定义，因此我们将单元测试可执行文件链接到该目标。
 
-High-level control is also available through the
-:variable:`FETCHCONTENT_TRY_FIND_PACKAGE_MODE` variable.  This can be set to
-``NEVER`` to disable all redirection to :command:`find_package`.  It can be
-set to ``ALWAYS`` to try :command:`find_package` even if ``FIND_PACKAGE_ARGS``
-was not specified (this should be used with caution).
+高级控件也可以通过\ :variable:`FETCHCONTENT_TRY_FIND_PACKAGE_MODE`\ 变量获得。\
+可以将其设置为\ ``NEVER``\ 以禁用所有对\ :command:`find_package`\ 的重定向。\
+即使没有指定\ ``FIND_PACKAGE_ARGS``，也可以将其设置为\ ``ALWAYS``\ 以尝试\ :command:`find_package`\ （这应该谨慎使用）。
 
-The project might also decide that a particular dependency must be built from
-source.  This might be needed if a patched or unreleased version of the
-dependency is required, or to satisfy some policy that requires all
-dependencies to be built from source.  The project can enforce this by adding
-the ``OVERRIDE_FIND_PACKAGE`` keyword to :command:`FetchContent_Declare`.
-A call to :command:`find_package` for that dependency will then be redirected
-to :command:`FetchContent_MakeAvailable` instead.
+项目还可能决定必须从源代码构建特定的依赖项。如果需要补丁或未发布的依赖项版本，\
+或者满足某些要求从源代码构建所有依赖项的策略，则可能需要这样做。\
+项目可以通过向\ :command:`FetchContent_Declare`\ 添加\ ``OVERRIDE_FIND_PACKAGE``\ 关键字来强制执行这一点。\
+对该依赖项的\ :command:`find_package`\ 调用将被重定向到\ :command:`FetchContent_MakeAvailable`。
 
 .. code-block:: cmake
 
@@ -261,51 +247,34 @@ to :command:`FetchContent_MakeAvailable` instead.
   # The following is automatically redirected to FetchContent_MakeAvailable(Catch2)
   find_package(Catch2)
 
-For more advanced use cases, see the
-:variable:`CMAKE_FIND_PACKAGE_REDIRECTS_DIR` variable.
+有关更高级的用例，请参阅\ :variable:`CMAKE_FIND_PACKAGE_REDIRECTS_DIR`\ 变量。
 
 .. _dependency_providers_overview:
 
-Dependency Providers
+依赖提供器
 ====================
 
 .. versionadded:: 3.24
 
-The preceding section discussed techniques that projects can use to specify
-their dependencies.  Ideally, the project shouldn't really care where a
-dependency comes from, as long as it provides the things it expects (often
-just some imported targets).  The project says what it needs and may also
-specify where to get it from, in the absence of any other details, so that it
-can still be built out-of-the-box.
+上一节讨论了项目可用于指定其依赖项的技术。理想情况下，项目不应该真正关心依赖项来自何处，\
+只要它提供了它所期望的东西（通常只是一些导入的目标）。在没有任何其他细节的情况下，\
+项目说明了它需要什么，还可能指定从哪里获得它，因此它仍然可以开箱即用。
 
-The developer, on the other hand, may be much more interested in controlling
-*how* a dependency is provided to the project.  You might want to use a
-particular version of a package that you built yourself.  You might want
-to use a third party package manager.  You might want to redirect some
-requests to a different URL on a system you control for security or
-performance reasons.  CMake supports these sort of scenarios through
-:ref:`dependency_providers`.
+另一方面，开发人员可能更感兴趣的是控制\ *如何*\ 向项目提供依赖项。你可能希望使用自己构建的包的特定版本。\
+你可能希望使用第三方包管理器。出于安全性或性能原因，你可能希望将一些请求重定向到你控制的系统上的不同URL。\
+CMake通过\ :ref:`依赖提供器 <dependency_providers>`\ 支持这类场景。
 
-A dependency provider can be set to intercept :command:`find_package` and
-:command:`FetchContent_MakeAvailable` calls.  The provider is given an
-opportunity to satisfy such requests before falling back to the built-in
-implementation if the provider doesn't fulfill it.
+依赖提供器可以设置为拦截\ :command:`find_package`\ 和\ :command:`FetchContent_MakeAvailable`\ 调用。\
+提供器有机会满足这些请求，如果提供器不能满足这些请求，就会返回到内置实现。
 
-Only one dependency provider can be set, and it can only be set at a very
-specific point early in the CMake run.
-The :variable:`CMAKE_PROJECT_TOP_LEVEL_INCLUDES` variable lists CMake files
-that will be read while processing the first :command:`project()` call (and
-only that call).  This is the only time a dependency provider may be set.
-At most, one single provider is expected to be used throughout the whole
-project.
+只能设置一个依赖提供器，并且只能在CMake运行早期的一个非常特定的位置设置它。\
+:variable:`CMAKE_PROJECT_TOP_LEVEL_INCLUDES`\ 变量列出了将在处理第一个\ :command:`project()`\ 调用（并且仅该调用）时读取的CMake文件。\
+这是唯一可以设置依赖项提供器的时间。在整个项目中，最多只能使用一个单一的提供者。
 
-For some scenarios, the user wouldn't need to know the details of how the
-dependency provider is set.  A third party may provide a file that can be
-added to :variable:`CMAKE_PROJECT_TOP_LEVEL_INCLUDES`, which will set up
-the dependency provider on the user's behalf.  This is the recommended
-approach for package managers.  The developer can use such a file like so::
+对于某些场景，用户不需要知道依赖提供器是如何设置的细节。\
+第三方可能会提供一个可以添加到\ :variable:`CMAKE_PROJECT_TOP_LEVEL_INCLUDES`\ 的文件，\
+该文件将代表用户建立依赖提供器。这是包管理器的推荐方法。开发人员可以像这样使用这样的文件::
 
   cmake -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=/path/to/package_manager/setup.cmake ...
 
-For details on how to implement your own custom dependency provider, see the
-:command:`cmake_language(SET_DEPENDENCY_PROVIDER)` command.
+有关如何实现你自己的自定义依赖提供器的详细信息，请参阅\ :command:`cmake_language(SET_DEPENDENCY_PROVIDER)`\ 命令。
