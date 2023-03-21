@@ -13,26 +13,25 @@ IDE集成指南
 捆绑
 ========
 
-许多IDE厂商想要在他们的IDE中捆绑一个CMake的副本。捆绑CMake的IDE应该向用户提供使用外部CMake安装而不是捆绑的CMake安装的选项，以防捆绑的副本过时而用户想要使用一个新的版本。
+许多IDE厂商想要在他们的IDE中捆绑一个CMake的副本。捆绑CMake的IDE应该向用户提供使用外部CMake安装而不是捆绑的CMake安装的选项，\
+以防捆绑的副本过时而用户想要使用一个新的版本。
 
-虽然IDE供应商可能会试图将不同版本的CMake与他们的应用程序捆绑在一起，但不建议这样做。CMake有强大的向后兼容性保证，没有理由不使用比项目需要的更新版本的CMake，或者实际上是最新版本的CMake。因此，建议将CMake与他们的应用程序捆绑在一起的IDE供应商在发布时始终包含最新的CMake补丁版本。
+虽然IDE供应商可能会试图将不同版本的CMake与他们的应用程序捆绑在一起，但不建议这样做。\
+CMake有强大的向后兼容性保证，没有理由不使用比项目需要的更新版本的CMake，或者实际上是最新版本的CMake。因此，建议将CMake与他们的应用程序捆绑在一起的IDE供应商在发布时始终包含最新的CMake补丁版本。
 
-作为建议，IDE也可以在CMake的同时提供一个Ninja构建系统的副本。Ninja在所有支持CMake的平台上性能和兼容性都不错。IDE应该捆绑Ninja 1.10或更高版本，以包含支持Fortran构建所需的特性。
+作为建议，IDE也可以在CMake的同时提供一个Ninja构建系统的副本。Ninja在所有支持CMake的平台上性能和兼容性都不错。\
+IDE应该捆绑Ninja 1.10或更高版本，以包含支持Fortran构建所需的特性。
 
 预设
 =======
 
-CMake支持一种名为\ ``CMakePresets.json``\ 的文件格式，以及与之对应的特定于用户的\ ``CMakeUserPresets.json``。这个文件包含用户可能需要的各种配置预设的信息。每个预设可能有一个不同的编译器，构建标志，等等。该格式的细节在\ :manual:`cmake(1)`\ 手册中解释。
+CMake支持一种名为\ ``CMakePresets.json``\ 的文件格式，以及与之对应的特定于用户的\ ``CMakeUserPresets.json``。\
+这个文件包含用户可能需要的各种配置预设的信息。每个预设可能有一个不同的编译器，构建标志，等等。该格式的细节在\ :manual:`cmake(1)`\ 手册中解释。
 
-IDE vendors are encouraged to read and evaluate this file the same way CMake
-does, and present the user with the presets listed in the file. Users should be
-able to see (and possibly edit) the CMake cache variables, environment
-variables, and command line options that are defined for a given preset. The
-IDE should then construct the list of appropriate :manual:`cmake(1)` command
-line arguments based on these settings, rather than using the
-:option:`--preset= <cmake --preset>` option directly. The
-:option:`--preset= <cmake --preset>` option is intended only as a convenient
-frontend for command line users, and should not be used by the IDE.
+鼓励IDE供应商以与CMake相同的方式读取和计算该文件，并向用户提供文件中列出的预设值。\
+用户应该能够看到（可能还可以编辑）为给定的预设定义的CMake缓存变量、环境变量和命令行选项。\
+IDE应该根据这些设置构造适当的\ :manual:`cmake(1)`\ 命令行参数列表，而不是直接使用\ :option:`--preset= <cmake --preset>`\ 选项。\
+:option:`--preset= <cmake --preset>`\ 选项只是作为命令行用户的一个方便的前端，IDE不应该使用它。
 
 例如，如果一个名为\ ``ninja``\ 的预设值指定\ ``Ninja``\ 为生成器，并指定\ ``${sourceDir}/build``\ 为构建目录，而不是运行目录：
 
@@ -46,39 +45,47 @@ IDE应该计算\ ``ninja``\ 预设的设置，然后运行：
 
   cmake -S /path/to/source -B /path/to/source/build -G Ninja
 
-In cases where a preset contains lots of cache variables, and passing all of
-them as :option:`-D <cmake -D>` flags would cause the command line length limit
-of the platform to be exceeded, the IDE should instead construct a temporary
-cache script and pass it with the :option:`-C <cmake -C>` flag.
+如果预设包含大量缓存变量，并且将它们全部作为\ :option:`-D <cmake -D>`\ 标志传递会导致超过平台的命令行长度限制，\
+IDE应该构造一个临时缓存脚本，并将其传递为\ :option:`-C <cmake -C>`\ 标志。
 
-虽然读取、解析和计算\ ``CMakePresets.json``\ 的内容很容易，但它并不简单。除了文档之外，IDE厂商可能还希望参考CMake源代码和测试用例，以更好地理解如何实现这种格式。:download:`该文件 <../../manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\ 格式提供了一个机器可读的JSON模式，IDE供应商可能会发现该模式对于验证和提供编辑帮助很有用。
+虽然读取、解析和计算\ ``CMakePresets.json``\ 的内容很容易，但它并不简单。\
+除了文档之外，IDE厂商可能还希望参考CMake源代码和测试用例，以更好地理解如何实现这种格式。\
+:download:`该文件 <../../manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\ 格式提供了一个机器可读的JSON模式，\
+IDE供应商可能会发现该模式对于验证和提供编辑帮助很有用。
 
 配置
 ===========
 
-调用\ :manual:`cmake(1)`\ 来运行配置步骤的IDE可能希望接收关于构建将生成的构件的信息，以及用于构建构件的包含目录、编译定义等。这些信息可以通过使用\ :manual:`File API <cmake-file-api(7)>`\ 获得。File API的手册页包含了关于API以及如何调用它的更多信息。:manual:`Server mode <cmake-server(7)>`\ 从CMake 3.20起被删除，不该在CMake 3.14或更高版本上使用。
+调用\ :manual:`cmake(1)`\ 来运行配置步骤的IDE可能希望接收关于构建将生成的构件的信息，\
+以及用于构建构件的包含目录、编译定义等。这些信息可以通过使用\ :manual:`File API <cmake-file-api(7)>`\ 获得。\
+File API的手册页包含了关于API以及如何调用它的更多信息。:manual:`Server mode <cmake-server(7)>`\ 从CMake 3.20起被删除，\
+不该在CMake 3.14或更高版本上使用。
 
-IDE应该避免创建多余的构建树，只在用户希望切换到不同的编译器、使用不同的编译标志等情况下才创建多个构建树。特别是，IDE不应该创建多个单配置构建树，这些树除了\ :variable:`CMAKE_BUILD_TYPE`\ 不同外，都具有相同的属性，从而等效创建一个多配置环境。相反，应该使用\ :generator:`Ninja Multi-Config`\ 生成器和\ :manual:`File API <cmake-file-api(7)>`\ 来获得构建配置列表。
+IDE应该避免创建多余的构建树，只在用户希望切换到不同的编译器、使用不同的编译标志等情况下才创建多个构建树。\
+特别是，IDE不应该创建多个单配置构建树，这些树除了\ :variable:`CMAKE_BUILD_TYPE`\ 不同外，\
+都具有相同的属性，从而等效创建一个多配置环境。相反，应该使用\ :generator:`Ninja Multi-Config`\ 生成器和\ :manual:`File API <cmake-file-api(7)>`\ 来获得构建配置列表。
 
-IDE不应该在Makefile或Ninja生成器中使用“额外的生成器”，这些生成器除了生成Makefile或Ninja文件外还生成IDE项目文件。相反，应该使用\ :manual:`File API <cmake-file-api(7)>`\ 来获取构建构件的列表。
+IDE不应该在Makefile或Ninja生成器中使用“额外的生成器”，这些生成器除了生成Makefile或Ninja文件外还生成IDE项目文件。\
+相反，应该使用\ :manual:`File API <cmake-file-api(7)>`\ 来获取构建构件的列表。
 
 编译
 ========
 
-If a Makefile or Ninja generator is used to generate the build tree, it is not
-recommended to invoke ``make`` or ``ninja`` directly. Instead, it is
-recommended that the IDE invoke :manual:`cmake(1)` with the
-:option:`--build <cmake --build>` argument, which will in turn invoke the
-appropriate build tool.
+如果使用Makefile或Ninja生成器来生成构建树，不建议直接调用 ``make`` 或 ``ninja``。\
+相反，建议IDE使用\ :option:`--build <cmake --build>`\ 参数调用\ :manual:`cmake(1)`，\
+这将反过来调用适当的构建工具。
 
-如果使用了IDE项目生成器，比如\ :generator:`Xcode`\ 或Visual Studio生成器，并且IDE理解所使用的项目格式，那么IDE应该读取项目文件，并以相同的方式构建它。
+如果使用了IDE项目生成器，比如\ :generator:`Xcode`\ 或Visual Studio生成器，并且IDE理解所使用的项目格式，\
+那么IDE应该读取项目文件，并以相同的方式构建它。
 
-:manual:`File API <cmake-file-api(7)>`\ 可以用于从构建树中获取构建配置的列表，IDE应该将此列表呈现给用户以选择构建配置。
+:manual:`File API <cmake-file-api(7)>`\ 可以用于从构建树中获取构建配置的列表，\
+IDE应该将此列表呈现给用户以选择构建配置。
 
 测试
 =======
 
-:manual:`ctest(1)`\ 支持输出包含可用测试和测试配置信息的JSON格式。想要运行CTest的IDE应该获得此信息，并使用它向用户提供测试列表。
+:manual:`ctest(1)`\ 支持输出包含可用测试和测试配置信息的JSON格式。想要运行CTest的IDE应该获得此信息，\
+并使用它向用户提供测试列表。
 
 IDE不应调用构建系统生成的\ ``test``\ 目标，而是应该直接调用\ :manual:`ctest(1)`。
 
@@ -106,4 +113,5 @@ IDE与CMake的集成
 * :ref:`IDE Build Tool Generators`:  
   生成IDE本地构建系统，如Visual Studio或Xcode。
 * :ref:`Extra Generators`:
-  扩展\ :ref:`Command-Line Build Tool Generators`\ 来生成IDE项目文件，这些文件可以钩子到命令行构建系统中。已被\ :manual:`File API <cmake-file-api(7)>`\ 取代。
+  扩展\ :ref:`Command-Line Build Tool Generators`\ 来生成IDE项目文件，这些文件可以钩子到命令行构建系统中。\
+  已被\ :manual:`File API <cmake-file-api(7)>`\ 取代。
