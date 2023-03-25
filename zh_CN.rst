@@ -4,9 +4,9 @@
 依赖
 =====
 
-* _`CMake`
-* _`Python`
-* Python的\ _`Sphinx`\ 包
+* `CMake`_
+* `Python`_
+* Python的\ `Sphinx`_\ 包
 
 .. _`CMake`: https://cmake.org/download/
 .. _`Python`: https://www.python.org/downloads/
