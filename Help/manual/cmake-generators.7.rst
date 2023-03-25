@@ -10,14 +10,13 @@ cmake-generators(7)
 引言
 ============
 
-*CMake生成器*\ 负责为本地构建系统编写输入文件。必须为构建树选择一个\ `CMake生成器`_，以确定要使用什么本地构建系统。可以选择一个\ `附加生成器`_\ 作为一些\ `命令行构建工具生成器`_\ 的变体，为辅助IDE生成项目文件。
+*CMake生成器*\ 负责为本地构建系统编写输入文件。必须为构建树选择一个\ `CMake生成器`_，\
+以确定要使用什么本地构建系统。可以选择一个\ `附加生成器`_\ 作为一些\ `命令行构建工具生成器`_\ 的变体，为辅助IDE生成项目文件。
 
-CMake Generators are platform-specific so each may be available only
-on certain platforms.  The :manual:`cmake(1)` command-line tool
-:option:`--help <cmake --help>` output lists available generators on the
-current platform.  Use its :option:`-G <cmake -G>` option to specify the
-generator for a new build tree. The :manual:`cmake-gui(1)` offers
-interactive selection of a generator when creating a new build tree.
+CMake生成器是特定于平台的，因此每个生成器可能只在某些平台上可用。\
+:manual:`cmake(1)`\ 命令行工具\ :option:`--help <cmake --help>`\ 输出列出当前平台上可用的生成器。\
+使用它的\ :option:`-G <cmake -G>`\ 选项为新的构建树指定生成器。当创建一个新的构建树时，\
+:manual:`cmake-gui(1)`\ 提供了交互式的生成器选择。
 
 CMake生成器
 ================
@@ -27,7 +26,8 @@ CMake生成器
 命令行构建工具生成器
 ----------------------------------
 
-这些生成器支持命令行构建工具。为了使用它们，必须从命令行提示符启动CMake，命令行提示符的环境已经为所选的编译器和构建工具配置好了。
+这些生成器支持命令行构建工具。为了使用它们，必须从命令行提示符启动CMake，\
+命令行提示符的环境已经为所选的编译器和构建工具配置好了。
 
 .. _`Makefile Generators`:
 
@@ -98,11 +98,9 @@ Visual Studio生成器
 附加生成器
 ================
 
-Some of the `CMake生成器`_ listed in the :manual:`cmake(1)`
-command-line tool :option:`--help <cmake --help>` output may have
-variants that specify an extra generator for an auxiliary IDE tool.
-Such generator names have the form ``<extra-generator> - <main-generator>``.
-The following extra generators are known to CMake.
+在\ :manual:`cmake(1)`\ 命令行工具\ :option:`--help <cmake --help>`\ 输出中列出的一些\ `CMake生成器`_\ 可能有变体，\
+为辅助IDE工具指定额外的生成器。生成器名称的形式为\ ``<extra-generator> - <main-generator>``。\
+以下是CMake已知的额外的生成器。
 
 .. toctree::
    :maxdepth: 1
