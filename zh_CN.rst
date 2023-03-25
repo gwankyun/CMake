@@ -4,13 +4,13 @@
 依赖
 =====
 
-* _`CMake`: https://cmake.org/download/
-* _`Python`: https://www.python.org/downloads/
-* Python的\ _`Sphinx`: https://pypi.org/project/Sphinx/\ 包
+* _`CMake`
+* _`Python`
+* Python的\ _`Sphinx`\ 包
 
 .. _`CMake`: https://cmake.org/download/
 .. _`Python`: https://www.python.org/downloads/
-.. Python的\ _`Sphinx`: https://pypi.org/project/Sphinx/
+.. _`Sphinx`: https://pypi.org/project/Sphinx/
 
 生成工程
 ========
