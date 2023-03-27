@@ -36,19 +36,15 @@ cmake-generator-expressions(7)
 如果\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\ 小于4.2.0，\
 则上述内容将扩展为\ ``OLD_COMPILER``。
 
-Whitespace And Quoting
+空格和引号
 ======================
 
-Generator expressions are typically parsed after command arguments.
-If a generator expression contains spaces, new lines, semicolons or
-other characters that may be interpreted as command argument separators,
-the whole expression should be surrounded by quotes when passed to a
-command.  Failure to do so may result in the expression being split and
-it may no longer be recognized as a generator expression.
+生成器表达式通常在命令参数之后进行解析。如果生成器表达式包含空格、新行、分号或其他可能被解释为命令参数分隔符的字符，\
+则整个表达式在传递给命令时应该用引号括起来。如果不这样做，可能会导致表达式被拆分，并\
+且可能不再将其识别为生成器表达式。
 
-When using :command:`add_custom_command` or :command:`add_custom_target`,
-use the ``VERBATIM`` and ``COMMAND_EXPAND_LISTS`` options to obtain robust
-argument splitting and quoting.
+当使用\ :command:`add_custom_command`\ 或\ :command:`add_custom_target`\ 时，\
+使用\ ``VERBATIM``\ 和\ ``COMMAND_EXPAND_LISTS``\ 选项来获得健壮的参数分割和引用。
 
 .. code-block:: cmake
 
@@ -82,9 +78,7 @@ argument splitting and quoting.
     VERBATIM
   )
 
-Using variables to build up a more complex generator expression is also a
-good way to reduce errors and improve readability.  The above example can be
-improved further like so:
+使用变量构建更复杂的生成器表达式也是减少错误和提高可读性的好方法。上面的例子可以进一步改进如下：
 
 .. code-block:: cmake
 
@@ -97,8 +91,7 @@ improved further like so:
     VERBATIM
   )
 
-A common mistake is to try to split a generator expression across multiple
-lines with indenting:
+一个常见的错误是尝试用缩进将生成器表达式分割到多行：
 
 .. code-block:: cmake
 
@@ -111,8 +104,7 @@ lines with indenting:
       >:HAVE_5_OR_LATER>
   )
 
-Again, use helper variables with well-chosen names to build up a readable
-expression instead:
+同样，使用名称选择良好的辅助变量来构建可读的表达式：
 
 .. code-block:: cmake
 
@@ -123,37 +115,32 @@ expression instead:
     "$<${meet_requirements}:HAVE_5_OR_LATER>"
   )
 
-Debugging
+调试
 =========
 
-Since generator expressions are evaluated during generation of the buildsystem,
-and not during processing of ``CMakeLists.txt`` files, it is not possible to
-inspect their result with the :command:`message()` command.  One possible way
-to generate debug messages is to add a custom target:
+由于生成器表达式是在生成构建系统时计算的，而不是在处理\ ``CMakeLists.txt``\ 文件时计算的，\
+因此不可能使用\ :command:`message()`\ 命令检查它们的结果。生成调试消息的一种可能的方法是添加一个自定义目标：
 
 .. code-block:: cmake
 
   add_custom_target(genexdebug COMMAND ${CMAKE_COMMAND} -E echo "$<...>")
 
-After running :program:`cmake`, you can then build the ``genexdebug`` target to print
-the result of the ``$<...>`` expression (i.e. run the command
-:option:`cmake --build ... --target genexdebug <cmake--build --target>`).
+运行\ :program:`cmake`\ 之后，你可以构建\ ``genexdebug``\ 目标以打印\ ``$<...>``\
+表达式（即执行命令\ :option:`cmake --build ... --target genexdebug <cmake--build --target>`）。
 
-Another way is to write debug messages to a file with :command:`file(GENERATE)`:
+另一种方法是使用\ :command:`file(GENERATE)`\ 将调试消息写入文件：
 
 .. code-block:: cmake
 
   file(GENERATE OUTPUT filename CONTENT "$<...>")
 
-Generator Expression Reference
+生成器表达式参考
 ==============================
 
 .. note::
 
-  This reference deviates from most of the CMake documentation in that it
-  omits angular brackets ``<...>`` around placeholders like ``condition``,
-  ``string``, ``target``, etc.  This is to prevent an opportunity for those
-  placeholders to be misinterpreted as generator expressions.
+  这个参考偏离了大多数CMake文档，因为它省略了尖括号\ ``<...>``\ 围绕占位符，\
+  如 ``condition``、\ ``string``、\ ``target``\ 等。这是为了防止那些占位符被错误地解释为生成器表达式。
 
 .. _`Conditional Generator Expressions`:
 
