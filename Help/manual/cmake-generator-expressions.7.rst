@@ -10,28 +10,22 @@ cmake-generator-expressions(7)
 引言
 ============
 
-Generator expressions are evaluated during build system generation to produce
-information specific to each build configuration.  They have the form
-``$<...>``.  For example:
+生成器表达式在生成构建系统期间进行计算，以生成特定于每个构建配置的信息。它们的形式是\ ``$<...>``。例如：
 
 .. code-block:: cmake
 
   target_include_directories(tgt PRIVATE /opt/include/$<CXX_COMPILER_ID>)
 
-This would expand to ``/opt/include/GNU``, ``/opt/include/Clang``, etc.
-depending on the C++ compiler used.
+这将扩展到\ ``/opt/include/GNU``、\ ``/opt/include/Clang``\ 等，这取决于所使用的C++编译器。
 
-Generator expressions are allowed in the context of many target properties,
-such as :prop_tgt:`LINK_LIBRARIES`, :prop_tgt:`INCLUDE_DIRECTORIES`,
-:prop_tgt:`COMPILE_DEFINITIONS` and others.  They may also be used when using
-commands to populate those properties, such as :command:`target_link_libraries`,
-:command:`target_include_directories`, :command:`target_compile_definitions`
-and others.  They enable conditional linking, conditional definitions used when
-compiling, conditional include directories, and more.  The conditions may be
-based on the build configuration, target properties, platform information,
-or any other queryable information.
+生成器表达式可以在许多目标属性的上下文中使用，如\ :prop_tgt:`LINK_LIBRARIES`、\
+:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\ 等。\
+它们也可以在使用命令填充这些属性时使用，例如\ :command:`target_link_libraries`、\
+:command:`target_include_directories`、:command:`target_compile_definitions`\ 等。\
+它们支持条件链接、编译时使用的条件定义、条件包含目录等等。条件可能基于构建配置、目标属性、\
+平台信息或任何其他可查询信息。
 
-Generator expressions can be nested:
+生成器表达式可以嵌套：
 
 .. code-block:: cmake
 
@@ -39,9 +33,8 @@ Generator expressions can be nested:
     $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,4.2.0>:OLD_COMPILER>
   )
 
-The above would expand to ``OLD_COMPILER`` if the
-:variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>` is less
-than 4.2.0.
+如果\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\ 小于4.2.0，\
+则上述内容将扩展为\ ``OLD_COMPILER``。
 
 Whitespace And Quoting
 ======================
