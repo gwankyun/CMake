@@ -144,49 +144,45 @@ cmake-generator-expressions(7)
 
 .. _`Conditional Generator Expressions`:
 
-Conditional Expressions
+条件表达式
 -----------------------
 
-A fundamental category of generator expressions relates to conditional logic.
-Two forms of conditional generator expressions are supported:
+生成器表达式的一个基本类别与条件逻辑有关。支持两种形式的条件生成器表达式：
 
 .. genex:: $<condition:true_string>
 
-  Evaluates to ``true_string`` if ``condition`` is ``1``, or an empty string
-  if ``condition`` evaluates to ``0``.  Any other value for ``condition``
-  results in an error.
+  如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果\ ``condition``\ 为 ``0``，\
+  则返回空字符串。\ ``condition``\ 的任何其他值都会导致错误。
 
 .. genex:: $<IF:condition,true_string,false_string>
 
   .. versionadded:: 3.8
 
-  Evaluates to ``true_string`` if ``condition`` is ``1``, or ``false_string``
-  if ``condition`` is ``0``.  Any other value for ``condition`` results in an
-  error.
+  如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果 ``condition`` 为 ``0``，\
+  则返回\ ``false_string``。\ ``condition``\ 的任何其他值都会导致错误。
 
-Typically, the ``condition`` is itself a generator expression.  For instance,
-the following expression expands to ``DEBUG_MODE`` when the ``Debug``
-configuration is used, and the empty string for all other configurations:
+通常，\ ``condition``\ 本身就是一个生成器表达式。例如，当使用\ ``Debug``\ 配置时，\
+下面的表达式展开为\ ``DEBUG_MODE``，对于所有其他配置则为空字符串：
 
 .. code-block:: cmake
 
   $<$<CONFIG:Debug>:DEBUG_MODE>
 
-Boolean-like ``condition`` values other than ``1`` or ``0`` can be handled
-by wrapping them with the ``$<BOOL:...>`` generator expression:
+除\ ``1``\ 或\ ``0``\ 之外的类似布尔的\ ``condition``\ 值可以用\ ``$<BOOL:...>``\
+生成器表达式包裹来处理：
 
 .. genex:: $<BOOL:string>
 
   将\ ``string``\ 转换为\ ``0``\ 或\ ``1``。如果以下任意一个为真，则计算为\ ``0``：
 
   * ``string``\ 是空的，
-  * ``string``\ 不区分大小写，等价为\ ``0``、``FALSE``、``OFF``、``N``、``NO``、``IGNORE``\ 或\ ``NOTFOUND``，或
+  * ``string``\ 不区分大小写，等价为\ ``0``、``FALSE``、``OFF``、``N``、``NO``、\
+    ``IGNORE``\ 或\ ``NOTFOUND``，或
   * ``string``\ 以\ ``-NOTFOUND``\ 后缀结束（区分大小写）。
 
   否则等于\ ``1``。
 
-The ``$<BOOL:...>`` generator expression is often used when a ``condition``
-is provided by a CMake variable:
+当CMake变量提供\ ``condition``\ 时，通常使用\ ``$<BOOL:...>``\ 生成器表达式：
 
 .. code-block:: cmake
 
@@ -195,50 +191,44 @@ is provided by a CMake variable:
 
 .. _`Boolean Generator Expressions`:
 
-Logical Operators
+逻辑运算符
 -----------------
 
-The common boolean logic operators are supported:
+支持常见的布尔逻辑运算符：
 
 .. genex:: $<AND:conditions>
 
-  where ``conditions`` is a comma-separated list of boolean expressions,
-  all of which must evaluate to either ``1`` or ``0``.  The whole expression
-  evaluates to ``1`` if all conditions are ``1``.  If any condition is ``0``,
-  the whole expression evaluates to ``0``.
+  其中\ ``conditions``\ 是一个以逗号分隔的布尔表达式列表，所有这些表达式的值必须为\ ``1``\ 或\ ``0``。\
+  如果所有条件都为\ ``1``，则整个表达式的值为\ ``1``。如果任何条件为\ ``0``，整个表达式的计算结果为\ ``0``。
 
 .. genex:: $<OR:conditions>
 
-  where ``conditions`` is a comma-separated list of boolean expressions.
-  all of which must evaluate to either ``1`` or ``0``.  The whole expression
-  evaluates to ``1`` if at least one of the ``conditions`` is ``1``.  If all
-  ``conditions`` evaluate to ``0``, the whole expression evaluates to ``0``.
+  其中\ ``conditions``\ 是逗号分隔的布尔表达式列表。所有这些都必须等于\ ``1``\ 或\ ``0``。\
+  如果至少有一个条件为\ ``1``，则整个表达式的值为\ ``1``。如果所有条件的值为\ ``0``，\
+  则整个表达式的值为\ ``0``。
 
 .. genex:: $<NOT:condition>
 
-  ``condition`` must be ``0`` or ``1``.  The result of the expression is
-  ``0`` if ``condition`` is ``1``, else ``1``.
+  ``condition``\ 必须为\ ``0``\ 或\ ``1``。如果\ ``condition``\ 为\ ``1``，\
+  表达式的结果为\ ``0``，否则为\ ``1``。
 
 .. _`Comparison Expressions`:
 
-Primary Comparison Expressions
+主要比较表达式
 ------------------------------
 
-CMake supports a variety of generator expressions that compare things.
-This section covers the primary and most widely used comparison types.
-Other more specific comparison types are documented in their own separate
-sections further below.
+CMake支持各种生成器表达式进行比较。本节将介绍主要的和最广泛使用的比较类型。\
+其他更具体的比较类型将在后面单独的部分中进行说明。
 
-String Comparisons
+字符串比较
 ^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<STREQUAL:string1,string2>
 
-  ``1`` if ``string1`` and ``string2`` are equal, else ``0``.
-  The comparison is case-sensitive.  For a case-insensitive comparison,
-  combine with a :ref:`string transforming generator expression
-  <String Transforming Generator Expressions>`.  For example, the following
-  evaluates to ``1`` if ``${foo}`` is any of ``BAR``, ``Bar``, ``bar``, etc.
+  如果\ ``string1``\ 和\ ``string2``\ 相等，则为\ ``1``，否则为\ ``0``。比较是区分大小写的。\
+  要进行不区分大小写的比较，请与\ :ref:`字符串转换生成器表达式 <String Transforming Generator Expressions>`\ 结合使用。\
+  例如，如果\ ``${foo}``\ 是\ ``BAR``、\ ``Bar``、\ ``bar``\ 等中的任意一个，\
+  则下面的计算结果为\ ``1``。
 
   .. code-block:: cmake
 
@@ -248,7 +238,7 @@ String Comparisons
 
   如果\ ``value1``\ 和\ ``value2``\ 在数值上相等则为\ ``1``，否则为\ ``0``。
 
-Version Comparisons
+版本比较
 ^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<VERSION_LESS:v1,v2>
