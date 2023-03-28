@@ -267,21 +267,20 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. _`String Transforming Generator Expressions`:
 
-String Transformations
+字符串转换
 ----------------------
 
 .. genex:: $<LOWER_CASE:string>
 
-  Content of ``string`` converted to lower case.
+  转换为小写的\ ``string``\ 内容。
 
 .. genex:: $<UPPER_CASE:string>
 
-  Content of ``string`` converted to upper case.
+  转换为大写的\ ``string``\ 内容。
 
 .. genex:: $<MAKE_C_IDENTIFIER:...>
 
-  Content of ``...`` converted to a C identifier.  The conversion follows the
-  same behavior as :command:`string(MAKE_C_IDENTIFIER)`.
+  ``...``\ 的内容转换为C标识符。转换遵循与\ :command:`string(MAKE_C_IDENTIFIER)`\ 相同的行为。
 
 List Expressions
 ----------------
