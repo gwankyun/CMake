@@ -282,78 +282,68 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   ``...``\ 的内容转换为C标识符。转换遵循与\ :command:`string(MAKE_C_IDENTIFIER)`\ 相同的行为。
 
-List Expressions
+列表表达式
 ----------------
 
 .. genex:: $<IN_LIST:string,list>
 
   .. versionadded:: 3.12
 
-  ``1`` if ``string`` is an item in the semicolon-separated ``list``, else ``0``.
-  It uses case-sensitive comparisons.
+  如果\ ``string``\ 是分号分隔\ ``list``\ 中的项，则为\ ``1``，否则为\ ``0``。\
+  它使用区分大小写的比较。
 
 .. genex:: $<JOIN:list,string>
 
-  Joins the list with the content of ``string`` inserted between each item.
+  用插入在每个项之间的\ ``string``\ 内容连接列表。
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
   .. versionadded:: 3.15
 
-  Removes duplicated items in the given ``list``. The relative order of items
-  is preserved, but if duplicates are encountered, only the first instance is
-  preserved.
+  删除给定\ ``list``\ 中的重复项。保留项的相对顺序，但如果遇到重复项，则只保留第一个实例。
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.15
 
-  Includes or removes items from ``list`` that match the regular expression
-  ``regex``.
+  从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。
 
-Path Expressions
+路径表达式
 ----------------
 
-Most of the expressions in this section are closely associated with the
-:command:`cmake_path` command, providing the same capabilities, but in
-the form of a generator expression.
+本节中的大多数表达式都与\ :command:`cmake_path`\ 命令密切相关，提供相同的功能，\
+但是是以生成器表达式的形式。
 
-For all generator expressions in this section, paths are expected to be in
-cmake-style format. The :ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>`
-generator expression can be used to convert a native path to a cmake-style
-one.
+对于本节中的所有生成器表达式，路径都应该是cmake样式的格式。:ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>`\
+生成器表达式可用于将本机路径转换为cmake样式的路径。
 
 .. _GenEx Path Comparisons:
 
-Path Comparisons
+路径比较
 ^^^^^^^^^^^^^^^^
 
 .. genex:: $<PATH_EQUAL:path1,path2>
 
   .. versionadded:: 3.24
 
-  Compares the lexical representations of two paths. No normalization is
-  performed on either path. Returns ``1`` if the paths are equal, ``0``
-  otherwise.
+  比较两个路径的词法表示。在任何路径上都不执行归一化。如果路径相等则返回\ ``1``，否则返回\ ``0``。
 
-  See :ref:`cmake_path(COMPARE) <Path COMPARE>` for more details.
+  有关更多细节，请参阅\ :ref:`cmake_path(COMPARE) <Path COMPARE>`。
 
 .. _GenEx Path Queries:
 
-Path Queries
+路径查询
 ^^^^^^^^^^^^
 
-These expressions provide the generation-time capabilities equivalent to the
-:ref:`Query <Path Query>` options of the :command:`cmake_path` command.
-All paths are expected to be in cmake-style format.
+这些表达式提供了等同于\ :command:`cmake_path`\ 命令的\ :ref:`Query <Path Query>`\ 选项的生成时功能。\
+所有路径都应该是cmake样式的格式。
 
 .. genex:: $<PATH:HAS_*,path>
 
   .. versionadded:: 3.24
 
-  The following operations return ``1`` if the particular path component is
-  present, ``0`` otherwise. See :ref:`Path Structure And Terminology` for the
-  meaning of each path component.
+  如果存在特定的路径组件，则返回\ ``1``，否则返回\ ``0``。有关每个路径组件的含义，\
+  请参阅\ :ref:`Path Structure And Terminology`。
 
   ::
 
@@ -366,14 +356,13 @@ All paths are expected to be in cmake-style format.
     $<PATH:HAS_RELATIVE_PART,path>
     $<PATH:HAS_PARENT_PATH,path>
 
-  Note the following special cases:
+  注意以下特殊情况：
 
-  * For ``HAS_ROOT_PATH``, a true result will only be returned if at least one
-    of ``root-name`` or ``root-directory`` is non-empty.
+  * 对于\ ``HAS_ROOT_PATH``，只有当\ ``root-name``\ 或\ ``root-directory``\ 中至少有一个非空时，\
+    才会返回true结果。
 
-  * For ``HAS_PARENT_PATH``, the root directory is also considered to have a
-    parent, which will be itself.  The result is true except if the path
-    consists of just a :ref:`filename <FILENAME_DEF>`.
+  * 对于\ ``HAS_PARENT_PATH``，根目录也被认为有一个父目录，即它本身。\
+    除非路径仅由\ :ref:`filename <FILENAME_DEF>`\ 组成，否则结果为真。
 
 .. genex:: $<PATH:IS_ABSOLUTE,path>
 
