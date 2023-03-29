@@ -226,8 +226,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 .. genex:: $<STREQUAL:string1,string2>
 
   如果\ ``string1``\ 和\ ``string2``\ 相等，则为\ ``1``，否则为\ ``0``。比较是区分大小写的。\
-  要进行不区分大小写的比较，请与\ :ref:`字符串转换生成器表达式 <String Transforming Generator Expressions>`\ 结合使用。\
-  例如，如果\ ``${foo}``\ 是\ ``BAR``、\ ``Bar``、\ ``bar``\ 等中的任意一个，\
+  要进行不区分大小写的比较，请与\ :ref:`字符串转换生成器表达式 <String Transforming Generator Expressions>`\
+  结合使用。例如，如果\ ``${foo}``\ 是\ ``BAR``、\ ``Bar``、\ ``bar``\ 等中的任意一个，\
   则下面的计算结果为\ ``1``。
 
   .. code-block:: cmake
@@ -335,8 +335,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 路径查询
 ^^^^^^^^^^^^
 
-这些表达式提供了等同于\ :command:`cmake_path`\ 命令的\ :ref:`Query <Path Query>`\ 选项的生成时功能。\
-所有路径都应该是cmake样式的格式。
+这些表达式提供了等同于\ :command:`cmake_path`\ 命令的\ :ref:`Query <Path Query>`\
+选项的生成时功能。所有路径都应该是cmake样式的格式。
 
 .. genex:: $<PATH:HAS_*,path>
 
@@ -358,8 +358,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   注意以下特殊情况：
 
-  * 对于\ ``HAS_ROOT_PATH``，只有当\ ``root-name``\ 或\ ``root-directory``\ 中至少有一个非空时，\
-    才会返回true结果。
+  * 对于\ ``HAS_ROOT_PATH``，只有当\ ``root-name``\ 或\ ``root-directory``\
+    中至少有一个非空时，才会返回true结果。
 
   * 对于\ ``HAS_PARENT_PATH``，根目录也被认为有一个父目录，即它本身。\
     除非路径仅由\ :ref:`filename <FILENAME_DEF>`\ 组成，否则结果为真。
@@ -368,39 +368,36 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.24
 
-  Returns ``1`` if the path is :ref:`absolute <IS_ABSOLUTE>`, ``0`` otherwise.
+  如果路径是\ :ref:`absolute <IS_ABSOLUTE>`\ 路径则返回\ ``1``，否则返回\ ``0``。
 
 .. genex:: $<PATH:IS_RELATIVE,path>
 
   .. versionadded:: 3.24
 
-  This will return the opposite of ``IS_ABSOLUTE``.
+  这将返回与\ ``IS_ABSOLUTE``\ 相反的结果。
 
 .. genex:: $<PATH:IS_PREFIX[,NORMALIZE],path,input>
 
   .. versionadded:: 3.24
 
-  Returns ``1`` if ``path`` is the prefix of ``input``, ``0`` otherwise.
+  如果\ ``path``\ 是\ ``input``\ 的前缀，则返回\ ``1``，否则返回\ ``0``。
 
-  When the ``NORMALIZE`` option is specified, ``path`` and ``input`` are
-  :ref:`normalized <Normalization>` before the check.
+  当指定\ ``NORMALIZE``\ 选项时，\ ``path``\ 和\ ``input``\ 在检查之前被\
+  :ref:`normalized <Normalization>`。
 
 .. _GenEx Path Decomposition:
 
-Path Decomposition
+路径分解
 ^^^^^^^^^^^^^^^^^^
 
-These expressions provide the generation-time capabilities equivalent to the
-:ref:`Decomposition <Path Decomposition>` options of the :command:`cmake_path`
-command.  All paths are expected to be in cmake-style format.
+这些表达式提供了等同于\ :command:`cmake_path`\ 命令的\ :ref:`Decomposition <Path Decomposition>`\
+选项的生成时功能。所有路径都应该是cmake样式的格式。
 
 .. genex:: $<PATH:GET_*,...>
 
   .. versionadded:: 3.24
 
-  The following operations retrieve a different component or group of
-  components from a path. See :ref:`Path Structure And Terminology` for the
-  meaning of each path component.
+  以下操作从路径中检索不同的组件或组件组。有关每个路径组件的含义，请参阅\ :ref:`Path Structure And Terminology`。
 
   ::
 
@@ -413,8 +410,7 @@ command.  All paths are expected to be in cmake-style format.
     $<PATH:GET_RELATIVE_PART,path>
     $<PATH:GET_PARENT_PATH,path>
 
-  If a requested component is not present in the path, an empty string is
-  returned.
+  如果请求的组件不在路径中，则返回空字符串。
 
 .. _GenEx Path Transformations:
 
