@@ -501,23 +501,21 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   有关详细信息，请参阅\ :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>`。
 
-Shell Paths
+Shell路径
 ^^^^^^^^^^^
 
 .. genex:: $<SHELL_PATH:...>
 
   .. versionadded:: 3.4
 
-  Content of ``...`` converted to shell path style. For example, slashes are
-  converted to backslashes in Windows shells and drive letters are converted
-  to posix paths in MSYS shells. The ``...`` must be an absolute path.
+  ``...``\ 的内容转换为shell路径样式。例如，Windows shell中将斜杠转换为反斜杠，\
+  MSYS shell将盘符转换为posix路径。\ ``...``\ 必须为绝对路径。
 
   .. versionadded:: 3.14
-    The ``...`` may be a :ref:`semicolon-separated list <CMake Language Lists>`
-    of paths, in which case each path is converted individually and a result
-    list is generated using the shell path separator (``:`` on POSIX and
-    ``;`` on Windows).  Be sure to enclose the argument containing this genex
-    in double quotes in CMake source code so that ``;`` does not split arguments.
+    ``...``\ 可以是一个以\ :ref:`以分号分隔的列表 <CMake Language Lists>`，\
+    在这种情况下，每个路径都被单独转换，并且使用shell路径分隔符（\ ``:``\ 之于POSIX及\
+    ``;``\ 之于Windows）。在CMake源代码中，请务必将包含此genex的参数括在双引号中，\
+    以确保参数不被\ ``;``\ 隔开。
 
 Configuration Expressions
 -------------------------
