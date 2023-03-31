@@ -414,13 +414,11 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. _GenEx Path Transformations:
 
-Path Transformations
+路径转换
 ^^^^^^^^^^^^^^^^^^^^
 
-These expressions provide the generation-time capabilities equivalent to the
-:ref:`Modification <Path Modification>` and :ref:`Generation <Path Generation>`
-options of the :command:`cmake_path` command.  All paths are expected to be
-in cmake-style format.
+这些表达式提供了等同于\ :command:`cmake_path`\ 命令的\ :ref:`Modification <Path Modification>`\
+和\ :ref:`Generation <Path Generation>`\ 选项的生成时功能。所有路径都应该是cmake样式的格式。
 
 .. _GenEx PATH-CMAKE_PATH:
 
@@ -428,89 +426,80 @@ in cmake-style format.
 
   .. versionadded:: 3.24
 
-  Returns ``path``. If ``path`` is a native path, it is converted into a
-  cmake-style path with forward-slashes (``/``). On Windows, the long filename
-  marker is taken into account.
+  返回\ ``path``。如果\ ``path``\ 是原生路径，它将转换为带有正斜杠（\ ``/``\ ）的cmake样式的路径。\
+  在Windows上，长文件名标记会被考虑在内。
 
-  When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
-  <Normalization>` after the conversion.
+  当指定\ ``NORMALIZE``\ 选项时，转换后将对路径进行\ :ref:`normalized
+  <Normalization>`。
 
 .. genex:: $<PATH:APPEND,path,input,...>
 
   .. versionadded:: 3.24
 
-  Returns all the ``input`` arguments appended to ``path`` using ``/`` as the
-  ``directory-separator``. Depending on the ``input``, the value of ``path``
-  may be discarded.
+  返回以\ ``/``\ 作为\ ``directory-separator``\ 附加到\ ``path``\ 的所有\ ``input``\ 参数。\
+  根据\ ``input``\ 的不同，\ ``path``\ 的值可能会被丢弃。
 
-  See :ref:`cmake_path(APPEND) <APPEND>` for more details.
+  请参阅\ :ref:`cmake_path(APPEND) <APPEND>`\ 了解更多详细信息。
 
 .. genex:: $<PATH:REMOVE_FILENAME,path>
 
   .. versionadded:: 3.24
 
-  Returns ``path`` with filename component (as returned by
-  ``$<PATH:GET_FILENAME>``) removed. After removal, any trailing
-  ``directory-separator`` is left alone, if present.
+  返回删除了文件名组件（由\ ``$<PATH:GET_FILENAME>``\ 返回）的\ ``path``。删除之后，\
+  任何尾随的\ ``directory-separator``\ （如果存在的话）都将保持不变。
 
-  See :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>` for more details.
+  参见\ :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>`\ 了解更多细节。
 
 .. genex:: $<PATH:REPLACE_FILENAME,path,input>
 
   .. versionadded:: 3.24
 
-  Returns ``path`` with the filename component replaced by ``input``. If
-  ``path`` has no filename component (i.e. ``$<PATH:HAS_FILENAME>`` returns
-  ``0``), ``path`` is unchanged.
+  返回\ ``path``，其中文件组件被\ ``input``\ 替换。如果\ ``path``\ 没有文件名组件\
+  （例如\ ``$<PATH:HAS_FILENAME>``\ 返回\ ``0``），\ ``path``\ 不变。
 
-  See :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>` for more details.
+  参见\ :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>`\ 了解更多细节。
 
 .. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path>
 
   .. versionadded:: 3.24
 
-  Returns ``path`` with the :ref:`extension <EXTENSION_DEF>` removed, if any.
+  返回已删除\ :ref:`extension <EXTENSION_DEF>`\ 的\ ``path``，如果有的话。
 
-  See :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>` for more details.
+  有关详细信息，请参阅\ :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>`。
 
 .. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path,input>
 
   .. versionadded:: 3.24
 
-  Returns ``path`` with the :ref:`extension <EXTENSION_DEF>` replaced by
-  ``input``, if any.
+  返回\ ``path``，其中\ :ref:`extension <EXTENSION_DEF>`\ 替换为\ ``input``，\
+  如果有的话。
 
-  See :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>` for more details.
+  详细信息请参见\ :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>`。
 
 .. genex:: $<PATH:NORMAL_PATH,path>
 
   .. versionadded:: 3.24
 
-  Returns ``path`` normalized according to the steps described in
-  :ref:`Normalization`.
+  返回根据\ :ref:`Normalization`\ 中描述的步骤归一化的\ ``path``。
 
 .. genex:: $<PATH:RELATIVE_PATH,path,base_directory>
 
   .. versionadded:: 3.24
 
-  Returns ``path``, modified to make it relative to the ``base_directory``
-  argument.
+  返回\ ``path``，修改后使其相对于\ ``base_directory``\ 参数。
 
-  See :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>` for more
-  details.
+  有关更多细节，请参阅\ :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>`。
 
 .. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path,base_directory>
 
   .. versionadded:: 3.24
 
-  Returns ``path`` as absolute. If ``path`` is a relative path
-  (``$<PATH:IS_RELATIVE>`` returns ``1``), it is evaluated relative to the
-  given base directory specified by ``base_directory`` argument.
+  返回绝对\ ``path``。如果\ ``path``\ 是一个相对路径（\ ``$<PATH:IS_RELATIVE>``\ 返回\ ``1``），\
+  它将相对于\ ``base_directory``\ 参数指定的给定基目录进行计算。
 
-  When the ``NORMALIZE`` option is specified, the path is
-  :ref:`normalized <Normalization>` after the path computation.
+  当指定\ ``NORMALIZE``\ 选项时，在路径计算之后对路径进行\ :ref:`normalized <Normalization>`。
 
-  See :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>` for more details.
+  有关详细信息，请参阅\ :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>`。
 
 Shell Paths
 ^^^^^^^^^^^
