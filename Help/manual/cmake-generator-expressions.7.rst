@@ -517,50 +517,42 @@ Shell路径
     ``;``\ 之于Windows）。在CMake源代码中，请务必将包含此genex的参数括在双引号中，\
     以确保参数不被\ ``;``\ 隔开。
 
-Configuration Expressions
+配置表达式
 -------------------------
 
 .. genex:: $<CONFIG>
 
-  Configuration name. Use this instead of the deprecated :genex:`CONFIGURATION`
-  generator expression.
+  配置名称。使用此表达式代替已弃用的\ :genex:`CONFIGURATION`\ 生成器表达式。
 
 .. genex:: $<CONFIG:cfgs>
 
-  ``1`` if config is any one of the entries in comma-separated list
-  ``cfgs``, else ``0``. This is a case-insensitive comparison. The mapping in
-  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>` is also considered by this
-  expression when it is evaluated on a property of an :prop_tgt:`IMPORTED`
-  target.
+  如果config是逗号分隔的列表\ ``cfgs``\ 中的任何一项，则为\ ``1``，否则为\ ``0``。\
+  这是一个不区分大小写的比较。当在\ :prop_tgt:`IMPORTED`\ 目标的属性上计算\
+  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`\ 中的映射时，此表达式也会考虑它。
 
   .. versionchanged:: 3.19
-    Multiple configurations can be specified for ``cfgs``.
-    CMake 3.18 and earlier only accepted a single configuration.
+    可以为\ ``cfgs``\ 指定多种配置。CMake 3.18和更早的版本只接受单一配置。
 
 .. genex:: $<OUTPUT_CONFIG:...>
 
   .. versionadded:: 3.20
 
-  Only valid in :command:`add_custom_command` and :command:`add_custom_target`
-  as the outer-most generator expression in an argument.
-  With the :generator:`Ninja Multi-Config` generator, generator expressions
-  in ``...`` are evaluated using the custom command's "output config".
-  With other generators, the content of ``...`` is evaluated normally.
+  仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中作为参\
+  数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表达式在\
+  ``...``\ 使用自定义命令的“输出配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
 
 .. genex:: $<COMMAND_CONFIG:...>
 
   .. versionadded:: 3.20
 
-  Only valid in :command:`add_custom_command` and :command:`add_custom_target`
-  as the outer-most generator expression in an argument.
-  With the :generator:`Ninja Multi-Config` generator, generator expressions
-  in ``...`` are evaluated using the custom command's "command config".
-  With other generators, the content of ``...`` is evaluated normally.
+  仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中作为参\
+  数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表达式在\
+  ``...``\ 使用自定义命令的“命令配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
 
-Toolchain And Language Expressions
+工具链和语言表达式
 ----------------------------------
 
-Platform
+平台
 ^^^^^^^^
 
 .. genex:: $<PLATFORM_ID>
@@ -569,9 +561,8 @@ Platform
 
 .. genex:: $<PLATFORM_ID:platform_ids>
 
-  ``1`` if CMake's platform id matches any one of the entries in
-  comma-separated list ``platform_ids``, otherwise ``0``.
-  See also the :variable:`CMAKE_SYSTEM_NAME` variable.
+  如果CMake的平台id与逗号分隔的\ ``platform_ids``\ 列表中的任何一个项匹配，则为\ ``1``，\
+  否则为\ ``0``。另请参阅\ :variable:`CMAKE_SYSTEM_NAME`\ 变量。
 
 Compiler Version
 ^^^^^^^^^^^^^^^^
