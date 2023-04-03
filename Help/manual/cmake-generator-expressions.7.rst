@@ -564,95 +564,94 @@ Shell路径
   如果CMake的平台id与逗号分隔的\ ``platform_ids``\ 列表中的任何一个项匹配，则为\ ``1``，\
   否则为\ ``0``。另请参阅\ :variable:`CMAKE_SYSTEM_NAME`\ 变量。
 
-Compiler Version
+编译器版本
 ^^^^^^^^^^^^^^^^
 
-See also the :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable, which is
-closely related to the expressions in this sub-section.
+另请参阅\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量，该变量与本小节中的表达式密切相关。
 
 .. genex:: $<C_COMPILER_VERSION>
 
-  The version of the C compiler used.
+  使用的C编译器版本。
 
 .. genex:: $<C_COMPILER_VERSION:version>
 
-  ``1`` if the version of the C compiler matches ``version``, otherwise ``0``.
+  如果C编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CXX_COMPILER_VERSION>
 
-  The version of the CXX compiler used.
+  使用的CXX编译器的版本。
 
 .. genex:: $<CXX_COMPILER_VERSION:version>
 
-  ``1`` if the version of the CXX compiler matches ``version``, otherwise ``0``.
+  如果CXX编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CUDA_COMPILER_VERSION>
 
   .. versionadded:: 3.15
 
-  The version of the CUDA compiler used.
+  使用的CUDA编译器的版本。
 
 .. genex:: $<CUDA_COMPILER_VERSION:version>
 
   .. versionadded:: 3.15
 
-  ``1`` if the version of the CXX compiler matches ``version``, otherwise ``0``.
+  如果CUDA编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJC_COMPILER_VERSION>
 
   .. versionadded:: 3.16
 
-  The version of the OBJC compiler used.
+  使用的OBJC编译器的版本。
 
 .. genex:: $<OBJC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  ``1`` if the version of the OBJC compiler matches ``version``, otherwise ``0``.
+  如果OBJC编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJCXX_COMPILER_VERSION>
 
   .. versionadded:: 3.16
 
-  The version of the OBJCXX compiler used.
+  使用的OBJCXX编译器的版本。
 
 .. genex:: $<OBJCXX_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  ``1`` if the version of the OBJCXX compiler matches ``version``, otherwise ``0``.
+  如果OBJCXX编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<Fortran_COMPILER_VERSION>
 
-  The version of the Fortran compiler used.
+  使用的Fortran编译器的版本。
 
 .. genex:: $<Fortran_COMPILER_VERSION:version>
 
-  ``1`` if the version of the Fortran compiler matches ``version``, otherwise ``0``.
+  如果Fortran编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<HIP_COMPILER_VERSION>
 
   .. versionadded:: 3.21
 
-  The version of the HIP compiler used.
+  使用的HIP编译器的版本。
 
 .. genex:: $<HIP_COMPILER_VERSION:version>
 
   .. versionadded:: 3.21
 
-  ``1`` if the version of the HIP compiler matches ``version``, otherwise ``0``.
+  如果HIP编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<ISPC_COMPILER_VERSION>
 
   .. versionadded:: 3.19
 
-  The version of the ISPC compiler used.
+  使用的ISPC编译器的版本。
 
 .. genex:: $<ISPC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.19
 
-  ``1`` if the version of the ISPC compiler matches ``version``, otherwise ``0``.
+  如果ISPC编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
 Compiler Language And ID
 ^^^^^^^^^^^^^^^^^^^^^^^^
