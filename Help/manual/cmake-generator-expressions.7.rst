@@ -653,111 +653,102 @@ Shell路径
 
   如果ISPC编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
-Compiler Language And ID
+编译器语言和ID
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-See also the :variable:`CMAKE_<LANG>_COMPILER_ID` variable, which is closely
-related to most of the expressions in this sub-section.
+另请参阅\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量，该变量与本小节中的大多数表达式密切相关。
 
 .. genex:: $<C_COMPILER_ID>
 
-  CMake's compiler id of the C compiler used.
+  CMake使用的C编译器的id。
 
 .. genex:: $<C_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the C compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的C编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CXX_COMPILER_ID>
 
-  CMake's compiler id of the CXX compiler used.
+  CMake使用的CXX编译器的id。
 
 .. genex:: $<CXX_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the CXX compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的CXX编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CUDA_COMPILER_ID>
 
   .. versionadded:: 3.15
 
-  CMake's compiler id of the CUDA compiler used.
+  CMake使用的CUDA编译器的id。
 
 .. genex:: $<CUDA_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.15
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the CUDA compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的CUDA编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJC_COMPILER_ID>
 
   .. versionadded:: 3.16
 
-  CMake's compiler id of the OBJC compiler used.
+  CMake使用的OBJC编译器的id。
 
 .. genex:: $<OBJC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the Objective-C compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Objective-C编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJCXX_COMPILER_ID>
 
   .. versionadded:: 3.16
 
-  CMake's compiler id of the OBJCXX compiler used.
+  CMake使用的OBJCXX编译器的id。
 
 .. genex:: $<OBJCXX_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the Objective-C++ compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Objective-C++编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<Fortran_COMPILER_ID>
 
-  CMake's compiler id of the Fortran compiler used.
+  CMake使用的Fortran编译器的id。
 
 .. genex:: $<Fortran_COMPILER_ID:compiler_ids>
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the Fortran compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Fortran编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<HIP_COMPILER_ID>
 
   .. versionadded:: 3.21
 
-  CMake's compiler id of the HIP compiler used.
+  CMake使用的HIP编译器的id。
 
 .. genex:: $<HIP_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.21
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the HIP compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的HIP编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<ISPC_COMPILER_ID>
 
   .. versionadded:: 3.19
 
-  CMake's compiler id of the ISPC compiler used.
+  CMake使用的ISPC编译器的id。
 
 .. genex:: $<ISPC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.19
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler id of the ISPC compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的ISPC编译器id与\ ``compiler_ids``\
+  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<COMPILE_LANGUAGE>
 
