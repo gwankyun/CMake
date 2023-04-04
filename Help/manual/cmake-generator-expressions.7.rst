@@ -754,7 +754,8 @@ Shell路径
 
   .. versionadded:: 3.3
 
-  计算编译选项时源文件的编译语言。关于生成器表达式的可移植性，请参阅\ :ref:`相关的布尔表达式 <Boolean COMPILE_LANGUAGE Generator Expression>`\ ``$<COMPILE_LANGUAGE:language>``。
+  计算编译选项时源文件的编译语言。关于生成器表达式的可移植性，请参阅\
+  :ref:`相关的布尔表达式 <Boolean COMPILE_LANGUAGE Generator Expression>`\ ``$<COMPILE_LANGUAGE:language>``。
 
 .. _`Boolean COMPILE_LANGUAGE Generator Expression`:
 
@@ -763,14 +764,10 @@ Shell路径
   .. versionadded:: 3.3
 
   .. versionchanged:: 3.15
-    Multiple languages can be specified for ``languages``.
-    CMake 3.14 and earlier only accepted a single language.
+    可以为\ ``languages``\ 指定多种语言。CMake 3.14及更早版本只接受单一语言。
 
-  ``1`` when the language used for compilation unit matches any of the
-  comma-separated entries in ``languages``, otherwise ``0``. This expression
-  may be used to specify compile options, compile definitions, and include
-  directories for source files of a particular language in a target. For
-  example:
+  当用于编译单元的语言与\ ``languages``\ 中任何以逗号分隔的条目匹配时，则为\ ``1``，\
+  否则为\ ``0``。此表达式可用于指定编译选项、编译定义，并在目标中包含特定语言的源文件的目录。例如：
 
   .. code-block:: cmake
 
@@ -786,20 +783,15 @@ Shell路径
       PRIVATE $<$<COMPILE_LANGUAGE:CXX,CUDA>:/opt/foo/headers>
     )
 
-  This specifies the use of the ``-fno-exceptions`` compile option,
-  ``COMPILING_CXX`` compile definition, and ``cxx_headers`` include
-  directory for C++ only (compiler id checks elided).  It also specifies
-  a ``COMPILING_CUDA`` compile definition for CUDA.
+  这指定了仅用于C++的（编译器id检查省略）\ ``-fno-exceptions``\ 编译选项、\
+  ``COMPILING_CXX``\ 编译定义和\ ``cxx_headers``\ 包含目录。它还为CUDA指定了\
+  ``COMPILING_CUDA``\ 编译定义。
 
-  Note that with :ref:`Visual Studio Generators` and :generator:`Xcode` there
-  is no way to represent target-wide compile definitions or include directories
-  separately for ``C`` and ``CXX`` languages.
-  Also, with :ref:`Visual Studio Generators` there is no way to represent
-  target-wide flags separately for ``C`` and ``CXX`` languages.  Under these
-  generators, expressions for both C and C++ sources will be evaluated
-  using ``CXX`` if there are any C++ sources and otherwise using ``C``.
-  A workaround is to create separate libraries for each source file language
-  instead:
+  注意，在\ :ref:`Visual Studio Generators`\ 和\ :generator:`Xcode`\ 中，\
+  没有办法表示目标范围的编译定义，也没有办法分别包含\ ``C``\ 和\ ``CXX``\ 语言的目录。而且，\
+  使用\ :ref:`Visual Studio Generators`，无法分别为\ ``C``\ 语言和\ ``CXX``\ 语言表\
+  示目标范围的标志。在这些生成器下，C和C++源的表达式如果有任何C++源，将使用\ ``CXX``\ 求值，\
+  否则使用\ ``C``\ 求值。一个解决方法是为每种源文件语言创建单独的库：
 
   .. code-block:: cmake
 
