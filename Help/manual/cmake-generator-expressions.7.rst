@@ -805,14 +805,11 @@ Shell路径
 
   .. versionadded:: 3.15
 
-  ``1`` when the language used for compilation unit matches ``language`` and
-  CMake's compiler id of the ``language`` compiler matches any one of the
-  comma-separated entries in ``compiler_ids``, otherwise ``0``. This expression
-  is a short form for the combination of ``$<COMPILE_LANGUAGE:language>`` and
-  ``$<LANG_COMPILER_ID:compiler_ids>``. This expression may be used to specify
-  compile options, compile definitions, and include directories for source
-  files of a particular language and compiler combination in a target.
-  For example:
+  当编译单元使用的语言与\ ``language``\ 匹配，且\ ``language``\ 编译器的CMake的编译器id与\
+  ``compiler_ids``\ 中任何一个以逗号分隔的条目匹配时，则为\ ``1``，否则为\ ``0``。这个表达式是\
+  ``$<COMPILE_LANGUAGE:language>``\ 和\ ``$<LANG_COMPILER_ID:compiler_ids>``\
+  组合的简写形式。此表达式可用于指定编译选项、编译定义，及目标中特定语言的源文件和编译\
+  器组合的包含目录。例如：
 
   .. code-block:: cmake
 
@@ -823,15 +820,12 @@ Shell路径
               $<$<COMPILE_LANG_AND_ID:C,Clang>:COMPILING_C_WITH_CLANG>
     )
 
-  This specifies the use of different compile definitions based on both
-  the compiler id and compilation language. This example will have a
-  ``COMPILING_CXX_WITH_CLANG`` compile definition when Clang is the CXX
-  compiler, and ``COMPILING_CXX_WITH_INTEL`` when Intel is the CXX compiler.
-  Likewise, when the C compiler is Clang, it will only see the
-  ``COMPILING_C_WITH_CLANG`` definition.
+  这指定了基于编译器id和编译语言的不同编译定义的使用。当Clang是CXX编译器时，这个例子将有一个\
+  ``COMPILING_CXX_WITH_CLANG``\ 编译定义，当Intel是CXX编译器时，这个例子将有一个\
+  ``COMPILING_CXX_WITH_INTEL``\ 编译定义。同样，当C编译器是Clang时，它只能看到\
+  ``COMPILING_C_WITH_CLANG``\ 定义。
 
-  Without the ``COMPILE_LANG_AND_ID`` generator expression, the same logic
-  would be expressed as:
+  如果没有\ ``COMPILE_LANG_AND_ID``\ 生成器表达式，相同的逻辑将表示为：
 
   .. code-block:: cmake
 
@@ -841,33 +835,28 @@ Shell路径
               $<$<AND:$<COMPILE_LANGUAGE:C>,$<C_COMPILER_ID:Clang>>:COMPILING_C_WITH_CLANG>
     )
 
-Compile Features
+编译特性
 ^^^^^^^^^^^^^^^^
 
 .. genex:: $<COMPILE_FEATURES:features>
 
   .. versionadded:: 3.1
 
-  where ``features`` is a comma-separated list.
-  Evaluates to ``1`` if all of the ``features`` are available for the 'head'
-  target, and ``0`` otherwise. If this expression is used while evaluating
-  the link implementation of a target and if any dependency transitively
-  increases the required :prop_tgt:`C_STANDARD` or :prop_tgt:`CXX_STANDARD`
-  for the 'head' target, an error is reported.  See the
-  :manual:`cmake-compile-features(7)` manual for information on
-  compile features and a list of supported compilers.
+  其中\ ``features``\ 是一个逗号分隔的列表。如果'head'目标的所有\ ``features``\ 都可用，\
+  则返回\ ``1``，否则返回\ ``0``。如果在计算目标的链接实现时使用此表达式，并且如果任何依赖\
+  项传递性地增加了'head'目标所需的\ :prop_tgt:`C_STANDARD`\ 或\ :prop_tgt:`CXX_STANDARD`，\
+  则会报告错误。有关编译特性的信息和支持的编译器列表，请参阅\ :manual:`cmake-compile-features(7)`\ 手册。
 
-Linker Language And ID
+链接器语言和ID
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<LINK_LANGUAGE>
 
   .. versionadded:: 3.18
 
-  The link language of the target when evaluating link options.
-  See :ref:`the related boolean expression
-  <Boolean LINK_LANGUAGE Generator Expression>` ``$<LINK_LANGUAGE:languages>``
-  for notes about the portability of this generator expression.
+  计算链接选项时，目标的链接语言。请参阅\ :ref:`相关的布尔表达式
+  <Boolean LINK_LANGUAGE Generator Expression>` ``$<LINK_LANGUAGE:languages>``，\
+  以了解该生成器表达式的可移植性。
 
   .. note::
 
@@ -880,10 +869,8 @@ Linker Language And ID
 
   .. versionadded:: 3.18
 
-  ``1`` when the language used for link step matches any of the comma-separated
-  entries in ``languages``, otherwise ``0``.  This expression may be used to
-  specify link libraries, link options, link directories and link dependencies
-  of a particular language in a target. For example:
+  当用于链接步骤的语言匹配\ ``languages``\ 中任何以逗号分隔的条目时，则为\ ``1``，否则为\ ``0``。\
+  此表达式可用于指定目标中特定语言的链接库、链接选项、链接目录和链接依赖项。例如：
 
   .. code-block:: cmake
 
@@ -901,25 +888,18 @@ Linker Language And ID
     add_executable(myapp2 main.cpp)
     target_link_options(myapp2 PRIVATE api)
 
-  This specifies to use the ``api`` target for linking targets ``myapp1`` and
-  ``myapp2``. In practice, ``myapp1`` will link with target ``api_C`` and
-  option ``-opt_c`` because it will use ``C`` as link language. And ``myapp2``
-  will link with ``api_CXX`` and option ``-opt_cxx`` because ``CXX`` will be
-  the link language.
+  这指定使用\ ``api``\ 目标来链接目标\ ``myapp1``\ 和\ ``myapp2``。实际上，\ ``myapp1``\
+  将与目标\ ``api_C``\ 和选项\ ``-opt_c``\ 进行链接，因为它将使用\ ``C``\ 作为链接语言。\
+  ``myapp2``\ 将使用\ ``api_CXX``\ 和选项\ ``-opt_cxx``\ 链接，因为\ ``CXX``\ 将是链接语言。
 
   .. _`Constraints LINK_LANGUAGE Generator Expression`:
 
   .. note::
 
-    To determine the link language of a target, it is required to collect,
-    transitively, all the targets which will be linked to it. So, for link
-    libraries properties, a double evaluation will be done. During the first
-    evaluation, ``$<LINK_LANGUAGE:..>`` expressions will always return ``0``.
-    The link language computed after this first pass will be used to do the
-    second pass. To avoid inconsistency, it is required that the second pass
-    do not change the link language. Moreover, to avoid unexpected
-    side-effects, it is required to specify complete entities as part of the
-    ``$<LINK_LANGUAGE:..>`` expression. For example:
+    为了确定目标的链接语言，需要传递地收集将链接到它的所有目标。因此，对于链接库属性，\
+    将进行双重计算。在第一次求值期间，\ ``$<LINK_LANGUAGE:..>``\ 表达式总是返回\ ``0``。\
+    在第一次传递之后计算的链接语言将用于第二次传递。为了避免不一致，要求第二次传递不改变链接语言。\
+    此外，为了避免意外的副作用，需要指定完整的实体作为\ ``$<LINK_LANGUAGE:..>``\ 表达式。例如：
 
     .. code-block:: cmake
 
@@ -934,12 +914,10 @@ Linker Language And ID
       add_executable(myapp2 main.c)
       target_link_libraries(myapp2 PRIVATE $<$<LINK_LANGUAGE:C>:libother>)
 
-    In this example, for ``myapp1``, the first pass will, unexpectedly,
-    determine that the link language is ``CXX`` because the evaluation of the
-    generator expression will be an empty string so ``myapp1`` will depends on
-    target ``lib`` which is ``C++``. On the contrary, for ``myapp2``, the first
-    evaluation will give ``C`` as link language, so the second pass will
-    correctly add target ``libother`` as link dependency.
+    在本例中，对于\ ``myapp1``，第一次传递将意外地确定链接语言是\ ``CXX``，\
+    因为生成器表达式的计算将是一个空字符串，因此\ ``myapp1``\ 将依赖于\ ``C++``\ 的目标\
+    ``lib``。相反，对于\ ``myapp2``，第一次评估将给出\ ``C``\ 作为链接语言，\
+    因此第二次评估将正确地添加目标\ ``libother``\ 作为链接依赖项。
 
 .. genex:: $<LINK_LANG_AND_ID:language,compiler_ids>
 
