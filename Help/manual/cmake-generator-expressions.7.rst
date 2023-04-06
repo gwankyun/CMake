@@ -923,13 +923,11 @@ Shell路径
 
   .. versionadded:: 3.18
 
-  ``1`` when the language used for link step matches ``language`` and the
-  CMake's compiler id of the language linker matches any one of the comma-separated
-  entries in ``compiler_ids``, otherwise ``0``. This expression is a short form
-  for the combination of ``$<LINK_LANGUAGE:language>`` and
-  ``$<LANG_COMPILER_ID:compiler_ids>``. This expression may be used to specify
-  link libraries, link options, link directories and link dependencies of a
-  particular language and linker combination in a target. For example:
+  当用于链接步骤的语言匹配\ ``language``\ 并且语言链接器的CMake编译器id匹配\
+  ``compiler_ids``\ 中任何一个逗号分隔的条目时，则为\ ``1``，否则为\ ``0``。\
+  该表达式是\ ``$<LINK_LANGUAGE:language>``\ 和\ ``$<LANG_COMPILER_ID:compiler_ids>``\
+  组合的简写形式。此表达式可用于指定目标中特定语言和链接器组合的链接库、链接选项、链接目录和\
+  链接依赖项。例如：
 
   .. code-block:: cmake
 
@@ -948,18 +946,15 @@ Shell路径
               $<$<LINK_LANG_AND_ID:CXX,Intel>:libCXX_Intel>
               $<$<LINK_LANG_AND_ID:C,Intel>:libC_Intel>)
 
-  This specifies the use of different link libraries based on both the
-  compiler id and link language. This example will have target ``libCXX_Clang``
-  as link dependency when ``Clang`` or ``AppleClang`` is the ``CXX``
-  linker, and ``libCXX_Intel`` when ``Intel`` is the ``CXX`` linker.
-  Likewise when the ``C`` linker is ``Clang`` or ``AppleClang``, target
-  ``libC_Clang`` will be added as link dependency and ``libC_Intel`` when
-  ``Intel`` is the ``C`` linker.
+  这指定了基于编译器id和链接语言的不同链接库的使用。当\ ``Clang``\ 或\ ``AppleClang``\ 是\
+  ``CXX``\ 链接器时，这个例子将把目标\ ``libCXX_Intel``\ 作为链接依赖项，当\ ``Intel``\
+  是\ ``CXX``\ 链接器时，将把目标\ ``libCXX_Intel``\ 作为链接依赖项。同样地，当\ ``C``\
+  链接器是\ ``Clang``\ 或\ ``AppleClang``\ 时，目标\ ``libC_Clang``\ 将被添加为链接依\
+  赖项，当\ ``Intel``\ 是\ ``C``\ 链接器时，目标\ ``libC_Intel``\ 将被添加为链接依赖项。
 
-  See :ref:`the note related to
-  <Constraints LINK_LANGUAGE Generator Expression>`
-  ``$<LINK_LANGUAGE:language>`` for constraints about the usage of this
-  generator expression.
+  有关使用此生成器表达式的约束，请参阅\ :ref:`相关的说明
+  <Constraints LINK_LANGUAGE Generator Expression>`\
+  ``$<LINK_LANGUAGE:language>``。
 
 Link Features
 ^^^^^^^^^^^^^
