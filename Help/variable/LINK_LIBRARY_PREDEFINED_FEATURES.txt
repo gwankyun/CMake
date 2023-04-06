@@ -1,23 +1,17 @@
 ``DEFAULT``
-  This feature corresponds to standard linking, essentially equivalent to
-  using no feature at all.  It is typically only used with the
-  :prop_tgt:`LINK_LIBRARY_OVERRIDE` and
-  :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>` target properties.
+  这个特性对应于标准链接，本质上等同于不使用任何特性。它通常只与\ :prop_tgt:`LINK_LIBRARY_OVERRIDE`\
+  和\ :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>`\ 目标属性一起使用。
 
 ``WHOLE_ARCHIVE``
-  Force inclusion of all members of a static library.  This feature is only
-  supported for the following platforms, with limitations as noted:
+  强制包含静态库的所有成员。此功能仅支持以下平台，其局限性如下所示：
 
   * Linux.
-  * All BSD variants.
+  * 所有BSD变体.
   * SunOS.
-  * All Apple variants.  The library must be specified as a CMake target name,
-    a library file name (such as ``libfoo.a``), or a library file path (such as
-    ``/path/to/libfoo.a``).  Due to a limitation of the Apple linker, it
-    cannot be specified as a plain library name like ``foo``, where ``foo``
-    is not a CMake target.
-  * Windows.  When using a MSVC or MSVC-like toolchain, the MSVC version must
-    be greater than 1900.
+  * 所有Apple的变种。库必须指定为CMake目标名称、库文件名（如\ ``libfoo.a``）或库文件路径\
+    （如\ ``/path/to/libfoo.a``）。由于Apple链接器的限制，它不能被指定为普通的库名，比如\
+    ``foo``，其中\ ``foo``\ 不是CMake目标。
+  * Windows。当使用MSVC或类似MSVC的工具链时，MSVC版本必须大于1900。
   * Cygwin.
   * MSYS.
 

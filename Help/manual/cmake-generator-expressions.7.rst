@@ -956,15 +956,14 @@ Shell路径
   <Constraints LINK_LANGUAGE Generator Expression>`\
   ``$<LINK_LANGUAGE:language>``。
 
-Link Features
+链接特性
 ^^^^^^^^^^^^^
 
 .. genex:: $<LINK_LIBRARY:feature,library-list>
 
   .. versionadded:: 3.24
 
-  Specify a set of libraries to link to a target, along with a ``feature``
-  which provides details about *how* they should be linked.  For example:
+  指定一组要链接到目标的库，以及提供关于应该\ *如何*\ 链接它们的详细信息的\ ``feature``。例如：
 
   .. code-block:: cmake
 
@@ -972,12 +971,10 @@ Link Features
     add_library(lib2 ...)
     target_link_libraries(lib2 PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,lib1>")
 
-  This specifies that ``lib2`` should link to ``lib1`` and use the
-  ``WHOLE_ARCHIVE`` feature when doing so.
+  这指定\ ``lib2``\ 应该链接到\ ``lib1``，并在这样做时使用\ ``WHOLE_ARCHIVE``\ 特性。
 
-  Feature names are case-sensitive and may only contain letters, numbers and
-  underscores.  Feature names defined in all uppercase are reserved for CMake's
-  own built-in features.  The pre-defined built-in library features are:
+  特性名称区分大小写，只能包含字母、数字和下划线。所有大写的特性名称都保留给CMake自己的内置\
+  特性。预定义的内置库特性包括：
 
   .. include:: ../variable/LINK_LIBRARY_PREDEFINED_FEATURES.txt
 
