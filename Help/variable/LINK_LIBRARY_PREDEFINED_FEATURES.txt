@@ -16,16 +16,12 @@
   * MSYS.
 
 ``FRAMEWORK``
-  This option tells the linker to search for the specified framework using
-  the ``-framework`` linker option.  It can only be used on Apple platforms,
-  and only with a linker that understands the option used (i.e. the linker
-  provided with Xcode, or one compatible with it).
+  该选项告诉链接器使用\ ``-framework``\ 链接器选项搜索指定的框架。它只能在苹果平台上使用，\
+  并且只能使用一个理解所使用选项的链接器（即Xcode提供的链接器，或与之兼容的链接器）。
 
-  The framework can be specified as a CMake framework target, a bare framework
-  name, or a file path.  If a target is given, that target must have the
-  :prop_tgt:`FRAMEWORK` target property set to true.  For a file path, if it
-  contains a directory part, that directory will be added as a framework
-  search path.
+  该框架可以指定为CMake框架目标、裸框架名称或文件路径。如果给出了一个目标，该目标必须将\
+  :prop_tgt:`FRAMEWORK`\ 目标属性设置为true。对于文件路径，如果它包含目录部分，则该目录\
+  将被添加为框架搜索路径。
 
   .. code-block:: cmake
 
@@ -35,28 +31,21 @@
     # The constructed linker command line will contain:
     #   -F/path/to -framework my_framework
 
-  File paths must conform to one of the following patterns (``*`` is a
-  wildcard, and optional parts are shown as ``[...]``):
+  文件路径必须符合以下模式之一（``*``\ 为通配符，可选部分显示为\ ``[...]``）：
 
      * ``[/path/to/]FwName[.framework]``
      * ``[/path/to/]FwName.framework/FwName[suffix]``
      * ``[/path/to/]FwName.framework/Versions/*/FwName[suffix]``
 
-  Note that CMake recognizes and automatically handles framework targets,
-  even without using the :genex:`$<LINK_LIBRARY:FRAMEWORK,...>` expression.
-  The generator expression can still be used with a CMake target if the
-  project wants to be explicit about it, but it is not required to do so.
-  The linker command line may have some differences between using the
-  generator expression or not, but the final result should be the same.
-  On the other hand, if a file path is given, CMake will recognize some paths
-  automatically, but not all cases.  The project may want to use
-  :genex:`$<LINK_LIBRARY:FRAMEWORK,...>` for file paths so that the expected
-  behavior is clear.
+  注意，CMake识别并自动处理框架目标，即使不使用\ :genex:`$<LINK_LIBRARY:FRAMEWORK,...>`\
+  表达式。生成器表达式仍然可以与CMake目标一起使用，如果项目想显式地使用它，但并不要求这样做。\
+  链接器命令行在使用生成器表达式或不使用生成器表达式之间可能有一些差异，但最终结果应该是相同的。\
+  另一方面，如果给出了文件路径，CMake会自动识别一些路径，但不是所有情况。项目可能需要使用\
+  :genex:`$<LINK_LIBRARY:FRAMEWORK,...>`\ 的文件路径，以便预期的行为是明确的。
 
   .. versionadded:: 3.25
-    The :prop_tgt:`FRAMEWORK_MULTI_CONFIG_POSTFIX_<CONFIG>` target property as
-    well as the ``suffix`` of the framework library name are now supported by
-    the ``FRAMEWORK`` features.
+    ``FRAMEWORK``\ 特性现在支持\ :prop_tgt:`FRAMEWORK_MULTI_CONFIG_POSTFIX_<CONFIG>`\
+    目标属性以及框架库名称的\ ``suffix``。
 
 ``NEEDED_FRAMEWORK``
   This is similar to the ``FRAMEWORK`` feature, except it forces the linker
