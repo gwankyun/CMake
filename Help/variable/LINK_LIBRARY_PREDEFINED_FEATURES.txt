@@ -48,37 +48,27 @@
     目标属性以及框架库名称的\ ``suffix``。
 
 ``NEEDED_FRAMEWORK``
-  This is similar to the ``FRAMEWORK`` feature, except it forces the linker
-  to link with the framework even if no symbols are used from it.  It uses
-  the ``-needed_framework`` option and has the same linker constraints as
-  ``FRAMEWORK``.
+  这类似于\ ``FRAMEWORK``\ 特性，除了它强制链接器链接到框架，即使没有从框架中使用符号。\
+  它使用\ ``-needed_framework``\ 选项，并具有与\ ``FRAMEWORK``\ 相同的链接器约束。
 
 ``REEXPORT_FRAMEWORK``
-  This is similar to the ``FRAMEWORK`` feature, except it tells the linker
-  that the framework should be available to clients linking to the library
-  being created.  It uses the ``-reexport_framework`` option and has the
-  same linker constraints as ``FRAMEWORK``.
+  这类似于\ ``FRAMEWORK``\ 特性，除了它告诉链接器框架应该对链接到正在创建的库的客户端可用。\
+  它使用\ ``-reexport_framework``\ 选项，并具有与\ ``FRAMEWORK``\ 相同的链接器约束。
 
 ``WEAK_FRAMEWORK``
-  This is similar to the ``FRAMEWORK`` feature, except it forces the linker
-  to mark the framework and all references to it as weak imports.  It uses
-  the ``-weak_framework`` option and has the same linker constraints as
-  ``FRAMEWORK``.
+  这类似\ ``FRAMEWORK``\ 特性，除了它强制链接器将框架及其所有引用标记为弱导入。它使用\
+  ``-weak_framework``\ 选项，并具有与\ ``FRAMEWORK``\ 相同的链接器约束。
 
 ``NEEDED_LIBRARY``
-  This is similar to the ``NEEDED_FRAMEWORK`` feature, except it is for use
-  with non-framework targets or libraries (Apple platforms only).
-  It uses the ``-needed_library`` or ``-needed-l`` option as appropriate,
-  and has the same linker constraints as ``NEEDED_FRAMEWORK``.
+  这类似于\ ``NEEDED_FRAMEWORK``\ 特性，除了它用于非框架目标或库（仅限苹果平台）。它适当\
+  地使用\ ``-needed_library``\ 或\ ``-needed-l``\ 选项，并具有与\ ``NEEDED_FRAMEWORK``\
+  相同的链接器约束。
 
 ``REEXPORT_LIBRARY``
-  This is similar to the ``REEXPORT_FRAMEWORK`` feature,  except it is for use
-  with non-framework targets or libraries (Apple platforms only).
-  It uses the ``-reexport_library`` or ``-reexport-l`` option as appropriate,
-  and has the same linker constraints as ``REEXPORT_FRAMEWORK``.
+  这类似于\ ``REEXPORT_FRAMEWORK``\ 特性，除了它用于非框架目标或库（仅限苹果平台）。\
+  它适当地使用\ ``-reexport_library``\ 或\ ``-reexport-l``\ 选项，并具有与\
+  ``REEXPORT_FRAMEWORK``\ 相同的链接器约束。
 
 ``WEAK_LIBRARY``
-  This is similar to the ``WEAK_FRAMEWORK`` feature, except it is for use
-  with non-framework targets or libraries (Apple platforms only).
-  It uses the ``-weak_library`` or ``-weak-l`` option as appropriate,
-  and has the same linker constraints as ``WEAK_FRAMEWORK``.
+  这类似于\ ``WEAK_FRAMEWORK``\ 特性，除了它用于非框架目标或库（仅限苹果平台）。它适当地使用\
+  ``-weak_library``\ 或\ ``-weak-l``\ 选项，并具有与\ ``WEAK_FRAMEWORK``\ 相同的链接器约束。
