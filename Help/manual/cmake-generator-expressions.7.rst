@@ -1053,35 +1053,28 @@ Shell路径
 
   .. include:: ../variable/LINK_GROUP_PREDEFINED_FEATURES.txt
 
-  Built-in and custom group features are defined in terms of the following
-  variables:
+  内置和自定义组功能是根据以下变量定义的：
 
   * :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
   * :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`
   * :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
   * :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>`
 
-  The value used for each of these variables is the value as set at the end of
-  the directory scope in which the target was created.  The usage is as follows:
+  用于每个变量的值是在创建目标的目录作用域的末尾设置的值。用法如下：
 
-  1. If the language-specific
-     :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED` variable
-     is true, the ``feature`` must be defined by the corresponding
-     :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>` variable.
-  2. If no language-specific ``feature`` is supported, then the
-     :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED` variable must be
-     true and the ``feature`` must be defined by the corresponding
-     :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>` variable.
+  1. 如果特定于语言的\ :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`\
+     变量为真，则该\ ``feature``\ 必须由相应的\ :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`\
+     变量定义。
+  2. 如果不支持特定于语言的 ``feature``，则\ :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED`\
+     变量必须为真，并且该\ ``feature``\ 必须由相应的\
+     :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>`\ 变量定义。
 
-  The ``LINK_GROUP`` generator expression is compatible with the
-  :genex:`LINK_LIBRARY` generator expression. The libraries involved in a
-  group can be specified using the :genex:`LINK_LIBRARY` generator expression.
+  ``LINK_GROUP``\ 生成器表达式与\ :genex:`LINK_LIBRARY`\ 生成器表达式兼容。可以使用\
+  :genex:`LINK_LIBRARY`\ 生成器表达式指定组中涉及的库。
 
-  Each target or external library involved in the link step is allowed to be
-  part of multiple groups, but only if all the groups involved specify the
-  same ``feature``.  Such groups will not be merged on the linker command line,
-  the individual groups will still be preserved.  Mixing different group
-  features for the same target or library is forbidden.
+  链接步骤中涉及的每个目标或外部库都可以是多个组的一部分，但前提是所有涉及的组都指定了相同的\
+  ``feature``。这样的组不会在链接器命令行上被合并，单独的组仍然会被保留。禁止为相同的目标\
+  或库混合不同的组特征。
 
   .. code-block:: cmake
 
@@ -1100,9 +1093,8 @@ Shell路径
     # An error will be raised here because both lib1 and lib3 are part of two
     # groups with different features.
 
-  When a target or an external library is involved in the link step as part of
-  a group and also as not part of any group, any occurrence of the non-group
-  link item will be replaced by the groups it belongs to.
+  当目标或外部库作为组的一部分参与链接步骤，同时又不属于任何组时，任何出现的非组链接项都将被\
+  它所属的组替换。
 
   .. code-block:: cmake
 
@@ -1116,17 +1108,15 @@ Shell路径
     target_link_libraries(lib4 PRIVATE lib3 "$<LINK_GROUP:feature1,lib1,lib2>")
     # lib4 will only be linked with lib3 and the group {lib1,lib2}
 
-  Because ``lib1`` is part of the group defined for ``lib4``, that group then
-  gets applied back to the use of ``lib1`` for ``lib3``.  The end result will
-  be as though the linking relationship for ``lib3`` had been specified as:
+  因为\ ``lib1``\ 是为\ ``lib4``\ 定义的组的一部分，所以这个组将应用回对\ ``lib3``\ 使用\
+  ``lib1``。最终结果就像\ ``lib3``\ 的链接关系被指定为：
 
   .. code-block:: cmake
 
     target_link_libraries(lib3 PUBLIC "$<LINK_GROUP:feature1,lib1,lib2>")
 
-  Be aware that the precedence of the group over the non-group link item can
-  result in circular dependencies between groups.  If this occurs, a fatal
-  error is raised because circular dependencies are not allowed for groups.
+  注意，组相对于非组链接项的优先级可能导致组之间的循环依赖关系。如果发生这种情况，将引发致命\
+  错误，因为不允许组使用循环依赖项。
 
   .. code-block:: cmake
 
@@ -1146,36 +1136,29 @@ Shell路径
       "$<LINK_GROUP:feat,lib2A,lib2B>"
     )
 
-  Because of the groups defined for ``lib3``, the linking relationships for
-  ``lib1A`` and ``lib2B`` effectively get expanded to the equivalent of:
+  由于为\ ``lib3``\ 定义了组，\ ``lib1A``\ 和\ ``lib2B``\ 的链接关系有效地扩展为等价的：
 
   .. code-block:: cmake
 
     target_link_libraries(lib1A PUBLIC "$<LINK_GROUP:feat,lib2A,lib2B>")
     target_link_libraries(lib2B PUBLIC "$<LINK_GROUP:feat,lib1A,lib1B>")
 
-  This creates a circular dependency between groups:
-  ``lib1A --> lib2B --> lib1A``.
+  这在组之间创建了一个循环依赖：\ ``lib1A --> lib2B --> lib1A``。
 
-  The following limitations should also be noted:
+  还应注意以下限制：
 
-  * The ``library-list`` can specify CMake targets or libraries.
-    Any CMake target of type :ref:`OBJECT <Object Libraries>`
-    or :ref:`INTERFACE <Interface Libraries>` will ignore the feature aspect
-    of the expression and instead be linked in the standard way.
+  * ``library-list``\ 可以指定CMake目标或库。任何\ :ref:`OBJECT <Object Libraries>`\
+    或\ :ref:`INTERFACE <Interface Libraries>`\ 类型的CMake目标都将忽略表达式的特征方面，\
+    而是以标准方式链接。
 
-  * The ``$<LINK_GROUP:...>`` generator expression can only be used to
-    specify link libraries.  In practice, this means it can appear in the
-    :prop_tgt:`LINK_LIBRARIES`, :prop_tgt:`INTERFACE_LINK_LIBRARIES`,and
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` target properties, and be
-    specified in :command:`target_link_libraries` and :command:`link_libraries`
-    commands.
+  * ``$<LINK_GROUP:...>``\ 生成器表达式只能用于指定链接库。实际上，这意味着它可以出现在\
+    :prop_tgt:`LINK_LIBRARIES`、:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT`\ 目标属性中，并在\
+    :command:`target_link_libraries`\ 和\ :command:`link_libraries`\ 命令中指定。
 
-  * If a ``$<LINK_GROUP:...>`` generator expression appears in the
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES` property of a target, it will be
-    included in the imported target generated by a :command:`install(EXPORT)`
-    command.  It is the responsibility of the environment consuming this
-    import to define the link feature used by this expression.
+  * 如果\ ``$<LINK_GROUP:...>``\ 生成器表达式出现在目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+    属性中，它将包含在由\ :command:`install(EXPORT)`\ 命令生成的导入目标中。使用此导入\
+    的环境负责定义此表达式使用的链接特性。
 
 Link Context
 ^^^^^^^^^^^^
