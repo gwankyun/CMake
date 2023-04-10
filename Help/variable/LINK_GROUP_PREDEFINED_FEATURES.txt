@@ -1,22 +1,12 @@
 ``RESCAN``
-  Some linkers are single-pass only.  For such linkers, circular references
-  between libraries typically result in unresolved symbols.  This feature
-  instructs the linker to search the specified static libraries repeatedly
-  until no new undefined references are created.
+  有些链接器只能单次通过。对于这样的链接器，库之间的循环引用通常会导致无法解析的符号。该特性\
+  指示链接器重复搜索指定的静态库，直到没有新的未定义引用被创建为止。
 
-  Normally, a static library is searched only once in the order that it is
-  specified on the command line.  If a symbol in that library is needed to
-  resolve an undefined symbol referred to by an object in a library that
-  appears later on the command line, the linker would not be able to resolve
-  that reference.  By grouping the static libraries with the ``RESCAN``
-  feature, they will all be searched repeatedly until all possible references
-  are resolved.  This will use linker options like ``--start-group`` and
-  ``--end-group``, or on SunOS, ``-z rescan-start`` and ``-z rescan-end``.
+  通常，静态库只按照在命令行中指定的顺序搜索一次。如果需要该库中的符号来解析稍后出现在命令行\
+  上的库中对象引用的未定义符号，则链接器将无法解析该引用。通过使用\ ``RESCAN``\ 特性对静态\
+  库进行分组，将重复搜索它们，直到解析所有可能的引用。这将使用链接器选项，如\ ``--start-group``\
+  和\ ``--end-group``，或者在SunOS上的\ ``-z rescan-start``\ 和\ ``-z rescan-end``。
 
-  Using this feature has a significant performance cost. It is best to use it
-  only when there are unavoidable circular references between two or more
-  static libraries.
+  使用这个特性会带来很大的性能成本。最好只在两个或多个静态库之间存在不可避免的循环引用时使用它。
 
-  This feature is available when using toolchains that target Linux, BSD, and
-  SunOS.  It can also be used when targeting Windows platforms if the GNU
-  toolchain is used.
+  该特性在使用针对Linux、BSD和SunOS的工具链时可用。如果使用GNU工具链，它也可以用于Windows平台。

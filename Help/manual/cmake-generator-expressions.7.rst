@@ -1037,8 +1037,7 @@ Shell路径
 
   .. versionadded:: 3.24
 
-  Specify a group of libraries to link to a target, along with a ``feature``
-  which defines how that group should be linked.  For example:
+  指定要链接到目标的库组，以及定义该组应如何链接的\ ``feature``。例如:
 
   .. code-block:: cmake
 
@@ -1046,14 +1045,11 @@ Shell路径
     add_library(lib2 ...)
     target_link_libraries(lib2 PRIVATE "$<LINK_GROUP:RESCAN,lib1,external>")
 
-  This specifies that ``lib2`` should link to ``lib1`` and ``external``, and
-  that both of those two libraries should be included on the linker command
-  line according to the definition of the ``RESCAN`` feature.
+  这指定\ ``lib2``\ 应该链接到\ ``lib1``\ 和\ ``external``\ 库，并且根据\ ``RESCAN``\
+  特性的定义，这两个库都应该包含在链接器命令行中。
 
-  Feature names are case-sensitive and may only contain letters, numbers and
-  underscores.  Feature names defined in all uppercase are reserved for CMake's
-  own built-in features.  Currently, there is only one pre-defined built-in
-  group feature:
+  特性名称区分大小写，只能包含字母、数字和下划线。所有大写的特性名称都保留给CMake自己的内置\
+  特性。目前，只有一个预定义的内置组特性：
 
   .. include:: ../variable/LINK_GROUP_PREDEFINED_FEATURES.txt
 
