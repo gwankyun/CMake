@@ -1193,41 +1193,36 @@ Shell路径
 
 .. _`Target-Dependent Queries`:
 
-Target-Dependent Expressions
+依赖于目标的表达式
 ----------------------------
 
-These queries refer to a target ``tgt``. Unless otherwise stated, this can
-be any runtime artifact, namely:
+这些查询引用目标\ ``tgt``。除非另有说明，这可以是任何运行时工件，即：
 
-* An executable target created by :command:`add_executable`.
-* A shared library target (``.so``, ``.dll`` but not their ``.lib`` import
-  library) created by :command:`add_library`.
-* A static library target created by :command:`add_library`.
+* 由\ :command:`add_executable`\ 创建的可执行目标。
+* 由\ :command:`add_library`\ 创建的共享库目标（\ ``.so``、\ ``.dll``\ 而不是他们的\ ``.lib``\ 导入库）。
+* 由\ :command:`add_library`\ 创建的静态库目标。
 
-In the following, the phrase "the ``tgt`` filename" means the name of the
-``tgt`` binary file. This has to be distinguished from the phrase
-"the target name", which is just the string ``tgt``.
+在下文中，短语“\ ``tgt``\ 文件名”指的是\ ``tgt``\ 二进制文件的名称。这必须与短语“目标名称”\
+区别开来，后者只是字符串\ ``tgt``。
 
 .. genex:: $<TARGET_EXISTS:tgt>
 
   .. versionadded:: 3.12
 
-  ``1`` if ``tgt`` exists as a CMake target, else ``0``.
+  如果\ ``tgt``\ 作为CMake目标存在，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<TARGET_NAME_IF_EXISTS:tgt>
 
   .. versionadded:: 3.12
 
-  The target name ``tgt`` if the target exists, an empty string otherwise.
+  如果目标存在，则目标名\ ``tgt``，否则为空字符串。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_NAME:...>
 
-  Marks ``...`` as being the name of a target.  This is required if exporting
-  targets to multiple dependent export sets.  The ``...`` must be a literal
-  name of a target, it may not contain generator expressions.
+  标志着\ ``...``\ 作为目标的名字。如果将目标导出到多个依赖的导出集，这是必需的。\ ``...``\
+  必须是目标的字面名称，它不能包含生成器表达式。
 
 .. genex:: $<TARGET_PROPERTY:tgt,prop>
 
