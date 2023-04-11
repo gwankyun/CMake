@@ -1160,41 +1160,35 @@ Shell路径
     属性中，它将包含在由\ :command:`install(EXPORT)`\ 命令生成的导入目标中。使用此导入\
     的环境负责定义此表达式使用的链接特性。
 
-Link Context
+链接上下文
 ^^^^^^^^^^^^
 
 .. genex:: $<LINK_ONLY:...>
 
   .. versionadded:: 3.1
 
-  Content of ``...``, except while collecting :ref:`Target Usage Requirements`,
-  in which case it is the empty string.  This is intended for use in an
-  :prop_tgt:`INTERFACE_LINK_LIBRARIES` target property, typically populated
-  via the :command:`target_link_libraries` command, to specify private link
-  dependencies without other usage requirements.
+  ``...``\ 的内容，但在收集传递\ :ref:`Target Usage Requirements`\ 时除外，在这种情况下，\
+  它是空字符串。这用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 目标属性中，通常通过\
+  :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖关系，而不需要其他使用要求。
 
   .. versionadded:: 3.24
-    ``LINK_ONLY`` may also be used in a :prop_tgt:`LINK_LIBRARIES` target
-    property.  See policy :policy:`CMP0131`.
+    ``LINK_ONLY``\ 也可以在\ :prop_tgt:`LINK_LIBRARIES`\ 目标属性中使用。参见策略\
+    :policy:`CMP0131`。
 
 .. genex:: $<DEVICE_LINK:list>
 
   .. versionadded:: 3.18
 
-  Returns the list if it is the device link step, an empty list otherwise.
-  The device link step is controlled by :prop_tgt:`CUDA_SEPARABLE_COMPILATION`
-  and :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS` properties and
-  policy :policy:`CMP0105`. This expression can only be used to specify link
-  options.
+  如果是设备链接步骤，则返回列表，否则返回空列表。设备链接步骤由\ :prop_tgt:`CUDA_SEPARABLE_COMPILATION`\
+  和\ :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS`\ 属性和策略\ :policy:`CMP0105`\ 控制。\
+  此表达式只能用于指定链接选项。
 
 .. genex:: $<HOST_LINK:list>
 
   .. versionadded:: 3.18
 
-  Returns the list if it is the normal link step, an empty list otherwise.
-  This expression is mainly useful when a device link step is also involved
-  (see :genex:`$<DEVICE_LINK:list>` generator expression). This expression can
-  only be used to specify link options.
+  如果是普通的链接步骤，则返回列表，否则返回空列表。当还涉及到设备链接步骤时，此表达式相当有用\
+  （请参阅\ :genex:`$<DEVICE_LINK:list>`\ 生成器表达式）。此表达式只能用于指定链接选项。
 
 
 .. _`Target-Dependent Queries`:
