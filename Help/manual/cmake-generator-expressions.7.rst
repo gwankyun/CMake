@@ -1263,22 +1263,17 @@ Shell路径
 
   .. versionadded:: 3.15
 
-  Base name of ``tgt``, i.e. ``$<TARGET_FILE_NAME:tgt>`` without prefix and
-  suffix.
-  For example, if the ``tgt`` filename is ``libbase.so``, the base name is ``base``.
+  ``tgt``\ 的基本名称，即不带前缀和后缀的\ ``$<TARGET_FILE_NAME:tgt>``。例如，如果\
+  ``tgt``\ 文件名是\ ``libbase.so``，基名是\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  :prop_tgt:`LIBRARY_OUTPUT_NAME` and :prop_tgt:`RUNTIME_OUTPUT_NAME`
-  target properties and their configuration specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>`, :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`、\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 和\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ 目标属性\
+  及其特定于配置的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`、\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`\ 和\ :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_FILE_PREFIX:tgt>
 
