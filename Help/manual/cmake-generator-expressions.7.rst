@@ -1226,46 +1226,38 @@ Shell路径
 
 .. genex:: $<TARGET_PROPERTY:tgt,prop>
 
-  Value of the property ``prop`` on the target ``tgt``.
+  目标\ ``tgt``\ 上的属性\ ``prop``\ 的值。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
   .. versionchanged:: 3.26
-    When encountered during evaluation of :ref:`Target Usage Requirements`,
-    typically in an ``INTERFACE_*`` target property, lookup of the ``tgt``
-    name occurs in the directory of the target specifying the requirement,
-    rather than the directory of the consuming target for which the
-    expression is being evaluated.
+    当在评估\ :ref:`Target Usage Requirements`\ 期间遇到时，通常是在\ ``INTERFACE_*``\
+    目标属性中，在指定需求的目标的目录中查找\ ``tgt``\ 名称，而不是在计算表达式的消费目\
+    标的目录中。
 
 .. genex:: $<TARGET_PROPERTY:prop>
 
-  Value of the property ``prop`` on the target for which the expression
-  is being evaluated. Note that for generator expressions in
-  :ref:`Target Usage Requirements` this is the consuming target rather
-  than the target specifying the requirement.
+  属性\ ``prop``\ 在表达式被求值的目标上的值。注意，对于\ :ref:`Target Usage Requirements`\
+  中的生成器表达式，这是消费目标，而不是指定需求的目标。
 
 .. genex:: $<TARGET_OBJECTS:tgt>
 
   .. versionadded:: 3.1
 
-  List of objects resulting from building ``tgt``.  This would typically be
-  used on :ref:`object library <Object Libraries>` targets.
+  生成\ ``tgt``\ 产生的对象列表。这通常用于\ :ref:`object library <Object Libraries>`\
+  目标
 
 .. genex:: $<TARGET_POLICY:policy>
 
-  ``1`` if the ``policy`` was ``NEW`` when the 'head' target was created,
-  else ``0``.  If the ``policy`` was not set, the warning message for the policy
-  will be emitted. This generator expression only works for a subset of
-  policies.
+  如果创建'head'目标时策略为\ ``policy``，则为\ ``1``，否则为\ ``0``。如果没有设置\
+  ``policy``，则会发出策略的警告消息。此生成器表达式仅适用于策略的一个子集。
 
 .. genex:: $<TARGET_FILE:tgt>
 
-  Full path to the ``tgt`` binary file.
+  ``tgt``\ 二进制文件的完整路径。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on, unless the expression is being used in
-  :command:`add_custom_command` or :command:`add_custom_target`.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的，除非该表达式在\
+  :command:`add_custom_command`\ 或\ :command:`add_custom_target`\ 中使用。
 
 .. genex:: $<TARGET_FILE_BASE_NAME:tgt>
 
