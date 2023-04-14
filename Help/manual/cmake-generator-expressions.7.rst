@@ -1279,44 +1279,38 @@ Shell路径
 
   .. versionadded:: 3.15
 
-  Prefix of the ``tgt`` filename (such as ``lib``).
+  ``tgt``\ 文件名的前缀（例如\ ``lib``）。
 
-  See also the :prop_tgt:`PREFIX` target property.
+  请参见\ :prop_tgt:`PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Suffix of the ``tgt`` filename (extension such as ``.so`` or ``.exe``).
+  ``tgt``\ 文件名的后缀（扩展名如\ ``.so``\ 或\ ``.exe``）。
 
-  See also the :prop_tgt:`SUFFIX` target property.
+  请参见\ :prop_tgt:`SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_FILE_NAME:tgt>
 
-  The ``tgt`` filename.
+  ``tgt``\ 文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_FILE_DIR:tgt>
 
-  Directory of the ``tgt`` binary file.
+  ``tgt``\ 二进制文件的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 
-  File used when linking to the ``tgt`` target.  This will usually
-  be the library that ``tgt`` represents (``.a``, ``.lib``, ``.so``),
-  but for a shared library on DLL platforms, it would be the ``.lib``
-  import library associated with the DLL.
+  链接到\ ``tgt``\ 目标时使用的文件。这通常是\ ``tgt``\ 表示的库（\ ``.a``、\ ``.lib``、\
+  ``.so``），但对于DLL平台上的共享库，它将是与DLL关联的\ ``.lib``\ 导入库。
 
 .. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt>
 
