@@ -1316,176 +1316,147 @@ Shell路径
 
   .. versionadded:: 3.15
 
-  Base name of file used to link the target ``tgt``, i.e.
-  ``$<TARGET_LINKER_FILE_NAME:tgt>`` without prefix and suffix. For example,
-  if target file name is ``libbase.a``, the base name is ``base``.
+  用于链接目标\ ``tgt``\ 的基本文件名，例如\ ``$<TARGET_LINKER_FILE_NAME:tgt>``，\
+  不带前缀和后缀。例如，目标文件名为\ ``libbase.a``，基本名称为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  and :prop_tgt:`LIBRARY_OUTPUT_NAME` target properties and their configuration
-  specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
+  和\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性及其特定于配置的变体\
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>`、:prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
+  和\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_LINKER_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Prefix of file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的文件前缀。
 
-  See also the :prop_tgt:`PREFIX` and :prop_tgt:`IMPORT_PREFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`PREFIX`\ 和\ :prop_tgt:`IMPORT_PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_LINKER_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.15
 
-  Suffix of file used to link where ``tgt`` is the name of a target.
+  用于链接的文件后缀，其中\ ``tgt``\ 是目标的名称。
 
-  The suffix corresponds to the file extension (such as ".so" or ".lib").
+  后缀对应于文件扩展名（例如".so"或".lib"）。
 
-  See also the :prop_tgt:`SUFFIX` and :prop_tgt:`IMPORT_SUFFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`SUFFIX`\ 和\ :prop_tgt:`IMPORT_SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_LINKER_FILE_NAME:tgt>
 
-  Name of file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_LINKER_FILE_DIR:tgt>
 
-  Directory of file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的文件目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_SONAME_FILE:tgt>
 
-  File with soname (``.so.3``) where ``tgt`` is the name of a target.
+  带有soname（\ ``.so.3``）的文件，其中\ ``tgt``\ 是目标的名称。
 .. genex:: $<TARGET_SONAME_FILE_NAME:tgt>
 
-  Name of file with soname (``.so.3``).
+  带有soname（\ ``.so.3``）的文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_SONAME_FILE_DIR:tgt>
 
-  Directory of with soname (``.so.3``).
+  使用soname（\ ``.so.3``）的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_PDB_FILE:tgt>
 
   .. versionadded:: 3.1
 
-  Full path to the linker generated program database file (.pdb)
-  where ``tgt`` is the name of a target.
+  链接器生成的程序数据库文件（.pdb）的完整路径，其中\ ``tgt``\ 是目标的名称。
 
-  See also the :prop_tgt:`PDB_NAME` and :prop_tgt:`PDB_OUTPUT_DIRECTORY`
-  target properties and their configuration specific variants
-  :prop_tgt:`PDB_NAME_<CONFIG>` and :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`.
+  另请参阅\ :prop_tgt:`PDB_NAME`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ 目标属性及\
+  其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`。
 
 .. genex:: $<TARGET_PDB_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  Base name of the linker generated program database file (.pdb)
-  where ``tgt`` is the name of a target.
+  链接器生成的程序数据库文件（.pdb）的基本名称，其中\ ``tgt``\ 是目标的名称。
 
-  The base name corresponds to the target PDB file name (see
-  ``$<TARGET_PDB_FILE_NAME:tgt>``) without prefix and suffix. For example,
-  if target file name is ``base.pdb``, the base name is ``base``.
+  基本名称对应于不带前缀和后缀的目标PDB文件名（参见\ ``$<TARGET_PDB_FILE_NAME:tgt>``）。\
+  例如，如果目标文件名是\ ``base.pdb``，基本名称为\ ``base``。
 
-  See also the :prop_tgt:`PDB_NAME` target property and its configuration
-  specific variant :prop_tgt:`PDB_NAME_<CONFIG>`.
+  另请参阅\ :prop_tgt:`PDB_NAME`\ 目标属性及其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
 .. genex:: $<TARGET_PDB_FILE_NAME:tgt>
 
   .. versionadded:: 3.1
 
-  Name of the linker generated program database file (.pdb).
+  链接器生成的程序数据库文件（.pdb）的名称。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_PDB_FILE_DIR:tgt>
 
   .. versionadded:: 3.1
 
-  Directory of the linker generated program database file (.pdb).
+  链接器生成的程序数据库文件（.pdb）的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_BUNDLE_DIR:tgt>
 
   .. versionadded:: 3.9
 
-  Full path to the bundle directory (``/path/to/my.app``,
-  ``/path/to/my.framework``, or ``/path/to/my.bundle``),
-  where ``tgt`` is the name of a target.
+  bundle目录的完整路径（\ ``/path/to/my.app``、\ ``/path/to/my.framework``\ 或者\
+  ``/path/to/my.bundle``），其中\ ``tgt``\ 是目标的名称。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_BUNDLE_DIR_NAME:tgt>
 
   .. versionadded:: 3.24
 
-  Name of the bundle directory (``my.app``, ``my.framework``, or
-  ``my.bundle``), where ``tgt`` is the name of a target.
+  bundle目录的名称（\ ``my.app``、\ ``my.framework``\ 或者\ ``my.bundle``），其中\
+  ``tgt``\ 是目标的名称。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_BUNDLE_CONTENT_DIR:tgt>
 
   .. versionadded:: 3.9
 
-  Full path to the bundle content directory where ``tgt`` is the name of a
-  target.  For the macOS SDK it leads to ``/path/to/my.app/Contents``,
-  ``/path/to/my.framework``, or ``/path/to/my.bundle/Contents``.
-  For all other SDKs (e.g. iOS) it leads to ``/path/to/my.app``,
-  ``/path/to/my.framework``, or ``/path/to/my.bundle`` due to the flat
-  bundle structure.
+  bundle内容目录的完整路径，其中\ ``tgt``\ 是目标的名称。对于macOS SDK，它指向\
+  ``/path/to/my.app/Contents``、\ ``/path/to/my.framework``\ 或\
+  ``/path/to/my.bundle/Contents``。对于所有其他SDK（例如iOS），它指向\
+  ``/path/to/my.app``、\ ``/path/to/my.framework``\ 或\ ``/path/to/my.bundle`` ，\
+  因为它们的扁平bundle结构。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on (see policy :policy:`CMP0112`).
+  请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
 .. genex:: $<TARGET_RUNTIME_DLLS:tgt>
 
   .. versionadded:: 3.21
 
-  List of DLLs that the target depends on at runtime. This is determined by
-  the locations of all the ``SHARED`` targets in the target's transitive
-  dependencies. Using this generator expression on targets other than
-  executables, ``SHARED`` libraries, and ``MODULE`` libraries is an error.
-  **On non-DLL platforms, this expression always evaluates to an empty string**.
+  目标在运行时依赖的DLL列表。这是由目标的传递依赖项中所有 ``SHARED`` 目标的位置决定的。\
+  在可执行文件、\ ``SHARED``\ 库和\ ``MODULE``\ 库以外的目标上使用此生成器表达式是错误的。\
+  **在非dll平台上，这个表达式总是求值为空字符串**。
 
-  This generator expression can be used to copy all of the DLLs that a target
-  depends on into its output directory in a ``POST_BUILD`` custom command using
-  the :option:`cmake -E copy -t <cmake-E copy>` command. For example:
+  可以使用\ :option:`cmake -E copy -t <cmake-E copy>`\
+  命令将目标所依赖的所有DLL复制到\ ``POST_BUILD``\ 自定义命令的输出目录中。例如：
 
   .. code-block:: cmake
 
@@ -1500,24 +1471,20 @@ Shell路径
 
   .. note::
 
-    :ref:`Imported Targets` are supported only if they know the location
-    of their ``.dll`` files.  An imported ``SHARED`` library must have
-    :prop_tgt:`IMPORTED_LOCATION` set to its ``.dll`` file.  See the
-    :ref:`add_library imported libraries <add_library imported libraries>`
-    section for details.  Many :ref:`Find Modules` produce imported targets
-    with the ``UNKNOWN`` type and therefore will be ignored.
+    :ref:`Imported Targets`\ 的目标只有在知道其\ ``.dll``\ 文件的位置时才会被支持。\
+    导入的\ ``SHARED``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为其\ ``.dll``\
+    文件。有关详细信息，请参阅\ :ref:`add_library imported libraries <add_library imported libraries>`\
+    部分。许多查找模块生成\ ``UNKNOWN``\ 类型的导入目标，因此将被忽略。
 
-On platforms that support runtime paths (``RPATH``), refer to the
-:prop_tgt:`INSTALL_RPATH` target property.
-On Apple platforms, refer to the :prop_tgt:`INSTALL_NAME_DIR` target property.
+在支持运行时路径（\ ``RPATH``\ ）的平台上，请参考\ :prop_tgt:`INSTALL_RPATH`\ 目标属性。\
+在Apple平台上，请参考\ :prop_tgt:`INSTALL_NAME_DIR`\ 目标属性。
 
-Export And Install Expressions
+导出和安装表达式
 ------------------------------
 
 .. genex:: $<INSTALL_INTERFACE:...>
 
-  Content of ``...`` when the property is exported using
-  :command:`install(EXPORT)`, and empty otherwise.
+  ``...``\ 的内容当使用\ :command:`install(EXPORT)`\ 导出属性时，否则为空。
 
 .. genex:: $<BUILD_INTERFACE:...>
 
@@ -1527,38 +1494,32 @@ Export And Install Expressions
 
   .. versionadded:: 3.26
 
-  Content of ``...`` when the target is used by another target in the same
-  buildsystem. Expands to the empty string otherwise.
+  ``...``\ 的内容当目标被同一构建系统中的另一个目标使用时。否则展开为空字符串。
 
 .. genex:: $<INSTALL_PREFIX>
 
-  Content of the install prefix when the target is exported via
-  :command:`install(EXPORT)`, or when evaluated in the
-  :prop_tgt:`INSTALL_NAME_DIR` property or the ``INSTALL_NAME_DIR`` argument of
-  :command:`install(RUNTIME_DEPENDENCY_SET)`, and empty otherwise.
+  当通过\ :command:`install(EXPORT)`\ 导出目标时，或在\ :prop_tgt:`INSTALL_NAME_DIR`\
+  属性或\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ 的\ ``INSTALL_NAME_DIR``\
+  参数中求值时，安装前缀的内容，否则为空。
 
-Multi-level Expression Evaluation
+多层次表达式求值
 ---------------------------------
 
 .. genex:: $<GENEX_EVAL:expr>
 
   .. versionadded:: 3.12
 
-  Content of ``expr`` evaluated as a generator expression in the current
-  context. This enables consumption of generator expressions whose
-  evaluation results itself in generator expressions.
+  在当前上下文中作为生成器表达式计算的\ ``expr``\ 的内容。这允许使用生成器表达式，\
+  其计算结果本身就是生成器表达式。
 
 .. genex:: $<TARGET_GENEX_EVAL:tgt,expr>
 
   .. versionadded:: 3.12
 
-  Content of ``expr`` evaluated as a generator expression in the context of
-  ``tgt`` target. This enables consumption of custom target properties that
-  themselves contain generator expressions.
+  ``expr``\ 的内容在\ ``tgt``\ 目标的上下文中作为生成器表达式计算。这允许使用本身包含生成\
+  器表达式的自定义目标属性。
 
-  Having the capability to evaluate generator expressions is very useful when
-  you want to manage custom properties supporting generator expressions.
-  For example:
+  当你希望管理支持生成器表达式的自定义属性时，具有计算生成器表达式的功能非常有用。例如：
 
   .. code-block:: cmake
 
@@ -1572,13 +1533,11 @@ Multi-level Expression Evaluation
       COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_PROPERTY:foo,CUSTOM_KEYS>
     )
 
-  This naive implementation of the ``printFooKeys`` custom command is wrong
-  because ``CUSTOM_KEYS`` target property is not evaluated and the content
-  is passed as is (i.e. ``$<$<CONFIG:DEBUG>:FOO_EXTRA_THINGS>``).
+  ``printFooKeys``\ 自定义命令的简单实现是错误的，因为\ ``CUSTOM_KEYS``\ 目标属性没有被计算，\
+  并且内容按原样传递（即\ ``$<$<CONFIG:DEBUG>:FOO_EXTRA_THINGS>``）。
 
-  To have the expected result (i.e. ``FOO_EXTRA_THINGS`` if config is
-  ``Debug``), it is required to evaluate the output of
-  ``$<TARGET_PROPERTY:foo,CUSTOM_KEYS>``:
+  为了得到预期的结果（例如，如果config是\ ``Debug``，则\ ``FOO_EXTRA_THINGS``），\
+  需要计算\ ``$<TARGET_PROPERTY:foo,CUSTOM_KEYS>``\ 的输出：
 
   .. code-block:: cmake
 
@@ -1587,28 +1546,26 @@ Multi-level Expression Evaluation
         echo $<TARGET_GENEX_EVAL:foo,$<TARGET_PROPERTY:foo,CUSTOM_KEYS>>
     )
 
-Escaped Characters
+转义字符
 ------------------
 
-These expressions evaluate to specific string literals. Use them in place of
-the actual string literal where you need to prevent them from having their
-special meaning.
+这些表达式求值为特定的字符串字面量。使用它们来代替实际的字符串字面量，以防止它们具有特殊的含义。
 
 .. genex:: $<ANGLE-R>
 
-  A literal ``>``. Used for example to compare strings that contain a ``>``.
+  一个\ ``>``\ 字面量。例如，用于比较包含\ ``>``\ 的字符串。
 
 .. genex:: $<COMMA>
 
-  A literal ``,``. Used for example to compare strings which contain a ``,``.
+  一个\ ``,``\ 字面量。用于比较包含\ ``,``\ 的字符串。
 
 .. genex:: $<SEMICOLON>
 
-  A literal ``;``. Used to prevent list expansion on an argument with ``;``.
+  一个\ ``;``\ 字面量。用于防止\ ``;``\ 对参数进行列表扩展。
 
-Deprecated Expressions
+弃用表达式
 ----------------------
 
 .. genex:: $<CONFIGURATION>
 
-  Configuration name. Deprecated since CMake 3.0. Use :genex:`CONFIG` instead.
+  配置名称。CMake 3.0后已弃用。用\ :genex:`CONFIG`\ 代替。
