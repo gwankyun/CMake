@@ -9,37 +9,29 @@ cmake-configure-log(7)
 
    .. contents::
 
-Introduction
+介绍
 ============
 
-CMake writes a running log, known as the *configure log*,
-of certain events that occur during the Configure step.
-The configure log does *not* contain a log of all output, errors,
-or messages printed while configuring a project.  It is a log of
-detailed information about specific events, such as toolchain inspection
-by :command:`try_compile`, meant for use in debugging the configuration
-of a build tree.
+CMake写一个运行日志，称为\ *configure log*，记录在配置步骤中发生的某些事件。配置日志\ *不*\
+包含配置项目时打印的所有输出、错误或消息的日志。它是关于特定事件的详细信息的日志，例如由\
+:command:`try_compile`\ 进行的工具链检查，用于调试构建树的配置。
 
-For human use, this version of CMake writes the configure log to the file::
+对于人类使用，这个版本的CMake将配置日志写入文件::
 
   ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeConfigureLog.yaml
 
-However, the *location and name of the log file may change* in future
-versions of CMake.  Tools that read the configure log should get its
-location using a :ref:`configureLog <file-api configureLog>` query to
-the :manual:`cmake-file-api(7)`.
-See the `Log Versioning`_ section below for details.
+但是，在CMake的未来版本中，\ *日志文件的位置和名称可能会改变*。读取配置日志的工具应该使用对\
+:manual:`cmake-file-api(7)`\ 的\ :ref:`configureLog <file-api configureLog>`\
+查询来获取它的位置。有关详细信息，请参阅下面的\ `Log Versioning`_\ 控制部分。
 
-Log Structure
+日志结构
 =============
 
-The configure log is designed to be both machine- and human-readable.
+配置日志被设计为机器可读和人类可读。
 
-The log file is a YAML document stream containing zero or more YAML
-documents separated by document markers.  Each document begins
-with a ``---`` document marker line, contains a single YAML mapping
-that logs events from one CMake "configure" step, and, if the configure
-step finished normally, ends with a ``...`` document marker line:
+日志文件是一个YAML文档流，包含零个或多个用文档标记分隔的YAML文档。每个文档都以\ ``---``\
+文档标记行开始，包含单个YAML映射，用于记录来自一个CMake “配置”步骤的事件，如果配置步\
+骤正常完成，则以\ ``...``\ 文件标记线结束：
 
 .. code-block:: yaml
 
@@ -53,15 +45,13 @@ step finished normally, ends with a ``...`` document marker line:
       # (other fields omitted)
   ...
 
-A new document is appended to the log every time CMake configures
-the build tree and logs new events.
+每当CMake配置构建树并记录新事件时，都会将一个新文档追加到日志中。
 
-The keys of the each document root mapping are:
+每个文档根映射的键是：
 
 ``events``
-  A YAML block sequence of nodes corresponding to events logged during
-  one CMake "configure" step.  Each event is a YAML node containing one
-  of the `Event Kinds`_ documented below.
+  一个节点的YAML块序列，对应于在一个CMake“配置”步骤中记录的事件。每个事件都是一个YAML节点，\
+  包含下面记录的\ `Event Kinds`_\ 之一。
 
 Log Versioning
 --------------
