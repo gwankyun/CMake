@@ -3,8 +3,8 @@ find_path
 
 .. |FIND_XXX| replace:: find_path
 .. |NAMES| replace:: NAMES name1 [name2 ...]
-.. |SEARCH_XXX| replace:: file in a directory
-.. |SEARCH_XXX_DESC| replace:: directory containing the named file
+.. |SEARCH_XXX| replace:: 目录中的文件
+.. |SEARCH_XXX_DESC| replace:: 包含已命令文件的目录
 .. |prefix_XXX_SUBDIR| replace:: ``<prefix>/include``
 .. |entry_XXX_SUBDIR| replace:: ``<entry>/include``
 

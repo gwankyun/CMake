@@ -1,10 +1,10 @@
-A short-hand signature is:
+一个简短的签名是：
 
 .. parsed-literal::
 
    |FIND_XXX| (<VAR> name1 [path1 path2 ...])
 
-The general signature is:
+一般签名为：
 
 .. parsed-literal::
 
@@ -31,12 +31,9 @@ The general signature is:
               NO_CMAKE_FIND_ROOT_PATH]
             )
 
-This command is used to find a |SEARCH_XXX_DESC|.
-A cache entry, or a normal variable if ``NO_CACHE`` is specified,
-named by ``<VAR>`` is created to store the result of this command.
-If the |SEARCH_XXX| is found the result is stored in the variable
-and the search will not be repeated unless the variable is cleared.
-If nothing is found, the result will be ``<VAR>-NOTFOUND``.
+该命令用于查找\ |SEARCH_XXX_DESC|。创建一个缓存条目（如果指定了\ ``NO_CACHE``，则为\
+``<VAR>``\ 命名的普通变量）来存储此命令的结果。如果找到了\ |SEARCH_XXX| ，则结果将存储在\
+变量中，除非清除该变量，否则将不会重复搜索。如果没有找到，结果将是\ ``<VAR>-NOTFOUND``。
 
 Options include:
 
