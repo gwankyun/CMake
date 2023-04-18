@@ -11,15 +11,12 @@ find_package
 
    .. contents::
 
-.. note:: The :guide:`使用依赖项指南` provides a high-level
-  introduction to this general topic. It provides a broader overview of
-  where the ``find_package()`` command fits into the bigger picture,
-  including its relationship to the :module:`FetchContent` module.
-  The guide is recommended pre-reading before moving on to the details below.
+.. note:: :guide:`使用依赖项指南`\ 提供了这个通用主题的高级介绍。它更广泛地概述了\
+  ``find_package()``\ 命令在全局中的位置，包括它与\ :module:`FetchContent`\ 模块的关系。\
+  建议在阅读下面的细节之前先阅读一下这本指南。
 
-Find a package (usually provided by something external to the project),
-and load its package-specific details.  Calls to this command can also
-be intercepted by :ref:`dependency providers <dependency_providers>`.
+找到一个包（通常由项目外部提供），并加载其特定于包的详细信息。对该命令的调用也可能被\
+:ref:`dependency providers <dependency_providers>`\ 拦截。
 
 Search Modes
 ^^^^^^^^^^^^

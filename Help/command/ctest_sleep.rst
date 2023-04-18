@@ -1,7 +1,7 @@
 ctest_sleep
 -----------
 
-sleeps for some amount of time
+睡一段时间
 
 .. code-block:: cmake
 

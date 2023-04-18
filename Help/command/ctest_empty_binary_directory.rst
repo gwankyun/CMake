@@ -1,7 +1,7 @@
 ctest_empty_binary_directory
 ----------------------------
 
-empties the binary directory
+清空二进制目录
 
 .. code-block:: cmake
 

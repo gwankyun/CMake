@@ -1,7 +1,7 @@
 ctest_upload
 ------------
 
-Upload files to a dashboard server as a :ref:`Dashboard Client`.
+将文件作为\ :ref:`Dashboard Client`\ 上传到仪表板服务器。
 
 .. code-block:: cmake
 

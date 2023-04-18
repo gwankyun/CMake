@@ -1,7 +1,7 @@
 ctest_read_custom_files
 -----------------------
 
-read CTestCustom files.
+读取CTestCustom文件。
 
 .. code-block:: cmake
 

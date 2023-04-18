@@ -1,7 +1,7 @@
 ctest_coverage
 --------------
 
-Perform the :ref:`CTest Coverage Step` as a :ref:`Dashboard Client`.
+作为\ :ref:`Dashboard Client`\ 执行\ :ref:`CTest Coverage Step`。
 
 .. code-block:: cmake
 

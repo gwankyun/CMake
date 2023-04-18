@@ -1,7 +1,7 @@
 ctest_run_script
 ----------------
 
-runs a :option:`ctest -S` script
+运行\ :option:`ctest -S`\ 脚本
 
 .. code-block:: cmake
 

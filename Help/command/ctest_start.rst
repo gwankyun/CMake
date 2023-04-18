@@ -1,7 +1,7 @@
 ctest_start
 -----------
 
-Starts the testing for a given model
+启动给定模型的测试
 
 .. code-block:: cmake
 
