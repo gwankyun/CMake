@@ -22,7 +22,7 @@ CMake写一个运行日志，称为\ *configure log*，记录在配置步骤中�
 
 但是，在CMake的未来版本中，\ *日志文件的位置和名称可能会改变*。读取配置日志的工具应该使用对\
 :manual:`cmake-file-api(7)`\ 的\ :ref:`configureLog <file-api configureLog>`\
-查询来获取它的位置。有关详细信息，请参阅下面的\ `Log Versioning`_\ 控制部分。
+查询来获取它的位置。有关详细信息，请参阅下面的\ `日志版本`_\ 控制部分。
 
 日志结构
 =============
@@ -53,31 +53,25 @@ CMake写一个运行日志，称为\ *configure log*，记录在配置步骤中�
   一个节点的YAML块序列，对应于在一个CMake“配置”步骤中记录的事件。每个事件都是一个YAML节点，\
   包含下面记录的\ `Event Kinds`_\ 之一。
 
-Log Versioning
+日志版本
 --------------
 
-Each of the `Event Kinds`_ is versioned independently.  The set of
-keys an event's log entry provides is specific to its major version.
-When an event is logged, the latest version of its event kind that is
-known to the running version of CMake is always written to the log.
+每种\ `Event Kinds`_\ 的版本都是独立的。事件的日志条目提供的键集特定于它的主版本。当一个事\
+件被记录时，CMake运行版本所知道的事件类型的最新版本总是被写入日志。
 
-Tools reading the configure log must ignore event kinds and versions
-they do not understand:
+读取配置日志的工具必须忽略它们不理解的事件类型和版本：
 
-* A future version of CMake may introduce a new event kind or version.
+* CMake的未来版本可能会引入新的事件类型或版本。
 
-* If an existing build tree is re-configured with a different version of
-  CMake, the log may contain different versions of the same event kind.
+* 如果使用不同版本的CMake重新配置现有的构建树，日志可能包含相同事件类型的不同版本。
 
-* If :manual:`cmake-file-api(7)` queries request one or more
-  :ref:`configureLog <file-api configureLog>` object versions,
-  the log may contain multiple entries for the same event, each
-  with a different version of its event kind.
+* 如果\ :manual:`cmake-file-api(7)`\ 查询请求一个或多个\
+  :ref:`configureLog <file-api configureLog>`\ 对象版本，日志可能包含同一事件的多个条\
+  目，每个条目具有其事件类型的不同版本。
 
-IDEs should write a :manual:`cmake-file-api(7)` query requesting a
-specific :ref:`configureLog <file-api configureLog>` object version,
-before running CMake, and then read the configure log only as described
-by the file-api reply.
+IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请求一个特定的\
+:ref:`configureLog <file-api configureLog>`\ 对象版本，然后只按照file-api回复的描述\
+读取配置日志。
 
 Text Block Encoding
 -------------------
