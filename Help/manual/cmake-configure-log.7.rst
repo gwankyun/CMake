@@ -51,12 +51,12 @@ CMake写一个运行日志，称为\ *configure log*，记录在配置步骤中�
 
 ``events``
   一个节点的YAML块序列，对应于在一个CMake“配置”步骤中记录的事件。每个事件都是一个YAML节点，\
-  包含下面记录的\ `Event Kinds`_\ 之一。
+  包含下面记录的\ `事件类型`_\ 之一。
 
 日志版本
 --------------
 
-每种\ `Event Kinds`_\ 的版本都是独立的。事件的日志条目提供的键集特定于它的主版本。当一个事\
+每种\ `事件类型`_\ 的版本都是独立的。事件的日志条目提供的键集特定于它的主版本。当一个事\
 件被记录时，CMake运行版本所知道的事件类型的最新版本总是被写入日志。
 
 读取配置日志的工具必须忽略它们不理解的事件类型和版本：
@@ -73,23 +73,21 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
 :ref:`configureLog <file-api configureLog>`\ 对象版本，然后只按照file-api回复的描述\
 读取配置日志。
 
-Text Block Encoding
+文本块编码
 -------------------
 
-In order to make the log human-readable, text blocks are always
-represented using YAML literal block scalars (``|``).
-Since literal block scalars do not support escaping, backslashes
-and non-printable characters are encoded at the application layer:
+为了使日志易于人类阅读，文本块总是使用YAML文字块标量（\ ``|``）表示。由于文字块标量不支持转义，\
+反斜杠和不可打印字符在应用层编码：
 
-* ``\\`` encodes a backslash.
-* ``\xXX`` encodes a byte using two hexadecimal digits, ``XX``.
+* ``\\``\ 编码一个反斜杠。
+* ``\xXX``\ 用两个十六进制数字\ ``XX``\ 编码一个字节。
 
 .. _`configure-log event kinds`:
 
-Event Kinds
+事件类型
 ===========
 
-Every event kind is represented by a YAML mapping of the form:
+每个事件类型都由以下形式的YAML映射表示：
 
 .. code-block:: yaml
 
@@ -100,35 +98,29 @@ Every event kind is represented by a YAML mapping of the form:
     - "Checking for something"
   #...event-specific keys...
 
-The keys common to all events are:
+所有事件的共同键是：
 
 ``kind``
-  A string identifying the event kind and major version.
+  标识事件类型和主要版本的字符串。
 
 ``backtrace``
-  A YAML block sequence reporting the call stack of CMake source
-  locations at which the event occurred, from most-recent to
-  least-recent.  Each node is a string specifying one location
-  formatted as ``<file>:<line> (<function>)``.
+  一个YAML块序列，报告事件发生的CMake源位置的调用堆栈，从最近的到最近的。每个节点都是指定一\
+  个位置的字符串，格式为\ ``<file>:<line> (<function>)``。
 
 ``checks``
-  An optional key that is present when the event occurred with
-  at least one pending :command:`message(CHECK_START)`.  Its value
-  is a YAML block sequence reporting the stack of pending checks,
-  from most-recent to least-recent.  Each node is a string containing
-  a pending check message.
+  一个可选的键，当事件发生时，至少有一个挂起的\ :command:`message(CHECK_START)`\ 出现。\
+  它的值是一个YAML块序列，报告挂起检查的堆栈，从最近的到最近的。每个节点是一个字符串，包含一个挂起的检查消息。
 
-Additional mapping keys are specific to each (versioned) event kind,
-described below.
+其他映射键特定于每个（版本化的）事件类型，如下所述。
 
 .. _`message configure-log event`:
 
-Event Kind ``message``
+事件类型\ ``message``
 ----------------------
 
-The :command:`message(CONFIGURE_LOG)` command logs ``message`` events.
+:command:`message(CONFIGURE_LOG)`\ 命令记录\ ``message``\ 事件。
 
-There is only one ``message`` event major version, version 1.
+只有一个\ ``message``\ 事件主版本，即版本1。
 
 .. _`message-v1 event`:
 
@@ -151,7 +143,7 @@ The keys specific to ``message-v1`` mappings are:
 
 ``message``
   A YAML literal block scalar containing the message text,
-  represented using our `Text Block Encoding`_.
+  represented using our `文本块编码`_.
 
 .. _`try_compile configure-log event`:
 
@@ -229,7 +221,7 @@ The keys specific to ``try_compile-v1`` mappings are:
 
   ``stdout``
     A YAML literal block scalar containing the output from building
-    the test project, represented using our `Text Block Encoding`_.
+    the test project, represented using our `文本块编码`_.
     This contains build output from both stdout and stderr.
 
   ``exitCode``
@@ -296,7 +288,7 @@ documented by the `try_compile-v1 event`_, plus:
   ``stdout``
     An optional key that is present when the test project built successfully.
     Its value is a YAML literal block scalar containing output from running
-    the test executable, represented using our `Text Block Encoding`_.
+    the test executable, represented using our `文本块编码`_.
 
     If ``RUN_OUTPUT_VARIABLE`` was used, stdout and stderr are captured
     together, so this will contain both.  Otherwise, this will contain
@@ -306,7 +298,7 @@ documented by the `try_compile-v1 event`_, plus:
     An optional key that is present when the test project built successfully
     and the ``RUN_OUTPUT_VARIABLE`` option was not used.
     Its value is a YAML literal block scalar containing output from running
-    the test executable, represented using our `Text Block Encoding`_.
+    the test executable, represented using our `文本块编码`_.
 
     If ``RUN_OUTPUT_VARIABLE`` was used, stdout and stderr are captured
     together in the ``stdout`` key, and this key will not be present.
