@@ -124,10 +124,10 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
 
 .. _`message-v1 event`:
 
-``message-v1`` Event
+``message-v1``\ 事件
 ^^^^^^^^^^^^^^^^^^^^
 
-A ``message-v1`` event is a YAML mapping:
+``message-v1``\ 事件是一个YAML映射：
 
 .. code-block:: yaml
 
@@ -139,27 +139,26 @@ A ``message-v1`` event is a YAML mapping:
   message: |
     # ...
 
-The keys specific to ``message-v1`` mappings are:
+特定于\ ``message-v1``\ 映射的键是：
 
 ``message``
-  A YAML literal block scalar containing the message text,
-  represented using our `文本块编码`_.
+  包含消息文本的YAML文字块标量，使用\ `文本块编码`_\ 表示。
 
 .. _`try_compile configure-log event`:
 
-Event Kind ``try_compile``
+事件类型\ ``try_compile``
 --------------------------
 
-The :command:`try_compile` command logs ``try_compile`` events.
+:command:`try_compile`\ 命令记录\ ``try_compile``\ 事件。
 
-There is only one ``try_compile`` event major version, version 1.
+只有一个\ ``try_compile``\ 事件主版本，即版本1。
 
 .. _`try_compile-v1 event`:
 
-``try_compile-v1`` Event
+``try_compile-v1``\ 事件
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-A ``try_compile-v1`` event is a YAML mapping:
+``try_compile-v1``\ 事件是一个YAML映射：
 
 .. code-block:: yaml
 
@@ -181,61 +180,49 @@ A ``try_compile-v1`` event is a YAML mapping:
       # ...
     exitCode: 0
 
-The keys specific to ``try_compile-v1`` mappings are:
+特定于\ ``try_compile-v1``\ 映射的键是：
 
 ``description``
-  An optional key that is present when the ``LOG_DESCRIPTION <text>`` option
-  was used.  Its value is a string containing the description ``<text>``.
+  当使用\ ``LOG_DESCRIPTION <text>``\ 选项时出现的可选键。它的值是一个字符串，\
+  包含描述\ ``<text>``。
 
 ``directories``
-  A mapping describing the directories associated with the
-  compilation attempt.  It has the following keys:
+  描述与编译尝试相关联的目录的映射。它有以下几个键：
 
   ``source``
-    String specifying the source directory of the
-    :command:`try_compile` project.
+    指定\ :command:`try_compile`\ 项目的源目录的字符串。
 
   ``binary``
-    String specifying the binary directory of the
-    :command:`try_compile` project.
-    For non-project invocations, this is often the same as
-    the source directory.
+    指定\ :command:`try_compile`\ 项目的二进制目录的字符串。对于非项目调用，这通常与源目录相同。
 
 ``cmakeVariables``
-  An optional key that is present when CMake propagates variables
-  into the test project, either automatically or due to the
-  :variable:`CMAKE_TRY_COMPILE_PLATFORM_VARIABLES` variable.
-  Its value is a mapping from variable names to their values.
+  当CMake自动或由于\ :variable:`CMAKE_TRY_COMPILE_PLATFORM_VARIABLES`\ 变量将变量\
+  传播到测试项目时出现的可选键。它的值是从变量名到它们的值的映射。
 
 ``buildResult``
-  A mapping describing the result of compiling the test code.
-  It has the following keys:
+  描述编译测试代码的结果的映射。它有以下几个键：
 
   ``variable``
-    A string specifying the name of the CMake variable
-    storing the result of trying to build the test project.
+    一个字符串，指定CMake变量的名称，该变量存储尝试构建测试项目的结果。
 
   ``cached``
-    A boolean indicating whether the above result ``variable``
-    is stored in the CMake cache.
+    一个布尔值，指示上述结果\ ``variable``\ 是否存储在CMake缓存中。
 
   ``stdout``
-    A YAML literal block scalar containing the output from building
-    the test project, represented using our `文本块编码`_.
-    This contains build output from both stdout and stderr.
+    一个YAML文字块标量，包含构建测试项目的输出，使用我们的\ `文本块编码`_\ 表示。它包含来\
+    自标准输出和标准错误的构建输出。
 
   ``exitCode``
-    An integer specifying the build tool exit code from trying
-    to build the test project.
+    一个整数，指定尝试构建测试项目时的构建工具退出代码。
 
 .. _`try_run configure-log event`:
 
-Event Kind ``try_run``
+事件类型\ ``try_run``
 ----------------------
 
-The :command:`try_run` command logs ``try_run`` events.
+``try_run``\ 命令记录\ :command:`try_run`\ 事件。
 
-There is only one ``try_run`` event major version, version 1.
+只有一个\ ``try_run``\ 事件主版本，即版本1。
 
 .. _`try_run-v1 event`:
 
