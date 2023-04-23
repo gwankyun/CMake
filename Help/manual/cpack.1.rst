@@ -16,20 +16,19 @@ cpack(1)
 :program:`cpack`\ 可执行文件是CMake打包程序。它以各种格式生成安装程序和源包。
 
 对于每个安装程序或包格式，:program:`cpack`\ 都有一个特定的后端，称为“生成器”。\
-生成器负责生成所需的输入并调用特定的包创建工具。不要将这些安装程序或包生成器与\ :manual:`cmake <cmake(1)>`\ 命令的makefile生成器混淆。
+生成器负责生成所需的输入并调用特定的包创建工具。不要将这些安装程序或包生成器与\
+:manual:`cmake <cmake(1)>`\ 命令的makefile生成器混淆。
 
-All supported generators are specified in the :manual:`cpack-generators
-<cpack-generators(7)>` manual.  The command ``cpack --help`` prints a
-list of generators supported for the target platform.  Which of them are
-to be used can be selected through the :variable:`CPACK_GENERATOR` variable
-or through the command-line option :option:`-G <cpack -G>`.
+所有支持的生成器都在\ :manual:`cpack-generators <cpack-generators(7)>`\ 手册中指定。\
+命令\ ``cpack --help``\ 打印目标平台支持的生成器列表。可以通过\ :variable:`CPACK_GENERATOR`\
+变量或命令行选项\ :option:`-G <cpack -G>`\ 来选择要使用哪一个。
 
-The :program:`cpack` program is steered by a configuration file written in the
-:manual:`CMake language <cmake-language(7)>`. Unless chosen differently
-through the command-line option :option:`--config <cpack --config>`, the
-file ``CPackConfig.cmake`` in the current directory is used.
+:program:`cpack`\ 程序是由一个用\ :manual:`CMake语言 <cmake-language(7)>`\
+编写的配置文件控制的。除非通过命令行选项\ :option:`--config <cpack --config>`\ 选择不\
+同的选项，否则使用当前目录下的\ ``CPackConfig.cmake``\ 文件。
 
-在标准的CMake工作流中，CMake可执行文件\ ``CPackConfig.cmake``\ 是由\ :manual:`cmake <cmake(1)>`\ 可执行文件生成的，前提是\ :module:`CPack`\ 模块包含在项目的\ ``CMakeLists.txt``\ 文件中。
+在标准的CMake工作流中，CMake可执行文件\ ``CPackConfig.cmake``\ 是由\ :manual:`cmake <cmake(1)>`\
+可执行文件生成的，前提是\ :module:`CPack`\ 模块包含在项目的\ ``CMakeLists.txt``\ 文件中。
 
 选项
 =======
@@ -38,88 +37,75 @@ file ``CPackConfig.cmake`` in the current directory is used.
 
 .. option:: -G <generators>
 
-  ``<generators>`` is a :ref:`semicolon-separated list <CMake Language Lists>`
-  of generator names.  :program:`cpack` will iterate through this list and produce
-  package(s) in that generator's format according to the details provided in
-  the ``CPackConfig.cmake`` configuration file.  If this option is not given,
-  the :variable:`CPACK_GENERATOR` variable determines the default set of
-  generators that will be used.
+  ``<generators>``\ 是一个项为生成器名称的\ :ref:`以分号分隔的列表 <CMake Language Lists>`。\
+  :program:`cpack`\ 将遍历该列表，并根据\ ``CPackConfig.cmake``\ 配置文件中提供的详细\
+  信息以该生成器的格式生成包。如果没有给出这个选项，:variable:`CPACK_GENERATOR`\ 变量决\
+  定将使用的默认生成器集。
 
 .. option:: -C <configs>
 
-  Specify the project configuration(s) to be packaged (e.g. ``Debug``,
-  ``Release``, etc.), where ``<configs>`` is a
-  :ref:`semicolon-separated list <CMake Language Lists>`.
-  When the CMake project uses a multi-configuration
-  generator such as Xcode or Visual Studio, this option is needed to tell
-  :program:`cpack` which built executables to include in the package.
-  The user is responsible for ensuring that the configuration(s) listed
-  have already been built before invoking :program:`cpack`.
+  指定要打包的项目配置（例如\ ``Debug``、\ ``Release``\ 等），其中\ ``<configs>``\ 是\
+  :ref:`以分号分隔的列表 <CMake Language Lists>`。当CMake项目使用多配置生成器\
+  （如Xcode或Visual Studio）时，需要这个选项来告诉\ :program:`cpack`\ 哪些构建的可执行\
+  文件要包含在包中。用户有责任确保在调用\ :program:`cpack`\ 之前已经构建了列出的配置。
 
 .. option:: -D <var>=<value>
 
-  Set a CPack variable.  This will override any value set for ``<var>`` in the
-  input file read by :program:`cpack`.
+  设置一个CPack变量。这将覆盖在\ :program:`cpack`\ 读取的输入文件中为\ ``<var>``\
+  设置的任何值。
 
 .. option:: --config <configFile>
 
-  Specify the configuration file read by :program:`cpack` to provide the packaging
-  details.  By default, ``CPackConfig.cmake`` in the current directory will
-  be used.
+  指定由\ :program:`cpack`\ 读取的配置文件，以提供打包细节。默认将使用当前目录下的\
+  ``CPackConfig.cmake``。
 
 .. option:: -V, --verbose
 
-  Run :program:`cpack` with verbose output.  This can be used to show more details
-  from the package generation tools and is suitable for project developers.
+  运行带有详细输出的\ :program:`cpack`。这可以用于显示来自包生成工具的更多细节，并且适合于\
+  项目开发人员。
 
 .. option:: --debug
 
-  Run :program:`cpack` with debug output.  This option is intended mainly for the
-  developers of :program:`cpack` itself and is not normally needed by project
-  developers.
+  运行带有调试输出的\ :program:`cpack`。这个选项主要针对的是\ :program:`cpack`\ 本身的\
+  开发人员，项目开发人员通常不需要这个选项。
 
 .. option:: --trace
 
-  Put the underlying cmake scripts in trace mode.
+  将底层的cmake脚本置于跟踪模式。
 
 .. option:: --trace-expand
 
-  Put the underlying cmake scripts in expanded trace mode.
+  将底层cmake脚本置于扩展跟踪模式。
 
 .. option:: -P <packageName>
 
-  Override/define the value of the :variable:`CPACK_PACKAGE_NAME` variable used
-  for packaging.  Any value set for this variable in the ``CPackConfig.cmake``
-  file will then be ignored.
+  覆盖/定义用于打包的\ :variable:`CPACK_PACKAGE_NAME`\ 变量的值。在\
+  ``CPackConfig.cmake``\ 文件中为该变量设置的任何值将被忽略。
 
 .. option:: -R <packageVersion>
 
-  Override/define the value of the :variable:`CPACK_PACKAGE_VERSION`
-  variable used for packaging.  It will override a value set in the
-  ``CPackConfig.cmake`` file or one automatically computed from
-  :variable:`CPACK_PACKAGE_VERSION_MAJOR`,
-  :variable:`CPACK_PACKAGE_VERSION_MINOR` and
-  :variable:`CPACK_PACKAGE_VERSION_PATCH`.
+  覆盖/定义用于打包的\ :variable:`CPACK_PACKAGE_VERSION`\ 变量的值。它将覆盖\
+  ``CPackConfig.cmake``\ 文件中设置的或者从\ :variable:`CPACK_PACKAGE_VERSION_MAJOR`、
+  :variable:`CPACK_PACKAGE_VERSION_MINOR`\ 和\ :variable:`CPACK_PACKAGE_VERSION_PATCH`\
+  自动计算一个。
 
 .. option:: -B <packageDirectory>
 
-  Override/define :variable:`CPACK_PACKAGE_DIRECTORY`, which controls the
-  directory where CPack will perform its packaging work.  The resultant
-  package(s) will be created at this location by default and a
-  ``_CPack_Packages`` subdirectory will also be created below this directory to
-  use as a working area during package creation.
+  覆盖/定义\ :variable:`CPACK_PACKAGE_DIRECTORY`，它控制CPack执行其打包工作的目录。\
+  生成的包将在默认情况下在此位置创建，并且还将在此目录下创建\ ``_CPack_Packages``\ 子目录，\
+  以便在包创建期间用作工作区。
 
 .. option:: --vendor <vendorName>
 
-  Override/define :variable:`CPACK_PACKAGE_VENDOR`.
+  覆盖/定义\ :variable:`CPACK_PACKAGE_VENDOR`。
 
 .. option:: --preset <presetName>
 
-  Use a preset from :manual:`cmake-presets(7)`.
+  使用\ :manual:`cmake-presets(7)`\ 中的预设。
 
 .. option:: --list-presets
 
-  List presets from :manual:`cmake-presets(7)`.
+  从\ :manual:`cmake-presets(7)`\ 中列出预设。
 
 .. include:: OPTIONS_HELP.txt
 

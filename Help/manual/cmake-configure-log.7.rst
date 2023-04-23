@@ -226,10 +226,10 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
 
 .. _`try_run-v1 event`:
 
-``try_run-v1`` Event
+``try_run-v1``\ 事件
 ^^^^^^^^^^^^^^^^^^^^
 
-A ``try_run-v1`` event is a YAML mapping:
+``try_run-v1``\ 事件是一个YAML映射：
 
 .. code-block:: yaml
 
@@ -257,41 +257,32 @@ A ``try_run-v1`` event is a YAML mapping:
       # ...
     exitCode: 0
 
-The keys specific to ``try_run-v1`` mappings include those
-documented by the `try_compile-v1 event`_, plus:
+特定于\ ``try_run-v1``\ 映射的键包括\ `try_compile-v1事件 <try_compile-v1 event>`_\
+记录的键，加上：
 
 ``runResult``
-  A mapping describing the result of running the test code.
-  It has the following keys:
+  描述运行测试代码的结果的映射。它有以下几个键：
 
   ``variable``
-    A string specifying the name of the CMake variable
-    storing the result of trying to run the test executable.
+    一个字符串，指定CMake变量的名称，该变量存储尝试运行测试可执行文件的结果。
 
   ``cached``
-    A boolean indicating whether the above result ``variable``
-    is stored in the CMake cache.
+    一个布尔值，指示上述结果\ ``variable``\ 是否存储在CMake缓存中。
 
   ``stdout``
-    An optional key that is present when the test project built successfully.
-    Its value is a YAML literal block scalar containing output from running
-    the test executable, represented using our `文本块编码`_.
+    成功构建测试项目时出现的可选键。它的值是一个YAML文字块标量，包含运行测试可执行文件的输出，\
+    使用我们的\ `文本块编码`_\ 表示。
 
-    If ``RUN_OUTPUT_VARIABLE`` was used, stdout and stderr are captured
-    together, so this will contain both.  Otherwise, this will contain
-    only the stdout output.
+    如果使用了\ ``RUN_OUTPUT_VARIABLE``，则标准输出和标准错误将被一起捕获，因此这将包含两者。\
+    否则，这将只包含标准输出输出。
 
   ``stderr``
-    An optional key that is present when the test project built successfully
-    and the ``RUN_OUTPUT_VARIABLE`` option was not used.
-    Its value is a YAML literal block scalar containing output from running
-    the test executable, represented using our `文本块编码`_.
+    当测试项目成功构建并且未使用\ ``RUN_OUTPUT_VARIABLE``\ 选项时出现的可选键。它的值是\
+    一个YAML文字块标量，包含运行测试可执行文件的输出，使用我们的\ `文本块编码`_\ 表示。
 
-    If ``RUN_OUTPUT_VARIABLE`` was used, stdout and stderr are captured
-    together in the ``stdout`` key, and this key will not be present.
-    Otherwise, this will contain the stderr output.
+    如果使用\ ``RUN_OUTPUT_VARIABLE``，则在\ ``stdout``\ 键中同时捕获标准输出和标准错误，\
+    并且该键将不存在。否则，这将包含标准错误。
 
   ``exitCode``
-    An optional key that is present when the test project built successfully.
-    Its value is an integer specifying the exit code, or a string containing
-    an error message, from trying to run the test executable.
+    成功构建测试项目时出现的可选键。它的值是一个整数，指定试图运行测试可执行文件时的退出代码，\
+    或者包含错误消息的字符串。
