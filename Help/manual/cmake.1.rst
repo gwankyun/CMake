@@ -39,14 +39,19 @@ cmake(1)
 描述
 ===========
 
-:program:`cmake`\ 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面\ `概要`_\ 列出了工具可以执行的各种操作，如下面的部分所述。
+:program:`cmake`\ 可执行文件是跨平台构建系统生成器CMake的命令行界面。上面\ `概要`_\ 列出\
+了工具可以执行的各种操作，如下面的部分所述。
 
-要用CMake构建一个软件项目，请\ `生成一个项目构建系统`_。可以选择使用\ :program:`cmake`\ 来\ `构建一个项目`_\ 及\ `安装一个项目`_，或者直接运行相应的构建工具（例如\ ``make``）。:program:`cmake`\ 也可以用来\ `查看帮助`_。
+要用CMake构建一个软件项目，请\ `生成一个项目构建系统`_。可以选择使用\ :program:`cmake`\ 来\
+`构建一个项目`_\ 及\ `安装一个项目`_，或者直接运行相应的构建工具（例如\ ``make``）。\
+:program:`cmake`\ 也可以用来\ `查看帮助`_。
 
-其他操作是为了让软件开发人员使用\ :manual:`CMake language <cmake-language(7)>`\ 编写脚本来支持他们的构建。
+其他操作是为了让软件开发人员使用\ :manual:`CMake language <cmake-language(7)>`\ 编写\
+脚本来支持他们的构建。
 
-有关\ :program:`cmake`\ 的图形用户界面替代，请参阅\ :manual:`ccmake <ccmake(1)>`\ 和\ :manual:`cmake-gui <cmake-gui(1)>`。\
-有关CMake测试和打包工具的命令行接口，请参考\ :manual:`ctest <ctest(1)>`\ 和\ :manual:`cpack <cpack(1)>`。
+有关\ :program:`cmake`\ 的图形用户界面替代，请参阅\ :manual:`ccmake <ccmake(1)>`\ 和\
+:manual:`cmake-gui <cmake-gui(1)>`。有关CMake测试和打包工具的命令行接口，请参考\
+:manual:`ctest <ctest(1)>`\ 和\ :manual:`cpack <cpack(1)>`。
 
 有关CMake的详细信息，请\ `另行参阅`_\ 本手册末尾的链接。
 
@@ -54,17 +59,25 @@ cmake(1)
 介绍CMake构建系统
 ==================================
 
-*构建系统*\ 描述了如何使用\ *构建工具*\ 从其源代码中构建项目的可执行文件和库的自动化过程。例如，构建系统可能是一个\ ``Makefile``\ 文件，用于命令行\ ``make``\ 工具或用于集成开发环境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用\ :manual:`CMake语言 <cmake-language(7)>`\ 编写的文件抽象地指定它的构建系统。从这些文件中，CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一个首选的构建系统。
+*构建系统*\ 描述了如何使用\ *构建工具*\ 从其源代码中构建项目的可执行文件和库的自动化过程。\
+例如，构建系统可能是一个\ ``Makefile``\ 文件，用于命令行\ ``make``\ 工具或用于集成开发环\
+境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用\ :manual:`CMake语言 <cmake-language(7)>`\
+编写的文件抽象地指定它的构建系统。从这些文件中，CMake通过一个称为\ *生成器*\ 的后端为每个用\
+户在本地生成一个首选的构建系统。
 
 要用CMake生成一个构建系统，必须设置以下选项：
 
 源代码树
-  包含由项目提供的源文件的顶层目录。该项目使用\ :manual:`cmake-language(7)`\ 手册中描述的文件指定其构建系统，从顶层文件\ ``CMakeLists.txt``\ 开始。这些文件指定了\ :manual:`cmake-buildsystem(7)`\ 手册中描述的构建目标及其依赖关系。
+  包含由项目提供的源文件的顶层目录。该项目使用\ :manual:`cmake-language(7)`\ 手册中描述\
+  的文件指定其构建系统，从顶层文件\ ``CMakeLists.txt``\ 开始。这些文件指定了\ :manual:`cmake-buildsystem(7)`\
+  手册中描述的构建目标及其依赖关系。
 
 构建树
-  用于存储构建系统文件和构建输出工件（例如可执行文件和库）的顶层目录。CMake将编写一个\ ``CMakeCache.txt``\ 文件，将该目录标识为构建树，并存储持久信息，如构建系统配置选项。
+  用于存储构建系统文件和构建输出工件（例如可执行文件和库）的顶层目录。CMake将编写一个\
+  ``CMakeCache.txt``\ 文件，将该目录标识为构建树，并存储持久信息，如构建系统配置选项。
 
-  要维护原始的源代码树，请使用单独的专用构建树执行\ *源代码外*\ 构建。也支持将构建树放置在与源代码树相同的目录中的\ *源代码内*\ 构建，但不鼓励这样做。
+  要维护原始的源代码树，请使用单独的专用构建树执行\ *源代码外*\ 构建。也支持将构建树放置在与\
+  源代码树相同的目录中的\ *源代码内*\ 构建，但不鼓励这样做。
 
 Generator
   This chooses the kind of buildsystem to generate.  See the
@@ -74,7 +87,9 @@ Generator
   generator, or simply accept the default CMake chooses for the current
   platform.
 
-  当使用\ :ref:`Command-Line Build Tool Generators`\ 时，CMake期望编译器工具链所需要的环境已经在shell中配置好了。当使用\ :ref:`IDE Build Tool Generators`\ 时，不需要特定的环境。
+  当使用\ :ref:`Command-Line Build Tool Generators`\ 时，CMake期望编译器工具链所需要\
+  的环境已经在shell中配置好了。当使用\ :ref:`IDE Build Tool Generators`\ 时，不需要特\
+  定的环境。
 
 .. _`Generate a Project Buildsystem`:
 
@@ -84,7 +99,9 @@ Generator
 使用以下命令签名之一运行CMake，指定源和构建树，并生成一个构建系统：
 
 ``cmake [<options>] <path-to-source>``
-  使用当前工作目录作为构建树，并使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝对路径，也可以是相对于当前工作目录的路径。源树必须包含\ ``CMakeLists.txt``\ 文件，但\ *不能*\ 包含\ ``CMakeCache.txt``\ 文件，因为后者标识了一个现有的构建树。例如：
+  使用当前工作目录作为构建树，并使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝\
+  对路径，也可以是相对于当前工作目录的路径。源树必须包含\ ``CMakeLists.txt``\ 文件，但\
+  *不能*\ 包含\ ``CMakeCache.txt``\ 文件，因为后者标识了一个现有的构建树。例如：
 
   .. code-block:: console
 
@@ -92,7 +109,9 @@ Generator
     $ cmake ../src
 
 ``cmake [<options>] <path-to-existing-build>``
-  使用\ ``<path-to-existing-build>``\ 作为构建树，并从其\ ``CMakeCache.txt``\ 文件加载到源树的路径，该文件必须是之前运行CMake时生成的。指定的路径可以是绝对路径，也可以是相对于当前工作目录的路径。例如：
+  使用\ ``<path-to-existing-build>``\ 作为构建树，并从其\ ``CMakeCache.txt``\ 文件加\
+  载到源树的路径，该文件必须是之前运行CMake时生成的。指定的路径可以是绝对路径，也可以是相对于\
+  当前工作目录的路径。例如：
 
   .. code-block:: console
 
@@ -103,7 +122,9 @@ Generator
 
   .. versionadded:: 3.13
 
-  使用\ ``<path-to-build>``\ 作为构建树，使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝对路径或相对于当前工作目录的路径。源树必须包含一个\ ``CMakeLists.txt``\ 文件。如果构建树不存在，将自动创建它。例如：
+  使用\ ``<path-to-build>``\ 作为构建树，使用\ ``<path-to-source>``\ 作为源树。指定的\
+  路径可以是绝对路径或相对于当前工作目录的路径。源树必须包含一个\ ``CMakeLists.txt``\ 文件。\
+  如果构建树不存在，将自动创建它。例如：
 
   .. code-block:: console
 
@@ -133,9 +154,11 @@ the current working directory (cwd) is used for the other.  For example:
 
 .. versionchanged:: 3.23
 
-  CMake在指定多个源路径时发出警告。这从来没有正式的文档或支持，但较旧的版本会意外地接受多个源路径，并使用最后指定的路径。避免传递多个源路径参数。
+  CMake在指定多个源路径时发出警告。这从来没有正式的文档或支持，但较旧的版本会意外地接受多个\
+  源路径，并使用最后指定的路径。避免传递多个源路径参数。
 
-在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\ :generator:`Unix Makefiles`\ 生成器后，可以直接运行\ ``make``：
+在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\ :generator:`Unix Makefiles`\
+生成器后，可以直接运行\ ``make``：
 
   .. code-block:: console
 
@@ -157,7 +180,8 @@ the current working directory (cwd) is used for the other.  For example:
 
  .. versionadded:: 3.24
 
- 执行构建树的新配置。这将删除任何现有的\ ``CMakeCache.txt``\ 文件和相关的\ ``CMakeFiles/``\ 目录，并从头开始重新创建它们。
+ 执行构建树的新配置。这将删除任何现有的\ ``CMakeCache.txt``\ 文件和相关的\ ``CMakeFiles/``\
+ 目录，并从头开始重新创建它们。
 
 .. option:: -L[A][H]
 
@@ -181,13 +205,15 @@ the current working directory (cwd) is used for the other.  For example:
 
  Generate graphviz of dependencies, see :module:`CMakeGraphVizOptions` for more.
 
- 生成一个graphviz输入文件，该文件将包含项目中的所有库和可执行依赖项。更多细节请参阅\ :module:`CMakeGraphVizOptions`\ 文档。
+ 生成一个graphviz输入文件，该文件将包含项目中的所有库和可执行依赖项。更多细节请参阅\
+ :module:`CMakeGraphVizOptions`\ 文档。
 
 .. option:: --system-information [file]
 
  Dump information about this system.
 
- 转储关于当前系统的各种信息。如果从一个CMake项目的二进制目录顶层运行，它将转储额外的信息，如缓存、日志文件等。
+ 转储关于当前系统的各种信息。如果从一个CMake项目的二进制目录顶层运行，它将转储额外的信息，\
+ 如缓存、日志文件等。
 
 .. option:: --log-level=<level>
 
@@ -197,7 +223,8 @@ the current working directory (cwd) is used for the other.  For example:
  log level or higher.  The valid log levels are ``ERROR``, ``WARNING``,
  ``NOTICE``, ``STATUS`` (default), ``VERBOSE``, ``DEBUG``, or ``TRACE``.
 
- 要在CMake运行之间保持日志级别，可以将\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ 设置为缓存变量。如果同时给出了命令行选项和变量，则命令行选项优先。
+ 要在CMake运行之间保持日志级别，可以将\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ 设置为缓\
+ 存变量。如果同时给出了命令行选项和变量，则命令行选项优先。
 
  出于向后兼容的原因，``--loglevel``\ 也被接受为该选项的同义词。
 
@@ -210,7 +237,9 @@ the current working directory (cwd) is used for the other.  For example:
  Enable the :command:`message` command outputting context attached to each
  message.
 
- 这个选项打开仅显示当前CMake运行的上下文。为了让所有后续的CMake运行都持续显示上下文，可以将\ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 设置为缓存变量。当给出这个命令行选项时，:variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 将被忽略。
+ 这个选项打开仅显示当前CMake运行的上下文。为了让所有后续的CMake运行都持续显示上下文，可以将\
+ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 设置为缓存变量。当给出这个命令行选项时，\
+ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 将被忽略。
 
 .. option:: --debug-trycompile
 
@@ -243,7 +272,8 @@ the current working directory (cwd) is used for the other.  For example:
 
  Put cmake find commands in a debug mode.
 
- 在cmake运行到标准错误时打印额外的find调用信息。输出是为人们使用而设计的，而不是为解析设计的。请参阅\ :variable:`CMAKE_FIND_DEBUG_MODE`\ 变量来调试项目中更局部的部分。
+ 在cmake运行到标准错误时打印额外的find调用信息。输出是为人们使用而设计的，而不是为解析设计的。\
+ 请参阅\ :variable:`CMAKE_FIND_DEBUG_MODE`\ 变量来调试项目中更局部的部分。
 
 .. option:: --debug-find-pkg=<pkg>[,...]
 
