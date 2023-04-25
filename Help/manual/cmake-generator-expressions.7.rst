@@ -33,15 +33,15 @@ cmake-generator-expressions(7)
     $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,4.2.0>:OLD_COMPILER>
   )
 
-如果\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\ 小于4.2.0，\
-则上述内容将扩展为\ ``OLD_COMPILER``。
+如果\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\
+小于4.2.0，则上述内容将扩展为\ ``OLD_COMPILER``。
 
 空格和引号
 ======================
 
-生成器表达式通常在命令参数之后进行解析。如果生成器表达式包含空格、新行、分号或其他可能被解释为命令参数分隔符的字符，\
-则整个表达式在传递给命令时应该用引号括起来。如果不这样做，可能会导致表达式被拆分，并\
-且可能不再将其识别为生成器表达式。
+生成器表达式通常在命令参数之后进行解析。如果生成器表达式包含空格、新行、分号或其他可能被解释\
+为命令参数分隔符的字符，则整个表达式在传递给命令时应该用引号括起来。如果不这样做，可能会导致\
+表达式被拆分，并且可能不再将其识别为生成器表达式。
 
 当使用\ :command:`add_custom_command`\ 或\ :command:`add_custom_target`\ 时，\
 使用\ ``VERBATIM``\ 和\ ``COMMAND_EXPAND_LISTS``\ 选项来获得健壮的参数分割和引用。
@@ -119,7 +119,8 @@ cmake-generator-expressions(7)
 =========
 
 由于生成器表达式是在生成构建系统时计算的，而不是在处理\ ``CMakeLists.txt``\ 文件时计算的，\
-因此不可能使用\ :command:`message()`\ 命令检查它们的结果。生成调试消息的一种可能的方法是添加一个自定义目标：
+因此不可能使用\ :command:`message()`\ 命令检查它们的结果。生成调试消息的一种可能的方法是\
+添加一个自定义目标：
 
 .. code-block:: cmake
 
@@ -140,7 +141,8 @@ cmake-generator-expressions(7)
 .. note::
 
   这个参考偏离了大多数CMake文档，因为它省略了尖括号\ ``<...>``\ 围绕占位符，\
-  如 ``condition``、\ ``string``、\ ``target``\ 等。这是为了防止那些占位符被错误地解释为生成器表达式。
+  如 ``condition``、\ ``string``、\ ``target``\ 等。这是为了防止那些占位符被错误地解释\
+  为生成器表达式。
 
 .. _`Conditional Generator Expressions`:
 
@@ -151,15 +153,15 @@ cmake-generator-expressions(7)
 
 .. genex:: $<condition:true_string>
 
-  如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果\ ``condition``\ 为 ``0``，\
-  则返回空字符串。\ ``condition``\ 的任何其他值都会导致错误。
+  如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果\ ``condition``\ 为\
+  ``0``，则返回空字符串。\ ``condition``\ 的任何其他值都会导致错误。
 
 .. genex:: $<IF:condition,true_string,false_string>
 
   .. versionadded:: 3.8
 
-  如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果 ``condition`` 为 ``0``，\
-  则返回\ ``false_string``。\ ``condition``\ 的任何其他值都会导致错误。
+  如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果\ ``condition``\ 为\
+  ``0``，则返回\ ``false_string``。\ ``condition``\ 的任何其他值都会导致错误。
 
 通常，\ ``condition``\ 本身就是一个生成器表达式。例如，当使用\ ``Debug``\ 配置时，\
 下面的表达式展开为\ ``DEBUG_MODE``，对于所有其他配置则为空字符串：
@@ -198,8 +200,9 @@ cmake-generator-expressions(7)
 
 .. genex:: $<AND:conditions>
 
-  其中\ ``conditions``\ 是一个以逗号分隔的布尔表达式列表，所有这些表达式的值必须为\ ``1``\ 或\ ``0``。\
-  如果所有条件都为\ ``1``，则整个表达式的值为\ ``1``。如果任何条件为\ ``0``，整个表达式的计算结果为\ ``0``。
+  其中\ ``conditions``\ 是一个以逗号分隔的布尔表达式列表，所有这些表达式的值必须为\ ``1``\
+  或\ ``0``。如果所有条件都为\ ``1``，则整个表达式的值为\ ``1``。如果任何条件为\ ``0``，\
+  整个表达式的计算结果为\ ``0``。
 
 .. genex:: $<OR:conditions>
 
@@ -426,8 +429,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.24
 
-  返回\ ``path``。如果\ ``path``\ 是原生路径，它将转换为带有正斜杠（\ ``/``\ ）的cmake样式的路径。\
-  在Windows上，长文件名标记会被考虑在内。
+  返回\ ``path``。如果\ ``path``\ 是原生路径，它将转换为带有正斜杠（\ ``/``\ ）的cmake\
+  样式的路径。在Windows上，长文件名标记会被考虑在内。
 
   当指定\ ``NORMALIZE``\ 选项时，转换后将对路径进行\ :ref:`normalized
   <Normalization>`。
@@ -436,8 +439,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.24
 
-  返回以\ ``/``\ 作为\ ``directory-separator``\ 附加到\ ``path``\ 的所有\ ``input``\ 参数。\
-  根据\ ``input``\ 的不同，\ ``path``\ 的值可能会被丢弃。
+  返回以\ ``/``\ 作为\ ``directory-separator``\ 附加到\ ``path``\ 的所有\ ``input``\
+  参数。根据\ ``input``\ 的不同，\ ``path``\ 的值可能会被丢弃。
 
   请参阅\ :ref:`cmake_path(APPEND) <APPEND>`\ 了解更多详细信息。
 
@@ -494,8 +497,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.24
 
-  返回绝对\ ``path``。如果\ ``path``\ 是一个相对路径（\ ``$<PATH:IS_RELATIVE>``\ 返回\ ``1``），\
-  它将相对于\ ``base_directory``\ 参数指定的给定基目录进行计算。
+  返回绝对\ ``path``。如果\ ``path``\ 是一个相对路径（\ ``$<PATH:IS_RELATIVE>``\ 返回\
+  ``1``），它将相对于\ ``base_directory``\ 参数指定的给定基目录进行计算。
 
   当指定\ ``NORMALIZE``\ 选项时，在路径计算之后对路径进行\ :ref:`normalized <Normalization>`。
 
@@ -538,16 +541,16 @@ Shell路径
   .. versionadded:: 3.20
 
   仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中作为参\
-  数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表达式在\
-  ``...``\ 使用自定义命令的“输出配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
+  数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表\
+  达式在\ ``...``\ 使用自定义命令的“输出配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
 
 .. genex:: $<COMMAND_CONFIG:...>
 
   .. versionadded:: 3.20
 
   仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中作为参\
-  数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表达式在\
-  ``...``\ 使用自定义命令的“命令配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
+  数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表\
+  达式在\ ``...``\ 使用自定义命令的“命令配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
 
 工具链和语言表达式
 ----------------------------------
@@ -699,8 +702,8 @@ Shell路径
 
   .. versionadded:: 3.16
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Objective-C编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Objective-C编译器id与\
+  ``compiler_ids``\ 中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJCXX_COMPILER_ID>
 
@@ -712,8 +715,8 @@ Shell路径
 
   .. versionadded:: 3.16
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Objective-C++编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Objective-C++编译器id与\
+  ``compiler_ids``\ 中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<Fortran_COMPILER_ID>
 
@@ -721,8 +724,8 @@ Shell路径
 
 .. genex:: $<Fortran_COMPILER_ID:compiler_ids>
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Fortran编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Fortran编译器id与\
+  ``compiler_ids``\ 中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<HIP_COMPILER_ID>
 
@@ -734,8 +737,8 @@ Shell路径
 
   .. versionadded:: 3.21
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的HIP编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的HIP编译器id与\
+  ``compiler_ids``\ 中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<ISPC_COMPILER_ID>
 
@@ -747,15 +750,16 @@ Shell路径
 
   .. versionadded:: 3.19
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的ISPC编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的ISPC编译器id与\
+  ``compiler_ids``\ 中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
 
 .. genex:: $<COMPILE_LANGUAGE>
 
   .. versionadded:: 3.3
 
   计算编译选项时源文件的编译语言。关于生成器表达式的可移植性，请参阅\
-  :ref:`相关的布尔表达式 <Boolean COMPILE_LANGUAGE Generator Expression>`\ ``$<COMPILE_LANGUAGE:language>``。
+  :ref:`相关的布尔表达式 <Boolean COMPILE_LANGUAGE Generator Expression>`\
+  ``$<COMPILE_LANGUAGE:language>``。
 
 .. _`Boolean COMPILE_LANGUAGE Generator Expression`:
 
@@ -767,7 +771,8 @@ Shell路径
     可以为\ ``languages``\ 指定多种语言。CMake 3.14及更早版本只接受单一语言。
 
   当用于编译单元的语言与\ ``languages``\ 中任何以逗号分隔的条目匹配时，则为\ ``1``，\
-  否则为\ ``0``。此表达式可用于指定编译选项、编译定义，并在目标中包含特定语言的源文件的目录。例如：
+  否则为\ ``0``。此表达式可用于指定编译选项、编译定义，并在目标中包含特定语言的源文件的目录。\
+  例如：
 
   .. code-block:: cmake
 
@@ -845,7 +850,8 @@ Shell路径
   其中\ ``features``\ 是一个逗号分隔的列表。如果'head'目标的所有\ ``features``\ 都可用，\
   则返回\ ``1``，否则返回\ ``0``。如果在计算目标的链接实现时使用此表达式，并且如果任何依赖\
   项传递性地增加了'head'目标所需的\ :prop_tgt:`C_STANDARD`\ 或\ :prop_tgt:`CXX_STANDARD`，\
-  则会报告错误。有关编译特性的信息和支持的编译器列表，请参阅\ :manual:`cmake-compile-features(7)`\ 手册。
+  则会报告错误。有关编译特性的信息和支持的编译器列表，请参阅\ :manual:`cmake-compile-features(7)`\
+  手册。
 
 链接器语言和ID
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -869,8 +875,8 @@ Shell路径
 
   .. versionadded:: 3.18
 
-  当用于链接步骤的语言匹配\ ``languages``\ 中任何以逗号分隔的条目时，则为\ ``1``，否则为\ ``0``。\
-  此表达式可用于指定目标中特定语言的链接库、链接选项、链接目录和链接依赖项。例如：
+  当用于链接步骤的语言匹配\ ``languages``\ 中任何以逗号分隔的条目时，则为\ ``1``，否则为\
+  ``0``。此表达式可用于指定目标中特定语言的链接库、链接选项、链接目录和链接依赖项。例如：
 
   .. code-block:: cmake
 
@@ -898,8 +904,9 @@ Shell路径
 
     为了确定目标的链接语言，需要传递地收集将链接到它的所有目标。因此，对于链接库属性，\
     将进行双重计算。在第一次求值期间，\ ``$<LINK_LANGUAGE:..>``\ 表达式总是返回\ ``0``。\
-    在第一次传递之后计算的链接语言将用于第二次传递。为了避免不一致，要求第二次传递不改变链接语言。\
-    此外，为了避免意外的副作用，需要指定完整的实体作为\ ``$<LINK_LANGUAGE:..>``\ 表达式。例如：
+    在第一次传递之后计算的链接语言将用于第二次传递。为了避免不一致，要求第二次传递不改变链接\
+    语言。此外，为了避免意外的副作用，需要指定完整的实体作为\ ``$<LINK_LANGUAGE:..>``\
+    表达式。例如：
 
     .. code-block:: cmake
 
@@ -1199,7 +1206,8 @@ Shell路径
 这些查询引用目标\ ``tgt``。除非另有说明，这可以是任何运行时工件，即：
 
 * 由\ :command:`add_executable`\ 创建的可执行目标。
-* 由\ :command:`add_library`\ 创建的共享库目标（\ ``.so``、\ ``.dll``\ 而不是他们的\ ``.lib``\ 导入库）。
+* 由\ :command:`add_library`\ 创建的共享库目标（\ ``.so``、\ ``.dll``\ 而不是他们的\
+  ``.lib``\ 导入库）。
 * 由\ :command:`add_library`\ 创建的静态库目标。
 
 在下文中，短语“\ ``tgt``\ 文件名”指的是\ ``tgt``\ 二进制文件的名称。这必须与短语“目标名称”\
@@ -1488,7 +1496,8 @@ Shell路径
 
 .. genex:: $<BUILD_INTERFACE:...>
 
-  当使用\ :command:`export`\ 导出属性时的\ ``...``\ 内容，或者当目标被同一构建系统中的另一个目标使用时。否则展开为空字符串。
+  当使用\ :command:`export`\ 导出属性时的\ ``...``\ 内容，或者当目标被同一构建系统中的\
+  另一个目标使用时。否则展开为空字符串。
 
 .. genex:: $<BUILD_LOCAL_INTERFACE:...>
 

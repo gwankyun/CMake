@@ -10,9 +10,11 @@ cmake-developer(7)
 引言
 ============
 
-本手册旨在供使用\ :manual:`cmake-language(7)`\ 代码的开发人员参考，无论是编写自己的模块，自己的构建系统，还是CMake本身。
+本手册旨在供使用\ :manual:`cmake-language(7)`\ 代码的开发人员参考，无论是编写自己的模块，\
+自己的构建系统，还是CMake本身。
 
-请参见\ https://cmake.org/get-involved/\ 参与CMake上游的开发。它包括到贡献说明的链接，而贡献说明又链接到CMake自身的开发指南。
+请参见\ https://cmake.org/get-involved/\ 参与CMake上游的开发。它包括到贡献说明的链接，\
+而贡献说明又链接到CMake自身的开发指南。
 
 Accessing Windows Registry
 ==========================

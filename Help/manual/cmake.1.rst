@@ -340,10 +340,12 @@ the current working directory (cwd) is used for the other.  For example:
        ``file``\ 中函数调用开始的行。
 
      ``line_end``
-       如果函数调用跨越多行，则该字段将设置为函数调用结束的行。如果函数调用跨越单行，这个字段将被取消设置。该字段是在\ ``json-v1``\ 格式的次要版本2中添加的。
+       如果函数调用跨越多行，则该字段将设置为函数调用结束的行。如果函数调用跨越单行，这个字\
+       段将被取消设置。该字段是在\ ``json-v1``\ 格式的次要版本2中添加的。
 
      ``defer``
-       当函数调用被\ :command:`cmake_language(DEFER)`\ 延迟时出现的可选成员。如果存在，它的值是一个包含延迟调用\ ``<id>``\ 的字符串。
+       当函数调用被\ :command:`cmake_language(DEFER)`\ 延迟时出现的可选成员。如果存在，\
+       它的值是一个包含延迟调用\ ``<id>``\ 的字符串。
 
      ``cmd``
        被调用的函数的名称。
@@ -358,7 +360,8 @@ the current working directory (cwd) is used for the other.  For example:
        在当前正在处理的\ ``CMakeLists.txt``\ 的上下文中，被调用函数的堆栈帧深度。
 
      ``global_frame``
-       被调用函数的堆栈帧深度，在跟踪涉及的所有\ ``CMakeLists.txt``\ 文件中全局跟踪。该字段是在\ ``json-v1``\ 格式的次要版本2中添加的。
+       被调用函数的堆栈帧深度，在跟踪涉及的所有\ ``CMakeLists.txt``\ 文件中全局跟踪。该\
+       字段是在\ ``json-v1``\ 格式的次要版本2中添加的。
 
      此外，输出的第一个JSON文档包含当前主要和次要版本的\ ``version``\ 键
 
@@ -655,7 +658,8 @@ Run :option:`cmake --install` with no options for quick help.
  is not modified.  If variables are defined using ``-D``, this must be
  done before the ``-P`` argument.
 
-``--`` 后面的任何选项都不会被CMake解析，但它们仍然包含在 :variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>` 传递给脚本的变量（包括 ``--`` 本身）。
+``--``\ 后面的任何选项都不会被CMake解析，但它们仍然包含在\
+:variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>`\ 传递给脚本的变量\（包括 ``--``\ 本身）。
 
 
 .. _`Run a Command-Line Tool`:
@@ -1154,7 +1158,7 @@ Available commands are:
 Windows特定命令行工程
 -----------------------------------
 
-以下 ``cmake -E`` 命令仅在Windows操作系统下可用：
+以下\ ``cmake -E``\ 命令仅在Windows操作系统下可用：
 
 .. option:: delete_regv <key>
 
@@ -1190,7 +1194,9 @@ CMake provides a pkg-config like helper for Makefile-based projects:
 
   cmake --find-package [<options>]
 
-它使用 :command:`find_package()` 搜索包，并将结果标记打印到stdout。这可以代替pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到已安装的库（通过 ``share/aclocal/cmake.m4``）。
+它使用\ :command:`find_package()`\ 搜索包，并将结果标记打印到stdout。这可以代替\
+pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到已安装的库（通过\
+``share/aclocal/cmake.m4``）。
 
 .. note::
   由于一些技术限制，这种模式没有得到很好的支持。保留它是为了兼容，但不应该在新项目中使用。

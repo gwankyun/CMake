@@ -3,7 +3,8 @@
 cmake-modules(7)
 ****************
 
-这里列出的模块是CMake发行版的一部分。项目可提供进一步的模块；它们的位置可以用\ :variable:`CMAKE_MODULE_PATH`\ 变量指定。
+这里列出的模块是CMake发行版的一部分。项目可提供进一步的模块；它们的位置可以用\
+:variable:`CMAKE_MODULE_PATH`\ 变量指定。
 
 工具模块
 ^^^^^^^^^^^^^^^

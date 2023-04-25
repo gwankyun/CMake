@@ -72,7 +72,8 @@
 
  生成器的工具集规范（如果支持）。
 
- 一些CMake生成器支持一个工具集规范来告诉本地构建系统如何选择编译器。有关详细信息，请参阅\ :variable:`CMAKE_GENERATOR_TOOLSET`\ 变量。
+ 一些CMake生成器支持一个工具集规范来告诉本地构建系统如何选择编译器。有关详细信息，请参阅\
+ :variable:`CMAKE_GENERATOR_TOOLSET`\ 变量。
 
 .. option:: -A <platform-name>
 
