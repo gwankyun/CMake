@@ -61,16 +61,16 @@ cmake(1)
 
 *构建系统*\ 描述了如何使用\ *构建工具*\ 从其源代码中构建项目的可执行文件和库的自动化过程。\
 例如，构建系统可能是一个\ ``Makefile``\ 文件，用于命令行\ ``make``\ 工具或用于集成开发环\
-境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用\ :manual:`CMake语言 <cmake-language(7)>`\
-编写的文件抽象地指定它的构建系统。从这些文件中，CMake通过一个称为\ *生成器*\ 的后端为每个用\
-户在本地生成一个首选的构建系统。
+境（IDE）的项目文件。为了避免维护多个这样的构建系统，项目可以使用\
+:manual:`CMake语言 <cmake-language(7)>`\ 编写的文件抽象地指定它的构建系统。从这些文件中，\
+CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一个首选的构建系统。
 
 要用CMake生成一个构建系统，必须设置以下选项：
 
 源代码树
   包含由项目提供的源文件的顶层目录。该项目使用\ :manual:`cmake-language(7)`\ 手册中描述\
-  的文件指定其构建系统，从顶层文件\ ``CMakeLists.txt``\ 开始。这些文件指定了\ :manual:`cmake-buildsystem(7)`\
-  手册中描述的构建目标及其依赖关系。
+  的文件指定其构建系统，从顶层文件\ ``CMakeLists.txt``\ 开始。这些文件指定了\
+  :manual:`cmake-buildsystem(7)`\ 手册中描述的构建目标及其依赖关系。
 
 构建树
   用于存储构建系统文件和构建输出工件（例如可执行文件和库）的顶层目录。CMake将编写一个\
@@ -79,13 +79,11 @@ cmake(1)
   要维护原始的源代码树，请使用单独的专用构建树执行\ *源代码外*\ 构建。也支持将构建树放置在与\
   源代码树相同的目录中的\ *源代码内*\ 构建，但不鼓励这样做。
 
-Generator
-  This chooses the kind of buildsystem to generate.  See the
-  :manual:`cmake-generators(7)` manual for documentation of all generators.
-  Run :option:`cmake --help` to see a list of generators available locally.
-  Optionally use the :option:`-G <cmake -G>` option below to specify a
-  generator, or simply accept the default CMake chooses for the current
-  platform.
+生成器
+  这将选择要生成的构建系统的类型。请参阅\ :manual:`cmake-generators(7)`\ 手册获取所有生\
+  成器的文档。运行\ :option:`cmake --help`\ 查看本地可用的生成器列表。可以选择使用下面的\
+  :option:`-G <cmake -G>`\ 选项来指定一个生成器，或者简单地接受CMake为当前平台选择的默认\
+  生成器。
 
   当使用\ :ref:`Command-Line Build Tool Generators`\ 时，CMake期望编译器工具链所需要\
   的环境已经在shell中配置好了。当使用\ :ref:`IDE Build Tool Generators`\ 时，不需要特\
@@ -130,14 +128,12 @@ Generator
 
     $ cmake -S src -B build
 
-在所有情况下，``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
+在所有情况下，\ ``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
 
-The above styles for specifying the source and build trees may be mixed.
-Paths specified with :option:`-S <cmake -S>` or :option:`-B <cmake -B>`
-are always classified as source or build trees, respectively.  Paths
-specified with plain arguments are classified based on their content
-and the types of paths given earlier.  If only one type of path is given,
-the current working directory (cwd) is used for the other.  For example:
+上述用于指定源树和构建树的样式可以混合使用。用\ :option:`-S <cmake -S>`\ 或\
+:option:`-B <cmake -B>`\ 指定的路径总是分别归类为源树或构建树。使用普通参数指定的路径根据\
+其内容和前面给出的路径类型进行分类。如果只给出一种类型的路径，则使用当前工作目录（cwd）作为另\
+一种类型的路径。例如：
 
 ============================== ============ ===========
  命令行                          源目录        构建目录
@@ -157,8 +153,8 @@ the current working directory (cwd) is used for the other.  For example:
   CMake在指定多个源路径时发出警告。这从来没有正式的文档或支持，但较旧的版本会意外地接受多个\
   源路径，并使用最后指定的路径。避免传递多个源路径参数。
 
-在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\ :generator:`Unix Makefiles`\
-生成器后，可以直接运行\ ``make``：
+在生成构建系统之后，可以使用相应的本地构建工具来构建项目。例如，在使用\
+:generator:`Unix Makefiles`\ 生成器后，可以直接运行\ ``make``：
 
   .. code-block:: console
 
@@ -185,43 +181,40 @@ the current working directory (cwd) is used for the other.  For example:
 
 .. option:: -L[A][H]
 
- List non-advanced cached variables.
+ 列出非高级缓存变量。
 
- List ``CACHE`` variables will run CMake and list all the variables from
- the CMake ``CACHE`` that are not marked as ``INTERNAL`` or :prop_cache:`ADVANCED`.
- This will effectively display current CMake settings, which can then be
- changed with :option:`-D <cmake -D>` option.  Changing some of the variables
- may result in more variables being created.  If ``A`` is specified, then it
- will display also advanced variables.  If ``H`` is specified, it will also
- display help for each variable.
+ 列表\ ``CACHE``\ 变量将运行CMake并列出CMake ``CACHE``\ 中未标记为\ ``INTERNAL``\ 或\
+ :prop_cache:`ADVANCED`\ 的所有变量。这将有效地显示当前的CMake设置，然后可以使用\
+ :option:`-D <cmake -D>`\ 选项进行更改。更改一些变量可能会导致创建更多变量。如果指定了\
+ ``A``，那么它也将显示高级变量。如果指定了\ ``H``，它还将显示每个变量的帮助。
 
 .. option:: -N
 
- View mode only.
+ 仅支持查看模式。
 
  只加载缓存。不实际运行配置和生成步骤。
 
 .. option:: --graphviz=<file>
 
- Generate graphviz of dependencies, see :module:`CMakeGraphVizOptions` for more.
+ 生成依赖的graphviz，参见\ :module:`CMakeGraphVizOptions`\ 获取更多信息。
 
  生成一个graphviz输入文件，该文件将包含项目中的所有库和可执行依赖项。更多细节请参阅\
  :module:`CMakeGraphVizOptions`\ 文档。
 
 .. option:: --system-information [file]
 
- Dump information about this system.
+ 转储系统信息。
 
  转储关于当前系统的各种信息。如果从一个CMake项目的二进制目录顶层运行，它将转储额外的信息，\
  如缓存、日志文件等。
 
 .. option:: --log-level=<level>
 
- Set the log ``<level>``.
+ 设置日志\ ``<level>``。
 
- The :command:`message` command will only output messages of the specified
- log level or higher.  The valid log levels are ``ERROR``, ``WARNING``,
- ``NOTICE``, ``STATUS`` (default), ``VERBOSE``, ``DEBUG``, or ``TRACE``.
+ :command:`message`\ 命令只输出指定日志级别或更高级别的消息。有效的日志级别包括\
+ ``ERROR``、\ ``WARNING``、\ ``NOTICE``、\ ``STATUS``\ （默认）、\ ``VERBOSE``、\
+ ``DEBUG``\ 或\ ``TRACE``。
 
  要在CMake运行之间保持日志级别，可以将\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ 设置为缓\
  存变量。如果同时给出了命令行选项和变量，则命令行选项优先。
@@ -232,10 +225,12 @@ the current working directory (cwd) is used for the other.  For example:
    See the :command:`cmake_language` command for a way to
    :ref:`query the current message logging level <query_message_log_level>`.
 
+   有关\ :ref:`查询当前消息记录级别 <query_message_log_level>`\ 的方法，请参阅\
+   :command:`cmake_language`\ 命令。
+
 .. option:: --log-context
 
- Enable the :command:`message` command outputting context attached to each
- message.
+ 启用附加到每个消息的\ :command:`message`\ 命令输出上下文。
 
  这个选项打开仅显示当前CMake运行的上下文。为了让所有后续的CMake运行都持续显示上下文，可以将\
  :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 设置为缓存变量。当给出这个命令行选项时，\
