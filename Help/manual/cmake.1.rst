@@ -219,12 +219,9 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  要在CMake运行之间保持日志级别，可以将\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ 设置为缓\
  存变量。如果同时给出了命令行选项和变量，则命令行选项优先。
 
- 出于向后兼容的原因，``--loglevel``\ 也被接受为该选项的同义词。
+ 出于向后兼容的原因，\ ``--loglevel``\ 也被接受为该选项的同义词。
 
  .. versionadded:: 3.25
-   See the :command:`cmake_language` command for a way to
-   :ref:`query the current message logging level <query_message_log_level>`.
-
    有关\ :ref:`查询当前消息记录级别 <query_message_log_level>`\ 的方法，请参阅\
    :command:`cmake_language`\ 命令。
 
