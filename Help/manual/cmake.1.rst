@@ -235,72 +235,62 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --debug-trycompile
 
- Do not delete the files and directories created for
- :command:`try_compile` / :command:`try_run` calls.
- This is useful in debugging failed checks.
+ 不要删除为\ :command:`try_compile`\ /\ :command:`try_run`\ 调用创建的文件和目录。\
+ 这在调试失败的检查时很有用。
 
- Note that some uses of :command:`try_compile` may use the same build tree,
- which will limit the usefulness of this option if a project executes more
- than one :command:`try_compile`.  For example, such uses may change results
- as artifacts from a previous try-compile may cause a different test to either
- pass or fail incorrectly.  This option is best used only when debugging.
+ 注意，:command:`try_compile`\ 的某些用法可能使用相同的构建树，如果一个项目执行多个\
+ :command:`try_compile`，这将限制该选项的有用性。例如，这样的使用可能会改变结果，因为来自\
+ 先前尝试编译的工件可能会导致不同的测试错误地通过或失败。此选项最好仅在调试时使用。
 
- (With respect to the preceding, the :command:`try_run` command
- is effectively a :command:`try_compile`.  Any combination of the two
- is subject to the potential issues described.)
+ （与前面的命令相比，:command:`try_run`\ 命令实际上是\ :command:`try_compile`\ 命令。\
+ 两者的任何组合都受到所描述的潜在问题的影响。）
 
  .. versionadded:: 3.25
 
-   When this option is enabled, every try-compile check prints a log
-   message reporting the directory in which the check is performed.
+   启用此选项后，每次尝试编译检查都会打印一条日志消息，报告执行检查的目录。
 
 .. option:: --debug-output
 
- Put cmake in a debug mode.
+ 将cmake置于调试模式。
 
  在cmake运行期间打印额外的信息，就像使用\ :command:`message(SEND_ERROR)`\ 调用进行堆栈跟踪一样。
 
 .. option:: --debug-find
 
- Put cmake find commands in a debug mode.
+ 将cmake find命令置于调试模式。
 
  在cmake运行到标准错误时打印额外的find调用信息。输出是为人们使用而设计的，而不是为解析设计的。\
  请参阅\ :variable:`CMAKE_FIND_DEBUG_MODE`\ 变量来调试项目中更局部的部分。
 
 .. option:: --debug-find-pkg=<pkg>[,...]
 
- Put cmake find commands in a debug mode when running under calls
- to :command:`find_package(\<pkg\>) <find_package>`, where ``<pkg>``
- is an entry in the given comma-separated list of case-sensitive package
- names.
+ 在调用\ :command:`find_package(\<pkg\>) <find_package>`\ 时，将cmake find命令置于\
+ 调试模式，其中\ ``<pkg>``\ 是给定的逗号分隔的区分大小写的包名列表中的条目。
 
- Like :option:`--debug-find <cmake --debug-find>`, but limiting scope
- to the specified packages.
+ 类似于\ :option:`--debug-find <cmake --debug-find>`，但将作用域限制为指定的包。
 
 .. option:: --debug-find-var=<var>[,...]
 
- Put cmake find commands in a debug mode when called with ``<var>``
- as the result variable, where ``<var>`` is an entry in the given
- comma-separated list.
+ 当使用\ ``<var>``\ 作为结果变量调用cmake find命令时，将其置于调试模式，其中\ ``<var>``\
+ 是给定逗号分隔列表中的条目。
 
- Like :option:`--debug-find <cmake --debug-find>`, but limiting scope
- to the specified variable names.
+ 类似于\ :option:`--debug-find <cmake --debug-find>`，但将作用域限制为指定的变量名。
 
 .. option:: --trace
 
- Put cmake in trace mode.
+ 将cmake置于跟踪模式。
 
  打印所有呼叫的轨迹和调用的来源。
 
 .. option:: --trace-expand
 
- Put cmake in trace mode.
+ 将cmake置于跟踪模式。
 
- Like :option:`--trace <cmake --trace>`, but with variables expanded.
+ 类似于\ :option:`--trace <cmake --trace>`，但是变量展开了。
 
 .. option:: --trace-format=<format>
 
- Put cmake in trace mode and sets the trace output format.
+ 将cmake置于跟踪模式并设置跟踪输出格式。
 
  ``<format>``\ 可以是下列值之一。
 
@@ -374,88 +364,73 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --trace-source=<file>
 
- Put cmake in trace mode, but output only lines of a specified file.
+ 将cmake置于跟踪模式，但只输出指定文件的行。
 
- Multiple options are allowed.
+ 允许多个选项。
 
 .. option:: --trace-redirect=<file>
 
- Put cmake in trace mode and redirect trace output to a file instead of stderr.
+ 将cmake置于跟踪模式，并将跟踪输出重定向到文件而不是stderr。
 
 .. option:: --warn-uninitialized
 
- Warn about uninitialized values.
+ 警告未初始化的值。
 
- Print a warning when an uninitialized variable is used.
+ 当使用未初始化的变量时打印警告。
 
 .. option:: --warn-unused-vars
 
- Does nothing.  In CMake versions 3.2 and below this enabled warnings about
- unused variables.  In CMake versions 3.3 through 3.18 the option was broken.
- In CMake 3.19 and above the option has been removed.
+ 什么也不做。在CMake 3.2及以下版本中，此功能启用了关于未使用变量的警告。在CMake 3.3到\
+ 3.18版本中，这个选项被破坏了。在CMake 3.19及以上版本中，该选项已被删除。
 
 .. option:: --no-warn-unused-cli
 
- Don't warn about command line options.
+ 不要对命令行选项发出警告。
 
- Don't find variables that are declared on the command line, but not
- used.
+ 不要查找在命令行中声明但没有使用的变量。
 
 .. option:: --check-system-vars
 
- Find problems with variable usage in system files.
+ 在系统文件中查找变量使用的问题。
 
- Normally, unused and uninitialized variables are searched for only
- in :variable:`CMAKE_SOURCE_DIR` and :variable:`CMAKE_BINARY_DIR`.
- This flag tells CMake to warn about other files as well.
+ 通常，未使用和未初始化的变量只在\ :variable:`CMAKE_SOURCE_DIR`\
+ 和\ :variable:`CMAKE_BINARY_DIR`\ 中搜索。这个标志告诉CMake对其他文件也发出警告。
 
 .. option:: --compile-no-warning-as-error
 
- Ignore target property :prop_tgt:`COMPILE_WARNING_AS_ERROR` and variable
- :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`, preventing warnings from being
- treated as errors on compile.
+ 忽略目标属性\ :prop_tgt:`COMPILE_WARNING_AS_ERROR`\
+ 和变量\ :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`，防止警告在编译时被视为错误。
 
 .. option:: --profiling-output=<path>
 
- Used in conjunction with
- :option:`--profiling-format <cmake --profiling-format>` to output to a
- given path.
+ 与\ :option:`--profiling-format <cmake --profiling-format>`\ 一起使用，输出到给定的路径。
 
 .. option:: --profiling-format=<file>
 
- Enable the output of profiling data of CMake script in the given format.
+ 启用CMake脚本以给定格式输出分析数据。
 
- This can aid performance analysis of CMake scripts executed. Third party
- applications should be used to process the output into human readable format.
+ 这有助于执行CMake脚本的性能分析。应该使用第三方应用程序将输出处理成人类可读的格式。
 
- Currently supported values are:
- ``google-trace`` Outputs in Google Trace Format, which can be parsed by the
- about:tracing tab of Google Chrome or using a plugin for a tool like Trace
- Compass.
+ 目前支持的值是：\ ``google-trace``\ 输出谷歌Trace格式，可以通过谷歌Chrome的\
+ about:tracing\ 选项卡或使用Trace Compass等工具的插件进行解析。
 
 .. option:: --preset <preset>, --preset=<preset>
 
- Reads a :manual:`preset <cmake-presets(7)>` from
- ``<path-to-source>/CMakePresets.json`` and
- ``<path-to-source>/CMakeUserPresets.json``. The preset may specify the
- generator and the build directory, and a list of variables and other
- arguments to pass to CMake. The current working directory must contain
- CMake preset files. The :manual:`CMake GUI <cmake-gui(1)>` can
- also recognize ``CMakePresets.json`` and ``CMakeUserPresets.json`` files. For
- full details on these files, see :manual:`cmake-presets(7)`.
+ 从\ ``<path-to-source>/CMakePresets.json``\ 和\ ``<path-to-source>/CMakeUserPresets.json``\
+ 中读取\ :manual:`preset <cmake-presets(7)>`。预设可以指定生成器和构建目录，以及传递给\
+ CMake的变量和其他参数的列表。当前工作目录必须包含CMake预置文件。\ :manual:`CMake GUI <cmake-gui(1)>`\
+ 也可以识别\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 文件。有关这些文\
+ 件的详细信息，请参见\ :manual:`cmake-presets(7)`。
 
- The presets are read before all other command line options. The options
- specified by the preset (variables, generator, etc.) can all be overridden by
- manually specifying them on the command line. For example, if the preset sets
- a variable called ``MYVAR`` to ``1``, but the user sets it to ``2`` with a
- ``-D`` argument, the value ``2`` is preferred.
+ 在所有其他命令行选项之前读取预设。预设指定的选项（变量、生成器等）都可以通过在命令行中手动\
+ 指定来覆盖。例如，如果预设将名为\ ``MYVAR``\ 的变量设置为\ ``1``，但用户使用\ ``-D``\
+ 参数将其设置为\ ``2``，则首选值为\ ``2``。
 
 .. option:: --list-presets[=<type>]
 
- Lists the available presets of the specified ``<type>``.  Valid values for
- ``<type>`` are ``configure``, ``build``, ``test``, ``package``, or ``all``.
- If ``<type>`` is omitted, ``configure`` is assumed.  The current working
- directory must contain CMake preset files.
+ 列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值\ ``configure``、\ ``build``、\
+ ``test``、\ ``package``\ 或\ ``all``。如果省略\ ``<type>``，则假定为\ ``configure``。\
+ 当前工作目录必须包含CMake预置文件。
 
 .. _`Build Tool Mode`:
 
