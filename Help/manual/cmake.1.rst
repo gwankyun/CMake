@@ -439,8 +439,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. program:: cmake
 
-CMake provides a command-line signature to build an already-generated
-project binary tree:
+CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
 .. code-block:: shell
 
@@ -451,49 +450,42 @@ project binary tree:
 
 .. option:: --build <dir>
 
-  Project binary directory to be built.  This is required (unless a preset
-  is specified) and must be first.
+  要构建的项目二进制目录。这是必需的（除非指定了预设），并且必须放在首位。
 
 .. program:: cmake--build
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  Use a build preset to specify build options. The project binary directory
-  is inferred from the ``configurePreset`` key. The current working directory
-  must contain CMake preset files.
-  See :manual:`preset <cmake-presets(7)>` for more details.
+  使用构建预设来指定构建选项。项目二进制目录是从\ ``configurePreset``\ 键推断出来的。当前\
+  工作目录必须包含CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>`。
 
 .. option:: --list-presets
 
-  Lists the available build presets. The current working directory must
-  contain CMake preset files.
+  列出可用的构建预设。当前工作目录必须包含CMake预置文件。
 
 .. option:: -j [<jobs>], --parallel [<jobs>]
 
   .. versionadded:: 3.12
 
-  The maximum number of concurrent processes to use when building.
-  If ``<jobs>`` is omitted the native build tool's default number is used.
+  构建时要使用的最大并发进程数。如果省略\ ``<jobs>``，则使用本机构建工具的默认数字。
 
-  The :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` environment variable, if set,
-  specifies a default parallel level when this option is not given.
+  如果设置了\ :envvar:`CMAKE_BUILD_PARALLEL_LEVEL`\ 环境变量，则在未给出此选项时指定默\
+  认并行级别。
 
-  Some native build tools always build in parallel.  The use of ``<jobs>``
-  value of ``1`` can be used to limit to a single job.
+  一些本地构建工具总是并行构建。\ ``<jobs>``\ 值\ ``1``\ 的使用可用于限制为单个作业。
 
 .. option:: -t <tgt>..., --target <tgt>...
 
-  Build ``<tgt>`` instead of the default target.  Multiple targets may be
-  given, separated by spaces.
+  构建\ ``<tgt>``\ 而不是默认目标。可以给出多个目标，用空格分隔。
 
 .. option:: --config <cfg>
 
-  For multi-configuration tools, choose configuration ``<cfg>``.
+  对于多配置工具，选择\ ``<cfg>``\ 配置。
 
 .. option:: --clean-first
 
-  Build target ``clean`` first, then build.
-  (To clean only, use :option:`--target clean <cmake--build --target>`.)
+  先构建目标\ ``clean``，然后再构建。（如果只清理，请使用\
+  :option:`--target clean <cmake--build --target>`。）
 
 .. option:: --resolve-package-references=<value>
 
