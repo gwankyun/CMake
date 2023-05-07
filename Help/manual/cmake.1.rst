@@ -491,45 +491,38 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
   .. versionadded:: 3.23
 
-  Resolve remote package references from external package managers (e.g. NuGet)
-  before build. When ``<value>`` is set to ``on`` (default), packages will be
-  restored before building a target.  When ``<value>`` is set to ``only``, the
-  packages will be restored, but no build will be performed.  When
-  ``<value>`` is set to ``off``, no packages will be restored.
+  在构建之前解析来自外部包管理器（例如NuGet）的远程包引用。当\ ``<value>``\ 设置为\ ``on``\
+  （默认）时，将在构建目标之前恢复包。当\ ``<value>``\ 设置为\ ``only``\ 时，将恢复包，\
+  但不会执行构建。当\ ``<value>``\ 设置为\ ``off``\ 时，不恢复任何包。
 
-  If the target does not define any package references, this option does nothing.
+  如果目标未定义任何包引用，则此选项不执行任何操作。
 
-  This setting can be specified in a build preset (using
-  ``resolvePackageReferences``). The preset setting will be ignored, if this
-  command line option is specified.
+  该设置可以在构建预设中指定（使用\ ``resolvePackageReferences``）。如果指定了此命令行选项，\
+  则将忽略预设设置。
 
-  If no command line parameter or preset option are provided, an environment-
-  specific cache variable will be evaluated to decide, if package restoration
-  should be performed.
+  如果没有提供命令行参数或预设选项，将评估一个特定于环境的缓存变量，以决定是否应该执行包恢复。
 
-  When using the Visual Studio generator, package references are defined
-  using the :prop_tgt:`VS_PACKAGE_REFERENCES` property. Package references
-  are restored using NuGet. It can be disabled by setting the
-  ``CMAKE_VS_NUGET_PACKAGE_RESTORE`` variable to ``OFF``.
+  当使用Visual Studio生成器时，包引用是使用\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属\
+  性定义的。使用NuGet恢复包引用。可以通过将\ ``CMAKE_VS_NUGET_PACKAGE_RESTORE``\ 变量\
+  设置为\ ``OFF``\ 来禁用它。
 
 .. option:: --use-stderr
 
-  Ignored.  Behavior is default in CMake >= 3.0.
+  忽略。行为是默认的在CMake >= 3.0。
 
 .. option:: -v, --verbose
 
-  Enable verbose output - if supported - including the build commands to be
-  executed.
+  启用详细输出，如果支持的话，包括要执行的构建命令。
 
-  This option can be omitted if :envvar:`VERBOSE` environment variable or
-  :variable:`CMAKE_VERBOSE_MAKEFILE` cached variable is set.
+  如果设置了\ :envvar:`VERBOSE`\ 环境变量或\ :variable:`CMAKE_VERBOSE_MAKEFILE`\
+  缓存变量，则可以省略此选项。
 
 
 .. option:: --
 
-  Pass remaining options to the native tool.
+  将其余选项传递给本机工具。
 
-Run :option:`cmake --build` with no options for quick help.
+运行\ :option:`cmake --build`，没有快速帮助选项。
 
 安装一个项目
 =================
