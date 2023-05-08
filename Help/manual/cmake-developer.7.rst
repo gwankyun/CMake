@@ -16,36 +16,33 @@ cmake-developer(7)
 请参见\ https://cmake.org/get-involved/\ 参与CMake上游的开发。它包括到贡献说明的链接，\
 而贡献说明又链接到CMake自身的开发指南。
 
-Accessing Windows Registry
+访问Windows注册表
 ==========================
 
-CMake offers some facilities to access the registry on ``Windows`` platforms.
+CMake提供了一些工具来访问\ ``Windows``\ 平台上的注册表。
 
-Query Windows Registry
+查询Windows注册表
 ----------------------
 
 .. versionadded:: 3.24
 
-The :command:`cmake_host_system_information` command offers the possibility to
-query the registry on the local computer. See
-:ref:`cmake_host_system(QUERY_WINDOWS_REGISTRY) <Query Windows registry>` for
-more information.
+:command:`cmake_host_system_information`\ 命令提供了在本地计算机上查询注册表的可能性。\
+查看\ :ref:`cmake_host_system(QUERY_WINDOWS_REGISTRY) <Query Windows registry>`\
+获取更多信息。
 
 .. _`Find Using Windows Registry`:
 
-Find Using Windows Registry
+使用Windows注册表查找
 ---------------------------
 
 .. versionchanged:: 3.24
 
-Options ``HINTS`` and ``PATHS`` of :command:`find_file`,
-:command:`find_library`, :command:`find_path`, :command:`find_program`, and
-:command:`find_package` commands offer the possibility, on ``Windows``
-platform, to query the registry.
+:command:`find_file`、:command:`find_library`、:command:`find_path`、\
+:command:`find_program`\ 和\ :command:`find_package`\ 命令的\ ``HINTS``\ 和\
+``PATHS``\ 选项提供了在\ ``Windows``\ 平台上查询注册表的可能性。
 
-The formal syntax, as specified using
-`BNF <https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form>`_ notation with
-the regular extensions, for registry query is the following:
+注册表查询的正式语法，使用带有常规扩展的\ `BNF <https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form>`_\
+表示法指定，如下所示：
 
 .. raw:: latex
 
@@ -69,10 +66,9 @@ the regular extensions, for registry query is the following:
 
    \end{small}
 
-The :token:`sep_definition` optional item offers the possibility to specify
-the string used to separate the :token:`sub_key` from the :token:`value_name`
-item. If not specified, the character ``;`` is used. Multiple
-:token:`registry_query` items can be specified as part of a path.
+:token:`sep_definition`\ 可选项提供了指定用于分隔\ :token:`sub_key`\ 和\
+:token:`value_name`\ 项的字符串的可能性。如果未指定，则使用\ ``;``\ 字符。可以将多个\
+:token:`registry_query`\ 项指定为路径的一部分。
 
 .. code-block:: cmake
 
@@ -82,18 +78,16 @@ item. If not specified, the character ``;`` is used. Multiple
   # example using different specified separators
   find_library(... HINTS "/root/[{|}HKCU/Stuff|InstallDir]/lib[{@@}HKCU\\\\Stuff@@Architecture]")
 
-If the :token:`value_name` item is not specified or has the special name
-``(default)``, the content of the default value, if any, will be returned. The
-supported types for the :token:`value_name` are:
+如果\ :token:`value_name`\ 项未指定或有特殊名称\ ``(default)``，则返回默认值的内容\
+（如果有）。:token:`value_name`\ 支持的类型有：
 
-* ``REG_SZ``.
-* ``REG_EXPAND_SZ``. The returned data is expanded.
-* ``REG_DWORD``.
-* ``REG_QWORD``.
+* ``REG_SZ``。
+* ``REG_EXPAND_SZ``。返回被扩展的数据。
+* ``REG_DWORD``。
+* ``REG_QWORD``。
 
-When the registry query failed, typically because the key does not exist or
-the data type is not supported, the string ``/REGISTRY-NOTFOUND`` is substituted
-to the ``[]`` query expression.
+当注册表查询失败时（通常是因为键不存在或不支持数据类型），字符串\ ``/REGISTRY-NOTFOUND``\
+将被替换为\ ``[]``\ 查询表达式。
 
 .. _`Find Modules`:
 
