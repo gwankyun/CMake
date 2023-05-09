@@ -94,30 +94,24 @@ CMake提供了一些工具来访问\ ``Windows``\ 平台上的注册表。
 查找模块
 ============
 
-A "find module" is a ``Find<PackageName>.cmake`` file to be loaded by the
-:command:`find_package` command when invoked for ``<PackageName>``.
+“查找模块”是一个\ ``Find<PackageName>.cmake``\ 文件，在调用时由\
+:command:`find_package`\ 命令加载。
 
-The primary task of a find module is to determine whether a package is
-available, set the ``<PackageName>_FOUND`` variable to reflect this and
-provide any variables, macros and imported targets required to use the
-package.  A find module is useful in cases where an upstream library does
-not provide a :ref:`config file package <Config File Packages>`.
+查找模块的主要任务是确定包是否可用，设置\ ``<PackageName>_FOUND``\ 变量以反映这一点，并提\
+供使用包所需的任何变量、宏和导入目标。在上游库没有提供\ :ref:`配置文件包 <Config File Packages>`\
+的情况下，查找模块很有用。
 
-The traditional approach is to use variables for everything, including
-libraries and executables: see the `标准变量名`_ section
-below.  This is what most of the existing find modules provided by CMake
-do.
+传统的方法是对所有东西都使用变量，包括库和可执行文件：请参阅下面的\ `标准变量名`_\ 部分。\
+这是CMake提供的大多数现有查找模块所做的。
 
-The more modern approach is to behave as much like
-:ref:`config file packages <Config File Packages>` files as possible, by
-providing :ref:`imported target <Imported targets>`.  This has the advantage
-of propagating :ref:`Target Usage Requirements` to consumers.
+更现代的方法是通过提供\ :ref:`导入目标 <Imported targets>`，尽可能地像\
+:ref:`配置文件包 <Config File Packages>`\ 文件那样运行。这样可以将\
+:ref:`Target Usage Requirements`\ 给消费者。
 
-In either case (or even when providing both variables and imported
-targets), find modules should provide backwards compatibility with old
-versions that had the same name.
+在任何一种情况下（甚至在同时提供变量和导入目标时），查找模块都应该提供与具有相同名称的旧版\
+本的向后兼容性。
 
-A FindFoo.cmake module will typically be loaded by the command::
+FindFoo.cmake模块通常通过以下命令加载：\ ::
 
   find_package(Foo [major[.minor[.patch[.tweak]]]]
                [EXACT] [QUIET] [REQUIRED]
@@ -125,32 +119,23 @@ A FindFoo.cmake module will typically be loaded by the command::
                [OPTIONAL_COMPONENTS components...]
                [NO_POLICY_SCOPE])
 
-See the :command:`find_package` documentation for details on what
-variables are set for the find module.  Most of these are dealt with by
-using :module:`FindPackageHandleStandardArgs`.
+有关查找模块设置了哪些变量的详细信息，请参阅\ :command:`find_package`\ 文档。其中大多数\
+都是通过使用\ :module:`FindPackageHandleStandardArgs`\ 来处理的。
 
-Briefly, the module should only locate versions of the package
-compatible with the requested version, as described by the
-``Foo_FIND_VERSION`` family of variables.  If ``Foo_FIND_QUIETLY`` is
-set to true, it should avoid printing messages, including anything
-complaining about the package not being found.  If ``Foo_FIND_REQUIRED``
-is set to true, the module should issue a ``FATAL_ERROR`` if the package
-cannot be found.  If neither are set to true, it should print a
-non-fatal message if it cannot find the package.
+简单地说，模块应该只定位与请求版本兼容的包的版本，正如变量族\ ``Foo_FIND_VERSION``\ 所描\
+述的那样。如果\ ``Foo_FIND_QUIETLY``\ 设置为true，它应该避免打印消息，包括没有找到包的任\
+何抱怨。如果\ ``Foo_FIND_REQUIRED``\ 被设置为true，如果找不到包，模块应该发出\ ``FATAL_ERROR``。\
+如果两者都设置为true，则如果它找不到包，则应该打印一条非致命消息。
 
-Packages that find multiple semi-independent parts (like bundles of
-libraries) should search for the components listed in
-``Foo_FIND_COMPONENTS`` if it is set , and only set ``Foo_FOUND`` to
-true if for each searched-for component ``<c>`` that was not found,
-``Foo_FIND_REQUIRED_<c>`` is not set to true.  The ``HANDLE_COMPONENTS``
-argument of ``find_package_handle_standard_args()`` can be used to
-implement this.
+找到多个半独立部件的包（如库包）应该搜索\ ``Foo_FIND_COMPONENTS``\ 中列出的组件，如果设\
+置为true，并且只有在每个搜索组件\ ``<c>``\ 未找到时才将\ ``Foo_FOUND``\ 设置为true, \
+``Foo_FIND_REQUIRED_<c>``\ 未设置为true。\ ``find_package_handle_standard_args()``\
+的\ ``HANDLE_COMPONENTS``\ 参数可用于实现此功能。
 
-If ``Foo_FIND_COMPONENTS`` is not set, which modules are searched for
-and required is up to the find module, but should be documented.
+如果没有设置\ ``Foo_FIND_COMPONENTS``，那么搜索哪些模块和需要哪些模块取决于查找模块，但应\
+该标明下来。
 
-For internal implementation, it is a generally accepted convention that
-variables starting with underscore are for temporary use only.
+对于内部实现，以下划线开头的变量仅供临时使用是一个普遍接受的约定。
 
 
 .. _`CMake Developer Standard Variable Names`:
