@@ -143,42 +143,28 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
 标准变量名
 -----------------------
 
-For a ``FindXxx.cmake`` module that takes the approach of setting
-variables (either instead of or in addition to creating imported
-targets), the following variable names should be used to keep things
-consistent between Find modules.  Note that all variables start with
-``Xxx_``, which (unless otherwise noted) must match exactly the name
-of the ``FindXxx.cmake`` file, including upper/lowercase.
-This prefix on the variable names ensures that they do not conflict with
-variables of other Find modules.  The same pattern should also be followed
-for any macros, functions and imported targets defined by the Find module.
+对于采用设置变量方法的\ ``FindXxx.cmake``\ 模块（代替或添加创建导入目标），应该使用以下变\
+量名来保持查找模块之间的一致性。请注意，所有变量都以\ ``Xxx_``\ 开头，除非另有说明，否则必\
+须与\ ``FindXxx.cmake``\ 文件的名称完全匹配，包括大写/小写。变量名上的前缀确保它们不会与\
+其他查找模块的变量冲突。对于查找模块定义的任何宏、函数和导入目标，也应该遵循相同的模式。
 
 ``Xxx_INCLUDE_DIRS``
-  The final set of include directories listed in one variable for use by
-  client code. This should not be a cache entry (note that this also means
-  this variable should not be used as the result variable of a
-  :command:`find_path` command - see ``Xxx_INCLUDE_DIR`` below for that).
+  最后一组包含目录列在一个变量中，供客户端代码使用。这不应该是一个缓存条目（注意，这也意味着\
+  这个变量不应该用作\ :command:`find_path`\ 命令的结果变量——请参阅下面的\ ``Xxx_INCLUDE_DIR``）。
 
 ``Xxx_LIBRARIES``
-  The libraries to use with the module.  These may be CMake targets, full
-  absolute paths to a library binary or the name of a library that the
-  linker must find in its search path.  This should not be a cache entry
-  (note that this also means this variable should not be used as the
-  result variable of a :command:`find_library` command - see
-  ``Xxx_LIBRARY`` below for that).
+  与模块一起使用的库。这些可能是CMake目标，库二进制文件的完整绝对路径或链接器必须在其搜索路\
+  径中找到的库的名称。这不应该是一个缓存条目（注意，这也意味着这个变量不应该用作\
+  :command:`find_library`\ 命令的结果变量——请参阅下面的\ ``Xxx_LIBRARY``）。
 
 ``Xxx_DEFINITIONS``
-  The compile definitions to use when compiling code that uses the module.
-  This really shouldn't include options such as ``-DHAS_JPEG`` that a client
-  source-code file uses to decide whether to ``#include <jpeg.h>``
+  编译使用该模块的代码时要使用的编译定义。这真的不应该包含像\ ``-DHAS_JPEG``\ 这样的选项，\
+  客户端源代码文件使用这些选项来决定是否\ ``#include <jpeg.h>``
 
 ``Xxx_EXECUTABLE``
-  The full absolute path to an executable.  In this case, ``Xxx`` might not
-  be the name of the module, it might be the name of the tool (usually
-  converted to all uppercase), assuming that tool has such a well-known name
-  that it is unlikely that another tool with the same name exists.  It would
-  be appropriate to use this as the result variable of a
-  :command:`find_program` command.
+  可执行文件的完整绝对路径。在这种情况下，\ ``Xxx``\ 可能不是模块的名称，它可能是工具的名称\
+  （通常转换为全大写），假设工具具有如此知名的名称，因此不太可能存在具有相同名称的其他工具。\
+  将其用作\ :command:`find_program`\ 命令的结果变量是合适的。
 
 ``Xxx_YYY_EXECUTABLE``
   Similar to ``Xxx_EXECUTABLE`` except here the ``Xxx`` is always the module
