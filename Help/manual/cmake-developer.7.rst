@@ -167,82 +167,61 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
   将其用作\ :command:`find_program`\ 命令的结果变量是合适的。
 
 ``Xxx_YYY_EXECUTABLE``
-  Similar to ``Xxx_EXECUTABLE`` except here the ``Xxx`` is always the module
-  name and ``YYY`` is the tool name (again, usually fully uppercase).
-  Prefer this form if the tool name is not very widely known or has the
-  potential  to clash with another tool.  For greater consistency, also
-  prefer this form if the module provides more than one executable.
+  类似于\ ``Xxx_EXECUTABLE``，除了这里\ ``Xxx``\ 总是模块名，\ ``YYY``\ 是工具名（同样，\
+  通常是全大写）。如果工具名称不是非常广为人知，或者有可能与其他工具冲突，则首选此形式。为了\
+  更大的一致性，如果模块提供了多个可执行文件，也更喜欢这种形式。
 
 ``Xxx_LIBRARY_DIRS``
-  Optionally, the final set of library directories listed in one
-  variable for use by client code. This should not be a cache entry.
+  可选地，在一个变量中列出供客户端代码使用的库目录的最终集。这不应该是缓存项。
 
 ``Xxx_ROOT_DIR``
-  Where to find the base directory of the module.
+  在哪里可以找到模块的基目录。
 
 ``Xxx_VERSION_VV``
-  Variables of this form specify whether the ``Xxx`` module being provided
-  is version ``VV`` of the module.  There should not be more than one
-  variable of this form set to true for a given module.  For example, a
-  module ``Barry`` might have evolved over many years and gone through a
-  number of different major versions.  Version 3 of the ``Barry`` module
-  might set the variable ``Barry_VERSION_3`` to true, whereas an older
-  version of the module might set ``Barry_VERSION_2`` to true instead.
-  It would be an error for both ``Barry_VERSION_3`` and ``Barry_VERSION_2``
-  to both be set to true.
+  该表单的变量指定所提供的\ ``Xxx``\ 模块是否为该模块的\ ``VV``\ 版本。对于给定的模块，\
+  不应该有多个这种形式的变量设置为true。例如，一个模块\ ``Barry``\ 可能已经发展了很多年，\
+  并且经历了许多不同的主要版本。版本3的\ ``Barry``\ 模块可能会将变量\ ``Barry_VERSION_3``\
+  设置为true，而旧版本的模块可能会将\ ``Barry_VERSION_2``\ 设置为true。\ ``Barry_VERSION_3``\
+  和\ ``Barry_VERSION_2``\ 都设置为true将是错误的。
 
 ``Xxx_WRAP_YY``
-  When a variable of this form is set to false, it indicates that the
-  relevant wrapping command should not be used.  The wrapping command
-  depends on the module, it may be implied by the module name or it might
-  be specified by the ``YY`` part of the variable.
+  当这种形式的变量被设置为false时，它表示不应该使用相关的包装命令。包装命令取决于模块，它可\
+  能由模块名暗示，也可能由变量的\ ``YY``\ 部分指定。
 
 ``Xxx_Yy_FOUND``
-  For variables of this form, ``Yy`` is the name of a component for the
-  module.  It should match exactly one of the valid component names that
-  may be passed to the :command:`find_package` command for the module.
-  If a variable of this form is set to false, it means that the ``Yy``
-  component of module ``Xxx`` was not found or is not available.
-  Variables of this form would typically be used for optional components
-  so that the caller can check whether an optional component is available.
+  对于这种形式的变量，\ ``Yy``\ 是模块的组件名。它应该完全匹配可能传递给模块的\
+  :command:`find_package`\ 命令的有效组件名之一。如果将这种形式的变量设置为false，则表示\
+  没有找到模块\ ``Xxx``\ 的\ ``Yy``\ 组件或不可用。此表单的变量通常用于可选组件，以便调用\
+  方可以检查可选组件是否可用。
 
 ``Xxx_FOUND``
-  When the :command:`find_package` command returns to the caller, this
-  variable will be set to true if the module was deemed to have been found
-  successfully.
+  当\ :command:`find_package`\ 命令返回给调用者时，如果认为模块已被成功找到，则该变量将\
+  被设置为true。
 
 ``Xxx_NOT_FOUND_MESSAGE``
-  Should be set by config-files in the case that it has set
-  ``Xxx_FOUND`` to FALSE.  The contained message will be printed by the
-  :command:`find_package` command and by
-  :command:`find_package_handle_standard_args` to inform the user about the
-  problem.  Use this instead of calling :command:`message` directly to
-  report a reason for failing to find the module or package.
+  在将\ ``Xxx_FOUND``\ 设置为FALSE的情况下，应该由config-files设置。包含的消息将由\
+  :command:`find_package`\ 命令和\ :command:`find_package_handle_standard_args`\
+  命令打印，以通知用户有关问题。使用此方法而不是直接调用\ :command:`message`\ 来报告无法\
+  找到模块或包的原因。
 
 ``Xxx_RUNTIME_LIBRARY_DIRS``
-  Optionally, the runtime library search path for use when running an
-  executable linked to shared libraries.  The list should be used by
-  user code to create the ``PATH`` on windows or ``LD_LIBRARY_PATH`` on
-  UNIX.  This should not be a cache entry.
+  可选地，运行时库搜索路径，供运行链接到共享库的可执行文件时使用。用户代码应该使用该列表来创\
+  建windows上的\ ``PATH``\ 或UNIX上的\ ``LD_LIBRARY_PATH``。这不应该是缓存项。
 
 ``Xxx_VERSION``
-  The full version string of the package found, if any.  Note that many
-  existing modules provide ``Xxx_VERSION_STRING`` instead.
+  找到的包的完整版本字符串，如果有的话。注意，许多现有模块提供的是\ ``Xxx_VERSION_STRING``。
 
 ``Xxx_VERSION_MAJOR``
-  The major version of the package found, if any.
+  找到的包的主要版本，如果有的话。
 
 ``Xxx_VERSION_MINOR``
-  The minor version of the package found, if any.
+  找到的包的次要版本，如果有的话。
 
 ``Xxx_VERSION_PATCH``
-  The patch version of the package found, if any.
+  找到的包的补丁版本，如果有的话。
 
-The following names should not usually be used in ``CMakeLists.txt`` files.
-They are intended for use by Find modules to specify and cache the locations
-of specific files or directories.  Users are typically able to set and edit
-these variables to control the behavior of Find modules (like entering the
-path to a library manually):
+以下名称通常不应该在\ ``CMakeLists.txt``\ 文件中使用。它们用于查找模块指定和缓存特定文件或\
+目录的位置。用户通常能够设置和编辑这些变量来控制查找模块的行为（比如手动输入库的路径）:
 
 ``Xxx_LIBRARY``
   The path of the library.  Use this form only when the module provides a
