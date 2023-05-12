@@ -224,54 +224,38 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
 目录的位置。用户通常能够设置和编辑这些变量来控制查找模块的行为（比如手动输入库的路径）:
 
 ``Xxx_LIBRARY``
-  The path of the library.  Use this form only when the module provides a
-  single library.  It is appropriate to use this as the result variable
-  in a :command:`find_library` command.
+  库的路径。仅当模块提供单个库时才使用此表单。将其用作\ :command:`find_library`\ 命令中\
+  的结果变量是合适的。
 
 ``Xxx_Yy_LIBRARY``
-  The path of library ``Yy`` provided by the module ``Xxx``.  Use this form
-  when the module provides more than one library or where other modules may
-  also provide a library of the same name. It is also appropriate to use
-  this form as the result variable in a :command:`find_library` command.
+  模块\ ``Xxx``\ 提供的库\ ``Yy``\ 的路径。当模块提供多个库或其他模块也可能提供相同名称的\
+  库时，使用此表单。将这种形式用作\ :command:`find_library`\ 命令中的结果变量也是合适的。
 
 ``Xxx_INCLUDE_DIR``
-  When the module provides only a single library, this variable can be used
-  to specify where to find headers for using the library (or more accurately,
-  the path that consumers of the library should add to their header search
-  path).  It would be appropriate to use this as the result variable in a
-  :command:`find_path` command.
+  当模块只提供一个库时，该变量可用于指定在何处查找使用该库的头文件（或者更准确地说，是该库的\
+  消费者应该添加到其头文件搜索路径中的路径）。将其用作\ :command:`find_path`\ 命令中的结\
+  果变量是合适的。
 
 ``Xxx_Yy_INCLUDE_DIR``
-  If the module provides more than one library or where other modules may
-  also provide a library of the same name, this form is recommended for
-  specifying where to find headers for using library ``Yy`` provided by
-  the module.  Again, it would be appropriate to use this as the result
-  variable in a :command:`find_path` command.
+  如果模块提供多个库，或者其他模块也可能提供同名库，则建议使用此表单指定在何处查找使用模块提\
+  供的库\ ``Yy``\ 的头文件。同样，将它用作\ :command:`find_path`\ 命令中的结果变量是合适的。
 
-To prevent users being overwhelmed with settings to configure, try to
-keep as many options as possible out of the cache, leaving at least one
-option which can be used to disable use of the module, or locate a
-not-found library (e.g. ``Xxx_ROOT_DIR``).  For the same reason, mark
-most cache options as advanced.  For packages which provide both debug
-and release binaries, it is common to create cache variables with a
-``_LIBRARY_<CONFIG>`` suffix, such as ``Foo_LIBRARY_RELEASE`` and
-``Foo_LIBRARY_DEBUG``.  The :module:`SelectLibraryConfigurations` module
-can be helpful for such cases.
+为了防止用户被需要配置的设置弄得不知所措，尽量在缓存中保留尽可能多的选项，至少留下一个选项，\
+可用于禁用模块的使用，或定位未找到的库（例如\ ``Xxx_ROOT_DIR``）。出于同样的原因，将大多数\
+缓存选项标记为高级。对于同时提供调试和发布二进制文件的包，通常使用\ ``_LIBRARY_<CONFIG>``\
+后缀创建缓存变量，例如\ ``Foo_LIBRARY_RELEASE``\ 和\ ``Foo_LIBRARY_DEBUG``。\
+:module:`SelectLibraryConfigurations`\ 模块对这种情况很有帮助。
 
-While these are the standard variable names, you should provide
-backwards compatibility for any old names that were actually in use.
-Make sure you comment them as deprecated, so that no-one starts using
-them.
+虽然这些都是标准的变量名，但你应该为实际使用的任何旧名称提供向后兼容性。确保将它们注释为已弃用，\
+这样就不会有人开始使用它们。
 
 查找模块示例
 --------------------
 
-We will describe how to create a simple find module for a library ``Foo``.
+我们将描述如何为库\ ``Foo``\ 创建一个简单的查找模块。
 
-The top of the module should begin with a license notice, followed by
-a blank line, and then followed by a :ref:`Bracket Comment`.  The comment
-should begin with ``.rst:`` to indicate that the rest of its content is
-reStructuredText-format documentation.  For example:
+模块的顶部应该以许可声明开始，然后是空白行，然后是\ :ref:`Bracket Comment`。注释应该以\
+``.rst:``\ 开头，以表明其其余内容是restructuredtext格式的文档。例如：
 
 ::
 
@@ -318,45 +302,36 @@ reStructuredText-format documentation.  For example:
 
   #]=======================================================================]
 
-The module documentation consists of:
+模块文档包括：
 
-* An underlined heading specifying the module name.
+* 带下划线的标题，指定模块名称。
 
-* A simple description of what the module finds.
-  More description may be required for some packages.  If there are
-  caveats or other details users of the module should be aware of,
-  specify them here.
+* 对模块查找内容的简单描述。某些包可能需要更多的描述。如果模块的用户应该知道一些警告或其他细\
+  节，请在这里指定。
 
-* A section listing imported targets provided by the module, if any.
+* 列出由模块提供的导入目标的部分，如果有的话。
 
-* A section listing result variables provided by the module.
+* 列出模块提供的结果变量的部分。
 
-* Optionally a section listing cache variables used by the module, if any.
+* 可选，列出模块使用的缓存变量的部分，如果有的话。
 
-If the package provides any macros or functions, they should be listed in
-an additional section, but can be documented by additional ``.rst:``
-comment blocks immediately above where those macros or functions are defined.
+如果包提供了任何宏或函数，它们应该被列在一个额外的部分中，但是可以通过在定义这些宏或函数的位\
+置上方的附加\ ``.rst:``\ 注释块进行记录。
 
-The find module implementation may begin below the documentation block.
-Now the actual libraries and so on have to be found.  The code here will
-obviously vary from module to module (dealing with that, after all, is the
-point of find modules), but there tends to be a common pattern for libraries.
+查找模块的实现可以从文档块下面开始。现在需要找到实际的库等等。这里的代码显然会因模块而异\
+（毕竟，处理这个问题是查找模块的重点），但是库往往有一个共同的模式。
 
-First, we try to use ``pkg-config`` to find the library.  Note that we
-cannot rely on this, as it may not be available, but it provides a good
-starting point.
+首先，我们尝试使用\ ``pkg-config``\ 来查找库。请注意，我们不能依赖它，因为它可能不可用，\
+但它提供了一个很好的起点。
 
 .. code-block:: cmake
 
   find_package(PkgConfig)
   pkg_check_modules(PC_Foo QUIET Foo)
 
-This should define some variables starting ``PC_Foo_`` that contain the
-information from the ``Foo.pc`` file.
+这应该定义一些从\ ``PC_Foo_``\ 开始的变量，其中包含来自\ ``Foo.pc``\ 文件的信息。
 
-Now we need to find the libraries and include files; we use the
-information from ``pkg-config`` to provide hints to CMake about where to
-look.
+现在我们需要找到库并包含文件；我们使用\ ``pkg-config``\ 中的信息为CMake提供有关查找位置的提示。
 
 .. code-block:: cmake
 
@@ -370,9 +345,8 @@ look.
     PATHS ${PC_Foo_LIBRARY_DIRS}
   )
 
-Alternatively, if the library is available with multiple configurations, you can
-use :module:`SelectLibraryConfigurations` to automatically set the
-``Foo_LIBRARY`` variable instead:
+或者，如果库有多个配置可用，你可以使用\ :module:`SelectLibraryConfigurations`\ 来自动\
+设置\ ``Foo_LIBRARY``\ 变量：
 
 .. code-block:: cmake
 
@@ -388,18 +362,15 @@ use :module:`SelectLibraryConfigurations` to automatically set the
   include(SelectLibraryConfigurations)
   select_library_configurations(Foo)
 
-If you have a good way of getting the version (from a header file, for
-example), you can use that information to set ``Foo_VERSION`` (although
-note that find modules have traditionally used ``Foo_VERSION_STRING``,
-so you may want to set both).  Otherwise, attempt to use the information
-from ``pkg-config``
+如果你有一个获得版本的好方法（例如，从头文件），你可以使用该信息来设置\ ``Foo_VERSION``\
+（尽管注意，查找模块传统上使用的是\ ``Foo_VERSION_STRING``，所以你可能想要设置两者）。\
+否则，尝试使用\ ``pkg-config``\ 中的信息
 
 .. code-block:: cmake
 
   set(Foo_VERSION ${PC_Foo_VERSION})
 
-Now we can use :module:`FindPackageHandleStandardArgs` to do most of the
-rest of the work for us
+现在我们可以使用\ :module:`FindPackageHandleStandardArgs`\ 为我们完成剩下的大部分工作
 
 .. code-block:: cmake
 
@@ -412,18 +383,13 @@ rest of the work for us
     VERSION_VAR Foo_VERSION
   )
 
-This will check that the ``REQUIRED_VARS`` contain values (that do not
-end in ``-NOTFOUND``) and set ``Foo_FOUND`` appropriately.  It will also
-cache those values.  If ``Foo_VERSION`` is set, and a required version
-was passed to :command:`find_package`, it will check the requested version
-against the one in ``Foo_VERSION``.  It will also print messages as
-appropriate; note that if the package was found, it will print the
-contents of the first required variable to indicate where it was found.
+这将检查\ ``REQUIRED_VARS``\ 是否包含值（不以\ ``-NOTFOUND``\ 结尾），并适当地设置\
+``Foo_FOUND``。它还将缓存这些值。如果设置了\ ``Foo_VERSION``，并且所需的版本被传递给\
+:command:`find_package`，它将根据\ ``Foo_VERSION``\ 中的版本检查所请求的版本。它还将酌\
+情打印消息；注意，如果找到了包，它将打印第一个必需变量的内容，以指示找到包的位置。
 
-At this point, we have to provide a way for users of the find module to
-link to the library or libraries that were found.  There are two
-approaches, as discussed in the `Find Modules`_ section above.  The
-traditional variable approach looks like
+此时，我们必须为查找模块的用户提供一种方法来链接到找到的库。如上面的\ `查找模块`_\
+部分所述，有两种方法。传统的变量方法是这样的
 
 .. code-block:: cmake
 
@@ -433,16 +399,11 @@ traditional variable approach looks like
     set(Foo_DEFINITIONS ${PC_Foo_CFLAGS_OTHER})
   endif()
 
-If more than one library was found, all of them should be included in
-these variables (see the `标准变量名`_ section for more
-information).
+如果找到了多个库，则应将所有库都包含在这些变量中（有关更多信息，请参阅\ `标准变量名`_\ 名称部分）。
 
-When providing imported targets, these should be namespaced (hence the
-``Foo::`` prefix); CMake will recognize that values passed to
-:command:`target_link_libraries` that contain ``::`` in their name are
-supposed to be imported targets (rather than just library names), and
-will produce appropriate diagnostic messages if that target does not
-exist (see policy :policy:`CMP0028`).
+当提供导入的目标时，这些目标应该有命名空间（因此使用\ ``Foo::``\ 前缀）；CMake将识别传递给\
+:command:`target_link_libraries`\ 的名称中包含\ ``::``\ 的值应该是导入的目标（而不仅仅\
+是库名），并且如果该目标不存在（参见策略\ :policy:`CMP0028`），则会产生适当的诊断消息。
 
 .. code-block:: cmake
 
@@ -455,20 +416,15 @@ exist (see policy :policy:`CMP0028`).
     )
   endif()
 
-One thing to note about this is that the ``INTERFACE_INCLUDE_DIRECTORIES`` and
-similar properties should only contain information about the target itself, and
-not any of its dependencies.  Instead, those dependencies should also be
-targets, and CMake should be told that they are dependencies of this target.
-CMake will then combine all the necessary information automatically.
+关于这一点需要注意的一点是，\ ``INTERFACE_INCLUDE_DIRECTORIES``\ 和类似的属性应该只包\
+含关于目标本身的信息，而不包含它的任何依赖项。相反，这些依赖项也应该是目标，并且CMake应该被\
+告知它们是这个目标的依赖项。然后，CMake将自动组合所有必要的信息。
 
-The type of the :prop_tgt:`IMPORTED` target created in the
-:command:`add_library` command can always be specified as ``UNKNOWN``
-type.  This simplifies the code in cases where static or shared variants may
-be found, and CMake will determine the type by inspecting the files.
+使用\ :command:`add_library`\ 命令创建的\ :prop_tgt:`IMPORTED`\ 目标的类型总是可以指\
+定为\ ``UNKNOWN``\ 类型。在可能发现静态或共享变量的情况下，这简化了代码，CMake将通过检查文\
+件来确定类型。
 
-If the library is available with multiple configurations, the
-:prop_tgt:`IMPORTED_CONFIGURATIONS` target property should also be
-populated:
+如果库可用于多个配置，:prop_tgt:`IMPORTED_CONFIGURATIONS`\ 目标属性也应该被填充：
 
 .. code-block:: cmake
 
@@ -498,12 +454,10 @@ populated:
     )
   endif()
 
-The ``RELEASE`` variant should be listed first in the property
-so that the variant is chosen if the user uses a configuration which is
-not an exact match for any listed ``IMPORTED_CONFIGURATIONS``.
+``RELEASE``\ 变量应该首先在属性中列出，以便当用户使用的配置与任何列出的\
+``IMPORTED_CONFIGURATIONS``\ 不完全匹配时选择该变量。
 
-Most of the cache variables should be hidden in the :program:`ccmake` interface unless
-the user explicitly asks to edit them.
+大多数缓存变量应该隐藏在\ :program:`ccmake`\ 接口中，除非用户显式要求编辑它们。
 
 .. code-block:: cmake
 
@@ -512,8 +466,7 @@ the user explicitly asks to edit them.
     Foo_LIBRARY
   )
 
-If this module replaces an older version, you should set compatibility variables
-to cause the least disruption possible.
+如果此模块替换旧版本，则应该设置兼容性变量以尽可能减少中断。
 
 .. code-block:: cmake
 
