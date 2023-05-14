@@ -17,102 +17,79 @@ CMake使用工具链来编译、链接库和创建存档，以及其他任务来
 .. versionadded:: 3.19
   可以使用\ :manual:`cmake-presets(7)`\ 来指定工具链文件。
 
-Languages
+语言
 =========
 
-Languages are enabled by the :command:`project` command.  Language-specific
-built-in variables, such as
-:variable:`CMAKE_CXX_COMPILER <CMAKE_<LANG>_COMPILER>`,
-:variable:`CMAKE_CXX_COMPILER_ID <CMAKE_<LANG>_COMPILER_ID>` etc are set by
-invoking the :command:`project` command.  If no project command
-is in the top-level CMakeLists file, one will be implicitly generated. By default
-the enabled languages are ``C`` and ``CXX``:
+语言是通过\ :command:`project`\ 命令启用的。特定于语言的内置变量，如\
+:variable:`CMAKE_CXX_COMPILER <CMAKE_<LANG>_COMPILER>`、\
+:variable:`CMAKE_CXX_COMPILER_ID <CMAKE_<LANG>_COMPILER_ID>`\ 等，可以通过调用\
+:command:`project`\ 命令来设置。如果顶层CMakeLists文件中没有项目命令，则会隐式生成一个。\
+默认情况下，启用的语言是\ ``C``\ 和\ ``CXX``：
 
 .. code-block:: cmake
 
   project(C_Only C)
 
-A special value of ``NONE`` can also be used with the :command:`project` command
-to enable no languages:
+特殊值\ ``NONE``\ 也可以与\ :command:`project`\ 命令一起使用，以启用无语言：
 
 .. code-block:: cmake
 
   project(MyProject NONE)
 
-The :command:`enable_language` command can be used to enable languages after the
-:command:`project` command:
+:command:`enable_language`\ 命令可用于在\ :command:`project`\ 命令之后启用语言：
 
 .. code-block:: cmake
 
   enable_language(CXX)
 
-When a language is enabled, CMake finds a compiler for that language, and
-determines some information, such as the vendor and version of the compiler,
-the target architecture and bitwidth, the location of corresponding utilities
-etc.
+当一种语言被启用时，CMake为该语言找到一个编译器，并确定一些信息，如编译器的供应商和版本、目\
+标体系结构和位宽、相应实用程序的位置等。
 
-The :prop_gbl:`ENABLED_LANGUAGES` global property contains the languages which
-are currently enabled.
+:prop_gbl:`ENABLED_LANGUAGES`\ 全局属性包含当前启用的语言。
 
 变量和属性
 ========================
 
-Several variables relate to the language components of a toolchain which are
-enabled:
+有几个变量与工具链的语言组件相关，这些组件是启用的：
 
 :variable:`CMAKE_<LANG>_COMPILER`
-  The full path to the compiler used for ``<LANG>``
+  用于\ ``<LANG>``\ 的编译器的完整路径
 :variable:`CMAKE_<LANG>_COMPILER_ID`
-  The compiler identifier used by CMake
+  CMake使用的编译器标识符
 :variable:`CMAKE_<LANG>_COMPILER_VERSION`
-  The version of the compiler.
+  编译器的版本。
 :variable:`CMAKE_<LANG>_FLAGS`
-  The variables and the configuration-specific equivalents contain flags that
-  will be added to the compile command when compiling a file of a particular
-  language.
+  变量和特定于配置的等效物，包含在编译特定语言的文件时将被添加到编译命令中的标志。
 
-CMake needs a way to determine which compiler to use to invoke the linker.
-This is determined by the :prop_sf:`LANGUAGE` property of source files of the
-:manual:`target <cmake-buildsystem(7)>`, and in the case of static libraries,
-the ``LANGUAGE`` of the dependent libraries. The choice CMake makes may be overridden
-with the :prop_tgt:`LINKER_LANGUAGE` target property.
+CMake需要一种方法来确定使用哪个编译器来调用链接器。这是由\ :manual:`目标 <cmake-buildsystem(7)>`\
+源文件的\ :prop_sf:`LANGUAGE`\ 属性决定的，在静态库的情况下，是由依赖库的\ ``LANGUAGE``\
+属性决定的。CMake做出的选择可能会被\ :prop_tgt:`LINKER_LANGUAGE`\ 目标属性覆盖。
 
 工具链特性
 ==================
 
-CMake provides the :command:`try_compile` command and wrapper macros such as
-:module:`CheckCXXSourceCompiles`, :module:`CheckCXXSymbolExists` and
-:module:`CheckIncludeFile` to test capability and availability of various
-toolchain features. These APIs test the toolchain in some way and cache the
-result so that the test does not have to be performed again the next time
-CMake runs.
+CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\ :module:`CheckCXXSourceCompiles`、\
+:module:`CheckCXXSymbolExists`\ 和\ :module:`CheckIncludeFile`\ 来测试各种工具链功\
+能的能力和可用性。这些API以某种方式测试工具链并缓存结果，以便下次CMake运行时不必再次执行测试。
 
-Some toolchain features have built-in handling in CMake, and do not require
-compile-tests. For example, :prop_tgt:`POSITION_INDEPENDENT_CODE` allows
-specifying that a target should be built as position-independent code, if
-the compiler supports that feature. The :prop_tgt:`<LANG>_VISIBILITY_PRESET`
-and :prop_tgt:`VISIBILITY_INLINES_HIDDEN` target properties add flags for
-hidden visibility, if supported by the compiler.
+一些工具链特性在CMake中有内置处理，不需要编译测试。例如，:prop_tgt:`POSITION_INDEPENDENT_CODE`\
+允许指定目标应该构建为位置无关的代码，如果编译器支持该特性。:prop_tgt:`<LANG>_VISIBILITY_PRESET`\
+和\ :prop_tgt:`VISIBILITY_INLINES_HIDDEN`\ 目标属性添加了隐藏可见性的标志，如果编译器支持的话。
 
 .. _`Cross Compiling Toolchain`:
 
 交叉编译
 ===============
 
-If :manual:`cmake(1)` is invoked with the command line parameter
-:option:`--toolchain path/to/file <cmake --toolchain>` or
-:option:`-DCMAKE_TOOLCHAIN_FILE=path/to/file <cmake -D>`, the
-file will be loaded early to set values for the compilers.
-The :variable:`CMAKE_CROSSCOMPILING` variable is set to true when CMake is
-cross-compiling.
+如果使用命令行参数\ :option:`--toolchain path/to/file <cmake --toolchain>`\ 或\
+:option:`-DCMAKE_TOOLCHAIN_FILE=path/to/file <cmake -D>`\ 调用\ :manual:`cmake(1)`，\
+文件将提前加载以为编译器设置值。当CMake进行交叉编译时，\ :variable:`CMAKE_CROSSCOMPILING`\
+变量被设置为true。
 
-Note that using the :variable:`CMAKE_SOURCE_DIR` or :variable:`CMAKE_BINARY_DIR`
-variables inside a toolchain file is typically undesirable.  The toolchain
-file is used in contexts where these variables have different values when used
-in different places (e.g. as part of a call to :command:`try_compile`).  In most
-cases, where there is a need to evaluate paths inside a toolchain file, the more
-appropriate variable to use would be :variable:`CMAKE_CURRENT_LIST_DIR`, since
-it always has an unambiguous, predictable value.
+注意，在工具链文件中使用\ :variable:`CMAKE_SOURCE_DIR`\ 或\ :variable:`CMAKE_BINARY_DIR`\
+变量通常是不可取的。工具链文件用于这些变量在不同地方使用时具有不同值的上下文中（例如，作为调用\
+:command:`try_compile`\ 的一部分）。在大多数情况下，当需要计算工具链文件中的路径时，更合适\
+的变量是\ :variable:`CMAKE_CURRENT_LIST_DIR`，因为它总是有一个明确的、可预测的值。
 
 Linux交叉编译
 -------------------------
