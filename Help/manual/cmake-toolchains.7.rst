@@ -158,9 +158,8 @@ Cray编程环境的默认配置是只支持静态库。可以通过将\ ``CRAYPE
 使用Clang交叉编译
 ---------------------------
 
-Some compilers such as Clang are inherently cross compilers.
-The :variable:`CMAKE_<LANG>_COMPILER_TARGET` can be set to pass a
-value to those supported compilers when compiling:
+一些编译器（如Clang）本质上是交叉编译器。:variable:`CMAKE_<LANG>_COMPILER_TARGET`\
+可以设置为在编译时向支持的编译器传递一个值：
 
 .. code-block:: cmake
 
@@ -174,18 +173,15 @@ value to those supported compilers when compiling:
   set(CMAKE_CXX_COMPILER clang++)
   set(CMAKE_CXX_COMPILER_TARGET ${triple})
 
-Similarly, some compilers do not ship their own supplementary utilities
-such as linkers, but provide a way to specify the location of the external
-toolchain which will be used by the compiler driver. The
-:variable:`CMAKE_<LANG>_COMPILER_EXTERNAL_TOOLCHAIN` variable can be set in a
-toolchain file to pass the path to the compiler driver.
+类似地，一些编译器不附带它们自己的补充工具，比如链接器，但提供了一种方法来指定编译器驱动程序将\
+使用的外部工具链的位置。:variable:`CMAKE_<LANG>_COMPILER_EXTERNAL_TOOLCHAIN`\ 变量可\
+以在工具链文件中设置，以将路径传递给编译器驱动程序。
 
 QNX交叉编译
 -----------------------
 
-As the Clang compiler the QNX QCC compile is inherently a cross compiler.
-And the :variable:`CMAKE_<LANG>_COMPILER_TARGET` can be set to pass a
-value to those supported compilers when compiling:
+作为Clang编译器，QNX QCC编译器本质上是一个交叉编译器。:variable:`CMAKE_<LANG>_COMPILER_TARGET`\
+可以设置为在编译时向支持的编译器传递一个值：
 
 .. code-block:: cmake
 
@@ -204,12 +200,10 @@ value to those supported compilers when compiling:
 Windows CE交叉编译
 ------------------------------
 
-Cross compiling for Windows CE requires the corresponding SDK being
-installed on your system.  These SDKs are usually installed under
-``C:/Program Files (x86)/Windows CE Tools/SDKs``.
+Windows CE的交叉编译需要在系统上安装相应的SDK。这些SDK通常安装在\
+``C:/Program Files (x86)/Windows CE Tools/SDKs``\ 下。
 
-A toolchain file to configure a Visual Studio generator for
-Windows CE may look like this:
+为Windows CE配置Visual Studio生成器的工具链文件可能如下所示：
 
 .. code-block:: cmake
 
@@ -221,34 +215,29 @@ Windows CE may look like this:
   set(CMAKE_GENERATOR_TOOLSET CE800) # Can be omitted for 8.0
   set(CMAKE_GENERATOR_PLATFORM SDK_AM335X_SK_WEC2013_V310)
 
-The :variable:`CMAKE_GENERATOR_PLATFORM` tells the generator which SDK to use.
-Further :variable:`CMAKE_SYSTEM_VERSION` tells the generator what version of
-Windows CE to use.  Currently version 8.0 (Windows Embedded Compact 2013) is
-supported out of the box.  Other versions may require one to set
-:variable:`CMAKE_GENERATOR_TOOLSET` to the correct value.
+:variable:`CMAKE_GENERATOR_PLATFORM`\ 告诉生成器要使用哪个SDK。进一步\
+:variable:`CMAKE_SYSTEM_VERSION`\ 告诉生成器要使用哪个版本的Windows CE。目前版本8.0 \
+（Windows Embedded Compact 2013）是开箱即用的。其他版本可能需要将\
+:variable:`CMAKE_GENERATOR_TOOLSET`\ 设置为正确的值。
 
 Windows 10通用应用交叉编译
 -----------------------------------------------------
 
-A toolchain file to configure a Visual Studio generator for a
-Windows 10 Universal Application may look like this:
+为Windows 10通用应用程序配置Visual Studio生成器的工具链文件可能如下所示：
 
 .. code-block:: cmake
 
   set(CMAKE_SYSTEM_NAME WindowsStore)
   set(CMAKE_SYSTEM_VERSION 10.0)
 
-A Windows 10 Universal Application targets both Windows Store and
-Windows Phone.  Specify the :variable:`CMAKE_SYSTEM_VERSION` variable
-to be ``10.0`` to build with the latest available Windows 10 SDK.
-Specify a more specific version (e.g. ``10.0.10240.0`` for RTM)
-to build with the corresponding SDK.
+Windows 10通用应用程序同时针对Windows Store和Windows Phone。将\
+:variable:`CMAKE_SYSTEM_VERSION`\ 变量指定为\ ``10.0``，以使用最新可用的\
+Windows 10 SDK进行构建。指定一个更具体的版本（例如RTM的\ ``10.0.10240.0``）来构建相应的SDK。
 
 Windows Phone交叉编译
 ---------------------------------
 
-A toolchain file to configure a Visual Studio generator for
-Windows Phone may look like this:
+为Windows Phone配置Visual Studio生成器的工具链文件可能是这样的：
 
 .. code-block:: cmake
 
@@ -258,8 +247,7 @@ Windows Phone may look like this:
 Windows Store交叉编译
 ---------------------------------
 
-A toolchain file to configure a Visual Studio generator for
-Windows Store may look like this:
+为Windows Store配置Visual Studio生成器的工具链文件可能如下所示：
 
 .. code-block:: cmake
 
