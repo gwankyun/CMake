@@ -94,8 +94,7 @@ CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\ :module:`Ch
 Linux交叉编译
 -------------------------
 
-A typical cross-compiling toolchain for Linux has content such
-as:
+典型的Linux交叉编译工具链包含如下内容：
 
 .. code-block:: cmake
 
@@ -117,60 +116,44 @@ as:
 Where:
 
 :variable:`CMAKE_SYSTEM_NAME`
-  is the CMake-identifier of the target platform to build for.
+  是要构建的目标平台的CMake标识符。
 :variable:`CMAKE_SYSTEM_PROCESSOR`
-  is the CMake-identifier of the target architecture.
+  是目标体系结构的CMake标识符。
 :variable:`CMAKE_SYSROOT`
-  is optional, and may be specified if a sysroot is available.
+  是可选的，如果sysroot可用，则可以指定。
 :variable:`CMAKE_STAGING_PREFIX`
-  is also optional. It may be used to specify a path on the host to install to.
-  The :variable:`CMAKE_INSTALL_PREFIX` is always the runtime installation
-  location, even when cross-compiling.
+  也是可选的。它可以用来指定要安装到的主机上的路径。:variable:`CMAKE_INSTALL_PREFIX`\
+  始终是运行时安装位置，即使在交叉编译时也是如此。
 :variable:`CMAKE_<LANG>_COMPILER`
-  variable may be set to full paths, or to names of compilers to search for
-  in standard locations.  For toolchains that do not support linking binaries
-  without custom flags or scripts one may set the
-  :variable:`CMAKE_TRY_COMPILE_TARGET_TYPE` variable to ``STATIC_LIBRARY`` to
-  tell CMake not to try to link executables during its checks.
+  变量可以设置为完整路径，也可以设置为要在标准位置中搜索的编译器的名称。对于不支持链接没有自\
+  定义标志或脚本的二进制文件的工具链，可以将\ :variable:`CMAKE_TRY_COMPILE_TARGET_TYPE`\
+  变量设置为\ ``STATIC_LIBRARY``，以告诉CMake在检查期间不要尝试链接可执行文件。
 
-CMake ``find_*`` commands will look in the sysroot, and the :variable:`CMAKE_FIND_ROOT_PATH`
-entries by default in all cases, as well as looking in the host system root prefix.
-Although this can be controlled on a case-by-case basis, when cross-compiling, it
-can be useful to exclude looking in either the host or the target for particular
-artifacts. Generally, includes, libraries and packages should be found in the
-target system prefixes, whereas executables which must be run as part of the build
-should be found only on the host and not on the target. This is the purpose of
-the ``CMAKE_FIND_ROOT_PATH_MODE_*`` variables.
+默认情况下，CMake的\ ``find_*``\ 命令将查找sysroot和\ :variable:`CMAKE_FIND_ROOT_PATH`\
+条目，以及查找主机系统根前缀。虽然这可以根据具体情况进行控制，但是在交叉编译时，排除在主机或目\
+标中查找特定工件是很有用的。通常，includes、库和包应该在目标系统前缀中找到，而必须作为构建的一\
+部分运行的可执行文件应该只在主机上找到，而不是在目标系统上。这就是\
+``CMAKE_FIND_ROOT_PATH_MODE_*``\ 变量的目的。
 
 .. _`Cray Cross-Compile`:
 
 Cray Linux环境交叉编译
 ----------------------------------------------
 
-Cross compiling for compute nodes in the Cray Linux Environment can be done
-without needing a separate toolchain file.  Specifying
-``-DCMAKE_SYSTEM_NAME=CrayLinuxEnvironment`` on the CMake command line will
-ensure that the appropriate build settings and search paths are configured.
-The platform will pull its configuration from the current environment
-variables and will configure a project to use the compiler wrappers from the
-Cray Programming Environment's ``PrgEnv-*`` modules if present and loaded.
+在Cray Linux环境中，计算节点的交叉编译无需单独的工具链文件即可完成。在CMake命令行中指定\
+``-DCMAKE_SYSTEM_NAME=CrayLinuxEnvironment``\ 将确保配置适当的构建设置和搜索路径。平台\
+将从当前环境变量中提取其配置，并将配置项目以使用Cray编程环境的\ ``PrgEnv-*``\ 模块中的编译\
+器包装器，如果存在并已加载。
 
-The default configuration of the Cray Programming Environment is to only
-support static libraries.  This can be overridden and shared libraries
-enabled by setting the ``CRAYPE_LINK_TYPE`` environment variable to
-``dynamic``.
+Cray编程环境的默认配置是只支持静态库。可以通过将\ ``CRAYPE_LINK_TYPE``\ 环境变量设置为\
+``dynamic``\ 来覆盖和启用共享库。
 
-Running CMake without specifying :variable:`CMAKE_SYSTEM_NAME` will
-run the configure step in host mode assuming a standard Linux environment.
-If not overridden, the ``PrgEnv-*`` compiler wrappers will end up getting used,
-which if targeting the either the login node or compute node, is likely not the
-desired behavior.  The exception to this would be if you are building directly
-on a NID instead of cross-compiling from a login node. If trying to build
-software for a login node, you will need to either first unload the
-currently loaded ``PrgEnv-*`` module or explicitly tell CMake to use the
-system compilers in ``/usr/bin`` instead of the Cray wrappers.  If instead
-targeting a compute node is desired, just specify the
-:variable:`CMAKE_SYSTEM_NAME` as mentioned above.
+运行CMake而不指定\ :variable:`CMAKE_SYSTEM_NAME`\ 将在主机模式下运行配置步骤（假设是标\
+准Linux环境）。如果不重写，\ ``PrgEnv-*``\ 编译器包装器最终将被使用，如果针对登录节点或计\
+算节点，这可能不是期望的行为。如果你直接在NID上构建，而不是从登录节点进行交叉编译，则会出现例\
+外。如果试图为登录节点构建软件，你需要首先卸载当前加载的\ ``PrgEnv-*``\ 模块，或者显式地告\
+诉CMake使用\ ``/usr/bin``\ 中的系统编译器而不是Cray包装器。如果希望以计算节点为目标，只需\
+像上面提到的那样指定\ :variable:`CMAKE_SYSTEM_NAME`。
 
 使用Clang交叉编译
 ---------------------------
