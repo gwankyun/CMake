@@ -256,87 +256,70 @@ Windows Store交叉编译
 
 .. _`Cross Compiling for ADSP SHARC/Blackfin`:
 
-Cross Compiling for ADSP SHARC/Blackfin
+ADSP SHARC/Blackfin交叉编译
 ---------------------------------------
 
-Cross-compiling for ADSP SHARC or Blackfin can be configured
-by setting the :variable:`CMAKE_SYSTEM_NAME` variable to ``ADSP``
-and the :variable:`CMAKE_SYSTEM_PROCESSOR` variable
-to the "part number", excluding the ``ADSP-`` prefix,
-for example, ``21594``, ``SC589``, etc.
-This value is case insensitive.
+可以通过将\ :variable:`CMAKE_SYSTEM_NAME`\ 变量设置为\ ``ADSP``，将\
+:variable:`CMAKE_SYSTEM_PROCESSOR`\ 变量设置为“部件号”来配置ADSP SHARC或Blackfin的交\
+叉编译，不包括\ ``ADSP-``\ 前缀，例如\ ``21594``、\ ``SC589``\ 等。此值不区分大小写。
 
-CMake will automatically search for CCES or VDSP++ installs
-in their default install locations
-and select the most recent version found.
-CCES will be selected over VDSP++ if both are installed.
-Custom install paths can be set via the :variable:`CMAKE_ADSP_ROOT` variable
-or the :envvar:`ADSP_ROOT` environment variable.
+CMake将自动在默认安装位置搜索CCES或VDSP++安装，并选择找到的最新版本。如果安装了CCES，则将选\
+择CCES而不是VDSP++。可以通过\ :variable:`CMAKE_ADSP_ROOT`\ 变量或\ :envvar:`ADSP_ROOT`\
+环境变量设置自定义安装路径。
 
-The compiler (``cc21k`` vs. ``ccblkfn``) is selected automatically
-based on the :variable:`CMAKE_SYSTEM_PROCESSOR` value provided.
+编译器（\ ``cc21k``\ 或者\ ``ccblkfn``）是根据提供的\ :variable:`CMAKE_SYSTEM_PROCESSOR`\
+值自动选择的。
 
 .. _`Cross Compiling for Android`:
 
 Android交叉编译
 ---------------------------
 
-A toolchain file may configure cross-compiling for Android by setting the
-:variable:`CMAKE_SYSTEM_NAME` variable to ``Android``.  Further configuration
-is specific to the Android development environment to be used.
+工具链文件可以通过将\ :variable:`CMAKE_SYSTEM_NAME`\ 变量设置为\ ``Android``\ 来配置\
+Android的交叉编译。进一步的配置特定于要使用的Android开发环境。
 
-For :ref:`Visual Studio Generators`, CMake expects :ref:`NVIDIA Nsight Tegra
+对于\ :ref:`Visual Studio Generators`，CMake希望安装\ :ref:`NVIDIA Nsight Tegra
 Visual Studio Edition <Cross Compiling for Android with NVIDIA Nsight Tegra
-Visual Studio Edition>` or the :ref:`Visual Studio tools for Android
-<Cross Compiling for Android with the NDK>` to be installed. See those sections
-for further configuration details.
+Visual Studio Edition>`\ 或\ :ref:`Visual Studio tools for Android
+<Cross Compiling for Android with the NDK>`。有关进一步的配置细节，请参阅这些小节。
 
-For :ref:`Makefile Generators` and the :generator:`Ninja` generator,
-CMake expects one of these environments:
+对于\ :ref:`Makefile Generators`\ 和\ :generator:`Ninja`\ 生成器，CMake期望下列环境之一：
 
 * :ref:`NDK <Cross Compiling for Android with the NDK>`
 * :ref:`Standalone Toolchain <Cross Compiling for Android with a Standalone Toolchain>`
 
-CMake uses the following steps to select one of the environments:
+CMake使用以下步骤选择一个环境：
 
-* If the :variable:`CMAKE_ANDROID_NDK` variable is set, the NDK at the
-  specified location will be used.
+* 如果设置了\ :variable:`CMAKE_ANDROID_NDK`\ 变量，将使用指定位置的NDK。
 
-* Else, if the :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN` variable
-  is set, the Standalone Toolchain at the specified location will be used.
+* 否则，如果设置了\ :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`\ 变量，则将使用指\
+  定位置的独立工具链。
 
-* Else, if the :variable:`CMAKE_SYSROOT` variable is set to a directory
-  of the form ``<ndk>/platforms/android-<api>/arch-<arch>``, the ``<ndk>``
-  part will be used as the value of :variable:`CMAKE_ANDROID_NDK` and the
-  NDK will be used.
+* 否则，如果\ :variable:`CMAKE_SYSROOT`\ 变量被设置为一个形式为\
+  ``<ndk>/platforms/android-<api>/arch-<arch>``\ 的目录，\ ``<ndk>``\ 部分将被用作\
+  :variable:`CMAKE_ANDROID_NDK`\ 的值，并且NDK将被使用。
 
-* Else, if the :variable:`CMAKE_SYSROOT` variable is set to a directory of the
-  form ``<standalone-toolchain>/sysroot``, the ``<standalone-toolchain>`` part
-  will be used as the value of :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`
-  and the Standalone Toolchain will be used.
+* 否则，如果\ :variable:`CMAKE_SYSROOT`\ 变量被设置为一个形式为\
+  ``<standalone-toolchain>/sysroot``\ 的目录，\ ``<standalone-toolchain>``\ 部分将\
+  被用作\ :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`\ 的值，并且将使用独立工具链。
 
-* Else, if a cmake variable ``ANDROID_NDK`` is set it will be used
-  as the value of :variable:`CMAKE_ANDROID_NDK`, and the NDK will be used.
+* 否则，如果设置了cmake变量\ ``ANDROID_NDK``，它将被用作\ :variable:`CMAKE_ANDROID_NDK`\
+  的值，并且NDK将被使用。
 
-* Else, if a cmake variable ``ANDROID_STANDALONE_TOOLCHAIN`` is set, it will be
-  used as the value of :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`, and the
-  Standalone Toolchain will be used.
+* 否则，如果设置了cmake变量\ ``ANDROID_STANDALONE_TOOLCHAIN``，它将被用作\
+  :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`\ 的值，并且将使用独立工具链。
 
-* Else, if an environment variable ``ANDROID_NDK_ROOT`` or
-  ``ANDROID_NDK`` is set, it will be used as the value of
-  :variable:`CMAKE_ANDROID_NDK`, and the NDK will be used.
+* 否则，如果设置了环境变量\ ``ANDROID_NDK_ROOT``\ 或\ ``ANDROID_NDK``，它将被用作\
+  :variable:`CMAKE_ANDROID_NDK`\ 的值，并且NDK将被使用。
 
-* Else, if an environment variable ``ANDROID_STANDALONE_TOOLCHAIN`` is
-  set then it will be used as the value of
-  :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`, and the Standalone
-  Toolchain will be used.
+* 否则，如果设置了环境变量\ ``ANDROID_STANDALONE_TOOLCHAIN``，那么它将被用作\
+  :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`\ 的值，并且将使用独立工具链。
 
-* Else, an error diagnostic will be issued that neither the NDK or
-  Standalone Toolchain can be found.
+* 否则，将发出错误诊断，NDK或独立工具链都无法找到。
 
 .. versionadded:: 3.20
-  If an Android NDK is selected, its version number is reported
-  in the :variable:`CMAKE_ANDROID_NDK_VERSION` variable.
+  如果选择了Android NDK，则会在\ :variable:`CMAKE_ANDROID_NDK_VERSION`\ 变量中报告其\
+  版本号。
 
 .. _`Cross Compiling for Android with the NDK`:
 
