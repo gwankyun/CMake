@@ -326,65 +326,52 @@ CMake使用以下步骤选择一个环境：
 使用NDK交叉编译Android
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A toolchain file may configure :ref:`Makefile Generators`,
-:ref:`Ninja Generators`, or :ref:`Visual Studio Generators` to target
-Android for cross-compiling.
+工具链文件可以配置\ :ref:`Makefile Generators`、:ref:`Ninja Generators`\ 或\
+:ref:`Visual Studio Generators`\ 来针对Android进行交叉编译。
 
-Configure use of an Android NDK with the following variables:
+使用以下变量配置Android NDK的使用：
 
 :variable:`CMAKE_SYSTEM_NAME`
-  Set to ``Android``.  Must be specified to enable cross compiling
-  for Android.
+  设置为\ ``Android``。必须指定以启用Android的交叉编译。
 
 :variable:`CMAKE_SYSTEM_VERSION`
-  Set to the Android API level.  If not specified, the value is
-  determined as follows:
+  设置为Android API级别。如果不指定，则确定值如下：
 
-  * If the :variable:`CMAKE_ANDROID_API` variable is set, its value
-    is used as the API level.
-  * If the :variable:`CMAKE_SYSROOT` variable is set, the API level is
-    detected from the NDK directory structure containing the sysroot.
-  * Otherwise, the latest API level available in the NDK is used.
+  * 如果设置了\ :variable:`CMAKE_ANDROID_API`\ 变量，则使用其值作为API级别。
+  * 如果设置了\ :variable:`CMAKE_SYSROOT`\ 变量，则从包含sysroot的NDK目录结构中检测API级别。
+  * 否则，将使用NDK中可用的最新API级别。
 
 :variable:`CMAKE_ANDROID_ARCH_ABI`
-  Set to the Android ABI (architecture).  If not specified, this
-  variable will default to the first supported ABI in the list of
-  ``armeabi``, ``armeabi-v7a`` and ``arm64-v8a``.
-  The :variable:`CMAKE_ANDROID_ARCH` variable will be computed
-  from ``CMAKE_ANDROID_ARCH_ABI`` automatically.
-  Also see the :variable:`CMAKE_ANDROID_ARM_MODE` and
-  :variable:`CMAKE_ANDROID_ARM_NEON` variables.
+  设置为Android ABI（架构）。如果未指定，该变量将默认为\ ``armeabi``、\ ``armeabi-v7a``\
+  和\ ``arm64-v8a``\ 列表中第一个支持的ABI。:variable:`CMAKE_ANDROID_ARCH`\ 变量将从\
+  ``CMAKE_ANDROID_ARCH_ABI``\ 自动计算。也请参阅\ :variable:`CMAKE_ANDROID_ARM_MODE`\
+  和\ :variable:`CMAKE_ANDROID_ARM_NEON`\ 变量。
 
 :variable:`CMAKE_ANDROID_NDK`
-  Set to the absolute path to the Android NDK root directory.
-  If not specified, a default for this variable will be chosen
-  as specified :ref:`above <Cross Compiling for Android>`.
+  设置为Android NDK根目录的绝对路径。如果未指定，则如\
+  :ref:`上 <Cross Compiling for Android>`\ 所述选择此变量的默认值。
 
 :variable:`CMAKE_ANDROID_NDK_DEPRECATED_HEADERS`
-  Set to a true value to use the deprecated per-api-level headers
-  instead of the unified headers.  If not specified, the default will
-  be false unless using a NDK that does not provide unified headers.
+  设置为true值以使用已弃用的每个api级别的标头而不是统一的标头。如果未指定，默认值将为false，\
+  除非使用不提供统一头文件的NDK。
 
 :variable:`CMAKE_ANDROID_NDK_TOOLCHAIN_VERSION`
-  On NDK r19 or above, this variable must be unset or set to ``clang``.
-  On NDK r18 or below, set this to the version of the NDK toolchain to
-  be selected as the compiler.  If not specified, the default will be
-  the latest available GCC toolchain.
+  在NDK r19或更高版本上，这个变量必须取消设置或设置为\ ``clang``。在NDK r18或以下版本上，\
+  将此设置为要选择作为编译器的NDK工具链的版本。如果未指定，则默认为最新可用的GCC工具链。
 
 :variable:`CMAKE_ANDROID_STL_TYPE`
-  Set to specify which C++ standard library to use.  If not specified,
-  a default will be selected as described in the variable documentation.
+  设置为指定要使用的C++标准库。如果未指定，将按照变量文档中的描述选择默认值。
 
-The following variables will be computed and provided automatically:
+以下变量将自动计算并提供：
 
 :variable:`CMAKE_<LANG>_ANDROID_TOOLCHAIN_PREFIX`
-  The absolute path prefix to the binutils in the NDK toolchain.
+  NDK工具链中binutils的绝对路径前缀。
 
 :variable:`CMAKE_<LANG>_ANDROID_TOOLCHAIN_SUFFIX`
-  The host platform suffix of the binutils in the NDK toolchain.
+  NDK工具链中binutils的主机平台后缀。
 
 
-For example, a toolchain file might contain:
+例如，一个工具链文件可能包含：
 
 .. code-block:: cmake
 
@@ -394,7 +381,7 @@ For example, a toolchain file might contain:
   set(CMAKE_ANDROID_NDK /path/to/android-ndk)
   set(CMAKE_ANDROID_STL_TYPE gnustl_static)
 
-Alternatively one may specify the values without a toolchain file:
+或者可以不使用工具链文件指定值：
 
 .. code-block:: console
 
@@ -410,54 +397,48 @@ Alternatively one may specify the values without a toolchain file:
 使用单独工具链交叉编译Android
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A toolchain file may configure :ref:`Makefile Generators` or the
-:generator:`Ninja` generator to target Android for cross-compiling
-using a standalone toolchain.
+工具链文件可以配置\ :ref:`Makefile Generators`\ 或\ :generator:`Ninja`\ 生成器，以\
+Android为目标，使用独立的工具链进行交叉编译。
 
-Configure use of an Android standalone toolchain with the following variables:
+使用以下变量配置Android独立工具链：
 
 :variable:`CMAKE_SYSTEM_NAME`
-  Set to ``Android``.  Must be specified to enable cross compiling
-  for Android.
+  设置为\ ``Android``。必须指定以启用Android的交叉编译。
 
 :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`
-  Set to the absolute path to the standalone toolchain root directory.
-  A ``${CMAKE_ANDROID_STANDALONE_TOOLCHAIN}/sysroot`` directory
-  must exist.
-  If not specified, a default for this variable will be chosen
-  as specified :ref:`above <Cross Compiling for Android>`.
+  设置为独立工具链根目录的绝对路径。必须存在\ ``${CMAKE_ANDROID_STANDALONE_TOOLCHAIN}/sysroot``\
+  目录。如果未指定，则如\ :ref:`上 <Cross Compiling for Android>`\ 所述选择此变量的默认值。
 
 :variable:`CMAKE_ANDROID_ARM_MODE`
-  When the standalone toolchain targets ARM, optionally set this to ``ON``
-  to target 32-bit ARM instead of 16-bit Thumb.
-  See variable documentation for details.
+  当独立工具链以ARM为目标时，可选择将此设置为\ ``ON``\ 以瞄准32位ARM而不是16位Thumb。有关\
+  详细信息，请参阅变量文档。
 
 :variable:`CMAKE_ANDROID_ARM_NEON`
-  When the standalone toolchain targets ARM v7, optionally set thisto ``ON``
-  to target ARM NEON devices.  See variable documentation for details.
+  当独立工具链针对ARM v7时，可选择将这里设置为\ ``ON``\ 以针对ARM NEON设备。有关详细信息，\
+  请参阅变量文档。
 
-The following variables will be computed and provided automatically:
+以下变量将自动计算并提供：
 
 :variable:`CMAKE_SYSTEM_VERSION`
-  The Android API level detected from the standalone toolchain.
+  从独立工具链中检测到的Android API级别。
 
 :variable:`CMAKE_ANDROID_ARCH_ABI`
-  The Android ABI detected from the standalone toolchain.
+  从独立工具链中检测到的Android ABI。
 
 :variable:`CMAKE_<LANG>_ANDROID_TOOLCHAIN_PREFIX`
-  The absolute path prefix to the ``binutils`` in the standalone toolchain.
+  独立工具链中\ ``binutils``\ 的绝对路径前缀。
 
 :variable:`CMAKE_<LANG>_ANDROID_TOOLCHAIN_SUFFIX`
-  The host platform suffix of the ``binutils`` in the standalone toolchain.
+  独立工具链中\ ``binutils``\ 的主机平台后缀。
 
-For example, a toolchain file might contain:
+例如，一个工具链文件可能包含：
 
 .. code-block:: cmake
 
   set(CMAKE_SYSTEM_NAME Android)
   set(CMAKE_ANDROID_STANDALONE_TOOLCHAIN /path/to/android-toolchain)
 
-Alternatively one may specify the values without a toolchain file:
+或者可以不使用工具链文件指定值：
 
 .. code-block:: console
 
@@ -470,17 +451,16 @@ Alternatively one may specify the values without a toolchain file:
 使用NVIDIA Nsight Tegra Visual Studio版本交叉编译Android
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A toolchain file to configure one of the :ref:`Visual Studio Generators`
-to build using NVIDIA Nsight Tegra targeting Android may look like this:
+一个工具链文件，用来配置一个\ :ref:`Visual Studio Generators`，使用NVIDIA Nsight Tegra\
+针对Android构建，可能是这样的：
 
 .. code-block:: cmake
 
   set(CMAKE_SYSTEM_NAME Android)
 
-The :variable:`CMAKE_GENERATOR_TOOLSET` may be set to select
-the Nsight Tegra "Toolchain Version" value.
+:variable:`CMAKE_GENERATOR_TOOLSET`\ 可以设置为选择Nsight Tegra的“工具链版本”值。
 
-See also target properties:
+参见目标属性：
 
 * :prop_tgt:`ANDROID_ANT_ADDITIONAL_OPTIONS`
 * :prop_tgt:`ANDROID_API_MIN`
@@ -505,18 +485,15 @@ See also target properties:
 iOS、tvOS或者watchOS交叉编译
 -----------------------------------------
 
-For cross-compiling to iOS, tvOS, or watchOS, the :generator:`Xcode`
-generator is recommended.  The :generator:`Unix Makefiles` or
-:generator:`Ninja` generators can also be used, but they require the
-project to handle more areas like target CPU selection and code signing.
+对于交叉编译到iOS、tvOS或watchOS，建议使用\ :generator:`Xcode`\ 生成器。也可以使用\
+:generator:`Unix Makefiles`\ 或\ :generator:`Ninja`\ 生成器，但它们要求项目处理更多的\
+领域，如目标CPU选择和代码签名。
 
-Any of the three systems can be targeted by setting the
-:variable:`CMAKE_SYSTEM_NAME` variable to a value from the table below.
-By default, the latest Device SDK is chosen.  As for all Apple platforms,
-a different SDK (e.g. a simulator) can be selected by setting the
-:variable:`CMAKE_OSX_SYSROOT` variable, although this should rarely be
-necessary (see :ref:`Switching Between Device and Simulator` below).
-A list of available SDKs can be obtained by running ``xcodebuild -showsdks``.
+通过将\ :variable:`CMAKE_SYSTEM_NAME`\ 变量设置为下表中的值，可以将这三个系统中的任何一\
+个作为目标。默认情况下，选择最新的Device SDK。对于所有的Apple平台，可以通过设置\
+:variable:`CMAKE_OSX_SYSROOT`\ 变量来选择不同的SDK（例如模拟器），尽管不是很必要（参见下\
+面的\ :ref:`Switching Between Device and Simulator`）。一个可用SDK的列表可以通过运行\
+``xcodebuild -showsdks``\ 获得。
 
 =======  ================= ==================== ================
 OS       CMAKE_SYSTEM_NAME Device SDK (default) Simulator SDK
@@ -526,20 +503,17 @@ tvOS     tvOS              appletvos            appletvsimulator
 watchOS  watchOS           watchos              watchsimulator
 =======  ================= ==================== ================
 
-For example, to create a CMake configuration for iOS, the following
-command is sufficient:
+例如，要为iOS创建CMake配置，以下命令就足够了：
 
 .. code-block:: console
 
   cmake .. -GXcode -DCMAKE_SYSTEM_NAME=iOS
 
-Variable :variable:`CMAKE_OSX_ARCHITECTURES` can be used to set architectures
-for both device and simulator. Variable :variable:`CMAKE_OSX_DEPLOYMENT_TARGET`
-can be used to set an iOS/tvOS/watchOS deployment target.
+变量\ :variable:`CMAKE_OSX_ARCHITECTURES`\ 可用于设置设备和模拟器的体系结构。变量\
+:variable:`CMAKE_OSX_DEPLOYMENT_TARGET`\ 用于设置iOS/tvOS/watchOS的部署目标。
 
-Next configuration will install fat 5 architectures iOS library
-and add the ``-miphoneos-version-min=9.3``/``-mios-simulator-version-min=9.3``
-flags to the compiler:
+下一个配置将安装fat 5架构的iOS库，并在编译器中添加\
+``-miphoneos-version-min=9.3``/\ ``-mios-simulator-version-min=9.3``\ 标志：
 
 .. code-block:: console
 
@@ -551,7 +525,7 @@ flags to the compiler:
       -DCMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH=NO \
       -DCMAKE_IOS_INSTALL_COMBINED=YES
 
-Example:
+例子：
 
 .. code-block:: cmake
 
@@ -561,13 +535,13 @@ Example:
   add_library(foo foo.cpp)
   install(TARGETS foo DESTINATION lib)
 
-Install:
+安装：
 
 .. code-block:: console
 
     $ cmake --build _builds --config Release --target install
 
-Check library:
+检查库：
 
 .. code-block:: console
 
@@ -584,47 +558,34 @@ Check library:
 代码签名
 ^^^^^^^^^^^^
 
-Some build artifacts for the embedded Apple platforms require mandatory
-code signing.  If the :generator:`Xcode` generator is being used and
-code signing is required or desired, the development team ID can be
-specified via the ``CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM`` CMake variable.
-This team ID will then be included in the generated Xcode project.
-By default, CMake avoids the need for code signing during the internal
-configuration phase (i.e compiler ID and feature detection).
+嵌入式Apple平台的一些构建构件需要强制代码签名。如果正在使用\ :generator:`Xcode`\ 生成器，\
+并且需要或希望代码签名，则可以通过\ ``CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM``  CMake\
+变量指定开发团队ID。这个团队ID将被包含在生成的Xcode项目中。默认情况下，CMake在内部配置阶段\
+（即编译器ID和特性检测）避免了代码签名的需要。
 
 .. _`Switching Between Device and Simulator`:
 
 在设备和模拟器之间切换
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When configuring for any of the embedded platforms, one can target either
-real devices or the simulator.  Both have their own separate SDK, but CMake
-only supports specifying a single SDK for the configuration phase.  This
-means the developer must select one or the other at configuration time.
-When using the :generator:`Xcode` generator, this is less of a limitation
-because Xcode still allows you to build for either a device or a simulator,
-even though configuration was only performed for one of the two.  From
-within the Xcode IDE, builds are performed for the selected "destination"
-platform.  When building from the command line, the desired sdk can be
-specified directly by passing a ``-sdk`` option to the underlying build
-tool (``xcodebuild``).  For example:
+在为任何嵌入式平台配置时，可以针对实际设备或模拟器进行配置。两者都有自己独立的SDK，但CMake只\
+支持在配置阶段指定单个SDK。这意味着开发人员必须在配置时选择其中一个。当使用\ :generator:`Xcode`\
+生成器时，这不是一个限制，因为Xcode仍然允许你为设备或模拟器构建，即使配置只对两者中的一个执行。\
+在Xcode IDE中，为选定的“目标”平台执行构建。当从命令行构建时，可以通过向底层构建工具（\
+``xcodebuild``）传递\ ``-sdk``\ 选项来直接指定所需的sdk。例如：
 
 .. code-block:: console
 
   $ cmake --build ... -- -sdk iphonesimulator
 
-Please note that checks made during configuration were performed against
-the configure-time SDK and might not hold true for other SDKs.  Commands
-like :command:`find_package`, :command:`find_library`, etc. store and use
-details only for the configured SDK/platform, so they can be problematic
-if wanting to switch between device and simulator builds. You can follow
-the next rules to make device + simulator configuration work:
+请注意，配置期间所做的检查是针对配置时SDK执行的，可能不适用于其他SDK。:command:`find_package`、\
+:command:`find_library`\ 等命令只存储和使用配置的SDK/平台的详细信息，所以如果想在设备和模\
+拟器构建之间切换，它们可能会出现问题。你可以遵循以下规则使设备+模拟器配置工作：
 
-- Use explicit ``-l`` linker flag,
-  e.g. ``target_link_libraries(foo PUBLIC "-lz")``
+- 使用明确的\ ``-l``\ 链接器标志，例如\ ``target_link_libraries(foo PUBLIC "-lz")``
 
-- Use explicit ``-framework`` linker flag,
-  e.g. ``target_link_libraries(foo PUBLIC "-framework CoreFoundation")``
+- 使用显式的\ ``-framework``\ 链接器标志，例如\
+  ``target_link_libraries(foo PUBLIC "-framework CoreFoundation")``
 
-- Use :command:`find_package` only for libraries installed with
-  :variable:`CMAKE_IOS_INSTALL_COMBINED` feature
+- :command:`find_package`\ 仅用于安装了\ :variable:`CMAKE_IOS_INSTALL_COMBINED`\
+  特性的库
