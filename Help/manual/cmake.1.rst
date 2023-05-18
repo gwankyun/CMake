@@ -529,8 +529,7 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
 .. program:: cmake
 
-CMake provides a command-line signature to install an already-generated
-project binary tree:
+CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
 .. code-block:: shell
 
@@ -540,37 +539,37 @@ project binary tree:
 
 .. option:: --install <dir>
 
-  Project binary directory to install. This is required and must be first.
+  要安装的项目二进制目录。这是必须的，而且必须放在首位。
 
 .. program:: cmake--install
 
 .. option:: --config <cfg>
 
-  For multi-configuration generators, choose configuration ``<cfg>``.
+  对于多配置生成器，选择\ ``<cfg>``\ 配置。
 
 .. option:: --component <comp>
 
-  Component-based install. Only install component ``<comp>``.
+  基于组件的安装。只安装\ ``<comp>``\ 组件。
 
 .. option:: --default-directory-permissions <permissions>
 
-  Default directory install permissions. Permissions in format ``<u=rwx,g=rx,o=rx>``.
+  默认目录安装权限。权限为\ ``<u=rwx,g=rx,o=rx>``\ 的格式。
 
 .. option:: --prefix <prefix>
 
-  Override the installation prefix, :variable:`CMAKE_INSTALL_PREFIX`.
+  覆盖安装前缀\ :variable:`CMAKE_INSTALL_PREFIX`。
 
 .. option:: --strip
 
-  Strip before installing.
+  安装前去除前后空格。
 
 .. option:: -v, --verbose
 
-  Enable verbose output.
+  启用详细输出。
 
-  This option can be omitted if :envvar:`VERBOSE` environment variable is set.
+  如果设置了\ :envvar:`VERBOSE`\ 环境变量，则可以省略此选项。
 
-Run :option:`cmake --install` with no options for quick help.
+运行\ :option:`cmake --install`，没有快速帮助选项。
 
 打开一个项目
 ==============

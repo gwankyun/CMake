@@ -20,7 +20,7 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
 .. toctree::
    :maxdepth: 1
 
-   cmake(1)：45%</manual/cmake.1>
+   cmake(1)：50%</manual/cmake.1>
    ctest(1)：1%</manual/ctest.1>
    cpack(1)：100%</manual/cpack.1>
 
