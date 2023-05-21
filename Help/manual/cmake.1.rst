@@ -598,16 +598,14 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
 .. option:: -D <var>=<value>
 
- Define a variable for script mode.
+ 为脚本模式定义变量。
 
 .. program:: cmake
 
 .. option:: -P <cmake-script-file>
 
- Process the given cmake file as a script written in the CMake
- language.  No configure or generate step is performed and the cache
- is not modified.  If variables are defined using ``-D``, this must be
- done before the ``-P`` argument.
+ 将给定的cmake文件作为用CMake语言编写的脚本处理。不执行配置或生成步骤，不修改缓存。如果使用\
+ ``-D``\ 定义变量，则必须在\ ``-P``\ 参数之前进行。
 
 ``--``\ 后面的任何选项都不会被CMake解析，但它们仍然包含在\
 :variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>`\ 传递给脚本的变量\（包括 ``--``\ 本身）。
@@ -620,7 +618,7 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
 .. program:: cmake
 
-CMake provides builtin command-line tools through the signature
+CMake通过签名提供内置命令行工具
 
 .. code-block:: shell
 
@@ -628,86 +626,77 @@ CMake provides builtin command-line tools through the signature
 
 .. option:: -E [help]
 
-  Run ``cmake -E`` or ``cmake -E help`` for a summary of commands.
+  执行\ ``cmake -E``\ 或\ ``cmake -E help``\ 查看命令摘要。
 
 .. program:: cmake-E
 
-Available commands are:
+可用的命令有：
 
 .. option:: capabilities
 
   .. versionadded:: 3.7
 
-  Report cmake capabilities in JSON format. The output is a JSON object
-  with the following keys:
+  JSON格式的cmake报表生成功能。输出是一个JSON对象，包含以下关键字：
 
   ``version``
-    A JSON object with version information. Keys are:
+    带有版本信息的JSON对象。键是：
 
     ``string``
-      The full version string as displayed by cmake :option:`--version <cmake --version>`.
+      完整版本字符串，如\ :option:`--version <cmake --version>`\ 所示。
     ``major``
-      The major version number in integer form.
+      以整数形式表示的主版本号。
     ``minor``
-      The minor version number in integer form.
+      整数形式的次要版本号。
     ``patch``
-      The patch level in integer form.
+      整数形式的补丁级别。
     ``suffix``
-      The cmake version suffix string.
+      cmake版本后缀字符串。
     ``isDirty``
-      A bool that is set if the cmake build is from a dirty tree.
+      如果生成来自脏树，则设置一个bool值。
 
   ``generators``
-    A list available generators. Each generator is a JSON object with the
-    following keys:
+    一个可用的生成器列表。每个生成器都是一个JSON对象，具有以下键：
 
     ``name``
-      A string containing the name of the generator.
+      包含生成器名称的字符串。
     ``toolsetSupport``
-      ``true`` if the generator supports toolsets and ``false`` otherwise.
+      如果生成器支持工具集，则为\ ``true``，否则为\ ``false``。
     ``platformSupport``
-      ``true`` if the generator supports platforms and ``false`` otherwise.
+      如果生成器支持平台，则为\ ``true``，否则为\ ``false``。
     ``supportedPlatforms``
       .. versionadded:: 3.21
 
-      Optional member that may be present when the generator supports
-      platform specification via :variable:`CMAKE_GENERATOR_PLATFORM`
-      (:option:`-A ... <cmake -A>`).  The value is a list of platforms known to
-      be supported.
+      当生成器通过\ :variable:`CMAKE_GENERATOR_PLATFORM` (\ :option:`-A ... <cmake -A>`\ )\
+      支持平台规范时，可能存在的可选成员。该值是已知支持的平台列表。
     ``extraGenerators``
-      A list of strings with all the extra generators compatible with
-      the generator.
+      具有与该生成器兼容的所有额外生成器的字符串列表。
 
   ``fileApi``
-    Optional member that is present when the :manual:`cmake-file-api(7)`
-    is available.  The value is a JSON object with one member:
+    :manual:`cmake-file-api(7)`\ 可用时出现的可选成员。该值是一个JSON对象，只有一个成员：
 
     ``requests``
-      A JSON array containing zero or more supported file-api requests.
-      Each request is a JSON object with members:
+      一个JSON数组，包含零个或多个支持的文件api请求。每个请求都是一个JSON对象，包含以下成员:
 
       ``kind``
-        Specifies one of the supported :ref:`file-api object kinds`.
+        指定支持的\ :ref:`file-api object kinds`\ 之一。
 
       ``version``
-        A JSON array whose elements are each a JSON object containing
-        ``major`` and ``minor`` members specifying non-negative integer
-        version components.
+        一个JSON数组，其每个元素都是一个JSON对象，其中包含指定非负整数版本组件的\ ``major``\
+        和\ ``minor``\ 成员。
 
   ``serverMode``
-    ``true`` if cmake supports server-mode and ``false`` otherwise.
-    Always false since CMake 3.20.
+    如果cmake支持服务器模式，则为\ ``true``，否则为\ ``false``。自CMake 3.20以来总是false。
 
   ``tls``
     .. versionadded:: 3.25
 
-    ``true`` if TLS support is enabled and ``false`` otherwise.
+    如果启用了TLS支持，则为\ ``true``，否则为\ ``false`` 。
 
 .. option:: cat [--] <files>...
 
   .. versionadded:: 3.18
 
-  Concatenate files and print on the standard output.
+  连接文件并在标准输出上打印。
 
   .. program:: cmake-E_cat
 
@@ -715,22 +704,20 @@ Available commands are:
 
     .. versionadded:: 3.24
 
-    Added support for the double dash argument ``--``. This basic implementation
-    of ``cat`` does not support any options, so using a option starting with
-    ``-`` will result in an error. Use ``--`` to indicate the end of options, in
-    case a file starts with ``-``.
+    增加了对双破折号参数的支持\ ``--``。\ ``cat``\ 的基本实现不支持任何选项，因此使用以\
+    ``-``\ 开头的选项将导致错误。在文件以\ ``-``\ 开头的情况下，使用\ ``--``\ 来表示选项\
+    的结束。
 
 .. program:: cmake-E
 
 .. option:: chdir <dir> <cmd> [<arg>...]
 
-  Change the current working directory and run a command.
+  更改当前工作目录并运行命令。
 
 .. option:: compare_files [--ignore-eol] <file1> <file2>
 
-  Check if ``<file1>`` is same as ``<file2>``. If files are the same,
-  then returns ``0``, if not it returns ``1``.  In case of invalid
-  arguments, it returns 2.
+  检查\ ``<file1>``\ 是否与\ ``<file2>``\ 相同。如果文件相同，则返回\ ``0``，否则返回\
+  ``1``。如果参数无效，则返回2。
 
   .. program:: cmake-E_compare_files
 
@@ -738,47 +725,42 @@ Available commands are:
 
     .. versionadded:: 3.14
 
-    The option implies line-wise comparison and ignores LF/CRLF differences.
+    该选项暗示逐行比较，忽略LF/CRLF差异。
 
 .. program:: cmake-E
 
 .. option:: copy <file>... <destination>, copy -t <destination> <file>...
 
-  Copy files to ``<destination>`` (either file or directory).
-  If multiple files are specified, or if ``-t`` is specified, the
-  ``<destination>`` must be directory and it must exist. If ``-t`` is not
-  specified, the last argument is assumed to be the ``<destination>``.
-  Wildcards are not supported. ``copy`` does follow symlinks. That means it
-  does not copy symlinks, but the files or directories it point to.
+  将文件复制到\ ``<destination>``\ （文件或目录）。如果指定了多个文件，或者指定了\ ``-t`` ，\
+  ``<destination>`` \ 必须是目录，并且必须存在。如果未指定\ ``-t`` ，则假定最后一个参数为\
+  ``<destination>``。不支持通配符。\ ``copy``\ 遵循符号链接。这意味着它不复制符号链接，\
+  而是复制它所指向的文件或目录。
 
   .. versionadded:: 3.5
-    Support for multiple input files.
+    支持多个输入文件。
 
   .. versionadded:: 3.26
-    Support for ``-t`` argument.
+    支持\ ``-t``\ 参数。
 
 .. option:: copy_directory <dir>... <destination>
 
-  Copy content of ``<dir>...`` directories to ``<destination>`` directory.
-  If ``<destination>`` directory does not exist it will be created.
-  ``copy_directory`` does follow symlinks.
+  复制\ ``<dir>...``\ 目录到\ ``<destination>``\ 目录。如果\ ``<destination>``\
+  目录不存在，它将被创建。\ ``copy_directory``\ 遵循符号链接。
 
   .. versionadded:: 3.5
-    Support for multiple input directories.
+    支持多个输入目录。
 
   .. versionadded:: 3.15
-    The command now fails when the source directory does not exist.
-    Previously it succeeded by creating an empty destination directory.
+    当源目录不存在时，该命令将失败。之前，它通过创建一个空的目标目录而成功。
 
 .. option:: copy_directory_if_different <dir>... <destination>
 
   .. versionadded:: 3.26
 
-  Copy changed content of ``<dir>...`` directories to ``<destination>`` directory.
-  If ``<destination>`` directory does not exist it will be created.
+  复制\ ``<dir>...``\ 目录的更改内容到\ ``<destination>``\ 目录。如果\ ``<destination>``\
+  目录不存在，它将被创建。
 
-  ``copy_directory_if_different`` does follow symlinks.
-  The command fails when the source directory does not exist.
+  ``copy_directory_if_different``\ 遵循符号链接。当源目录不存在时，命令执行失败。
 
 .. option:: copy_if_different <file>... <destination>
 
