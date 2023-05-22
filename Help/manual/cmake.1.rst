@@ -30,7 +30,7 @@ cmake(1)
  `运行包查找工具`_
   cmake --find-package [<options>]
 
- `Run a Workflow Preset`_
+ `运行工作流预设`_
   cmake --workflow [<options>]
 
  `查看帮助`_
@@ -913,7 +913,7 @@ CMake通过签名提供内置命令行工具
   and not files it point to.
 
   The implementation was buggy and always returned 0. It cannot be fixed without
-  breaking backwards compatibility. Use ``rm`` instead.
+  breaking backwards compatibility. 使用\ ``rm``\ 代替。
 
 .. option:: remove_directory <dir>...
 
@@ -921,7 +921,7 @@ CMake通过签名提供内置命令行工具
 
   Remove ``<dir>`` directories and their contents. If a directory does
   not exist it will be silently ignored.
-  Use ``rm`` instead.
+  使用\ ``rm``\ 代替。
 
   .. versionadded:: 3.15
     Support for multiple directories.
@@ -931,152 +931,135 @@ CMake通过签名提供内置命令行工具
 
 .. option:: rename <oldname> <newname>
 
-  Rename a file or directory (on one volume). If file with the ``<newname>`` name
-  already exists, then it will be silently replaced.
+  重命名文件或目录（在一个卷上）。如果名称为\ ``<newname>``\ 的文件已经存在，那么它将被静默替换。
 
 .. option:: rm [-rRf] [--] <file|dir>...
 
   .. versionadded:: 3.17
 
-  Remove the files ``<file>`` or directories ``<dir>``.
-  Use ``-r`` or ``-R`` to remove directories and their contents recursively.
-  If any of the listed files/directories do not exist, the command returns a
-  non-zero exit code, but no message is logged. The ``-f`` option changes
-  the behavior to return a zero exit code (i.e. success) in such
-  situations instead. Use ``--`` to stop interpreting options and treat all
-  remaining arguments as paths, even if they start with ``-``.
+  删除文件\ ``<file>``\ 或目录\ ``<dir>``。使用\ ``-r`` 或 ``-R``\ 递归地删除目录及其\
+  内容。如果列出的任何文件/目录不存在，该命令返回一个非零退出代码，但不记录任何消息。在这种情\
+  况下，\ ``-f``\ 选项将行为更改为返回零退出代码（即成功）。使用\ ``--``\ 停止解释选项，并\
+  将所有剩余的参数视为路径，即使它们以\ ``-``\ 开头。
 
 .. option:: sleep <number>...
 
   .. versionadded:: 3.0
 
-  Sleep for given number of seconds.
+  睡眠给定的秒数。
 
 .. option:: tar [cxt][vf][zjJ] file.tar [<options>] [--] [<pathname>...]
 
-  Create or extract a tar or zip archive.  Options are:
+  创建或提取一个tar或zip归档文件。选项有：
 
   .. program:: cmake-E_tar
 
   .. option:: c
 
-    Create a new archive containing the specified files.
-    If used, the ``<pathname>...`` argument is mandatory.
+    创建包含指定文件的新存档。如果使用\ ``<pathname>...``\ 参数是强制性的。
 
   .. option:: x
 
-    Extract to disk from the archive.
+    从归档文件中提取到磁盘。
 
     .. versionadded:: 3.15
-      The ``<pathname>...`` argument could be used to extract only selected files
-      or directories.
-      When extracting selected files or directories, you must provide their exact
-      names including the path, as printed by list (``-t``).
+      ``<pathname>...``\ 参数可用于仅提取选定的文件或目录。在提取选定的文件或目录时，必须\
+      提供它们的确切名称，包括路径，如列表打印（\ ``-t``\ ）所示。
 
   .. option:: t
 
-    List archive contents.
+    列出存档内容。
 
     .. versionadded:: 3.15
-      The ``<pathname>...`` argument could be used to list only selected files
-      or directories.
+      ``<pathname>...``\ 参数可用于仅列出选定的文件或目录。
 
   .. option:: v
 
-    Produce verbose output.
+    产生详细的输出。
 
   .. option:: z
 
-    Compress the resulting archive with gzip.
+    使用gzip压缩生成的归档文件。
 
   .. option:: j
 
-    Compress the resulting archive with bzip2.
+    使用bzip2压缩生成的归档文件。
 
   .. option:: J
 
     .. versionadded:: 3.1
 
-    Compress the resulting archive with XZ.
+    使用XZ压缩生成的归档文件。
 
   .. option:: --zstd
 
     .. versionadded:: 3.15
 
-    Compress the resulting archive with Zstandard.
+    使用Zstandard压缩生成的归档文件。
 
   .. option:: --files-from=<file>
 
     .. versionadded:: 3.1
 
-    Read file names from the given file, one per line.
-    Blank lines are ignored.  Lines may not start in ``-``
-    except for ``--add-file=<name>`` to add files whose
-    names start in ``-``.
+    从给定的文件中读取文件名，每行一个。空行将被忽略。行不能以\ ``-``\ 开头，除非\
+    ``--add-file=<name>``\ 添加文件名以\ ``-``\ 开头的文件。
 
   .. option:: --format=<format>
 
     .. versionadded:: 3.3
 
-    Specify the format of the archive to be created.
-    Supported formats are: ``7zip``, ``gnutar``, ``pax``,
-    ``paxr`` (restricted pax, default), and ``zip``.
+    指定要创建的归档文件的格式。支持的格式有：\ ``7zip``、\ ``gnutar``、\ ``pax``、\
+    ``paxr``\ （受限pax，默认）和\ ``zip``。
 
   .. option:: --mtime=<date>
 
     .. versionadded:: 3.1
 
-    Specify modification time recorded in tarball entries.
+    指定在tarball条目中记录的修改时间。
 
   .. option:: --touch
 
     .. versionadded:: 3.24
 
-    Use current local timestamp instead of extracting file timestamps
-    from the archive.
+    使用当前本地时间戳，而不是从存档中提取文件时间戳。
 
   .. option:: --
 
     .. versionadded:: 3.1
 
-    Stop interpreting options and treat all remaining arguments
-    as file names, even if they start with ``-``.
+    停止解释选项，并将所有剩余的参数视为文件名，即使它们以\ ``-``\ 开头。
 
   .. versionadded:: 3.1
-    LZMA (7zip) support.
+    支持LZMA （7zip）。
 
   .. versionadded:: 3.15
-    The command now continues adding files to an archive even if some of the
-    files are not readable.  This behavior is more consistent with the classic
-    ``tar`` tool. The command now also parses all flags, and if an invalid flag
-    was provided, a warning is issued.
+    该命令现在继续向存档中添加文件，即使其中一些文件不可读。这种行为与经典的\ ``tar``\ 工具\
+    更加一致。该命令现在还解析所有标志，如果提供了无效标志，则发出警告。
 
 .. program:: cmake-E
 
 .. option:: time <command> [<args>...]
 
-  Run command and display elapsed time.
+  运行命令并显示运行时间。
 
   .. versionadded:: 3.5
-    The command now properly passes arguments with spaces or special characters
-    through to the child process. This may break scripts that worked around the
-    bug with their own extra quoting or escaping.
+    该命令现在正确地将带有空格或特殊字符的参数传递给子进程。这可能会破坏那些使用自己的额外引\
+    用或转义来解决错误的脚本。
 
 .. option:: touch <file>...
 
-  Creates ``<file>`` if file do not exist.
-  If ``<file>`` exists, it is changing ``<file>`` access and modification times.
+  如果文件不存在，则创建\ ``<file>``。如果\ ``<file>``\ 存在，它正在改变\ ``<file>``\
+  的访问和修改时间。
 
 .. option:: touch_nocreate <file>...
 
-  Touch a file if it exists but do not create it.  If a file does
-  not exist it will be silently ignored.
+  触摸一个文件，如果它存在，但不创建它。如果一个文件不存在，它将被静默忽略。
 
 .. option:: true
 
   .. versionadded:: 3.16
 
-  Do nothing, with an exit code of 0.
+  什么都不做，退出代码为0。
 
 Windows特定命令行工程
 -----------------------------------
@@ -1085,25 +1068,23 @@ Windows特定命令行工程
 
 .. option:: delete_regv <key>
 
-  Delete Windows registry value.
+  删除Windows注册表值。
 
 .. option:: env_vs8_wince <sdkname>
 
   .. versionadded:: 3.2
 
-  Displays a batch file which sets the environment for the provided
-  Windows CE SDK installed in VS2005.
+  显示一个批处理文件，该文件为VS2005中安装的Windows CE SDK设置环境。
 
 .. option:: env_vs9_wince <sdkname>
 
   .. versionadded:: 3.2
 
-  Displays a batch file which sets the environment for the provided
-  Windows CE SDK installed in VS2008.
+  显示一个批处理文件，该文件为安装在VS2008中提供的Windows CE SDK设置环境。
 
 .. option:: write_regv <key> <value>
 
-  Write Windows registry value.
+  写入Windows注册表值。
 
 
 运行包查找工具
@@ -1111,7 +1092,7 @@ Windows特定命令行工程
 
 .. program:: cmake--find-package
 
-CMake provides a pkg-config like helper for Makefile-based projects:
+CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
 
 .. code-block:: shell
 
@@ -1126,50 +1107,45 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 
 .. _`Workflow Mode`:
 
-Run a Workflow Preset
+运行工作流预设
 =====================
 
 .. program:: cmake
 
-:manual:`CMake Presets <cmake-presets(7)>` provides a way to execute multiple
-build steps in order:
+:manual:`CMake预设 <cmake-presets(7)>`\ 提供了一种按顺序执行多个构建步骤的方法：
 
 .. code-block:: shell
 
   cmake --workflow [<options>]
 
-The options are:
+选项有：
 
 .. option:: --workflow
 
-  Select a :ref:`Workflow Preset` using one of the following options.
+  使用以下选项之一选择\ :ref:`Workflow Preset` 。
 
 .. program:: cmake--workflow
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  Use a workflow preset to specify a workflow. The project binary directory
-  is inferred from the initial configure preset. The current working directory
-  must contain CMake preset files.
-  See :manual:`preset <cmake-presets(7)>` for more details.
+  使用工作流预设来指定工作流。项目二进制目录是从初始配置预设推断出来的。当前工作目录必须包含\
+  CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>` 。
 
 .. option:: --list-presets
 
-  Lists the available workflow presets. The current working directory must
-  contain CMake preset files.
+  列出可用的工作流预设。当前工作目录必须包含CMake预设文件。
 
 .. option:: --fresh
 
-  Perform a fresh configuration of the build tree.
-  This removes any existing ``CMakeCache.txt`` file and associated
-  ``CMakeFiles/`` directory, and recreates them from scratch.
+  执行构建树的新配置。这将删除任何现有的\ ``CMakeCache.txt``\ 文件和相关的\ ``CMakeFiles/``\
+  目录，并从头开始重新创建它们。
 
 查看帮助
 =========
 
 .. program:: cmake
 
-To print selected pages from the CMake documentation, use
+要从CMake文档中打印选定的页面，使用
 
 .. code-block:: shell
 
@@ -1179,7 +1155,7 @@ To print selected pages from the CMake documentation, use
 
 .. include:: OPTIONS_HELP.txt
 
-To view the presets available for a project, use
+若要查看项目可用的预设，请使用
 
 .. code-block:: shell
 
@@ -1188,13 +1164,13 @@ To view the presets available for a project, use
 
 .. _`CMake Exit Code`:
 
-Return Value (Exit Code)
+返回值（退出码）
 ========================
 
-Upon regular termination, the :program:`cmake` executable returns the exit code ``0``.
+在常规终止时，:program:`cmake`\ 可执行文件返回退出码\ ``0``。
 
-If termination is caused by the command :command:`message(FATAL_ERROR)`,
-or another error condition, then a non-zero exit code is returned.
+如果终止是由命令消息\ :command:`message(FATAL_ERROR)`\ 或其他错误条件引起的，则返回一个\
+非零退出代码。
 
 
 另行参阅
