@@ -764,104 +764,94 @@ CMake通过签名提供内置命令行工具
 
 .. option:: copy_if_different <file>... <destination>
 
-  Copy files to ``<destination>`` (either file or directory) if
-  they have changed.
-  If multiple files are specified, the ``<destination>`` must be
-  directory and it must exist.
-  ``copy_if_different`` does follow symlinks.
+  如果文件已更改，则将其复制到\ ``<destination>``\（文件或目录）。如果指定了多个文件，\
+  ``<destination>``\ 必须是目录且必须存在。\ ``copy_if_different``\ 遵循符号链接。
 
   .. versionadded:: 3.5
-    Support for multiple input files.
+    支持多个输入文件。
 
 .. option:: create_symlink <old> <new>
 
-  Create a symbolic link ``<new>`` naming ``<old>``.
+  创建一个命名为\ ``<old>``\ 的符号链接\ ``<new>``。
 
   .. versionadded:: 3.13
-    Support for creating symlinks on Windows.
+    支持在Windows上创建符号链接。
 
   .. note::
-    Path to where ``<new>`` symbolic link will be created has to exist beforehand.
+    创建\ ``<new>``\ 符号链接的路径必须事先存在。
 
 .. option:: create_hardlink <old> <new>
 
   .. versionadded:: 3.19
 
-  Create a hard link ``<new>`` naming ``<old>``.
+  创建一个硬链接\ ``<new>``\ 命名为\ ``<old>``。
 
   .. note::
-    Path to where ``<new>`` hard link will be created has to exist beforehand.
-    ``<old>`` has to exist beforehand.
+    要创建\ ``<new>``\ 硬链接的路径必须事先存在。\ ``<old>``\ 必须事先存在。
 
 .. option:: echo [<string>...]
 
-  Displays arguments as text.
+  将参数显示为文本。
 
 .. option:: echo_append [<string>...]
 
-  Displays arguments as text but no new line.
+  将参数显示为文本，但不换行。
 
 .. option:: env [<options>] [--] <command> [<arg>...]
 
   .. versionadded:: 3.1
 
-  Run command in a modified environment. Options are:
+  在修改后的环境中执行命令。选项有：
 
   .. program:: cmake-E_env
 
   .. option:: NAME=VALUE
 
-    Replaces the current value of ``NAME`` with ``VALUE``.
+    将\ ``NAME``\ 的当前值替换为\ ``VALUE``。
 
   .. option:: --unset=NAME
 
-    Unsets the current value of ``NAME``.
+    取消\ ``NAME``\ 的当前值。
 
   .. option:: --modify ENVIRONMENT_MODIFICATION
 
     .. versionadded:: 3.25
 
-    Apply a single :prop_test:`ENVIRONMENT_MODIFICATION` operation to the
-    modified environment.
+    对修改后的环境应用单个\ :prop_test:`ENVIRONMENT_MODIFICATION`\ 操作。
 
-    The ``NAME=VALUE`` and ``--unset=NAME`` options are equivalent to
-    ``--modify NAME=set:VALUE`` and ``--modify NAME=unset:``, respectively.
-    Note that ``--modify NAME=reset:`` resets ``NAME`` to the value it had
-    when :program:`cmake` launched (or unsets it), not to the most recent
-    ``NAME=VALUE`` option.
+    ``NAME=VALUE``\ 和\ ``--unset=NAME``\ 选项分别相当于\ ``--modify NAME=set:VALUE``\
+    和\ ``--modify NAME=unset:``。注意\ ``--modify NAME=reset:``\ 将\ ``NAME``\
+    重置为\ :program:`cmake`\ 启动（或取消设置）时的值，而不是最近的\ ``NAME=VALUE``\ 选项。
 
   .. option:: --
 
     .. versionadded:: 3.24
 
-    Added support for the double dash argument ``--``. Use ``--`` to stop
-    interpreting options/environment variables and treat the next argument as
-    the command, even if it start with ``-`` or contains a ``=``.
+    增加了对双破折号参数的支持\ ``--``。使用\ ``--``\ 停止解释选项/环境变量，并将下一个参\
+    数视为命令，即使它以\ ``-``\ 开头或包含\ ``=``。
 
 .. program:: cmake-E
 
 .. option:: environment
 
-  Display the current environment variables.
+  显示当前环境变量。
 
 .. option:: false
 
   .. versionadded:: 3.16
 
-  Do nothing, with an exit code of 1.
+  什么都不做，退出代码为1。
 
 .. option:: make_directory <dir>...
 
-  Create ``<dir>`` directories.  If necessary, create parent
-  directories too.  If a directory already exists it will be
-  silently ignored.
+  创建\ ``<dir>``\ 目录。如果需要，也创建父目录。如果一个目录已经存在，它将被静默忽略。
 
   .. versionadded:: 3.5
-    Support for multiple input directories.
+    支持多个输入目录。
 
 .. option:: md5sum <file>...
 
-  Create MD5 checksum of files in ``md5sum`` compatible format::
+  以\ ``md5sum``\ 兼容格式创建文件的MD5校验和：\ ::
 
      351abe79cd3800b38cdfb25d45015a15  file1.txt
      052f86c15bbde68af55c7f7b340ab639  file2.txt
@@ -870,7 +860,7 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.10
 
-  Create SHA1 checksum of files in ``sha1sum`` compatible format::
+  以\ ``sha1sum``\ 兼容格式创建文件的SHA1校验和：\ ::
 
      4bb7932a29e6f73c97bb9272f2bdc393122f86e0  file1.txt
      1df4c8f318665f9a5f2ed38f55adadb7ef9f559c  file2.txt
@@ -879,7 +869,7 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.10
 
-  Create SHA224 checksum of files in ``sha224sum`` compatible format::
+  以\ ``sha224sum``\ 兼容格式创建文件的SHA224校验和：\ ::
 
      b9b9346bc8437bbda630b0b7ddfc5ea9ca157546dbbf4c613192f930  file1.txt
      6dfbe55f4d2edc5fe5c9197bca51ceaaf824e48eba0cc453088aee24  file2.txt
@@ -888,7 +878,7 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.10
 
-  Create SHA256 checksum of files in ``sha256sum`` compatible format::
+  以\ ``sha256sum``\ 兼容格式创建文件的SHA256校验和：\ ::
 
      76713b23615d31680afeb0e9efe94d47d3d4229191198bb46d7485f9cb191acc  file1.txt
      15b682ead6c12dedb1baf91231e1e89cfc7974b3787c1e2e01b986bffadae0ea  file2.txt
@@ -897,7 +887,7 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.10
 
-  Create SHA384 checksum of files in ``sha384sum`` compatible format::
+  以\ ``sha384sum``\ 兼容格式创建文件的SHA384校验和：\ ::
 
      acc049fedc091a22f5f2ce39a43b9057fd93c910e9afd76a6411a28a8f2b8a12c73d7129e292f94fc0329c309df49434  file1.txt
      668ddeb108710d271ee21c0f3acbd6a7517e2b78f9181c6a2ff3b8943af92b0195dcb7cce48aa3e17893173c0a39e23d  file2.txt
@@ -906,7 +896,7 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.10
 
-  Create SHA512 checksum of files in ``sha512sum`` compatible format::
+  以\ ``sha512sum``\ 兼容格式创建文件的SHA512校验和：\ ::
 
      2a78d7a6c5328cfb1467c63beac8ff21794213901eaadafd48e7800289afbc08e5fb3e86aa31116c945ee3d7bf2a6194489ec6101051083d1108defc8e1dba89  file1.txt
      7a0b54896fe5e70cca6dd643ad6f672614b189bf26f8153061c4d219474b05dad08c4e729af9f4b009f1a1a280cb625454bf587c690f4617c27e3aebdf3b7a2d  file2.txt
