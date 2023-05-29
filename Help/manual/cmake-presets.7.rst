@@ -29,7 +29,7 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 格式
 ======
 
-The files are a JSON document with an object as the root:
+这些文件是一个JSON文档，以一个对象作为根：
 
 .. literalinclude:: presets/example.json
   :language: json
@@ -75,7 +75,7 @@ The root object recognizes the following fields:
   An optional array of strings representing files to include. If the filenames
   are not absolute, they are considered relative to the current file.
   This is allowed in preset files specifying version ``4`` or above.
-  See `Includes`_ for discussion of the constraints on included files.
+  See `包含`_ for discussion of the constraints on included files.
 
 ``vendor``
   An optional map containing vendor-specific information. CMake does not
@@ -98,14 +98,14 @@ The root object recognizes the following fields:
   This is allowed in preset files specifying version ``2`` or above.
 
 ``packagePresets``
-  An optional array of `Package Preset`_ objects.
+  An optional array of `包预设`_ objects.
   This is allowed in preset files specifying version ``6`` or above.
 
 ``workflowPresets``
   An optional array of `Workflow Preset`_ objects.
   This is allowed in preset files specifying version ``6`` or above.
 
-Includes
+包含
 ^^^^^^^^
 
 ``CMakePresets.json`` and ``CMakeUserPresets.json`` can include other files
@@ -857,7 +857,7 @@ that may contain the following fields:
       Equivalent to passing :option:`--no-tests=ignore <ctest --no-tests>`
       on the command line.
 
-Package Preset
+包预设
 ^^^^^^^^^^^^^^
 
 Package presets may be used in schema version ``6`` or above. Each entry of
@@ -987,7 +987,7 @@ fields:
 
 .. _`Workflow Preset`:
 
-Workflow Preset
+工作流预设
 ^^^^^^^^^^^^^^^
 
 Workflow presets may be used in schema version ``6`` or above. Each entry of
