@@ -5,5 +5,4 @@ CMAKE_COLOR_DIAGNOSTICS
 
 .. include:: ENV_VAR.txt
 
-Specifies a default value for the :variable:`CMAKE_COLOR_DIAGNOSTICS` variable
-when there is no explicit value given on the first run.
+当第一次运行时没有给出显式值时，为\ :variable:`CMAKE_COLOR_DIAGNOSTICS`\ 变量指定一个默认值。

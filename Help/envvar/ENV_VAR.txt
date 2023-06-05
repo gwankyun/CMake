@@ -1,3 +1,2 @@
-This is a CMake :ref:`Environment Variable <CMake Language
-Environment Variables>`. Its initial value is taken from
-the calling process environment.
+这是一个CMake\ :ref:`环境变量 <CMake Language Environment Variables>`。它的初始值取\
+自调用进程环境。

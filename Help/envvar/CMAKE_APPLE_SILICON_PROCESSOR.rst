@@ -5,9 +5,8 @@ CMAKE_APPLE_SILICON_PROCESSOR
 
 .. include:: ENV_VAR.txt
 
-On Apple Silicon hosts running macOS, set this environment variable to tell
-CMake what architecture to use for :variable:`CMAKE_HOST_SYSTEM_PROCESSOR`.
-The value must be either ``arm64`` or ``x86_64``.
+在运行macOS的Apple Silicon主机上，设置这个环境变量来告诉CMake
+:variable:`CMAKE_HOST_SYSTEM_PROCESSOR`\ 使用什么架构。取值为\ ``arm64``\ 或\ ``x86_64``。
 
 The :variable:`CMAKE_APPLE_SILICON_PROCESSOR` normal variable, if set,
 overrides this environment variable.

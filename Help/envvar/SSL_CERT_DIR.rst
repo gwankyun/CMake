@@ -5,5 +5,4 @@ SSL_CERT_DIR
 
 .. include:: ENV_VAR.txt
 
-Specify default directory containing CA certificates.  It overrides
-the default CA directory used.
+指定CA证书的默认存放路径。它覆盖所使用的默认CA目录。

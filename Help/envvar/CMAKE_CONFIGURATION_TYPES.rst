@@ -5,7 +5,5 @@ CMAKE_CONFIGURATION_TYPES
 
 .. include:: ENV_VAR.txt
 
-The ``CMAKE_CONFIGURATION_TYPES`` environment variable specifies a
-default value for the :variable:`CMAKE_CONFIGURATION_TYPES` variable
-when there is no explicit configuration given on the first run while
-creating a new build tree.
+``CMAKE_CONFIGURATION_TYPES``\ 环境变量为\ :variable:`CMAKE_CONFIGURATION_TYPES`\
+变量指定一个默认值，如果在创建新构建树的第一次运行时没有给出显式配置。

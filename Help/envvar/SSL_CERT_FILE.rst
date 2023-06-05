@@ -5,5 +5,4 @@ SSL_CERT_FILE
 
 .. include:: ENV_VAR.txt
 
-Specify the file name containing CA certificates.  It overrides the
-default, os-specific CA file used.
+指定包含CA证书的文件名。它覆盖所使用的默认的、特定于操作系统的CA文件。

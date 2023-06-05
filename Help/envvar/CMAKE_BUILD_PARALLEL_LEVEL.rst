@@ -5,9 +5,8 @@ CMAKE_BUILD_PARALLEL_LEVEL
 
 .. include:: ENV_VAR.txt
 
-Specifies the maximum number of concurrent processes to use when building
-using the ``cmake --build`` command line
-:ref:`Build Tool Mode <Build Tool Mode>`.
+指定使用\ ``cmake --build``\ 命令行\ :ref:`构建工具模式 <Build Tool Mode>`\ 进行构建\
+时要使用的最大并发进程数。
 
 If this variable is defined empty the native build tool's default number is
 used.

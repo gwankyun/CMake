@@ -5,6 +5,5 @@ ADSP_ROOT
 
 .. include:: ENV_VAR.txt
 
-The ``ADSP_ROOT`` environment variable specifies a default value
-for the :variable:`CMAKE_ADSP_ROOT` variable when there is no explicit
-configuration given on the first run while creating a new build tree.
+当在创建新构建树的第一次运行时没有给出显式配置时，\ ``ADSP_ROOT``\ 环境变量为\
+:variable:`CMAKE_ADSP_ROOT`\ 变量指定一个默认值。
