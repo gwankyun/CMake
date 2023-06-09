@@ -3,12 +3,8 @@
 #include <iostream>
 #include <string>
 
+#include "MathFunctions.h"
 #include "TutorialConfig.h"
-
-// 是否包括MathFunctions头文件？
-#ifdef USE_MYMATH
-#  include "MathFunctions.h"
-#endif
 
 int main(int argc, char* argv[])
 {
@@ -23,12 +19,7 @@ int main(int argc, char* argv[])
   // 将输入转换为double类型
   const double inputValue = std::stod(argv[1]);
 
-  // 应该用哪个平方根函数？
-#ifdef USE_MYMATH
-  const double outputValue = mysqrt(inputValue);
-#else
-  const double outputValue = sqrt(inputValue);
-#endif
+  const double outputValue = mathfunctions::sqrt(inputValue);
 
   std::cout << "The square root of " << inputValue << " is " << outputValue
             << std::endl;

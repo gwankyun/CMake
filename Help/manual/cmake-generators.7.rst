@@ -99,6 +99,12 @@ Visual Studio生成器
 附加生成器
 ================
 
+.. deprecated:: 3.27
+
+  Support for "Extra Generators" is deprecated and will be removed from
+  a future version of CMake.  IDEs may use the :manual:`cmake-file-api(7)`
+  to view CMake-generated project build trees.
+
 在\ :manual:`cmake(1)`\ 命令行工具\ :option:`--help <cmake --help>`\ 输出中列出的一些\
 `CMake生成器`_\ 可能有变体，为辅助IDE工具指定额外的生成器。生成器名称的形式为\
 ``<extra-generator> - <main-generator>``。以下是CMake已知的额外的生成器。

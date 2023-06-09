@@ -30,6 +30,8 @@ cmake-buildsystem(7)
 和\ ``lzma.cpp``\ 编译对象的存档。\ ``zipapp``\ 被定义为通过编译和链接\ ``zipapp.cpp``\
 而形成的可执行文件。当链接\ ``zipapp``\ 可执行文件时，\ ``archive``\ 静态库会被链接到。
 
+.. _`Binary Executables`:
+
 二进制可执行文件
 ------------------
 
@@ -663,6 +665,10 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 * 在AIX上：当设置了可执行目标的\ :prop_tgt:`ENABLE_EXPORTS`\ 目标属性时，\
   :command:`add_executable`\ 命令创建的可执行目标的链接器导入文件（例如\ ``.imp``）。
+
+* On macOS: the linker import file (e.g. ``.tbd``) of a shared library target
+  created by the :command:`add_library` command with the ``SHARED`` option and
+  when its :prop_tgt:`ENABLE_EXPORTS` target property is set.
 
 :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
 目标属性可以用于控制构建树中的归档输出工件位置和名称。

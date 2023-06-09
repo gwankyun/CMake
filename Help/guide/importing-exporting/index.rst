@@ -190,7 +190,10 @@
   :start-after: # generate and install export file
   :end-before: # include CMakePackageConfigHelpers macro
 
-这些命令生成\ ``MathFunctionsTargets.cmake``\ 文件并被计划安装在\ ``lib/cmake``。该文件包含适合下游使用的代码，用于从安装树中导入安装命令中列出的所有目标。
+This command generates the ``MathFunctionsTargets.cmake`` file and arranges
+to install it to ``${CMAKE_INSTALL_LIBDIR}/cmake/MathFunctions``. The file
+contains code suitable for use by downstreams to import all targets listed in
+the install command from the installation tree.
 
 在写入导出文件时，``NAMESPACE``\ 选项可以在这些目标名前添加\ ``MathFunctions::``。双冒号约定会提示CMake当下游项目使用该名称时，该名称是一个\ :prop_tgt:`IMPORTED`\ 的目标。这样，若无法找到提供它的包，CMake可以作出提示。
 
@@ -212,7 +215,8 @@
 .. code-block:: cmake
   :linenos:
 
-   include(${INSTALL_PREFIX}/lib/cmake/MathFunctionTargets.cmake)
+   include(GNUInstallDirs)
+   include(${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/MathFunctions/MathFunctionTargets.cmake)
    add_executable(myexe src1.c src2.c )
    target_link_libraries(myexe PRIVATE MathFunctions::MathFunctions)
 

@@ -16,22 +16,15 @@ target_compile_options(tutorial_compiler_flags INTERFACE
   "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
 )
 
-# should we use our own math functions
-option(USE_MYMATH "Use tutorial provided math implementation" ON)
-
-# configure a header file to pass some of the CMake settings
-# to the source code
+# configure a header file to pass the version number only
 configure_file(TutorialConfig.h.in TutorialConfig.h)
 
 # add the MathFunctions library
-if(USE_MYMATH)
-  add_subdirectory(MathFunctions)
-  list(APPEND EXTRA_LIBS MathFunctions)
-endif()
+add_subdirectory(MathFunctions)
 
 # 添加可执行文件
 add_executable(Tutorial tutorial.cxx)
-target_link_libraries(Tutorial PUBLIC ${EXTRA_LIBS} tutorial_compiler_flags)
+target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
 
 # 添加二进制树到引用目录的搜索路径
 # 以便找到TutorialConfig.h

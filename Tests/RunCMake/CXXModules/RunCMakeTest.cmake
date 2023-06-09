@@ -60,8 +60,7 @@ if (NOT generator_supports_cxx_modules)
 endif ()
 
 set(fileset_types
-  Modules
-  ModuleHeaderUnits)
+  Modules)
 set(scopes
   Interface
   Private
@@ -155,6 +154,9 @@ endif ()
 # Tests which require collation work.
 if ("collation" IN_LIST CMake_TEST_MODULE_COMPILATION)
   run_cxx_module_test(public-req-private)
+  set(RunCMake_CXXModules_NO_TEST 1)
+  run_cxx_module_test(req-private-other-target)
+  unset(RunCMake_CXXModules_NO_TEST)
 endif ()
 
 # Tests which use named modules in shared libraries.

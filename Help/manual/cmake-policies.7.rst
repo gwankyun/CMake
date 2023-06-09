@@ -40,6 +40,21 @@ CMake中的策略用于保持跨多个版本的向后兼容行为。当引入新
 :variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量也可以用来决定是否报告在使用弃用宏或\
 函数时的错误。
 
+Policies Introduced by CMake 3.27
+=================================
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0151: AUTOMOC include directory is a system include directory by default. </policy/CMP0151>
+   CMP0150: ExternalProject_Add and FetchContent_Declare treat relative git repository paths as being relative to parent project's remote. </policy/CMP0150>
+   CMP0149: Visual Studio generators select latest Windows SDK by default. </policy/CMP0149>
+   CMP0148: The FindPythonInterp and FindPythonLibs modules are removed. </policy/CMP0148>
+   CMP0147: Visual Studio generators build custom commands in parallel. </policy/CMP0147>
+   CMP0146: The FindCUDA module is removed. </policy/CMP0146>
+   CMP0145: The Dart and FindDart modules are removed. </policy/CMP0145>
+   CMP0144: find_package uses upper-case PACKAGENAME_ROOT variables. </policy/CMP0144>
+
 Policies Introduced by CMake 3.26
 =================================
 

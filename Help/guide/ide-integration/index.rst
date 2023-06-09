@@ -102,7 +102,7 @@ IDE与CMake的集成
 * `VSCode`_\ （通过插件）
 
 .. _CLion: https://www.jetbrains.com/clion/
-.. _KDevelop: https://www.kdevelop.org/
+.. _KDevelop: https://kdevelop.org/
 .. _QtCreator: https://www.qt.io/product/development-tools
 .. _Vim: https://www.vim.org/
 .. _Visual Studio: https://visualstudio.microsoft.com/

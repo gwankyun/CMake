@@ -25,7 +25,8 @@ The first signature is for adding a custom command to produce an output:
                      [DEPFILE depfile]
                      [JOB_POOL job_pool]
                      [VERBATIM] [APPEND] [USES_TERMINAL]
-                     [COMMAND_EXPAND_LISTS])
+                     [COMMAND_EXPAND_LISTS]
+                     [DEPENDS_EXPLICIT_ONLY])
 
 This defines a command to generate specified ``OUTPUT`` file(s).
 A target created in the same directory (``CMakeLists.txt`` file)
@@ -357,6 +358,24 @@ The options are:
   :ref:`Makefile Generators`, :ref:`Visual Studio Generators`,
   and the :generator:`Xcode` generator.
 
+``DEPENDS_EXPLICIT_ONLY``
+
+  .. versionadded:: 3.27
+
+  Indicate that the command's ``DEPENDS`` argument represents all files
+  required by the command and implicit dependencies are not required.
+
+  Without this option, if any target uses the output of the custom command,
+  CMake will consider that target's dependencies as implicit dependencies for
+  the custom command in case this custom command requires files implicitly
+  created by those targets.
+
+  This option can be enabled on all custom commands by setting
+  :variable:`CMAKE_ADD_CUSTOM_COMMAND_DEPENDS_EXPLICIT_ONLY` to ``ON``.
+
+  Only the :ref:`Ninja Generators` actually use this information to remove
+  unnecessary implicit dependencies.
+
 Examples: Generating Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -470,9 +489,12 @@ When the command will happen is determined by which
 of the following is specified:
 
 ``PRE_BUILD``
-  On :ref:`Visual Studio Generators`, run before any other rules are
-  executed within the target.
-  On other generators, run just before ``PRE_LINK`` commands.
+  This option has unique behavior for the :ref:`Visual Studio Generators`.
+  When using one of the Visual Studio generators, the command will run before
+  any other rules are executed within the target.  With all other generators,
+  this option behaves the same as ``PRE_LINK`` instead.  Because of this,
+  it is recommended to avoid using ``PRE_BUILD`` except when it is known that
+  a Visual Studio generator is being used.
 ``PRE_LINK``
   Run after sources have been compiled but before linking the binary
   or running the librarian or archiver tool of a static library.

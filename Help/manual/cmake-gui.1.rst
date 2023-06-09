@@ -9,9 +9,9 @@ cmake-gui(1)
 .. parsed-literal::
 
  cmake-gui [<options>]
+ cmake-gui [<options>] -B <path-to-build> [-S <path-to-source>]
  cmake-gui [<options>] <path-to-source | path-to-existing-build>
- cmake-gui [<options>] -S <path-to-source> -B <path-to-build>
- cmake-gui [<options>] --browse-manual
+ cmake-gui [<options>] --browse-manual [<filename>]
 
 描述
 ===========
@@ -42,9 +42,11 @@ CMake是一个跨平台的构建系统生成器。项目使用与平台无关的
 
  要从项目的\ :manual:`presets <cmake-presets(7)>`\ 文件中使用的预置名称，如果有的话。
 
-.. option:: --browse-manual
+.. option:: --browse-manual [<filename>]
 
- 在浏览器中打开CMake参考手册并立即退出。
+ 在浏览器中打开CMake参考手册并立即退出。 If
+ ``<filename>`` is specified, open that file within the reference manual
+ instead of ``index.html``.
 
 .. include:: OPTIONS_HELP.txt
 

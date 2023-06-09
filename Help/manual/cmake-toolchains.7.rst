@@ -68,7 +68,7 @@ CMake需要一种方法来确定使用哪个编译器来调用链接器。这是
 工具链特性
 ==================
 
-CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\ :module:`CheckCXXSourceCompiles`、\
+CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\ :module:`CheckSourceCompiles`、\
 :module:`CheckCXXSymbolExists`\ 和\ :module:`CheckIncludeFile`\ 来测试各种工具链功\
 能的能力和可用性。这些API以某种方式测试工具链并缓存结果，以便下次CMake运行时不必再次执行测试。
 
@@ -223,7 +223,7 @@ Windows CE的交叉编译需要在系统上安装相应的SDK。这些SDK通常�
 Windows 10通用应用交叉编译
 -----------------------------------------------------
 
-为Windows 10通用应用程序配置Visual Studio生成器的工具链文件可能如下所示：
+为Windows 10通用应用程序配置\ :ref:`Visual Studio Generators`\ 的工具链文件可能如下所示：
 
 .. code-block:: cmake
 
@@ -231,8 +231,10 @@ Windows 10通用应用交叉编译
   set(CMAKE_SYSTEM_VERSION 10.0)
 
 Windows 10通用应用程序同时针对Windows Store和Windows Phone。将\
-:variable:`CMAKE_SYSTEM_VERSION`\ 变量指定为\ ``10.0``，以使用最新可用的\
-Windows 10 SDK进行构建。指定一个更具体的版本（例如RTM的\ ``10.0.10240.0``）来构建相应的SDK。
+:variable:`CMAKE_SYSTEM_VERSION`\ 变量指定为\ ``10.0``\ 或更高。
+
+CMake selects a Windows SDK as described by documentation of the
+:variable:`CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION` variable.
 
 Windows Phone交叉编译
 ---------------------------------

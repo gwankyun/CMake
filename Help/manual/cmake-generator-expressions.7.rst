@@ -91,6 +91,17 @@ cmake-generator-expressions(7)
     VERBATIM
   )
 
+Finally, the above example can be expressed in a more simple and robust way
+using an alternate generator expression:
+
+.. code-block:: cmake
+
+  add_custom_target(run_some_tool
+    COMMAND some_tool "$<LIST:TRANSFORM,$<TARGET_PROPERTY:tgt,INCLUDE_DIRECTORIES>,PREPEND,-I>"
+    COMMAND_EXPAND_LISTS
+    VERBATIM
+  )
+
 一个常见的错误是尝试用缩进将生成器表达式分割到多行：
 
 .. code-block:: cmake
@@ -288,6 +299,15 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 列表表达式
 ----------------
 
+Most of the expressions in this section are closely associated with the
+:command:`list` command, providing the same capabilities, but in
+the form of a generator expression.
+
+.. _GenEx List Comparisons:
+
+List Comparisons
+^^^^^^^^^^^^^^^^
+
 .. genex:: $<IN_LIST:string,list>
 
   .. versionadded:: 3.12
@@ -295,9 +315,186 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   如果\ ``string``\ 是分号分隔\ ``list``\ 中的项，则为\ ``1``，否则为\ ``0``。\
   它使用区分大小写的比较。
 
-.. genex:: $<JOIN:list,string>
+.. _GenEx List Queries:
 
-  用插入在每个项之间的\ ``string``\ 内容连接列表。
+List Queries
+^^^^^^^^^^^^
+
+.. genex:: $<LIST:LENGTH,list>
+
+  .. versionadded:: 3.27
+
+  Returns the list's length.
+
+.. genex:: $<LIST:GET,list,index,...>
+
+  .. versionadded:: 3.27
+
+  Returns the list of elements specified by indices from the list.
+
+.. genex:: $<LIST:SUBLIST,list,begin,length>
+
+  .. versionadded:: 3.27
+
+  Returns a sublist of the given list. If <length> is 0, an empty list will be
+  returned. If <length> is -1 or the list is smaller than <begin>+<length> then
+  the remaining elements of the list starting at <begin> will be returned.
+
+.. genex:: $<LIST:FIND,list,value>
+
+  .. versionadded:: 3.27
+
+  Returns the index of the element specified in the list or -1 if it wasn't
+  found.
+
+.. _GenEx List Transformations:
+
+List Transformations
+^^^^^^^^^^^^^^^^^^^^
+
+.. genex:: $<LIST:JOIN,list,glue>
+
+  .. versionadded:: 3.27
+
+  Returns a string which joins the list with the content of the ``glue`` string
+  inserted between each item.
+
+.. genex:: $<LIST:APPEND,list,element,...>
+
+  .. versionadded:: 3.27
+
+  Returns a list with the elements appended.
+
+.. genex:: $<LIST:PREPEND,list,element,...>
+
+  .. versionadded:: 3.27
+
+  Returns a list with the elements inserted at the beginning of the list.
+
+.. genex:: $<LIST:INSERT,list,index,element,...>
+
+  .. versionadded:: 3.27
+
+  Returns a list with the elements inserted at the specified index. It is an
+  error to specify an out-of-range index. Valid indexes are 0 to N where N is
+  the length of the list, inclusive. An empty list has length 0.
+
+.. genex:: $<LIST:POP_BACK,list>
+
+  .. versionadded:: 3.27
+
+  Returns a list with the last element was removed.
+
+.. genex:: $<LIST:POP_FRONT,list>
+
+  .. versionadded:: 3.27
+
+  Returns a list with the first element was removed.
+
+.. genex:: $<LIST:REMOVE_ITEM,list,value,...>
+
+  .. versionadded:: 3.27
+
+  Returns a list with all instances of the given values were removed.
+
+.. genex:: $<LIST:REMOVE_AT,list,index,...>
+
+  .. versionadded:: 3.27
+
+  Returns a list with all values at given indices were removed.
+
+.. genex:: $<LIST:REMOVE_DUPLICATES,list>
+
+  .. versionadded:: 3.27
+
+  Returns a list where duplicated items were removed. The relative order of
+  items is preserved, but if duplicates are encountered, only the first
+  instance is preserved.
+
+.. genex:: $<LIST:FILTER,list,INCLUDE|EXCLUDE,regex>
+
+  .. versionadded:: 3.27
+
+  Returns a list with the items that match the regular expression ``regex``
+  were included or removed.
+
+.. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
+
+  .. versionadded:: 3.27
+
+  Returns the list transformed by applying an ``ACTION`` to all or, by
+  specifying a ``SELECTOR``, to the selected elements of the list.
+
+  .. note::
+
+    The ``TRANSFORM`` sub-command does not change the number of elements in the
+    list. If a ``SELECTOR`` is specified, only some elements will be changed,
+    the other ones will remain the same as before the transformation.
+
+  ``ACTION`` specifies the action to apply to the elements of the list.
+  The actions have exactly the same semantics as of the
+  :command:`list(TRANSFORM)` command.  ``ACTION`` must be one of the following:
+
+    :command:`APPEND <list(TRANSFORM_APPEND)>`, :command:`PREPEND <list(TRANSFORM_APPEND)>`
+      Append, prepend specified value to each element of the list.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,(APPEND|PREPEND),value[,SELECTOR]>
+
+    :command:`TOLOWER <list(TRANSFORM_TOLOWER)>`, :command:`TOUPPER <list(TRANSFORM_TOLOWER)>`
+      Convert each element of the list to lower, upper characters.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,(TOLOWER|TOUPPER)[,SELECTOR]>
+
+    :command:`STRIP <list(TRANSFORM_STRIP)>`
+      Remove leading and trailing spaces from each element of the list.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,STRIP[,SELECTOR]>
+
+    :command:`REPLACE <list(TRANSFORM_REPLACE)>`:
+      Match the regular expression as many times as possible and substitute
+      the replacement expression for the match for each element of the list.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,REPLACE,regular_expression,replace_expression[,SELECTOR]>
+
+  ``SELECTOR`` determines which elements of the list will be transformed.
+  Only one type of selector can be specified at a time. When given,
+  ``SELECTOR`` must be one of the following:
+
+    ``AT``
+      Specify a list of indexes.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,ACTION,AT,index[,index...]>
+
+    ``FOR``
+      Specify a range with, optionally, an increment used to iterate over the
+      range.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,ACTION,FOR,start,stop[,step]>
+
+    ``REGEX``
+      Specify a regular expression.
+      Only elements matching the regular expression will be transformed.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,ACTION,REGEX,regular_expression>
+
+.. genex:: $<JOIN:list,glue>
+
+  Joins the list with the content of the ``glue`` string inserted between each
+  item.
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
@@ -310,6 +507,69 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   .. versionadded:: 3.15
 
   从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。
+
+.. _GenEx List Ordering:
+
+List Ordering
+^^^^^^^^^^^^^
+
+.. genex:: $<LIST:REVERSE,list>
+
+  .. versionadded:: 3.27
+
+  Returns the list with the elements in reverse order.
+
+.. genex:: $<LIST:SORT,list[,(COMPARE:option|CASE:option|ORDER:option)]...>
+
+  .. versionadded:: 3.27
+
+  Returns the list sorted according the specified options.
+
+  Use one of the ``COMPARE`` options to select the comparison method
+  for sorting:
+
+    ``STRING``
+      Sorts a list of strings alphabetically.
+      This is the default behavior if the ``COMPARE`` option is not given.
+
+    ``FILE_BASENAME``
+      Sorts a list of pathnames of files by their basenames.
+
+    ``NATURAL``
+      Sorts a list of strings using natural order
+      (see ``strverscmp(3)`` manual), i.e. such that contiguous digits
+      are compared as whole numbers.
+      For example: the following list `10.0 1.1 2.1 8.0 2.0 3.1`
+      will be sorted as `1.1 2.0 2.1 3.1 8.0 10.0` if the ``NATURAL``
+      comparison is selected where it will be sorted as
+      `1.1 10.0 2.0 2.1 3.1 8.0` with the ``STRING`` comparison.
+
+  Use one of the ``CASE`` options to select a case sensitive or case
+  insensitive sort mode:
+
+    ``SENSITIVE``
+      List items are sorted in a case-sensitive manner.
+      This is the default behavior if the ``CASE`` option is not given.
+
+    ``INSENSITIVE``
+      List items are sorted case insensitively.  The order of
+      items which differ only by upper/lowercase is not specified.
+
+  To control the sort order, one of the ``ORDER`` options can be given:
+
+    ``ASCENDING``
+      Sorts the list in ascending order.
+      This is the default behavior when the ``ORDER`` option is not given.
+
+    ``DESCENDING``
+      Sorts the list in descending order.
+
+  This is an error to specify multiple times the same option. Various options
+  can be specified in any order:
+
+  .. code-block:: cmake
+
+    $<LIST:SORT,list,CASE:SENSITIVE,COMPARE:STRING,ORDER:DESCENDING>
 
 路径表达式
 ----------------
@@ -402,16 +662,20 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   以下操作从路径中检索不同的组件或组件组。有关每个路径组件的含义，请参阅\ :ref:`Path Structure And Terminology`。
 
+  .. versionchanged:: 3.27
+    All operations now accept a list of paths as argument. When a list of paths
+    is specified, the operation will be applied to each path.
+
   ::
 
-    $<PATH:GET_ROOT_NAME,path>
-    $<PATH:GET_ROOT_DIRECTORY,path>
-    $<PATH:GET_ROOT_PATH,path>
-    $<PATH:GET_FILENAME,path>
-    $<PATH:GET_EXTENSION[,LAST_ONLY],path>
-    $<PATH:GET_STEM[,LAST_ONLY],path>
-    $<PATH:GET_RELATIVE_PART,path>
-    $<PATH:GET_PARENT_PATH,path>
+    $<PATH:GET_ROOT_NAME,path...>
+    $<PATH:GET_ROOT_DIRECTORY,path...>
+    $<PATH:GET_ROOT_PATH,path...>
+    $<PATH:GET_FILENAME,path...>
+    $<PATH:GET_EXTENSION[,LAST_ONLY],path...>
+    $<PATH:GET_STEM[,LAST_ONLY],path...>
+    $<PATH:GET_RELATIVE_PART,path...>
+    $<PATH:GET_PARENT_PATH,path...>
 
   如果请求的组件不在路径中，则返回空字符串。
 
@@ -423,9 +687,14 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 这些表达式提供了等同于\ :command:`cmake_path`\ 命令的\ :ref:`Modification <Path Modification>`\
 和\ :ref:`Generation <Path Generation>`\ 选项的生成时功能。所有路径都应该是cmake样式的格式。
 
+.. versionchanged:: 3.27
+  All operations now accept a list of paths as argument. When a list of paths
+  is specified, the operation will be applied to each path.
+
+
 .. _GenEx PATH-CMAKE_PATH:
 
-.. genex:: $<PATH:CMAKE_PATH[,NORMALIZE],path>
+.. genex:: $<PATH:CMAKE_PATH[,NORMALIZE],path...>
 
   .. versionadded:: 3.24
 
@@ -435,7 +704,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   当指定\ ``NORMALIZE``\ 选项时，转换后将对路径进行\ :ref:`normalized
   <Normalization>`。
 
-.. genex:: $<PATH:APPEND,path,input,...>
+.. genex:: $<PATH:APPEND,path...,input,...>
 
   .. versionadded:: 3.24
 
@@ -444,7 +713,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   请参阅\ :ref:`cmake_path(APPEND) <APPEND>`\ 了解更多详细信息。
 
-.. genex:: $<PATH:REMOVE_FILENAME,path>
+.. genex:: $<PATH:REMOVE_FILENAME,path...>
 
   .. versionadded:: 3.24
 
@@ -453,7 +722,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   参见\ :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>`\ 了解更多细节。
 
-.. genex:: $<PATH:REPLACE_FILENAME,path,input>
+.. genex:: $<PATH:REPLACE_FILENAME,path...,input>
 
   .. versionadded:: 3.24
 
@@ -462,7 +731,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   参见\ :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>`\ 了解更多细节。
 
-.. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path>
+.. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path...>
 
   .. versionadded:: 3.24
 
@@ -470,7 +739,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   有关详细信息，请参阅\ :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>`。
 
-.. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path,input>
+.. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path...,input>
 
   .. versionadded:: 3.24
 
@@ -479,13 +748,13 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   详细信息请参见\ :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>`。
 
-.. genex:: $<PATH:NORMAL_PATH,path>
+.. genex:: $<PATH:NORMAL_PATH,path...>
 
   .. versionadded:: 3.24
 
   返回根据\ :ref:`Normalization`\ 中描述的步骤归一化的\ ``path``。
 
-.. genex:: $<PATH:RELATIVE_PATH,path,base_directory>
+.. genex:: $<PATH:RELATIVE_PATH,path...,base_directory>
 
   .. versionadded:: 3.24
 
@@ -493,7 +762,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   有关更多细节，请参阅\ :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>`。
 
-.. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path,base_directory>
+.. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path...,base_directory>
 
   .. versionadded:: 3.24
 
@@ -853,6 +1122,25 @@ Shell路径
   则会报告错误。有关编译特性的信息和支持的编译器列表，请参阅\ :manual:`cmake-compile-features(7)`\
   手册。
 
+Compile Context
+^^^^^^^^^^^^^^^
+
+.. genex:: $<COMPILE_ONLY:...>
+
+  .. versionadded:: 3.27
+
+  Content of ``...``, when collecting :ref:`Target Usage Requirements`,
+  otherwise it is the empty string.  This is intended for use in an
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES` and :prop_tgt:`LINK_LIBRARIES` target
+  properties, typically populated via the :command:`target_link_libraries` command.
+  Provides compilation usage requirements without any linking requirements.
+
+  Use cases include header-only usage where all usages are known to not have
+  linking requirements (e.g., all-``inline`` or C++ template libraries).
+
+  Note that for proper evaluation of this expression requires policy :policy:`CMP0099`
+  to be set to `NEW`.
+
 链接器语言和ID
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1176,7 +1464,8 @@ Shell路径
 
   ``...``\ 的内容，但在收集传递\ :ref:`Target Usage Requirements`\ 时除外，在这种情况下，\
   它是空字符串。这用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 目标属性中，通常通过\
-  :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖关系，而不需要其他使用要求。
+  :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖关系，而不需要其他使用要求。such as include directories or
+  compile options.
 
   .. versionadded:: 3.24
     ``LINK_ONLY``\ 也可以在\ :prop_tgt:`LINK_LIBRARIES`\ 目标属性中使用。参见策略\
@@ -1244,6 +1533,7 @@ Shell路径
     标的目录中。
 
 .. genex:: $<TARGET_PROPERTY:prop>
+  :target: TARGET_PROPERTY:prop
 
   属性\ ``prop``\ 在表达式被求值的目标上的值。注意，对于\ :ref:`Target Usage Requirements`\
   中的生成器表达式，这是消费目标，而不是指定需求的目标。
@@ -1315,16 +1605,95 @@ Shell路径
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
+.. genex:: $<TARGET_IMPORT_FILE:tgt>
+
+  .. versionadded:: 3.27
+
+  Full path to the linker import file. On DLL platforms, it would be the
+  ``.lib`` file. On AIX, for the executables, and on macOS, for the shared
+  libraries, it could be, respectively, the ``.imp`` or ``.tbd`` import file,
+  depending of the value of :prop_tgt:`ENABLE_EXPORTS` property.
+
+  An empty string is returned when there is no import file associated with the
+  target.
+
+.. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Base name of file linker import file of the target ``tgt`` without prefix and
+  suffix. For example, if target file name is ``libbase.tbd``, the base name is
+  ``base``.
+
+  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`
+  target properties and their configuration specific variants
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>` and :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`.
+
+  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
+  properties can also be considered.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_IMPORT_FILE_PREFIX:tgt>
+
+  .. versionadded:: 3.27
+
+  Prefix of the import file of the target ``tgt``.
+
+  See also the :prop_tgt:`IMPORT_PREFIX` target property.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_IMPORT_FILE_SUFFIX:tgt>
+
+  .. versionadded:: 3.27
+
+  Suffix of the import file of the target ``tgt``.
+
+  The suffix corresponds to the file extension (such as ".lib" or ".tbd").
+
+  See also the :prop_tgt:`IMPORT_SUFFIX` target property.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_IMPORT_FILE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Name of the import file of the target target ``tgt``.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_IMPORT_FILE_DIR:tgt>
+
+  Directory of the import file of the target ``tgt``.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 
   链接到\ ``tgt``\ 目标时使用的文件。这通常是\ ``tgt``\ 表示的库（\ ``.a``、\ ``.lib``、\
   ``.so``），但对于DLL平台上的共享库，它将是与DLL关联的\ ``.lib``\ 导入库。
 
+  .. versionadded:: 3.27
+    On macOS, it could be the ``.tbd`` import file associated with the shared
+    library, depending of the value of :prop_tgt:`ENABLE_EXPORTS` property.
+
+  This generator expression is equivalent to
+  :genex:`$<TARGET_LINKER_LIBRARY_FILE>` or
+  :genex:`$<TARGET_LINKER_IMPORT_FILE>` generator expressions, depending of the
+  characteristics of the target and the platform.
+
 .. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  用于链接目标\ ``tgt``\ 的基本文件名，例如\ ``$<TARGET_LINKER_FILE_NAME:tgt>``，\
+  用于链接目标\ ``tgt``\ 的基本文件名，例如\ :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` ，\
   不带前缀和后缀。例如，目标文件名为\ ``libbase.a``，基本名称为\ ``base``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
@@ -1370,9 +1739,151 @@ Shell路径
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE:tgt>
+
+  .. versionadded:: 3.27
+
+  File used when linking o the ``tgt`` target is done using directly the
+  library, and not an import file. This will usually be the library that
+  ``tgt`` represents (``.a``, ``.so``, ``.dylib``). So, on DLL platforms, it
+  will be an empty string.
+
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Base name of library file used to link the target ``tgt``, i.e.
+  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>` without prefix and suffix.
+  For example, if target file name is ``libbase.a``, the base name is ``base``.
+
+  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
+  and :prop_tgt:`LIBRARY_OUTPUT_NAME` target properties and their configuration
+  specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`,
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>` and
+  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`.
+
+  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
+  properties can also be considered.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE_PREFIX:tgt>
+
+  .. versionadded:: 3.27
+
+  Prefix of the library file used to link target ``tgt``.
+
+  See also the :prop_tgt:`PREFIX` target property.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE_SUFFIX:tgt>
+
+  .. versionadded:: 3.27
+
+  Suffix of the library file used to link target ``tgt``.
+
+  The suffix corresponds to the file extension (such as ".a" or ".dylib").
+
+  See also the :prop_tgt:`SUFFIX` target property.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Name of the library file used to link target ``tgt``.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE_DIR:tgt>
+
+  .. versionadded:: 3.27
+
+  Directory of the library file used to link target ``tgt``.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_IMPORT_FILE:tgt>
+
+  .. versionadded:: 3.27
+
+  File used when linking to the ``tgt`` target is done using an import
+  file.  This will usually be the import file that ``tgt`` represents
+  (``.lib``, ``.tbd``). So, when no import file is involved in the link step,
+  an empty string is returned.
+
+.. genex:: $<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Base name of the import file used to link the target ``tgt``, i.e.
+  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>` without prefix and suffix.
+  For example, if target file name is ``libbase.tbd``, the base name is ``base``.
+
+  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
+  target properties and their configuration
+  specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>` and
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`.
+
+  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
+  properties can also be considered.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_IMPORT_FILE_PREFIX:tgt>
+
+  .. versionadded:: 3.27
+
+  Prefix of the import file used to link target ``tgt``.
+
+  See also the :prop_tgt:`IMPORT_PREFIX` target property.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_IMPORT_FILE_SUFFIX:tgt>
+
+  .. versionadded:: 3.27
+
+  Suffix of the import file used to link target ``tgt``.
+
+  The suffix corresponds to the file extension (such as ".lib" or ".tbd").
+
+  See also the :prop_tgt:`IMPORT_SUFFIX` target property.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_IMPORT_FILE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Name of the import file used to link target ``tgt``.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_LINKER_IMPORT_FILE_DIR:tgt>
+
+  .. versionadded:: 3.27
+
+  Directory of the import file used to link target ``tgt``.
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
 .. genex:: $<TARGET_SONAME_FILE:tgt>
 
   带有soname（\ ``.so.3``）的文件，其中\ ``tgt``\ 是目标的名称。
+
 .. genex:: $<TARGET_SONAME_FILE_NAME:tgt>
 
   带有soname（\ ``.so.3``）的文件名。
@@ -1381,9 +1892,33 @@ Shell路径
 
 .. genex:: $<TARGET_SONAME_FILE_DIR:tgt>
 
-  使用soname（\ ``.so.3``）的目录。
+  Directory of file with soname (``.so.3``).
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
+
+.. genex:: $<TARGET_SONAME_IMPORT_FILE:tgt>
+
+  .. versionadded:: 3.27
+
+  Import file with soname (``.3.tbd``) where ``tgt`` is the name of a target.
+
+.. genex:: $<TARGET_SONAME_IMPORT_FILE_NAME:tgt>
+
+  .. versionadded:: 3.27
+
+  Name of the import file with soname (``.3.tbd``).
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
+
+.. genex:: $<TARGET_SONAME_IMPORT_FILE_DIR:tgt>
+
+  .. versionadded:: 3.27
+
+  Directory of the import file with soname (``.3.tbd``).
+
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
 
 .. genex:: $<TARGET_PDB_FILE:tgt>
 
@@ -1460,6 +1995,8 @@ Shell路径
   .. versionadded:: 3.21
 
   目标在运行时依赖的DLL列表。这是由目标的传递依赖项中所有 ``SHARED`` 目标的位置决定的。\
+  If only the directories of the DLLs are needed, see the
+  :genex:`TARGET_RUNTIME_DLL_DIRS` generator expression.
   在可执行文件、\ ``SHARED``\ 库和\ ``MODULE``\ 库以外的目标上使用此生成器表达式是错误的。\
   **在非dll平台上，这个表达式总是求值为空字符串**。
 
@@ -1487,6 +2024,20 @@ Shell路径
 在支持运行时路径（\ ``RPATH``\ ）的平台上，请参考\ :prop_tgt:`INSTALL_RPATH`\ 目标属性。\
 在Apple平台上，请参考\ :prop_tgt:`INSTALL_NAME_DIR`\ 目标属性。
 
+.. genex:: $<TARGET_RUNTIME_DLL_DIRS:tgt>
+
+  .. versionadded:: 3.27
+
+  List of the directories which contain the DLLs that the target depends on at
+  runtime (see :genex:`TARGET_RUNTIME_DLLS`). This is determined by
+  the locations of all the ``SHARED`` targets in the target's transitive
+  dependencies. Using this generator expression on targets other than
+  executables, ``SHARED`` libraries, and ``MODULE`` libraries is an error.
+  **On non-DLL platforms, this expression always evaluates to an empty string**.
+
+  This generator expression can e.g. be used to create a batch file using
+  :command:`file(GENERATE)` which sets the PATH environment variable accordingly.
+
 导出和安装表达式
 ------------------------------
 
@@ -1507,9 +2058,12 @@ Shell路径
 
 .. genex:: $<INSTALL_PREFIX>
 
-  当通过\ :command:`install(EXPORT)`\ 导出目标时，或在\ :prop_tgt:`INSTALL_NAME_DIR`\
-  属性或\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ 的\ ``INSTALL_NAME_DIR``\
-  参数中求值时，安装前缀的内容，否则为空。
+  Content of the install prefix when the target is exported via
+  :command:`install(EXPORT)`, or when evaluated in the
+  :prop_tgt:`INSTALL_NAME_DIR` property, the ``INSTALL_NAME_DIR`` argument of
+  :command:`install(RUNTIME_DEPENDENCY_SET)`, the code argument of
+  :command:`install(CODE)`, or the file argument of :command:`install(SCRIPT)`,
+  and empty otherwise.
 
 多层次表达式求值
 ---------------------------------

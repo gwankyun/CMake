@@ -1,10 +1,12 @@
-#include <iostream>
+#include "mysqrt.h"
 
-#include "MathFunctions.h"
+#include <iostream>
 
 // 包括生成的表
 #include "Table.h"
 
+namespace mathfunctions {
+namespace detail {
 // 使用简单的操作进行平方根计算
 double mysqrt(double x)
 {
@@ -30,4 +32,6 @@ double mysqrt(double x)
   }
 
   return result;
+}
+}
 }

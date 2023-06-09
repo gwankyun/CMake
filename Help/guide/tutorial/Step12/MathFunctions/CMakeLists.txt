@@ -15,16 +15,7 @@ if(USE_MYMATH)
 
   target_compile_definitions(MathFunctions PRIVATE "USE_MYMATH")
 
-  # 首先添加生成表的可执行文件
-  add_executable(MakeTable MakeTable.cxx)
-  target_link_libraries(MakeTable PRIVATE tutorial_compiler_flags)
-
-  # 添加生成源代码的命令
-  add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-    COMMAND MakeTable ${CMAKE_CURRENT_BINARY_DIR}/Table.h
-    DEPENDS MakeTable
-    )
+  include(MakeTable.cmake) # generates Table.h
 
   # 只包含sqrt的库
   add_library(SqrtLibrary STATIC

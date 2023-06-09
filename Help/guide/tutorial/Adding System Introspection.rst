@@ -108,7 +108,7 @@
   :name: MathFunctions/CMakeLists.txt-target_compile_definitions
   :language: cmake
   :start-after: # 添加编译器定义
-  :end-before: # install libs
+  :end-before: # state
 
 .. raw:: html
 
@@ -124,7 +124,8 @@
   :caption: TODO 4: MathFunctions/mysqrt.cxx
   :name: MathFunctions/mysqrt.cxx-include-cmath
   :language: c++
-  :end-before: #include <iostream>
+  :start-after: #include "mysqrt.h"
+  :end-before: include <iostream>
 
 .. raw:: html
 

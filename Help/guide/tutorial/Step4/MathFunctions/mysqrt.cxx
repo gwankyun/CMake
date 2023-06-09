@@ -1,7 +1,9 @@
+#include "mysqrt.h"
+
 #include <iostream>
 
-#include "MathFunctions.h"
-
+namespace mathfunctions {
+namespace detail {
 // 使用简单的操作进行平方根计算
 double mysqrt(double x)
 {
@@ -21,4 +23,6 @@ double mysqrt(double x)
     std::cout << "Computing sqrt of " << x << " to be " << result << std::endl;
   }
   return result;
+}
+}
 }

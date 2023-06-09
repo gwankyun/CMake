@@ -42,9 +42,14 @@
 在这个练习中，我们将向我们的项目中添加一个库，其中包含我们自己的用于计算数字平方根的实现。\
 然后，可执行程序可以使用这个库，而不是编译器提供的标准平方根函数。
 
-在本教程中，我们将把库放入名为\ ``MathFunctions``\ 的子目录中。\
-这个目录已经包含了一个头文件\ ``MathFunctions.h``\ 和一个源文件\ ``mysqrt.cxx``。我们不需要修改这些文件。\
-源文件有一个名为\ ``mysqrt``\ 的函数，它提供了与编译器的\ ``sqrt``\ 函数类似的功能。
+For this tutorial we will put the library into a subdirectory called
+``MathFunctions``. This directory already contains the header files
+``MathFunctions.h`` and ``mysqrt.h``. Their respective source files
+``MathFunctions.cxx`` and ``mysqrt.cxx`` are also provided. We will not need
+to modify any of these files. ``mysqrt.cxx`` has one function called
+``mysqrt`` that provides similar functionality to the compiler's ``sqrt``
+function. ``MathFunctions.cxx`` contains one function ``sqrt`` which serves
+to hide the implementation details of ``sqrt``.
 
 从\ ``Help/guide/tutorial/Step2``\ 目录中，从\ ``TODO 1``\ 开始，到\ ``TODO 6``\ 完成。
 
@@ -74,18 +79,20 @@
 解决方案
 --------
 
-在\ ``MathFunctions``\ 目录下的\ ``CMakeLists.txt``\ 文件中，我们用\ :command:`add_library`\ 创建了一个名为\ ``MathFunctions``\ 的库目标。\
-库的源文件作为参数传递给\ :command:`add_library`。这看起来像下面这行：
+In the ``CMakeLists.txt`` file in the ``MathFunctions`` directory, we create
+a library target called ``MathFunctions`` with :command:`add_library`. The
+source files for the library are passed as an argument to
+:command:`add_library`. This looks like the following line:
 
-.. raw:: html
+.. raw:: html/
 
   <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/MathFunctions/CMakeLists.txt
+.. code-block:: cmake
   :caption: TODO 1: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_library
-  :language: cmake
-  :end-before: # TODO 1
+
+  add_library(MathFunctions MathFunctions.cxx mysqrt.cxx)
 
 .. raw:: html
 
@@ -149,37 +156,42 @@
 
   <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
-.. code-block:: c++
-  :caption: TODO 5 : tutorial.cxx
-  :name: tutorial.cxx-include_MathFunctions.h
-
-  #include "MathFunctions.h"
+.. literalinclude:: Step3/tutorial.cxx
+  :caption: TODO 5: tutorial.cxx
+  :name: CMakeLists.txt-include-MathFunctions.h
+  :language: cmake
+  :start-after: #include <string>
+  :end-before: #include "TutorialConfig.h"
 
 .. raw:: html
 
   </details>
 
-最后，用库函数\ ``mysqrt``\ 替换\ ``sqrt``。
+最后，用库函数\ ``mathfunctions::mysqrt``\ 替换\ ``sqrt``。
 
 .. raw:: html
 
   <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
-.. code-block:: c++
-  :caption: TODO 6 : tutorial.cxx
-  :name: tutorial.cxx-call_mysqrt
-
-  const double outputValue = mysqrt(inputValue);
+.. literalinclude:: Step3/tutorial.cxx
+  :caption: TODO 6: tutorial.cxx
+  :name: CMakeLists.txt-option
+  :language: cmake
+  :start-after:   const double inputValue = std::stod(argv[1]);
+  :end-before: std::cout
 
 .. raw:: html
 
   </details>
 
-练习2 - 令我们的库成为可选
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exercise 2 - Adding an Option
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-现在让我们将MathFunctions库设置为可选的。虽然对于本教程来说，真的没有必要这样做，\
-但对于较大的项目来说，这是很常见的情况。
+Now let us add an option in the MathFunctions library to allow developers to
+select either the custom square root implementation or the built in standard
+implementation. While for the tutorial
+there really isn't any need to do so, for larger projects this is a common
+occurrence.
 
 CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提供了一个变量，\
 他们可以在配置cmake构建时更改该变量。此设置将存储在缓存中，以便用户不需要每次在构建目录上运行CMake时都设置该值。
@@ -194,26 +206,30 @@ CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提
 -----------------
 
 * :command:`if`
-* :command:`list`
 * :command:`option`
-* :command:`cmakedefine <configure_file>`
+* :command:`target_compile_definitions`
 
 待编辑的文件
 -------------
 
-* ``CMakeLists.txt``
-* ``tutorial.cxx``
-* ``TutorialConfig.h.in``
+* ``MathFunctions/CMakeLists.txt``
+* ``MathFunctions/MathFunctions.cxx``
 
 开始
 ---------------
 
-从练习1中的结果文件开始。完成\ ``TODO 7``\ 至\ ``TODO 13``。
+从练习1中的结果文件开始。完成\ ``TODO 7``\ 至\ ``TODO 14``。
 
-首先在顶层的\ ``CMakeLists.txt``\ 文件中使用\ :command:`option`\ 命令创建一个变量\ ``USE_MYMATH``。\
-在同一文件中，使用该选项来确定是否构建和使用\ ``MathFunctions``\ 库。
+First create a variable ``USE_MYMATH`` using the :command:`option` command
+in ``MathFunctions/CMakeLists.txt``. In that same file, use that option
+to pass a compile definition to the ``MathFunctions`` library.
 
-然后，更新\ ``tutorial.cxx``\ 和\ ``TutorialConfig.h.in``\ 以使用\ ``USE_MYMATH``。
+Then, update ``MathFunctions.cxx`` to redirect compilation based on
+``USE_MYMATH``.
+
+Lastly, prevent ``mysqrt.cxx`` from being compiled when ``USE_MYMATH`` is on
+by making it its own library inside of the ``USE_MYMATH`` block of
+``MathFunctions/CMakeLists.txt``.
 
 构建并运行
 -------------
@@ -247,7 +263,7 @@ CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提
 解决方案
 --------
 
-第一步是向顶层\ ``CMakeLists.txt``\ 文件添加一个选项。\
+第一步是向顶层\ ``MathFunctions/CMakeLists.txt``\ 文件添加一个选项。\
 该选项将显示在\ :manual:`cmake-gui <cmake-gui(1)>`\ 和\ :manual:`ccmake <ccmake(1)>`\ 中，\
 默认值为\ ``ON``，用户可以更改该值。
 
@@ -255,157 +271,150 @@ CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提
 
   <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/CMakeLists.txt
-  :caption: TODO 7: CMakeLists.txt
-  :name: CMakeLists.txt-option
+.. literalinclude:: Step3/MathFunctions/CMakeLists.txt
+  :caption: TODO 7: MathFunctions/CMakeLists.txt
+  :name: CMakeLists.txt-option-library-level
   :language: cmake
-  :start-after: # 是否使用我们自己的数学函数
-  :end-before: # 配置一个头文件，将一些CMake设置
+  :start-after: # should we use our own math functions
+  :end-before: if (USE_MYMATH)
 
 .. raw:: html
 
   </details>
 
-接下来，令\ ``MathFunctions``\ 库的构建和链接成为有条件的。
+Next, make building and linking our library with ``mysqrt`` function
+conditional using this new option.
 
-首先为我们的项目创建一个可选库目标\ :command:`list`。目前，它只是\ ``MathFunctions``。\
-我们把这个列表命名为\ ``EXTRA_LIBS``。
-
-类似地，我们需要为可选include创建一个\ :command:`list`，我们将其称为\ ``EXTRA_INCLUDES``。\
-在这个列表中，我们将\ ``APPEND``\ 库所需的头文件路径。
-
-接下来，创建\ :command:`if`\ 语句，检查\ ``USE_MYMATH``\ 的值。在\ :command:`if`\ 块中，\
-放入练习1中的\ :command:`add_subdirectory`\ 命令和额外的\ :command:`list`\ 命令。
-
-当\ ``USE_MYMATH``\ 为\ ``ON``\ 时，列表将生成并添加到我们的项目中。\
-当\ ``USE_MYMATH``\ 为\ ``OFF``\ 时，列表保持为空。通过这种策略，\
-我们允许用户切换\ ``USE_MYMATH``\ 来操作构建中使用的库。
-
-顶层的CMakeLists.txt文件现在看起来如下所示：
+Create an :command:`if` statement which checks the value of
+``USE_MYMATH``. Inside the :command:`if` block, put the
+:command:`target_compile_definitions` command with the compile
+definition ``USE_MYMATH``.
 
 .. raw:: html
 
   <details><summary>TODO 8: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/CMakeLists.txt
-  :caption: TODO 8: CMakeLists.txt
+.. code-block:: cmake
+  :caption: TODO 8: MathFunctions/CMakeLists.txt
   :name: CMakeLists.txt-USE_MYMATH
-  :language: cmake
-  :start-after: # add the MathFunctions library
-  :end-before: # 添加可执行文件
+
+  if (USE_MYMATH)
+    target_compile_definitions(MathFunctions PRIVATE "USE_MYMATH")
+  endif()
 
 .. raw:: html
 
   </details>
 
-现在我们有了这两个列表，我们需要更新\ :command:`target_link_libraries`\ 和\ :command:`target_include_directories`\ 来使用它们。\
-改变它们相当简单。
+When ``USE_MYMATH`` is ``ON``, the compile definition ``USE_MYMATH`` will
+be set. We can then use this compile definition to enable or disable
+sections of our source code.
 
-对于\ :command:`target_link_libraries`，我们用\ ``EXTRA_LIBS``\ 替换写出的库名。\
-如下图所示：
+The corresponding changes to the source code are fairly straightforward.
+In ``MathFunctions.cxx``, we make ``USE_MYMATH`` control which square root
+function is used:
 
 .. raw:: html
 
   <details><summary>TODO 9: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/CMakeLists.txt
-  :caption: TODO 9: CMakeLists.txt
-  :name: CMakeLists.txt-target_link_libraries-EXTRA_LIBS
-  :language: cmake
-  :start-after: add_executable(Tutorial tutorial.cxx)
-  :end-before: # TODO 3
+.. literalinclude:: Step3/MathFunctions/MathFunctions.cxx
+  :caption: TODO 9: MathFunctions/MathFunctions.cxx
+  :name: MathFunctions-USE_MYMATH-if
+  :language: c++
+  :start-after: which square root function should we use?
+  :end-before: }
 
 .. raw:: html
 
   </details>
 
-然后，我们对\ :command:`target_include_directories`\ 和\ ``EXTRA_INCLUDES``\ 做同样的事情。
+Next, we need to include ``mysqrt.h`` if ``USE_MYMATH`` is defined.
 
 .. raw:: html
 
   <details><summary>TODO 10: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/CMakeLists.txt
-  :caption: TODO 10 : CMakeLists.txt
-  :name: CMakeLists.txt-target_link_libraries-EXTRA_INCLUDES
-  :language: cmake
-  :start-after: # so that we will find TutorialConfig.h
+.. literalinclude:: Step3/MathFunctions/MathFunctions.cxx
+  :caption: TODO 10: MathFunctions/MathFunctions.cxx
+  :name: MathFunctions-USE_MYMATH-if-include
+  :language: c++
+  :start-after: include <cmath>
+  :end-before: namespace mathfunctions
 
 .. raw:: html
 
   </details>
 
-注意，这是处理许多组件时的经典方法。我们将在本教程的步骤3中介绍现代方法。
-
-对源代码的相应更改相当简单。首先，在\ ``tutorial.cxx``\ 中，如果定义了\ ``USE_MYMATH``，\
-则包含\ ``MathFunctions.h``\ 头。
+Finally, we need to include ``cmath`` now that we are using ``std::sqrt``.
 
 .. raw:: html
 
   <details><summary>TODO 11: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/tutorial.cxx
-  :caption: TODO 11 : tutorial.cxx
-  :name: tutorial.cxx-ifdef-include
-  :language: c++
-  :start-after: // 是否包括MathFunctions头文件？
-  :end-before: int main
+.. code-block:: c++
+  :caption: TODO 11 : MathFunctions/MathFunctions.cxx
+  :name: tutorial.cxx-include_cmath
+
+  #include <cmath>
 
 .. raw:: html
 
   </details>
 
-然后，在同一个文件中，我们让\ ``USE_MYMATH``\ 控件使用的是哪个平方根函数：
+Then, in the same file, we make ``USE_MYMATH`` control which square root
+function is used:
 
 .. raw:: html
 
   <details><summary>TODO 12: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/tutorial.cxx
-  :caption: TODO 12 : tutorial.cxx
-  :name: tutorial.cxx-ifdef-const
-  :language: c++
-  :start-after: // 应该用哪个平方根函数？
-  :end-before: std::cout << "The square root of
+.. literalinclude:: Step3/MathFunctions/CMakeLists.txt
+  :caption: TODO 12 : MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-add_library-SqrtLibrary
+  :language: cmake
+  :start-after: # library that just does sqrt
+  :end-before: # TODO 7: Link
 
 .. raw:: html
 
   </details>
 
-由于源代码现在需要\ ``USE_MYMATH``，我们可以将它添加到\ ``TutorialConfig.h.in``，使用以下行：
+Next, we link ``SqrtLibrary`` onto ``MathFunctions`` when ``USE_MYMATH`` is
+enabled.
 
 .. raw:: html
 
   <details><summary>TODO 13: 点击显示/隐藏答案</summary>
 
-.. literalinclude:: Step3/TutorialConfig.h.in
-  :caption: TODO 13 : TutorialConfig.h.in
-  :name: TutorialConfig.h.in-cmakedefine
-  :language: c++
-  :lines: 4
+.. literalinclude:: Step3/MathFunctions/CMakeLists.txt
+  :caption: TODO 13 : MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-target_link_libraries-SqrtLibrary
+  :language: cmake
+  :start-after: to tutorial_compiler_flags
+  :end-before: endif()
 
 .. raw:: html
 
   </details>
 
-通过这些更改，我们的库现在对构建和使用它的任何人都是完全可选的。
-
-奖励问题
---------------
-
-为什么在\ ``USE_MYMATH``\ 选项之后配置\ ``TutorialConfig.h.in``\ 很重要？\
-如果我们把这两个式子倒出来会怎么样？
-
-答案
-------
+Finally, we can remove ``mysqrt.cxx`` from our ``MathFunctions`` library
+source list because it will be pulled in when ``SqrtLibrary`` is included.
 
 .. raw:: html
 
-  <details><summary>点击显示/隐藏答案</summary>
+  <details><summary>TODO 14: 点击显示/隐藏答案</summary>
 
-我们在后面配置，因为\ ``TutorialConfig.h.in``\ 使用\ ``USE_MYMATH``\ 的值。\
-如果在调用\ :command:`option`\ 之前配置文件，就不会使用\ ``USE_MYMATH``\ 的期望值。
+.. literalinclude:: Step3/MathFunctions/CMakeLists.txt
+  :caption: TODO 14 : MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-remove-mysqrt.cxx-MathFunctions
+  :language: cmake
+  :end-before: # TODO 1:
 
 .. raw:: html
 
   </details>
+
+With these changes, the ``mysqrt`` function is now completely optional to
+whoever is building and using the ``MathFunctions`` library. Users can toggle
+``USE_MYMATH`` to manipulate what library is used in the build.

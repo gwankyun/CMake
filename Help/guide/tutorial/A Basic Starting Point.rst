@@ -134,7 +134,7 @@
   :name: CMakeLists.txt-add_executable
   :language: cmake
   :start-after: # add the executable
-  :end-before: # TODO 9:
+  :end-before: # TODO 3:
 
 .. raw:: html
 
@@ -206,7 +206,7 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
   :name: tutorial.cxx-cxx11
   :language: c++
   :start-after: // 将输入转换为double类型
-  :end-before: // TODO 12:
+  :end-before: // TODO 6:
 
 .. raw:: html
 
@@ -229,7 +229,7 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
   :name: CMakeLists.txt-CXX_STANDARD
   :language: cmake
   :start-after: # 指定C++标准
-  :end-before: # TODO 7:
+  :end-before: # configure a header file
 
 .. raw:: html
 
@@ -326,7 +326,7 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
   :name: CMakeLists.txt-configure_file
   :language: cmake
   :start-after: # to the source code
-  :end-before: # TODO 8:
+  :end-before: # TODO 2:
 
 .. raw:: html
 
@@ -364,7 +364,6 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
   :caption: TODO 10: TutorialConfig.h.in
   :name: TutorialConfig.h.in
   :language: c++
-  :end-before: // TODO 13:
 
 .. raw:: html
 

@@ -1,4 +1,5 @@
 include(RunCMake)
+set(RunCMake_IGNORE_POLICY_VERSION_DEPRECATION ON)
 
 run_cmake(BadIF)
 run_cmake(BadCONFIG)
@@ -21,6 +22,7 @@ run_cmake(NonValidTarget-CXX_COMPILER_VERSION)
 run_cmake(NonValidTarget-Fortran_COMPILER_VERSION)
 run_cmake(NonValidTarget-TARGET_PROPERTY)
 run_cmake(NonValidTarget-TARGET_POLICY)
+run_cmake(COMPILE_ONLY-not-compiling)
 run_cmake(LINK_ONLY-not-linking)
 run_cmake(TARGET_EXISTS-no-arg)
 run_cmake(TARGET_EXISTS-empty-arg)

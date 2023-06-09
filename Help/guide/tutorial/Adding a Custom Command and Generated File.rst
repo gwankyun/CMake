@@ -11,36 +11,47 @@
 
 检视这个文件后，可以看到这个表以C++代码展现，输出文件名通过参数传达。
 
-下一步是将适当的命令添加文件中，以构建\ ``MathFunctions/CMakeLists.txt``\ 文件中以构建MakeTable程序并作为构建过程的一部分运行。\
-需要一些命令来完成这一点。
+The next step is to create ``MathFunctions/MakeTable.cmake``. Then, add the
+appropriate commands to the file to build the ``MakeTable`` executable and
+then run it as part of the build process. A few commands are needed to
+accomplish this.
 
-首先在\ ``MathFunctions/CMakeLists.txt``\ 开头将\ ``MakeTable``\ 添加为其他可执行文件。
+First, we add an executable for ``MakeTable``.
 
-.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
-  :name: MathFunctions/CMakeLists.txt-add_executable-MakeTable
+.. literalinclude:: Step9/MathFunctions/MakeTable.cmake
+  :caption: MathFunctions/MakeTable.cmake
+  :name: MathFunctions/MakeTable.cmake-add_executable-MakeTable
   :language: cmake
-  :start-after: # 首先添加一个可执行文件用以生成表
-  :end-before: # 添加命令以生成源码
+  :start-after: # first we add the executable that generates the table
+  :end-before: target_link_libraries
+
+After creating the executable, we add the ``tutorial_compiler_flags`` to our
+executable using :command:`target_link_libraries`.
+
+.. literalinclude:: Step9/MathFunctions/MakeTable.cmake
+  :caption: MathFunctions/MakeTable.cmake
+  :name: MathFunctions/MakeTable.cmake-link-tutorial-compiler-flags
+  :language: cmake
+  :start-after: add_executable
+  :end-before: # add the command to generate
 
 然后，我们添加一个自定义命令，指定如何通过运行MakeTable生成\ ``Table.h``。
 
-.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
-  :name: MathFunctions/CMakeLists.txt-add_custom_command-Table.h
+.. literalinclude:: Step9/MathFunctions/MakeTable.cmake
+  :caption: MathFunctions/MakeTable.cmake
+  :name: MathFunctions/MakeTable.cmake-add_custom_command-Table.h
   :language: cmake
-  :start-after: # 添加命令以生成源码
-  :end-before: # 添加主库
+  :start-after: # add the command to generate the source code
 
 接下来需要让CMake知道\ ``mysqrt.cxx``\ 依赖于那个生成的\ ``Table.h``。\
-这是通过将\ ``Table.h``\ 添加到MathFunctions的源码列表达到的。
+这是通过将\ ``Table.h``\ 添加到``SqrtLibrary``的源码列表达到的。
 
 .. literalinclude:: Step9/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-add_library-Table.h
   :language: cmake
-  :start-after: # 添加主库
-  :end-before: # 说明任何人想链接我们必须包含当前源目录
+  :start-after:   # library that just does sqrt
+  :end-before: # state that we depend on
 
 我们必须将当前目录加入引入目录列表，令\ ``Table.h``\ 能够被\ ``mysqrt.cxx``\ 找到并引用。
 
@@ -49,7 +60,17 @@
   :name: MathFunctions/CMakeLists.txt-target_include_directories-Table.h
   :language: cmake
   :start-after: # state that we depend on our bin
-  :end-before: # install libs
+  :end-before: target_link_libraries
+
+As the last step, we need to include
+``MakeTable.cmake`` at the top of the ``MathFunctions/CMakeLists.txt``.
+
+.. literalinclude:: Step9/MathFunctions/CMakeLists.txt
+  :caption: MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-include-MakeTable.cmake
+  :language: cmake
+  :start-after: # generate Table.h
+  :end-before: # library that just does sqrt
 
 现在我们使用已生成的表。首先，修改\ ``mysqrt.cxx``\ 以引用\ ``Table.h``。接着，我们重构\ ``mysqrt``\ 函数使用这个表：
 

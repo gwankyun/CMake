@@ -73,6 +73,7 @@ syn keyword cmakeProperty contained
             \ AUTOGEN_ORIGIN_DEPENDS
             \ AUTOGEN_PARALLEL
             \ AUTOGEN_SOURCE_GROUP
+            \ AUTOGEN_USE_SYSTEM_INCLUDE
             \ AUTOGEN_TARGETS_FOLDER
             \ AUTOGEN_TARGET_DEPENDS
             \ AUTOMOC
@@ -128,7 +129,10 @@ syn keyword cmakeProperty contained
             \ CPACK_WIX_ACL
             \ CROSSCOMPILING_EMULATOR
             \ CUDA_ARCHITECTURES
+            \ CUDA_CUBIN_COMPILATION
             \ CUDA_EXTENSIONS
+            \ CUDA_FATBIN_COMPILATION
+            \ CUDA_OPTIX_COMPILATION
             \ CUDA_PTX_COMPILATION
             \ CUDA_RESOLVE_DEVICE_SYMBOLS
             \ CUDA_RUNTIME_LIBRARY
@@ -217,6 +221,7 @@ syn keyword cmakeProperty contained
             \ INSTALL_RPATH
             \ INSTALL_RPATH_USE_LINK_PATH
             \ INTERFACE_AUTOUIC_OPTIONS
+            \ INTERFACE_AUTOMOC_MACRO_NAMES
             \ INTERFACE_COMPILE_DEFINITIONS
             \ INTERFACE_COMPILE_FEATURES
             \ INTERFACE_COMPILE_OPTIONS
@@ -320,6 +325,7 @@ syn keyword cmakeProperty contained
             \ SKIP_AUTORCC
             \ SKIP_AUTOUIC
             \ SKIP_BUILD_RPATH
+            \ SKIP_LINTING
             \ SKIP_PRECOMPILE_HEADERS
             \ SKIP_REGULAR_EXPRESSION
             \ SKIP_RETURN_CODE
@@ -459,6 +465,7 @@ syn keyword cmakeVariable contained
             \ BUILD_SHARED_LIBS
             \ CACHE
             \ CMAKE_ABSOLUTE_DESTINATION_FILES
+            \ CMAKE_ADD_CUSTOM_COMMAND_DEPENDS_EXPLICIT_ONLY
             \ CMAKE_AIX_EXPORT_ALL_SYMBOLS
             \ CMAKE_ANDROID_ANT_ADDITIONAL_OPTIONS
             \ CMAKE_ANDROID_API
@@ -678,6 +685,7 @@ syn keyword cmakeVariable contained
             \ CMAKE_ASM_VISIBILITY_PRESET
             \ CMAKE_AUTOGEN_ORIGIN_DEPENDS
             \ CMAKE_AUTOGEN_PARALLEL
+            \ CMAKE_AUTOGEN_USE_SYSTEM_INCLUDE
             \ CMAKE_AUTOGEN_VERBOSE
             \ CMAKE_AUTOMOC
             \ CMAKE_AUTOMOC_COMPILER_PREDEFINES
@@ -686,11 +694,14 @@ syn keyword cmakeVariable contained
             \ CMAKE_AUTOMOC_MOC_OPTIONS
             \ CMAKE_AUTOMOC_PATH_PREFIX
             \ CMAKE_AUTOMOC_RELAXED_MODE
+            \ CMAKE_AUTOMOC_EXECUTABLE
             \ CMAKE_AUTORCC
             \ CMAKE_AUTORCC_OPTIONS
+            \ CMAKE_AUTORCC_EXECUTABLE
             \ CMAKE_AUTOUIC
             \ CMAKE_AUTOUIC_OPTIONS
             \ CMAKE_AUTOUIC_SEARCH_PATHS
+            \ CMAKE_AUTOUIC_EXECUTABLE
             \ CMAKE_BACKWARDS_COMPATIBILITY
             \ CMAKE_BINARY_DIR
             \ CMAKE_BUILD_RPATH
@@ -2095,6 +2106,7 @@ syn keyword cmakeKWadd_custom_command contained
             \ COMMENT
             \ CROSSCOMPILING_EMULATOR
             \ DEPENDS
+            \ DEPENDS_EXPLICIT_ONLY
             \ DEPFILE
             \ GENERATED
             \ IMPLICIT_DEPENDS
@@ -2735,6 +2747,7 @@ syn keyword cmakeKWfile contained
             \ READ_SYMLINK
             \ REAL_PATH
             \ REGEX
+            \ RELATIVE
             \ RELATIVE_PATH
             \ RELEASE
             \ REMOVE

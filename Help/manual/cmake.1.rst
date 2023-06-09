@@ -9,8 +9,8 @@ cmake(1)
 .. parsed-literal::
 
  `Generate a Project Buildsystem`_
+  cmake [<options>] -B <path-to-build> [-S <path-to-source>]
   cmake [<options>] <path-to-source | path-to-existing-build>
-  cmake [<options>] -S <path-to-source> -B <path-to-build>
 
  `构建一个项目`_
   cmake --build <dir> [<options>] [-- <build-tool-options>]
@@ -94,7 +94,22 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 生成一个项目构建系统
 ==============================
 
-使用以下命令签名之一运行CMake，指定源和构建树，并生成一个构建系统：
+Run CMake with one of the following command signatures to specify the
+source and build trees and generate a buildsystem:
+
+``cmake [<options>] -B <path-to-build> [-S <path-to-source>]``
+
+  .. versionadded:: 3.13
+
+  Uses ``<path-to-build>`` as the build tree and ``<path-to-source>``
+  as the source tree.  The specified paths may be absolute or relative
+  to the current working directory.  The source tree must contain a
+  ``CMakeLists.txt`` file.  The build tree will be created automatically
+  if it does not already exist.  For example:
+
+  .. code-block:: console
+
+    $ cmake -S src -B build
 
 ``cmake [<options>] <path-to-source>``
   使用当前工作目录作为构建树，并使用\ ``<path-to-source>``\ 作为源树。指定的路径可以是绝\
@@ -116,19 +131,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
     $ cd build
     $ cmake .
 
-``cmake [<options>] -S <path-to-source> -B <path-to-build>``
-
-  .. versionadded:: 3.13
-
-  使用\ ``<path-to-build>``\ 作为构建树，使用\ ``<path-to-source>``\ 作为源树。指定的\
-  路径可以是绝对路径或相对于当前工作目录的路径。源树必须包含一个\ ``CMakeLists.txt``\ 文件。\
-  如果构建树不存在，将自动创建它。例如：
-
-  .. code-block:: console
-
-    $ cmake -S src -B build
-
-在所有情况下，\ ``<options>``\ 可能是下面\ `选项`_\ 的零或多个。
+In all cases the ``<options>`` may be zero or more of the `Options`_ below.
 
 上述用于指定源树和构建树的样式可以混合使用。用\ :option:`-S <cmake -S>`\ 或\
 :option:`-B <cmake -B>`\ 指定的路径总是分别归类为源树或构建树。使用普通参数指定的路径根据\
@@ -138,14 +141,14 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 ============================== ============ ===========
  命令行                          源目录        构建目录
 ============================== ============ ===========
+ ``cmake -B build``             `cwd`        ``build``
+ ``cmake -B build src``         ``src``      ``build``
+ ``cmake -B build -S src``      ``src``      ``build``
  ``cmake src``                  ``src``      `cwd`
  ``cmake build`` (existing)     `loaded`     ``build``
  ``cmake -S src``               ``src``      `cwd`
  ``cmake -S src build``         ``src``      ``build``
  ``cmake -S src -B build``      ``src``      ``build``
- ``cmake -B build``             `cwd`        ``build``
- ``cmake -B build src``         ``src``      ``build``
- ``cmake -B build -S src``      ``src``      ``build``
 ============================== ============ ===========
 
 .. versionchanged:: 3.23
@@ -428,9 +431,57 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --list-presets[=<type>]
 
- 列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值\ ``configure``、\ ``build``、\
- ``test``、\ ``package``\ 或\ ``all``。如果省略\ ``<type>``，则假定为\ ``configure``。\
- 当前工作目录必须包含CMake预置文件。
+ Lists the available presets of the specified ``<type>``.  Valid values for
+ ``<type>`` are ``configure``, ``build``, ``test``, ``package``, or ``all``.
+ If ``<type>`` is omitted, ``configure`` is assumed.  The current working
+ directory must contain CMake preset files.
+
+.. option:: --debugger
+
+  Enables interactive debugging of the CMake language. CMake exposes a debugging
+  interface on the pipe named by :option:`--debugger-pipe <cmake --debugger-pipe>`
+  that conforms to the `Debug Adapter Protocol`_ specification with the following
+  modifications.
+
+  The ``initialize`` response includes an additional field named ``cmakeVersion``
+  which specifies the version of CMake being debugged.
+
+  .. code-block:: json
+    :caption: Debugger initialize response
+
+    {
+      "cmakeVersion": {
+        "major": 3,
+        "minor": 27,
+        "patch": 0,
+        "full": "3.27.0"
+      }
+    }
+
+  The members are:
+
+  ``major``
+    An integer specifying the major version number.
+
+  ``minor``
+    An integer specifying the minor version number.
+
+  ``patch``
+    An integer specifying the patch version number.
+
+  ``full``
+    A string specifying the full CMake version.
+
+.. _`Debug Adapter Protocol`: https://microsoft.github.io/debug-adapter-protocol/
+
+.. option:: --debugger-pipe <pipe name>, --debugger-pipe=<pipe name>
+
+  Name of the pipe (on Windows) or domain socket (on Unix) to use for
+  debugger communication.
+
+.. option:: --debugger-dap-log <log path>, --debugger-dap-log=<log path>
+
+  Logs all debugger communication to the specified file.
 
 .. _`Build Tool Mode`:
 
@@ -669,7 +720,7 @@ CMake通过签名提供内置命令行工具
       当生成器通过\ :variable:`CMAKE_GENERATOR_PLATFORM` (\ :option:`-A ... <cmake -A>`\ )\
       支持平台规范时，可能存在的可选成员。该值是已知支持的平台列表。
     ``extraGenerators``
-      具有与该生成器兼容的所有额外生成器的字符串列表。
+      具有与该生成器兼容的所有\ :ref:`Extra Generators`\ 的字符串列表。
 
   ``fileApi``
     :manual:`cmake-file-api(7)`\ 可用时出现的可选成员。该值是一个JSON对象，只有一个成员：
@@ -690,7 +741,13 @@ CMake通过签名提供内置命令行工具
   ``tls``
     .. versionadded:: 3.25
 
-    如果启用了TLS支持，则为\ ``true``，否则为\ ``false`` 。
+    ``true`` if TLS support is enabled and ``false`` otherwise.
+
+  ``debugger``
+    .. versionadded:: 3.27
+
+    ``true`` if the :option:`--debugger <cmake --debugger>` mode
+    is supported and ``false`` otherwise.
 
 .. option:: cat [--] <files>...
 
@@ -942,11 +999,18 @@ CMake通过签名提供内置命令行工具
   况下，\ ``-f``\ 选项将行为更改为返回零退出代码（即成功）。使用\ ``--``\ 停止解释选项，并\
   将所有剩余的参数视为路径，即使它们以\ ``-``\ 开头。
 
-.. option:: sleep <number>...
+.. option:: sleep <number>
 
   .. versionadded:: 3.0
 
-  睡眠给定的秒数。
+  睡眠给定的秒\ ``<number>``。\ ``<number>`` may be a floating point number.
+  A practical minimum is about 0.1 seconds due to overhead in starting/stopping
+  CMake executable. This can be useful in a CMake script to insert a delay:
+
+  .. code-block:: cmake
+
+    # Sleep for about 0.5 seconds
+    execute_process(COMMAND ${CMAKE_COMMAND} -E sleep 0.5)
 
 .. option:: tar [cxt][vf][zjJ] file.tar [<options>] [--] [<pathname>...]
 
@@ -1040,7 +1104,7 @@ CMake通过签名提供内置命令行工具
 
 .. option:: time <command> [<args>...]
 
-  运行命令并显示运行时间。
+  运行\ ``<command>``\ 并显示运行时间。(including overhead of CMake frontend).
 
   .. versionadded:: 3.5
     该命令现在正确地将带有空格或特殊字符的参数传递给子进程。这可能会破坏那些使用自己的额外引\

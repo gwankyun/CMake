@@ -1,14 +1,10 @@
 // 一个简单的程序，计算一个数的平方根
-#include <cmath>
 #include <iostream>
+#include <sstream>
 #include <string>
 
+#include "MathFunctions.h"
 #include "TutorialConfig.h"
-
-// should we include the MathFunctions header?
-#ifdef USE_MYMATH
-#  include "MathFunctions.h"
-#endif
 
 int main(int argc, char* argv[])
 {
@@ -23,12 +19,7 @@ int main(int argc, char* argv[])
   // 将输入转换为double类型
   const double inputValue = std::stod(argv[1]);
 
-  // which square root function should we use?
-#ifdef USE_MYMATH
-  const double outputValue = mysqrt(inputValue);
-#else
-  const double outputValue = sqrt(inputValue);
-#endif
+  const double outputValue = mathfunctions::sqrt(inputValue);
 
   std::cout << "The square root of " << inputValue << " is " << outputValue
             << std::endl;

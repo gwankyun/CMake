@@ -7,41 +7,22 @@
 为此，我们需要将\ :variable:`BUILD_SHARED_LIBS`\ 添加到顶层\ ``CMakeLists.txt``\ 中。\
 我们使用\ :command:`option`\ 命令，因为它能用户选择值为\ ``ON``\ 或者\ ``OFF``。
 
-接下来，我们将重构\ ``MathFunctions``，使其成为一个使用\ ``mysqrt``\ 或\ ``sqrt``\ 封装的真正的库，而不是要求在代码处理这些逻辑。\
-这也意味着\ ``USE_MYMATH``\ 将不再控制构建\ ``MathFunctions``，而是控制这个库的行为。
-
-第一步是像下面那样更新顶层\ ``CMakeLists.txt``：
-
 .. literalinclude:: Step11/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-option-BUILD_SHARED_LIBS
   :language: cmake
-  :end-before: # 添加二进制树到引用目录的搜索路径
+  :start-after: set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+  :end-before: # configure a header file to pass the version number only
 
-现在我们已经使\ ``MathFunctions``\ 始终被使用，需要更新这个库的逻辑。\
-因此，在\ ``MathFunctions/CMakeLists.txt``\ 中需要创建一个当\ ``USE_MYMATH``\ 被启用时有条件构建和安装的SqrtLibrary。\
-现在，由于这是一个教程，我们明确要求SqrtLibrary是静态构建的。
+Next, we need to specify output directories for our static and shared
+libraries.
 
-``MathFunctions/CMakeLists.txt``\ 最终应该像下面那样：
-
-.. literalinclude:: Step11/MathFunctions/CMakeLists.txt
-  :caption: MathFunctions/CMakeLists.txt
-  :name: MathFunctions/CMakeLists.txt-add_library-STATIC
+.. literalinclude:: Step11/CMakeLists.txt
+  :caption: CMakeLists.txt
+  :name: CMakeLists.txt-cmake-output-directories
   :language: cmake
-  :lines: 1-36,42-
-
-接下来使用\ ``mathfunctions``\ 函数及\ ``detail``\ 命名空间修改\ ``MathFunctions/mysqrt.cxx``：
-
-.. literalinclude:: Step11/MathFunctions/mysqrt.cxx
-  :caption: MathFunctions/mysqrt.cxx
-  :name: MathFunctions/mysqrt.cxx-namespace
-  :language: c++
-
-我们还需要在\ ``tutorial.cxx``\ 中做一些修改，使它不再使用\ ``USE_MYMATH``：
-
-#. 总是包含\ ``MathFunctions.h``
-#. 总是使用\ ``mathfunctions::sqrt``
-#. 不再引用\ ``cmath``
+  :start-after: # we don't need to tinker with the path to run the executable
+  :end-before: # configure a header file to pass the version number only
 
 最后，更新\ ``MathFunctions/MathFunctions.h``\ 以使用dll导出的定义：
 
