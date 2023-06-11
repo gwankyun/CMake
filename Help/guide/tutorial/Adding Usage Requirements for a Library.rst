@@ -105,7 +105,7 @@ Remove this line:
   :name: CMakeLists.txt-remove-EXTRA_INCLUDES
   :language: cmake
   :start-after: add_subdirectory(MathFunctions)
-  :end-before: # add the executable
+  :end-before: # 添加可执行文件
 
 .. raw:: html
 
@@ -220,7 +220,7 @@ The specific lines to remove are as follows:
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-CXX_STANDARD-variable-remove
   :language: cmake
-  :start-after: # specify the C++ standard
+  :start-after: # 指定C++标准
   :end-before: # configure a header file
 
 Next, we need to create an interface library, ``tutorial_compiler_flags``. And
@@ -258,7 +258,7 @@ this:
   :name: CMakeLists.txt-target_link_libraries-step4
   :language: cmake
   :start-after: add_executable(Tutorial tutorial.cxx)
-  :end-before: # add the binary tree to the search path for include file
+  :end-before: # 添加二进制树到引用目录的搜索路径
 
 .. raw:: html
 

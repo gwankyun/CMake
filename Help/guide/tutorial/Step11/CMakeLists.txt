@@ -17,7 +17,7 @@ target_compile_options(tutorial_compiler_flags INTERFACE
 )
 
 # 控制静态库和共享库的构建位置
-# 这样在Windows上就不用修改可执行文件的运行路径
+# 这样就不用考虑可执行文件的运行路径
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")

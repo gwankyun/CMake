@@ -1,26 +1,31 @@
 步骤4：添加生成器表达式
 =====================================
 
-:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 在生成生成系统期间计算，以生成特定于每个生成配置的信息。
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 在生成生成系统期间计算，以生\
+成特定于每个生成配置的信息。
 
 :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 可以在许多目标属性的上下文中使用，\
-比如\ :prop_tgt:`LINK_LIBRARIES`、:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\ 等等。\
-它们也可以在使用命令填充那些属性时使用，\
-比如\ :command:`target_link_libraries`、:command:`target_include_directories`、:command:`target_compile_definitions`\ 等等。
+比如\ :prop_tgt:`LINK_LIBRARIES`、\ :prop_tgt:`INCLUDE_DIRECTORIES`、\
+:prop_tgt:`COMPILE_DEFINITIONS`\ 等等。它们也可以在使用命令填充那些属性时使用，比如\
+:command:`target_link_libraries`、\ :command:`target_include_directories`、\
+:command:`target_compile_definitions`\ 等等。
 
-:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 可用于启用条件链接、编译时使用的条件定义、条件包含目录等等。\
-这些条件可能基于构建配置、目标属性、平台信息或任何其他可查询的信息。
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 可用于启用条件链接、编译时使\
+用的条件定义、条件包含目录等等。这些条件可能基于构建配置、目标属性、平台信息或任何其他可查询的信息。
 
-:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 有不同的类型，包括逻辑表达式、信息表达式和输出表达式。
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 有不同的类型，包括逻辑表达式、\
+信息表达式和输出表达式。
 
-逻辑表达式用于创建条件输出。基本表达式是\ ``0``\ 和\ ``1``\ 表达式。``$<0:...>``\ 结果为空字符串，而\ ``<1:...>``\ 则会生成\ ``...``。\
+逻辑表达式用于创建条件输出。基本表达式是\ ``0``\ 和\ ``1``\ 表达式。``$<0:...>``\ 结果为\
+空字符串，而\ ``<1:...>``\ 则会生成\ ``...``。\
 可以嵌套使用。
 
-Exercise 1 - Adding Compiler Warning Flags with Generator Expressions
+练习1 - 在生成器表达式中添加编译器警告标志
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 的一种常见用法是有条件地添加编译器标记，\
-例如用于语言级别或警告的标记。一个很好的模式是将该信息关联到一个\ ``INTERFACE``\ 目标，让该信息传播。
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 的一种常见用法是有条件地添加\
+编译器标记，例如用于语言级别或警告的标记。一个很好的模式是将该信息关联到一个\ ``INTERFACE``\
+目标，让该信息传播。
 
 目标
 ----
@@ -43,11 +48,10 @@ Exercise 1 - Adding Compiler Warning Flags with Generator Expressions
 开始
 ---------------
 
-Open the file ``Step4/CMakeLists.txt`` and complete ``TODO 1`` through
-``TODO 4``.
+打开文件\ ``Step4/CMakeLists.txt``，完成\ ``TODO 1``\ 到\ ``TODO 4``。
 
-首先，在顶层的\ ``CMakeLists.txt``\ 文件中，我们需要将\ :command:`cmake_minimum_required`\ 设置为\ ``3.15``。\
-在这个练习中，我们将使用在CMake 3.15中引入的生成器表达式。
+首先，在顶层的\ ``CMakeLists.txt``\ 文件中，我们需要将\ :command:`cmake_minimum_required`\
+设置为\ ``3.15``。在这个练习中，我们将使用在CMake 3.15中引入的生成器表达式。
 
 接下来，我们为项目添加所需的编译器警告标志。由于警告标志因编译器而不同，\
 我们使用\ ``COMPILE_LANG_AND_ID``\ 生成器表达式来控制给定语言和一组编译器id应用哪些标志。
@@ -55,10 +59,9 @@ Open the file ``Step4/CMakeLists.txt`` and complete ``TODO 1`` through
 构建并运行
 -------------
 
-Make a new directory called ``Step4_build``, run the :manual:`cmake <cmake(1)>`
-executable or the :manual:`cmake-gui <cmake-gui(1)>` to configure the project
-and then build it with your chosen build tool or by using ``cmake --build .``
-from the build directory.
+创建一个名为\ ``Step4_build``\ 的新目录，运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\
+:manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，然后使用你选择的构建工具或使用\
+``cmake --build .``\ 从构建目录来构建它。
 
 .. code-block:: console
 
@@ -126,8 +129,9 @@ from the build directory.
 
   </details>
 
-最后，我们只希望在构建期间使用这些警告标志。已安装项目的使用者不应该继承我们的警告标志。\
-为了指定这一点，我们使用\ ``BUILD_INTERFACE``\ 条件将标记包装在生成器表达式中。生成的完整代码如下所示：
+最后，我们只希望在构建期间使用这些警告标志。已安装项目的使用者不应该继承我们的警告标志。为了\
+指定这一点，我们使用\ ``BUILD_INTERFACE``\ 条件将标记包装在生成器表达式中。生成的完整代码\
+如下所示：
 
 .. raw:: html
 

@@ -1,19 +1,21 @@
 步骤2：添加库
 ========================
 
-至此，我们已经了解了如何使用CMake创建一个基本项目。在这一步中，我们将学习如何在我们的项目中创建和使用库。\
-我们还将了解如何使库的使用成为可选的。
+至此，我们已经了解了如何使用CMake创建一个基本项目。在这一步中，我们将学习如何在我们的项目中\
+创建和使用库。我们还将了解如何使库的使用成为可选的。
 
 练习1 - 创建一个库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 要在CMake中添加库，可以使用\ :command:`add_library`\ 命令并指定应该由哪些源文件组成库。
 
-我们可以用一个或多个子目录来组织项目，而不是将所有源文件放在一个目录中。在本例中，我们将专门为库创建一个子目录。\
-在这里，我们可以添加一个新的\ ``CMakeLists.txt``\ 文件和一个或多个源文件。\
-在顶层\ ``CMakeLists.txt``\ 文件中，我们将使用\ :command:`add_subdirectory`\ 命令将子目录添加到构建中。
+我们可以用一个或多个子目录来组织项目，而不是将所有源文件放在一个目录中。在本例中，我们将专门\
+为库创建一个子目录。在这里，我们可以添加一个新的\ ``CMakeLists.txt``\ 文件和一个或多个源\
+文件。在顶层\ ``CMakeLists.txt``\ 文件中，我们将使用\ :command:`add_subdirectory`\
+命令将子目录添加到构建中。
 
-一旦创建了库，它将通过\ :command:`target_include_directories`\ 和\ :command:`target_link_libraries`\ 连接到可执行目标。
+一旦创建了库，它将通过\ :command:`target_include_directories`\ 和\
+:command:`target_link_libraries`\ 连接到可执行目标。
 
 目标
 ----
@@ -42,14 +44,11 @@
 在这个练习中，我们将向我们的项目中添加一个库，其中包含我们自己的用于计算数字平方根的实现。\
 然后，可执行程序可以使用这个库，而不是编译器提供的标准平方根函数。
 
-For this tutorial we will put the library into a subdirectory called
-``MathFunctions``. This directory already contains the header files
-``MathFunctions.h`` and ``mysqrt.h``. Their respective source files
-``MathFunctions.cxx`` and ``mysqrt.cxx`` are also provided. We will not need
-to modify any of these files. ``mysqrt.cxx`` has one function called
-``mysqrt`` that provides similar functionality to the compiler's ``sqrt``
-function. ``MathFunctions.cxx`` contains one function ``sqrt`` which serves
-to hide the implementation details of ``sqrt``.
+在本教程中，我们将把库放入名为\ ``MathFunctions``\ 的子目录中。这个目录已经包含了头文件\
+``MathFunctions.h``\ 和\ ``mysqrt.h``。还提供了它们各自的源文件\ ``MathFunctions.cxx``\
+和\ ``mysqrt.cxx``。我们不需要修改这些文件中的任何一个。\ ``mysqrt.cxx``\ 有一个名为\
+``mysqrt``\ 的函数，它提供了与编译器的\ ``sqrt``\ 函数类似的功能。\ ``MathFunctions.cxx``\
+包含一个函数\ ``sqrt``，用于隐藏\ ``sqrt``\ 的实现细节。
 
 从\ ``Help/guide/tutorial/Step2``\ 目录中，从\ ``TODO 1``\ 开始，到\ ``TODO 6``\ 完成。
 
@@ -62,8 +61,8 @@ to hide the implementation details of ``sqrt``.
 构建并运行
 -------------
 
-运行\ :manual:`cmake  <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
-然后用你选择的构建工具构建它。
+运行\ :manual:`cmake  <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\
+来配置项目，然后用你选择的构建工具构建它。
 
 下面是命令行中的一个刷新：
 
@@ -79,10 +78,9 @@ to hide the implementation details of ``sqrt``.
 解决方案
 --------
 
-In the ``CMakeLists.txt`` file in the ``MathFunctions`` directory, we create
-a library target called ``MathFunctions`` with :command:`add_library`. The
-source files for the library are passed as an argument to
-:command:`add_library`. This looks like the following line:
+在\ ``MathFunctions``\ 目录下的\ ``CMakeLists.txt``\ 文件中，我们使用\
+:command:`add_library`\ 创建了一个名为\ ``MathFunctions``\ 的库目标。库的源文件作为参\
+数传递给\ :command:`add_library`。这看起来像下面这行：
 
 .. raw:: html/
 
@@ -98,7 +96,8 @@ source files for the library are passed as an argument to
 
   </details>
 
-为了使用新的库，我们将在顶层\ ``CMakeLists.txt``\ 文件中添加一个\ :command:`add_subdirectory`\ 调用，以便构建库。
+为了使用新的库，我们将在顶层\ ``CMakeLists.txt``\ 文件中添加一个\ :command:`add_subdirectory`\
+调用，以便构建库。
 
 .. raw:: html
 
@@ -130,8 +129,8 @@ source files for the library are passed as an argument to
 
   </details>
 
-最后，我们需要指定库的头文件位置。修改\ :command:`target_include_directories`\ 以\
-添加\ ``MathFunctions``\ 子目录作为包含目录，以便可以找到\ ``MathFunctions.h``\ 头文件。
+最后，我们需要指定库的头文件位置。修改\ :command:`target_include_directories`\ 以添加\
+``MathFunctions``\ 子目录作为包含目录，以便可以找到\ ``MathFunctions.h``\ 头文件。
 
 .. raw:: html
 
@@ -184,17 +183,15 @@ source files for the library are passed as an argument to
 
   </details>
 
-Exercise 2 - Adding an Option
+练习2 - 添加选项
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now let us add an option in the MathFunctions library to allow developers to
-select either the custom square root implementation or the built in standard
-implementation. While for the tutorial
-there really isn't any need to do so, for larger projects this is a common
-occurrence.
+现在让我们在MathFunctions库中添加一个选项，允许开发人员选择自定义的平方根实现或内置的标准实\
+现。虽然对于教程来说，确实没有必要这样做，但对于大型项目来说，这是一种常见的情况。
 
-CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提供了一个变量，\
-他们可以在配置cmake构建时更改该变量。此设置将存储在缓存中，以便用户不需要每次在构建目录上运行CMake时都设置该值。
+CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提供了一个变量，他们可以在配\
+置cmake构建时更改该变量。此设置将存储在缓存中，以便用户不需要每次在构建目录上运行CMake时都\
+设置该值。
 
 目标
 ----
@@ -220,12 +217,10 @@ CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提
 
 从练习1中的结果文件开始。完成\ ``TODO 7``\ 至\ ``TODO 14``。
 
-First create a variable ``USE_MYMATH`` using the :command:`option` command
-in ``MathFunctions/CMakeLists.txt``. In that same file, use that option
-to pass a compile definition to the ``MathFunctions`` library.
+首先使用\ ``MathFunctions/CMakeLists.txt``\ 中的\ :command:`option`\ 命令创建一个变量\
+``USE_MYMATH``。在同一个文件中，使用该选项将编译定义传递给\ ``MathFunctions``\ 库。
 
-Then, update ``MathFunctions.cxx`` to redirect compilation based on
-``USE_MYMATH``.
+然后，更新\ ``MathFunctions.cxx``\ 以基于\ ``USE_MYMATH``\ 重定向编译。
 
 Lastly, prevent ``mysqrt.cxx`` from being compiled when ``USE_MYMATH`` is on
 by making it its own library inside of the ``USE_MYMATH`` block of
@@ -243,9 +238,9 @@ by making it its own library inside of the ``USE_MYMATH`` block of
 
 接下来，用几个数字来运行\ ``Tutorial``\ 可执行文件，以验证它仍然正确。
 
-现在让我们将\ ``USE_MYMATH``\ 的值更新为\ ``OFF``。如果你在终端中，\
-最简单的方法是使用\ :manual:`cmake-gui <cmake-gui(1)>`\ 或\ :manual:`ccmake <ccmake(1)>`。\
-或者，如果你想从命令行更改这个选项，试试：
+现在让我们将\ ``USE_MYMATH``\ 的值更新为\ ``OFF``。如果你在终端中，最简单的方法是使用\
+:manual:`cmake-gui <cmake-gui(1)>`\ 或\ :manual:`ccmake <ccmake(1)>`。或者，如果你\
+想从命令行更改这个选项，试试：
 
 .. code-block:: console
 
@@ -263,9 +258,9 @@ by making it its own library inside of the ``USE_MYMATH`` block of
 解决方案
 --------
 
-第一步是向顶层\ ``MathFunctions/CMakeLists.txt``\ 文件添加一个选项。\
-该选项将显示在\ :manual:`cmake-gui <cmake-gui(1)>`\ 和\ :manual:`ccmake <ccmake(1)>`\ 中，\
-默认值为\ ``ON``，用户可以更改该值。
+第一步是向顶层\ ``MathFunctions/CMakeLists.txt``\ 文件添加一个选项。该选项将显示在\
+:manual:`cmake-gui <cmake-gui(1)>`\ 和\ :manual:`ccmake <ccmake(1)>`\ 中，默认值为\
+``ON``，用户可以更改该值。
 
 .. raw:: html
 

@@ -131,7 +131,7 @@ source and build trees and generate a buildsystem:
     $ cd build
     $ cmake .
 
-In all cases the ``<options>`` may be zero or more of the `Options`_ below.
+In all cases the ``<options>`` may be zero or more of the `选项`_ below.
 
 上述用于指定源树和构建树的样式可以混合使用。用\ :option:`-S <cmake -S>`\ 或\
 :option:`-B <cmake -B>`\ 指定的路径总是分别归类为源树或构建树。使用普通参数指定的路径根据\

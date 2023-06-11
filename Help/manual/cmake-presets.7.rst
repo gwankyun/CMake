@@ -129,7 +129,7 @@ guaranteed to be provided by the project. ``CMakeUserPresets.json`` may
 include files from anywhere.
 
 Starting from version ``7``, the ``include`` field supports
-`macro expansion`_, but only ``$penv{}`` macro expansion.
+`宏扩展`_, but only ``$penv{}`` macro expansion.
 
 配置预设
 ^^^^^^^^^^^^^^^^
