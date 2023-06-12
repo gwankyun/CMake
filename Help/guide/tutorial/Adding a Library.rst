@@ -222,9 +222,8 @@ CMake可以使用\ :command:`option`\ 命令来做到这一点。这为用户提
 
 然后，更新\ ``MathFunctions.cxx``\ 以基于\ ``USE_MYMATH``\ 重定向编译。
 
-Lastly, prevent ``mysqrt.cxx`` from being compiled when ``USE_MYMATH`` is on
-by making it its own library inside of the ``USE_MYMATH`` block of
-``MathFunctions/CMakeLists.txt``.
+最后，防止\ ``mysqrt.cxx``\ 在\ ``USE_MYMATH``\ 打开时被编译，方法是在\
+``MathFunctions/CMakeLists.txt``\ 的\ ``USE_MYMATH``\ 块中使其成为自己的库。
 
 构建并运行
 -------------
@@ -277,13 +276,10 @@ by making it its own library inside of the ``USE_MYMATH`` block of
 
   </details>
 
-Next, make building and linking our library with ``mysqrt`` function
-conditional using this new option.
+接下来，使用这个新选项使库与\ ``mysqrt``\ 函数的构建和链接成为有条件的。
 
-Create an :command:`if` statement which checks the value of
-``USE_MYMATH``. Inside the :command:`if` block, put the
-:command:`target_compile_definitions` command with the compile
-definition ``USE_MYMATH``.
+创建一个\ :command:`if`\ 语句来检查\ ``USE_MYMATH``\ 的值。在\ :command:`if`\ 块中，\
+放入\ :command:`target_compile_definitions`\ 命令和编译定义\ ``USE_MYMATH``。
 
 .. raw:: html
 
@@ -301,13 +297,11 @@ definition ``USE_MYMATH``.
 
   </details>
 
-When ``USE_MYMATH`` is ``ON``, the compile definition ``USE_MYMATH`` will
-be set. We can then use this compile definition to enable or disable
-sections of our source code.
+当\ ``USE_MYMATH``\ 为\ ``ON``\ 时，编译定义\ ``USE_MYMATH``\ 将被设置。然后，我们可\
+以使用这个编译定义来启用或禁用源代码的部分。
 
-The corresponding changes to the source code are fairly straightforward.
-In ``MathFunctions.cxx``, we make ``USE_MYMATH`` control which square root
-function is used:
+对源代码的相应更改相当简单。在\ ``MathFunctions.cxx``\ 中，我们使用\ ``USE_MYMATH``\
+来控制使用哪个平方根函数：
 
 .. raw:: html
 
@@ -324,7 +318,7 @@ function is used:
 
   </details>
 
-Next, we need to include ``mysqrt.h`` if ``USE_MYMATH`` is defined.
+接下来，如果定义了\ ``USE_MYMATH``，我们需要包含\ ``mysqrt.h``。
 
 .. raw:: html
 
@@ -341,7 +335,7 @@ Next, we need to include ``mysqrt.h`` if ``USE_MYMATH`` is defined.
 
   </details>
 
-Finally, we need to include ``cmath`` now that we are using ``std::sqrt``.
+最后，在使用\ ``std::sqrt``\ 时，我们需要包含\ ``cmath``。
 
 .. raw:: html
 
@@ -357,8 +351,7 @@ Finally, we need to include ``cmath`` now that we are using ``std::sqrt``.
 
   </details>
 
-Then, in the same file, we make ``USE_MYMATH`` control which square root
-function is used:
+然后，在同一个文件中，我们让\ ``USE_MYMATH``\ 控制使用哪个平方根函数：
 
 .. raw:: html
 
@@ -375,8 +368,7 @@ function is used:
 
   </details>
 
-Next, we link ``SqrtLibrary`` onto ``MathFunctions`` when ``USE_MYMATH`` is
-enabled.
+接下来，当启用\ ``USE_MYMATH``\ 时，我们将\ ``SqrtLibrary``\ 链接到\ ``MathFunctions``。
 
 .. raw:: html
 
@@ -393,8 +385,8 @@ enabled.
 
   </details>
 
-Finally, we can remove ``mysqrt.cxx`` from our ``MathFunctions`` library
-source list because it will be pulled in when ``SqrtLibrary`` is included.
+最后，我们可以从\ ``MathFunctions``\ 库源列表中删除\ ``mysqrt.cxx``，因为它将在包含\
+``SqrtLibrary``\ 时被拉入。
 
 .. raw:: html
 
@@ -410,6 +402,5 @@ source list because it will be pulled in when ``SqrtLibrary`` is included.
 
   </details>
 
-With these changes, the ``mysqrt`` function is now completely optional to
-whoever is building and using the ``MathFunctions`` library. Users can toggle
-``USE_MYMATH`` to manipulate what library is used in the build.
+通过这些更改，\ ``mysqrt``\ 函数现在对于正在构建和使用\ ``MathFunctions``\ 库的人来说完\
+全是可选的。用户可以切换\ ``USE_MYMATH``\ 来操作构建中使用的库。

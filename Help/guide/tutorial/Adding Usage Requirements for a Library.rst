@@ -94,7 +94,7 @@
 既然我们已经指定了\ ``MathFunctions``\ 的使用要求，\
 就可以安全地从顶层文件\ ``CMakeLists.txt``\ 中删除\ ``EXTRA_INCLUDES``\ 变量了。
 
-Remove this line:
+删除这一行：
 
 .. raw:: html
 
@@ -111,7 +111,7 @@ Remove this line:
 
   </details>
 
-And the lines:
+和这几行：
 
 .. raw:: html
 
@@ -127,11 +127,11 @@ And the lines:
 
   </details>
 
-The remaining code looks like:
+剩下的代码如下：
 
 .. raw:: html
 
-  <details><summary>Click to show/hide the resulting code</summary>
+  <details><summary>点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: Remaining code after removing EXTRA_INCLUDES
@@ -147,74 +147,65 @@ The remaining code looks like:
 注意，使用这种技术，我们的可执行目标要使用库所做的唯一一件事就是调用\ :command:`target_link_libraries`，\
 并指定库目标的名称。在大型项目中，手动指定库依赖关系的经典方法很快就会变得非常复杂。
 
-Exercise 2 - Setting the C++ Standard with Interface Libraries
+练习2 - 用接口库设置C++标准
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now that we have switched our code to a more modern approach, let's demonstrate
-a modern technique to set properties to multiple targets.
+既然我们已经将代码转换为更现代的方法，那么让我们演示一种为多个目标设置属性的现代技术。
 
-Let's refactor our existing code to use an ``INTERFACE`` library. We will
-use that library in the next step to demonstrate a common use for
-:manual:`generator expressions <cmake-generator-expressions(7)>`.
+让我们重构现有代码以使用\ ``INTERFACE``\ 库。我们将在下一步中使用该库来演示\
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 的常见用法。
 
-Goal
+目标
 ----
 
-Add an ``INTERFACE`` library target to specify the required C++ standard.
+添加一个\ ``INTERFACE``\ 库目标来指定所需的C++标准。
 
-Helpful Resources
+有用的资源
 -----------------
 
 * :command:`add_library`
 * :command:`target_compile_features`
 * :command:`target_link_libraries`
 
-Files to Edit
+待编辑的文件
 -------------
 
 * ``CMakeLists.txt``
 * ``MathFunctions/CMakeLists.txt``
 
-Getting Started
+开始
 ---------------
 
-In this exercise, we will refactor our code to use an ``INTERFACE`` library to
-specify the C++ standard.
+在本练习中，我们将重构代码，使用\ ``INTERFACE``\ 库指定C++标准。
 
-Start this exercise from what we left at the end of Step3 exercise 1. You will
-have to complete ``TODO 4`` through ``TODO 7``.
+从我们在步骤3练习1结束时留下的内容开始这个练习。你必须完成\ ``TODO 4``\ 到\ ``TODO 7``。
 
-Start by editing the top level ``CMakeLists.txt`` file. Construct an
-``INTERFACE`` library target called ``tutorial_compiler_flags`` and
-specify ``cxx_std_11`` as a target compiler feature.
+首先编辑顶层的\ ``CMakeLists.txt``\ 文件。构造一个名为\ ``tutorial_compiler_flags``\
+的\ ``INTERFACE``\ 库目标，并指定\ ``cxx_std_11``\ 作为目标编译器特性。
 
-Modify ``CMakeLists.txt`` and ``MathFunctions/CMakeLists.txt`` so that all
-targets have a :command:`target_link_libraries` call to
-``tutorial_compiler_flags``.
+修改\ ``CMakeLists.txt``\ 和\ ``MathFunctions/CMakeLists.txt``，以便所有目标都有一个\
+:command:`target_link_libraries`\ 调用\ ``tutorial_compiler_flags``。
 
-Build and Run
+构建并运行
 -------------
 
-Since we have our build directory already configured from Exercise 1, simply
-rebuild our code by calling the following:
+由于我们已经在练习1中配置了构建目录，只需通过调用以下命令重新构建代码：
 
 .. code-block:: console
 
   cd Step3_build
   cmake --build .
 
-Next, use the newly built ``Tutorial`` and verify that it is working as
-expected.
+接下来，使用新构建的\ ``Tutorial``\ 并验证它是否按预期工作。
 
-Solution
+解决方案
 --------
 
-Let's update our code from the previous step to use interface libraries
-to set our C++ requirements.
+让我们更新上一步的代码，使用接口库来设置C++需求。
 
-To start, we need to remove the two :command:`set` calls on the variables
-:variable:`CMAKE_CXX_STANDARD` and :variable:`CMAKE_CXX_STANDARD_REQUIRED`.
-The specific lines to remove are as follows:
+首先，我们需要删除变量\ :variable:`CMAKE_CXX_STANDARD`\ 和\
+:variable:`CMAKE_CXX_STANDARD_REQUIRED`\ 上的两个\ :command:`set`\ 调用。具体要删除\
+的行如下：
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -223,14 +214,13 @@ The specific lines to remove are as follows:
   :start-after: # 指定C++标准
   :end-before: # configure a header file
 
-Next, we need to create an interface library, ``tutorial_compiler_flags``. And
-then use :command:`target_compile_features` to add the compiler feature
-``cxx_std_11``.
+接下来，我们需要创建一个接口库\ ``tutorial_compiler_flags``。然后使用\
+:command:`target_compile_features`\ 来添加编译器特性\ ``cxx_std_11``。
 
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: TODO 4: CMakeLists.txt
@@ -249,9 +239,12 @@ library to our new
 ``tutorial_compiler_flags`` library. Respectively, the code will look like
 this:
 
+最后，在设置好接口库之后，我们需要将可执行的\ ``Target``、\ ``MathFunctions``\ 库和\
+``SqrtLibrary``\ 库链接到新的\ ``tutorial_compiler_flags``\ 库。代码分别如下：
+
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: TODO 5: CMakeLists.txt
@@ -264,11 +257,11 @@ this:
 
   </details>
 
-this:
+这样：
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/MathFunctions/CMakeLists.txt
   :caption: TODO 6: MathFunctions/CMakeLists.txt
@@ -281,11 +274,11 @@ this:
 
   </details>
 
-and this:
+和这样：
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/MathFunctions/CMakeLists.txt
   :caption: TODO 7: MathFunctions/CMakeLists.txt
@@ -299,7 +292,5 @@ and this:
   </details>
 
 
-With this, all of our code still requires C++ 11 to build. Notice
-though that with this method, it gives us the ability to be specific about
-which targets get specific requirements. In addition, we create a single
-source of truth in our interface library.
+尽管如此，我们所有的代码仍然需要C++ 11来构建。注意，使用这种方法，我们可以明确哪些目标需要特\
+定的需求。此外，我们在接口库中创建了一个单一的事实来源。
