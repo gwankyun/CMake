@@ -233,8 +233,8 @@ Windows 10通用应用交叉编译
 Windows 10通用应用程序同时针对Windows Store和Windows Phone。将\
 :variable:`CMAKE_SYSTEM_VERSION`\ 变量指定为\ ``10.0``\ 或更高。
 
-CMake selects a Windows SDK as described by documentation of the
-:variable:`CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION` variable.
+CMake根据\ :variable:`CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION`\ 变量的文档描述选择\
+Windows SDK。
 
 Windows Phone交叉编译
 ---------------------------------
