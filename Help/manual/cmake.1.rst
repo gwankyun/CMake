@@ -94,18 +94,15 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 生成一个项目构建系统
 ==============================
 
-Run CMake with one of the following command signatures to specify the
-source and build trees and generate a buildsystem:
+使用以下命令签名之一运行CMake来指定源和构建树，并生成一个构建系统：
 
 ``cmake [<options>] -B <path-to-build> [-S <path-to-source>]``
 
   .. versionadded:: 3.13
 
-  Uses ``<path-to-build>`` as the build tree and ``<path-to-source>``
-  as the source tree.  The specified paths may be absolute or relative
-  to the current working directory.  The source tree must contain a
-  ``CMakeLists.txt`` file.  The build tree will be created automatically
-  if it does not already exist.  For example:
+  使用\ ``<path-to-build>``\ 作为构建树，并使用\ ``<path-to-source>``\ 作为源码树。指\
+  定的路径可以是绝对的，也可以是相对于当前工作目录的。源树码必须包含一个\ ``CMakeLists.txt``\
+  文件。如果构建树还不存在，将自动创建它。例如：
 
   .. code-block:: console
 
@@ -131,7 +128,7 @@ source and build trees and generate a buildsystem:
     $ cd build
     $ cmake .
 
-In all cases the ``<options>`` may be zero or more of the `选项`_ below.
+在所有情况下，\ ``<options>``\ 可以是下面的零个或多个\ `选项`_。
 
 上述用于指定源树和构建树的样式可以混合使用。用\ :option:`-S <cmake -S>`\ 或\
 :option:`-B <cmake -B>`\ 指定的路径总是分别归类为源树或构建树。使用普通参数指定的路径根据\
@@ -431,20 +428,17 @@ In all cases the ``<options>`` may be zero or more of the `选项`_ below.
 
 .. option:: --list-presets[=<type>]
 
- Lists the available presets of the specified ``<type>``.  Valid values for
- ``<type>`` are ``configure``, ``build``, ``test``, ``package``, or ``all``.
- If ``<type>`` is omitted, ``configure`` is assumed.  The current working
- directory must contain CMake preset files.
+ 列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值是\ ``configure``、\
+ ``build``、\ ``test``、\ ``package``\ 或\ ``all``。如果省略\ ``<type>``，则假定为\
+ ``configure``。当前工作目录必须包含CMake预置文件。
 
 .. option:: --debugger
 
-  Enables interactive debugging of the CMake language. CMake exposes a debugging
-  interface on the pipe named by :option:`--debugger-pipe <cmake --debugger-pipe>`
-  that conforms to the `Debug Adapter Protocol`_ specification with the following
-  modifications.
+  启用CMake语言的交互式调试。CMake在名为\ :option:`--debugger-pipe <cmake --debugger-pipe>`\
+  的管道上公开了一个调试接口，该接口符合\ `Debug Adapter Protocol`_\ 规范，并进行了以下修改。
 
-  The ``initialize`` response includes an additional field named ``cmakeVersion``
-  which specifies the version of CMake being debugged.
+  ``initialize``\ 响应包括一个名为\ ``cmakeVersion``\ 的附加字段，该字段指定正在调试的\
+  CMake版本。
 
   .. code-block:: json
     :caption: Debugger initialize response
@@ -458,30 +452,29 @@ In all cases the ``<options>`` may be zero or more of the `选项`_ below.
       }
     }
 
-  The members are:
+  成员包括：
 
   ``major``
-    An integer specifying the major version number.
+    指定主版本号的整数。
 
   ``minor``
-    An integer specifying the minor version number.
+    指定次要版本号的整数。
 
   ``patch``
-    An integer specifying the patch version number.
+    指定补丁版本号的整数。
 
   ``full``
-    A string specifying the full CMake version.
+    指定完整CMake版本的字符串。
 
 .. _`Debug Adapter Protocol`: https://microsoft.github.io/debug-adapter-protocol/
 
 .. option:: --debugger-pipe <pipe name>, --debugger-pipe=<pipe name>
 
-  Name of the pipe (on Windows) or domain socket (on Unix) to use for
-  debugger communication.
+  用于调试器通信的管道（在Windows上）或域套接字（在Unix上）的名称。
 
 .. option:: --debugger-dap-log <log path>, --debugger-dap-log=<log path>
 
-  Logs all debugger communication to the specified file.
+  将所有调试器通信记录到指定文件。
 
 .. _`Build Tool Mode`:
 
@@ -741,13 +734,13 @@ CMake通过签名提供内置命令行工具
   ``tls``
     .. versionadded:: 3.25
 
-    ``true`` if TLS support is enabled and ``false`` otherwise.
+    如果启用了TLS支持，则为\ ``true``，否则为\ ``false``。
 
   ``debugger``
     .. versionadded:: 3.27
 
-    ``true`` if the :option:`--debugger <cmake --debugger>` mode
-    is supported and ``false`` otherwise.
+    如果支持\ :option:`--debugger <cmake --debugger>`\ 模式，则为\ ``true``，否则为\
+    ``false``。
 
 .. option:: cat [--] <files>...
 
@@ -962,29 +955,23 @@ CMake通过签名提供内置命令行工具
 
   .. deprecated:: 3.17
 
-  Remove the file(s). The planned behavior was that if any of the
-  listed files already do not exist, the command returns a non-zero exit code,
-  but no message is logged. The ``-f`` option changes the behavior to return a
-  zero exit code (i.e. success) in such situations instead.
-  ``remove`` does not follow symlinks. That means it remove only symlinks
-  and not files it point to.
+  删除文件。计划的行为是，如果列出的任何文件已经不存在，该命令返回非零退出代码，但不记录任何\
+  消息。在这种情况下，\ ``-f``\ 选项将行为更改为返回零退出代码（即成功）。\ ``remove``\
+  不跟随符号链接。这意味着它只删除符号链接，而不删除它指向的文件。
 
-  The implementation was buggy and always returned 0. It cannot be fixed without
-  breaking backwards compatibility. 使用\ ``rm``\ 代替。
+  这个实现有很多问题，总是返回0。如果不破坏向后兼容性，就无法修复它。请使用\ ``rm``\ 代替。
 
 .. option:: remove_directory <dir>...
 
   .. deprecated:: 3.17
 
-  Remove ``<dir>`` directories and their contents. If a directory does
-  not exist it will be silently ignored.
-  使用\ ``rm``\ 代替。
+  删除\ ``<dir>``\ 目录及其内容。如果一个目录不存在，它将被静默忽略。使用\ ``rm``\ 代替。
 
   .. versionadded:: 3.15
-    Support for multiple directories.
+    支持多个目录。
 
   .. versionadded:: 3.16
-    If ``<dir>`` is a symlink to a directory, just the symlink will be removed.
+    如果\ ``<dir>``\ 是指向目录的符号链接，则只删除符号链接。
 
 .. option:: rename <oldname> <newname>
 
@@ -1003,9 +990,8 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.0
 
-  睡眠给定的秒\ ``<number>``。\ ``<number>`` may be a floating point number.
-  A practical minimum is about 0.1 seconds due to overhead in starting/stopping
-  CMake executable. This can be useful in a CMake script to insert a delay:
+  睡眠给定的秒\ ``<number>``。\ ``<number>``\ 可以是浮点数。由于启动/停止CMake可执行文\
+  件的开销，实际的最小值大约是0.1秒。这在CMake脚本中插入延迟是很有用的：
 
   .. code-block:: cmake
 
@@ -1104,7 +1090,7 @@ CMake通过签名提供内置命令行工具
 
 .. option:: time <command> [<args>...]
 
-  运行\ ``<command>``\ 并显示运行时间。(including overhead of CMake frontend).
+  运行\ ``<command>``\ 并显示运行时间。（包括CMake前端的开销）。
 
   .. versionadded:: 3.5
     该命令现在正确地将带有空格或特殊字符的参数传递给子进程。这可能会破坏那些使用自己的额外引\
