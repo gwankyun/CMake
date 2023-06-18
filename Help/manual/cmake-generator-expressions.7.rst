@@ -91,8 +91,7 @@ cmake-generator-expressions(7)
     VERBATIM
   )
 
-Finally, the above example can be expressed in a more simple and robust way
-using an alternate generator expression:
+最后，上面的例子可以用一种更简单和健壮的方式来表达，使用一个替代生成器表达式：
 
 .. code-block:: cmake
 
@@ -299,13 +298,12 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 列表表达式
 ----------------
 
-Most of the expressions in this section are closely associated with the
-:command:`list` command, providing the same capabilities, but in
-the form of a generator expression.
+本节中的大多数表达式都与\ :command:`list`\ 命令密切相关，提供相同的功能，但采用生成器表达\
+式的形式。
 
 .. _GenEx List Comparisons:
 
-List Comparisons
+列表比较
 ^^^^^^^^^^^^^^^^
 
 .. genex:: $<IN_LIST:string,list>
@@ -317,39 +315,37 @@ List Comparisons
 
 .. _GenEx List Queries:
 
-List Queries
+列表查询
 ^^^^^^^^^^^^
 
 .. genex:: $<LIST:LENGTH,list>
 
   .. versionadded:: 3.27
 
-  Returns the list's length.
+  返回列表的长度。
 
 .. genex:: $<LIST:GET,list,index,...>
 
   .. versionadded:: 3.27
 
-  Returns the list of elements specified by indices from the list.
+  返回列表中由索引指定的元素列表。
 
 .. genex:: $<LIST:SUBLIST,list,begin,length>
 
   .. versionadded:: 3.27
 
-  Returns a sublist of the given list. If <length> is 0, an empty list will be
-  returned. If <length> is -1 or the list is smaller than <begin>+<length> then
-  the remaining elements of the list starting at <begin> will be returned.
+  返回给定列表的子列表。如果<length>为0，则返回空列表。如果<length>为-1或列表小于\
+  <begin>+<length>，则返回从<begin>开始的列表的其余元素。
 
 .. genex:: $<LIST:FIND,list,value>
 
   .. versionadded:: 3.27
 
-  Returns the index of the element specified in the list or -1 if it wasn't
-  found.
+  返回列表中指定元素的索引，如果没有找到则返回-1。
 
 .. _GenEx List Transformations:
 
-List Transformations
+列表转换
 ^^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<LIST:JOIN,list,glue>
@@ -510,7 +506,7 @@ List Transformations
 
 .. _GenEx List Ordering:
 
-List Ordering
+列表排序
 ^^^^^^^^^^^^^
 
 .. genex:: $<LIST:REVERSE,list>
