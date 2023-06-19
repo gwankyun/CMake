@@ -352,67 +352,62 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  Returns a string which joins the list with the content of the ``glue`` string
-  inserted between each item.
+  返回一个字符串，该字符串将列表与插入在每个项之间的\ ``glue``\ 字符串的内容连接起来。
 
 .. genex:: $<LIST:APPEND,list,element,...>
 
   .. versionadded:: 3.27
 
-  Returns a list with the elements appended.
+  返回一个添加了元素的列表。
 
 .. genex:: $<LIST:PREPEND,list,element,...>
 
   .. versionadded:: 3.27
 
-  Returns a list with the elements inserted at the beginning of the list.
+  返回在列表开头插入元素的列表。
 
 .. genex:: $<LIST:INSERT,list,index,element,...>
 
   .. versionadded:: 3.27
 
-  Returns a list with the elements inserted at the specified index. It is an
-  error to specify an out-of-range index. Valid indexes are 0 to N where N is
-  the length of the list, inclusive. An empty list has length 0.
+  返回一个列表，其中包含在指定索引处插入的元素。指定超出范围的索引是错误的。有效的索引范围是\
+  0到N，其中N是列表的长度，包括列表的长度。空列表的长度为0。
 
 .. genex:: $<LIST:POP_BACK,list>
 
   .. versionadded:: 3.27
 
-  Returns a list with the last element was removed.
+  返回一个删除最后一个元素的列表。
 
 .. genex:: $<LIST:POP_FRONT,list>
 
   .. versionadded:: 3.27
 
-  Returns a list with the first element was removed.
+  返回删除第一个元素的列表。
 
 .. genex:: $<LIST:REMOVE_ITEM,list,value,...>
 
   .. versionadded:: 3.27
 
-  Returns a list with all instances of the given values were removed.
+  返回一个列表，其中给定值的所有实例已被删除。
 
 .. genex:: $<LIST:REMOVE_AT,list,index,...>
 
   .. versionadded:: 3.27
 
-  Returns a list with all values at given indices were removed.
+  返回一个列表，其中给定索引处的所有值都已删除。
 
 .. genex:: $<LIST:REMOVE_DUPLICATES,list>
 
   .. versionadded:: 3.27
 
-  Returns a list where duplicated items were removed. The relative order of
-  items is preserved, but if duplicates are encountered, only the first
-  instance is preserved.
+  返回删除重复项的列表。保留条目的相对顺序，但如果遇到重复项，则只保留第一个实例。
 
 .. genex:: $<LIST:FILTER,list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.27
 
-  Returns a list with the items that match the regular expression ``regex``
-  were included or removed.
+  返回一个列表，其中包含或删除了与正则表达式\ ``regex``\ 匹配的项。
 
 .. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
 
