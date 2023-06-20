@@ -413,70 +413,63 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  Returns the list transformed by applying an ``ACTION`` to all or, by
-  specifying a ``SELECTOR``, to the selected elements of the list.
+  通过对列表中的所有元素应用\ ``ACTION``\ 或指定一个\ ``SELECTOR``，返回转换后的列表。
 
   .. note::
 
-    The ``TRANSFORM`` sub-command does not change the number of elements in the
-    list. If a ``SELECTOR`` is specified, only some elements will be changed,
-    the other ones will remain the same as before the transformation.
+    ``TRANSFORM``\ 子命令不改变列表中元素的数量。如果指定了\ ``SELECTOR``，则只有一些元\
+    素会被更改，其他元素将保持与转换前相同。
 
-  ``ACTION`` specifies the action to apply to the elements of the list.
-  The actions have exactly the same semantics as of the
-  :command:`list(TRANSFORM)` command.  ``ACTION`` must be one of the following:
+  ``ACTION``\ 指定应用于列表元素的操作。操作具有与\ :command:`list(TRANSFORM)`\ 命令完\
+  全相同的语义。\ ``ACTION``\ 必须是以下选项之一：
 
     :command:`APPEND <list(TRANSFORM_APPEND)>`, :command:`PREPEND <list(TRANSFORM_APPEND)>`
-      Append, prepend specified value to each element of the list.
+      将指定的值追加到列表的每个元素。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,(APPEND|PREPEND),value[,SELECTOR]>
 
     :command:`TOLOWER <list(TRANSFORM_TOLOWER)>`, :command:`TOUPPER <list(TRANSFORM_TOLOWER)>`
-      Convert each element of the list to lower, upper characters.
+      将列表中的每个元素转换为大小写字符。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,(TOLOWER|TOUPPER)[,SELECTOR]>
 
     :command:`STRIP <list(TRANSFORM_STRIP)>`
-      Remove leading and trailing spaces from each element of the list.
+      从列表的每个元素中删除前导和尾随空格。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,STRIP[,SELECTOR]>
 
     :command:`REPLACE <list(TRANSFORM_REPLACE)>`:
-      Match the regular expression as many times as possible and substitute
-      the replacement expression for the match for each element of the list.
+      尽可能多地匹配正则表达式，并用替换表达式替换列表中每个元素的匹配项。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,REPLACE,regular_expression,replace_expression[,SELECTOR]>
 
-  ``SELECTOR`` determines which elements of the list will be transformed.
-  Only one type of selector can be specified at a time. When given,
-  ``SELECTOR`` must be one of the following:
+  ``SELECTOR``\ 决定列表中的哪些元素将被转换。一次只能指定一种类型的选择器。当给定时，\
+  ``SELECTOR``\ 必须是下列之一：
 
     ``AT``
-      Specify a list of indexes.
+      指定索引列表。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,ACTION,AT,index[,index...]>
 
     ``FOR``
-      Specify a range with, optionally, an increment used to iterate over the
-      range.
+      指定一个范围，并使用可选的增量来迭代该范围。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,ACTION,FOR,start,stop[,step]>
 
     ``REGEX``
-      Specify a regular expression.
-      Only elements matching the regular expression will be transformed.
+      指定正则表达式。只有匹配正则表达式的元素才会被转换。
 
       .. code-block:: cmake
 
@@ -484,8 +477,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. genex:: $<JOIN:list,glue>
 
-  Joins the list with the content of the ``glue`` string inserted between each
-  item.
+  用插入在每个项目之间的\ ``glue``\ 字符串内容连接列表。
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
