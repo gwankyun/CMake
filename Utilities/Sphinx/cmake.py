@@ -5,25 +5,29 @@
 
 import os
 import re
-
 from dataclasses import dataclass
 from typing import Any, List, Tuple, Type, cast
 
 import sphinx
 
-from docutils.utils.code_analyzer import Lexer, LexerError
-from docutils.parsers.rst import Directive, directives
-from docutils.transforms import Transform
-from docutils.nodes import Element, Node, TextElement, system_message
-from docutils import io, nodes
+# The following imports may fail if we don't have Sphinx 2.x or later.
+if sphinx.version_info >= (2,):
+    from docutils import io, nodes
+    from docutils.nodes import Element, Node, TextElement, system_message
+    from docutils.parsers.rst import Directive, directives
+    from docutils.transforms import Transform
+    from docutils.utils.code_analyzer import Lexer, LexerError
 
-from sphinx.directives import ObjectDescription, nl_escape_re
-from sphinx.domains import Domain, ObjType
-from sphinx.roles import XRefRole
-from sphinx.util.docutils import ReferenceRole
-from sphinx.util.nodes import make_refnode
-from sphinx.util import logging, ws_re
-from sphinx import addnodes
+    from sphinx import addnodes
+    from sphinx.directives import ObjectDescription, nl_escape_re
+    from sphinx.domains import Domain, ObjType
+    from sphinx.roles import XRefRole
+    from sphinx.util import logging, ws_re
+    from sphinx.util.docutils import ReferenceRole
+    from sphinx.util.nodes import make_refnode
+else:
+    # Sphinx 2.x is required.
+    assert sphinx.version_info >= (2,)
 
 # END imports
 
@@ -42,10 +46,10 @@ from sphinx import addnodes
 # - manual/cmake-buildsystem.7.html
 #     (with nested $<..>; relative and absolute paths, "::")
 
+from pygments.lexer import bygroups  # noqa I100
 from pygments.lexers import CMakeLexer
 from pygments.token import (Comment, Name, Number, Operator, Punctuation,
                             String, Text, Whitespace)
-from pygments.lexer import bygroups
 
 # Notes on regular expressions below:
 # - [\.\+-] are needed for string constants like gtk+-2.0
@@ -109,9 +113,6 @@ CMakeLexer.tokens["root"] = [
 # END pygments tweaks
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-# Require at least Sphinx 2.x.
-assert sphinx.version_info >= (2,)
 
 logger = logging.getLogger(__name__)
 
@@ -514,7 +515,7 @@ class CMakeReferenceRole:
         class Class(parent):
             def __call__(self, name: str, rawtext: str, text: str,
                          *args, **kwargs
-                        ) -> Tuple[List[Node], List[system_message]]:
+                         ) -> Tuple[List[Node], List[system_message]]:
                 text = CMakeReferenceRole._escape_angle_brackets(text)
                 return super().__call__(name, rawtext, text, *args, **kwargs)
         return Class
