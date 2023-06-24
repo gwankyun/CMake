@@ -143,7 +143,7 @@
   :name: MathFunctions/mysqrt.cxx-ifdef
   :language: c++
   :start-after: // 如果log和exp都有，那就用它们
-  :end-before: // return result;
+  :end-before: return result;
 
 .. raw:: html
 

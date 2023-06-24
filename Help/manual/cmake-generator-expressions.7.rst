@@ -500,55 +500,45 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  Returns the list with the elements in reverse order.
+  返回元素以相反顺序排列的列表。
 
 .. genex:: $<LIST:SORT,list[,(COMPARE:option|CASE:option|ORDER:option)]...>
 
   .. versionadded:: 3.27
 
-  Returns the list sorted according the specified options.
+  返回按指定选项排序的列表。
 
-  Use one of the ``COMPARE`` options to select the comparison method
-  for sorting:
+  使用\ ``COMPARE``\ 选项之一来选择排序的比较方法：
 
     ``STRING``
-      Sorts a list of strings alphabetically.
-      This is the default behavior if the ``COMPARE`` option is not given.
+      按字母顺序对字符串列表进行排序。如果没有给出\ ``COMPARE``\ 选项，这是默认行为。
 
     ``FILE_BASENAME``
-      Sorts a list of pathnames of files by their basenames.
+      按基本名称对文件的路径名列表进行排序。
 
     ``NATURAL``
-      Sorts a list of strings using natural order
-      (see ``strverscmp(3)`` manual), i.e. such that contiguous digits
-      are compared as whole numbers.
-      For example: the following list `10.0 1.1 2.1 8.0 2.0 3.1`
-      will be sorted as `1.1 2.0 2.1 3.1 8.0 10.0` if the ``NATURAL``
-      comparison is selected where it will be sorted as
-      `1.1 10.0 2.0 2.1 3.1 8.0` with the ``STRING`` comparison.
+      使用自然顺序对字符串列表进行排序（参见\ ``strverscmp(3)``\ 手册），即将连续数字作为\
+      整数进行比较。例如：下面的列表\ `10.0 1.1 2.1 8.0 2.0 3.1`\ 将被排序为\
+      `1.1 2.0 2.1 3.1 8.0 10.0`，如果选择了\ ``NATURAL``\ 比较，它将被排序为\
+      `1.1 10.0 2.0 2.1 3.1 8.0`\ 与\ ``STRING``\ 比较。
 
-  Use one of the ``CASE`` options to select a case sensitive or case
-  insensitive sort mode:
+  使用\ ``CASE``\ 选项之一来选择区分大小写或不区分大小写的排序模式：
 
     ``SENSITIVE``
-      List items are sorted in a case-sensitive manner.
-      This is the default behavior if the ``CASE`` option is not given.
+      列表项以区分大小写的方式排序。如果没有给出\ ``CASE``\ 选项，这是默认行为。
 
     ``INSENSITIVE``
-      List items are sorted case insensitively.  The order of
-      items which differ only by upper/lowercase is not specified.
+      列表项的排序不区分大小写。仅大小写不同的项的顺序未指定。
 
-  To control the sort order, one of the ``ORDER`` options can be given:
+  要控制排序顺序，可以给出\ ``ORDER``\ 选项之一：
 
     ``ASCENDING``
-      Sorts the list in ascending order.
-      This is the default behavior when the ``ORDER`` option is not given.
+      按升序对列表进行排序。这是未给出\ ``ORDER``\ 选项时的默认行为。
 
     ``DESCENDING``
-      Sorts the list in descending order.
+      按降序对列表进行排序。
 
-  This is an error to specify multiple times the same option. Various options
-  can be specified in any order:
+  多次指定相同的选项是错误的。可以按任意顺序指定各种选项：
 
   .. code-block:: cmake
 
@@ -646,8 +636,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   以下操作从路径中检索不同的组件或组件组。有关每个路径组件的含义，请参阅\ :ref:`Path Structure And Terminology`。
 
   .. versionchanged:: 3.27
-    All operations now accept a list of paths as argument. When a list of paths
-    is specified, the operation will be applied to each path.
+    现在所有的操作都接受一个路径列表作为参数。当指定了路径列表时，该操作将应用于每个路径。
 
   ::
 
@@ -671,8 +660,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 和\ :ref:`Generation <Path Generation>`\ 选项的生成时功能。所有路径都应该是cmake样式的格式。
 
 .. versionchanged:: 3.27
-  All operations now accept a list of paths as argument. When a list of paths
-  is specified, the operation will be applied to each path.
+  现在所有的操作都接受一个路径列表作为参数。当指定了路径列表时，该操作将应用于每个路径。
 
 
 .. _GenEx PATH-CMAKE_PATH:
@@ -1105,24 +1093,21 @@ Shell路径
   则会报告错误。有关编译特性的信息和支持的编译器列表，请参阅\ :manual:`cmake-compile-features(7)`\
   手册。
 
-Compile Context
+编译环境
 ^^^^^^^^^^^^^^^
 
 .. genex:: $<COMPILE_ONLY:...>
 
   .. versionadded:: 3.27
 
-  Content of ``...``, when collecting :ref:`Target Usage Requirements`,
-  otherwise it is the empty string.  This is intended for use in an
-  :prop_tgt:`INTERFACE_LINK_LIBRARIES` and :prop_tgt:`LINK_LIBRARIES` target
-  properties, typically populated via the :command:`target_link_libraries` command.
-  Provides compilation usage requirements without any linking requirements.
+  ``...``\ 的内容，在收集\ :ref:`Target Usage Requirements`\ 时，否则为空字符串。这用\
+  于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\ :prop_tgt:`LINK_LIBRARIES`\ 目标\
+  属性，通常通过\ :command:`target_link_libraries`\命令填充。提供编译使用需求，而不需要\
+  任何链接需求。
 
-  Use cases include header-only usage where all usages are known to not have
-  linking requirements (e.g., all-``inline`` or C++ template libraries).
+  用例包括仅头文件的使用，其中所有的使用都已知没有链接需求（例如，全\ ``inline``\ 或C++模板库）。
 
-  Note that for proper evaluation of this expression requires policy :policy:`CMP0099`
-  to be set to `NEW`.
+  注意，要正确计算这个表达式，需要将策略\ :policy:`CMP0099`\ 设置为\ `NEW`。
 
 链接器语言和ID
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -1592,71 +1577,62 @@ Compile Context
 
   .. versionadded:: 3.27
 
-  Full path to the linker import file. On DLL platforms, it would be the
-  ``.lib`` file. On AIX, for the executables, and on macOS, for the shared
-  libraries, it could be, respectively, the ``.imp`` or ``.tbd`` import file,
-  depending of the value of :prop_tgt:`ENABLE_EXPORTS` property.
+  链接器导入文件的完整路径。在DLL平台上，它将是\ ``.lib``\ 文件。在AIX上，对于可执行文件，\
+  在macOS上，对于共享库，它可以分别是\ ``.imp``\ 或\ ``.tbd``\ 导入文件，具体取决于\
+  :prop_tgt:`ENABLE_EXPORTS`\ 属性的值。
 
-  An empty string is returned when there is no import file associated with the
-  target.
+  如果没有与目标关联的导入文件，则返回空字符串。
 
 .. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Base name of file linker import file of the target ``tgt`` without prefix and
-  suffix. For example, if target file name is ``libbase.tbd``, the base name is
-  ``base``.
+  目标文件链接器导入文件的基名\ ``tgt``，不带前缀和后缀。例如，目标文件名为\
+  ``libbase.tbd``，则基文件名为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`
-  target properties and their configuration specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>` and :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性\
+  及其特定于配置的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_IMPORT_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Prefix of the import file of the target ``tgt``.
+  目标\ ``tgt``\ 导入文件的前缀。
 
-  See also the :prop_tgt:`IMPORT_PREFIX` target property.
+  另请参见\ :prop_tgt:`IMPORT_PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_IMPORT_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Suffix of the import file of the target ``tgt``.
+  目标导入文件的后缀 ``tgt``。
 
-  The suffix corresponds to the file extension (such as ".lib" or ".tbd").
+  后缀对应于文件扩展名（如“.lib”或“.tbd”）。
 
-  See also the :prop_tgt:`IMPORT_SUFFIX` target property.
+  另请参见\ :prop_tgt:`IMPORT_SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_IMPORT_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Name of the import file of the target target ``tgt``.
+  ``tgt``\ 目标的导入文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_IMPORT_FILE_DIR:tgt>
 
-  Directory of the import file of the target ``tgt``.
+  ``tgt``\ 目标导入文件的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 
@@ -1664,13 +1640,11 @@ Compile Context
   ``.so``），但对于DLL平台上的共享库，它将是与DLL关联的\ ``.lib``\ 导入库。
 
   .. versionadded:: 3.27
-    On macOS, it could be the ``.tbd`` import file associated with the shared
-    library, depending of the value of :prop_tgt:`ENABLE_EXPORTS` property.
+    在macOS上，它可以是与共享库关联的\ ``.tbd``\ 导入文件，具体取决于\
+    :prop_tgt:`ENABLE_EXPORTS`\ 属性的值。
 
-  This generator expression is equivalent to
-  :genex:`$<TARGET_LINKER_LIBRARY_FILE>` or
-  :genex:`$<TARGET_LINKER_IMPORT_FILE>` generator expressions, depending of the
-  characteristics of the target and the platform.
+  该生成器表达式等价于\ :genex:`$<TARGET_LINKER_LIBRARY_FILE>`\ 或\
+  :genex:`$<TARGET_LINKER_IMPORT_FILE>`\ 生成器表达式，具体取决于目标和平台的特征。
 
 .. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt>
 
@@ -1726,54 +1700,47 @@ Compile Context
 
   .. versionadded:: 3.27
 
-  File used when linking o the ``tgt`` target is done using directly the
-  library, and not an import file. This will usually be the library that
-  ``tgt`` represents (``.a``, ``.so``, ``.dylib``). So, on DLL platforms, it
-  will be an empty string.
+  链接到\ ``tgt``\ 目标时使用的文件是直接使用库完成的，而不是导入文件。这通常是\ ``tgt``\
+  表示的库（\ ``.a``、\ ``.so``、\ ``.dylib``）。因此，在DLL平台上，它将是一个空字符串。
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Base name of library file used to link the target ``tgt``, i.e.
-  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>` without prefix and suffix.
-  For example, if target file name is ``libbase.a``, the base name is ``base``.
+  用于链接目标\ ``tgt``\ 的库文件的基本名称，即\
+  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>`，不带前缀和后缀。例如，目标文件名为\
+  ``libbase.a``，则基文件名为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  and :prop_tgt:`LIBRARY_OUTPUT_NAME` target properties and their configuration
-  specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性及其配置特定的变体\
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
+  和\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Prefix of the library file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的库文件前缀。
 
-  See also the :prop_tgt:`PREFIX` target property.
+  另请参见\ :prop_tgt:`PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Suffix of the library file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的库文件后缀。
 
-  The suffix corresponds to the file extension (such as ".a" or ".dylib").
+  后缀对应于文件扩展名（如“.a”或“.dylib”）。
 
-  See also the :prop_tgt:`SUFFIX` target property.
+  另请参见\ :prop_tgt:`SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>
 
