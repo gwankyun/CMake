@@ -17,17 +17,17 @@
 
   .. code-block:: console
 
-    $ mkdir ../build/CMake
-    $ cmake -S . -B ../build/CMake -DSPHINX_HTML=ON
+    $ mkdir ./build
+    $ cmake -S . -B ./build -D SPHINX_HTML=ON
 
 编译文档
 ========
 
   .. code-block:: console
 
-    $ cmake --build ../build/CMake --target documentation --config Debug
+    $ cmake --build ./build --target documentation --config Debug
 
 输出路径
 ========
 
-  ``../build/CMake/Utilities/Sphinx/html``
+  ``./build/Utilities/Sphinx/html``
