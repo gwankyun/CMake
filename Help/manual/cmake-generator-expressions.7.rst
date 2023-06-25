@@ -1746,28 +1746,24 @@ Shell路径
 
   .. versionadded:: 3.27
 
-  Name of the library file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的库文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_DIR:tgt>
 
   .. versionadded:: 3.27
 
-  Directory of the library file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的库文件目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE:tgt>
 
   .. versionadded:: 3.27
 
-  File used when linking to the ``tgt`` target is done using an import
-  file.  This will usually be the import file that ``tgt`` represents
-  (``.lib``, ``.tbd``). So, when no import file is involved in the link step,
-  an empty string is returned.
+  使用导入文件链接到\ ``tgt``\ 目标时使用的文件。这通常是\ ``tgt``\ 表示的导入文件（\
+  ``.lib``、\ ``.tbd``）。因此，当链接步骤中没有涉及导入文件时，将返回一个空字符串。
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>
 
