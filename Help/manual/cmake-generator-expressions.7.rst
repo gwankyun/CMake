@@ -1795,32 +1795,29 @@ Shell路径
 
   .. versionadded:: 3.27
 
-  Suffix of the import file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的导入文件的后缀。
 
-  The suffix corresponds to the file extension (such as ".lib" or ".tbd").
+  后缀对应于文件扩展名（如“.lib”或“.tbd”）。
 
-  See also the :prop_tgt:`IMPORT_SUFFIX` target property.
+  另请参见\ :prop_tgt:`IMPORT_SUFFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Name of the import file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的导入文件名。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_DIR:tgt>
 
   .. versionadded:: 3.27
 
-  Directory of the import file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的导入文件的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_SONAME_FILE:tgt>
 
@@ -1834,7 +1831,7 @@ Shell路径
 
 .. genex:: $<TARGET_SONAME_FILE_DIR:tgt>
 
-  Directory of file with soname (``.so.3``).
+  soname（\ ``.so.3``\ ）的文件目录。
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
@@ -1842,25 +1839,23 @@ Shell路径
 
   .. versionadded:: 3.27
 
-  Import file with soname (``.3.tbd``) where ``tgt`` is the name of a target.
+  使用soname（\ ``.3.tbd``\ ）导入文件，其中\ ``tgt``\ 是目标的名称。
 
 .. genex:: $<TARGET_SONAME_IMPORT_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Name of the import file with soname (``.3.tbd``).
+  使用soname（\ ``.3.tbd``\ ）导入文件的名称。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_SONAME_IMPORT_FILE_DIR:tgt>
 
   .. versionadded:: 3.27
 
-  Directory of the import file with soname (``.3.tbd``).
+  使用sonname（\ ``.3.tbd``\ ）导入文件的目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_PDB_FILE:tgt>
 
@@ -1869,7 +1864,8 @@ Shell路径
   链接器生成的程序数据库文件（.pdb）的完整路径，其中\ ``tgt``\ 是目标的名称。
 
   另请参阅\ :prop_tgt:`PDB_NAME`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ 目标属性及\
-  其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`。
+  其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`\ 和\
+  :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`。
 
 .. genex:: $<TARGET_PDB_FILE_BASE_NAME:tgt>
 
@@ -1937,8 +1933,7 @@ Shell路径
   .. versionadded:: 3.21
 
   目标在运行时依赖的DLL列表。这是由目标的传递依赖项中所有 ``SHARED`` 目标的位置决定的。\
-  If only the directories of the DLLs are needed, see the
-  :genex:`TARGET_RUNTIME_DLL_DIRS` generator expression.
+  如果只需要DLL所在的目录，请参见\ :genex:`TARGET_RUNTIME_DLL_DIRS`\ 生成器表达式。
   在可执行文件、\ ``SHARED``\ 库和\ ``MODULE``\ 库以外的目标上使用此生成器表达式是错误的。\
   **在非dll平台上，这个表达式总是求值为空字符串**。
 
@@ -1970,15 +1965,13 @@ Shell路径
 
   .. versionadded:: 3.27
 
-  List of the directories which contain the DLLs that the target depends on at
-  runtime (see :genex:`TARGET_RUNTIME_DLLS`). This is determined by
-  the locations of all the ``SHARED`` targets in the target's transitive
-  dependencies. Using this generator expression on targets other than
-  executables, ``SHARED`` libraries, and ``MODULE`` libraries is an error.
-  **On non-DLL platforms, this expression always evaluates to an empty string**.
+  包含目标运行时所依赖的DLL的目录列表（参见\ :genex:`TARGET_RUNTIME_DLLS`\ ）。这是由目\
+  标的传递依赖项中所有\ ``SHARED``\ 目标的位置决定的。在可执行文件、\ ``SHARED``\ 库和\
+  ``MODULE``\ 库以外的目标上使用此生成器表达式是错误的。\ **在非DLL平台上，此表达式的计算\
+  结果始终为空字符串**。
 
-  This generator expression can e.g. be used to create a batch file using
-  :command:`file(GENERATE)` which sets the PATH environment variable accordingly.
+  这个生成器表达式可以用来创建一个批处理文件，使用\ :command:`file(GENERATE)`\ 来设置相\
+  应的PATH环境变量。
 
 导出和安装表达式
 ------------------------------
@@ -2000,12 +1993,10 @@ Shell路径
 
 .. genex:: $<INSTALL_PREFIX>
 
-  Content of the install prefix when the target is exported via
-  :command:`install(EXPORT)`, or when evaluated in the
-  :prop_tgt:`INSTALL_NAME_DIR` property, the ``INSTALL_NAME_DIR`` argument of
-  :command:`install(RUNTIME_DEPENDENCY_SET)`, the code argument of
-  :command:`install(CODE)`, or the file argument of :command:`install(SCRIPT)`,
-  and empty otherwise.
+  当通过\ :command:`install(EXPORT)`\ 导出目标时，或在\ :prop_tgt:`INSTALL_NAME_DIR`\
+  属性、\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ 的\ ``INSTALL_NAME_DIR``\
+  参数、\ :command:`install(CODE)`\ 的code参数或\ :command:`install(SCRIPT)`\ 的\
+  file参数中求值时，install前缀的内容，否则为空。
 
 多层次表达式求值
 ---------------------------------
