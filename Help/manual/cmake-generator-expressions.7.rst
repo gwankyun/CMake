@@ -1769,31 +1769,27 @@ Shell路径
 
   .. versionadded:: 3.27
 
-  Base name of the import file used to link the target ``tgt``, i.e.
-  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>` without prefix and suffix.
-  For example, if target file name is ``libbase.tbd``, the base name is ``base``.
+  用于链接目标\ ``tgt``\ 的导入文件的基本名称，即\
+  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>`\ ，不带前缀和后缀。例如，如果目标文\
+  件名为\ ``libbase.tbd``，则基文件名为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  target properties and their configuration
-  specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性\
+  及其配置特定的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`。
 
-  The :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties can also be considered.
+  也可以考虑\ :prop_tgt:`<CONFIG>_POSTFIX`\ 和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Prefix of the import file used to link target ``tgt``.
+  用于链接目标\ ``tgt``\ 的导入文件的前缀。
 
-  See also the :prop_tgt:`IMPORT_PREFIX` target property.
+  另请参见\ :prop_tgt:`IMPORT_PREFIX`\ 目标属性。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_SUFFIX:tgt>
 
