@@ -34,11 +34,10 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 .. literalinclude:: presets/example.json
   :language: json
 
-The root object recognizes the following fields:
+根对象识别以下字段：
 
 ``version``
-  A required integer representing the version of the JSON schema.
-  The supported versions are:
+  必需的整数，表示JSON模式的版本。支持的版本有：
 
   ``1``
     .. versionadded:: 3.19
@@ -62,51 +61,45 @@ The root object recognizes the following fields:
     .. versionadded:: 3.27
 
 ``cmakeMinimumRequired``
-  An optional object representing the minimum version of CMake needed to
-  build this project. This object consists of the following fields:
+  一个可选对象，表示构建此项目所需的CMake的最小版本。该节点由以下字段组成：
 
   ``major``
-    An optional integer representing the major version.
+    一个可选的整数，表示主版本。
 
   ``minor``
-    An optional integer representing the minor version.
+    一个可选的整数，表示次版本。
 
   ``patch``
-    An optional integer representing the patch version.
+    一个可选的整数，表示补丁版本。
 
 ``include``
-  An optional array of strings representing files to include. If the filenames
-  are not absolute, they are considered relative to the current file.
-  This is allowed in preset files specifying version ``4`` or above.
-  See `包含`_ for discussion of the constraints on included files.
+  表示要包含的文件的可选字符串数组。如果文件名不是绝对的，则认为它们是相对于当前文件的。这在\
+  指定版本\ ``4``\ 或以上的预设文件中是允许的。有关所包含文件的约束的讨论，请参阅\ `包含`_。
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map if
-  it does exist. However, the keys should be a vendor-specific domain name
-  followed by a ``/``-separated path. For example, the Example IDE 1.0 could
-  use ``example.com/ExampleIDE/1.0``. The value of each field can be anything
-  desired by the vendor, though will typically be a map.
+  一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。\
+  但是，密钥应该是特定于供应商的域名，后跟以\ ``/``\ 分隔的路径。例如，示例IDE 1.0可以使用\
+  ``example.com/ExampleIDE/1.0``。每个字段的值可以是供应商想要的任何值，但通常是一个映射。
 
 ``configurePresets``
-  An optional array of `配置预设`_ objects.
-  This is allowed in preset files specifying version ``1`` or above.
+  `配置预设`_\ 对象的可选数组。
+  在指定版本\ ``1``\ 或更高版本的预设文件中允许这样做。
 
 ``buildPresets``
-  An optional array of `构建预设`_ objects.
-  This is allowed in preset files specifying version ``2`` or above.
+  `构建预设`_\ 对象的可选数组。
+  在指定版本\ ``2``\ 或更高版本的预设文件中允许这样做。
 
 ``testPresets``
-  An optional array of `测试预设`_ objects.
-  This is allowed in preset files specifying version ``2`` or above.
+  `测试预设`_\ 对象的可选数组。
+  在指定版本\ ``2``\ 或更高版本的预设文件中允许这样做。
 
 ``packagePresets``
-  An optional array of `包预设`_ objects.
-  This is allowed in preset files specifying version ``6`` or above.
+  `包预设`_\ 对象的可选数组。
+  在指定版本\ ``6``\ 或更高版本的预设文件中允许这样做。
 
 ``workflowPresets``
-  An optional array of `Workflow Preset`_ objects.
-  This is allowed in preset files specifying version ``6`` or above.
+  `工作流预设`_\ 对象的可选数组。
+  在指定版本\ ``6``\ 或更高版本的预设文件中允许这样做。
 
 包含
 ^^^^^^^^
