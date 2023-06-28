@@ -104,25 +104,20 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 包含
 ^^^^^^^^
 
-``CMakePresets.json`` and ``CMakeUserPresets.json`` can include other files
-with the ``include`` field in file version ``4`` and later. Files included
-by these files can also include other files. If ``CMakePresets.json`` and
-``CMakeUserPresets.json`` are both present, ``CMakeUserPresets.json``
-implicitly includes ``CMakePresets.json``, even with no ``include`` field,
-in all versions of the format.
+``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 可以在文件版本\ ``4``\ 及以后\
+包含\ ``include``\ 字段的其他文件。这些文件包含的文件还可以包含其他文件。如果\
+``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 都存在，\
+``CMakeUserPresets.json``\ 隐式包含\ ``CMakePresets.json``，即使没有\ ``include``\
+字段，在所有版本的格式。
 
-If a preset file contains presets that inherit from presets in another file,
-the file must include the other file either directly or indirectly.
-Include cycles are not allowed among files. If ``a.json`` includes
-``b.json``, ``b.json`` cannot include ``a.json``. However, a file may be
-included multiple times from the same file or from different files.
+如果一个预置文件包含从另一个文件中的预置继承的预置，则该文件必须直接或间接地包含另一个文件。\
+文件之间不允许包含循环。如果\ ``a.json``\ 包含\ ``b.json``，\ ``b.json``\ 不能包含\
+``a.json``。但是，一个文件可能会从同一个文件或不同的文件中被包含多次。
 
-Files directly or indirectly included from ``CMakePresets.json`` should be
-guaranteed to be provided by the project. ``CMakeUserPresets.json`` may
-include files from anywhere.
+``CMakePresets.json``\ 中直接或间接包含的文件应保证由项目提供。\ ``CMakeUserPresets.json``\
+可以包含来自任何地方的文件。
 
-Starting from version ``7``, the ``include`` field supports
-`宏扩展`_, but only ``$penv{}`` macro expansion.
+从版本\ ``7``\ 开始，\ ``include``\ 字段支持\ `宏扩展`_，但只支持\ ``$penv{}``\ 宏扩展。
 
 配置预设
 ^^^^^^^^^^^^^^^^
