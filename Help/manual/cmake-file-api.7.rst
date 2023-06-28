@@ -19,31 +19,25 @@ API目录中的文件布局。API文件布局的版本控制与响应中使用�
 此版本的CMake只支持一个API版本：\ `API v1`_。
 
 .. versionadded:: 3.27
-  Projects may also submit queries for the current run using the
-  :command:`cmake_file_api` command.
+  项目也可以使用\ :command:`cmake_file_api`\ 命令提交当前运行的查询。
 
 .. _`file-api v1`:
 
 API v1
 ======
 
-API v1 is housed in the ``<build>/.cmake/api/v1/`` directory.
-It has the following subdirectories:
+API v1位于\ ``<build>/.cmake/api/v1/``\ 目录下。它有以下子目录：
 
 ``query/``
-  Holds query files written by clients.
-  These may be `v1共享无状态查询文件`_,
-  `v1客户端无状态查询文件`_, or `v1客户端有状态查询文件`_.
+  保存客户端写入的查询文件。这些文件可能是\ `v1共享无状态查询文件`_、\ `v1客户端无状态查询文件`_\
+  或\ `v1客户端有状态查询文件`_。
 
 ``reply/``
-  Holds reply files written by CMake whenever it runs to generate a build
-  system.  These are indexed by a `v1应答索引文件`_ file that may
-  reference additional `v1应答文件`_.  CMake owns all reply files.
-  Clients must never remove them.
+  保存CMake在生成构建系统时所写的应答文件。它们由\ `v1应答索引文件`_\ 文件索引，该文件可能\
+  引用其他\ `v1应答文件`_。CMake拥有所有应答文件。客户端永远不能删除它们。
 
-  Clients may look for and read a reply index file at any time.
-  Clients may optionally create the ``reply/`` directory at any time
-  and monitor it for the appearance of a new reply index file.
+  客户端可以随时查找和读取应答索引文件。客户端可以选择在任何时候创建\ ``reply/``\ 目录，并\
+  监视它是否出现新的应答索引文件。
 
 v1共享无状态查询文件
 -------------------------------
