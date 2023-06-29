@@ -42,21 +42,17 @@ API v1位于\ ``<build>/.cmake/api/v1/``\ 目录下。它有以下子目录：
 v1共享无状态查询文件
 -------------------------------
 
-Shared stateless query files allow clients to share requests for
-major versions of the `对象类型`_ and get all requested versions
-recognized by the CMake that runs.
+共享的无状态查询文件允许客户端共享\ `对象类型`_\ 的主要版本的请求，并获得运行的CMake所识别\
+的所有请求版本。
 
-Clients may create shared requests by creating empty files in the
-``v1/query/`` directory.  The form is::
+客户端可以通过在\ ``v1/query/``\ 目录下创建空文件来创建共享请求。格式如下：\ ::
 
   <build>/.cmake/api/v1/query/<kind>-v<major>
 
-where ``<kind>`` is one of the `对象类型`_, ``-v`` is literal,
-and ``<major>`` is the major version number.
+其中\ ``<kind>``\ 是\ `对象类型`_\ 之一，\ ``-v``\ 是文字，\ ``<major>``\ 是主版本号。
 
-Files of this form are stateless shared queries not owned by any specific
-client.  Once created they should not be removed without external client
-coordination or human intervention.
+这种形式的文件是无状态共享查询，不属于任何特定的客户端。一旦创建，在没有外部客户协调或人工干\
+预的情况下，不应该删除它们。
 
 v1客户端无状态查询文件
 -------------------------------
