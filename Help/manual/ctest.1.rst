@@ -45,24 +45,19 @@ ctest(1)
 
 .. option:: --preset <preset>, --preset=<preset>
 
- Use a test preset to specify test options. The project binary directory
- is inferred from the ``configurePreset`` key. The current working directory
- must contain CMake preset files.
- See :manual:`preset <cmake-presets(7)>` for more details.
+ 使用测试预设来指定测试选项。项目二进制目录是从\ ``configurePreset``\ 键推断出来的。当前工\
+ 作目录必须包含CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>`。
 
 .. option:: --list-presets
 
- Lists the available test presets. The current working directory must contain
- CMake preset files.
+ 列出可用的测试预设。当前工作目录必须包含CMake预置文件。
 
 .. option:: -C <cfg>, --build-config <cfg>
 
- Choose configuration to test.
+ 选择要测试的配置。
 
- Some CMake-generated build trees can have multiple build
- configurations in the same tree.  This option can be used to specify
- which one should be tested.  Example configurations are ``Debug`` and
- ``Release``.
+ 一些CMake生成的构建树可以在同一树中有多个构建配置。此选项可用于指定应该测试哪一个。示例配置是\
+ ``Debug``\ 和\ ``Release``。
 
 .. option:: --progress
 
