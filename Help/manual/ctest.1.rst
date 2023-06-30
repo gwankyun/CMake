@@ -61,56 +61,46 @@ ctest(1)
 
 .. option:: --progress
 
- Enable short progress output from tests.
+ 启用测试的短进度输出。
 
- When the output of :program:`ctest` is being sent directly to a terminal, the
- progress through the set of tests is reported by updating the same line
- rather than printing start and end messages for each test on new lines.
- This can significantly reduce the verbosity of the test output.
- Test completion messages are still output on their own line for failed
- tests and the final test summary will also still be logged.
+ 当\ :program:`ctest`\ 的输出直接发送到终端时，通过更新同一行来报告测试集的进度，而不是在\
+ 新行上为每个测试打印开始和结束消息。这可以显著减少测试输出的冗长性。对于失败的测试，测试完成\
+ 消息仍将在其单独的行上输出，并且仍将记录最终的测试摘要。
 
- This option can also be enabled by setting the environment variable
- :envvar:`CTEST_PROGRESS_OUTPUT`.
+ 这个选项也可以通过设置环境变量\ :envvar:`CTEST_PROGRESS_OUTPUT`\ 来启用。
 
 .. option:: -V, --verbose
 
- Enable verbose output from tests.
+ 启用测试的详细输出。
 
- Test output is normally suppressed and only summary information is
- displayed.  This option will show all test output.
+ 测试输出通常被抑制，只显示摘要信息。此选项将显示所有测试输出。
 
 .. option:: -VV, --extra-verbose
 
- Enable more verbose output from tests.
+ 从测试中启用更详细的输出。
 
- Test output is normally suppressed and only summary information is
- displayed.  This option will show even more test output.
+ 测试输出通常被抑制，只显示摘要信息。这个选项将显示更多的测试输出。
 
 .. option:: --debug
 
- Displaying more verbose internals of CTest.
+ 显示CTest的更详细的内部信息。
 
- This feature will result in a large number of output that is mostly
- useful for debugging dashboard problems.
+ 该特性将产生大量输出，这些输出对调试仪表板问题非常有用。
 
 .. option:: --output-on-failure
 
- Output anything outputted by the test program if the test should fail.
- This option can also be enabled by setting the
- :envvar:`CTEST_OUTPUT_ON_FAILURE` environment variable
+ 如果测试失败，输出测试程序输出的任何内容。这个选项也可以通过设置\
+ :envvar:`CTEST_OUTPUT_ON_FAILURE`\ 环境变量来启用。
 
 .. option:: --stop-on-failure
 
- Stop running the tests when the first failure happens.
+ 当出现第一个故障时，停止运行测试。
 
 .. option:: -F
 
- Enable failover.
+ 支持故障转移。
 
- This option allows CTest to resume a test set execution that was
- previously interrupted.  If no interruption occurred, the ``-F`` option
- will have no effect.
+ 此选项允许CTest恢复先前中断的测试集执行。如果没有中断发生，\ ``-F``\ 选项将不起作用。
 
 .. option:: -j <jobs>, --parallel <jobs>
 
