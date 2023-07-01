@@ -122,24 +122,18 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 配置预设
 ^^^^^^^^^^^^^^^^
 
-Each entry of the ``configurePresets`` array is a JSON object
-that may contain the following fields:
+``configurePresets``\ 数组的每个条目都是一个JSON对象，可能包含以下字段：
 
 ``name``
-  A required string representing the machine-friendly name of the preset.
-  This identifier is used in the :ref:`cmake --preset <CMake Options>` option.
-  There must not be two configure presets in the union of ``CMakePresets.json``
-  and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a configure preset may have the same name as a build, test,
-  package, or workflow preset.
+  必需的字符串，表示预设的机器友好的名称。这个标识符在\ :ref:`cmake --preset <CMake Options>`\
+  选项中使用。\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录下，\
+  不能有两个同名的配置预置。但是，配置预设可能与构建、测试、包或工作流预设具有相同的名称。
 
 ``hidden``
-  An optional boolean specifying whether or not a preset should be hidden.
-  If a preset is hidden, it cannot be used in the ``--preset=`` argument,
-  will not show up in the :manual:`CMake GUI <cmake-gui(1)>`, and does not
-  have to have a valid ``generator`` or ``binaryDir``, even from
-  inheritance. ``hidden`` presets are intended to be used as a base for
-  other presets to inherit via the ``inherits`` field.
+  一个可选的布尔值，指定是否应该隐藏预设。如果预设是隐藏的，它不能在\ ``--preset=``\ 参数\
+  中使用，不会显示在\ :manual:`CMake GUI <cmake-gui(1)>`\ 中，并且不必有一个有效的\
+  ``generator``\ 或\ ``binaryDir``，即使是从继承。\ ``hidden``\ 预设被用作其他预设通过\
+  ``inherits``\ 字段继承的基础。
 
 ``inherits``
   An optional array of strings representing the names of presets to inherit
