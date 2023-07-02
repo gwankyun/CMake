@@ -136,39 +136,29 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   ``inherits``\ 字段继承的基础。
 
 ``inherits``
-  An optional array of strings representing the names of presets to inherit
-  from. This field can also be a string, which is equivalent to an array
-  containing one string.
+  一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的数组。
 
-  The preset will inherit all of the fields from the ``inherits``
-  presets by default (except ``name``, ``hidden``, ``inherits``,
-  ``description``, and ``displayName``), but can override them as
-  desired. If multiple ``inherits`` presets provide conflicting values for
-  the same field, the earlier preset in the ``inherits`` array will be
-  preferred.
+  默认情况下，预设将继承\ ``inherits``\ 预设中的所有字段（除了\ ``name``、\ ``hidden``、\
+  ``inherits``、\ ``description``\ 和\ ``displayName``），但是可以根据需要覆盖它们。\
+  如果多个\ ``inherits``\ 预设为同一字段提供冲突的值，则优先选择\ ``inherits``\ 数组中\
+  较早的预设。
 
-  A preset can only inherit from another preset that is defined in the
-  same file or in one of the files it includes (directly or indirectly).
-  Presets in ``CMakePresets.json`` may not inherit from presets in
-  ``CMakeUserPresets.json``.
+  预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。\
+  ``CMakePresets.json``\ 中的预置不能继承\ ``CMakeUserPresets.json``\ 中的预置。
 
 ``condition``
-  An optional `条件`_ object. This is allowed in preset files specifying
-  version ``3`` or above.
+  一个可选的\ `条件`_\ 对象。这在指定版本\ ``3``\ 或以上的预设文件中是允许的。
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map
-  if it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field. If vendors use their own per-preset
-  ``vendor`` field, they should implement inheritance in a sensible manner
-  when appropriate.
+  一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。\
+  但是，它应该遵循与根级\ ``vendor``\ 字段相同的约定。如果供应商使用他们自己预置的\
+  ``vendor``\ 字段，他们应该在适当的时候以合理的方式实现继承。
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，具有预设的人性化名称。
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选的字符串，具有对预设的人性化描述。
 
 ``generator``
   An optional string representing the generator to use for the preset. If

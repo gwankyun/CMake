@@ -57,23 +57,18 @@ v1共享无状态查询文件
 v1客户端无状态查询文件
 -------------------------------
 
-Client stateless query files allow clients to create owned requests for
-major versions of the `对象类型`_ and get all requested versions
-recognized by the CMake that runs.
+客户端无状态查询文件允许客户端为\ `对象类型`_\ 的主要版本创建自己的请求，并获得运行的CMake\
+所识别的所有请求版本。
 
-Clients may create owned requests by creating empty files in
-client-specific query subdirectories.  The form is::
+客户端可以通过在特定于客户端的查询子目录中创建空文件来创建自己的请求。格式如下：\ ::
 
   <build>/.cmake/api/v1/query/client-<client>/<kind>-v<major>
 
-where ``client-`` is literal, ``<client>`` is a string uniquely
-identifying the client, ``<kind>`` is one of the `对象类型`_,
-``-v`` is literal, and ``<major>`` is the major version number.
-Each client must choose a unique ``<client>`` identifier via its
-own means.
+其中\ ``client-``\ 是字面量，\ ``<client>``\ 是唯一标识客户端的字符串，\ ``<kind>``\
+是\ `对象类型`_\ 之一，\ ``-v``\ 是字面意思，\ ``<major>``\ 是主版本号。每个客户端必须选\
+择唯一的\ ``<client>``\ 标识符通过它自己的方式。
 
-Files of this form are stateless queries owned by the client ``<client>``.
-The owning client may remove them at any time.
+这种形式的文件是客户端\ ``<client>``\ 拥有的无状态查询。拥有它们的客户端可以随时删除它们。
 
 v1客户端有状态查询文件
 ------------------------------

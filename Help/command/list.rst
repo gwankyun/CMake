@@ -1,7 +1,7 @@
 list
 ----
 
-Operations on :ref:`semicolon-separated lists <CMake Language Lists>`.
+对\ :ref:`以分号分隔的列表 <CMake Language Lists>`\ 的操作。
 
 Synopsis
 ^^^^^^^^
