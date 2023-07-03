@@ -161,73 +161,58 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   一个可选的字符串，具有对预设的人性化描述。
 
 ``generator``
-  An optional string representing the generator to use for the preset. If
-  ``generator`` is not specified, it must be inherited from the
-  ``inherits`` preset (unless this preset is ``hidden``). In version ``3``
-  or above, this field may be omitted to fall back to regular generator
-  discovery procedure.
+  一个可选字符串，表示要用于预设的生成器。如果未指定\ ``generator``，则必须从所\
+  ``inherits``\ 的预设继承（除非该预设是\ ``hidden``）。在版本\ ``3``\ 或更高版本中，可\
+  以省略此字段以返回到常规生成器发现过程。
 
-  Note that for Visual Studio generators, unlike in the command line
-  :option:`-G <cmake -G>` argument, you cannot include the platform name
-  in the generator name. Use the ``architecture`` field instead.
+  请注意，对于Visual Studio生成器，与命令行\ :option:`-G <cmake -G>`\ 参数不同，你不能\
+  在生成器名称中包含平台名称。请使用\ ``architecture``\ 字段。
 
 ``architecture``, ``toolset``
-  Optional fields representing the platform and toolset, respectively, for
-  :manual:`generators <cmake-generators(7)>` that support them.
+  可选字段，分别表示支持它们的\ :manual:`generators <cmake-generators(7)>`\ 的平台和\
+  工具集。
 
-  See :option:`cmake -A` option for possible values for ``architecture``
-  and :option:`cmake -T` for ``toolset``.
+  请参阅\ :option:`cmake -A`\ 选项了解\ ``architecture``\ 的可能值，并参阅\
+  :option:`cmake -T`\ 了解\ ``toolset``。
 
-  Each may be either a string or an object with the following fields:
+  每个字段都可以是字符串或具有以下字段的对象：
 
   ``value``
-    An optional string representing the value.
+    表示值的可选字符串。
 
   ``strategy``
-    An optional string telling CMake how to handle the ``architecture`` or
-    ``toolset`` field. Valid values are:
+    一个可选的字符串，告诉CMake如何处理\ ``architecture``\ 或\ ``toolset``\ 字段。有\
+    效值为：
 
     ``"set"``
-      Set the respective value. This will result in an error for generators
-      that do not support the respective field.
+      设置各自的值。这将导致不支持相应字段的生成器出现错误。
 
     ``"external"``
-      Do not set the value, even if the generator supports it. This is
-      useful if, for example, a preset uses the Ninja generator, and an IDE
-      knows how to set up the Visual C++ environment from the
-      ``architecture`` and ``toolset`` fields. In that case, CMake will
-      ignore the field, but the IDE can use them to set up the environment
-      before invoking CMake.
+      即使生成器支持该值，也不要设置该值。例如，如果预设使用Ninja生成器，并且IDE知道如何从\
+      ``architecture``\ 和\ ``toolset``\ 字段设置Visual C++环境，则这很有用。在这种情\
+      况下，CMake将忽略该字段，但IDE可以在调用CMake之前使用它们来设置环境。
 
-    If no ``strategy`` field is given, or if the field uses the string form
-    rather than the object form, the behavior is the same as ``"set"``.
+    如果没有给出\ ``strategy``\ 字段，或者该字段使用字符串形式而不是对象形式，则行为与\
+    ``"set"``\ 相同。
 
 ``toolchainFile``
-  An optional string representing the path to the toolchain file.
-  This field supports `宏扩展`_. If a relative path is specified,
-  it is calculated relative to the build directory, and if not found,
-  relative to the source directory. This field takes precedence over any
-  :variable:`CMAKE_TOOLCHAIN_FILE` value. It is allowed in preset files
-  specifying version ``3`` or above.
+  表示工具链文件路径的可选字符串。该字段支持\ `宏扩展`_。如果指定了相对路径，则计算相对于构\
+  建目录的路径，如果没有找到，则计算相对于源目录的路径。该字段优先于\
+  :variable:`CMAKE_TOOLCHAIN_FILE`\ 的任何值。在指定版本\ ``3``\ 或更高版本的预设文件\
+  中允许使用。
 
 ``binaryDir``
-  An optional string representing the path to the output binary directory.
-  This field supports `宏扩展`_. If a relative path is specified,
-  it is calculated relative to the source directory. If ``binaryDir`` is not
-  specified, it must be inherited from the ``inherits`` preset (unless this
-  preset is ``hidden``). In version ``3`` or above, this field may be
-  omitted.
+  一个可选字符串，表示输出二进制目录的路径。该字段支持\ `宏扩展`_.。如果指定了相对路径，则计\
+  算相对于源目录的路径。如果未指定\ ``binaryDir``，则必须从\ ``inherits``\ 预设继承（除\
+  非该预设是\ ``hidden``）。在版本\ ``3``\ 或更高版本中，此字段可能被省略。
 
 ``installDir``
-  An optional string representing the path to the installation directory.
-  This field supports `宏扩展`_. If a relative path is specified,
-  it is calculated relative to the source directory. This is allowed in
-  preset files specifying version ``3`` or above.
+  表示安装目录路径的可选字符串。该字段支持\ `宏扩展`_。如果指定了相对路径，则计算相对于源目\
+  录的路径。这在指定版本\ ``3``\ 或以上的预设文件中是允许的。
 
 ``cmakeExecutable``
-  An optional string representing the path to the CMake executable to use
-  for this preset. This is reserved for use by IDEs, and is not used by
-  CMake itself. IDEs that use this field should expand any macros in it.
+  一个可选的字符串，表示用于此预设的CMake可执行文件的路径。这是保留给IDE使用的，而不是由\
+  CMake本身使用。使用该字段的IDE应该展开其中的任何宏。
 
 ``cacheVariables``
   An optional map of cache variables. The key is the variable name (which
