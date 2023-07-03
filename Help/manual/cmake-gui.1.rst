@@ -44,9 +44,8 @@ CMake是一个跨平台的构建系统生成器。项目使用与平台无关的
 
 .. option:: --browse-manual [<filename>]
 
- 在浏览器中打开CMake参考手册并立即退出。 If
- ``<filename>`` is specified, open that file within the reference manual
- instead of ``index.html``.
+ 在浏览器中打开CMake参考手册并立即退出。如果指定了\ ``<filename>``，则在参考手册中打开该\
+ 文件，而非\ ``index.html``。
 
 .. include:: OPTIONS_HELP.txt
 

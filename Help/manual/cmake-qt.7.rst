@@ -173,23 +173,24 @@ AUTORCC
 
   add_executable(myexe main.cpp resource_file.qrc)
 
-通过设置\ :variable:`CMAKE_AUTORCC`\ 变量，可以为以下所有目标预先设置\ :prop_tgt:`AUTORCC`\
-目标属性。可以填充\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性来设置传递给\ ``rcc``\ 的选项。\
-可以填充\ :variable:`CMAKE_AUTORCC_OPTIONS`\ 变量，以预先设置以下所有目标的选项。\
-:prop_sf:`AUTORCC_OPTIONS`\ 源文件属性可以在\ ``<name>.qrc``\ 文件上设置文件的特定选项。\
-这将覆盖\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性中的选项。
+通过设置\ :variable:`CMAKE_AUTORCC`\ 变量，可以为以下所有目标预先设置\
+:prop_tgt:`AUTORCC`\ 目标属性。可以填充\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性来设置\
+传递给\ ``rcc``\ 的选项。可以填充\ :variable:`CMAKE_AUTORCC_OPTIONS`\ 变量，以预先设\
+置以下所有目标的选项。\ :prop_sf:`AUTORCC_OPTIONS`\ 源文件属性可以在\ ``<name>.qrc``\
+文件上设置文件的特定选项。这将覆盖\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性中的选项。
 
-通过启用\ :prop_sf:`SKIP_AUTORCC`\ 或更广泛的\ :prop_sf:`SKIP_AUTOGEN`，\
-源文件可以从\ :prop_tgt:`AUTORCC`\ 处理中排除。
+通过启用\ :prop_sf:`SKIP_AUTORCC`\ 或更广泛的\ :prop_sf:`SKIP_AUTOGEN`，源文件可以从\
+:prop_tgt:`AUTORCC`\ 处理中排除。
 
 ``<ORIGIN>_autogen``\ 目标
 ===============================
 
 ``moc``\ 和\ ``uic``\ 工具作为CMake生成的合成\ ``<ORIGIN>_autogen``\
-:command:`自定义目标 <add_custom_target>`\ 的一部分执行。默认情况下，\ ``<ORIGIN>_autogen``\
-目标继承了\ ``<ORIGIN>``\ 目标的依赖关系（参见\ :prop_tgt:`AUTOGEN_ORIGIN_DEPENDS`）。\
-通过将目标依赖项添加到\ :prop_tgt:`AUTOGEN_TARGET_DEPENDS`\ 目标属性，可以将它们添加到\
-``<ORIGIN>_autogen``\ 目标中。
+:command:`自定义目标 <add_custom_target>`\ 的一部分执行。默认情况下，\
+``<ORIGIN>_autogen``\ 目标继承了\ ``<ORIGIN>``\ 目标的依赖关系（参见\
+:prop_tgt:`AUTOGEN_ORIGIN_DEPENDS`）。通过将目标依赖项添加到\
+:prop_tgt:`AUTOGEN_TARGET_DEPENDS`\ 目标属性，可以将它们添加到\ ``<ORIGIN>_autogen``\
+目标中。
 
 Visual Studio生成器
 ========================

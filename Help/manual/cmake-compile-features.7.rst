@@ -52,8 +52,8 @@ CMake会添加\ ``-std=gnu++11``\ 标志。
 
 在上面的例子中，``mylib``\ 在自己构建时需要\ ``cxx_constexpr``，但是\ ``mylib``\ 的消\
 费者不需要使用支持\ ``cxx_constexpr``\ 的编译器。如果\ ``mylib``\ 的接口确实需要\
-``cxx_constexpr``\ 特性（或任何其他已知特性），则可以使用\ :command:`target_compile_features`\
-的\ ``PUBLIC``\ 或\ ``INTERFACE``\ 签名来指定：
+``cxx_constexpr``\ 特性（或任何其他已知特性），则可以使用\
+:command:`target_compile_features`\ 的\ ``PUBLIC``\ 或\ ``INTERFACE``\ 签名来指定：
 
 .. code-block:: cmake
 
@@ -73,9 +73,9 @@ CMake会添加\ ``-std=gnu++11``\ 标志。
 指定语言标准
 ----------------------------
 
-在使用大量来自特定语言标准（如C++ 11）的通用特性的项目中，可以指定一个元特性（如\  ``cxx_std_11``），\
-该元特性需要使用最低限度但可能更高的知道该标准的编译器模式。这比单独指定所有特性要简单，但这\
-不能保证任何特定特性的存在。对不受支持特性的使用的诊断将延迟到编译时。
+在使用大量来自特定语言标准（如C++ 11）的通用特性的项目中，可以指定一个元特性（如\
+``cxx_std_11``），该元特性需要使用最低限度但可能更高的知道该标准的编译器模式。这比单独指定\
+所有特性要简单，但这不能保证任何特定特性的存在。对不受支持特性的使用的诊断将延迟到编译时。
 
 例如，如C++ 11特性在项目的头文件中广泛使用，那么客户端必须使用不低于C++ 11的编译器模式。代\
 码中可以这样指定：
@@ -166,10 +166,10 @@ CMake会添加\ ``-std=gnu++11``\ 标志。
 
 然而，如果有许多文件要抽象，这也许难以维护。我们需要的是根据编译器的能力使用替代的include目录。
 
-CMake提供了一个\ ``COMPILE_FEATURES``\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\
-来实现这些条件。这可以与诸如\ :command:`target_include_directories`\ 和\
-:command:`target_link_libraries`\ 这样的构建属性命令一起使用，以设置适当的\
-:manual:`构建系统 <cmake-buildsystem(7)>`\ 属性：
+CMake提供了一个\ ``COMPILE_FEATURES``\
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 来实现这些条件。这可以与诸如\
+:command:`target_include_directories`\ 和\ :command:`target_link_libraries`\ 这\
+样的构建属性命令一起使用，以设置适当的\ :manual:`构建系统 <cmake-buildsystem(7)>`\ 属性：
 
 .. code-block:: cmake
 
@@ -215,8 +215,8 @@ CMake目前知道的\ :prop_tgt:`C标准 <C_STANDARD>`\ 和\
 * ``GNU``: GNU 编译器版本 3.4+。
 
 CMake目前知道的\ :prop_tgt:`C++标准 <CXX_STANDARD>`\ 及其相关的元特性（例如\
-``cxx_std_11``），这些元特性可以从以下\ :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>`\
-中获得：
+``cxx_std_11``），这些元特性可以从以下\
+:variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>`\ 中获得：
 
 * ``Cray``: Cray 编译器环境版本 8.1+。
 * ``Fujitsu``: Fujitsu HPC 编译器 4.0+。
@@ -243,14 +243,15 @@ CMake目前知道的\ :prop_tgt:`CUDA标准 <CUDA_STANDARD>`\ 及其相关的元
 语言标准标志
 =======================
 
-为了满足\ :command:`target_compile_features`\ 命令或\ :variable:`CMAKE_<LANG>_STANDARD`\
-变量指定的要求，CMake可以向编译器传递一个语言标准标志，例如\ ``-std=c++11``。
+为了满足\ :command:`target_compile_features`\ 命令或\
+:variable:`CMAKE_<LANG>_STANDARD`\ 变量指定的要求，CMake可以向编译器传递一个语言标准标\
+志，例如\ ``-std=c++11``。
 
-对于\ :ref:`Visual Studio Generators`，CMake不能精确地控制编译器命令行上语言标准标志的位置。\
-对于\ :ref:`Ninja Generators`、:ref:`Makefile Generators`\ 和\ :generator:`Xcode`, \
-CMake将语言标准标志放在\ :variable:`CMAKE_<LANG>_FLAGS`\和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
-的语言范围标志之后。
+对于\ :ref:`Visual Studio Generators`，CMake不能精确地控制编译器命令行上语言标准标志的\
+位置。对于\ :ref:`Ninja Generators`、:ref:`Makefile Generators`\ 和\
+:generator:`Xcode`, CMake将语言标准标志放在\ :variable:`CMAKE_<LANG>_FLAGS`\和\
+:variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\ 的语言范围标志之后。
 
 .. versionchanged:: 3.26
-  语言标准标志被放置在其他抽象指定的标志之前，例如\ :command:`target_compile_options`\ 命令。\
-  在CMake 3.26之前，语言标准标志放在它们之后。
+  语言标准标志被放置在其他抽象指定的标志之前，例如\ :command:`target_compile_options`\
+  命令。在CMake 3.26之前，语言标准标志放在它们之后。

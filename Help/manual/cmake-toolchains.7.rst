@@ -61,20 +61,23 @@ CMake使用工具链来编译、链接库和创建存档，以及其他任务来
 :variable:`CMAKE_<LANG>_FLAGS`
   变量和特定于配置的等效物，包含在编译特定语言的文件时将被添加到编译命令中的标志。
 
-CMake需要一种方法来确定使用哪个编译器来调用链接器。这是由\ :manual:`目标 <cmake-buildsystem(7)>`\
-源文件的\ :prop_sf:`LANGUAGE`\ 属性决定的，在静态库的情况下，是由依赖库的\ ``LANGUAGE``\
-属性决定的。CMake做出的选择可能会被\ :prop_tgt:`LINKER_LANGUAGE`\ 目标属性覆盖。
+CMake需要一种方法来确定使用哪个编译器来调用链接器。这是由\
+:manual:`目标 <cmake-buildsystem(7)>`\ 源文件的\ :prop_sf:`LANGUAGE`\ 属性决定的，\
+在静态库的情况下，是由依赖库的\ ``LANGUAGE``\ 属性决定的。CMake做出的选择可能会被\
+:prop_tgt:`LINKER_LANGUAGE`\ 目标属性覆盖。
 
 工具链特性
 ==================
 
-CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\ :module:`CheckSourceCompiles`、\
-:module:`CheckCXXSymbolExists`\ 和\ :module:`CheckIncludeFile`\ 来测试各种工具链功\
-能的能力和可用性。这些API以某种方式测试工具链并缓存结果，以便下次CMake运行时不必再次执行测试。
+CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\
+:module:`CheckSourceCompiles`、\ :module:`CheckCXXSymbolExists`\ 和\
+:module:`CheckIncludeFile`\ 来测试各种工具链功能的能力和可用性。这些API以某种方式测试工\
+具链并缓存结果，以便下次CMake运行时不必再次执行测试。
 
-一些工具链特性在CMake中有内置处理，不需要编译测试。例如，:prop_tgt:`POSITION_INDEPENDENT_CODE`\
-允许指定目标应该构建为位置无关的代码，如果编译器支持该特性。:prop_tgt:`<LANG>_VISIBILITY_PRESET`\
-和\ :prop_tgt:`VISIBILITY_INLINES_HIDDEN`\ 目标属性添加了隐藏可见性的标志，如果编译器支持的话。
+一些工具链特性在CMake中有内置处理，不需要编译测试。例如，\
+:prop_tgt:`POSITION_INDEPENDENT_CODE`\ 允许指定目标应该构建为位置无关的代码，如果编译\
+器支持该特性。:prop_tgt:`<LANG>_VISIBILITY_PRESET`\ 和\
+:prop_tgt:`VISIBILITY_INLINES_HIDDEN`\ 目标属性添加了隐藏可见性的标志，如果编译器支持的话。
 
 .. _`Cross Compiling Toolchain`:
 
@@ -82,14 +85,15 @@ CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\ :module:`Ch
 ===============
 
 如果使用命令行参数\ :option:`--toolchain path/to/file <cmake --toolchain>`\ 或\
-:option:`-DCMAKE_TOOLCHAIN_FILE=path/to/file <cmake -D>`\ 调用\ :manual:`cmake(1)`，\
-文件将提前加载以为编译器设置值。当CMake进行交叉编译时，\ :variable:`CMAKE_CROSSCOMPILING`\
-变量被设置为true。
+:option:`-DCMAKE_TOOLCHAIN_FILE=path/to/file <cmake -D>`\ 调用\
+:manual:`cmake(1)`，文件将提前加载以为编译器设置值。当CMake进行交叉编译时，\
+:variable:`CMAKE_CROSSCOMPILING`\ 变量被设置为true。
 
-注意，在工具链文件中使用\ :variable:`CMAKE_SOURCE_DIR`\ 或\ :variable:`CMAKE_BINARY_DIR`\
-变量通常是不可取的。工具链文件用于这些变量在不同地方使用时具有不同值的上下文中（例如，作为调用\
-:command:`try_compile`\ 的一部分）。在大多数情况下，当需要计算工具链文件中的路径时，更合适\
-的变量是\ :variable:`CMAKE_CURRENT_LIST_DIR`，因为它总是有一个明确的、可预测的值。
+注意，在工具链文件中使用\ :variable:`CMAKE_SOURCE_DIR`\ 或\
+:variable:`CMAKE_BINARY_DIR`\ 变量通常是不可取的。工具链文件用于这些变量在不同地方使用时\
+具有不同值的上下文中（例如，作为调用\ :command:`try_compile`\ 的一部分）。在大多数情况下，\
+当需要计算工具链文件中的路径时，更合适的变量是\ :variable:`CMAKE_CURRENT_LIST_DIR`，因\
+为它总是有一个明确的、可预测的值。
 
 Linux交叉编译
 -------------------------
@@ -180,8 +184,8 @@ Cray编程环境的默认配置是只支持静态库。可以通过将\ ``CRAYPE
 QNX交叉编译
 -----------------------
 
-作为Clang编译器，QNX QCC编译器本质上是一个交叉编译器。:variable:`CMAKE_<LANG>_COMPILER_TARGET`\
-可以设置为在编译时向支持的编译器传递一个值：
+作为Clang编译器，QNX QCC编译器本质上是一个交叉编译器。\
+:variable:`CMAKE_<LANG>_COMPILER_TARGET`\ 可以设置为在编译时向支持的编译器传递一个值：
 
 .. code-block:: cmake
 
@@ -266,11 +270,11 @@ ADSP SHARC/Blackfin交叉编译
 叉编译，不包括\ ``ADSP-``\ 前缀，例如\ ``21594``、\ ``SC589``\ 等。此值不区分大小写。
 
 CMake将自动在默认安装位置搜索CCES或VDSP++安装，并选择找到的最新版本。如果安装了CCES，则将选\
-择CCES而不是VDSP++。可以通过\ :variable:`CMAKE_ADSP_ROOT`\ 变量或\ :envvar:`ADSP_ROOT`\
-环境变量设置自定义安装路径。
+择CCES而不是VDSP++。可以通过\ :variable:`CMAKE_ADSP_ROOT`\ 变量或\
+:envvar:`ADSP_ROOT`\ 环境变量设置自定义安装路径。
 
-编译器（\ ``cc21k``\ 或者\ ``ccblkfn``）是根据提供的\ :variable:`CMAKE_SYSTEM_PROCESSOR`\
-值自动选择的。
+编译器（\ ``cc21k``\ 或者\ ``ccblkfn``）是根据提供的\
+:variable:`CMAKE_SYSTEM_PROCESSOR`\ 值自动选择的。
 
 .. _`Cross Compiling for Android`:
 
@@ -285,7 +289,8 @@ Visual Studio Edition <Cross Compiling for Android with NVIDIA Nsight Tegra
 Visual Studio Edition>`\ 或\ :ref:`Visual Studio tools for Android
 <Cross Compiling for Android with the NDK>`。有关进一步的配置细节，请参阅这些小节。
 
-对于\ :ref:`Makefile Generators`\ 和\ :generator:`Ninja`\ 生成器，CMake期望下列环境之一：
+对于\ :ref:`Makefile Generators`\ 和\ :generator:`Ninja`\ 生成器，CMake期望下列环境\
+之一：
 
 * :ref:`NDK <Cross Compiling for Android with the NDK>`
 * :ref:`Standalone Toolchain <Cross Compiling for Android with a Standalone Toolchain>`
@@ -305,8 +310,8 @@ CMake使用以下步骤选择一个环境：
   ``<standalone-toolchain>/sysroot``\ 的目录，\ ``<standalone-toolchain>``\ 部分将\
   被用作\ :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`\ 的值，并且将使用独立工具链。
 
-* 否则，如果设置了cmake变量\ ``ANDROID_NDK``，它将被用作\ :variable:`CMAKE_ANDROID_NDK`\
-  的值，并且NDK将被使用。
+* 否则，如果设置了cmake变量\ ``ANDROID_NDK``，它将被用作\
+  :variable:`CMAKE_ANDROID_NDK`\ 的值，并且NDK将被使用。
 
 * 否则，如果设置了cmake变量\ ``ANDROID_STANDALONE_TOOLCHAIN``，它将被用作\
   :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`\ 的值，并且将使用独立工具链。
@@ -408,8 +413,9 @@ Android为目标，使用独立的工具链进行交叉编译。
   设置为\ ``Android``。必须指定以启用Android的交叉编译。
 
 :variable:`CMAKE_ANDROID_STANDALONE_TOOLCHAIN`
-  设置为独立工具链根目录的绝对路径。必须存在\ ``${CMAKE_ANDROID_STANDALONE_TOOLCHAIN}/sysroot``\
-  目录。如果未指定，则如\ :ref:`上 <Cross Compiling for Android>`\ 所述选择此变量的默认值。
+  设置为独立工具链根目录的绝对路径。必须存在\
+  ``${CMAKE_ANDROID_STANDALONE_TOOLCHAIN}/sysroot``\ 目录。如果未指定，则如\
+  :ref:`上 <Cross Compiling for Android>`\ 所述选择此变量的默认值。
 
 :variable:`CMAKE_ANDROID_ARM_MODE`
   当独立工具链以ARM为目标时，可选择将此设置为\ ``ON``\ 以瞄准32位ARM而不是16位Thumb。有关\
@@ -561,7 +567,7 @@ watchOS  watchOS           watchos              watchsimulator
 ^^^^^^^^^^^^
 
 嵌入式Apple平台的一些构建构件需要强制代码签名。如果正在使用\ :generator:`Xcode`\ 生成器，\
-并且需要或希望代码签名，则可以通过\ ``CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM``  CMake\
+并且需要或希望代码签名，则可以通过\ ``CMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM`` CMake\
 变量指定开发团队ID。这个团队ID将被包含在生成的Xcode项目中。默认情况下，CMake在内部配置阶段\
 （即编译器ID和特性检测）避免了代码签名的需要。
 
@@ -571,18 +577,19 @@ watchOS  watchOS           watchos              watchsimulator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 在为任何嵌入式平台配置时，可以针对实际设备或模拟器进行配置。两者都有自己独立的SDK，但CMake只\
-支持在配置阶段指定单个SDK。这意味着开发人员必须在配置时选择其中一个。当使用\ :generator:`Xcode`\
-生成器时，这不是一个限制，因为Xcode仍然允许你为设备或模拟器构建，即使配置只对两者中的一个执行。\
-在Xcode IDE中，为选定的“目标”平台执行构建。当从命令行构建时，可以通过向底层构建工具（\
-``xcodebuild``）传递\ ``-sdk``\ 选项来直接指定所需的sdk。例如：
+支持在配置阶段指定单个SDK。这意味着开发人员必须在配置时选择其中一个。当使用\
+:generator:`Xcode`\ 生成器时，这不是一个限制，因为Xcode仍然允许你为设备或模拟器构建，即使\
+配置只对两者中的一个执行。在Xcode IDE中，为选定的“目标”平台执行构建。当从命令行构建时，可以\
+通过向底层构建工具（\ ``xcodebuild``）传递\ ``-sdk``\ 选项来直接指定所需的sdk。例如：
 
 .. code-block:: console
 
   $ cmake --build ... -- -sdk iphonesimulator
 
-请注意，配置期间所做的检查是针对配置时SDK执行的，可能不适用于其他SDK。:command:`find_package`、\
-:command:`find_library`\ 等命令只存储和使用配置的SDK/平台的详细信息，所以如果想在设备和模\
-拟器构建之间切换，它们可能会出现问题。你可以遵循以下规则使设备+模拟器配置工作：
+请注意，配置期间所做的检查是针对配置时SDK执行的，可能不适用于其他SDK。\
+:command:`find_package`、\ :command:`find_library`\ 等命令只存储和使用配置的SDK/平台\
+的详细信息，所以如果想在设备和模拟器构建之间切换，它们可能会出现问题。你可以遵循以下规则使设\
+备+模拟器配置工作：
 
 - 使用明确的\ ``-l``\ 链接器标志，例如\ ``target_link_libraries(foo PUBLIC "-lz")``
 

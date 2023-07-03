@@ -143,9 +143,10 @@ cmake-buildsystem(7)
 :command:`target_include_directories`、:command:`target_compile_definitions`\ 和\
 :command:`target_compile_options`\ 命令指定二进制目标的构建规范和使用要求。\
 这些命令分别填充了\ :prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\
-和\ :prop_tgt:`COMPILE_OPTIONS`\ 目标属性，可能还有\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、\
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\
-目标属性。
+和\ :prop_tgt:`COMPILE_OPTIONS`\ 目标属性，可能还有\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、\
+:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和\
+:prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标属性。
 
 每个命令都有\ ``PRIVATE``、\ ``PUBLIC``\ 和\ ``INTERFACE``\ 模式。\ ``PRIVATE``\
 模式只填充目标属性的非\ ``INTERFACE_``\ 变量，\ ``INTERFACE``\ 模式只填充\
@@ -159,31 +160,33 @@ cmake-buildsystem(7)
     INTERFACE USING_ARCHIVE_LIB
   )
 
-注意，使用要求并不是为了方便而让下游使用特定的\ :prop_tgt:`COMPILE_OPTIONS`\ 或\ :prop_tgt:`COMPILE_OPTIONS`\ 等。\
-属性的内容必须是\ **要求**，而不仅仅是建议或方便。
+注意，使用要求并不是为了方便而让下游使用特定的\ :prop_tgt:`COMPILE_OPTIONS`\ 或\
+:prop_tgt:`COMPILE_OPTIONS`\ 等。属性的内容必须是\ **要求**，而不仅仅是建议或方便。
 
-请参阅\ :manual:`cmake-packages(7)`\ 手册的\ :ref:`Creating Relocatable Packages`\ 一节，\
-讨论在为重新分发创建包时指定使用要求时必须注意的其他事项。
+请参阅\ :manual:`cmake-packages(7)`\ 手册的\ :ref:`Creating Relocatable Packages`\
+一节，讨论在为重新分发创建包时指定使用要求时必须注意的其他事项。
 
 目标属性
 -----------------
 
-在编译二进制目标的源文件时，:prop_tgt:`INCLUDE_DIRECTORIES`、:prop_tgt:`COMPILE_DEFINITIONS`\ 和\
-:prop_tgt:`COMPILE_OPTIONS`\ 目标属性的内容会被适当地使用。
+在编译二进制目标的源文件时，:prop_tgt:`INCLUDE_DIRECTORIES`、\
+:prop_tgt:`COMPILE_DEFINITIONS`\ 和\ :prop_tgt:`COMPILE_OPTIONS`\ 目标属性的内容会\
+被适当地使用。
 
 :prop_tgt:`INCLUDE_DIRECTORIES`\ 中的条目用\ ``-I``\ 或\ ``-isystem``\ 前缀按照属性\
 值出现的顺序添加到编译行。
 
-:prop_tgt:`COMPILE_DEFINITIONS`\ 中的条目以\ ``-D``\ 或\ ``/D``\ 作为前缀，\
-并以未指定的顺序添加到编译行中。:prop_tgt:`DEFINE_SYMBOL`\ 目标属性也被添加为一个编译定义，\
-作为\ ``SHARED``\ 库和 ``MODULE``\ 库目标的便捷特例。
+:prop_tgt:`COMPILE_DEFINITIONS`\ 中的条目以\ ``-D``\ 或\ ``/D``\ 作为前缀，并以未指\
+定的顺序添加到编译行中。:prop_tgt:`DEFINE_SYMBOL`\ 目标属性也被添加为一个编译定义，作为\
+``SHARED``\ 库和 ``MODULE``\ 库目标的便捷特例。
 
-:prop_tgt:`COMPILE_OPTIONS`\ 中的条目被转义为shell，并按照属性值中出现的顺序添加。\
-一些编译选项有特殊的独立处理，如\ :prop_tgt:`POSITION_INDEPENDENT_CODE`。
+:prop_tgt:`COMPILE_OPTIONS`\ 中的条目被转义为shell，并按照属性值中出现的顺序添加。一些\
+编译选项有特殊的独立处理，如\ :prop_tgt:`POSITION_INDEPENDENT_CODE`。
 
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\
-和\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标属性的内容是\ *使用要求*\ ——它们指定消\
-费者必须使用哪些内容来正确编译和链接它们所出现的目标。对于任何二进制目标，在\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、\
+:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 和\
+:prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标属性的内容是\ *使用要求*\ ——它们指定消费者\
+必须使用哪些内容来正确编译和链接它们所出现的目标。对于任何二进制目标，在\
 :command:`target_link_libraries`\ 命令中指定的每个目标上的每个\ ``INTERFACE_``\ 属性\
 的内容都会被消耗：
 
@@ -205,12 +208,12 @@ cmake-buildsystem(7)
   # executable sources are compiled with -DUSING_ARCHIVE_LIB.
   target_link_libraries(consumer archive)
 
-因为通常需要将源目录和相应的构建目录添加到\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中，\
-所以可以启用\ :variable:`CMAKE_INCLUDE_CURRENT_DIR`\ 变量，\
-方便地将相应的目录添加到所有目标的\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中。\
-可以启用 \ :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ 变量，\
-将相应的目录添加到所有目标的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 中。\
-通过使用\ :command:`target_link_libraries`\ 命令，可以方便地使用多个不同目录中的目标。
+因为通常需要将源目录和相应的构建目录添加到\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中，所以可\
+以启用\ :variable:`CMAKE_INCLUDE_CURRENT_DIR`\ 变量，方便地将相应的目录添加到所有目标的\
+:prop_tgt:`INCLUDE_DIRECTORIES`\ 中。可以启用\
+:variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ 变量，将相应的目录添加到所有目标\
+的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 中。通过使用\
+:command:`target_link_libraries`\ 命令，可以方便地使用多个不同目录中的目标。
 
 
 .. _`Target Usage Requirements`:
@@ -242,14 +245,14 @@ cmake-buildsystem(7)
 因为\ ``archive``\ 是\ ``archiveExtras``\ 的\ ``PUBLIC``\ 依赖项，所以它的使用需求也\
 会传播给\ ``consumer``。
 
-因为\ ``serialization``\ 是\ ``archiveExtras``\ 的\ ``PRIVATE``\ 依赖项，\
-所以它的使用需求不会传播给\ ``consumer``。
+因为\ ``serialization``\ 是\ ``archiveExtras``\ 的\ ``PRIVATE``\ 依赖项，所以它的使\
+用需求不会传播给\ ``consumer``。
 
-通常，如果依赖项只在库的实现，而不是头文件中使用，则应该使用\ :command:`target_link_libraries`\
-和\ ``PRIVATE``\ 关键字指定依赖项。如果一个依赖在库的头文件中被额外使用（例如用于类继承），\
-那么它应该被指定为\ ``PUBLIC``\ 依赖。一个库的实现中没有使用的依赖项，只有它的头文件才使用它，\
-则应该被指定为一个\ ``INTERFACE``\ 依赖项。\ :command:`target_link_libraries`\ 命令\
-可以对每个关键字进行多次调用：
+通常，如果依赖项只在库的实现，而不是头文件中使用，则应该使用\
+:command:`target_link_libraries`\ 和\ ``PRIVATE``\ 关键字指定依赖项。如果一个依赖在库\
+的头文件中被额外使用（例如用于类继承），那么它应该被指定为\ ``PUBLIC``\ 依赖。一个库的实现\
+中没有使用的依赖项，只有它的头文件才使用它，则应该被指定为一个\ ``INTERFACE``\ 依赖项。\
+:command:`target_link_libraries`\ 命令可以对每个关键字进行多次调用：
 
 .. code-block:: cmake
 
@@ -259,8 +262,9 @@ cmake-buildsystem(7)
   )
 
 使用要求是通过从依赖项中读取目标属性的\ ``INTERFACE_``\ 变量并将值附加到操作数的非\
-``INTERFACE_``\ 变量来传播的。例如，读取依赖关系的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\
-并将其附加到操作数的\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 中。如果顺序是相关的且被维护，并且\
+``INTERFACE_``\ 变量来传播的。例如，读取依赖关系的\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 并将其附加到操作数的\
+:prop_tgt:`INCLUDE_DIRECTORIES`\ 中。如果顺序是相关的且被维护，并且\
 :command:`target_link_libraries`\ 调用产生的顺序不允许正确的编译，则可以使用适当的命令\
 直接设置属性来更新顺序。
 
@@ -281,10 +285,10 @@ cmake-buildsystem(7)
 兼容的接口属性
 -------------------------------
 
-一些目标属性需要在目标和每个依赖项的接口之间兼容。例如，:prop_tgt:`POSITION_INDEPENDENT_CODE`\
-目标属性可以指定一个布尔值，表示目标是否应该被编译为位置无关的代码，这具有特定于平台的结果。\
-目标还可以指定使用要求\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\ 来通知消费\
-者必须被编译为位置无关代码。
+一些目标属性需要在目标和每个依赖项的接口之间兼容。例如，\
+:prop_tgt:`POSITION_INDEPENDENT_CODE`\ 目标属性可以指定一个布尔值，表示目标是否应该被\
+编译为位置无关的代码，这具有特定于平台的结果。目标还可以指定使用要求\
+:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\ 来通知消费者必须被编译为位置无关代码。
 
 .. code-block:: cmake
 
@@ -297,9 +301,9 @@ cmake-buildsystem(7)
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1)
 
-在这里，``exe1``\ 和\ ``exe2``\ 都将被编译为位置无关代码。``lib1``\ 也将被编译为位置无关代码，\
-因为这是\ ``SHARED``\ 库的默认设置。如果依赖关系有冲突的、不兼容的要求，:manual:`cmake(1)`\
-会发出一个诊断：
+在这里，``exe1``\ 和\ ``exe2``\ 都将被编译为位置无关代码。``lib1``\ 也将被编译为位置无关\
+代码，因为这是\ ``SHARED``\ 库的默认设置。如果依赖关系有冲突的、不兼容的要求，\
+:manual:`cmake(1)`\ 会发出一个诊断：
 
 .. code-block:: cmake
 
@@ -320,9 +324,9 @@ cmake-buildsystem(7)
 :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 属性不“兼容”。库要求将消费者构建为位置无关代码，\
 而可执行文件指定不构建为位置无关代码，因此会发出诊断。
 
-``lib1``\ 和\ ``lib2``\ 要求不“兼容”。其中一个要求将消费者构建为与位置无关的代码，\
-而另一个并未要求将消费者构建为与位置无关的代码。因为\ ``exe2``\ 链接到两者，并且它们是冲突的，\
-所以会发出一个CMake错误消息： ::
+``lib1``\ 和\ ``lib2``\ 要求不“兼容”。其中一个要求将消费者构建为与位置无关的代码，而另一\
+个并未要求将消费者构建为与位置无关的代码。因为\ ``exe2``\ 链接到两者，并且它们是冲突的，所\
+以会发出一个CMake错误消息： ::
 
   CMake Error: The INTERFACE_POSITION_INDEPENDENT_CODE property of "lib2" does
   not agree with the value of POSITION_INDEPENDENT_CODE already determined
@@ -332,9 +336,9 @@ cmake-buildsystem(7)
 必须与设置该属性的所有传递指定依赖项的\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\
 属性相同。
 
-通过在\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ 目标属性的内容中指定该属性，\
-“兼容接口要求”的属性可以扩展到其他属性。每个指定的属性必须在消费目标和对应的属性之间兼容，\
-每个依赖都有一个\ ``INTERFACE_``\ 前缀：
+通过在\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ 目标属性的内容中指定该属性，“兼容接口要\
+求”的属性可以扩展到其他属性。每个指定的属性必须在消费目标和对应的属性之间兼容，每个依赖都有一个\
+``INTERFACE_``\ 前缀：
 
 .. code-block:: cmake
 
@@ -396,7 +400,8 @@ cmake-buildsystem(7)
   # CONTAINER_SIZE_REQUIRED will be "1000"
   target_link_libraries(exe2 lib1Version2 lib1Version3)
 
-类似地，可以使用\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ 从依赖项中计算属性的最小数值。
+类似地，可以使用\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ 从依赖项中计算属性的最\
+小数值。
 
 每个计算出的“兼容”属性值都可以在生成时使用生成器表达式从消费者中读取。
 
@@ -405,9 +410,9 @@ cmake-buildsystem(7)
 属性起源调试
 -------------------------
 
-因为构建规范可以由依赖关系决定，创建目标和负责设置构建规范的代码缺乏本地化可能会使代码更难推理。\
-:manual:`cmake(1)`\ 提供了一个调试工具，打印属性内容的来源，这可能是由依赖关系决定的。\
-可以调试的属性列在\ :variable:`CMAKE_DEBUG_TARGET_PROPERTIES`\ 变量文档中：
+因为构建规范可以由依赖关系决定，创建目标和负责设置构建规范的代码缺乏本地化可能会使代码更难推\
+理。\ :manual:`cmake(1)`\ 提供了一个调试工具，打印属性内容的来源，这可能是由依赖关系决定\
+的。可以调试的属性列在\ :variable:`CMAKE_DEBUG_TARGET_PROPERTIES`\ 变量文档中：
 
 .. code-block:: cmake
 
@@ -420,16 +425,17 @@ cmake-buildsystem(7)
   )
   add_executable(exe1 exe1.cpp)
 
-对于在\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ 或\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\
-中列出的属性，调试输出显示哪个目标负责设置该属性，以及哪个其他依赖项也定义了该属性。\
-在\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\ 和\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\
-的情况下，调试输出显示每个依赖项的属性值，以及该值是否决定了新的极值。
+对于在\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ 或\
+:prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ 中列出的属性，调试输出显示哪个目标负责设置该\
+属性，以及哪个其他依赖项也定义了该属性。在\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\
+和\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ 的情况下，调试输出显示每个依赖项的属\
+性值，以及该值是否决定了新的极值。
 
 使用生成器表达式构建规范
 ----------------------------------------------
 
-构建规范可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`，\
-其中包含有条件的或在生成时才知道的内容。例如，计算出的属性“compatible”值可以通过\
+构建规范可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`，其中包含有\
+条件的或在生成时才知道的内容。例如，计算出的属性“compatible”值可以通过\
 ``TARGET_PROPERTY``\ 表达式读取：
 
 .. code-block:: cmake
@@ -470,13 +476,13 @@ cmake-buildsystem(7)
   target_link_libraries(shared_lib lib1)
 
 ``exe1``\ 可执行文件将使用\ ``-DLIB1_WITH_EXE``\ 编译，\
-而\ ``shared_lib``\ 共享库将使用\ ``-DLIB1_WITH_SHARED_LIB``\ 和\ ``-DCONSUMER_CMP0041_NEW``\
-编译，因为策略\ :policy:`CMP0041`\ 在创建\ ``shared_lib``\ 目标的地方是\ ``NEW``。
+而\ ``shared_lib``\ 共享库将使用\ ``-DLIB1_WITH_SHARED_LIB``\ 和\
+``-DCONSUMER_CMP0041_NEW``\ 编译，因为策略\ :policy:`CMP0041`\ 在创建\
+``shared_lib``\ 目标的地方是\ ``NEW``。
 
-``BUILD_INTERFACE``\ 表达式包装的需求仅在从同一个构建系统中的目标消费时使用，\
-或者在使用\ :command:`export`\ 命令从导出到构建目录的目标消费时使用。\
-``INSTALL_INTERFACE``\ 表达式包装了只在使用\ :command:`install(EXPORT)`\ 命令安装并\
-导出的目标时使用的需求：
+``BUILD_INTERFACE``\ 表达式包装的需求仅在从同一个构建系统中的目标消费时使用，或者在使用\
+:command:`export`\ 命令从导出到构建目录的目标消费时使用。\ ``INSTALL_INTERFACE``\ 表达\
+式包装了只在使用\ :command:`install(EXPORT)`\ 命令安装并导出的目标时使用的需求：
 
 .. code-block:: cmake
 
@@ -506,8 +512,9 @@ cmake-buildsystem(7)
   target_link_libraries(Downstream Upstream::ClimbingStats)
 
 ``Downstream``\ 目标将使用\ ``-DClimbingStats_FROM_BUILD_LOCATION``\ 或\
-``-DClimbingStats_FROM_INSTALL_LOCATION``\ 编译，这取决于\ ``ClimbingStats``\
-包是从构建位置还是安装位置使用的。有关包和导出的更多信息，请参阅\ :manual:`cmake-packages(7)`\ 手册。
+``-DClimbingStats_FROM_INSTALL_LOCATION``\ 编译，这取决于\ ``ClimbingStats``\ 包是\
+从构建位置还是安装位置使用的。有关包和导出的更多信息，请参阅\ :manual:`cmake-packages(7)`\
+手册。
 
 .. _`Include Directories and Usage Requirements`:
 
@@ -565,18 +572,20 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
   install(EXPORT tgts ${other_args})
   install(FILES ${headers} DESTINATION include)
 
-这相当于在由\ :command:`install(EXPORT)`\ 生成的每个已安装的\ :prop_tgt:`IMPORTED`\ 目标的\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 中附加\ ``${CMAKE_INSTALL_PREFIX}/include``。
+这相当于在由\ :command:`install(EXPORT)`\ 生成的每个已安装的\ :prop_tgt:`IMPORTED`\
+目标的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 中附加\
+``${CMAKE_INSTALL_PREFIX}/include``。
 
-当\ :ref:`导入的目标 <Imported targets>`\ 的\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\
-被使用时，该属性中的条目可能被视为系统包含目录。其影响取决于工具链，但一个常见的影响是忽略在\
-这些目录中找到的头的编译器警告。已安装目标的\ :prop_tgt:`SYSTEM`\ 属性决定了这种行为\
-（有关如何修改目标的已安装值，请参阅\ :prop_tgt:`EXPORT_NO_SYSTEM`\ 属性）。还可以通过在\
-*使用者*\ 上设置\ :prop_tgt:`NO_SYSTEM_FROM_IMPORTED`\ 目标属性来更改使用者如何解释所\
-使用的导入目标的系统行为。
+当\ :ref:`导入的目标 <Imported targets>`\ 的\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 被使用时，该属性中的条目可能被视为系统包含\
+目录。其影响取决于工具链，但一个常见的影响是忽略在这些目录中找到的头的编译器警告。已安装目标的\
+:prop_tgt:`SYSTEM`\ 属性决定了这种行为（有关如何修改目标的已安装值，请参阅\
+:prop_tgt:`EXPORT_NO_SYSTEM`\ 属性）。还可以通过在\ *使用者*\ 上设置\
+:prop_tgt:`NO_SYSTEM_FROM_IMPORTED`\ 目标属性来更改使用者如何解释所使用的导入目标的系统\
+行为。
 
-如果一个二进制目标被传递地链接到一个macOS :prop_tgt:`FRAMEWORK`，\
-框架的\ ``Headers``\ 目录也被视为使用需求。这与将框架目录作为包含目录传递的效果相同。
+如果一个二进制目标被传递地链接到一个macOS :prop_tgt:`FRAMEWORK`，框架的\ ``Headers``\
+目录也被视为使用需求。这与将框架目录作为包含目录传递的效果相同。
 
 链接库和生成器表达式
 ----------------------------------------
@@ -666,9 +675,9 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 * 在AIX上：当设置了可执行目标的\ :prop_tgt:`ENABLE_EXPORTS`\ 目标属性时，\
   :command:`add_executable`\ 命令创建的可执行目标的链接器导入文件（例如\ ``.imp``）。
 
-* On macOS: the linker import file (e.g. ``.tbd``) of a shared library target
-  created by the :command:`add_library` command with the ``SHARED`` option and
-  when its :prop_tgt:`ENABLE_EXPORTS` target property is set.
+* 在macOS上：共享库目标的链接器导入文件（例如\ ``.tbd``）由\ :command:`add_library`\
+  命令创建，带有\ ``SHARED``\ 选项，当它的\ :prop_tgt:`ENABLE_EXPORTS`\ 目标属性被设\
+  置时。
 
 :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
 目标属性可以用于控制构建树中的归档输出工件位置和名称。
@@ -767,9 +776,9 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 在多配置生成器中，默认情况下\ :variable:`CMAKE_CONFIGURATION_TYPES`\ 变量将使用上述列表\
 （可能是其中的一个子集）填充，除非被项目或用户覆盖。使用的实际配置由用户在构建时选择。
 
-对于单配置生成器，配置在配置时使用\ :variable:`CMAKE_BUILD_TYPE`\ 变量指定，\
-不能在构建时更改。默认值通常不是上述标准配置，而是一个空字符串。一个常见的误解是，\
-这与\ ``Debug``\ 相同，但事实并非如此。用户应该始终显式地指定构建类型，以避免此常见问题。
+对于单配置生成器，配置在配置时使用\ :variable:`CMAKE_BUILD_TYPE`\ 变量指定，不能在构建时\
+更改。默认值通常不是上述标准配置，而是一个空字符串。一个常见的误解是，这与\ ``Debug``\ 相同，\
+但事实并非如此。用户应该始终显式地指定构建类型，以避免此常见问题。
 
 上述标准配置类型在大多数平台上提供了合理的行为，但它们可以被扩展为提供其他类型。每个配置都为\
 所使用的语言定义了一组编译器和链接器标志变量。这些变量遵循惯例\
@@ -780,8 +789,8 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 伪目标
 ==============
 
-有些目标类型不表示构建系统的输出，而只表示输入，如外部依赖项、别名或其他非构建构件。\
-生成的构建系统中不表示伪目标。
+有些目标类型不表示构建系统的输出，而只表示输入，如外部依赖项、别名或其他非构建构件。生成的构\
+建系统中不表示伪目标。
 
 .. _`Imported Targets`:
 
@@ -790,21 +799,25 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 :prop_tgt:`IMPORTED`\ 目标表示预先存在的依赖项。通常这样的由上游包定义的目标，应该被视为\
 不可变的。在声明了一个\ :prop_tgt:`IMPORTED`\ 目标之后，我们可以像使用其他常规目标一样，\
-使用习惯命令\ :command:`target_compile_definitions`、:command:`target_include_directories`、\
-:command:`target_compile_options`\ 或\ :command:`target_link_libraries`\ 来调整\
+使用习惯命令\ :command:`target_compile_definitions`、\
+:command:`target_include_directories`、\ :command:`target_compile_options`\ 或\
+:command:`target_link_libraries`\ 来调整\
 它的目标属性。
 
 :prop_tgt:`IMPORTED`\ 的目标可能有与二进制目标相同的使用需求属性，例如\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、\ :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`、\
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS`、:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、\
+:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`、\
+:prop_tgt:`INTERFACE_COMPILE_OPTIONS`、\
+:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\
 :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`。
 
 :prop_tgt:`LOCATION`\ 也可以从IMPORTED目标读取，尽管这样做的理由很少。\
-:command:`add_custom_command`\ 等命令可以透明地使用\ :prop_tgt:`IMPORTED` :prop_tgt:`EXECUTABLE <TYPE>`\
-目标作为\ ``COMMAND``\ 可执行文件。
+:command:`add_custom_command`\ 等命令可以透明地使用\
+:prop_tgt:`IMPORTED` :prop_tgt:`EXECUTABLE <TYPE>`\ 目标作为\ ``COMMAND``\ 可执行\
+文件。
 
-:prop_tgt:`IMPORTED`\ 目标定义的范围是定义它的目录。可以从子目录访问和使用它，\
-但不能从父目录或同级目录访问。作用域类似于cmake变量的作用域。
+:prop_tgt:`IMPORTED`\ 目标定义的范围是定义它的目录。可以从子目录访问和使用它，但不能从父\
+目录或同级目录访问。作用域类似于cmake变量的作用域。
 
 还可以定义一个在构建系统中全局访问的\ ``GLOBAL`` :prop_tgt:`IMPORTED`\ 目标。
 

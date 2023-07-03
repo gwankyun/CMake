@@ -9,7 +9,8 @@ cmake-env-variables(7)
 
 这个页面列出了对CMake有特殊意义的环境变量。
 
-有关环境变量的一般信息，请参见cmake语言手册中的\ :ref:`环境变量 <CMake Language Environment Variables>`\ 部分。
+有关环境变量的一般信息，请参见cmake语言手册中的\
+:ref:`环境变量 <CMake Language Environment Variables>`\ 部分。
 
 改变行为的环境变量
 ==========================================
