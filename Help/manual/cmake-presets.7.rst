@@ -215,74 +215,57 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   CMake本身使用。使用该字段的IDE应该展开其中的任何宏。
 
 ``cacheVariables``
-  An optional map of cache variables. The key is the variable name (which
-  may not be an empty string), and the value is either ``null``, a boolean
-  (which is equivalent to a value of ``"TRUE"`` or ``"FALSE"`` and a type
-  of ``BOOL``), a string representing the value of the variable (which
-  supports `宏扩展`_), or an object with the following fields:
+  缓存变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为布尔值\
+  （相当于\ ``"TRUE"``\ 或\ ``"FALSE"``\ 的值和\ ``BOOL``\ 类型），要么为表示变量值的\
+  字符串（支持\ `宏扩展`_），要么为具有以下字段的对象：
 
   ``type``
-    An optional string representing the type of the variable.
+    表示变量类型的可选字符串。
 
   ``value``
-    A required string or boolean representing the value of the variable.
-    A boolean is equivalent to ``"TRUE"`` or ``"FALSE"``. This field
-    supports `宏扩展`_.
+    表示变量值的必需字符串或布尔值。布尔值相当于\ ``"TRUE"``\ 或\ ``"FALSE"``。该字段支持\
+    `宏扩展`_。
 
-  Cache variables are inherited through the ``inherits`` field, and the
-  preset's variables will be the union of its own ``cacheVariables`` and
-  the ``cacheVariables`` from all its parents. If multiple presets in this
-  union define the same variable, the standard rules of ``inherits`` are
-  applied. Setting a variable to ``null`` causes it to not be set, even if
-  a value was inherited from another preset.
+  缓存变量通过\ ``inherits``\ 字段继承，预设的变量将是它自己的\ ``cacheVariables``\ 和\
+  它所有父变量的\ ``cacheVariables``\ 的联合。如果此联合中的多个预设定义了相同的变量，则\
+  应用\ ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是\
+  从另一个预设继承的。
 
 ``environment``
-  An optional map of environment variables. The key is the variable name
-  (which may not be an empty string), and the value is either ``null`` or
-  a string representing the value of the variable. Each variable is set
-  regardless of whether or not a value was given to it by the process's
-  environment. This field supports `宏扩展`_, and environment
-  variables in this map may reference each other, and may be listed in any
-  order, as long as such references do not cause a cycle (for example,
-  if ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
+  环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持\ `宏扩展`_，并且该\
+  映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
+  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不可是\ ``$env{ENV_1}``）。
 
-  Environment variables are inherited through the ``inherits`` field, and
-  the preset's environment will be the union of its own ``environment`` and
-  the ``environment`` from all its parents. If multiple presets in this
-  union define the same variable, the standard rules of ``inherits`` are
-  applied. Setting a variable to ``null`` causes it to not be set, even if
-  a value was inherited from another preset.
+  环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来自\
+  所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
+  ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是从另一\
+  个预设继承的。
 
 ``warnings``
-  An optional object specifying the warnings to enable. The object may
-  contain the following fields:
+  一个可选对象，指定要启用的警告。该对象可以包含以下字段：
 
   ``dev``
-    An optional boolean. Equivalent to passing :option:`-Wdev <cmake -Wdev>`
-    or :option:`-Wno-dev <cmake -Wno-dev>` on the command line. This may not
-    be set to ``false`` if ``errors.dev`` is set to ``true``.
+    可选的布尔值。相当于在命令行上传递\ :option:`-Wdev <cmake -Wdev>`\ 或\
+    :option:`-Wno-dev <cmake -Wno-dev>` 。如果\ ``errors.dev``\ 被设置为\ ``true``，\
+    这个值可能不会被设置为\ ``false``。
 
   ``deprecated``
-    An optional boolean. Equivalent to passing
-    :option:`-Wdeprecated <cmake -Wdeprecated>` or
-    :option:`-Wno-deprecated <cmake -Wno-deprecated>` on the command line.
-    This may not be set to ``false`` if ``errors.deprecated`` is set to
-    ``true``.
+    可选的布尔值。相当于在命令行上传递\ :option:`-Wdeprecated <cmake -Wdeprecated>`\
+    或\ :option:`-Wno-deprecated <cmake -Wno-deprecated>`。如果\ ``errors.deprecated``\
+    被设置为\ ``true``，则该值可能不会被设置为\ ``false``。
 
   ``uninitialized``
-    An optional boolean. Setting this to ``true`` is equivalent to passing
-    :option:`--warn-uninitialized <cmake --warn-uninitialized>` on the command
-    line.
+    可选的布尔值。将其设置为\ ``true``\ 相当于在命令行上传递\
+    :option:`--warn-uninitialized <cmake --warn-uninitialized>`。
 
   ``unusedCli``
-    An optional boolean. Setting this to ``false`` is equivalent to passing
-    :option:`--no-warn-unused-cli <cmake --no-warn-unused-cli>` on the command
-    line.
+    可选的布尔值。将其设置为\ ``false``\ 相当于在命令行上传递\
+    :option:`--no-warn-unused-cli <cmake --no-warn-unused-cli>`。
 
   ``systemVars``
-    An optional boolean. Setting this to ``true`` is equivalent to passing
-    :option:`--check-system-vars <cmake --check-system-vars>` on the command
-    line.
+    可选的布尔值。将其设置为\ ``true``\ 相当于在命令行上传递\
+    :option:`--check-system-vars <cmake --check-system-vars>`。
 
 ``errors``
   An optional object specifying the errors to enable. The object may
