@@ -268,37 +268,32 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     :option:`--check-system-vars <cmake --check-system-vars>`。
 
 ``errors``
-  An optional object specifying the errors to enable. The object may
-  contain the following fields:
+  一个可选对象，指定要启用的错误。该对象可以包含以下字段：
 
   ``dev``
-    An optional boolean. Equivalent to passing :option:`-Werror=dev <cmake -Werror>`
-    or :option:`-Wno-error=dev <cmake -Werror>` on the command line.
-    This may not be set to ``true`` if ``warnings.dev`` is set to ``false``.
+    可选的布尔值。相当于在命令行上传递\ :option:`-Werror=dev <cmake -Werror>`\ 或\
+    :option:`-Wno-error=dev <cmake -Werror>`。如果\ ``warnings.dev``\ 设置为\
+    ``false``，则可能不会将其设置为\ ``true``。
 
   ``deprecated``
-    An optional boolean. Equivalent to passing
-    :option:`-Werror=deprecated <cmake -Werror>` or
-    :option:`-Wno-error=deprecated <cmake -Werror>` on the command line.
-    This may not be set to ``true`` if ``warnings.deprecated`` is set to
-    ``false``.
+    可选的布尔值。相当于在命令行上传递\ :option:`-Werror=deprecated <cmake -Werror>`\
+    或\ :option:`-Wno-error=deprecated <cmake -Werror>`。如果\ ``warnings.deprecated``\
+    设置为\ ``false``，则可能不会将其设置为\ ``true``。
 
 ``debug``
-  An optional object specifying debug options. The object may contain the
-  following fields:
+  指定调试选项的可选对象。该对象可以包含以下字段：
 
   ``output``
-    An optional boolean. Setting this to ``true`` is equivalent to passing
-    :option:`--debug-output <cmake --debug-output>` on the command line.
+    可选的布尔值。将其设置为\ ``true``\ 相当于在命令行上传递\
+    :option:`--debug-output <cmake --debug-output>`。
 
   ``tryCompile``
-    An optional boolean. Setting this to ``true`` is equivalent to passing
-    :option:`--debug-trycompile <cmake --debug-trycompile>` on the command
-    line.
+    可选的布尔值。将其设置为\ ``true``\ 相当于在命令行上传递\
+    :option:`--debug-trycompile <cmake --debug-trycompile>`。
 
   ``find``
-    An optional boolean. Setting this to ``true`` is equivalent to passing
-    :option:`--debug-find <cmake --debug-find>` on the command line.
+    可选的布尔值。将其设置为\ ``true``\ 相当于在命令行上传递\
+    :option:`--debug-find <cmake --debug-find>`。
 
 ``trace``
   An optional object specifying trace options. This is allowed in preset
