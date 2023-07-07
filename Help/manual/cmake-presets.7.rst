@@ -296,50 +296,40 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     :option:`--debug-find <cmake --debug-find>`。
 
 ``trace``
-  An optional object specifying trace options. This is allowed in preset
-  files specifying version ``7``. The object may contain the following fields:
+  指定跟踪选项的可选对象。这在指定版本\ ``7``\ 的预设文件中是允许的。该对象可以包含以下字段：
 
   ``mode``
-    An optional string that specifies the trace mode. Valid values are:
+    指定跟踪模式的可选字符串。有效值为：
 
     ``on``
-      Causes a trace of all calls made and from where to be printed.
-      Equivalent to passing :option:`--trace <cmake --trace>` on the command
-      line.
+      导致所有调用的跟踪，以及从哪里打印。相当于在命令行上传递\
+      :option:`--trace <cmake --trace>`。
 
     ``off``
-      A trace of all calls will not be printed.
+      不会打印所有调用的跟踪。
 
     ``expand``
-      Causes a trace with variables expanded of all calls made and from where
-      to be printed. Equivalent to passing :option:`--trace-expand <cmake --trace-expand>`
-      on the command line.
+      使用展开的所有调用的变量和要从何处打印的变量进行跟踪。相当于在命令行上传递\
+      :option:`--trace-expand <cmake --trace-expand>`。
 
   ``format``
-    An optional string that specifies the format output of the trace.
-    Valid values are:
+    指定跟踪的格式输出的可选字符串。有效值为：
 
     ``human``
-      Prints each trace line in a human-readable format.
-      This is the default format.  Equivalent to passing
-      :option:`--trace-format=human <cmake --trace-format>`
-      on the command line.
+      以人类可读的格式打印每个跟踪行。这是默认格式。相当于在命令行上传递\
+      :option:`--trace-format=human <cmake --trace-format>`。
 
     ``json-v1``
-      Prints each line as a separate JSON document.  Equivalent to passing
-      :option:`--trace-format=json-v1 <cmake --trace-format>`
-      on the command line.
+      将每行打印为单独的JSON文档。相当于在命令行上传递\
+      :option:`--trace-format=json-v1 <cmake --trace-format>`。
 
   ``source``
-    An optional array of strings representing the paths of source files to
-    be traced.  This field can also be a string, which is equivalent to an
-    array containing one string.  Equivalent to passing
-    :option:`--trace-source <cmake --trace-source>` on the command line.
+    表示要跟踪的源文件路径的可选字符串数组。该字段也可以是字符串，相当于包含一个字符串的数组。\
+    相当于在命令行上传递\ :option:`--trace-source <cmake --trace-source>`。
 
   ``redirect``
-    An optional string specifying a path to a trace output file.  Equivalent
-    to passing :option:`--trace-redirect <cmake --trace-redirect>`
-    on the command line.
+    指定跟踪输出文件路径的可选字符串。相当于在命令行上传递\
+    :option:`--trace-redirect <cmake --trace-redirect>`。
 
 构建预设
 ^^^^^^^^^^^^
