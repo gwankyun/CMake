@@ -334,186 +334,137 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 构建预设
 ^^^^^^^^^^^^
 
-Each entry of the ``buildPresets`` array is a JSON object
-that may contain the following fields:
+``buildPresets``\ 数组的每个条目都是一个JSON对象，可能包含以下字段：
 
 ``name``
-  A required string representing the machine-friendly name of the preset.
-  This identifier is used in the
-  :ref:`cmake --build --preset <Build Tool Mode>` option.
-  There must not be two build presets in the union of ``CMakePresets.json``
-  and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a build preset may have the same name as a configure, test,
-  package, or workflow preset.
+  必需的字符串，表示预设的机器友好的名称。这个标识符在\
+  :ref:`cmake --build --preset <Build Tool Mode>`\ 选项中使用。在\
+  ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录中，不能有两个构建\
+  预置，且名称相同。但是，构建预设可能与配置、测试、打包或工作流预设具有相同的名称。
 
 ``hidden``
-  An optional boolean specifying whether or not a preset should be hidden.
-  If a preset is hidden, it cannot be used in the
-  :option:`--preset <cmake --preset>` argument
-  and does not have to have a valid ``configurePreset``, even from
-  inheritance. ``hidden`` presets are intended to be used as a base for
-  other presets to inherit via the ``inherits`` field.
+  一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在\
+  :option:`--preset <cmake --preset>`\ 参数中使用，也不必有一个有效的\
+  ``configurePreset``，即使是从继承中也是如此。\ ``hidden``\ 预设被用作其他预设通过\
+  ``inherits``\ 字段继承的基础。
 
 ``inherits``
-  An optional array of strings representing the names of presets to inherit
-  from. This field can also be a string, which is equivalent to an array
-  containing one string.
+  一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的\
+  数组。
 
-  The preset will inherit all of the fields from the
-  ``inherits`` presets by default (except ``name``, ``hidden``,
-  ``inherits``, ``description``, and ``displayName``), but can override
-  them as desired. If multiple ``inherits`` presets provide conflicting
-  values for the same field, the earlier preset in the ``inherits`` array
-  will be preferred.
+  默认情况下，预设将继承\ ``inherits``\ 预设中的所有字段（除了\ ``name``、\ ``hidden``、\
+  ``inherits``、\ ``description``\ 和\ ``displayName``），但是可以根据需要覆盖它们。\
+  如果多个\ ``inherits``\ 预设为同一字段提供冲突的值，则优先选择\ ``inherits``\ 数组中\
+  较早的预设。
 
-  A preset can only inherit from another preset that is defined in the
-  same file or in one of the files it includes (directly or indirectly).
-  Presets in ``CMakePresets.json`` may not inherit from presets in
-  ``CMakeUserPresets.json``.
+  预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。\
+  ``CMakePresets.json``\ 中的预置不能继承\ ``CMakeUserPresets.json``\ 中的预置。
 
 ``condition``
-  An optional `条件`_ object. This is allowed in preset files specifying
-  version ``3`` or above.
+  可选的\ `条件`_\ 对象。这在指定版本\ ``3``\ 或以上的预设文件中是允许的。
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map
-  if it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field. If vendors use their own per-preset
-  ``vendor`` field, they should implement inheritance in a sensible manner
-  when appropriate.
+  一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。\
+  但是，它应该遵循与根级\ ``vendor``\ 字段相同的约定。如果供应商使用他们自己预置的\
+  ``vendor``\ 字段，他们应该在适当的时候以合理的方式实现继承。
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，具有预设的人性化名称。
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选的字符串，具有对预设的人性化描述。
 
 ``environment``
-  An optional map of environment variables. The key is the variable name
-  (which may not be an empty string), and the value is either ``null`` or
-  a string representing the value of the variable. Each variable is set
-  regardless of whether or not a value was given to it by the process's
-  environment. This field supports macro expansion, and environment
-  variables in this map may reference each other, and may be listed in any
-  order, as long as such references do not cause a cycle (for example, if
-  ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
+  环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中\
+  的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
+  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不能是\ ``$env{ENV_1}``）。
 
-  Environment variables are inherited through the ``inherits`` field, and
-  the preset's environment will be the union of its own ``environment``
-  and the ``environment`` from all its parents. If multiple presets in
-  this union define the same variable, the standard rules of ``inherits``
-  are applied. Setting a variable to ``null`` causes it to not be set,
-  even if a value was inherited from another preset.
+  环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
+  自所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
+  ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是从另一\
+  个预设继承的。
 
   .. note::
 
-    For a CMake project using ExternalProject with a configuration preset
-    having environment variables needed in the ExternalProject, use a build
-    preset that inherits that configuration preset or the ExternalProject
-    will not have the environment variables set in the configuration preset.
-    Example: suppose the host defaults to one compiler (say Clang)
-    and the user wishes to use another compiler (say GCC). Set configuration
-    preset environment variables ``CC`` and ``CXX`` and use a build preset
-    that inherits that configuration preset. Otherwise the ExternalProject
-    may use a different (system default) compiler than the top-level CMake
-    project.
+    对于使用ExternalProject的CMake项目，使用具有ExternalProject中需要的环境变量的配置\
+    预置，使用继承该配置预置的构建预置，否则ExternalProject将不会在配置预置中设置环境变量。\
+    示例：假设主机默认使用一个编译器（比如Clang），而用户希望使用另一个编译器（比如GCC）。\
+    设置配置预设环境变量\ ``CC``\ 和\ ``CXX``，并使用继承该配置预设的构建预设。否则，\
+    ExternalProject可能会使用与顶级CMake项目不同的（系统默认）编译器。
 
 ``configurePreset``
-  An optional string specifying the name of a configure preset to
-  associate with this build preset. If ``configurePreset`` is not
-  specified, it must be inherited from the inherits preset (unless this
-  preset is hidden). The build directory is inferred from the configure
-  preset, so the build will take place in the same ``binaryDir`` that the
-  configuration did.
+  一个可选字符串，指定要与此生成预设关联的配置预设的名称。如果未指定\ ``configurePreset``，\
+  则必须从所继承的预设中继承（除非该预设是隐藏的）。构建目录是从配置预设中推断出来的，因此构\
+  建将在与配置相同的\ ``binaryDir``\ 中进行。
 
 ``inheritConfigureEnvironment``
-  An optional boolean that defaults to true. If true, the environment
-  variables from the associated configure preset are inherited after all
-  inherited build preset environments, but before environment variables
-  explicitly specified in this build preset.
+  默认为true的可选布尔值。如果为true，则在所有继承的构建预设环境之后，但在此构建预设中显式\
+  指定的环境变量之前，继承相关配置预设的环境变量。
 
 ``jobs``
-  An optional integer. Equivalent to passing
-  :option:`--parallel <cmake--build --parallel>` or ``-j`` on the command line.
+  可选整数。相当于在命令行上传递\ :option:`--parallel <cmake--build --parallel>`\ 或\
+  ``-j``。
 
 ``targets``
-  An optional string or array of strings. Equivalent to passing
-  :option:`--target <cmake--build --target>` or ``-t`` on the command line.
-  Vendors may ignore the targets property or hide build presets that
-  explicitly specify targets. This field supports macro expansion.
+  一个可选的字符串或字符串数组。相当于在命令行上传递\
+  :option:`--target <cmake--build --target>`\ 或\ ``-t``。供应商可以忽略目标属性或隐\
+  藏显式指定目标的构建预设。该字段支持宏扩展。
 
 ``configuration``
-  An optional string. Equivalent to passing
-  :option:`--config <cmake--build --config>` on the command line.
+  可选字符串。相当于在命令行上传递\ :option:`--config <cmake--build --config>`。
 
 ``cleanFirst``
-  An optional bool. If true, equivalent to passing
-  :option:`--clean-first <cmake--build --clean-first>` on the command line.
+  可选bool。如果为true，相当于在命令行上传递\
+  :option:`--clean-first <cmake--build --clean-first>`。
 
 ``resolvePackageReferences``
-  An optional string that specifies the package resolve mode. This is
-  allowed in preset files specifying version ``4`` or above.
+  指定包解析模式的可选字符串。这在指定版本\ ``4``\ 或以上的预设文件中是允许的。
 
-  Package references are used to define dependencies to packages from
-  external package managers. Currently only NuGet in combination with the
-  Visual Studio generator is supported. If there are no targets that define
-  package references, this option does nothing. Valid values are:
+  包引用用于定义对来自外部包管理器的包的依赖。目前只支持NuGet与Visual Studio生成器的组合。\
+  如果没有定义包引用的目标，则此选项不执行任何操作。有效值为：
 
   ``on``
-    Causes package references to be resolved before attempting a build.
+    导致在尝试构建之前解析包引用。
 
   ``off``
-    Package references will not be resolved. Note that this may cause
-    errors in some build environments, such as .NET SDK style projects.
+    包引用将不会被解析。请注意，这可能会在某些构建环境中导致错误，例如.NET SDK风格的项目。
 
   ``only``
-    Only resolve package references, but do not perform a build.
+    仅解析包引用，但不执行构建。
 
   .. note::
 
-    The command line parameter
-    :option:`--resolve-package-references <cmake--build --resolve-package-references>`
-    will take priority over this setting. If the command line parameter is not
-    provided and this setting is not specified, an environment-specific cache
-    variable will be evaluated to decide, if package restoration should be
-    performed.
+    命令行参数\
+    :option:`--resolve-package-references <cmake--build --resolve-package-references>`\
+    将优先于此设置。如果未提供命令行参数并且未指定此设置，则将评估特定于环境的缓存变量以决定\
+    是否应该执行包恢复。
 
-    When using the Visual Studio generator, package references are defined
-    using the :prop_tgt:`VS_PACKAGE_REFERENCES` property. Package references
-    are restored using NuGet. It can be disabled by setting the
-    ``CMAKE_VS_NUGET_PACKAGE_RESTORE`` variable to ``OFF``. This can also be
-    done from within a configure preset.
+    当使用Visual Studio生成器时，包引用是使用\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属\
+    性定义的。使用NuGet恢复包引用。可以通过将\ ``CMAKE_VS_NUGET_PACKAGE_RESTORE``\ 变\
+    量设置为\ ``OFF``\ 来禁用它。这也可以在配置预设中完成。
 
 ``verbose``
-  An optional bool. If true, equivalent to passing
-  :option:`--verbose <cmake--build --verbose>` on the command line.
+  可选bool。如果为true，相当于在命令行上传递\ :option:`--verbose <cmake--build --verbose>`。
 
 ``nativeToolOptions``
-  An optional array of strings. Equivalent to passing options after ``--``
-  on the command line. The array values support macro expansion.
+  一个可选的字符串数组。相当于在命令行上在\ ``--``\ 之后传递选项。数组值支持宏扩展。
 
 测试预设
 ^^^^^^^^^^^
 
-Each entry of the ``testPresets`` array is a JSON object
-that may contain the following fields:
+``testPresets``\ 数组的每个条目都是一个JSON对象，可能包含以下字段：
 
 ``name``
-  A required string representing the machine-friendly name of the preset.
-  This identifier is used in the :option:`ctest --preset` option.
-  There must not be two test presets in the union of ``CMakePresets.json``
-  and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a test preset may have the same name as a configure, build,
-  package, or workflow preset.
+  必需的字符串，表示预设的机器友好的名称。这个标识符在\ :option:`ctest --preset`\ 选项中\
+  使用。\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录中不能有\
+  两个测试预置，且名称相同。然而，测试预设可能与配置、构建、打包或工作流预设具有相同的名称。
 
 ``hidden``
-  An optional boolean specifying whether or not a preset should be hidden.
-  If a preset is hidden, it cannot be used in the
-  :option:`--preset <ctest --preset>` argument
-  and does not have to have a valid ``configurePreset``, even from
-  inheritance. ``hidden`` presets are intended to be used as a base for
-  other presets to inherit via the ``inherits`` field.
+  一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在\
+  :option:`--preset <ctest --preset>`\ 参数中使用，也不必有一个有效的\
+  ``configurePreset``，即使是从继承中也是如此。\ ``hidden``\ 预设被用作其他预设通过\
+  ``inherits``\ 字段继承的基础。
 
 ``inherits``
   An optional array of strings representing the names of presets to inherit
