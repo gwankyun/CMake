@@ -479,22 +479,18 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   ``CMakePresets.json``\ 中的预置不能继承\ ``CMakeUserPresets.json``\ 中的预置。
 
 ``condition``
-  An optional `条件`_ object. This is allowed in preset files specifying
-  version ``3`` or above.
+  一个可选的\ `条件`_\ 对象。这在指定版本\ ``3``\ 或以上的预设文件中是允许的。
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map
-  if it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field. If vendors use their own per-preset
-  ``vendor`` field, they should implement inheritance in a sensible manner
-  when appropriate.
+  一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。\
+  但是，它应该遵循与根级\ ``vendor``\ 字段相同的约定。如果供应商使用他们自己预置的\
+  ``vendor``\ 字段，他们应该在适当的时候以合理的方式实现继承。
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，具有预设的人性化名称。
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选的字符串，具有对预设的人性化描述。
 
 ``environment``
   An optional map of environment variables. The key is the variable name
