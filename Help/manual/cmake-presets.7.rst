@@ -493,45 +493,31 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   一个可选的字符串，具有对预设的人性化描述。
 
 ``environment``
-  An optional map of environment variables. The key is the variable name
-  (which may not be an empty string), and the value is either ``null`` or
-  a string representing the value of the variable. Each variable is set
-  regardless of whether or not a value was given to it by the process's
-  environment. This field supports macro expansion, and environment
-  variables in this map may reference each other, and may be listed in any
-  order, as long as such references do not cause a cycle (for example, if
-  ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
+  环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中\
+  的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
+  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不可是\ ``$env{ENV_1}``）。
 
-  Environment variables are inherited through the ``inherits`` field, and
-  the preset's environment will be the union of its own ``environment``
-  and the ``environment`` from all its parents. If multiple presets in
-  this union define the same variable, the standard rules of ``inherits``
-  are applied. Setting a variable to ``null`` causes it to not be set,
-  even if a value was inherited from another preset.
+  环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
+  自所有父\ ``environment``\ 环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
+  ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是从另一\
+  个预设继承的。
 
 ``configurePreset``
-  An optional string specifying the name of a configure preset to
-  associate with this test preset. If ``configurePreset`` is not
-  specified, it must be inherited from the inherits preset (unless this
-  preset is hidden). The build directory is inferred from the configure
-  preset, so tests will run in the same ``binaryDir`` that the
-  configuration did and build did.
+  一个可选字符串，指定要与此测试预置关联的配置预置的名称。如果未指定\ ``configurePreset``，\
+  则必须从所继承的预设中继承（除非该预设是隐藏的）。构建目录是从配置预设中推断出来的，因此测\
+  试将在配置和构建所使用的相同的\ ``binaryDir``\ 中运行。
 
 ``inheritConfigureEnvironment``
-  An optional boolean that defaults to true. If true, the environment
-  variables from the associated configure preset are inherited after all
-  inherited test preset environments, but before environment variables
-  explicitly specified in this test preset.
+  默认为true的可选布尔值。如果为true，则在所有继承的测试预设环境之后，但是在此测试预设中显\
+  式指定的环境变量之前，从关联的配置预设中继承环境变量。
 
 ``configuration``
-  An optional string. Equivalent to passing
-  :option:`--build-config <ctest --build-config>` on the command line.
+  可选字符串。相当于在命令行上传递\ :option:`--build-config <ctest --build-config>`。
 
 ``overwriteConfigurationFile``
-  An optional array of configuration options to overwrite options
-  specified in the CTest configuration file. Equivalent to passing
-  :option:`--overwrite <ctest --overwrite>` for each value in the array.
-  The array values support macro expansion.
+  一个可选的配置选项数组，用于覆盖CTest配置文件中指定的选项。相当于为数组中的每个值传递\
+  :option:`--overwrite <ctest --overwrite>`。数组值支持宏扩展。
 
 ``output``
   An optional object specifying output options. The object may contain the
