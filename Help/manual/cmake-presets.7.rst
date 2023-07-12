@@ -520,85 +520,66 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   :option:`--overwrite <ctest --overwrite>`。数组值支持宏扩展。
 
 ``output``
-  An optional object specifying output options. The object may contain the
-  following fields.
+  指定输出选项的可选对象。该对象可以包含以下字段。
 
   ``shortProgress``
-    An optional bool. If true, equivalent to passing
-    :option:`--progress <ctest --progress>` on the command line.
+    可选bool。如果为true，相当于在命令行上传递\ :option:`--progress <ctest --progress>`。
 
   ``verbosity``
-    An optional string specifying verbosity level. Must be one of the
-    following:
+    指定冗长级别的可选字符串。必须是下列之一：
 
     ``default``
-      Equivalent to passing no verbosity flags on the command line.
+      相当于在命令行上不传递冗长标志。
 
     ``verbose``
-      Equivalent to passing :option:`--verbose <ctest --verbose>` on
-      the command line.
+      相当于在命令行上传递\ :option:`--verbose <ctest --verbose>`。
 
     ``extra``
-      Equivalent to passing :option:`--extra-verbose <ctest --extra-verbose>`
-      on the command line.
+      相当于在命令行上传递\ :option:`--extra-verbose <ctest --extra-verbose>`。
 
   ``debug``
-    An optional bool. If true, equivalent to passing
-    :option:`--debug <ctest --debug>` on the command line.
+    可选bool。如果为true，相当于在命令行上传递\ :option:`--debug <ctest --debug>`。
 
   ``outputOnFailure``
-    An optional bool. If true, equivalent to passing
-    :option:`--output-on-failure <ctest --output-on-failure>` on the command
-    line.
+    可选bool。如果为真，相当于在命令行上传递\
+    :option:`--output-on-failure <ctest --output-on-failure>`。
 
   ``quiet``
-    An optional bool. If true, equivalent to passing
-    :option:`--quiet <ctest --quiet>` on the command line.
+    可选bool。如果为true，相当于在命令行上传递\ :option:`--quiet <ctest --quiet>`。
 
   ``outputLogFile``
-    An optional string specifying a path to a log file. Equivalent to
-    passing :option:`--output-log <ctest --output-log>` on the command line.
-    This field supports macro expansion.
+    指定日志文件路径的可选字符串。相当于在命令行上传递\
+    :option:`--output-log <ctest --output-log>`。该字段支持宏扩展。
 
   ``outputJUnitFile``
-    An optional string specifying a path to a JUnit file. Equivalent to
-    passing :option:`--output-junit <ctest --output-junit>` on the command line.
-    This field supports macro expansion. This is allowed in preset files
-    specifying version ``6`` or above.
+    指定JUnit文件路径的可选字符串。相当于在命令行上传递\
+    :option:`--output-junit <ctest --output-junit>`。该字段支持宏扩展。这在指定版本\
+    ``6``\ 或以上的预设文件中是允许的。
 
   ``labelSummary``
-    An optional bool. If false, equivalent to passing
-    :option:`--no-label-summary <ctest --no-label-summary>` on the command
-    line.
+    可选bool。如果为false，相当于在命令行上传递\
+    :option:`--no-label-summary <ctest --no-label-summary>`。
 
   ``subprojectSummary``
-    An optional bool. If false, equivalent to passing
-    :option:`--no-subproject-summary <ctest --no-subproject-summary>`
-    on the command line.
+    可选bool。如果为false，相当于在命令行上传递\
+    :option:`--no-subproject-summary <ctest --no-subproject-summary>`。
 
   ``maxPassedTestOutputSize``
-    An optional integer specifying the maximum output for passed tests in
-    bytes. Equivalent to passing
-    :option:`--test-output-size-passed <ctest --test-output-size-passed>`
-    on the command line.
+    可选整数，以字节为单位指定通过测试的最大输出。相当于在命令行上传递\
+    :option:`--test-output-size-passed <ctest --test-output-size-passed>`。
 
   ``maxFailedTestOutputSize``
-    An optional integer specifying the maximum output for failed tests in
-    bytes. Equivalent to passing
-    :option:`--test-output-size-failed <ctest --test-output-size-failed>`
-    on the command line.
+    可选整数，以字节为单位指定失败测试的最大输出。相当于在命令行上传递\
+    :option:`--test-output-size-failed <ctest --test-output-size-failed>`。
 
   ``testOutputTruncation``
-    An optional string specifying the test output truncation mode. Equivalent
-    to passing
-    :option:`--test-output-truncation <ctest --test-output-truncation>` on
-    the command line. This is allowed in preset files specifying version
-    ``5`` or above.
+    指定测试输出截断模式的可选字符串。相当于在命令行上传递\
+    :option:`--test-output-truncation <ctest --test-output-truncation>`。这在指定\
+    版本\ ``5``\ 或以上的预设文件中是允许的。
 
   ``maxTestNameWidth``
-    An optional integer specifying the maximum width of a test name to
-    output. Equivalent to passing :option:`--max-width <ctest --max-width>`
-    on the command line.
+    可选整数，指定要输出的测试名的最大宽度。相当于在命令行上传递\
+    :option:`--max-width <ctest --max-width>`。
 
 ``filter``
   An optional object specifying how to filter the tests to run. The object
