@@ -582,83 +582,68 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     :option:`--max-width <ctest --max-width>`。
 
 ``filter``
-  An optional object specifying how to filter the tests to run. The object
-  may contain the following fields.
+  指定如何筛选要运行的测试的可选对象。该对象可以包含以下字段。
 
   ``include``
-    An optional object specifying which tests to include. The object may
-    contain the following fields.
+    指定要包含哪些测试的可选对象。该对象可以包含以下字段。
 
     ``name``
-      An optional string specifying a regex for test names. Equivalent to
-      passing :option:`--tests-regex <ctest --tests-regex>` on the command
-      line. This field supports macro expansion. CMake regex syntax is
-      described under :ref:`string(REGEX) <Regex Specification>`.
+      一个可选字符串，指定测试名称的正则表达式。相当于在命令行上传递\
+      :option:`--tests-regex <ctest --tests-regex>`。该字段支持宏扩展。CMake正则表\
+      达式语法在\ :ref:`string(REGEX) <Regex Specification>`\ 下描述。
 
     ``label``
-      An optional string specifying a regex for test labels. Equivalent to
-      passing :option:`--label-regex <ctest --label-regex>` on the command
-      line. This field supports macro expansion.
+      一个可选字符串，指定测试标签的正则表达式。相当于在命令行上传递\
+      :option:`--label-regex <ctest --label-regex>`。该字段支持宏扩展。
 
     ``useUnion``
-      An optional bool. Equivalent to passing :option:`--union <ctest --union>`
-      on the command line.
+      可选bool。相当于在命令行上传递\ :option:`--union <ctest --union>`。
 
     ``index``
-      An optional object specifying tests to include by test index. The
-      object may contain the following fields. Can also be an optional
-      string specifying a file with the command line syntax for
-      :option:`--tests-information <ctest --tests-information>`.
-      If specified as a string, this field supports macro expansion.
+      一个可选对象，按测试索引指定要包含的测试。该对象可以包含以下字段。也可以是一个可选字符\
+      串，用命令行语法\ :option:`--tests-information <ctest --tests-information>`\
+      指定一个文件。如果指定为字符串，则此字段支持宏展开。
 
       ``start``
-        An optional integer specifying a test index to start testing at.
+        一个可选的整数，指定要开始测试的测试索引。
 
       ``end``
-        An optional integer specifying a test index to stop testing at.
+        一个可选整数，指定要停止测试的测试索引。
 
       ``stride``
-        An optional integer specifying the increment.
+        指定增量的可选整数。
 
       ``specificTests``
-        An optional array of integers specifying specific test indices to
-        run.
+        一个可选的整数数组，指定要运行的特定测试索引。
 
   ``exclude``
-    An optional object specifying which tests to exclude. The object may
-    contain the following fields.
+    指定要排除哪些测试的可选对象。该对象可以包含以下字段。
 
     ``name``
-      An optional string specifying a regex for test names. Equivalent to
-      passing :option:`--exclude-regex <ctest --exclude-regex>` on the
-      command line. This field supports macro expansion.
+      一个可选字符串，指定测试名称的正则表达式。相当于在命令行上传递\
+      :option:`--exclude-regex <ctest --exclude-regex>`。该字段支持宏扩展。
 
     ``label``
-      An optional string specifying a regex for test labels. Equivalent to
-      passing :option:`--label-exclude <ctest --label-exclude>` on the
-      command line. This field supports macro expansion.
+      一个可选字符串，指定测试标签的正则表达式。相当于在命令行上传递\
+      :option:`--label-exclude <ctest --label-exclude>`。该字段支持宏扩展。
 
     ``fixtures``
-      An optional object specifying which fixtures to exclude from adding
-      tests. The object may contain the following fields.
+      一个可选对象，指定要从添加测试中排除哪些fixture。该对象可以包含以下字段。
 
       ``any``
-        An optional string specifying a regex for text fixtures to exclude
-        from adding any tests. Equivalent to
-        :option:`--fixture-exclude-any <ctest --fixture-exclude-any>` on
-        the command line. This field supports macro expansion.
+        一个可选字符串，指定要在添加任何测试时排除的文本fixture的正则表达式。相当于命令行上\
+        的\ :option:`--fixture-exclude-any <ctest --fixture-exclude-any>`。该字段\
+        支持宏扩展。
 
       ``setup``
-        An optional string specifying a regex for text fixtures to exclude
-        from adding setup tests. Equivalent to
-        :option:`--fixture-exclude-setup <ctest --fixture-exclude-setup>`
-        on the command line. This field supports macro expansion.
+        一个可选字符串，指定要在添加安装测试时排除的文本fixture的正则表达式。相当于命令行上\
+        的\ :option:`--fixture-exclude-setup <ctest --fixture-exclude-setup>`。\
+        该字段支持宏扩展。
 
       ``cleanup``
-        An optional string specifying a regex for text fixtures to exclude
-        from adding cleanup tests. Equivalent to
-        :option:`--fixture-exclude-cleanup <ctest --fixture-exclude-cleanup>`
-        on the command line. This field supports macro expansion.
+        一个可选字符串，指定要在添加清理测试时排除的文本fixture的正则表达式。相当于命令行上\
+        的\ :option:`--fixture-exclude-cleanup <ctest --fixture-exclude-cleanup>`。\
+        该字段支持宏扩展。
 
 ``execution``
   An optional object specifying options for test execution. The object may
