@@ -301,6 +301,15 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 本节中的大多数表达式都与\ :command:`list`\ 命令密切相关，提供相同的功能，但采用生成器表达\
 式的形式。
 
+In each of the following list-related generator expressions, the ``list``
+must not contain any commas if that generator expression expects something to
+be provided after the ``list``.  For example, the expression
+``$<LIST:FIND,list,value>`` requires a ``value`` after the ``list``.
+Since a comma is used to separate the ``list`` and the ``value``, the ``list``
+cannot itself contain a comma.  This restriction does not apply to the
+:command:`list` command, it is specific to the list-handling generator
+expressions only.
+
 .. _GenEx List Comparisons:
 
 列表比较
@@ -322,136 +331,155 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  返回列表的长度。
+  返回\ ``list``\ 项数
 
 .. genex:: $<LIST:GET,list,index,...>
 
   .. versionadded:: 3.27
 
-  返回列表中由索引指定的元素列表。
+  返回列表中由索引指定的项\ ``list``。
 
 .. genex:: $<LIST:SUBLIST,list,begin,length>
 
   .. versionadded:: 3.27
 
-  返回给定列表的子列表。如果<length>为0，则返回空列表。如果<length>为-1或列表小于\
-  <begin>+<length>，则返回从<begin>开始的列表的其余元素。
+  返回给定\ ``list``\ 的子列表。如果\ ``length``\ 为0，则返回空列表。如果\ ``length``\ 为-1或列表小于\
+  ``begin + length``，则返回从\ ``begin``\ 开始的列表的其余项。
 
 .. genex:: $<LIST:FIND,list,value>
 
   .. versionadded:: 3.27
 
-  返回列表中指定元素的索引，如果没有找到则返回-1。
+  The index of the first item in ``list`` with the specified ``value``,
+  or -1 if ``value`` is not in the ``list``.
 
 .. _GenEx List Transformations:
 
 列表转换
 ^^^^^^^^^^^^^^^^^^^^
 
+.. _GenEx LIST-JOIN:
+
 .. genex:: $<LIST:JOIN,list,glue>
 
   .. versionadded:: 3.27
 
-  返回一个字符串，该字符串将列表与插入在每个项之间的\ ``glue``\ 字符串的内容连接起来。
+  Converts ``list`` to a single string with the content of the ``glue`` string
+  inserted between each item.  This is conceptually the same operation as
+  :genex:`$<JOIN:list,glue>`, but the two have different behavior with regard
+  to empty items.  ``$<LIST:JOIN,list,glue>`` preserves all empty items,
+  whereas :genex:`$<JOIN:list,glue>` drops all empty items from the list.
 
-.. genex:: $<LIST:APPEND,list,element,...>
-
-  .. versionadded:: 3.27
-
-  返回一个添加了元素的列表。
-
-.. genex:: $<LIST:PREPEND,list,element,...>
+.. genex:: $<LIST:APPEND,list,item,...>
 
   .. versionadded:: 3.27
 
-  返回在列表开头插入元素的列表。
+  The ``list`` with each ``item`` appended.  Multiple items should be
+  separated by commas.
 
-.. genex:: $<LIST:INSERT,list,index,element,...>
+.. genex:: $<LIST:PREPEND,list,item,...>
 
   .. versionadded:: 3.27
 
-  返回一个列表，其中包含在指定索引处插入的元素。指定超出范围的索引是错误的。有效的索引范围是\
-  0到N，其中N是列表的长度，包括列表的长度。空列表的长度为0。
+  The ``list`` with each ``item`` inserted at the beginning.  If there are
+  multiple items, they should be separated by commas, and the order of the
+  prepended items will be preserved.
+
+.. genex:: $<LIST:INSERT,list,index,item,...>
+
+  .. versionadded:: 3.27
+
+  The ``list`` with the ``item`` (or multiple items) inserted at the specified
+  ``index``.  Multiple items should be separated by commas.
+
+  It is an error to specify an out-of-range ``index``. Valid indexes are 0 to N,
+  where N is the length of the list, inclusive. An empty list has length 0.
 
 .. genex:: $<LIST:POP_BACK,list>
 
   .. versionadded:: 3.27
 
-  返回一个删除最后一个元素的列表。
+  返回一个删除最后一个项的\ ``list``。
 
 .. genex:: $<LIST:POP_FRONT,list>
 
   .. versionadded:: 3.27
 
-  返回删除第一个元素的列表。
+  返回删除第一个项的\ ``list``。
 
 .. genex:: $<LIST:REMOVE_ITEM,list,value,...>
 
   .. versionadded:: 3.27
 
-  返回一个列表，其中给定值的所有实例已被删除。
+  The ``list`` with all instances of the given ``value`` (or values) removed.
+  If multiple values are given, they should be separated by commas.
 
 .. genex:: $<LIST:REMOVE_AT,list,index,...>
 
   .. versionadded:: 3.27
 
-  返回一个列表，其中给定索引处的所有值都已删除。
+  返回一个\ ``list``，其中给定\ ``index``\ 处的所有值都已删除。
 
 .. genex:: $<LIST:REMOVE_DUPLICATES,list>
 
   .. versionadded:: 3.27
 
-  返回删除重复项的列表。保留条目的相对顺序，但如果遇到重复项，则只保留第一个实例。
+  返回删除重复项的\ ``list``。保留条目的相对顺序，但如果遇到重复项，则只保留第一个实例。The result is the same as
+  :genex:`$<REMOVE_DUPLICATES:list>`.
+
+.. _GenEx LIST-FILTER:
 
 .. genex:: $<LIST:FILTER,list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.27
 
-  返回一个列表，其中包含或删除了与正则表达式\ ``regex``\ 匹配的项。
+  A list of items from the ``list`` which match (``INCLUDE``) or do not match
+  (``EXCLUDE``) the regular expression ``regex``.  The result is the same as
+  :genex:`$<FILTER:list,INCLUDE|EXCLUDE,regex>`.
 
 .. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
 
   .. versionadded:: 3.27
 
-  通过对列表中的所有元素应用\ ``ACTION``\ 或指定一个\ ``SELECTOR``，返回转换后的列表。
+  通过对\ ``list``\ 中的所有项应用\ ``ACTION``\ 或指定一个\ ``SELECTOR``，返回转换后的列表。
 
   .. note::
 
-    ``TRANSFORM``\ 子命令不改变列表中元素的数量。如果指定了\ ``SELECTOR``，则只有一些元\
-    素会被更改，其他元素将保持与转换前相同。
+    ``TRANSFORM``\ 子命令不改变列表中元素的数量。如果指定了\ ``SELECTOR``，则只有一些项\
+    会被更改，其他项将保持与转换前相同。
 
-  ``ACTION``\ 指定应用于列表元素的操作。操作具有与\ :command:`list(TRANSFORM)`\ 命令完\
+  ``ACTION``\ 指定应用于列表项的操作。操作具有与\ :command:`list(TRANSFORM)`\ 命令完\
   全相同的语义。\ ``ACTION``\ 必须是以下选项之一：
 
     :command:`APPEND <list(TRANSFORM_APPEND)>`, :command:`PREPEND <list(TRANSFORM_APPEND)>`
-      将指定的值追加到列表的每个元素。
+      将指定的值追加到列表的每个项。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,(APPEND|PREPEND),value[,SELECTOR]>
 
     :command:`TOLOWER <list(TRANSFORM_TOLOWER)>`, :command:`TOUPPER <list(TRANSFORM_TOLOWER)>`
-      将列表中的每个元素转换为大小写字符。
+      将列表中的每个项转换为大小写字符。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,(TOLOWER|TOUPPER)[,SELECTOR]>
 
     :command:`STRIP <list(TRANSFORM_STRIP)>`
-      从列表的每个元素中删除前导和尾随空格。
+      从列表的每个项中删除前导和尾随空格。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,STRIP[,SELECTOR]>
 
     :command:`REPLACE <list(TRANSFORM_REPLACE)>`:
-      尽可能多地匹配正则表达式，并用替换表达式替换列表中每个元素的匹配项。
+      尽可能多地匹配正则表达式，并用替换表达式替换列表中每个项的匹配项。
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,REPLACE,regular_expression,replace_expression[,SELECTOR]>
 
-  ``SELECTOR``\ 决定列表中的哪些元素将被转换。一次只能指定一种类型的选择器。当给定时，\
+  ``SELECTOR``\ 决定列表中的哪些项将被转换。一次只能指定一种类型的选择器。当给定时，\
   ``SELECTOR``\ 必须是下列之一：
 
     ``AT``
@@ -469,7 +497,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
         $<LIST:TRANSFORM,list,ACTION,FOR,start,stop[,step]>
 
     ``REGEX``
-      指定正则表达式。只有匹配正则表达式的元素才会被转换。
+      指定正则表达式。只有匹配正则表达式的项才会被转换。
 
       .. code-block:: cmake
 
@@ -477,19 +505,25 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. genex:: $<JOIN:list,glue>
 
-  用插入在每个项目之间的\ ``glue``\ 字符串内容连接列表。
+  用插入在每个项目之间的\ ``glue``\ 字符串内容连接\ ``list``。This is conceptually the same operation as
+  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`, but the two have
+  different behavior with regard to empty items.
+  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>` preserves all empty items,
+  whereas ``$<JOIN,list,glue>`` drops all empty items from the list.
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
   .. versionadded:: 3.15
 
-  删除给定\ ``list``\ 中的重复项。保留项的相对顺序，但如果遇到重复项，则只保留第一个实例。
+  删除给定\ ``list``\ 中的重复项。保留项的相对顺序，并且如果遇到重复项，则只保留第一个实例。The result is the same as
+  :ref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`.
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.15
 
-  从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。
+  从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。  The result is the same as
+  :ref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`.
 
 .. _GenEx List Ordering:
 
@@ -500,13 +534,13 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  返回元素以相反顺序排列的列表。
+  返回项以相反顺序排列的\ ``list``。
 
 .. genex:: $<LIST:SORT,list[,(COMPARE:option|CASE:option|ORDER:option)]...>
 
   .. versionadded:: 3.27
 
-  返回按指定选项排序的列表。
+  返回按指定选项排序的\ ``list``。
 
   使用\ ``COMPARE``\ 选项之一来选择排序的比较方法：
 
@@ -514,13 +548,15 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
       按字母顺序对字符串列表进行排序。如果没有给出\ ``COMPARE``\ 选项，这是默认行为。
 
     ``FILE_BASENAME``
-      按基本名称对文件的路径名列表进行排序。
+      按基本名称对文件路径名列表进行排序。
 
     ``NATURAL``
-      使用自然顺序对字符串列表进行排序（参见\ ``strverscmp(3)``\ 手册），即将连续数字作为\
-      整数进行比较。例如：下面的列表\ `10.0 1.1 2.1 8.0 2.0 3.1`\ 将被排序为\
-      `1.1 2.0 2.1 3.1 8.0 10.0`，如果选择了\ ``NATURAL``\ 比较，它将被排序为\
-      `1.1 10.0 2.0 2.1 3.1 8.0`\ 与\ ``STRING``\ 比较。
+      Sorts a list of strings using natural order (see the man page for
+      ``strverscmp(3)``), such that contiguous digits are compared as whole
+      numbers.  For example, the following list ``10.0 1.1 2.1 8.0 2.0 3.1``
+      will be sorted as ``1.1 2.0 2.1 3.1 8.0 10.0`` if the ``NATURAL``
+      comparison is selected, whereas it will be sorted as
+      ``1.1 10.0 2.0 2.1 3.1 8.0`` with the ``STRING`` comparison.
 
   使用\ ``CASE``\ 选项之一来选择区分大小写或不区分大小写的排序模式：
 
@@ -538,7 +574,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
     ``DESCENDING``
       按降序对列表进行排序。
 
-  多次指定相同的选项是错误的。可以按任意顺序指定各种选项：
+  可以按任意顺序指定各种选项，但多次指定相同的选项是错误的。
 
   .. code-block:: cmake
 
@@ -1577,17 +1613,19 @@ Shell路径
 
   .. versionadded:: 3.27
 
-  链接器导入文件的完整路径。在DLL平台上，它将是\ ``.lib``\ 文件。在AIX上，对于可执行文件，\
-  在macOS上，对于共享库，它可以分别是\ ``.imp``\ 或\ ``.tbd``\ 导入文件，具体取决于\
+  链接器导入文件的完整路径。在DLL平台上，它将是\ ``.lib``\ 文件。对于AIX上的可执行文件，\
+  对于macOS上的共享库，它可以分别是\ ``.imp``\ 或\ ``.tbd``\ 导入文件，具体取决于\
   :prop_tgt:`ENABLE_EXPORTS`\ 属性的值。
 
   如果没有与目标关联的导入文件，则返回空字符串。
+  This expands to an empty string when there is no import file associated
+  with the target.
 
 .. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  目标文件链接器导入文件的基名\ ``tgt``，不带前缀和后缀。例如，目标文件名为\
+  目标文件链接器导入文件的基名\ ``tgt``，不带前缀或者后缀。例如，目标文件名为\
   ``libbase.tbd``，则基文件名为\ ``base``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性\
@@ -1614,7 +1652,7 @@ Shell路径
 
   目标导入文件的后缀 ``tgt``。
 
-  后缀对应于文件扩展名（如“.lib”或“.tbd”）。
+  后缀对应于文件扩展名（如\ ``.lib``\ 或\ ``.tbd``）。
 
   另请参见\ :prop_tgt:`IMPORT_SUFFIX`\ 目标属性。
 
@@ -1625,14 +1663,16 @@ Shell路径
   .. versionadded:: 3.27
 
   ``tgt``\ 目标的导入文件名。
+  Name of the import file of the target ``tgt``.
 
   请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_IMPORT_FILE_DIR:tgt>
 
-  ``tgt``\ 目标导入文件的目录。
+  Directory of the import file of the target ``tgt``.
 
-  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
+  Note that ``tgt`` is not added as a dependency of the target this
+  expression is evaluated on.
 
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 

@@ -499,11 +499,7 @@ if(Protobuf_INCLUDE_DIR)
   math(EXPR _PROTOBUF_MAJOR_VERSION "${Protobuf_LIB_VERSION} / 1000000")
   math(EXPR _PROTOBUF_MINOR_VERSION "${Protobuf_LIB_VERSION} / 1000 % 1000")
   math(EXPR _PROTOBUF_SUBMINOR_VERSION "${Protobuf_LIB_VERSION} % 1000")
-  if (_PROTOBUF_MINOR_VERSION GREATER_EQUAL "21")
-    set(Protobuf_VERSION "${_PROTOBUF_MINOR_VERSION}.${_PROTOBUF_SUBMINOR_VERSION}")
-  else()
-    set(Protobuf_VERSION "${_PROTOBUF_MAJOR_VERSION}.${_PROTOBUF_MINOR_VERSION}.${_PROTOBUF_SUBMINOR_VERSION}")
-  endif()
+  set(Protobuf_VERSION "${_PROTOBUF_MAJOR_VERSION}.${_PROTOBUF_MINOR_VERSION}.${_PROTOBUF_SUBMINOR_VERSION}")
 
   if(Protobuf_DEBUG)
     message(STATUS "[ ${CMAKE_CURRENT_LIST_FILE}:${CMAKE_CURRENT_LIST_LINE} ] "
@@ -524,7 +520,9 @@ if(Protobuf_INCLUDE_DIR)
           "${Protobuf_PROTOC_EXECUTABLE} reveals version ${_PROTOBUF_PROTOC_EXECUTABLE_VERSION}")
     endif()
 
-    if(NOT "${_PROTOBUF_PROTOC_EXECUTABLE_VERSION}" VERSION_EQUAL "${Protobuf_VERSION}")
+    # protoc version 22 and up don't print the major version any more
+    if(NOT "${_PROTOBUF_PROTOC_EXECUTABLE_VERSION}" VERSION_EQUAL "${Protobuf_VERSION}" AND
+       NOT "${_PROTOBUF_PROTOC_EXECUTABLE_VERSION}" VERSION_EQUAL "${_PROTOBUF_MINOR_VERSION}.${_PROTOBUF_SUBMINOR_VERSION}")
       message(WARNING "Protobuf compiler version ${_PROTOBUF_PROTOC_EXECUTABLE_VERSION}"
         " doesn't match library version ${Protobuf_VERSION}")
     endif()
@@ -556,7 +554,7 @@ if(Protobuf_INCLUDE_DIR)
               INTERFACE_COMPILE_FEATURES cxx_std_11
             )
           endif()
-          if (MSVC AND NOT Protobuf_USE_STATIC_LIBS)
+          if (WIN32 AND NOT Protobuf_USE_STATIC_LIBS)
             set_property(TARGET protobuf::libprotobuf APPEND PROPERTY
               INTERFACE_COMPILE_DEFINITIONS "PROTOBUF_USE_DLLS"
             )
@@ -589,7 +587,7 @@ if(Protobuf_INCLUDE_DIR)
             set_target_properties(protobuf::libprotobuf-lite PROPERTIES
               IMPORTED_LOCATION_DEBUG "${Protobuf_LITE_LIBRARY_DEBUG}")
           endif()
-          if (MSVC AND NOT Protobuf_USE_STATIC_LIBS)
+          if (WIN32 AND NOT Protobuf_USE_STATIC_LIBS)
             set_property(TARGET protobuf::libprotobuf-lite APPEND PROPERTY
               INTERFACE_COMPILE_DEFINITIONS "PROTOBUF_USE_DLLS"
             )
@@ -627,7 +625,7 @@ if(Protobuf_INCLUDE_DIR)
               INTERFACE_COMPILE_FEATURES cxx_std_11
             )
           endif()
-          if (MSVC AND NOT Protobuf_USE_STATIC_LIBS)
+          if (WIN32 AND NOT Protobuf_USE_STATIC_LIBS)
             set_property(TARGET protobuf::libprotoc APPEND PROPERTY
               INTERFACE_COMPILE_DEFINITIONS "PROTOBUF_USE_DLLS"
             )
