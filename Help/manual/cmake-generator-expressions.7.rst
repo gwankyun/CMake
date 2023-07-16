@@ -150,8 +150,8 @@ cmake-generator-expressions(7)
 
 .. note::
 
-  这个参考偏离了大多数CMake文档，因为它省略了尖括号\ ``<...>``\ 围绕占位符，\
-  如 ``condition``、\ ``string``、\ ``target``\ 等。这是为了防止那些占位符被错误地解释\
+  这个参考偏离了大多数CMake文档，因为它省略了尖括号\ ``<...>``\ 围绕占位符，\ 如\
+  ``condition``、\ ``string``、\ ``target``\ 等。这是为了防止那些占位符被错误地解释\
   为生成器表达式。
 
 .. _`Conditional Generator Expressions`:
@@ -238,10 +238,11 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. genex:: $<STREQUAL:string1,string2>
 
-  如果\ ``string1``\ 和\ ``string2``\ 相等，则为\ ``1``，否则为\ ``0``。比较是区分大小写的。\
-  要进行不区分大小写的比较，请与\ :ref:`字符串转换生成器表达式 <String Transforming Generator Expressions>`\
-  结合使用。例如，如果\ ``${foo}``\ 是\ ``BAR``、\ ``Bar``、\ ``bar``\ 等中的任意一个，\
-  则下面的计算结果为\ ``1``。
+  如果\ ``string1``\ 和\ ``string2``\ 相等，则为\ ``1``，否则为\ ``0``。比较是区分大\
+  小写的。要进行不区分大小写的比较，请与\
+  :ref:`字符串转换生成器表达式 <String Transforming Generator Expressions>`\ 结合使\
+  用。例如，如果\ ``${foo}``\ 是\ ``BAR``、\ ``Bar``、\ ``bar``\ 等中的任意一个，则下\
+  面的计算结果为\ ``1``。
 
   .. code-block:: cmake
 
@@ -293,7 +294,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. genex:: $<MAKE_C_IDENTIFIER:...>
 
-  ``...``\ 的内容转换为C标识符。转换遵循与\ :command:`string(MAKE_C_IDENTIFIER)`\ 相同的行为。
+  ``...``\ 的内容转换为C标识符。转换遵循与\ :command:`string(MAKE_C_IDENTIFIER)`\
+  相同的行为。
 
 列表表达式
 ----------------
@@ -301,14 +303,10 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 本节中的大多数表达式都与\ :command:`list`\ 命令密切相关，提供相同的功能，但采用生成器表达\
 式的形式。
 
-In each of the following list-related generator expressions, the ``list``
-must not contain any commas if that generator expression expects something to
-be provided after the ``list``.  For example, the expression
-``$<LIST:FIND,list,value>`` requires a ``value`` after the ``list``.
-Since a comma is used to separate the ``list`` and the ``value``, the ``list``
-cannot itself contain a comma.  This restriction does not apply to the
-:command:`list` command, it is specific to the list-handling generator
-expressions only.
+在以下每个与列表相关的生成器表达式中，如果生成器表达式希望在\ ``list``\ 后提供某些内容，则该\
+``list``\ 不得包含任何逗号。例如，表达式\ ``$<LIST:FIND,list,value>``\ 在\ ``list``\
+后面需要一个\ ``value``。由于使用逗号分隔\ ``list``\ 和\ ``value``，因此列表本身不能包\
+含逗号。此限制不适用于\ :command:`list`\ 命令，它仅特定于列表处理生成器表达式。
 
 .. _GenEx List Comparisons:
 
@@ -343,15 +341,15 @@ expressions only.
 
   .. versionadded:: 3.27
 
-  返回给定\ ``list``\ 的子列表。如果\ ``length``\ 为0，则返回空列表。如果\ ``length``\ 为-1或列表小于\
-  ``begin + length``，则返回从\ ``begin``\ 开始的列表的其余项。
+  返回给定\ ``list``\ 的子列表。如果\ ``length``\ 为0，则返回空列表。如果\ ``length``\
+  为-1或列表小于\ ``begin + length``，则返回从\ ``begin``\ 开始的列表的其余项。
 
 .. genex:: $<LIST:FIND,list,value>
 
   .. versionadded:: 3.27
 
-  The index of the first item in ``list`` with the specified ``value``,
-  or -1 if ``value`` is not in the ``list``.
+  ``list``\ 中具有指定\ ``value``\ 的第一个项的索引，如果\ ``value``\ 不在\ ``list``\
+  中，则为-1。
 
 .. _GenEx List Transformations:
 
@@ -419,6 +417,8 @@ expressions only.
   .. versionadded:: 3.27
 
   返回一个\ ``list``，其中给定\ ``index``\ 处的所有值都已删除。
+
+.. _GenEx LIST-REMOVE_DUPLICATES:
 
 .. genex:: $<LIST:REMOVE_DUPLICATES,list>
 
