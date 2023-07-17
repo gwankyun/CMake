@@ -362,36 +362,31 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  Converts ``list`` to a single string with the content of the ``glue`` string
-  inserted between each item.  This is conceptually the same operation as
-  :genex:`$<JOIN:list,glue>`, but the two have different behavior with regard
-  to empty items.  ``$<LIST:JOIN,list,glue>`` preserves all empty items,
-  whereas :genex:`$<JOIN:list,glue>` drops all empty items from the list.
+  将\ ``list``\ 转换为单个字符串，并在每个项之间插入\ ``glue``\ 字符串的内容。这在概念上与\
+  :genex:`$<JOIN:list,glue>`\ 操作相同，但是两者对于空项的行为不同。\
+  ``$<LIST:JOIN,list,glue>``\ 保留所有空项，而\ :genex:`$<JOIN:list,glue>`\ 从列表\
+  中删除所有空项。
 
 .. genex:: $<LIST:APPEND,list,item,...>
 
   .. versionadded:: 3.27
 
-  The ``list`` with each ``item`` appended.  Multiple items should be
-  separated by commas.
+  附加所有\ ``item``\ 的\ ``list``。多个项之间应该用逗号分隔。
 
 .. genex:: $<LIST:PREPEND,list,item,...>
 
   .. versionadded:: 3.27
 
-  The ``list`` with each ``item`` inserted at the beginning.  If there are
-  multiple items, they should be separated by commas, and the order of the
-  prepended items will be preserved.
+  在\ ``list``\ 的开头插入每个\ ``item``。如果有多个项，则应以逗号分隔，并保留前置项的顺序。
 
 .. genex:: $<LIST:INSERT,list,index,item,...>
 
   .. versionadded:: 3.27
 
-  The ``list`` with the ``item`` (or multiple items) inserted at the specified
-  ``index``.  Multiple items should be separated by commas.
+  在指定索引处插入\ ``item``\ （或多个项）的\ ``list``。多个项之间应该用逗号分隔。
 
-  It is an error to specify an out-of-range ``index``. Valid indexes are 0 to N,
-  where N is the length of the list, inclusive. An empty list has length 0.
+  指定超出范围的\ ``index``\ 是错误的。有效的索引范围是0到N，其中N是列表的长度，包括列表的\
+  长度。空列表的长度为0。
 
 .. genex:: $<LIST:POP_BACK,list>
 
@@ -409,8 +404,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  The ``list`` with all instances of the given ``value`` (or values) removed.
-  If multiple values are given, they should be separated by commas.
+  删除给定\ ``value``\ （或多个值）的所有实例的\ ``list``。如果给出了多个值，它们之间应\
+  该用逗号分隔。
 
 .. genex:: $<LIST:REMOVE_AT,list,index,...>
 
@@ -424,8 +419,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  返回删除重复项的\ ``list``。保留条目的相对顺序，但如果遇到重复项，则只保留第一个实例。The result is the same as
-  :genex:`$<REMOVE_DUPLICATES:list>`.
+  返回删除重复项的\ ``list``。保留条目的相对顺序，但如果遇到重复项，则只保留第一个实例。结\
+  果与\ :genex:`$<REMOVE_DUPLICATES:list>`\ 相同。
 
 .. _GenEx LIST-FILTER:
 
@@ -433,9 +428,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.27
 
-  A list of items from the ``list`` which match (``INCLUDE``) or do not match
-  (``EXCLUDE``) the regular expression ``regex``.  The result is the same as
-  :genex:`$<FILTER:list,INCLUDE|EXCLUDE,regex>`.
+  ``list``\ 中匹配（\ ``INCLUDE``\ ）或不匹配（\ ``EXCLUDE``\ ）正则表达式\ ``regex``\
+  的项的列表。结果与\ :genex:`$<FILTER:list,INCLUDE|EXCLUDE,regex>`\ 相同。
 
 .. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
 
@@ -505,25 +499,25 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. genex:: $<JOIN:list,glue>
 
-  用插入在每个项目之间的\ ``glue``\ 字符串内容连接\ ``list``。This is conceptually the same operation as
-  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`, but the two have
-  different behavior with regard to empty items.
-  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>` preserves all empty items,
-  whereas ``$<JOIN,list,glue>`` drops all empty items from the list.
+  用插入在每个项目之间的\ ``glue``\ 字符串内容连接\ ``list``。这在概念上与\
+  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ 操作相同，但是两者对于空项的行\
+  为不同。\ :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ 保留所有空项，而\
+  ``$<JOIN,list,glue>``\ 从列表中删除所有空项。
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
   .. versionadded:: 3.15
 
-  删除给定\ ``list``\ 中的重复项。保留项的相对顺序，并且如果遇到重复项，则只保留第一个实例。The result is the same as
-  :ref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`.
+  删除给定\ ``list``\ 中的重复项。保留项的相对顺序，并且如果遇到重复项，则只保留第一个实例。\
+  结果与\ :ref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`\
+  相同。
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.15
 
-  从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。  The result is the same as
-  :ref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`.
+  从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。结果与\
+  :ref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`\ 相同。
 
 .. _GenEx List Ordering:
 
@@ -551,12 +545,10 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
       按基本名称对文件路径名列表进行排序。
 
     ``NATURAL``
-      Sorts a list of strings using natural order (see the man page for
-      ``strverscmp(3)``), such that contiguous digits are compared as whole
-      numbers.  For example, the following list ``10.0 1.1 2.1 8.0 2.0 3.1``
-      will be sorted as ``1.1 2.0 2.1 3.1 8.0 10.0`` if the ``NATURAL``
-      comparison is selected, whereas it will be sorted as
-      ``1.1 10.0 2.0 2.1 3.1 8.0`` with the ``STRING`` comparison.
+      使用自然顺序对字符串列表进行排序（请参阅\ ``strverscmp(3)``\ 的手册页），以便将连\
+      续数字作为整数进行比较。例如，如果选择了\ ``NATURAL``\ 比较，下面的列表\
+      ``10.0 1.1 2.1 8.0 2.0 3.1``\ 将被排序为\ ``1.1 10.0 2.0 2.1 3.1 8.0``，而\
+      如果选择了\ ``STRING``\ 比较，它将被排序为\ ``1.1 10.0 2.0 2.1 3.1 8.0``。
 
   使用\ ``CASE``\ 选项之一来选择区分大小写或不区分大小写的排序模式：
 
@@ -1468,8 +1460,8 @@ Shell路径
 
   ``...``\ 的内容，但在收集传递\ :ref:`Target Usage Requirements`\ 时除外，在这种情况下，\
   它是空字符串。这用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 目标属性中，通常通过\
-  :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖关系，而不需要其他使用要求。such as include directories or
-  compile options.
+  :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖关系，而不需要其他使用\
+  要求。例如包含目录或编译选项。
 
   .. versionadded:: 3.24
     ``LINK_ONLY``\ 也可以在\ :prop_tgt:`LINK_LIBRARIES`\ 目标属性中使用。参见策略\
@@ -1618,8 +1610,6 @@ Shell路径
   :prop_tgt:`ENABLE_EXPORTS`\ 属性的值。
 
   如果没有与目标关联的导入文件，则返回空字符串。
-  This expands to an empty string when there is no import file associated
-  with the target.
 
 .. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt>
 
@@ -1663,16 +1653,14 @@ Shell路径
   .. versionadded:: 3.27
 
   ``tgt``\ 目标的导入文件名。
-  Name of the import file of the target ``tgt``.
 
   请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_IMPORT_FILE_DIR:tgt>
 
-  Directory of the import file of the target ``tgt``.
+  ``tgt``\ 目标的导入文件目录。
 
-  Note that ``tgt`` is not added as a dependency of the target this
-  expression is evaluated on.
+  请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 
@@ -1995,7 +1983,7 @@ Shell路径
 
     :ref:`Imported Targets`\ 的目标只有在知道其\ ``.dll``\ 文件的位置时才会被支持。\
     导入的\ ``SHARED``\ 库必须将\ :prop_tgt:`IMPORTED_LOCATION`\ 设置为其\ ``.dll``\
-    文件。有关详细信息，请参阅\ :ref:`add_library imported libraries <add_library imported libraries>`\
+    文件。有关详细信息，请参阅\ :ref:`add_library导入库 <add_library imported libraries>`\
     部分。许多查找模块生成\ ``UNKNOWN``\ 类型的导入目标，因此将被忽略。
 
 在支持运行时路径（\ ``RPATH``\ ）的平台上，请参考\ :prop_tgt:`INSTALL_RPATH`\ 目标属性。\
