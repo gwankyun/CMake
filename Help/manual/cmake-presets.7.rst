@@ -646,47 +646,40 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
         该字段支持宏扩展。
 
 ``execution``
-  An optional object specifying options for test execution. The object may
-  contain the following fields.
+  指定测试执行选项的可选对象。该对象可以包含以下字段。
 
   ``stopOnFailure``
-    An optional bool. If true, equivalent to passing
-    :option:`--stop-on-failure <ctest --stop-on-failure>` on the command
-    line.
+    可选bool。如果为true，相当于在命令行上传递\
+    :option:`--stop-on-failure <ctest --stop-on-failure>`。
 
   ``enableFailover``
-    An optional bool. If true, equivalent to passing :option:`-F <ctest -F>`
-    on the command line.
+    可选bool。如果为true，相当于在命令行上传递\ :option:`-F <ctest -F>`。
 
   ``jobs``
-    An optional integer. Equivalent to passing
-    :option:`--parallel <ctest --parallel>` on the command line.
+    可选整数。相当于在命令行上传递\
+    :option:`--parallel <ctest --parallel>` on the command line。
 
   ``resourceSpecFile``
-    An optional string. Equivalent to passing
-    :option:`--resource-spec-file <ctest --resource-spec-file>` on
-    the command line. This field supports macro expansion.
+    可选字符串。相当于在命令行上传递\
+    :option:`--resource-spec-file <ctest --resource-spec-file>`。该字段支持宏扩展。
 
   ``testLoad``
-    An optional integer. Equivalent to passing
-    :option:`--test-load <ctest --test-load>` on the command line.
+    可选整数。相当于在命令行上传递\ :option:`--test-load <ctest --test-load>`。
 
   ``showOnly``
-    An optional string. Equivalent to passing
-    :option:`--show-only <ctest --show-only>` on the
-    command line. The string must be one of the following values:
+    可选字符串。相当于在命令行上传递\ :option:`--show-only <ctest --show-only>`。字符\
+    串必须是以下值之一：
 
     ``human``
 
     ``json-v1``
 
   ``repeat``
-    An optional object specifying how to repeat tests. Equivalent to
-    passing :option:`--repeat <ctest --repeat>` on the command line.
-    The object must have the following fields.
+    指定如何重复测试的可选对象。相当于在命令行上传递\ :option:`--repeat <ctest --repeat>`。\
+    该对象必须具有以下字段。
 
     ``mode``
-      A required string. Must be one of the following values:
+      必需的字符串。必须是以下值之一：
 
       ``until-fail``
 
@@ -695,38 +688,32 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
       ``after-timeout``
 
     ``count``
-      A required integer.
+      必需的整数。
 
   ``interactiveDebugging``
-    An optional bool. If true, equivalent to passing
-    :option:`--interactive-debug-mode 1 <ctest --interactive-debug-mode>`
-    on the command line. If false, equivalent to passing
-    :option:`--interactive-debug-mode 0 <ctest --interactive-debug-mode>`
-    on the command line.
+    可选bool。如果为true，相当于在命令行上传递\
+    :option:`--interactive-debug-mode 1 <ctest --interactive-debug-mode>`。如果\
+    为false，相当于在命令行上传递\
+    :option:`--interactive-debug-mode 0 <ctest --interactive-debug-mode>`。
 
   ``scheduleRandom``
-    An optional bool. If true, equivalent to passing
-    :option:`--schedule-random <ctest --schedule-random>` on the command
-    line.
+    可选bool。如果为true，相当于在命令行上传递\
+    :option:`--schedule-random <ctest --schedule-random>`。
 
   ``timeout``
-    An optional integer. Equivalent to passing
-    :option:`--timeout <ctest --timeout>` on the command line.
+    可选整数。相当于在命令行上传递\ :option:`--timeout <ctest --timeout>`。
 
   ``noTestsAction``
-    An optional string specifying the behavior if no tests are found. Must
-    be one of the following values:
+    一个可选字符串，指定未找到测试时的行为。必须是以下值之一：
 
     ``default``
-      Equivalent to not passing any value on the command line.
+      相当于在命令行上不传递任何值。
 
     ``error``
-      Equivalent to passing :option:`--no-tests=error <ctest --no-tests>`
-      on the command line.
+      相当于在命令行上传递\ :option:`--no-tests=error <ctest --no-tests>`。
 
     ``ignore``
-      Equivalent to passing :option:`--no-tests=ignore <ctest --no-tests>`
-      on the command line.
+      相当于在命令行上传递\ :option:`--no-tests=ignore <ctest --no-tests>`。
 
 包预设
 ^^^^^^^^^^^^^^
