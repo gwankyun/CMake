@@ -718,45 +718,33 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 包预设
 ^^^^^^^^^^^^^^
 
-Package presets may be used in schema version ``6`` or above. Each entry of
-the ``packagePresets`` array is a JSON object that may contain the following
-fields:
+包预设可以在架构版本\ ``6``\ 或更高版本中使用。\ ``packagePresets``\ 数组的每个条目都是\
+一个JSON对象，可能包含以下字段：
 
 ``name``
-  A required string representing the machine-friendly name of the preset.
-  This identifier is used in the :option:`cpack --preset` option.
-  There must not be two package presets in the union of ``CMakePresets.json``
-  and ``CMakeUserPresets.json`` in the same directory with the same name.
-  However, a package preset may have the same name as a configure, build,
-  test, or workflow preset.
+  必需的字符串，表示预设的机器友好的名称。这个标识符在\ :option:`cpack --preset`\ 选项中\
+  使用。在\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录中，不\
+  能有两个包预置，且名称相同。但是，包预置可能与配置、构建、测试或工作流预置具有相同的名称。
 
 ``hidden``
-  An optional boolean specifying whether or not a preset should be hidden.
-  If a preset is hidden, it cannot be used in the
-  :option:`--preset <cpack --preset>` argument
-  and does not have to have a valid ``configurePreset``, even from
-  inheritance. ``hidden`` presets are intended to be used as a base for
-  other presets to inherit via the ``inherits`` field.
+  一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在\
+  :option:`--preset <cpack --preset>`\ 参数中使用，也不必有一个有效的\
+  ``configurePreset``，即使是从继承中也是如此。\ ``hidden``\ 预设被用作其他预设通过\
+  ``inherits``\ 字段继承的基础。
 
 ``inherits``
-  An optional array of strings representing the names of presets to inherit
-  from. This field can also be a string, which is equivalent to an array
-  containing one string.
+  一个可选的字符串数组，表示要继承的预设的名称。该字段也可以是字符串，相当于包含一个字符串的数组。
 
-  The preset will inherit all of the fields from the
-  ``inherits`` presets by default (except ``name``, ``hidden``,
-  ``inherits``, ``description``, and ``displayName``), but can override
-  them as desired. If multiple ``inherits`` presets provide conflicting
-  values for the same field, the earlier preset in the ``inherits`` array
-  will be preferred.
+  默认情况下，预设将继承\ ``inherits``\ 预设中的所有字段（除了\ ``name``、\ ``hidden``、\
+  ``inherits``、\ ``description``\ 和\ ``displayName``），但是可以根据需要覆盖它们。\
+  如果多个\ ``inherits``\ 预设为同一字段提供冲突的值，则优先选择\ ``inherits``\ 数组中\
+  较早的预设。
 
-  A preset can only inherit from another preset that is defined in the
-  same file or in one of the files it includes (directly or indirectly).
-  Presets in ``CMakePresets.json`` may not inherit from presets in
-  ``CMakeUserPresets.json``.
+  预设只能从定义在同一文件或其包含的其中一个文件中的另一个预设继承（直接或间接）。\
+  ``CMakePresets.json``\ 中的预置不能继承\ ``CMakeUserPresets.json``\ 中的预置。
 
 ``condition``
-  An optional `条件`_ object.
+  一个可选的\ `条件`_\ 对象。
 
 ``vendor``
   An optional map containing vendor-specific information. CMake does not
