@@ -747,264 +747,212 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   一个可选的\ `条件`_\ 对象。
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map
-  if it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field. If vendors use their own per-preset
-  ``vendor`` field, they should implement inheritance in a sensible manner
-  when appropriate.
+  一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。\
+  但是，它应该遵循与根级\ ``vendor``\ 字段相同的约定。如果供应商使用他们自己预置的\
+  ``vendor``\ 字段，他们应该在适当的时候以合理的方式实现继承。
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，具有预设的人性化名称。
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选的字符串，具有对预设的人性化描述。
 
 ``environment``
-  An optional map of environment variables. The key is the variable name
-  (which may not be an empty string), and the value is either ``null`` or
-  a string representing the value of the variable. Each variable is set
-  regardless of whether or not a value was given to it by the process's
-  environment. This field supports macro expansion, and environment
-  variables in this map may reference each other, and may be listed in any
-  order, as long as such references do not cause a cycle (for example, if
-  ``ENV_1`` is ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``.)
+  环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中\
+  的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
+  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不能是\ ``$env{ENV_1}``）。
 
-  Environment variables are inherited through the ``inherits`` field, and
-  the preset's environment will be the union of its own ``environment``
-  and the ``environment`` from all its parents. If multiple presets in
-  this union define the same variable, the standard rules of ``inherits``
-  are applied. Setting a variable to ``null`` causes it to not be set,
-  even if a value was inherited from another preset.
+  环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
+  自所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
+  ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是从另一\
+  个预设继承的。
 
 ``configurePreset``
-  An optional string specifying the name of a configure preset to
-  associate with this package preset. If ``configurePreset`` is not
-  specified, it must be inherited from the inherits preset (unless this
-  preset is hidden). The build directory is inferred from the configure
-  preset, so packaging will run in the same ``binaryDir`` that the
-  configuration did and build did.
+  一个可选字符串，指定要与此包预置关联的配置预置的名称。如果未指定\ ``configurePreset``，\
+  则必须从所继承的预设中继承（除非该预设是隐藏的）。构建目录是从配置预设中推断出来的，因此打\
+  包将在配置和构建所运行的同一个\ ``binaryDir``\ 下运行。
 
 ``inheritConfigureEnvironment``
-  An optional boolean that defaults to true. If true, the environment
-  variables from the associated configure preset are inherited after all
-  inherited package preset environments, but before environment variables
-  explicitly specified in this package preset.
+  默认为true的可选布尔值。如果为true，则在所有继承的包预置环境之后，但在此包预置中显式指定\
+  的环境变量之前继承相关配置预置的环境变量。
 
 ``generators``
-  An optional array of strings representing generators for CPack to use.
+  一个可选的字符串数组，表示供CPack使用的生成器。
 
 ``configurations``
-  An optional array of strings representing build configurations for CPack to
-  package.
+  一个可选的字符串数组，表示CPack要打包的构建配置。
 
 ``variables``
-  An optional map of variables to pass to CPack, equivalent to
-  :option:`-D <cpack -D>` arguments. Each key is the name of a variable, and
-  the value is the string to assign to that variable.
+  传递给CPack的可选变量映射，相当于\ :option:`-D <cpack -D>`\ 参数。每个键是一个变量的\
+  名称，值是要分配给该变量的字符串。
 
 ``configFile``
-  An optional string representing the config file for CPack to use.
+  一个可选字符串，表示供CPack使用的配置文件。
 
 ``output``
-  An optional object specifying output options. Valid keys are:
+  指定输出选项的可选对象。有效的密钥有：
 
   ``debug``
-    An optional boolean specifying whether or not to print debug information.
-    A value of ``true`` is equivalent to passing
-    :option:`--debug <cpack --debug>` on the command line.
+    一个可选的布尔值，指定是否打印调试信息。值为\ ``true``\ 相当于在命令行上传递\
+    :option:`--debug <cpack --debug>`。
 
   ``verbose``
-    An optional boolean specifying whether or not to print verbosely. A value
-    of ``true`` is equivalent to passing :option:`--verbose <cpack --verbose>`
-    on the command line.
+    一个可选的布尔值，指定是否详细打印。值为\ ``true``\ 等同于在命令行上传递\
+    :option:`--verbose <cpack --verbose>`。
 
 ``packageName``
-  An optional string representing the package name.
+  表示包名的可选字符串。
 
 ``packageVersion``
-  An optional string representing the package version.
+  表示包版本的可选字符串。
 
 ``packageDirectory``
-  An optional string representing the directory in which to place the package.
+  一个可选字符串，表示放置包的目录。
 
 ``vendorName``
-  An optional string representing the vendor name.
+  表示供应商名称的可选字符串。
 
 .. _`Workflow Preset`:
 
 工作流预设
 ^^^^^^^^^^^^^^^
 
-Workflow presets may be used in schema version ``6`` or above. Each entry of
-the ``workflowPresets`` array is a JSON object that may contain the following
-fields:
+工作流预设可以在架构版本\ ``6``\ 或更高版本中使用。\ ``workflowPresets``\ 数组的每个条\
+目都是一个JSON对象，可能包含以下字段：
 
 ``name``
-  A required string representing the machine-friendly name of the preset.
-  This identifier is used in the
-  :ref:`cmake --workflow --preset <Workflow Mode>` option. There must not be
-  two workflow presets in the union of ``CMakePresets.json`` and
-  ``CMakeUserPresets.json`` in the same directory with the same name. However,
-  a workflow preset may have the same name as a configure, build, test, or
-  package preset.
+  必需的字符串，表示预设的机器友好的名称。这个标识符在\
+  :ref:`cmake --workflow --preset <Workflow Mode>`\ 选项中使用。在\
+  ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录中，不能有两个同\
+  名的工作流预置。然而，工作流预设可能与配置、构建、测试或包预设具有相同的名称。
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map
-  if it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field.
+  一个可选的映射，包含特定于供应商的信息。CMake不会解释这个字段的内容，除非验证它是否存在。\
+  但是，它应该遵循与根级\ ``vendor``\ 字段相同的约定。
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，具有预设的人性化名称。
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选的字符串，具有对预设的人性化描述。
 
 ``steps``
-  A required array of objects describing the steps of the workflow. The first
-  step must be a configure preset, and all subsequent steps must be non-
-  configure presets whose ``configurePreset`` field matches the starting
-  configure preset. Each object may contain the following fields:
+  描述工作流步骤的必要对象数组。第一步必须是配置预设，所有后续步骤必须是非配置预设，其\
+  ``configurePreset``\ 字段与开始的配置预设匹配。每个对象可能包含以下字段：
 
   ``type``
-    A required string. The first step must be ``configure``. Subsequent steps
-    must be either ``build``, ``test``, or ``package``.
+    必需的字符串。第一步必须\ ``configure``。后续步骤必须是\ ``build``、\ ``test``\ 或\
+    ``package``。
 
   ``name``
-    A required string representing the name of the configure, build, test, or
-    package preset to run as this workflow step.
+    一个必需的字符串，表示作为此工作流步骤运行的配置、构建、测试或包预置的名称。
 
 条件
 ^^^^^^^^^
 
-The ``condition`` field of a preset, allowed in preset files specifying version
-``3`` or above, is used to determine whether or not the preset is enabled. For
-example, this can be used to disable a preset on platforms other than Windows.
-``condition`` may be either a boolean, ``null``, or an object. If it is a
-boolean, the boolean indicates whether the preset is enabled or disabled. If it
-is ``null``, the preset is enabled, but the ``null`` condition is not inherited
-by any presets that may inherit from the preset. Sub-conditions (for example in
-a ``not``, ``anyOf``, or ``allOf`` condition) may not be ``null``. If it is an
-object, it has the following fields:
+指定版本\ ``3``\ 或更高版本的预置文件中允许的预置\ ``condition``\ 字段用于确定是否启用该\
+预置。例如，这可以用于在Windows以外的平台上禁用预设。\ ``condition``\ 可以是布尔值、\
+``null``\ 或对象。如果是布尔值，则布尔值表示该预置是启用还是禁用。如果为\ ``null``，则启\
+用该预设，但任何可能从该预设继承的预设都不会继承\ ``null``\ 条件。子条件（例如\ ``not``、\
+``anyOf``\ 或\ ``allOf``\ 条件）不能为\ ``null``。如果它是一个对象，它有以下字段：
 
 ``type``
-  A required string with one of the following values:
+  必须的字符串，具有以下值之一：
 
   ``"const"``
-    Indicates that the condition is constant. This is equivalent to using a
-    boolean in place of the object. The condition object will have the
-    following additional fields:
+    指示条件是恒定的。这相当于使用布尔值代替对象。条件对象将具有以下附加字段：
 
     ``value``
-      A required boolean which provides a constant value for the condition's
-      evaluation.
+      一个必需的布尔值，它为条件的求值提供一个常量值。
 
   ``"equals"``
 
   ``"notEquals"``
-    Indicates that the condition compares two strings to see if they are equal
-    (or not equal). The condition object will have the following additional
-    fields:
+    指示条件比较两个字符串，看它们是否相等（或不相等）。条件对象将具有以下附加字段：
 
     ``lhs``
-      First string to compare. This field supports macro expansion.
+      第一个要比较的字符串。该字段支持宏扩展。
 
     ``rhs``
-      Second string to compare. This field supports macro expansion.
+      第二个要比较的字符串。该字段支持宏扩展。
 
   ``"inList"``
 
   ``"notInList"``
-    Indicates that the condition searches for a string in a list of strings.
-    The condition object will have the following additional fields:
+    指示该条件在字符串列表中搜索字符串。条件对象将具有以下附加字段：
 
     ``string``
-      A required string to search for. This field supports macro expansion.
+      需要搜索的字符串。该字段支持宏扩展。
 
     ``list``
-      A required array of strings to search. This field supports macro
-      expansion, and uses short-circuit evaluation.
+      需要搜索的字符串数组。该字段支持宏扩展，并使用短路求值。
 
   ``"matches"``
 
   ``"notMatches"``
-    Indicates that the condition searches for a regular expression in a string.
-    The condition object will have the following additional fields:
+    表示该条件在字符串中搜索正则表达式。条件对象将具有以下附加字段：
 
     ``string``
-      A required string to search. This field supports macro expansion.
+      需要搜索的字符串。该字段支持宏扩展。
 
     ``regex``
-      A required regular expression to search for. This field supports macro
-      expansion.
+      需要搜索的正则表达式。该字段支持宏扩展。
 
   ``"anyOf"``
 
   ``"allOf"``
 
-    Indicates that the condition is an aggregation of zero or more nested
-    conditions. The condition object will have the following additional fields:
+    指示条件是零个或多个嵌套条件的聚合。条件对象将具有以下附加字段：
 
     ``conditions``
-      A required array of condition objects. These conditions use short-circuit
-      evaluation.
+      必需的条件对象数组。这些条件使用短路求值。
 
   ``"not"``
-    Indicates that the condition is an inversion of another condition. The
-    condition object will have the following additional fields:
+    指示条件是另一个条件的反转。条件对象将具有以下附加字段：
 
     ``condition``
-      A required condition object.
+      必需条件对象。
 
 宏扩展
 ^^^^^^^^^^^^^^^
 
-As mentioned above, some fields support macro expansion. Macros are
-recognized in the form ``$<macro-namespace>{<macro-name>}``. All macros are
-evaluated in the context of the preset being used, even if the macro is in a
-field that was inherited from another preset. For example, if the ``Base``
-preset sets variable ``PRESET_NAME`` to ``${presetName}``, and the
-``Derived`` preset inherits from ``Base``, ``PRESET_NAME`` will be set to
-``Derived``.
+如上所述，一些字段支持宏扩展。宏的识别形式为\ ``$<macro-namespace>{<macro-name>}``。所\
+有宏都在正在使用的预设上下文中求值，即使宏位于从另一个预设继承的字段中。例如，如果\ ``Base``\
+预置将变量\ ``PRESET_NAME``\ 设置为\ ``${presetName}``，而\ ``Derived``\ 预置继承自\
+``Base``，则\ ``PRESET_NAME``\ 将被设置为\ ``Derived``。
 
-It is an error to not put a closing brace at the end of a macro name. For
-example, ``${sourceDir`` is invalid. A dollar sign (``$``) followed by
-anything other than a left curly brace (``{``) with a possible namespace is
-interpreted as a literal dollar sign.
+在宏名称的末尾不加上右括号是错误的。例如，\ ``${sourceDir``\ 无效。美元符号（\ ``$``\ ）\
+后面跟一个可能的命名空间的左花括号（\ ``{``\ ）以外的任何东西都会被解释为字面的美元符号。
 
-Recognized macros include:
+可识别的宏包括：
 
 ``${sourceDir}``
-  Path to the project source directory (i.e. the same as
-  :variable:`CMAKE_SOURCE_DIR`).
+  项目源目录的路径（即与\ :variable:`CMAKE_SOURCE_DIR`\ 相同）。
 
 ``${sourceParentDir}``
-  Path to the project source directory's parent directory.
+  项目源目录的父目录的路径。
 
 ``${sourceDirName}``
-  The last filename component of ``${sourceDir}``. For example, if
-  ``${sourceDir}`` is ``/path/to/source``, this would be ``source``.
+  ``${sourceDir}``\ 的最后一个文件名组件。例如，如果\ ``${sourceDir}``\ 是\
+  ``/path/to/source``，这将是\ ``source``。
 
 ``${presetName}``
-  Name specified in the preset's ``name`` field.
+  在预设的\ ``name``\ 字段中指定的名称。
 
 ``${generator}``
-  Generator specified in the preset's ``generator`` field. For build and
-  test presets, this will evaluate to the generator specified by
-  ``configurePreset``.
+  在预设的\ ``generator``\ 字段中指定的生成器。对于构建和测试预设，这将计算为\
+  ``configurePreset``\ 指定的生成器。
 
 ``${hostSystemName}``
-  The name of the host operating system. Contains the same value as
-  :variable:`CMAKE_HOST_SYSTEM_NAME`. This is allowed in preset files
-  specifying version ``3`` or above.
+  主机操作系统的名称。与\ :variable:`CMAKE_HOST_SYSTEM_NAME`\ 相同。这在指定版本\
+  ``3``\ 或以上的预设文件中是允许的。
 
 ``${fileDir}``
-  Path to the directory containing the preset file which contains the macro.
-  This is allowed in preset files specifying version ``4`` or above.
+  包含包含宏的预设文件的目录的路径。这在指定版本\ ``4``\ 或以上的预设文件中是允许的。
 
 ``${dollar}``
-  A literal dollar sign (``$``).
+  字面上的美元符号（\ ``$``\ ）。
 
 ``${pathListSep}``
   Native character for separating lists of paths, such as ``:`` or ``;``.
