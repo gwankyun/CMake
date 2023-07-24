@@ -955,50 +955,37 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   字面上的美元符号（\ ``$``\ ）。
 
 ``${pathListSep}``
-  Native character for separating lists of paths, such as ``:`` or ``;``.
+  分隔路径列表的本地字符，如\ ``:``\ 或\ ``;``。
 
-  For example, by setting ``PATH`` to
-  ``/path/to/ninja/bin${pathListSep}$env{PATH}``, ``${pathListSep}`` will
-  expand to the underlying operating system's character used for
-  concatenation in ``PATH``.
+  例如，通过将\ ``PATH``\ 设置为\ ``/path/to/ninja/bin${pathListSep}$env{PATH}``，\
+  ``${pathListSep}``\ 将扩展为用于在\ ``PATH``\ 中连接的底层操作系统的字符。
 
-  This is allowed in preset files specifying version ``5`` or above.
+  这在指定版本\ ``5``\ 或以上的预设文件中是允许的。
 
 ``$env{<variable-name>}``
-  Environment variable with name ``<variable-name>``. The variable name may
-  not be an empty string. If the variable is defined in the ``environment``
-  field, that value is used instead of the value from the parent environment.
-  If the environment variable is not defined, this evaluates as an empty
-  string.
+  名称为\ ``<variable-name>``\ 的环境变量。变量名不能是空字符串。如果变量在\
+  ``environment``\ 字段中定义，则使用该值而不是来自父环境的值。如果没有定义环境变量，则计\
+  算结果为空字符串。
 
-  Note that while Windows environment variable names are case-insensitive,
-  variable names within a preset are still case-sensitive. This may lead to
-  unexpected results when using inconsistent casing. For best results, keep
-  the casing of environment variable names consistent.
+  请注意，虽然Windows环境变量名是不区分大小写的，但预设中的变量名仍然是区分大小写的。当使用\
+  不一致的套管时，这可能会导致意想不到的结果。为了获得最佳效果，请保持环境变量名称的大小写一致。
 
 ``$penv{<variable-name>}``
-  Similar to ``$env{<variable-name>}``, except that the value only comes from
-  the parent environment, and never from the ``environment`` field. This
-  allows you to prepend or append values to existing environment variables.
-  For example, setting ``PATH`` to ``/path/to/ninja/bin:$penv{PATH}`` will
-  prepend ``/path/to/ninja/bin`` to the ``PATH`` environment variable. This
-  is needed because ``$env{<variable-name>}`` does not allow circular
-  references.
+  类似于\ ``$env{<variable-name>}``，不同之处在于该值只来自父环境，而不来自\
+  ``environment``\ 字段。这允许你在现有环境变量上添加或追加值。例如，将\ ``PATH``\ 设置为\
+  ``/path/to/ninja/bin:$penv{PATH}``\ 将把\ ``/path/to/ninja/bin``\ 添加到\ ``PATH``\
+  环境变量中。这是必需的，因为\ ``$env{<variable-name>}``\ 不允许循环引用。
 
 ``$vendor{<macro-name>}``
-  An extension point for vendors to insert their own macros. CMake will not
-  be able to use presets which have a ``$vendor{<macro-name>}`` macro, and
-  effectively ignores such presets. However, it will still be able to use
-  other presets from the same file.
+  一个扩展点，供供应商插入他们自己的宏。CMake将不能使用带有\ ``$vendor{<macro-name>}``\
+  宏的预置，并且会有效地忽略这些预置。但是，它仍然可以使用同一文件中的其他预设。
 
-  CMake does not make any attempt to interpret ``$vendor{<macro-name>}``
-  macros. However, to avoid name collisions, IDE vendors should prefix
-  ``<macro-name>`` with a very short (preferably <= 4 characters) vendor
-  identifier prefix, followed by a ``.``, followed by the macro name. For
-  example, the Example IDE could have ``$vendor{xide.ideInstallDir}``.
+  CMake不会尝试解释\ ``$vendor{<macro-name>}``\ 宏。但是，为了避免名称冲突，IDE供应商\
+  应该在\ ``<macro-name>``\ 前面加上一个非常短的（最好是<=4个字符）供应商标识符前缀，后\
+  跟一个\ ``.``，再后跟宏名称。例如，示例IDE可以有\ ``$vendor{xide.ideInstallDir}``。
 
 模式
 ======
 
-:download:`This file </manual/presets/schema.json>` provides a machine-readable
-JSON schema for the ``CMakePresets.json`` format.
+:download:`This file </manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\
+格式提供了一个机器可读的JSON模式。
