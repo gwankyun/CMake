@@ -104,51 +104,46 @@ ctest(1)
 
 .. option:: -j <jobs>, --parallel <jobs>
 
- Run the tests in parallel using the given number of jobs.
+ 使用给定数量的作业并行运行测试。
 
- This option tells CTest to run the tests in parallel using given
- number of jobs. This option can also be set by setting the
- :envvar:`CTEST_PARALLEL_LEVEL` environment variable.
+ 此选项告诉CTest使用给定数量的作业并行运行测试。这个选项也可以通过设置\
+ :envvar:`CTEST_PARALLEL_LEVEL`\ 环境变量来设置。
 
- This option can be used with the :prop_test:`PROCESSORS` test property.
+ 这个选项可以与\ :prop_test:`PROCESSORS`\ 测试属性一起使用。
 
- See `Label and Subproject Summary`_.
+ 请参阅\ `标签和子项目摘要`_。
 
 .. option:: --resource-spec-file <file>
 
- Run CTest with :ref:`resource allocation <ctest-resource-allocation>` enabled,
- using the
- :ref:`resource specification file <ctest-resource-specification-file>`
- specified in ``<file>``.
+ 使用\ ``<file>``\ 中指定的\
+ :ref:`资源规范文件 <ctest-resource-specification-file>`，在启用\
+ :ref:`资源分配 <ctest-resource-allocation>`\ 的情况下运行CTest。
 
- When :program:`ctest` is run as a `Dashboard Client`_ this sets the
- ``ResourceSpecFile`` option of the `CTest Test Step`_.
+ 当\ :program:`ctest`\ 作为\ `仪表板客户端`_\ 运行时，这将设置\ `CTest测试步骤`_\ 的\
+ ``ResourceSpecFile``\ 选项。
 
 .. option:: --test-load <level>
 
- While running tests in parallel (e.g. with :option:`-j <ctest -j>`), try
- not to start tests when they may cause the CPU load to pass above a given
- threshold.
+ 在并行运行测试时（例如使用\ :option:`-j <ctest -j>`），当测试可能导致CPU负载超过给定阈\
+ 值时，尽量不要启动测试。
 
- When :program:`ctest` is run as a `Dashboard Client`_ this sets the
- ``TestLoad`` option of the `CTest Test Step`_.
+ 当\ :program:`ctest`\ 作为\ `仪表板客户端`_\ 运行时，这将设置\ `CTest测试步骤`_\ 的\
+ ``TestLoad``\ 选项。
 
 .. option:: -Q, --quiet
 
- Make CTest quiet.
+ 让CTest保持安静。
 
- This option will suppress all the output.  The output log file will
- still be generated if the :option:`--output-log <ctest --output-log>` is
- specified.  Options such as :option:`--verbose <ctest --verbose>`,
- :option:`--extra-verbose <ctest --extra-verbose>`, and
- :option:`--debug <ctest --debug>` are ignored
- if ``--quiet`` is specified.
+ 此选项将抑制所有输出。如果指定了\ :option:`--output-log <ctest --output-log>`，仍然\
+ 会生成输出日志文件。如果指定了\ ``--quiet``，那么\ :option:`--verbose <ctest --verbose>`、\
+ :option:`--extra-verbose <ctest --extra-verbose>`\ 和\
+ :option:`--debug <ctest --debug>`\ 等选项将被忽略。
 
 .. option:: -O <file>, --output-log <file>
 
- Output to log file.
+ 输出到日志文件。
 
- This option tells CTest to write all its output to a ``<file>`` log file.
+ 该选项告诉CTest将其所有输出写入\ ``<file>``\ 日志文件。
 
 .. option:: --output-junit <file>
 
