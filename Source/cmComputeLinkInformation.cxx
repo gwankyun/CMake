@@ -525,12 +525,6 @@ cmComputeLinkInformation::GetSharedLibrariesLinked() const
   return this->SharedLibrariesLinked;
 }
 
-const std::vector<const cmGeneratorTarget*>&
-cmComputeLinkInformation::GetObjectLibrariesLinked() const
-{
-  return this->ObjectLibrariesLinked;
-}
-
 bool cmComputeLinkInformation::Compute()
 {
   // Skip targets that do not link.
@@ -1153,12 +1147,8 @@ void cmComputeLinkInformation::AddItem(LinkEntry const& entry)
         this->AddItem(BT<std::string>(libName, item.Backtrace));
       }
     } else if (tgt->GetType() == cmStateEnums::OBJECT_LIBRARY) {
-      if (!tgt->HaveCxx20ModuleSources() && !tgt->HaveFortranSources(config)) {
-        // Ignore object library!
-        // Its object-files should already have been extracted for linking.
-      } else {
-        this->ObjectLibrariesLinked.push_back(entry.Target);
-      }
+      // Ignore object library!
+      // Its object-files should already have been extracted for linking.
     } else {
       // Decide whether to use an import library.
       cmStateEnums::ArtifactType artifact = tgt->HasImportLibrary(config)

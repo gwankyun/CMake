@@ -143,6 +143,7 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
   const std::string& remoteprefix, const std::string& url)
 {
   CURL* curl;
+  CURLcode res;
   FILE* ftpfile;
   char error_buffer[1024];
   // Set Content-Type to satisfy fussy modsecurity rules.
@@ -210,6 +211,8 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       if (this->CTest->ShouldUseHTTP10()) {
         curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
       }
+      // enable HTTP ERROR parsing
+      curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1);
       /* enable uploading */
       curl_easy_setopt(curl, CURLOPT_UPLOAD, 1);
 
@@ -283,7 +286,7 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       upload_as += "&MD5=";
 
       if (cmIsOn(this->GetOption("InternalTest"))) {
-        upload_as += "ffffffffffffffffffffffffffffffff";
+        upload_as += "bad_md5sum";
       } else {
         upload_as +=
           cmSystemTools::ComputeFileHash(local_file, cmCryptoHash::AlgoMD5);
@@ -335,7 +338,7 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       ::curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &chunkDebug);
 
       // Now run off and do what you've been told!
-      ::curl_easy_perform(curl);
+      res = ::curl_easy_perform(curl);
 
       if (!chunk.empty()) {
         cmCTestOptionalLog(this->CTest, DEBUG,
@@ -356,11 +359,7 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
 
       // If curl failed for any reason, or checksum fails, wait and retry
       //
-      long response_code;
-      curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-      bool successful_submission = response_code == 200;
-
-      if (!successful_submission || this->HasErrors) {
+      if (res != CURLE_OK || this->HasErrors) {
         std::string retryDelay = *this->GetOption("RetryDelay");
         std::string retryCount = *this->GetOption("RetryCount");
 
@@ -398,7 +397,7 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
           chunkDebug.clear();
           this->HasErrors = false;
 
-          ::curl_easy_perform(curl);
+          res = ::curl_easy_perform(curl);
 
           if (!chunk.empty()) {
             cmCTestOptionalLog(this->CTest, DEBUG,
@@ -409,16 +408,14 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
             this->ParseResponse(chunk);
           }
 
-          curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-          if (response_code == 200 && !this->HasErrors) {
-            successful_submission = true;
+          if (res == CURLE_OK && !this->HasErrors) {
             break;
           }
         }
       }
 
       fclose(ftpfile);
-      if (!successful_submission) {
+      if (res) {
         cmCTestLog(this->CTest, ERROR_MESSAGE,
                    "   Error when uploading file: " << local_file
                                                     << std::endl);
