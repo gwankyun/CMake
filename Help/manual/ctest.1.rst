@@ -149,91 +149,74 @@ ctest(1)
 
  .. versionadded:: 3.21
 
- Write test results in JUnit format.
+ 以JUnit格式编写测试结果。
 
- This option tells CTest to write test results to ``<file>`` in JUnit XML
- format. If ``<file>`` already exists, it will be overwritten. If using the
- :option:`-S <ctest -S>` option to run a dashboard script, use the
- ``OUTPUT_JUNIT`` keyword with the :command:`ctest_test` command instead.
+ 这个选项告诉CTest将测试结果写入\ ``<file>``\ 在JUnit XML格式。如果\ ``<file>``\ 已经\
+ 存在，它将被覆盖。如果使用\ :option:`-S <ctest -S>`\ 选项运行仪表板脚本，则使用\
+ ``OUTPUT_JUNIT``\ 关键字和\ :command:`ctest_test`\ 命令代替。
 
 .. option:: -N, --show-only[=<format>]
 
- Disable actual execution of tests.
+ 禁用测试的实际执行。
 
- This option tells CTest to list the tests that would be run but not
- actually run them.  Useful in conjunction with the :option:`-R <ctest -R>`
- and :option:`-E <ctest -E>` options.
+ 这个选项告诉CTest列出将要运行但没有实际运行的测试。与\ :option:`-R <ctest -R>`\ 和\
+ :option:`-E <ctest -E>`\ 选项一起使用。
 
  .. versionadded:: 3.14
 
-   The ``--show-only`` option accepts a ``<format>`` value.
+   ``--show-only``\ 选项接受\ ``<format>``\ 值。
 
- ``<format>`` can be one of the following values.
+ ``<format>``\ 可以是以下值之一。
 
    ``human``
-     Human-friendly output.  This is not guaranteed to be stable.
-     This is the default.
+     人性化的输出。这不能保证是稳定的。这是默认值。
 
    ``json-v1``
-     Dump the test information in JSON format.
-     See `Show as JSON Object Model`_.
+     以JSON格式转储测试信息。参见显示为\ `显示为JSON对象模型`_。
 
 .. option:: -L <regex>, --label-regex <regex>
 
- Run tests with labels matching regular expression as described under
- :ref:`string(REGEX) <Regex Specification>`.
+ 运行与\ :ref:`string(REGEX) <Regex Specification>`\ 下描述的正则表达式匹配的标签的测试。
 
- This option tells CTest to run only the tests whose labels match the
- given regular expression.  When more than one ``-L`` option is given,
- a test will only be run if each regular expression matches at least one
- of the test's labels (i.e. the multiple ``-L`` labels form an ``AND``
- relationship).  See `Label Matching`_.
+ 此选项告诉CTest只运行标签与给定正则表达式匹配的测试。当给出多个\ ``-L``\ 选项时，只有当每\
+ 个正则表达式匹配至少一个测试的标签（即多个\ ``-L``\ 标签形成一个\ ``AND``\ 关系）时，才\
+ 会运行测试。参见\ `标签匹配`_。
 
 .. option:: -R <regex>, --tests-regex <regex>
 
- Run tests matching regular expression.
+ 运行匹配正则表达式的测试。
 
- This option tells CTest to run only the tests whose names match the
- given regular expression.
+ 此选项告诉CTest只运行名称与给定正则表达式匹配的测试。
 
 .. option:: -E <regex>, --exclude-regex <regex>
 
- Exclude tests matching regular expression.
+ 排除匹配正则表达式的测试。
 
- This option tells CTest to NOT run the tests whose names match the
- given regular expression.
+ 此选项告诉CTest不运行名称与给定正则表达式匹配的测试。
 
 .. option:: -LE <regex>, --label-exclude <regex>
 
- Exclude tests with labels matching regular expression.
+ 排除标签与正则表达式匹配的测试。
 
- This option tells CTest to NOT run the tests whose labels match the
- given regular expression.  When more than one ``-LE`` option is given,
- a test will only be excluded if each regular expression matches at least one
- of the test's labels (i.e. the multiple ``-LE`` labels form an ``AND``
- relationship).  See `Label Matching`_.
+ 此选项告诉CTest不运行标签与给定正则表达式匹配的测试。当给出多个\ ``-LE``\ 选项时，只有当\
+ 每个正则表达式匹配至少一个测试的标签（即多个\ ``-LE``\ 标签形成一个\ ``AND``\ 关系）时，\
+ 才会排除测试。参考\ `标签匹配`_。
 
 .. option:: -FA <regex>, --fixture-exclude-any <regex>
 
- Exclude fixtures matching ``<regex>`` from automatically adding any tests to
- the test set.
+ 排除与\ ``<regex>``\ 匹配的fixture自动向测试集中添加任何测试。
 
- If a test in the set of tests to be executed requires a particular fixture,
- that fixture's setup and cleanup tests would normally be added to the test set
- automatically. This option prevents adding setup or cleanup tests for fixtures
- matching the ``<regex>``. Note that all other fixture behavior is retained,
- including test dependencies and skipping tests that have fixture setup tests
- that fail.
+ 如果要执行的测试集中的一个测试需要一个特定的fixture，那么该fixture的设置和清理测试通常会\
+ 自动添加到测试集中。此选项可防止为匹配\ ``<regex>``\ 的fixture添加安装或清理测试。注意，\
+ 保留所有其他fixture行为，包括测试依赖项和跳过fixture设置测试失败的测试。
 
 .. option:: -FS <regex>, --fixture-exclude-setup <regex>
 
- Same as :option:`-FA <ctest -FA>` except only matching setup tests are
- excluded.
+ 与\ :option:`-FA <ctest -FA>`\ 相同，但只排除匹配的设置测试。
 
 .. option:: -FC <regex>, --fixture-exclude-cleanup <regex>
 
- Same as :option:`-FA <ctest -FA>` except only matching cleanup tests are
- excluded.
+ 与\ :option:`-FA <ctest -FA>`\ 相同，但只排除匹配的清理测试。
 
 .. option:: -I [Start,End,Stride,test#,test#|Test file], --tests-information
 

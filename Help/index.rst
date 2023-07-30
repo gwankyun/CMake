@@ -27,7 +27,7 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
    :maxdepth: 1
 
    cmake(1)：100%</manual/cmake.1>
-   ctest(1)：8.3%</manual/ctest.1>
+   ctest(1)：12.4%</manual/ctest.1>
    cpack(1)：100%</manual/cpack.1>
 
 交互式对话框
