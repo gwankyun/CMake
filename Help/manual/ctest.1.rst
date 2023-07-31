@@ -220,194 +220,164 @@ ctest(1)
 
 .. option:: -I [Start,End,Stride,test#,test#|Test file], --tests-information
 
- Run a specific number of tests by number.
+ 按编号运行特定数量的测试。
 
- This option causes CTest to run tests starting at number ``Start``,
- ending at number ``End``, and incrementing by ``Stride``.  Any additional
- numbers after ``Stride`` are considered individual test numbers.  ``Start``,
- ``End``, or ``Stride`` can be empty.  Optionally a file can be given that
- contains the same syntax as the command line.
+ 此选项使CTest运行从编号\ ``Start``\ 开始，以编号\ ``End``\ 结束并按\ ``Stride``\ 递\
+ 增的测试。\ ``Stride``\ 之后的任何附加数字都被视为单独的测试数字。\ ``Start``、\ ``End``\
+ 和\ ``Stride``\ 可以为空。可以选择一个包含与命令行相同语法的文件。
 
 .. option:: -U, --union
 
- Take the Union of :option:`-I <ctest -I>` and :option:`-R <ctest -R>`.
+ 取\ :option:`-I <ctest -I>`\ 和\ :option:`-R <ctest -R>`\ 的并集。
 
- When both :option:`-R <ctest -R>` and :option:`-I <ctest -I>` are specified
- by default the intersection of tests are run.  By specifying ``-U`` the union
- of tests is run instead.
+ 默认情况下，同时指定\ :option:`-R <ctest -R>`\ 和\ :option:`-I <ctest -I>`\ 时，将\
+ 运行测试交集。通过指定\ ``-U``，将运行测试的并集。
 
 .. option:: --rerun-failed
 
- Run only the tests that failed previously.
+ 只运行先前失败的测试。
 
- This option tells CTest to perform only the tests that failed during
- its previous run.  When this option is specified, CTest ignores all
- other options intended to modify the list of tests to run (
- :option:`-L <ctest -L>`, :option:`-R <ctest -R>`, :option:`-E <ctest -E>`,
- :option:`-LE <ctest -LE>`, :option:`-I <ctest -I>`, etc).  In the event that
- CTest runs and no tests fail, subsequent calls to CTest with the
- ``--rerun-failed`` option will run the set of tests that most recently
- failed (if any).
+ 此选项告诉CTest只执行在上次运行期间失败的测试。指定此选项后，CTest将忽略用于修改要运行的测\
+ 试列表的所有其他选项（:option:`-L <ctest -L>`、:option:`-R <ctest -R>`、\
+ :option:`-E <ctest -E>`、:option:`-LE <ctest -LE>`、:option:`-I <ctest -I>`\ 等）。\
+ 如果CTest运行并且没有测试失败，则使用\ ``--rerun-failed``\ 选项对CTest的后续调用将运行\
+ 最近失败的测试集（如果有的话）。
 
 .. option:: --repeat <mode>:<n>
 
-  Run tests repeatedly based on the given ``<mode>`` up to ``<n>`` times.
-  The modes are:
+  根据给定的\ ``<mode>``\ 重复运行测试，最多可运行\ ``<n>``\ 次。模式有：
 
   ``until-fail``
-    Require each test to run ``<n>`` times without failing in order to pass.
-    This is useful in finding sporadic failures in test cases.
+    要求每个测试运行\ ``<n>``\ 次而不失败才能通过。这对于发现测试用例中的零星故障很有用。
 
   ``until-pass``
-    Allow each test to run up to ``<n>`` times in order to pass.
-    Repeats tests if they fail for any reason.
-    This is useful in tolerating sporadic failures in test cases.
+    允许每个测试最多运行\ ``<n>``\ 次才能通过。如果测试因任何原因失败，则重复测试。这对于\
+    容忍测试用例中的零星故障是很有用的。
 
   ``after-timeout``
-    Allow each test to run up to ``<n>`` times in order to pass.
-    Repeats tests only if they timeout.
-    This is useful in tolerating sporadic timeouts in test cases
-    on busy machines.
+    允许每个测试最多运行\ ``<n>``\ 次才能通过。只有当测试超时时才重复测试。这对于在繁忙的\
+    机器上容忍测试用例中的零星超时非常有用。
 
 .. option:: --repeat-until-fail <n>
 
- Equivalent to :option:`--repeat until-fail:\<n\> <ctest --repeat>`.
+ 相当于\ :option:`--repeat until-fail:\<n\> <ctest --repeat>`。
 
 .. option:: --max-width <width>
 
- Set the max width for a test name to output.
+ 设置测试名称输出的最大宽度。
 
- Set the maximum width for each test name to show in the output.
- This allows the user to widen the output to avoid clipping the test
- name which can be very annoying.
+ 设置要在输出中显示的每个测试名称的最大宽度。这允许用户扩大输出，以避免剪切测试名称，这可能\
+ 是非常烦人的。
 
 .. option:: --interactive-debug-mode [0|1]
 
- Set the interactive mode to ``0`` or ``1``.
+ 设置交互模式为\ ``0``\ 或\ ``1``。
 
- This option causes CTest to run tests in either an interactive mode
- or a non-interactive mode.  In dashboard mode (``Experimental``, ``Nightly``,
- ``Continuous``), the default is non-interactive.  In non-interactive mode,
- the environment variable :envvar:`DASHBOARD_TEST_FROM_CTEST` is set.
+ 此选项可使CTest以交互模式或非交互模式运行测试。在仪表板模式下（\ ``Experimental``、\
+ ``Nightly``、\ ``Continuous``），默认为非交互式。在非交互模式下，设置环境变量\
+ :envvar:`DASHBOARD_TEST_FROM_CTEST`。
 
- Prior to CMake 3.11, interactive mode on Windows allowed system debug
- popup windows to appear.  Now, due to CTest's use of ``libuv`` to launch
- test processes, all system debug popup windows are always blocked.
+ 在CMake 3.11之前，Windows上的交互模式允许出现系统调试弹出窗口。现在，由于CTest使用\
+ ``libuv``\ 来启动测试进程，所有系统调试弹出窗口总是被禁止。
 
 .. option:: --no-label-summary
 
- Disable timing summary information for labels.
+ 禁用标签的定时汇总信息。
 
- This option tells CTest not to print summary information for each
- label associated with the tests run.  If there are no labels on the
- tests, nothing extra is printed.
+ 此选项告诉CTest不要打印与测试运行相关联的每个标签的摘要信息。如果测试上没有标签，就不会打\
+ 印任何额外的内容。
 
- See `Label and Subproject Summary`_.
+ 请参阅\ `Label and Subproject Summary`_。
 
 .. option:: --no-subproject-summary
 
- Disable timing summary information for subprojects.
+ 禁用子项目的定时摘要信息。
 
- This option tells CTest not to print summary information for each
- subproject associated with the tests run.  If there are no subprojects on the
- tests, nothing extra is printed.
+ 此选项告诉CTest不要打印与测试运行相关联的每个子项目的摘要信息。如果测试中没有子项目，则不会\
+ 打印额外的内容。
 
- See `Label and Subproject Summary`_.
+ 请参阅\ `Label and Subproject Summary`_。
 
 .. option:: --test-dir <dir>
 
- Specify the directory in which to look for tests, typically a CMake project
- build directory. If not specified, the current directory is used.
+ 指定要查找测试的目录，通常是CMake项目构建目录。如果未指定，则使用当前目录。
 
 .. option:: --test-output-size-passed <size>
 
  .. versionadded:: 3.4
 
- Limit the output for passed tests to ``<size>`` bytes.
+ 将通过的测试的输出限制为\ ``<size>``\ 字节。
 
 .. option:: --test-output-size-failed <size>
 
  .. versionadded:: 3.4
 
- Limit the output for failed tests to ``<size>`` bytes.
+ 将失败测试的输出限制为\ ``<size>``\ 字节。
 
 .. option:: --test-output-truncation <mode>
 
  .. versionadded:: 3.24
 
- Truncate ``tail`` (default), ``middle`` or ``head`` of test output once
- maximum output size is reached.
+ 一旦达到最大输出大小，截断测试输出的\ ``tail``\ （默认）、\ ``middle``\ 或\ ``head``。
 
 .. option:: --overwrite
 
- Overwrite CTest configuration option.
+ 覆盖CTest配置选项。
 
- By default CTest uses configuration options from configuration file.
- This option will overwrite the configuration option.
+ 默认情况下，CTest使用配置文件中的配置选项。此选项将覆盖配置选项。
 
 .. option:: --force-new-ctest-process
 
- Run child CTest instances as new processes.
+ 将子CTest实例作为新进程运行。
 
- By default CTest will run child CTest instances within the same
- process.  If this behavior is not desired, this argument will
- enforce new processes for child CTest processes.
+ 默认情况下，CTest将在同一进程中运行子CTest实例。如果不需要这种行为，这个参数将为子CTest进\
+ 程强制新的进程。
 
 .. option:: --schedule-random
 
- Use a random order for scheduling tests.
+ 使用随机顺序安排测试。
 
- This option will run the tests in a random order.  It is commonly
- used to detect implicit dependencies in a test suite.
+ 此选项将以随机顺序运行测试。它通常用于检测测试套件中的隐式依赖关系。
 
 .. option:: --submit-index
 
- Legacy option for old Dart2 dashboard server feature.
- Do not use.
+ 旧的Dart2仪表板服务器功能的遗留选项。请勿使用。
 
 .. option:: --timeout <seconds>
 
- Set the default test timeout.
+ 设置默认测试超时时间。
 
- This option effectively sets a timeout on all tests that do not
- already have a timeout set on them via the :prop_test:`TIMEOUT`
- property.
+ 此选项有效地为尚未通过\ :prop_test:`TIMEOUT`\ 属性对其设置超时的所有测试设置超时。
 
 .. option:: --stop-time <time>
 
- Set a time at which all tests should stop running.
+ 设置所有测试应停止运行的时间。
 
- Set a real time of day at which all tests should timeout.  Example:
- ``7:00:00 -0400``.  Any time format understood by the curl date parser
- is accepted.  Local time is assumed if no timezone is specified.
+ 设置一天中所有测试应该超时的实际时间。例如\ ``7:00:00 -0400``。可以接受curl日期解析器理\
+ 解的任何时间格式。如果没有指定时区，则假定为本地时间。
 
 .. option:: --print-labels
 
- Print all available test labels.
+ 打印所有可用的测试标签。
 
- This option will not run any tests, it will simply print the list of
- all labels associated with the test set.
+ 此选项不会运行任何测试，它只会打印与测试集关联的所有标签的列表。
 
 .. option:: --no-tests=<action>
 
- Regard no tests found either as error (when ``<action>`` is set to
- ``error``) or ignore it (when ``<action>`` is set to ``ignore``).
+ 将未发现的测试视为错误（当\ ``<action>``\ 设置为\ ``error``\ 时）或忽略它（当\
+ ``<action>``\ 设置为\ ``ignore``\ 时）。
 
- If no tests were found, the default behavior of CTest is to always log an
- error message but to return an error code in script mode only.  This option
- unifies the behavior of CTest by either returning an error code if no tests
- were found or by ignoring it.
+ 如果未找到任何测试，CTest的默认行为是始终记录错误消息，但仅在脚本模式下返回错误代码。该选项\
+ 通过在没有找到测试时返回错误代码或忽略它来统一CTest的行为。
 
  .. versionadded:: 3.26
 
- This option can also be set by setting the :envvar:`CTEST_NO_TESTS_ACTION`
- environment variable.
+ 这个选项也可以通过设置\ :envvar:`CTEST_NO_TESTS_ACTION`\ 环境变量来设置。
 
 查看帮助
 =========
 
-To print version details or selected pages from the CMake documentation,
-use one of the following options:
+要打印版本详细信息或从CMake文档中选择的页面，使用以下选项之一：
 
 .. include:: OPTIONS_HELP.txt
 
