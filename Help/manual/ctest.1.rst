@@ -287,7 +287,7 @@ ctest(1)
  此选项告诉CTest不要打印与测试运行相关联的每个标签的摘要信息。如果测试上没有标签，就不会打\
  印任何额外的内容。
 
- 请参阅\ `Label and Subproject Summary`_。
+ 请参阅\ `标签和子项目摘要`_。
 
 .. option:: --no-subproject-summary
 
@@ -296,7 +296,7 @@ ctest(1)
  此选项告诉CTest不要打印与测试运行相关联的每个子项目的摘要信息。如果测试中没有子项目，则不会\
  打印额外的内容。
 
- 请参阅\ `Label and Subproject Summary`_。
+ 请参阅\ `标签和子项目摘要`_。
 
 .. option:: --test-dir <dir>
 
@@ -386,40 +386,32 @@ ctest(1)
 标签匹配
 ==============
 
-Tests may have labels attached to them. Tests may be included
-or excluded from a test run by filtering on the labels.
-Each individual filter is a regular expression applied to
-the labels attached to a test.
+测试可能附有标签。通过筛选标签，可以将测试包括在测试运行中，也可以将测试排除在测试运行中。每\
+个单独的过滤器都是一个正则表达式，应用于附加到测试的标签。
 
-When :option:`-L <ctest -L>` is used, in order for a test to be included in a
-test run, each regular expression must match at least one
-label.  Using more than one :option:`-L <ctest -L>` option means "match **all**
-of these".
+当使用\ :option:`-L <ctest -L>`\ 时，为了将测试包含在测试运行中，每个正则表达式必须匹配\
+至少一个标签。使用多个\ :option:`-L <ctest -L>`\ 选项意味着“匹配\ **所有**\ 这些”。
 
-The :option:`-LE <ctest -LE>` option works just like :option:`-L <ctest -L>`,
-but excludes tests rather than including them. A test is excluded if each
-regular expression matches at least one label.
+:option:`-LE <ctest -LE>`\ 选项的工作原理与\ :option:`-L <ctest -L>`\ 类似，但它排除\
+测试而不是包括测试。如果每个正则表达式匹配至少一个标签，则排除测试。
 
-If a test has no labels attached to it, then :option:`-L <ctest -L>` will never
-include that test, and :option:`-LE <ctest -LE>` will never exclude that test.
-As an example of tests with labels, consider five tests,
-with the following labels:
+如果一个测试没有附加标签，那么\ :option:`-L <ctest -L>`\ 将永远不会包括该测试，并且\
+:option:`-LE <ctest -LE>`\ 将永远不会排除该测试。以带标签的测试为例，考虑五个测试，它们\
+带有以下标签：
 
-* *test1* has labels *tuesday* and *production*
-* *test2* has labels *tuesday* and *test*
-* *test3* has labels *wednesday* and *production*
-* *test4* has label *wednesday*
-* *test5* has labels *friday* and *test*
+* *test1*\ 有\ *tuesday*\ 和\ *production*\ 标签
+* *test2*\ 有\ *tuesday*\ 和\ *test*\ 标签
+* *test3*\ 有\ *wednesday*\ 和\ *production*\ 标签
+* *test4*\ 有\ *wednesday*\ 的标签
+* *test5*\ 有标签\ *friday*\ 和\ *test*
 
-Running :program:`ctest` with ``-L tuesday -L test`` will select *test2*, which has
-both labels. Running CTest with ``-L test`` will select *test2* and
-*test5*, because both of them have a label that matches that regular
-expression.
+用\ ``-L tuesday -L test``\ 命令运行\ :program:`ctest`，将选择\ *test2*，它有两个标签。\
+使用\ ``-L test``\ 运行CTest将选择\ *test2*\ 和\ *test5*，因为它们都有一个与正则表达式\
+匹配的标签。
 
-Because the matching works with regular expressions, take note that
-running CTest with ``-L es`` will match all five tests.
-To select the *tuesday* and *wednesday* tests together, use a single
-regular expression that matches either of them, like ``-L "tue|wed"``.
+因为匹配使用正则表达式，所以请注意，使用\ ``-L es``\ 运行CTest将匹配所有五个测试。若要同时\
+选择\ *tuesday*\ 和\ *wednesday*\ 测试，请使用匹配其中一个的单个正则表达式，如\
+``-L "tue|wed"``。
 
 .. _`Label and Subproject Summary`:
 
