@@ -418,20 +418,16 @@ ctest(1)
 标签和子项目摘要
 ============================
 
-CTest prints timing summary information for each ``LABEL`` and subproject
-associated with the tests run. The label time summary will not include labels
-that are mapped to subprojects.
+CTest打印与测试运行相关联的每个\ ``LABEL``\ 和子项目的计时摘要信息。标签时间摘要将不包括映\
+射到子项目的标签。
 
 .. versionadded:: 3.22
-  Labels added dynamically during test execution are also reported in the
-  timing summary.  See :ref:`Additional Labels`.
+  在测试执行期间动态添加的标签也会在计时摘要中报告。请参阅\ :ref:`Additional Labels`。
 
-When the :prop_test:`PROCESSORS` test property is set, CTest will display a
-weighted test timing result in label and subproject summaries. The time is
-reported with `sec*proc` instead of just `sec`.
+当设置了 :prop_test:`PROCESSORS` 测试属性时，CTest将在标签和子项目摘要中显示加权测试计时\
+结果。时间是用\ `sec*proc`\ 报告的，而不仅仅是\ `sec`。
 
-The weighted time summary reported for each label or subproject ``j``
-is computed as::
+每个标签或子项目\ ``j``\ 报告的加权时间汇总计算为：\ ::
 
   Weighted Time Summary for Label/Subproject j =
       sum(raw_test_time[j,i] * num_processors[j,i], i=1...num_tests[j])
@@ -440,25 +436,20 @@ is computed as::
 
 where:
 
-* ``raw_test_time[j,i]``: Wall-clock time for the ``i`` test
-  for the ``j`` label or subproject
-* ``num_processors[j,i]``: Value of the CTest :prop_test:`PROCESSORS` property
-  for the ``i`` test for the ``j`` label or subproject
-* ``num_tests[j]``: Number of tests associated with the ``j`` label or subproject
-* ``total``: Total number of labels or subprojects that have at least one test run
+* ``raw_test_time[j,i]``： ``j``\ 标签或子项目的\ ``i``\ 测试的时钟时间
+* ``num_processors[j,i]``： 用于\ ``j``\ 标签或子项目的\ ``i``\ 测试的CTest\
+  :prop_test:`PROCESSORS`\ 属性的值
+* ``num_tests[j]``： 与\ ``j``\ 标签或子项目关联的测试数
+* ``total``： 至少有一个测试运行的标签或子项目的总数
 
-Therefore, the weighted time summary for each label or subproject represents
-the amount of time that CTest gave to run the tests for each label or
-subproject and gives a good representation of the total expense of the tests
-for each label or subproject when compared to other labels or subprojects.
+因此，每个标签或子项目的加权时间摘要表示CTest为每个标签或子项目运行测试所花费的时间量，并很\
+好地表示了与其他标签或子项目相比，每个标签或子项目的测试总费用。
 
-For example, if ``SubprojectA`` showed ``100 sec*proc`` and ``SubprojectB`` showed
-``10 sec*proc``, then CTest allocated approximately 10 times the CPU/core time
-to run the tests for ``SubprojectA`` than for ``SubprojectB`` (e.g. so if effort
-is going to be expended to reduce the cost of the test suite for the whole
-project, then reducing the cost of the test suite for ``SubprojectA`` would
-likely have a larger impact than effort to reduce the cost of the test suite
-for ``SubprojectB``).
+例如，如果\ ``SubprojectA``\ 显示\ ``100 sec*proc``，而\ ``SubprojectB``\ 显示\
+``10 sec*proc``，那么CTest分配大约10倍的CPU/核心时间来运行\ ``SubprojectA``\ 的测试，\
+而不是\ ``SubprojectB``\ 的测试（例如，如果要花费精力来减少整个项目测试套件的成本，那么减少\
+``SubprojectA``\ 测试套件的成本可能会比减少\ ``SubprojectB``\ 测试套件的成本产生更大的\
+影响）。
 
 .. _`Build and Test Mode`:
 
