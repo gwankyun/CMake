@@ -434,7 +434,7 @@ CTest打印与测试运行相关联的每个\ ``LABEL``\ 和子项目的计时�
 
   for labels/subprojects j=1...total
 
-where:
+其中：
 
 * ``raw_test_time[j,i]``： ``j``\ 标签或子项目的\ ``i``\ 测试的时钟时间
 * ``num_processors[j,i]``： 用于\ ``j``\ 标签或子项目的\ ``i``\ 测试的CTest\
@@ -456,8 +456,7 @@ where:
 构建和测试模式
 ===================
 
-CTest provides a command-line signature to configure (i.e. run cmake on),
-build, and/or execute a test::
+CTest提供了一个命令行签名来配置（即运行cmake）、构建和/或执行测试：\ ::
 
   ctest --build-and-test <path-to-source> <path-to-build>
         --build-generator <generator>
@@ -465,92 +464,83 @@ build, and/or execute a test::
         [--build-options <opts>...]
         [--test-command <command> [<args>...]]
 
-The configure and test steps are optional. The arguments to this command line
-are the source and binary directories.  The ``--build-generator`` option *must*
-be provided to use ``--build-and-test``.  If ``--test-command`` is specified
-then that will be run after the build is complete.  Other options that affect
-this mode include:
+配置和测试步骤是可选的。该命令行的参数是源目录和二进制目录。\ *必须*\ 提供\
+``--build-generator``\ 选项才能使用\ ``--build-and-test``。如果指定了\
+``--test-command``，那么它将在构建完成后运行。影响此模式的其他选项包括：
 
 .. option:: --build-and-test
 
- Switch into the build and test mode.
+ 切换到构建和测试模式。
 
 .. option:: --build-target
 
- Specify a specific target to build.  The option can be given multiple times
- with different targets, in which case each target is built in turn.
- A clean will be done before building each target unless the
- :option:`--build-noclean` option is given.
+ 指定要构建的特定目标。可以使用不同的目标多次给出该选项，在这种情况下，依次构建每个目标。除非\
+ 给出了\ :option:`--build-noclean`\ 选项，否则将在构建每个目标之前执行一次清理。
 
- If no ``--build-target`` is specified, the ``all`` target is built.
+ 如果不指定\ ``--build-target``，则构建\ ``all``\ 目标。
 
 .. option:: --build-nocmake
 
- Run the build without running cmake first.
+ 运行构建，但不要先运行cmake。
 
- Skip the cmake step.
+ 跳过cmake步骤。
 
 .. option:: --build-run-dir
 
- Specify directory to run programs from.
+ 指定要运行程序的目录。
 
- Directory where programs will be after it has been compiled.
+ 编译后程序所在的目录。
 
 .. option:: --build-two-config
 
- Run CMake twice.
+ 运行两次CMake。
 
 .. option:: --build-exe-dir
 
- Specify the directory for the executable.
+ 指定可执行文件的目录。
 
 .. option:: --build-generator
 
- Specify the generator to use. See the :manual:`cmake-generators(7)` manual.
+ 指定要使用的生成器。请参阅\ :manual:`cmake-generators(7)`\ 手册。
 
 .. option:: --build-generator-platform
 
- Specify the generator-specific platform.
+ 指定特定于生成器的平台。
 
 .. option:: --build-generator-toolset
 
- Specify the generator-specific toolset.
+ 指定特定于生成器的工具集。
 
 .. option:: --build-project
 
- Specify the name of the project to build.
+ 指定要生成的项目的名称。
 
 .. option:: --build-makeprogram
 
- Specify the explicit make program to be used by CMake when configuring and
- building the project. Only applicable for Make and Ninja based generators.
+ 指定CMake在配置和构建项目时使用的显式make程序。仅适用于基于Make和Ninja的生成器。
 
 .. option:: --build-noclean
 
- Skip the make clean step.
+ 跳过清理步骤。
 
 .. option:: --build-config-sample
 
- A sample executable to use to determine the configuration that
- should be used.  e.g.  ``Debug``, ``Release`` etc.
+ 用于确定应该使用的配置的示例可执行文件。例如\ ``Debug``、\ ``Release``\ 等。
 
 .. option:: --build-options
 
- Additional options for configuring the build (i.e. for CMake, not for
- the build tool).  Note that if this is specified, the ``--build-options``
- keyword and its arguments must be the last option given on the command
- line, with the possible exception of ``--test-command``.
+ 配置构建的附加选项（即CMake，而不是构建工具）。注意，如果指定了这个选项，\
+ ``--build-options``\ 关键字及其参数必须是命令行上给出的最后一个选项，可能的例外是\
+ ``--test-command``。
 
 .. option:: --test-command
 
- The command to run as the test step with the
- :option:`--build-and-test <ctest --build-and-test>` option.
- All arguments following this keyword will be assumed to be part of the
- test command line, so it must be the last option given.
+ 使用\ :option:`--build-and-test <ctest --build-and-test>`\ 选项作为测试步骤运行的\
+ 命令。这个关键字后面的所有参数都被认为是test命令行的一部分，所以它必须是给出的最后一个选项。
 
 .. option:: --test-timeout
 
- The time limit in seconds
+ 以秒为单位的时间限制
 
 .. _`Dashboard Client`:
 
