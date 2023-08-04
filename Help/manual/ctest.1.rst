@@ -547,175 +547,145 @@ CTest提供了一个命令行签名来配置（即运行cmake）、构建和/或
 仪表板客户端
 ================
 
-CTest can operate as a client for the `CDash`_ software quality dashboard
-application.  As a dashboard client, CTest performs a sequence of steps
-to configure, build, and test software, and then submits the results to
-a `CDash`_ server. The command-line signature used to submit to `CDash`_ is::
+CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作。作为仪表板客户机，CTest执行\
+一系列步骤来配置、构建和测试软件，然后将结果提交给CDash服务器。提交到\ `CDash`_\ 的命令行\
+签名是：\ ::
 
   ctest -D <dashboard>         [-- <dashboard-options>...]
   ctest -M <model> -T <action> [-- <dashboard-options>...]
   ctest -S <script>            [-- <dashboard-options>...]
   ctest -SP <script>           [-- <dashboard-options>...]
 
-Options for Dashboard Client include:
+仪表板客户端的选项包括：
 
 .. option:: -D <dashboard>, --dashboard <dashboard>
 
- Execute dashboard test.
+ 执行仪表板测试。
 
- This option tells CTest to act as a CDash client and perform a
- dashboard test.  All tests are ``<Mode><Test>``, where ``<Mode>`` can be
- ``Experimental``, ``Nightly``, and ``Continuous``, and ``<Test>`` can be
- ``Start``, ``Update``, ``Configure``, ``Build``, ``Test``,
- ``Coverage``, and ``Submit``.
+ 这个选项告诉CTest充当一个CDash客户端并执行一个指示板测试。所有测试都是\ ``<Mode><Test>``，\
+ 其中\ ``<Mode>``\ 可以是\ ``Experimental``、\ ``Nightly``\ 和\ ``Continuous``， \
+ ``<Test>``\ 可以是\ ``Start``、\ ``Update``、\ ``Configure``、\ ``Build``、\
+ ``Test``、\ ``Coverage``\ 和\ ``Submit``。
 
- If ``<dashboard>`` is not one of the recognized ``<Mode><Test>`` values,
- this will be treated as a variable definition instead (see the
- :ref:`dashboard-options <Dashboard Options>` further below).
+ 如果\ ``<dashboard>``\ 不是可识别的\ ``<Mode><Test>``\ 值之一，则将其视为变量定义（请\
+ 参阅下面的\ :ref:`dashboard-options <Dashboard Options>`）。
 
 .. option:: -M <model>, --test-model <model>
 
- Sets the model for a dashboard.
+ 设置指示板的模型。
 
- This option tells CTest to act as a CDash client where the ``<model>``
- can be ``Experimental``, ``Nightly``, and ``Continuous``.
- Combining ``-M`` and :option:`-T <ctest -T>` is similar to
- :option:`-D <ctest -D>`.
+ 这个选项告诉CTest充当一个CDash客户端，其中\ ``<model>``\ 可以是\ ``Experimental``、\
+ ``Nightly``\ 和\ ``Continuous``。\ ``-M``\ 和\ :option:`-T <ctest -T>`\ 的组合类\
+ 似于\ :option:`-D <ctest -D>`。
 
 .. option:: -T <action>, --test-action <action>
 
- Sets the dashboard action to perform.
+ 设置要执行的指示板操作。
 
- This option tells CTest to act as a CDash client and perform some
- action such as ``start``, ``build``, ``test`` etc. See
- `仪表板客户端步骤`_ for the full list of actions.
- Combining :option:`-M <ctest -M>` and ``-T`` is similar to
- :option:`-D <ctest -D>`.
+ 这个选项告诉CTest充当一个CDash客户端，并执行一些操作，如\ ``start``、\ ``build``、\
+ ``test``\ 等。有关操作的完整列表，请参阅\ `仪表板客户端步骤`_ 。\ :option:`-M <ctest -M>`\
+ 和\ ``-T``\ 的组合类似于\ :option:`-D <ctest -D>`。
 
 .. option:: -S <script>, --script <script>
 
- Execute a dashboard for a configuration.
+ 为配置执行指示板。
 
- This option tells CTest to load in a configuration script which sets
- a number of parameters such as the binary and source directories.
- Then CTest will do what is required to create and run a dashboard.
- This option basically sets up a dashboard and then runs :option:`ctest -D`
- with the appropriate options.
+ 这个选项告诉CTest加载一个配置脚本，该脚本设置了一些参数，比如二进制文件和源目录。然后，\
+ CTest将执行创建和运行仪表板所需的操作。这个选项基本上设置了一个指示板，然后使用适当的选项\
+ 运行\ :option:`ctest -D`。
 
 .. option:: -SP <script>, --script-new-process <script>
 
- Execute a dashboard for a configuration.
+ 为配置执行指示板。
 
- This option does the same operations as :option:`-S <ctest -S>` but it
- will do them in a separate process.  This is primarily useful in cases
- where the script may modify the environment and you do not want the modified
- environment to impact other :option:`-S <ctest -S>` scripts.
+ 此选项执行与\ :option:`-S <ctest -S>`\ 相同的操作，但它将在单独的进程中执行。当脚本可能\
+ 会修改环境，而你不希望修改后的环境影响其他\ :option:`-S <ctest -S>`\ 脚本时，相当有用。
 
 .. _`Dashboard Options`:
 
-The available ``<dashboard-options>`` are the following:
+可用的\ ``<dashboard-options>``\ 如下：
 
 .. option:: -D <var>:<type>=<value>
 
- Define a variable for script mode.
+ 为脚本模式定义变量。
 
- Pass in variable values on the command line.  Use in conjunction
- with :option:`-S <ctest -S>` to pass variable values to a dashboard script.
- Parsing ``-D`` arguments as variable values is only attempted if the value
- following ``-D`` does not match any of the known dashboard types.
+ 在命令行上传递变量值。与\ :option:`-S <ctest -S>`\ 一起使用可将变量值传递给指示板脚本。\
+ 只有当\ ``-D``\ 后面的值与任何已知的指示板类型不匹配时，才会尝试将\ ``-D``\ 参数解析为变\
+ 量值。
 
 .. option:: --group <group>
 
- Specify what group you'd like to submit results to
+ 指定要将结果提交给哪个组
 
- Submit dashboard to specified group instead of default one.  By
- default, the dashboard is submitted to Nightly, Experimental, or
- Continuous group, but by specifying this option, the group can be
- arbitrary.
+ 提交仪表板到指定组，而不是默认组。默认情况下，仪表板被提交到Nightly、Experimental或\
+ Continuous组，但通过指定此选项，该组可以是任意的。
 
- This replaces the deprecated option ``--track``.
- Despite the name change its behavior is unchanged.
+ 这将取代已弃用的选项\ ``--track``。尽管名称改变了它的行为是不变的。
 
 .. option:: -A <file>, --add-notes <file>
 
- Add a notes file with submission.
+ 添加带有提交的注释文件。
 
- This option tells CTest to include a notes file when submitting
- dashboard.
+ 这个选项告诉CTest在提交指示板时包含一个注释文件。
 
 .. option:: --tomorrow-tag
 
- ``Nightly`` or ``Experimental`` starts with next day tag.
+ ``Nightly``\ 或\ ``Experimental``\ 开始与第二天标签。
 
- This is useful if the build will not finish in one day.
+ 如果构建不能在一天内完成，这是很有用的。
 
 .. option:: --extra-submit <file>[;<file>]
 
- Submit extra files to the dashboard.
+ 向仪表板提交额外的文件。
 
- This option will submit extra files to the dashboard.
+ 此选项将向指示板提交额外的文件。
 
 .. option:: --http1.0
 
- Submit using `HTTP 1.0`.
+ 使用\ `HTTP 1.0`\ 提交。
 
- This option will force CTest to use `HTTP 1.0` to submit files to the
- dashboard, instead of `HTTP 1.1`.
+ 这个选项将强制CTest使用\ `HTTP 1.0`\ 向仪表板提交文件，而不是\ `HTTP 1.1`。
 
 .. option:: --no-compress-output
 
- Do not compress test output when submitting.
+ 提交时不要压缩测试输出。
 
- This flag will turn off automatic compression of test output.  Use
- this to maintain compatibility with an older version of CDash which
- doesn't support compressed test output.
+ 此标志将关闭测试输出的自动压缩。使用它可以保持与旧版本的CDash的兼容性，该版本不支持压缩测试\
+ 输出。
 
 仪表板客户端步骤
 ----------------------
 
-CTest defines an ordered list of testing steps of which some or all may
-be run as a dashboard client:
+CTest定义了一个有序的测试步骤列表，其中一些或全部可以作为仪表板客户端运行：
 
 ``Start``
-  Start a new dashboard submission to be composed of results recorded
-  by the following steps.
-  See the `CTest Start Step`_ section below.
+  启动一个新的仪表板提交，由以下步骤记录的结果组成。请参阅下面的\ `CTest开始步骤`_\ 章节。
 
 ``Update``
-  Update the source tree from its version control repository.
-  Record the old and new versions and the list of updated source files.
-  See the `CTest Update Step`_ section below.
+  从其版本控制存储库更新源代码树。记录新旧版本和更新的源文件列表。请参阅下面的\
+  `CTest更新步骤`_\ 章节。
 
 ``Configure``
-  Configure the software by running a command in the build tree.
-  Record the configuration output log.
-  See the `CTest Configure Step`_ section below.
+  通过在构建树中运行命令来配置软件。记录配置输出日志。请参阅下面的\ `CTest配置步骤`_\ 章节。
 
 ``Build``
-  Build the software by running a command in the build tree.
-  Record the build output log and detect warnings and errors.
-  See the `CTest Build Step`_ section below.
+  通过在构建树中运行命令来构建软件。记录构建输出日志并检测警告和错误。请参阅下面的\
+  `CTest构建步骤`_\ 部分。
 
 ``Test``
-  Test the software by loading a ``CTestTestfile.cmake``
-  from the build tree and executing the defined tests.
-  Record the output and result of each test.
-  See the `CTest Test Step`_ section below.
+  通过从构建树中加载\ ``CTestTestfile.cmake``\ 并执行定义的测试来测试软件。记录每次测试\
+  的输出和结果。请参阅下面的\ `CTest测试步骤`_\ 章节。
 
 ``Coverage``
-  Compute coverage of the source code by running a coverage
-  analysis tool and recording its output.
-  See the `CTest Coverage Step`_ section below.
+  通过运行覆盖率分析工具并记录其输出来计算源代码的覆盖率。请参阅下面的\ `CTest覆盖步骤`_\
+  章节。
 
 ``MemCheck``
-  Run the software test suite through a memory check tool.
-  Record the test output, results, and issues reported by the tool.
-  See the `CTest MemCheck Step`_ section below.
+  通过内存检查工具运行软件测试套件。记录工具报告的测试输出、结果和问题。请参阅下面的\
+  `CTest内存测试步骤`_\ 章节。
 
 ``Submit``
-  Submit results recorded from other testing steps to the
-  software quality dashboard server.
-  See the `CTest Submit Step`_ section below.
+  将其他测试步骤记录的结果提交到软件质量仪表板服务器。请参阅下面的\ `CTest提交步骤`_\ 章节。
 
 仪表格客户端模式
 ----------------------
