@@ -919,7 +919,7 @@ CTest更新步骤
   ``git``、\ ``hg``、\ ``p4``\ 及\ ``svn``。
 
   * `CTest Script`_\ 变量：无，从源代码树检测
-  * :module:`CTest`\ 变量：如果设置了，则为\ ``UPDATE_TYPE``，则设置为\
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``UPDATE_TYPE``，否则为\
     ``CTEST_UPDATE_TYPE``
 
 .. _`UpdateVersionOnly`:
@@ -934,56 +934,48 @@ CTest更新步骤
 ``UpdateVersionOverride``
   指定源代码树的当前版本。
 
-  When this variable is set to a non-empty string, CTest will report the value
-  you specified rather than using the update command to discover the current
-  version that is checked out. Use of this variable supersedes
-  ``UpdateVersionOnly``. Like ``UpdateVersionOnly``, using this variable tells
-  CTest not to update the source tree to a different version.
+  当将该变量设置为非空字符串时，CTest将报告你指定的值，而不是使用update命令来发现已检出的\
+  当前版本。这个变量的使用取代了\ ``UpdateVersionOnly``。与\ ``UpdateVersionOnly``\
+  一样，使用这个变量告诉CTest不要将源树更新为不同的版本。
 
   * `CTest Script`_\ 变量：:variable:`CTEST_UPDATE_VERSION_OVERRIDE`
 
-Additional configuration settings include:
+其他配置设置包括：
 
 ``NightlyStartTime``
-  In the ``Nightly`` dashboard mode, specify the "nightly start time".
-  With centralized version control systems (``cvs`` and ``svn``),
-  the ``Update`` step checks out the version of the software as of
-  this time so that multiple clients choose a common version to test.
-  This is not well-defined in distributed version-control systems so
-  the setting is ignored.
+  在\ ``Nightly``\ 仪表板模式下，指定“夜间开始时间”。使用集中式版本控制系统（\ ``cvs``\
+  和\ ``svn``），\ ``Update``\ 步骤会检出此时的软件版本，以便多个客户机选择一个通用版本\
+  进行测试。这在分布式版本控制系统中没有明确定义，因此该设置被忽略。
 
   * `CTest Script`_\ 变量：:variable:`CTEST_NIGHTLY_START_TIME`
-  * :module:`CTest` module variable: ``NIGHTLY_START_TIME`` if set,
-    else ``CTEST_NIGHTLY_START_TIME``
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``NIGHTLY_START_TIME``，否则为\
+    ``CTEST_NIGHTLY_START_TIME``
 
 .. _`CTest Configure Step`:
 
 CTest配置步骤
 --------------------
 
-In a `CTest Script`_, the :command:`ctest_configure` command runs this step.
-Arguments to the command may specify some of the step settings.
+在\ `CTest Script`_\ 中，\ :command:`ctest_configure`\ 命令运行此步骤。命令的参数可\
+以指定一些步骤设置。
 
-Configuration settings include:
+配置设置包括：
 
 ``ConfigureCommand``
-  Command-line to launch the software configuration process.
-  It will be executed in the location specified by the
-  ``BuildDirectory`` setting.
+  命令行启动软件配置过程。它将在\ ``BuildDirectory``\ 设置指定的位置执行。
 
-  * `CTest Script`_ variable: :variable:`CTEST_CONFIGURE_COMMAND`
-  * :module:`CTest` module variable: :variable:`CMAKE_COMMAND`
-    followed by :variable:`PROJECT_SOURCE_DIR`
+  * `CTest Script`_\ 变量：:variable:`CTEST_CONFIGURE_COMMAND`
+  * :module:`CTest`\ 变量：:variable:`CMAKE_COMMAND`，后面跟着\
+    :variable:`PROJECT_SOURCE_DIR`
 
 ``LabelsForSubprojects``
-  Specify a semicolon-separated list of labels that will be treated as
-  subprojects. This mapping will be passed on to CDash when configure, test or
-  build results are submitted.
+  指定一个分号分隔的标签列表，这些标签将被视为子项目。当提交配置、测试或构建结果时，该映射将\
+  传递给CDash。
 
-  * `CTest Script`_ variable: :variable:`CTEST_LABELS_FOR_SUBPROJECTS`
-  * :module:`CTest` module variable: ``CTEST_LABELS_FOR_SUBPROJECTS``
+  * `CTest Script`_\ 变量：:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
+  * :module:`CTest`\ 变量：\ ``CTEST_LABELS_FOR_SUBPROJECTS``
 
-  See `Label and Subproject Summary`_.
+  请参阅\ `标签和子项目摘要`_。
 
 .. _`CTest Build Step`:
 
