@@ -1028,307 +1028,274 @@ CTest构建步骤
 CTest测试步骤
 ---------------
 
-In a `CTest Script`_, the :command:`ctest_test` command runs this step.
-Arguments to the command may specify some of the step settings.
+在\ `CTest Script`_\ 中，\ :command:`ctest_test`\ 命令运行此步骤。命令的参数可以指定\
+一些步骤设置。
 
-Configuration settings include:
+配置设置包括：
 
 ``ResourceSpecFile``
-  Specify a
-  :ref:`resource specification file <ctest-resource-specification-file>`.
+  指定\ :ref:`资源规范文件 <ctest-resource-specification-file>`。
 
-  * `CTest Script`_ variable: :variable:`CTEST_RESOURCE_SPEC_FILE`
-  * :module:`CTest` module variable: ``CTEST_RESOURCE_SPEC_FILE``
+  * `CTest Script`_\ 变量：:variable:`CTEST_RESOURCE_SPEC_FILE`
+  * :module:`CTest`\ 变量：\ ``CTEST_RESOURCE_SPEC_FILE``
 
-  See :ref:`ctest-resource-allocation` for more information.
+  有关更多信息，请参见\ :ref:`ctest-resource-allocation`。
 
 ``LabelsForSubprojects``
-  Specify a semicolon-separated list of labels that will be treated as
-  subprojects. This mapping will be passed on to CDash when configure, test or
-  build results are submitted.
+  指定一个分号分隔的标签列表，这些标签将被视为子项目。当提交配置、测试或构建结果时，该映射将\
+  传递给CDash。
 
-  * `CTest Script`_ variable: :variable:`CTEST_LABELS_FOR_SUBPROJECTS`
-  * :module:`CTest` module variable: ``CTEST_LABELS_FOR_SUBPROJECTS``
+  * `CTest Script`_\ 变量：:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
+  * :module:`CTest`\ 变量：\ ``CTEST_LABELS_FOR_SUBPROJECTS``
 
-  See `Label and Subproject Summary`_.
+  请参阅\ `标签和子项目摘要`_。
 
 ``TestLoad``
-  While running tests in parallel (e.g. with :option:`-j <ctest -j>`),
-  try not to start tests when they may cause the CPU load to pass above
-  a given threshold.
+  在并行运行测试时（例如使用\ :option:`-j <ctest -j>`），当测试可能导致CPU负载超过给定阈\
+  值时，尽量不要启动测试。
 
-  * `CTest Script`_ variable: :variable:`CTEST_TEST_LOAD`
-  * :module:`CTest` module variable: ``CTEST_TEST_LOAD``
+  * `CTest Script`_\ 变量：:variable:`CTEST_TEST_LOAD`
+  * :module:`CTest`\ 变量：\ ``CTEST_TEST_LOAD``
 
 ``TimeOut``
-  The default timeout for each test if not specified by the
-  :prop_test:`TIMEOUT` test property.
+  如果未由\ :prop_test:`TIMEOUT`\ 属性指定，则为每个测试的默认超时。
 
-  * `CTest Script`_ variable: :variable:`CTEST_TEST_TIMEOUT`
-  * :module:`CTest` module variable: ``DART_TESTING_TIMEOUT``
+  * `CTest Script`_\ 变量：:variable:`CTEST_TEST_TIMEOUT`
+  * :module:`CTest`\ 变量：\ ``DART_TESTING_TIMEOUT``
 
-To report extra test values to CDash, see :ref:`Additional Test Measurements`.
+要向CDash报告额外的测试值，请参阅\ :ref:`Additional Test Measurements`。
 
 .. _`CTest Coverage Step`:
 
 CTest覆盖步骤
 -------------------
 
-In a `CTest Script`_, the :command:`ctest_coverage` command runs this step.
-Arguments to the command may specify some of the step settings.
+在\ `CTest Script`_\ 中，\ :command:`ctest_coverage`\ 命令运行这个步骤。命令的参数可\
+以指定一些步骤设置。
 
-Configuration settings include:
+配置设置包括：
 
 ``CoverageCommand``
-  Command-line tool to perform software coverage analysis.
-  It will be executed in the location specified by the
-  ``BuildDirectory`` setting.
+  执行软件覆盖率分析的命令行工具。它将在\ ``BuildDirectory``\ 设置指定的位置执行。
 
-  * `CTest Script`_ variable: :variable:`CTEST_COVERAGE_COMMAND`
-  * :module:`CTest` module variable: ``COVERAGE_COMMAND``
+  * `CTest Script`_\ 变量：:variable:`CTEST_COVERAGE_COMMAND`
+  * :module:`CTest`\ 变量：\ ``COVERAGE_COMMAND``
 
 ``CoverageExtraFlags``
-  Specify command-line options to the ``CoverageCommand`` tool.
+  为\ ``CoverageCommand``\ 工具指定命令行选项。
 
-  * `CTest Script`_ variable: :variable:`CTEST_COVERAGE_EXTRA_FLAGS`
-  * :module:`CTest` module variable: ``COVERAGE_EXTRA_FLAGS``
+  * `CTest Script`_\ 变量：:variable:`CTEST_COVERAGE_EXTRA_FLAGS`
+  * :module:`CTest`\ 变量：\ ``COVERAGE_EXTRA_FLAGS``
 
-  These options are the first arguments passed to ``CoverageCommand``.
+  这些选项是传递给\ ``CoverageCommand``\ 的第一个参数。
 
 .. _`CTest MemCheck Step`:
 
 CTest内存测试步骤
 -------------------
 
-In a `CTest Script`_, the :command:`ctest_memcheck` command runs this step.
-Arguments to the command may specify some of the step settings.
+在\ `CTest Script`_\ 中，\ :command:`ctest_memcheck`\ 命令运行此步骤。命令的参数可以\
+指定一些步骤设置。
 
-Configuration settings include:
+配置设置包括：
 
 ``MemoryCheckCommand``
-  Command-line tool to perform dynamic analysis.  Test command lines
-  will be launched through this tool.
+  执行动态分析的命令行工具。测试命令行将通过这个工具启动。
 
-  * `CTest Script`_ variable: :variable:`CTEST_MEMORYCHECK_COMMAND`
-  * :module:`CTest` module variable: ``MEMORYCHECK_COMMAND``
+  * `CTest Script`_\ 变量：:variable:`CTEST_MEMORYCHECK_COMMAND`
+  * :module:`CTest`\ 变量：\ ``MEMORYCHECK_COMMAND``
 
 ``MemoryCheckCommandOptions``
-  Specify command-line options to the ``MemoryCheckCommand`` tool.
-  They will be placed prior to the test command line.
+  为\ ``MemoryCheckCommand``\ 工具指定命令行选项。它们将被放置在测试命令行之前。
 
-  * `CTest Script`_ variable: :variable:`CTEST_MEMORYCHECK_COMMAND_OPTIONS`
-  * :module:`CTest` module variable: ``MEMORYCHECK_COMMAND_OPTIONS``
+  * `CTest Script`_\ 变量：:variable:`CTEST_MEMORYCHECK_COMMAND_OPTIONS`
+  * :module:`CTest`\ 变量：\ ``MEMORYCHECK_COMMAND_OPTIONS``
 
 ``MemoryCheckType``
-  Specify the type of memory checking to perform.
+  指定要执行的内存检查类型。
 
-  * `CTest Script`_ variable: :variable:`CTEST_MEMORYCHECK_TYPE`
-  * :module:`CTest` module variable: ``MEMORYCHECK_TYPE``
+  * `CTest Script`_\ 变量：:variable:`CTEST_MEMORYCHECK_TYPE`
+  * :module:`CTest`\ 变量：\ ``MEMORYCHECK_TYPE``
 
 ``MemoryCheckSanitizerOptions``
-  Specify options to sanitizers when running with a sanitize-enabled build.
+  在使用启用了杀毒功能的构建运行时，指定杀毒功能的选项。
 
-  * `CTest Script`_ variable: :variable:`CTEST_MEMORYCHECK_SANITIZER_OPTIONS`
-  * :module:`CTest` module variable: ``MEMORYCHECK_SANITIZER_OPTIONS``
+  * `CTest Script`_\ 变量：:variable:`CTEST_MEMORYCHECK_SANITIZER_OPTIONS`
+  * :module:`CTest`\ 变量：\ ``MEMORYCHECK_SANITIZER_OPTIONS``
 
 ``MemoryCheckSuppressionFile``
-  Specify a file containing suppression rules for the
-  ``MemoryCheckCommand`` tool.  It will be passed with options
-  appropriate to the tool.
+  指定包含\ ``MemoryCheckCommand``\ 工具抑制规则的文件。它将与适合于工具的选项一起传递。
 
-  * `CTest Script`_ variable: :variable:`CTEST_MEMORYCHECK_SUPPRESSIONS_FILE`
-  * :module:`CTest` module variable: ``MEMORYCHECK_SUPPRESSIONS_FILE``
+  * `CTest Script`_\ 变量：:variable:`CTEST_MEMORYCHECK_SUPPRESSIONS_FILE`
+  * :module:`CTest`\ 变量：\ ``MEMORYCHECK_SUPPRESSIONS_FILE``
 
-Additional configuration settings include:
+其他配置设置包括：
 
 ``BoundsCheckerCommand``
-  Specify a ``MemoryCheckCommand`` that is known to be command-line
-  compatible with Bounds Checker.
+  指定已知与边界检查器兼容的命令行\ ``MemoryCheckCommand``。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: none
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：无
 
 ``PurifyCommand``
-  Specify a ``MemoryCheckCommand`` that is known to be command-line
-  compatible with Purify.
+  指定一个已知与Purify命令行兼容的\ ``MemoryCheckCommand``。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``PURIFYCOMMAND``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``PURIFYCOMMAND``
 
 ``ValgrindCommand``
-  Specify a ``MemoryCheckCommand`` that is known to be command-line
-  compatible with Valgrind.
+  指定一个已知与Valgrind命令行兼容的\ ``MemoryCheckCommand``。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``VALGRIND_COMMAND``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``VALGRIND_COMMAND``
 
 ``ValgrindCommandOptions``
-  Specify command-line options to the ``ValgrindCommand`` tool.
-  They will be placed prior to the test command line.
+  为\ ``ValgrindCommand``\ 工具指定命令行选项。它们将被放置在测试命令行之前。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``VALGRIND_COMMAND_OPTIONS``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``VALGRIND_COMMAND_OPTIONS``
 
 ``DrMemoryCommand``
-  Specify a ``MemoryCheckCommand`` that is known to be a command-line
-  compatible with DrMemory.
+  指定一个已知与DrMemory兼容的命令行\ ``MemoryCheckCommand``。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``DRMEMORY_COMMAND``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``DRMEMORY_COMMAND``
 
 ``DrMemoryCommandOptions``
-  Specify command-line options to the ``DrMemoryCommand`` tool.
-  They will be placed prior to the test command line.
+  为\ ``DrMemoryCommand``\ 工具指定命令行选项。它们将被放置在测试命令行之前。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``DRMEMORY_COMMAND_OPTIONS``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``DRMEMORY_COMMAND_OPTIONS``
 
 ``CudaSanitizerCommand``
-  Specify a ``MemoryCheckCommand`` that is known to be a command-line
-  compatible with cuda-memcheck or compute-sanitizer.
+  指定一个\ ``MemoryCheckCommand``，已知它是与cuda-memcheck或compute-sanitizer兼容\
+  的命令行。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``CUDA_SANITIZER_COMMAND``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``CUDA_SANITIZER_COMMAND``
 
 ``CudaSanitizerCommandOptions``
-  Specify command-line options to the ``CudaSanitizerCommand`` tool.
-  They will be placed prior to the test command line.
+  为\ ``CudaSanitizerCommand``\ 工具指定命令行选项。它们将被放置在测试命令行之前。
 
-  * `CTest Script`_ variable: none
-  * :module:`CTest` module variable: ``CUDA_SANITIZER_COMMAND_OPTIONS``
+  * `CTest Script`_\ 变量：无
+  * :module:`CTest`\ 变量：\ ``CUDA_SANITIZER_COMMAND_OPTIONS``
 
 .. _`CTest Submit Step`:
 
 CTest提交步骤
 -----------------
 
-In a `CTest Script`_, the :command:`ctest_submit` command runs this step.
-Arguments to the command may specify some of the step settings.
+在\ `CTest Script`_\ 中，\ :command:`ctest_submit`\ 命令运行此步骤。命令的参数可以指\
+定一些步骤设置。
 
-Configuration settings include:
+配置设置包括：
 
 ``BuildName``
-  Describe the dashboard client platform with a short string.
-  (Operating system, compiler, etc.)
+  用一个短字符串描述仪表板客户端平台。（操作系统、编译器等）
 
-  * `CTest Script`_ variable: :variable:`CTEST_BUILD_NAME`
-  * :module:`CTest` module variable: ``BUILDNAME``
+  * `CTest Script`_\ 变量：:variable:`CTEST_BUILD_NAME`
+  * :module:`CTest`\ 变量：\ ``BUILDNAME``
 
 ``CDashVersion``
-  Legacy option.  Not used.
+  遗留的选项。不用。
 
-  * `CTest Script`_ variable: none, detected from server
-  * :module:`CTest` module variable: ``CTEST_CDASH_VERSION``
+  * `CTest Script`_\ 变量：无，由服务器检测
+  * :module:`CTest`\ 变量：\ ``CTEST_CDASH_VERSION``
 
 ``CTestSubmitRetryCount``
-  Specify a number of attempts to retry submission on network failure.
+  指定在网络故障时重试提交的次数。
 
-  * `CTest Script`_ variable: none,
-    use the :command:`ctest_submit` ``RETRY_COUNT`` option.
-  * :module:`CTest` module variable: ``CTEST_SUBMIT_RETRY_COUNT``
+  * `CTest Script`_\ 变量：无，使用\ :command:`ctest_submit` ``RETRY_COUNT``\ 选项。
+  * :module:`CTest`\ 变量：\ ``CTEST_SUBMIT_RETRY_COUNT``
 
 ``CTestSubmitRetryDelay``
-  Specify a delay before retrying submission on network failure.
+  指定在网络故障时重试提交之前的延迟。
 
-  * `CTest Script`_ variable: none,
-    use the :command:`ctest_submit` ``RETRY_DELAY`` option.
-  * :module:`CTest` module variable: ``CTEST_SUBMIT_RETRY_DELAY``
+  * `CTest Script`_\ 变量：无，使用\ :command:`ctest_submit` ``RETRY_DELAY``\ 选项。
+  * :module:`CTest`\ 变量：\ ``CTEST_SUBMIT_RETRY_DELAY``
 
 ``CurlOptions``
-  Specify a semicolon-separated list of options to control the
-  Curl library that CTest uses internally to connect to the
-  server.  Possible options are ``CURLOPT_SSL_VERIFYPEER_OFF``
-  and ``CURLOPT_SSL_VERIFYHOST_OFF``.
+  指定一个以分号分隔的选项列表来控制Curl库，CTest在内部使用Curl库连接到服务器。可能的选项是\
+  ``CURLOPT_SSL_VERIFYPEER_OFF``\ 和\ ``CURLOPT_SSL_VERIFYHOST_OFF``。
 
-  * `CTest Script`_ variable: :variable:`CTEST_CURL_OPTIONS`
-  * :module:`CTest` module variable: ``CTEST_CURL_OPTIONS``
+  * `CTest Script`_\ 变量：:variable:`CTEST_CURL_OPTIONS`
+  * :module:`CTest`\ 变量：\ ``CTEST_CURL_OPTIONS``
 
 ``DropLocation``
-  Legacy option.  When ``SubmitURL`` is not set, it is constructed from
-  ``DropMethod``, ``DropSiteUser``, ``DropSitePassword``, ``DropSite``, and
-  ``DropLocation``.
+  遗留的选择。当未设置 ``SubmitURL`` 时，它由\ ``DropMethod``、\ ``DropSiteUser``、\
+  ``DropSitePassword``、\ ``DropSite``\ 和\ ``DropLocation``\ 构造。
 
-  * `CTest Script`_ variable: :variable:`CTEST_DROP_LOCATION`
-  * :module:`CTest` module variable: ``DROP_LOCATION`` if set,
-    else ``CTEST_DROP_LOCATION``
+  * `CTest Script`_\ 变量：:variable:`CTEST_DROP_LOCATION`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``DROP_LOCATION``，否则\
+    ``CTEST_DROP_LOCATION``
 
 ``DropMethod``
-  Legacy option.  When ``SubmitURL`` is not set, it is constructed from
-  ``DropMethod``, ``DropSiteUser``, ``DropSitePassword``, ``DropSite``, and
-  ``DropLocation``.
+  遗留的选择。当未设置 ``SubmitURL`` 时，它由\ ``DropMethod``、\ ``DropSiteUser``、\
+  ``DropSitePassword``、\ ``DropSite``\ 和\ ``DropLocation``\ 构造。
 
-  * `CTest Script`_ variable: :variable:`CTEST_DROP_METHOD`
-  * :module:`CTest` module variable: ``DROP_METHOD`` if set,
-    else ``CTEST_DROP_METHOD``
+  * `CTest Script`_\ 变量：:variable:`CTEST_DROP_METHOD`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``DROP_METHOD``，否则\
+    ``CTEST_DROP_METHOD``
 
 ``DropSite``
-  Legacy option.  When ``SubmitURL`` is not set, it is constructed from
-  ``DropMethod``, ``DropSiteUser``, ``DropSitePassword``, ``DropSite``, and
-  ``DropLocation``.
+  遗留的选择。当未设置 ``SubmitURL`` 时，它由\ ``DropMethod``、\ ``DropSiteUser``、\
+  ``DropSitePassword``、\ ``DropSite``\ 和\ ``DropLocation``\ 构造。
 
-  * `CTest Script`_ variable: :variable:`CTEST_DROP_SITE`
-  * :module:`CTest` module variable: ``DROP_SITE`` if set,
-    else ``CTEST_DROP_SITE``
+  * `CTest Script`_\ 变量：:variable:`CTEST_DROP_SITE`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``DROP_SITE``，否则\ ``CTEST_DROP_SITE``
 
 ``DropSitePassword``
-  Legacy option.  When ``SubmitURL`` is not set, it is constructed from
-  ``DropMethod``, ``DropSiteUser``, ``DropSitePassword``, ``DropSite``, and
-  ``DropLocation``.
+  遗留的选择。当未设置 ``SubmitURL`` 时，它由\ ``DropMethod``、\ ``DropSiteUser``、\
+  ``DropSitePassword``、\ ``DropSite``\ 和\ ``DropLocation``\ 构造。
 
-  * `CTest Script`_ variable: :variable:`CTEST_DROP_SITE_PASSWORD`
-  * :module:`CTest` module variable: ``DROP_SITE_PASSWORD`` if set,
-    else ``CTEST_DROP_SITE_PASWORD``
+  * `CTest Script`_\ 变量：:variable:`CTEST_DROP_SITE_PASSWORD`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``DROP_SITE_PASSWORD``，否则\
+    ``CTEST_DROP_SITE_PASWORD``
 
 ``DropSiteUser``
-  Legacy option.  When ``SubmitURL`` is not set, it is constructed from
-  ``DropMethod``, ``DropSiteUser``, ``DropSitePassword``, ``DropSite``, and
-  ``DropLocation``.
+  遗留的选择。当未设置 ``SubmitURL`` 时，它由\ ``DropMethod``、\ ``DropSiteUser``、\
+  ``DropSitePassword``、\ ``DropSite``\ 和\ ``DropLocation``\ 构造。
 
-  * `CTest Script`_ variable: :variable:`CTEST_DROP_SITE_USER`
-  * :module:`CTest` module variable: ``DROP_SITE_USER`` if set,
-    else ``CTEST_DROP_SITE_USER``
+  * `CTest Script`_\ 变量：:variable:`CTEST_DROP_SITE_USER`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``DROP_SITE_USER``，否则\
+    ``CTEST_DROP_SITE_USER``
 
 ``IsCDash``
-  Legacy option.  Not used.
+  遗留的选项。不用。
 
-  * `CTest Script`_ variable: :variable:`CTEST_DROP_SITE_CDASH`
-  * :module:`CTest` module variable: ``CTEST_DROP_SITE_CDASH``
+  * `CTest Script`_\ 变量：:variable:`CTEST_DROP_SITE_CDASH`
+  * :module:`CTest`\ 变量：\ ``CTEST_DROP_SITE_CDASH``
 
 ``ScpCommand``
-  Legacy option.  Not used.
+  遗留的选项。不用。
 
-  * `CTest Script`_ variable: :variable:`CTEST_SCP_COMMAND`
-  * :module:`CTest` module variable: ``SCPCOMMAND``
+  * `CTest Script`_\ 变量：:variable:`CTEST_SCP_COMMAND`
+  * :module:`CTest`\ 变量：\ ``SCPCOMMAND``
 
 ``Site``
-  Describe the dashboard client host site with a short string.
-  (Hostname, domain, etc.)
+  用短字符串描述仪表板客户端主机站点。（主机名、域名等）
 
-  * `CTest Script`_ variable: :variable:`CTEST_SITE`
-  * :module:`CTest` module variable: ``SITE``,
-    initialized by the :command:`site_name` command
+  * `CTest Script`_\ 变量：:variable:`CTEST_SITE`
+  * :module:`CTest`\ 变量：\ ``SITE``，被\ :command:`site_name`\ 命令初始值。 
 
 ``SubmitURL``
-  The ``http`` or ``https`` URL of the dashboard server to send the submission
-  to.
+  将提交发送到的仪表板服务器的\ ``http``\ 或\ ``https`` URL。
 
-  * `CTest Script`_ variable: :variable:`CTEST_SUBMIT_URL`
-  * :module:`CTest` module variable: ``SUBMIT_URL`` if set,
-    else ``CTEST_SUBMIT_URL``
+  * `CTest Script`_\ 变量：:variable:`CTEST_SUBMIT_URL`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``SUBMIT_URL``，否则\ ``CTEST_SUBMIT_URL``
 
 ``SubmitInactivityTimeout``
-  The time to wait for the submission after which it is canceled
-  if not completed. Specify a zero value to disable timeout.
+  等待提交的时间，如果提交未完成，提交将被取消。指定一个零值来禁用超时。
 
-  * `CTest Script`_ variable: :variable:`CTEST_SUBMIT_INACTIVITY_TIMEOUT`
-  * :module:`CTest` module variable: ``CTEST_SUBMIT_INACTIVITY_TIMEOUT``
+  * `CTest Script`_\ 变量：:variable:`CTEST_SUBMIT_INACTIVITY_TIMEOUT`
+  * :module:`CTest`\ 变量：\ ``CTEST_SUBMIT_INACTIVITY_TIMEOUT``
 
 ``TriggerSite``
-  Legacy option.  Not used.
+  遗留的选项。不用。
 
-  * `CTest Script`_ variable: :variable:`CTEST_TRIGGER_SITE`
-  * :module:`CTest` module variable: ``TRIGGER_SITE`` if set,
-    else ``CTEST_TRIGGER_SITE``
+  * `CTest Script`_\ 变量：:variable:`CTEST_TRIGGER_SITE`
+  * :module:`CTest`\ 变量：如果设置了，则为\ ``TRIGGER_SITE``，否则\
+    ``CTEST_TRIGGER_SITE``
 
 .. _`Show as JSON Object Model`:
 
