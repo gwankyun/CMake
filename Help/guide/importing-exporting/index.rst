@@ -270,8 +270,8 @@ CMake在何处安装这些目标。
    add_executable(myexe src1.c src2.c )
    target_link_libraries(myexe PRIVATE MathFunctions::MathFunctions)
 
-第1行加载目标CMake文件。尽管我们只导出了一个目标，但该文件可以导入任意数量的目标。它们的位置\
-是相对于文件位置计算的，以便可以容易地移动安装树。第3行引用了导入的\ ``MathFunctions``\
+第2行加载目标CMake文件。尽管我们只导出了一个目标，但该文件可以导入任意数量的目标。它们的位置\
+是相对于文件位置计算的，以便可以容易地移动安装树。第4行引用了导入的\ ``MathFunctions``\
 库。生成的构建系统将从库的安装位置链接到库。
 
 可执行文件也可以使用相同的过程导出和导入。

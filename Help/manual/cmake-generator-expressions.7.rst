@@ -1986,8 +1986,8 @@ Shell路径
     文件。有关详细信息，请参阅\ :ref:`add_library导入库 <add_library imported libraries>`\
     部分。许多查找模块生成\ ``UNKNOWN``\ 类型的导入目标，因此将被忽略。
 
-在支持运行时路径（\ ``RPATH``\ ）的平台上，请参考\ :prop_tgt:`INSTALL_RPATH`\ 目标属性。\
-在Apple平台上，请参考\ :prop_tgt:`INSTALL_NAME_DIR`\ 目标属性。
+  在支持运行时路径（\ ``RPATH``\ ）的平台上，请参考\ :prop_tgt:`INSTALL_RPATH`\ 目标属性。\
+  在Apple平台上，请参考\ :prop_tgt:`INSTALL_NAME_DIR`\ 目标属性。
 
 .. genex:: $<TARGET_RUNTIME_DLL_DIRS:tgt>
 
