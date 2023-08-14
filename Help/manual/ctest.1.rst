@@ -1304,153 +1304,118 @@ CTest提交步骤
 
 .. versionadded:: 3.14
 
-When the ``--show-only=json-v1`` command line option is given, the test
-information is output in JSON format.  Version 1.0 of the JSON object
-model is defined as follows:
+当给出\ ``--show-only=json-v1``\ 命令行选项时，测试信息以JSON格式输出。版本1.0的JSON对\
+象模型定义如下：
 
 ``kind``
-  The string "ctestInfo".
+  字符串“ctestInfo”。
 
 ``version``
-  A JSON object specifying the version components.  Its members are
+  指定版本组件的JSON对象。其成员是
 
   ``major``
-    A non-negative integer specifying the major version component.
+    一个非负整数，指定主版本组件。
   ``minor``
-    A non-negative integer specifying the minor version component.
+    指定次要版本组件的非负整数。
 
 ``backtraceGraph``
-    JSON object representing backtrace information with the
-    following members:
+    JSON对象，使用以下成员表示回溯信息：
 
     ``commands``
-      List of command names.
+      命令名称列表。
     ``files``
-      List of file names.
+      文件名列表。
     ``nodes``
-      List of node JSON objects with members:
+      包含成员的节点JSON对象列表：
 
       ``command``
-        Index into the ``commands`` member of the ``backtraceGraph``.
+        索引到\ ``backtraceGraph``\ 的\ ``commands``\ 成员。
       ``file``
-        Index into the ``files`` member of the ``backtraceGraph``.
+        索引到\ ``backtraceGraph``\ 的\ ``files``\ 成员。
       ``line``
-        Line number in the file where the backtrace was added.
+        添加回溯的文件中的行号。
       ``parent``
-        Index into the ``nodes`` member of the ``backtraceGraph``
-        representing the parent in the graph.
+        索引到表示图中父节点的\ ``backtraceGraph``\ 的\ ``nodes``\ 成员。
 
 ``tests``
-  A JSON array listing information about each test.  Each entry
-  is a JSON object with members:
+  一个JSON数组，列出关于每个测试的信息。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
-    Test name.
+    测试名称。
   ``config``
-    Configuration that the test can run on.
-    Empty string means any config.
+    测试可以运行的配置。空字符串表示任何配置。
   ``command``
-    List where the first element is the test command and the
-    remaining elements are the command arguments.
+    列表，其中第一个元素是测试命令，其余元素是命令参数。
   ``backtrace``
-    Index into the ``nodes`` member of the ``backtraceGraph``.
+    索引到\ ``backtraceGraph``\ 的\ ``nodes``\ 成员。
   ``properties``
-    Test properties.
-    Can contain keys for each of the supported test properties.
+    测试属性。可以包含每个支持的测试属性的键。
 
 .. _`ctest-resource-allocation`:
 
 资源分配
 ===================
 
-CTest provides a mechanism for tests to specify the resources that they need
-in a fine-grained way, and for users to specify the resources available on
-the running machine. This allows CTest to internally keep track of which
-resources are in use and which are free, scheduling tests in a way that
-prevents them from trying to claim resources that are not available.
+CTest为测试提供了一种机制，以细粒度的方式指定它们所需的资源，并为用户指定正在运行的机器上可\
+用的资源。这允许CTest在内部跟踪哪些资源正在使用，哪些资源是空闲的，以一种防止它们试图声明不\
+可用的资源的方式调度测试。
 
-When the resource allocation feature is used, CTest will not oversubscribe
-resources. For example, if a resource has 8 slots, CTest will not run tests
-that collectively use more than 8 slots at a time. This has the effect of
-limiting how many tests can run at any given time, even if a high ``-j``
-argument is used, if those tests all use some slots from the same resource.
-In addition, it means that a single test that uses more of a resource than is
-available on a machine will not run at all (and will be reported as
-``Not Run``).
+当使用资源分配特性时，CTest不会过度订阅资源。例如，如果一个资源有8个插槽，CTest将不会运行一\
+次总共使用超过8个插槽的测试。这样做的效果是限制在任何给定时间内可以运行的测试数量，即使使用了\
+高\ ``-j``\ 参数，如果这些测试都使用来自同一资源的一些插槽。此外，这意味着单个测试使用的资源\
+超过了机器上可用的资源，将根本不会运行（并且将报告为\ ``Not Run``）。
 
-A common use case for this feature is for tests that require the use of a GPU.
-Multiple tests can simultaneously allocate memory from a GPU, but if too many
-tests try to do this at once, some of them will fail to allocate, resulting in
-a failed test, even though the test would have succeeded if it had the memory
-it needed. By using the resource allocation feature, each test can specify how
-much memory it requires from a GPU, allowing CTest to schedule tests in a way
-that running several of these tests at once does not exhaust the GPU's memory
-pool.
+此功能的一个常见用例是需要使用GPU的测试。多个测试可以同时从一个GPU分配内存，但是如果有太多测\
+试试图一次这样做，其中一些测试将分配失败，导致测试失败，即使测试如果拥有所需的内存也会成功。\
+通过使用资源分配特性，每个测试都可以指定它从GPU需要多少内存，从而允许CTest以一种同时运行几个\
+测试而不会耗尽GPU内存池的方式来安排测试。
 
-Please note that CTest has no concept of what a GPU is or how much memory it
-has, nor does it have any way of communicating with a GPU to retrieve this
-information or perform any memory management. CTest simply keeps track of a
-list of abstract resource types, each of which has a certain number of slots
-available for tests to use. Each test specifies the number of slots that it
-requires from a certain resource, and CTest then schedules them in a way that
-prevents the total number of slots in use from exceeding the listed capacity.
-When a test is executed, and slots from a resource are allocated to that test,
-tests may assume that they have exclusive use of those slots for the duration
-of the test's process.
+请注意，CTest不知道GPU是什么，也不知道它有多少内存，也没有任何方式与GPU通信来检索这些信息或\
+执行任何内存管理。CTest只是跟踪抽象资源类型的列表，其中每个类型都有一定数量的槽可供测试使用。\
+每个测试指定它从某个资源中需要的插槽数量，然后CTest以一种防止正在使用的插槽总数超过列出的容量\
+的方式调度它们。当执行测试时，资源中的插槽被分配给该测试，测试可以假设它们在测试进程的持续时间\
+内独占使用这些插槽。
 
-The CTest resource allocation feature consists of two inputs:
+CTest资源分配特性由两个输入组成：
 
-* The :ref:`resource specification file <ctest-resource-specification-file>`,
-  described below, which describes the resources available on the system.
-* The :prop_test:`RESOURCE_GROUPS` property of tests, which describes the
-  resources required by the test.
+* :ref:`资源规范文件 <ctest-resource-specification-file>`，如下所述，它描述了系统上可\
+  用的资源。
+* 测试的\ :prop_test:`RESOURCE_GROUPS`\ 属性，它描述测试所需的资源。
 
-When CTest runs a test, the resources allocated to that test are passed in the
-form of a set of
-:ref:`environment variables <ctest-resource-environment-variables>` as
-described below. Using this information to decide which resource to connect to
-is left to the test writer.
+当CTest运行测试时，分配给该测试的资源以一组\
+:ref:`环境变量 <ctest-resource-environment-variables>`\ 的形式传递，如下所述。使用此\
+信息来决定将连接到哪个资源留给测试编写者。
 
-The ``RESOURCE_GROUPS`` property tells CTest what resources a test expects
-to use grouped in a way meaningful to the test.  The test itself must read
-the :ref:`environment variables <ctest-resource-environment-variables>` to
-determine which resources have been allocated to each group.  For example,
-each group may correspond to a process the test will spawn when executed.
+``RESOURCE_GROUPS``\ 属性告诉CTest测试期望使用什么资源，以对测试有意义的方式进行分组。测\
+试本身必须读取\ :ref:`环境变量 <ctest-resource-environment-variables>`，以确定分配给\
+每个组的资源。例如，每个组可能对应于测试在执行时将产生的一个进程。
 
-Note that even if a test specifies a ``RESOURCE_GROUPS`` property, it is still
-possible for that to test to run without any resource allocation (and without
-the corresponding
-:ref:`environment variables <ctest-resource-environment-variables>`)
-if the user does not pass a resource specification file. Passing this file,
-either through the ``--resource-spec-file`` command-line argument or the
-``RESOURCE_SPEC_FILE`` argument to :command:`ctest_test`, is what activates the
-resource allocation feature. Tests should check the
-``CTEST_RESOURCE_GROUP_COUNT`` environment variable to find out whether or not
-resource allocation is activated. This variable will always (and only) be
-defined if resource allocation is activated. If resource allocation is not
-activated, then the ``CTEST_RESOURCE_GROUP_COUNT`` variable will not exist,
-even if it exists for the parent :program:`ctest` process. If a test absolutely must
-have resource allocation, then it can return a failing exit code or use the
-:prop_test:`SKIP_RETURN_CODE` or :prop_test:`SKIP_REGULAR_EXPRESSION`
-properties to indicate a skipped test.
+注意，即使测试指定了\ ``RESOURCE_GROUPS``\ 属性，如果用户没有传递资源规范文件，该测试仍然\
+有可能在没有任何资源分配（并且没有相应的\
+:ref:`环境变量 <ctest-resource-environment-variables>`）的情况下运行。通过\
+``--resource-spec-file``\ 命令行参数或\ ``RESOURCE_SPEC_FILE``\ 参数将该文件传递给\
+:command:`ctest_test`，将激活资源分配特性。测试应该检查\ ``CTEST_RESOURCE_GROUP_COUNT``\
+环境变量，以确定是否激活了资源分配。如果激活了资源分配，这个变量将始终（且仅）被定义。如果没有\
+激活资源分配，那么\ ``CTEST_RESOURCE_GROUP_COUNT``\ 变量将不存在，即使它存在于父\
+:program:`ctest`\ 进程中。如果测试绝对必须有资源分配，那么它可以返回失败的退出代码，或者使\
+用\ :prop_test:`SKIP_RETURN_CODE`\ 或\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ 属性\
+来指示跳过的测试。
 
 .. _`ctest-resource-specification-file`:
 
 资源规格文件
 ---------------------------
 
-The resource specification file is a JSON file which is passed to CTest, either
-on the command line as :option:`ctest --resource-spec-file`, or as the
-``RESOURCE_SPEC_FILE`` argument of :command:`ctest_test`. If a dashboard script
-is used and ``RESOURCE_SPEC_FILE`` is not specified, the value of
-:variable:`CTEST_RESOURCE_SPEC_FILE` in the dashboard script is used instead.
-If :option:`--resource-spec-file <ctest --resource-spec-file>`, ``RESOURCE_SPEC_FILE``,
-and :variable:`CTEST_RESOURCE_SPEC_FILE` in the dashboard script are not specified,
-the value of :variable:`CTEST_RESOURCE_SPEC_FILE` in the CMake build is used
-instead. If none of these are specified, no resource spec file is used.
+资源规范文件是一个JSON文件，传递给CTest，可以在命令行中作为\
+:option:`ctest --resource-spec-file`，也可以作为\ :command:`ctest_test`\ 的\
+``RESOURCE_SPEC_FILE``\ 参数。如果使用仪表板脚本，并且没有指定\ ``RESOURCE_SPEC_FILE``，\
+则使用仪表板脚本中的\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ 的值。如果没有指定仪表板脚\
+本中的\ :option:`--resource-spec-file <ctest --resource-spec-file>`、\
+``RESOURCE_SPEC_FILE``\ 和\ :variable:`CTEST_RESOURCE_SPEC_FILE`，则使用CMake构建\
+中的\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ 的值。如果这些都没有指定，则不使用资源规范\
+文件。
 
-The resource specification file must be a JSON object. All examples in this
-document assume the following resource specification file:
+资源规范文件必须是一个JSON对象。本文档中的所有例子都假设了以下资源规范文件：
 
 .. code-block:: json
 
@@ -1490,93 +1455,75 @@ document assume the following resource specification file:
 
 The members are:
 
+成员包括：
+
 ``version``
-  An object containing a ``major`` integer field and a ``minor`` integer field.
-  Currently, the only supported version is major ``1``, minor ``0``. Any other
-  value is an error.
+  包含一个\ ``major``\ 整数字段和一个\ ``minor``\ 整数字段的对象。目前，唯一支持的版本是\
+  major ``1``, minor ``0``。任何其他值都是错误的。
 
 ``local``
-  A JSON array of resource sets present on the system.  Currently, this array
-  is restricted to being of size 1.
+  系统上呈现的资源集的JSON数组。目前，这个数组的大小被限制为1。
 
-  Each array element is a JSON object with members whose names are equal to the
-  desired resource types, such as ``gpus``. These names must start with a
-  lowercase letter or an underscore, and subsequent characters can be a
-  lowercase letter, a digit, or an underscore. Uppercase letters are not
-  allowed, because certain platforms have case-insensitive environment
-  variables. See the `环境变量`_ section below for
-  more information. It is recommended that the resource type name be the plural
-  of a noun, such as ``gpus`` or ``crypto_chips`` (and not ``gpu`` or
-  ``crypto_chip``.)
+  每个数组元素都是一个JSON对象，其成员的名称等于所需的资源类型，例如\ ``gpus``。这些名称必\
+  须以小写字母或下划线开头，后面的字符可以是小写字母、数字或下划线。不允许使用大写字母，因为\
+  某些平台有不区分大小写的环境变量。有关更多信息，请参阅下面的\ `环境变量`_\ 部分。建议资源\
+  类型名称为名词的复数形式，如\ ``gpus``\ 或\ ``crypto_chips``\ （而不是\ ``gpu``\ 或\
+  ``crypto_chip``）。
 
-  Please note that the names ``gpus`` and ``crypto_chips`` are just examples,
-  and CTest does not interpret them in any way. You are free to make up any
-  resource type you want to meet your own requirements.
+  请注意，名称\ ``gpus``\ 和\ ``crypto_chips``\ 只是示例，CTest不会以任何方式解释它们。\
+  你可以自由地创建任何想要满足自己需求的资源类型。
 
-  The value for each resource type is a JSON array consisting of JSON objects,
-  each of which describe a specific instance of the specified resource. These
-  objects have the following members:
+  每种资源类型的值都是由JSON对象组成的JSON数组，每个对象描述指定资源的特定实例。这些对象有\
+  以下成员：
 
   ``id``
-    A string consisting of an identifier for the resource. Each character in
-    the identifier can be a lowercase letter, a digit, or an underscore.
-    Uppercase letters are not allowed.
+    由资源标识符组成的字符串。标识符中的每个字符可以是小写字母、数字或下划线。不允许使用大写字母。
 
-    Identifiers must be unique within a resource type. However, they do not
-    have to be unique across resource types. For example, it is valid to have a
-    ``gpus`` resource named ``0`` and a ``crypto_chips`` resource named ``0``,
-    but not two ``gpus`` resources both named ``0``.
+    标识符在资源类型中必须是唯一的。但是，它们不必在资源类型之间是唯一的。例如，一个名为\
+    ``0``\ 的\ ``gpus``\ 资源和一个名为\ ``0``\ 的\ ``crypto_chips``\ 资源是有效的，\
+    但不能两个都名为\ ``0``\ 的\ ``gpus``\ 资源。
 
-    Please note that the IDs ``0``, ``1``, ``2``, ``3``, and ``card0`` are just
-    examples, and CTest does not interpret them in any way. You are free to
-    make up any IDs you want to meet your own requirements.
+    请注意，ID ``0``、\ ``1``、\ ``2``、\ ``3``\ 和\ ``card0``\ 只是示例，CTest不会\
+    以任何方式解释它们。你可以自由地创建任何你想要的ID来满足你自己的需求。
 
   ``slots``
-    An optional unsigned number specifying the number of slots available on the
-    resource. For example, this could be megabytes of RAM on a GPU, or
-    cryptography units available on a cryptography chip. If ``slots`` is not
-    specified, a default value of ``1`` is assumed.
+    一个可选的无符号数，指定资源上可用的插槽数。例如，这可能是GPU上的兆字节RAM，或者是加密\
+    芯片上可用的加密单元。如果未指定\ ``slots``，则假定缺省值为\ ``1``。
 
-In the example file above, there are four GPUs with ID's 0 through 3. GPU 0 has
-2 slots, GPU 1 has 4, GPU 2 has 2, and GPU 3 has a default of 1 slot. There is
-also one cryptography chip with 4 slots.
+在上面的示例文件中，有四个ID为0到3的GPU。GPU 0有2个槽位，GPU 1有4个槽位，GPU 2有2个槽位，\
+GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 
 ``RESOURCE_GROUPS``\ 属性
 ----------------------------
 
-See :prop_test:`RESOURCE_GROUPS` for a description of this property.
+有关此属性的描述，请参阅\ :prop_test:`RESOURCE_GROUPS`。
 
 .. _`ctest-resource-environment-variables`:
 
 环境变量
 ---------------------
 
-Once CTest has decided which resources to allocate to a test, it passes this
-information to the test executable as a series of environment variables. For
-each example below, we will assume that the test in question has a
-:prop_test:`RESOURCE_GROUPS` property of
-``2,gpus:2;gpus:4,gpus:1,crypto_chips:2``.
+一旦CTest决定将哪些资源分配给测试，它就会将这些信息作为一系列环境变量传递给测试可执行文件。\
+对于下面的每个示例，我们将假设所讨论的测试的\ :prop_test:`RESOURCE_GROUPS`\ 属性为\
+``2,gpus:2;gpus:4,gpus:1,crypto_chips:2``。
 
-The following variables are passed to the test process:
+以下变量被传递给测试过程：
 
 .. envvar:: CTEST_RESOURCE_GROUP_COUNT
 
-  The total number of groups specified by the :prop_test:`RESOURCE_GROUPS`
-  property. For example:
+  :prop_test:`RESOURCE_GROUPS`\ 属性指定的组的总数。例如：
 
   * ``CTEST_RESOURCE_GROUP_COUNT=3``
 
-  This variable will only be defined if :manual:`ctest(1)` has been given a
-  ``--resource-spec-file``, or if :command:`ctest_test` has been given a
-  ``RESOURCE_SPEC_FILE``. If no resource specification file has been given,
-  this variable will not be defined.
+  只有在给\ :manual:`ctest(1)`\ 指定了\ ``--resource-spec-file``，或者给\
+  :command:`ctest_test`\ 指定了\ ``RESOURCE_SPEC_FILE``\ 时，才会定义这个变量。如果没\
+  有给出资源规范文件，则不会定义该变量。
 
 .. envvar:: CTEST_RESOURCE_GROUP_<num>
 
-  The list of resource types allocated to each group, with each item
-  separated by a comma. ``<num>`` is a number from zero to
-  ``CTEST_RESOURCE_GROUP_COUNT`` minus one. ``CTEST_RESOURCE_GROUP_<num>``
-  is defined for each ``<num>`` in this range. For example:
+  分配给每个组的资源类型列表，每个项之间用逗号分隔。\ ``<num>``\ 是一个从零到\
+  ``CTEST_RESOURCE_GROUP_COUNT``\ 减一的数字。\ ``CTEST_RESOURCE_GROUP_<num>``\ 是\
+  为这个范围中的每个\ ``<num>``\ 定义的。例如：
 
   * ``CTEST_RESOURCE_GROUP_0=gpus``
   * ``CTEST_RESOURCE_GROUP_1=gpus``
@@ -1584,37 +1531,28 @@ The following variables are passed to the test process:
 
 .. envvar:: CTEST_RESOURCE_GROUP_<num>_<resource-type>
 
-  The list of resource IDs and number of slots from each ID allocated to each
-  group for a given resource type. This variable consists of a series of
-  pairs, each pair separated by a semicolon, and with the two items in the pair
-  separated by a comma. The first item in each pair is ``id:`` followed by the
-  ID of a resource of type ``<resource-type>``, and the second item is
-  ``slots:`` followed by the number of slots from that resource allocated to
-  the given group. For example:
+  资源ID的列表和分配给给定资源类型的每个组的每个ID的插槽数量。这个变量由一系列对组成，每一对\
+  由分号分隔，其中的两个项目由逗号分隔。每对中的第一项是\ ``id:``\ 后面是类型为\
+  ``<resource-type>``\ 的资源的ID，第二项是\ ``slots:``\ 后面是分配给给定组的资源的插槽\
+  数。例如：
 
   * ``CTEST_RESOURCE_GROUP_0_GPUS=id:0,slots:2``
   * ``CTEST_RESOURCE_GROUP_1_GPUS=id:2,slots:2``
   * ``CTEST_RESOURCE_GROUP_2_GPUS=id:1,slots:4;id:3,slots:1``
   * ``CTEST_RESOURCE_GROUP_2_CRYPTO_CHIPS=id:card0,slots:2``
 
-  In this example, group 0 gets 2 slots from GPU ``0``, group 1 gets 2 slots
-  from GPU ``2``, and group 2 gets 4 slots from GPU ``1``, 1 slot from GPU
-  ``3``, and 2 slots from cryptography chip ``card0``.
+  在本例中，组0从GPU ``0``\ 获得2个插槽，组1从GPU ``2``\ 获得2个插槽，组2从GPU ``1``\
+  获得4个插槽，从GPU ``3``\ 获得1个插槽，从加密芯片\ ``card0``\ 获得2个插槽。
 
-  ``<num>`` is a number from zero to ``CTEST_RESOURCE_GROUP_COUNT`` minus one.
-  ``<resource-type>`` is the name of a resource type, converted to uppercase.
-  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>`` is defined for the product
-  of each ``<num>`` in the range listed above and each resource type listed in
-  ``CTEST_RESOURCE_GROUP_<num>``.
+  ``<num>``\ 是一个从零到\ ``CTEST_RESOURCE_GROUP_COUNT``\ 减一的数字。\
+  ``<resource-type>``\ 是资源类型的名称，转换为大写。\
+  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ 是为上面列出的范围中的每个\
+  ``<num>``\ 和\ ``CTEST_RESOURCE_GROUP_<num>``\ 中列出的每个资源类型的乘积定义的。
 
-  Because some platforms have case-insensitive names for environment variables,
-  the names of resource types may not clash in a case-insensitive environment.
-  Because of this, for the sake of simplicity, all resource types must be
-  listed in all lowercase in the
-  :ref:`resource specification file <ctest-resource-specification-file>` and
-  in the :prop_test:`RESOURCE_GROUPS` property, and they are converted to all
-  uppercase in the ``CTEST_RESOURCE_GROUP_<num>_<resource-type>`` environment
-  variable.
+  由于某些平台对环境变量具有不区分大小写的名称，因此资源类型的名称在不区分大小写的环境中可能\
+  不会冲突。因此，为了简单起见，在\ :ref:`资源规范文件 <ctest-resource-specification-file>`\
+  和\ :prop_test:`RESOURCE_GROUPS`\ 属性中，所有资源类型必须全部小写，并且在\
+  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ 环境变量中将它们转换为全部大写。
 
 另请参阅
 ========
