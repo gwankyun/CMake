@@ -73,27 +73,21 @@ v1客户端无状态查询文件
 v1客户端有状态查询文件
 ------------------------------
 
-Stateful query files allow clients to request a list of versions of
-each of the `对象类型`_ and get only the most recent version
-recognized by the CMake that runs.
+有状态查询文件允许客户端请求每个\ `对象类型`_\ 的版本列表，并且只获得运行的CMake所识别的最\
+新版本。
 
-Clients may create owned stateful queries by creating ``query.json``
-files in client-specific query subdirectories.  The form is::
+客户端可以通过创建\ ``query.json``\ 文件来创建特定于客户端的子目录自有状态查询。格式如下：\ ::
 
   <build>/.cmake/api/v1/query/client-<client>/query.json
 
-where ``client-`` is literal, ``<client>`` is a string uniquely
-identifying the client, and ``query.json`` is literal.  Each client
-must choose a unique ``<client>`` identifier via its own means.
+其中\ ``client-``\ 是字面量，\ ``<client>``\ 是唯一标识客户端和查询的字符串。\
+``query.json``\ 也是字面量。每个客户端必须通过自己的方式选择唯一的\ ``<client>``\ 标识符。
 
-``query.json`` files are stateful queries owned by the client ``<client>``.
-The owning client may update or remove them at any time.  When a
-given client installation is updated it may then update the stateful
-query it writes to build trees to request newer object versions.
-This can be used to avoid asking CMake to generate multiple object
-versions unnecessarily.
+``query.json``\ 文件是客户端\ ``<client>``\ 拥有的有状态查询。拥有的客户端可以随时更新或\
+删除它们。当给定的客户端安装更新时，它可能会更新它写的有状态查询，以构建树以请求更新的对象版本。\
+这可以用来避免要求CMake不必要地生成多个对象版本。
 
-A ``query.json`` file must contain a JSON object:
+一个\ ``query.json``\ 文件必须包含一个JSON对象：
 
 .. code-block:: json
 
@@ -109,47 +103,34 @@ A ``query.json`` file must contain a JSON object:
     "client": {}
   }
 
-The members are:
+成员包括：
 
 ``requests``
-  A JSON array containing zero or more requests.  Each request is
-  a JSON object with members:
+  包含零个或多个请求的JSON数组。每个请求都是一个JSON对象，包含以下成员：
 
   ``kind``
-    Specifies one of the `对象类型`_ to be included in the reply.
+    指定要包含在应答中的\ `对象类型`_\ 之一。
 
   ``version``
-    Indicates the version(s) of the object kind that the client
-    understands.  Versions have major and minor components following
-    semantic version conventions.  The value must be
+    显示客户端可以理解的对象类型的版本。版本有遵循语义版本约定的主要和次要组件。该值必须为
 
-    * a JSON integer specifying a (non-negative) major version number, or
-    * a JSON object containing ``major`` and (optionally) ``minor``
-      members specifying non-negative integer version components, or
-    * a JSON array whose elements are each one of the above.
+    * 指定（非负的）主版本号的JSON整数，或者
+    * 包含指定非负整数版本组件的\ ``major``\ 成员和（可选）\ ``minor``\ 成员的JSON对象，或者
+    * 一个JSON数组，其元素均为上述元素之一。
 
   ``client``
-    Optional member reserved for use by the client.  This value is
-    preserved in the reply written for the client in the
-    `v1应答索引文件`_ but is otherwise ignored.  Clients may use
-    this to pass custom information with a request through to its reply.
+    可选成员，保留给客户端使用。在\ `v1应答索引文件`_\ 中为客户端写的应答中保留该值，否则将\
+    被忽略。客户端可以使用它将自定义信息与请求一起传递到它的应答。
 
-  For each requested object kind CMake will choose the *first* version
-  that it recognizes for that kind among those listed in the request.
-  The response will use the selected *major* version with the highest
-  *minor* version known to the running CMake for that major version.
-  Therefore clients should list all supported major versions in
-  preferred order along with the minimal minor version required
-  for each major version.
+  对于每个请求的对象类型，CMake将在请求中列出的对象类型中选择它识别的\ *第一个*\ 版本。响应\
+  将使用所选的 *major* 版本和运行中的CMake已知的该主版本的最高\ *minor*\ 版本。因此，客户\
+  端应该按照首选顺序列出所有支持的主要版本，以及每个主要版本所需的最小次要版本。
 
 ``client``
-  Optional member reserved for use by the client.  This value is
-  preserved in the reply written for the client in the
-  `v1应答索引文件`_ but is otherwise ignored.  Clients may use
-  this to pass custom information with a query through to its reply.
+  可选成员，保留给客户端使用。在\ `v1应答索引文件`_\ 中为客户端写的应答中保留该值，否则将被\
+  忽略。客户端可以使用它将带有查询的自定义信息传递给它的应答。
 
-Other ``query.json`` top-level members are reserved for future use.
-If present they are ignored for forward compatibility.
+其他\ ``query.json``\ 顶层成员被保留以备将来使用。如果存在，则忽略它们以实现前向兼容性。
 
 v1应答索引文件
 -------------------
