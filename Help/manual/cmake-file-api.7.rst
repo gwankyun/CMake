@@ -135,21 +135,16 @@ v1客户端有状态查询文件
 v1应答索引文件
 -------------------
 
-CMake writes an ``index-*.json`` file to the ``v1/reply/`` directory
-whenever it runs to generate a build system.  Clients must read the
-reply index file first and may read other `v1应答文件`_ only by
-following references.  The form of the reply index file name is::
+当运行生成构建系统时，CMake写一个\ ``index-*.json``\ 文件放到\ ``v1/reply/``\ 目录中。\
+客户端必须先读取应答索引文件，其他\ `v1应答文件`_\ 只能通过引用读取。应答索引文件名的格式为：\ ::
 
   <build>/.cmake/api/v1/reply/index-<unspecified>.json
 
-where ``index-`` is literal and ``<unspecified>`` is an unspecified
-name selected by CMake.  Whenever a new index file is generated it
-is given a new name and any old one is deleted.  During the short
-time between these steps there may be multiple index files present;
-the one with the largest name in lexicographic order is the current
-index file.
+其中\ ``index-``\ 是字面量，\ ``<unspecified>``\ 是CMake选择的未指定名称。每当生成新的\
+索引文件时，都会给它一个新名称，并删除旧的名称。在这些步骤之间的短时间内，可能存在多个索引文件；\
+按字典顺序排最前的是当前索引文件。
 
-The reply index file contains a JSON object:
+应答索引文件包含一个JSON对象：
 
 .. code-block:: json
 
@@ -203,162 +198,122 @@ The reply index file contains a JSON object:
     }
   }
 
-The members are:
+成员包括：
 
 ``cmake``
-  A JSON object containing information about the instance of CMake that
-  generated the reply.  It contains members:
+  一个JSON对象，包含有关生成应答的CMake实例的信息。它包含以下成员：
 
   ``version``
-    A JSON object specifying the version of CMake with members:
+    一个JSON对象，成员指定CMake的版本：
 
     ``major``, ``minor``, ``patch``
-      Integer values specifying the major, minor, and patch version components.
+      整数值，指定主版本、次版本和补丁版本组件。
     ``suffix``
-      A string specifying the version suffix, if any, e.g. ``g0abc3``.
+      指定版本后缀的字符串（如果有的话），例如\ ``g0abc3``。
     ``string``
-      A string specifying the full version in the format
-      ``<major>.<minor>.<patch>[-<suffix>]``.
+      指定完整版本的字符串，格式为\ ``<major>.<minor>.<patch>[-<suffix>]``。
     ``isDirty``
-      A boolean indicating whether the version was built from a version
-      controlled source tree with local modifications.
+      一个布尔值，指示版本是否从经过本地修改的版本控制源代码树生成。
 
   ``paths``
-    A JSON object specifying paths to things that come with CMake.
-    It has members for :program:`cmake`, :program:`ctest`, and :program:`cpack`
-    whose values are JSON strings specifying the absolute path to each tool,
-    represented with forward slashes.  It also has a ``root`` member for
-    the absolute path to the directory containing CMake resources like the
-    ``Modules/`` directory (see :variable:`CMAKE_ROOT`).
+    一个JSON对象，指定CMake自带的东西的路径。它有\ :program:`cmake`、\ :program:`ctest`\
+    和\ :program:`cpack`\ 成员，它们的值是JSON字符串，指定每个工具的绝对路径，用正斜杠表\
+    示。它还有一个\ ``root``\ 成员，用于包含CMake资源的目录的绝对路径，比如\ ``Modules/``\
+    目录（见\ :variable:`CMAKE_ROOT`）。
 
   ``generator``
-    A JSON object describing the CMake generator used for the build.
-    It has members:
+    一个JSON对象，描述用于构建的CMake生成器。它的成员有：
 
     ``multiConfig``
-      A boolean specifying whether the generator supports multiple output
-      configurations.
+      一个布尔值，指定生成器是否支持多个输出配置。
     ``name``
-      A string specifying the name of the generator.
+      指定生成器名称的字符串。
     ``platform``
-      If the generator supports :variable:`CMAKE_GENERATOR_PLATFORM`,
-      this is a string specifying the generator platform name.
+      如果生成器支持\ :variable:`CMAKE_GENERATOR_PLATFORM`，这是一个指定生成器平台名\
+      称的字符串。
 
 ``objects``
-  A JSON array listing all versions of all `对象类型`_ generated
-  as part of the reply.  Each array entry is a
-  `v1应答文件引用`_.
+  一个JSON数组，列出了作为应答的一部分生成的所有\ `对象类型`_\ 的所有版本。每个数组项是一个\
+  `v1应答文件引用`_。
 
 ``reply``
-  A JSON object mirroring the content of the ``query/`` directory
-  that CMake loaded to produce the reply.  The members are of the form
+  一个JSON对象，镜像CMake加载以生成回复的\ ``query/``\ 目录的内容。成员是这个格式的
 
   ``<kind>-v<major>``
-    A member of this form appears for each of the
-    `v1共享无状态查询文件`_ that CMake recognized as a
-    request for object kind ``<kind>`` with major version ``<major>``.
-    The value is a `v1应答文件引用`_ to the corresponding
-    reply file for that object kind and version.
+    这个表单的成员出现在每个\ `v1共享无状态查询文件`_\ 中，CMake将其识别为具有主要版本\
+    ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是一个\ `v1应答文件引用`_，对该对\
+    象类型和版本对应的应答文件的引用。
 
   ``<unknown>``
-    A member of this form appears for each of the
-    `v1共享无状态查询文件`_ that CMake did not recognize.
-    The value is a JSON object with a single ``error`` member
-    containing a string with an error message indicating that the
-    query file is unknown.
+    这个表单的成员出现在每个CMake不能识别的\ `v1共享无状态查询文件`_\ 中。该值是一个JSON对\
+    象，其单个\ ``error``\ 成员包含一个字符串，该字符串带有错误消息，指示查询文件未知。
 
   ``client-<client>``
-    A member of this form appears for each client-owned directory
-    holding `v1客户端无状态查询文件`_.
-    The value is a JSON object mirroring the content of the
-    ``query/client-<client>/`` directory.  The members are of the form:
+    这个表单的成员出现在每个持有\ `v1客户端无状态查询文件`_\ 的客户端所有的目录中。这是一个\
+    JSON对象，镜像查询\ ``query/client-<client>/``\ 目录的内容。成员的格式为：
 
     ``<kind>-v<major>``
-      A member of this form appears for each of the
-      `v1客户端无状态查询文件`_ that CMake recognized as a
-      request for object kind ``<kind>`` with major version ``<major>``.
-      The value is a `v1应答文件引用`_ to the corresponding
-      reply file for that object kind and version.
+      这个表单的成员出现在每个\ `v1客户端无状态查询文件`_\ 中，这些文件被CMake识别为具有\
+      主要版本\ ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是一个\ `v1应答文件引用`_，\
+      对该对象类型和版本对应的应答文件的引用。
 
     ``<unknown>``
-      A member of this form appears for each of the
-      `v1客户端无状态查询文件`_ that CMake did not recognize.
-      The value is a JSON object with a single ``error`` member
-      containing a string with an error message indicating that the
-      query file is unknown.
+      这个表单的成员出现在每个CMake不能识别的\ `v1客户端无状态查询文件`_\ 中。该值是一个\
+      JSON对象，其单个\ ``error``\ 成员包含一个字符串，该字符串带有错误消息，指示查询文件\
+      未知。
 
     ``query.json``
-      This member appears for clients using
-      `v1客户端有状态查询文件`_.
-      If the ``query.json`` file failed to read or parse as a JSON object,
-      this member is a JSON object with a single ``error`` member
-      containing a string with an error message.  Otherwise, this member
-      is a JSON object mirroring the content of the ``query.json`` file.
-      The members are:
+      这个成员出现在使用\ `v1客户端有状态查询文件`_\ 的客户端。如果\ ``query.json``\
+      文件未能读取或解析为JSON对象，此成员是一个JSON对象，其单个\ ``error``\ 成员包含一个\
+      带有错误消息的字符串。否则，该成员是一个JSON对象，镜像\ ``query.json``\ 文件的内容。\
+      成员包括：
 
       ``client``
-        A copy of the ``query.json`` file ``client`` member, if it exists.
+        ``query.json``\ 文件副本的\ ``client``\ 成员，如果存在的话。
 
       ``requests``
-        A copy of the ``query.json`` file ``requests`` member, if it exists.
+        ``query.json``\ 文件副本的\ ``requests``\ 成员，如果存在的话。
 
       ``responses``
-        If the ``query.json`` file ``requests`` member is missing or invalid,
-        this member is a JSON object with a single ``error`` member
-        containing a string with an error message.  Otherwise, this member
-        contains a JSON array with a response for each entry of the
-        ``requests`` array, in the same order.  Each response is
+        如果\ ``query.json``\ 文件\ ``requests``\ 成员缺失或无效，该成员是一个JSON对象，\
+        其单个\ ``error``\ 成员包含一个带有错误消息的字符串。否则，该成员将包含一个JSON数\
+        组，其中以相同的顺序对请求数组的每个条目进行响应。每个响应是
 
-        * a JSON object with a single ``error`` member containing a string
-          with an error message, or
-        * a `v1应答文件引用`_ to the corresponding reply file for
-          the requested object kind and selected version.
+        * 带有单个\ ``error``\ 成员的JSON对象，该成员包含带有错误消息的字符串，或者
+        * 一个\ `v1应答文件引用`_\ 对所请求对象类型和所选版本对应的应答文件的引用。
 
-After reading the reply index file, clients may read the other
-`v1应答文件`_ it references.
+客户端读取应答索引文件后，可以读取它引用的其他\ `v1应答文件`_。
 
 v1应答文件引用
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The reply index file represents each reference to another reply file
-using a JSON object with members:
+应答索引文件使用JSON对象表示对另一个回复文件的引用，该JSON对象包含成员：
 
 ``kind``
-  A string specifying one of the `对象类型`_.
+  指定\ `对象类型`_\ 之一的字符串。
 ``version``
-  A JSON object with members ``major`` and ``minor`` specifying
-  integer version components of the object kind.
+  一个JSON对象，其成员\ ``major``\ 和\ ``minor``\ 指定对象类型的整数版本组件。
 ``jsonFile``
-  A JSON string specifying a path relative to the reply index file
-  to another JSON file containing the object.
+  一个JSON字符串，指定相对于应答索引文件到包含该对象的另一个JSON文件的路径。
 
 v1应答文件
 --------------
 
-Reply files containing specific `对象类型`_ are written by CMake.
-The names of these files are unspecified and must not be interpreted
-by clients.  Clients must first read the `v1应答索引文件`_ and
-follow references to the names of the desired response objects.
+包含特定\ `对象类型`_\ 的应答文件由CMake编写。这些文件的名称是未指定的，并且不能被客户端解释。\
+客户端必须首先读取\ `v1应答索引文件`_，并遵循对所需响应对象名称的引用。
 
-Reply files (including the index file) will never be replaced by
-files of the same name but different content.  This allows a client
-to read the files concurrently with a running CMake that may generate
-a new reply.  However, after generating a new reply CMake will attempt
-to remove reply files from previous runs that it did not just write.
-If a client attempts to read a reply file referenced by the index but
-finds the file missing, that means a concurrent CMake has generated
-a new reply.  The client may simply start again by reading the new
-reply index file.
+应答文件（包括索引文件）永远不会被同名但内容不同的文件所取代。这允许客户端在运行CMake的同时\
+读取文件，这可能会产生一个新的应答。然而，在生成一个新的应答后，CMake将尝试从之前的运行中删\
+除它没有写入的应答文件。如果客户端试图读取索引引用的应答文件，但发现文件丢失，这意味着并发\
+CMake已经生成了一个新的应答。客户机可以通过读取新的应答索引文件重新开始。
 
 .. _`file-api object kinds`:
 
 对象类型
 ============
 
-The CMake file-based API reports semantic information about the build
-system using the following kinds of JSON objects.  Each kind of object
-is versioned independently using semantic versioning with major and
-minor components.  Every kind of object has the form:
+CMake基于文件的API使用以下类型的JSON对象报告构建系统的语义信息。每种对象都使用带有主要和次\
+要组件的语义版本控制来独立地进行版本控制。每一种对象都有这样的格式：
 
 .. code-block:: json
 
@@ -368,20 +323,16 @@ minor components.  Every kind of object has the form:
     "...": {}
   }
 
-The ``kind`` member is a string specifying the object kind name.
-The ``version`` member is a JSON object with ``major`` and ``minor``
-members specifying integer components of the object kind's version.
-Additional top-level members are specific to each object kind.
+``kind``\ 成员是指定对象类型名称的字符串。\ ``version``\ 成员是一个JSON对象，\ ``major``\
+成员和\ ``minor``\ 成员指定对象类型版本的整数组成部分。附加的顶层成员是特定于每种对象类型的。
 
 “codemodel”对象类型
 -----------------------
 
-The ``codemodel`` object kind describes the build system structure as
-modeled by CMake.
+``codemodel``\ 对象类型描述了由CMake建模的构建系统结构。
 
-There is only one ``codemodel`` object major version, version 2.
-Version 1 does not exist to avoid confusion with that from
-:manual:`cmake-server(7)` mode.
+只有一个\ ``codemodel``\ 对象主版本，即版本2。版本1不存在是为了避免与\
+:manual:`cmake-server(7)`\ 模式的版本混淆。
 
 “codemodel”版本2
 ^^^^^^^^^^^^^^^^^^^^^
