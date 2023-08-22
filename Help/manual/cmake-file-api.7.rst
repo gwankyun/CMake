@@ -337,7 +337,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 “codemodel”版本2
 ^^^^^^^^^^^^^^^^^^^^^
 
-``codemodel`` object version 2 is a JSON object:
+``codemodel``\ 对象版本2是一个JSON对象：
 
 .. code-block:: json
 
@@ -401,554 +401,425 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     ]
   }
 
-The members specific to ``codemodel`` objects are:
+特定于\ ``codemodel``\ 对象的成员有：
 
 ``paths``
-  A JSON object containing members:
+  包含以下成员的JSON对象：
 
   ``source``
-    A string specifying the absolute path to the top-level source directory,
-    represented with forward slashes.
+    指定顶层源目录的绝对路径的字符串，用正斜杠表示。
 
   ``build``
-    A string specifying the absolute path to the top-level build directory,
-    represented with forward slashes.
+    指定顶层构建目录的绝对路径的字符串，用正斜杠表示。
 
 ``configurations``
-  A JSON array of entries corresponding to available build configurations.
-  On single-configuration generators there is one entry for the value
-  of the :variable:`CMAKE_BUILD_TYPE` variable.  For multi-configuration
-  generators there is an entry for each configuration listed in the
-  :variable:`CMAKE_CONFIGURATION_TYPES` variable.
-  Each entry is a JSON object containing members:
+  一个JSON数组，包含与可用构建配置相对应的条目。在单配置生成器中，有一个条目用于\
+  :variable:`CMAKE_BUILD_TYPE`\ 变量的值。对于多配置生成器，\
+  :variable:`CMAKE_CONFIGURATION_TYPES`\ 变量中列出的每个配置都有一个条目。每个条目是\
+  一个JSON对象，包含以下成员：
 
   ``name``
-    A string specifying the name of the configuration, e.g. ``Debug``.
+    指定配置名称的字符串，例如\ ``Debug``。
 
   ``directories``
-    A JSON array of entries each corresponding to a build system directory
-    whose source directory contains a ``CMakeLists.txt`` file.  The first
-    entry corresponds to the top-level directory.  Each entry is a
-    JSON object containing members:
+    条目的JSON数组，每个条目对应于构建系统目录，其源目录包含\ ``CMakeLists.txt``\ 文件。\
+    第一个条目对应于顶层目录。每个条目是一个JSON对象，包含以下成员：
 
     ``source``
-      A string specifying the path to the source directory, represented
-      with forward slashes.  If the directory is inside the top-level
-      source directory then the path is specified relative to that
-      directory (with ``.`` for the top-level source directory itself).
-      Otherwise the path is absolute.
+      指定源目录路径的字符串，用正斜杠表示。如果目录位于顶层源目录中，则指定相对于该目录的路\
+      径（使用\ ``.``\ 对于顶层源目录本身）。否则路径是绝对的。
 
     ``build``
-      A string specifying the path to the build directory, represented
-      with forward slashes.  If the directory is inside the top-level
-      build directory then the path is specified relative to that
-      directory (with ``.`` for the top-level build directory itself).
-      Otherwise the path is absolute.
+      指定构建目录路径的字符串，用正斜杠表示。如果目录位于顶层构建目录中，则指定相对于该目录\
+      的路径（使用\ ``.``\ 对于顶层构建目录本身）。否则路径是绝对的。
 
     ``parentIndex``
-      Optional member that is present when the directory is not top-level.
-      The value is an unsigned integer 0-based index of another entry in
-      the main ``directories`` array that corresponds to the parent
-      directory that added this directory as a subdirectory.
+      当目录不是顶层目录时出现的可选成员。该值是主\ ``directories``\ 数组中另一个条目的无\
+      符号整数，从0开始索引，该索引对应于将该目录添加为子目录的父目录。
 
     ``childIndexes``
-      Optional member that is present when the directory has subdirectories.
-      The value is a JSON array of entries corresponding to child directories
-      created by the :command:`add_subdirectory` or :command:`subdirs`
-      command.  Each entry is an unsigned integer 0-based index of another
-      entry in the main ``directories`` array.
+      当目录有子目录时出现的可选成员。该值为JSON数组，包含由\ :command:`add_subdirectory`\
+      或\ :command:`subdirs`\ 命令创建的子目录对应的条目。每个条目都是主\ ``directories``\
+      数组中另一个条目的基于0的无符号整数索引。
 
     ``projectIndex``
-      An unsigned integer 0-based index into the main ``projects`` array
-      indicating the build system project to which the this directory belongs.
+      主\ ``projects``\ 数组中基于0的无符号整数索引，指示此目录所属的生成系统项目。
 
     ``targetIndexes``
-      Optional member that is present when the directory itself has targets,
-      excluding those belonging to subdirectories.  The value is a JSON
-      array of entries corresponding to the targets.  Each entry is an
-      unsigned integer 0-based index into the main ``targets`` array.
+      当目录本身具有目标时出现的可选成员，不包括属于子目录的目标。该值是一个JSON数组，包含\
+      与目标器对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
 
     ``minimumCMakeVersion``
-      Optional member present when a minimum required version of CMake is
-      known for the directory.  This is the ``<min>`` version given to the
-      most local call to the :command:`cmake_minimum_required(VERSION)`
-      command in the directory itself or one of its ancestors.
-      The value is a JSON object with one member:
+      当目录已知CMake的最低要求版本时出现的可选成员。这是对目录本身或其祖先之一的\
+      :command:`cmake_minimum_required(VERSION)`\ 命令的最本地调用给出的\ ``<min>``\
+      版本。该值是一个JSON对象，只有一个成员：
 
       ``string``
-        A string specifying the minimum required version in the format::
+        一个字符串，指定所需的最小版本，格式为：\ ::
 
           <major>.<minor>[.<patch>[.<tweak>]][<suffix>]
 
-        Each component is an unsigned integer and the suffix may be an
-        arbitrary string.
+        每个组件都是一个无符号整数，后缀可以是任意字符串。
 
     ``hasInstallRule``
-      Optional member that is present with boolean value ``true`` when
-      the directory or one of its subdirectories contains any
-      :command:`install` rules, i.e. whether a ``make install``
-      or equivalent rule is available.
+      可选成员，当目录或其子目录之一包含任何\ :command:`install`\ 规则时，即\
+      ``make install``\ 或等效规则是否可用时，以布尔值\ ``true``\ 出现。
 
     ``jsonFile``
-      A JSON string specifying a path relative to the codemodel file
-      to another JSON file containing a
-      `“codemodel”版本2“directory”对象`_.
+      一个JSON字符串，指定一个相对于代码模型文件到另一个包含\
+      `“codemodel”版本2“directory”对象`_\ 的JSON文件的路径。
 
-      This field was added in codemodel version 2.3.
+      此字段是在代码模型版本2.3中添加的。
 
   ``projects``
-    A JSON array of entries corresponding to the top-level project
-    and sub-projects defined in the build system.  Each (sub-)project
-    corresponds to a source directory whose ``CMakeLists.txt`` file
-    calls the :command:`project` command with a project name different
-    from its parent directory.  The first entry corresponds to the
-    top-level project.
+    与构建系统中定义的顶层项目和子项目相对应的条目的JSON数组。每个（子）项目对应于一个源目录，\
+    其\ ``CMakeLists.txt``\ 文件调用\ :command:`project`\ 命令时使用的项目名称与父目\
+    录不同。第一个条目对应于顶层项目。
 
-    Each entry is a JSON object containing members:
+    每个条目是一个JSON对象，包含以下成员：
 
     ``name``
-      A string specifying the name given to the :command:`project` command.
+      指定\ :command:`project`\ 命令名称的字符串。
 
     ``parentIndex``
-      Optional member that is present when the project is not top-level.
-      The value is an unsigned integer 0-based index of another entry in
-      the main ``projects`` array that corresponds to the parent project
-      that added this project as a sub-project.
+      当项目不是顶层时出现的可选成员。该值是主\ ``projects``\ 数组中另一个条目的基于0的无\
+      符号整数索引，该索引对应于将此项目添加为子项目的父项目。
 
     ``childIndexes``
-      Optional member that is present when the project has sub-projects.
-      The value is a JSON array of entries corresponding to the sub-projects.
-      Each entry is an unsigned integer 0-based index of another
-      entry in the main ``projects`` array.
+      当项目有子项目时出现的可选成员。该值是一个JSON数组，包含与子项目相对应的条目。每个条\
+      目都是主\ ``projects``\ 数组中另一个条目的基于0的无符号整数索引。
 
     ``directoryIndexes``
-      A JSON array of entries corresponding to build system directories
-      that are part of the project.  The first entry corresponds to the
-      top-level directory of the project.  Each entry is an unsigned
-      integer 0-based index into the main ``directories`` array.
+      一个JSON数组，条目对应于作为项目一部分的构建系统目录。第一个条目对应于项目的顶层目录。\
+      每个条目都是一个基于0的无符号整数到主\ ``directories``\ 数组的索引。
 
     ``targetIndexes``
-      Optional member that is present when the project itself has targets,
-      excluding those belonging to sub-projects.  The value is a JSON
-      array of entries corresponding to the targets.  Each entry is an
-      unsigned integer 0-based index into the main ``targets`` array.
+      当项目本身具有目标时出现的可选成员，不包括属于子项目的目标。该值是一个JSON数组，包含\
+      与目标器对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
 
   ``targets``
-    A JSON array of entries corresponding to the build system targets.
-    Such targets are created by calls to :command:`add_executable`,
-    :command:`add_library`, and :command:`add_custom_target`, excluding
-    imported targets and interface libraries (which do not generate any
-    build rules).  Each entry is a JSON object containing members:
+    与构建系统目标相对应的条目的JSON数组。这样的目标是通过调用\ :command:`add_executable`、\
+    :command:`add_library`\ 和\ :command:`add_custom_target`\ 创建的，不包括导入的\
+    目标和接口库（它们不生成任何构建规则）。每个条目是一个JSON对象，包含以下成员：
 
     ``name``
-      A string specifying the target name.
+      指定目标名称的字符串。
 
     ``id``
-      A string uniquely identifying the target.  This matches the ``id``
-      field in the file referenced by ``jsonFile``.
+      唯一标识目标的字符串。这与\ ``jsonFile``\ 引用的文件中的\ ``id``\ 字段相匹配。
 
     ``directoryIndex``
-      An unsigned integer 0-based index into the main ``directories`` array
-      indicating the build system directory in which the target is defined.
+      一个基于0的无符号整数到主\ ``directories``\ 数组的索引，指示在其中定义目标的构建系\
+      统目录。
 
     ``projectIndex``
-      An unsigned integer 0-based index into the main ``projects`` array
-      indicating the build system project in which the target is defined.
+      在主\ ``projects``\ 数组中基于0的无符号整数索引，指示在其中定义目标的构建系统项目。
 
     ``jsonFile``
-      A JSON string specifying a path relative to the codemodel file
-      to another JSON file containing a
-      `“codemodel”版本2“target”对象`_.
+      一个JSON字符串，指定从代码模型文件到包含\ `“codemodel”版本2“target”对象`_\ 的另\
+      一个JSON文件的相对路径。
 
 “codemodel”版本2“directory”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A codemodel "directory" object is referenced by a `“codemodel”版本2`_
-object's ``directories`` array.  Each "directory" object is a JSON object
-with members:
+代码模型“目录”对象由\ `“codemodel”版本2`_\ 对象的\ ``directories``\ 数组引用。每个\
+“directory”对象都是一个JSON对象，包含以下成员：
 
 ``paths``
-  A JSON object containing members:
+  包含以下成员的JSON对象：
 
   ``source``
-    A string specifying the path to the source directory, represented
-    with forward slashes.  If the directory is inside the top-level
-    source directory then the path is specified relative to that
-    directory (with ``.`` for the top-level source directory itself).
-    Otherwise the path is absolute.
+    指定源目录路径的字符串，用正斜杠表示。如果目录位于顶层源目录中，则指定相对于该目录的路径\
+    （使用\ ``.``\ 对于顶层源目录本身）。否则路径是绝对的。
 
   ``build``
-    A string specifying the path to the build directory, represented
-    with forward slashes.  If the directory is inside the top-level
-    build directory then the path is specified relative to that
-    directory (with ``.`` for the top-level build directory itself).
-    Otherwise the path is absolute.
+    指定构建目录路径的字符串，用正斜杠表示。如果目录位于顶层构建目录中，则指定相对于该目录的\
+    路径（使用\ ``.``\ 对于顶层构建目录本身）。否则路径是绝对的。
 
 ``installers``
-  A JSON array of entries corresponding to :command:`install` rules.
-  Each entry is a JSON object containing members:
+  与\ :command:`install`\ 规则相对应的条目的JSON数组。每个条目是一个JSON对象，包含以下\
+  成员：
 
   ``component``
-    A string specifying the component selected by the corresponding
-    :command:`install` command invocation.
+    指定由相应的\ :command:`install`\ 命令调用选择的组件的字符串。
 
   ``destination``
-    Optional member that is present for specific ``type`` values below.
-    The value is a string specifying the install destination path.
-    The path may be absolute or relative to the install prefix.
+    为下面的特定\ ``type``\ 值提供的可选成员。该值是指定安装目标路径的字符串。路径可以是绝\
+    对的，也可以是相对于安装前缀的。
 
   ``paths``
-    Optional member that is present for specific ``type`` values below.
-    The value is a JSON array of entries corresponding to the paths
-    (files or directories) to be installed.  Each entry is one of:
+    为下面的特定\ ``type``\ 值提供的可选成员。该值是包含需要安装的路径（文件或目录）对应的\
+    条目的JSON数组。每个条目是：
 
-    * A string specifying the path from which a file or directory
-      is to be installed.  The portion of the path not preceded by
-      a ``/`` also specifies the path (name) to which the file
-      or directory is to be installed under the destination.
+    * 指定要安装的文件或目录的路径的字符串。路径前面没有\ ``/``\ 的部分也指定了要安装到目\
+      标目录下的文件或目录的路径（名称）。
 
-    * A JSON object with members:
+    * 一个JSON对象，包含以下成员：
 
       ``from``
-        A string specifying the path from which a file or directory
-        is to be installed.
+        指定要安装的文件或目录的路径的字符串。
 
       ``to``
-        A string specifying the path to which the file or directory
-        is to be installed under the destination.
+        指定要在目标目录下安装的文件或目录的路径的字符串。
 
-    In both cases the paths are represented with forward slashes.  If
-    the "from" path is inside the top-level directory documented by the
-    corresponding ``type`` value, then the path is specified relative
-    to that directory.  Otherwise the path is absolute.
+    在这两种情况下，路径都用正斜杠表示。如果“from”路径位于由相应\ ``type``\ 值记录的顶层\
+    目录中，则指定相对于该目录的路径。否则路径是绝对的。
 
   ``type``
-    A string specifying the type of installation rule.  The value is one
-    of the following, with some variants providing additional members:
+    指定安装规则类型的字符串。该值是下列值之一，一些变体提供了额外的成员：
 
     ``file``
-      An :command:`install(FILES)` or :command:`install(PROGRAMS)` call.
-      The ``destination`` and ``paths`` members are populated, with paths
-      under the top-level *source* directory expressed relative to it.
-      The ``isOptional`` member may exist.
-      This type has no additional members.
+      一个\ :command:`install(FILES)`\ 或\ :command:`install(PROGRAMS)`\ 调用。将\
+      填充\ ``destination``\ 和\ ``paths``\ 成员，并使用相对于它表示的顶层\ *源*\ 目\
+      录下的路径。\ ``isOptional``\ 成员可能存在。此类型没有其他成员。
 
     ``directory``
-      An :command:`install(DIRECTORY)` call.
-      The ``destination`` and ``paths`` members are populated, with paths
-      under the top-level *source* directory expressed relative to it.
-      The ``isOptional`` member may exist.
-      This type has no additional members.
+      一个\ :command:`install(DIRECTORY)`\ 调用。将填充\ ``destination``\ 和\
+      ``paths``\ 成员，并使用相对于它表示的顶层\ *源*\ 目录下的路径。\ ``isOptional``\
+      成员可能存在。此类型没有其他成员。
 
     ``target``
-      An :command:`install(TARGETS)` call.
-      The ``destination`` and ``paths`` members are populated, with paths
-      under the top-level *build* directory expressed relative to it.
-      The ``isOptional`` member may exist.
-      This type has additional members ``targetId``, ``targetIndex``,
-      ``targetIsImportLibrary``, and ``targetInstallNamelink``.
+      一个\ :command:`install(TARGETS)`\ 调用。将填充\ ``destination``\ 和\ ``paths``\
+      成员，并使用相对于它表示的顶层\ *构建*\ 目录下的路径。\ ``isOptional``\ 成员可能存\
+      在。这个类型有额外的成员\ ``targetId``、\ ``targetIndex``、\ ``targetIsImportLibrary``\
+      和\ ``targetInstallNamelink``。
 
     ``export``
-      An :command:`install(EXPORT)` call.
-      The ``destination`` and ``paths`` members are populated, with paths
-      under the top-level *build* directory expressed relative to it.
-      The ``paths`` entries refer to files generated automatically by
-      CMake for installation, and their actual values are considered
-      private implementation details.
-      This type has additional members ``exportName`` and ``exportTargets``.
+      一个\ :command:`install(EXPORT)`\ 调用。将填充\ ``destination``\ 和\ ``paths``\
+      成员，并使用相对于它表示的顶层\ *构建*\ 目录下的路径。\ ``paths``\ 条目指的是CMake\
+      为安装自动生成的文件，它们的实际值被认为是私有实现细节。此类型具有额外的成员\
+      ``exportName``\ 和\ ``exportTargets``。
 
     ``script``
-      An :command:`install(SCRIPT)` call.
-      This type has additional member ``scriptFile``.
+      一个\ :command:`install(SCRIPT)`\ 调用。这个类型有额外的成员\ ``scriptFile``。
 
     ``code``
-      An :command:`install(CODE)` call.
-      This type has no additional members.
+      一个\ :command:`install(CODE)`\ 调用。此类型没有其他成员。
 
     ``importedRuntimeArtifacts``
-      An :command:`install(IMPORTED_RUNTIME_ARTIFACTS)` call.
-      The ``destination`` member is populated. The ``isOptional`` member may
-      exist. This type has no additional members.
+      一个\ :command:`install(IMPORTED_RUNTIME_ARTIFACTS)`\ 调用。已填充\
+      ``destination``\ 成员。\ ``isOptional``\ 成员可能存在。此类型没有其他成员。
 
     ``runtimeDependencySet``
-      An :command:`install(RUNTIME_DEPENDENCY_SET)` call or an
-      :command:`install(TARGETS)` call with ``RUNTIME_DEPENDENCIES``. The
-      ``destination`` member is populated. This type has additional members
-      ``runtimeDependencySetName`` and ``runtimeDependencySetType``.
+      一个\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ 调用或一个带有\
+      ``RUNTIME_DEPENDENCIES``\ 的\ :command:`install(TARGETS)`\ 调用。已填充\
+      ``destination``\ 成员。该类型有额外的成员\ ``runtimeDependencySetName``\ 和\
+      ``runtimeDependencySetType``。
 
     ``fileSet``
-      An :command:`install(TARGETS)` call with ``FILE_SET``.
-      The ``destination`` and ``paths`` members are populated.
-      The ``isOptional`` member may exist.
-      This type has additional members ``fileSetName``, ``fileSetType``,
-      ``fileSetDirectories``, and ``fileSetTarget``.
+      一个带有\ ``FILE_SET``\ 的\ :command:`install(TARGETS)`\ 调用。填充\
+      ``destination``\ 和\ ``paths``\ 成员。\ ``isOptional``\ 成员可能存在。该类型有\
+      额外的成员\ ``fileSetName``、\ ``fileSetType``、\ ``fileSetDirectories``\ 和\
+      ``fileSetTarget``。
 
-      This type was added in codemodel version 2.4.
+      此类型在代码模型2.4版中添加。
 
   ``isExcludeFromAll``
-    Optional member that is present with boolean value ``true`` when
-    :command:`install` is called with the ``EXCLUDE_FROM_ALL`` option.
+    可选成员，当使用\ ``EXCLUDE_FROM_ALL``\ 选项调用\ :command:`install`\ 时，以布尔值\
+    ``true``\ 出现。
 
   ``isForAllComponents``
-    Optional member that is present with boolean value ``true`` when
-    :command:`install(SCRIPT|CODE)` is called with the
-    ``ALL_COMPONENTS`` option.
+    当使用\ ``ALL_COMPONENTS``\ 选项调用\ :command:`install(SCRIPT|CODE)`\ 时，以\
+    布尔值\ ``true``\ 呈现的可选成员。
 
   ``isOptional``
-    Optional member that is present with boolean value ``true`` when
-    :command:`install` is called with the ``OPTIONAL`` option.
-    This is allowed when ``type`` is ``file``, ``directory``, or ``target``.
+    可选成员，当使用\ ``OPTIONAL``\ 选项调用\ :command:`install`\ 时以布尔值\ ``true``\
+    出现。当\ ``type``\ 为\ ``file``、\ ``directory``\ 或\ ``target``\ 时，允许这样做。
 
   ``targetId``
-    Optional member that is present when ``type`` is ``target``.
-    The value is a string uniquely identifying the target to be installed.
-    This matches the ``id`` member of the target in the main
-    "codemodel" object's ``targets`` array.
+    当\ ``type``\ 为\ ``target``\ 时出现的可选成员。字符串形式，唯一标识待安装的目标器。\
+    这与主“codemodel”对象的\ ``targets``\ 数组中目标的\ ``id``\ 成员相匹配。
 
   ``targetIndex``
-    Optional member that is present when ``type`` is ``target``.
-    The value is an unsigned integer 0-based index into the main "codemodel"
-    object's ``targets`` array for the target to be installed.
+    当\ ``type``\ 为\ ``target``\ 时出现的可选成员。该值是一个无符号整数，基于0的索引，\
+    指向要安装的目标器的主“codemodel”对象的\ ``targets``\ 数组。
 
   ``targetIsImportLibrary``
-    Optional member that is present when ``type`` is ``target`` and
-    the installer is for a Windows DLL import library file or for an
-    AIX linker import file.  If present, it has boolean value ``true``.
+    可选成员，当\ ``type``\ 为\ ``target``\ 且安装程序用于Windows DLL导入库文件或AIX链\
+    接器导入文件时，该成员会出现。如果存在，它的布尔值为\ ``true``。
 
   ``targetInstallNamelink``
-    Optional member that is present when ``type`` is ``target`` and
-    the installer corresponds to a target that may use symbolic links
-    to implement the :prop_tgt:`VERSION` and :prop_tgt:`SOVERSION`
-    target properties.
-    The value is a string indicating how the installer is supposed to
-    handle the symlinks: ``skip`` means the installer should skip the
-    symlinks and install only the real file, and ``only`` means the
-    installer should install only the symlinks and not the real file.
-    In all cases the ``paths`` member lists what it actually installs.
+    可选成员，当\ ``type``\ 为\ ``target``\ 并且安装程序对应于可以使用符号链接实现\
+    :prop_tgt:`VERSION` 和\ :prop_tgt:`SOVERSION`\ 目标属性的目标时出现。该值是一个字\
+    符串，指示安装程序应该如何处理符号链接：\ ``skip``\ 意味着安装程序应该跳过符号链接，只\
+    安装真正的文件，并且\ ``only``\ 意味着安装程序应该只安装符号链接，而不是真正的文件。在\
+    所有情况下，\ ``paths``\ 成员都会列出它实际安装的内容。
 
   ``exportName``
-    Optional member that is present when ``type`` is ``export``.
-    The value is a string specifying the name of the export.
+    当\ ``type``\ 为\ ``export``\ 时出现的可选成员。该值是一个字符串，指定导出的名称。
 
   ``exportTargets``
-    Optional member that is present when ``type`` is ``export``.
-    The value is a JSON array of entries corresponding to the targets
-    included in the export.  Each entry is a JSON object with members:
+    当\ ``type``\ 为\ ``export``\ 时出现的可选成员。该值是一个JSON数组，包含与导出中包\
+    含的目标相对应的条目。每个条目都是一个JSON对象，包含以下成员：
 
     ``id``
-      A string uniquely identifying the target.  This matches
-      the ``id`` member of the target in the main "codemodel"
-      object's ``targets`` array.
+      唯一标识目标的字符串。这与主“codemodel”对象的\ ``targets``\ 数组中目标的\ ``id``\
+      成员相匹配。
 
     ``index``
-      An unsigned integer 0-based index into the main "codemodel"
-      object's ``targets`` array for the target.
+      一个基于0的无符号整数，索引到目标的主“codemodel”对象的\ ``targets``\ 数组。
 
   ``runtimeDependencySetName``
-    Optional member that is present when ``type`` is ``runtimeDependencySet``
-    and the installer was created by an
-    :command:`install(RUNTIME_DEPENDENCY_SET)` call. The value is a string
-    specifying the name of the runtime dependency set that was installed.
+    可选成员，当\ ``type``\ 为\ ``runtimeDependencySet``\ 并且安装程序是由\
+    :command:`install(RUNTIME_DEPENDENCY_SET)`\ 调用创建时出现。该值是一个字符串，指\
+    定所安装的运行时依赖项集的名称。
 
   ``runtimeDependencySetType``
-    Optional member that is present when ``type`` is ``runtimeDependencySet``.
-    The value is a string with one of the following values:
+    当\ ``type``\ 为\ ``runtimeDependencySet``\ 时出现的可选成员。该值是具有以下值之\
+    一的字符串：
 
     ``library``
-      Indicates that this installer installs dependencies that are not macOS
-      frameworks.
+      指示此安装程序安装非macOS框架的依赖项。
 
     ``framework``
-      Indicates that this installer installs dependencies that are macOS
-      frameworks.
+      指示此安装程序安装macOS框架的依赖项。
 
   ``fileSetName``
-    Optional member that is present when ``type`` is ``fileSet``. The value is
-    a string with the name of the file set.
+    当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是带有文件集名称的字符串。
 
-    This field was added in codemodel version 2.4.
+    此字段在代码模型2.4版中添加。
 
   ``fileSetType``
-    Optional member that is present when ``type`` is ``fileSet``. The value is
-    a string with the type of the file set.
+    当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是带有文件集类型的字符串。
 
-    This field was added in codemodel version 2.4.
+    此字段在代码模型2.4版中添加。
 
   ``fileSetDirectories``
-    Optional member that is present when ``type`` is ``fileSet``. The value
-    is a list of strings with the file set's base directories (determined by
-    genex-evaluation of :prop_tgt:`HEADER_DIRS` or
-    :prop_tgt:`HEADER_DIRS_<NAME>`).
+    当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是包含文件集基本目录的字符串列\
+    表（由\ :prop_tgt:`HEADER_DIRS`\ 或\ :prop_tgt:`HEADER_DIRS_<NAME>`\ 的生成器\
+    表达式值决定)。
 
-    This field was added in codemodel version 2.4.
+    此字段在代码模型2.4版中添加。
 
   ``fileSetTarget``
-    Optional member that is present when ``type`` is ``fileSet``. The value
-    is a JSON object with members:
+    当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是一个JSON对象，包含以下成员：
 
     ``id``
-      A string uniquely identifying the target.  This matches
-      the ``id`` member of the target in the main "codemodel"
-      object's ``targets`` array.
+      唯一标识目标的字符串。这与主“codemodel”对象的\ ``targets``\ 数组中目标的\ ``id``\
+      成员相匹配。
 
     ``index``
-      An unsigned integer 0-based index into the main "codemodel"
-      object's ``targets`` array for the target.
+      一个基于0的无符号整数，索引到目标的主“codemodel”对象的\ ``targets``\ 数组。
 
-    This field was added in codemodel version 2.4.
+    此字段在代码模型2.4版中添加。
 
   ``scriptFile``
-    Optional member that is present when ``type`` is ``script``.
-    The value is a string specifying the path to the script file on disk,
-    represented with forward slashes.  If the file is inside the top-level
-    source directory then the path is specified relative to that directory.
-    Otherwise the path is absolute.
+    当\ ``type``\ 为\ ``script``\ 时出现的可选成员。该值是一个字符串，指定磁盘上脚本文件\
+    的路径，用正斜杠表示。如果文件位于顶层源目录中，则指定相对于该目录的路径。否则路径是绝对的。
 
   ``backtrace``
-    Optional member that is present when a CMake language backtrace to
-    the :command:`install` or other command invocation that added this
-    installer is available.  The value is an unsigned integer 0-based
-    index into the ``backtraceGraph`` member's ``nodes`` array.
+    当CMake语言回溯到添加此安装程序的\ :command:`install`\ 或其他命令调用时出现的可选成\
+    员。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``backtraceGraph``
-  A `“codemodel”版本2“backtrace graph”对象`_ whose nodes are referenced
-  from ``backtrace`` members elsewhere in this "directory" object.
+  一个\ `“codemodel”版本2“backtrace graph”对象`_，其节点从此“目录”对象中其他地方的\
+  ``backtrace``\ 成员引用。
 
 “codemodel”版本2“target”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A codemodel "target" object is referenced by a `“codemodel”版本2`_
-object's ``targets`` array.  Each "target" object is a JSON object
-with members:
+代码模型“目标”对象由\ `“codemodel”版本2`_\ 对象的\ ``targets``\ 数组引用。每个“目标”对\
+象都是一个JSON对象，包含以下成员：
 
 ``name``
-  A string specifying the logical name of the target.
+  指定目标逻辑名称的字符串。
 
 ``id``
-  A string uniquely identifying the target.  The format is unspecified
-  and should not be interpreted by clients.
+  唯一标识目标的字符串。该格式未指定，不应由客户端解释。
 
 ``type``
-  A string specifying the type of the target.  The value is one of
-  ``EXECUTABLE``, ``STATIC_LIBRARY``, ``SHARED_LIBRARY``,
-  ``MODULE_LIBRARY``, ``OBJECT_LIBRARY``, ``INTERFACE_LIBRARY``,
-  or ``UTILITY``.
+  指定目标类型的字符串。取值为\ ``EXECUTABLE``、\ ``STATIC_LIBRARY``、\
+  ``SHARED_LIBRARY``、\ ``MODULE_LIBRARY``、\ ``OBJECT_LIBRARY``、\
+  ``INTERFACE_LIBRARY``\ 或\ ``UTILITY``\ 中的一个。
 
 ``backtrace``
-  Optional member that is present when a CMake language backtrace to
-  the command in the source code that created the target is available.
-  The value is an unsigned integer 0-based index into the
-  ``backtraceGraph`` member's ``nodes`` array.
+  当CMake语言回溯到创建目标的源代码中的命令时出现的可选成员。该值是\ ``backtraceGraph``\
+  成员的\ ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``folder``
-  Optional member that is present when the :prop_tgt:`FOLDER` target
-  property is set.  The value is a JSON object with one member:
+  设置\ :prop_tgt:`FOLDER`\ 目标属性时出现的可选成员。该值是一个JSON对象，只有一个成员：
 
   ``name``
-    A string specifying the name of the target folder.
+    指定目标文件夹名称的字符串。
 
 ``paths``
-  A JSON object containing members:
+  包含以下成员的JSON对象：
 
   ``source``
-    A string specifying the path to the target's source directory,
-    represented with forward slashes.  If the directory is inside the
-    top-level source directory then the path is specified relative to
-    that directory (with ``.`` for the top-level source directory itself).
-    Otherwise the path is absolute.
+    指定目标源目录路径的字符串，用正斜杠表示。如果目录位于顶层源目录中，则指定相对于该目录的\
+    路径（使用\ ``.``\ 对于顶层源目录本身）。否则路径是绝对的。
 
   ``build``
-    A string specifying the path to the target's build directory,
-    represented with forward slashes.  If the directory is inside the
-    top-level build directory then the path is specified relative to
-    that directory (with ``.`` for the top-level build directory itself).
-    Otherwise the path is absolute.
+    指定目标构建目录路径的字符串，用正斜杠表示。如果目录位于顶层构建目录中，则指定相对于该目\
+    录的路径（使用\ ``.``\ 对于顶层构建目录本身）。否则路径是绝对的。
 
 ``nameOnDisk``
-  Optional member that is present for executable and library targets
-  that are linked or archived into a single primary artifact.
-  The value is a string specifying the file name of that artifact on disk.
+  可选成员，用于链接或存档为单个主工件的可执行目标和库目标。该值是一个字符串，指定磁盘上工件\
+  的文件名。
 
 ``artifacts``
-  Optional member that is present for executable and library targets
-  that produce artifacts on disk meant for consumption by dependents.
-  The value is a JSON array of entries corresponding to the artifacts.
-  Each entry is a JSON object containing one member:
+  可选成员，它存在于可执行目标和库目标中，这些目标在磁盘上生成供依赖项使用的工件。该值是与工\
+  件对应的条目的JSON数组。每个条目是一个JSON对象，包含一个成员：
 
   ``path``
-    A string specifying the path to the file on disk, represented with
-    forward slashes.  If the file is inside the top-level build directory
-    then the path is specified relative to that directory.
-    Otherwise the path is absolute.
+    指定磁盘上文件路径的字符串，用正斜杠表示。如果文件位于顶层构建目录中，则指定相对于该目录\
+    的路径。否则路径是绝对的。
 
 ``isGeneratorProvided``
-  Optional member that is present with boolean value ``true`` if the
-  target is provided by CMake's build system generator rather than by
-  a command in the source code.
+  可选成员，如果目标由CMake的构建系统生成器提供，而不是由源代码中的命令提供，则以布尔值\
+  ``true``\ 呈现。
 
 ``install``
-  Optional member that is present when the target has an :command:`install`
-  rule.  The value is a JSON object with members:
+  当目标具有\ :command:`install`\ 规则时出现的可选成员。该值是一个JSON对象，包含以下成员：
 
   ``prefix``
-    A JSON object specifying the installation prefix.  It has one member:
+    指定安装前缀的JSON对象。它有一个成员：
 
     ``path``
-      A string specifying the value of :variable:`CMAKE_INSTALL_PREFIX`.
+      指定\ :variable:`CMAKE_INSTALL_PREFIX`\ 值的字符串。
 
   ``destinations``
-    A JSON array of entries specifying an install destination path.
-    Each entry is a JSON object with members:
+    指定安装目标路径的条目的JSON数组。每个条目都是一个JSON对象，包含以下成员：
 
     ``path``
-      A string specifying the install destination path.  The path may
-      be absolute or relative to the install prefix.
+      指定安装目标路径的字符串。路径可以是绝对的，也可以是相对于安装前缀的。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the :command:`install` command invocation that specified this
-      destination is available.  The value is an unsigned integer 0-based
-      index into the ``backtraceGraph`` member's ``nodes`` array.
+      当CMake语言回溯到指定此目标的\ :command:`install`\ 命令调用时出现的可选成员。该值是\
+      ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``link``
-  Optional member that is present for executables and shared library
-  targets that link into a runtime binary.  The value is a JSON object
-  with members describing the link step:
+  可选成员，用于链接到运行时二进制文件的可执行文件和共享库目标。该值是一个JSON对象，其成员描\
+  述链接步骤：
 
   ``language``
-    A string specifying the language (e.g. ``C``, ``CXX``, ``Fortran``)
-    of the toolchain is used to invoke the linker.
+    指定工具链的语言（如\ ``C``、\ ``CXX``、\ ``Fortran``）的字符串用于调用链接器。
 
   ``commandFragments``
-    Optional member that is present when fragments of the link command
-    line invocation are available.  The value is a JSON array of entries
-    specifying ordered fragments.  Each entry is a JSON object with members:
+    可选成员，当link命令行调用的片段可用时出现。该值是一个JSON数组，包含指定有序片段的条目。\
+    每个条目都是一个JSON对象，包含以下成员：
 
     ``fragment``
-      A string specifying a fragment of the link command line invocation.
-      The value is encoded in the build system's native shell format.
+      指定link命令行调用片段的字符串。该值以构建系统的本机shell格式编码。
 
     ``role``
-      A string specifying the role of the fragment's content:
+      指定片段内容角色的字符串：
 
-      * ``flags``: link flags.
-      * ``libraries``: link library file paths or flags.
-      * ``libraryPath``: library search path flags.
-      * ``frameworkPath``: macOS framework search path flags.
+      * ``flags``：链接标志。
+      * ``libraries``： 链接库文件路径或标志。
+      * ``libraryPath``： 库搜索路径标志。
+      * ``frameworkPath``： macOS框架搜索路径标志。
 
   ``lto``
-    Optional member that is present with boolean value ``true``
-    when link-time optimization (a.k.a. interprocedural optimization
-    or link-time code generation) is enabled.
+    可选成员，当启用链接时间优化（也称为过程间优化或链接时间代码生成）时，以布尔值\ ``true``\
+    出现。
 
   ``sysroot``
-    Optional member that is present when the :variable:`CMAKE_SYSROOT_LINK`
-    or :variable:`CMAKE_SYSROOT` variable is defined.  The value is a
-    JSON object with one member:
+    可选成员，在定义\ :variable:`CMAKE_SYSROOT_LINK`\ 或\ :variable:`CMAKE_SYSROOT`\
+    变量时出现。该值是一个JSON对象，只有一个成员：
 
     ``path``
-      A string specifying the absolute path to the sysroot, represented
-      with forward slashes.
+      指定到系统根的绝对路径的字符串，用正斜杠表示。
 
 ``archive``
   Optional member that is present for static library targets.  The value

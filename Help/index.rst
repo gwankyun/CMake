@@ -26,9 +26,9 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
 .. toctree::
    :maxdepth: 1
 
-   cmake(1)：100%</manual/cmake.1>
-   ctest(1)：100%</manual/ctest.1>
-   cpack(1)：100%</manual/cpack.1>
+   cmake(1)</manual/cmake.1>
+   ctest(1)</manual/ctest.1>
+   cpack(1)</manual/cpack.1>
 
 交互式对话框
 ###################
@@ -36,8 +36,8 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
 .. toctree::
    :maxdepth: 1
 
-   cmake-gui(1)：100%</manual/cmake-gui.1>
-   ccmake(1)：100%</manual/ccmake.1>
+   cmake-gui(1)</manual/cmake-gui.1>
+   ccmake(1)</manual/ccmake.1>
 
 参考手册
 #################
@@ -45,24 +45,24 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
 .. toctree::
    :maxdepth: 1
 
-   cmake-buildsystem(7)：100%</manual/cmake-buildsystem.7>
+   cmake-buildsystem(7)</manual/cmake-buildsystem.7>
    cmake-commands(7)</manual/cmake-commands.7>
-   cmake-compile-features(7)：100%</manual/cmake-compile-features.7>
-   cmake-configure-log(7)：100%</manual/cmake-configure-log.7>
-   cmake-developer(7)：100%</manual/cmake-developer.7>
+   cmake-compile-features(7)</manual/cmake-compile-features.7>
+   cmake-configure-log(7)</manual/cmake-configure-log.7>
+   cmake-developer(7)</manual/cmake-developer.7>
    cmake-env-variables(7)</manual/cmake-env-variables.7>
-   cmake-file-api(7)：21.2%</manual/cmake-file-api.7>
-   cmake-generator-expressions(7)：100%</manual/cmake-generator-expressions.7>
+   cmake-file-api(7)：56.4%</manual/cmake-file-api.7>
+   cmake-generator-expressions(7)</manual/cmake-generator-expressions.7>
    cmake-generators(7)</manual/cmake-generators.7>
-   cmake-language(7)：100%</manual/cmake-language.7>
+   cmake-language(7)</manual/cmake-language.7>
    cmake-modules(7)</manual/cmake-modules.7>
-   cmake-packages(7)：100%</manual/cmake-packages.7>
+   cmake-packages(7)</manual/cmake-packages.7>
    cmake-policies(7)</manual/cmake-policies.7>
-   cmake-presets(7)：100%</manual/cmake-presets.7>
+   cmake-presets(7)</manual/cmake-presets.7>
    cmake-properties(7)</manual/cmake-properties.7>
-   cmake-qt(7)：100%</manual/cmake-qt.7>
-   cmake-server(7)：100%</manual/cmake-server.7>
-   cmake-toolchains(7)：100%</manual/cmake-toolchains.7>
+   cmake-qt(7)</manual/cmake-qt.7>
+   cmake-server(7)</manual/cmake-server.7>
+   cmake-toolchains(7)</manual/cmake-toolchains.7>
    cmake-variables(7)</manual/cmake-variables.7>
    cpack-generators(7)</manual/cpack-generators.7>
 
@@ -74,11 +74,11 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
  .. toctree::
     :maxdepth: 1
 
-    CMake教程：100%</guide/tutorial/index>
-    用户交互指南：100%</guide/user-interaction/index>
-    使用依赖项指南：100%</guide/using-dependencies/index>
-    导入导出指南：100%</guide/importing-exporting/index>
-    IDE集成指南：100%</guide/ide-integration/index>
+    CMake教程</guide/tutorial/index>
+    用户交互指南</guide/user-interaction/index>
+    使用依赖项指南</guide/using-dependencies/index>
+    导入导出指南</guide/importing-exporting/index>
+    IDE集成指南</guide/ide-integration/index>
 
 .. only:: html or text
 
