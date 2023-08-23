@@ -51,7 +51,7 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
    cmake-configure-log(7)</manual/cmake-configure-log.7>
    cmake-developer(7)</manual/cmake-developer.7>
    cmake-env-variables(7)</manual/cmake-env-variables.7>
-   cmake-file-api(7)：56.4%</manual/cmake-file-api.7>
+   cmake-file-api(7)：66.4%</manual/cmake-file-api.7>
    cmake-generator-expressions(7)</manual/cmake-generator-expressions.7>
    cmake-generators(7)</manual/cmake-generators.7>
    cmake-language(7)</manual/cmake-language.7>

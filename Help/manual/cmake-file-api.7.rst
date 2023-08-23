@@ -822,163 +822,126 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       指定到系统根的绝对路径的字符串，用正斜杠表示。
 
 ``archive``
-  Optional member that is present for static library targets.  The value
-  is a JSON object with members describing the archive step:
+  为静态库目标提供的可选成员。该值是一个JSON对象，其成员描述存档步骤：
 
   ``commandFragments``
-    Optional member that is present when fragments of the archiver command
-    line invocation are available.  The value is a JSON array of entries
-    specifying the fragments.  Each entry is a JSON object with members:
+    存档程序命令行调用片段可用时出现的可选成员。该值是一个JSON数组，包含指定片段的条目。每个\
+    条目都是一个JSON对象，包含以下成员：
 
     ``fragment``
-      A string specifying a fragment of the archiver command line invocation.
-      The value is encoded in the build system's native shell format.
+      指定归档程序命令行调用片段的字符串。该值以构建系统的本机shell格式编码。
 
     ``role``
-      A string specifying the role of the fragment's content:
+      指定片段内容角色的字符串：
 
-      * ``flags``: archiver flags.
+      * ``flags``：归档器标志。
 
   ``lto``
-    Optional member that is present with boolean value ``true``
-    when link-time optimization (a.k.a. interprocedural optimization
-    or link-time code generation) is enabled.
+    可选成员，当启用链接时间优化（也称为过程间优化或链接时间代码生成）时，以布尔值\ ``true``\
+    出现。
 
 ``dependencies``
-  Optional member that is present when the target depends on other targets.
-  The value is a JSON array of entries corresponding to the dependencies.
-  Each entry is a JSON object with members:
+  当目标依赖于其他目标时出现的可选成员。该值是一个JSON数组，包含与依赖项对应的条目。每个条目\
+  都是一个JSON对象，包含以下成员：
 
   ``id``
-    A string uniquely identifying the target on which this target depends.
-    This matches the main ``id`` member of the other target.
+    唯一标识此目标所依赖的目标的字符串。这与另一个目标的主\ ``id``\ 成员相匹配。
 
   ``backtrace``
-    Optional member that is present when a CMake language backtrace to
-    the :command:`add_dependencies`, :command:`target_link_libraries`,
-    or other command invocation that created this dependency is
-    available.  The value is an unsigned integer 0-based index into
-    the ``backtraceGraph`` member's ``nodes`` array.
+    当CMake语言回溯到\ :command:`add_dependencies`、\ :command:`target_link_libraries`\
+    或其他创建此依赖的命令调用时，该可选成员可用。该值是\ ``backtraceGraph``\ 成员的\
+    ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``fileSets``
-  A JSON array of entries corresponding to the target's file sets. Each entry
-  is a JSON object with members:
+  与目标文件集相对应的条目的JSON数组。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
-    A string specifying the name of the file set.
+    指定文件集名称的字符串。
 
   ``type``
-    A string specifying the type of the file set.  See
-    :command:`target_sources` supported file set types.
+    指定文件集类型的字符串。请参阅\ :command:`target_sources`\ 支持的文件集类型。
 
   ``visibility``
-    A string specifying the visibility of the file set; one of ``PUBLIC``,
-    ``PRIVATE``, or ``INTERFACE``.
+    指定文件集可见性的字符串；\ ``PUBLIC``、\ ``PRIVATE``\ 或\ ``INTERFACE``\ 其中之一。
 
   ``baseDirectories``
-    A JSON array of strings specifying the base directories containing sources
-    in the file set.
+    字符串的JSON数组，指定文件集中包含源的基本目录。
 
-  This field was added in codemodel version 2.5.
+  此字段在代码模型版本2.5中添加。
 
 ``sources``
-  A JSON array of entries corresponding to the target's source files.
-  Each entry is a JSON object with members:
+  与目标源文件对应的条目的JSON数组。每个条目都是一个JSON对象，包含以下成员：
 
   ``path``
-    A string specifying the path to the source file on disk, represented
-    with forward slashes.  If the file is inside the top-level source
-    directory then the path is specified relative to that directory.
-    Otherwise the path is absolute.
+    指定磁盘上源文件路径的字符串，用正斜杠表示。如果文件位于顶层源目录中，则指定相对于该目录\
+    的路径。否则路径是绝对的。
 
   ``compileGroupIndex``
-    Optional member that is present when the source is compiled.
-    The value is an unsigned integer 0-based index into the
-    ``compileGroups`` array.
+    编译源代码时出现的可选成员。该值是一个无符号整数，从0开始索引到\ ``compileGroups``\
+    数组。
 
   ``sourceGroupIndex``
-    Optional member that is present when the source is part of a source
-    group either via the :command:`source_group` command or by default.
-    The value is an unsigned integer 0-based index into the
-    ``sourceGroups`` array.
+    当源是源组的一部分时，通过\ :command:`source_group`\ 命令或默认情况下出现的可选成员。\
+    取值为无符号整数，从0开始索引\ ``sourceGroups``\ 数组。
 
   ``isGenerated``
-    Optional member that is present with boolean value ``true`` if
-    the source is :prop_sf:`GENERATED`.
+    可选成员，如果源是\ :prop_sf:`GENERATED`，则以布尔值\ ``true``\ 出现。
 
   ``fileSetIndex``
-    Optional member that is present when the source is part of a file set.
-    The value is an unsigned integer 0-based index into the ``fileSets``
-    array.
+    当源是文件集的一部分时出现的可选成员。该值是一个无符号整数，从0开始索引到\ ``fileSets``\
+    数组。
 
-    This field was added in codemodel version 2.5.
+    此字段在代码模型版本2.5中添加。
 
   ``backtrace``
-    Optional member that is present when a CMake language backtrace to
-    the :command:`target_sources`, :command:`add_executable`,
-    :command:`add_library`, :command:`add_custom_target`, or other
-    command invocation that added this source to the target is
-    available.  The value is an unsigned integer 0-based index into
-    the ``backtraceGraph`` member's ``nodes`` array.
+    可选成员，当CMake语言回溯到\ :command:`target_sources`、\ :command:`add_executable`、\
+    :command:`add_library`、\ :command:`add_custom_target`\ 或其他将此源添加到目标\
+    的命令调用时，该成员可用。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于\
+    0的无符号整数索引。
 
 ``sourceGroups``
-  Optional member that is present when sources are grouped together by
-  the :command:`source_group` command or by default.  The value is a
-  JSON array of entries corresponding to the groups.  Each entry is
-  a JSON object with members:
+  可选成员，当通过\ :command:`source_group`\ 命令或默认情况下将源分组在一起时出现。该值\
+  是一个JSON数组，包含与组对应的条目。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
-    A string specifying the name of the source group.
+    指定源组名称的字符串。
 
   ``sourceIndexes``
-    A JSON array listing the sources belonging to the group.
-    Each entry is an unsigned integer 0-based index into the
-    main ``sources`` array for the target.
+    一个JSON数组，列出属于该组的源。每个条目都是目标主\ ``sources``\ 数组中基于0的无符号\
+    整数索引。
 
 ``compileGroups``
-  Optional member that is present when the target has sources that compile.
-  The value is a JSON array of entries corresponding to groups of sources
-  that all compile with the same settings.  Each entry is a JSON object
-  with members:
+  当目标具有可编译的源时出现的可选成员。该值是一个JSON数组，条目对应于所有使用相同设置编译的\
+  源组。每个条目都是一个JSON对象，包含以下成员：
 
   ``sourceIndexes``
-    A JSON array listing the sources belonging to the group.
-    Each entry is an unsigned integer 0-based index into the
-    main ``sources`` array for the target.
+    一个JSON数组，列出属于该组的源。每个条目都是目标主\ ``sources``\ 数组中基于0的无符号\
+    整数索引。
 
   ``language``
-    A string specifying the language (e.g. ``C``, ``CXX``, ``Fortran``)
-    of the toolchain is used to compile the source file.
+    指定工具链的语言（例如\ ``C``、\ ``CXX``、\ ``Fortran``）的字符串用于编译源文件。
 
   ``languageStandard``
-    Optional member that is present when the language standard is set
-    explicitly (e.g. via :prop_tgt:`CXX_STANDARD`) or implicitly by
-    compile features.  Each entry is a JSON object with two members:
+    可选成员，当显式设置语言标准（例如通过\ :prop_tgt:`CXX_STANDARD`）或通过编译特性隐式\
+    设置语言标准时出现。每个条目是一个JSON对象，包含两个成员：
 
     ``backtraces``
-      Optional member that is present when a CMake language backtrace to
-      the ``<LANG>_STANDARD`` setting is available.  If the language
-      standard was set implicitly by compile features those are used as
-      the backtrace(s).  It's possible for multiple compile features to
-      require the same language standard so there could be multiple
-      backtraces. The value is a JSON array with each entry being an
-      unsigned integer 0-based index into the ``backtraceGraph``
-      member's ``nodes`` array.
+      当CMake语言回溯到\ ``<LANG>_STANDARD``\ 设置可用时出现的可选成员。如果语言标准是\
+      由编译功能隐式设置的，则这些功能用作回溯。多个编译特性可能需要相同的语言标准，因此可能\
+      存在多个回溯。该值是一个JSON数组，每个条目都是\ ``backtraceGraph``\ 成员\ ``nodes``\
+      数组中基于0的无符号整数索引。
 
     ``standard``
-      String representing the language standard.
+      表示语言标准的字符串。
 
-    This field was added in codemodel version 2.2.
+    此字段在代码模型2.2版中添加。
 
   ``compileCommandFragments``
-    Optional member that is present when fragments of the compiler command
-    line invocation are available.  The value is a JSON array of entries
-    specifying ordered fragments.  Each entry is a JSON object with
-    one member:
+    可选成员，当编译器命令行调用的片段可用时出现。该值是一个JSON数组，包含指定有序片段的条目。\
+    每个条目是一个JSON对象，包含一个成员：
 
     ``fragment``
-      A string specifying a fragment of the compile command line invocation.
-      The value is encoded in the build system's native shell format.
+      指定编译命令行调用片段的字符串。该值以构建系统的本机shell格式编码。
 
   ``includes``
     Optional member that is present when there are include directories.
