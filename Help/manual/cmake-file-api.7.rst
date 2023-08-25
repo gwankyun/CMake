@@ -944,148 +944,120 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       指定编译命令行调用片段的字符串。该值以构建系统的本机shell格式编码。
 
   ``includes``
-    Optional member that is present when there are include directories.
-    The value is a JSON array with an entry for each directory.  Each
-    entry is a JSON object with members:
+    存在包含目录时出现的可选成员。该值是一个JSON数组，每个目录都有一个条目。每个条目都是一个\
+    JSON对象，包含以下成员：
 
     ``path``
-      A string specifying the path to the include directory,
-      represented with forward slashes.
+      指定包含目录路径的字符串，用正斜杠表示。
 
     ``isSystem``
-      Optional member that is present with boolean value ``true`` if
-      the include directory is marked as a system include directory.
+      可选成员，如果包含目录被标记为系统包含目录，则以布尔值\ ``true``\ 出现。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the :command:`target_include_directories` or other command invocation
-      that added this include directory is available.  The value is
-      an unsigned integer 0-based index into the ``backtraceGraph``
-      member's ``nodes`` array.
+      可选成员，当CMake语言回溯到\ :command:`target_include_directories`\ 或其他添加\
+      此包含目录的命令调用时，该成员可用。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\
+      数组中基于0的无符号整数索引。
 
   ``frameworks``
-    Optional member that is present when, on Apple platforms, there are
-    frameworks. The value is a JSON array with an entry for each directory.
-    Each entry is a JSON object with members:
+    可选成员，当在Apple平台上有框架时存在。该值是一个JSON数组，每个目录都有一个条目。每个条\
+    目都是一个JSON对象，包含以下成员：
 
     ``path``
-      A string specifying the path to the framework directory,
-      represented with forward slashes.
+      指定框架目录路径的字符串，用正斜杠表示。
 
     ``isSystem``
-      Optional member that is present with boolean value ``true`` if
-      the framework is marked as a system one.
+      可选成员，如果框架被标记为系统框架，则该成员的布尔值为\ ``true``。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the :command:`target_link_libraries` or other command invocation
-      that added this framework is available.  The value is
-      an unsigned integer 0-based index into the ``backtraceGraph``
-      member's ``nodes`` array.
+      可选成员，当CMake语言回溯到\ :command:`target_link_libraries`\ 或其他添加此框架\
+      的命令调用时存在。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于0的无\
+      符号整数索引。
 
-    This field was added in codemodel version 2.6.
+    此字段在代码模型2.6版中添加。
 
   ``precompileHeaders``
-    Optional member that is present when :command:`target_precompile_headers`
-    or other command invocations set :prop_tgt:`PRECOMPILE_HEADERS` on the
-    target.  The value is a JSON array with an entry for each header.  Each
-    entry is a JSON object with members:
+    当\ :command:`target_precompile_headers`\ 或其他命令调用在目标上设置\
+    :prop_tgt:`PRECOMPILE_HEADERS`\ 时出现的可选成员。该值是一个JSON数组，每个标头都有\
+    一个条目。每个条目都是一个JSON对象，包含以下成员：
 
     ``header``
-      Full path to the precompile header file.
+      预编译头文件的完整路径。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the :command:`target_precompile_headers` or other command invocation
-      that added this precompiled header is available.  The value is an
-      unsigned integer 0-based index into the ``backtraceGraph`` member's
-      ``nodes`` array.
+      可选成员，当CMake语言回溯到\ :command:`target_precompile_headers`\ 或其他添加\
+      此预编译头的命令调用时存在。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组\
+      中基于0的无符号整数索引。
 
-    This field was added in codemodel version 2.1.
+    此字段在代码模型版本2.1中添加。
 
   ``defines``
-    Optional member that is present when there are preprocessor definitions.
-    The value is a JSON array with an entry for each definition.  Each
-    entry is a JSON object with members:
+    存在预处理器定义时出现的可选成员。该值是一个JSON数组，每个定义都有一个条目。每个条目都是\
+    一个JSON对象，包含以下成员：
 
     ``define``
-      A string specifying the preprocessor definition in the format
-      ``<name>[=<value>]``, e.g. ``DEF`` or ``DEF=1``.
+      指定预处理器定义的字符串，格式为\ ``<name>[=<value>]``，例如\ ``DEF``\ 或\
+      ``DEF=1``。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the :command:`target_compile_definitions` or other command invocation
-      that added this preprocessor definition is available.  The value is
-      an unsigned integer 0-based index into the ``backtraceGraph``
-      member's ``nodes`` array.
+      可选成员，当CMake语言回溯到\ :command:`target_compile_definitions`\ 或其他添加\
+      此预处理器定义的命令调用时，该成员可用。该值是\ ``backtraceGraph``\ 成员的\
+      ``nodes``\ 数组中基于0的无符号整数索引。
 
   ``sysroot``
-    Optional member that is present when the
-    :variable:`CMAKE_SYSROOT_COMPILE` or :variable:`CMAKE_SYSROOT`
-    variable is defined.  The value is a JSON object with one member:
+    定义\ :variable:`CMAKE_SYSROOT_COMPILE`\ 或\ :variable:`CMAKE_SYSROOT`\ 变量\
+    时出现的可选成员。该值是一个JSON对象，只有一个成员：
 
     ``path``
-      A string specifying the absolute path to the sysroot, represented
-      with forward slashes.
+      指定到系统根的绝对路径的字符串，用正斜杠表示。
 
 ``backtraceGraph``
-  A `“codemodel”版本2“backtrace graph”对象`_ whose nodes are referenced
-  from ``backtrace`` members elsewhere in this "target" object.
+  一个\ `“codemodel”版本2“backtrace graph”对象`_，其节点从这个“目标”对象中其他地方的\
+  ``backtrace``\ 成员引用。
 
 “codemodel”版本2“backtrace graph”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``backtraceGraph`` member of a `“codemodel”版本2“directory”对象`_,
-or `“codemodel”版本2“target”对象`_ is a JSON object describing a
-graph of backtraces.  Its nodes are referenced from ``backtrace`` members
-elsewhere in the containing object.  The backtrace graph object members are:
+`“codemodel”版本2“directory”对象`_\ 或\ `“codemodel”版本2“target”对象`_\ 的\
+``backtraceGraph``\ 成员是一个描述回溯图的JSON对象。它的节点是从包含对象的其他地方的\
+``backtrace``\ 成员引用的。回溯图对象的成员有：
 
 ``nodes``
-  A JSON array listing nodes in the backtrace graph.  Each entry
-  is a JSON object with members:
+  一个JSON数组，列出回溯图中的节点。每个条目都是一个JSON对象，包含以下成员：
 
   ``file``
-    An unsigned integer 0-based index into the backtrace ``files`` array.
+    回溯\ ``files``\ 数组中基于0的无符号整数索引。
 
   ``line``
-    An optional member present when the node represents a line within
-    the file.  The value is an unsigned integer 1-based line number.
+    当节点表示文件中的一行时出现的可选成员。无符号整数形式，行号从1开始。
 
   ``command``
-    An optional member present when the node represents a command
-    invocation within the file.  The value is an unsigned integer
-    0-based index into the backtrace ``commands`` array.
+    当节点表示文件中的命令调用时出现的可选成员。该值是一个无符号整数，在回溯\ ``commands``\
+    数组中以0为基础的索引。
 
   ``parent``
-    An optional member present when the node is not the bottom of
-    the call stack.  The value is an unsigned integer 0-based index
-    of another entry in the backtrace ``nodes`` array.
+    当节点不是调用堆栈的底部时出现的可选成员。该值是回溯\ ``nodes``\ 数组中另一项的基于0的\
+    无符号整数索引。
 
 ``commands``
-  A JSON array listing command names referenced by backtrace nodes.
-  Each entry is a string specifying a command name.
+  一个JSON数组，列出回溯节点引用的命令名。每个条目都是指定命令名称的字符串。
 
 ``files``
-  A JSON array listing CMake language files referenced by backtrace nodes.
-  Each entry is a string specifying the path to a file, represented
-  with forward slashes.  If the file is inside the top-level source
-  directory then the path is specified relative to that directory.
-  Otherwise the path is absolute.
+  一个JSON数组，列出了回溯节点引用的CMake语言文件。每个条目都是一个字符串，指定文件的路径，\
+  用正斜杠表示。如果文件位于顶层源目录中，则指定相对于该目录的路径。否则为绝对路径。
 
 .. _`file-api configureLog`:
 
-Object Kind "configureLog"
+“configureLog”对象类型
 --------------------------
 
-The ``configureLog`` object kind describes the location and contents of
-a :manual:`cmake-configure-log(7)` file.
+``configureLog``\ 对象类型描述了\ :manual:`cmake-configure-log(7)`\ 文件的位置和内容。
 
-There is only one ``configureLog`` object major version, version 1.
+只有一个\ ``configureLog``\ 对象的主要版本，即版本1。
 
-"configureLog" version 1
+“configureLog”版本1
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-``configureLog`` object version 1 is a JSON object:
+``configureLog``\ 对象版本1是一个JSON对象：
 
 .. code-block:: json
 
@@ -1096,36 +1068,30 @@ There is only one ``configureLog`` object major version, version 1.
     "eventKindNames": [ "try_compile-v1", "try_run-v1" ]
   }
 
-The members specific to ``configureLog`` objects are:
+特定于\ ``configureLog``\ 对象的成员是：
 
 ``path``
-  A string specifying the path to the configure log file.
-  Clients must read the log file from this path, which may be
-  different than the path documented by :manual:`cmake-configure-log(7)`.
-  The log file may not exist if no events are logged.
+  指定配置日志文件路径的字符串。客户端必须从该路径读取日志文件，该路径可能与\
+  :manual:`cmake-configure-log(7)`\ 记录的路径不同。如果没有记录事件，日志文件可能不存在。
 
 ``eventKindNames``
-  A JSON array whose entries are each a JSON string naming one
-  of the :manual:`cmake-configure-log(7)` versioned event kinds.
-  At most one version of each configure log event kind will be listed.
-  Although the configure log may contain other (versioned) event kinds,
-  clients must ignore those that are not listed in this field.
+  一个JSON数组，其每个条目都是一个JSON字符串，命名\ :manual:`cmake-configure-log(7)`\
+  版本事件类型之一。每种配置日志事件类型最多只列出一个版本。虽然配置日志可能包含其他（版本控\
+  制的）事件类型，但客户端必须忽略未在此字段中列出的事件类型。
 
 “cache”对象类型
 -------------------
 
-The ``cache`` object kind lists cache entries.  These are the
-:ref:`CMake Language Variables` stored in the persistent cache
-(``CMakeCache.txt``) for the build tree.
+``cache``\ 对象类型列出了缓存项。这些是存储在构建树的持久缓存（\ ``CMakeCache.txt``\ ）\
+中的\ :ref:`CMake Language Variables`。
 
-There is only one ``cache`` object major version, version 2.
-Version 1 does not exist to avoid confusion with that from
-:manual:`cmake-server(7)` mode.
+只有一个\ ``cache``\ 对象主版本，即版本2。版本1不存在是为了避免与\ :manual:`cmake-server(7)`\
+模式的版本混淆。
 
 “cache”版本2
 ^^^^^^^^^^^^^^^^^
 
-``cache`` object version 2 is a JSON object:
+``cache``\ 对象版本2是一个JSON对象：
 
 .. code-block:: json
 
@@ -1158,46 +1124,42 @@ Version 1 does not exist to avoid confusion with that from
     ]
   }
 
-The members specific to ``cache`` objects are:
+特定于\ ``cache``\ 对象的成员有：
 
 ``entries``
-  A JSON array whose entries are each a JSON object specifying a
-  cache entry.  The members of each entry are:
+  一个JSON数组，其每个条目都是指定缓存条目的JSON对象。每个表项的成员是：
 
   ``name``
-    A string specifying the name of the entry.
+    指定条目名称的字符串。
 
   ``value``
-    A string specifying the value of the entry.
+    指定条目值的字符串。
 
   ``type``
-    A string specifying the type of the entry used by
-    :manual:`cmake-gui(1)` to choose a widget for editing.
+    一个字符串，指定\ :manual:`cmake-gui(1)`\ 用来选择要编辑的小部件的条目类型。
 
   ``properties``
-    A JSON array of entries specifying associated
-    :ref:`cache entry properties <Cache Entry Properties>`.
-    Each entry is a JSON object containing members:
+    指定关联\ :ref:`缓存项属性 <Cache Entry Properties>`\ 的条目的JSON数组。每个条目是\
+    一个JSON对象，包含以下成员：
 
     ``name``
-      A string specifying the name of the cache entry property.
+      指定缓存项属性名称的字符串。
 
     ``value``
-      A string specifying the value of the cache entry property.
+      指定缓存项属性值的字符串。
 
 “cmakeFiles”对象类型
 ------------------------
 
-The ``cmakeFiles`` object kind lists files used by CMake while
-configuring and generating the build system.  These include the
-``CMakeLists.txt`` files as well as included ``.cmake`` files.
+``cmakeFiles``\ 对象类型列出了CMake在配置和生成构建系统时使用的文件。这些文件包括\
+``CMakeLists.txt``\ 文件以及包含的\ ``.cmake``\ 文件。
 
-There is only one ``cmakeFiles`` object major version, version 1.
+只有一个\ ``cmakeFiles``\ 对象的主要版本，即版本1。
 
 “cmakeFiles”版本1
 ^^^^^^^^^^^^^^^^^^^^^^
 
-``cmakeFiles`` object version 1 is a JSON object:
+``cmakeFiles``\ 对象版本1是一个JSON对象：
 
 .. code-block:: json
 
@@ -1228,57 +1190,47 @@ There is only one ``cmakeFiles`` object major version, version 1.
     ]
   }
 
-The members specific to ``cmakeFiles`` objects are:
+特定于\ ``cmakeFiles``\ 对象的成员有：
 
 ``paths``
-  A JSON object containing members:
+  包含以下成员的JSON对象：
 
   ``source``
-    A string specifying the absolute path to the top-level source directory,
-    represented with forward slashes.
+    指定顶层源目录的绝对路径的字符串，用正斜杠表示。
 
   ``build``
-    A string specifying the absolute path to the top-level build directory,
-    represented with forward slashes.
+    指定顶层构建目录的绝对路径的字符串，用正斜杠表示。
 
 ``inputs``
-  A JSON array whose entries are each a JSON object specifying an input
-  file used by CMake when configuring and generating the build system.
-  The members of each entry are:
+  一个JSON数组，其每个条目都是一个JSON对象，指定CMake在配置和生成构建系统时使用的输入文件。
+  每个表项的成员是：
 
   ``path``
-    A string specifying the path to an input file to CMake, represented
-    with forward slashes.  If the file is inside the top-level source
-    directory then the path is specified relative to that directory.
-    Otherwise the path is absolute.
+    指定CMake输入文件路径的字符串，用正斜杠表示。如果文件位于顶层源目录中，则指定相对于该目\
+    录的路径。否则路径是绝对的。
 
   ``isGenerated``
-    Optional member that is present with boolean value ``true``
-    if the path specifies a file that is under the top-level
-    build directory and the build is out-of-source.
-    This member is not available on in-source builds.
+    可选成员，如果路径指定了位于顶层构建目录下的文件并且构建是源外的，则该成员以布尔值\
+    ``true``\ 出现。此成员在源内构建中不可用。
 
   ``isExternal``
-    Optional member that is present with boolean value ``true``
-    if the path specifies a file that is not under the top-level
-    source or build directories.
+    可选成员，如果路径指定的文件不在顶层源目录或构建目录下，则以布尔值\ ``true``\ 出现。
 
   ``isCMake``
-    Optional member that is present with boolean value ``true``
-    if the path specifies a file in the CMake installation.
+    可选成员，如果路径指定了CMake安装中的文件，则以布尔值\ ``true``\ 出现。
 
 “toolchains”对象类型
 ------------------------
 
-The ``toolchains`` object kind lists properties of the toolchains used during
-the build.  These include the language, compiler path, ID, and version.
+``toolchains``\ 对象类型列出了构建过程中使用的工具链的属性。这些包括语言、编译器路径、ID和\
+版本。
 
-There is only one ``toolchains`` object major version, version 1.
+只有一个\ ``toolchains``\ 对象主版本，即版本1。
 
 “toolchains”版本1
 ^^^^^^^^^^^^^^^^^^^^^^
 
-``toolchains`` object version 1 is a JSON object:
+``toolchains``\ 对象版本1是一个JSON对象：
 
 .. code-block:: json
 
