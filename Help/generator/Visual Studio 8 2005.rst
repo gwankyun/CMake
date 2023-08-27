@@ -1,6 +1,5 @@
 Visual Studio 8 2005
 --------------------
 
-Removed.  This once generated Visual Studio 8 2005 project files, but
-the generator has been removed since CMake 3.12.  It is still possible to
-build with VS 2005 tools using the :generator:`NMake Makefiles` generator.
+移除。这个生成器曾经生成过Visual Studio 8 2005的项目文件，但是从CMake 3.12开始，这个生成\
+器就被删除了。使用\ :generator:`NMake Makefiles`\ 生成器仍然可以使用VS 2005工具进行构建。

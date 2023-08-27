@@ -1,7 +1,7 @@
 Visual Studio 12 2013
 ---------------------
 
-Generates Visual Studio 12 (VS 2013) project files.
+生成Visual Studio 12（VS 2013）项目文件。
 
 For compatibility with CMake versions prior to 3.0, one may specify this
 generator using the name "Visual Studio 12" without the year component.

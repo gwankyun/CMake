@@ -3,7 +3,7 @@ Visual Studio 14 2015
 
 .. versionadded:: 3.1
 
-Generates Visual Studio 14 (VS 2015) project files.
+生成Visual Studio 14（VS 2015）项目文件。
 
 Project Types
 ^^^^^^^^^^^^^

@@ -5,7 +5,9 @@ target_link_libraries
 
    .. contents::
 
-指定在链接给定目标或者其依赖项时要使用的库和标志。来自链接库目标的 :ref:`使用需求 <Target Usage Requirements>` 将被传递下去。目标依赖项的使用需求会影响其自身源代码的编译。
+指定在链接给定目标或者其依赖项时要使用的库和标志。来自链接库目标的\
+:ref:`使用需求 <Target Usage Requirements>`\ 将被传递下去。目标依赖项的使用需求会影响\
+其自身源代码的编译。
 
 Overview
 ^^^^^^^^

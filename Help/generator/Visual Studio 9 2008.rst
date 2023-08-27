@@ -1,7 +1,7 @@
 Visual Studio 9 2008
 --------------------
 
-Deprecated.  Generates Visual Studio 9 2008 project files.
+弃用。生成Visual Studio 9 2008项目文件。
 
 .. note::
   This generator is deprecated and will be removed in a future version

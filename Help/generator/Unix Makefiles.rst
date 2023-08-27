@@ -1,7 +1,7 @@
 Unix Makefiles
 --------------
 
-Generates standard UNIX makefiles.
+生成标准UNIX makefiles。
 
 A hierarchy of UNIX makefiles is generated into the build tree.  Use
 any standard UNIX-style make program to build the project through

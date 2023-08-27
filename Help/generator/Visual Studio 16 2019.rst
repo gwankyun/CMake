@@ -3,7 +3,7 @@ Visual Studio 16 2019
 
 .. versionadded:: 3.14
 
-Generates Visual Studio 16 (VS 2019) project files.
+生成Visual Studio 16（VS 2019）项目文件。
 
 Project Types
 ^^^^^^^^^^^^^

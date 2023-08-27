@@ -1,4 +1,4 @@
 NMake Makefiles
 ---------------
 
-Generates NMake makefiles.
+生成NMake makefiles。

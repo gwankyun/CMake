@@ -3,7 +3,7 @@ Visual Studio 17 2022
 
 .. versionadded:: 3.21
 
-Generates Visual Studio 17 (VS 2022) project files.
+生成Visual Studio 17（VS 2022）项目文件。
 
 Project Types
 ^^^^^^^^^^^^^

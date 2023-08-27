@@ -1,7 +1,9 @@
 set
 ---
 
-将一个普通变量、缓存变量或环境变量设置为给定值。请参考 :ref:`cmake-language(7) variables <CMake Language Variables>` ，了解普通变量和缓存项的作用域和交互。
+将一个普通变量、缓存变量或环境变量设置为给定值。请参考\
+:ref:`cmake-language(7)变量 <CMake Language Variables>`，了解普通变量和缓存\
+项的作用域和交互。
 
 Signatures of this command that specify a ``<value>...`` placeholder
 expect zero or more arguments.  Multiple arguments will be joined as

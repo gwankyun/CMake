@@ -1,6 +1,5 @@
 Visual Studio 7 .NET 2003
 -------------------------
 
-Removed.  This once generated Visual Studio .NET 2003 project files, but
-the generator has been removed since CMake 3.9.  It is still possible to
-build with VS 7.1 tools using the :generator:`NMake Makefiles` generator.
+移除。这个生成器曾经生成过Visual Studio .NET 2003的项目文件，但是从CMake 3.9开始，这个生\
+成器就被删除了。使用\ :generator:`NMake Makefiles`\ 生成器仍然可以使用VS 7.1工具进行构建。

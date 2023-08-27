@@ -1,7 +1,7 @@
 Ninja
 -----
 
-Generates ``build.ninja`` files.
+生成\ ``build.ninja``\ 文件。
 
 A ``build.ninja`` file is generated into the build tree.  Use the ninja
 program to build the project through the ``all`` target and install the

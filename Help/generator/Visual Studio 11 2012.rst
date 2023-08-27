@@ -1,7 +1,7 @@
 Visual Studio 11 2012
 ---------------------
 
-Deprecated.  Generates Visual Studio 11 (VS 2012) project files.
+弃用。生成Visual Studio 11（VS 2012）项目文件。
 
 .. note::
   This generator is deprecated and will be removed in a future version

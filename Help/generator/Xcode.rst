@@ -1,7 +1,7 @@
 Xcode
 -----
 
-Generate Xcode project files.
+生成Xcode项目文件。
 
 .. versionchanged:: 3.15
   This generator supports Xcode 5.0 and above.

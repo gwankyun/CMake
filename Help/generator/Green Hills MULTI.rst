@@ -6,7 +6,7 @@ Green Hills MULTI
 .. versionadded:: 3.15
   Linux support.
 
-Generates Green Hills MULTI project files (experimental, work-in-progress).
+生成Green Hills MULTI项目文件（实验性，正在进行中）。
 
   The buildsystem has predetermined build-configuration settings that can be controlled
   via the :variable:`CMAKE_BUILD_TYPE` variable.

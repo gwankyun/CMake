@@ -1,4 +1,4 @@
 Watcom WMake
 ------------
 
-Generates Watcom WMake makefiles.
+生成Watcom WMake makefiles。

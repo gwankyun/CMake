@@ -3,7 +3,7 @@ cmake_file_api
 
 .. versionadded:: 3.27
 
-Enables interacting with the :manual:`CMake file API <cmake-file-api(7)>`.
+启用与\ :manual:`CMake文件API <cmake-file-api(7)>`\ 的交互。
 
 .. signature::
   cmake_file_api(QUERY ...)

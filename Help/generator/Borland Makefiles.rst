@@ -1,4 +1,4 @@
 Borland Makefiles
 -----------------
 
-Generates Borland makefiles.
+生成Borland makefiles。

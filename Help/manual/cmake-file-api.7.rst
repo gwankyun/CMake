@@ -1300,78 +1300,57 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     ]
   }
 
-The members specific to ``toolchains`` objects are:
+特定于\ ``toolchains``\ 对象的成员是：
 
 ``toolchains``
-  A JSON array whose entries are each a JSON object specifying a toolchain
-  associated with a particular language. The members of each entry are:
+  一个JSON数组，其每个条目都是一个JSON对象，指定与特定语言关联的工具链。每个表项的成员是：
 
   ``language``
-    A JSON string specifying the toolchain language, like C or CXX. Language
-    names are the same as language names that can be passed to the
-    :command:`project` command. Because CMake only supports a single toolchain
-    per language, this field can be used as a key.
+    指定工具链语言的JSON字符串，如C或CXX。语言名称与可以传递给\ :command:`project`\ 命\
+    令的语言名称相同。因为CMake对每种语言只支持一个工具链，所以这个字段可以用作键。
 
   ``compiler``
-    A JSON object containing members:
+    包含以下成员的JSON对象：
 
     ``path``
-      Optional member that is present when the
-      :variable:`CMAKE_<LANG>_COMPILER` variable is defined for the current
-      language. Its value is a JSON string holding the path to the compiler.
+      为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER`\ 变量时出现的可选成员。它的值\
+      是一个JSON字符串，包含编译器的路径。
 
     ``id``
-      Optional member that is present when the
-      :variable:`CMAKE_<LANG>_COMPILER_ID` variable is defined for the current
-      language. Its value is a JSON string holding the ID (GNU, MSVC, etc.) of
-      the compiler.
+      为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量时出现的可选成员。它\
+      的值是一个JSON字符串，包含编译器的ID （GNU, MSVC等）。
 
     ``version``
-      Optional member that is present when the
-      :variable:`CMAKE_<LANG>_COMPILER_VERSION` variable is defined for the
-      current language. Its value is a JSON string holding the version of the
-      compiler.
+      为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ 变量时出现的可选成\
+      员。它的值是一个JSON字符串，包含编译器的版本。
 
     ``target``
-      Optional member that is present when the
-      :variable:`CMAKE_<LANG>_COMPILER_TARGET` variable is defined for the
-      current language. Its value is a JSON string holding the cross-compiling
-      target of the compiler.
+      为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER_TARGET`\ 变量时出现的可选成员。\
+      它的值是一个JSON字符串，包含编译器的交叉编译目标。
 
     ``implicit``
-      A JSON object containing members:
+      包含以下成员的JSON对象：
 
       ``includeDirectories``
-        Optional member that is present when the
-        :variable:`CMAKE_<LANG>_IMPLICIT_INCLUDE_DIRECTORIES` variable is
-        defined for the current language. Its value is a JSON array of JSON
-        strings where each string holds a path to an implicit include
-        directory for the compiler.
+        为当前语言定义\ :variable:`CMAKE_<LANG>_IMPLICIT_INCLUDE_DIRECTORIES`\
+        变量时出现的可选成员。它的值是一个JSON字符串数组，其中每个字符串包含编译器隐式\
+        include目录的路径。
 
       ``linkDirectories``
-        Optional member that is present when the
-        :variable:`CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES` variable is
-        defined for the current language. Its value is a JSON array of JSON
-        strings where each string holds a path to an implicit link directory
-        for the compiler.
+        为当前语言定义\ :variable:`CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES`\ 变量时\
+        出现的可选成员。它的值是一个由JSON字符串组成的JSON数组，其中每个字符串都包含一个指\
+        向编译器的隐式链接目录的路径。
 
       ``linkFrameworkDirectories``
-        Optional member that is present when the
-        :variable:`CMAKE_<LANG>_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES` variable
-        is defined for the current language. Its value is a JSON array of JSON
-        strings where each string holds a path to an implicit link framework
-        directory for the compiler.
+        当为当前语言定义\ :variable:`CMAKE_<LANG>_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES`\
+        变量时出现的可选成员。它的值是一个由JSON字符串组成的JSON数组，其中每个字符串都包含\
+        一个指向编译器的隐式链接框架目录的路径。
 
       ``linkLibraries``
-        Optional member that is present when the
-        :variable:`CMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES` variable is defined
-        for the current language. Its value is a JSON array of JSON strings
-        where each string holds a path to an implicit link library for the
-        compiler.
+        为当前语言定义\ :variable:`CMAKE_<LANG>_IMPLICIT_LINK_LIBRARIES`\ 变量时出\
+        现的可选成员。它的值是一个JSON字符串数组，其中每个字符串都包含一个指向编译器隐式链\
+        接库的路径。
 
   ``sourceFileExtensions``
-    Optional member that is present when the
-    :variable:`CMAKE_<LANG>_SOURCE_FILE_EXTENSIONS` variable is defined for
-    the current language. Its value is a JSON array of JSON strings where each
-    each string holds a file extension (without the leading dot) for the
-    language.
+    为当前语言定义\ :variable:`CMAKE_<LANG>_SOURCE_FILE_EXTENSIONS`\ 变量时出现的可\
+    选成员。它的值是一个JSON字符串数组，其中每个字符串都包含该语言的文件扩展名（没有前面的点）。
