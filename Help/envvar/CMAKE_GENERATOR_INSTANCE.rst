@@ -5,5 +5,5 @@ CMAKE_GENERATOR_INSTANCE
 
 .. include:: ENV_VAR.txt
 
-Default value for :variable:`CMAKE_GENERATOR_INSTANCE` if no Cache entry is
-present. This value is only applied if :envvar:`CMAKE_GENERATOR` is set.
+如果没有缓存项存在，\ :variable:`CMAKE_GENERATOR_INSTANCE`\ 的默认值。此值仅在设置了\
+:envvar:`CMAKE_GENERATOR`\ 时有效。

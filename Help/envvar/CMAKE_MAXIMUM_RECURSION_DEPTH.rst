@@ -5,6 +5,5 @@ CMAKE_MAXIMUM_RECURSION_DEPTH
 
 .. include:: ENV_VAR.txt
 
-Maximum recursion depth for CMake scripts.  This environment variable is
-used if the :variable:`CMAKE_MAXIMUM_RECURSION_DEPTH` variable is not set.
-See that variable's documentation for details.
+CMake脚本的最大递归深度。如果没有设置\ :variable:`CMAKE_MAXIMUM_RECURSION_DEPTH`\ 变\
+量，则使用该环境变量。有关详细信息，请参阅该变量的文档。

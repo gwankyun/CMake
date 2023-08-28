@@ -3,8 +3,7 @@ VERBOSE
 
 .. versionadded:: 3.14
 
-Activates verbose output from CMake and your build tools of choice when
-you start to actually build your project.
+当你开始实际构建项目时，激活CMake和你选择的构建工具的详细输出。
 
 Note that any given value is ignored. It's just checked for existence.
 

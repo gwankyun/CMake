@@ -3,9 +3,8 @@ DESTDIR
 
 .. include:: ENV_VAR.txt
 
-On UNIX one can use the ``DESTDIR`` mechanism in order to relocate the
-whole installation.  ``DESTDIR`` means DESTination DIRectory.  It is
-commonly used by packagers to install software in a staging directory.
+在UNIX上，可以使用\ ``DESTDIR``\ 机制来重新定位整个安装。\ ``DESTDIR``\ 表示目的目录。\
+它通常被打包者用来在暂存目录中安装软件。
 
 For example, running
 

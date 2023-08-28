@@ -5,8 +5,6 @@ CMAKE_<LANG>_COMPILER_LAUNCHER
 
 .. include:: ENV_VAR.txt
 
-Default compiler launcher to use for the specified language. Will only be used
-by CMake to initialize the variable on the first configuration. Afterwards, it
-is available through the cache setting of the variable of the same name. For
-any configuration run (including the first), the environment variable will be
-ignored if the :variable:`CMAKE_<LANG>_COMPILER_LAUNCHER` variable is defined.
+为指定语言使用的默认编译器启动器。只会被CMake用来初始化第一次配置时的变量。之后，它可以通过\
+同名变量的缓存设置获得。对于任何配置运行（包括第一次），如果定义了\
+:variable:`CMAKE_<LANG>_COMPILER_LAUNCHER`\ 变量，则环境变量将被忽略。

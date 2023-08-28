@@ -5,6 +5,6 @@ CMAKE_GENERATOR_PLATFORM
 
 .. include:: ENV_VAR.txt
 
-Default value for :variable:`CMAKE_GENERATOR_PLATFORM` if no Cache entry
-is present and no value is specified by :option:`cmake -A` option.
-This value is only applied if :envvar:`CMAKE_GENERATOR` is set.
+如果没有缓存条目存在并且\ :option:`cmake -A`\ 选项没有指定值，则\
+:variable:`CMAKE_GENERATOR_PLATFORM`\ 的默认值。此值仅在设置了\
+:envvar:`CMAKE_GENERATOR`\ 时有效。

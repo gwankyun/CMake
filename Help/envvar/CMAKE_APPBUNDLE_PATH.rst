@@ -3,9 +3,8 @@ CMAKE_APPBUNDLE_PATH
 
 .. include:: ENV_VAR.txt
 
-The ``CMAKE_APPBUNDLE_PATH`` environment variable may be set to a list of
-directories to be searched for macOS application bundles
-by the :command:`find_program` and :command:`find_package` commands.
+``CMAKE_APPBUNDLE_PATH``\ 环境变量可以设置为一个目录列表，通过\ :command:`find_program`\
+和\ :command:`find_package`\ 命令搜索macOS应用程序包。
 
 This variable may hold a single directory or a list of directories separated
 by ``:`` on UNIX or ``;`` on Windows (the same as the ``PATH`` environment

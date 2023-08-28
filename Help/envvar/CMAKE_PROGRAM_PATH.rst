@@ -3,8 +3,8 @@ CMAKE_PROGRAM_PATH
 
 .. include:: ENV_VAR.txt
 
-The ``CMAKE_PROGRAM_PATH`` environment variable may be set to a list of
-directories to be searched by the :command:`find_program` command.
+可以将\ ``CMAKE_PROGRAM_PATH``\ 环境变量设置为\ :command:`find_program`\ 命令要搜索\
+的目录列表。
 
 This variable may hold a single directory or a list of directories separated
 by ``:`` on UNIX or ``;`` on Windows (the same as the ``PATH`` environment

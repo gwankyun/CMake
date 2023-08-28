@@ -5,8 +5,8 @@ CMAKE_INSTALL_MODE
 
 .. include:: ENV_VAR.txt
 
-The ``CMAKE_INSTALL_MODE`` environment variable allows users to operate
-CMake in an alternate mode of :command:`file(INSTALL)` and :command:`install()`.
+``CMAKE_INSTALL_MODE``\ 环境变量允许用户以\ :command:`file(INSTALL)`\ 和\
+:command:`install()`\ 的替代模式操作CMake。
 
 The default behavior for an installation is to copy a source file from a
 source directory into a destination directory. This environment variable
