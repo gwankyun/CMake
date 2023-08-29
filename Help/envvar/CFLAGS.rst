@@ -3,7 +3,7 @@ CFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``C`` files.
+添加编译\ ``C``\ 文件时使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_C_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``C``

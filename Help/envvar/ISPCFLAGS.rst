@@ -5,7 +5,7 @@ ISPCFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``ISPC`` files.
+添加编译\ ``ISPC``\ 文件时要使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_ISPC_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``ISPC``

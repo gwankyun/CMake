@@ -5,11 +5,10 @@ CUDAHOSTCXX
 
 .. include:: ENV_VAR.txt
 
-Preferred executable for compiling host code when compiling ``CUDA``
-language files. Will only be used by CMake on the first configuration to
-determine ``CUDA`` host compiler, after which the value for ``CUDAHOSTCXX`` is
-stored in the cache as :variable:`CMAKE_CUDA_HOST_COMPILER`. This environment
-variable is preferred over :variable:`CMAKE_CUDA_HOST_COMPILER`.
+编译\ ``CUDA``\ 语言文件时编译主机代码的首选可执行文件。将仅由CMake在第一次配置中使用，以\
+确定\ ``CUDA``\ 主机编译器，之后\ ``CUDAHOSTCXX``\ 的值存储在缓存中为\
+:variable:`CMAKE_CUDA_HOST_COMPILER`。此环境变量优先于\
+:variable:`CMAKE_CUDA_HOST_COMPILER`。
 
 This environment variable is primarily meant for use with projects that
 enable ``CUDA`` as a first-class language.

@@ -3,8 +3,7 @@ ASM<DIALECT>
 
 .. include:: ENV_VAR.txt
 
-Preferred executable for compiling a specific dialect of assembly language
-files. ``ASM<DIALECT>`` can be one of:
+编译汇编语言文件的特定方言的首选可执行文件。\ ``ASM<DIALECT>``\ 可以是：
 
 * ``ASM``
 * ``ASM_NASM`` (Netwide Assembler)

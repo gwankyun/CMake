@@ -5,7 +5,7 @@ CUDAFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``CUDA`` files.
+添加编译\ ``CUDA``\ 文件时使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_CUDA_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``CUDA``

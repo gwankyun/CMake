@@ -3,7 +3,7 @@ FFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``Fortran`` files.
+添加编译\ ``Fortran``\ 文件时要使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_Fortran_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``Fortran``

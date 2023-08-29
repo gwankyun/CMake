@@ -5,7 +5,7 @@ HIPFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``HIP`` files.
+添加编译\ ``HIP``\ 文件时要使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_HIP_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``HIP``

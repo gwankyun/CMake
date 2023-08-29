@@ -5,7 +5,7 @@ CSFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``CSharp`` files.
+添加编译\ ``CSharp``\ 文件时使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_CSharp_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``CSharp``

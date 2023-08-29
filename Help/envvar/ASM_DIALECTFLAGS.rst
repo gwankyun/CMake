@@ -3,8 +3,7 @@ ASM<DIALECT>FLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling a specific dialect
-of an assembly language.  ``ASM<DIALECT>FLAGS`` can be one of:
+添加默认编译标志，以便在编译汇编语言的特定方言时使用。\ ``ASM<DIALECT>FLAGS``\ 标志可以是：
 
 * ``ASMFLAGS``
 * ``ASM_NASMFLAGS``
