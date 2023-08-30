@@ -3,6 +3,5 @@ DASHBOARD_TEST_FROM_CTEST
 
 .. include:: ENV_VAR.txt
 
-Environment variable that will exist when a test executed by :manual:`ctest(1)`
-is run in non-interactive mode.  The value will be equal to
-:variable:`CMAKE_VERSION`.
+由\ :manual:`ctest(1)`\ 执行的测试在非交互模式下运行时将存在的环境变量。该值将等于\
+:variable:`CMAKE_VERSION`。

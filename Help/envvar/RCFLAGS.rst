@@ -3,7 +3,7 @@ RCFLAGS
 
 .. include:: ENV_VAR.txt
 
-Add default compilation flags to be used when compiling ``RC`` (resource) files.
+添加编译\ ``RC``\ （资源）文件时要使用的默认编译标志。
 
 .. |CMAKE_LANG_FLAGS| replace:: :variable:`CMAKE_RC_FLAGS <CMAKE_<LANG>_FLAGS>`
 .. |LANG| replace:: ``RC``

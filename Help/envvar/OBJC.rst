@@ -5,12 +5,11 @@ OBJC
 
 .. include:: ENV_VAR.txt
 
-Preferred executable for compiling ``OBJC`` language files. Will only be used
-by CMake on the first configuration to determine ``OBJC`` compiler, after
-which the value for ``OBJC`` is stored in the cache as
-:variable:`CMAKE_OBJC_COMPILER <CMAKE_<LANG>_COMPILER>`. For any configuration
-run (including the first), the environment variable will be ignored if the
-:variable:`CMAKE_OBJC_COMPILER <CMAKE_<LANG>_COMPILER>` variable is defined.
+编译\ ``OBJC``\ 语言文件的首选可执行文件。将仅由CMake在第一次配置时使用，以确定\ ``OBJC``\
+编译器，之后\ ``OBJC``\ 的值存储在缓存中为\
+:variable:`CMAKE_OBJC_COMPILER <CMAKE_<LANG>_COMPILER>`。对于任何配置运行（包括第一\
+次），如果定义了\ :variable:`CMAKE_OBJC_COMPILER <CMAKE_<LANG>_COMPILER>`\ 变量，则\
+环境变量将被忽略。
 
 If ``OBJC`` is not defined, the :envvar:`CC` environment variable will
 be checked instead.

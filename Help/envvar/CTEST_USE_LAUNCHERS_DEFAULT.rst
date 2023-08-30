@@ -3,4 +3,4 @@ CTEST_USE_LAUNCHERS_DEFAULT
 
 .. include:: ENV_VAR.txt
 
-Initializes the :variable:`CTEST_USE_LAUNCHERS` variable if not already defined.
+初始化\ :variable:`CTEST_USE_LAUNCHERS`\ 变量（如果尚未定义）。

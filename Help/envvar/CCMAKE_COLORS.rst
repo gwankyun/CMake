@@ -3,10 +3,8 @@ CCMAKE_COLORS
 
 .. versionadded:: 3.18
 
-Determines what colors are used by the CMake curses interface,
-when run on a terminal that supports colors.
-The syntax follows the same conventions as ``LS_COLORS``;
-that is, a list of key/value pairs separated by ``:``.
+当在支持颜色的终端上运行时，决定CMake curses接口使用的颜色。语法遵循与\ ``LS_COLORS``\
+相同的约定；也就是说，用\ ``:``\ 分隔的键/值对列表。
 
 Keys are a single letter corresponding to a CMake cache variable type:
 

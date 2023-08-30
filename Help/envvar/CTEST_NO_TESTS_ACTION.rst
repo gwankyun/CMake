@@ -5,9 +5,8 @@ CTEST_NO_TESTS_ACTION
 
 .. include:: ENV_VAR.txt
 
-Environment variable that controls how :manual:`ctest <ctest(1)>` handles
-cases when there are no tests to run. Possible values are: ``error``,
-``ignore``, empty or unset.
+环境变量，控制\ :manual:`ctest <ctest(1)>`\ 在没有要运行的测试时如何处理用例。可能的值是：\
+``error``\、\ ``ignore``、empty或unset。
 
 The :option:`--no-tests=\<action\> <ctest --no-tests>` option to
 :manual:`ctest <ctest(1)>` overrides this environment variable if both
