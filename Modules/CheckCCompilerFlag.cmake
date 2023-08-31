@@ -5,7 +5,7 @@
 CheckCCompilerFlag
 ------------------
 
-Check whether the C compiler supports a given flag.
+检查C编译器是否支持给定的标志。
 
 .. command:: check_c_compiler_flag
 

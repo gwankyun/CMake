@@ -9,7 +9,7 @@ cmake-modules(7)
 工具模块
 ^^^^^^^^^^^^^^^
 
-这些模块使用 :command:`include` 命令加载。
+这些模块使用\ :command:`include`\ 命令加载。
 
 .. toctree::
    :maxdepth: 1

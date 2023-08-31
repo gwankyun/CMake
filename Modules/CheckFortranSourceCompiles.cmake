@@ -7,7 +7,7 @@ CheckFortranSourceCompiles
 
 .. versionadded:: 3.1
 
-Check if given Fortran source compiles and links into an executable.
+检查给定的Fortran源代码是否编译并链接到可执行文件中。
 
 .. command:: check_fortran_source_compiles
 

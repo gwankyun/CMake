@@ -7,7 +7,7 @@ CheckFortranCompilerFlag
 
 .. versionadded:: 3.3
 
-Check whether the Fortran compiler supports a given flag.
+检查Fortran编译器是否支持给定的标志。
 
 .. command:: check_fortran_compiler_flag
 

@@ -5,7 +5,7 @@
 CheckCXXCompilerFlag
 ------------------------
 
-Check whether the CXX compiler supports a given flag.
+检查CXX编译器是否支持给定的标志。
 
 .. command:: check_cxx_compiler_flag
 

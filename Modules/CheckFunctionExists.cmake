@@ -5,7 +5,7 @@
 CheckFunctionExists
 -------------------
 
-Check if a C function can be linked
+检查是否可以链接一个C函数
 
 .. command:: check_function_exists
 

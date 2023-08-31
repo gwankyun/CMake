@@ -5,7 +5,7 @@
 CheckCXXSymbolExists
 --------------------
 
-Check if a symbol exists as a function, variable, or macro in ``C++``.
+检查一个符号在\ ``C++``\ 中是否以函数、变量或宏的形式存在。
 
 .. command:: check_cxx_symbol_exists
 

@@ -5,7 +5,7 @@
 BundleUtilities
 ---------------
 
-Functions to help assemble a standalone bundle application.
+帮助组装独立bundle应用程序的函数。
 
 A collection of CMake utility functions useful for dealing with ``.app``
 bundles on the Mac and bundle-like directories on any OS.

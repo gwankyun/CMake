@@ -5,8 +5,7 @@
 CheckCSourceRuns
 ----------------
 
-Check if given C source compiles and links into an executable and can
-subsequently be run.
+检查给定的C源代码是否可以编译并链接到可执行文件中，并且随后可以运行。
 
 .. command:: check_c_source_runs
 

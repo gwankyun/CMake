@@ -7,7 +7,7 @@ CheckCompilerFlag
 
 .. versionadded:: 3.19
 
-Check whether the compiler supports a given flag.
+检查编译器是否支持给定的标志。
 
 .. command:: check_compiler_flag
 

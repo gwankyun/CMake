@@ -7,7 +7,7 @@ AndroidTestUtilities
 
 .. versionadded:: 3.7
 
-Create a test that automatically loads specified data onto an Android device.
+创建一个测试，自动将指定的数据加载到Android设备上。
 
 Introduction
 ^^^^^^^^^^^^

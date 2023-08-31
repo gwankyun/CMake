@@ -5,7 +5,7 @@
 CheckFortranFunctionExists
 --------------------------
 
-Check if a Fortran function exists.
+检查是否存在Fortran函数。
 
 .. command:: CHECK_FORTRAN_FUNCTION_EXISTS
 
