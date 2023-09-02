@@ -5,7 +5,7 @@
 CMakeAddFortranSubdirectory
 ---------------------------
 
-Add a fortran-only subdirectory, find a fortran compiler, and build.
+添加fortran专用子目录，找到fortran编译器，然后构建。
 
 The ``cmake_add_fortran_subdirectory`` function adds a subdirectory
 to a project that contains a fortran-only subproject.  The module will

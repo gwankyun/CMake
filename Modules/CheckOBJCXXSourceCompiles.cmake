@@ -7,7 +7,7 @@ CheckOBJCXXSourceCompiles
 
 .. versionadded:: 3.16
 
-Check if given Objective-C++ source compiles and links into an executable.
+检查给定的Objective-C++ 源代码是否编译并链接为可执行文件。
 
 .. command:: check_objcxx_source_compiles
 

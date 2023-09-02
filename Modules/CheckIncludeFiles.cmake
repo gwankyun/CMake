@@ -5,8 +5,7 @@
 CheckIncludeFiles
 -----------------
 
-Provides a macro to check if a list of one or more header files can
-be included together.
+提供一个宏，用于检查是否可以将一个或多个头文件的列表包含在一起。
 
 .. command:: CHECK_INCLUDE_FILES
 

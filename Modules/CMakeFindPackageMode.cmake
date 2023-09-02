@@ -7,8 +7,7 @@ CMakeFindPackageMode
 
 
 
-This file is executed by cmake when invoked with --find-package.  It
-expects that the following variables are set using -D:
+当使用——find-package调用时，该文件由cmake执行。它期望使用-D设置以下变量：
 
 ``NAME``
   name of the package

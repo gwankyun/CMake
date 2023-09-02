@@ -5,7 +5,7 @@
 CheckIncludeFile
 ----------------
 
-Provides a macro to check if a header file can be included in ``C``.
+提供一个宏来检查头文件是否可以包含在\ ``C``\ 语言中。
 
 .. command:: CHECK_INCLUDE_FILE
 

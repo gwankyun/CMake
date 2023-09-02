@@ -5,7 +5,7 @@
 CheckLanguage
 -------------
 
-Check if a language can be enabled
+检查是否可以启用语言
 
 Usage:
 

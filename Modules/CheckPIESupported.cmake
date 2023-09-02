@@ -7,10 +7,8 @@ CheckPIESupported
 
 .. versionadded:: 3.14
 
-Check whether the linker supports Position Independent Code (PIE) or No
-Position Independent Code (NO_PIE) for executables.
-Use this to ensure that the :prop_tgt:`POSITION_INDEPENDENT_CODE` target
-property for executables will be honored at link time.
+检查链接器是否支持可执行文件的位置独立代码（PIE）或无位置独立代码（NO_PIE）。使用它可以确保\
+可执行文件的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 目标属性在链接时得到保证。
 
 .. command:: check_pie_supported
 

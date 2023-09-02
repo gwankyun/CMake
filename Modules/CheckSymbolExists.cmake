@@ -5,8 +5,7 @@
 CheckSymbolExists
 -----------------
 
-Provides a macro to check if a symbol exists as a function, variable,
-or macro in ``C``.
+提供一个宏，用于检查符号是否作为\ ``C``\ 中的函数、变量或宏存在。
 
 .. command:: check_symbol_exists
 

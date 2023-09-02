@@ -7,7 +7,7 @@ CheckOBJCSourceCompiles
 
 .. versionadded:: 3.16
 
-Check if given Objective-C source compiles and links into an executable.
+检查给定的Objective-C源代码是否编译并链接为可执行文件。
 
 .. command:: check_objc_source_compiles
 

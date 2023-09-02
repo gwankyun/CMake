@@ -5,7 +5,7 @@
 CheckVariableExists
 -------------------
 
-Check if the variable exists.
+检查变量是否存在。
 
 .. command:: CHECK_VARIABLE_EXISTS
 

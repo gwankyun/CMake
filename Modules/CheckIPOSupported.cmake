@@ -7,9 +7,8 @@ CheckIPOSupported
 
 .. versionadded:: 3.9
 
-Check whether the compiler supports an interprocedural optimization (IPO/LTO).
-Use this before enabling the :prop_tgt:`INTERPROCEDURAL_OPTIMIZATION` target
-property.
+检查编译器是否支持过程间优化（IPO/LTO）。在启用\
+:prop_tgt:`INTERPROCEDURAL_OPTIMIZATION`\ 目标属性之前使用。
 
 .. command:: check_ipo_supported
 

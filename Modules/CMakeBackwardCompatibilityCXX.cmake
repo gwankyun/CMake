@@ -5,7 +5,7 @@
 CMakeBackwardCompatibilityCXX
 -----------------------------
 
-define a bunch of backwards compatibility variables
+定义一堆向后兼容性变量
 
 ::
 

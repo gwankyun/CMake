@@ -7,8 +7,7 @@ CMakeFindDependencyMacro
 
 .. command:: find_dependency
 
-  The ``find_dependency()`` macro wraps a :command:`find_package` call for
-  a package dependency::
+  ``find_dependency()``\ 宏封装了对包依赖的\ :command:`find_package`\ 调用：\ ::
 
     find_dependency(<dep> [...])
 

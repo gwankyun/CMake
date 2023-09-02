@@ -8,7 +8,7 @@ CheckSourceCompiles
 
 .. versionadded:: 3.19
 
-Check if given source compiles and links into an executable.
+检查给定的源代码是否编译并链接到可执行文件中。
 
 .. command:: check_source_compiles
 

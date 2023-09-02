@@ -5,7 +5,7 @@
 CheckTypeSize
 -------------
 
-Check sizeof a type
+检查类型的大小
 
 .. command:: check_type_size
 

@@ -5,7 +5,7 @@
 CheckPrototypeDefinition
 ------------------------
 
-Check if the prototype we expect is correct.
+检查我们期望的原型是否正确。
 
 .. command:: check_prototype_definition
 

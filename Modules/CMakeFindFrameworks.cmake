@@ -5,7 +5,7 @@
 CMakeFindFrameworks
 -------------------
 
-helper module to find OSX frameworks
+查找OSX框架的helper模块
 
 This module reads hints about search locations from variables::
 

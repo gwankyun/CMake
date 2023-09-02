@@ -7,7 +7,7 @@ CheckOBJCCompilerFlag
 
 .. versionadded:: 3.16
 
-Check whether the Objective-C compiler supports a given flag.
+检查Objective-C编译器是否支持给定的标志。
 
 .. command:: check_objc_compiler_flag
 

@@ -5,7 +5,7 @@
 CheckIncludeFileCXX
 -------------------
 
-Provides a macro to check if a header file can be included in ``CXX``.
+提供一个宏来检查头文件是否可以包含在\ ``CXX``\ 中。
 
 .. command:: CHECK_INCLUDE_FILE_CXX
 

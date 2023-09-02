@@ -5,7 +5,7 @@
 CMakeDependentOption
 --------------------
 
-Macro to provide an option dependent on other options.
+宏提供依赖于其他选项的选项。
 
 This macro presents an option to the user only if a set of other
 conditions are true.

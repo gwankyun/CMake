@@ -7,7 +7,7 @@ CheckLinkerFlag
 
 .. versionadded:: 3.18
 
-Check whether the compiler supports a given link flag.
+检查编译器是否支持给定的链接标志。
 
 .. command:: check_linker_flag
 

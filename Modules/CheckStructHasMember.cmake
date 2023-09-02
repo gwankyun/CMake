@@ -5,7 +5,7 @@
 CheckStructHasMember
 --------------------
 
-Check if the given struct or class has the specified member variable
+检查给定的结构或类是否具有指定的成员变量
 
 .. command:: CHECK_STRUCT_HAS_MEMBER
 
