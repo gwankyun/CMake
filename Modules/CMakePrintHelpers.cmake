@@ -5,8 +5,7 @@
 CMakePrintHelpers
 -----------------
 
-Convenience functions for printing properties and variables, useful
-e.g. for debugging.
+用于打印属性和变量的方便函数，例如用于调试。
 
 ::
 

@@ -7,7 +7,7 @@ CTestScriptMode
 
 
 
-This file is read by ctest in script mode (-S)
+该文件由ctest以脚本模式（-S）读取
 #]=======================================================================]
 
 # Determine the current system, so this information can be used

@@ -5,7 +5,7 @@
 CPackComponent
 --------------
 
-Configure components for binary installers and source packages.
+为二进制安装程序和源包配置组件。
 
 .. only:: html
 

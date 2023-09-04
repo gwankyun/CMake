@@ -5,7 +5,7 @@
 CMakePrintSystemInformation
 ---------------------------
 
-Print system information.
+打印系统信息。
 
 This module serves diagnostic purposes. Just include it in a
 project to see various internal CMake variables.

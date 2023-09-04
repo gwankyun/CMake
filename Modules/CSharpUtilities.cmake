@@ -7,7 +7,7 @@ CSharpUtilities
 
 .. versionadded:: 3.8
 
-Functions to make configuration of CSharp/.NET targets easier.
+令配置CSharp/.NET目标更容易的函数。
 
 A collection of CMake utility functions useful for dealing with CSharp
 targets for Visual Studio generators from version 2010 and later.

@@ -9,14 +9,10 @@ FindPackageMessage
 
   find_package_message(<name> "message for user" "find result details")
 
-This function is intended to be used in FindXXX.cmake modules files.
-It will print a message once for each unique find result.  This is
-useful for telling the user where a package was found.  The first
-argument specifies the name (XXX) of the package.  The second argument
-specifies the message to display.  The third argument lists details
-about the find result so that if they change the message will be
-displayed again.  The macro also obeys the QUIET argument to the
-find_package command.
+这个函数打算在FindXXX.cmake模块文件中使用。它将为每个唯一的查找结果打印一条消息。这用于告\
+诉用户找到包的位置。第一个参数指定包的名称（XXX）。第二个参数指定要显示的消息。第三个参数列\
+出了查找结果的详细信息，因此如果它们更改了消息将再次显示。宏还遵守find_package命令的QUIET\
+参数。
 
 Example:
 

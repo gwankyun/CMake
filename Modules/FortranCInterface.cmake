@@ -5,7 +5,7 @@
 FortranCInterface
 -----------------
 
-Fortran/C Interface Detection
+Fortran/C接口检测
 
 This module automatically detects the API by which C and Fortran
 languages interact.

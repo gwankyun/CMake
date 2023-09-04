@@ -5,7 +5,7 @@
 CPack
 -----
 
-Configure generators for binary installers and source packages.
+为二进制安装程序和源代码包配置生成器。
 
 Introduction
 ^^^^^^^^^^^^

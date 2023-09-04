@@ -7,18 +7,14 @@ CMakePushCheckState
 
 
 
-This module defines three macros: ``CMAKE_PUSH_CHECK_STATE()``
-``CMAKE_POP_CHECK_STATE()`` and ``CMAKE_RESET_CHECK_STATE()`` These macros can
-be used to save, restore and reset (i.e., clear contents) the state of
-the variables ``CMAKE_REQUIRED_FLAGS``, ``CMAKE_REQUIRED_DEFINITIONS``,
-``CMAKE_REQUIRED_LINK_OPTIONS``, ``CMAKE_REQUIRED_LIBRARIES``,
-``CMAKE_REQUIRED_INCLUDES`` and ``CMAKE_EXTRA_INCLUDE_FILES`` used by the
-various Check-files coming with CMake, like e.g. ``check_function_exists()``
-etc.
-The variable contents are pushed on a stack, pushing multiple times is
-supported.  This is useful e.g.  when executing such tests in a Find-module,
-where they have to be set, but after the Find-module has been executed they
-should have the same value as they had before.
+这个模块定义了三个宏：\ ``CMAKE_PUSH_CHECK_STATE()``、\ ``CMAKE_POP_CHECK_STATE()``\
+和\ ``CMAKE_RESET_CHECK_STATE()``\ 这些宏可以用来保存，恢复和重置（即清除内容）变量的状\
+态\ ``CMAKE_REQUIRED_FLAGS``、\ ``CMAKE_REQUIRED_DEFINITIONS``、\
+``CMAKE_REQUIRED_LINK_OPTIONS``、\ ``CMAKE_REQUIRED_LIBRARIES``、\
+``CMAKE_REQUIRED_INCLUDES``\ 和\ ``CMAKE_EXTRA_INCLUDE_FILES``\ 由各种检查文件使用\
+CMake，例如\ ``check_function_exists()``\ 等。变量内容被压入堆栈，支持多次压入。这是有\
+用的，例如，当在查找模块中执行此类测试时，它们必须被设置，但在查找模块执行后，它们应该具有与\
+之前相同的值。
 
 ``CMAKE_PUSH_CHECK_STATE()`` macro receives optional argument ``RESET``.
 Whether it's specified, ``CMAKE_PUSH_CHECK_STATE()`` will set all

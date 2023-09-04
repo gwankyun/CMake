@@ -5,7 +5,7 @@
 CMakeGraphVizOptions
 --------------------
 
-The builtin Graphviz support of CMake.
+CMake的内置Graphviz支持。
 
 Generating Graphviz files
 ^^^^^^^^^^^^^^^^^^^^^^^^^

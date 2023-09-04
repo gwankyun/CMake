@@ -7,9 +7,9 @@ CPackIFW
 
 .. versionadded:: 3.1
 
-This module looks for the location of the command-line utilities supplied with the
-`Qt Installer Framework <https://doc.qt.io/qtinstallerframework/index.html>`_
-(QtIFW).
+这个模块查找\
+`Qt安装程序框架 <https://doc.qt.io/qtinstallerframework/index.html>`_\ （QtIFW）提\
+供的命令行实用程序的位置。
 
 The module also defines several commands to control the behavior of the
 :cpack_gen:`CPack IFW Generator`.

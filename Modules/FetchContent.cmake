@@ -20,12 +20,10 @@ FetchContent
 Overview
 ^^^^^^^^
 
-This module enables populating content at configure time via any method
-supported by the :module:`ExternalProject` module.  Whereas
-:command:`ExternalProject_Add` downloads at build time, the
-``FetchContent`` module makes content available immediately, allowing the
-configure step to use the content in commands like :command:`add_subdirectory`,
-:command:`include` or :command:`file` operations.
+该模块允许在配置时通过\ :module:`ExternalProject`\ 模块支持的任何方法填充内容。而
+\ :command:`ExternalProject_Add`\ 在构建时下载，\ ``FetchContent``\ 模块使内容立即\
+可用，允许配置步骤在\ :command:`add_subdirectory`、\ :command:`include`\ 或\
+:command:`file`\ 操作等命令中使用内容。
 
 Content population details should be defined separately from the command that
 performs the actual population.  This separation ensures that all the

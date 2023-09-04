@@ -5,7 +5,7 @@
 FeatureSummary
 --------------
 
-Functions for generating a summary of enabled/disabled features.
+用于生成启用/禁用特性摘要的函数。
 
 These functions can be used to generate a summary of enabled and disabled
 packages and/or feature for a build tree such as::

@@ -9,7 +9,7 @@ ExternalData
 
    .. contents::
 
-Manage data files stored outside source tree
+管理存储在源树外的数据文件
 
 Introduction
 ^^^^^^^^^^^^

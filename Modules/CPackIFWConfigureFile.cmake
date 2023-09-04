@@ -7,8 +7,7 @@ CPackIFWConfigureFile
 
 .. versionadded:: 3.8
 
-The module defines :command:`configure_file` similar command to
-configure file templates prepared in QtIFW/SDK/Creator style.
+该模块定义了\ :command:`configure_file` \类似的命令来配置QtIFW/SDK/Creator样式的文件模板。
 
 
 Commands

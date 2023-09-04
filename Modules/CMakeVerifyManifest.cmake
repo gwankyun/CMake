@@ -9,14 +9,10 @@ CMakeVerifyManifest
 
 CMakeVerifyManifest.cmake
 
-This script is used to verify that embedded manifests and side by side
-manifests for a project match.  To run this script, cd to a directory
-and run the script with cmake -P.  On the command line you can pass in
-versions that are OK even if not found in the .manifest files.  For
-example, cmake -Dallow_versions=8.0.50608.0
--PCmakeVerifyManifest.cmake could be used to allow an embedded manifest
-of 8.0.50608.0 to be used in a project even if that version was not
-found in the .manifest file.
+此脚本用于验证项目的嵌入式清单和并排清单是否匹配。要运行此脚本，请cd到一个目录，并使用\
+cmake -P命令运行脚本。在命令行上，即使在.manifest文件中中没有找到，也可以传入正常的版本清\
+单文件。例如，cmake -Dallow_versions=8.0.50608.0 -PCmakeVerifyManifest.cmake可用于\
+允许嵌入8.0.50608.0的清单将在项目中使用，即使在.manifest文件中没有找到该版本。
 #]=======================================================================]
 
 # This script first recursively globs *.manifest files from

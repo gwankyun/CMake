@@ -5,8 +5,7 @@
 CMakePackageConfigHelpers
 -------------------------
 
-Helpers functions for creating config files that can be included by other
-projects to find and use a package.
+用于创建配置文件的helper函数，其他项目可以包含这些配置文件来查找和使用包。
 
 Adds the :command:`configure_package_config_file()` and
 :command:`write_basic_package_version_file()` commands.

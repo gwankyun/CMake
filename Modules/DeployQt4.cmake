@@ -5,7 +5,7 @@
 DeployQt4
 ---------
 
-Functions to help assemble a standalone Qt4 executable.
+帮助组装独立Qt4可执行文件的函数。
 
 A collection of CMake utility functions useful for deploying Qt4
 executables.

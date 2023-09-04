@@ -5,7 +5,7 @@
 CTest
 -----
 
-Configure a project for testing with CTest/CDash
+用CTest/CDash配置一个测试项目
 
 Include this module in the top CMakeLists.txt file of a project to
 enable testing with CTest and dashboard submissions to CDash::

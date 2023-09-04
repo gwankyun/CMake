@@ -5,7 +5,7 @@
 CTestUseLaunchers
 -----------------
 
-Set the RULE_LAUNCH_* global properties when CTEST_USE_LAUNCHERS is on.
+当CTEST_USE_LAUNCHERS打开时，设置RULE_LAUNCH_*全局属性。
 
 CTestUseLaunchers is automatically included when you include(CTest).
 However, it is split out into its own module file so projects can use

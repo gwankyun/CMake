@@ -5,8 +5,8 @@
 FindPackageHandleStandardArgs
 -----------------------------
 
-This module provides functions intended to be used in :ref:`Find Modules`
-implementing :command:`find_package(<PackageName>)` calls.
+该模块提供了用于\ :ref:`Find Modules`\ 中实现\ :command:`find_package(<PackageName>)`\
+调用的函数。
 
 .. command:: find_package_handle_standard_args
 
