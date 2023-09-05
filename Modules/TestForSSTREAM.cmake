@@ -5,7 +5,7 @@
 TestForSSTREAM
 --------------
 
-Test for compiler support of ANSI sstream header
+测试编译器对ANSI sstream头文件的支持
 
 check if the compiler supports the standard ANSI sstream header
 

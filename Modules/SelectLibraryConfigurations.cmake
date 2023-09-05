@@ -9,8 +9,7 @@ SelectLibraryConfigurations
 
   select_library_configurations(basename)
 
-This macro takes a library base name as an argument, and will choose
-good values for the variables
+该宏将库基名作为参数，并为变量选择合适的值
 
 ::
 

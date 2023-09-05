@@ -7,10 +7,9 @@ GoogleTest
 
 .. versionadded:: 3.9
 
-This module defines functions to help use the Google Test infrastructure.  Two
-mechanisms for adding tests are provided. :command:`gtest_add_tests` has been
-around for some time, originally via ``find_package(GTest)``.
-:command:`gtest_discover_tests` was introduced in CMake 3.10.
+这个模块定义了帮助使用Google Test基础架构的函数。提供了两种添加测试的机制。\
+:command:`gtest_add_tests`\ 已经存在一段时间了，最初是通过\ ``find_package(GTest)``\
+实现的。\ :command:`gtest_discover_tests`\ 在CMake 3.10中被引入。
 
 The (older) :command:`gtest_add_tests` scans source files to identify tests.
 This is usually effective, with some caveats, including in cross-compiling

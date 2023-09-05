@@ -5,7 +5,7 @@
 UsewxWidgets
 ------------
 
-Convenience include for using wxWidgets library.
+方便包含使用wxWidgets库。
 
 Determines if wxWidgets was FOUND and sets the appropriate libs,
 incdirs, flags, etc.  INCLUDE_DIRECTORIES and LINK_DIRECTORIES are

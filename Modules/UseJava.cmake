@@ -5,9 +5,8 @@
 UseJava
 -------
 
-This file provides support for ``Java``.  It is assumed that
-:module:`FindJava` has already been loaded.  See :module:`FindJava` for
-information on how to load Java into your CMake project.
+该文件提供对\ ``Java``\ 的支持。假设\ :module:`FindJava`\ 已经加载。有关如何加载Java到\
+你的CMake项目的信息，请参见\ :module:`FindJava`。
 
 Synopsis
 ^^^^^^^^

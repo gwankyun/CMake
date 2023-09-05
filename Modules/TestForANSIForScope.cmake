@@ -5,7 +5,7 @@
 TestForANSIForScope
 -------------------
 
-Check for ANSI for scope support
+检查ANSI是否支持作用域
 
 Check if the compiler restricts the scope of variables declared in a
 for-init-statement to the loop body.

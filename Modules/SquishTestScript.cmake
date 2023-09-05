@@ -9,9 +9,8 @@ SquishTestScript
 
 
 
-This script launches a GUI test using Squish.  You should not call the
-script directly; instead, you should access it via the SQUISH_ADD_TEST
-macro that is defined in FindSquish.cmake.
+该脚本使用Squish启动GUI测试。你不应该直接调用脚本；相反，你应该通过FindSquish.cmake中定义\
+的SQUISH_ADD_TEST宏来访问它。
 
 This script starts the Squish server, launches the test on the client,
 and finally stops the squish server.  If any of these steps fail

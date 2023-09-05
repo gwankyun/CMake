@@ -5,7 +5,7 @@
 GNUInstallDirs
 --------------
 
-Define GNU standard installation directories
+定义GNU标准安装目录
 
 Provides install directory variables as defined by the
 `GNU Coding Standards`_.

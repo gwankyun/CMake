@@ -7,7 +7,7 @@ ProcessorCount
 
 ProcessorCount(var)
 
-Determine the number of processors/cores and save value in ${var}
+确定处理器/内核的数量，并将值保存在${var}中
 
 Sets the variable named ${var} to the number of physical cores
 available on the machine if the information can be determined.

@@ -5,9 +5,8 @@
 InstallRequiredSystemLibraries
 ------------------------------
 
-Include this module to search for compiler-provided system runtime
-libraries and add install rules for them.  Some optional variables
-may be set prior to including the module to adjust behavior:
+包含这个模块来搜索编译器提供的系统运行时库，并为它们添加安装规则。可以在包含模块之前设置一些\
+可选变量来调整行为：
 
 ``CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS``
   Specify additional runtime libraries that may not be detected.

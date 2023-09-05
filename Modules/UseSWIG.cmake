@@ -5,8 +5,7 @@
 UseSWIG
 -------
 
-This file provides support for ``SWIG``. It is assumed that :module:`FindSWIG`
-module has already been loaded.
+该文件提供了对\ ``SWIG``\ 的支持。假设\ :module:`FindSWIG`\ 模块已经加载。
 
 .. only:: html
 

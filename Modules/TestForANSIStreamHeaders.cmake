@@ -5,7 +5,7 @@
 TestForANSIStreamHeaders
 ------------------------
 
-Test for compiler support of ANSI stream headers iostream, etc.
+测试编译器对ANSI流头iostream等的支持。
 
 check if the compiler supports the standard ANSI iostream header
 (without the .h)

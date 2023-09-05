@@ -5,7 +5,7 @@
 TestForSTDNamespace
 -------------------
 
-Test for std:: namespace support
+测试是否支持std::命名空间
 
 check if the compiler supports std:: on stl classes
 

@@ -5,7 +5,7 @@
 UseEcos
 -------
 
-This module defines variables and macros required to build eCos application.
+该模块定义了构建eCos应用程序所需的变量和宏。
 
 This file contains the following macros:
 ECOS_ADD_INCLUDE_DIRECTORIES() - add the eCos include dirs

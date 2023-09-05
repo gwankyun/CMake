@@ -5,7 +5,7 @@
 GenerateExportHeader
 --------------------
 
-Function for generation of export macros for libraries
+为库生成导出宏的函数
 
 This module provides the function ``GENERATE_EXPORT_HEADER()``.
 
