@@ -5,7 +5,7 @@
 FindCoin3D
 ----------
 
-Find Coin3D (Open Inventor)
+查找Coin3D（Open Inventor）
 
 Coin3D is an implementation of the Open Inventor API.  It provides
 data structures and algorithms for 3D visualization.

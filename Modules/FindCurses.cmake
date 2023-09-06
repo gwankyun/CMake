@@ -5,7 +5,7 @@
 FindCurses
 ----------
 
-Find the curses or ncurses include file and library.
+查找curses或ncurses包含文件和库。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

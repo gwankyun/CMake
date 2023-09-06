@@ -5,7 +5,7 @@
 FindBZip2
 ---------
 
-Try to find BZip2
+试着找到BZip2
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

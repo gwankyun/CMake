@@ -7,9 +7,8 @@ FindCUDAToolkit
 
 .. versionadded:: 3.17
 
-This script locates the NVIDIA CUDA toolkit and the associated libraries, but
-does not require the ``CUDA`` language be enabled for a given project. This
-module does not search for the NVIDIA CUDA Samples.
+此脚本定位NVIDIA CUDA工具包和相关库，但不需要为给定项目启用\ ``CUDA``\ 语言。该模块不搜索\
+NVIDIA CUDA样本。
 
 .. versionadded:: 3.19
   QNX support.

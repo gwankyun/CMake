@@ -5,7 +5,7 @@
 FindCABLE
 ---------
 
-Find CABLE
+查找CABLE
 
 This module finds if CABLE is installed and determines where the
 include files and libraries are.  This code sets the following

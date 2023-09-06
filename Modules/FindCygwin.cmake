@@ -5,8 +5,7 @@
 FindCygwin
 ----------
 
-Find Cygwin, a POSIX-compatible environment that runs natively
-on Microsoft Windows
+查找Cygwin，这是一个与POSIX兼容的环境，原生运行在Microsoft Windows上
 #]=======================================================================]
 
 if (WIN32)

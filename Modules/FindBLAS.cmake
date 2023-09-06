@@ -5,7 +5,7 @@
 FindBLAS
 --------
 
-Find Basic Linear Algebra Subprograms (BLAS) library
+查找基本线性代数子程序（BLAS）库
 
 This module finds an installed Fortran library that implements the
 `BLAS linear-algebra interface`_.

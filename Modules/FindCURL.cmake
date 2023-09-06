@@ -5,7 +5,7 @@
 FindCURL
 --------
 
-Find the native CURL headers and libraries.
+查找本地的CURL头文件和库。
 
 .. versionadded:: 3.14
   This module accept optional COMPONENTS to check supported features and

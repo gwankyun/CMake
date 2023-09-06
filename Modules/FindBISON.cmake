@@ -5,7 +5,7 @@
 FindBISON
 ---------
 
-Find ``bison`` executable and provide a macro to generate custom build rules.
+查找\ ``bison``\ 可执行文件，并提供一个宏来生成自定义构建规则。
 
 The module defines the following variables:
 

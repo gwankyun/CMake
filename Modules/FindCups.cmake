@@ -5,7 +5,7 @@
 FindCups
 --------
 
-Find the Common UNIX Printing System (CUPS).
+找到通用UNIX打印系统（CUPS）。
 
 Set ``CUPS_REQUIRE_IPP_DELETE_ATTRIBUTE`` to ``TRUE`` if you need a version which
 features this function (i.e. at least ``1.1.19``)

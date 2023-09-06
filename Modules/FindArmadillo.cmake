@@ -5,8 +5,7 @@
 FindArmadillo
 -------------
 
-Find the Armadillo C++ library.
-Armadillo is a library for linear algebra & scientific computing.
+找到Armadillo C++库。Armadillo是一个线性代数和科学计算库。
 
 .. versionadded:: 3.18
   Support for linking wrapped libraries directly (``ARMA_DONT_USE_WRAPPER``).

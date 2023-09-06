@@ -5,7 +5,7 @@
 FindASPELL
 ----------
 
-Try to find ASPELL
+试着找到ASPELL
 
 Once done this will define
 

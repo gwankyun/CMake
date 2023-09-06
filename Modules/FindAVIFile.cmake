@@ -5,7 +5,7 @@
 FindAVIFile
 -----------
 
-Locate AVIFILE library and include paths
+找到AVIFILE库并包含路径
 
 AVIFILE (https://avifile.sourceforge.net/) is a set of libraries for
 i386 machines to use various AVI codecs.  Support is limited beyond

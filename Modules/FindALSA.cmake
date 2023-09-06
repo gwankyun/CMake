@@ -5,7 +5,7 @@
 FindALSA
 --------
 
-Find Advanced Linux Sound Architecture (ALSA)
+查找高级Linux声音架构（ALSA）
 
 Find the alsa libraries (``asound``)
 

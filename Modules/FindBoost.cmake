@@ -5,7 +5,7 @@
 FindBoost
 ---------
 
-Find Boost include dirs and libraries
+查找Boost包含目录和库
 
 Use this module by invoking :command:`find_package` with the form:
 

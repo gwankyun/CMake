@@ -5,7 +5,8 @@
 FindBacktrace
 -------------
 
-Find provider for `backtrace(3) <https://man7.org/linux/man-pages/man3/backtrace.3.html>`__.
+查找\ `backtrace(3) <https://man7.org/linux/man-pages/man3/backtrace.3.html>`__\
+的提供程序。
 
 Checks if OS supports ``backtrace(3)`` via either ``libc`` or custom library.
 This module defines the following variables:
