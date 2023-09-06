@@ -5,8 +5,7 @@
 FindFLEX
 --------
 
-Find Fast Lexical Analyzer (Flex) executable and provides a macro
-to generate custom build rules
+查找快速词法分析器（Flex）可执行文件，并提供一个宏来生成自定义构建规则
 
 
 

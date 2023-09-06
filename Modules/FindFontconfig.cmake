@@ -7,7 +7,7 @@ FindFontconfig
 
 .. versionadded:: 3.14
 
-Find Fontconfig headers and library.
+查找Fontconfig头文件和库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

@@ -5,7 +5,7 @@
 FindFreetype
 ------------
 
-Find the FreeType font renderer includes and library.
+找到FreeType字体渲染器包含和库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

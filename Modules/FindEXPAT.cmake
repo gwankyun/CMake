@@ -5,8 +5,7 @@
 FindEXPAT
 ---------
 
-Find the native Expat headers and library.
-Expat is a stream-oriented XML parser library written in C.
+查找本机Expat头文件和库。Expat是一个用C编写的面向流的XML解析器库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

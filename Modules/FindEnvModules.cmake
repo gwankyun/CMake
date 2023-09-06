@@ -7,9 +7,8 @@ FindEnvModules
 
 .. versionadded:: 3.15
 
-Locate an environment module implementation and make commands available to
-CMake scripts to use them.  This is compatible with both Lua-based Lmod
-and TCL-based EnvironmentModules.
+找到一个环境模块实现，并使CMake脚本可以使用命令来使用它们。这与基于Lua的Lmod和基于TCL的\
+EnvironmentModules兼容。
 
 This module is intended for the use case of setting up the compiler and library
 environment within a :ref:`CTest Script <CTest Script>` (``ctest -S``).  It can

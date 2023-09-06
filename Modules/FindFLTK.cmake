@@ -5,7 +5,7 @@
 FindFLTK
 --------
 
-Find the Fast Light Toolkit (FLTK) library
+查找快速光工具包（FLTK）库
 
 Input Variables
 ^^^^^^^^^^^^^^^

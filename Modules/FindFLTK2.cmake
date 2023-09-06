@@ -5,7 +5,7 @@
 FindFLTK2
 ---------
 
-Find the native FLTK 2.0 includes and library
+查找本机FLTK 2.0包含和库
 
 The following settings are defined
 
