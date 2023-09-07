@@ -5,7 +5,7 @@
 FindGnuplot
 -----------
 
-this module looks for gnuplot
+这个模块查找gnuplot
 
 
 

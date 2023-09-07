@@ -5,7 +5,7 @@
 FindGLEW
 --------
 
-Find the OpenGL Extension Wrangler Library (GLEW)
+找到OpenGL扩展Wrangler库（GLEW）
 
 Input Variables
 ^^^^^^^^^^^^^^^

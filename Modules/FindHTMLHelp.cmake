@@ -5,7 +5,7 @@
 FindHTMLHelp
 ------------
 
-This module looks for Microsoft HTML Help Compiler
+这个模块寻找微软HTML帮助编译器
 
 It defines:
 

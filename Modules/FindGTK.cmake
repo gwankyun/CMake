@@ -5,7 +5,7 @@
 FindGTK
 -------
 
-Find GTK, glib and GTKGLArea
+查找GTK、glib和GTKGLArea
 
 ::
 

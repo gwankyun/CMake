@@ -5,7 +5,7 @@
 FindGTest
 ---------
 
-Locate the Google C++ Testing Framework.
+找到Google C++测试框架。
 
 .. versionadded:: 3.20
   Upstream ``GTestConfig.cmake`` is used if possible.

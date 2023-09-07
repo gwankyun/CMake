@@ -5,8 +5,7 @@
 FindGTK2
 --------
 
-Find the GTK2 widget libraries and several of its other optional components
-like ``gtkmm``, ``glade``, and ``glademm``.
+查找GTK2小部件库和其他几个可选组件，如\ ``gtkmm``、\ ``glade``\ 和\ ``glademm``。
 
 Specify one or more of the following components as you call this find
 module.  See example below.

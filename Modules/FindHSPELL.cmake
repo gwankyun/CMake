@@ -5,7 +5,7 @@
 FindHSPELL
 ----------
 
-Try to find Hebrew spell-checker (Hspell) and morphology engine.
+尝试找到希伯来语拼写检查器（Hspell）和词法引擎。
 
 Once done this will define
 

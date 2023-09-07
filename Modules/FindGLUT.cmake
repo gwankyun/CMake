@@ -5,7 +5,7 @@
 FindGLUT
 --------
 
-Find OpenGL Utility Toolkit (GLUT) library and include files.
+找到OpenGL Utility Toolkit（GLUT）库和包含文件。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

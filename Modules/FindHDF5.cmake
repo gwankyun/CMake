@@ -5,8 +5,7 @@
 FindHDF5
 --------
 
-Find Hierarchical Data Format (HDF5), a library for reading and writing
-self describing array data.
+查找层次数据格式（HDF5），一个用于读取和写入自描述数组数据的库。
 
 
 This module invokes the ``HDF5`` wrapper compiler that should be installed

@@ -5,11 +5,8 @@
 FindDoxygen
 -----------
 
-Doxygen is a documentation generation tool (see https://www.doxygen.nl).
-This module looks for Doxygen and some optional tools it supports:
-
-Doxygen是一个文档生成工具（参见 https://www.doxygen.nl）。这个模块查找氧和它支持的一些可\
-选工具：
+Doxygen是一个文档生成工具（参见\ https://www.doxygen.nl）。这个模块查找Doxygen和它支持\
+的一些可选工具：
 
 ``dot``
   `Graphviz <https://graphviz.org>`_ ``dot`` utility used to render various

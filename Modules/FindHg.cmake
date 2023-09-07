@@ -5,7 +5,7 @@
 FindHg
 ------
 
-Extract information from a mercurial working copy.
+从mercurial工作副本中提取信息。
 
 The module defines the following variables:
 

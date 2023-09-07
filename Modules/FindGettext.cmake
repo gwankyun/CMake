@@ -5,7 +5,7 @@
 FindGettext
 -----------
 
-Find GNU gettext tools
+查找GNU gettext工具
 
 This module looks for the GNU gettext tools.  This module defines the
 following values:

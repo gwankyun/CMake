@@ -5,7 +5,7 @@
 FindGIF
 -------
 
-This finds the Graphics Interchange Format (GIF) library (``giflib``)
+查找图形交换格式（GIF）库（\ ``giflib``\ ）
 
 Imported targets
 ^^^^^^^^^^^^^^^^

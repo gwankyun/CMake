@@ -5,7 +5,7 @@
 FindGCCXML
 ----------
 
-Find the GCC-XML front-end executable.
+查找GCC-XML前端可执行文件。
 
 
 

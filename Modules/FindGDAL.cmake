@@ -5,7 +5,7 @@
 FindGDAL
 --------
 
-Find Geospatial Data Abstraction Library (GDAL).
+查找地理空间数据抽象库（GDAL）。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

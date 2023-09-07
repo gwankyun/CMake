@@ -5,7 +5,7 @@
 FindGit
 -------
 
-The module defines the following variables:
+模块定义了以下变量：
 
 ``GIT_EXECUTABLE``
   Path to Git command-line client.

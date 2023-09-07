@@ -5,7 +5,7 @@
 FindGnuTLS
 ----------
 
-Find the GNU Transport Layer Security library (gnutls)
+查找GNU传输层安全库（gnutls）
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^
