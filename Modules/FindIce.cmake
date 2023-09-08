@@ -7,8 +7,7 @@ FindIce
 
 .. versionadded:: 3.1
 
-Find the ZeroC Internet Communication Engine (ICE) programs,
-libraries and datafiles.
+查找ZeroC Internet Communication Engine（ICE）程序、库和数据。
 
 This module supports multiple components.
 Components can include any of: ``Freeze``, ``Glacier2``, ``Ice``,

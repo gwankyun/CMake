@@ -5,7 +5,7 @@
 FindIcotool
 -----------
 
-Find icotool
+查找icotool
 
 This module looks for icotool. Convert and create Win32 icon and cursor files.
 This module defines the following values:

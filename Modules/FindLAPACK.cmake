@@ -5,7 +5,7 @@
 FindLAPACK
 ----------
 
-Find Linear Algebra PACKage (LAPACK) library
+查找线性代数包（LAPACK）库
 
 This module finds an installed Fortran library that implements the
 `LAPACK linear-algebra interface`_.

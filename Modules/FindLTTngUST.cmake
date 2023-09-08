@@ -7,8 +7,7 @@ FindLTTngUST
 
 .. versionadded:: 3.6
 
-Find
-`Linux Trace Toolkit Next Generation (LTTng-UST) <https://lttng.org/>`__ library.
+查找\ `Linux Trace Toolkit Next Generation (LTTng-UST) <https://lttng.org/>`__\ 库。
 
 Imported target
 ^^^^^^^^^^^^^^^

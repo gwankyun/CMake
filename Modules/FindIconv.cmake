@@ -7,9 +7,8 @@ FindIconv
 
 .. versionadded:: 3.11
 
-This module finds the ``iconv()`` POSIX.1 functions on the system.
-These functions might be provided in the regular C library or externally
-in the form of an additional library.
+该模块查找系统上的\ ``iconv()`` POSIX.1函数。这些函数可以在常规C库中提供，也可以在外部以\
+附加库的形式提供。
 
 The following variables are provided to indicate iconv support:
 

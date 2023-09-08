@@ -7,7 +7,7 @@ FindLibinput
 
 .. versionadded:: 3.14
 
-Find libinput headers and library.
+查找libinput头文件和库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

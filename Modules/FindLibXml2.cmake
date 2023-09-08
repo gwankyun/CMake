@@ -5,7 +5,7 @@
 FindLibXml2
 -----------
 
-Find the XML processing library (libxml2).
+查找XML处理库（libxml2）。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

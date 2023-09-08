@@ -7,9 +7,7 @@ FindKDE4
 
 
 
-Find KDE4 and provide all necessary variables and macros to compile
-software for it.  It looks for KDE 4 in the following directories in
-the given order:
+查找KDE4并提供为其编译软件所需的所有变量和宏。它按照给定的顺序在以下目录中查找KDE 4：
 
 ::
 

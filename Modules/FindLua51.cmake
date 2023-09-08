@@ -7,8 +7,7 @@ FindLua51
 
 
 
-Locate Lua library.
-This module defines::
+查找Lua库。该模块定义
 
 ::
 

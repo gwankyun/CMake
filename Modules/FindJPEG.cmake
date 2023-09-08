@@ -5,7 +5,7 @@
 FindJPEG
 --------
 
-Find the Joint Photographic Experts Group (JPEG) library (``libjpeg``)
+查找联合摄影专家组（JPEG）库（\ ``libjpeg``\ ）
 
 Imported targets
 ^^^^^^^^^^^^^^^^

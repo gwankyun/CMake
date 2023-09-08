@@ -5,7 +5,7 @@
 FindJNI
 -------
 
-Find Java Native Interface (JNI) headers and libraries.
+查找Java本机接口（JNI）头文件和库。
 
 JNI enables Java code running in a Java Virtual Machine (JVM) or Dalvik Virtual
 Machine (DVM) on Android to call and be called by native applications and

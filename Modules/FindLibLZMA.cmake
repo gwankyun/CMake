@@ -5,7 +5,7 @@
 FindLibLZMA
 -----------
 
-Find LZMA compression algorithm headers and library.
+查找LZMA压缩算法头文件和库。
 
 
 Imported Targets

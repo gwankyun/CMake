@@ -7,7 +7,7 @@ FindIntl
 
 .. versionadded:: 3.2
 
-Find the Gettext libintl headers and libraries.
+查找Gettext libintl头文件和库。
 
 This module reports information about the Gettext libintl
 installation in several variables.

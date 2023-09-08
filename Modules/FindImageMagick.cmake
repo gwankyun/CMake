@@ -5,8 +5,7 @@
 FindImageMagick
 ---------------
 
-Find ImageMagick, software suite for displaying, converting and
-manipulating raster images.
+找到ImageMagick，用于显示、转换和操作光栅图像的软件套件。
 
 
 .. versionadded:: 3.9

@@ -5,8 +5,7 @@
 FindLibArchive
 --------------
 
-Find libarchive library and headers.
-Libarchive is multi-format archive and compression library.
+查找libchive库和头文件。libchive是一个多格式的归档和压缩库。
 
 The module defines the following variables:
 

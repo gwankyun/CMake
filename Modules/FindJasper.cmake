@@ -5,7 +5,7 @@
 FindJasper
 ----------
 
-Find the Jasper JPEG2000 library.
+查找Jasper JPEG2000库。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

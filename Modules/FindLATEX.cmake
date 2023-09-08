@@ -5,7 +5,7 @@
 FindLATEX
 ---------
 
-Find LaTeX
+查找LaTeX
 
 This module finds an installed LaTeX and determines the location
 of the compiler.  Additionally the module looks for Latex-related

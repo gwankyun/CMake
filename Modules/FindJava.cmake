@@ -5,7 +5,7 @@
 FindJava
 --------
 
-Find Java
+查找Java
 
 This module finds if Java is installed and determines where the
 include files and libraries are.  The caller may set variable ``JAVA_HOME``

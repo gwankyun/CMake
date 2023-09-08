@@ -5,8 +5,7 @@
 FindLibXslt
 -----------
 
-Find the XSL Transformations, Extensible Stylesheet Language
-Transformations (XSLT) library (LibXslt)
+查找XSL转换、可扩展样式表语言转换（XSLT）库（LibXslt）
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

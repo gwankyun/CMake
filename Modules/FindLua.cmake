@@ -5,7 +5,7 @@
 FindLua
 -------
 
-Locate Lua library.
+查找Lua库。
 
 .. versionadded:: 3.18
   Support for Lua 5.4.

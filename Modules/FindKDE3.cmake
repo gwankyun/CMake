@@ -5,7 +5,7 @@
 FindKDE3
 --------
 
-Find the KDE3 include and library dirs, KDE preprocessors and define a some macros
+查找KDE3包含和库文件、KDE预处理器并定义一些宏
 
 
 

@@ -7,8 +7,7 @@ FindICU
 
 .. versionadded:: 3.7
 
-Find the International Components for Unicode (ICU) libraries and
-programs.
+查找Unicode国际组件（ICU）库和程序。
 
 This module supports multiple components.
 Components can include any of: ``data``, ``i18n``, ``io``, ``le``,
