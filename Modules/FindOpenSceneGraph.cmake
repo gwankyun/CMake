@@ -5,7 +5,7 @@
 FindOpenSceneGraph
 ------------------
 
-Find OpenSceneGraph (3D graphics application programming interface)
+查找OpenSceneGraph（3D图形应用程序编程接口）
 
 This module searches for the OpenSceneGraph core "osg" library as well
 as :module:`FindOpenThreads`, and whatever additional ``COMPONENTS``

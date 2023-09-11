@@ -5,7 +5,7 @@
 FindMFC
 -------
 
-Find Microsoft Foundation Class Library (MFC) on Windows
+在Windows上查找Microsoft Foundation Class Library（MFC）
 
 Find the native MFC - i.e.  decide if an application can link to the
 MFC libraries.

@@ -5,7 +5,7 @@
 FindMPEG
 --------
 
-Find the native MPEG includes and library
+查找本机MPEG包含和库
 
 This module defines
 

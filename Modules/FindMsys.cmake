@@ -7,8 +7,7 @@ FindMsys
 
 .. versionadded:: 3.21
 
-Find MSYS, a POSIX-compatible environment that runs natively
-on Microsoft Windows
+查找MSYS，这是一个与POSIX兼容的环境，原生运行在Microsoft Windows上
 #]=======================================================================]
 
 if (WIN32)

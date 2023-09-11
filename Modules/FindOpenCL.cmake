@@ -7,7 +7,7 @@ FindOpenCL
 
 .. versionadded:: 3.1
 
-Finds Open Computing Language (OpenCL)
+查找开放计算语言（OpenCL）
 
 .. versionadded:: 3.10
   Detection of OpenCL 2.1 and 2.2.

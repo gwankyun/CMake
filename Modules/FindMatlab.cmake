@@ -5,8 +5,7 @@
 FindMatlab
 ----------
 
-Finds Matlab or Matlab Compiler Runtime (MCR) and provides Matlab tools,
-libraries and compilers to CMake.
+查找Matlab或Matlab编译运行时（MCR），并为CMake提供Matlab工具、库和编译器。
 
 This package primary purpose is to find the libraries associated with Matlab
 or the MCR in order to be able to build Matlab extensions (mex files). It

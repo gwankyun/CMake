@@ -5,7 +5,7 @@
 FindOpenMP
 ----------
 
-Finds Open Multi-Processing (OpenMP) support.
+查找开放多处理（OpenMP）支持。
 
 This module can be used to detect OpenMP support in a compiler.  If
 the compiler supports OpenMP, the flags required to compile with

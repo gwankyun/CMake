@@ -7,7 +7,7 @@ FindOpenSP
 
 .. versionadded:: 3.25
 
-Try to find the OpenSP library.
+尝试找到OpenSP库。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

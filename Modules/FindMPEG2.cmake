@@ -5,7 +5,7 @@
 FindMPEG2
 ---------
 
-Find the native MPEG2 includes and library
+查找本机MPEG2包含和库
 
 This module defines
 

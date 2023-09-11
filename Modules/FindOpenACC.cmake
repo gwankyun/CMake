@@ -7,7 +7,7 @@ FindOpenACC
 
 .. versionadded:: 3.10
 
-Detect OpenACC support by the compiler.
+检测编译器对OpenACC的支持。
 
 This module can be used to detect OpenACC support in a compiler.
 If the compiler supports OpenACC, the flags required to compile with

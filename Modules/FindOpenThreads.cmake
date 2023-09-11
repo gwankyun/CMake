@@ -7,11 +7,9 @@ FindOpenThreads
 
 
 
-OpenThreads is a C++ based threading library.  Its largest userbase
-seems to OpenSceneGraph so you might notice I accept OSGDIR as an
-environment path.  I consider this part of the Findosg* suite used to
-find OpenSceneGraph components.  Each component is separate and you
-must opt in to each module.
+OpenThreads是一个基于C++的线程库。它最大的用户群似乎是OpenSceneGraph，所以你可能会注意到\
+我接受OSGDIR作为环境路径。我认为Findosg*套件的这一部分用于查找OpenSceneGraph组件。每个组\
+件都是独立的，你必须选择加入每个模块。
 
 Locate OpenThreads This module defines OPENTHREADS_LIBRARY
 OPENTHREADS_FOUND, if false, do not try to link to OpenThreads

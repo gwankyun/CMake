@@ -7,7 +7,7 @@ FindODBC
 
 .. versionadded:: 3.12
 
-Find an Open Database Connectivity (ODBC) include directory and library.
+查找开放数据库连接（ODBC），包括目录和库。
 
 On Windows, when building with Visual Studio, this module assumes the ODBC
 library is provided by the available Windows SDK.

@@ -5,7 +5,7 @@
 FindOpenAL
 ----------
 
-Finds Open Audio Library (OpenAL).
+查找开放音频库（OpenAL）。
 
 Projects using this module should use ``#include "al.h"`` to include the OpenAL
 header file, **not** ``#include <AL/al.h>``.  The reason for this is that the

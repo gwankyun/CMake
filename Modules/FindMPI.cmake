@@ -5,7 +5,7 @@
 FindMPI
 -------
 
-Find a Message Passing Interface (MPI) implementation.
+找到一个消息传递接口（MPI）实现。
 
 The Message Passing Interface (MPI) is a library used to write
 high-performance distributed-memory parallel applications, and is

@@ -5,7 +5,7 @@
 FindMotif
 ---------
 
-Try to find Motif (or lesstif)
+尝试找到Motif（或lesstif）
 
 Once done this will define:
 

@@ -5,7 +5,7 @@
 FindOpenGL
 ----------
 
-FindModule for OpenGL and OpenGL Utility Library (GLU).
+OpenGL和OpenGL Utility Library（GLU）的查找模块。
 
 .. versionchanged:: 3.2
   X11 is no longer added as a dependency on Unix/Linux systems.

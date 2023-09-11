@@ -5,7 +5,7 @@
 FindOpenSSL
 -----------
 
-Find the OpenSSL encryption library.
+找到OpenSSL加密库。
 
 This module finds an installed OpenSSL library and determines its version.
 
