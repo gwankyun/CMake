@@ -18,7 +18,9 @@ Locate PhysFS library This module defines:
 
 ``$PHYSFSDIR`` is an environment variable that would correspond to::
 
-  ./configure --prefix=$PHYSFSDIR used in building PHYSFS.
+  ./configure --prefix=$PHYSFSDIR
+  
+used in building PHYSFS.
 
 Created by Eric Wing.
 #]=======================================================================]
