@@ -5,7 +5,7 @@
 FindPHP4
 --------
 
-Find PHP4
+查找PHP4
 
 This module finds if PHP4 is installed and determines where the
 include files and libraries are.  It also determines what the name of

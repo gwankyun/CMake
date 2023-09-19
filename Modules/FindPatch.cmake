@@ -7,7 +7,7 @@ FindPatch
 
 .. versionadded:: 3.10
 
-The module defines the following variables:
+此模块定义以下变量：
 
 ``Patch_EXECUTABLE``
   Path to patch command-line executable.

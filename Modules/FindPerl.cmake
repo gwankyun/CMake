@@ -5,7 +5,7 @@
 FindPerl
 --------
 
-Find perl
+查找perl
 
 this module looks for Perl
 

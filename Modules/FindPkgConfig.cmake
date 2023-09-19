@@ -5,7 +5,7 @@
 FindPkgConfig
 -------------
 
-A ``pkg-config`` module for CMake.
+CMake的一个\ ``pkg-config``\ 模块。
 
 Finds the ``pkg-config`` executable and adds the :command:`pkg_get_variable`,
 :command:`pkg_check_modules` and :command:`pkg_search_module` commands. The

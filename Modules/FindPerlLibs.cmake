@@ -5,7 +5,7 @@
 FindPerlLibs
 ------------
 
-Find Perl libraries
+查找Perl库
 
 This module finds if PERL is installed and determines where the
 include files and libraries are.  It also determines what the name of

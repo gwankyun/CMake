@@ -5,7 +5,7 @@
 FindPike
 --------
 
-Find Pike
+查找Pike
 
 This module finds if PIKE is installed and determines where the
 include files and libraries are.  It also determines what the name of

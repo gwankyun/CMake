@@ -7,7 +7,7 @@ FindPhysFS
 
 
 
-Locate PhysFS library This module defines:
+定位PhysFS库，此模块定义：
 
 ``PHYSFS_LIBRARY``
   the name of the library to link against
