@@ -5,11 +5,10 @@
 FindTclStub
 -----------
 
-TCL_STUB_LIBRARY_DEBUG and TK_STUB_LIBRARY_DEBUG were removed.
+TCL_STUB_LIBRARY_DEBUG及TK_STUB_LIBRARY_DEBUG已被删除。
 
-This module finds Tcl stub libraries.  It first finds Tcl include
-files and libraries by calling FindTCL.cmake.  How to Use the Tcl
-Stubs Library:
+这个模块查找Tcl stub库。它首先通过调用FindTCL.cmake来查找Tcl包含文件和库。如何使用\
+Tcl Stubs库：
 
 ::
 

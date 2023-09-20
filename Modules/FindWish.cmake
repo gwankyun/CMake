@@ -5,7 +5,7 @@
 FindWish
 --------
 
-Find wish installation
+查找wish安装
 
 This module finds if TCL is installed and determines where the include
 files and libraries are.  It also determines what the name of the

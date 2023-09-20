@@ -5,7 +5,7 @@
 FindSWIG
 --------
 
-Find the Simplified Wrapper and Interface Generator (SWIG_) executable.
+查找简化包装器和接口生成器（SWIG_）可执行文件。
 
 This module finds an installed SWIG and determines its version.
 

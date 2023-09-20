@@ -5,7 +5,7 @@
 FindZLIB
 --------
 
-Find the native ZLIB includes and library.
+查找本机ZLIB包含和库。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

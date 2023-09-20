@@ -5,7 +5,7 @@
 FindTclsh
 ---------
 
-Find tclsh
+查找tclsh
 
 This module finds if TCL is installed and determines where the include
 files and libraries are.  It also determines what the name of the

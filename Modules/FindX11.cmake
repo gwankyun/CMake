@@ -5,7 +5,7 @@
 FindX11
 -------
 
-Find X11 installation
+查找X11安装
 
 Try to find X11 on UNIX systems. The following values are defined
 

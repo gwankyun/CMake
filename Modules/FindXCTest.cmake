@@ -7,7 +7,7 @@ FindXCTest
 
 .. versionadded:: 3.3
 
-Functions to help creating and executing XCTest bundles.
+帮助创建和执行XCTest包的函数。
 
 An XCTest bundle is a CFBundle with a special product-type
 and bundle extension. The Mac Developer Library provides more

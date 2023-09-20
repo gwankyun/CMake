@@ -5,7 +5,7 @@
 FindThreads
 -----------
 
-This module determines the thread library of the system.
+该模块确定系统的线程库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

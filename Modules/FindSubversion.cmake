@@ -5,7 +5,7 @@
 FindSubversion
 --------------
 
-Extract information from a subversion working copy
+从subversion工作副本中提取信息
 
 The module defines the following variables:
 

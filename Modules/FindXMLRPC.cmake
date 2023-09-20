@@ -5,7 +5,7 @@
 FindXMLRPC
 ----------
 
-Find xmlrpc
+查找xmlrpc
 
 Find the native XMLRPC headers and libraries.
 

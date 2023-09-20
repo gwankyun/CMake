@@ -7,8 +7,7 @@ FindVulkan
 
 .. versionadded:: 3.7
 
-Find Vulkan, which is a low-overhead, cross-platform 3D graphics
-and computing API.
+查找Vulkan，这是一个低开销、跨平台的3D图形和计算API。
 
 Optional COMPONENTS
 ^^^^^^^^^^^^^^^^^^^

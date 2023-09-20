@@ -5,7 +5,7 @@
 FindwxWidgets
 -------------
 
-Find a wxWidgets (a.k.a., wxWindows) installation.
+查找一个wxWidgets（也就是wxWindows）安装。
 
 This module finds if wxWidgets is installed and selects a default
 configuration to use.  wxWidgets is a modular library.  To specify the

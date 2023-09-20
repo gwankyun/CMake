@@ -5,11 +5,9 @@
 FindTCL
 -------
 
-TK_INTERNAL_PATH was removed.
+TK_INTERNAL_PATH已删除。
 
-This module finds if Tcl is installed and determines where the include
-files and libraries are.  It also determines what the name of the
-library is.  This code sets the following variables:
+该模块查找是否安装了Tcl，并确定包含文件和库的位置。它还确定库的名称。这段代码设置了以下变量：
 
 ::
 

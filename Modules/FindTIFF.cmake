@@ -5,7 +5,7 @@
 FindTIFF
 --------
 
-Find the TIFF library (``libtiff``, https://libtiff.gitlab.io/libtiff/).
+查找TIFF库（``libtiff``，https://libtiff.gitlab.io/libtiff/）。
 
 Optional COMPONENTS
 ^^^^^^^^^^^^^^^^^^^

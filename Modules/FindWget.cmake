@@ -5,7 +5,7 @@
 FindWget
 --------
 
-Find wget
+查找wget
 
 This module looks for wget.  This module defines the following values:
 
