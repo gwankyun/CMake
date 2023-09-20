@@ -5,7 +5,7 @@
 FindRTI
 -------
 
-Try to find M&S HLA RTI libraries
+尝试查找M&S HLA RTI库
 
 This module finds if any HLA RTI is installed and locates the standard
 RTI include files and libraries.

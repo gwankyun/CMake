@@ -7,7 +7,7 @@ FindSDL_gfx
 
 .. versionadded:: 3.25
 
-Locate SDL_gfx library
+定位SDL_gfx库
 
 This module defines:
 

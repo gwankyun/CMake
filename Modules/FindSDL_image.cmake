@@ -5,7 +5,7 @@
 FindSDL_image
 -------------
 
-Locate SDL_image library
+定位SDL_image库
 
 This module defines:
 

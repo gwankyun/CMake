@@ -5,7 +5,7 @@
 FindSDL_sound
 -------------
 
-Locates the SDL_sound library
+定位SDL_sound库
 
 
 

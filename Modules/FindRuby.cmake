@@ -5,7 +5,7 @@
 FindRuby
 --------
 
-Find Ruby
+查找Ruby
 
 This module finds if Ruby is installed and determines where the
 include files and libraries are.  Ruby 1.8 through 3.1 are

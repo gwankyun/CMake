@@ -5,7 +5,7 @@
 FindSDL_mixer
 -------------
 
-Locate SDL_mixer library
+定位SDL_mixer库
 
 This module defines:
 

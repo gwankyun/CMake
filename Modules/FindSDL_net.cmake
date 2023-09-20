@@ -5,7 +5,7 @@
 FindSDL_net
 -----------
 
-Locate SDL_net library
+定位SDL_net库
 
 This module defines:
 

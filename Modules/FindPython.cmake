@@ -7,8 +7,7 @@ FindPython
 
 .. versionadded:: 3.12
 
-Find Python interpreter, compiler and development environment (include
-directories and libraries).
+查找Python解释器、编译器和开发环境（包括目录和库）。
 
 .. versionadded:: 3.19
   When a version is requested, it can be specified as a simple value or as a

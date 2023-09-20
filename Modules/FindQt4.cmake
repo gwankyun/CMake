@@ -8,10 +8,8 @@ FindQt4
 Finding and Using Qt4
 ^^^^^^^^^^^^^^^^^^^^^
 
-This module can be used to find Qt4.  The most important issue is that
-the Qt4 qmake is available via the system path.  This qmake is then
-used to detect basically everything else.  This module defines a
-number of :prop_tgt:`IMPORTED` targets, macros and variables.
+这个模块可以用来查找Qt4。最重要的问题是Qt4 qmake可以通过系统路径获得。然后使用这个qmake来\
+检测基本上所有其他的东西。这个模块定义了一些\ :prop_tgt:`IMPORTED`\ 目标、宏和变量。
 
 Typical usage could be something like:
 

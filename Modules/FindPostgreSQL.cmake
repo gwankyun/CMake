@@ -5,7 +5,7 @@
 FindPostgreSQL
 --------------
 
-Find the PostgreSQL installation.
+查找PostgreSQL安装。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

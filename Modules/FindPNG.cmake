@@ -5,7 +5,7 @@
 FindPNG
 -------
 
-Find libpng, the official reference library for the PNG image format.
+找到libpng，这是PNG图像格式的官方参考库。
 
 Imported targets
 ^^^^^^^^^^^^^^^^

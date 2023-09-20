@@ -7,22 +7,16 @@ FindProducer
 
 
 
-Though Producer isn't directly part of OpenSceneGraph, its primary
-user is OSG so I consider this part of the Findosg* suite used to find
-OpenSceneGraph components.  You'll notice that I accept OSGDIR as an
-environment path.
+虽然Producer不是OpenSceneGraph的直接组成部分，但它的主要用户是OSG，所以我认为这是Findosg*\
+套件的一部分，用于查找OpenSceneGraph组件。你将注意到我接受OSGDIR作为环境路径。
 
-Each component is separate and you must opt in to each module.  You
-must also opt into OpenGL (and OpenThreads?) as these modules won't do
-it for you.  This is to allow you control over your own system piece
-by piece in case you need to opt out of certain components or change
-the Find behavior for a particular module (perhaps because the default
-:module:`FindOpenGL` module doesn't work with your system as an example).
-If you want to use a more convenient module that includes everything,
-use the :module:`FindOpenSceneGraph` instead of the Findosg*.cmake
-modules.
+每个组件都是独立的，你必须选择加入每个模块。你还必须选择OpenGL（和OpenThreads？），因为这\
+些模块不会为你做。这是为了让你在需要选择退出某些组件或更改特定模块的查找行为（可能是因为默认的\
+:module:`FindOpenGL` \模块不能与你的系统一起工作）的情况下，一块一块地控制你自己的系统。\
+如果你想使用一个更方便的模块，包括一切，使用\ :module:`FindOpenSceneGraph`\ 而不是\
+Findosg*.cmake模块。
 
-Locate Producer This module defines:
+定位Producer，此模块定义：
 
 ``PRODUCER_LIBRARY``
 

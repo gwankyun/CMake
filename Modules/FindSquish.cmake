@@ -9,7 +9,7 @@ FindSquish
 
 
 
-This module can be used to find Squish.
+这模块用于查找Squish。
 
 ::
 

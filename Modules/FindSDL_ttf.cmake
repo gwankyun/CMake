@@ -5,7 +5,7 @@
 FindSDL_ttf
 -----------
 
-Locate SDL_ttf library
+定位SDL_ttf库
 
 This module defines:
 

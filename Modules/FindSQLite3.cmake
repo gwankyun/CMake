@@ -7,7 +7,7 @@ FindSQLite3
 
 .. versionadded:: 3.14
 
-Find the SQLite libraries, v3
+查找SQLite库，v3版本
 
 IMPORTED targets
 ^^^^^^^^^^^^^^^^

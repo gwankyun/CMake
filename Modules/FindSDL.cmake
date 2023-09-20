@@ -5,7 +5,7 @@
 FindSDL
 -------
 
-Locate the SDL library
+定位SDL库
 
 
 Imported targets

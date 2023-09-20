@@ -5,7 +5,7 @@
 FindProtobuf
 ------------
 
-Locate and configure the Google Protocol Buffers library.
+找到并配置Google Protocol Buffers库。
 
 .. versionadded:: 3.6
   Support for :command:`find_package` version checks.

@@ -5,7 +5,7 @@
 FindSelfPackers
 ---------------
 
-Find upx
+查找upx
 
 This module looks for some executable packers (i.e.  software that
 compress executables or shared libs into on-the-fly self-extracting

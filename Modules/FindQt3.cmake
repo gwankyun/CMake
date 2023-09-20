@@ -5,7 +5,7 @@
 FindQt3
 -------
 
-Locate Qt include paths and libraries
+定位Qt包含路径和库
 
 This module defines:
 
