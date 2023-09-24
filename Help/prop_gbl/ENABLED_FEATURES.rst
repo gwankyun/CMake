@@ -1,7 +1,7 @@
 ENABLED_FEATURES
 ----------------
 
-List of features which are enabled during the CMake run.
+在CMake运行期间启用的特性列表。
 
 List of features which are enabled during the CMake run.  By default
 it contains the names of all packages which were found.  This is

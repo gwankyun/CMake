@@ -1,6 +1,6 @@
 ENABLED_LANGUAGES
 -----------------
 
-Read-only property that contains the list of currently enabled languages
+包含当前启用的语言列表的只读属性
 
 Set to list of currently enabled languages.

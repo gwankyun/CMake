@@ -1,7 +1,7 @@
 DEBUG_CONFIGURATIONS
 --------------------
 
-Specify which configurations are for debugging.
+指定调试哪些配置。
 
 The value must be a semi-colon separated list of configuration names.
 Currently this property is used only by the :command:`target_link_libraries`

@@ -3,8 +3,7 @@ FIND_LIBRARY_USE_LIB32_PATHS
 
 .. versionadded:: 3.7
 
-Whether the :command:`find_library` command should automatically search
-``lib32`` directories.
+是否使用\ :command:`find_library`\ 命令自动搜索\ ``lib32``\ 目录。
 
 ``FIND_LIBRARY_USE_LIB32_PATHS`` is a boolean specifying whether the
 :command:`find_library` command should automatically search the ``lib32``

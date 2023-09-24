@@ -1,7 +1,7 @@
 GLOBAL_DEPENDS_NO_CYCLES
 ------------------------
 
-Disallow global target dependency graph cycles.
+禁止全局目标依赖图循环。
 
 CMake automatically analyzes the global inter-target dependency graph
 at the beginning of native build system generation.  It reports an

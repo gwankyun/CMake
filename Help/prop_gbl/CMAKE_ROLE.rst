@@ -3,8 +3,7 @@ CMAKE_ROLE
 
 .. versionadded:: 3.14
 
-Tells what mode the current running script is in. Could be one of several
-values:
+告诉当前运行的脚本处于什么模式。可以是以下值之一：
 
 ``PROJECT``
   Running in project mode (processing a ``CMakeLists.txt`` file).

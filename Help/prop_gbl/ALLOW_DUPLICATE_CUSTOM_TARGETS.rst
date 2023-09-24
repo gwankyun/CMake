@@ -1,7 +1,7 @@
 ALLOW_DUPLICATE_CUSTOM_TARGETS
 ------------------------------
 
-Allow duplicate custom targets to be created.
+允许创建重复的自定义目标。
 
 Normally CMake requires that all targets built in a project have
 globally unique logical names (see policy :policy:`CMP0002`).

@@ -3,7 +3,7 @@ CMAKE_C_KNOWN_FEATURES
 
 .. versionadded:: 3.1
 
-List of C features known to this version of CMake.
+本版本CMake已知的C语言特性列表。
 
 The features listed in this global property may be known to be available to the
 C compiler.  If the feature is available with the C compiler, it will

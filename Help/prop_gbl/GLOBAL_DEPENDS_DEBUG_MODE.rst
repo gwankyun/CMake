@@ -1,7 +1,7 @@
 GLOBAL_DEPENDS_DEBUG_MODE
 -------------------------
 
-Enable global target dependency graph debug mode.
+启用全局目标依赖图调试模式。
 
 CMake automatically analyzes the global inter-target dependency graph
 at the beginning of native build system generation.  This property

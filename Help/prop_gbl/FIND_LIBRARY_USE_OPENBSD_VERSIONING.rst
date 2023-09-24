@@ -1,8 +1,7 @@
 FIND_LIBRARY_USE_OPENBSD_VERSIONING
 -----------------------------------
 
-Whether :command:`find_library` should find OpenBSD-style shared
-libraries.
+:command:`find_library`\ 是否查找OpenBSD风格的共享库。
 
 This property is a boolean specifying whether the
 :command:`find_library` command should find shared libraries with

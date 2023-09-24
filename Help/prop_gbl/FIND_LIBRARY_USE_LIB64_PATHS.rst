@@ -1,8 +1,7 @@
 FIND_LIBRARY_USE_LIB64_PATHS
 ----------------------------
 
-Whether :command:`find_library` should automatically search lib64
-directories.
+:command:`find_library`\ 是否自动搜索lib64目录。
 
 FIND_LIBRARY_USE_LIB64_PATHS is a boolean specifying whether the
 :command:`find_library` command should automatically search the lib64

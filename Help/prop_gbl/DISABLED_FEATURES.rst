@@ -1,7 +1,7 @@
 DISABLED_FEATURES
 -----------------
 
-List of features which are disabled during the CMake run.
+在CMake运行期间禁用的功能列表。
 
 List of features which are disabled during the CMake run.  By default
 it contains the names of all packages which were not found.  This is

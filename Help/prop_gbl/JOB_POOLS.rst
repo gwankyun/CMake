@@ -1,7 +1,7 @@
 JOB_POOLS
 ---------
 
-Ninja only: List of available pools.
+Ninja专用：可用池列表。
 
 A pool is a named integer property and defines the maximum number
 of concurrent jobs which can be started by a rule assigned to the pool.

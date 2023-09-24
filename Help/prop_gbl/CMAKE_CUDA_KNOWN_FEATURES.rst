@@ -3,7 +3,7 @@ CMAKE_CUDA_KNOWN_FEATURES
 
 .. versionadded:: 3.17
 
-List of CUDA features known to this version of CMake.
+此版本CMake已知的CUDA特性列表。
 
 The features listed in this global property may be known to be available to the
 CUDA compiler.  If the feature is available with the C++ compiler, it will

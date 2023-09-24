@@ -3,7 +3,7 @@ ECLIPSE_EXTRA_CPROJECT_CONTENTS
 
 .. versionadded:: 3.12
 
-Additional contents to be inserted into the generated Eclipse cproject file.
+要插入到生成的Eclipse cproject文件中的其他内容。
 
 The cproject file defines the CDT specific information. Some third party IDE's
 are based on Eclipse with the addition of other information specific to that IDE.

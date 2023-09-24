@@ -1,8 +1,8 @@
 AUTOMOC_TARGETS_FOLDER
 ----------------------
 
-Name of :prop_tgt:`FOLDER` for ``*_autogen`` targets that are added automatically by
-CMake for targets for which :prop_tgt:`AUTOMOC` is enabled.
+CMake为启用\ :prop_tgt:`AUTOMOC`\ 的目标自动添加的\ ``*_autogen``\ 目标\
+:prop_tgt:`FOLDER`\ 名称。
 
 This property is obsolete.  Use :prop_gbl:`AUTOGEN_TARGETS_FOLDER` instead.
 

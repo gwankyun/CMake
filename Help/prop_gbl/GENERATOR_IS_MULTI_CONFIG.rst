@@ -3,7 +3,7 @@ GENERATOR_IS_MULTI_CONFIG
 
 .. versionadded:: 3.9
 
-Read-only property that is true on multi-configuration generators.
+只读属性，在多配置生成器上为真。
 
 True when using a multi-configuration generator such as:
 
