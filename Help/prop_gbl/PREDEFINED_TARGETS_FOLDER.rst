@@ -1,7 +1,7 @@
 PREDEFINED_TARGETS_FOLDER
 -------------------------
 
-Name of FOLDER for targets that are added automatically by CMake.
+CMake自动添加目标的FOLDER名称。
 
 If not set, CMake uses "CMakePredefinedTargets" as a default value for
 this property.  Targets such as INSTALL, PACKAGE and RUN_TESTS will be

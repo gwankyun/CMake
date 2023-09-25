@@ -1,7 +1,7 @@
 TARGET_SUPPORTS_SHARED_LIBS
 ---------------------------
 
-Does the target platform support shared libraries.
+目标平台是否支持共享库。
 
 TARGET_SUPPORTS_SHARED_LIBS is a boolean specifying whether the target
 platform supports shared libraries.  Basically all current general

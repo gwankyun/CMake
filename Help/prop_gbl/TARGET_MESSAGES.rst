@@ -3,7 +3,7 @@ TARGET_MESSAGES
 
 .. versionadded:: 3.4
 
-Specify whether to report the completion of each target.
+指定是否报告每个目标的完成情况。
 
 This property specifies whether :ref:`Makefile Generators` should
 add a progress message describing that each target has been completed.

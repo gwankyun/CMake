@@ -1,7 +1,7 @@
 RULE_MESSAGES
 -------------
 
-Specify whether to report a message for each make rule.
+指定是否为每个make规则报告一条消息。
 
 This property specifies whether Makefile generators should add a
 progress message describing what each build rule does.  If the

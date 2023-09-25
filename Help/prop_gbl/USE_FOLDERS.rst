@@ -1,9 +1,8 @@
 USE_FOLDERS
 -----------
 
-Controls whether to use the :prop_tgt:`FOLDER` target property to organize
-targets into folders.  The value of ``USE_FOLDERS`` at the end of the top level
-``CMakeLists.txt`` file is what determines the behavior.
+控制是否使用\ :prop_tgt:`FOLDER`\ 目标属性将目标组织到文件夹中。在顶层\ ``CMakeLists.txt``\
+文件末尾的\ ``USE_FOLDERS``\ 的值决定了行为。
 
 .. versionchanged:: 3.26
 

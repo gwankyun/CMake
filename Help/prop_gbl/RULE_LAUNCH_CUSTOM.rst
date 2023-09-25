@@ -1,7 +1,7 @@
 RULE_LAUNCH_CUSTOM
 ------------------
 
-Specify a launcher for custom rules.
+为自定义规则指定启动器。
 
 :ref:`Makefile Generators` and the :generator:`Ninja` generator prefix
 custom commands with the given launcher command line.
