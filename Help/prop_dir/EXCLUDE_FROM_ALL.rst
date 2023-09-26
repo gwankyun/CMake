@@ -1,12 +1,9 @@
 EXCLUDE_FROM_ALL
 ----------------
 
-Set this directory property to a true value on a subdirectory to exclude
-its targets from the "all" target of its ancestors.  If excluded, running
-e.g. ``make`` in the parent directory will not build targets the
-subdirectory by default.  This does not affect the "all" target of the
-subdirectory itself.  Running e.g. ``make`` inside the subdirectory will
-still build its targets.
+在子目录上将此目录属性设置为true值，以将其目标从其父目录的“all”目标中排除。如果排除，在父目\
+录中运行例如\ ``make``\ 将不会在默认情况下以子目录为目标。这不会影响子目录本身的“all”目标。\
+在子目录中运行例如\ ``make``\ 仍然会构建它的目标。
 
 If the :prop_tgt:`EXCLUDE_FROM_ALL` target property is set on a target
 then its value determines whether the target is included in the "all"

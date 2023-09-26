@@ -1,6 +1,5 @@
 CLEAN_NO_CUSTOM
 ---------------
 
-Set to true to tell :ref:`Makefile Generators` not to remove the outputs of
-custom commands for this directory during the ``make clean`` operation.
-This is ignored on other generators because it is not possible to implement.
+设置为true告诉\ :ref:`Makefile Generators`\ 在\ ``make clean``\ 操作期间不要删除此\
+目录的自定义命令的输出。这在其他生成器上被忽略，因为它不可能实现。

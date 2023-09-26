@@ -3,5 +3,4 @@ BINARY_DIR
 
 .. versionadded:: 3.7
 
-This read-only directory property reports absolute path to the binary
-directory corresponding to the source on which it is read.
+此只读目录属性报告与读取源对应的二进制目录的绝对路径。

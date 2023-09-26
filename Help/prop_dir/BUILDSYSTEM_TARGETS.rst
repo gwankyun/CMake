@@ -3,13 +3,11 @@ BUILDSYSTEM_TARGETS
 
 .. versionadded:: 3.7
 
-This read-only directory property contains a
-:ref:`semicolon-separated list <CMake Language Lists>` of buildsystem targets added in the
-directory by calls to the :command:`add_library`, :command:`add_executable`,
-and :command:`add_custom_target` commands.  The list does not include any
-:ref:`Imported Targets` or :ref:`Alias Targets`, but does include
-:ref:`Interface Libraries`.  Each entry in the list is the logical name
-of a target, suitable to pass to the :command:`get_property` command
-``TARGET`` option.
+这个只读目录属性包含一个构建系统目标的\ :ref:`分号分隔列表 <CMake Language Lists>`，\
+这些目标是通过调用\ :command:`add_library`、\ :command:`add_executable`\ 和\
+:command:`add_custom_target`\ 命令添加到目录中的。该列表不包括任何\
+:ref:`Imported Targets`\ 或\ :ref:`Alias Targets`，但包括\
+:ref:`Interface Libraries`。列表中的每个条目都是目标的逻辑名称，适合传递给\
+:command:`get_property`\ 命令\ ``TARGET``\ 选项。
 
 See also the :prop_dir:`IMPORTED_TARGETS` directory property.

@@ -1,7 +1,7 @@
 COMPILE_OPTIONS
 ---------------
 
-List of options to pass to the compiler.
+要传递给编译器的选项列表。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>` of options
 given so far to the :command:`add_compile_options` command.

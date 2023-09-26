@@ -1,8 +1,7 @@
 DEFINITIONS
 -----------
 
-For CMake 2.4 compatibility only.  Use :prop_dir:`COMPILE_DEFINITIONS`
-instead.
+仅为CMake 2.4兼容。使用\ :prop_dir:`COMPILE_DEFINITIONS`\ 代替。
 
 This read-only property specifies the list of flags given so far to
 the :command:`add_definitions` command.  It is intended for debugging

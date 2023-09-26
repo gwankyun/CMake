@@ -1,7 +1,7 @@
 COMPILE_DEFINITIONS
 -------------------
 
-Preprocessor definitions for compiling a directory's sources.
+编译目录源代码的预处理器定义。
 
 This property specifies the list of options given so far to the
 :command:`add_compile_definitions` (or :command:`add_definitions`) command.
