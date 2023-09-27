@@ -3,12 +3,9 @@ IMPORTED_TARGETS
 
 .. versionadded:: 3.21
 
-This read-only directory property contains a
-:ref:`semicolon-separated list <CMake Language Lists>` of
-:ref:`Imported Targets` added in the directory by calls to the
-:command:`add_library` and :command:`add_executable` commands.
-Each entry in the list is the logical name of a target, suitable
-to pass to the :command:`get_property` command ``TARGET`` option
-when called in the same directory.
+此只读目录属性包含通过调用\ :command:`add_library`\ 和\ :command:`add_executable`\
+命令添加到目录中的\ :ref:`Imported Targets`\ 的\
+:ref:`分号分隔列表 <CMake Language Lists>` 。列表中的每个条目都是目标的逻辑名称，适合在\
+同一目录中调用时传递给\ :command:`get_property`\ 命令\ ``TARGET``\ 选项。
 
 See also the :prop_dir:`BUILDSYSTEM_TARGETS` directory property.

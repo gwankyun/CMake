@@ -1,7 +1,7 @@
 IMPLICIT_DEPENDS_INCLUDE_TRANSFORM
 ----------------------------------
 
-Specify ``#include`` line transforms for dependencies in a directory.
+为目录中的依赖项指定\ ``#include``\ 行转换。
 
 This property specifies rules to transform macro-like ``#include`` lines
 during implicit dependency scanning of C and C++ source files.  The

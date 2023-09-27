@@ -1,7 +1,7 @@
 INCLUDE_REGULAR_EXPRESSION
 --------------------------
 
-Include file scanning regular expression.
+包括文件扫描正则表达式。
 
 This property specifies the regular expression used during
 dependency scanning to match include files that should be followed.
