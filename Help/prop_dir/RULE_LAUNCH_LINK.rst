@@ -1,7 +1,7 @@
 RULE_LAUNCH_LINK
 ----------------
 
-Specify a launcher for link rules.
+为链接规则指定启动器。
 
 .. note::
   This property is intended for internal use by :manual:`ctest(1)`.  Projects

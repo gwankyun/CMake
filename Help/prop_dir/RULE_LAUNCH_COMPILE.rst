@@ -1,7 +1,7 @@
 RULE_LAUNCH_COMPILE
 -------------------
 
-Specify a launcher for compile rules.
+为编译规则指定启动器。
 
 .. note::
   This property is intended for internal use by :manual:`ctest(1)`.  Projects

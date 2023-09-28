@@ -1,7 +1,7 @@
 VS_GLOBAL_SECTION_POST_<section>
 --------------------------------
 
-Specify a postSolution global section in Visual Studio.
+在Visual Studio中指定一个postSolution全局部分。
 
 Setting a property like this generates an entry of the following form
 in the solution file:

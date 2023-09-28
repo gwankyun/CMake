@@ -1,7 +1,7 @@
 LINK_DIRECTORIES
 ----------------
 
-List of linker search directories.
+链接器搜索目录列表。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>` of directories
 and is typically populated using the :command:`link_directories` command.

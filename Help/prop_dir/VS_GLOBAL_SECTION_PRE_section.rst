@@ -1,7 +1,7 @@
 VS_GLOBAL_SECTION_PRE_<section>
 -------------------------------
 
-Specify a preSolution global section in Visual Studio.
+在Visual Studio中指定一个preSolution全局部分。
 
 Setting a property like this generates an entry of the following form
 in the solution file:

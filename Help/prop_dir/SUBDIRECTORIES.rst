@@ -3,12 +3,10 @@ SUBDIRECTORIES
 
 .. versionadded:: 3.7
 
-This read-only directory property contains a
-:ref:`semicolon-separated list <CMake Language Lists>` of subdirectories processed so far by
-the :command:`add_subdirectory` or :command:`subdirs` commands.  Each entry is
-the absolute path to the source directory (containing the ``CMakeLists.txt``
-file).  This is suitable to pass to the :command:`get_property` command
-``DIRECTORY`` option.
+此只读目录属性包含由\ :command:`add_subdirectory`\ 或\ :command:`subdirs`\ 命令处理\
+的子目录的\ :ref:`分号分隔列表 <CMake Language Lists>`。每个条目都是源目录（包含\
+``CMakeLists.txt``\ 文件）的绝对路径。这适合传递给\ :command:`get_property`\ 命令\
+``DIRECTORY``\ 选项。
 
 .. note::
 

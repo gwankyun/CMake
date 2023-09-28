@@ -3,7 +3,7 @@ VS_STARTUP_PROJECT
 
 .. versionadded:: 3.6
 
-Specify the default startup project in a Visual Studio solution.
+在Visual Studio解决方案中指定默认启动项目。
 
 The :ref:`Visual Studio Generators` create a ``.sln`` file for each directory
 whose ``CMakeLists.txt`` file calls the :command:`project` command.  Set this

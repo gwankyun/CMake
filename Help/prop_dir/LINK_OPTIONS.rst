@@ -3,8 +3,7 @@ LINK_OPTIONS
 
 .. versionadded:: 3.13
 
-List of options to use for the link step of shared library, module
-and executable targets as well as the device link step.
+用于共享库、模块和可执行目标的链接步骤以及设备链接步骤的选项列表。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>` of options
 given so far to the :command:`add_link_options` command.

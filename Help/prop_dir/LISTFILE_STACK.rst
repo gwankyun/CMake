@@ -1,7 +1,7 @@
 LISTFILE_STACK
 --------------
 
-The current stack of listfiles being processed.
+正在处理的列表文件的当前堆栈。
 
 This property is mainly useful when trying to debug errors in your
 CMake scripts.  It returns a list of what list files are currently
