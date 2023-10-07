@@ -1058,7 +1058,8 @@ CTest测试步骤
   * :module:`CTest`\ 变量：\ ``CTEST_TEST_LOAD``
 
 ``TimeOut``
-  如果未由\ :prop_test:`TIMEOUT`\ 属性指定，则为每个测试的默认超时。
+  如果未由\ :prop_test:`TIMEOUT`\ 属性或者\ :option:`--timeout <ctest --timeout>`\
+  标识指定，则为每个测试的默认超时。
 
   * `CTest Script`_\ 变量：:variable:`CTEST_TEST_TIMEOUT`
   * :module:`CTest`\ 变量：\ ``DART_TESTING_TIMEOUT``
