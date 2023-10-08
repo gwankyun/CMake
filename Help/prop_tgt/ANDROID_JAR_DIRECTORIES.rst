@@ -3,8 +3,7 @@ ANDROID_JAR_DIRECTORIES
 
 .. versionadded:: 3.4
 
-Set the Android property that specifies directories to search for
-the JAR libraries.
+设置Android属性，指定要搜索JAR库的目录。
 
 This a string property that contains the directory paths separated by
 semicolons. This property is initialized by the value of the

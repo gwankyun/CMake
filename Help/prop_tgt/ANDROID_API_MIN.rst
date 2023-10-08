@@ -3,7 +3,6 @@ ANDROID_API_MIN
 
 .. versionadded:: 3.2
 
-Set the Android MIN API version (e.g. ``9``).  The version number
-must be a positive decimal integer.  This property is initialized by
-the value of the :variable:`CMAKE_ANDROID_API_MIN` variable if it is set
-when a target is created.  Native code builds using this API version.
+设置Android MIN API版本号（如\ ``9``\ ），版本号必须为十进制正整数。如果在创建目标时设置\
+:variable:`CMAKE_ANDROID_API_MIN`\ 变量，则该属性由该变量的值初始化。使用此API版本构建\
+本机代码。

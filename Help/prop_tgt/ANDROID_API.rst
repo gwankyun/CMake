@@ -3,8 +3,6 @@ ANDROID_API
 
 .. versionadded:: 3.1
 
-When :ref:`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio
-Edition`, this property sets the Android target API version (e.g. ``15``).
-The version number must be a positive decimal integer.  This property is
-initialized by the value of the :variable:`CMAKE_ANDROID_API` variable if
-it is set when a target is created.
+当\ :ref:`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio Edition`\
+时，此属性设置Android目标API版本（例如\ ``15``\ ）。版本号必须是一个正十进制整数。如果在\
+创建目标时设置该属性，则由\ :variable:`CMAKE_ANDROID_API`\ 变量的值初始化。

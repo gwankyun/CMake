@@ -3,8 +3,7 @@ ALIAS_GLOBAL
 
 .. versionadded:: 3.18
 
-Read-only property indicating of whether an :ref:`ALIAS target <Alias Targets>`
-is globally visible.
+只读属性，指示\ :ref:`ALIAS目标 <Alias Targets>`\ 是否全局可见。
 
 The boolean value of this property is ``TRUE`` for aliases to
 :ref:`IMPORTED targets <Imported Targets>` created

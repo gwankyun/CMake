@@ -3,7 +3,5 @@ ANDROID_JAR_DEPENDENCIES
 
 .. versionadded:: 3.4
 
-Set the Android property that specifies JAR dependencies.
-This is a string value property. This property is initialized
-by the value of the :variable:`CMAKE_ANDROID_JAR_DEPENDENCIES`
-variable if it is set when a target is created.
+设置指定JAR依赖项的Android属性。这是一个字符串值属性。如果在创建目标时设置该属性，则该属性由\
+:variable:`CMAKE_ANDROID_JAR_DEPENDENCIES`\ 变量的值初始化。
