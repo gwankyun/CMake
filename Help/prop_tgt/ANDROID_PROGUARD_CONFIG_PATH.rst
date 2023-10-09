@@ -3,9 +3,6 @@ ANDROID_PROGUARD_CONFIG_PATH
 
 .. versionadded:: 3.4
 
-Set the Android property that specifies the location of the ProGuard
-config file. Leave empty to use the default one.
-This a string property that contains the path to ProGuard config file.
-This property is initialized by the value of the
-:variable:`CMAKE_ANDROID_PROGUARD_CONFIG_PATH` variable if it is set
-when a target is created.
+设置Android属性，指定ProGuard配置文件的位置。留空以使用默认值。这是一个字符串属性，包含\
+ProGuard配置文件的路径。如果在创建目标时设置了\
+:variable:`CMAKE_ANDROID_PROGUARD_CONFIG_PATH`\ 变量，则该属性由该变量的值初始化。

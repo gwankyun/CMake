@@ -3,8 +3,5 @@ ANDROID_PROCESS_MAX
 
 .. versionadded:: 3.4
 
-Set the Android property that defines the maximum number of a
-parallel Android NDK compiler processes (e.g. ``4``).
-This property is initialized by the value of the
-:variable:`CMAKE_ANDROID_PROCESS_MAX` variable if it is set
-when a target is created.
+设置Android属性，定义并行Android NDK编译器进程的最大数量（例如\ ``4``\ ）。如果在创建目\
+标时设置该属性，则该属性由\ :variable:`CMAKE_ANDROID_PROCESS_MAX`\ 变量的值初始化。

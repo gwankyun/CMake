@@ -3,8 +3,7 @@ ANDROID_NATIVE_LIB_DEPENDENCIES
 
 .. versionadded:: 3.4
 
-Set the Android property that specifies the .so dependencies.
-This is a string property.
+设置指定.so依赖项的Android属性。这是一个字符串属性。
 
 This property is initialized by the value of the
 :variable:`CMAKE_ANDROID_NATIVE_LIB_DEPENDENCIES` variable if it is set

@@ -1,7 +1,7 @@
 AUTOGEN_TARGET_DEPENDS
 ----------------------
 
-Additional target dependencies of the corresponding ``_autogen`` target.
+对应\ ``_autogen``\ 目标的附加目标依赖项。
 
 Targets which have their :prop_tgt:`AUTOMOC` or :prop_tgt:`AUTOUIC` property
 ``ON`` have a corresponding ``_autogen`` target which generates

@@ -3,6 +3,5 @@ ANDROID_SKIP_ANT_STEP
 
 .. versionadded:: 3.4
 
-Set the Android property that defines whether or not to skip the Ant build step.
-This is a boolean property initialized by the value of the
-:variable:`CMAKE_ANDROID_SKIP_ANT_STEP` variable if it is set when a target is created.
+设置定义是否跳过Ant构建步骤的Android属性。这是一个布尔属性，如果在创建目标时设置\
+:variable:`CMAKE_ANDROID_SKIP_ANT_STEP`\ 变量，则由该变量的值初始化。

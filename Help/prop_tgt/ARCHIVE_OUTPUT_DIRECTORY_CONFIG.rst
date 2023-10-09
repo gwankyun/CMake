@@ -1,8 +1,7 @@
 ARCHIVE_OUTPUT_DIRECTORY_<CONFIG>
 ---------------------------------
 
-Per-configuration output directory for
-:ref:`ARCHIVE <Archive Output Artifacts>` target files.
+:ref:`ARCHIVE <Archive Output Artifacts>`\ 目标文件的配置输出目录。
 
 This is a per-configuration version of the
 :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY` target property, but

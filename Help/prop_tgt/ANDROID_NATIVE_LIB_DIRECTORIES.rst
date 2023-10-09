@@ -3,8 +3,7 @@ ANDROID_NATIVE_LIB_DIRECTORIES
 
 .. versionadded:: 3.4
 
-Set the Android property that specifies directories to search for the ``.so``
-libraries.
+设置Android属性，指定要搜索\ ``.so``\ 库的目录。
 
 This a string property that contains the directory paths separated
 by semicolons.

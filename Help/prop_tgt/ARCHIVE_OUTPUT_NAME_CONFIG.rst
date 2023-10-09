@@ -1,8 +1,7 @@
 ARCHIVE_OUTPUT_NAME_<CONFIG>
 ----------------------------
 
-Per-configuration output name for
-:ref:`ARCHIVE <Archive Output Artifacts>` target files.
+:ref:`ARCHIVE <Archive Output Artifacts>`\ 目标文件的配置输出名称。
 
 This is the configuration-specific version of the
 :prop_tgt:`ARCHIVE_OUTPUT_NAME` target property.

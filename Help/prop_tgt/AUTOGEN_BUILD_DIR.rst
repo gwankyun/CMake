@@ -3,8 +3,8 @@ AUTOGEN_BUILD_DIR
 
 .. versionadded:: 3.9
 
-Directory where :prop_tgt:`AUTOMOC`, :prop_tgt:`AUTOUIC` and :prop_tgt:`AUTORCC`
-generate files for the target.
+:prop_tgt:`AUTOMOC`、\ :prop_tgt:`AUTOUIC`\ 和\ :prop_tgt:`AUTORCC`\ 为目标生成文\
+件的目录。
 
 The directory is created on demand and automatically added to the
 :prop_tgt:`ADDITIONAL_CLEAN_FILES` target property.

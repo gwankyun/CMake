@@ -1,4 +1,4 @@
-Output directory in which to build |XXX| target files.
+要在其中构建\ |XXX|\ 目标文件的输出目录。
 
 This property specifies the directory into which |xxx| target files
 should be built.  The property value may use

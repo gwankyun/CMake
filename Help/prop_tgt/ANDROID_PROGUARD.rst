@@ -3,9 +3,6 @@ ANDROID_PROGUARD
 
 .. versionadded:: 3.4
 
-When this property is set to true that enables the ProGuard tool to shrink,
-optimize, and obfuscate the code by removing unused code and renaming
-classes, fields, and methods with semantically obscure names.
-This property is initialized by the value of the
-:variable:`CMAKE_ANDROID_PROGUARD` variable if it is set
-when a target is created.
+当此属性设置为true时，ProGuard工具可以通过删除未使用的代码和用语义模糊的名称重命名类、字段\
+和方法来缩小、优化和混淆代码。如果在创建目标时设置\ :variable:`CMAKE_ANDROID_PROGUARD`\
+变量，则该属性由该变量的值初始化。

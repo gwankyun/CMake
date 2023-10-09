@@ -3,9 +3,8 @@ ANDROID_STL_TYPE
 
 .. versionadded:: 3.4
 
-When :ref:`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio
-Edition`, this property specifies the type of STL support for the project.
-This is a string property that could set to the one of the following values:
+当\ :ref:`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio Edition`\
+时，此属性指定项目的STL支持类型。这是一个字符串属性，可以设置为以下值之一：
 
 ``none``
   No C++ Support

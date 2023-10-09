@@ -3,8 +3,7 @@ AUTOGEN_ORIGIN_DEPENDS
 
 .. versionadded:: 3.14
 
-Switch for forwarding origin target dependencies to the corresponding
-``_autogen`` target.
+将原始目标依赖项转发到相应的\ ``_autogen``\ 目标。
 
 Targets which have their :prop_tgt:`AUTOMOC` or :prop_tgt:`AUTOUIC` property
 ``ON`` have a corresponding ``_autogen`` target which generates
