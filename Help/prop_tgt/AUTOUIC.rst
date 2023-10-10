@@ -1,7 +1,7 @@
 AUTOUIC
 -------
 
-Should the target be processed with auto-uic (for Qt projects).
+应该用auto-uic处理目标（对于Qt项目）。
 
 ``AUTOUIC`` is a boolean specifying whether CMake will handle
 the Qt ``uic`` code generator automatically, i.e. without having to use

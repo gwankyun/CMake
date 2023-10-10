@@ -3,8 +3,7 @@ AUTOUIC_SEARCH_PATHS
 
 .. versionadded:: 3.9
 
-Search path list used by :prop_tgt:`AUTOUIC` to find included
-``.ui`` files.
+:prop_tgt:`AUTOUIC`\ 用于查找包含的\ ``.ui``\ 文件的搜索路径列表。
 
 This property is initialized by the value of the
 :variable:`CMAKE_AUTOUIC_SEARCH_PATHS` variable if it is set

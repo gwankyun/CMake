@@ -3,8 +3,7 @@ AUTOMOC_COMPILER_PREDEFINES
 
 .. versionadded:: 3.10
 
-Boolean value used by :prop_tgt:`AUTOMOC` to determine if the
-compiler pre definitions file ``moc_predefs.h`` should be generated.
+:prop_tgt:`AUTOMOC`\ 使用布尔值来确定是否应该生成编译器预定义文件\ ``moc_predefs.h``。
 
 CMake generates a ``moc_predefs.h`` file with compiler pre definitions
 from the output of the command defined in

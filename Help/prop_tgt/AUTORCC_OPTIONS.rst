@@ -1,7 +1,7 @@
 AUTORCC_OPTIONS
 ---------------
 
-Additional options for ``rcc`` when using :prop_tgt:`AUTORCC`
+使用\ :prop_tgt:`AUTORCC`\ 时\ ``rcc``\ 的附加选项
 
 This property holds additional command line options which will be used
 when ``rcc`` is executed during the build via :prop_tgt:`AUTORCC`,

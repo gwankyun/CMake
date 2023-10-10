@@ -3,8 +3,8 @@ AUTOMOC_PATH_PREFIX
 
 .. versionadded:: 3.16
 
-When this property is ``ON``, CMake will generate the ``-p`` path prefix
-option for ``moc`` on :prop_tgt:`AUTOMOC` enabled Qt targets.
+当此属性为\ ``ON``\ 时，CMake将为启用\ :prop_tgt:`AUTOMOC`\ 的\ ``moc``\ 目标生成\
+``-p``\ 路径前缀选项。
 
 To generate the path prefix, CMake tests if the header compiled by ``moc``
 is in any of the target

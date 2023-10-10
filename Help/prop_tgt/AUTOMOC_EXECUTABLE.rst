@@ -3,11 +3,9 @@ AUTOMOC_EXECUTABLE
 
 .. versionadded:: 3.14
 
-``AUTOMOC_EXECUTABLE`` is file path pointing to the ``moc``
-executable to use for :prop_tgt:`AUTOMOC` enabled files. Setting
-this property will make CMake skip the automatic detection of the
-``moc`` binary as well as the sanity-tests normally run to ensure
-that the binary is available and working as expected.
+``AUTOMOC_EXECUTABLE``\ 是指向\ ``moc``\ 可执行文件的文件路径，用于启用\
+:prop_tgt:`AUTOMOC`\ 的文件。设置此属性将使CMake跳过\ ``moc``\ 二进制文件的自动检测以\
+及通常运行的安全性测试，以确保二进制文件可用并按预期工作。
 
 Usually this property does not need to be set. Only consider this
 property if auto-detection of ``moc`` can not work -- e.g. because

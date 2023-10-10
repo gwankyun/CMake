@@ -1,7 +1,7 @@
 AUTORCC
 -------
 
-Should the target be processed with auto-rcc (for Qt projects).
+应该用auto-rcc处理目标（对于Qt项目）。
 
 ``AUTORCC`` is a boolean specifying whether CMake will handle
 the Qt ``rcc`` code generator automatically, i.e. without having to use

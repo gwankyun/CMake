@@ -1,7 +1,7 @@
 AUTOMOC
 -------
 
-Should the target be processed with auto-moc (for Qt projects).
+应该用auto-moc处理目标（对于Qt项目）。
 
 ``AUTOMOC`` is a boolean specifying whether CMake will handle the Qt
 ``moc`` preprocessor automatically, i.e.  without having to use commands like

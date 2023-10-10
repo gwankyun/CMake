@@ -3,9 +3,8 @@ AUTOMOC_DEPEND_FILTERS
 
 .. versionadded:: 3.9
 
-Filter definitions used by :prop_tgt:`AUTOMOC` to extract file names from a
-source file that are registered as additional dependencies for the
-``moc`` file of the source file.
+:prop_tgt:`AUTOMOC`\ 用于从源文件提取文件名的过滤器定义，这些文件名被注册为源文件的\
+``moc``\ 文件的附加依赖项。
 
 Filters are defined as ``KEYWORD;REGULAR_EXPRESSION`` pairs. First the file
 content is searched for ``KEYWORD``. If it is found at least once, then file
