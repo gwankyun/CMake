@@ -3,7 +3,7 @@ BUILD_RPATH_USE_ORIGIN
 
 .. versionadded:: 3.14
 
-Whether to use relative paths for the build ``RPATH``.
+是否为构建\ ``RPATH``\ 使用相对路径。
 
 This property is initialized by the value of the variable
 :variable:`CMAKE_BUILD_RPATH_USE_ORIGIN`.

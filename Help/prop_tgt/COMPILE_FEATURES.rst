@@ -3,7 +3,7 @@ COMPILE_FEATURES
 
 .. versionadded:: 3.1
 
-Compiler features enabled for this target.
+为此目标启用的编译器特性。
 
 The list of features in this property are a subset of the features listed
 in the :variable:`CMAKE_C_COMPILE_FEATURES`, :variable:`CMAKE_CUDA_COMPILE_FEATURES`, and

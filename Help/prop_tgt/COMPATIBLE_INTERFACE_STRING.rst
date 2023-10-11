@@ -1,7 +1,7 @@
 COMPATIBLE_INTERFACE_STRING
 ---------------------------
 
-Properties which must be string-compatible with their link interface
+属性，这些属性必须与其链接接口的字符串兼容
 
 The ``COMPATIBLE_INTERFACE_STRING`` property may contain a list of
 properties for this target which must be the same when evaluated as a

@@ -1,7 +1,7 @@
 COMPATIBLE_INTERFACE_NUMBER_MAX
 -------------------------------
 
-Properties whose maximum value from the link interface will be used.
+将使用来自链接接口的最大值的属性。
 
 The ``COMPATIBLE_INTERFACE_NUMBER_MAX`` property may contain a list of
 properties for this target whose maximum value may be read at generate

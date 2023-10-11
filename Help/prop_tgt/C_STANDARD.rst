@@ -3,7 +3,7 @@ C_STANDARD
 
 .. versionadded:: 3.1
 
-The C standard whose features are requested to build this target.
+C标准，其特性被要求构建此目标。
 
 This property specifies the C standard whose features are requested
 to build this target.  For some compilers, this results in adding a

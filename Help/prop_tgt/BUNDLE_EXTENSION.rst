@@ -1,8 +1,8 @@
 BUNDLE_EXTENSION
 ----------------
 
-The file extension used to name a :prop_tgt:`BUNDLE`, a :prop_tgt:`FRAMEWORK`,
-or a :prop_tgt:`MACOSX_BUNDLE` target on the macOS and iOS.
+用于命名macOS和iOS上的\ :prop_tgt:`BUNDLE`、\ :prop_tgt:`FRAMEWORK`\ 或\
+:prop_tgt:`MACOSX_BUNDLE`\ 目标的文件扩展名。
 
 The default value is ``bundle``, ``framework``, or ``app`` for the respective
 target types.

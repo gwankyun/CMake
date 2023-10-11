@@ -1,7 +1,7 @@
 COMPATIBLE_INTERFACE_BOOL
 -------------------------
 
-Properties which must be compatible with their link interface
+属性，这些属性必须与其链接接口兼容
 
 The ``COMPATIBLE_INTERFACE_BOOL`` property may contain a list of
 properties for this target which must be consistent when evaluated as a

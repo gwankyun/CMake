@@ -3,10 +3,9 @@ COMPILE_WARNING_AS_ERROR
 
 .. versionadded:: 3.24
 
-Specify whether to treat warnings on compile as errors.
-If enabled, adds a flag to treat warnings on compile as errors.
-If the :option:`cmake --compile-no-warning-as-error` option is given
-on the :manual:`cmake(1)` command line, this property is ignored.
+指定是否将编译上的警告视为错误。如果启用，则添加一个标志以将编译上的警告视为错误。如果在\
+:manual:`cmake(1)`\ 命令行上给出了\ :option:`cmake --compile-no-warning-as-error`\
+选项，则忽略此属性。
 
 This property is not implemented for all compilers.  It is silently ignored
 if there is no implementation for the compiler being used.  The currently

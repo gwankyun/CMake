@@ -1,7 +1,7 @@
 <CONFIG>_POSTFIX
 ----------------
 
-Postfix to append to the target file name for configuration ``<CONFIG>``.
+用于添加到配置\ ``<CONFIG>``\ 的目标文件名的后缀。
 
 When building with configuration ``<CONFIG>`` the value of this property
 is appended to the target file name built on disk.  For non-executable

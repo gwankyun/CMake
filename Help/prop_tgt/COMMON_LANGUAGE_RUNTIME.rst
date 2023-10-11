@@ -3,8 +3,7 @@ COMMON_LANGUAGE_RUNTIME
 
 .. versionadded:: 3.12
 
-By setting this target property, the target is configured to build with
-``C++/CLI`` support.
+通过设置该目标属性，可以将目标配置为使用\ ``C++/CLI``\ 支持进行构建。
 
 The Visual Studio generator defines the ``clr`` parameter depending on
 the value of the ``COMMON_LANGUAGE_RUNTIME`` target property:

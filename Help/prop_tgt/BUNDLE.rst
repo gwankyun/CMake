@@ -1,7 +1,7 @@
 BUNDLE
 ------
 
-This target is a ``CFBundle`` on the macOS.
+这个目标是macOS上的\ ``CFBundle``。
 
 If a module library target has this property set to true it will be
 built as a ``CFBundle`` when built on the mac.  It will have the directory

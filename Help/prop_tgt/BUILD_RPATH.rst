@@ -3,12 +3,10 @@ BUILD_RPATH
 
 .. versionadded:: 3.8
 
-A :ref:`semicolon-separated list <CMake Language Lists>` specifying
-runtime path (``RPATH``) entries to add to binaries linked in the
-build tree (for platforms that support it).  By default, CMake sets
-the runtime path of binaries in the build tree to contain search
-paths it knows are needed to find the shared libraries they link.
-Projects may set ``BUILD_RPATH`` to specify additional search paths.
+一个\ :ref:`分号分隔的列表 <CMake Language Lists>`，指定要添加到构建树中链接的二进制文\
+件中的运行时路径（\ ``RPATH``\ ）条目（对于支持它的平台）。默认情况下，CMake在构建树中设\
+置二进制文件的运行时路径，以包含它知道需要查找它们链接的共享库的搜索路径。项目可以设置\
+``BUILD_RPATH``\ 来指定额外的搜索路径。
 
 The build-tree runtime path will *not* be used for binaries in the
 install tree.  It will be replaced with the install-tree runtime path
