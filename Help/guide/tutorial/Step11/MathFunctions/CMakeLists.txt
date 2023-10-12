@@ -26,7 +26,7 @@ if(USE_MYMATH)
                              ${CMAKE_CURRENT_BINARY_DIR}
                              )
 
-  # 说明当默认是共享库时，SqrtLibrary需要PIC
+  # state that SqrtLibrary need PIC when the default is shared libraries
   set_target_properties(SqrtLibrary PROPERTIES
                         POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
                         )
@@ -40,7 +40,7 @@ endif()
 # link MathFunctions to tutorial_compiler_flags
 target_link_libraries(MathFunctions PUBLIC tutorial_compiler_flags)
 
-# 定义当用declspec(dllexport)声明的符号
+# define the symbol stating we are using the declspec(dllexport) when
 # 在windows构建时
 target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
 
