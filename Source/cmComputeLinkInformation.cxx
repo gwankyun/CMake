@@ -29,6 +29,7 @@
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmValue.h"
+#include "cmXcFramework.h"
 #include "cmake.h"
 
 // #define CM_COMPUTE_LINK_INFO_DEBUG
@@ -373,6 +374,10 @@ cmComputeLinkInformation::cmComputeLinkInformation(
   this->LibraryFeatureDescriptors.emplace(
     "__CMAKE_LINK_FRAMEWORK",
     LibraryFeatureDescriptor{ "__CMAKE_LINK_FRAMEWORK", "<LIBRARY>" });
+  // To link xcframework using a full path
+  this->LibraryFeatureDescriptors.emplace(
+    "__CMAKE_LINK_XCFRAMEWORK",
+    LibraryFeatureDescriptor{ "__CMAKE_LINK_XCFRAMEWORK", "<LIBRARY>" });
 
   // Check the platform policy for missing soname case.
   this->NoSONameUsesPath =
@@ -519,16 +524,16 @@ cmComputeLinkInformation::GetFrameworkPathsEmitted() const
   return this->FrameworkPathsEmitted;
 }
 
+std::vector<std::string> const&
+cmComputeLinkInformation::GetXcFrameworkHeaderPaths() const
+{
+  return this->XcFrameworkHeaderPaths;
+}
+
 const std::set<const cmGeneratorTarget*>&
 cmComputeLinkInformation::GetSharedLibrariesLinked() const
 {
   return this->SharedLibrariesLinked;
-}
-
-const std::vector<const cmGeneratorTarget*>&
-cmComputeLinkInformation::GetObjectLibrariesLinked() const
-{
-  return this->ObjectLibrariesLinked;
 }
 
 bool cmComputeLinkInformation::Compute()
@@ -1157,12 +1162,14 @@ void cmComputeLinkInformation::AddItem(LinkEntry const& entry)
         this->AddItem(BT<std::string>(libName, item.Backtrace));
       }
     } else if (tgt->GetType() == cmStateEnums::OBJECT_LIBRARY) {
-      if (!tgt->HaveCxx20ModuleSources() && !tgt->HaveFortranSources(config)) {
-        // Ignore object library!
-        // Its object-files should already have been extracted for linking.
-      } else {
-        this->ObjectLibrariesLinked.push_back(entry.Target);
-      }
+      this->Items.emplace_back(entry.Item, ItemIsPath::No, entry.Target);
+    } else if (this->GlobalGenerator->IsXcode() &&
+               !tgt->GetImportedXcFrameworkPath(config).empty()) {
+      this->Items.emplace_back(
+        tgt->GetImportedXcFrameworkPath(config), ItemIsPath::Yes, tgt,
+        this->FindLibraryFeature(entry.Feature == DEFAULT
+                                   ? "__CMAKE_LINK_XCFRAMEWORK"
+                                   : entry.Feature));
     } else {
       // Decide whether to use an import library.
       cmStateEnums::ArtifactType artifact = tgt->HasImportLibrary(config)
@@ -1202,6 +1209,25 @@ void cmComputeLinkInformation::AddItem(LinkEntry const& entry)
         this->AddRuntimeDLL(tgt);
       }
     }
+
+    auto xcFrameworkPath = tgt->GetImportedXcFrameworkPath(config);
+    if (!xcFrameworkPath.empty()) {
+      auto plist = cmParseXcFrameworkPlist(xcFrameworkPath, *this->Makefile,
+                                           item.Backtrace);
+      if (!plist) {
+        return;
+      }
+      if (auto const* library =
+            plist->SelectSuitableLibrary(*this->Makefile, item.Backtrace)) {
+        if (!library->HeadersPath.empty()) {
+          this->AddXcFrameworkHeaderPath(cmStrCat(xcFrameworkPath, '/',
+                                                  library->LibraryIdentifier,
+                                                  '/', library->HeadersPath));
+        }
+      } else {
+        return;
+      }
+    }
   } else {
     // This is not a CMake target.  Use the name given.
     if (cmHasSuffix(entry.Feature, "FRAMEWORK"_s) ||
@@ -1210,6 +1236,12 @@ void cmComputeLinkInformation::AddItem(LinkEntry const& entry)
          this->Target->IsApple())) {
       // This is a framework.
       this->AddFrameworkItem(entry);
+    } else if (cmHasSuffix(entry.Feature, "XCFRAMEWORK"_s) ||
+               (entry.Feature == DEFAULT &&
+                cmSystemTools::IsPathToXcFramework(item.Value) &&
+                this->Target->IsApple())) {
+      // This is a framework.
+      this->AddXcFrameworkItem(entry);
     } else if (cmSystemTools::FileIsFullPath(item.Value)) {
       if (cmSystemTools::FileIsDirectory(item.Value)) {
         // This is a directory.
@@ -1593,7 +1625,9 @@ void cmComputeLinkInformation::AddTargetItem(LinkEntry const& entry)
     this->OldLinkDirItems.push_back(item.Value);
   }
 
-  if (target->IsFrameworkOnApple()) {
+  const bool isImportedFrameworkFolderOnApple =
+    target->IsImportedFrameworkFolderOnApple(this->Config);
+  if (target->IsFrameworkOnApple() || isImportedFrameworkFolderOnApple) {
     // Add the framework directory and the framework item itself
     auto fwDescriptor = this->GlobalGenerator->SplitFrameworkPath(
       item.Value, cmGlobalGenerator::FrameworkFormat::Extended);
@@ -1611,16 +1645,33 @@ void cmComputeLinkInformation::AddTargetItem(LinkEntry const& entry)
     }
 
     if (this->GlobalGenerator->IsXcode()) {
-      this->Items.emplace_back(
-        item, ItemIsPath::Yes, target,
-        this->FindLibraryFeature(entry.Feature == DEFAULT
-                                   ? "__CMAKE_LINK_FRAMEWORK"
-                                   : entry.Feature));
+      if (isImportedFrameworkFolderOnApple) {
+        if (entry.Feature == DEFAULT) {
+          this->AddLibraryFeature("FRAMEWORK");
+          this->Items.emplace_back(item, ItemIsPath::Yes, target,
+                                   this->FindLibraryFeature("FRAMEWORK"));
+        } else {
+          this->Items.emplace_back(item, ItemIsPath::Yes, target,
+                                   this->FindLibraryFeature(entry.Feature));
+        }
+      } else {
+        this->Items.emplace_back(
+          item, ItemIsPath::Yes, target,
+          this->FindLibraryFeature(entry.Feature == DEFAULT
+                                     ? "__CMAKE_LINK_FRAMEWORK"
+                                     : entry.Feature));
+      }
     } else {
       if (cmHasSuffix(entry.Feature, "FRAMEWORK"_s)) {
         this->Items.emplace_back(fwDescriptor->GetLinkName(), ItemIsPath::Yes,
                                  target,
                                  this->FindLibraryFeature(entry.Feature));
+      } else if (entry.Feature == DEFAULT &&
+                 isImportedFrameworkFolderOnApple) {
+        this->AddLibraryFeature("FRAMEWORK");
+        this->Items.emplace_back(fwDescriptor->GetLinkName(), ItemIsPath::Yes,
+                                 target,
+                                 this->FindLibraryFeature("FRAMEWORK"));
       } else {
         this->Items.emplace_back(
           item, ItemIsPath::Yes, target,
@@ -1930,6 +1981,46 @@ void cmComputeLinkInformation::AddFrameworkItem(LinkEntry const& entry)
   }
 }
 
+void cmComputeLinkInformation::AddXcFrameworkItem(LinkEntry const& entry)
+{
+  auto plist = cmParseXcFrameworkPlist(entry.Item.Value, *this->Makefile,
+                                       entry.Item.Backtrace);
+  if (!plist) {
+    return;
+  }
+
+  if (auto const* lib =
+        plist->SelectSuitableLibrary(*this->Makefile, entry.Item.Backtrace)) {
+    if (this->GlobalGenerator->IsXcode()) {
+      this->Items.emplace_back(
+        entry.Item.Value, ItemIsPath::Yes, nullptr,
+        this->FindLibraryFeature(entry.Feature == DEFAULT
+                                   ? "__CMAKE_LINK_XCFRAMEWORK"
+                                   : entry.Feature));
+    } else {
+      auto libraryPath = cmStrCat(
+        entry.Item.Value, '/', lib->LibraryIdentifier, '/', lib->LibraryPath);
+      LinkEntry libraryEntry(
+        BT<std::string>(libraryPath, entry.Item.Backtrace), entry.Target);
+
+      if (cmSystemTools::IsPathToFramework(libraryPath) &&
+          this->Target->IsApple()) {
+        // This is a framework.
+        this->AddFrameworkItem(libraryEntry);
+      } else {
+        this->Depends.push_back(libraryPath);
+        this->AddFullItem(libraryEntry);
+        this->AddLibraryRuntimeInfo(libraryPath);
+        if (!lib->HeadersPath.empty()) {
+          this->AddXcFrameworkHeaderPath(cmStrCat(entry.Item.Value, '/',
+                                                  lib->LibraryIdentifier, '/',
+                                                  lib->HeadersPath));
+        }
+      }
+    }
+  }
+}
+
 void cmComputeLinkInformation::DropDirectoryItem(BT<std::string> const& item)
 {
   // A full path to a directory was found as a link item.  Warn the
@@ -1965,6 +2056,11 @@ void cmComputeLinkInformation::AddFrameworkPath(std::string const& p)
   if (this->FrameworkPathsEmitted.insert(p).second) {
     this->FrameworkPaths.push_back(p);
   }
+}
+
+void cmComputeLinkInformation::AddXcFrameworkHeaderPath(std::string const& p)
+{
+  this->XcFrameworkHeaderPaths.push_back(p);
 }
 
 bool cmComputeLinkInformation::CheckSharedLibNoSOName(LinkEntry const& entry)
@@ -2236,16 +2332,20 @@ void cmComputeLinkInformation::AddLibraryRuntimeInfo(
   if (target->GetType() != cmStateEnums::SHARED_LIBRARY) {
     return;
   }
+  auto const* info = target->GetImportInfo(this->Config);
 
   // Try to get the soname of the library.  Only files with this name
   // could possibly conflict.
-  std::string soName = target->GetSOName(this->Config);
-  const char* soname = soName.empty() ? nullptr : soName.c_str();
+  const char* soname =
+    (!info || info->SOName.empty()) ? nullptr : info->SOName.c_str();
 
-  // Include this library in the runtime path ordering.
-  this->OrderRuntimeSearchPath->AddRuntimeLibrary(fullPath, soname);
-  if (this->LinkWithRuntimePath) {
-    this->OrderLinkerSearchPath->AddRuntimeLibrary(fullPath, soname);
+  // If this shared library has a known runtime artifact (IMPORTED_LOCATION),
+  // include its location in the runtime path ordering.
+  if (!info || !info->Location.empty()) {
+    this->OrderRuntimeSearchPath->AddRuntimeLibrary(fullPath, soname);
+    if (this->LinkWithRuntimePath) {
+      this->OrderLinkerSearchPath->AddRuntimeLibrary(fullPath, soname);
+    }
   }
 }
 

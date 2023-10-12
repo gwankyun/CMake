@@ -63,8 +63,8 @@ UNIX/Mac OSX/MinGW/MSYS/Cygwin
 或者，如果你计划开发CMake或以其他方式运行测试套件，创建
 一个单独的构建树：\ ::
 
-  $ mkdir cmake-build && cd cmake-build
-  $ ../cmake-source/bootstrap && make
+  $ mkdir build && cd build
+  $ ../bootstrap && make
 
 Windows
 ^^^^^^^

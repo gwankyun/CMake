@@ -5,9 +5,7 @@
 FindPhysFS
 ----------
 
-
-
-定位PhysFS库，此模块定义：
+Locate PhysFS library This module defines:
 
 ``PHYSFS_LIBRARY``
   the name of the library to link against
@@ -19,10 +17,8 @@ FindPhysFS
 ``$PHYSFSDIR`` is an environment variable that would correspond to::
 
   ./configure --prefix=$PHYSFSDIR
-  
-used in building PHYSFS.
 
-Created by Eric Wing.
+used in building PHYSFS.
 #]=======================================================================]
 
 find_path(PHYSFS_INCLUDE_DIR physfs.h

@@ -1,7 +1,7 @@
 COMPATIBLE_INTERFACE_NUMBER_MIN
 -------------------------------
 
-将使用来自链接接口的最小值的属性。
+Properties whose minimum value from the link interface will be used.
 
 The ``COMPATIBLE_INTERFACE_NUMBER_MIN`` property may contain a list of
 properties for this target whose minimum value may be read at generate

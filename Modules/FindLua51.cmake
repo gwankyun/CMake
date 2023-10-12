@@ -5,11 +5,7 @@
 FindLua51
 ---------
 
-
-
 查找Lua库。该模块定义
-
-::
 
   LUA51_FOUND, if false, do not try to link to Lua
   LUA_LIBRARIES
@@ -17,16 +13,11 @@ FindLua51
   LUA_VERSION_STRING, the version of Lua found (since CMake 2.8.8)
 
 
-
-Note that the expected include convention is
-
-::
+Note that the expected include convention is::
 
   #include "lua.h"
 
-and not
-
-::
+and not::
 
   #include <lua/lua.h>
 

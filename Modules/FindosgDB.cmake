@@ -34,7 +34,7 @@ FindosgDB
 ``$OSGDIR`` is an environment variable that would correspond to::
 
   ./configure --prefix=$OSGDIR
-  
+
 used in building osg.
 
 #]=======================================================================]

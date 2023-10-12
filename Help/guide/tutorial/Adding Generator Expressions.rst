@@ -129,9 +129,10 @@
 
   </details>
 
-最后，我们只希望在构建期间使用这些警告标志。已安装项目的使用者不应该继承我们的警告标志。为了\
-指定这一点，我们使用\ ``BUILD_INTERFACE``\ 条件将标记包装在生成器表达式中。生成的完整代码\
-如下所示：
+Lastly, we only want these warning flags to be used during builds. Consumers
+of our installed project should not inherit our warning flags. To specify
+this, we wrap our flags from TODO 3 in a generator expression using the
+``BUILD_INTERFACE`` condition. The resulting full code looks like the following:
 
 .. raw:: html
 

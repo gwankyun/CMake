@@ -82,7 +82,7 @@
 :command:`add_library`\ 创建了一个名为\ ``MathFunctions``\ 的库目标。库的源文件作为参\
 数传递给\ :command:`add_library`。这看起来像下面这行：
 
-.. raw:: html/
+.. raw:: html
 
   <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
@@ -166,7 +166,7 @@
 
   </details>
 
-最后，用库函数\ ``mathfunctions::mysqrt``\ 替换\ ``sqrt``。
+Lastly, replace ``sqrt`` with the wrapper function ``mathfunctions::sqrt``.
 
 .. raw:: html
 

@@ -19,18 +19,16 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
-#include "cm_codecvt.hxx"
-
 #include "cmBuildOptions.h"
 #include "cmCustomCommandLines.h"
 #include "cmDuration.h"
 #include "cmExportSet.h"
+#include "cmLocalGenerator.h"
 #include "cmStateSnapshot.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetDepend.h"
-#include "cmTransformDepfile.h"
 #include "cmValue.h"
 
 #if !defined(CMAKE_BOOTSTRAP)
@@ -41,13 +39,15 @@
 
 #define CMAKE_DIRECTORY_ID_SEP "::@"
 
+enum class cmDepfileFormat;
+enum class codecvt_Encoding;
+
 class cmDirectoryId;
 class cmExportBuildFileGenerator;
 class cmExternalMakefileProjectGenerator;
 class cmGeneratorTarget;
 class cmInstallRuntimeDependencySet;
 class cmLinkLineComputer;
-class cmLocalGenerator;
 class cmMakefile;
 class cmOutputConverter;
 class cmQtAutoGenGlobalInitializer;
@@ -120,10 +120,7 @@ public:
   }
 
   /** Get encoding used by generator for makefile files */
-  virtual codecvt::Encoding GetMakefileEncoding() const
-  {
-    return codecvt::None;
-  }
+  virtual codecvt_Encoding GetMakefileEncoding() const;
 
 #if !defined(CMAKE_BOOTSTRAP)
   /** Get a JSON object describing the generator.  */
@@ -160,6 +157,8 @@ public:
   virtual bool InspectConfigTypeVariables() { return true; }
 
   virtual bool CheckCxxModuleSupport() { return false; }
+
+  virtual bool IsGNUMakeJobServerAware() const { return false; }
 
   bool Compute();
   virtual void AddExtraIDETargets() {}
@@ -640,6 +639,8 @@ public:
   };
   StripCommandStyle GetStripCommandStyle(std::string const& strip);
 
+  virtual std::string& EncodeLiteral(std::string& lit) { return lit; }
+
 protected:
   // for a project collect all its targets by following depend
   // information, and also collect all the targets
@@ -660,6 +661,8 @@ protected:
   virtual bool ComputeTargetDepends();
 
   virtual bool CheckALLOW_DUPLICATE_CUSTOM_TARGETS() const;
+
+  bool DiscoverSyntheticTargets();
 
   bool AddHeaderSetVerification();
 

@@ -31,10 +31,13 @@ if(USE_MYMATH)
                         POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
                         )
 
+  # link SqrtLibrary to tutorial_compiler_flags
   target_link_libraries(SqrtLibrary PUBLIC tutorial_compiler_flags)
+
   target_link_libraries(MathFunctions PRIVATE SqrtLibrary)
 endif()
 
+# link MathFunctions to tutorial_compiler_flags
 target_link_libraries(MathFunctions PUBLIC tutorial_compiler_flags)
 
 # 定义当用declspec(dllexport)声明的符号

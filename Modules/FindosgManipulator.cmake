@@ -7,14 +7,18 @@ FindosgManipulator
 
 
 
-这是\ ``Findosg*``\ 套件的一部分，用于查找OpenSceneGraph组件。每个组件都是独立的，你必\
-须选择加入每个模块。你还必须选择OpenGL和OpenThreads（和生产者，如果需要的话），因为这些模\
-块不会为你做。这是为了在需要退出某些组件或更改特定模块的Find行为（可能是因为默认\
-:module:`FindOpenGL`\ 模块不能与你的系统一起工作）时，允许你逐个控制自己的系统。如果你想\
-使用一个更方便的模块，包括一切，使用\ :module:`FindOpenSceneGraph`\ 而不是\
-``Findosg*.cmake``\ 模块。
+This is part of the ``Findosg*`` suite used to find OpenSceneGraph
+components.  Each component is separate and you must opt in to each
+module.  You must also opt into OpenGL and OpenThreads (and Producer
+if needed) as these modules won't do it for you.  This is to allow you
+control over your own system piece by piece in case you need to opt
+out of certain components or change the Find behavior for a particular
+module (perhaps because the default :module:`FindOpenGL` module doesn't
+work with your system as an example).  If you want to use a more
+convenient module that includes everything, use the
+:module:`FindOpenSceneGraph` instead of the ``Findosg*.cmake`` modules.
 
-定位osgManipulator，该模块定义：
+Locate osgManipulator This module defines:
 
 ``OSGMANIPULATOR_FOUND``
   Was osgManipulator found?
@@ -30,7 +34,7 @@ FindosgManipulator
 ``$OSGDIR`` is an environment variable that would correspond to::
 
   ./configure --prefix=$OSGDIR
-  
+
 used in building osg.
 
 Created by Eric Wing.

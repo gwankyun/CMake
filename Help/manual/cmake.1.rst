@@ -257,22 +257,34 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --debug-find
 
- 将cmake find命令置于调试模式。
+ .. versionadded:: 3.17
 
- 在cmake运行到标准错误时打印额外的find调用信息。输出是为人们使用而设计的，而不是为解析设计的。\
- 请参阅\ :variable:`CMAKE_FIND_DEBUG_MODE`\ 变量来调试项目中更局部的部分。
+ Put cmake find commands in a debug mode.
+
+ Print extra find call information during the cmake run to standard
+ error. Output is designed for human consumption and not for parsing.
+ See also the :variable:`CMAKE_FIND_DEBUG_MODE` variable for debugging
+ a more local part of the project.
 
 .. option:: --debug-find-pkg=<pkg>[,...]
 
- 在调用\ :command:`find_package(\<pkg\>) <find_package>`\ 时，将cmake find命令置于\
- 调试模式，其中\ ``<pkg>``\ 是给定的逗号分隔的区分大小写的包名列表中的条目。
+ .. versionadded:: 3.23
 
- 类似于\ :option:`--debug-find <cmake --debug-find>`，但将作用域限制为指定的包。
+ Put cmake find commands in a debug mode when running under calls
+ to :command:`find_package(\<pkg\>) <find_package>`, where ``<pkg>``
+ is an entry in the given comma-separated list of case-sensitive package
+ names.
+
+ Like :option:`--debug-find <cmake --debug-find>`, but limiting scope
+ to the specified packages.
 
 .. option:: --debug-find-var=<var>[,...]
 
- 当使用\ ``<var>``\ 作为结果变量调用cmake find命令时，将其置于调试模式，其中\ ``<var>``\
- 是给定逗号分隔列表中的条目。
+ .. versionadded:: 3.23
+
+ Put cmake find commands in a debug mode when called with ``<var>``
+ as the result variable, where ``<var>`` is an entry in the given
+ comma-separated list.
 
  类似于\ :option:`--debug-find <cmake --debug-find>`，但将作用域限制为指定的变量名。
 
@@ -290,9 +302,11 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --trace-format=<format>
 
- 将cmake置于跟踪模式并设置跟踪输出格式。
+ .. versionadded:: 3.17
 
- ``<format>``\ 可以是下列值之一。
+ Put cmake in trace mode and sets the trace output format.
+
+ ``<format>`` can be one of the following values.
 
    ``human``
      以人类可读的格式打印每个跟踪行。这是默认格式。
@@ -398,12 +412,19 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --compile-no-warning-as-error
 
- 忽略目标属性\ :prop_tgt:`COMPILE_WARNING_AS_ERROR`\
- 和变量\ :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`，防止警告在编译时被视为错误。
+ .. versionadded:: 3.24
+
+ Ignore target property :prop_tgt:`COMPILE_WARNING_AS_ERROR` and variable
+ :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`, preventing warnings from being
+ treated as errors on compile.
 
 .. option:: --profiling-output=<path>
 
- 与\ :option:`--profiling-format <cmake --profiling-format>`\ 一起使用，输出到给定的路径。
+ .. versionadded:: 3.18
+
+ Used in conjunction with
+ :option:`--profiling-format <cmake --profiling-format>` to output to a
+ given path.
 
 .. option:: --profiling-format=<file>
 
@@ -1159,6 +1180,8 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 
 运行工作流预设
 =====================
+
+.. versionadded:: 3.25
 
 .. program:: cmake
 

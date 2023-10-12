@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <functional>
 #include <sstream>
+#include <type_traits>
 #include <utility>
 
 #include <cm/iterator>
@@ -181,14 +182,13 @@ std::string cmGlobalNinjaGenerator::EncodeRuleName(std::string const& name)
   return encoded;
 }
 
-std::string cmGlobalNinjaGenerator::EncodeLiteral(const std::string& lit)
+std::string cmGlobalNinjaGenerator::GetEncodedLiteral(const std::string& lit)
 {
   std::string result = lit;
-  EncodeLiteralInplace(result);
-  return result;
+  return this->EncodeLiteral(result);
 }
 
-void cmGlobalNinjaGenerator::EncodeLiteralInplace(std::string& lit)
+std::string& cmGlobalNinjaGenerator::EncodeLiteral(std::string& lit)
 {
   cmSystemTools::ReplaceString(lit, "$", "$$");
   cmSystemTools::ReplaceString(lit, "\n", "$\n");
@@ -196,6 +196,7 @@ void cmGlobalNinjaGenerator::EncodeLiteralInplace(std::string& lit)
     cmSystemTools::ReplaceString(lit, cmStrCat('$', this->GetCMakeCFGIntDir()),
                                  this->GetCMakeCFGIntDir());
   }
+  return lit;
 }
 
 std::string cmGlobalNinjaGenerator::EncodePath(const std::string& path)
@@ -207,7 +208,7 @@ std::string cmGlobalNinjaGenerator::EncodePath(const std::string& path)
   else
     std::replace(result.begin(), result.end(), '/', '\\');
 #endif
-  this->EncodeLiteralInplace(result);
+  this->EncodeLiteral(result);
   cmSystemTools::ReplaceString(result, " ", "$ ");
   cmSystemTools::ReplaceString(result, ":", "$:");
   return result;
@@ -394,7 +395,7 @@ void cmGlobalNinjaGenerator::WriteCustomCommandBuild(
 #endif
       vars["COMMAND"] = std::move(cmd);
     }
-    vars["DESC"] = this->EncodeLiteral(description);
+    vars["DESC"] = this->GetEncodedLiteral(description);
     if (restat) {
       vars["restat"] = "1";
     }
@@ -553,6 +554,15 @@ cmGlobalNinjaGenerator::cmGlobalNinjaGenerator(cmake* cm)
 {
 #ifdef _WIN32
   cm->GetState()->SetWindowsShell(true);
+
+  // Attempt to use full path to COMSPEC, default "cmd.exe"
+  std::string comspec;
+  if (cmSystemTools::GetEnv("COMSPEC", comspec) &&
+      cmSystemTools::FileIsFullPath(comspec)) {
+    this->Comspec = comspec;
+  } else {
+    this->Comspec = "cmd.exe";
+  }
 #endif
   this->FindMakeProgramFile = "CMakeNinjaFindMake.cmake";
 }
@@ -566,7 +576,7 @@ std::unique_ptr<cmLocalGenerator> cmGlobalNinjaGenerator::CreateLocalGenerator(
     cm::make_unique<cmLocalNinjaGenerator>(this, mf));
 }
 
-codecvt::Encoding cmGlobalNinjaGenerator::GetMakefileEncoding() const
+codecvt_Encoding cmGlobalNinjaGenerator::GetMakefileEncoding() const
 {
   return this->NinjaExpectedEncoding;
 }
@@ -799,7 +809,7 @@ void cmGlobalNinjaGenerator::CheckNinjaFeatures()
   if (this->NinjaSupportsCodePage) {
     this->CheckNinjaCodePage();
   } else {
-    this->NinjaExpectedEncoding = codecvt::ANSI;
+    this->NinjaExpectedEncoding = codecvt_Encoding::ANSI;
   }
 #endif
 }
@@ -830,9 +840,9 @@ void cmGlobalNinjaGenerator::CheckNinjaCodePage()
           lineView.substr(cmStrLen("Build file encoding: "));
         if (encoding == "UTF-8") {
           // Ninja expects UTF-8. We use that internally. No conversion needed.
-          this->NinjaExpectedEncoding = codecvt::None;
+          this->NinjaExpectedEncoding = codecvt_Encoding::None;
         } else {
-          this->NinjaExpectedEncoding = codecvt::ANSI;
+          this->NinjaExpectedEncoding = codecvt_Encoding::ANSI;
         }
         found = true;
         break;
@@ -842,10 +852,10 @@ void cmGlobalNinjaGenerator::CheckNinjaCodePage()
       this->GetCMakeInstance()->IssueMessage(
         MessageType::WARNING,
         "Could not determine Ninja's code page, defaulting to UTF-8");
-      this->NinjaExpectedEncoding = codecvt::None;
+      this->NinjaExpectedEncoding = codecvt_Encoding::None;
     }
   } else {
-    this->NinjaExpectedEncoding = codecvt::ANSI;
+    this->NinjaExpectedEncoding = codecvt_Encoding::ANSI;
   }
 }
 
@@ -1266,6 +1276,13 @@ std::string cmGlobalNinjaGenerator::OrderDependsTargetForTarget(
   cmGeneratorTarget const* target, const std::string& /*config*/) const
 {
   return cmStrCat("cmake_object_order_depends_target_", target->GetName());
+}
+
+std::string cmGlobalNinjaGenerator::OrderDependsTargetForTargetPrivate(
+  cmGeneratorTarget const* target, const std::string& config) const
+{
+  return cmStrCat(this->OrderDependsTargetForTarget(target, config),
+                  "_private");
 }
 
 void cmGlobalNinjaGenerator::AppendTargetOutputs(
@@ -2642,7 +2659,9 @@ bool cmGlobalNinjaGenerator::WriteDyndepFile(
   for (cmScanDepInfo const& object : objects) {
     for (auto const& p : object.Provides) {
       std::string mod;
-      if (!p.CompiledModulePath.empty()) {
+      if (cmDyndepCollation::IsBmiOnly(export_info, object.PrimaryOutput)) {
+        mod = object.PrimaryOutput;
+      } else if (!p.CompiledModulePath.empty()) {
         // The scanner provided the path to the module file.
         mod = p.CompiledModulePath;
         if (!cmSystemTools::FileIsFullPath(mod)) {
@@ -2713,8 +2732,12 @@ bool cmGlobalNinjaGenerator::WriteDyndepFile(
       build.Outputs[0] = this->ConvertToNinjaPath(object.PrimaryOutput);
       build.ImplicitOuts.clear();
       for (auto const& p : object.Provides) {
-        build.ImplicitOuts.push_back(
-          this->ConvertToNinjaPath(mod_files[p.LogicalName].BmiPath));
+        auto const implicitOut =
+          this->ConvertToNinjaPath(mod_files[p.LogicalName].BmiPath);
+        // Ignore the `provides` when the BMI is the output.
+        if (implicitOut != build.Outputs[0]) {
+          build.ImplicitOuts.emplace_back(implicitOut);
+        }
       }
       build.ImplicitDeps.clear();
       for (auto const& r : object.Requires) {
@@ -3159,4 +3182,11 @@ std::string cmGlobalNinjaMultiGenerator::OrderDependsTargetForTarget(
 {
   return cmStrCat("cmake_object_order_depends_target_", target->GetName(), '_',
                   cmSystemTools::UpperCase(config));
+}
+
+std::string cmGlobalNinjaMultiGenerator::OrderDependsTargetForTargetPrivate(
+  cmGeneratorTarget const* target, const std::string& config) const
+{
+  return cmStrCat(this->OrderDependsTargetForTarget(target, config),
+                  "_private");
 }

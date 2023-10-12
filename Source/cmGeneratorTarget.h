@@ -17,20 +17,22 @@
 #include <cm/optional>
 
 #include "cmAlgorithms.h"
+#include "cmComputeLinkInformation.h"
 #include "cmLinkItem.h"
 #include "cmListFileCache.h"
 #include "cmPolicies.h"
+#include "cmStandardLevel.h"
 #include "cmStateTypes.h"
 #include "cmValue.h"
 
 enum class cmBuildStep;
-class cmComputeLinkInformation;
 class cmCustomCommand;
 class cmFileSet;
 class cmGlobalGenerator;
 class cmLocalGenerator;
 class cmMakefile;
 class cmSourceFile;
+struct cmSyntheticTargetCache;
 class cmTarget;
 
 struct cmGeneratorExpressionContext;
@@ -51,6 +53,7 @@ public:
 
   bool IsInBuildSystem() const;
   bool IsNormal() const;
+  bool IsRuntimeBinary() const;
   bool IsSynthetic() const;
   bool IsImported() const;
   bool IsImportedGloballyVisible() const;
@@ -115,6 +118,7 @@ public:
     SourceKindCertificate,
     SourceKindCustomCommand,
     SourceKindExternalObject,
+    SourceKindCxxModuleSource,
     SourceKindExtra,
     SourceKindHeader,
     SourceKindIDL,
@@ -185,6 +189,8 @@ public:
                           const std::string& config) const;
   void GetHeaderSources(std::vector<cmSourceFile const*>&,
                         const std::string& config) const;
+  void GetCxxModuleSources(std::vector<cmSourceFile const*>&,
+                           const std::string& config) const;
   void GetExtraSources(std::vector<cmSourceFile const*>&,
                        const std::string& config) const;
   void GetCustomCommands(std::vector<cmSourceFile const*>&,
@@ -491,11 +497,17 @@ public:
                                 cmSourceFile const& sf) const;
 
   void AddCUDAArchitectureFlags(cmBuildStep compileOrLink,
-                                const std::string& config,
+                                std::string const& config,
                                 std::string& flags) const;
+  void AddCUDAArchitectureFlagsImpl(cmBuildStep compileOrLink,
+                                    std::string const& config,
+                                    std::string const& lang, std::string arch,
+                                    std::string& flags) const;
   void AddCUDAToolkitFlags(std::string& flags) const;
 
-  void AddHIPArchitectureFlags(std::string& flags) const;
+  void AddHIPArchitectureFlags(cmBuildStep compileOrLink,
+                               std::string const& config,
+                               std::string& flags) const;
 
   void AddISPCTargetFlags(std::string& flags) const;
 
@@ -602,12 +614,11 @@ public:
   /** Add the target output files to the global generator manifest.  */
   void ComputeTargetManifest(const std::string& config) const;
 
-  bool ComputeCompileFeatures(std::string const& config) const;
+  bool ComputeCompileFeatures(std::string const& config);
 
   using LanguagePair = std::pair<std::string, std::string>;
-  bool ComputeCompileFeatures(
-    std::string const& config,
-    std::set<LanguagePair> const& languagePairs) const;
+  bool ComputeCompileFeatures(std::string const& config,
+                              std::set<LanguagePair> const& languagePairs);
 
   /**
    * Trace through the source files in this target and add al source files
@@ -812,6 +823,10 @@ public:
       Apple.  */
   bool IsFrameworkOnApple() const;
 
+  /** Return whether this target is an IMPORTED library target on Apple
+      with a .framework folder as its location.  */
+  bool IsImportedFrameworkFolderOnApple(const std::string& config) const;
+
   /** Return whether this target is an executable Bundle on Apple.  */
   bool IsAppBundleOnApple() const;
 
@@ -921,6 +936,11 @@ public:
   std::string GenerateHeaderSetVerificationFile(
     cmSourceFile& source, const std::string& dir,
     cm::optional<std::set<std::string>>& languages) const;
+
+  std::string GetImportedXcFrameworkPath(const std::string& config) const;
+
+  bool DiscoverSyntheticTargets(cmSyntheticTargetCache& cache,
+                                std::string const& config);
 
 private:
   void AddSourceCommon(const std::string& src, bool before = false);
@@ -1072,6 +1092,7 @@ private:
     std::string SharedDeps;
   };
 
+  friend cmComputeLinkInformation;
   using ImportInfoMapType = std::map<std::string, ImportInfo>;
   mutable ImportInfoMapType ImportInfoMap;
   void ComputeImportInfo(std::string const& desired_config,
@@ -1220,7 +1241,14 @@ private:
   bool GetRPATH(const std::string& config, const std::string& prop,
                 std::string& rpath) const;
 
-  mutable std::map<std::string, BTs<std::string>> LanguageStandardMap;
+  std::map<std::string, BTs<std::string>> LanguageStandardMap;
+
+  cm::optional<cmStandardLevel> GetExplicitStandardLevel(
+    std::string const& lang, std::string const& config) const;
+  void UpdateExplicitStandardLevel(std::string const& lang,
+                                   std::string const& config,
+                                   cmStandardLevel level);
+  std::map<std::string, cmStandardLevel> ExplicitStandardLevel;
 
   cmValue GetPropertyWithPairedLanguageSupport(std::string const& lang,
                                                const char* suffix) const;
@@ -1257,17 +1285,20 @@ public:
    *
    * This will inspect the target itself to see if C++20 module
    * support is expected to work based on its sources.
+   *
+   * If `errorMessage` is given a non-`nullptr`, any error message will be
+   * stored in it, otherwise the error will be reported directly.
    */
-  bool HaveCxx20ModuleSources() const;
+  bool HaveCxx20ModuleSources(std::string* errorMessage = nullptr) const;
 
   enum class Cxx20SupportLevel
   {
     // C++ is not available.
     MissingCxx,
-    // The experimental feature is not available.
-    MissingExperimentalFlag,
     // The target does not require at least C++20.
     NoCxx20,
+    // C++20 module scanning rules are not present.
+    MissingRule,
     // C++20 modules are available and working.
     Supported,
   };
@@ -1294,6 +1325,8 @@ private:
   {
     bool BuiltFileSetCache = false;
     std::map<std::string, cmFileSet const*> FileSetCache;
+    std::map<cmGeneratorTarget const*, std::vector<cmGeneratorTarget const*>>
+      SyntheticDeps;
   };
   mutable std::map<std::string, InfoByConfig> Configs;
 };

@@ -5,9 +5,7 @@
 FindQuickTime
 -------------
 
-
-
-定位QuickTime，此模块定义：
+Locate QuickTime This module defines:
 
 ``QUICKTIME_LIBRARY``
 
@@ -19,8 +17,6 @@ FindQuickTime
 ``$QUICKTIME_DIR`` is an environment variable that would correspond to::
 
   ./configure --prefix=$QUICKTIME_DIR
-
-Created by Eric Wing.
 #]=======================================================================]
 
 find_path(QUICKTIME_INCLUDE_DIR QuickTime/QuickTime.h QuickTime.h

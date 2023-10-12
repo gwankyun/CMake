@@ -111,7 +111,7 @@
 
   </details>
 
-和这几行：
+And remove ``EXTRA_INCLUDES`` from ``target_include_directories``:
 
 .. raw:: html
 
@@ -127,27 +127,12 @@
 
   </details>
 
-剩下的代码如下：
+Notice that with this technique, the only thing our executable target does to
+use our library is call :command:`target_link_libraries` with the name
+of the library target. In larger projects, the classic method of specifying
+library dependencies manually becomes very complicated very quickly.
 
-.. raw:: html
-
-  <details><summary>点击显示/隐藏答案</summary>
-
-.. literalinclude:: Step4/CMakeLists.txt
-  :caption: Remaining code after removing EXTRA_INCLUDES
-  :name: CMakeLists.txt-after-removing-EXTRA_INCLUDES
-  :language: cmake
-  :start-after: add_subdirectory(MathFunctions)
-
-.. raw:: html
-
-  </details>
-
-
-注意，使用这种技术，我们的可执行目标要使用库所做的唯一一件事就是调用\ :command:`target_link_libraries`，\
-并指定库目标的名称。在大型项目中，手动指定库依赖关系的经典方法很快就会变得非常复杂。
-
-练习2 - 用接口库设置C++标准
+Exercise 2 - Setting the C++ Standard with Interface Libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 既然我们已经将代码转换为更现代的方法，那么让我们演示一种为多个目标设置属性的现代技术。
@@ -234,10 +219,9 @@
   </details>
 
 Finally, with our interface library set up, we need to link our
-executable ``Target``, our ``MathFunctions`` library, and our ``SqrtLibrary``
-library to our new
-``tutorial_compiler_flags`` library. Respectively, the code will look like
-this:
+executable ``Tutorial``, our ``SqrtLibrary`` library and our ``MathFunctions``
+library to our new ``tutorial_compiler_flags`` library. Respectively, the code
+will look like this:
 
 最后，在设置好接口库之后，我们需要将可执行的\ ``Target``、\ ``MathFunctions``\ 库和\
 ``SqrtLibrary``\ 库链接到新的\ ``tutorial_compiler_flags``\ 库。代码分别如下：
@@ -267,7 +251,7 @@ this:
   :caption: TODO 6: MathFunctions/CMakeLists.txt
   :name: MathFunctions-CMakeLists.txt-target_link_libraries-step4
   :language: cmake
-  :start-after: # link our compiler flags interface library
+  :start-after: # link SqrtLibrary to tutorial_compiler_flags
   :end-before: target_link_libraries(MathFunctions
 
 .. raw:: html
@@ -284,8 +268,7 @@ this:
   :caption: TODO 7: MathFunctions/CMakeLists.txt
   :name: MathFunctions-SqrtLibrary-target_link_libraries-step4
   :language: cmake
-  :start-after: target_link_libraries(SqrtLibrary
-  :end-before: endif()
+  :start-after: # link MathFunctions to tutorial_compiler_flags
 
 .. raw:: html
 

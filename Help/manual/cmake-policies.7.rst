@@ -40,6 +40,17 @@ CMake中的策略用于保持跨多个版本的向后兼容行为。当引入新
 :variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量也可以用来决定是否报告在使用弃用宏或\
 函数时的错误。
 
+Policies Introduced by CMake 3.28
+=================================
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0155: C++ sources in targets with at least C++20 are scanned for imports. </policy/CMP0155>
+   CMP0154: Generated files are private by default in targets using file sets. </policy/CMP0154>
+   CMP0153: The exec_program command should not be called. </policy/CMP0153>
+   CMP0152: file(REAL_PATH) resolves symlinks before collapsing ../ components.  </policy/CMP0152>
+
 Policies Introduced by CMake 3.27
 =================================
 

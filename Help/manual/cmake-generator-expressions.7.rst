@@ -173,6 +173,12 @@ cmake-generator-expressions(7)
   如果\ ``condition``\ 为\ ``1``，则返回\ ``true_string``；如果\ ``condition``\ 为\
   ``0``，则返回\ ``false_string``。\ ``condition``\ 的任何其他值都会导致错误。
 
+  .. versionadded:: 3.28
+
+    This generator expression short-circuits such that generator expressions in
+    ``false_string`` will not evaluate when ``condition`` is ``1``, and generator
+    expressions in ``true_string`` will not evaluate when condition is ``0``.
+
 通常，\ ``condition``\ 本身就是一个生成器表达式。例如，当使用\ ``Debug``\ 配置时，\
 下面的表达式展开为\ ``DEBUG_MODE``，对于所有其他配置则为空字符串：
 
@@ -222,8 +228,13 @@ cmake-generator-expressions(7)
 
 .. genex:: $<NOT:condition>
 
-  ``condition``\ 必须为\ ``0``\ 或\ ``1``。如果\ ``condition``\ 为\ ``1``，\
-  表达式的结果为\ ``0``，否则为\ ``1``。
+  ``condition`` must be ``0`` or ``1``.  The result of the expression is
+  ``0`` if ``condition`` is ``1``, else ``1``.
+
+.. versionadded:: 3.28
+
+  Logical operators short-circuit such that generator expressions in the
+  arguments list will not be evaluated once a return value can be determined.
 
 .. _`Comparison Expressions`:
 

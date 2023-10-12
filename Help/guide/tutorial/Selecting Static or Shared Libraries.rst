@@ -39,7 +39,18 @@
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-POSITION_INDEPENDENT_CODE
   :language: cmake
-  :lines: 37-42
+  :start-at: # state that SqrtLibrary need PIC when the default is shared libraries
+  :end-at:  )
+
+Define ``EXPORTING_MYMATH`` stating we are using ``declspec(dllexport)`` when
+building on Windows.
+
+.. literalinclude:: Step11/MathFunctions/CMakeLists.txt
+  :caption: MathFunctions/CMakeLists.txt
+  :name: MathFunctions/CMakeLists.txt-dll-export
+  :language: cmake
+  :start-at: # define the symbol stating we are using the declspec(dllexport) when
+  :end-at: target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
 
 **练习**：我们修改了\ ``MathFunctions.h``\ 以使用dll导出的定义。使用CMake文档你能找到一\
 个帮助模块来简化这个吗?

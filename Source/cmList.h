@@ -21,6 +21,9 @@
 
 #include "cmValue.h"
 
+template <typename T>
+class BT;
+
 /**
  * CMake lists management
  * A CMake list is a string where list elements are separated by the ';'
@@ -744,8 +747,10 @@ public:
                        ExpandElements expandElements = ExpandElements::Yes,
                        EmptyElements emptyElements = EmptyElements::No)
   {
-    this->insert(this->begin() + this->ComputeInsertIndex(index), first, last,
-                 expandElements, emptyElements);
+    auto const offset =
+      static_cast<difference_type>(this->ComputeInsertIndex(index));
+    this->insert(this->begin() + offset, first, last, expandElements,
+                 emptyElements);
     return *this;
   }
   template <typename InputIterator>
@@ -1121,6 +1126,13 @@ public:
       list, cmList::Join(first, last, cmList::element_separator));
   }
 
+  template <typename Range,
+            cm::enable_if_t<cm::is_range<Range>::value, int> = 0>
+  static std::string to_string(Range const& r)
+  {
+    return cmList::Join(r, cmList::element_separator);
+  }
+
   // Non-members
   // ===========
   friend inline bool operator==(const cmList& lhs, const cmList& rhs) noexcept
@@ -1176,13 +1188,13 @@ private:
         auto size = container.size();
         insertPos = cmList::Insert(container, insertPos, *first,
                                    expandElements, emptyElements);
-        insertPos += container.size() - size;
+        insertPos += static_cast<decltype(delta)>(container.size() - size);
       }
     } else {
       for (; first != last; ++first) {
         if (!first->empty() || emptyElements == EmptyElements::Yes) {
           insertPos = container.insert(insertPos, *first);
-          insertPos++;
+          ++insertPos;
         }
       }
     }
@@ -1192,6 +1204,7 @@ private:
 
   static std::string const& ToString(std::string const& s) { return s; }
   static std::string ToString(cm::string_view s) { return std::string{ s }; }
+  static std::string const& ToString(BT<std::string> const&);
 
   template <typename Range>
   static std::string Join(Range const& r, cm::string_view glue)

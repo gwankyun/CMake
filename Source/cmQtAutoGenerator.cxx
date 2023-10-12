@@ -2,6 +2,8 @@
    file Copyright.txt or https://cmake.org/licensing for details.  */
 #include "cmQtAutoGenerator.h"
 
+#include <iterator>
+
 #include <cm3p/json/reader.h>
 
 #include "cmsys/FStream.hxx"
@@ -428,10 +430,12 @@ std::string cmQtAutoGenerator::MessagePath(cm::string_view path) const
   return cmQtAutoGen::Quoted(res);
 }
 
-bool cmQtAutoGenerator::Run(cm::string_view infoFile, cm::string_view config)
+bool cmQtAutoGenerator::Run(cm::string_view infoFile, cm::string_view config,
+                            cm::string_view executableConfig)
 {
   // Info config
   this->InfoConfig_ = std::string(config);
+  this->ExecutableConfig_ = std::string(executableConfig);
 
   // Info file
   this->InfoFile_ = std::string(infoFile);

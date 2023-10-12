@@ -11,6 +11,21 @@
 
  用例描述了基本的命令行接口及其选项。
 
+.. option:: --help <keyword> [<file>]
+
+ Print help for one CMake keyword.
+
+ ``<keyword>`` can be a property, variable, command, policy, generator
+ or module.
+
+ The relevant manual entry for ``<keyword>`` is
+ printed in a human-readable text format.
+ |file|
+
+ .. versionchanged:: 3.28
+
+   Prior to CMake 3.28, this option supported command names only.
+
 .. option:: --help-full [<file>]
 
  打印所有帮助手册并退出。

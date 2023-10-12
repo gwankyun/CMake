@@ -488,28 +488,32 @@ Android为目标，使用独立的工具链进行交叉编译。
 * :prop_tgt:`ANDROID_SKIP_ANT_STEP`
 * :prop_tgt:`ANDROID_STL_TYPE`
 
-.. _`Cross Compiling for iOS, tvOS, or watchOS`:
+.. _`Cross Compiling for iOS, tvOS, visionOS, or watchOS`:
 
-iOS、tvOS或者watchOS交叉编译
------------------------------------------
+Cross Compiling for iOS, tvOS, visionOS, or watchOS
+---------------------------------------------------
 
-对于交叉编译到iOS、tvOS或watchOS，建议使用\ :generator:`Xcode`\ 生成器。也可以使用\
-:generator:`Unix Makefiles`\ 或\ :generator:`Ninja`\ 生成器，但它们要求项目处理更多的\
-领域，如目标CPU选择和代码签名。
+For cross-compiling to iOS, tvOS, visionOS, or watchOS, the :generator:`Xcode`
+generator is recommended.  The :generator:`Unix Makefiles` or
+:generator:`Ninja` generators can also be used, but they require the
+project to handle more areas like target CPU selection and code signing.
 
-通过将\ :variable:`CMAKE_SYSTEM_NAME`\ 变量设置为下表中的值，可以将这三个系统中的任何一\
-个作为目标。默认情况下，选择最新的Device SDK。对于所有的Apple平台，可以通过设置\
-:variable:`CMAKE_OSX_SYSROOT`\ 变量来选择不同的SDK（例如模拟器），尽管不是很必要（参见下\
-面的\ :ref:`Switching Between Device and Simulator`）。一个可用SDK的列表可以通过运行\
-``xcodebuild -showsdks``\ 获得。
+Any of the three systems can be targeted by setting the
+:variable:`CMAKE_SYSTEM_NAME` variable to a value from the table below.
+By default, the latest Device SDK is chosen.  As for all Apple platforms,
+a different SDK (e.g. a simulator) can be selected by setting the
+:variable:`CMAKE_OSX_SYSROOT` variable, although this should rarely be
+necessary (see :ref:`Switching Between Device and Simulator` below).
+A list of available SDKs can be obtained by running ``xcodebuild -showsdks``.
 
-=======  ================= ==================== ================
-OS       CMAKE_SYSTEM_NAME Device SDK (default) Simulator SDK
-=======  ================= ==================== ================
-iOS      iOS               iphoneos             iphonesimulator
-tvOS     tvOS              appletvos            appletvsimulator
-watchOS  watchOS           watchos              watchsimulator
-=======  ================= ==================== ================
+========  ================= ==================== ================
+OS        CMAKE_SYSTEM_NAME Device SDK (default) Simulator SDK
+========  ================= ==================== ================
+iOS       iOS               iphoneos             iphonesimulator
+tvOS      tvOS              appletvos            appletvsimulator
+visionOS  visionOS          xros                 xrsimulator
+watchOS   watchOS           watchos              watchsimulator
+========  ================= ==================== ================
 
 例如，要为iOS创建CMake配置，以下命令就足够了：
 
@@ -518,7 +522,7 @@ watchOS  watchOS           watchos              watchsimulator
   cmake .. -GXcode -DCMAKE_SYSTEM_NAME=iOS
 
 变量\ :variable:`CMAKE_OSX_ARCHITECTURES`\ 可用于设置设备和模拟器的体系结构。变量\
-:variable:`CMAKE_OSX_DEPLOYMENT_TARGET`\ 用于设置iOS/tvOS/watchOS的部署目标。
+:variable:`CMAKE_OSX_DEPLOYMENT_TARGET`\ 用于设置iOS/tvOS/visionOS/watchOS的部署目标。
 
 下一个配置将安装fat 5架构的iOS库，并在编译器中添加\
 ``-miphoneos-version-min=9.3``/\ ``-mios-simulator-version-min=9.3``\ 标志：

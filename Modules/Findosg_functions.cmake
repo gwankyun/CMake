@@ -9,8 +9,9 @@ Findosg_functions
 
 
 
-这个CMake文件包含两个宏来帮助搜索OSG库和nodekit。请参阅\ :module:`FindOpenSceneGraph`\
-以获取完整的文档。
+This CMake file contains two macros to assist with searching for OSG
+libraries and nodekits.  Please see :module:`FindOpenSceneGraph` for full
+documentation.
 #]=======================================================================]
 
 include(${CMAKE_CURRENT_LIST_DIR}/SelectLibraryConfigurations.cmake)

@@ -3,8 +3,8 @@ include(RunCMake)
 # For `if (IN_LIST)`
 cmake_policy(SET CMP0057 NEW)
 
-run_cmake(compiler_introspection)
-include("${RunCMake_BINARY_DIR}/compiler_introspection-build/info.cmake")
+run_cmake(Inspect)
+include("${RunCMake_BINARY_DIR}/Inspect-build/info.cmake")
 
 # Test negative cases where C++20 modules do not work.
 run_cmake(NoCXX)
@@ -13,11 +13,16 @@ if ("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
   # standard. If the compiler forces a standard to be used, skip it.
   if (NOT forced_cxx_standard)
     run_cmake(NoCXX20)
+    if(CMAKE_CXX_STANDARD_DEFAULT AND CMAKE_CXX20_STANDARD_COMPILE_OPTION)
+      run_cmake_with_options(ImplicitCXX20 -DCMAKE_CXX20_STANDARD_COMPILE_OPTION=${CMAKE_CXX20_STANDARD_COMPILE_OPTION})
+    endif()
   endif ()
 
-  # This test uses C++20, but another prerequisite is missing, so forced
-  # standards don't matter.
-  run_cmake(NoCXX20ModuleFlag)
+  run_cmake(NoScanningSourceFileProperty)
+  run_cmake(NoScanningTargetProperty)
+  run_cmake(NoScanningVariable)
+  run_cmake(CMP0155-OLD)
+  run_cmake(CMP0155-NEW)
 endif ()
 
 if (RunCMake_GENERATOR MATCHES "Ninja")
@@ -149,6 +154,8 @@ if ("named" IN_LIST CMake_TEST_MODULE_COMPILATION)
   run_cxx_module_test(duplicate)
   set(RunCMake_CXXModules_NO_TEST 1)
   run_cxx_module_test(circular)
+  run_cxx_module_test(try-compile)
+  run_cxx_module_test(try-run)
   unset(RunCMake_CXXModules_NO_TEST)
   run_cxx_module_test(same-src-name)
   run_cxx_module_test(scan_properties)
@@ -186,7 +193,24 @@ endif ()
 if ("export_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
   run_cxx_module_test(export-interface-no-properties-build)
   run_cxx_module_test(export-interface-build)
+  run_cxx_module_test(export-include-directories-build)
+  run_cxx_module_test(export-usage-build)
   run_cxx_module_test(export-bmi-and-interface-build)
+
+  if ("collation" IN_LIST CMake_TEST_MODULE_COMPILATION AND
+      "bmionly" IN_LIST CMake_TEST_MODULE_COMPILATION)
+    set(test_suffix export-interface-build)
+    run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-build")
+
+    set(test_suffix export-interface-no-properties-build)
+    run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-build" -DNO_PROPERTIES=1)
+
+    set(test_suffix export-include-directories-build)
+    run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-build" -DINCLUDE_PROPERTIES=1)
+
+    set(test_suffix export-bmi-and-interface-build)
+    run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-build" -DWITH_BMIS=1)
+  endif ()
 endif ()
 
 # All of the following tests perform installation.
@@ -200,6 +224,25 @@ if ("install_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
   if ("export_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
     run_cxx_module_test(export-interface-no-properties-install)
     run_cxx_module_test(export-interface-install)
+    run_cxx_module_test(export-include-directories-install)
+    run_cxx_module_test(export-usage-install)
     run_cxx_module_test(export-bmi-and-interface-install)
+
+    if ("collation" IN_LIST CMake_TEST_MODULE_COMPILATION AND
+        "bmionly" IN_LIST CMake_TEST_MODULE_COMPILATION)
+      set(RunCMake_CXXModules_INSTALL 0)
+      set(test_suffix export-interface-install)
+      run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-install")
+
+      set(test_suffix export-interface-no-properties-install)
+      run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-install" -DNO_PROPERTIES=1)
+
+      set(test_suffix export-include-directories-install)
+      run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-install" -DINCLUDE_PROPERTIES=1)
+
+      set(test_suffix export-bmi-and-interface-install)
+      run_cxx_module_test(import-modules "import-modules-${test_suffix}" "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/examples/${test_suffix}-install" -DWITH_BMIS=1)
+      set(RunCMake_CXXModules_INSTALL 1)
+    endif ()
   endif ()
 endif ()
