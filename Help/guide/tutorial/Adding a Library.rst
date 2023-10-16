@@ -166,7 +166,7 @@
 
   </details>
 
-Lastly, replace ``sqrt`` with the wrapper function ``mathfunctions::sqrt``.
+最后，用包装函数\ ``mathfunctions::sqrt``\ 替换\ ``sqrt``。
 
 .. raw:: html
 
