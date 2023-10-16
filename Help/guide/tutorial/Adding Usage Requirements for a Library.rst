@@ -111,7 +111,7 @@
 
   </details>
 
-And remove ``EXTRA_INCLUDES`` from ``target_include_directories``:
+并从\ ``target_include_directories``\ 中删除\ ``EXTRA_INCLUDES``\ ：
 
 .. raw:: html
 
@@ -127,12 +127,11 @@ And remove ``EXTRA_INCLUDES`` from ``target_include_directories``:
 
   </details>
 
-Notice that with this technique, the only thing our executable target does to
-use our library is call :command:`target_link_libraries` with the name
-of the library target. In larger projects, the classic method of specifying
-library dependencies manually becomes very complicated very quickly.
+注意，使用这种技术，我们的可执行目标使用我们的库所做的唯一事情就是用库目标的名称调用\
+:command:`target_link_libraries`。在较大的项目中，手动指定库依赖项的经典方法很快就会变\
+得非常复杂。
 
-Exercise 2 - Setting the C++ Standard with Interface Libraries
+练习2 - 用接口库设置C++标准
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 既然我们已经将代码转换为更现代的方法，那么让我们演示一种为多个目标设置属性的现代技术。
@@ -218,13 +217,9 @@ Exercise 2 - Setting the C++ Standard with Interface Libraries
 
   </details>
 
-Finally, with our interface library set up, we need to link our
-executable ``Tutorial``, our ``SqrtLibrary`` library and our ``MathFunctions``
-library to our new ``tutorial_compiler_flags`` library. Respectively, the code
-will look like this:
-
-最后，在设置好接口库之后，我们需要将可执行的\ ``Target``、\ ``MathFunctions``\ 库和\
-``SqrtLibrary``\ 库链接到新的\ ``tutorial_compiler_flags``\ 库。代码分别如下：
+最后，设置好接口库后，我们需要将可执行\ ``Tutorial``、\ ``SqrtLibrary``\ 库和\
+``MathFunctions``\ 库链接到新的\ ``tutorial_compiler_flags``\ 库。分别，代码分别如下\
+这样：
 
 .. raw:: html
 
@@ -275,5 +270,5 @@ will look like this:
   </details>
 
 
-尽管如此，我们所有的代码仍然需要C++ 11来构建。注意，使用这种方法，我们可以明确哪些目标需要特\
+尽管如此，我们所有的代码仍然需要C++11来构建。注意，使用这种方法，我们可以明确哪些目标需要特\
 定的需求。此外，我们在接口库中创建了一个单一的事实来源。

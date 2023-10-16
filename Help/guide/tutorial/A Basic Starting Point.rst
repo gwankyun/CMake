@@ -79,14 +79,13 @@
 
   cmake --build .
 
-For multi-config generators (e.g. Visual Studio), first navigate to the
-appropriate subdirectory, for example:
+对于多配置生成器（例如Visual Studio），首先导航到适当的子目录，例如：
 
 .. code-block:: console
 
   cd Debug
 
-Finally, try to use the newly built ``Tutorial``:
+最后，尝试使用新建的\ ``Tutorial``：
 
 .. code-block:: console
 
@@ -95,9 +94,8 @@ Finally, try to use the newly built ``Tutorial``:
   Tutorial
 
 
-**Note:** Depending on the shell, the correct syntax may be ``Tutorial``,
-``./Tutorial`` or ``.\Tutorial``. For simplicity, the exercises will use
-``Tutorial`` throughout.
+**Note:** 根据shell的不同，正确的语法可能是 ``Tutorial``、\ ``./Tutorial``\ 或\
+``.\Tutorial``。为简单起见，练习将自始至终使用\ ``Tutorial``。
 
 解决方案
 --------

@@ -42,8 +42,7 @@
   :start-at: # state that SqrtLibrary need PIC when the default is shared libraries
   :end-at:  )
 
-Define ``EXPORTING_MYMATH`` stating we are using ``declspec(dllexport)`` when
-building on Windows.
+定义\ ``EXPORTING_MYMATH``，说明我们在Windows上构建时使用\ ``declspec(dllexport)``。
 
 .. literalinclude:: Step11/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
