@@ -1,26 +1,29 @@
 步骤1：一个基本的起点
 ==============================
 
-我从哪里开始使用CMake？这一步将介绍CMake的一些基本语法、命令和变量。\
-随着这些概念的介绍，我们将完成三个练习并创建一个简单的CMake项目。
+我从哪里开始使用CMake？这一步将介绍CMake的一些基本语法、命令和变量。随着这些概念的介绍，我\
+们将完成三个练习并创建一个简单的CMake项目。
 
 这一步中的每个练习都将从一些背景信息开始。然后，提供了一个目标和有用的资源列表。\
-``待编辑的文件``\ 部分中的每个文件都位于\ ``Step1``\ 目录中，并包含一个或多个\ ``TODO``\ 注释。\
-每个\ ``TODO``\ 表示要更改或添加的一到两行代码。这些\ ``TODO``\ 将按数字顺序完成，\
-首先完成\ ``TODO 1``，然后完成\ ``TODO 2``，以此类推。\ ``Getting Started``\ 部分将提供一些有用的提示并指导你完成练习。\
-然后，\ ``Build and Run``\ 部分将逐步介绍如何构建和测试该练习。最后，在每次练习结束时讨论预期的解决方案。
+``待编辑的文件``\ 部分中的每个文件都位于\ ``Step1``\ 目录中，并包含一个或多个\ ``TODO``\
+注释。每个\ ``TODO``\ 表示要更改或添加的一到两行代码。这些\ ``TODO``\ 将按数字顺序完成，\
+首先完成\ ``TODO 1``，然后完成\ ``TODO 2``，以此类推。\ ``Getting Started``\ 部分将\
+提供一些有用的提示并指导你完成练习。然后，\ ``Build and Run``\ 部分将逐步介绍如何构建和测\
+试该练习。最后，在每次练习结束时讨论预期的解决方案。
 
-还要注意，教程中的每个步骤都是建立在下一个步骤之上的。因此，如 \ ``Step2``\ 的开始代码就是\ ``Step1``\ 的完整解决方案。
+还要注意，教程中的每个步骤都是建立在下一个步骤之上的。因此，如 \ ``Step2``\ 的开始代码就是\
+``Step1``\ 的完整解决方案。
 
 练习1 - 创建一个基本项目
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-最基本的CMake项目是从单个源代码文件构建的可执行文件。对于像这样的简单项目，只需要一个带有三个命令的\ ``CMakeLists.txt``\ 文件。
+最基本的CMake项目是从单个源代码文件构建的可执行文件。对于像这样的简单项目，只需要一个带有三\
+个命令的\ ``CMakeLists.txt``\ 文件。
 
 **注意：**\ 尽管CMake支持大写、小写和混合大小写命令，但小写命令是首选，并将在整个教程中使用。
 
-任何项目的最顶层的CMakeLists.txt必须通过使用\ :command:`cmake_minimum_required`\ 命令指定最小的CMake版本开始。\
-这将建立策略设置，并确保随后的CMake函数在CMake的兼容版本中运行。
+任何项目的最顶层的CMakeLists.txt必须通过使用\ :command:`cmake_minimum_required`\ 命\
+令指定最小的CMake版本开始。这将建立策略设置，并确保随后的CMake函数在CMake的兼容版本中运行。
 
 要启动一个项目，我们使用\ :command:`project`\ 命令来设置项目名称。每个项目都需要这个调用，\
 应紧随\ :command:`cmake_minimum_required`\ 其后。正如我们稍后将看到的，\
@@ -48,25 +51,28 @@
 开始
 ----------------
 
-``tutorial.cxx``\ 的源代码在\ ``Help/guide/tutorial/Step1``\ 目录中提供，\
-可用于计算一个数的平方根。在此步骤中不需要编辑此文件。
+``tutorial.cxx``\ 的源代码在\ ``Help/guide/tutorial/Step1``\ 目录中提供，可用于计算\
+一个数的平方根。在此步骤中不需要编辑此文件。
 
-在同一个目录中有一个待你完成的\ ``CMakeLists.txt``\ 文件。从\ ``TODO 1``\ 开始，真到\ ``TODO 3``。
+在同一个目录中有一个待你完成的\ ``CMakeLists.txt``\ 文件。从\ ``TODO 1``\ 开始，真到\
+``TODO 3``。
 
 构建并运行
 -------------
 
 一旦完成了\ ``TODO 1``\ 到\ ``TODO 3``，我们就准备好构建和运行我们的项目了！\
-首先，运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
-然后用你选择的构建工具构建它。
+首先，运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\
+:manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，然后用你选择的构建工具构建它。
 
-例如，我们可以在命令行中导航到CMake源代码树的\ ``Help/guide/tutorial``\ 目录，并创建一个构建目录：
+例如，我们可以在命令行中导航到CMake源代码树的\ ``Help/guide/tutorial``\ 目录，并创建一\
+个构建目录：
 
 .. code-block:: console
 
   mkdir Step1_build
 
-接下来，导航到那个构建目录并运行\ :manual:`cmake <cmake(1)>`\ 来配置项目并生成一个本地构建系统：
+接下来，导航到那个构建目录并运行\ :manual:`cmake <cmake(1)>`\ 来配置项目并生成一个本地\
+构建系统：
 
 .. code-block:: console
 
@@ -100,8 +106,8 @@
 解决方案
 --------
 
-如上所述，一个三行的\ ``CMakeLists.txt``\ 是启动和运行所需要的全部内容。\
-第一行是使用\ :command:`cmake_minimum_required`\ 设置CMake版本如下：
+如上所述，一个三行的\ ``CMakeLists.txt``\ 是启动和运行所需要的全部内容。第一行是使用\
+:command:`cmake_minimum_required`\ 设置CMake版本如下：
 
 .. raw:: html
 
@@ -153,9 +159,9 @@
 练习2 - 指定c++标准
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项目代码设置时对CMake有意义。\
-许多这些变量都以\ ``CMAKE_``\ 开头。在为项目创建变量时，要避免这种命名约定。\
-其中两个特殊的用户可设置变量是\ :variable:`CMAKE_CXX_STANDARD`\ 和\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`。\
+CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项目代码设置时对CMake有意义。许多这些\
+变量都以\ ``CMAKE_``\ 开头。在为项目创建变量时，要避免这种命名约定。其中两个特殊的用户可设\
+置变量是\ :variable:`CMAKE_CXX_STANDARD`\ 和\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`。\
 这两个变量可以一起使用，以指定构建项目所需的C++标准。
 
 目标
@@ -181,12 +187,14 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 
 继续编辑\ ``Step1``\ 目录中的文件。从\ ``TODO 4``\ 开始，直到\ ``TODO 6``。
 
-首先，通过编辑\ ``tutorial.cxx``\ 来添加一个需要C++11的特性。然后更新\ ``CMakeLists.txt``\ 以要求C++11。
+首先，通过编辑\ ``tutorial.cxx``\ 来添加一个需要C++11的特性。然后更新\
+``CMakeLists.txt``\ 以要求C++11。
 
 构建并运行
 -------------
 
-让我们重新构建我们的项目。因为我们已经创建了一个构建目录并为练习1运行了CMake，我们可以跳到构建步骤：
+让我们重新构建我们的项目。因为我们已经创建了一个构建目录并为练习1运行了CMake，我们可以跳到\
+构建步骤：
 
 .. code-block:: console
 
@@ -204,8 +212,8 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 解决方案
 --------
 
-首先，我们在\ ``tutorial.cxx``\ 中将\ ``atof``\ 替换为\ ``std::stod``，从而为我们的项目添加一些C++11特性。\
-如下所示：
+首先，我们在\ ``tutorial.cxx``\ 中将\ ``atof``\ 替换为\ ``std::stod``，从而为我们的\
+项目添加一些C++11特性。如下所示：
 
 .. raw:: html
 
@@ -226,9 +234,9 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 
 我们需要在CMake代码中显式地声明它应该使用正确的标志。\
 在CMake中启用对特定C++标准的支持的一种方法是使用\ :variable:`CMAKE_CXX_STANDARD`\ 变量。\
-对于本教程，将\ ``CMakeLists.txt``\ 文件中的\ :variable:`CMAKE_CXX_STANDARD`\ 变量设置为\ ``11``，\
-将\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`\ 设置为\ ``True``。\
-确保调用\ :command:`add_executable`\ 之前添加\ :variable:`CMAKE_CXX_STANDARD`\ 声明。
+对于本教程，将\ ``CMakeLists.txt``\ 文件中的\ :variable:`CMAKE_CXX_STANDARD`\ 变量\
+设置为\ ``11``，将\ :variable:`CMAKE_CXX_STANDARD_REQUIRED`\ 设置为\ ``True``。确\
+保调用\ :command:`add_executable`\ 之前添加\ :variable:`CMAKE_CXX_STANDARD`\ 声明。
 
 .. raw:: html
 
@@ -252,10 +260,12 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 在这种情况下，我们想打印项目版本。
 
 实现这一点的一种方法是使用配置好的头文件。我们创建一个输入文件，其中包含一个或多个要替换的变量。\
-这些变量具有类似\ ``@VAR@``\ 的特殊语法。然后，我们使用\ :command:`configure_file`\ 命令将输入文件复制到给定的输出文件，\
-并用\ ``CMakelists.txt``\ 文件中的\ ``VAR``\ 当前值替换这些变量。
+这些变量具有类似\ ``@VAR@``\ 的特殊语法。然后，我们使用\ :command:`configure_file`\
+命令将输入文件复制到给定的输出文件，并用\ ``CMakelists.txt``\ 文件中的\ ``VAR``\ 当前值\
+替换这些变量。
 
-虽然我们可以直接在源代码中编辑版本，但最好使用这个特性，因为它创建了一个真实的单一来源，并避免了重复。
+虽然我们可以直接在源代码中编辑版本，但最好使用这个特性，因为它创建了一个真实的单一来源，并避\
+免了重复。
 
 目标
 ----
@@ -279,20 +289,21 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 开始
 ---------------
 
-继续编辑\ ``Step1``\ 中的文件。从\ ``TODO 7``\ 开始，直到\ ``TODO 12``。\
-在这个练习中，我们首先在\ ``CMakeLists.txt``\ 中添加一个项目版本号。\
-在同一个文件中，使用\ :command:`configure_file`\ 将给定的输入文件复制到输出文件中，\
-并在输入文件内容中替换一些变量值。
+继续编辑\ ``Step1``\ 中的文件。从\ ``TODO 7``\ 开始，直到\ ``TODO 12``。在这个练习中，\
+我们首先在\ ``CMakeLists.txt``\ 中添加一个项目版本号。在同一个文件中，使用\
+:command:`configure_file`\ 将给定的输入文件复制到输出文件中，并在输入文件内容中替换一些\
+变量值。
 
-接下来，在定义版本号时创建一个输入头文件\ ``TutorialConfig.h.in``。\
-它将接受来自\ :command:`configure_file`\ 的变量。
+接下来，在定义版本号时创建一个输入头文件\ ``TutorialConfig.h.in``。它将接受来自\
+:command:`configure_file`\ 的变量。
 
 最后，更新\ ``tutorial.cxx``\ 以打印出它的版本号。
 
 构建并运行
 -------------
 
-让我们重新构建我们的项目。和前面一样，我们已经创建了一个构建目录并运行CMake，所以我们可以跳到构建步骤：
+让我们重新构建我们的项目。和前面一样，我们已经创建了一个构建目录并运行CMake，所以我们可以跳\
+到构建步骤：
 
 .. code-block:: console
 
@@ -305,10 +316,12 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 --------
 
 在本练习中，我们通过打印版本号来改进可执行文件。\
-虽然我们可以在源代码中单独完成这一点，但是使用\ ``CMakeLists.txt``\ 可以让我们维护版本号的单个数据源。
+虽然我们可以在源代码中单独完成这一点，但是使用\ ``CMakeLists.txt``\ 可以让我们维护版本号\
+的单个数据源。
 
-首先，我们修改\ ``CMakeLists.txt``\ 文件，以使用\ :command:`project`\ 命令设置项目名称和版本号。\
-当\ :command:`project`\ 命令被调用时，CMake在幕后定义\ ``Tutorial_VERSION_MAJOR``\ 和\ ``Tutorial_VERSION_MINOR``。
+首先，我们修改\ ``CMakeLists.txt``\ 文件，以使用\ :command:`project`\ 命令设置项目名\
+称和版本号。当\ :command:`project`\ 命令被调用时，CMake在幕后定义\
+``Tutorial_VERSION_MAJOR``\ 和\ ``Tutorial_VERSION_MINOR``。
 
 .. raw:: html
 
@@ -344,7 +357,8 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 
 因为配置的文件将被写入项目二进制文件目录，我们必须将该目录添加到要搜索的包括文件路径列表中。
 
-**注意：**\ 在本教程中，我们将交替使用项目构建和项目二进制目录。它们是相同的，并不意味着要引用\ `bin/`\ 目录。
+**注意：**\ 在本教程中，我们将交替使用项目构建和项目二进制目录。它们是相同的，并不意味着要\
+引用\ `bin/`\ 目录。
 
 我们使用\ :command:`target_include_directories`\ 来指定可执行目标应该在哪里查找包含文件。
 
@@ -364,7 +378,8 @@ CMake有一些特殊的变量，这些变量是在幕后创建的，或者在项
 
 ``TutorialConfig.h.in``\ 是要配置的输入头文件。\
 当\ :command:`configure_file`\ 从我们的\ ``CMakeLists.txt``\ 中被调用时，\
-\ ``@Tutorial_VERSION_MAJOR@``\ 和\ ``@Tutorial_VERSION_MINOR@``\ 的值将被\ ``TutorialConfig.h``\ 中来自项目的相应版本号替换。
+\ ``@Tutorial_VERSION_MAJOR@``\ 和\ ``@Tutorial_VERSION_MINOR@``\ 的值将被\
+``TutorialConfig.h``\ 中来自项目的相应版本号替换。
 
 .. raw:: html
 

@@ -62,7 +62,8 @@
   :start-after: # state that we depend on our bin
   :end-before: target_link_libraries
 
-作为最后一步，我们需要在\ ``MathFunctions/CMakeLists.txt``\ 的顶部包含\ ``MakeTable.cmake``。
+作为最后一步，我们需要在\ ``MathFunctions/CMakeLists.txt``\ 的顶部包含\
+``MakeTable.cmake``。
 
 .. literalinclude:: Step9/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt

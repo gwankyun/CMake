@@ -1,9 +1,9 @@
 步骤7: 添加系统自省
 ===================================
 
-考虑向项目中添加一些依赖目标平台可能没有的特性代码。\
-对于本例，我们将添加一些代码，这将取决于目标平台是否有\ ``log``\ 和\ ``exp``\ 函数。\
-当然，几乎每个平台都有这些函数，但本教程假设它们并不常见。
+考虑向项目中添加一些依赖目标平台可能没有的特性代码。对于本例，我们将添加一些代码，这将取决于\
+目标平台是否有\ ``log``\ 和\ ``exp``\ 函数。当然，几乎每个平台都有这些函数，但本教程假设\
+它们并不常见。
 
 练习1 - 评估依赖项可用性
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -30,19 +30,20 @@
 
 在\ ``Step7``\ 目录中提供了起始源代码。在这个练习中，完成\ ``TODO 1``\ 到\ ``TODO 5``。
 
-首先编辑\ ``MathFunctions/CMakeLists.txt``。包含\ :module:`CheckCXXSourceCompiles`\ 模块。\
-然后，使用\ ``check_cxx_source_compiles``\ 来确定\ ``log``\ 和\ ``exp``\ 是否可以从\ ``cmath``\ 获得。\
-如果可用，则使用\ :command:`target_compile_definitions`\ 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 作为编译定义。
+首先编辑\ ``MathFunctions/CMakeLists.txt``。包含\ :module:`CheckCXXSourceCompiles`\
+模块。然后，使用\ ``check_cxx_source_compiles``\ 来确定\ ``log``\ 和\ ``exp``\ 是否\
+可以从\ ``cmath``\ 获得。如果可用，则使用\ :command:`target_compile_definitions`\
+指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 作为编译定义。
 
-在\ ``MathFunctions/mysqrt.cxx``\ 中，包含\ ``cmath``。然后，如果系统有\ ``log``\ 和\ ``exp``，\
-使用它们来计算平方根。
+在\ ``MathFunctions/mysqrt.cxx``\ 中，包含\ ``cmath``。然后，如果系统有\ ``log``\
+和\ ``exp``，使用它们来计算平方根。
 
 构建并运行
 -------------
 
 创建一个名为\ ``Step7_build``\ 的新目录。\
-运行\ :manual:`cmake  <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
-然后使用你选择的构建工具构建它，并运行\ ``Tutorial``\ 可执行文件。
+运行\ :manual:`cmake  <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\
+来配置项目，然后使用你选择的构建工具构建它，并运行\ ``Tutorial``\ 可执行文件。
 
 它看起来像下面这样：
 
@@ -58,8 +59,8 @@
 解决方案
 --------
 
-在本练习中，我们将使用\ :module:`CheckCXXSourceCompiles`\ 模块中的函数，\
-因此首先我们必须将其包含在\ ``MathFunctions/CMakeLists.txt``\ 中。
+在本练习中，我们将使用\ :module:`CheckCXXSourceCompiles`\ 模块中的函数，因此首先我们必\
+须将其包含在\ ``MathFunctions/CMakeLists.txt``\ 中。
 
 .. raw:: html
 
@@ -76,9 +77,9 @@
 
   </details>
 
-然后使用\ ``check_cxx_compiles_source``\ 测试\ ``log``\ 和\ ``exp``\ 的可用性。\
-这个函数允许我们在真正的源代码编译之前，尝试使用所需的依赖项编译简单的代码。\
-结果变量\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 表示这些依赖项是否可用。
+然后使用\ ``check_cxx_compiles_source``\ 测试\ ``log``\ 和\ ``exp``\ 的可用性。这个\
+函数允许我们在真正的源代码编译之前，尝试使用所需的依赖项编译简单的代码。结果变量\
+``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 表示这些依赖项是否可用。
 
 .. raw:: html
 
@@ -97,7 +98,8 @@
 
 接下来，我们需要将这些CMake变量传递给源代码。这样，我们的源代码就可以知道哪些资源是可用的。\
 如果 ``log`` 和\ ``exp``\ 都可用，\
-则使用\ :command:`target_compile_definitions`\ 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 作为\ ``PRIVATE``\ 编译定义。
+则使用\ :command:`target_compile_definitions`\ 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\
+作为\ ``PRIVATE``\ 编译定义。
 
 .. raw:: html
 
@@ -114,7 +116,8 @@
 
   </details>
 
-因为我们可能会使用\ ``log``\ 和\ ``exp``，所以我们需要修改\ ``mysqrt.cxx``\ 包含\ ``cmath``。
+因为我们可能会使用\ ``log``\ 和\ ``exp``，所以我们需要修改\ ``mysqrt.cxx``\ 包含\
+``cmath``。
 
 .. raw:: html
 

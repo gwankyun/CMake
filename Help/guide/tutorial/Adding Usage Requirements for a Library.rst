@@ -4,8 +4,9 @@
 练习1 - 为库添加使用需求
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-目标参数的\ :ref:`使用需求 <Target Usage Requirements>`\ 允许对库或可执行文件的link和include行进行更好的控制，\
-同时也可以对CMake内部目标的传递属性进行更多的控制。利用使用需求的主要命令有：
+目标参数的\ :ref:`使用需求 <Target Usage Requirements>`\ 允许对库或可执行文件的link和\
+include行进行更好的控制，同时也可以对CMake内部目标的传递属性进行更多的控制。利用使用需求的\
+主要命令有：
 
 * :command:`target_compile_definitions`
 * :command:`target_compile_options`
@@ -35,25 +36,26 @@
 开始
 ---------------
 
-在本练习中，我们将使用现代的CMake方法重构\ :guide:`添加库 <tutorial/Adding a Library>`\ 中的代码。\
-我们将让我们的库定义自己的使用需求，以便在必要时将它们传递给其他目标。\
-在本例中，\ ``MathFunctions``\ 将自己指定任何所需的include目录。\
-然后，消费目标\ ``Tutorial``\ 只需要链接到\ ``MathFunctions``，而不用担心任何额外的包含目录。
+在本练习中，我们将使用现代的CMake方法重构\ :guide:`添加库 <tutorial/Adding a Library>`\
+中的代码。我们将让我们的库定义自己的使用需求，以便在必要时将它们传递给其他目标。在本例中，\
+``MathFunctions``\ 将自己指定任何所需的include目录。然后，消费目标\ ``Tutorial``\ 只\
+需要链接到\ ``MathFunctions``，而不用担心任何额外的包含目录。
 
 在\ ``Step3``\ 目录中提供了起始源代码。在这个练习中，完成\ ``TODO 1``\ 到\ ``TODO 3``。
 
-首先，在\ ``MathFunctions/CMakeLists``\ 中添加对\ :command:`target_include_directories`\ 的调用。\
-请记住，:variable:`CMAKE_CURRENT_SOURCE_DIR`\ 是当前正在处理的源目录的路径。
+首先，在\ ``MathFunctions/CMakeLists``\ 中添加对\ :command:`target_include_directories`\
+的调用。请记住，:variable:`CMAKE_CURRENT_SOURCE_DIR`\ 是当前正在处理的源目录的路径。
 
-然后，更新（并简化！）顶层\ ``CMakeLists.txt``\ 中对\ :command:`target_include_directories`\ 的调用。
+然后，更新（并简化！）顶层\ ``CMakeLists.txt``\ 中对\
+:command:`target_include_directories`\ 的调用。
 
 构建并运行
 -------------
 
 创建一个名为\ ``Step3_build``\ 的新目录，\
-运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\ 来配置项目，\
-然后使用你选择的构建工具或使用\ :option:`cmake --build . <cmake --build>`\ 来从构建目录构建它。\
-下面是命令行的更新：
+运行\ :manual:`cmake <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\
+来配置项目，然后使用你选择的构建工具或使用\ :option:`cmake --build . <cmake --build>`\
+来从构建目录构建它。下面是命令行的更新：
 
 .. code-block:: console
 
@@ -69,12 +71,12 @@
 
 让我们更新上一步中的代码，以使用现代CMake方法来满足使用需求。
 
-我们想声明的是，任何链接到\ ``MathFunctions``\ 的人都需要包含当前源目录，\
-而\ ``MathFunctions``\ 本身则不需要。这可以用\ ``INTERFACE``\ 使用需求来表示。\
-记住，\ ``INTERFACE``\ 指的是消费者需要但生产者不需要的东西。
+我们想声明的是，任何链接到\ ``MathFunctions``\ 的人都需要包含当前源目录，而\
+``MathFunctions``\ 本身则不需要。这可以用\ ``INTERFACE``\ 使用需求来表示。记住，\
+``INTERFACE``\ 指的是消费者需要但生产者不需要的东西。
 
-在\ ``MathFunctions/CMakeLists.txt``\ 的末尾，\
-使用带\ ``INTERFACE``\ 关键字的\ :command:`target_include_directories`，如下所示：
+在\ ``MathFunctions/CMakeLists.txt``\ 的末尾，使用带\ ``INTERFACE``\ 关键字的\
+:command:`target_include_directories`，如下所示：
 
 .. raw:: html
 
@@ -91,8 +93,8 @@
 
   </details>
 
-既然我们已经指定了\ ``MathFunctions``\ 的使用要求，\
-就可以安全地从顶层文件\ ``CMakeLists.txt``\ 中删除\ ``EXTRA_INCLUDES``\ 变量了。
+既然我们已经指定了\ ``MathFunctions``\ 的使用要求，就可以安全地从顶层文件\
+``CMakeLists.txt``\ 中删除\ ``EXTRA_INCLUDES``\ 变量了。
 
 删除这一行：
 
