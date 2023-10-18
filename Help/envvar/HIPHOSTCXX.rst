@@ -5,11 +5,9 @@ HIPHOSTCXX
 
 .. include:: ENV_VAR.txt
 
-Preferred executable for compiling host code when compiling ``HIP``
-language files with the NVIDIA CUDA Compiler. Will only be used by CMake
-on the first configuration to determine ``HIP`` host compiler, after which
-the value for ``HIPHOSTCXX`` is stored in the cache as
-:variable:`CMAKE_HIP_HOST_COMPILER <CMAKE_<LANG>_HOST_COMPILER>`.
+使用NVIDIA CUDA编译器编译\ ``HIP``\ 语言文件时，编译主机代码的首选可执行文件。只有CMake\
+在第一次配置时使用它来确定\ ``HIP``\ 主机编译器，之后\ ``HIPHOSTCXX``\ 的值存储在缓存中\
+为\ :variable:`CMAKE_HIP_HOST_COMPILER <CMAKE_<LANG>_HOST_COMPILER>`。
 
 This environment variable is primarily meant for use with projects that
 enable ``HIP`` as a first-class language.

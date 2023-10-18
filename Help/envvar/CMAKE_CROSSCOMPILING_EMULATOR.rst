@@ -5,7 +5,6 @@ CMAKE_CROSSCOMPILING_EMULATOR
 
 .. include:: ENV_VAR.txt
 
-The default value for :variable:`CMAKE_CROSSCOMPILING_EMULATOR` when there
-is no explicit configuration given on the first run while creating a new
-build tree.  On later runs in an existing build tree the value persists in
-the cache as :variable:`CMAKE_CROSSCOMPILING_EMULATOR`.
+:variable:`CMAKE_CROSSCOMPILING_EMULATOR`\ 的默认值，当在创建新构建树的第一次运行时没\
+有给出显式配置时。以后在现有构建树中运行时，该值将作为\
+:variable:`CMAKE_CROSSCOMPILING_EMULATOR`\ 保存在缓存中。
