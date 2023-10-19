@@ -37,13 +37,10 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 根对象识别以下字段：
 
 ``$schema``
-  An optional string that provides a URI to the JSON schema that describes the
-  structure of this JSON document. This field is used for validation and
-  autocompletion in editors that support JSON schema. It doesn't affect the
-  behavior of the document itself. If this field is not specified, the JSON
-  document will still be valid, but tools that use JSON schema for validation
-  and autocompletion may not function correctly.
-  This is allowed in preset files specifying version ``8`` or above.
+  一个可选字符串，它向描述该JSON文档结构的JSON模式提供一个URI。该字段用于在支持JSON模式的\
+  编辑器中进行验证和自动完成。它不会影响文档本身的行为。如果没有指定这个字段，JSON文档仍然有\
+  效，但是使用JSON模式进行验证和自动完成的工具可能无法正常工作。这在指定版本\ ``8``\ 或以\
+  上的预设文件中是允许的。
 
 ``version``
   必需的整数，表示JSON模式的版本。支持的版本有：

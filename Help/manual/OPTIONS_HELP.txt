@@ -13,18 +13,18 @@
 
 .. option:: --help <keyword> [<file>]
 
- Print help for one CMake keyword.
+ 打印一个CMake关键字的帮助。
 
- ``<keyword>`` can be a property, variable, command, policy, generator
- or module.
+ ``<keyword>``\ 可以是属性、变量、命令、策略、生成器或模块。
 
- The relevant manual entry for ``<keyword>`` is
- printed in a human-readable text format.
+ ``<keyword>``\ 以人类可读的文本格式打印。
  |file|
 
  .. versionchanged:: 3.28
 
    Prior to CMake 3.28, this option supported command names only.
+
+   在CMake 3.28之前，这个选项只支持命令名。
 
 .. option:: --help-full [<file>]
 

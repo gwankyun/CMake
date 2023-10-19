@@ -86,15 +86,13 @@
 
  .. versionadded:: 3.21
 
- Specify the cross compiling toolchain file, equivalent to setting
- :variable:`CMAKE_TOOLCHAIN_FILE` variable.
+ 指定交叉编译工具链文件，相当于设置\ :variable:`CMAKE_TOOLCHAIN_FILE`\ 变量。
 
 .. option:: --install-prefix <directory>
 
  .. versionadded:: 3.21
 
- Specify the installation directory, used by the
- :variable:`CMAKE_INSTALL_PREFIX` variable. Must be an absolute path.
+ 指定安装目录，由\ :variable:`CMAKE_INSTALL_PREFIX`\ 变量使用。必须是绝对路径。
 
 .. option:: -Wno-dev
 

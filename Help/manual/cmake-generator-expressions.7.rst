@@ -175,9 +175,9 @@ cmake-generator-expressions(7)
 
   .. versionadded:: 3.28
 
-    This generator expression short-circuits such that generator expressions in
-    ``false_string`` will not evaluate when ``condition`` is ``1``, and generator
-    expressions in ``true_string`` will not evaluate when condition is ``0``.
+    这个生成器表达式会短路，当\ ``condition``\ 为\ ``1``\ 时，\ ``false_string``\ 中\
+    的生成器表达式不会求值，当\ ``condition``\ 为\ ``0``\ 时，\ ``true_string``\ 中\
+    的生成器表达式不会求值。
 
 通常，\ ``condition``\ 本身就是一个生成器表达式。例如，当使用\ ``Debug``\ 配置时，\
 下面的表达式展开为\ ``DEBUG_MODE``，对于所有其他配置则为空字符串：
@@ -233,8 +233,7 @@ cmake-generator-expressions(7)
 
 .. versionadded:: 3.28
 
-  Logical operators short-circuit such that generator expressions in the
-  arguments list will not be evaluated once a return value can be determined.
+  逻辑运算符会发生短路，一旦确定了返回值，就不会对参数列表中的生成器表达式进行求值。
 
 .. _`Comparison Expressions`:
 
