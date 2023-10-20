@@ -7,7 +7,7 @@ CMAKE_<LANG>_HOST_COMPILER
 .. versionadded:: 3.28
   ``CMAKE_HIP_HOST_COMPILER``
 
-This variable is available when ``<LANG>`` is ``CUDA`` or ``HIP``.
+当\ ``<LANG>``\ 是\ ``CUDA``\ 或\ ``HIP``\ 时，此变量可用。
 
 When :variable:`CMAKE_<LANG>_COMPILER_ID` is
 ``NVIDIA``, ``CMAKE_<LANG>_HOST_COMPILER`` selects the compiler executable

@@ -3,7 +3,7 @@ CMAKE_HIP_PLATFORM
 
 .. versionadded:: 3.28
 
-GPU platform for which HIP language sources are to be compiled.
+要编译HIP语言源的GPU平台。
 
 The value must be one of:
 

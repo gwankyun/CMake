@@ -1545,41 +1545,32 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
   在本例中，组0从GPU ``0``\ 获得2个插槽，组1从GPU ``2``\ 获得2个插槽，组2从GPU ``1``\
   获得4个插槽，从GPU ``3``\ 获得1个插槽，从加密芯片\ ``card0``\ 获得2个插槽。
 
-  ``<num>`` is a number from zero to ``CTEST_RESOURCE_GROUP_COUNT`` minus one.
-  ``<resource-type>`` is the name of a resource type, converted to uppercase.
-  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>`` is defined for the product
-  of each ``<num>`` in the range listed above and each resource type listed in
-  ``CTEST_RESOURCE_GROUP_<num>``.
+  ``<num>``\ 是一个从零到\ ``CTEST_RESOURCE_GROUP_COUNT``\ 减一的数字。\
+  ``<resource-type>``\ 是资源类型的名称，转换成大写。\
+  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ 是为上面列出的范围中的每个\
+  ``<num>``\ 和\ ``CTEST_RESOURCE_GROUP_<num>``\ 中列出的每个资源类型的乘积定义的。
 
-  Because some platforms have case-insensitive names for environment variables,
-  the names of resource types may not clash in a case-insensitive environment.
-  Because of this, for the sake of simplicity, all resource types must be
-  listed in all lowercase in the
-  :ref:`resource specification file <ctest-resource-specification-file>` and
-  in the :prop_test:`RESOURCE_GROUPS` property, and they are converted to all
-  uppercase in the ``CTEST_RESOURCE_GROUP_<num>_<resource-type>`` environment
-  variable.
+  由于某些平台对环境变量具有不区分大小写的名称，因此资源类型的名称在不区分大小写的环境中可能\
+  不会冲突。因此，为了简单起见，在\ :ref:`资源规范文件 <ctest-resource-specification-file>`\
+  和\ :prop_test:`RESOURCE_GROUPS`\ 属性中，所有资源类型都必须以小写形式列出，并且在\
+  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ 环境变量中将它们全部转换为大写形式。
 
 .. _`ctest-resource-dynamically-generated-spec-file`:
 
-Dynamically-Generated Resource Specification File
+动态生成的资源规范文件
 -------------------------------------------------
 
 .. versionadded:: 3.28
 
-A project may optionally specify a single test which will be used to
-dynamically generate the resource specification file that CTest will use for
-scheduling tests that use resources. The test that generates the file must
-have the :prop_test:`GENERATED_RESOURCE_SPEC_FILE` property set, and must have
-exactly one fixture in its :prop_test:`FIXTURES_SETUP` property. This fixture
-is considered by CTest to have special meaning: it's the fixture that generates
-the resource spec file. The fixture may have any name. If such a fixture
-exists, all tests that have :prop_test:`RESOURCE_GROUPS` set must have the
-fixture in their :prop_test:`FIXTURES_REQUIRED`, and a resource spec file may
-not be specified with the ``--resource-spec-file`` argument or the
-:variable:`CTEST_RESOURCE_SPEC_FILE` variable.
+项目可以选择指定单个测试，该测试将用于动态生成资源规范文件，CTest将使用该文件调度使用资源的\
+测试。生成文件的测试必须设置\ :prop_test:`GENERATED_RESOURCE_SPEC_FILE`\ 属性，并且在\
+其\ :prop_test:`FIXTURES_SETUP`\ 属性中必须只有一个fixture。CTest认为这个fixture具有\
+特殊的含义：它是生成资源规范文件的fixture。fixture可以有任何名称。如果存在这样的fixture，\
+那么设置了\ :prop_test:`RESOURCE_GROUPS`\ 的所有测试必须在其\
+:prop_test:`FIXTURES_REQUIRED`\ 中包含该fixture，并且资源规范文件不能使用\
+``--resource-spec-file``\ 参数或\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ 变量指定。
 
-See Also
+另请参阅
 ========
 
 .. include:: LINKS.txt

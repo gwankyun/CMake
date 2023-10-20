@@ -1,7 +1,7 @@
 Visual Studio 12 2013
 ---------------------
 
-Deprecated.  生成Visual Studio 12（VS 2013）项目文件。
+弃用。生成Visual Studio 12（VS 2013）项目文件。
 
 .. note::
   This generator is deprecated and will be removed in a future version
