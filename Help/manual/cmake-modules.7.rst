@@ -71,7 +71,6 @@ cmake-modules(7)
    /module/CTestCoverageCollectGCOV
    /module/CTestScriptMode
    /module/CTestUseLaunchers
-   /module/Dart
    /module/DeployQt4
    /module/ExternalData
    /module/ExternalProject
@@ -81,14 +80,12 @@ cmake-modules(7)
    /module/FindPackageMessage
    /module/FortranCInterface
    /module/GenerateExportHeader
-   /module/GetPrerequisites
    /module/GNUInstallDirs
    /module/GoogleTest
    /module/InstallRequiredSystemLibraries
    /module/ProcessorCount
    /module/SelectLibraryConfigurations
    /module/SquishTestScript
-   /module/TestBigEndian
    /module/TestForANSIForScope
    /module/TestForANSIStreamHeaders
    /module/TestForSSTREAM
@@ -125,7 +122,6 @@ cmake-modules(7)
    /module/FindCVS
    /module/FindCxxTest
    /module/FindCygwin
-   /module/FindDart
    /module/FindDCMTK
    /module/FindDevIL
    /module/FindDoxygen
@@ -274,8 +270,11 @@ cmake-modules(7)
    /module/CMakeExpandImportedTargets
    /module/CMakeForceCompiler
    /module/CMakeParseArguments
+   /module/Dart
    /module/Documentation
+   /module/GetPrerequisites
    /module/MacroAddFileDependencies
+   /module/TestBigEndian
    /module/TestCXXAcceptsFlag
    /module/UseJavaClassFilelist
    /module/UseJavaSymlinks
@@ -291,6 +290,7 @@ cmake-modules(7)
    :maxdepth: 1
 
    /module/FindCUDA
+   /module/FindDart
    /module/FindITK
    /module/FindPythonInterp
    /module/FindPythonLibs

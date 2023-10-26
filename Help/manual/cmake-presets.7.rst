@@ -66,6 +66,9 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   ``7``
     .. versionadded:: 3.27
 
+  ``8``
+    .. versionadded:: 3.28
+
 ``cmakeMinimumRequired``
   一个可选对象，表示构建此项目所需的CMake的最小版本。该节点由以下字段组成：
 
