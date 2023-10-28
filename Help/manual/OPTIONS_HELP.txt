@@ -22,8 +22,6 @@
 
  .. versionchanged:: 3.28
 
-   Prior to CMake 3.28, this option supported command names only.
-
    在CMake 3.28之前，这个选项只支持命令名。
 
 .. option:: --help-full [<file>]
