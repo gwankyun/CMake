@@ -5,7 +5,7 @@
 FindLua51
 ---------
 
-查找Lua库。该模块定义
+查找Lua库。该模块定义：\ ::
 
   LUA51_FOUND, if false, do not try to link to Lua
   LUA_LIBRARIES
