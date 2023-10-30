@@ -257,7 +257,7 @@ CMake提供了一个\ :module:`FindGTest`\ 模块，所以如果它发现了一�
 
 高级控件也可以通过\ :variable:`FETCHCONTENT_TRY_FIND_PACKAGE_MODE`\ 变量获得。可以将\
 其设置为\ ``NEVER``\ 以禁用所有对\ :command:`find_package`\ 的重定向。即使没有指定\
-``FIND_PACKAGE_ARGS``，也可以将其设置为\ ``ALWAYS``\ 以尝试\ :command:`find_package`\ 
+``FIND_PACKAGE_ARGS``，也可以将其设置为\ ``ALWAYS``\ 以尝试\ :command:`find_package`\
 （这应该谨慎使用）。
 
 项目还可能决定必须从源代码构建特定的依赖项。如果需要补丁或未发布的依赖项版本，或者满足某些要\
