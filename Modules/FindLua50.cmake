@@ -5,7 +5,7 @@
 FindLua50
 ---------
 
-Locate Lua library.
+定位Lua库。
 
 This module defines::
 

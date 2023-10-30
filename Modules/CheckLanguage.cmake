@@ -5,8 +5,7 @@
 CheckLanguage
 -------------
 
-Check whether a language can be enabled by the :command:`enable_language`
-or :command:`project` commands:
+查看是否可以使用\ :command:`enable_language`\ 或\ :command:`project`\ 命令启用语言：
 
 .. command:: check_language
 

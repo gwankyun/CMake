@@ -16,9 +16,8 @@ External Project Definition
 
 .. command:: ExternalProject_Add
 
-  The ``ExternalProject_Add()`` function creates a custom target to drive
-  download, update/patch, configure, build, install and test steps of an
-  external project:
+  ``ExternalProject_Add()``\ 函数创建一个自定义目标来驱动外部项目的下载、更新/补丁、配置、\
+  构建、安装和测试步骤：
 
   .. code-block:: cmake
 

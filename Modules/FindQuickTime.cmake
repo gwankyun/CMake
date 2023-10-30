@@ -5,7 +5,7 @@
 FindQuickTime
 -------------
 
-Locate QuickTime This module defines:
+定位QuickTime，此模块定义：
 
 ``QUICKTIME_LIBRARY``
 
