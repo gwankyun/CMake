@@ -3,7 +3,7 @@ CUDA_SEPARABLE_COMPILATION
 
 .. versionadded:: 3.8
 
-CUDA only: Enables separate compilation of device code
+CUDA专用：允许单独编译设备代码
 
 If set this will enable separable compilation for all CUDA files for
 the given target.

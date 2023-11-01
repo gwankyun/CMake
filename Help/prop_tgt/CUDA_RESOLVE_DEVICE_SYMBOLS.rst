@@ -3,8 +3,7 @@ CUDA_RESOLVE_DEVICE_SYMBOLS
 
 .. versionadded:: 3.9
 
-CUDA only: Enables device linking for the specific library target where
-required.
+CUDA专用：在需要的地方为特定库目标启用设备链接。
 
 If set, this will tell the required compilers to enable device linking
 on the library target. Device linking is an additional link step

@@ -3,8 +3,8 @@ CUDA_OPTIX_COMPILATION
 
 .. versionadded:: 3.27
 
-Compile CUDA sources to ``.optixir`` files instead of ``.obj`` files
-within :ref:`Object Libraries`.
+将CUDA源编译为\ ``.optixir``\ 文件，而不是\ :ref:`Object Libraries`\ 中的\ ``.obj``\
+文件。
 
 For example:
 

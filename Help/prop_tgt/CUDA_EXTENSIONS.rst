@@ -3,7 +3,7 @@ CUDA_EXTENSIONS
 
 .. versionadded:: 3.8
 
-Boolean specifying whether compiler specific extensions are requested.
+布尔值，指定是否请求特定于编译器的扩展。
 
 This property specifies whether compiler specific extensions should be
 used.  For some compilers, this results in adding a flag such
