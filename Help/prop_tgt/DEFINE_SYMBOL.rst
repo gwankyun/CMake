@@ -1,7 +1,7 @@
 DEFINE_SYMBOL
 -------------
 
-Define a symbol when compiling this target's sources.
+在编译此目标的源代码时定义一个符号。
 
 ``DEFINE_SYMBOL`` sets the name of the preprocessor symbol defined when
 compiling sources in a shared library.  If not set here then it is set

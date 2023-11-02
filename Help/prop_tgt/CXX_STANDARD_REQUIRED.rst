@@ -3,7 +3,7 @@ CXX_STANDARD_REQUIRED
 
 .. versionadded:: 3.1
 
-Boolean describing whether the value of :prop_tgt:`CXX_STANDARD` is a requirement.
+布尔值，描述\ :prop_tgt:`CXX_STANDARD`\ 的值是否是必需的。
 
 If this property is set to ``ON``, then the value of the
 :prop_tgt:`CXX_STANDARD` target property is treated as a requirement.  If this

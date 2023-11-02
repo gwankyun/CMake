@@ -3,7 +3,7 @@ DOTNET_SDK
 
 .. versionadded:: 3.23
 
-Specify the .NET SDK for C# projects.  For example: ``Microsoft.NET.Sdk``.
+为C#项目指定.NET SDK。例如：\ ``Microsoft.NET.Sdk``。
 
 This property tells :ref:`Visual Studio Generators` for VS 2019 and
 above to generate a .NET SDK-style project using the specified SDK.

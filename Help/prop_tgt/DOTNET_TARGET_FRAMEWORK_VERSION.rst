@@ -3,7 +3,7 @@ DOTNET_TARGET_FRAMEWORK_VERSION
 
 .. versionadded:: 3.12
 
-Specify the .NET target framework version.
+指定.NET目标框架版本。
 
 Used to specify the .NET target framework version for C++/CLI and C#.
 For example: ``v4.5``.

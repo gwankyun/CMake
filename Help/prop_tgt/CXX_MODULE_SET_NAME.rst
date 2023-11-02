@@ -3,10 +3,9 @@ CXX_MODULE_SET_<NAME>
 
 .. versionadded:: 3.28
 
-Semicolon-separated list of files in the target's ``<NAME>`` C++ module set,
-which has the set type ``CXX_MODULES``. If any of the paths are relative, they
-are computed relative to the target's source directory. The property supports
-:manual:`generator expressions <cmake-generator-expressions(7)>`.
+目标的\ ``<NAME>``\ C++模块集中的文件列表，以分号分隔，该模块集的类型为\ ``CXX_MODULES``。\
+如果任何路径是相对的，则相对于目标的源目录计算它们。该属性支持\
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 This property is normally only set by :command:`target_sources(FILE_SET)`
 rather than being manipulated directly.

@@ -1,7 +1,7 @@
 ENABLE_EXPORTS
 --------------
 
-Specify whether an executable or a shared library exports symbols.
+指定可执行文件或共享库是否导出符号。
 
 Normally an executable does not export any symbols because it is the
 final program.  It is possible for an executable to export symbols to

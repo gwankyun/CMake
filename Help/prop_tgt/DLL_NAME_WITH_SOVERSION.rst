@@ -3,10 +3,8 @@ DLL_NAME_WITH_SOVERSION
 
 .. versionadded:: 3.27
 
-This property controls whether the :prop_tgt:`SOVERSION` target
-property is added to the filename of generated DLL filenames
-for the Windows platform, which is selected when the
-:variable:`WIN32` variable is set.
+该属性控制是否将\ :prop_tgt:`SOVERSION`\ 目标属性添加到为Windows平台生成的DLL文件名中，\
+该属性在设置\ :variable:`WIN32`\ 变量时选择。
 
 The value of the listed property is appended to the
 basename of the runtime component of the shared library

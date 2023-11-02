@@ -1,7 +1,7 @@
 EXCLUDE_FROM_DEFAULT_BUILD_<CONFIG>
 -----------------------------------
 
-Per-configuration version of target exclusion from ``Build Solution``.
+从\ ``Build Solution``\ 中排除目标的每个配置版本。
 
 This is the configuration-specific version of
 :prop_tgt:`EXCLUDE_FROM_DEFAULT_BUILD`.  If the generic

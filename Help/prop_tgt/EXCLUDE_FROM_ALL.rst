@@ -1,10 +1,8 @@
 EXCLUDE_FROM_ALL
 ----------------
 
-Set this target property to a true (or false) value to exclude (or include)
-the target from the "all" target of the containing directory and its
-ancestors.  If excluded, running e.g. ``make`` in the containing directory
-or its ancestors will not build the target by default.
+将此目标属性设置为true（或false）值，以从包含目录及其祖先目录的“all”目标中排除（或包含）该\
+目标。如果排除，默认情况下，在包含目录或其祖先目录中运行例如\ ``make``\ 将不会构建目标。
 
 If this target property is not set then the target will be included in
 the "all" target of the containing directory.  Furthermore, it will be
