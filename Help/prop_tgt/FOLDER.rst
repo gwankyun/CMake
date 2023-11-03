@@ -1,12 +1,9 @@
 FOLDER
 ------
 
-For IDEs that present targets using a folder hierarchy, this property
-specifies the name of the folder to place the target under.
-To nest folders, use ``FOLDER`` values such as ``GUI/Dialogs`` with ``/``
-characters separating folder levels.  Targets with no ``FOLDER`` property
-will appear as top level entities.  Targets with the same ``FOLDER``
-property value will appear in the same folder as siblings.
+对于使用文件夹层次结构呈现目标的IDE，此属性指定要放置目标的文件夹的名称。要嵌套文件夹，使用\
+``FOLDER``\ 值，如\ ``GUI/Dialogs``，用\ ``/``\ 字符分隔文件夹级别。没有\ ``FOLDER``\
+属性的目标将显示为顶级实体。具有相同\ ``FOLDER``\ 属性值的目标将与同级目标出现在同一文件夹中。
 
 Only some CMake generators honor the ``FOLDER`` property
 (e.g. :generator:`Xcode` or any of the

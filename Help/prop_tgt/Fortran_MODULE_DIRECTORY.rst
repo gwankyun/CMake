@@ -1,7 +1,7 @@
 Fortran_MODULE_DIRECTORY
 ------------------------
 
-Specify output directory for Fortran modules provided by the target.
+为目标提供的Fortran模块指定输出目录。
 
 If the target contains Fortran source files that provide modules and
 the compiler supports a module output directory this specifies the

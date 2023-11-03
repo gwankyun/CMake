@@ -3,7 +3,7 @@ EXPORT_PROPERTIES
 
 .. versionadded:: 3.12
 
-List additional properties to export for a target.
+列出要为目标导出的其他属性。
 
 This property contains a list of property names that should be exported by
 the :command:`install(EXPORT)` and :command:`export` commands.  By default

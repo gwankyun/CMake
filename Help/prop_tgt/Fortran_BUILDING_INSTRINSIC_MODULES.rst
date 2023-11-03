@@ -3,8 +3,7 @@ Fortran_BUILDING_INSTRINSIC_MODULES
 
 .. versionadded:: 3.22
 
-Instructs the CMake Fortran preprocessor that the target is building
-Fortran intrinsics for building a Fortran compiler.
+指示CMake Fortran预处理器目标正在为Fortran编译器构建Fortran的内在函数。
 
 This property is off by default and should be turned only on projects
 that build a Fortran compiler. It should not be turned on for projects

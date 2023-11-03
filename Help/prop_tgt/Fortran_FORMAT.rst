@@ -1,7 +1,7 @@
 Fortran_FORMAT
 --------------
 
-Set to ``FIXED`` or ``FREE`` to indicate the Fortran source layout.
+设置为\ ``FIXED``\ 或\ ``FREE``\ 以指示Fortran源布局。
 
 This property tells CMake whether the Fortran source files in a target
 use fixed-format or free-format.  CMake will pass the corresponding
