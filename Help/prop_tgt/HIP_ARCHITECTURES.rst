@@ -3,8 +3,7 @@ HIP_ARCHITECTURES
 
 .. versionadded:: 3.21
 
-List of GPU architectures to for which to generate device code.
-Architecture names are interpreted based on :variable:`CMAKE_HIP_PLATFORM`.
+生成设备代码的GPU架构列表。架构名称是基于\ :variable:`CMAKE_HIP_PLATFORM`\ 进行解释的。
 
 A non-empty false value (e.g. ``OFF``) disables adding architectures.
 This is intended to support packagers and rare cases where full control

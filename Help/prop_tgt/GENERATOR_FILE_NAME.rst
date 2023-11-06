@@ -1,7 +1,7 @@
 GENERATOR_FILE_NAME
 -------------------
 
-Generator's file for this target.
+此目标的生成器文件。
 
 An internal property used by some generators to record the name of the
 project or dsp file associated with this target.  Note that at

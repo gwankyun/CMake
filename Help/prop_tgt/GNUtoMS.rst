@@ -1,7 +1,7 @@
 GNUtoMS
 -------
 
-Convert GNU import library (``.dll.a``) to MS format (``.lib``).
+将GNU导入库（\ ``.dll.a``）转换为MS格式（\ ``.lib``）。
 
 When linking a shared library or executable that exports symbols using
 GNU tools on Windows (MinGW/MSYS) with Visual Studio installed convert

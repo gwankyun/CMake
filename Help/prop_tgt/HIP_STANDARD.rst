@@ -3,7 +3,7 @@ HIP_STANDARD
 
 .. versionadded:: 3.21
 
-The HIP/C++ standard requested to build this target.
+构建这个目标的HIP/C++标准要求。
 
 Supported values are:
 

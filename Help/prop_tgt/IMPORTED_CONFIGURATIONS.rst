@@ -1,7 +1,7 @@
 IMPORTED_CONFIGURATIONS
 -----------------------
 
-Configurations provided for an :ref:`imported target <Imported targets>`.
+为\ :ref:`导入目标 <Imported targets>`\ 提供的配置。
 
 Set this to the list of configuration names available for an imported
 target.  For each configuration named, the imported target's artifacts

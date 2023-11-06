@@ -3,9 +3,8 @@ HEADER_DIRS_<NAME>
 
 .. versionadded:: 3.23
 
-Semicolon-separated list of base directories of the target's ``<NAME>``
-header set, which has the set type ``HEADERS``. The property supports
-:manual:`generator expressions <cmake-generator-expressions(7)>`.
+目标的\ ``<NAME>``\ 头文件集的基本目录列表，以分号分隔，其集类型为\ ``HEADERS``。该属性\
+支持\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 This property is normally only set by :command:`target_sources(FILE_SET)`
 rather than being manipulated directly.

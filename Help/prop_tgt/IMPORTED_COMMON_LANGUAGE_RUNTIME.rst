@@ -3,7 +3,7 @@ IMPORTED_COMMON_LANGUAGE_RUNTIME
 
 .. versionadded:: 3.12
 
-Property to define if the target uses ``C++/CLI``.
+定义目标是否使用\ ``C++/CLI``\ 的属性。
 
 Ignored for non-imported targets.
 

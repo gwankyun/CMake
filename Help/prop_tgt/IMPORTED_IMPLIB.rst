@@ -1,7 +1,7 @@
 IMPORTED_IMPLIB
 ---------------
 
-Full path to the import library for an ``IMPORTED`` target.
+``IMPORTED``\ 目标的导入库的完整路径。
 
 This property may be set:
 

@@ -3,10 +3,9 @@ HEADER_SET_<NAME>
 
 .. versionadded:: 3.23
 
-Semicolon-separated list of files in the target's ``<NAME>`` header set,
-which has the set type ``HEADERS``. If any of the paths are relative,
-they are computed relative to the target's source directory. The property
-supports :manual:`generator expressions <cmake-generator-expressions(7)>`.
+目标的\ ``<NAME>``\ 头文件集中以分号分隔的文件列表，其集合类型为\ ``HEADERS``。如果任何\
+路径是相对的，则相对于目标的源目录计算它们。该属性支持\
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 This property is normally only set by :command:`target_sources(FILE_SET)`
 rather than being manipulated directly.

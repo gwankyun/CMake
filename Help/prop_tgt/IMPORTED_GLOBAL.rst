@@ -3,8 +3,7 @@ IMPORTED_GLOBAL
 
 .. versionadded:: 3.11
 
-Indication of whether an :ref:`IMPORTED target <Imported Targets>` is
-globally visible.
+指示\ :ref:`导入目标 <Imported Targets>`\ 是否全局可见。
 
 The boolean value of this property is True for targets created with the
 ``IMPORTED`` ``GLOBAL`` options to :command:`add_executable()` or

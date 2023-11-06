@@ -1,7 +1,7 @@
 FRAMEWORK
 ---------
 
-Build ``SHARED`` or ``STATIC`` library as Framework Bundle on the macOS and iOS.
+在macOS和iOS上构建\ ``SHARED``\ 或\ ``STATIC``\ 库作为框架包。
 
 If such a library target has this property set to ``TRUE`` it will be
 built as a framework when built on the macOS and iOS.  It will have the
