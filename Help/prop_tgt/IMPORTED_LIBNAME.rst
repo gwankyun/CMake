@@ -3,8 +3,8 @@ IMPORTED_LIBNAME
 
 .. versionadded:: 3.8
 
-Specify the link library name for an :ref:`imported <Imported Targets>`
-:ref:`Interface Library <Interface Libraries>`.
+为\ :ref:`导入 <Imported Targets>`\ 的\ :ref:`接口库 <Interface Libraries>`\ 指定\
+链接库名称。
 
 An interface library builds no library file itself but does specify
 usage requirements for its consumers.  The ``IMPORTED_LIBNAME``

@@ -1,7 +1,7 @@
 IMPORT_SUFFIX
 -------------
 
-What comes after the import library name.
+导入库名称后面的内容。
 
 Similar to the target property :prop_tgt:`SUFFIX`, but used
 for import libraries (typically corresponding to a ``DLL``) instead of

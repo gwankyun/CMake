@@ -1,6 +1,6 @@
 IMPORTED_LINK_INTERFACE_MULTIPLICITY
 ------------------------------------
 
-Repetition count for cycles of ``IMPORTED`` static libraries.
+``IMPORTED``\ 静态库的循环重复计数。
 
 This is :prop_tgt:`LINK_INTERFACE_MULTIPLICITY` for ``IMPORTED`` targets.

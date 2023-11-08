@@ -1,7 +1,7 @@
 IMPORTED_NO_SONAME
 ------------------
 
-Specifies that an ``IMPORTED`` shared library target has no ``soname``.
+指定\ ``IMPORTED``\ 共享库目标没有\ ``soname``.。
 
 Set this property to true for an imported shared library file that has
 no ``soname`` field.  CMake may adjust generated link commands for some

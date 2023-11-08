@@ -1,7 +1,7 @@
 IMPORTED_LINK_INTERFACE_LIBRARIES
 ---------------------------------
 
-Transitive link interface of an ``IMPORTED`` target.
+``IMPORTED``\ 目标的传递链接接口。
 
 Set this to the list of libraries whose interface is included when an
 ``IMPORTED`` library target is linked to another target.  The libraries

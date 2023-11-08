@@ -1,7 +1,7 @@
 INSTALL_NAME_DIR
 ----------------
 
-Directory name for installed targets on Apple platforms.
+在苹果平台上安装的目标的目录名。
 
 ``INSTALL_NAME_DIR`` is a string specifying the directory portion of the
 "install_name" field of shared libraries on Apple platforms for

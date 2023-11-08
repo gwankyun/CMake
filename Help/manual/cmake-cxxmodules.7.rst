@@ -20,8 +20,7 @@ C++ 20引入了“模块”的概念。该设计要求构建系统之间对编�
 - 如果设置了\ :prop_sf:`CXX_SCAN_FOR_MODULES`\ 源文件属性，则将使用其值。
 - 如果设置了\ :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ 目标属性，则将使用其值。设置\
   :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ 变量，以便在创建所有目标时初始化该属性。
-- Otherwise, the source file will be scanned if the compiler and generator
-  support scanning.  See policy :policy:`CMP0155`.
+- 否则，将在编译器和生成器支持的前提下，扫描源文件。参见策略\ :policy:`CMP0155`。
 
 编译器支持
 ================

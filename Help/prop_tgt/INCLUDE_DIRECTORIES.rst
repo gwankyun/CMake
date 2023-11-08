@@ -1,7 +1,7 @@
 INCLUDE_DIRECTORIES
 -------------------
 
-List of preprocessor include file search directories.
+预处理器列表包括文件搜索目录。
 
 This property specifies the list of directories given so far to the
 :command:`target_include_directories` command.  In addition to accepting

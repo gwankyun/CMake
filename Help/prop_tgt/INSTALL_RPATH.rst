@@ -1,7 +1,7 @@
 INSTALL_RPATH
 -------------
 
-The rpath to use for installed targets.
+用于已安装目标的rpath。
 
 By default, the install rpath is empty. It can be set using this property,
 which is a semicolon-separated list specifying the rpath to use in installed

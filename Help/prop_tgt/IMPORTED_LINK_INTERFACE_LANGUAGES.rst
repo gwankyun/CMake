@@ -1,7 +1,7 @@
 IMPORTED_LINK_INTERFACE_LANGUAGES
 ---------------------------------
 
-Languages compiled into an ``IMPORTED`` static library.
+编译成\ ``IMPORTED``\ 静态库的语言。
 
 Set this to the list of languages of source files compiled to produce
 a ``STATIC IMPORTED`` library (such as ``C`` or ``CXX``).  CMake accounts for

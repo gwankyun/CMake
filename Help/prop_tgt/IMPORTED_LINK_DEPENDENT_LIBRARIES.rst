@@ -1,7 +1,7 @@
 IMPORTED_LINK_DEPENDENT_LIBRARIES
 ---------------------------------
 
-Dependent shared libraries of an imported shared library.
+导入共享库的依赖共享库。
 
 Shared libraries may be linked to other shared libraries as part of
 their implementation.  On some platforms the linker searches for the

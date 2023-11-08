@@ -3,9 +3,8 @@ IMPORTED_OBJECTS
 
 .. versionadded:: 3.9
 
-A :ref:`semicolon-separated list <CMake Language Lists>` of absolute paths
-to the object files on disk for an :ref:`imported <Imported targets>`
-:ref:`object library <object libraries>`.
+对于\ :ref:`导入 <Imported targets>`\ 的\ :ref:`对象库 <object libraries>`，指向磁\
+盘上对象文件的绝对路径，格式为\ :ref:`以分号分割的列表 <CMake Language Lists>` 。
 
 Ignored for non-imported targets.
 

@@ -3,7 +3,7 @@ INSTALL_REMOVE_ENVIRONMENT_RPATH
 
 .. versionadded:: 3.16
 
-Controls whether toolchain-defined rpaths should be removed during installation.
+控制是否应该在安装期间删除工具链定义的rpath。
 
 When a target is being installed, CMake may need to rewrite its rpath
 information.  This occurs when the install rpath (as specified by the
