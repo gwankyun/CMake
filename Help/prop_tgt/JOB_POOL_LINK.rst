@@ -1,7 +1,7 @@
 JOB_POOL_LINK
 -------------
 
-Ninja only: Pool used for linking.
+Ninja专用：用于链接的池。
 
 The number of parallel link processes could be limited by defining
 pools with the global :prop_gbl:`JOB_POOLS`

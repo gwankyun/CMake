@@ -3,7 +3,7 @@ JOB_POOL_PRECOMPILE_HEADER
 
 .. versionadded:: 3.17
 
-Ninja only: Pool used for generating pre-compiled headers.
+Ninja专用：用于生成预编译头文件的池。
 
 The number of parallel compile processes could be limited by defining
 pools with the global :prop_gbl:`JOB_POOLS`

@@ -1,5 +1,5 @@
 
-List of public |property_name| requirements for a library.
+库的公共\ |property_name|\ 要求列表。
 
 Targets may populate this property to publish the |property_name|
 required to compile against the headers for the target.  The |command_name|

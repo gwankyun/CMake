@@ -3,7 +3,7 @@ INTERFACE_SOURCES
 
 .. versionadded:: 3.1
 
-List of interface sources to compile into consuming targets.
+要编译成消费目标的接口源列表。
 
 Targets may populate this property to publish the sources
 for consuming targets to compile.  The :command:`target_sources` command

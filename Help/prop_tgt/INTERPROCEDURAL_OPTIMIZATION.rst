@@ -1,7 +1,7 @@
 INTERPROCEDURAL_OPTIMIZATION
 ----------------------------
 
-Enable interprocedural optimization for a target.
+为目标启用程序间优化。
 
 If set to true, enables interprocedural optimizations if they are
 known :module:`to be supported <CheckIPOSupported>` by the compiler. Depending

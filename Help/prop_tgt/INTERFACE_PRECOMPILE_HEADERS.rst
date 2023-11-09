@@ -3,7 +3,7 @@ INTERFACE_PRECOMPILE_HEADERS
 
 .. versionadded:: 3.16
 
-List of interface header files to precompile into consuming targets.
+要预编译为消费目标的接口头文件列表。
 
 Targets may populate this property to publish the header files
 for consuming targets to precompile.  The :command:`target_precompile_headers`

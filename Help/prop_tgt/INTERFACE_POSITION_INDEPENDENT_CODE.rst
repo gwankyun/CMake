@@ -1,7 +1,7 @@
 INTERFACE_POSITION_INDEPENDENT_CODE
 -----------------------------------
 
-Whether consumers need to create a position-independent target
+消费者是否需要创建一个与位置无关的目标
 
 The ``INTERFACE_POSITION_INDEPENDENT_CODE`` property informs consumers of
 this target whether they must set their

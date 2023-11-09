@@ -1,7 +1,7 @@
 INTERFACE_AUTOUIC_OPTIONS
 -------------------------
 
-List of interface options to pass to uic.
+传递给uic的接口选项列表。
 
 Targets may populate this property to publish the options
 required to use when invoking ``uic``.  Consuming targets can add entries to their

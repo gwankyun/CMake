@@ -3,8 +3,7 @@ INTERFACE_HEADER_SETS_TO_VERIFY
 
 .. versionadded:: 3.24
 
-Used to specify which ``PUBLIC`` and ``INTERFACE`` header sets of a target
-should be verified.
+用于指定目标的哪些\ ``PUBLIC``\ 和\ ``INTERFACE``\ 头文件集应该被验证。
 
 This property contains a semicolon-separated list of header sets which
 should be verified if :prop_tgt:`VERIFY_INTERFACE_HEADER_SETS` is set to

@@ -1,7 +1,7 @@
 INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
 ------------------------------------
 
-List of public system include directories for a library.
+公共系统包含库的目录列表。
 
 Targets may populate this property to publish the include directories
 which contain system headers, and therefore should not result in

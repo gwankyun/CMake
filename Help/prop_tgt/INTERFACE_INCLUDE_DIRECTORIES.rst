@@ -1,7 +1,7 @@
 INTERFACE_INCLUDE_DIRECTORIES
 -----------------------------
 
-.. |property_name| replace:: include directories
+.. |property_name| replace:: 包含目录
 .. |command_name| replace:: :command:`target_include_directories`
 .. |PROPERTY_INTERFACE_NAME| replace:: ``INTERFACE_INCLUDE_DIRECTORIES``
 .. |PROPERTY_LINK| replace:: :prop_tgt:`INCLUDE_DIRECTORIES`

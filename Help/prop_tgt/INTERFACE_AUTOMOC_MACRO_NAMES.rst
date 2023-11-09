@@ -3,8 +3,8 @@ INTERFACE_AUTOMOC_MACRO_NAMES
 
 .. versionadded:: 3.27
 
-A :ref:`semicolon-separated list <CMake Language Lists>` of macro names for
-:prop_tgt:`AUTOMOC` to be propagated to consumers.
+:prop_tgt:`AUTOMOC`\ 宏名称的\ :ref:`分号分隔列表 <CMake Language Lists>`，以便将其\
+传播给消费者。
 
 When a target with :prop_tgt:`AUTOMOC` enabled links to a library that sets
 ``INTERFACE_AUTOMOC_MACRO_NAMES``, the target inherits the listed macro names

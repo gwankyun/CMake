@@ -3,7 +3,7 @@ ISPC_HEADER_DIRECTORY
 
 .. versionadded:: 3.19
 
-Specify relative output directory for ISPC headers provided by the target.
+为目标提供的ISPC标头指定相对输出目录。
 
 If the target contains ISPC source files, this specifies the directory in which
 the generated headers will be placed. Relative paths are treated with respect to

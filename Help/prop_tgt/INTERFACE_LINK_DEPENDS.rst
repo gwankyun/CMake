@@ -3,7 +3,7 @@ INTERFACE_LINK_DEPENDS
 
 .. versionadded:: 3.13
 
-Additional public interface files on which a target binary depends for linking.
+目标二进制文件所依赖的其他公共接口文件进行链接。
 
 This property is supported only by :generator:`Ninja` and
 :ref:`Makefile Generators`.

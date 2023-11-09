@@ -3,7 +3,7 @@ ISPC_INSTRUCTION_SETS
 
 .. versionadded:: 3.19
 
-List of instruction set architectures to generate code for.
+要为其生成代码的指令集体系结构列表。
 
 This property is initialized by the value of the :variable:`CMAKE_ISPC_INSTRUCTION_SETS`
 variable if it is set when a target is created.

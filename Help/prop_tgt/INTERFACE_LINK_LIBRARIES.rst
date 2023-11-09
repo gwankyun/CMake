@@ -1,7 +1,7 @@
 INTERFACE_LINK_LIBRARIES
 ------------------------
 
-List public interface libraries for a library.
+列出库的公共接口库。
 
 This property contains the list of transitive link dependencies.  When
 the target is linked into another target using the

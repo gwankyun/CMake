@@ -1,7 +1,7 @@
 JOB_POOL_COMPILE
 ----------------
 
-Ninja only: Pool used for compiling.
+Ninja专用：用于编译的池。
 
 The number of parallel compile processes could be limited by defining
 pools with the global :prop_gbl:`JOB_POOLS`

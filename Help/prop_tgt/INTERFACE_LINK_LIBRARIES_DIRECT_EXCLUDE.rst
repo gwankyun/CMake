@@ -3,8 +3,7 @@ INTERFACE_LINK_LIBRARIES_DIRECT_EXCLUDE
 
 .. versionadded:: 3.24
 
-List of libraries that consumers of this library should *not* treat
-as direct link dependencies.
+此库的使用者不应将其视为直接链接依赖项的库列表。
 
 This target property may be set to *exclude* items from a dependent
 target's final set of direct link dependencies.  This property is
