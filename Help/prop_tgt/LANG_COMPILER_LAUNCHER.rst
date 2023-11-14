@@ -3,8 +3,8 @@
 
 .. versionadded:: 3.4
 
-This property is implemented only when ``<LANG>`` is ``C``, ``CXX``,
-``Fortran``, ``HIP``, ``ISPC``, ``OBJC``, ``OBJCXX``, or ``CUDA``.
+此属性仅在\ ``<LANG>``\ 为\ ``C``、\ ``CXX``、\ ``Fortran``、\ ``HIP``、\ ``ISPC``、\
+``OBJC``、\ ``OBJCXX``\ 或\ ``CUDA``\ 时实现。
 
 Specify a :ref:`semicolon-separated list <CMake Language Lists>` containing a command line
 for a compiler launching tool. The :ref:`Makefile Generators` and the

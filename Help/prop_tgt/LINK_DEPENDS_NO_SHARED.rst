@@ -1,7 +1,7 @@
 LINK_DEPENDS_NO_SHARED
 ----------------------
 
-Do not depend on linked shared library files.
+不要依赖链接的共享库文件。
 
 Set this property to true to tell CMake generators not to add
 file-level dependencies on the shared library files linked by this

@@ -3,8 +3,7 @@
 
 .. versionadded:: 3.6
 
-This property is implemented only when ``<LANG>`` is ``C``, ``CXX``, ``OBJC``
-or ``OBJCXX``.
+此属性仅在\ ``<LANG>``\ 为\ ``C``、\ ``CXX``、\ ``OBJC``\ 或\ ``OBJCXX``\ 时实现。
 
 Specify a :ref:`semicolon-separated list <CMake Language Lists>` containing
 a command line for the ``clang-tidy`` tool.  The :ref:`Makefile Generators`

@@ -3,7 +3,7 @@
 
 .. versionadded:: 3.3
 
-This property is implemented only when ``<LANG>`` is ``C`` or ``CXX``.
+此属性仅在\ ``<LANG>``\ 为\ ``C``\ 或\ ``CXX``\ 时实现。
 
 Specify a :ref:`semicolon-separated list <CMake Language Lists>` containing a command
 line for the ``include-what-you-use`` tool.  The :ref:`Makefile Generators`

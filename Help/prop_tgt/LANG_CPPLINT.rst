@@ -3,7 +3,7 @@
 
 .. versionadded:: 3.8
 
-This property is supported only when ``<LANG>`` is ``C`` or ``CXX``.
+只有当\ ``<LANG>``\ 为\ ``C``\ 或\ ``CXX``\ 时才支持此属性。
 
 Specify a :ref:`semicolon-separated list <CMake Language Lists>` containing a command line
 for the ``cpplint`` style checker.  The :ref:`Makefile Generators` and the

@@ -1,7 +1,7 @@
 LINK_DEPENDS
 ------------
 
-Additional files on which a target binary depends for linking.
+目标二进制文件所依赖进行链接的附加文件。
 
 Specifies a semicolon-separated list of full-paths to files on which
 the link rule for this target depends.  The target binary will be

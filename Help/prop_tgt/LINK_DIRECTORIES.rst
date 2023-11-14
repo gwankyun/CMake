@@ -3,8 +3,7 @@ LINK_DIRECTORIES
 
 .. versionadded:: 3.13
 
-List of directories to use for the link step of shared library, module
-and executable targets.
+用于共享库、模块和可执行目标的链接步骤的目录列表。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>` of directories
 specified so far for its target.  Use the :command:`target_link_directories`

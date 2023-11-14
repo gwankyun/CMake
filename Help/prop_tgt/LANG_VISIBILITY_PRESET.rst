@@ -1,7 +1,7 @@
 <LANG>_VISIBILITY_PRESET
 ------------------------
 
-Value for symbol visibility compile flags
+符号可见性编译标志的值
 
 The ``<LANG>_VISIBILITY_PRESET`` property determines the value passed in a
 visibility related compile option, such as ``-fvisibility=`` for ``<LANG>``.

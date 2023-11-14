@@ -1,7 +1,7 @@
 <LANG>_STANDARD_REQUIRED
 ------------------------
 
-The variations are:
+这些变体是：
 
 * :prop_tgt:`C_STANDARD_REQUIRED`
 * :prop_tgt:`CXX_STANDARD_REQUIRED`

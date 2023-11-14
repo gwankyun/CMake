@@ -3,9 +3,8 @@
 
 .. versionadded:: 3.26
 
-This property is implemented only when ``<LANG>`` is ``C``, ``CXX``, ``OBJC``
-or ``OBJCXX``, and only has an effect when :prop_tgt:`<LANG>_CLANG_TIDY` is
-set.
+此属性仅在\ ``<LANG>``\ 为\ ``C``、\ ``CXX``、\ ``OBJC``\ 或\ ``OBJCXX``\ 时实现，\
+且仅在设置\ :prop_tgt:`<LANG>_CLANG_TIDY`\ 时生效。
 
 Specify a directory for the ``clang-tidy`` tool to put ``.yaml`` files
 containing its suggested changes in. This can be used for automated mass

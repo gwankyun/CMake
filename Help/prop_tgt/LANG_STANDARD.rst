@@ -1,7 +1,7 @@
 <LANG>_STANDARD
 ---------------
 
-The variations are:
+这些变体是：
 
 * :prop_tgt:`C_STANDARD`
 * :prop_tgt:`CXX_STANDARD`

@@ -1,7 +1,7 @@
 <LANG>_EXTENSIONS
 -----------------
 
-The variations are:
+这些变体是：
 
 * :prop_tgt:`C_EXTENSIONS`
 * :prop_tgt:`CXX_EXTENSIONS`
