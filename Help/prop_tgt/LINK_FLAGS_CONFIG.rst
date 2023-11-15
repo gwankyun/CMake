@@ -1,8 +1,7 @@
 LINK_FLAGS_<CONFIG>
 -------------------
 
-Per-configuration linker flags for a ``SHARED`` library, ``MODULE`` or
-``EXECUTABLE`` target.
+``SHARED``\ 库、\ ``MODULE``\ 或\ ``EXECUTABLE``\ 目标的配置链接器标志。
 
 This is the configuration-specific version of :prop_tgt:`LINK_FLAGS`.
 

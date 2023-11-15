@@ -3,14 +3,11 @@ LINK_WHAT_YOU_USE
 
 .. versionadded:: 3.7
 
-This is a boolean option that, when set to ``TRUE``, will automatically run
-contents of variable :variable:`CMAKE_LINK_WHAT_YOU_USE_CHECK` on the target
-after it is linked. In addition, the linker flag specified by variable
-:variable:`CMAKE_<LANG>_LINK_WHAT_YOU_USE_FLAG`  will be passed to the target
-with the link command so that all libraries specified on the command line will
-be linked into the target. This will result in the link producing a list of
-libraries that provide no symbols used by this target but are being linked to
-it.
+这是一个布尔选项，当设置为\ ``TRUE``\ 时，将在链接目标后自动运行变量\
+:variable:`CMAKE_LINK_WHAT_YOU_USE_CHECK`\ 的内容。此外，变量\
+:variable:`CMAKE_<LANG>_LINK_WHAT_YOU_USE_FLAG`\ 指定的链接器标志将通过链接命令传递\
+给目标，这样命令行上指定的所有库都将被链接到目标中。这将导致链接生成一个库列表，这些库不提供\
+此目标使用的符号，但正在被链接到它。
 
 .. note::
 

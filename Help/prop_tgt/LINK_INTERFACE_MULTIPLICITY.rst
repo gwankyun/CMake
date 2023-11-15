@@ -1,7 +1,7 @@
 LINK_INTERFACE_MULTIPLICITY
 ---------------------------
 
-Repetition count for ``STATIC`` libraries with cyclic dependencies.
+具有循环依赖关系的\ ``STATIC``\ 库的重复计数。
 
 When linking to a ``STATIC`` library target with cyclic dependencies the
 linker may need to scan more than once through the archives in the

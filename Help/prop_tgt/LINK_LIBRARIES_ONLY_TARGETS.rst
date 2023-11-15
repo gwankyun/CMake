@@ -3,7 +3,7 @@ LINK_LIBRARIES_ONLY_TARGETS
 
 .. versionadded:: 3.23
 
-Enforce that link items that can be target names are actually existing targets.
+强制可以作为目标名称的链接项是实际存在的目标。
 
 Set this property to a true value to enable additional checks on the contents
 of the :prop_tgt:`LINK_LIBRARIES` and :prop_tgt:`INTERFACE_LINK_LIBRARIES`

@@ -1,7 +1,7 @@
 LINK_INTERFACE_LIBRARIES_<CONFIG>
 ---------------------------------
 
-Per-configuration list of public interface libraries for a target.
+目标的公共接口库的配置列表。
 
 This is the configuration-specific version of
 :prop_tgt:`LINK_INTERFACE_LIBRARIES`.  If set, this property completely

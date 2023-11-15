@@ -1,7 +1,7 @@
 LOCATION_<CONFIG>
 -----------------
 
-Read-only property providing a target location on disk.
+提供磁盘上目标位置的只读属性。
 
 A read-only property that indicates where a target's main file is
 located on disk for the configuration ``<CONFIG>``.  The property is

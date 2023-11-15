@@ -1,7 +1,7 @@
 LINK_LIBRARIES
 --------------
 
-List of direct link dependencies.
+直接链接依赖项列表。
 
 This property specifies the list of libraries or targets which will be
 used for linking.  In addition to accepting values from the

@@ -3,10 +3,9 @@ LINK_LIBRARY_OVERRIDE_<LIBRARY>
 
 .. versionadded:: 3.24
 
-Override the library feature associated with ``<LIBRARY>`` from
-:genex:`LINK_LIBRARY` generator expressions.  This can be used to resolve
-incompatible library features that result from specifying different features
-for ``<LIBRARY>`` in different :genex:`LINK_LIBRARY` generator expressions.
+覆盖与\ :genex:`LINK_LIBRARY`\ 生成器表达式中的\ ``<LIBRARY>``\ 关联的库特性。这可以\
+用来解决由于在不同的\ :genex:`LINK_LIBRARY`\ 生成器表达式中为\ ``<LIBRARY>``\ 指定不\
+同的特性而导致的不兼容的库特性。
 
 When set on a target, this property holds a single library feature name, which
 will be applied to ``<LIBRARY>`` when linking that target.

@@ -1,7 +1,7 @@
 LINK_SEARCH_END_STATIC
 ----------------------
 
-End a link line such that static system libraries are used.
+结束一个链接行，以便使用静态系统库。
 
 Some linkers support switches such as ``-Bstatic`` and ``-Bdynamic`` to
 determine whether to use static or shared libraries for ``-lXXX`` options.

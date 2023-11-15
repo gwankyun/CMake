@@ -1,7 +1,7 @@
 LINKER_LANGUAGE
 ---------------
 
-Specifies language whose compiler will invoke the linker.
+指定其编译器将调用该链接器的语言。
 
 For executables, shared libraries, and modules, this sets the language
 whose compiler is used to link the target (such as "C" or "CXX").  A

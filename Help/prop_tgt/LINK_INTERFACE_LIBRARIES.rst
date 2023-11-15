@@ -1,7 +1,7 @@
 LINK_INTERFACE_LIBRARIES
 ------------------------
 
-List public interface libraries for a shared library or executable.
+列出共享库或可执行文件的公共接口库。
 
 By default linking to a shared library target transitively links to
 targets with which the library itself was linked.  For an executable

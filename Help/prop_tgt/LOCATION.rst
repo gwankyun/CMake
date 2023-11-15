@@ -1,7 +1,7 @@
 LOCATION
 --------
 
-Read-only location of a target on disk.
+目标在磁盘上的只读位置。
 
 For an imported target, this read-only property returns the value of
 the ``LOCATION_<CONFIG>`` property for an unspecified configuration

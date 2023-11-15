@@ -3,10 +3,8 @@ LINK_LIBRARY_OVERRIDE
 
 .. versionadded:: 3.24
 
-Override the library features associated with libraries from
-:genex:`LINK_LIBRARY` generator expressions.  This can be used to resolve
-incompatible library features that result from specifying different features
-for the same library in different :genex:`LINK_LIBRARY` generator expressions.
+覆盖与\ :genex:`LINK_LIBRARY`\ 生成器表达式中的库相关联的库特性。这可以用来解决由于在不\
+同的\ :genex:`LINK_LIBRARY`\ 生成器表达式中为同一个库指定不同的特性而导致的不兼容的库特性。
 
 This property supports overriding multiple libraries and features. It expects
 a :ref:`semicolon-separated list <CMake Language Lists>`, where each list item

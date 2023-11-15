@@ -1,10 +1,8 @@
 LINK_FLAGS
 ----------
 
-Additional flags to use when linking this target if it is a shared library,
-module library, or an executable. Static libraries need to use
-:prop_tgt:`STATIC_LIBRARY_OPTIONS` or :prop_tgt:`STATIC_LIBRARY_FLAGS`
-properties.
+如果此目标是共享库、模块库或可执行文件，则在链接此目标时要使用的其他标志。静态库需要使用\
+:prop_tgt:`STATIC_LIBRARY_OPTIONS`\ 或\ :prop_tgt:`STATIC_LIBRARY_FLAGS`\ 属性。
 
 The ``LINK_FLAGS`` property, managed as a string, can be used to add extra
 flags to the link step of a target.  :prop_tgt:`LINK_FLAGS_<CONFIG>` will add

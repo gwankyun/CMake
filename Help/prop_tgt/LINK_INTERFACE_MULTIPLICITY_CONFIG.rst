@@ -1,7 +1,7 @@
 LINK_INTERFACE_MULTIPLICITY_<CONFIG>
 ------------------------------------
 
-Per-configuration repetition count for cycles of ``STATIC`` libraries.
+``STATIC``\ 库循环的每个配置重复计数。
 
 This is the configuration-specific version of
 :prop_tgt:`LINK_INTERFACE_MULTIPLICITY`.  If set, this property completely

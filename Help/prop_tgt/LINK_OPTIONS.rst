@@ -3,9 +3,8 @@ LINK_OPTIONS
 
 .. versionadded:: 3.13
 
-List of options to use for the link step of shared library, module
-and executable targets as well as the device link step. Targets that are static
-libraries need to use the :prop_tgt:`STATIC_LIBRARY_OPTIONS` target property.
+用于共享库、模块和可执行目标的链接步骤以及设备链接步骤的选项列表。作为静态库的目标需要使用\
+:prop_tgt:`STATIC_LIBRARY_OPTIONS`\ 目标属性。
 
 These options are used for both normal linking and device linking
 (see policy :policy:`CMP0105`). To control link options for normal and device
