@@ -3,7 +3,7 @@ PRECOMPILE_HEADERS
 
 .. versionadded:: 3.16
 
-List of header files to precompile.
+要预编译的头文件列表。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>`
 of header files to precompile specified so far for its target.

@@ -1,7 +1,7 @@
 MACOSX_BUNDLE
 -------------
 
-Build an executable as an Application Bundle on macOS or iOS.
+在macOS或iOS上构建可执行文件作为应用程序包。
 
 When this property is set to ``TRUE`` the executable when built on macOS
 or iOS will be created as an application bundle.  This makes it

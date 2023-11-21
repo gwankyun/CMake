@@ -1,7 +1,7 @@
 MACOSX_FRAMEWORK_INFO_PLIST
 ---------------------------
 
-Specify a custom ``Info.plist`` template for a macOS and iOS Framework.
+为macOS和iOS框架指定自定义\ ``Info.plist``\ 模板。
 
 A library target with :prop_tgt:`FRAMEWORK` enabled will be built as a
 framework on macOS.  By default its ``Info.plist`` file is created by

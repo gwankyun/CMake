@@ -1,8 +1,7 @@
 MAP_IMPORTED_CONFIG_<CONFIG>
 ----------------------------
 
-Map from project configuration to
-:ref:`imported target <IMPORTED targets>`'s configuration.
+从项目配置映射到\ :ref:`导入目标 <IMPORTED targets>`\ 配置。
 
 Set this to the list of configurations of an imported target that may
 be used for the current project's ``<CONFIG>`` configuration.  Targets

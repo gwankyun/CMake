@@ -1,9 +1,8 @@
 STATIC_LIBRARY_FLAGS
 --------------------
 
-Archiver (or MSVC librarian) flags for a static library target.
-Targets that are shared libraries, modules, or executables need to use
-the :prop_tgt:`LINK_OPTIONS` or :prop_tgt:`LINK_FLAGS` target properties.
+静态库目标的归档器（或MSVC库管理）标志。共享库、模块或可执行文件的目标需要使用\
+:prop_tgt:`LINK_OPTIONS`\ 或\ :prop_tgt:`LINK_FLAGS`\ 目标属性。
 
 The ``STATIC_LIBRARY_FLAGS`` property, managed as a string, can be used to add
 extra flags to the link step of a static library target.

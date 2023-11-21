@@ -1,7 +1,7 @@
 SKIP_BUILD_RPATH
 ----------------
 
-Should rpaths be used for the build tree.
+是否为构建树使用rpath。
 
 ``SKIP_BUILD_RPATH`` is a boolean specifying whether to skip automatic
 generation of an rpath allowing the target to run from the build tree,

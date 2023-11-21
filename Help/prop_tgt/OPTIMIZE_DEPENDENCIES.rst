@@ -3,7 +3,7 @@ OPTIMIZE_DEPENDENCIES
 
 .. versionadded:: 3.19
 
-Activates dependency optimization of static and object libraries.
+激活静态库和对象库的依赖关系优化。
 
 When this property is set to true, some dependencies for a static or object
 library may be removed at generation time if they are not necessary to build

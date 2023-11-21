@@ -1,7 +1,7 @@
 RESOURCE
 --------
 
-Specify resource files in a :prop_tgt:`FRAMEWORK` or :prop_tgt:`BUNDLE`.
+在\ :prop_tgt:`FRAMEWORK`\ 或\ :prop_tgt:`BUNDLE`\ 中指定资源文件。
 
 Target marked with the :prop_tgt:`FRAMEWORK` or :prop_tgt:`BUNDLE` property
 generate framework or application bundle (both macOS and iOS is supported)

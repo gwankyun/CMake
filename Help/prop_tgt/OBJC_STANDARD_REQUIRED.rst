@@ -3,7 +3,7 @@ OBJC_STANDARD_REQUIRED
 
 .. versionadded:: 3.16
 
-Boolean describing whether the value of :prop_tgt:`OBJC_STANDARD` is a requirement.
+布尔值，描述\ :prop_tgt:`OBJC_STANDARD`\ 的值是否是必需的。
 
 If this property is set to ``ON``, then the value of the
 :prop_tgt:`OBJC_STANDARD` target property is treated as a requirement.  If this

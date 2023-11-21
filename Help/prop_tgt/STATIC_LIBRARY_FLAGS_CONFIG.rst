@@ -1,8 +1,7 @@
 STATIC_LIBRARY_FLAGS_<CONFIG>
 -----------------------------
 
-Per-configuration archiver (or MSVC librarian) flags for a static library
-target.
+静态库目标的特定配置归档器（或MSVC库管理）标志。
 
 This is the configuration-specific version of :prop_tgt:`STATIC_LIBRARY_FLAGS`.
 

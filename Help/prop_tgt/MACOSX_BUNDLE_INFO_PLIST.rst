@@ -1,7 +1,7 @@
 MACOSX_BUNDLE_INFO_PLIST
 ------------------------
 
-Specify a custom ``Info.plist`` template for a macOS and iOS Application Bundle.
+为macOS和iOS应用包指定一个自定义的\ ``Info.plist``\ 模板。
 
 An executable target with :prop_tgt:`MACOSX_BUNDLE` enabled will be built as an
 application bundle on macOS.  By default its ``Info.plist`` file is created

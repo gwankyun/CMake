@@ -1,7 +1,7 @@
 SOVERSION
 ---------
 
-What version number is this target.
+这个目标的版本号是什么？
 
 For shared libraries :prop_tgt:`VERSION` and ``SOVERSION`` can be used to
 specify the build version and API version respectively.  When building or

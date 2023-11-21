@@ -1,9 +1,8 @@
 SOURCES
 -------
 
-This specifies the list of paths to source files for the target.
-The following commands all set or add to the ``SOURCES`` target property
-and are the usual way to manipulate it:
+它指定目标源文件的路径列表。以下命令都设置或添加到\ ``SOURCES``\ 目标属性，并且是操作它的\
+常用方法：
 
 * :command:`add_executable`
 * :command:`add_library`

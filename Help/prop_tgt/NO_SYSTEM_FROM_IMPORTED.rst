@@ -1,8 +1,7 @@
 NO_SYSTEM_FROM_IMPORTED
 -----------------------
 
-Do not treat include directories from the interfaces of consumed
-:ref:`imported targets` as system directories.
+不要将已使用的\ :ref:`imported targets`\ 的接口中的include目录视为系统目录。
 
 When the consumed target's :prop_tgt:`SYSTEM` property is set to true, the
 contents of the :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` target property are

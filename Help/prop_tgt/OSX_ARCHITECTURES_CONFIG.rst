@@ -1,7 +1,7 @@
 OSX_ARCHITECTURES_<CONFIG>
 --------------------------
 
-Per-configuration macOS and iOS binary architectures for a target.
+目标的特定配置macOS和iOS二进制架构。
 
 This property is the configuration-specific version of
 :prop_tgt:`OSX_ARCHITECTURES`.

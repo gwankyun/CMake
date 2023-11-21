@@ -1,7 +1,7 @@
 PUBLIC_HEADER
 -------------
 
-Specify public header files in a :prop_tgt:`FRAMEWORK` shared library target.
+在\ :prop_tgt:`FRAMEWORK`\ 共享库目标中指定公共头文件。
 
 Shared library targets marked with the :prop_tgt:`FRAMEWORK` property generate
 frameworks on macOS, iOS and normal shared libraries on other platforms.

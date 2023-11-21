@@ -3,7 +3,7 @@ MACHO_COMPATIBILITY_VERSION
 
 .. versionadded:: 3.17
 
-What compatibility version number is this target for Mach-O binaries.
+Mach-O二进制文件的目标兼容性版本号是什么？
 
 For shared libraries on Mach-O systems (e.g. macOS, iOS)
 the ``MACHO_COMPATIBILITY_VERSION`` property corresponds to the

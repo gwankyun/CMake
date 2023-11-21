@@ -1,7 +1,7 @@
 NO_SONAME
 ---------
 
-Whether to set ``soname`` when linking a shared library.
+链接共享库时是否设置\ ``soname``。
 
 Enable this boolean property if a generated ``SHARED`` library
 should not have ``soname`` set.  Default is to set ``soname`` on all

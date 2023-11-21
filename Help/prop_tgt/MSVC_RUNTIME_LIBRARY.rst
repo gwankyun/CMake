@@ -3,7 +3,7 @@ MSVC_RUNTIME_LIBRARY
 
 .. versionadded:: 3.15
 
-Select the MSVC runtime library for use by compilers targeting the MSVC ABI.
+选择以MSVC ABI为目标的编译器使用的MSVC运行时库。
 
 The allowed values are:
 

@@ -3,7 +3,7 @@ MSVC_DEBUG_INFORMATION_FORMAT
 
 .. versionadded:: 3.25
 
-Select debug information format when targeting the MSVC ABI.
+当以MSVC ABI为目标时，选择调试信息格式。
 
 The allowed values are:
 

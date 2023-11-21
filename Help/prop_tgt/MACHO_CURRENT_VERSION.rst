@@ -3,7 +3,7 @@ MACHO_CURRENT_VERSION
 
 .. versionadded:: 3.17
 
-What current version number is this target for Mach-O binaries.
+Mach-O二进制文件的目标当前版本号是什么？
 
 For shared libraries on Mach-O systems (e.g. macOS, iOS)
 the :prop_tgt:`MACHO_COMPATIBILITY_VERSION` property corresponds to the

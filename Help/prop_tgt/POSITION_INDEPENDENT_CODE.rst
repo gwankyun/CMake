@@ -1,7 +1,7 @@
 POSITION_INDEPENDENT_CODE
 -------------------------
 
-Whether to create a position-independent target
+是否创建与位置无关的目标
 
 The ``POSITION_INDEPENDENT_CODE`` property determines whether position
 independent executables or shared libraries will be created.  This

@@ -1,7 +1,7 @@
 PRIVATE_HEADER
 --------------
 
-Specify private header files in a :prop_tgt:`FRAMEWORK` shared library target.
+在\ :prop_tgt:`FRAMEWORK`\ 共享库目标中指定私有头文件。
 
 Shared library targets marked with the :prop_tgt:`FRAMEWORK` property generate
 frameworks on macOS, iOS and normal shared libraries on other platforms.

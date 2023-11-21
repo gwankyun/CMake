@@ -3,9 +3,8 @@ STATIC_LIBRARY_OPTIONS
 
 .. versionadded:: 3.13
 
-Archiver (or MSVC librarian) flags for a static library target.
-Targets that are shared libraries, modules, or executables need to use
-the :prop_tgt:`LINK_OPTIONS` target property.
+静态库目标的归档器（或MSVC库管理）标志。共享库、模块或可执行文件的目标需要使用\
+:prop_tgt:`LINK_OPTIONS`\ 目标属性。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>` of options
 specified so far for its target.  Use :command:`set_target_properties` or

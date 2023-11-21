@@ -3,7 +3,7 @@ OBJCXX_STANDARD
 
 .. versionadded:: 3.16
 
-The ObjC++ standard whose features are requested to build this target.
+ObjC++标准，其特性被要求构建此目标。
 
 This property specifies the ObjC++ standard whose features are requested
 to build this target.  For some compilers, this results in adding a

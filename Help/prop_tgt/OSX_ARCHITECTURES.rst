@@ -1,7 +1,7 @@
 OSX_ARCHITECTURES
 -----------------
 
-Target specific architectures for macOS.
+针对macOS的目标特定架构。
 
 The ``OSX_ARCHITECTURES`` property sets the target binary architecture for
 targets on macOS (``-arch``).  This property is initialized by the value of the

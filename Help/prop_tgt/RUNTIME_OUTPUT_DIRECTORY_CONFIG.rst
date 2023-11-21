@@ -1,8 +1,7 @@
 RUNTIME_OUTPUT_DIRECTORY_<CONFIG>
 ---------------------------------
 
-Per-configuration output directory for
-:ref:`RUNTIME <Runtime Output Artifacts>` target files.
+:ref:`RUNTIME <Runtime Output Artifacts>`\ 目标文件的配置输出目录。
 
 This is a per-configuration version of the
 :prop_tgt:`RUNTIME_OUTPUT_DIRECTORY` target property, but
