@@ -3,7 +3,5 @@ Swift_LANGUAGE_VERSION
 
 .. versionadded:: 3.16
 
-This property sets the language version for the Swift sources in the target.  If
-one is not specified, it will default to
-:variable:`CMAKE_Swift_LANGUAGE_VERSION` if specified, otherwise it is the
-latest version supported by the compiler.
+该属性设置目标中Swift源的语言版本。如果未指定，则默认为\
+:variable:`CMAKE_Swift_LANGUAGE_VERSION`，否则为编译器支持的最新版本。

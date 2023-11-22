@@ -3,11 +3,9 @@ UNITY_BUILD
 
 .. versionadded:: 3.16
 
-When this property is set to true, the target source files will be combined
-into batches for faster compilation.  This is done by creating a (set of)
-unity sources which ``#include`` the original sources, then compiling these
-unity sources instead of the originals.  This is known as a *Unity* or *Jumbo*
-build.
+当此属性设置为true时，目标源文件将被组合成批，以便更快地编译。这是通过创建一个（一组）\
+``#include``\ 原始源的统一源来实现的，然后编译这些统一源而不是原始源。这被称为\ *Unity*\
+或\ *Jumbo*\ 构建。
 
 CMake provides different algorithms for selecting which sources are grouped
 together into a *bucket*. Algorithm selection is decided by the

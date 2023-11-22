@@ -3,8 +3,7 @@ UNITY_BUILD_UNIQUE_ID
 
 .. versionadded:: 3.20
 
-The name of a valid C-identifier which is set to a unique per-file
-value during unity builds.
+有效的C标识符名称，在unity构建其间设置为每个文件的唯一值。
 
 When this property is populated and when :prop_tgt:`UNITY_BUILD`
 is true, the property value is used to define a compiler definition

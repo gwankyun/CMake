@@ -3,10 +3,8 @@ UNITY_BUILD_BATCH_SIZE
 
 .. versionadded:: 3.16
 
-Specifies the maximum number of source files that can be combined into any one
-unity source file when unity builds are enabled by the :prop_tgt:`UNITY_BUILD`
-target property.  The original source files will be distributed across as many
-unity source files as necessary to honor this limit.
+指定当\ :prop_tgt:`UNITY_BUILD`\ 目标属性启用unity构建时，可以合并到任何一个unity源文\
+件中的源文件的最大数量。原始源文件将分布在尽可能多的unity源文件中，以遵守此限制。
 
 The initial value for this property is taken from the
 :variable:`CMAKE_UNITY_BUILD_BATCH_SIZE` variable when the target is created.

@@ -3,9 +3,8 @@ UNITY_BUILD_CODE_AFTER_INCLUDE
 
 .. versionadded:: 3.16
 
-Code snippet which is included verbatim by the :prop_tgt:`UNITY_BUILD`
-feature just after every ``#include`` statement in the generated unity
-source files.  For example:
+:prop_tgt:`UNITY_BUILD`\ 功能在生成的unity源文件中的每个\ ``#include``\ 语句之后逐字\
+包含的代码片段。例如：
 
 .. code-block:: cmake
 

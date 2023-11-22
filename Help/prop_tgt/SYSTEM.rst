@@ -3,8 +3,7 @@ SYSTEM
 
 .. versionadded:: 3.25
 
-Specifies that a target is a system target.  This has the following
-effects:
+指定目标为系统目标。影响如下：
 
 * Entries of :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` are treated as
   system include directories when compiling consumers.

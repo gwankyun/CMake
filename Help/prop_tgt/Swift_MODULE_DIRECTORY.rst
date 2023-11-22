@@ -3,7 +3,7 @@ Swift_MODULE_DIRECTORY
 
 .. versionadded:: 3.15
 
-Specify output directory for Swift modules provided by the target.
+为目标提供的Swift模块指定输出目录。
 
 If the target contains Swift source files, this specifies the directory in which
 the modules will be placed.  When this property is not set, the modules will be

@@ -3,5 +3,5 @@ Swift_DEPENDENCIES_FILE
 
 .. versionadded:: 3.15
 
-This property sets the path for the Swift dependency file (swiftdep) for the
-target.  If one is not specified, it will default to ``<TARGET>.swiftdeps``.
+该属性为目标设置Swift依赖文件（swiftdep）的路径。如果未指定，则默认为\
+``<TARGET>.swiftdeps``。

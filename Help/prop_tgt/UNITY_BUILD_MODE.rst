@@ -3,9 +3,8 @@ UNITY_BUILD_MODE
 
 .. versionadded:: 3.18
 
-CMake provides different algorithms for selecting which sources are grouped
-together into a *bucket*. Selection is decided by this property,
-which has the following acceptable values:
+CMake提供了不同的算法来选择哪些源被分组到一个\ *bucket*\ 中。选择由此属性决定，该属性具有\
+以下可接受的值：
 
 ``BATCH``
   When in this mode CMake determines which files are grouped together.

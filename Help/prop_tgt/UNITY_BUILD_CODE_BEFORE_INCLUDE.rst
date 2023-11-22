@@ -3,9 +3,8 @@ UNITY_BUILD_CODE_BEFORE_INCLUDE
 
 .. versionadded:: 3.16
 
-Code snippet which is included verbatim by the :prop_tgt:`UNITY_BUILD`
-feature just before every ``#include`` statement in the generated unity
-source files.  For example:
+在生成的unity源文件中，:prop_tgt:`UNITY_BUILD`\ 特性在每个\ ``#include``\ 语句之前逐\
+字包含的代码片段。例如：
 
 .. code-block:: cmake
 

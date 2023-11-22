@@ -1,7 +1,7 @@
 TYPE
 ----
 
-The type of the target.
+目标的类型。
 
 This read-only property can be used to test the type of the given
 target.  It will be one of ``STATIC_LIBRARY``, ``MODULE_LIBRARY``,
