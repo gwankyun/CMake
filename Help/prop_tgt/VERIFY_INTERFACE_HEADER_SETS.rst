@@ -3,8 +3,7 @@ VERIFY_INTERFACE_HEADER_SETS
 
 .. versionadded:: 3.24
 
-Used to verify that all headers in a target's ``PUBLIC`` and ``INTERFACE``
-header sets can be included on their own.
+用于验证目标的\ ``PUBLIC``\ 和\ ``INTERFACE``\ 头文件集中的所有头文件是否可以单独包含。
 
 When this property is set to true, and the target is an object library, static
 library, shared library, interface library, or executable with exports enabled,

@@ -1,7 +1,7 @@
 VISIBILITY_INLINES_HIDDEN
 -------------------------
 
-Whether to add a compile flag to hide symbols of inline functions
+是否添加编译标志以隐藏内联函数的符号
 
 The ``VISIBILITY_INLINES_HIDDEN`` property determines whether a flag for
 hiding symbols for inline functions, such as ``-fvisibility-inlines-hidden``,

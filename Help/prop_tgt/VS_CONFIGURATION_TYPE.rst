@@ -3,7 +3,7 @@ VS_CONFIGURATION_TYPE
 
 .. versionadded:: 3.6
 
-Visual Studio project configuration type.
+Visual Studio项目配置类型。
 
 Sets the ``ConfigurationType`` attribute for a generated Visual Studio project.
 The property value may use
