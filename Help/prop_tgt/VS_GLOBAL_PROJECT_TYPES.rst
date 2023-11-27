@@ -1,7 +1,7 @@
 VS_GLOBAL_PROJECT_TYPES
 -----------------------
 
-Visual Studio project type(s).
+Visual Studio项目类型。
 
 Can be set to one or more UUIDs recognized by Visual Studio to
 indicate the type of project.  This value is copied verbatim into the

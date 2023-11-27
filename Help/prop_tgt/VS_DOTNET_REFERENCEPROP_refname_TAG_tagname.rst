@@ -3,8 +3,7 @@ VS_DOTNET_REFERENCEPROP_<refname>_TAG_<tagname>
 
 .. versionadded:: 3.10
 
-Defines an XML property ``<tagname>`` for a .NET reference
-``<refname>``.
+为.NET引用\ ``<tagname>``\ 定义一个XML属性\ ``<refname>``。
 
 Reference properties can be set for .NET references which are
 defined by the target properties :prop_tgt:`VS_DOTNET_REFERENCES`,

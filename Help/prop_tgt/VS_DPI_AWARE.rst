@@ -3,8 +3,7 @@ VS_DPI_AWARE
 
 .. versionadded:: 3.16
 
-Set the Manifest Tool -> Input and Output -> DPI Awareness in the Visual Studio
-target project properties.
+在Visual Studio目标项目属性中设置Manifest Tool -> Input and Output -> DPI Awareness。
 
 Valid values are ``PerMonitor``, ``ON``, or ``OFF``.
 

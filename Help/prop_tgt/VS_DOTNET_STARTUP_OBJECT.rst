@@ -3,9 +3,8 @@ VS_DOTNET_STARTUP_OBJECT
 
 .. versionadded:: 3.24
 
-Sets the startup object property in Visual Studio .NET targets.
-The property value defines a full qualified class name (including package
-name), for example: ``MyCompany.Package.MyStarterClass``.
+设置Visual Studio .NET目标中的启动对象属性。属性值定义了一个完整的限定类名（包括包名），\
+例如：\ ``MyCompany.Package.MyStarterClass``。
 
 If the property is unset, Visual Studio uses the first matching
 ``static void Main(string[])`` function signature by default. When more

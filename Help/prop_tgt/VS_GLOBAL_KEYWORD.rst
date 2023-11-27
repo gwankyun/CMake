@@ -1,7 +1,7 @@
 VS_GLOBAL_KEYWORD
 -----------------
 
-Visual Studio project keyword for VS 10 (2010) and newer.
+VS10（2010）及更新版本的Visual Studio项目关键字。
 
 Sets the "keyword" attribute for a generated Visual Studio project.
 Defaults to "Win32Proj".  You may wish to override this value with
