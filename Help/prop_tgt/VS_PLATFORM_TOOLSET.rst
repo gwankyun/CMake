@@ -3,7 +3,7 @@ VS_PLATFORM_TOOLSET
 
 .. versionadded:: 3.18
 
-Overrides the platform toolset used to build a target.
+覆盖用于构建目标的平台工具集。
 
 Only supported when the compiler used by the given toolset is the
 same as the compiler used to build the whole source tree.

@@ -3,7 +3,7 @@ VS_PROJECT_IMPORT
 
 .. versionadded:: 3.15
 
-Visual Studio managed project imports
+Visual Studio管理项目导入
 
 Adds to a generated Visual Studio project one or more semicolon-delimited paths
 to .props files needed when building projects from some NuGet packages.

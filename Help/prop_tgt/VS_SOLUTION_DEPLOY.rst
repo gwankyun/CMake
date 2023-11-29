@@ -3,8 +3,7 @@ VS_SOLUTION_DEPLOY
 
 .. versionadded:: 3.18
 
-Specify that the target should be marked for deployment when not targeting
-Windows CE, Windows Phone or a Windows Store application.
+指定目标在不针对Windows CE、Windows Phone或Windows Store应用程序时应标记为部署。
 
 If the target platform doesn't support deployment, this property won't have
 any effect.

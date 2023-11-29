@@ -3,7 +3,7 @@ VS_PACKAGE_REFERENCES
 
 .. versionadded:: 3.15
 
-Visual Studio package references for nuget.
+nuget的Visual Studio包引用。
 
 Adds one or more semicolon-delimited package references to a generated
 Visual Studio project. The version of the package will be

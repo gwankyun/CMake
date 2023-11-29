@@ -3,7 +3,7 @@ VS_MOBILE_EXTENSIONS_VERSION
 
 .. versionadded:: 3.4
 
-Visual Studio Windows 10 Mobile Extensions Version
+Visual Studio Windows 10移动扩展版本
 
 Specifies the version of the Mobile Extensions that should be included in the
 target. For example ``10.0.10240.0``. If the value is not specified, the Mobile

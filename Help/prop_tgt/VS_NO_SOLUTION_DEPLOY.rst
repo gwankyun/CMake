@@ -3,8 +3,7 @@ VS_NO_SOLUTION_DEPLOY
 
 .. versionadded:: 3.15
 
-Specify that the target should not be marked for deployment to a Windows CE
-or Windows Phone device in the generated Visual Studio solution.
+在生成的Visual Studio解决方案中，指定不应将目标标记为部署到Windows CE或Windows Phone设备。
 
 Be default, all EXE and shared library (DLL) targets are marked to deploy to
 the target device in the generated Visual Studio solution.
