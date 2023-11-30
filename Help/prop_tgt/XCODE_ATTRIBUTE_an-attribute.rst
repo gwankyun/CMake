@@ -1,7 +1,7 @@
 XCODE_ATTRIBUTE_<an-attribute>
 ------------------------------
 
-Set Xcode target attributes directly.
+直接设置Xcode目标属性。
 
 Tell the :generator:`Xcode` generator to set ``<an-attribute>`` to a given
 value in the generated Xcode project.  Ignored on other generators.

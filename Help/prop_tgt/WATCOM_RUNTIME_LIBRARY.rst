@@ -3,7 +3,7 @@ WATCOM_RUNTIME_LIBRARY
 
 .. versionadded:: 3.24
 
-Select the Watcom runtime library for use by compilers targeting the Watcom ABI.
+选择Watcom运行时库，供针对Watcom ABI的编译器使用。
 
 The allowed values are:
 

@@ -1,7 +1,7 @@
 WIN32_EXECUTABLE
 ----------------
 
-Build an executable with a WinMain entry point on windows.
+在windows上构建一个带有WinMain入口点的可执行文件。
 
 When this property is set to true the executable when linked on
 Windows will be created with a WinMain() entry point instead of just

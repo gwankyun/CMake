@@ -3,9 +3,8 @@ XCODE_EMBED_<type>
 
 .. versionadded:: 3.20
 
-Tell the :generator:`Xcode` generator to embed the specified list of items into
-the target bundle.  ``<type>`` specifies the embed build phase to use.
-See the Xcode documentation for the base location of each ``<type>``.
+告诉\ :generator:`Xcode`\ 生成器将指定的项目列表嵌入到目标包中。\ ``<type>``\ 指定要使\
+用的嵌入构建阶段。请参阅Xcode文档了解每个\ ``<type>``\ 的基本位置。
 
 The supported values for ``<type>`` are:
 

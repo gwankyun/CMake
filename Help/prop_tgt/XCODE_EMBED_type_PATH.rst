@@ -3,12 +3,10 @@ XCODE_EMBED_<type>_PATH
 
 .. versionadded:: 3.20
 
-This property is used only by the :generator:`Xcode` generator.  When defined,
-it specifies the relative path to use when embedding the items specified by
-:prop_tgt:`XCODE_EMBED_<type>`.  The path is relative
-to the base location of the ``Embed XXX`` build phase associated with
-``<type>``.  See the Xcode documentation for the base location of each
-``<type>``.
+这个属性只被\ :generator:`Xcode`\ 生成器使用。定义后，它指定了当嵌入由\
+:prop_tgt:`XCODE_EMBED_<type>`\ 指定的项时要使用的相对路径。该路径相对于与\ ``<type>``\
+相关联的\ ``Embed XXX``\ 构建阶段的基本位置。请参阅Xcode文档了解每个\ ``<type>``\ 的基\
+本位置。
 
 The supported values for ``<type>`` are:
 

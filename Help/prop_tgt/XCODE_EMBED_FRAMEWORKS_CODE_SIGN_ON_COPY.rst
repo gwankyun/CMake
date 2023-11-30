@@ -3,9 +3,9 @@ XCODE_EMBED_FRAMEWORKS_CODE_SIGN_ON_COPY
 
 .. versionadded:: 3.20
 
-Tell the :generator:`Xcode` generator to perform code signing for all the
-frameworks and libraries that are embedded using the
-:prop_tgt:`XCODE_EMBED_FRAMEWORKS <XCODE_EMBED_<type>>` property.
+告诉\ :generator:`Xcode`\ 生成器对所有使用\
+:prop_tgt:`XCODE_EMBED_FRAMEWORKS <XCODE_EMBED_<type>>`\ 属性嵌入的框架和库执行代码\
+签名。
 
 .. versionadded:: 3.21
 

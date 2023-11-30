@@ -3,7 +3,7 @@ WINDOWS_EXPORT_ALL_SYMBOLS
 
 .. versionadded:: 3.4
 
-This property is implemented only for MS-compatible tools on Windows.
+此属性仅对Windows上的MS兼容工具实现。
 
 Enable this boolean property to automatically create a module definition
 (``.def``) file with all global symbols found in the input ``.obj`` files

@@ -3,9 +3,8 @@ XCODE_EMBED_<type>_REMOVE_HEADERS_ON_COPY
 
 .. versionadded:: 3.20
 
-Boolean property used only by the :generator:`Xcode` generator.  It specifies
-whether to remove headers from all the frameworks that are embedded using the
-:prop_tgt:`XCODE_EMBED_<type>` property.
+布尔属性，仅由\ :generator:`Xcode`\ 生成器使用。它指定是否从使用\
+:prop_tgt:`XCODE_EMBED_<type>`\ 属性嵌入的所有框架中删除头文件。
 
 The supported values for ``<type>`` are:
 
