@@ -865,7 +865,10 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     指定文件集可见性的字符串；\ ``PUBLIC``、\ ``PRIVATE``\ 或\ ``INTERFACE``\ 其中之一。
 
   ``baseDirectories``
-    字符串的JSON数组，指定文件集中包含源的基本目录。
+    A JSON array of strings, each specifying a base directory containing
+    sources in the file set.  If the directory is inside the top-level source
+    directory then the path is specified relative to that directory.
+    Otherwise the path is absolute.
 
   此字段在代码模型版本2.5中添加。
 

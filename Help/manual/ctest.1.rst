@@ -556,6 +556,8 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
   ctest -S <script>            [-- <dashboard-options>...]
   ctest -SP <script>           [-- <dashboard-options>...]
 
+.. _`CDash`: https://www.cdash.org
+
 仪表板客户端的选项包括：
 
 .. option:: -D <dashboard>, --dashboard <dashboard>
@@ -1574,5 +1576,3 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 ========
 
 .. include:: LINKS.txt
-
-_`CDash`: https://cdash.org
