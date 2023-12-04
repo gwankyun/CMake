@@ -3,11 +3,9 @@ XCODE_LINK_BUILD_PHASE_MODE
 
 .. versionadded:: 3.19
 
-When using the :generator:`Xcode` generator, libraries to be linked will be
-specified in the Xcode project file using either the "Link Binary With
-Libraries" build phase or directly as linker flags.  The former allows Xcode
-to manage build paths, which may be necessary when creating Xcode archives
-because it may use different build paths to a regular build.
+当使用\ :generator:`Xcode`\ 生成器时，要链接的库将在Xcode项目文件中使用\
+“Link Binary With libraries”构建阶段或直接作为链接器标志指定。前者允许Xcode管理构建路径，\
+这在创建Xcode存档时可能是必要的，因为它可能会使用不同的构建路径来进行常规构建。
 
 This property controls usage of "Link Binary With Libraries" build phase for
 a target that is an app bundle, executable, shared library, shared framework
