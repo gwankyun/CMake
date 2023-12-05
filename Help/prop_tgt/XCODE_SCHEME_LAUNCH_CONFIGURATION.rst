@@ -3,7 +3,7 @@ XCODE_SCHEME_LAUNCH_CONFIGURATION
 
 .. versionadded:: 3.25
 
-Set the build configuration to run the target.
+设置构建配置以运行目标。
 
 This property is initialized by the value of the variable
 :variable:`CMAKE_XCODE_SCHEME_LAUNCH_CONFIGURATION`

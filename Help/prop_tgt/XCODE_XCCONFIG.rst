@@ -3,9 +3,8 @@ XCODE_XCCONFIG
 
 .. versionadded:: 3.24
 
-If set, the :generator:`Xcode` generator will register the specified
-file as a target-level XCConfig file. For global XCConfig files see
-the :variable:`CMAKE_XCODE_XCCONFIG` variable.
+如果设置了，\ :generator:`Xcode`\ 生成器将把指定的文件注册为目标级XCConfig文件。对于全\
+局XCConfig文件，请参阅\ :variable:`CMAKE_XCODE_XCCONFIG`\ 变量。
 
 This feature is intended to ease migration from native Xcode projects
 to CMake projects.

@@ -3,7 +3,7 @@ XCTEST
 
 .. versionadded:: 3.3
 
-This target is a XCTest CFBundle on the Mac.
+这个目标是Mac上的XCTest CFBundle。
 
 This property will usually get set via the :command:`xctest_add_bundle`
 macro in :module:`FindXCTest` module.

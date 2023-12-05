@@ -3,8 +3,7 @@ XCODE_SCHEME_UNDEFINED_BEHAVIOUR_SANITIZER
 
 .. versionadded:: 3.13
 
-Whether to enable ``Undefined Behavior Sanitizer``
-in the Diagnostics section of the generated Xcode scheme.
+是否在生成的Xcode方案的诊断部分启用\ ``Undefined Behavior Sanitizer``。
 
 This property is initialized by the value of the variable
 :variable:`CMAKE_XCODE_SCHEME_UNDEFINED_BEHAVIOUR_SANITIZER`
