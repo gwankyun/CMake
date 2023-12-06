@@ -3,8 +3,7 @@ FIXTURES_REQUIRED
 
 .. versionadded:: 3.7
 
-Specifies a list of fixtures the test requires. Fixture names are case
-sensitive and they are not required to have any similarity to test names.
+指定测试所需的fixture列表。fixture名称区分大小写，不需要与测试名称有任何相似之处。
 
 Fixtures are a way to attach setup and cleanup tasks to a set of tests. If a
 test requires a given fixture, then all tests marked as setup tasks for that

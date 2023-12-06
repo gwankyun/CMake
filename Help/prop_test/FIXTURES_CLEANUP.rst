@@ -3,9 +3,8 @@ FIXTURES_CLEANUP
 
 .. versionadded:: 3.7
 
-Specifies a list of fixtures for which the test is to be treated as a cleanup
-test. These fixture names are distinct from test case names and are not
-required to have any similarity to the names of tests associated with them.
+指定要将测试作为清理测试处理的fixture列表。这些fixture名称与测试用例名称不同，并且不需要与\
+其关联的测试名称有任何相似之处。
 
 Fixture cleanup tests are ordinary tests with all of the usual test
 functionality. Setting the ``FIXTURES_CLEANUP`` property for a test has two

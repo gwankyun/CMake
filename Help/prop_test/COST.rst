@@ -1,10 +1,8 @@
 COST
 ----
 
-This property describes the cost of a test.  When parallel testing is
-enabled, tests in the test set will be run in descending order of cost.
-Projects can explicitly define the cost of a test by setting this property
-to a floating point value.
+此属性描述测试的成本。启用并行测试后，测试集中的测试将按成本降序运行。项目可以通过将此属性设\
+置为浮点值来显式定义测试的成本。
 
 When the cost of a test is not defined by the project,
 :manual:`ctest <ctest(1)>` will initially use a default cost of ``0``.

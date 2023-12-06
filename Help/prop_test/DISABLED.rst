@@ -3,9 +3,8 @@ DISABLED
 
 .. versionadded:: 3.9
 
-If set to ``True``, the test will be skipped and its status will be 'Not Run'. A
-``DISABLED`` test will not be counted in the total number of tests and its
-completion status will be reported to CDash as ``Disabled``.
+如果设置为\ ``True``，测试将被跳过，其状态将为“Not Run”。已\ ``DISABLED``\ 的测试将不\
+计入测试总数，其完成状态将报告给CDash为\ ``DISABLED``。
 
 A ``DISABLED`` test does not participate in test fixture dependency resolution.
 If a ``DISABLED`` test has fixture requirements defined in its

@@ -1,7 +1,7 @@
 DEPENDS
 -------
 
-Specifies that this test should only be run after the specified list of tests.
+指定此测试只应在指定的测试列表之后运行。
 
 Set this to a list of tests that must finish before this test is run. The
 results of those tests are not considered, the dependency relationship is

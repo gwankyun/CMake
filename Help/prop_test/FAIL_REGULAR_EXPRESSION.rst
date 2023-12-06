@@ -1,8 +1,7 @@
 FAIL_REGULAR_EXPRESSION
 -----------------------
 
-If the output matches this regular expression the test will fail,
-regardless of the process exit code.
+如果输出与此正则表达式匹配，则无论进程退出代码如何，测试都将失败。
 
 If set, if the output matches one of specified regular expressions,
 the test will fail.  Example:

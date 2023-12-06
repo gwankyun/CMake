@@ -1,7 +1,7 @@
 ENVIRONMENT
 -----------
 
-Specify environment variables that should be defined for running a test.
+指定应该为运行测试而定义的环境变量。
 
 Set to a :ref:`semicolon-separated list <CMake Language Lists>` list
 of environment variables and values of the form ``MYVAR=value``.

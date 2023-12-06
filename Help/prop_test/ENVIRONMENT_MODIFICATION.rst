@@ -3,9 +3,8 @@ ENVIRONMENT_MODIFICATION
 
 .. versionadded:: 3.22
 
-Specify environment variables that should be modified for running a test. Note
-that the operations performed by this property are performed after the
-:prop_test:`ENVIRONMENT` property is already applied.
+指定运行测试时应该修改的环境变量。注意，这个属性执行的操作是在已经应用了\
+:prop_test:`ENVIRONMENT`\ 属性之后执行的。
 
 Set to a :ref:`semicolon-separated list <CMake Language Lists>` of
 environment variables and values of the form ``MYVAR=OP:VALUE``,
