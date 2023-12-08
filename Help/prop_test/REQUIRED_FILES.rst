@@ -1,8 +1,8 @@
 REQUIRED_FILES
 --------------
 
-List of files required to run the test.  The filenames are relative to the
-test :prop_test:`WORKING_DIRECTORY` unless an absolute path is specified.
+运行测试所需的文件列表。除非指定了绝对路径，否则文件名是相对于测试\
+:prop_test:`WORKING_DIRECTORY`\ 的。
 
 If set to a list of files, the test will not be run unless all of the
 files exist.

@@ -1,7 +1,7 @@
 WILL_FAIL
 ---------
 
-If set to true, this will invert the pass/fail flag of the test.
+如果设置为true，这将反转测试的通过/失败标志。
 
 This property can be used for tests that are expected to fail and return a
 non-zero return code. Note that system-level test failures such as segmentation

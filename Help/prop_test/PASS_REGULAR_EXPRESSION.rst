@@ -1,8 +1,7 @@
 PASS_REGULAR_EXPRESSION
 -----------------------
 
-The output must match this regular expression for the test to pass.
-The process exit code is ignored.
+输出必须匹配此正则表达式才能通过测试。进程退出码被忽略。
 
 If set, the test output will be checked against the specified regular
 expressions and at least one of the regular expressions has to match,

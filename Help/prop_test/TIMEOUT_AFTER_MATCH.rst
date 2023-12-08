@@ -3,8 +3,7 @@ TIMEOUT_AFTER_MATCH
 
 .. versionadded:: 3.6
 
-Change a test's timeout duration after a matching line is encountered
-in its output.
+在测试的输出中遇到匹配行后，更改测试的超时时间。
 
 Usage
 ^^^^^

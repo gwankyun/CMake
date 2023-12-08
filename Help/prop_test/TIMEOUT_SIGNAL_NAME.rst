@@ -3,9 +3,8 @@ TIMEOUT_SIGNAL_NAME
 
 .. versionadded:: 3.27
 
-Specify a custom signal to send to a test process when its timeout is reached.
-This is available only on platforms supporting POSIX signals.
-It is not available on Windows.
+指定一个自定义信号，在达到测试进程超时时发送给测试进程。这仅在支持POSIX信号的平台上可用。\
+在Windows上不可用。
 
 The name must be one of the following:
 

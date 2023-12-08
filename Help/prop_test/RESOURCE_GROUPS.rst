@@ -3,10 +3,8 @@ RESOURCE_GROUPS
 
 .. versionadded:: 3.16
 
-Specify resources required by a test, grouped in a way that is meaningful to
-the test.  See :ref:`resource allocation <ctest-resource-allocation>`
-for more information on how this property integrates into the CTest resource
-allocation feature.
+指定测试所需的资源，以对测试有意义的方式分组。有关如何将此属性集成到CTest资源分配特性中的更\
+多信息，请参阅\ :ref:`资源分配 <ctest-resource-allocation>`。
 
 The ``RESOURCE_GROUPS`` property is a :ref:`semicolon-separated list <CMake
 Language Lists>` of group descriptions. Each entry consists of an optional

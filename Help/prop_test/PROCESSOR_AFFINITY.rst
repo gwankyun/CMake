@@ -3,11 +3,8 @@ PROCESSOR_AFFINITY
 
 .. versionadded:: 3.12
 
-Set to a true value to ask CTest to launch the test process with CPU affinity
-for a fixed set of processors.  If enabled and supported for the current
-platform, CTest will choose a set of processors to place in the CPU affinity
-mask when launching the test process.  The number of processors in the set is
-determined by the :prop_test:`PROCESSORS` test property or the number of
-processors available to CTest, whichever is smaller.  The set of processors
-chosen will be disjoint from the processors assigned to other concurrently
-running tests that also have the ``PROCESSOR_AFFINITY`` property enabled.
+设置为true值，以要求CTest为一组固定的处理器启动具有CPU亲和力的测试进程。如果当前平台启用并\
+支持CTest，则在启动测试进程时，CTest将选择一组处理器放置在CPU亲和掩码中。集合中的处理器数\
+量由\ :prop_test:`PROCESSORS`\ 测试属性或CTest可用的处理器数量决定，以较小者为准。所选\
+择的处理器集将与分配给其他并发运行的测试的处理器分离，这些测试也启用了\
+``PROCESSOR_AFFINITY``\ 属性。

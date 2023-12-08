@@ -1,7 +1,7 @@
 TIMEOUT
 -------
 
-How many seconds to allow for this test.
+这个测试需要多少秒。
 
 This property if set will limit a test to not take more than the
 specified number of seconds to run.  If it exceeds that the test

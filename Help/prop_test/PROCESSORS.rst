@@ -1,8 +1,7 @@
 PROCESSORS
 ----------
 
-Set to specify how many process slots this test requires.
-If not set, the default is ``1`` processor.
+设置为指定此测试需要多少个进程槽。如果未设置，则默认为\ ``1``\ 个处理器。
 
 Denotes the number of processors that this test will require.  This is
 typically used for MPI tests, and should be used in conjunction with

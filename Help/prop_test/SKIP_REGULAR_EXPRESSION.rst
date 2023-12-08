@@ -3,7 +3,7 @@ SKIP_REGULAR_EXPRESSION
 
 .. versionadded:: 3.16
 
-If the output matches this regular expression the test will be marked as skipped.
+如果输出匹配这个正则表达式，测试将被标记为跳过。
 
 If set, if the output matches one of specified regular expressions,
 the test will be marked as skipped.  Example:

@@ -1,7 +1,7 @@
 SKIP_RETURN_CODE
 ----------------
 
-Return code to mark a test as skipped.
+标记为跳过的测试返回值。
 
 Sometimes only a test itself can determine if all requirements for the
 test are met. If such a situation should not be considered a hard failure

@@ -1,7 +1,7 @@
 WORKING_DIRECTORY
 -----------------
 
-The directory from which the test executable will be called.
+将从其中调用测试可执行文件的目录。
 
 If this is not set, the test will be run with the working directory set to the
 binary directory associated with where the test was created (i.e. the
