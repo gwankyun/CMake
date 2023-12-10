@@ -1,7 +1,7 @@
 COMPILE_FLAGS
 -------------
 
-Additional flags to be added when compiling this source file.
+编译此源文件时要添加的其他标志。
 
 The ``COMPILE_FLAGS`` property, managed as a string, sets additional compiler
 flags used that will be added to the list of compile flags when this source

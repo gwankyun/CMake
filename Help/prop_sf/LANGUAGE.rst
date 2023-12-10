@@ -1,7 +1,7 @@
 LANGUAGE
 --------
 
-Specify the programming language in which a source file is written.
+指定编写源文件所用的编程语言。
 
 A property that can be set to indicate what programming language the
 source file is.  If it is not set the language is determined based on

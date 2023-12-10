@@ -3,7 +3,7 @@ COMPILE_OPTIONS
 
 .. versionadded:: 3.11
 
-List of additional options to pass to the compiler.
+传递给编译器的附加选项列表。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>`
 of options and will be added to the list of compile flags when this source

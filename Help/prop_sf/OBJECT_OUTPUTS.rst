@@ -1,7 +1,7 @@
 OBJECT_OUTPUTS
 --------------
 
-Additional outputs for a :generator:`Ninja` or :ref:`Makefile Generators` rule.
+:generator:`Ninja`\ 或\ :ref:`Makefile Generators`\ 规则的附加输出。
 
 Additional outputs created by compilation of this source file.  If any
 of these outputs is missing the object will be recompiled.  This is

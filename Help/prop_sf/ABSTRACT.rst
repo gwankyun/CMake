@@ -1,7 +1,7 @@
 ABSTRACT
 --------
 
-Is this source file an abstract class.
+这个源文件是一个抽象类吗？
 
 A property on a source file that indicates if the source file
 represents a class that is abstract.  This only makes sense for

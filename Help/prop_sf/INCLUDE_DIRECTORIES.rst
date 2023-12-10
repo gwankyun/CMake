@@ -3,7 +3,7 @@ INCLUDE_DIRECTORIES
 
 .. versionadded:: 3.11
 
-List of preprocessor include file search directories.
+预处理器列表包括文件搜索目录。
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>` of paths
 and will be added to the list of include directories when this

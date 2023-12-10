@@ -3,7 +3,7 @@ SKIP_AUTOMOC
 
 .. versionadded:: 3.8
 
-Exclude the source file from :prop_tgt:`AUTOMOC` processing (for Qt projects).
+从\ :prop_tgt:`AUTOMOC`\ 处理中排除源文件（对于Qt项目）。
 
 For broader exclusion control see :prop_sf:`SKIP_AUTOGEN`.
 

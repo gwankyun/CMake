@@ -1,7 +1,7 @@
 HEADER_FILE_ONLY
 ----------------
 
-Is this source file only a header file.
+这个源文件只是一个头文件吗？
 
 A property on a source file that indicates if the source file is a
 header file with no associated implementation.  This is set

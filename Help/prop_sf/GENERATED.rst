@@ -1,7 +1,7 @@
 GENERATED
 ---------
 
-Is this source file generated as part of the build or CMake process.
+这个源文件是作为构建或CMake过程的一部分生成的吗？
 
 .. versionchanged:: 3.20
   The GENERATED source file property is now visible in all directories.

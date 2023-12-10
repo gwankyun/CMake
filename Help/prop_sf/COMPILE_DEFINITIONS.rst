@@ -1,7 +1,7 @@
 COMPILE_DEFINITIONS
 -------------------
 
-Preprocessor definitions for compiling a source file.
+编译源文件的预处理器定义。
 
 The ``COMPILE_DEFINITIONS`` property may be set to a semicolon-separated
 list of preprocessor definitions using the syntax ``VAR`` or ``VAR=value``.

@@ -3,9 +3,8 @@ CXX_SCAN_FOR_MODULES
 
 .. versionadded:: 3.28
 
-``CXX_SCAN_FOR_MODULES`` is a boolean specifying whether CMake will scan the
-source for C++ module dependencies.  See also the
-:prop_tgt:`CXX_SCAN_FOR_MODULES` for target-wide settings.
+``CXX_SCAN_FOR_MODULES``\ 是一个布尔值，指定CMake是否扫描源代码中的C++模块依赖关系。\
+关于目标范围的设置，请参见\ :prop_tgt:`CXX_SCAN_FOR_MODULES`。
 
 When this property is set ``ON``, CMake will scan the source at build time and
 add module dependency information to the compile line as necessary.  When this

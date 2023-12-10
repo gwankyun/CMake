@@ -3,7 +3,7 @@ Fortran_PREPROCESS
 
 .. versionadded:: 3.18
 
-Control whether the Fortran source file should be unconditionally preprocessed.
+控制Fortran源文件是否应该无条件预处理。
 
 If unset or empty, rely on the compiler to determine whether the file
 should be preprocessed. If explicitly set to ``OFF`` then the file

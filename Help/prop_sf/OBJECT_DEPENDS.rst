@@ -1,7 +1,7 @@
 OBJECT_DEPENDS
 --------------
 
-Additional files on which a compiled object file depends.
+编译后的目标文件所依赖的其他文件。
 
 Specifies a :ref:`semicolon-separated list <CMake Language Lists>` of full-paths to
 files on which any object files compiled from this source file depend.

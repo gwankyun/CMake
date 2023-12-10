@@ -1,10 +1,8 @@
 MACOSX_PACKAGE_LOCATION
 -----------------------
 
-Place a source file inside a Application Bundle
-(:prop_tgt:`MACOSX_BUNDLE`), Core Foundation Bundle (:prop_tgt:`BUNDLE`),
-or Framework Bundle (:prop_tgt:`FRAMEWORK`).  It is applicable for macOS
-and iOS.
+将源文件放在应用程序包（:prop_tgt:`MACOSX_BUNDLE`\ ）、核心基础包（:prop_tgt:`BUNDLE`\
+）或框架包（:prop_tgt:`FRAMEWORK`\ ）中。适用于macOS和iOS。
 
 Executable targets with the :prop_tgt:`MACOSX_BUNDLE` property set are
 built as macOS or iOS application bundles on Apple platforms.  Shared
