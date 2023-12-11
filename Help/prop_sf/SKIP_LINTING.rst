@@ -3,14 +3,11 @@ SKIP_LINTING
 
 .. versionadded:: 3.27
 
-This property allows you to exclude a specific source file
-from the linting process. The linting process involves running
-tools such as :prop_tgt:`<LANG>_CPPLINT`, :prop_tgt:`<LANG>_CLANG_TIDY`,
-:prop_tgt:`<LANG>_CPPCHECK`, and :prop_tgt:`<LANG>_INCLUDE_WHAT_YOU_USE`
-on the source files, as well as compiling header files as part of
-:prop_tgt:`VERIFY_INTERFACE_HEADER_SETS`. By setting ``SKIP_LINTING`` on a
-source file, the mentioned linting tools will not be executed for that
-particular file.
+此属性允许你从检查进程中排除特定的源文件。检查过程包括在源文件上运行诸如\
+:prop_tgt:`<LANG>_CPPLINT`、\ :prop_tgt:`<LANG>_CLANG_TIDY`、\
+:prop_tgt:`<LANG>_CPPCHECK`\ 和\ :prop_tgt:`<LANG>_INCLUDE_WHAT_YOU_USE`\ 等工具，\
+以及编译头文件作为\ :prop_tgt:`VERIFY_INTERFACE_HEADER_SETS`\ 的一部分。通过在源文件\
+上设置\ ``SKIP_LINTING``，将不会为该特定文件执行上述检测工具。
 
 Example
 ^^^^^^^
