@@ -3,6 +3,5 @@ VS_SHADER_DISABLE_OPTIMIZATIONS
 
 .. versionadded:: 3.11
 
-Disable compiler optimizations for an ``.hlsl`` source file.  This adds the
-``-Od`` flag to the command line for the FxCompiler tool.  Specify the value
-``true`` for this property to disable compiler optimizations.
+禁用\ ``.hlsl``\ 源文件的编译器优化。这将在FxCompiler工具的命令行中添加\ ``-Od``\ 标志。\
+为此属性指定值\ ``true``\ 以禁用编译器优化。

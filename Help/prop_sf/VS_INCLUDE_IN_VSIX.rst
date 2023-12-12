@@ -3,6 +3,5 @@ VS_INCLUDE_IN_VSIX
 
 .. versionadded:: 3.8
 
-Boolean property to specify if the file should be included within a
-VSIX (Visual Studio Integration Extension) extension package.
-This is needed for development of Visual Studio extensions.
+布尔属性，指定文件是否应该包含在VSIX（Visual Studio集成扩展）扩展包中。这是开发\
+Visual Studio扩展所需要的。

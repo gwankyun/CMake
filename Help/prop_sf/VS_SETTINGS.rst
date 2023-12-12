@@ -3,7 +3,7 @@ VS_SETTINGS
 
 .. versionadded:: 3.18
 
-Set any item metadata on a file.
+在文件上设置任何项元数据。
 
 .. versionadded:: 3.22
 

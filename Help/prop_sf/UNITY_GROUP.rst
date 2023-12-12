@@ -3,5 +3,5 @@ UNITY_GROUP
 
 .. versionadded:: 3.18
 
-This property controls which *bucket* the source will be part of when
-the :prop_tgt:`UNITY_BUILD_MODE` is set to ``GROUP``.
+当\ :prop_tgt:`UNITY_BUILD_MODE`\ 设置为\ ``GROUP``\ 时，该属性控制源将成为哪个\ *桶*\
+的一部分。

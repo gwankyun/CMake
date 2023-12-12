@@ -3,7 +3,7 @@ VS_CSHARP_<tagname>
 
 .. versionadded:: 3.8
 
-Visual Studio and CSharp source-file-specific configuration.
+Visual Studio和CSharp特定于源文件的配置。
 
 Tell the :manual:`Visual Studio generators <cmake-generators(7)>`
 to set the source file tag ``<tagname>``

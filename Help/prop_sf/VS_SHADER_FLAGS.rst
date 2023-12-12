@@ -3,4 +3,4 @@ VS_SHADER_FLAGS
 
 .. versionadded:: 3.2
 
-Set additional Visual Studio shader flags of a ``.hlsl`` source file.
+设置\ ``.hlsl``\ 源文件的其他Visual Studio着色器标志。
