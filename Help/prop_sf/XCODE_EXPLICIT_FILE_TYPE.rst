@@ -3,8 +3,7 @@ XCODE_EXPLICIT_FILE_TYPE
 
 .. versionadded:: 3.1
 
-Set the :generator:`Xcode` ``explicitFileType`` attribute on its reference to a
-source file.  CMake computes a default based on file extension but
-can be told explicitly with this property.
+设置\ :generator:`Xcode`\ 的\ ``explicitFileType``\ 属性在它对源文件的引用上。CMake\
+根据文件扩展名计算一个默认值，但可以使用此属性显式地告诉。
 
 See also :prop_sf:`XCODE_LAST_KNOWN_FILE_TYPE`.

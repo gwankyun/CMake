@@ -1,7 +1,7 @@
 STRINGS
 -------
 
-Enumerate possible ``STRING`` entry values for GUI selection.
+枚举GUI选择可能的\ ``STRING``\ 条目值。
 
 For cache entries with type ``STRING``, this enumerates a set of values.
 CMake GUIs may use this to provide a selection widget instead of a

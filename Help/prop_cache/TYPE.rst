@@ -1,7 +1,7 @@
 TYPE
 ----
 
-Widget type for entry in GUIs.
+用于在GUI中输入的小部件类型。
 
 Cache entry values are always strings, but CMake GUIs present widgets
 to help users set values.  The GUIs use this property as a hint to

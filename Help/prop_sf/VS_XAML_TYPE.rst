@@ -3,7 +3,5 @@ VS_XAML_TYPE
 
 .. versionadded:: 3.3
 
-Mark a Extensible Application Markup Language (XAML) source file
-as a different type than the default ``Page``.
-The most common usage would be to set the default ``App.xaml`` file as
-``ApplicationDefinition``.
+将可扩展应用程序标记语言（XAML）源文件标记为与默认\ ``Page``\ 不同的类型。最常见的用法是将\
+默认的\ ``App.xaml``\ 文件设置为\ ``ApplicationDefinition``。

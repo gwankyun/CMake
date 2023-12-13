@@ -3,4 +3,4 @@ VS_SHADER_TYPE
 
 .. versionadded:: 3.1
 
-Set the Visual Studio shader type of a ``.hlsl`` source file.
+设置\ ``.hlsl``\ 源文件的Visual Studio着色器类型。

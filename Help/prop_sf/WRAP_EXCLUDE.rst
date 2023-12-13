@@ -1,7 +1,7 @@
 WRAP_EXCLUDE
 ------------
 
-Exclude this source file from any code wrapping techniques.
+将此源文件排除在任何代码包装技术之外。
 
 Some packages can wrap source files into alternate languages to
 provide additional functionality.

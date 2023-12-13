@@ -3,5 +3,4 @@ VS_TOOL_OVERRIDE
 
 .. versionadded:: 3.7
 
-Override the default Visual Studio tool that will be applied to the source file
-with a new tool not based on the extension of the file.
+使用不基于文件扩展名的新工具覆盖默认Visual Studio工具，其将应用于源文件。

@@ -3,8 +3,7 @@ CPACK_WIX_ACL
 
 .. versionadded:: 3.1
 
-Specifies access permissions for files or directories
-installed by a WiX installer.
+指定WiX安装程序安装的文件或目录的访问权限。
 
 The property can contain multiple list entries,
 each of which has to match the following format.
