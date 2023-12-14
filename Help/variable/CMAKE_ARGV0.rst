@@ -1,7 +1,7 @@
 CMAKE_ARGV0
 -----------
 
-Command line argument passed to CMake in script mode.
+命令行参数在脚本模式下传递给CMake。
 
 When run in :ref:`-P <Script Processing Mode>` script mode, CMake sets this
 variable to the first command line argument.  It then also sets ``CMAKE_ARGV1``,

@@ -1,6 +1,5 @@
 CMAKE_BUILD_TOOL
 ----------------
 
-This variable exists only for backwards compatibility.
-It contains the same value as :variable:`CMAKE_MAKE_PROGRAM`.
-Use that variable instead.
+这个变量的存在只是为了向后兼容。它包含与\ :variable:`CMAKE_MAKE_PROGRAM`\ 相同的值。用\
+那个变量代替。

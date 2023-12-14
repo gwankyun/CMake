@@ -1,7 +1,7 @@
 CMAKE_BINARY_DIR
 ----------------
 
-The path to the top level of the build tree.
+构建树顶层的路径。
 
 This is the full path to the top level of the current CMake build
 tree.  For an in-source build, this would be the same as
