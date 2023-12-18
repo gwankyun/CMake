@@ -1,7 +1,7 @@
 CMAKE_CTEST_COMMAND
 -------------------
 
-Full path to :manual:`ctest(1)` command installed with CMake.
+CMake安装\ :manual:`ctest(1)`\ 命令的全路径。
 
 This is the full path to the CTest executable :manual:`ctest(1)`
 that can be used for custom commands or tests to invoke

@@ -1,7 +1,7 @@
 CMAKE_CURRENT_BINARY_DIR
 ------------------------
 
-The path to the binary directory currently being processed.
+当前正在处理的二进制目录的路径。
 
 This is the full path to the build directory that is currently being
 processed by cmake.  Each directory added by :command:`add_subdirectory` will

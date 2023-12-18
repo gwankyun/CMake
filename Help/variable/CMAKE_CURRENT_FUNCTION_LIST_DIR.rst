@@ -3,8 +3,7 @@ CMAKE_CURRENT_FUNCTION_LIST_DIR
 
 .. versionadded:: 3.17
 
-When executing code inside a :command:`function`, this variable
-contains the full directory of the listfile that defined the current function.
+在\ :command:`function`\ 中执行代码时，该变量包含定义当前函数的listfile的完整目录。
 
 It is quite common practice in CMake for modules to use some additional files,
 such as templates to be copied in after substituting CMake variables.

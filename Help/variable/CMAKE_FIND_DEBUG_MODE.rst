@@ -3,8 +3,7 @@ CMAKE_FIND_DEBUG_MODE
 
 .. versionadded:: 3.17
 
-Print extra find call information for the following commands to standard
-error:
+为以下命令打印额外的查找调用信息到标准错误：
 
 * :command:`find_program`
 * :command:`find_library`

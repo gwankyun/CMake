@@ -1,7 +1,7 @@
 CMAKE_EXECUTABLE_SUFFIX
 -----------------------
 
-The suffix for executables on this platform.
+此平台上可执行文件的后缀。
 
 The suffix to use for the end of an executable filename if any, ``.exe``
 on Windows.

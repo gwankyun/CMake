@@ -3,8 +3,7 @@ CMAKE_DOTNET_TARGET_FRAMEWORK_VERSION
 
 .. versionadded:: 3.12
 
-Default value for :prop_tgt:`DOTNET_TARGET_FRAMEWORK_VERSION`
-property of targets.
+目标的\ :prop_tgt:`DOTNET_TARGET_FRAMEWORK_VERSION`\ 属性的默认值。
 
 This variable is used to initialize the
 :prop_tgt:`DOTNET_TARGET_FRAMEWORK_VERSION` property on all

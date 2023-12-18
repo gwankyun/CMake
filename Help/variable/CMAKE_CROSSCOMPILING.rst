@@ -1,8 +1,7 @@
 CMAKE_CROSSCOMPILING
 --------------------
 
-This variable is set by CMake to indicate whether it is cross compiling,
-but note limitations discussed below.
+这个变量是由CMake设置的，用来指示它是否在交叉编译，但请注意下面讨论的限制。
 
 This variable will be set to true by CMake if the :variable:`CMAKE_SYSTEM_NAME`
 variable has been set manually (i.e. in a toolchain file or as a cache entry

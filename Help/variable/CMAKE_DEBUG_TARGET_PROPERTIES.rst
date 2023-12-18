@@ -1,7 +1,7 @@
 CMAKE_DEBUG_TARGET_PROPERTIES
 -----------------------------
 
-Enables tracing output for target properties.
+启用目标属性的跟踪输出。
 
 This variable can be populated with a list of properties to generate
 debug output for when evaluating target properties.  Currently it can

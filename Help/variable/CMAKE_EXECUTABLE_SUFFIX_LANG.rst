@@ -1,7 +1,6 @@
 CMAKE_EXECUTABLE_SUFFIX_<LANG>
 ------------------------------
 
-The suffix to use for the end of an executable filename of ``<LANG>``
-compiler target architecture, if any.
+用于\ ``<LANG>``\ 编译器目标体系结构的可执行文件名末尾的后缀，如果有的话。
 
 It overrides :variable:`CMAKE_EXECUTABLE_SUFFIX` for language ``<LANG>``.

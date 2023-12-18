@@ -1,7 +1,7 @@
 CMAKE_CURRENT_LIST_FILE
 -----------------------
 
-Full path to the listfile currently being processed.
+当前正在处理的列表文件的完整路径。
 
 As CMake processes the listfiles in your project this variable will
 always be set to the one currently being processed.  The value has

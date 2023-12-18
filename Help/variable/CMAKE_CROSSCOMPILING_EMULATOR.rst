@@ -3,9 +3,8 @@ CMAKE_CROSSCOMPILING_EMULATOR
 
 .. versionadded:: 3.3
 
-This variable is only used when :variable:`CMAKE_CROSSCOMPILING` is on. It
-should point to a command on the host system that can run executable built
-for the target system.
+这个变量只在\ :variable:`CMAKE_CROSSCOMPILING`\ 开启时使用。它应该指向主机系统上的一个\
+命令，该命令可以运行为目标系统构建的可执行文件。
 
 .. versionadded:: 3.15
   If this variable contains a :ref:`semicolon-separated list <CMake Language

@@ -1,7 +1,7 @@
 CMAKE_COMMAND
 -------------
 
-The full path to the :manual:`cmake(1)` executable.
+:manual:`cmake(1)`\ 可执行文件的完整路径。
 
 This is the full path to the CMake executable :manual:`cmake(1)` which is
 useful from custom commands that want to use the :option:`cmake -E` option for
