@@ -3,6 +3,6 @@ CMAKE_<LANG>_LINK_LIBRARY_SUFFIX
 
 .. versionadded:: 3.16
 
-Language-specific suffix for libraries that you link to.
+链接到的库的特定于语言的后缀。
 
 The suffix to use for the end of a library filename, ``.lib`` on Windows.

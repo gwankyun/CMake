@@ -3,8 +3,7 @@ CMAKE_FIND_PACKAGE_SORT_ORDER
 
 .. versionadded:: 3.7
 
-The default order for sorting packages found using :command:`find_package`.
-It can assume one of the following values:
+使用\ :command:`find_package`\ 找到的包的默认排序顺序。它可以假设下列值之一：
 
 ``NONE``
   Default.  No attempt is done to sort packages.

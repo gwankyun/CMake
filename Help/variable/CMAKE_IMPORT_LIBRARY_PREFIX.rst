@@ -1,7 +1,7 @@
 CMAKE_IMPORT_LIBRARY_PREFIX
 ---------------------------
 
-The prefix for import libraries that you link to.
+链接到的导入库前缀。
 
 The prefix to use for the name of an import library if used on this
 platform.

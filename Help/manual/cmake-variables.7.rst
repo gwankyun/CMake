@@ -9,7 +9,7 @@ cmake-variables(7)
 
 本页面记录了由CMake提供的变量或由项目代码设置的对CMake有意义的变量。
 
-有关变量的一般信息，请参阅cmake语言手册中的\ :ref:`Variables <CMake Language Variables>`\
+有关变量的一般信息，请参阅cmake语言手册中的\ :ref:`变量 <CMake Language Variables>`\
 部分。
 
 .. include:: ID_RESERVE.txt

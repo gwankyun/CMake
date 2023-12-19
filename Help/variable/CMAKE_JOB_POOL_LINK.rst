@@ -1,6 +1,5 @@
 CMAKE_JOB_POOL_LINK
 -------------------
 
-This variable is used to initialize the :prop_tgt:`JOB_POOL_LINK`
-property on all the targets. See :prop_tgt:`JOB_POOL_LINK`
-for additional information.
+该变量用于初始化所有目标上的\ :prop_tgt:`JOB_POOL_LINK`\ 属性。更多信息请参见\
+:prop_tgt:`JOB_POOL_LINK`。

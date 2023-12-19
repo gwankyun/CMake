@@ -1,9 +1,8 @@
 CMAKE_MAKE_PROGRAM
 ------------------
 
-Tool that can launch the native build system.
-The value may be the full path to an executable or just the tool
-name if it is expected to be in the ``PATH``.
+可以启动本机构建系统的工具。该值可以是可执行文件的完整路径，或者只是工具名称，如果它被预期在\
+``PATH``\ 中。
 
 The tool selected depends on the :variable:`CMAKE_GENERATOR` used
 to configure the project:

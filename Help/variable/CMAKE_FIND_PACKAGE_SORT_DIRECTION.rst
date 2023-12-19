@@ -3,8 +3,7 @@ CMAKE_FIND_PACKAGE_SORT_DIRECTION
 
 .. versionadded:: 3.7
 
-The sorting direction used by :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`.
-It can assume one of the following values:
+:variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`\ 使用的排序方向。它可以假设下列值之一：
 
 ``DEC``
   Default.  Ordering is done in descending mode.

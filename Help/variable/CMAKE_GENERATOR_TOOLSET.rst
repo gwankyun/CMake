@@ -1,7 +1,7 @@
 CMAKE_GENERATOR_TOOLSET
 -----------------------
 
-Native build system toolset specification provided by user.
+用户提供的本机构建系统工具集规范。
 
 Some CMake generators support a toolset specification to tell the
 native build system how to choose a compiler.  If the user specifies

@@ -1,7 +1,7 @@
 CMAKE_IMPORT_LIBRARY_SUFFIX
 ---------------------------
 
-The suffix for import libraries that you link to.
+链接到的导入库后缀。
 
 The suffix to use for the end of an import library filename if used on
 this platform.

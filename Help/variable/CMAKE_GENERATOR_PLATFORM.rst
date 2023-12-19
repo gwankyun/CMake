@@ -3,7 +3,7 @@ CMAKE_GENERATOR_PLATFORM
 
 .. versionadded:: 3.1
 
-Generator-specific target platform specification provided by user.
+由用户提供的特定于生成器的目标平台规范。
 
 Some CMake generators support a target platform name to be given
 to the native build system to choose a compiler toolchain.

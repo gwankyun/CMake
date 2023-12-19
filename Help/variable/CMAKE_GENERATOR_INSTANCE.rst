@@ -3,7 +3,7 @@ CMAKE_GENERATOR_INSTANCE
 
 .. versionadded:: 3.11
 
-Generator-specific instance specification provided by user.
+由用户提供的特定于生成器的实例规范。
 
 Some CMake generators support selection of an instance of the native build
 system when multiple instances are available.  If the user specifies an

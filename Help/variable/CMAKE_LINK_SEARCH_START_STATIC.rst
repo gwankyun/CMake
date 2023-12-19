@@ -3,7 +3,7 @@ CMAKE_LINK_SEARCH_START_STATIC
 
 .. versionadded:: 3.4
 
-Assume the linker looks for static libraries by default.
+假设链接器在默认情况下查找静态库。
 
 Some linkers support switches such as ``-Bstatic`` and ``-Bdynamic`` to
 determine whether to use static or shared libraries for ``-lXXX`` options.

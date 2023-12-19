@@ -1,6 +1,6 @@
 CMAKE_LINK_LIBRARY_SUFFIX
 -------------------------
 
-The suffix for libraries that you link to.
+链接到的库后缀。
 
 The suffix to use for the end of a library filename, ``.lib`` on Windows.

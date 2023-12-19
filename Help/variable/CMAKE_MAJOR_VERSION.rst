@@ -1,5 +1,4 @@
 CMAKE_MAJOR_VERSION
 -------------------
 
-First version number component of the :variable:`CMAKE_VERSION`
-variable.
+:variable:`CMAKE_VERSION`\ 变量的第一个版本号组件。

@@ -3,7 +3,7 @@ CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT
 
 .. versionadded:: 3.14
 
-Identification string of the compiler frontend variant.
+编译器前端变体的标识字符串。
 
 Some compilers have multiple, different frontends for accepting command
 line options.  (For example ``Clang`` originally only had a frontend

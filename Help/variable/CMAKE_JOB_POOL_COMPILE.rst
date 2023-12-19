@@ -1,6 +1,5 @@
 CMAKE_JOB_POOL_COMPILE
 ----------------------
 
-This variable is used to initialize the :prop_tgt:`JOB_POOL_COMPILE`
-property on all the targets. See :prop_tgt:`JOB_POOL_COMPILE`
-for additional information.
+该变量用于初始化所有目标上的\ :prop_tgt:`JOB_POOL_COMPILE`\ 属性。有关其他信息，请参见\
+:prop_tgt:`JOB_POOL_COMPILE`。

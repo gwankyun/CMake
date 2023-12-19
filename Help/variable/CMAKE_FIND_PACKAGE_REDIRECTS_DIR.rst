@@ -3,10 +3,8 @@ CMAKE_FIND_PACKAGE_REDIRECTS_DIR
 
 .. versionadded:: 3.24
 
-This read-only variable specifies a directory that the :command:`find_package`
-command will check first before searching anywhere else for a module or config
-package file.  A config package file in this directory will always be found in
-preference to any other Find module file or config package file.
+这个只读变量指定了一个目录，\ :command:`find_package`\ 命令在其他地方搜索模块或配置包文\
+件之前首先检查这个目录。这个目录中的配置包文件总是优先于任何其他查找模块文件或配置包文件。
 
 The primary purpose of this variable is to facilitate integration between
 :command:`find_package` and :command:`FetchContent_MakeAvailable`.  The latter
