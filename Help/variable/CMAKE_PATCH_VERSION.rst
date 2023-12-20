@@ -1,5 +1,4 @@
 CMAKE_PATCH_VERSION
 -------------------
 
-Third version number component of the :variable:`CMAKE_VERSION`
-variable.
+:variable:`CMAKE_VERSION`\ 变量的第三个版本号组件。

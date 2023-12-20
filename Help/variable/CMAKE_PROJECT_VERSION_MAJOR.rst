@@ -3,7 +3,7 @@ CMAKE_PROJECT_VERSION_MAJOR
 
 .. versionadded:: 3.12
 
-The major version of the top level project.
+顶层项目的主要版本。
 
 This variable holds the major version of the project as specified in the top
 level CMakeLists.txt file by a :command:`project` command. Please see

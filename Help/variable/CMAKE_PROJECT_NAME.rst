@@ -1,7 +1,7 @@
 CMAKE_PROJECT_NAME
 ------------------
 
-The name of the top level project.
+顶层项目的名称。
 
 This variable holds the name of the project as specified in the top
 level CMakeLists.txt file by a :command:`project` command.  In the event that

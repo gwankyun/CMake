@@ -1,7 +1,7 @@
 CMAKE_PARENT_LIST_FILE
 ----------------------
 
-Full path to the CMake file that included the current one.
+包含当前文件的CMake文件的完整路径。
 
 While processing a CMake file loaded by :command:`include` or
 :command:`find_package` this variable contains the full path to the file

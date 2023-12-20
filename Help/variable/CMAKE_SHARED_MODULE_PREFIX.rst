@@ -1,7 +1,7 @@
 CMAKE_SHARED_MODULE_PREFIX
 --------------------------
 
-The prefix for loadable modules that you link to.
+链接到的可加载模块的前缀。
 
 The prefix to use for the name of a loadable module on this platform.
 

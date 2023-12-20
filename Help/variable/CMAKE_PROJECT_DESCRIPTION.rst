@@ -3,7 +3,7 @@ CMAKE_PROJECT_DESCRIPTION
 
 .. versionadded:: 3.9
 
-The description of the top level project.
+顶层项目的描述。
 
 This variable holds the description of the project as specified in the top
 level CMakeLists.txt file by a :command:`project` command.  In the event that

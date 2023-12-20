@@ -3,7 +3,7 @@ CMAKE_MATCH_COUNT
 
 .. versionadded:: 3.2
 
-The number of matches with the last regular expression.
+与最后一个正则表达式匹配的数目。
 
 When a regular expression match is used, CMake fills in
 :variable:`CMAKE_MATCH_<n>` variables with the match contents.

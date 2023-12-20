@@ -1,7 +1,7 @@
 CMAKE_SIZEOF_VOID_P
 -------------------
 
-Size of a ``void`` pointer.
+``void``\ 指针的大小。
 
 This is set to the size of a pointer on the target machine, and is determined
 when a compiled language is enabled.  If a 64-bit size is found, then the

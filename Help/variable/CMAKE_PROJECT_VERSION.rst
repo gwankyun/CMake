@@ -3,7 +3,7 @@ CMAKE_PROJECT_VERSION
 
 .. versionadded:: 3.12
 
-The version of the top level project.
+顶层项目的版本。
 
 This variable holds the version of the project as specified in the top
 level CMakeLists.txt file by a :command:`project` command.  In the event that

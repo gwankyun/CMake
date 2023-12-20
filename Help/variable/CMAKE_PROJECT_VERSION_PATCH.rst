@@ -3,7 +3,7 @@ CMAKE_PROJECT_VERSION_PATCH
 
 .. versionadded:: 3.12
 
-The patch version of the top level project.
+顶层项目的补丁版本。
 
 This variable holds the patch version of the project as specified in the top
 level CMakeLists.txt file by a :command:`project` command. Please see

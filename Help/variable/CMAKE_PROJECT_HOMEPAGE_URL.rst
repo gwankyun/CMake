@@ -3,7 +3,7 @@ CMAKE_PROJECT_HOMEPAGE_URL
 
 .. versionadded:: 3.12
 
-The homepage URL of the top level project.
+顶层项目的主页URL。
 
 This variable holds the homepage URL of the project as specified in the top
 level CMakeLists.txt file by a :command:`project` command.  In the event that

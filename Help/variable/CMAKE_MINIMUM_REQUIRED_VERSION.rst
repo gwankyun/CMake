@@ -1,6 +1,5 @@
 CMAKE_MINIMUM_REQUIRED_VERSION
 ------------------------------
 
-The ``<min>`` version of CMake given to the most recent call to the
-:command:`cmake_minimum_required(VERSION)` command in the current
-variable scope or any parent variable scope.
+当前变量作用域或任何父变量作用域中最近一次调用\ :command:`cmake_minimum_required(VERSION)`\
+命令时给出的CMake ``<min>``\ 版本。

@@ -1,7 +1,7 @@
 CMAKE_SKIP_RPATH
 ----------------
 
-If true, do not add run time path information.
+如果为true，则不要添加运行时路径信息。
 
 If this is set to ``TRUE``, then the rpath information is not added to
 compiled executables.  The default is to add rpath information if the

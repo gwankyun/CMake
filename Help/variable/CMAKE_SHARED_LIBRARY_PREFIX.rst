@@ -1,7 +1,7 @@
 CMAKE_SHARED_LIBRARY_PREFIX
 ---------------------------
 
-The prefix for shared libraries that you link to.
+链接到的共享库的前缀。
 
 The prefix to use for the name of a shared library, ``lib`` on UNIX.
 

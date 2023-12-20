@@ -1,7 +1,7 @@
 CMAKE_SHARED_MODULE_SUFFIX
 --------------------------
 
-The suffix for shared libraries that you link to.
+链接到的可加载模块的后缀。
 
 The suffix to use for the end of a loadable module filename on this
 platform
