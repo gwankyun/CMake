@@ -3,7 +3,7 @@ CMAKE_VS_TARGET_FRAMEWORK_IDENTIFIER
 
 .. versionadded:: 3.22
 
-Visual Studio target framework identifier.
+Visual Studio目标框架标识符。
 
 In some cases, the :ref:`Visual Studio Generators` may use an explicit value
 for the MSBuild ``TargetFrameworkIdentifier`` setting in ``.csproj`` files.

@@ -1,8 +1,7 @@
 CMAKE_TWEAK_VERSION
 -------------------
 
-Defined to ``0`` for compatibility with code written for older
-CMake versions that may have defined higher values.
+定义为\ ``0``\ 以兼容为旧CMake版本编写的代码，这些版本可能定义了更高的值。
 
 .. note::
 

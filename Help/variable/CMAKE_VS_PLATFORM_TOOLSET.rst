@@ -1,7 +1,7 @@
 CMAKE_VS_PLATFORM_TOOLSET
 -------------------------
 
-Visual Studio Platform Toolset name.
+Visual Studio平台工具集名称。
 
 VS 10 and above use MSBuild under the hood and support multiple
 compiler toolchains.  CMake may specify a toolset explicitly, such as

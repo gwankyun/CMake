@@ -3,7 +3,7 @@ CMAKE_VS_PLATFORM_TOOLSET_CUDA
 
 .. versionadded:: 3.9
 
-NVIDIA CUDA Toolkit version whose Visual Studio toolset to use.
+使用Visual Studio工具集的NVIDIA CUDA工具包版本。
 
 The :ref:`Visual Studio Generators` for VS 2010 and above support using
 a CUDA toolset provided by a CUDA Toolkit.  The toolset version number

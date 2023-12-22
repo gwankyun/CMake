@@ -1,7 +1,7 @@
 <PROJECT-NAME>_SOURCE_DIR
 -------------------------
 
-Top level source directory for the named project.
+命名项目的顶层源目录。
 
 A variable is created with the name used in the :command:`project` command,
 and is the source directory for the project.  This can be useful when

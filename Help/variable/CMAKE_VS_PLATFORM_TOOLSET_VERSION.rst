@@ -3,7 +3,7 @@ CMAKE_VS_PLATFORM_TOOLSET_VERSION
 
 .. versionadded:: 3.12
 
-Visual Studio Platform Toolset version.
+Visual Studio平台工具集版本。
 
 The :ref:`Visual Studio Generators` for VS 2017 and above allow to
 select minor versions of the same toolset. The toolset version number

@@ -3,5 +3,5 @@
 
 .. versionadded:: 3.12
 
-Value given to the ``HOMEPAGE_URL`` option of the most recent call to the
-:command:`project` command with project name ``<PROJECT-NAME>``, if any.
+最近调用项目名称\ ``<PROJECT-NAME>``\ 的\ :command:`project`\ 命令的\ ``HOMEPAGE_URL``\
+选项的值，如果有的话。

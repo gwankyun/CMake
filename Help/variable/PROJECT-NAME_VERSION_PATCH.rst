@@ -1,5 +1,5 @@
 <PROJECT-NAME>_VERSION_PATCH
 ----------------------------
 
-Third version number component of the :variable:`<PROJECT-NAME>_VERSION`
-variable as set by the :command:`project` command.
+:variable:`<PROJECT-NAME>_VERSION`\ 变量的第三个版本号组件，由\ :command:`project`\
+命令设置。

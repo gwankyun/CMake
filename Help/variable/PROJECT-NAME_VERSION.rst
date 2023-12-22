@@ -1,8 +1,8 @@
 <PROJECT-NAME>_VERSION
 ----------------------
 
-Value given to the ``VERSION`` option of the most recent call to the
-:command:`project` command with project name ``<PROJECT-NAME>``, if any.
+最近一次调用项目名称\ ``<PROJECT-NAME>``\ 的\ :command:`project`\ 命令的\ ``VERSION``\
+选项的值，如果有的话。
 
 See also the component-wise version variables
 :variable:`<PROJECT-NAME>_VERSION_MAJOR`,

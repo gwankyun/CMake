@@ -3,7 +3,7 @@ CMAKE_VS_TARGET_FRAMEWORK_VERSION
 
 .. versionadded:: 3.22
 
-Visual Studio target framework version.
+Visual Studio目标框架版本。
 
 In some cases, the :ref:`Visual Studio Generators` may use an explicit value
 for the MSBuild ``TargetFrameworkVersion`` setting in ``.csproj`` files.

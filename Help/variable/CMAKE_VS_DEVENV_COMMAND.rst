@@ -1,10 +1,9 @@
 CMAKE_VS_DEVENV_COMMAND
 -----------------------
 
-The generators for :generator:`Visual Studio 9 2008` and above set this
-variable to the ``devenv.com`` command installed with the corresponding
-Visual Studio version.  Note that this variable may be empty on
-Visual Studio Express editions because they do not provide this tool.
+:generator:`Visual Studio 9 2008`\ 及以上版本的生成器将此变量设置为与相应的\
+Visual Studio版本一起安装的\ ``devenv.com``\ 命令。注意，此变量在Visual Studio Express\
+版本上可能为空，因为它们不提供此工具。
 
 This variable is not defined by other generators even if ``devenv.com``
 is installed on the computer.

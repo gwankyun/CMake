@@ -1,7 +1,7 @@
 <PROJECT-NAME>_BINARY_DIR
 -------------------------
 
-Top level binary directory for the named project.
+命名项目的顶层二进制目录。
 
 A variable is created with the name used in the :command:`project` command,
 and is the binary directory for the project.  This can be useful when

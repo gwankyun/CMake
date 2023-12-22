@@ -3,7 +3,7 @@ CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE
 
 .. versionadded:: 3.8
 
-Visual Studio preferred tool architecture.
+Visual Studio首选的工具架构。
 
 The :ref:`Visual Studio Generators` for VS 2013 and above support using
 either the 32-bit or 64-bit host toolchains by specifying a ``host=x86``

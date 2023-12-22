@@ -1,7 +1,7 @@
 BUILD_SHARED_LIBS
 -----------------
 
-Global flag to cause :command:`add_library` to create shared libraries if on.
+如果开启，导致\ :command:`add_library`\ 创建共享库的全局标志。
 
 If present and true, this will cause all libraries to be built shared
 unless the library was explicitly added as a static library.  This

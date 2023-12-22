@@ -3,8 +3,7 @@
 
 .. versionadded:: 3.21
 
-A boolean variable indicating whether the named project was called in a top
-level ``CMakeLists.txt`` file.
+一个布尔变量，指示命名项目是否在顶层\ ``CMakeLists.txt``\ 文件中被调用。
 
 To obtain the value from the most recent call to :command:`project` in
 the current directory scope or above, see the

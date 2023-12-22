@@ -1,5 +1,5 @@
 <PROJECT-NAME>_VERSION_MINOR
 ----------------------------
 
-Second version number component of the :variable:`<PROJECT-NAME>_VERSION`
-variable as set by the :command:`project` command.
+由\ :command:`project`\ 命令设置的\ :variable:`<PROJECT-NAME>_VERSION`\ 变量的第二\
+个版本号组件。

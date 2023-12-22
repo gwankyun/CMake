@@ -1,7 +1,7 @@
 CMAKE_VERBOSE_MAKEFILE
 ----------------------
 
-Enable verbose output from Makefile builds.
+启用Makefile构建的详细输出。
 
 This variable is a cache entry initialized (to ``FALSE``) by
 the :command:`project` command.  Users may enable the option

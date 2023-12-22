@@ -1,10 +1,8 @@
 CMAKE_VERSION
 -------------
 
-The CMake version string as three non-negative integer components
-separated by ``.`` and possibly followed by ``-`` and other information.
-The first two components represent the feature level and the third
-component represents either a bug-fix level or development date.
+CMake版本字符串作为三个非负整数组成部分，由\ ``.``\ 分隔。可能还会有\ ``-``\ 和其他信息。\
+前两个组件表示特性级别，第三个组件表示bug修复级别或开发日期。
 
 Release versions and release candidate versions of CMake use the format::
 

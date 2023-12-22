@@ -3,7 +3,7 @@ CMAKE_VS_VERSION_BUILD_NUMBER
 
 .. versionadded:: 3.26
 
-Visual Studio version.
+Visual Studio版本。
 
 :ref:`Visual Studio Generators` for VS 2017 and above set this
 variable to the Visual Studio version build number in the format

@@ -3,7 +3,7 @@ CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION
 
 .. versionadded:: 3.4
 
-Visual Studio Windows Target Platform Version.
+Visual Studio Windows目标平台版本。
 
 When targeting Windows 10 and above, :ref:`Visual Studio Generators` for
 VS 2015 and above support specification of a Windows SDK version:

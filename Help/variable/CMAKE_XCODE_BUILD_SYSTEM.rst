@@ -3,7 +3,7 @@ CMAKE_XCODE_BUILD_SYSTEM
 
 .. versionadded:: 3.19
 
-Xcode build system selection.
+Xcode构建系统选择。
 
 The :generator:`Xcode` generator defines this variable to indicate which
 variant of the Xcode build system will be used.  The value is the

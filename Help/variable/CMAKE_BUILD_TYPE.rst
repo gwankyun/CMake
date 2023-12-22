@@ -1,10 +1,9 @@
 CMAKE_BUILD_TYPE
 ----------------
 
-Specifies the build type on single-configuration generators (e.g.
-:ref:`Makefile Generators` or :generator:`Ninja`).  Typical values include
-``Debug``, ``Release``, ``RelWithDebInfo`` and ``MinSizeRel``, but custom
-build types can also be defined.
+指定单配置生成器的构建类型（例如\ :ref:`Makefile Generators`\ 或\ :generator:`Ninja`）。\
+典型的值包括\ ``Debug``、\ ``Release``、\ ``RelWithDebInfo``\ 和\ ``MinSizeRel``，\
+但是也可以定义自定义构建类型。
 
 This variable is initialized by the first :command:`project` or
 :command:`enable_language` command called in a project when a new build

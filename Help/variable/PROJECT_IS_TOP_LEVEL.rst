@@ -3,9 +3,8 @@ PROJECT_IS_TOP_LEVEL
 
 .. versionadded:: 3.21
 
-A boolean variable indicating whether the most recently called
-:command:`project` command in the current scope or above was in the top
-level ``CMakeLists.txt`` file.
+一个布尔变量，指示当前或以上范围内最近调用的\ :command:`project`\ 命令是否在顶层\
+``CMakeLists.txt``\ 文件中。
 
 Some modules should only be included as part of the top level
 ``CMakeLists.txt`` file to not cause unintended side effects in the build
