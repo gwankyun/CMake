@@ -1,8 +1,8 @@
 CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION
 -------------------------------------------
 
-Ask ``cmake_install.cmake`` script to error out as soon as a file with
-absolute ``INSTALL DESTINATION`` is encountered.
+让\ ``cmake_install.cmake``\ 脚本一旦遇到具有绝对\ ``INSTALL DESTINATION``\ 的文件，\
+就报错。
 
 The fatal error is emitted before the installation of the offending
 file takes place.  This variable is used by CMake-generated

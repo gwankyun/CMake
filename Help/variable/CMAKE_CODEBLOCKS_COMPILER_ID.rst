@@ -3,7 +3,7 @@ CMAKE_CODEBLOCKS_COMPILER_ID
 
 .. versionadded:: 3.11
 
-Change the compiler id in the generated CodeBlocks project files.
+在生成的CodeBlocks项目文件中更改编译器id。
 
 CodeBlocks uses its own compiler id string which differs from
 :variable:`CMAKE_<LANG>_COMPILER_ID`.  If this variable is left empty,

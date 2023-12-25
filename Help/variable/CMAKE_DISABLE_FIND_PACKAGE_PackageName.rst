@@ -1,7 +1,7 @@
 CMAKE_DISABLE_FIND_PACKAGE_<PackageName>
 ----------------------------------------
 
-Variable for disabling :command:`find_package` calls.
+变量用于禁用\ :command:`find_package`\ 调用。
 
 Every non-``REQUIRED`` :command:`find_package` call in a project can be
 disabled by setting the variable

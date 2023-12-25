@@ -1,12 +1,10 @@
 CMAKE_CONFIGURATION_TYPES
 -------------------------
 
-Specifies the available build types (configurations) on multi-config
-generators (e.g. :ref:`Visual Studio <Visual Studio Generators>`,
-:generator:`Xcode`, or :generator:`Ninja Multi-Config`) as a
-:ref:`semicolon-separated list <CMake Language Lists>`.  Typical entries
-include ``Debug``, ``Release``, ``RelWithDebInfo`` and ``MinSizeRel``,
-but custom build types can also be defined.
+指定多配置生成器（例如\ :ref:`Visual Studio <Visual Studio Generators>`、\
+:generator:`Xcode`\ 或\ :generator:`Ninja Multi-Config`）上可用的构建类型（配置），\
+以\ :ref:`分号分隔列表 <CMake Language Lists>`\ 为格式。典型的条目包括\ ``Debug``、\
+``Release``、\ ``RelWithDebInfo``\ 和\ ``MinSizeRel``，但是也可以定义自定义构建类型。
 
 This variable is initialized by the first :command:`project` or
 :command:`enable_language` command called in a project when a new build

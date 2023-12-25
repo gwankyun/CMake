@@ -3,7 +3,7 @@ CMAKE_COLOR_DIAGNOSTICS
 
 .. versionadded:: 3.24
 
-Enable color diagnostics throughout.
+始终启用彩色诊断。
 
 This variable uses three states: ``ON``, ``OFF`` and not defined.
 
