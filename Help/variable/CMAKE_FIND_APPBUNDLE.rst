@@ -3,8 +3,7 @@ CMAKE_FIND_APPBUNDLE
 
 .. versionadded:: 3.4
 
-This variable affects how ``find_*`` commands choose between
-macOS Application Bundles and unix-style package components.
+这个变量影响\ ``find_*``\ 命令如何在macOS应用程序包和unix风格的包组件之间进行选择。
 
 On Darwin or systems supporting macOS Application Bundles, the
 ``CMAKE_FIND_APPBUNDLE`` variable can be set to empty or

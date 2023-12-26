@@ -3,7 +3,7 @@ CMAKE_EXPORT_COMPILE_COMMANDS
 
 .. versionadded:: 3.5
 
-Enable/Disable output of compile commands during generation.
+在生成过程中启用/禁用编译命令输出。
 
 If enabled, generates a ``compile_commands.json`` file containing the exact
 compiler calls for all translation units of the project in machine-readable

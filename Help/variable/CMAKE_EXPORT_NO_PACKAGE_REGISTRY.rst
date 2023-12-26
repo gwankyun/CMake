@@ -3,8 +3,7 @@ CMAKE_EXPORT_NO_PACKAGE_REGISTRY
 
 .. versionadded:: 3.1
 
-Disable the :command:`export(PACKAGE)` command when :policy:`CMP0090`
-is not set to ``NEW``.
+当\ :policy:`CMP0090`\ 不为\ ``NEW``\ 时，禁用\ :command:`export(PACKAGE)`\ 命令。
 
 In some cases, for example for packaging and for system wide
 installations, it is not desirable to write the user package registry.
