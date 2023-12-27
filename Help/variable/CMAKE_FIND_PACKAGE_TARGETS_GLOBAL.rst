@@ -3,8 +3,8 @@ CMAKE_FIND_PACKAGE_TARGETS_GLOBAL
 
 .. versionadded:: 3.24
 
-Setting to ``TRUE`` promotes all :prop_tgt:`IMPORTED` targets discoverd
-by :command:`find_package` to a ``GLOBAL`` scope.
+设置为\ ``TRUE``\ 将\ :command:`find_package`\ 发现的所有\ :prop_tgt:`IMPORTED`\
+目标提升到\ ``GLOBAL``\ 作用域。
 
 
 Setting this to ``TRUE`` is akin to specifying ``GLOBAL``

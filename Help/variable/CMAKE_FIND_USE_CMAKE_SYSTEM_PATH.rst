@@ -3,8 +3,7 @@ CMAKE_FIND_USE_CMAKE_SYSTEM_PATH
 
 .. versionadded:: 3.16
 
-Controls the default behavior of the following commands for whether or not to
-search paths provided by platform-specific cmake variables:
+控制以下命令的默认行为，决定是否搜索由平台特定的cmake变量提供的路径：
 
 * :command:`find_program`
 * :command:`find_library`

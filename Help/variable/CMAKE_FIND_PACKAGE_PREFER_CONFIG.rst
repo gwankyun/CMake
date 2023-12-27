@@ -3,8 +3,7 @@ CMAKE_FIND_PACKAGE_PREFER_CONFIG
 
 .. versionadded:: 3.15
 
-Tell :command:`find_package` to try "Config" mode before "Module" mode if no
-mode was specified.
+如果没有指定模式，告诉\ :command:`find_package`\ 在“Module”模式之前尝试“Config”模式。
 
 The command :command:`find_package` operates without an explicit mode when
 the reduced signature is used without the ``MODULE`` option. In this case,

@@ -3,8 +3,7 @@ CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH
 
 .. versionadded:: 3.16
 
-Controls the default behavior of the following commands for whether or not to
-search paths provided by standard system environment variables:
+控制以下命令的默认行为，是否搜索由标准系统环境变量提供的路径：
 
 * :command:`find_program`
 * :command:`find_library`

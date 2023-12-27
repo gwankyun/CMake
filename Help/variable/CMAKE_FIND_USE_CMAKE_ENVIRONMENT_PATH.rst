@@ -3,8 +3,7 @@ CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH
 
 .. versionadded:: 3.16
 
-Controls the default behavior of the following commands for whether or not to
-search paths provided by cmake-specific environment variables:
+控制以下命令的默认行为，以决定是否搜索由cmake特定环境变量提供的路径：
 
 * :command:`find_program`
 * :command:`find_library`

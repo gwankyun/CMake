@@ -1,7 +1,7 @@
 CMAKE_FIND_LIBRARY_SUFFIXES
 ---------------------------
 
-Suffixes to append when looking for libraries.
+查找库时要附加的后缀。
 
 This specifies what suffixes to add to library names when the
 :command:`find_library` command looks for libraries.  On Windows systems this

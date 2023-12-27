@@ -1,7 +1,7 @@
 CMAKE_FIND_PACKAGE_WARN_NO_MODULE
 ---------------------------------
 
-Tell :command:`find_package` to warn if called without an explicit mode.
+告诉\ :command:`find_package`\ 在没有显式模式的情况下调用时发出警告。
 
 If :command:`find_package` is called without an explicit mode option
 (``MODULE``, ``CONFIG``, or ``NO_MODULE``) and no ``Find<pkg>.cmake`` module

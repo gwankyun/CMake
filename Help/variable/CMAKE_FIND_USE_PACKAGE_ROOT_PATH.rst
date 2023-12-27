@@ -3,8 +3,7 @@ CMAKE_FIND_USE_PACKAGE_ROOT_PATH
 
 .. versionadded:: 3.16
 
-Controls the default behavior of the following commands for whether or not to
-search paths provided by :variable:`<PackageName>_ROOT` variables:
+控制以下命令的默认行为是否搜索\ :variable:`<PackageName>_ROOT`\ 变量提供的路径：
 
 * :command:`find_program`
 * :command:`find_library`

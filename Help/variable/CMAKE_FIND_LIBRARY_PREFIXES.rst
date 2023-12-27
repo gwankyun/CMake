@@ -1,7 +1,7 @@
 CMAKE_FIND_LIBRARY_PREFIXES
 ---------------------------
 
-Prefixes to prepend when looking for libraries.
+查找库时要添加的前缀。
 
 This specifies what prefixes to add to library names when the
 :command:`find_library` command looks for libraries.  On UNIX systems this is

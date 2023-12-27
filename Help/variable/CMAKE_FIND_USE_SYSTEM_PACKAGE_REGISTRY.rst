@@ -3,8 +3,7 @@ CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY
 
 .. versionadded:: 3.16
 
-Controls searching the :ref:`System Package Registry` by the
-:command:`find_package` command.
+控制通过\ :command:`find_package`\ 命令搜索\ :ref:`系统包注册表 <System Package Registry>`。
 
 By default this variable is not set and the behavior will fall back
 to that determined by the deprecated

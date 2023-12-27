@@ -1,5 +1,5 @@
-This variable controls whether the :variable:`CMAKE_FIND_ROOT_PATH` and
-:variable:`CMAKE_SYSROOT` are used by |FIND_XXX|.
+这个变量控制\ :variable:`CMAKE_FIND_ROOT_PATH`\ 和\ :variable:`CMAKE_SYSROOT`\
+是否被\ |FIND_XXX|\ 使用。
 
 If set to ``ONLY``, then only the roots in :variable:`CMAKE_FIND_ROOT_PATH`
 will be searched. If set to ``NEVER``, then the roots in

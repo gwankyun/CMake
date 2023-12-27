@@ -3,8 +3,8 @@ CMAKE_FIND_PACKAGE_RESOLVE_SYMLINKS
 
 .. versionadded:: 3.14
 
-Set to ``TRUE`` to tell :command:`find_package` calls to resolve symbolic
-links in the value of ``<PackageName>_DIR``.
+设置为\ ``TRUE``\ 告诉\ :command:`find_package`\ 调用解析\ ``<PackageName>_DIR``\
+值中的符号链接。
 
 This is helpful in use cases where the package search path points at a
 proxy directory in which symlinks to the real package locations appear.
