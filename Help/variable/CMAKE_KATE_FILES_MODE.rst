@@ -3,9 +3,8 @@ CMAKE_KATE_FILES_MODE
 
 .. versionadded:: 3.27
 
-This cache variable is used by the Kate project generator and controls
-to what mode the ``files`` entry in the project file will be set.  See
-:manual:`cmake-generators(7)`.
+该缓存变量由Kate项目生成器使用，并控制将项目文件中的\ ``files``\ 条目设置为何种模式。参阅\
+:manual:`cmake-generators(7)`。
 
 Possible values are ``AUTO``, ``SVN``, ``GIT``, ``HG``, ``FOSSIL`` and ``LIST``.
 

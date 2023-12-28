@@ -3,11 +3,9 @@ CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT
 
 .. versionadded:: 3.7.1
 
-CMake sets this variable to a ``TRUE`` value when the
-:variable:`CMAKE_INSTALL_PREFIX` has just been initialized to
-its default value, typically on the first run of CMake within
-a new build tree.  This can be used by project code to change
-the default without overriding a user-provided value:
+当\ :variable:`CMAKE_INSTALL_PREFIX`\ 刚刚初始化为默认值时，CMake将该变量设置为\
+``TRUE``\ 值，通常是在CMake在新构建树中的第一次运行时。项目代码可以使用它来更改默认值，而\
+无需覆盖用户提供的值：
 
 .. code-block:: cmake
 

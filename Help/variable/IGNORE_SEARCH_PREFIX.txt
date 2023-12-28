@@ -1,6 +1,4 @@
-:ref:`Semicolon-separated list <CMake Language Lists>` of search *prefixes*
-to be ignored by the :command:`find_program`, :command:`find_library`,
-:command:`find_file`, and :command:`find_path` commands.
-The prefixes are also ignored by the *Config mode* of the
-:command:`find_package` command (*Module mode* is unaffected).
-To ignore specific directories instead, see |CMAKE_IGNORE_NONPREFIX_VAR|.
+:command:`find_program`、\ :command:`find_library`、\ :command:`find_file`\ 和\
+:command:`find_path`\ 命令忽略的搜索前缀\ :ref:`分号分隔列表 <CMake Language Lists>`。\
+:command:`find_package`\ 命令的\ *Config模式*\ 也会忽略前缀（\ *Module模式*\ 不受影响）。\
+要忽略特定的目录，请参见\ |CMAKE_IGNORE_NONPREFIX_VAR|。

@@ -1,5 +1,4 @@
-:ref:`Semicolon-separated list <CMake Language Lists>` of directories
-to be ignored by the various ``find...()`` commands.
+各种\ ``find...()``\ 命令将忽略的目录\ :ref:`分号分隔列表 <CMake Language Lists>`。
 
 For :command:`find_program`, :command:`find_library`, :command:`find_file`,
 and :command:`find_path`, any file found in one of the listed directories

@@ -1,8 +1,7 @@
 CMAKE_INCLUDE_DIRECTORIES_BEFORE
 --------------------------------
 
-Whether to append or prepend directories by default in
-:command:`include_directories`.
+在\ :command:`include_directories`\ 中默认是否追加或追加目录。
 
 This variable affects the default behavior of the :command:`include_directories`
 command.  Setting this variable to ``ON`` is equivalent to using the ``BEFORE``

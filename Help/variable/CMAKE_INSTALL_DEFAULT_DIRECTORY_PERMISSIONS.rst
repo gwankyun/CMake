@@ -3,8 +3,8 @@ CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
 
 .. versionadded:: 3.11
 
-Default permissions for directories created implicitly during installation
-of files by :command:`install` and :command:`file(INSTALL)`.
+在安装文件期间通过\ :command:`install`\ 和\ :command:`file(INSTALL)`\ 隐式创建的目录\
+的默认权限。
 
 If ``make install`` is invoked and directories are implicitly created they
 get permissions set by ``CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS``

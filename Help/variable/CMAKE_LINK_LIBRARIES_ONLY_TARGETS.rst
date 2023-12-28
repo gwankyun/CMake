@@ -3,8 +3,6 @@ CMAKE_LINK_LIBRARIES_ONLY_TARGETS
 
 .. versionadded:: 3.23
 
-Set this variable to initialize the :prop_tgt:`LINK_LIBRARIES_ONLY_TARGETS`
-property of non-imported targets when they are created.  Setting it to true
-enables an additional check that all items named by
-:command:`target_link_libraries` that can be target names are actually names
-of existing targets.  See the target property documentation for details.
+设置这个变量是为了在创建非导入目标时初始化它们的\ :prop_tgt:`LINK_LIBRARIES_ONLY_TARGETS`\
+属性。将其设置为true将启用额外的检查，即\ :command:`target_link_libraries`\ 命名的所有\
+可以作为目标名的项实际上都是现有目标的名称。有关详细信息，请参阅目标属性文档。

@@ -1,7 +1,7 @@
 CMAKE_INSTALL_PREFIX
 --------------------
 
-Install directory used by :command:`install`.
+:command:`install`\ 使用的安装目录。
 
 If ``make install`` is invoked or ``INSTALL`` is built, this directory is
 prepended onto all install directories.  This variable defaults to

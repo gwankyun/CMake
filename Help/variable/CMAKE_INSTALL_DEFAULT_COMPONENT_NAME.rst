@@ -1,7 +1,7 @@
 CMAKE_INSTALL_DEFAULT_COMPONENT_NAME
 ------------------------------------
 
-Default component used in :command:`install` commands.
+在\ :command:`install`\ 命令中使用的默认组件。
 
 If an :command:`install` command is used without the ``COMPONENT`` argument,
 these files will be grouped into a default component.  The name of this
