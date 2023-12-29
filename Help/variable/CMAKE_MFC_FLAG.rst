@@ -1,7 +1,7 @@
 CMAKE_MFC_FLAG
 --------------
 
-Use the MFC library for an executable or dll.
+使用MFC库的可执行文件或dll。
 
 Enables the use of the Microsoft Foundation Classes (MFC).
 It should be set to ``1`` for the static MFC library, and

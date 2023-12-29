@@ -1,12 +1,10 @@
 CMAKE_PREFIX_PATH
 -----------------
 
-:ref:`Semicolon-separated list <CMake Language Lists>` of directories specifying installation
-*prefixes* to be searched by the :command:`find_package`,
-:command:`find_program`, :command:`find_library`, :command:`find_file`, and
-:command:`find_path` commands.  Each command will add appropriate
-subdirectories (like ``bin``, ``lib``, or ``include``) as specified in its own
-documentation.
+由\ :command:`find_package`、\ :command:`find_program`、\ :command:`find_library`、\
+:command:`find_file`\ 和\ :command:`find_path`\ 命令搜索的指定安装\ *前缀*\ 的目录\
+:ref:`分号分隔列表 <CMake Language Lists>`。每个命令都将添加相应的子目录（如\ ``bin``、\
+``lib``\ 或\ ``include``），这是在其自己的文档中指定的。
 
 By default this is empty.  It is intended to be set by the project.
 

@@ -3,11 +3,10 @@ CMAKE_MESSAGE_CONTEXT
 
 .. versionadded:: 3.17
 
-When enabled by the :option:`cmake --log-context` command line
-option or the :variable:`CMAKE_MESSAGE_CONTEXT_SHOW` variable, the
-:command:`message` command converts the ``CMAKE_MESSAGE_CONTEXT`` list into a
-dot-separated string surrounded by square brackets and prepends it to each line
-for messages of log levels ``NOTICE`` and below.
+当\ :option:`cmake --log-context`\ 命令行选项或\
+:variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 变量启用时，\ :command:`message`\ 命令将\
+``CMAKE_MESSAGE_CONTEXT``\ 列表转换为一个用方括号包围的点分隔字符串，并将其添加到日志级别\
+``NOTICE``\ 及以下的消息的每行。
 
 For logging contexts to work effectively, projects should generally
 ``APPEND`` and ``POP_BACK`` an item to the current value of

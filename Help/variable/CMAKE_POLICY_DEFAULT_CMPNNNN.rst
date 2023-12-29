@@ -1,7 +1,7 @@
 CMAKE_POLICY_DEFAULT_CMP<NNNN>
 ------------------------------
 
-Default for CMake Policy ``CMP<NNNN>`` when it is otherwise left unset.
+默认CMake策略\ ``CMP<NNNN>``，否则不设置。
 
 Commands :command:`cmake_minimum_required(VERSION)` and
 :command:`cmake_policy(VERSION)` by default leave policies introduced after

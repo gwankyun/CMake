@@ -3,9 +3,8 @@ CMAKE_MESSAGE_INDENT
 
 .. versionadded:: 3.16
 
-The :command:`message` command joins the strings from this list and for
-log levels of ``NOTICE`` and below, it prepends the resultant string to
-each line of the message.
+:command:`message`\ 命令连接该列表中的字符串，对于\ ``NOTICE``\ 及以下的日志级别，它将\
+结果字符串添加到消息的每一行。
 
 Example:
 

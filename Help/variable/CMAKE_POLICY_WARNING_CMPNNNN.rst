@@ -1,10 +1,9 @@
 CMAKE_POLICY_WARNING_CMP<NNNN>
 ------------------------------
 
-Explicitly enable or disable the warning when CMake Policy ``CMP<NNNN>``
-has not been set explicitly by :command:`cmake_policy` or implicitly
-by :command:`cmake_minimum_required`. This is meaningful
-only for the policies that do not warn by default:
+当CMake策略\ ``CMP<NNNN>``\ 未被\ :command:`cmake_policy`\ 显式设置或\
+:command:`cmake_minimum_required`\ 隐式设置时，显式启用或禁用警告。这只对默认不发出警\
+告的策略有意义：
 
 * ``CMAKE_POLICY_WARNING_CMP0025`` controls the warning for
   policy :policy:`CMP0025`.
