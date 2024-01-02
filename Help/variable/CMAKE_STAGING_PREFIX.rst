@@ -1,9 +1,8 @@
 CMAKE_STAGING_PREFIX
 --------------------
 
-This variable may be set to a path to install to when cross-compiling. This can
-be useful if the path in :variable:`CMAKE_SYSROOT` is read-only, or otherwise
-should remain pristine.
+此变量可以设置为交叉编译时要安装到的路径。如果\ :variable:`CMAKE_SYSROOT`\ 中的路径是只\
+读的，或者应该保持原始状态，这可能很有用。
 
 The ``CMAKE_STAGING_PREFIX`` location is also used as a search prefix
 by the ``find_*`` commands. This can be controlled by setting the

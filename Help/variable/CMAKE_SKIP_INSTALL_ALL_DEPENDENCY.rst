@@ -1,7 +1,7 @@
 CMAKE_SKIP_INSTALL_ALL_DEPENDENCY
 ---------------------------------
 
-Don't make the ``install`` target depend on the ``all`` target.
+不要让\ ``install``\ 目标依赖于\ ``all``\ 目标。
 
 By default, the ``install`` target depends on the ``all`` target.  This
 has the effect, that when ``make install`` is invoked or ``INSTALL`` is

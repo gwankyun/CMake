@@ -3,8 +3,7 @@ CMAKE_SUBLIME_TEXT_2_ENV_SETTINGS
 
 .. versionadded:: 3.8
 
-This variable contains a list of env vars as a list of tokens with the
-syntax ``var=value``.
+这个变量包含一个env变量列表，它是一个令牌列表，语法为\ ``var=value``。
 
 Example:
 

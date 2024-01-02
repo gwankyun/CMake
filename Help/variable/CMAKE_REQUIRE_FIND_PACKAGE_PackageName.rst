@@ -3,7 +3,7 @@ CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>
 
 .. versionadded:: 3.22
 
-Variable for making :command:`find_package` call ``REQUIRED``.
+进行\ :command:`find_package`\ 调用的变量\ ``REQUIRED``。
 
 Every non-``REQUIRED`` :command:`find_package` call in a project can be
 turned into ``REQUIRED`` by setting the variable
