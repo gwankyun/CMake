@@ -1,7 +1,7 @@
 CMAKE_SYSROOT
 -------------
 
-Path to pass to the compiler in the ``--sysroot`` flag.
+在\ ``--sysroot``\ 标志中传递给编译器的路径。
 
 The ``CMAKE_SYSROOT`` content is passed to the compiler in the ``--sysroot``
 flag, if supported.  The path is also stripped from the ``RPATH``/``RUNPATH``

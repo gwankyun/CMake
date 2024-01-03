@@ -1,8 +1,7 @@
 CMAKE_SYSTEM_INCLUDE_PATH
 -------------------------
 
-:ref:`Semicolon-separated list <CMake Language Lists>` of directories specifying a search path
-for the :command:`find_file` and :command:`find_path` commands.  By default
-this contains the standard directories for the current system.  It is *not*
-intended to be modified by the project; use :variable:`CMAKE_INCLUDE_PATH` for
-this.  See also :variable:`CMAKE_SYSTEM_PREFIX_PATH`.
+指定\ :command:`find_file`\ 和\ :command:`find_path`\ 命令的搜索路径的目录\
+:ref:`分号分隔列表 <CMake Language Lists>`。默认情况下，它包含当前系统的标准目录。若\
+*不*\ 打算被项目修改，请使用\ :variable:`CMAKE_INCLUDE_PATH`。参阅\
+:variable:`CMAKE_SYSTEM_PREFIX_PATH`。

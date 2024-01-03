@@ -3,8 +3,6 @@ CMAKE_SYSTEM_FRAMEWORK_PATH
 
 .. versionadded:: 3.4
 
-Search path for macOS frameworks used by the :command:`find_library`,
-:command:`find_package`, :command:`find_path`, and :command:`find_file`
-commands.  By default it contains the standard directories for the
-current system.  It is *not* intended to be modified by the project,
-use :variable:`CMAKE_FRAMEWORK_PATH` for this.
+查找\ :command:`find_library`、\ :command:`find_package`、\ :command:`find_path`\
+和\ :command:`find_file`\ 命令使用的macOS框架的路径。默认情况下，它包含当前系统的标准目\
+录。若\ *不*\ 打算被项目修改，请使用\ :variable:`CMAKE_FRAMEWORK_PATH`。
