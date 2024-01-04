@@ -1,7 +1,7 @@
 CMAKE_WARN_DEPRECATED
 ---------------------
 
-Whether to issue warnings for deprecated functionality.
+是否对已弃用的功能发出警告。
 
 If not ``FALSE``, use of deprecated functionality will issue warnings.
 If this variable is not set, CMake behaves as if it were set to ``TRUE``.

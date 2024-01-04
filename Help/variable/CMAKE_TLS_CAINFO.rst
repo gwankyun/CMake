@@ -1,9 +1,8 @@
 CMAKE_TLS_CAINFO
 ----------------
 
-Specify the default value for the :command:`file(DOWNLOAD)` and
-:command:`file(UPLOAD)` commands' ``TLS_CAINFO`` options.
-It is unset by default.
+指定\ :command:`file(DOWNLOAD)`\ 和\ :command:`file(UPLOAD)`\ 命令的\ ``TLS_CAINFO``\
+选项的默认值。默认为未设置。
 
 This variable is also used by the :module:`ExternalProject` and
 :module:`FetchContent` modules for internal calls to :command:`file(DOWNLOAD)`.

@@ -1,7 +1,7 @@
 CMAKE_USER_MAKE_RULES_OVERRIDE
 ------------------------------
 
-Specify a CMake file that overrides platform information.
+指定一个覆盖平台信息的CMake文件。
 
 CMake loads the specified file while enabling support for each
 language from either the :command:`project` or :command:`enable_language`
