@@ -3,8 +3,7 @@ CMAKE_XCODE_SCHEME_ENABLE_GPU_API_VALIDATION
 
 .. versionadded:: 3.25
 
-Property value for ``Metal: API Validation`` in the Options section of
-the generated Xcode scheme.
+在生成的Xcode方案的Options部分中\ ``Metal: API Validation``\ 的属性值。
 
 This variable initializes the
 :prop_tgt:`XCODE_SCHEME_ENABLE_GPU_API_VALIDATION` property on all targets.

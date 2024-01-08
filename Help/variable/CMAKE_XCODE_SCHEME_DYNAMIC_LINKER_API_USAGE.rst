@@ -3,8 +3,7 @@ CMAKE_XCODE_SCHEME_DYNAMIC_LINKER_API_USAGE
 
 .. versionadded:: 3.13
 
-Whether to enable ``Dynamic Linker API usage``
-in the Diagnostics section of the generated Xcode scheme.
+是否在生成的Xcode方案的诊断部分启用\ ``Dynamic Linker API usage``。
 
 This variable initializes the
 :prop_tgt:`XCODE_SCHEME_DYNAMIC_LINKER_API_USAGE`

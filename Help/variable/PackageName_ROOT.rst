@@ -3,12 +3,10 @@
 
 .. versionadded:: 3.12
 
-Calls to :command:`find_package(<PackageName>)` will search in prefixes
-specified by the ``<PackageName>_ROOT`` CMake variable, where
-``<PackageName>`` is the (case-preserved) name given to the
-:command:`find_package` call and ``_ROOT`` is literal.
-For example, ``find_package(Foo)`` will search prefixes specified in the
-``Foo_ROOT`` CMake variable (if set).  See policy :policy:`CMP0074`.
+对\ :command:`find_package(<PackageName>)`\ 的调用将搜索由\ ``<PackageName>_ROOT``
+CMake变量指定的前缀，其中\ ``<PackageName>``\ 是给定给\ :command:`find_package`\ 调\
+用的名称（保留大小写），而\ ``_ROOT``\ 是字面值。例如，\ ``find_package(Foo)``\ 将搜索\
+在\ ``Foo_ROOT`` CMake变量中指定的前缀（如果设置了）。参见策略\ :policy:`CMP0074`。
 
 This variable may hold a single prefix or a
 :ref:`semicolon-separated list <CMake Language Lists>` of multiple prefixes.
