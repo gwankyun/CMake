@@ -1,8 +1,7 @@
 CMAKE_SYSTEM_VERSION
 --------------------
 
-The version of the operating system for which CMake is to build.
-See the :variable:`CMAKE_SYSTEM_NAME` variable for the OS name.
+CMake要为其构建的操作系统版本。操作系统名称请参考\ :variable:`CMAKE_SYSTEM_NAME`\ 变量。
 
 System Version for Host Builds
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

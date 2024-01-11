@@ -3,5 +3,5 @@ BSD
 
 .. versionadded:: 3.25
 
-Set to a string value when the target system is BSD. This value can be one of
-the following: DragonFlyBSD, FreeBSD, OpenBSD, or NetBSD.
+当目标系统为BSD时，请设置为以下其中之一的字符串值：DragonFlyBSD、FreeBSD、OpenBSD或\
+NetBSD。

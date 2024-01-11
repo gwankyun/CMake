@@ -1,7 +1,7 @@
 CMAKE_HOST_SYSTEM_PROCESSOR
 ---------------------------
 
-The name of the CPU CMake is running on.
+当前运行CMake的CPU名称。
 
 Windows Platforms
 ^^^^^^^^^^^^^^^^^

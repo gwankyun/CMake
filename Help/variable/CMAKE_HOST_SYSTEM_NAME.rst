@@ -1,7 +1,7 @@
 CMAKE_HOST_SYSTEM_NAME
 ----------------------
 
-Name of the OS CMake is running on.
+当前运行CMake的操作系统名称。
 
 On systems that have the uname command, this variable is set to the
 output of ``uname -s``.  ``Linux``, ``Windows``, and ``Darwin`` for macOS

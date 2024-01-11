@@ -1,10 +1,8 @@
 MSVC_VERSION
 ------------
 
-The version of Microsoft Visual C/C++ being used if any.
-If a compiler simulating Visual C++ is being used, this variable is set
-to the toolset version simulated as given by the ``_MSC_VER``
-preprocessor definition.
+如果有的话，使用的是Microsoft Visual C/C++版本。如果使用模拟Visual C++的编译器，则将该\
+变量设置为\ ``_MSC_VER``\ 预处理器定义所给出的模拟工具集版本。
 
 Known version numbers are::
 

@@ -1,8 +1,8 @@
 CMAKE_SYSTEM_NAME
 -----------------
 
-The name of the operating system for which CMake is to build.
-See the :variable:`CMAKE_SYSTEM_VERSION` variable for the OS version.
+CMake要为之构建的操作系统的名称。操作系统版本请参考\ :variable:`CMAKE_SYSTEM_VERSION`\
+变量。
 
 Note that ``CMAKE_SYSTEM_NAME`` is not set to anything by default when running
 in script mode, since it's not building anything.

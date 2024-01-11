@@ -3,9 +3,8 @@ MSVC_TOOLSET_VERSION
 
 .. versionadded:: 3.12
 
-The toolset version of Microsoft Visual C/C++ being used if any.
-If MSVC-like is being used, this variable is set based on the version
-of the compiler as given by the :variable:`MSVC_VERSION` variable.
+如果使用了Microsoft Visual C/C++的工具集版本的话。如果正在使用MSVC类编译器，则该变量是根据\
+:variable:`MSVC_VERSION`\ 变量给出的编译器版本设置的。
 
 Known toolset version numbers are::
 

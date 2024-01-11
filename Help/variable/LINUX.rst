@@ -3,4 +3,4 @@ LINUX
 
 .. versionadded:: 3.25
 
-Set to true when the target system is Linux.
+当目标系统为Linux时，该值为true。

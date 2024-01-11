@@ -1,7 +1,7 @@
 CMAKE_OBJECT_PATH_MAX
 ---------------------
 
-Maximum object file full-path length allowed by native build tools.
+本机构建工具允许的最大对象文件全路径长度。
 
 CMake computes for every source file an object file name that is
 unique to the source file and deterministic with respect to the full

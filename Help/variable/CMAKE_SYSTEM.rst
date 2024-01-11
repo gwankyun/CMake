@@ -1,7 +1,7 @@
 CMAKE_SYSTEM
 ------------
 
-Composite name of operating system CMake is compiling for.
+CMake正在编译的操作系统的复合名称。
 
 This variable is the composite of :variable:`CMAKE_SYSTEM_NAME` and
 :variable:`CMAKE_SYSTEM_VERSION`, e.g.

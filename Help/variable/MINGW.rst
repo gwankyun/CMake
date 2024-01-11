@@ -3,7 +3,6 @@ MINGW
 
 .. versionadded:: 3.2
 
-Set to a true value when at least one language is enabled
-with a compiler targeting the GNU ABI on Windows (MinGW).
+当至少有一种语言通过针对Windows （MinGW）上的GNU ABI的编译器启用时，设置为true值。
 
 Otherwise, this variable is not set by CMake.

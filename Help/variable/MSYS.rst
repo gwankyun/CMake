@@ -3,4 +3,4 @@ MSYS
 
 .. versionadded:: 3.14
 
-``True`` when using the :generator:`MSYS Makefiles` generator.
+当使用\ :generator:`MSYS Makefiles`\ 生成器时为\ ``True``。

@@ -3,4 +3,4 @@ IOS
 
 .. versionadded:: 3.14
 
-Set to ``1`` when the target system (:variable:`CMAKE_SYSTEM_NAME`) is ``iOS``.
+当目标系统（:variable:`CMAKE_SYSTEM_NAME`）为\ ``iOS``\ 时，该值为\ ``1``。

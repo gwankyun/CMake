@@ -1,7 +1,7 @@
 MSVC_IDE
 --------
 
-``True`` when using the Microsoft Visual C++ IDE.
+在使用Microsoft Visual C++ IDE时为\ ``True``。
 
 Set to ``true`` when the target platform is the Microsoft Visual C++ IDE, as
 opposed to the command line compiler.

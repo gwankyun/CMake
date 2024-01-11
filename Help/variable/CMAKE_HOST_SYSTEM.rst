@@ -1,7 +1,7 @@
 CMAKE_HOST_SYSTEM
 -----------------
 
-Composite Name of OS CMake is being run on.
+当前运行CMake的操作系统复合名称。
 
 This variable is the composite of :variable:`CMAKE_HOST_SYSTEM_NAME` and
 :variable:`CMAKE_HOST_SYSTEM_VERSION`, e.g.
