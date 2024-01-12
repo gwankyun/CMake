@@ -3,8 +3,8 @@ CMAKE_ANDROID_ARCH_ABI
 
 .. versionadded:: 3.7
 
-When :ref:`Cross Compiling for Android`, this variable specifies the
-target architecture and ABI to be used.  Valid values are:
+在\ :ref:`Cross Compiling for Android`\ 时，该变量指定要使用的目标体系结构和ABI。\
+有效值为：
 
 * ``arm64-v8a``
 * ``armeabi-v7a``

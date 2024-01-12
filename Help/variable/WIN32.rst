@@ -1,4 +1,4 @@
 WIN32
 -----
 
-Set to ``True`` when the target system is Windows, including Win64.
+当目标系统为Windows（包括Win64）时，设置为\ ``True``。

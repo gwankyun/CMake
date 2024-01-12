@@ -3,7 +3,6 @@ CMAKE_ANDROID_ARM_MODE
 
 .. versionadded:: 3.7
 
-When :ref:`Cross Compiling for Android` and :variable:`CMAKE_ANDROID_ARCH_ABI`
-is set to one of the ``armeabi`` architectures, set ``CMAKE_ANDROID_ARM_MODE``
-to ``ON`` to target 32-bit ARM processors (``-marm``).  Otherwise, the
-default is to target the 16-bit Thumb processors (``-mthumb``).
+当\ :ref:`Cross Compiling for Android`\ 和\ :variable:`CMAKE_ANDROID_ARCH_ABI`\
+设置为其中一种\ ``armeabi``\ 架构时，将\ ``CMAKE_ANDROID_ARM_MODE``\ 设置为\ ``ON``\
+以针对32位ARM处理器（\ ``-marm``\ ）。否则，默认是针对16位Thumb处理器（\ ``-mthumb``\ ）。

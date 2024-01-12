@@ -3,10 +3,9 @@ CMAKE_ANDROID_ARCH
 
 .. versionadded:: 3.4
 
-When :ref:`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio
-Edition`, this variable may be set to specify the default value for the
-:prop_tgt:`ANDROID_ARCH` target property.  See that target property for
-additional information.
+当\ :ref:`Cross Compiling for Android with NVIDIA Nsight Tegra Visual Studio Edition`\
+时，这个变量可以被设置为指定\ :prop_tgt:`ANDROID_ARCH`\ 目标属性的默认值。有关其他信息，\
+请参阅目标属性。
 
 Otherwise, when :ref:`Cross Compiling for Android`, this variable provides
 the name of the Android architecture corresponding to the value of the

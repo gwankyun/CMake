@@ -3,5 +3,4 @@ CMAKE_ANDROID_API_MIN
 
 .. versionadded:: 3.2
 
-Default value for the :prop_tgt:`ANDROID_API_MIN` target property.
-See that target property for additional information.
+:prop_tgt:`ANDROID_API_MIN`\ 目标属性的默认值。有关其他信息，请参阅目标属性。

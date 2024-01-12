@@ -3,6 +3,6 @@ CMAKE_ANDROID_ARM_NEON
 
 .. versionadded:: 3.7
 
-When :ref:`Cross Compiling for Android` and :variable:`CMAKE_ANDROID_ARCH_ABI`
-is set to ``armeabi-v7a`` set ``CMAKE_ANDROID_ARM_NEON`` to ``ON`` to target
-ARM NEON devices.
+当\ :ref:`Cross Compiling for Android`\ 和\ :variable:`CMAKE_ANDROID_ARCH_ABI`\
+设置为\ ``armeabi-v7a``\ 时，将\ ``CMAKE_ANDROID_ARM_NEON``\ 设置为\ ``ON``\ 以针对\
+ARM NEON设备。

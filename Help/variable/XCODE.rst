@@ -3,4 +3,4 @@ XCODE
 
 .. versionadded:: 3.7
 
-``True`` when using :generator:`Xcode` generator.
+当使用\ :generator:`Xcode`\ 生成器时为\ ``True``。
