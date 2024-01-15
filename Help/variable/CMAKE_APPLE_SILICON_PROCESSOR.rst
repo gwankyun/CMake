@@ -3,9 +3,8 @@ CMAKE_APPLE_SILICON_PROCESSOR
 
 .. versionadded:: 3.19.2
 
-On Apple Silicon hosts running macOS, set this variable to tell
-CMake what architecture to use for :variable:`CMAKE_HOST_SYSTEM_PROCESSOR`.
-The value must be either ``arm64`` or ``x86_64``.
+在运行macOS的Apple Silicon主机上，设置这个变量来告诉CMake :variable:`CMAKE_HOST_SYSTEM_PROCESSOR`\
+使用什么架构。取值为\ ``arm64``\ 或\ ``x86_64``。
 
 The value of this variable should never be modified by project code.
 It is meant to be set as a cache entry provided by the user,
