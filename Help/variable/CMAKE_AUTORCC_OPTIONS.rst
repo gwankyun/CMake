@@ -1,7 +1,7 @@
 CMAKE_AUTORCC_OPTIONS
 ---------------------
 
-Additional options for ``rcc`` when using :variable:`CMAKE_AUTORCC`.
+使用\ :variable:`CMAKE_AUTORCC`\ 时\ ``rcc``\ 的附加选项。
 
 This variable is used to initialize the :prop_tgt:`AUTORCC_OPTIONS` property on
 all the targets.  See that target property for additional information.

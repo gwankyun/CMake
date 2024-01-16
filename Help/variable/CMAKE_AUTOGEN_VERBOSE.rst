@@ -3,9 +3,8 @@ CMAKE_AUTOGEN_VERBOSE
 
 .. versionadded:: 3.13
 
-Sets the verbosity of :prop_tgt:`AUTOMOC`, :prop_tgt:`AUTOUIC` and
-:prop_tgt:`AUTORCC`.  A positive integer value or a true boolean value
-lets the ``AUTO*`` generators output additional processing information.
+设置\ :prop_tgt:`AUTOMOC`、\ :prop_tgt:`AUTOUIC`\ 和\ :prop_tgt:`AUTORCC`\ 的篇幅。\
+正整数值或真布尔值允许\ ``AUTO*``\ 生成器输出额外的处理信息。
 
 Setting ``CMAKE_AUTOGEN_VERBOSE`` has the same effect
 as setting the ``VERBOSE`` environment variable during
