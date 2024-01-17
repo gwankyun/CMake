@@ -3,9 +3,8 @@ CMAKE_DLL_NAME_WITH_SOVERSION
 
 .. versionadded:: 3.27
 
-This variable is used to initialize the :prop_tgt:`DLL_NAME_WITH_SOVERSION`
-property on shared library targets for the Windows platform, which is selected
-when the :variable:`WIN32` variable is set.
+该变量用于在Windows平台的共享库目标上初始化\ :prop_tgt:`DLL_NAME_WITH_SOVERSION`\ 属性，\
+该属性在设置\ :variable:`WIN32`\ 变量时选择。
 
 See this target property for additional information.
 

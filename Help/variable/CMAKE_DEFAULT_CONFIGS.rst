@@ -3,11 +3,10 @@ CMAKE_DEFAULT_CONFIGS
 
 .. versionadded:: 3.17
 
-Specifies a :ref:`semicolon-separated list <CMake Language Lists>` of configurations
-to build for a target in ``build.ninja`` if no ``:<Config>`` suffix is specified in
-the :generator:`Ninja Multi-Config` generator. If it is set to ``all``, all
-configurations from :variable:`CMAKE_CROSS_CONFIGS` are used. If it is not
-specified, it defaults to :variable:`CMAKE_DEFAULT_BUILD_TYPE`.
+如果没有在\ :generator:`Ninja Multi-Config`\ 生成器中指定\ ``:<Config>``\ 后缀，则在\
+``build.ninja``\ 中指定要为目标构建配置\ :ref:`分号分隔列表 <CMake Language Lists>`。\
+如果设置为\ ``all``，则使用\ :variable:`CMAKE_CROSS_CONFIGS`\ 中的所有配置。如果未指定，\
+则默认为\ :variable:`CMAKE_DEFAULT_BUILD_TYPE`。
 
 For example, if you set :variable:`CMAKE_DEFAULT_BUILD_TYPE` to ``Release``,
 but set ``CMAKE_DEFAULT_CONFIGS`` to ``Debug`` or ``all``, all

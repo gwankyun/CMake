@@ -3,7 +3,7 @@ CMAKE_EXECUTABLE_ENABLE_EXPORTS
 
 .. versionadded:: 3.27
 
-Specify whether executables export symbols for loadable modules.
+指定可执行文件是否为可加载模块导出符号。
 
 This variable is used to initialize the :prop_tgt:`ENABLE_EXPORTS` target
 property for executable targets when they are created by calls to the
