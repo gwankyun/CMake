@@ -3,6 +3,5 @@ CMAKE_<LANG>_CPPLINT
 
 .. versionadded:: 3.8
 
-Default value for :prop_tgt:`<LANG>_CPPLINT` target property. This variable
-is used to initialize the property on each target as it is created.  This
-is done only when ``<LANG>`` is ``C`` or ``CXX``.
+:prop_tgt:`<LANG>_CPPLINT`\ 目标属性的默认值。该变量用于在创建每个目标时初始化其属性。\
+只有当\ ``<LANG>``\ 是\ ``C``\ 或\ ``CXX``\ 时才会这样做。

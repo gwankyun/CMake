@@ -3,7 +3,7 @@ CMAKE_GLOBAL_AUTORCC_TARGET
 
 .. versionadded:: 3.14
 
-Switch to enable generation of a global ``autorcc`` target.
+切换到启用全局\ ``autorcc``\ 目标的生成。
 
 When ``CMAKE_GLOBAL_AUTORCC_TARGET`` is enabled, a custom target
 ``autorcc`` is generated. This target depends on all :prop_tgt:`AUTORCC`

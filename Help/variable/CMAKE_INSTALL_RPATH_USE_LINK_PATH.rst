@@ -1,7 +1,7 @@
 CMAKE_INSTALL_RPATH_USE_LINK_PATH
 ---------------------------------
 
-Add paths to linker search and installed rpath.
+在链接器搜索和安装的rpath中添加路径。
 
 ``CMAKE_INSTALL_RPATH_USE_LINK_PATH`` is a boolean that if set to ``True``
 will append to the runtime search path (rpath) of installed binaries

@@ -3,6 +3,5 @@ CMAKE_GHS_NO_SOURCE_GROUP_FILE
 
 .. versionadded:: 3.14
 
-``ON`` / ``OFF`` boolean to control if the project file for a target should
-be one single file or multiple files.  Refer to
-:prop_tgt:`GHS_NO_SOURCE_GROUP_FILE` for further details.
+``ON``\ /\ ``OFF``\ 布尔值，用于控制目标的项目文件是单个文件还是多个文件。详细信息请参考\
+:prop_tgt:`GHS_NO_SOURCE_GROUP_FILE`。

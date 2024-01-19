@@ -3,7 +3,7 @@ CMAKE_GLOBAL_AUTOGEN_TARGET
 
 .. versionadded:: 3.14
 
-Switch to enable generation of a global ``autogen`` target.
+切换到启用生成全局\ ``autogen``\ 目标。
 
 When ``CMAKE_GLOBAL_AUTOGEN_TARGET`` is enabled, a custom target
 ``autogen`` is generated.  This target depends on all :prop_tgt:`AUTOMOC` and

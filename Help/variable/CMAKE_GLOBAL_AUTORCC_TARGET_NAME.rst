@@ -3,7 +3,7 @@ CMAKE_GLOBAL_AUTORCC_TARGET_NAME
 
 .. versionadded:: 3.14
 
-Change the name of the global ``autorcc`` target.
+更改全局\ ``autorcc``\ 目标的名称。
 
 When :variable:`CMAKE_GLOBAL_AUTORCC_TARGET` is enabled, a global custom target
 named ``autorcc`` is created.  ``CMAKE_GLOBAL_AUTORCC_TARGET_NAME``

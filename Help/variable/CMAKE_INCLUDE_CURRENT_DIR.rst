@@ -1,7 +1,7 @@
 CMAKE_INCLUDE_CURRENT_DIR
 -------------------------
 
-Automatically add the current source and build directories to the include path.
+自动将当前源代码和构建目录添加到包含路径。
 
 If this variable is enabled, CMake automatically adds
 :variable:`CMAKE_CURRENT_SOURCE_DIR` and :variable:`CMAKE_CURRENT_BINARY_DIR`
