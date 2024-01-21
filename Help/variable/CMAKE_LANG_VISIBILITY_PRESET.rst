@@ -1,5 +1,4 @@
 CMAKE_<LANG>_VISIBILITY_PRESET
 ------------------------------
 
-Default value for the :prop_tgt:`<LANG>_VISIBILITY_PRESET` target
-property when a target is created.
+创建目标时，:prop_tgt:`<LANG>_VISIBILITY_PRESET`\ 目标属性的默认值。
