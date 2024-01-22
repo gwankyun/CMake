@@ -3,10 +3,8 @@ CMAKE_LINK_LIBRARY_USING_<FEATURE>
 
 .. versionadded:: 3.24
 
-This variable defines how to link a library or framework for the specified
-``<FEATURE>`` when a :genex:`LINK_LIBRARY` generator expression is used.
-Both of the following conditions must be met for this variable to have any
-effect:
+当使用\ :genex:`LINK_LIBRARY`\ 生成器表达式时，该变量定义了如何为指定的\ ``<FEATURE>``\
+链接库或框架。要使该变量生效，必须同时满足以下两个条件：
 
 * The associated :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`
   variable must be set to true.

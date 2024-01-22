@@ -3,9 +3,8 @@ CMAKE_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED
 
 .. versionadded:: 3.24
 
-Set to ``TRUE`` if the ``<FEATURE>``, as defined by variable
-:variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>`, is supported regardless the
-linker language.
+如果\ ``<FEATURE>``\ 由变量\ :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>`\ 定义，\
+无论链接器语言如何都支持，则设置为\ ``TRUE``。
 
 .. note::
 
