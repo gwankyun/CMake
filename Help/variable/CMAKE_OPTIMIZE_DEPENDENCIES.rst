@@ -3,4 +3,4 @@ CMAKE_OPTIMIZE_DEPENDENCIES
 
 .. versionadded:: 3.19
 
-Initializes the :prop_tgt:`OPTIMIZE_DEPENDENCIES` target property.
+初始化\ :prop_tgt:`OPTIMIZE_DEPENDENCIES`\ 目标属性。

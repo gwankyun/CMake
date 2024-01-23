@@ -3,8 +3,8 @@ CMAKE_NINJA_OUTPUT_PATH_PREFIX
 
 .. versionadded:: 3.6
 
-Tell the :ref:`Ninja Generators` to add a prefix to every output path in
-``build.ninja``.  A trailing slash is appended to the prefix, if missing.
+告诉\ :ref:`Ninja Generators`\ 在\ ``build.ninja``\ 中的每个输出路径中添加一个前缀。\
+如果没有，则在前缀后面添加一个斜杠。
 
 This is useful when the generated ninja file is meant to be embedded as a
 ``subninja`` file into a *super* ninja project.  For example, the command:

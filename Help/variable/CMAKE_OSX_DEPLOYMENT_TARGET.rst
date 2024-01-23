@@ -1,12 +1,9 @@
 CMAKE_OSX_DEPLOYMENT_TARGET
 ---------------------------
 
-Specify the minimum version of the target platform (e.g. macOS or iOS)
-on which the target binaries are to be deployed.  CMake uses this
-variable value for the ``-mmacosx-version-min`` flag or their respective
-target platform equivalents.  For older Xcode versions that shipped
-multiple macOS SDKs this variable also helps to choose the SDK in case
-:variable:`CMAKE_OSX_SYSROOT` is unset.
+指定要部署目标二进制文件的目标平台（例如macOS或iOS）的最低版本。CMake将此变量值用于\
+``-mmacosx-version-min``\ 标志或它们各自的目标平台等效值。对于带有多个macOS SDK的旧\
+Xcode版本，这个变量也有助于在\ :variable:`CMAKE_OSX_SYSROOT`\ 未设置的情况下选择SDK。
 
 If not set explicitly the value is initialized by the
 ``MACOSX_DEPLOYMENT_TARGET`` environment variable, if set,

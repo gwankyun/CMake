@@ -3,11 +3,9 @@ CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 
 .. versionadded:: 3.25
 
-Select the MSVC debug information format targeting the MSVC ABI.
-This variable is used to initialize the
-:prop_tgt:`MSVC_DEBUG_INFORMATION_FORMAT` property on all targets as they are
-created.  It is also propagated by calls to the :command:`try_compile` command
-into the test project.
+选择针对MSVC ABI的MSVC调试信息格式。该变量用于在创建所有目标时初始化它们的\
+:prop_tgt:`MSVC_DEBUG_INFORMATION_FORMAT`\ 属性。它还通过调用\ :command:`try_compile`\
+命令传播到测试项目中。
 
 The allowed values are:
 

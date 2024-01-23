@@ -1,8 +1,7 @@
 CMAKE_NO_BUILTIN_CHRPATH
 ------------------------
 
-Do not use the builtin binary editor to fix runtime library search
-paths on installation.
+不要在安装时使用内置二进制编辑器来修复运行时库搜索路径。
 
 When an ELF or XCOFF binary needs to have a different runtime library
 search path after installation than it does in the build tree, CMake uses

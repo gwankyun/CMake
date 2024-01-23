@@ -1,10 +1,8 @@
 CMAKE_OSX_SYSROOT
 -----------------
 
-Specify the location or name of the macOS platform SDK to be used.
-CMake uses this value to compute the value of the ``-isysroot`` flag
-or equivalent and to help the ``find_*`` commands locate files in
-the SDK.
+指定要使用的macOS平台SDK的位置或名称。CMake使用这个值来计算\ ``-isysroot``\ 标志或同等\
+标志的值，并帮助\ ``find_*``\ 命令在SDK中定位文件。
 
 If not set explicitly the value is initialized by the ``SDKROOT``
 environment variable, if set, and otherwise computed based on the
