@@ -1,7 +1,7 @@
 CMAKE_SKIP_BUILD_RPATH
 ----------------------
 
-Do not include RPATHs in the build tree.
+不要在构建树中包含RPATH。
 
 Normally CMake uses the build tree for the RPATH when building
 executables etc on systems that use RPATH.  When the software is

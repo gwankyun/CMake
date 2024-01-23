@@ -1,9 +1,7 @@
 CMAKE_STATIC_LINKER_FLAGS_<CONFIG>
 ----------------------------------
 
-Flags to be used to create static libraries.  These flags will be passed
-to the archiver when creating a static library in the ``<CONFIG>``
-configuration.
+用于创建静态库的标志。当在\ ``<CONFIG>``\ 配置中创建静态库时，这些标志将传递给归档器。
 
 See also :variable:`CMAKE_STATIC_LINKER_FLAGS`.
 

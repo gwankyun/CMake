@@ -1,7 +1,7 @@
 CMAKE_POSITION_INDEPENDENT_CODE
 -------------------------------
 
-Default value for :prop_tgt:`POSITION_INDEPENDENT_CODE` of targets.
+目标的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 默认值。
 
 This variable is used to initialize the
 :prop_tgt:`POSITION_INDEPENDENT_CODE` property on all the targets.

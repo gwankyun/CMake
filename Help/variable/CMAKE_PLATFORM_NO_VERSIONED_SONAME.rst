@@ -3,11 +3,8 @@ CMAKE_PLATFORM_NO_VERSIONED_SONAME
 
 .. versionadded:: 3.1
 
-This variable is used to globally control whether the
-:prop_tgt:`VERSION` and :prop_tgt:`SOVERSION` target
-properties should be used for shared libraries.
-When set to true, adding version information to each
-shared library target is disabled.
+该变量用于全局控制是否应该将\ :prop_tgt:`VERSION`\ 和\ :prop_tgt:`SOVERSION`\ 目标\
+属性用于共享库。当设置为true时，向每个共享库目标添加版本信息将被禁用。
 
 By default this variable is set only on platforms where
 CMake knows it is needed.   On other platforms, the

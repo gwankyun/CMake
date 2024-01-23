@@ -1,7 +1,7 @@
 CMAKE_SKIP_INSTALL_RPATH
 ------------------------
 
-Do not include RPATHs in the install tree.
+不要在安装树中包含RPATH。
 
 Normally CMake uses the build tree for the RPATH when building
 executables etc on systems that use RPATH.  When the software is
