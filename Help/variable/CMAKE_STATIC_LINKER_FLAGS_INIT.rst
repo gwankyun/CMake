@@ -3,11 +3,9 @@ CMAKE_STATIC_LINKER_FLAGS_INIT
 
 .. versionadded:: 3.7
 
-Value used to initialize the :variable:`CMAKE_STATIC_LINKER_FLAGS`
-cache entry the first time a build tree is configured.
-This variable is meant to be set by a :variable:`toolchain file
-<CMAKE_TOOLCHAIN_FILE>`.  CMake may prepend or append content to
-the value based on the environment and target platform.
+用于在第一次配置构建树时初始化\ :variable:`CMAKE_STATIC_LINKER_FLAGS`\ 缓存项。该变量\
+将由\ :variable:`工具链文件 <CMAKE_TOOLCHAIN_FILE>`\ 设置。CMake可以根据环境和目标平台\
+在值前添加或追加内容。
 
 See also the configuration-specific variable
 :variable:`CMAKE_STATIC_LINKER_FLAGS_<CONFIG>_INIT`.

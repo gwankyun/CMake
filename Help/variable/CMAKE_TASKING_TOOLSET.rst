@@ -3,7 +3,7 @@ CMAKE_TASKING_TOOLSET
 
 .. versionadded:: 3.25
 
-Select the Tasking toolset which provides the compiler
+选择提供编译器的Tasking工具集
 
 Architecture compilers are provided by different toolchains with
 incompatible versioning schemes.  Set this variable in a

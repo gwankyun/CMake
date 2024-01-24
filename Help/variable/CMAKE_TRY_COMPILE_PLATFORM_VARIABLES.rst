@@ -3,9 +3,8 @@ CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
 
 .. versionadded:: 3.6
 
-List of variables that the :command:`try_compile` command source file signature
-must propagate into the test project in order to target the same platform as
-the host project.
+:command:`try_compile`\ 命令源文件签名必须传播到测试项目中的变量列表，以便针对与主机项目\
+相同的平台。
 
 This variable should not be set by project code.  It is meant to be set by
 CMake's platform information modules for the current toolchain, or by a

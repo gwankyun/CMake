@@ -1,8 +1,7 @@
 CMAKE_TRY_COMPILE_CONFIGURATION
 -------------------------------
 
-Build configuration used for :command:`try_compile` and :command:`try_run`
-projects.
+用于\ :command:`try_compile`\ 和\ :command:`try_run`\ 项目的构建配置。
 
 Projects built by :command:`try_compile` and :command:`try_run` are built
 synchronously during the CMake configuration step.  Therefore a specific build

@@ -3,10 +3,8 @@ CMAKE_UNITY_BUILD
 
 .. versionadded:: 3.16
 
-This variable is used to initialize the :prop_tgt:`UNITY_BUILD`
-property of targets when they are created.  Setting it to true
-enables batch compilation of multiple sources within each target.
-This feature is known as a *Unity* or *Jumbo* build.
+该变量用于在创建目标时初始化目标的\ :prop_tgt:`UNITY_BUILD`\ 属性。将其设置为true将启用\
+批处理编译多个源内的每个目标。这个特性被称为\ *Unity*\ 或\ *Jumbo*\ 构建。
 
 Projects should not set this variable, it is intended as a developer
 control to be set on the :manual:`cmake(1)` command line or other
