@@ -3,10 +3,9 @@ CMAKE_WATCOM_RUNTIME_LIBRARY
 
 .. versionadded:: 3.24
 
-Select the Watcom runtime library for use by compilers targeting the Watcom ABI.
-This variable is used to initialize the :prop_tgt:`WATCOM_RUNTIME_LIBRARY`
-property on all targets as they are created.  It is also propagated by
-calls to the :command:`try_compile` command into the test project.
+选择Watcom运行时库，供针对Watcom ABI的编译器使用。该变量用于在创建所有目标时初始化它们的\
+:prop_tgt:`WATCOM_RUNTIME_LIBRARY`\ 属性。它还通过调用\ :command:`try_compile`\
+命令传播到测试项目中。
 
 The allowed values are:
 

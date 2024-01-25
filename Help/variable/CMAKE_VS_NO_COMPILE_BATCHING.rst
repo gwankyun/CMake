@@ -3,7 +3,7 @@ CMAKE_VS_NO_COMPILE_BATCHING
 
 .. versionadded:: 3.24
 
-Turn off compile batching when using :ref:`Visual Studio Generators`.
+使用\ :ref:`Visual Studio Generators`\ 时关闭编译批处理。
 
 This variable is used to initialize the :prop_tgt:`VS_NO_COMPILE_BATCHING`
 property on all targets when they are created.  See that target property for

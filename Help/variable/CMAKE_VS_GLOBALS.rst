@@ -3,8 +3,8 @@ CMAKE_VS_GLOBALS
 
 .. versionadded:: 3.13
 
-List of ``Key=Value`` records to be set per target as target properties
-:prop_tgt:`VS_GLOBAL_<variable>` with ``variable=Key`` and value ``Value``.
+每个目标要设置的\ ``Key=Value``\ 记录列表作为带有\ ``variable=Key``\ 及\ ``Value``\
+值的目标属性\ :prop_tgt:`VS_GLOBAL_<variable>`。
 
 For example:
 

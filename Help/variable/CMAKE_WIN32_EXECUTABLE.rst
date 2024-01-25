@@ -1,7 +1,7 @@
 CMAKE_WIN32_EXECUTABLE
 ----------------------
 
-Default value for :prop_tgt:`WIN32_EXECUTABLE` of targets.
+目标的\ :prop_tgt:`WIN32_EXECUTABLE`\ 默认值。
 
 This variable is used to initialize the :prop_tgt:`WIN32_EXECUTABLE` property
 on all the targets.  See that target property for additional information.

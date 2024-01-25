@@ -3,4 +3,4 @@ CMAKE_VS_SDK_LIBRARY_DIRECTORIES
 
 .. versionadded:: 3.12
 
-This variable allows to override Visual Studio default Library Directories.
+此变量允许覆盖Visual Studio默认的库目录。

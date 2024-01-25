@@ -3,11 +3,9 @@ CMAKE_VS_WINRT_BY_DEFAULT
 
 .. versionadded:: 3.13
 
-Inform :ref:`Visual Studio Generators` for VS 2010 and above that the
-target platform enables WinRT compilation by default and it needs to
-be explicitly disabled if ``/ZW`` or :prop_tgt:`VS_WINRT_COMPONENT` is
-omitted (as opposed to enabling it when either of those options is
-present)
+通知VS 2010及以上版本的\ :ref:`Visual Studio Generators`\ 目标平台默认启用WinRT编译，\
+如果\ ``/ZW``\ 或\ :prop_tgt:`VS_WINRT_COMPONENT`\ 被省略，则需要显式禁用它（而不是在\
+存在这些选项中的任何一个时启用它）
 
 This makes cmake configuration consistent in terms of WinRT among
 platforms - if you did not enable the WinRT compilation explicitly, it

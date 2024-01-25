@@ -3,7 +3,7 @@ CMAKE_C_COMPILE_FEATURES
 
 .. versionadded:: 3.1
 
-List of features known to the C compiler
+C编译器已知的特性列表
 
 These features are known to be available for use with the C compiler. This
 list is a subset of the features listed in the

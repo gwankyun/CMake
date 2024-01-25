@@ -1,7 +1,7 @@
 LIBRARY_OUTPUT_PATH
 -------------------
 
-Old library location variable.
+旧的库位置变量。
 
 The target properties :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`,
 :prop_tgt:`LIBRARY_OUTPUT_DIRECTORY`, and :prop_tgt:`RUNTIME_OUTPUT_DIRECTORY`
