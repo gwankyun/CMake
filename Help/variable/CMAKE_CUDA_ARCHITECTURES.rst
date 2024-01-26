@@ -3,7 +3,7 @@ CMAKE_CUDA_ARCHITECTURES
 
 .. versionadded:: 3.18
 
-Default value for :prop_tgt:`CUDA_ARCHITECTURES` property of targets.
+目标的\ :prop_tgt:`CUDA_ARCHITECTURES`\ 属性默认值。
 
 Initialized by the :envvar:`CUDAARCHS` environment variable if set.
 Otherwise as follows depending on :variable:`CMAKE_CUDA_COMPILER_ID <CMAKE_<LANG>_COMPILER_ID>`:

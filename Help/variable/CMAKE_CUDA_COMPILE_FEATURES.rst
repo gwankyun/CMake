@@ -3,7 +3,7 @@ CMAKE_CUDA_COMPILE_FEATURES
 
 .. versionadded:: 3.17
 
-List of features known to the CUDA compiler
+CUDA编译器已知的功能列表
 
 These features are known to be available for use with the CUDA compiler. This
 list is a subset of the features listed in the

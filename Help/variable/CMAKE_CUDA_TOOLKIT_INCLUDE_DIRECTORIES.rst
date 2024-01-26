@@ -3,7 +3,5 @@ CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES
 
 .. versionadded:: 3.8
 
-When the ``CUDA`` language has been enabled, this provides a
-:ref:`semicolon-separated list <CMake Language Lists>` of include directories provided
-by the CUDA Toolkit.  The value may be useful for C++ source files
-to include CUDA headers.
+当\ ``CUDA``\ 语言已经启用时，它提供了一个由CUDA工具包提供的包含目录的\
+:ref:`分号分隔列表 <CMake Language Lists>`。该值对于包含CUDA头文件的C++源文件可能有用。
