@@ -1,7 +1,7 @@
 CMAKE_<LANG>_ARCHIVE_APPEND
 ---------------------------
 
-Rule variable to append to a static archive.
+规则变量追加到静态存档。
 
 This is a rule variable that tells CMake how to append to a static
 archive.  It is used in place of :variable:`CMAKE_<LANG>_CREATE_STATIC_LIBRARY`

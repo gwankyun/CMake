@@ -3,8 +3,7 @@ CMAKE_<LANG>_BYTE_ORDER
 
 .. versionadded:: 3.20
 
-Byte order of ``<LANG>`` compiler target architecture, if known.
-If defined and not empty, the value is one of:
+在知道的前排下，\ ``<LANG>``\ 编译器目标体系结构。如果已定义且不为空，则值为：
 
 ``BIG_ENDIAN``
   The target architecture is Big Endian.

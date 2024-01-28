@@ -1,7 +1,7 @@
 CMAKE_<LANG>_ARCHIVE_FINISH
 ---------------------------
 
-Rule variable to finish an existing static archive.
+规则变量来完成现有的静态存档。
 
 This is a rule variable that tells CMake how to finish a static
 archive.  It is used in place of :variable:`CMAKE_<LANG>_CREATE_STATIC_LIBRARY`
