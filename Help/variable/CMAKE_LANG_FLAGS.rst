@@ -1,10 +1,8 @@
 CMAKE_<LANG>_FLAGS
 ------------------
 
-Language-wide flags for language ``<LANG>`` used when building for
-all configurations.  These flags will be passed to all invocations
-of the compiler.  This includes invocations that drive compiling
-and those that drive linking.
+为所有配置构建时使用的语言\ ``<LANG>``\ 的语言范围标志。这些标志将传递给编译器的所有调用。\
+这包括驱动编译的调用和驱动链接的调用。
 
 For each language, if this variable is not defined, it is initialized
 and stored in the cache using values from environment variables in

@@ -1,7 +1,7 @@
 CMAKE_<LANG>_COMPILER_ID
 ------------------------
 
-Compiler identification string.
+编译器标识字符串。
 
 A short string unique to the compiler vendor.  Possible values
 include:

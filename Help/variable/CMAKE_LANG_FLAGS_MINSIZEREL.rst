@@ -1,5 +1,4 @@
 CMAKE_<LANG>_FLAGS_MINSIZEREL
 -----------------------------
 
-This variable is the ``MinSizeRel`` variant of the
-:variable:`CMAKE_<LANG>_FLAGS_<CONFIG>` variable.
+该变量是\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\ 变量的\ ``MinSizeRel``\ 变体。

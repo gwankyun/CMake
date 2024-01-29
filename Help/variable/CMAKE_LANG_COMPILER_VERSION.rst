@@ -1,7 +1,7 @@
 CMAKE_<LANG>_COMPILER_VERSION
 -----------------------------
 
-Compiler version string.
+编译器版本字符串。
 
 Compiler version in major[.minor[.patch[.tweak]]] format.  This
 variable is not guaranteed to be defined for all compilers or

@@ -1,7 +1,7 @@
 CMAKE_<LANG>_COMPILER_EXTERNAL_TOOLCHAIN
 ----------------------------------------
 
-The external toolchain for cross-compiling, if supported.
+交叉编译的外部工具链，如果支持的话。
 
 Some compiler toolchains do not ship their own auxiliary utilities such as
 archivers and linkers.  The compiler driver may support a command-line argument

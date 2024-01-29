@@ -1,7 +1,7 @@
 CMAKE_<LANG>_COMPILER_TARGET
 ----------------------------
 
-The target for cross-compiling, if supported.
+交叉编译的目标，如果支持的话。
 
 Some compiler drivers are inherently cross-compilers, such as clang and
 QNX qcc. These compiler drivers support a command-line argument to specify

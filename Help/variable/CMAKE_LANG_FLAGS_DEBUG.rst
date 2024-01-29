@@ -1,5 +1,4 @@
 CMAKE_<LANG>_FLAGS_DEBUG
 ------------------------
 
-This variable is the ``Debug`` variant of the
-:variable:`CMAKE_<LANG>_FLAGS_<CONFIG>` variable.
+该变量是\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\ 变量的\ ``Debug``\ 变体。

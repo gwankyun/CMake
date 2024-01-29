@@ -1,7 +1,7 @@
 CMAKE_<LANG>_EXTENSIONS
 -----------------------
 
-The variations are:
+这些变量是：
 
 * :variable:`CMAKE_C_EXTENSIONS`
 * :variable:`CMAKE_CXX_EXTENSIONS`

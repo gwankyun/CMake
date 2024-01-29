@@ -1,7 +1,7 @@
 CMAKE_<LANG>_COMPILER
 ---------------------
 
-The full path to the compiler for ``LANG``.
+``LANG``\ 编译器的完整路径。
 
 This is the command that will be used as the ``<LANG>`` compiler.  Once
 set, you can not change this variable.
