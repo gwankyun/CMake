@@ -1,7 +1,7 @@
 CMAKE_<LANG>_IMPLICIT_LINK_DIRECTORIES
 --------------------------------------
 
-Implicit linker search path detected for language ``<LANG>``.
+为语言\ ``<LANG>``\ 检测到隐式链接器搜索路径。
 
 Compilers typically pass directories containing language runtime
 libraries and default library search paths when they invoke a linker.

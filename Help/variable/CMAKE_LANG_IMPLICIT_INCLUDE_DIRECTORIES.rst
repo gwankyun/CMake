@@ -1,7 +1,7 @@
 CMAKE_<LANG>_IMPLICIT_INCLUDE_DIRECTORIES
 -----------------------------------------
 
-Directories implicitly searched by the compiler for header files.
+编译器隐式搜索头文件的目录。
 
 CMake does not explicitly specify these directories on compiler
 command lines for language ``<LANG>``.  This prevents system include
