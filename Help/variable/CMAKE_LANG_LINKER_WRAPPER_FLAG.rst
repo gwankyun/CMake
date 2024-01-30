@@ -3,9 +3,8 @@ CMAKE_<LANG>_LINKER_WRAPPER_FLAG
 
 .. versionadded:: 3.13
 
-Defines the syntax of compiler driver option to pass options to the linker
-tool. It will be used to translate the ``LINKER:`` prefix in the link options
-(see :command:`add_link_options` and :command:`target_link_options`).
+定义编译器驱动程序选项的语法，以便将选项传递给链接器工具。它将用于转换链接选项中的\ ``LINKER:``\
+前缀（参见\ :command:`add_link_options`\ 和\ :command:`target_link_options`）。
 
 This variable holds a :ref:`semicolon-separated list <CMake Language Lists>` of tokens.
 If a space (i.e. " ") is specified as last token, flag and ``LINKER:``
