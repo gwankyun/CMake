@@ -187,7 +187,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 .. note::
  3.0之前的CMake版本不支持方括号参数。它们将开括号解释为\ `无引号参数`_\ 的开始。
 
-.. _`Lua`: http://www.lua.org/
+.. _`Lua`: https://www.lua.org/
 
 .. _`Quoted Argument`:
 

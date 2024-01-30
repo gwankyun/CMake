@@ -9,3 +9,7 @@ SKIP_UNITY_BUILD_INCLUSION
 This property helps with "ODR (One definition rule)" problems where combining
 a particular source file with others might lead to build errors or other
 unintended side effects.
+
+Note that sources which are scanned for C++ modules (see
+:manual:`cmake-cxxmodules(7)`) are not eligible for unity build inclusion and
+will automatically be excluded.

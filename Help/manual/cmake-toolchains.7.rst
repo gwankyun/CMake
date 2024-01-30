@@ -497,8 +497,8 @@ Android为目标，使用独立的工具链进行交叉编译。
 可以使用\ :generator:`Unix Makefiles`\ 或\ :generator:`Ninja`\ 生成器，但它们要求项\
 目处理更多的领域，如目标CPU选择和代码签名。
 
-通过将\ :variable:`CMAKE_SYSTEM_NAME`\ 变量设置为下表中的值，可以将这三个系统中的任何一\
-个作为目标。默认情况下，选择最新的Device SDK。对于所有的Apple平台，可以通过设置\
+通过将\ :variable:`CMAKE_SYSTEM_NAME`\ 变量设置为下表中的值，可以将任何苹果设备平台\
+作为目标。默认情况下，选择最新的Device SDK。对于所有的Apple平台，可以通过设置\
 :variable:`CMAKE_OSX_SYSROOT`\ 变量来选择不同的SDK（例如模拟器），尽管这很少是必要的（\
 参见下面的\ :ref:`Switching Between Device and Simulator`\ ）。一个可用SDK的列表可以\
 通过运行\ ``xcodebuild -showsdks``\ 获得。
@@ -521,8 +521,11 @@ watchOS   watchOS           watchos              watchsimulator
 变量\ :variable:`CMAKE_OSX_ARCHITECTURES`\ 可用于设置设备和模拟器的体系结构。变量\
 :variable:`CMAKE_OSX_DEPLOYMENT_TARGET`\ 用于设置iOS/tvOS/visionOS/watchOS的部署目标。
 
-下一个配置将安装fat 5架构的iOS库，并在编译器中添加\
-``-miphoneos-version-min=9.3``/\ ``-mios-simulator-version-min=9.3``\ 标志：
+The next example installs five architectures in a universal binary for an iOS
+library.  It adds the relevant ``-miphoneos-version-min=9.3`` or
+``-mios-simulator-version-min=9.3`` compiler flag where appropriate.
+Note that the :variable:`CMAKE_IOS_INSTALL_COMBINED` variable used in the
+example is now deprecated, so this approach is no longer recommended.
 
 .. code-block:: console
 
