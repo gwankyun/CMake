@@ -1,7 +1,7 @@
 CMAKE_<LANG>_SIMULATE_VERSION
 -----------------------------
 
-Version string of "simulated" compiler.
+“模拟”编译器的版本字符串。
 
 Some compilers simulate other compilers to serve as drop-in
 replacements.  When CMake detects such a compiler it sets this
