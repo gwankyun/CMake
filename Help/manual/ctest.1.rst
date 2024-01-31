@@ -1373,19 +1373,13 @@ CTest为测试提供了一种机制，以细粒度的方式指定它们所需的
 通过使用资源分配特性，每个测试都可以指定它从GPU需要多少内存，从而允许CTest以一种同时运行几个\
 测试而不会耗尽GPU内存池的方式来安排测试。
 
-Please note that CTest has no concept of what a GPU is or how much memory it
-has. It does not have any way of communicating with a GPU to retrieve this
-information or perform any memory management, although the project can define
-a test that provides details about the test machine (see
-:ref:`ctest-resource-dynamically-generated-spec-file`).
+请注意，CTest没有GPU是什么或它有多少内存的概念。它没有任何与GPU通信的方式来检索这些信息或\
+执行任何内存管理，尽管项目可以定义一个测试，提供有关测试机器的详细信息（参见\
+:ref:`ctest-resource-dynamically-generated-spec-file`）。
 
-CTest keeps track of a list of abstract resource types, each of which has a
-certain number of slots available for tests to use. Each test specifies the
-number of slots that it requires from a certain resource, and CTest then
-schedules them in a way that prevents the total number of slots in use from
-exceeding the listed capacity. When a test is executed, and slots from a
-resource are allocated to that test, tests may assume that they have exclusive
-use of those slots for the duration of the test's process.
+CTest跟踪抽象资源类型的列表，其中每个类型都有一定数量的槽可供测试使用。每个测试指定它从某个\
+资源中需要的插槽数量，然后CTest以一种防止正在使用的插槽总数超过列出的容量的方式调度它们。\
+当执行测试时，资源中的插槽被分配给该测试，测试可以假设它们在测试进程的持续时间内独占使用这些插槽。
 
 CTest资源分配特性由最少两个输入组成：
 
@@ -1417,20 +1411,16 @@ CTest资源分配特性由最少两个输入组成：
 资源规格文件
 ---------------------------
 
-The resource specification file is a JSON file which is passed to CTest in one
-of a number of ways. It can be specified on the command line with the
-:option:`ctest --resource-spec-file` option, it can be given using the
-``RESOURCE_SPEC_FILE`` argument of :command:`ctest_test`, or it can be
-generated dynamically as part of test execution (see
-:ref:`ctest-resource-dynamically-generated-spec-file`).
+资源规范文件是一个JSON文件，以多种方式传递给CTest。它可以在命令行上使用\
+:option:`ctest --resource-spec-file`\ 选项指定，也可以使用\ :command:`ctest_test`\
+的\ ``RESOURCE_SPEC_FILE``\ 参数指定，或者可以作为测试执行的一部分动态生成（参见\
+:ref:`ctest-resource-dynamically-generated-spec-file`）。
 
-If a dashboard script is used and ``RESOURCE_SPEC_FILE`` is not specified, the
-value of :variable:`CTEST_RESOURCE_SPEC_FILE` in the dashboard script is used
-instead.  If :option:`--resource-spec-file <ctest --resource-spec-file>`,
-``RESOURCE_SPEC_FILE``, and :variable:`CTEST_RESOURCE_SPEC_FILE` in the
-dashboard script are not specified, the value of
-:variable:`CTEST_RESOURCE_SPEC_FILE` in the CMake build is used instead.
-If none of these are specified, no resource spec file is used.
+如果使用仪表板脚本，并且没有指定\ ``RESOURCE_SPEC_FILE``，则使用仪表板脚本中的\
+:variable:`CTEST_RESOURCE_SPEC_FILE`\ 的值。如果没有指定仪表板脚本中的\
+:option:`--resource-spec-file <ctest --resource-spec-file>`、\
+``RESOURCE_SPEC_FILE``\ 和\ :variable:`CTEST_RESOURCE_SPEC_FILE`，则使用CMake构建\
+中的\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ 的值。如果这些都没有指定，则不使用资源规范文件。
 
 资源规范文件必须是一个JSON对象。本文档中的所有例子都假设了以下资源规范文件：
 

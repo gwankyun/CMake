@@ -521,11 +521,10 @@ watchOS   watchOS           watchos              watchsimulator
 变量\ :variable:`CMAKE_OSX_ARCHITECTURES`\ 可用于设置设备和模拟器的体系结构。变量\
 :variable:`CMAKE_OSX_DEPLOYMENT_TARGET`\ 用于设置iOS/tvOS/visionOS/watchOS的部署目标。
 
-The next example installs five architectures in a universal binary for an iOS
-library.  It adds the relevant ``-miphoneos-version-min=9.3`` or
-``-mios-simulator-version-min=9.3`` compiler flag where appropriate.
-Note that the :variable:`CMAKE_IOS_INSTALL_COMBINED` variable used in the
-example is now deprecated, so this approach is no longer recommended.
+下一个示例将在一个iOS库的通用二进制文件中安装五个体系结构。它在适当的地方添加了相关的\
+``-miphoneos-version-min=9.3``\ 或\ ``-mios-simulator-version-min=9.3``\ 编译器\
+标志。注意，示例中使用的\ :variable:`CMAKE_IOS_INSTALL_COMBINED`\ 变量现在已弃用，\
+因此不再推荐使用这种方法。
 
 .. code-block:: console
 

@@ -1,7 +1,7 @@
 CMAKE_<LANG>_STANDARD
 ---------------------
 
-The variations are:
+这些变量是：
 
 * :variable:`CMAKE_C_STANDARD`
 * :variable:`CMAKE_CXX_STANDARD`

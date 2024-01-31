@@ -3,9 +3,8 @@ CMAKE_<LANG>_STANDARD_LIBRARIES
 
 .. versionadded:: 3.6
 
-Libraries linked into every executable and shared library linked
-for language ``<LANG>``.  This is meant for specification of system
-libraries needed by the language for the current platform.
+链接到语言\ ``<LANG>``\ 的每个可执行库和共享库中的库。这意味着对当前平台的语言所需的系统库\
+进行规范。
 
 This variable should not be set by project code.  It is meant to be set by
 CMake's platform information modules for the current toolchain, or by a
