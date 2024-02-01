@@ -3,8 +3,7 @@ CMAKE_Swift_LANGUAGE_VERSION
 
 .. versionadded:: 3.7
 
-Set to the Swift language version number.  If not set, the oldest legacy
-version known to be available in the host Xcode version is assumed:
+设置Swift语言的版本号。如果未设置，则假定主机Xcode版本中已知的最旧遗留版本：
 
 * Swift ``4.0`` for Xcode 10.2 and above.
 * Swift ``3.0`` for Xcode 8.3 and above.
