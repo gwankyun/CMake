@@ -3,5 +3,4 @@ CTEST_CURL_OPTIONS
 
 .. versionadded:: 3.1
 
-Specify the CTest ``CurlOptions`` setting
-in a :manual:`ctest(1)` dashboard client script.
+在\ :manual:`ctest(1)`\ 指示板客户端脚本中指定CTest ``CurlOptions``\ 设置。

@@ -1,7 +1,6 @@
 CTEST_CUSTOM_ERROR_PRE_CONTEXT
 ------------------------------
 
-The number of lines to include as context which precede an error message by
-the :command:`ctest_build` command. The default is 10.
+:command:`ctest_build`\ 命令在错误消息之前作为上下文包含的行数。默认值是10。
 
 .. include:: CTEST_CUSTOM_XXX.txt

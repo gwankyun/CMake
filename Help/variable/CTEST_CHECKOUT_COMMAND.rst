@@ -3,5 +3,5 @@ CTEST_CHECKOUT_COMMAND
 
 .. versionadded:: 3.1
 
-Tell the :command:`ctest_start` command how to checkout or initialize
-the source directory in a :manual:`ctest(1)` dashboard client script.
+告诉\ :command:`ctest_start`\ 命令如何在\ :manual:`ctest(1)`\ 仪表板客户端脚本中检出\
+或初始化源目录。
