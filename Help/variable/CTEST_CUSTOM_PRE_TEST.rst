@@ -1,6 +1,6 @@
 CTEST_CUSTOM_PRE_TEST
 ----------------------
 
-A list of commands to run at the start of the :command:`ctest_test` command.
+要在\ :command:`ctest_test`\ 命令开始时运行的命令列表。
 
 .. include:: CTEST_CUSTOM_XXX.txt

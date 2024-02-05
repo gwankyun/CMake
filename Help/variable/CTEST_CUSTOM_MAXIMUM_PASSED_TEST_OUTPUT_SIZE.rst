@@ -1,10 +1,9 @@
 CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE
 --------------------------------------------
 
-When saving a passing test's output, this is the maximum size, in bytes, that
-will be collected by the :command:`ctest_test` command. Defaults to 1024
-(1 KiB). See :variable:`CTEST_CUSTOM_TEST_OUTPUT_TRUNCATION` for possible
-truncation modes.
+在保存通过的测试的输出时，这是\ :command:`ctest_test`\ 命令将收集的最大大小，以字节为单位。\
+默认为1024（1kib）。有关可能的截断模式，请参阅\
+:variable:`CTEST_CUSTOM_TEST_OUTPUT_TRUNCATION` 。
 
 If a test's output contains the literal string "CTEST_FULL_OUTPUT",
 the output will not be truncated and may exceed the maximum size.

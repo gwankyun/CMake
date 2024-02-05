@@ -1,6 +1,6 @@
 CTEST_CUSTOM_POST_TEST
 ----------------------
 
-A list of commands to run at the end of the :command:`ctest_test` command.
+要在\ :command:`ctest_test`\ 命令末尾运行的命令列表。
 
 .. include:: CTEST_CUSTOM_XXX.txt

@@ -1,7 +1,6 @@
 CTEST_CUSTOM_MEMCHECK_IGNORE
 ----------------------------
 
-A list of regular expressions to use to exclude tests during the
-:command:`ctest_memcheck` command.
+在\ :command:`ctest_memcheck`\ 命令期间用于排除测试的正则表达式列表。
 
 .. include:: CTEST_CUSTOM_XXX.txt
