@@ -10,7 +10,7 @@ FindCxxTest
 Find the `CxxTest`_ suite and declare a helper macro for creating
 unit tests and integrating them with CTest.
 
-.. _`CxxTest`: https://github.com/CxxTest/cxxtest#readme
+.. _`CxxTest`: https://github.com/CxxTest/cxxtest
 
 Input Variables
 ^^^^^^^^^^^^^^^

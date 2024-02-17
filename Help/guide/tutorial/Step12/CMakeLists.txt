@@ -97,7 +97,7 @@ include(CMakePackageConfigHelpers)
 # 生成包含导出的配置文件
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
   "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfig.cmake"
-  INSTALL_DESTINATION "lib/cmake/example"
+  INSTALL_DESTINATION "lib/cmake/MathFunctions"
   NO_SET_AND_CHECK_MACRO
   NO_CHECK_REQUIRED_COMPONENTS_MACRO
   )

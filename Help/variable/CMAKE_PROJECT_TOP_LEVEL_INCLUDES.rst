@@ -9,6 +9,10 @@ CMake语言文件\ :ref:`分号分隔列表 <CMake Language Lists>`，作为第�
 :variable:`CMAKE_<LANG>_COMPILER`\ 之类的变量。有关在\ :command:`project`\ 调用期间\
 可能包含的文件的更详细讨论，请参阅\ :ref:`代码注入 <Code Injection>`。
 
+.. versionadded:: 3.29
+  This variable can also now refer to module names to be found in
+  :variable:`CMAKE_MODULE_PATH` or builtin to CMake.
+
 This variable is intended for specifying files that perform one-time setup
 for the build. It provides an injection point for things like configuring
 package managers, adding logic the user shares between projects (e.g. defining

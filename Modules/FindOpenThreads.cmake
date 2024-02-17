@@ -5,24 +5,30 @@
 FindOpenThreads
 ---------------
 
-
-
 OpenThreads是一个基于C++的线程库。它最大的用户群似乎是OpenSceneGraph，所以你可能会注意到\
-我接受OSGDIR作为环境路径。我认为Findosg*套件的这一部分用于查找OpenSceneGraph组件。每个组\
-件都是独立的，你必须选择加入每个模块。
+我接受OSGDIR作为环境路径。我认为\ ``Findosg*``\ 套件的这一部分用于查找OpenSceneGraph组件。\
+每个组件都是独立的，你必须选择加入每个模块。
 
-Locate OpenThreads This module defines OPENTHREADS_LIBRARY
-OPENTHREADS_FOUND, if false, do not try to link to OpenThreads
-OPENTHREADS_INCLUDE_DIR, where to find the headers
+This module defines:
 
-$OPENTHREADS_DIR is an environment variable that would correspond to
-the ./configure --prefix=$OPENTHREADS_DIR used in building osg.
+``OPENTHREADS_LIBRARY``
 
-[CMake 2.8.10]: The CMake variables OPENTHREADS_DIR or OSG_DIR can now
-be used as well to influence detection, instead of needing to specify
-an environment variable.
+``OPENTHREADS_FOUND``
+  if false, do not try to link to OpenThreads
+``OPENTHREADS_INCLUDE_DIR``
+  where to find the headers
 
-Created by Eric Wing.
+``$OPENTHREADS_DIR`` is an environment variable that would correspond to the::
+
+  ./configure --prefix=$OPENTHREADS_DIR
+
+used in building osg.
+
+.. versionadded:: 2.8.10
+
+  The CMake variables ``OPENTHREADS_DIR`` or ``OSG_DIR`` can now
+  be used as well to influence detection, instead of needing to specify
+  an environment variable.
 #]=======================================================================]
 
 # Header files are presumed to be included like

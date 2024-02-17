@@ -129,8 +129,8 @@
 
   </details>
 
-最后，我们需要指定库的头文件位置。修改\ :command:`target_include_directories`\ 以添加\
-``MathFunctions``\ 子目录作为包含目录，以便可以找到\ ``MathFunctions.h``\ 头文件。
+最后，我们需要指定库的头文件位置。修改现存的\ :command:`target_include_directories`\
+以添加\ ``MathFunctions``\ 子目录作为包含目录，以便可以找到\ ``MathFunctions.h``\ 头文件。
 
 .. raw:: html
 

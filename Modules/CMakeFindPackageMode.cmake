@@ -7,7 +7,8 @@ CMakeFindPackageMode
 
 
 
-当使用——find-package调用时，该文件由cmake执行。它期望使用-D设置以下变量：
+当使用\ :ref:`--find-package <Find-Package Tool Mode>`\ 调用时，该文件由cmake执行。\
+它期望使用\ ``-D``\ 设置以下变量：
 
 ``NAME``
   name of the package

@@ -378,6 +378,15 @@ void cmGlobalNinjaGenerator::WriteCustomCommandBuild(
   }
 
   {
+    std::string ninjaDepfilePath;
+    bool depfileIsOutput = false;
+    if (!depfile.empty()) {
+      ninjaDepfilePath = this->ConvertToNinjaPath(depfile);
+      depfileIsOutput =
+        std::find(outputs.ExplicitOuts.begin(), outputs.ExplicitOuts.end(),
+                  ninjaDepfilePath) != outputs.ExplicitOuts.end();
+    }
+
     cmNinjaBuild build("CUSTOM_COMMAND");
     build.Comment = comment;
     build.Outputs = std::move(outputs.ExplicitOuts);
@@ -405,7 +414,13 @@ void cmGlobalNinjaGenerator::WriteCustomCommandBuild(
       vars["pool"] = job_pool;
     }
     if (!depfile.empty()) {
-      vars["depfile"] = depfile;
+      vars["depfile"] = ninjaDepfilePath;
+      // Add the depfile to the `.ninja_deps` database. Since this (generally)
+      // removes the file, it cannot be declared as an output or byproduct of
+      // the command.
+      if (!depfileIsOutput) {
+        vars["deps"] = "gcc";
+      }
     }
     if (config.empty()) {
       this->WriteBuild(*this->GetCommonFileStream(), build);
@@ -813,6 +828,9 @@ void cmGlobalNinjaGenerator::CheckNinjaFeatures()
     this->NinjaExpectedEncoding = codecvt_Encoding::ANSI;
   }
 #endif
+  this->NinjaSupportsCWDDepend =
+    !cmSystemTools::VersionCompare(cmSystemTools::OP_LESS, this->NinjaVersion,
+                                   RequiredNinjaVersionForCWDDepend());
 }
 
 void cmGlobalNinjaGenerator::CheckNinjaCodePage()
@@ -1359,10 +1377,10 @@ void cmGlobalNinjaGenerator::AppendTargetDepends(
   } else {
     cmNinjaDeps outs;
 
-    auto computeISPCOuputs = [](cmGlobalNinjaGenerator* gg,
-                                cmGeneratorTarget const* depTarget,
-                                cmNinjaDeps& outputDeps,
-                                const std::string& targetConfig) {
+    auto computeISPCOutputs = [](cmGlobalNinjaGenerator* gg,
+                                 cmGeneratorTarget const* depTarget,
+                                 cmNinjaDeps& outputDeps,
+                                 const std::string& targetConfig) {
       if (depTarget->CanCompileSources()) {
         auto headers = depTarget->GetGeneratedISPCHeaders(targetConfig);
         if (!headers.empty()) {
@@ -1386,10 +1404,10 @@ void cmGlobalNinjaGenerator::AppendTargetDepends(
       }
       if (targetDep.IsCross()) {
         this->AppendTargetOutputs(targetDep, outs, fileConfig, depends);
-        computeISPCOuputs(this, targetDep, outs, fileConfig);
+        computeISPCOutputs(this, targetDep, outs, fileConfig);
       } else {
         this->AppendTargetOutputs(targetDep, outs, config, depends);
-        computeISPCOuputs(this, targetDep, outs, config);
+        computeISPCOutputs(this, targetDep, outs, config);
       }
     }
     std::sort(outs.begin(), outs.end());
@@ -1979,6 +1997,11 @@ bool cmGlobalNinjaGenerator::SupportsManifestRestat() const
 bool cmGlobalNinjaGenerator::SupportsMultilineDepfile() const
 {
   return this->NinjaSupportsMultilineDepfile;
+}
+
+bool cmGlobalNinjaGenerator::SupportsCWDDepend() const
+{
+  return this->NinjaSupportsCWDDepend;
 }
 
 bool cmGlobalNinjaGenerator::WriteTargetCleanAdditional(std::ostream& os)
@@ -3241,11 +3264,4 @@ std::string cmGlobalNinjaMultiGenerator::OrderDependsTargetForTarget(
 {
   return cmStrCat("cmake_object_order_depends_target_", target->GetName(), '_',
                   cmSystemTools::UpperCase(config));
-}
-
-std::string cmGlobalNinjaMultiGenerator::OrderDependsTargetForTargetPrivate(
-  cmGeneratorTarget const* target, const std::string& config) const
-{
-  return cmStrCat(this->OrderDependsTargetForTarget(target, config),
-                  "_private");
 }

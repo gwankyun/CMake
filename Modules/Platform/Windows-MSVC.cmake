@@ -512,6 +512,14 @@ macro(__windows_compiler_msvc lang)
     set(CMAKE_DEPFILE_FLAGS_${lang} "/showIncludes")
     set(CMAKE_${lang}_DEPFILE_FORMAT msvc)
   endif()
+
+  set(CMAKE_${lang}_LINK_LIBRARIES_PROCESSING ORDER=FORWARD UNICITY=ALL)
+
+  # linker selection
+  set(CMAKE_${lang}_USING_LINKER_SYSTEM "${CMAKE_LINKER_LINK}")
+  set(CMAKE_${lang}_USING_LINKER_LLD "${CMAKE_LINKER_LLD}")
+  set(CMAKE_${lang}_USING_LINKER_MSVC "${CMAKE_LINKER_LINK}")
+  set(CMAKE_${lang}_USING_LINKER_MODE TOOL)
 endmacro()
 
 macro(__windows_compiler_msvc_enable_rc flags)

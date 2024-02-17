@@ -53,7 +53,6 @@ cmake-variables(7)
    /variable/CMAKE_EDIT_COMMAND
    /variable/CMAKE_EXECUTABLE_SUFFIX
    /variable/CMAKE_EXECUTABLE_SUFFIX_LANG
-   /variable/CMAKE_EXTRA_GENERATOR
    /variable/CMAKE_EXTRA_SHARED_LIBRARY_SUFFIXES
    /variable/CMAKE_FIND_DEBUG_MODE
    /variable/CMAKE_FIND_PACKAGE_NAME
@@ -72,6 +71,10 @@ cmake-variables(7)
    /variable/CMAKE_JOB_POOLS
    /variable/CMAKE_LANG_COMPILER_AR
    /variable/CMAKE_LANG_COMPILER_FRONTEND_VARIANT
+   /variable/CMAKE_LANG_COMPILER_LINKER
+   /variable/CMAKE_LANG_COMPILER_LINKER_FRONTEND_VARIANT
+   /variable/CMAKE_LANG_COMPILER_LINKER_ID
+   /variable/CMAKE_LANG_COMPILER_LINKER_VERSION
    /variable/CMAKE_LANG_COMPILER_RANLIB
    /variable/CMAKE_LANG_LINK_LIBRARY_SUFFIX
    /variable/CMAKE_LINK_LIBRARY_SUFFIX
@@ -109,8 +112,10 @@ cmake-variables(7)
    /variable/CMAKE_SOURCE_DIR
    /variable/CMAKE_STATIC_LIBRARY_PREFIX
    /variable/CMAKE_STATIC_LIBRARY_SUFFIX
+   /variable/CMAKE_Swift_COMPILATION_MODE
    /variable/CMAKE_Swift_MODULE_DIRECTORY
    /variable/CMAKE_Swift_NUM_THREADS
+   /variable/CMAKE_TEST_LAUNCHER
    /variable/CMAKE_TOOLCHAIN_FILE
    /variable/CMAKE_TWEAK_VERSION
    /variable/CMAKE_VERBOSE_MAKEFILE
@@ -124,6 +129,7 @@ cmake-variables(7)
    /variable/CMAKE_VS_PLATFORM_TOOLSET
    /variable/CMAKE_VS_PLATFORM_TOOLSET_CUDA
    /variable/CMAKE_VS_PLATFORM_TOOLSET_CUDA_CUSTOM_DIR
+   /variable/CMAKE_VS_PLATFORM_TOOLSET_FORTRAN
    /variable/CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE
    /variable/CMAKE_VS_PLATFORM_TOOLSET_VERSION
    /variable/CMAKE_VS_TARGET_FRAMEWORK_IDENTIFIER
@@ -167,8 +173,6 @@ cmake-variables(7)
    /variable/CMAKE_ABSOLUTE_DESTINATION_FILES
    /variable/CMAKE_ADD_CUSTOM_COMMAND_DEPENDS_EXPLICIT_ONLY
    /variable/CMAKE_APPBUNDLE_PATH
-   /variable/CMAKE_AUTOMOC_RELAXED_MODE
-   /variable/CMAKE_BACKWARDS_COMPATIBILITY
    /variable/CMAKE_BUILD_TYPE
    /variable/CMAKE_CLANG_VFS_OVERLAY
    /variable/CMAKE_CODEBLOCKS_COMPILER_ID
@@ -196,8 +200,6 @@ cmake-variables(7)
    /variable/CMAKE_FIND_LIBRARY_PREFIXES
    /variable/CMAKE_FIND_LIBRARY_SUFFIXES
    /variable/CMAKE_FIND_NO_INSTALL_PREFIX
-   /variable/CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY
-   /variable/CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY
    /variable/CMAKE_FIND_PACKAGE_PREFER_CONFIG
    /variable/CMAKE_FIND_PACKAGE_RESOLVE_SYMLINKS
    /variable/CMAKE_FIND_PACKAGE_TARGETS_GLOBAL
@@ -249,6 +251,7 @@ cmake-variables(7)
    /variable/CMAKE_PROJECT_TOP_LEVEL_INCLUDES
    /variable/CMAKE_REQUIRE_FIND_PACKAGE_PackageName
    /variable/CMAKE_SKIP_INSTALL_ALL_DEPENDENCY
+   /variable/CMAKE_SKIP_TEST_ALL_DEPENDENCY
    /variable/CMAKE_STAGING_PREFIX
    /variable/CMAKE_SUBLIME_TEXT_2_ENV_SETTINGS
    /variable/CMAKE_SUBLIME_TEXT_2_EXCLUDE_BUILD_TREE
@@ -334,15 +337,6 @@ cmake-variables(7)
    /variable/LINUX
    /variable/MINGW
    /variable/MSVC
-   /variable/MSVC10
-   /variable/MSVC11
-   /variable/MSVC12
-   /variable/MSVC14
-   /variable/MSVC60
-   /variable/MSVC70
-   /variable/MSVC71
-   /variable/MSVC80
-   /variable/MSVC90
    /variable/MSVC_IDE
    /variable/MSVC_TOOLSET_VERSION
    /variable/MSVC_VERSION
@@ -393,6 +387,8 @@ cmake-variables(7)
    /variable/CMAKE_APPLE_SILICON_PROCESSOR
    /variable/CMAKE_ARCHIVE_OUTPUT_DIRECTORY
    /variable/CMAKE_ARCHIVE_OUTPUT_DIRECTORY_CONFIG
+   /variable/CMAKE_AUTOGEN_BETTER_GRAPH_MULTI_CONFIG
+   /variable/CMAKE_AUTOGEN_COMMAND_LINE_LENGTH_MAX
    /variable/CMAKE_AUTOGEN_ORIGIN_DEPENDS
    /variable/CMAKE_AUTOGEN_PARALLEL
    /variable/CMAKE_AUTOGEN_USE_SYSTEM_INCLUDE
@@ -437,6 +433,7 @@ cmake-variables(7)
    /variable/CMAKE_EXE_LINKER_FLAGS_CONFIG
    /variable/CMAKE_EXE_LINKER_FLAGS_CONFIG_INIT
    /variable/CMAKE_EXE_LINKER_FLAGS_INIT
+   /variable/CMAKE_EXPORT_FIND_PACKAGE_NAME
    /variable/CMAKE_FOLDER
    /variable/CMAKE_Fortran_FORMAT
    /variable/CMAKE_Fortran_MODULE_DIRECTORY
@@ -457,7 +454,6 @@ cmake-variables(7)
    /variable/CMAKE_INSTALL_RPATH_USE_LINK_PATH
    /variable/CMAKE_INTERPROCEDURAL_OPTIMIZATION
    /variable/CMAKE_INTERPROCEDURAL_OPTIMIZATION_CONFIG
-   /variable/CMAKE_IOS_INSTALL_COMBINED
    /variable/CMAKE_LANG_CLANG_TIDY
    /variable/CMAKE_LANG_CLANG_TIDY_EXPORT_FIXES_DIR
    /variable/CMAKE_LANG_COMPILER_LAUNCHER
@@ -472,6 +468,8 @@ cmake-variables(7)
    /variable/CMAKE_LANG_LINK_LIBRARY_USING_FEATURE_SUPPORTED
    /variable/CMAKE_LANG_LINK_WHAT_YOU_USE_FLAG
    /variable/CMAKE_LANG_LINKER_LAUNCHER
+   /variable/CMAKE_LANG_USING_LINKER_MODE
+   /variable/CMAKE_LANG_USING_LINKER_TYPE
    /variable/CMAKE_LANG_VISIBILITY_PRESET
    /variable/CMAKE_LIBRARY_OUTPUT_DIRECTORY
    /variable/CMAKE_LIBRARY_OUTPUT_DIRECTORY_CONFIG
@@ -488,6 +486,7 @@ cmake-variables(7)
    /variable/CMAKE_LINK_LIBRARY_USING_FEATURE_SUPPORTED
    /variable/CMAKE_LINK_WHAT_YOU_USE
    /variable/CMAKE_LINK_WHAT_YOU_USE_CHECK
+   /variable/CMAKE_LINKER_TYPE
    /variable/CMAKE_MACOSX_BUNDLE
    /variable/CMAKE_MACOSX_RPATH
    /variable/CMAKE_MAP_IMPORTED_CONFIG_CONFIG
@@ -532,7 +531,6 @@ cmake-variables(7)
    /variable/CMAKE_UNITY_BUILD
    /variable/CMAKE_UNITY_BUILD_BATCH_SIZE
    /variable/CMAKE_UNITY_BUILD_UNIQUE_ID
-   /variable/CMAKE_USE_RELATIVE_PATHS
    /variable/CMAKE_VERIFY_INTERFACE_HEADER_SETS
    /variable/CMAKE_VISIBILITY_INLINES_HIDDEN
    /variable/CMAKE_VS_DEBUGGER_COMMAND
@@ -569,9 +567,6 @@ cmake-variables(7)
    /variable/CMAKE_C_EXTENSIONS
    /variable/CMAKE_C_STANDARD
    /variable/CMAKE_C_STANDARD_REQUIRED
-   /variable/CMAKE_COMPILER_IS_GNUCC
-   /variable/CMAKE_COMPILER_IS_GNUCXX
-   /variable/CMAKE_COMPILER_IS_GNUG77
    /variable/CMAKE_CUDA_ARCHITECTURES
    /variable/CMAKE_CUDA_COMPILE_FEATURES
    /variable/CMAKE_CUDA_EXTENSIONS
@@ -691,7 +686,6 @@ CTest相关变量
    /variable/CTEST_CUSTOM_TESTS_IGNORE
    /variable/CTEST_CUSTOM_WARNING_EXCEPTION
    /variable/CTEST_CUSTOM_WARNING_MATCH
-   /variable/CTEST_CVS_CHECKOUT
    /variable/CTEST_CVS_COMMAND
    /variable/CTEST_CVS_UPDATE_OPTIONS
    /variable/CTEST_DROP_LOCATION
@@ -720,7 +714,6 @@ CTest相关变量
    /variable/CTEST_P4_UPDATE_OPTIONS
    /variable/CTEST_RESOURCE_SPEC_FILE
    /variable/CTEST_RUN_CURRENT_SCRIPT
-   /variable/CTEST_SCP_COMMAND
    /variable/CTEST_SCRIPT_DIRECTORY
    /variable/CTEST_SITE
    /variable/CTEST_SOURCE_DIRECTORY
@@ -731,7 +724,6 @@ CTest相关变量
    /variable/CTEST_SVN_UPDATE_OPTIONS
    /variable/CTEST_TEST_LOAD
    /variable/CTEST_TEST_TIMEOUT
-   /variable/CTEST_TRIGGER_SITE
    /variable/CTEST_UPDATE_COMMAND
    /variable/CTEST_UPDATE_OPTIONS
    /variable/CTEST_UPDATE_VERSION_ONLY
@@ -782,3 +774,67 @@ CMake有许多内部变量。它们中的大部分都未公开。然而，其中
    /variable/CMAKE_LANG_PLATFORM_ID
    /variable/CMAKE_NOT_USING_CONFIG_FLAGS
    /variable/CMAKE_VS_INTEL_Fortran_PROJECT_VERSION
+
+Deprecated Variables that Provide Information
+=============================================
+
+.. toctree::
+   :maxdepth: 1
+
+   /variable/CMAKE_EXTRA_GENERATOR
+
+Deprecated Variables that Change Behavior
+=========================================
+
+.. toctree::
+   :maxdepth: 1
+
+   /variable/CMAKE_AUTOMOC_RELAXED_MODE
+   /variable/CMAKE_BACKWARDS_COMPATIBILITY
+   /variable/CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY
+   /variable/CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY
+
+Deprecated Variables that Describe the System
+=============================================
+
+.. toctree::
+   :maxdepth: 1
+
+   /variable/MSVC10
+   /variable/MSVC11
+   /variable/MSVC12
+   /variable/MSVC14
+   /variable/MSVC60
+   /variable/MSVC70
+   /variable/MSVC71
+   /variable/MSVC80
+   /variable/MSVC90
+
+Deprecated Variables that Control the Build
+===========================================
+
+.. toctree::
+   :maxdepth: 1
+
+   /variable/CMAKE_IOS_INSTALL_COMBINED
+   /variable/CMAKE_USE_RELATIVE_PATHS
+
+Deprecated Variables for Languages
+==================================
+
+.. toctree::
+   :maxdepth: 1
+
+   /variable/CMAKE_COMPILER_IS_GNUCC
+   /variable/CMAKE_COMPILER_IS_GNUCXX
+   /variable/CMAKE_COMPILER_IS_GNUG77
+
+Deprecated Variables for CTest
+==============================
+
+.. toctree::
+   :maxdepth: 1
+
+   /variable/CTEST_CVS_CHECKOUT
+   /variable/CTEST_SCP_COMMAND
+   /variable/CTEST_TRIGGER_SITE

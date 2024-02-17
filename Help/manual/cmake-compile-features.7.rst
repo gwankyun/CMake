@@ -223,6 +223,7 @@ CMake目前知道的\ :prop_tgt:`C++标准 <CXX_STANDARD>`\ 及其相关的元�
 * ``PGI``: PGI 版本 12.10+。
 * ``NVHPC``: NVIDIA HPC 编译器版本 11.0+。
 * ``TI``: Texas Instruments 编译器。
+* ``TIClang``: Texas Instruments Clang-based compilers.
 * ``XL``: IBM XL 版本 10.1+。
 
 CMake目前知道的\ :prop_tgt:`C标准 <C_STANDARD>`\ 及其相关的元特性（例如\ ``c_std_99``）\

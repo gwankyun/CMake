@@ -6,9 +6,9 @@ AUTOGEN_PARALLEL
 使用\ :prop_tgt:`AUTOMOC`\ 和\ :prop_tgt:`AUTOUIC`\ 时启动的并行\ ``moc``\ 或\
 ``uic``\ 进程数。
 
-The custom ``<origin>_autogen`` target starts a number of threads of which
+The custom :ref:`<ORIGIN>_autogen` target starts a number of threads of which
 each one parses a source file and on demand starts a ``moc`` or ``uic``
-process.  ``AUTOGEN_PARALLEL`` controls how many parallel threads
+process. ``AUTOGEN_PARALLEL`` controls how many parallel threads
 (and therefore ``moc`` or ``uic`` processes) are started.
 
 - An empty (or unset) value or the string ``AUTO`` sets the number of

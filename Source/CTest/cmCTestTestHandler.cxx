@@ -345,6 +345,8 @@ void cmCTestTestHandler::Initialize()
   this->ExcludeFixtureRegExp.clear();
   this->ExcludeFixtureSetupRegExp.clear();
   this->ExcludeFixtureCleanupRegExp.clear();
+  this->TestListFile.clear();
+  this->ExcludeTestListFile.clear();
 
   this->TestsToRunString.clear();
   this->UseUnion = false;
@@ -584,6 +586,14 @@ bool cmCTestTestHandler::ProcessOptions()
   val = this->GetOption("ResourceSpecFile");
   if (val) {
     this->ResourceSpecFile = *val;
+  }
+  val = this->GetOption("TestListFile");
+  if (val) {
+    this->TestListFile = val;
+  }
+  val = this->GetOption("ExcludeTestListFile");
+  if (val) {
+    this->ExcludeTestListFile = val;
   }
   this->SetRerunFailed(cmIsOn(this->GetOption("RerunFailed")));
 
@@ -933,6 +943,21 @@ bool cmCTestTestHandler::ComputeTestList()
         continue;
       }
     }
+
+    if (!this->TestsToRunByName.empty()) {
+      if (this->TestsToRunByName.find(tp.Name) ==
+          this->TestsToRunByName.end()) {
+        continue;
+      }
+    }
+
+    if (!this->TestsToExcludeByName.empty()) {
+      if (this->TestsToExcludeByName.find(tp.Name) !=
+          this->TestsToExcludeByName.end()) {
+        continue;
+      }
+    }
+
     tp.Index = cnt; // save the index into the test list for this test
     finalList.push_back(tp);
   }
@@ -1381,15 +1406,15 @@ bool cmCTestTestHandler::ProcessDirectory(std::vector<std::string>& passed,
         }
       }
     }
-    tests[p.Index] = depends;
+    tests[p.Index].Depends = depends;
     properties[p.Index] = &p;
   }
   parallel->SetResourceSpecFile(this->ResourceSpecFile);
-  parallel->SetTests(tests, properties);
+  parallel->SetTests(std::move(tests), std::move(properties));
   parallel->SetPassFailVectors(&passed, &failed);
   this->TestResults.clear();
   parallel->SetTestResults(&this->TestResults);
-  parallel->CheckResourcesAvailable();
+  parallel->CheckResourceAvailability();
 
   if (this->CTest->ShouldPrintLabels()) {
     parallel->PrintLabels();
@@ -1818,6 +1843,15 @@ bool cmCTestTestHandler::GetListOfTests()
   if (this->ResourceSpecFile.empty() && specFile) {
     this->ResourceSpecFile = *specFile;
   }
+
+  if (!this->TestListFile.empty()) {
+    this->TestsToRunByName = this->ReadTestListFile(this->TestListFile);
+  }
+  if (!this->ExcludeTestListFile.empty()) {
+    this->TestsToExcludeByName =
+      this->ReadTestListFile(this->ExcludeTestListFile);
+  }
+
   cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
                      "Done constructing a list of tests" << std::endl,
                      this->Quiet);
@@ -1984,6 +2018,34 @@ void cmCTestTestHandler::ExpandTestsToRunInformationForRerunFailed()
                  << " while generating list of previously failed tests."
                  << std::endl);
   }
+}
+
+std::set<std::string> cmCTestTestHandler::ReadTestListFile(
+  const std::string& testListFileName) const
+{
+  std::set<std::string> testNames;
+
+  cmsys::ifstream ifs(testListFileName.c_str());
+  if (ifs) {
+    std::string line;
+    while (cmSystemTools::GetLineFromStream(ifs, line)) {
+      std::string trimmed = cmTrimWhitespace(line);
+      if (trimmed.empty() || (trimmed[0] == '#')) {
+        continue;
+      }
+
+      testNames.insert(trimmed);
+    }
+    ifs.close();
+  } else if (!this->CTest->GetShowOnly() &&
+             !this->CTest->ShouldPrintLabels()) {
+    cmCTestLog(this->CTest, ERROR_MESSAGE,
+               "Problem reading test list file: "
+                 << testListFileName
+                 << " while generating list of tests to run." << std::endl);
+  }
+
+  return testNames;
 }
 
 void cmCTestTestHandler::RecordCustomTestMeasurements(cmXMLWriter& xml,
@@ -2233,7 +2295,7 @@ bool cmCTestTestHandler::SetTestsProperties(
           } else if (key == "RESOURCE_LOCK"_s) {
             cmList lval{ val };
 
-            rt.LockedResources.insert(lval.begin(), lval.end());
+            rt.ProjectResources.insert(lval.begin(), lval.end());
           } else if (key == "FIXTURES_SETUP"_s) {
             cmList lval{ val };
 

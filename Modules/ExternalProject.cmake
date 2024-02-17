@@ -1517,6 +1517,21 @@ function(_ep_write_downloadfile_script
   netrc
   netrc_file
 )
+  if("x${REMOTE}" STREQUAL "x")
+    message(FATAL_ERROR "REMOTE can't be empty")
+  endif()
+  if("x${LOCAL}" STREQUAL "x")
+    message(FATAL_ERROR "LOCAL can't be empty")
+  endif()
+
+  # REMOTE could contain special characters that parse as separate arguments.
+  # Things like parentheses are legitimate characters in a URL, but would be
+  # seen as the start of a new unquoted argument by the cmake language parser.
+  # Avoid those special cases by preparing quoted strings for direct inclusion
+  # in the foreach() call that iterates over the set of URLs in REMOTE.
+  set(REMOTE "[====[${REMOTE}]====]")
+  string(REPLACE ";" "]====] [====[" REMOTE "${REMOTE}")
+
   if(timeout)
     set(TIMEOUT_ARGS TIMEOUT ${timeout})
     set(TIMEOUT_MSG "${timeout} seconds")
@@ -1598,7 +1613,7 @@ function(_ep_write_downloadfile_script
 
   set(HTTP_HEADERS_ARGS "")
   if(NOT http_headers STREQUAL "")
-    foreach(header ${http_headers})
+    foreach(header IN LISTS http_headers)
       string(PREPEND HTTP_HEADERS_ARGS
         "HTTPHEADER \"${header}\"\n        "
       )
@@ -1723,7 +1738,7 @@ function(_ep_set_directories name)
 
   # Apply defaults and convert to absolute paths.
   set(places stamp download source binary install tmp)
-  foreach(var ${places})
+  foreach(var IN LISTS places)
     string(TOUPPER "${var}" VAR)
     get_property(${var}_dir TARGET ${name} PROPERTY _EP_${VAR}_DIR)
     if(NOT ${var}_dir)
@@ -1795,9 +1810,9 @@ endfunction()
 #
 macro(_ep_replace_location_tags target_name)
   set(vars ${ARGN})
-  foreach(var ${vars})
-    if(${var})
-      foreach(dir
+  foreach(var IN LISTS vars)
+    if(var)
+      foreach(dir IN ITEMS
         SOURCE_DIR
         SOURCE_SUBDIR
         BINARY_DIR
@@ -1827,7 +1842,7 @@ function(_ep_command_line_to_initial_cache
   if(force)
     set(forceArg "FORCE")
   endif()
-  foreach(line ${args})
+  foreach(line IN LISTS args)
     if("${line}" MATCHES "^-D(.*)")
       set(line "${CMAKE_MATCH_1}")
       if(NOT "${setArg}" STREQUAL "")
@@ -1883,7 +1898,7 @@ endfunction()
 
 
 function(ExternalProject_Get_Property name)
-  foreach(var ${ARGN})
+  foreach(var IN LISTS ARGN)
     string(TOUPPER "${var}" VAR)
     get_property(is_set TARGET ${name} PROPERTY _EP_${VAR} SET)
     if(NOT is_set)
@@ -1933,8 +1948,10 @@ function(_ep_get_build_command
   set(args)
   _ep_get_configure_command_id(${name} cfg_cmd_id)
   if(cfg_cmd_id STREQUAL "cmake")
-    # CMake project.  Select build command based on generator.
-    get_target_property(cmake_generator ${name} _EP_CMAKE_GENERATOR)
+    # Adding a CMake project as an External Project.  Select command based on generator
+    get_property(cmake_generator TARGET ${name} PROPERTY _EP_CMAKE_GENERATOR)
+    # cmake_generator is the CMake generator of the ExternalProject target being added
+    # CMAKE_GENERATOR is the CMake generator of the Current Project
     if("${CMAKE_GENERATOR}" MATCHES "Make" AND
        ("${cmake_generator}" MATCHES "Make" OR NOT cmake_generator))
       # The project uses the same Makefile generator.  Use recursive make.
@@ -1947,6 +1964,11 @@ function(_ep_get_build_command
       endif()
     else()
       # Drive the project with "cmake --build".
+      if(NOT cmake_generator)
+        # If there is no CMake Generator defined on the ExternalProject,
+        # use the same Generator as the current project
+        set(cmake_generator "${CMAKE_GENERATOR}")
+      endif()
       get_target_property(cmake_command ${name} _EP_CMAKE_COMMAND)
       if(cmake_command)
         set(cmd "${cmake_command}")
@@ -1976,7 +1998,11 @@ function(_ep_get_build_command
         list(APPEND args --config ${config})
       endif()
       if(step STREQUAL "INSTALL")
-        list(APPEND args --target install)
+        if("${cmake_generator}" MATCHES "Green Hills MULTI")
+          list(APPEND args --target INSTALL)
+        else()
+          list(APPEND args --target install)
+        endif()
       endif()
       # But for "TEST" drive the project with corresponding "ctest".
       if("x${step}x" STREQUAL "xTESTx")
@@ -2360,7 +2386,7 @@ function(ExternalProject_Add_StepTargets name)
     endif()
     message(AUTHOR_WARNING "${_cmp0114_warning}")
   endif()
-  foreach(step ${steps})
+  foreach(step IN LISTS steps)
     _ep_step_add_target("${name}" "${step}" "${no_deps}")
   endforeach()
 endfunction()
@@ -2541,7 +2567,7 @@ function(ExternalProject_Add_Step name step)
     get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
     if(_isMultiConfig)
       _ep_get_configuration_subdir_genex(cfgdir)
-      foreach(cfg ${CMAKE_CONFIGURATION_TYPES})
+      foreach(cfg IN LISTS CMAKE_CONFIGURATION_TYPES)
         string(REPLACE "${cfgdir}" "/${cfg}"
           stamp_file_config "${stamp_file}"
         )
@@ -2616,7 +2642,7 @@ function(ExternalProject_Add_Step name step)
       PROPERTY EP_STEP_TARGETS
     )
   endif()
-  foreach(st ${step_targets})
+  foreach(st IN LISTS step_targets)
     if("${st}" STREQUAL "${step}")
       _ep_step_add_target("${name}" "${step}" "FALSE")
       break()
@@ -2663,7 +2689,7 @@ function(ExternalProject_Add_Step name step)
         message(AUTHOR_WARNING "${_cmp0114_warning}")
       endif()
     endif()
-    foreach(st ${independent_step_targets})
+    foreach(st IN LISTS independent_step_targets)
       if("${st}" STREQUAL "${step}")
         _ep_step_add_target("${name}" "${step}" "TRUE")
         break()
@@ -2729,17 +2755,15 @@ function(ExternalProject_Add_StepDependencies name step)
   # Always add file-level dependency, but add target-level dependency
   # only if the target exists for that step.
   _ep_get_step_stampfile(${name} ${step} stamp_file)
-  foreach(dep ${dependencies})
+  foreach(dep IN LISTS dependencies)
     add_custom_command(APPEND
       OUTPUT ${stamp_file}
       DEPENDS ${dep}
     )
-    if(TARGET ${name}-${step})
-      foreach(dep ${dependencies})
-        add_dependencies(${name}-${step} ${dep})
-      endforeach()
-    endif()
   endforeach()
+  if(TARGET ${name}-${step})
+    add_dependencies(${name}-${step} ${dependencies})
+  endif()
 
 endfunction()
 
@@ -3067,7 +3091,7 @@ hash=${hash}
 
     list(LENGTH url url_list_length)
     if(NOT "${url_list_length}" STREQUAL "1")
-      foreach(entry ${url})
+      foreach(entry IN LISTS url)
         if(NOT "${entry}" MATCHES "^[a-z]+://")
           message(FATAL_ERROR
             "At least one entry of URL is a path (invalid in a list)"
@@ -3762,6 +3786,9 @@ function(_ep_extract_configure_command var name)
         list(APPEND cmd "-G${CMAKE_EXTRA_GENERATOR} - ${CMAKE_GENERATOR}")
       else()
         list(APPEND cmd "-G${CMAKE_GENERATOR}")
+        # GreenHills needs to know about the compiler and toolset.
+        # Be sure to update the similar section in
+        # FetchContent.cmake:__FetchContent_directPopulate()
         if("${CMAKE_GENERATOR}" MATCHES "Green Hills MULTI")
           set(has_cmake_cache_default_args 1)
           list(APPEND cmake_cache_default_args

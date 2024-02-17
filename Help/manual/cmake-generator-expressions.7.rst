@@ -945,8 +945,13 @@ Shell路径
 
 .. genex:: $<C_COMPILER_ID:compiler_ids>
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的C编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  where ``compiler_ids`` is a comma-separated list.
+  ``1`` if CMake's compiler id of the C compiler matches any one
+  of the entries in ``compiler_ids``, otherwise ``0``.
+
+  .. versionchanged:: 3.15
+    Multiple ``compiler_ids`` can be specified.
+    CMake 3.14 and earlier only accepted a single compiler ID.
 
 .. genex:: $<CXX_COMPILER_ID>
 
@@ -954,8 +959,13 @@ Shell路径
 
 .. genex:: $<CXX_COMPILER_ID:compiler_ids>
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的CXX编译器id与\ ``compiler_ids``\
-  中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  where ``compiler_ids`` is a comma-separated list.
+  ``1`` if CMake's compiler id of the CXX compiler matches any one
+  of the entries in ``compiler_ids``, otherwise ``0``.
+
+  .. versionchanged:: 3.15
+    Multiple ``compiler_ids`` can be specified.
+    CMake 3.14 and earlier only accepted a single compiler ID.
 
 .. genex:: $<CUDA_COMPILER_ID>
 
@@ -1002,8 +1012,13 @@ Shell路径
 
 .. genex:: $<Fortran_COMPILER_ID:compiler_ids>
 
-  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的Fortran编译器id与\
-  ``compiler_ids``\ 中的任何一个条目匹配，则返回\ ``1``，否则为\ ``0``。
+  where ``compiler_ids`` is a comma-separated list.
+  ``1`` if CMake's compiler id of the Fortran compiler matches any one
+  of the entries in ``compiler_ids``, otherwise ``0``.
+
+  .. versionchanged:: 3.15
+    Multiple ``compiler_ids`` can be specified.
+    CMake 3.14 and earlier only accepted a single compiler ID.
 
 .. genex:: $<HIP_COMPILER_ID>
 
@@ -2031,12 +2046,17 @@ Shell路径
 
 .. genex:: $<INSTALL_PREFIX>
 
-  当通过\ :command:`install(EXPORT)`\ 导出目标时，或在\ :prop_tgt:`INSTALL_NAME_DIR`\
-  属性、\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ 的\ ``INSTALL_NAME_DIR``\
-  参数、\ :command:`install(CODE)`\ 的code参数或\ :command:`install(SCRIPT)`\ 的\
-  file参数中求值时，install前缀的内容，否则为空。
+  Content of the install prefix when the target is exported via
+  :command:`install(EXPORT)`, or when evaluated in the
+  :prop_tgt:`INSTALL_NAME_DIR` property or the ``INSTALL_NAME_DIR`` argument of
+  :command:`install(RUNTIME_DEPENDENCY_SET)`, and empty otherwise.
 
-多层次表达式求值
+  .. versionchanged:: 3.27
+    Evaluates to the content of the install prefix
+    in the code argument of :command:`install(CODE)` or
+    the file argument of :command:`install(SCRIPT)`.
+
+Multi-level Expression Evaluation
 ---------------------------------
 
 .. genex:: $<GENEX_EVAL:expr>

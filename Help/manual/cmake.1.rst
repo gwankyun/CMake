@@ -771,6 +771,10 @@ CMake通过签名提供内置命令行工具
     ``-``\ 开头的选项将导致错误。在文件以\ ``-``\ 开头的情况下，使用\ ``--``\ 来表示选项\
     的结束。
 
+  .. versionadded:: 3.29
+
+    ``cat`` can now print the standard input by passing the ``-`` argument.
+
 .. program:: cmake-E
 
 .. option:: chdir <dir> <cmd> [<arg>...]
@@ -1149,6 +1153,7 @@ Windows特定命令行工程
 
   写入Windows注册表值。
 
+.. _`Find-Package Tool Mode`:
 
 运行包查找工具
 =========================

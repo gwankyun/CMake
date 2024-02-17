@@ -196,11 +196,37 @@ ctest(1)
 
 .. option:: -LE <regex>, --label-exclude <regex>
 
- 排除标签与正则表达式匹配的测试。
+ Exclude tests with labels matching regular expression.
 
- 此选项告诉CTest不运行标签与给定正则表达式匹配的测试。当给出多个\ ``-LE``\ 选项时，只有当\
- 每个正则表达式匹配至少一个测试的标签（即多个\ ``-LE``\ 标签形成一个\ ``AND``\ 关系）时，\
- 才会排除测试。参考\ `标签匹配`_。
+ This option tells CTest to NOT run the tests whose labels match the
+ given regular expression.  When more than one ``-LE`` option is given,
+ a test will only be excluded if each regular expression matches at least one
+ of the test's labels (i.e. the multiple ``-LE`` labels form an ``AND``
+ relationship).  See `Label Matching`_.
+
+.. option:: --tests-from-file <filename>
+
+ .. versionadded:: 3.29
+
+ Run tests listed in the given file.
+
+ This option tells CTest to run the tests which are listed in the given
+ file. The file must contain one exact test name per line.
+ Lines can be commented out using a ``#``.
+ This option can be combined with the other options like
+ ``-R``, ``-E``, ``-L`` or ``-LE``.
+
+.. option:: --exclude-from-file <filename>
+
+ .. versionadded:: 3.29
+
+ Exclude tests listed in the given file.
+
+ This option tells CTest to NOT run the tests which are listed in the given
+ file. The file must contain one exact test name per line.
+ Lines can be commented out using a ``#``.
+ This option can be combined with the other options like
+ ``-R``, ``-E``, ``-L`` or ``-LE``.
 
 .. option:: -FA <regex>, --fixture-exclude-any <regex>
 
@@ -300,7 +326,10 @@ ctest(1)
 
 .. option:: --test-dir <dir>
 
- 指定要查找测试的目录，通常是CMake项目构建目录。如果未指定，则使用当前目录。
+ .. versionadded:: 3.20
+
+ Specify the directory in which to look for tests, typically a CMake project
+ build directory. If not specified, the current directory is used.
 
 .. option:: --test-output-size-passed <size>
 
@@ -638,9 +667,19 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
 
 .. option:: --extra-submit <file>[;<file>]
 
- 向仪表板提交额外的文件。
+ Submit extra files to the dashboard.
 
- 此选项将向指示板提交额外的文件。
+ This option will submit extra files to the dashboard.
+
+.. option:: --http-header <header>
+
+ .. versionadded:: 3.29
+
+ Append HTTP header when submitting to the dashboard.
+
+ This option will cause CTest to append the specified header
+ when submitting to the dashboard.
+ This option may be specified more than once.
 
 .. option:: --http1.0
 
@@ -1568,15 +1607,44 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 
 .. versionadded:: 3.28
 
-项目可以选择指定单个测试，该测试将用于动态生成资源规范文件，CTest将使用该文件调度使用资源的\
-测试。生成文件的测试必须设置\ :prop_test:`GENERATED_RESOURCE_SPEC_FILE`\ 属性，并且在\
-其\ :prop_test:`FIXTURES_SETUP`\ 属性中必须只有一个fixture。CTest认为这个fixture具有\
-特殊的含义：它是生成资源规范文件的fixture。fixture可以有任何名称。如果存在这样的fixture，\
-那么设置了\ :prop_test:`RESOURCE_GROUPS`\ 的所有测试必须在其\
-:prop_test:`FIXTURES_REQUIRED`\ 中包含该fixture，并且资源规范文件不能使用\
-``--resource-spec-file``\ 参数或\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ 变量指定。
+A project may optionally specify a single test which will be used to
+dynamically generate the resource specification file that CTest will use for
+scheduling tests that use resources. The test that generates the file must
+have the :prop_test:`GENERATED_RESOURCE_SPEC_FILE` property set, and must have
+exactly one fixture in its :prop_test:`FIXTURES_SETUP` property. This fixture
+is considered by CTest to have special meaning: it's the fixture that generates
+the resource spec file. The fixture may have any name. If such a fixture
+exists, all tests that have :prop_test:`RESOURCE_GROUPS` set must have the
+fixture in their :prop_test:`FIXTURES_REQUIRED`, and a resource spec file may
+not be specified with the ``--resource-spec-file`` argument or the
+:variable:`CTEST_RESOURCE_SPEC_FILE` variable.
 
-另请参阅
+.. _`ctest-job-server-integration`:
+
+Job Server Integration
+======================
+
+.. versionadded:: 3.29
+
+On POSIX systems, when running under the context of a `Job Server`_,
+CTest shares its job slots.  This is independent of the :prop_test:`PROCESSORS`
+test property, which still counts against CTest's :option:`-j <ctest -j>`
+parallel level.  CTest acquires exactly one token from the job server before
+running each test, and returns it when the test finishes.
+
+For example, consider the ``Makefile``:
+
+.. literalinclude:: CTEST_EXAMPLE_MAKEFILE_JOB_SERVER.make
+  :language: make
+
+When invoked via ``make -j 2 test``, ``ctest`` connects to the job server,
+acquires a token for each test, and runs at most 2 tests concurrently.
+
+On Windows systems, job server integration is not yet implemented.
+
+.. _`Job Server`: https://www.gnu.org/software/make/manual/html_node/Job-Slots.html
+
+See Also
 ========
 
 .. include:: LINKS.txt

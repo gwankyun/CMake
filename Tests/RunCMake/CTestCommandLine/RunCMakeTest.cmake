@@ -207,6 +207,24 @@ set_tests_properties(test1 PROPERTIES SKIP_REGULAR_EXPRESSION \"test1\")
 endfunction()
 run_SkipRegexFoundTest()
 
+
+function(run_TestsFromFileTest arg)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/TestsFromFile)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
+add_test(Test1 \"${CMAKE_COMMAND}\" -E echo \"test1\")
+add_test(Test2 \"${CMAKE_COMMAND}\" -E echo \"test2\")
+add_test(Test11 \"${CMAKE_COMMAND}\" -E echo \"test11\")
+")
+  run_cmake_command(TestsFromFile-${arg} ${CMAKE_CTEST_COMMAND} --${arg} ${RunCMake_SOURCE_DIR}/TestsFromFile-TestList.txt )
+endfunction()
+run_TestsFromFileTest(tests-from-file)
+run_TestsFromFileTest(exclude-from-file)
+
+
 function(run_SerialFailed)
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/SerialFailed)
   set(RunCMake_TEST_NO_CLEAN 1)
@@ -229,19 +247,22 @@ function(run_TestLoad name load)
   file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
   file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
   add_test(TestLoad1 \"${CMAKE_COMMAND}\" -E echo \"test of --test-load\")
+  set_tests_properties(TestLoad1 PROPERTIES PROCESSORS 2)
   add_test(TestLoad2 \"${CMAKE_COMMAND}\" -E echo \"test of --test-load\")
+  set_tests_properties(TestLoad2 PROPERTIES PROCESSORS 2)
 ")
-  run_cmake_command(${name} ${CMAKE_CTEST_COMMAND} -VV -j2 --test-load ${load})
+  run_cmake_command(${name} ${CMAKE_CTEST_COMMAND} -VV -j8 --test-load ${load})
 endfunction()
 
 # Tests for the --test-load feature of ctest
 #
 # Spoof a load average value to make these tests more reliable.
-set(ENV{__CTEST_FAKE_LOAD_AVERAGE_FOR_TESTING} 5)
+set(ENV{__CTEST_FAKE_LOAD_AVERAGE_FOR_TESTING} 7)
 
 # Verify that new tests are not started when the load average exceeds
 # our threshold and that they then run once the load average drops.
-run_TestLoad(test-load-wait 3)
+run_TestLoad(test-load-wait0 5)
+run_TestLoad(test-load-wait1 8)
 
 # Verify that warning message is displayed but tests still start when
 # an invalid argument is given.
@@ -249,7 +270,7 @@ run_TestLoad(test-load-invalid 'two')
 
 # Verify that new tests are started when the load average falls below
 # our threshold.
-run_TestLoad(test-load-pass 10)
+run_TestLoad(test-load-pass 12)
 
 unset(ENV{__CTEST_FAKE_LOAD_AVERAGE_FOR_TESTING})
 

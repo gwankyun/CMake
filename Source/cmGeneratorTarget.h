@@ -206,6 +206,9 @@ public:
   cmValue GetFeature(const std::string& feature,
                      const std::string& config) const;
 
+  std::string GetLinkerTypeProperty(std::string const& lang,
+                                    std::string const& config) const;
+
   const char* GetLinkPIEProperty(const std::string& config) const;
 
   bool IsIPOEnabled(std::string const& lang, std::string const& config) const;
@@ -447,9 +450,12 @@ public:
   TargetOrString ResolveTargetReference(std::string const& name,
                                         cmLocalGenerator const* lg) const;
 
-  cmLinkItem ResolveLinkItem(BT<std::string> const& name) const;
-  cmLinkItem ResolveLinkItem(BT<std::string> const& name,
-                             cmLocalGenerator const* lg) const;
+  cmLinkItem ResolveLinkItem(
+    BT<std::string> const& name,
+    std::string const& linkFeature = cmLinkItem::DEFAULT) const;
+  cmLinkItem ResolveLinkItem(
+    BT<std::string> const& name, cmLocalGenerator const* lg,
+    std::string const& linkFeature = cmLinkItem::DEFAULT) const;
 
   bool HasPackageReferences() const;
   std::vector<std::string> GetPackageReferences() const;
@@ -794,6 +800,13 @@ public:
 
   //! Return the preferred linker language for this target
   std::string GetLinkerLanguage(const std::string& config) const;
+  //! Return the preferred linker tool for this target
+  std::string GetLinkerTool(const std::string& config) const;
+  std::string GetLinkerTool(const std::string& lang,
+                            const std::string& config) const;
+
+  /** Is the linker known to enforce '--no-allow-shlib-undefined'? */
+  bool LinkerEnforcesNoAllowShLibUndefined(std::string const& config) const;
 
   /** Does this target have a GNU implib to convert to MS format?  */
   bool HasImplibGNUtoMS(std::string const& config) const;
@@ -1175,6 +1188,7 @@ private:
   };
   cm::optional<cmLinkItem> LookupLinkItem(std::string const& n,
                                           cmListFileBacktrace const& bt,
+                                          std::string const& linkFeature,
                                           LookupLinkItemScope* scope,
                                           LookupSelf lookupSelf) const;
 
