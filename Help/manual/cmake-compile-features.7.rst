@@ -219,11 +219,11 @@ CMake目前知道的\ :prop_tgt:`C++标准 <CXX_STANDARD>`\ 及其相关的元�
 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>`\ 中获得：
 
 * ``Cray``: Cray 编译器环境版本 8.1+。
-* ``Fujitsu``: Fujitsu HPC 编译器 4.0+。
+* ``Fujitsu``: 富士通 HPC 编译器 4.0+。
 * ``PGI``: PGI 版本 12.10+。
 * ``NVHPC``: NVIDIA HPC 编译器版本 11.0+。
-* ``TI``: Texas Instruments 编译器。
-* ``TIClang``: Texas Instruments Clang-based compilers.
+* ``TI``: 德州仪器编译器。
+* ``TIClang``: 德州仪器基于 Clang 的编译器.
 * ``XL``: IBM XL 版本 10.1+。
 
 CMake目前知道的\ :prop_tgt:`C标准 <C_STANDARD>`\ 及其相关的元特性（例如\ ``c_std_99``）\
