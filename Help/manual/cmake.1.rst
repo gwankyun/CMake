@@ -773,7 +773,7 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 3.29
 
-    ``cat`` can now print the standard input by passing the ``-`` argument.
+    ``cat``\ 现在可以通过传递\ ``-``\ 参数打印标准输入。
 
 .. program:: cmake-E
 

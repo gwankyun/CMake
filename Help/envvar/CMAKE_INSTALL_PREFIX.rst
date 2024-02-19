@@ -5,7 +5,5 @@ CMAKE_INSTALL_PREFIX
 
 .. include:: ENV_VAR.txt
 
-The ``CMAKE_INSTALL_PREFIX`` environment variable specifies a custom default
-value for the :variable:`CMAKE_INSTALL_PREFIX` variable in place of the
-default values specified by CMake itself. The value specified must be an
-absolute path to a directory.
+``CMAKE_INSTALL_PREFIX``\ 环境变量为\ :variable:`CMAKE_INSTALL_PREFIX`\ 变量指定一个\
+自定义的默认值，以代替CMake自己指定的默认值。指定的值必须是目录的绝对路径。

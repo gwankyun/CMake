@@ -14,7 +14,7 @@ cmake-variables(7)
 
 .. include:: ID_RESERVE.txt
 
-提供信息的变量
+信息提供变量
 ==================================
 
 .. toctree::
@@ -163,7 +163,7 @@ cmake-variables(7)
    /variable/PROJECT_VERSION_PATCH
    /variable/PROJECT_VERSION_TWEAK
 
-改变行为的变量
+改变行为变量
 ==============================
 
 .. toctree::
@@ -301,7 +301,7 @@ cmake-variables(7)
    /variable/CMAKE_XCODE_XCCONFIG
    /variable/PackageName_ROOT
 
-描述系统的变量
+系统描述变量
 ==================================
 
 .. toctree::
@@ -349,7 +349,7 @@ cmake-variables(7)
    /variable/XCODE
    /variable/XCODE_VERSION
 
-控制构建的变量
+构建控制变量
 ================================
 
 .. toctree::
@@ -557,7 +557,7 @@ cmake-variables(7)
    /variable/EXECUTABLE_OUTPUT_PATH
    /variable/LIBRARY_OUTPUT_PATH
 
-编程语言相关变量
+语言相关变量
 =======================
 
 .. toctree::
@@ -775,7 +775,7 @@ CMake有许多内部变量。它们中的大部分都未公开。然而，其中
    /variable/CMAKE_NOT_USING_CONFIG_FLAGS
    /variable/CMAKE_VS_INTEL_Fortran_PROJECT_VERSION
 
-Deprecated Variables that Provide Information
+废弃的信息提供变量
 =============================================
 
 .. toctree::
@@ -783,7 +783,7 @@ Deprecated Variables that Provide Information
 
    /variable/CMAKE_EXTRA_GENERATOR
 
-Deprecated Variables that Change Behavior
+废弃的改变行为变量
 =========================================
 
 .. toctree::
@@ -794,7 +794,7 @@ Deprecated Variables that Change Behavior
    /variable/CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY
    /variable/CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY
 
-Deprecated Variables that Describe the System
+废弃的系统描述变量
 =============================================
 
 .. toctree::
@@ -810,7 +810,7 @@ Deprecated Variables that Describe the System
    /variable/MSVC80
    /variable/MSVC90
 
-Deprecated Variables that Control the Build
+废弃的构建控制变量
 ===========================================
 
 .. toctree::
@@ -819,7 +819,7 @@ Deprecated Variables that Control the Build
    /variable/CMAKE_IOS_INSTALL_COMBINED
    /variable/CMAKE_USE_RELATIVE_PATHS
 
-Deprecated Variables for Languages
+废弃的语言相关变量
 ==================================
 
 .. toctree::
@@ -829,7 +829,7 @@ Deprecated Variables for Languages
    /variable/CMAKE_COMPILER_IS_GNUCXX
    /variable/CMAKE_COMPILER_IS_GNUG77
 
-Deprecated Variables for CTest
+废弃的CTest相关变量
 ==============================
 
 .. toctree::

@@ -789,34 +789,27 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``launchers``
-  Optional member that is present on executable targets that have
-  at least one launcher specified by the project.  The value is a
-  JSON array of entries corresponding to the specified launchers.
-  Each entry is a JSON object with members:
+  可选成员，该成员存在于至少有一个由项目指定的启动程序的可执行目标上。该值是一个JSON数组，\
+  包含与指定启动器对应的条目。每个条目都是一个JSON对象，包含以下成员：
 
   ``command``
-    A string specifying the path to the launcher on disk, represented
-    with forward slashes. If the file is inside the top-level source
-    directory then the path is specified relative to that directory.
+    一个字符串，指定磁盘上启动程序的路径，用正斜杠表示。如果文件位于顶层源目录中，则指定相对\
+    于该目录的路径。
 
   ``arguments``
-    Optional member that is present when the launcher command has
-    arguments preceding the executable to be launched.  The value
-    is a JSON array of strings representing the arguments.
+    可选成员，当启动器命令在要启动的可执行文件之前有参数时，该成员会出现。该值是表示参数的\
+    字符串的JSON数组。
 
   ``type``
-    A string specifying the type of launcher.  The value is one of
-    the following:
+    指定启动程序类型的字符串。取值为以下任意一种：
 
     ``emulator``
-      An emulator for the target platform when cross-compiling.
-      See the :prop_tgt:`CROSSCOMPILING_EMULATOR` target property.
+      交叉编译时目标平台的模拟器。参见\ :prop_tgt:`CROSSCOMPILING_EMULATOR`\ 目标属性。
 
     ``test``
-      A start program for the execution of tests.
-      See the :prop_tgt:`TEST_LAUNCHER` target property.
+      用于执行测试的启动程序。请参阅\ :prop_tgt:`TEST_LAUNCHER`\ 目标属性。
 
-  This field was added in codemodel version 2.7.
+  此字段在代码模型版本2.7中添加。
 
 ``link``
   可选成员，用于链接到运行时二进制文件的可执行文件和共享库目标。该值是一个JSON对象，其成员描\

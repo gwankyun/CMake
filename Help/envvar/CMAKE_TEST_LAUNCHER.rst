@@ -5,7 +5,6 @@ CMAKE_TEST_LAUNCHER
 
 .. include:: ENV_VAR.txt
 
-The default value for the :variable:`CMAKE_TEST_LAUNCHER` variable when there
-is no explicit configuration given on the first run while creating a new
-build tree.  On later runs in an existing build tree the value persists in
-the cache as :variable:`CMAKE_TEST_LAUNCHER`.
+:variable:`CMAKE_TEST_LAUNCHER`\ 变量的默认值，如果在第一次运行时创建新的构建树时没有给出\
+显式配置。以后在现有构建树中运行时，该值将作为\ :variable:`CMAKE_TEST_LAUNCHER`\ 保存在\
+缓存中。
