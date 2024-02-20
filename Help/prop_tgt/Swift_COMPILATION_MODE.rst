@@ -3,7 +3,7 @@ Swift_COMPILATION_MODE
 
 .. versionadded:: 3.29
 
-Specify how Swift compiles a target.
+指定Swift如何编译目标。
 
 The allowed values are:
 

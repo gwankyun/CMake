@@ -1,12 +1,10 @@
 WILL_FAIL
 ---------
 
-If ``true``, inverts the pass / fail test criteria. Tests for which
-``WILL_FAIL`` is ``true`` fail with return code 0 and pass with non-zero
-return code. Tests that exceed the timeout specified by :prop_test:`TIMEOUT`
-still fail regardless of ``WILL_FAIL``.
-System-level test failures including segmentation faults,
-signal abort, or heap errors may fail the test even if ``WILL_FAIL`` is true.
+如果为\ ``true``，则反转通过/失败测试标准。\ ``WILL_FAIL``\ 为\ ``true``\ 的测试失败，\
+返回代码为0，通过，返回代码为非0。无论\ ``WILL_FAIL``\ 是否存在，超过\ :prop_test:`TIMEOUT`\
+指定的超时的测试仍然会失败。即使\ ``WILL_FAIL``\ 为真，包括分段错误、信号中止或堆错误在内\
+的系统级测试失败也可能导致测试失败。
 
 Example of a test that would ordinarily pass, but fails because ``WILL_FAIL``
 is ``true``:

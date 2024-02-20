@@ -3,12 +3,10 @@ SKIP_REGULAR_EXPRESSION
 
 .. versionadded:: 3.16
 
-If the test output (stderr or stdout) matches this regular expression the test
-will be marked as skipped, regardless of the process exit code. Tests that
-exceed the timeout specified by :prop_test:`TIMEOUT` still fail regardless of
-``SKIP_REGULAR_EXPRESSION``. System-level test failures including segmentation
-faults, signal abort, or heap errors may fail the test even if the regular
-expression matches.
+如果测试输出（stderr或stdout）匹配此正则表达式，则测试将被标记为跳过，而不管进程退出代码是\
+什么。无论\ ``SKIP_REGULAR_EXPRESSION``\ 如何设置，超过\ :prop_test:`TIMEOUT`\ 指定\
+的超时的测试仍然会失败。即使正则表达式匹配，包括分段错误、信号中止或堆错误在内的系统级测试\
+失败也可能导致测试失败。
 
 Example:
 

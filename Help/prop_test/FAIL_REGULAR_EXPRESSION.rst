@@ -1,12 +1,10 @@
 FAIL_REGULAR_EXPRESSION
 -----------------------
 
-If the test output (stdout or stderr) matches this regular expression the test
-will fail, regardless of the process exit code. Tests that exceed the timeout
-specified by :prop_test:`TIMEOUT` fail regardless of
-``FAIL_REGULAR_EXPRESSION``. Any non-zero return code or system-level test
-failures including segmentation faults, signal abort, or heap errors fail the
-test even if the regular expression does not match.
+如果测试输出（stdout或stderr）匹配此正则表达式，则无论进程退出代码如何，测试都将失败。无论\
+``FAIL_REGULAR_EXPRESSION``\ 如何，超过\ :prop_test:`TIMEOUT`\ 指定的超时的测试都会\
+失败。任何非零返回码或系统级测试失败，包括分段错误、信号中止或堆错误，即使正则表达式不匹配，\
+也会使测试失败。
 
 If set, if the output matches one of specified regular expressions, the test
 will fail.  Example:

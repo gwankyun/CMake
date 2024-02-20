@@ -1,8 +1,7 @@
 AUTOGEN_TARGET_DEPENDS
 ----------------------
 
-Additional target dependencies of the corresponding :ref:`<ORIGIN>_autogen`
-target.
+对应\ :ref:`<ORIGIN>_autogen`\ 的附加目标依赖项。
 
   .. note::
 

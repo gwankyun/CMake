@@ -1,7 +1,7 @@
 SOVERSION
 ---------
 
-ABI version number of a shared library target.
+这个共享库目标的ABI版本号。
 
 For shared libraries :prop_tgt:`VERSION` and ``SOVERSION`` can be used to
 specify the build version and ABI version respectively.  When building or

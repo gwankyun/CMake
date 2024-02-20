@@ -3,9 +3,8 @@ AUTOGEN_COMMAND_LINE_LENGTH_MAX
 
 .. versionadded:: 3.29
 
-Command line length limit for autogen targets, i.e. ``moc`` or ``uic``,
-that triggers the use of response files on Windows instead of passing all
-arguments to the command line.
+autogen目标的命令行长度限制，即\ ``moc``\ 或\ ``uic``，触发在Windows上使用响应文件，\
+而不是将所有参数传递给命令行。
 
 - An empty (or unset) value sets the limit to 32000
 - A positive non zero integer value sets the exact command line length

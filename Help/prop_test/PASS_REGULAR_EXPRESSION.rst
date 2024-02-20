@@ -1,12 +1,10 @@
 PASS_REGULAR_EXPRESSION
 -----------------------
 
-The test output (stdout or stderr) must match this regular expression
-for the test to pass. The process exit code is ignored. Tests that exceed
-the timeout specified by :prop_test:`TIMEOUT` still fail regardless of
-``PASS_REGULAR_EXPRESSION``. System-level test failures including
-segmentation faults, signal abort, or heap errors may fail the test even
-if ``PASS_REGULAR_EXPRESSION`` is matched.
+测试输出（stdout或stderr）必须匹配此正则表达式才能通过测试。进程退出码被忽略。无论\
+``PASS_REGULAR_EXPRESSION``\ 如何设置，超过\ :prop_test:`TIMEOUT`\ 指定的超时的测试\
+仍然会失败。即使\ ``PASS_REGULAR_EXPRESSION``\ 匹配，包括分段错误、信号中止或堆错误在内\
+的系统级测试失败也可能导致测试失败。
 
 Example:
 
