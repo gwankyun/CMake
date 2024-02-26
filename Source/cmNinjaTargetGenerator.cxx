@@ -815,6 +815,11 @@ void cmNinjaTargetGenerator::WriteCompileRule(const std::string& lang,
     // dyndep rules
     rule.RspFile = "$out.rsp";
     rule.RspContent = "$in";
+    // Ninja's collator writes all outputs using `cmGeneratedFileStream`, so
+    // they are only updated if contents actually change. Avoid running
+    // dependent jobs if the contents don't change by telling `ninja` to check
+    // the timestamp again.
+    rule.Restat = "1";
 
     // Run CMake dependency scanner on the source file (using the preprocessed
     // source if that was performed).
@@ -1222,11 +1227,13 @@ void cmNinjaTargetGenerator::WriteObjectBuildStatements(
 
     cmNinjaBuild build(this->LanguageDyndepRule(language, config));
     build.Outputs.push_back(this->GetDyndepFilePath(language, config));
-    build.ImplicitOuts.push_back(
+    build.ImplicitOuts.emplace_back(
       cmStrCat(this->Makefile->GetCurrentBinaryDirectory(), '/',
                this->LocalGenerator->GetTargetDirectory(this->GeneratorTarget),
                this->GetGlobalGenerator()->ConfigDirectory(config), '/',
                language, "Modules.json"));
+    build.ImplicitDeps.emplace_back(
+      this->GetTargetDependInfoPath(language, config));
     for (auto const& scanFiles : scanningFiles) {
       if (!scanFiles.ScanningOutput.empty()) {
         build.ExplicitDeps.push_back(scanFiles.ScanningOutput);
@@ -1241,10 +1248,12 @@ void cmNinjaTargetGenerator::WriteObjectBuildStatements(
     auto const linked_directories =
       this->GetLinkedTargetDirectories(language, config);
     for (std::string const& l : linked_directories.Direct) {
-      build.ImplicitDeps.push_back(cmStrCat(l, '/', language, "Modules.json"));
+      build.ImplicitDeps.emplace_back(
+        cmStrCat(l, '/', language, "Modules.json"));
     }
     for (std::string const& l : linked_directories.Forward) {
-      build.ImplicitDeps.push_back(cmStrCat(l, '/', language, "Modules.json"));
+      build.ImplicitDeps.emplace_back(
+        cmStrCat(l, '/', language, "Modules.json"));
     }
 
     this->GetGlobalGenerator()->WriteBuild(this->GetImplFileStream(fileConfig),
@@ -1639,7 +1648,7 @@ void cmNinjaTargetGenerator::WriteObjectBuildStatement(
       // corresponding file path.
       std::string ddModmapFile = cmStrCat(objectFileName, ".modmap");
       vars["DYNDEP_MODULE_MAP_FILE"] = ddModmapFile;
-      objBuild.OrderOnlyDeps.push_back(ddModmapFile);
+      objBuild.ImplicitDeps.push_back(ddModmapFile);
       scanningFiles.ModuleMapFile = std::move(ddModmapFile);
     }
 
