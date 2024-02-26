@@ -3,7 +3,7 @@ CMAKE_SKIP_TEST_ALL_DEPENDENCY
 
 .. versionadded:: 3.29
 
-Control whether the ``test`` target depends on the ``all`` target.
+控制\ ``test``\ 目标是否依赖于\ ``all``\ 目标。
 
 If this variable is not defined, or is set to ``TRUE``, then the
 ``test`` (or ``RUN_TESTS``) target does not depend on the

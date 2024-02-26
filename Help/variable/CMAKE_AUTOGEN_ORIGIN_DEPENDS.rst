@@ -3,7 +3,7 @@ CMAKE_AUTOGEN_ORIGIN_DEPENDS
 
 .. versionadded:: 3.14
 
-将原始目标依赖项转发到相应的\ :ref:`<ORIGIN>_autogen`\ 目标。
+将原始目标依赖项转发到相应的\ :ref:`<ORIGIN>_autogen`。
 
   .. note::
 

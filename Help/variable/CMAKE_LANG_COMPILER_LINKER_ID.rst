@@ -3,7 +3,7 @@ CMAKE_<LANG>_COMPILER_LINKER_ID
 
 .. versionadded:: 3.29
 
-Linker identification string.
+链接器标识字符串。
 
 A short string unique to the linker vendor.  Possible values
 include:

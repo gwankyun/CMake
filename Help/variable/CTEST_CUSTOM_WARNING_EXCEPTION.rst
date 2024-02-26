@@ -1,7 +1,7 @@
 CTEST_CUSTOM_WARNING_EXCEPTION
 ------------------------------
 
-A list of regular expressions which will be used to exclude when detecting
-warning messages in build outputs by the :command:`ctest_build` command.
+一个正则表达式列表，当\ :command:`ctest_build`\ 命令在构建输出中检测警告消息时，用于\
+排除。
 
 .. include:: CTEST_CUSTOM_XXX.txt

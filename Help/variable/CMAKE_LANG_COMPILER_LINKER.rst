@@ -3,7 +3,7 @@ CMAKE_<LANG>_COMPILER_LINKER
 
 .. versionadded:: 3.29
 
-The full path to the linker for ``LANG``.
+``LANG``\ 链接器的完整路径。
 
 This is the command that will be used as the ``<LANG>`` linker.
 

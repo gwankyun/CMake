@@ -3,7 +3,7 @@ CMAKE_VS_PLATFORM_TOOLSET_FORTRAN
 
 .. versionadded:: 3.29
 
-Fortran compiler to be used by Visual Studio projects.
+Visual Studio项目使用的Fortran编译器。
 
 :ref:`Visual Studio Generators` support selecting among Fortran compilers
 whose Visual Studio Integration is installed.  The compiler may be specified

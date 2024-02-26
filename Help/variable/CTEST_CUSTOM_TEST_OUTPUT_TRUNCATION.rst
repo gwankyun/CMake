@@ -3,10 +3,9 @@ CTEST_CUSTOM_TEST_OUTPUT_TRUNCATION
 
 .. versionadded:: 3.24
 
-Set the test output truncation mode in case a maximum size is configured
-via the :variable:`CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE` or
-:variable:`CTEST_CUSTOM_MAXIMUM_FAILED_TEST_OUTPUT_SIZE` variables.
-By default the ``tail`` of the output will be truncated. Other possible
-values are ``middle`` and ``head``.
+如果通过\ :variable:`CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE`\ 或\
+:variable:`CTEST_CUSTOM_MAXIMUM_FAILED_TEST_OUTPUT_SIZE`\ 变量配置了最大大小，则\
+设置测试输出截断模式。默认情况下，输出的\ ``tail``\ 将被截断。其他可能的值是\ ``middle``\
+和\ ``head``。
 
 .. include:: CTEST_CUSTOM_XXX.txt

@@ -3,7 +3,7 @@ CMAKE_<LANG>_COMPILER_LINKER_FRONTEND_VARIANT
 
 .. versionadded:: 3.29
 
-Identification string of the linker frontend variant.
+链接器前端变体的标识字符串。
 
 Some linkers have multiple, different frontends for accepting command
 line options.  (For example ``LLCM LLD`` originally only had a frontend

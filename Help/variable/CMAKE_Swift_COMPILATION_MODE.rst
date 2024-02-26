@@ -3,8 +3,8 @@ CMAKE_Swift_COMPILATION_MODE
 
 .. versionadded:: 3.29
 
-Specify how Swift compiles a target. This variable is used to initialize the
-:prop_tgt:`Swift_COMPILATION_MODE` property on targets as they are created.
+指定Swift如何编译目标。该变量用于在创建目标时初始化目标的\
+:prop_tgt:`Swift_COMPILATION_MODE`\ 属性。
 
 The allowed values are:
 

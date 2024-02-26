@@ -1,7 +1,6 @@
 CTEST_CUSTOM_WARNING_MATCH
 --------------------------
 
-A list of regular expressions which will be used to detect warning messages in
-build outputs by the :command:`ctest_build` command.
+一个正则表达式列表，它将被\ :command:`ctest_build`\ 命令用于检测构建输出中的警告消息。
 
 .. include:: CTEST_CUSTOM_XXX.txt

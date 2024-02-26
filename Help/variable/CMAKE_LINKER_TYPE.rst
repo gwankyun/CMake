@@ -3,7 +3,7 @@ CMAKE_LINKER_TYPE
 
 .. versionadded:: 3.29
 
-Specify which linker will be used for the link step.
+指定链接步骤将使用哪个链接器。
 
 .. note::
   It is assumed that the linker specified is fully compatible with the standard
