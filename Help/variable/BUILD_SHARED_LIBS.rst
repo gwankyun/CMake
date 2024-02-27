@@ -1,8 +1,8 @@
 BUILD_SHARED_LIBS
 -----------------
 
-Tell :command:`add_library` to default to ``SHARED`` libraries,
-instead of ``STATIC`` libraries, when called with no explicit library type.
+告诉\ :command:`add_library`\ 在没有显式库类型的情况下调用时默认为\ ``SHARED``\ 库，\
+而不是\ ``STATIC``\ 库。
 
 Calls to :command:`add_library` without any explicit library type check
 the current ``BUILD_SHARED_LIBS`` variable value.  If it is true, then the

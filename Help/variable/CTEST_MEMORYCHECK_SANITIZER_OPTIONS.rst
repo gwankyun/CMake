@@ -3,8 +3,7 @@ CTEST_MEMORYCHECK_SANITIZER_OPTIONS
 
 .. versionadded:: 3.1
 
-Specify the CTest ``MemoryCheckSanitizerOptions`` setting
-in a :manual:`ctest(1)` dashboard client script.
+在\ :manual:`ctest(1)`\ 仪表板客户端脚本中指定CTest ``MemoryCheckSanitizerOptions``\ 设置。
 
 CTest prepends correct sanitizer options ``*_OPTIONS``
 environment variable to executed command. CTests adds
