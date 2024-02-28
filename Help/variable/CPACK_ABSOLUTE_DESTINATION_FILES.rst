@@ -1,7 +1,7 @@
 CPACK_ABSOLUTE_DESTINATION_FILES
 --------------------------------
 
-List of files which have been installed using an ``ABSOLUTE DESTINATION`` path.
+使用\ ``ABSOLUTE DESTINATION``\ 路径安装的文件列表。
 
 This variable is a Read-Only variable which is set internally by CPack
 during installation and before packaging using

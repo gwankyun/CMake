@@ -3,13 +3,10 @@ CPACK_CUSTOM_INSTALL_VARIABLES
 
 .. versionadded:: 3.21
 
-CPack variables (set via e.g. :option:`cpack -D`, ``CPackConfig.cmake`` or
-:variable:`CPACK_PROJECT_CONFIG_FILE` scripts) are not directly visible in
-installation scripts.  Instead, one can pass a list of ``varName=value``
-pairs in the ``CPACK_CUSTOM_INSTALL_VARIABLES`` variable.  At install time,
-each list item will result in a variable of the specified name (``varName``)
-being set to the given ``value``.  The ``=`` can be omitted for an empty
-``value``.
+CPack变量（通过\ :option:`cpack -D`、\ ``CPackConfig.cmake``\ 或\
+:variable:`CPACK_PROJECT_CONFIG_FILE`\ 脚本设置）在安装脚本中不直接可见。相反，可以在\ ``CPACK_CUSTOM_INSTALL_VARIABLES``\ 变量中传递\ ``varName=value``\ 对的列表。\
+在安装时，每个列表项将导致指定名称的变量（\ ``varName``\ ）被设置为给定的\ ``value``。\
+对于空\ ``value``，可以省略\ ``=``。
 
 ``CPACK_CUSTOM_INSTALL_VARIABLES`` allows the packaging installation to be
 influenced by the user or driving script at CPack runtime without having to
