@@ -3,5 +3,4 @@ CTEST_USE_LAUNCHERS
 
 .. versionadded:: 3.1
 
-Specify the CTest ``UseLaunchers`` setting
-in a :manual:`ctest(1)` dashboard client script.
+在\ :manual:`ctest(1)`\ 仪表板客户端脚本中指定CTest ``UseLaunchers``\ 设置。

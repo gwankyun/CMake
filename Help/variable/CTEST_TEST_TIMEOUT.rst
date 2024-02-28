@@ -3,5 +3,4 @@ CTEST_TEST_TIMEOUT
 
 .. versionadded:: 3.1
 
-Specify the CTest ``TimeOut`` setting
-in a :manual:`ctest(1)` dashboard client script.
+在\ :manual:`ctest(1)`\ 仪表板客户端脚本中指定CTest ``TimeOut``\ 设置。

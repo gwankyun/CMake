@@ -3,5 +3,4 @@ CTEST_P4_CLIENT
 
 .. versionadded:: 3.1
 
-Specify the CTest ``P4Client`` setting
-in a :manual:`ctest(1)` dashboard client script.
+在\ :manual:`ctest(1)`\ 仪表板客户端脚本中指定CTest ``P4Client``\ 设置。

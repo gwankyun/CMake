@@ -1,5 +1,4 @@
 CTEST_SCRIPT_DIRECTORY
 ----------------------
 
-The directory containing the top-level CTest script.
-The concept is similar to :variable:`CMAKE_SOURCE_DIR`.
+包含顶层CTest脚本的目录。这个概念类似于\ :variable:`CMAKE_SOURCE_DIR`。

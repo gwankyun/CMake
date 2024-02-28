@@ -3,7 +3,5 @@ CTEST_TEST_LOAD
 
 .. versionadded:: 3.4
 
-Specify the ``TestLoad`` setting in the :ref:`CTest Test Step`
-of a :manual:`ctest(1)` dashboard client script.  This sets the
-default value for the ``TEST_LOAD`` option of the :command:`ctest_test`
-command.
+在\ :manual:`ctest(1)`\ 仪表板客户端脚本的\ :ref:`CTest Test Step`\ 中指定\
+``TestLoad``\ 设置。这将为\ :command:`ctest_test`\ 命令的\ ``TEST_LOAD``\ 选项设置默认值。

@@ -3,5 +3,5 @@ CTEST_RUN_CURRENT_SCRIPT
 
 .. versionadded:: 3.11
 
-Setting this to 0 prevents :manual:`ctest(1)` from being run again when it
-reaches the end of a script run by calling :option:`ctest -S`.
+将其设置为0可以防止\ :manual:`ctest(1)`\ 在调用\ :option:`ctest -S`\ 运行到脚本结束时\
+再次运行。
