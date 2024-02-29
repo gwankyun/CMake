@@ -1,7 +1,7 @@
 CPack NSIS Generator
 --------------------
 
-CPack Nullsoft Scriptable Install System (NSIS) generator specific options.
+CPack Nullsoft Scriptable Install System（NSIS）生成器特定选项。
 
 .. versionchanged:: 3.22
  The NSIS generator requires NSIS 3.03 or newer.

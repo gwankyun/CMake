@@ -1,7 +1,7 @@
 CPack WIX Generator
 -------------------
 
-CPack WIX generator specific options
+CPack WIX生成器的特定选项
 
 .. versionadded:: 3.7
   Support :variable:`CPACK_COMPONENT_<compName>_DISABLED` variable.

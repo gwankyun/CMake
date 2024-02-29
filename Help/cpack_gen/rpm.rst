@@ -1,7 +1,7 @@
 CPack RPM Generator
 -------------------
 
-The built in (binary) CPack RPM generator (Unix only)
+内置的（二进制）CPack RPM生成器（仅限Unix）
 
 Variables specific to CPack RPM generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

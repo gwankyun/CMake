@@ -3,10 +3,9 @@ CPack NuGet Generator
 
 .. versionadded:: 3.12
 
-When build a NuGet package there is no direct way to control an output
-filename due a lack of the corresponding CLI option of NuGet, so there
-is no :variable:`!CPACK_NUGET_PACKAGE_FILE_NAME` variable. To form the output filename
-NuGet uses the package name and the version according to its built-in rules.
+当构建NuGet包时，由于缺乏NuGet的相应CLI选项，没有直接的方法来控制输出文件名，因此没有\
+:variable:`!CPACK_NUGET_PACKAGE_FILE_NAME`\ 变量。为了形成输出文件名，NuGet根据其内置\
+规则使用包名和版本。
 
 Also, be aware that including a top level directory
 (:variable:`CPACK_INCLUDE_TOPLEVEL_DIRECTORY`) is ignored by this generator.

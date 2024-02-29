@@ -3,7 +3,7 @@ CPack FreeBSD Generator
 
 .. versionadded:: 3.10
 
-The built in (binary) CPack FreeBSD (pkg) generator (Unix only)
+内置的（二进制）CPack FreeBSD（pkg）生成器（仅限Unix）
 
 Variables affecting the CPack FreeBSD (pkg) generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

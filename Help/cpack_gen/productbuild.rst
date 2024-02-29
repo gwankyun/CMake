@@ -3,7 +3,7 @@ CPack productbuild Generator
 
 .. versionadded:: 3.7
 
-productbuild CPack generator (macOS).
+productbuild CPack生成器（macOS）。
 
 Variables specific to CPack productbuild generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

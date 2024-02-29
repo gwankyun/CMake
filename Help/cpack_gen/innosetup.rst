@@ -3,8 +3,8 @@ CPack Inno Setup Generator
 
 .. versionadded:: 3.27
 
-Inno Setup is a free installer for Windows programs by Jordan Russell and
-Martijn Laan (https://jrsoftware.org/isinfo.php).
+Inno Setup是Jordan Russell和Martijn Laan为Windows程序提供的免费安装程序\
+（https://jrsoftware.org/isinfo.php）。
 
 This documentation explains Inno Setup generator specific options.
 

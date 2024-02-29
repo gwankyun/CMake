@@ -3,7 +3,7 @@ CPack IFW Generator
 
 .. versionadded:: 3.1
 
-Configure and run the Qt Installer Framework to generate a Qt installer.
+配置并运行Qt安装程序框架以生成Qt安装程序。
 
 .. only:: html
 

@@ -3,14 +3,10 @@ CPack External Generator
 
 .. versionadded:: 3.13
 
-CPack provides many generators to create packages for a variety of platforms
-and packaging systems. The intention is for CMake/CPack to be a complete
-end-to-end solution for building and packaging a software project. However, it
-may not always be possible to use CPack for the entire packaging process, due
-to either technical limitations or policies that require the use of certain
-tools. For this reason, CPack provides the "External" generator, which allows
-external packaging software to take advantage of some of the functionality
-provided by CPack, such as component installation and the dependency graph.
+CPack提供了许多生成器来为各种平台和打包系统创建包。目的是让CMake/CPack成为一个完整的端到端\
+解决方案，用于构建和打包软件项目。然而，由于技术限制或政策要求使用某些工具，在整个包装过程中\
+可能并不总是可以使用CPack。由于这个原因，CPack提供了“外部”生成器，它允许外部打包软件利用\
+CPack提供的一些功能，比如组件安装和依赖关系图。
 
 Integration with External Packaging Tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
