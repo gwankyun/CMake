@@ -1,7 +1,7 @@
 CPack Bundle Generator
 ----------------------
 
-CPack Bundle generator (macOS) specific options
+CPack Bundle生成器（macOS）特定选项
 
 Variables specific to CPack Bundle generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

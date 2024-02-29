@@ -1,7 +1,7 @@
 CPack Cygwin Generator
 ----------------------
 
-Cygwin CPack generator (Cygwin).
+Cygwin包生成器（Cygwin）。
 
 Variables affecting the CPack Cygwin generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

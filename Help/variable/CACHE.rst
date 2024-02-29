@@ -3,7 +3,7 @@ CACHE
 
 .. versionadded:: 3.13
 
-Operator to read cache variables.
+读取缓存变量的操作符。
 
 Use the syntax ``$CACHE{VAR}`` to read cache entry ``VAR``.
 See the :ref:`cmake-language(7) variables <CMake Language Variables>`

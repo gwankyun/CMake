@@ -1,8 +1,7 @@
 CPack Archive Generator
 -----------------------
 
-CPack generator for packaging files into an archive, which can have
-any of the following formats:
+用于将文件打包成存档文件的CPack生成器，它可以有以下任何格式：
 
   - 7Z - 7zip - (``.7z``)
   - TBZ2 (``.tar.bz2``)

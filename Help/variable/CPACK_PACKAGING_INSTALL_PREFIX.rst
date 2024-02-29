@@ -1,7 +1,7 @@
 CPACK_PACKAGING_INSTALL_PREFIX
 ------------------------------
 
-The prefix used in the built package.
+在构建包中使用的前缀。
 
 Each CPack generator has a default value (like ``/usr``).  This default
 value may be overwritten from the ``CMakeLists.txt`` or the :manual:`cpack(1)`

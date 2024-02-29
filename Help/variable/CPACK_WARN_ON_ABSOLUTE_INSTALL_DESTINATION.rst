@@ -1,8 +1,7 @@
 CPACK_WARN_ON_ABSOLUTE_INSTALL_DESTINATION
 ------------------------------------------
 
-Ask CPack to warn each time a file with absolute ``INSTALL DESTINATION`` is
-encountered.
+要求CPack在每次遇到具有绝对\ ``INSTALL DESTINATION``\ 的文件时发出警告。
 
 This variable triggers the definition of
 :variable:`CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION` when CPack runs

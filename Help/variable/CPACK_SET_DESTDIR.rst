@@ -1,7 +1,7 @@
 CPACK_SET_DESTDIR
 -----------------
 
-Boolean toggle to make CPack use ``DESTDIR`` mechanism when packaging.
+布尔开关，使CPack在打包时使用\ ``DESTDIR``\ 机制。
 
 ``DESTDIR`` means DESTination DIRectory.  It is commonly used by makefile
 users in order to install software at non-default location.  It is a

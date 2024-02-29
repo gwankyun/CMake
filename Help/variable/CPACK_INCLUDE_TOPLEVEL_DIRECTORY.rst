@@ -1,7 +1,7 @@
 CPACK_INCLUDE_TOPLEVEL_DIRECTORY
 --------------------------------
 
-Boolean toggle to include/exclude top level directory.
+布尔开关，包括/排除顶层目录。
 
 When preparing a package CPack installs the item under the so-called
 top level directory.  The purpose of is to include (set to ``1`` or ``ON`` or

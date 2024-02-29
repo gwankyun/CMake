@@ -1,7 +1,7 @@
 CPack DragNDrop Generator
 -------------------------
 
-The DragNDrop CPack generator (macOS) creates a DMG image.
+DragNDrop包生成器（macOS）创建DMG图像。
 
 Variables specific to CPack DragNDrop generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

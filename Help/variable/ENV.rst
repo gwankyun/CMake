@@ -1,7 +1,7 @@
 ENV
 ---
 
-Operator to read environment variables.
+读取环境变量的操作符。
 
 Use the syntax ``$ENV{VAR}`` to read environment variable ``VAR``.
 

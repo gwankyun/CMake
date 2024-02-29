@@ -1,7 +1,7 @@
 CPack DEB Generator
 -------------------
 
-The built in (binary) CPack DEB generator (Unix only)
+内置的（二进制）CPack DEB生成器（仅限Unix）
 
 Variables specific to CPack Debian (DEB) generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
