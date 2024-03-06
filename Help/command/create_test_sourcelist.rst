@@ -1,9 +1,8 @@
 create_test_sourcelist
 ----------------------
 
-Create a test driver program that links together many small tests into a
-single executable.  This is useful when building static executables with
-large libraries to shrink the total required size.
+创建一个测试驱动程序，将许多小测试链接到一个可执行文件中。这在使用大型库构建静态可执行文件以\
+缩小所需的总大小时非常有用。
 
 .. signature::
   create_test_sourcelist(<sourceListName> <driverName> <test>... <options>...)
