@@ -17,7 +17,7 @@ CMake是一个跨平台、开源的构建系统生成器。完整的文档请访
 
 `Kitware`_\ 维护和支持CMake，与此同时也和与富有成效的贡献者社区合作。
 
-.. _`Kitware`: http://www.kitware.com/cmake
+.. _`Kitware`: https://www.kitware.com/cmake
 
 许可
 =======
@@ -98,7 +98,7 @@ Windows
 `Sphinx`_\ 并配置CMake，以启用“html”或“man”构建器。如果没有自动找到该工具，则将添加\
 ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build``。
 
-.. _`Sphinx`: http://sphinx-doc.org
+.. _`Sphinx`: https://sphinx-doc.org
 
 报告错误
 ==============

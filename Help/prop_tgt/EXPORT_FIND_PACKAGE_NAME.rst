@@ -1,7 +1,9 @@
 EXPORT_FIND_PACKAGE_NAME
 ------------------------
 
-.. versionadded:: 3.29
+.. note::
+
+  Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_DEPENDENCIES``.
 
 在\ :command:`install(EXPORT)`\ 或\ :command:`export(EXPORT)`\ 中导出\
 :command:`find_dependency`\ 调用时，控制与依赖目标关联的包名。这可以用来为CMake构建和\

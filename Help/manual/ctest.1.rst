@@ -102,16 +102,27 @@ ctest(1)
 
  此选项允许CTest恢复先前中断的测试集执行。如果没有中断发生，\ ``-F``\ 选项将不起作用。
 
-.. option:: -j <jobs>, --parallel <jobs>
+.. option:: -j [<level>], --parallel [<level>]
 
- 使用给定数量的作业并行运行测试。
+ Run tests in parallel, optionally limited to a given level of parallelism.
 
- 此选项告诉CTest使用给定数量的作业并行运行测试。这个选项也可以通过设置\
- :envvar:`CTEST_PARALLEL_LEVEL`\ 环境变量来设置。
+ .. versionadded:: 3.29
 
- 这个选项可以与\ :prop_test:`PROCESSORS`\ 测试属性一起使用。
+    The ``<level>`` may be omitted, or ``0``, in which case:
 
- 请参阅\ `标签和子项目摘要`_。
+    * Under `Job Server Integration`_, parallelism is limited by
+      available job tokens.
+
+    * Otherwise, if the value is omitted, parallelism is limited
+      by the number of processors, or 2, whichever is larger.
+
+    * Otherwise, if the value is ``0``, parallelism is unbounded.
+
+ This option may instead be specified by the :envvar:`CTEST_PARALLEL_LEVEL`
+ environment variable.
+
+ This option can be used with the :prop_test:`PROCESSORS` test property.
+ See the `标签和子项目摘要`_.
 
 .. option:: --resource-spec-file <file>
 
@@ -206,21 +217,25 @@ ctest(1)
 
  .. versionadded:: 3.29
 
- 运行给定文件中列出的测试。
+ Run tests listed in the given file.
 
- 该选项告诉CTest运行给定文件中列出的测试。该文件每行必须包含一个确切的测试名称。行可以用\
- ``#``\ 注释掉。此选项可以与\ ``-R``、\ ``-E``、\ ``-L``\ 或\ ``-LE``\ 等其他选项组合\
- 使用。
+ This option tells CTest to run tests that are listed in the given file.
+ The file must contain one exact test name per line.
+ Lines that do not exactly match any test names are ignored.
+ This option can be combined with the other options like
+ ``-R``, ``-E``, ``-L`` or ``-LE``.
 
 .. option:: --exclude-from-file <filename>
 
  .. versionadded:: 3.29
 
- 排除给定文件中列出的测试。
+ Exclude tests listed in the given file.
 
- 这个选项告诉CTest\ **不要**\ 运行给定文件中列出的测试。该文件每行必须包含一个确切的测试名称。\
- 行可以用\ ``#``\ 注释掉。此选项可以与\ ``-R``、\ ``-E``、\ ``-L``\ 或\ ``-LE``\ 等\
- 其他选项组合使用。
+ This option tells CTest to NOT run tests that are listed in the given file.
+ The file must contain one exact test name per line.
+ Lines that do not exactly match any test names are ignored.
+ This option can be combined with the other options like
+ ``-R``, ``-E``, ``-L`` or ``-LE``.
 
 .. option:: -FA <regex>, --fixture-exclude-any <regex>
 

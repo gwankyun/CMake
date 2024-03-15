@@ -7,6 +7,12 @@ CMAKE_<LANG>_USING_LINKER_<TYPE>
 目标属性指定的类型指定链接步骤链接器。它可以保存链接步骤的编译器标志，也可以直接保存链接工具。\
 数据类型由\ :variable:`CMAKE_<LANG>_USING_LINKER_MODE`\ 变量给出。
 
+.. note::
+
+  The specified linker tool is expected to be accessible through
+  the ``PATH`` environment variable, particularly when the
+  :variable:`CMAKE_<LANG>_USING_LINKER_MODE` variable is set to ``FLAG``.
+
 For example, to specify the ``LLVM`` linker for ``GNU`` compilers, we have:
 
 .. code-block:: cmake
