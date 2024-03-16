@@ -104,25 +104,21 @@ ctest(1)
 
 .. option:: -j [<level>], --parallel [<level>]
 
- Run tests in parallel, optionally limited to a given level of parallelism.
+ 并行运行测试，可选地限制在给定的并行度级别。
 
  .. versionadded:: 3.29
 
-    The ``<level>`` may be omitted, or ``0``, in which case:
+    ``<level>``\ 可以省略或为\ ``0``，在这种情况下：
 
-    * Under `Job Server Integration`_, parallelism is limited by
-      available job tokens.
+    * 在\ `作业服务器集成`_\ 下，并行性受到可用作业令牌的限制。
 
-    * Otherwise, if the value is omitted, parallelism is limited
-      by the number of processors, or 2, whichever is larger.
+    * 否则，如果省略该值，则并行性限制为处理器数量，或者为2，以较大者为准。
 
-    * Otherwise, if the value is ``0``, parallelism is unbounded.
+    * 否则，如果该值为\ ``0``，则并行度不受限制。
 
- This option may instead be specified by the :envvar:`CTEST_PARALLEL_LEVEL`
- environment variable.
+ 这个选项可以由\ :envvar:`CTEST_PARALLEL_LEVEL`\ 环境变量指定。
 
- This option can be used with the :prop_test:`PROCESSORS` test property.
- See the `标签和子项目摘要`_.
+ 这个选项可以与\ :prop_test:`PROCESSORS`\ 测试属性一起使用。请查看\ `标签和子项目摘要`_。
 
 .. option:: --resource-spec-file <file>
 
@@ -217,25 +213,21 @@ ctest(1)
 
  .. versionadded:: 3.29
 
- Run tests listed in the given file.
+ 运行给定文件中列出的测试。
 
- This option tells CTest to run tests that are listed in the given file.
- The file must contain one exact test name per line.
- Lines that do not exactly match any test names are ignored.
- This option can be combined with the other options like
- ``-R``, ``-E``, ``-L`` or ``-LE``.
+ 此选项告诉CTest运行给定文件中列出的测试。该文件每行必须包含一个确切的测试名称。不完全匹配\
+ 任何测试名称的行将被忽略。此选项可以与\ ``-R``、\ ``-E``、\ ``-L``\ 或\ ``-LE``\ 等\
+ 其他选项组合使用。
 
 .. option:: --exclude-from-file <filename>
 
  .. versionadded:: 3.29
 
- Exclude tests listed in the given file.
+ 排除给定文件中列出的测试。
 
- This option tells CTest to NOT run tests that are listed in the given file.
- The file must contain one exact test name per line.
- Lines that do not exactly match any test names are ignored.
- This option can be combined with the other options like
- ``-R``, ``-E``, ``-L`` or ``-LE``.
+ 这个选项告诉CTest\ **不**\ 运行给定文件中列出的测试。该文件每行必须包含一个确切的测试名称。\
+ 不完全匹配任何测试名称的行将被忽略。此选项可以与\ ``-R``、\ ``-E``、\ ``-L``\ 或\
+ ``-LE``\ 等其他选项组合使用。
 
 .. option:: -FA <regex>, --fixture-exclude-any <regex>
 
