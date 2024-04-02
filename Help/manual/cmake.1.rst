@@ -8,7 +8,7 @@ cmake(1)
 
 .. parsed-literal::
 
- `Generate a Project Buildsystem`_
+ `生成一个项目构建系统`_
   cmake [<options>] -B <path-to-build> [-S <path-to-source>]
   cmake [<options>] <path-to-source | path-to-existing-build>
 
