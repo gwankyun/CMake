@@ -3,8 +3,8 @@ CMAKE_<LANG>_USING_LINKER_MODE
 
 .. versionadded:: 3.29
 
-This controls how the value of the :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>`
-variable should be interpreted. The supported linker mode values are:
+这控制了如何解释\ :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>`\ 变量的值。支持的链接器\
+模式值为：
 
 ``FLAG``
   :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>` holds a

@@ -3,12 +3,11 @@ CMAKE_<LANG>_USING_LINKER_<TYPE>
 
 .. versionadded:: 3.29
 
-This variable defines how to specify the ``<TYPE>`` linker for the link step,
-as controlled by the :variable:`CMAKE_LINKER_TYPE` variable or the
-:prop_tgt:`LINKER_TYPE` target property. Depending on the value of the
-:variable:`CMAKE_<LANG>_USING_LINKER_MODE` variable,
-``CMAKE_<LANG>_USING_LINKER_<TYPE>`` can hold compiler flags for the link step,
-or flags to be given directly to the linker tool.
+该变量定义了如何为链接步骤指定\ ``<TYPE>``\ 链接器，由\ :variable:`CMAKE_LINKER_TYPE`\
+变量或\ :prop_tgt:`LINKER_TYPE`\ 目标属性控制。根据\
+:variable:`CMAKE_<LANG>_USING_LINKER_MODE`\ 变量的值，\
+``CMAKE_<LANG>_USING_LINKER_<TYPE>``\ 可以保存用于链接步骤的编译器标志，或者直接提供给\
+链接器工具的标志。
 
 .. note::
 
