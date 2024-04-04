@@ -3,32 +3,42 @@ CMAKE_<LANG>_USING_LINKER_<TYPE>
 
 .. versionadded:: 3.29
 
-该变量定义了如何为由\ :variable:`CMAKE_LINKER_TYPE`\ 变量或\ :prop_tgt:`LINKER_TYPE`\
-目标属性指定的类型指定链接步骤链接器。它可以保存链接步骤的编译器标志，也可以直接保存链接工具。\
-数据类型由\ :variable:`CMAKE_<LANG>_USING_LINKER_MODE`\ 变量给出。
+This variable defines how to specify the ``<TYPE>`` linker for the link step,
+as controlled by the :variable:`CMAKE_LINKER_TYPE` variable or the
+:prop_tgt:`LINKER_TYPE` target property. Depending on the value of the
+:variable:`CMAKE_<LANG>_USING_LINKER_MODE` variable,
+``CMAKE_<LANG>_USING_LINKER_<TYPE>`` can hold compiler flags for the link step,
+or flags to be given directly to the linker tool.
 
 .. note::
 
-  The specified linker tool is expected to be accessible through
-  the ``PATH`` environment variable, particularly when the
-  :variable:`CMAKE_<LANG>_USING_LINKER_MODE` variable is set to ``FLAG``.
+  The specified linker tool is generally expected to be accessible through
+  the ``PATH`` environment variable.
 
-For example, to specify the ``LLVM`` linker for ``GNU`` compilers, we have:
+For example, the ``LLD`` linker for ``GNU`` compilers is defined like so:
 
 .. code-block:: cmake
 
   set(CMAKE_C_USING_LINKER_LLD "-fuse-ld=lld")
 
-Or on ``Windows`` platform, for ``Clang`` compilers simulating ``MSVC``, we
-have:
+On the ``Windows`` platform with ``Clang`` compilers simulating ``MSVC``:
 
 .. code-block:: cmake
 
   set(CMAKE_C_USING_LINKER_LLD "-fuse-ld=lld-link")
 
-And for the ``MSVC`` compiler, linker is directly used, so we have:
+And for the ``MSVC`` compiler, the linker is invoked directly, not via the
+compiler frontend:
 
 .. code-block:: cmake
 
   set(CMAKE_C_USING_LINKER_LLD "/path/to/lld-link.exe")
   set(CMAKE_C_USING_LINKER_MODE TOOL)
+
+A custom linker type can also be defined, usually in a toolchain file:
+
+.. code-block:: cmake
+
+  set(CMAKE_LINKER_TYPE lld_launcher)
+  set(CMAKE_C_USING_LINKER_lld_launcher "-fuse-ld=/path/to/lld-launcher.sh")
+  set(CMAKE_C_USING_LINKER_MODE FLAG)
