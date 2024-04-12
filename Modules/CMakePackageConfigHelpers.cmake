@@ -376,24 +376,6 @@ macro(WRITE_BASIC_PACKAGE_VERSION_FILE)
   write_basic_config_version_file(${ARGN})
 endmacro()
 
-function(__CMAKE_get_config_file_package_prefix outvar)
-  get_property(counter GLOBAL PROPERTY CMAKE_CONFIGURE_PACKAGE_CONFIG_FILE_COUNTER)
-  if(NOT counter)
-    set(counter 1)
-    set_property(GLOBAL PROPERTY CMAKE_CONFIGURE_PACKAGE_CONFIG_FILE_COUNTER ${counter})
-  endif()
-  set(${outvar} "PACKAGE_\${CMAKE_FIND_PACKAGE_NAME}_COUNTER_${counter}" PARENT_SCOPE)
-endfunction()
-
-function(__CMAKE_increment_config_file_counter)
-  get_property(counter GLOBAL PROPERTY CMAKE_CONFIGURE_PACKAGE_CONFIG_FILE_COUNTER)
-  if(NOT counter)
-    message(FATAL_ERROR "Internal error: global counter unexpectedly not set")
-  endif()
-  math(EXPR counter "${counter} + 1")
-  set_property(GLOBAL PROPERTY CMAKE_CONFIGURE_PACKAGE_CONFIG_FILE_COUNTER ${counter})
-endfunction()
-
 function(CONFIGURE_PACKAGE_CONFIG_FILE _inputFile _outputFile)
   set(options NO_SET_AND_CHECK_MACRO NO_CHECK_REQUIRED_COMPONENTS_MACRO)
   set(oneValueArgs INSTALL_DESTINATION INSTALL_PREFIX)
@@ -429,17 +411,15 @@ function(CONFIGURE_PACKAGE_CONFIG_FILE _inputFile _outputFile)
 
   file(RELATIVE_PATH PACKAGE_RELATIVE_PATH "${absInstallDir}" "${installPrefix}" )
 
-  __CMAKE_get_config_file_package_prefix(prefix_dir)
-
   foreach(var ${CCF_PATH_VARS})
     if(NOT DEFINED ${var})
       message(FATAL_ERROR "Variable ${var} does not exist")
     else()
       if(IS_ABSOLUTE "${${var}}")
-        string(REPLACE "${installPrefix}" "\${${prefix_dir}}"
+        string(REPLACE "${installPrefix}" "\${PACKAGE_PREFIX_DIR}"
                         PACKAGE_${var} "${${var}}")
       else()
-        set(PACKAGE_${var} "\${${prefix_dir}}/${${var}}")
+        set(PACKAGE_${var} "\${PACKAGE_PREFIX_DIR}/${${var}}")
       endif()
     endif()
   endforeach()
@@ -451,7 +431,7 @@ function(CONFIGURE_PACKAGE_CONFIG_FILE _inputFile _outputFile)
 ####### Any changes to this file will be overwritten by the next CMake run ####
 ####### The input file was ${inputFileName}                            ########
 
-get_filename_component(${prefix_dir} \"\${CMAKE_CURRENT_LIST_DIR}/${PACKAGE_RELATIVE_PATH}\" ABSOLUTE)
+get_filename_component(PACKAGE_PREFIX_DIR \"\${CMAKE_CURRENT_LIST_DIR}/${PACKAGE_RELATIVE_PATH}\" ABSOLUTE)
 ")
 
   if("${absInstallDir}" MATCHES "^(/usr)?/lib(64)?/.+")
@@ -462,7 +442,7 @@ get_filename_component(${prefix_dir} \"\${CMAKE_CURRENT_LIST_DIR}/${PACKAGE_RELA
 get_filename_component(_realCurr \"\${CMAKE_CURRENT_LIST_DIR}\" REALPATH)
 get_filename_component(_realOrig \"${absInstallDir}\" REALPATH)
 if(_realCurr STREQUAL _realOrig)
-  set(${prefix_dir} \"${installPrefix}\")
+  set(PACKAGE_PREFIX_DIR \"${installPrefix}\")
 endif()
 unset(_realOrig)
 unset(_realCurr)
@@ -499,10 +479,6 @@ endmacro()
 ####################################################################################")
 
   configure_file("${_inputFile}" "${_outputFile}" @ONLY)
-
-  # We're done writing the file. Make sure the next one has a unique prefix dir
-  # variable name (we may have multiple config files for the one package)
-  __CMAKE_increment_config_file_counter()
 
 endfunction()
 
@@ -544,14 +520,12 @@ function(generate_apple_platform_selection_file _output_file)
     set(_branch_INIT "")
   endif()
 
-  __CMAKE_get_config_file_package_prefix(prefix_dir)
-
   set(_else ELSE)
   foreach(_opt IN LISTS _config_file_options _else)
     if(_gpsf_${_opt})
       set(_config_file "${_gpsf_${_opt}}")
       if(NOT IS_ABSOLUTE "${_config_file}")
-        string(PREPEND _config_file "\${${prefix_dir}}/")
+        string(PREPEND _config_file [[${PACKAGE_PREFIX_DIR}/]])
       endif()
       set(_branch_${_opt} "include(\"${_config_file}\")")
     elseif(_gpsf_ERROR_VARIABLE)
@@ -625,13 +599,11 @@ function(generate_apple_architecture_selection_file _output_file)
     "endif()\n"
     )
 
-  __CMAKE_get_config_file_package_prefix(prefix_dir)
-
   foreach(pair IN ZIP_LISTS _gasf_SINGLE_ARCHITECTURES _gasf_SINGLE_ARCHITECTURE_INCLUDE_FILES)
     set(arch "${pair_0}")
     set(config_file "${pair_1}")
     if(NOT IS_ABSOLUTE "${config_file}")
-      string(PREPEND config_file "\${${prefix_dir}}/")
+      string(PREPEND config_file [[${PACKAGE_PREFIX_DIR}/]])
     endif()
     string(APPEND _branch_code
       "\n"
@@ -646,7 +618,7 @@ function(generate_apple_architecture_selection_file _output_file)
     string(JOIN " " universal_archs "${_gasf_UNIVERSAL_ARCHITECTURES}")
     set(config_file "${_gasf_UNIVERSAL_INCLUDE_FILE}")
     if(NOT IS_ABSOLUTE "${config_file}")
-      string(PREPEND config_file "\${${prefix_dir}}/")
+      string(PREPEND config_file [[${PACKAGE_PREFIX_DIR}/]])
     endif()
     string(APPEND _branch_code
       "\n"
