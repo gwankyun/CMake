@@ -7,15 +7,14 @@ add_library
 
 使用特定的源文件向项目添加库。
 
-Normal Libraries
+正常库
 ^^^^^^^^^^^^^^^^
 
 .. signature::
   add_library(<name> [<type>] [EXCLUDE_FROM_ALL] <sources>...)
   :target: normal
 
-  Add a library target called ``<name>`` to be built from the source files
-  listed in the command invocation.
+  添加一个名为\ ``<name>``\ 的库目标，将从命令调用中列出的源文件构建。
 
   The optional ``<type>`` specifies the type of library to be created:
 
@@ -84,15 +83,14 @@ See also :prop_sf:`HEADER_FILE_ONLY` on what to do if some sources are
 pre-processed, and you want to have the original sources reachable from
 within IDE.
 
-Object Libraries
+对象库
 ^^^^^^^^^^^^^^^^
 
 .. signature::
   add_library(<name> OBJECT <sources>...)
   :target: OBJECT
 
-  Add an :ref:`Object Library <Object Libraries>` to compile source files
-  without archiving or linking their object files into a library.
+  添加\ :ref:`对象库 <Object Libraries>`\ 以编译源文件，而无需将其对象文件归档或链接到库中。
 
 Other targets created by ``add_library`` or :command:`add_executable`
 may reference the objects using an expression of the
@@ -117,16 +115,15 @@ consider adding at least one real source file to any target that references
 .. versionadded:: 3.12
   Object libraries can be linked to with :command:`target_link_libraries`.
 
-Interface Libraries
+接口库
 ^^^^^^^^^^^^^^^^^^^
 
 .. signature::
   add_library(<name> INTERFACE)
   :target: INTERFACE
 
-  Add an :ref:`Interface Library <Interface Libraries>` target that may
-  specify usage requirements for dependents but does not compile sources
-  and does not produce a library artifact on disk.
+  添加一个\ :ref:`接口库 <Interface Libraries>`\ 目标，它可以指定依赖项的使用需求，但\
+  不编译源代码，也不会在磁盘上生成库工件。
 
   An interface library with no source files is not included as a target
   in the generated buildsystem.  However, it may have
@@ -156,12 +153,10 @@ Interface Libraries
 
   .. versionadded:: 3.19
 
-  Add an :ref:`Interface Library <Interface Libraries>` target with
-  source files (in addition to usage requirements and properties as
-  documented by the :command:`above signature <add_library(INTERFACE)>`).
-  Source files may be listed directly in the ``add_library`` call
-  or added later by calls to :command:`target_sources` with the
-  ``PRIVATE`` or ``PUBLIC`` keywords.
+  添加带有源文件的\ :ref:`接口库 <Interface Libraries>`\ 目标（除了\
+  :command:`上述签名 <add_library(INTERFACE)>`\ 所记录的使用需求和属性之外）。源文件\
+  可以直接在\ ``add_library``\ 调用中列出，或者稍后通过使用\ ``PRIVATE``\ 或\
+  ``PUBLIC``\ 关键字调用\ :command:`target_sources`\ 添加。
 
   If an interface library has source files (i.e. the :prop_tgt:`SOURCES`
   target property is set), or header sets (i.e. the :prop_tgt:`HEADER_SETS`
@@ -188,17 +183,15 @@ Interface Libraries
 
 .. _`add_library imported libraries`:
 
-Imported Libraries
+导入库
 ^^^^^^^^^^^^^^^^^^
 
 .. signature::
   add_library(<name> <type> IMPORTED [GLOBAL])
   :target: IMPORTED
 
-  Add an :ref:`IMPORTED library target <Imported Targets>` called ``<name>``.
-  The target name may be referenced like any target built within the project,
-  except that by default it is visible only in the directory in which it is
-  created, and below.
+  添加一个名为\ ``<name>``\ 的\ :ref:`IMPORTED库目录<Imported Targets>` 。目标名称\
+  可以像在项目中构建的任何目标一样被引用，除了默认情况下它只在创建它的目录中可见之外。
 
   The ``<type>`` must be one of:
 
@@ -260,17 +253,16 @@ Details about the imported library are specified by setting properties whose
 names begin in ``IMPORTED_`` and ``INTERFACE_``.  See documentation of
 such properties for more information.
 
-Alias Libraries
+别名库
 ^^^^^^^^^^^^^^^
 
 .. signature::
   add_library(<name> ALIAS <target>)
   :target: ALIAS
 
-  Creates an :ref:`Alias Target <Alias Targets>`, such that ``<name>`` can be
-  used to refer to ``<target>`` in subsequent commands.  The ``<name>`` does
-  not appear in the generated buildsystem as a make target.  The ``<target>``
-  may not be an ``ALIAS``.
+  创建一个\ :ref:`别名目标 <Alias Targets>`，这样\ ``<name>``\ 就可以用来在后续命令中\
+  引用\ ``<target>``。\ ``<name>``\ 不会作为make目标出现在生成的构建系统中。\
+  ``<target>``\ 不能是\ ``ALIAS``。
 
 .. versionadded:: 3.11
   An ``ALIAS`` can target a ``GLOBAL`` :ref:`Imported Target <Imported Targets>`
@@ -289,7 +281,7 @@ operand of :command:`set_property`, :command:`set_target_properties`,
 :command:`target_link_libraries` etc.  An ``ALIAS`` target may not be
 installed or exported.
 
-See Also
+另外参阅
 ^^^^^^^^
 
 * :command:`add_executable`

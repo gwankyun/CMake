@@ -7,15 +7,14 @@ add_executable
 
 使用指定的源文件向项目添加可执行文件。
 
-Normal Executables
+正常可执行文件
 ^^^^^^^^^^^^^^^^^^
 
 .. signature::
   add_executable(<name> <options>... <sources>...)
   :target: normal
 
-  Add an executable target called ``<name>`` to be built from the source
-  files listed in the command invocation.
+  添加一个名为\ ``<name>``\ 的可执行目标，以便从命令调用中列出的源文件构建。
 
   The options are:
 
@@ -59,18 +58,15 @@ See also :prop_sf:`HEADER_FILE_ONLY` on what to do if some sources are
 pre-processed, and you want to have the original sources reachable from
 within IDE.
 
-Imported Executables
+导入的可执行文件
 ^^^^^^^^^^^^^^^^^^^^
 
 .. signature::
   add_executable(<name> IMPORTED [GLOBAL])
   :target: IMPORTED
 
-  Add an :ref:`IMPORTED executable target <Imported Targets>` to reference
-  an executable file located outside the project.  The target name may be
-  referenced like any target built within the project, except that by
-  default it is visible only in the directory in which it is created,
-  and below.
+  添加\ :ref:`IMPORTED可执行目标 <Imported Targets>` ，以引用位于项目外部的可执行文件。\
+  目标名称可以像在项目中构建的任何目标一样被引用，除了默认情况下它只在创建它的目录中可见之外。
 
   The options are:
 
@@ -88,17 +84,16 @@ whose names begin in ``IMPORTED_``.  The most important such property is
 the main executable file on disk.  See documentation of the ``IMPORTED_*``
 properties for more information.
 
-Alias Executables
+可执行文件别名
 ^^^^^^^^^^^^^^^^^
 
 .. signature::
   add_executable(<name> ALIAS <target>)
   :target: ALIAS
 
-  Creates an :ref:`Alias Target <Alias Targets>`, such that ``<name>`` can
-  be used to refer to ``<target>`` in subsequent commands.  The ``<name>``
-  does not appear in the generated buildsystem as a make target.  The
-  ``<target>`` may not be an ``ALIAS``.
+  创建一个\ :ref:`Alias Target <Alias Targets>`，这样\ ``<name>``\ 就可以用来在后续\
+  命令中引用\ ``<target>``。\ ``<name>``\ 不会作为make目标出现在生成的构建系统中。\
+  ``<target>``\ 不能是\ ``ALIAS``。
 
 .. versionadded:: 3.11
   An ``ALIAS`` can target a ``GLOBAL`` :ref:`Imported Target <Imported Targets>`
@@ -117,7 +112,7 @@ is, it may not be used as the operand of :command:`set_property`,
 :command:`set_target_properties`, :command:`target_link_libraries` etc.
 An ``ALIAS`` target may not be installed or exported.
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`add_library`
