@@ -11,14 +11,11 @@ target_link_directories
     <INTERFACE|PUBLIC|PRIVATE> [items1...]
     [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 
-Specifies the paths in which the linker should search for libraries when
-linking a given target.  Each item can be an absolute or relative path,
-with the latter being interpreted as relative to the current source
-directory.  These items will be added to the link command.
+指定链接器在链接给定目标时搜索库的路径。每个项可以是绝对路径或相对路径，后者被解释为相对于当\
+前源目录。这些项将被添加到link命令中。
 
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.
+命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
+等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
 
 The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
 specify the :ref:`scope <Target Usage Requirements>` of the items that follow

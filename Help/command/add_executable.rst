@@ -16,19 +16,16 @@ add_executable
 
   添加一个名为\ ``<name>``\ 的可执行目标，以便从命令调用中列出的源文件构建。
 
-  The options are:
+  选项有：
 
   ``WIN32``
-    Set the :prop_tgt:`WIN32_EXECUTABLE` target property automatically.
-    See documentation of that target property for details.
+    自动设置\ :prop_tgt:`WIN32_EXECUTABLE`\ 目标属性。有关详细信息，请参阅该目标属性的文档。
 
   ``MACOSX_BUNDLE``
-    Set the :prop_tgt:`MACOSX_BUNDLE` target property automatically.
-    See documentation of that target property for details.
+    自动设置\ :prop_tgt:`MACOSX_BUNDLE`\ 目标属性。有关详细信息，请参阅该目标属性的文档。
 
   ``EXCLUDE_FROM_ALL``
-    Set the :prop_tgt:`EXCLUDE_FROM_ALL` target property automatically.
-    See documentation of that target property for details.
+    自动设置\ :prop_tgt:`EXCLUDE_FROM_ALL`\ 目标属性。有关详细信息，请参阅该目标属性的文档。
 
 The ``<name>`` corresponds to the logical target name and must be globally
 unique within a project.  The actual file name of the executable built is

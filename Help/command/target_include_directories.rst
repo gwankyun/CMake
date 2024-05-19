@@ -9,13 +9,10 @@ target_include_directories
     <INTERFACE|PUBLIC|PRIVATE> [items1...]
     [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 
-Specifies include directories to use when compiling a given target.
-The named ``<target>`` must have been created by a command such
-as :command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.
+指定编译给定目标时要使用的包含目录。命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\
+或\ :command:`add_library`\ 等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
 
-By using ``AFTER`` or ``BEFORE`` explicitly, you can select between appending
-and prepending, independent of the default.
+通过显式地使用\ ``AFTER``\ 或\ ``BEFORE``，你可以在附加和前置之间进行选择，而不依赖于默认值。
 
 The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to specify
 the :ref:`scope <Target Usage Requirements>` of the following arguments.

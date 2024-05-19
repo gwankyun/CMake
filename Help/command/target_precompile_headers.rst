@@ -5,9 +5,8 @@ target_precompile_headers
 
 添加要预编译的头文件列表。
 
-Precompiling header files can speed up compilation by creating a partially
-processed version of some header files, and then using that version during
-compilations rather than repeatedly parsing the original headers.
+预编译头文件可以通过创建某些头文件的部分处理版本来加快编译速度，然后在编译期间使用该版本，而\
+不是重复解析原始头文件。
 
 Main Form
 ^^^^^^^^^

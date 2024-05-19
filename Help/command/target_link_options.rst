@@ -11,9 +11,8 @@ target_link_options
     <INTERFACE|PUBLIC|PRIVATE> [items1...]
     [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.
+命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
+等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
 
 This command can be used to add any link options, but alternative commands
 exist to add libraries (:command:`target_link_libraries` or

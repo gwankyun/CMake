@@ -9,10 +9,9 @@ target_compile_definitions
     <INTERFACE|PUBLIC|PRIVATE> [items1...]
     [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 
-Specifies compile definitions to use when compiling a given ``<target>``.  The
-named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.
+指定编译给定\ ``<target>``\ 时要使用的编译定义。命名的\ ``<target>``\ 必须是由\
+:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\
+:ref:`别名目标 <Alias Targets>`。
 
 The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
 specify the :ref:`scope <Target Usage Requirements>` of the following arguments.

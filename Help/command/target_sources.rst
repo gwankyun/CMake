@@ -11,12 +11,11 @@ target_sources
     <INTERFACE|PUBLIC|PRIVATE> [items1...]
     [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 
-Specifies sources to use when building a target and/or its dependents.
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` or
-:command:`add_custom_target` and must not be an
-:ref:`ALIAS target <Alias Targets>`.  The ``<items>`` may use
-:manual:`generator expressions <cmake-generator-expressions(7)>`.
+指定在构建目标和/或其依赖项时要使用的源。命名的\ ``<target>``\ 必须是由\
+:command:`add_executable`\ 或\ :command:`add_library`\ 或\
+:command:`add_custom_target`\ 等命令创建的，并且不能是\
+:ref:`别名目标 <Alias Targets>`。\ ``<items>``\ 可以使用\
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 .. versionadded:: 3.20
   ``<target>`` can be a custom target.
@@ -62,7 +61,7 @@ buildsystem properties.
 
 .. _`File Sets`:
 
-File Sets
+文件集
 ^^^^^^^^^
 
 .. versionadded:: 3.23
@@ -74,10 +73,9 @@ File Sets
      [FILE_SET <set> [TYPE <type>] [BASE_DIRS <dirs>...] [FILES <files>...]]...
     ]...)
 
-Adds a file set to a target, or adds files to an existing file set. Targets
-have zero or more named file sets. Each file set has a name, a type, a scope of
-``INTERFACE``, ``PUBLIC``, or ``PRIVATE``, one or more base directories, and
-files within those directories. The acceptable types include:
+将文件集添加到目标，或将文件添加到现有文件集。目标有零个或多个命名文件集。每个文件集都有名称、\
+类型、\ ``INTERFACE``\ 、\ ``PUBLIC``\ 或\ ``PRIVATE``\ 范围、一个或多个基本目录以及\
+这些目录中的文件。可接受的类型包括：
 
 ``HEADERS``
 
@@ -182,7 +180,7 @@ Target properties related to include directories are also modified by
   ``INTERFACE`` or ``PUBLIC``, all of the ``BASE_DIRS`` of the file set are
   wrapped in :genex:`$<BUILD_INTERFACE>` and appended to this property.
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`add_executable`

@@ -16,57 +16,45 @@ add_library
 
   添加一个名为\ ``<name>``\ 的库目标，将从命令调用中列出的源文件构建。
 
-  The optional ``<type>`` specifies the type of library to be created:
+  可选的\ ``<type>``\ 指定要创建的库的类型：
 
   ``STATIC``
-    An archive of object files for use when linking other targets.
+    目标文件的存档，用于链接其他目标时使用。
 
   ``SHARED``
-    A dynamic library that may be linked by other targets and loaded
-    at runtime.
+    可以被其他目标链接并在运行时加载的动态库。
 
   ``MODULE``
-    A plugin that may not be linked by other targets, but may be
-    dynamically loaded at runtime using dlopen-like functionality.
+    一个插件，它可能不会被其他目标链接，但可以在运行时使用类似于dlopen的功能动态加载。
 
-  If no ``<type>`` is given the default is ``STATIC`` or ``SHARED``
-  based on the value of the :variable:`BUILD_SHARED_LIBS` variable.
+  如果没有给出\ ``<type>``，则根据\ :variable:`BUILD_SHARED_LIBS`\ 变量的值默认为\
+  ``STATIC``\ 或\ ``SHARED``。
 
-  The options are:
+  选项有：
 
   ``EXCLUDE_FROM_ALL``
-    Set the :prop_tgt:`EXCLUDE_FROM_ALL` target property automatically.
-    See documentation of that target property for details.
+    自动设置\ :prop_tgt:`EXCLUDE_FROM_ALL`\ 目标属性。有关详细信息，请参阅该目标属性的文档。
 
-The ``<name>`` corresponds to the logical target name and must be globally
-unique within a project.  The actual file name of the library built is
-constructed based on conventions of the native platform (such as
-``lib<name>.a`` or ``<name>.lib``).
+``<name>``\ 对应于逻辑目标名称，并且在项目中必须是全局唯一的。构建的库的实际文件名是基于本\
+机平台的约定（例如\ ``lib<name>.a``\ 或\ ``<name>.lib``\ ）构建的。
 
 .. versionadded:: 3.1
-  Source arguments to ``add_library`` may use "generator expressions" with
-  the syntax ``$<...>``.  See the :manual:`cmake-generator-expressions(7)`
-  manual for available expressions.
+  ``add_library``\ 的源参数可以使用语法为\ ``$<...>``\ 的“生成器表达式”。有关可用的表达式，\
+  请参阅\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 手册。
 
 .. versionadded:: 3.11
-  The source files can be omitted if they are added later using
-  :command:`target_sources`.
+  如果稍后使用\ :command:`target_sources`\ 添加源文件，则可以省略它们。
 
-For ``SHARED`` and ``MODULE`` libraries the
-:prop_tgt:`POSITION_INDEPENDENT_CODE` target
-property is set to ``ON`` automatically.
-A ``SHARED`` library may be marked with the :prop_tgt:`FRAMEWORK`
-target property to create an macOS Framework.
+对于\ ``SHARED``\ 和\ ``MODULE``\ 库，\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\
+目标属性被自动设置为\ ``ON``。\ ``SHARED``\ 库可以被标记为\ :prop_tgt:`FRAMEWORK`\
+目标属性来创建macOS框架。
 
 .. versionadded:: 3.8
-  A ``STATIC`` library may be marked with the :prop_tgt:`FRAMEWORK`
-  target property to create a static Framework.
+  可以用\ :prop_tgt:`FRAMEWORK`\ 目标属性标记\ ``STATIC``\ 库以创建静态框架。
 
-If a library does not export any symbols, it must not be declared as a
-``SHARED`` library.  For example, a Windows resource DLL or a managed C++/CLI
-DLL that exports no unmanaged symbols would need to be a ``MODULE`` library.
-This is because CMake expects a ``SHARED`` library to always have an
-associated import library on Windows.
+如果库不导出任何符号，则不得将其声明为\ ``SHARED``\ 库。例如，Windows资源DLL或不导出非托\
+管符号的托管C++/CLI DLL需要是\ ``MODULE``\ 库。这是因为CMake希望\ ``SHARED``\ 库在\
+Windows上总是有一个关联的导入库。
 
 By default the library file will be created in the build tree directory
 corresponding to the source tree directory in which the command was
