@@ -56,20 +56,15 @@ add_library
 管符号的托管C++/CLI DLL需要是\ ``MODULE``\ 库。这是因为CMake希望\ ``SHARED``\ 库在\
 Windows上总是有一个关联的导入库。
 
-By default the library file will be created in the build tree directory
-corresponding to the source tree directory in which the command was
-invoked.  See documentation of the :prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`,
-:prop_tgt:`LIBRARY_OUTPUT_DIRECTORY`, and
-:prop_tgt:`RUNTIME_OUTPUT_DIRECTORY` target properties to change this
-location.  See documentation of the :prop_tgt:`OUTPUT_NAME` target
-property to change the ``<name>`` part of the final file name.
+默认情况下，库文件将在调用命令的源树目录对应的构建树目录中创建。要更改此位置，请参阅\
+:prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`、\ :prop_tgt:`LIBRARY_OUTPUT_DIRECTORY`\ 和\
+:prop_tgt:`RUNTIME_OUTPUT_DIRECTORY`\ 目标属性的文档。请参阅\ :prop_tgt:`OUTPUT_NAME`\
+目标属性的文档以更改最终文件名的\ ``<name>``\ 部分。
 
-See the :manual:`cmake-buildsystem(7)` manual for more on defining
-buildsystem properties.
+有关定义buildsystem属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
-See also :prop_sf:`HEADER_FILE_ONLY` on what to do if some sources are
-pre-processed, and you want to have the original sources reachable from
-within IDE.
+如果某些源代码是预处理过的，并且希望在IDE中可以访问到原始源代码，请参见\
+:prop_sf:`HEADER_FILE_ONLY` 。
 
 对象库
 ^^^^^^^^^^^^^^^^
@@ -80,28 +75,24 @@ within IDE.
 
   添加\ :ref:`对象库 <Object Libraries>`\ 以编译源文件，而无需将其对象文件归档或链接到库中。
 
-Other targets created by ``add_library`` or :command:`add_executable`
-may reference the objects using an expression of the
-form :genex:`$\<TARGET_OBJECTS:objlib\> <TARGET_OBJECTS>` as a source, where
-``objlib`` is the object library name.  For example:
+``add_library``\ 或\ :command:`add_executable`\ 创建的其他目标可以使用表达式引用对象，\
+形式为\ :genex:`$\<TARGET_OBJECTS:objlib\> <TARGET_OBJECTS>`\ 作为源，其中\
+``objlib``\ 是对象库的名称。例如：
 
 .. code-block:: cmake
 
   add_library(... $<TARGET_OBJECTS:objlib> ...)
   add_executable(... $<TARGET_OBJECTS:objlib> ...)
 
-will include objlib's object files in a library and an executable
-along with those compiled from their own sources.  Object libraries
-may contain only sources that compile, header files, and other files
-that would not affect linking of a normal library (e.g. ``.txt``).
-They may contain custom commands generating such sources, but not
-``PRE_BUILD``, ``PRE_LINK``, or ``POST_BUILD`` commands.  Some native build
-systems (such as Xcode) may not like targets that have only object files, so
-consider adding at least one real source file to any target that references
-:genex:`$\<TARGET_OBJECTS:objlib\> <TARGET_OBJECTS>`.
+将包含一个库中的objlib的目标文件和一个可执行文件，以及那些从他们自己的源编译的可执行文件。\
+对象库可能只包含编译源、头文件和其他文件，这些文件不会影响普通库的链接（例如\ ``.txt``）。\
+它们可能包含生成此类源的自定义命令，但不包括\ ``PRE_BUILD``、\ ``PRE_LINK``\ 或\
+``POST_BUILD``\ 命令。一些原生的构建系统（例如Xcode）可能不喜欢只有目标文件的目标，所以\
+考虑向任何引用\ :genex:`$\<TARGET_OBJECTS:objlib\> <TARGET_OBJECTS>`\ 的目标添加至\
+少一个真正的源文件。
 
 .. versionadded:: 3.12
-  Object libraries can be linked to with :command:`target_link_libraries`.
+  目标库可以通过\ :command:`target_link_libraries`\ 链接。
 
 接口库
 ^^^^^^^^^^^^^^^^^^^
@@ -113,11 +104,8 @@ consider adding at least one real source file to any target that references
   添加一个\ :ref:`接口库 <Interface Libraries>`\ 目标，它可以指定依赖项的使用需求，但\
   不编译源代码，也不会在磁盘上生成库工件。
 
-  An interface library with no source files is not included as a target
-  in the generated buildsystem.  However, it may have
-  properties set on it and it may be installed and exported.
-  Typically, ``INTERFACE_*`` properties are populated on an interface
-  target using the commands:
+  没有源文件的接口库不会作为目标包含在生成的构建系统中。但是，它可以被设置属性，并且可以被\
+  安装和导出。通常，使用以下命令将\ ``INTERFACE_*``\ 属性填充到接口目标：
 
   * :command:`set_property`,
   * :command:`target_link_libraries(INTERFACE)`,
@@ -127,13 +115,11 @@ consider adding at least one real source file to any target that references
   * :command:`target_compile_definitions(INTERFACE)`, and
   * :command:`target_sources(INTERFACE)`,
 
-  and then it is used as an argument to :command:`target_link_libraries`
-  like any other target.
+  然后像其他目标一样，它被用作\ :command:`target_link_libraries`\ 的参数。
 
   .. versionadded:: 3.15
-    An interface library can have :prop_tgt:`PUBLIC_HEADER` and
-    :prop_tgt:`PRIVATE_HEADER` properties.  The headers specified by those
-    properties can be installed using the :command:`install(TARGETS)` command.
+    接口库可以有\ :prop_tgt:`PUBLIC_HEADER`\ 和\ :prop_tgt:`PRIVATE_HEADER`\ 属性。\
+    由这些属性指定的标头可以使用\ :command:`install(TARGETS)`\ 命令安装。
 
 .. signature::
   add_library(<name> INTERFACE [EXCLUDE_FROM_ALL] <sources>...)
