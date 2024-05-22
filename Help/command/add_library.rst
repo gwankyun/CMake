@@ -132,28 +132,21 @@ Windows上总是有一个关联的导入库。
   可以直接在\ ``add_library``\ 调用中列出，或者稍后通过使用\ ``PRIVATE``\ 或\
   ``PUBLIC``\ 关键字调用\ :command:`target_sources`\ 添加。
 
-  If an interface library has source files (i.e. the :prop_tgt:`SOURCES`
-  target property is set), or header sets (i.e. the :prop_tgt:`HEADER_SETS`
-  target property is set), it will appear in the generated buildsystem
-  as a build target much like a target defined by the
-  :command:`add_custom_target` command.  It does not compile any sources,
-  but does contain build rules for custom commands created by the
-  :command:`add_custom_command` command.
+  如果接口库有源文件（即设置了\ :prop_tgt:`SOURCES`\ 目标属性），或头集（即设置了\
+  :prop_tgt:`HEADER_SETS`\ 目标属性），它将作为构建目标出现在生成的构建系统中，非常像\
+  :command:`add_custom_target`\ 命令定义的目标。它不编译任何源代码，但包含由\
+  :command:`add_custom_command`\ 命令创建的自定义命令的构建规则。
 
-  The options are:
+  选项有：
 
   ``EXCLUDE_FROM_ALL``
-    Set the :prop_tgt:`EXCLUDE_FROM_ALL` target property automatically.
-    See documentation of that target property for details.
+    自动设置目标属性\ :prop_tgt:`EXCLUDE_FROM_ALL`。详情请参阅目标属性的文档。
 
   .. note::
-    In most command signatures where the ``INTERFACE`` keyword appears,
-    the items listed after it only become part of that target's usage
-    requirements and are not part of the target's own settings.  However,
-    in this signature of ``add_library``, the ``INTERFACE`` keyword refers
-    to the library type only.  Sources listed after it in the ``add_library``
-    call are ``PRIVATE`` to the interface library and do not appear in its
-    :prop_tgt:`INTERFACE_SOURCES` target property.
+    在大多数出现\ ``INTERFACE``\ 关键字的命令签名中，在它之后列出的项目只成为目标使用需求\
+    的一部分，而不是目标自己设置的一部分。不过，在\ ``add_library``\ 的签名中，\
+    ``INTERFACE``\ 关键字只表示库的类型。在\ ``add_library``\ 调用中，在它后面列出的源\
+    是接口库\ ``PRIVATE``\ 的，不会出现在它的\ :prop_tgt:`INTERFACE_SOURCES`\ 目标属性中。
 
 .. _`add_library imported libraries`:
 
