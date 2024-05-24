@@ -160,22 +160,17 @@ Windows上总是有一个关联的导入库。
   添加一个名为\ ``<name>``\ 的\ :ref:`IMPORTED库目录<Imported Targets>` 。目标名称\
   可以像在项目中构建的任何目标一样被引用，除了默认情况下它只在创建它的目录中可见之外。
 
-  The ``<type>`` must be one of:
+  ``<type>``\ 必须是：
 
   ``STATIC``, ``SHARED``, ``MODULE``, ``UNKNOWN``
-    References a library file located outside the project.  The
-    :prop_tgt:`IMPORTED_LOCATION` target property (or its per-configuration
-    variant :prop_tgt:`IMPORTED_LOCATION_<CONFIG>`) specifies the
-    location of the main library file on disk:
+    引用位于项目外部的库文件。\ :prop_tgt:`IMPORTED_LOCATION`\ 目标属性（或其对应的配置\
+    变体\ :prop_tgt:`IMPORTED_LOCATION_<CONFIG>`\ ）指定了主库文件在磁盘上的位置：
 
-    * For a ``SHARED`` library on most non-Windows platforms, the main library
-      file is the ``.so`` or ``.dylib`` file used by both linkers and dynamic
-      loaders.  If the referenced library file has a ``SONAME`` (or on macOS,
-      has a ``LC_ID_DYLIB`` starting in ``@rpath/``), the value of that field
-      should be set in the :prop_tgt:`IMPORTED_SONAME` target property.
-      If the referenced library file does not have a ``SONAME``, but the
-      platform supports it, then  the :prop_tgt:`IMPORTED_NO_SONAME` target
-      property should be set.
+    * 对于大多数非Windows平台上的\ ``SHARED``\ 库，主库文件是链接器和动态加载器都使用的\
+      ``.so``\ 或\ ``.dylib``\ 文件。如果引用的库文件有一个\ ``SONAME``\（或者在macOS\
+      上，在\ ``@rpath/``\ 中有一个\ ``LC_ID_DYLIB``\ ），该字段的值应该设置在\
+      :prop_tgt:`IMPORTED_SONAME`\ 目标属性中。如果引用的库文件没有\ ``SONAME``，但平\
+      台支持它，那么应该设置\ :prop_tgt:`IMPORTED_NO_SONAME`\ 目标属性。
 
     * For a ``SHARED`` library on Windows, the :prop_tgt:`IMPORTED_IMPLIB`
       target property (or its per-configuration variant
