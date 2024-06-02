@@ -172,48 +172,36 @@ Windows上总是有一个关联的导入库。
       :prop_tgt:`IMPORTED_SONAME`\ 目标属性中。如果引用的库文件没有\ ``SONAME``，但平\
       台支持它，那么应该设置\ :prop_tgt:`IMPORTED_NO_SONAME`\ 目标属性。
 
-    * For a ``SHARED`` library on Windows, the :prop_tgt:`IMPORTED_IMPLIB`
-      target property (or its per-configuration variant
-      :prop_tgt:`IMPORTED_IMPLIB_<CONFIG>`) specifies the location of the
-      DLL import library file (``.lib`` or ``.dll.a``) on disk, and the
-      ``IMPORTED_LOCATION`` is the location of the ``.dll`` runtime
-      library (and is optional, but needed by the :genex:`TARGET_RUNTIME_DLLS`
-      generator expression).
+    * 对于Windows上的\ ``SHARED``\ 库，\ :prop_tgt:`IMPORTED_IMPLIB`\ 目标属性（\
+      或其每个配置的变体\ :prop_tgt:`IMPORTED_IMPLIB_<CONFIG>`\ ）指定了DLL导入库文件\
+      （\ ``.lib``\ 或\ ``.dll.a``\ ）在磁盘上的位置，\ ``IMPORTED_LOCATION``\ 是\
+      ``.dll``\ 运行库的位置（并且是可选的，但\ :genex:`TARGET_RUNTIME_DLLS`\ 生成器\
+      表达式需要）。
 
-    Additional usage requirements may be specified in ``INTERFACE_*``
-    properties.
+    其他使用要求可以在\ ``INTERFACE_*``\ 属性中指定。
 
-    An ``UNKNOWN`` library type is typically only used in the implementation
-    of :ref:`Find Modules`.  It allows the path to an imported library
-    (often found using the :command:`find_library` command) to be used
-    without having to know what type of library it is.  This is especially
-    useful on Windows where a static library and a DLL's import library
-    both have the same file extension.
+    ``UNKNOWN``\ 库类型通常只在\ :ref:`Find Modules`\ 的实现中使用。它允许使用导入库的\
+    路径（通常使用\ :command:`find_library`\ 命令找到），而不必知道它是什么类型的库。\
+    这在Windows上特别有用，因为静态库和DLL的导入库都具有相同的文件扩展名。
 
   ``OBJECT``
-    References a set of object files located outside the project.
-    The :prop_tgt:`IMPORTED_OBJECTS` target property (or its per-configuration
-    variant :prop_tgt:`IMPORTED_OBJECTS_<CONFIG>`) specifies the locations of
-    object files on disk.
-    Additional usage requirements may be specified in ``INTERFACE_*``
-    properties.
+    引用一组位于项目外部的目标文件。\ :prop_tgt:`IMPORTED_OBJECTS`\ 目标属性（或它的每\
+    个配置变体\ :prop_tgt:`IMPORTED_OBJECTS_<CONFIG>`\ ）指定了对象文件在磁盘上的位置。\
+    其他使用要求可以在\ ``INTERFACE_*``\ 属性中指定。
 
   ``INTERFACE``
-    Does not reference any library or object files on disk, but may
-    specify usage requirements in ``INTERFACE_*`` properties.
+    不引用磁盘上的任何库或目标文件，但可以在\ ``INTERFACE_*``\ 属性中指定使用要求。
 
-  The options are:
+  选项有：
 
   ``GLOBAL``
-    Make the target name globally visible.
+    使目标名称全局可见。
 
-No rules are generated to build imported targets, and the :prop_tgt:`IMPORTED`
-target property is ``True``.  Imported libraries are useful for convenient
-reference from commands like :command:`target_link_libraries`.
+不会生成任何规则来构建导入的目标，并且\ :prop_tgt:`IMPORTED`\ 的目标属性为 ``True``。\
+导入的库对于从\ :command:`target_link_libraries`\ 等命令中方便地引用非常有用。
 
-Details about the imported library are specified by setting properties whose
-names begin in ``IMPORTED_`` and ``INTERFACE_``.  See documentation of
-such properties for more information.
+通过设置名称以\ ``IMPORTED_``\ 和\ ``INTERFACE_``\ 开头的属性来指定导入库的详细信息。\
+有关更多信息，请参阅此类属性的文档。
 
 别名库
 ^^^^^^^^^^^^^^^
@@ -227,21 +215,16 @@ such properties for more information.
   ``<target>``\ 不能是\ ``ALIAS``。
 
 .. versionadded:: 3.11
-  An ``ALIAS`` can target a ``GLOBAL`` :ref:`Imported Target <Imported Targets>`
+  ``ALIAS``\ 可以针对\ ``GLOBAL``\ :ref:`导入目标 <Imported Targets>`
 
 .. versionadded:: 3.18
-  An ``ALIAS`` can target a non-``GLOBAL`` Imported Target. Such alias is
-  scoped to the directory in which it is created and below.
-  The :prop_tgt:`ALIAS_GLOBAL` target property can be used to check if the
-  alias is global or not.
+  ``ALIAS``\ 可以针对非\ ``GLOBAL``\ 导入的目标。这样的别名的作用域是创建它的目录及以下\
+  目录。\ :prop_tgt:`ALIAS_GLOBAL`\ 目标属性可用于检查别名是否是全局的。
 
-``ALIAS`` targets can be used as linkable targets and as targets to
-read properties from.  They can also be tested for existence with the
-regular :command:`if(TARGET)` subcommand.  The ``<name>`` may not be used
-to modify properties of ``<target>``, that is, it may not be used as the
-operand of :command:`set_property`, :command:`set_target_properties`,
-:command:`target_link_libraries` etc.  An ``ALIAS`` target may not be
-installed or exported.
+``ALIAS``\ 目标可以用作可链接的目标，也可以用作从中读取属性的目标。还可以使用常规\
+:command:`if(TARGET)`\ 子命令测试它们是否存在。\ ``<name>``\ 不能用于修改\ ``<target>``\
+的属性，即不能作为\ :command:`set_property`、\ :command:`set_target_properties`、\
+:command:`target_link_libraries`\ 等的操作数。\ ``ALIAS``\ 目标不能安装或导出。
 
 另外参阅
 ^^^^^^^^

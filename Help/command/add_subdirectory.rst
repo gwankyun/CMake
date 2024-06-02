@@ -7,35 +7,20 @@ add_subdirectory
 
   add_subdirectory(source_dir [binary_dir] [EXCLUDE_FROM_ALL] [SYSTEM])
 
-Adds a subdirectory to the build.  The ``source_dir`` specifies the
-directory in which the source ``CMakeLists.txt`` and code files are
-located.  If it is a relative path, it will be evaluated with respect
-to the current directory (the typical usage), but it may also be an
-absolute path.  The ``binary_dir`` specifies the directory in which to
-place the output files.  If it is a relative path, it will be evaluated
-with respect to the current output directory, but it may also be an
-absolute path.  If ``binary_dir`` is not specified, the value of
-``source_dir``, before expanding any relative path, will be used (the
-typical usage).  The ``CMakeLists.txt`` file in the specified source
-directory will be processed immediately by CMake before processing in
-the current input file continues beyond this command.
+在构建中添加一个子目录。\ ``source_dir``\ 指定了源文件\ ``CMakeLists.txt``\ 和代码文件\
+所在的目录。如果它是一个相对路径，它将相对于当前目录进行计算（典型用法），但它也可以是一个绝\
+对路径。\ ``binary_dir``\ 指定了放置输出文件的目录。如果它是一个相对路径，它将相对于当前\
+输出目录进行计算，但它也可以是一个绝对路径。如果没有指定\ ``binary_dir``\ ，则在展开任何\
+相对路径之前使用\ ``source_dir``\ 的值（典型用法）。CMake会立即处理指定源目录下的\
+``CMakeLists.txt``\ 文件，然后再处理当前输入文件。
 
-If the ``EXCLUDE_FROM_ALL`` argument is provided then targets in the
-subdirectory will not be included in the ``ALL`` target of the parent
-directory by default, and will be excluded from IDE project files.
-Users must explicitly build targets in the subdirectory.  This is
-meant for use when the subdirectory contains a separate part of the
-project that is useful but not necessary, such as a set of examples.
-Typically the subdirectory should contain its own :command:`project`
-command invocation so that a full build system will be generated in the
-subdirectory (such as a Visual Studio IDE solution file).  Note that
-inter-target dependencies supersede this exclusion.  If a target built by
-the parent project depends on a target in the subdirectory, the dependee
-target will be included in the parent project build system to satisfy
-the dependency.
+如果提供了\ ``EXCLUDE_FROM_ALL``\ 参数，则子目录中的目标默认不会包含在父目录的\ ``ALL``\
+目标中，并且将从IDE项目文件中排除。用户必须显式地在子目录中构建目标。这适用于子目录包含项目\
+中有用但不是必需的独立部分时，例如一组示例。通常子目录应该包含它自己的\ :command:`project`\
+命令调用，以便在子目录中生成完整的构建系统（例如Visual Studio IDE解决方案文件）。请注意，\
+目标间依赖关系取代了此排除。如果父项目生成的目标依赖于子目录中的目标，则从属目标将包含在父项目\
+生成系统中以满足依赖关系。
 
 .. versionadded:: 3.25
-  If the ``SYSTEM`` argument is provided, the :prop_dir:`SYSTEM` directory
-  property of the subdirectory will be set to true.  This property is
-  used to initialize the :prop_tgt:`SYSTEM` property of each non-imported
-  target created in that subdirectory.
+  如果提供了\ ``SYSTEM``\ 参数，子目录的\ :prop_dir:`SYSTEM`\ 目录属性将被设置为true。\
+  此属性用于初始化在该子目录中创建的每个未导入目标的\ :prop_tgt:`SYSTEM`\ 属性。
