@@ -9,34 +9,28 @@ target_compile_features
 
   target_compile_features(<target> <PRIVATE|PUBLIC|INTERFACE> <feature> [...])
 
-Specifies compiler features required when compiling a given target.  If the
-feature is not listed in the :variable:`CMAKE_C_COMPILE_FEATURES`,
-:variable:`CMAKE_CUDA_COMPILE_FEATURES`, or :variable:`CMAKE_CXX_COMPILE_FEATURES`
-variables, then an error will be reported by CMake.  If the use of the feature requires
-an additional compiler flag, such as ``-std=gnu++11``, the flag will be added
-automatically.
+指定编译给定目标时所需的编译器特性。如果\ :variable:`CMAKE_C_COMPILE_FEATURES`、\
+:variable:`CMAKE_CUDA_COMPILE_FEATURES`\ 或\ :variable:`CMAKE_CXX_COMPILE_FEATURES`\
+变量中未列出该特性，则CMake将报告一个错误。如果使用该特性需要一个额外的编译器标志，例如\
+``-std=gnu++11``，该标志将自动添加。
 
-The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the scope of the features.  ``PRIVATE`` and ``PUBLIC`` items will
-populate the :prop_tgt:`COMPILE_FEATURES` property of ``<target>``.
-``PUBLIC`` and ``INTERFACE`` items will populate the
-:prop_tgt:`INTERFACE_COMPILE_FEATURES` property of ``<target>``.
-Repeated calls for the same ``<target>`` append items.
+``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字是指定特性范围所必需的。\ ``PRIVATE``\
+和\ ``PUBLIC``\ 项将填充\ ``<target>``\ 的\ :prop_tgt:`COMPILE_FEATURES`\ 属性。\
+``PUBLIC``\ 和\ ``INTERFACE``\ 项将填充\ ``<target>``\ 的\
+:prop_tgt:`INTERFACE_COMPILE_FEATURES`\ 属性。重复调用相同的\ ``<target>``\ 追加元素。
 
 .. versionadded:: 3.11
-  Allow setting ``INTERFACE`` items on :ref:`IMPORTED targets <Imported Targets>`.
+  允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.
+命名\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
+等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
 
 .. |command_name| replace:: ``target_compile_features``
-.. |more_see_also| replace:: See the :manual:`cmake-compile-features(7)`
-   manual for information on compile features and a list of supported compilers.
+.. |more_see_also| replace:: 请参阅\ :manual:`cmake-compile-features(7)`\ 手册，了解有关编译特性的信息和支持的编译器列表。
 .. include:: GENEX_NOTE.txt
    :start-line: 1
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`target_compile_definitions`

@@ -1,6 +1,4 @@
-.. |more_see_also| replace:: See the :manual:`cmake-buildsystem(7)` manual
-   for more on defining buildsystem properties.
+.. |more_see_also| replace:: See the :manual:`cmake-buildsystem(7)` manual for more on defining buildsystem properties.
 
-Arguments to |command_name| may use generator expressions
-with the syntax ``$<...>``. See the :manual:`cmake-generator-expressions(7)`
-manual for available expressions.  |more_see_also|
+|command_name|\ 的参数可以使用生成器表达式，语法为\ ``$<...>``。有关可用的表达式，请参阅\
+:manual:`cmake-generator-expressions(7)`\ 手册。|more_see_also|
