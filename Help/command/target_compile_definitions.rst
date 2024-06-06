@@ -13,22 +13,19 @@ target_compile_definitions
 :command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\
 :ref:`别名目标 <Alias Targets>`。
 
-The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the :ref:`scope <Target Usage Requirements>` of the following arguments.
-``PRIVATE`` and ``PUBLIC`` items will populate the :prop_tgt:`COMPILE_DEFINITIONS`
-property of ``<target>``. ``PUBLIC`` and ``INTERFACE`` items will populate the
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` property of ``<target>``.
-The following arguments specify compile definitions.  Repeated calls for the
-same ``<target>`` append items in the order called.
+``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字用于指定下列参数的\
+:ref:`作用域 <Target Usage Requirements>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\
+``<target>``\ 的\ :prop_tgt:`COMPILE_DEFINITIONS`\ 属性。\ ``PUBLIC``\ 和\
+``INTERFACE``\ 项将填充\ ``<target>``\ 的\ :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\
+属性。下列参数指定编译定义。重复调用相同的\ ``<target>``\ 将元素按照调用的顺序添加。
 
 .. versionadded:: 3.11
-  Allow setting ``INTERFACE`` items on :ref:`IMPORTED targets <Imported Targets>`.
+  允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
 .. |command_name| replace:: ``target_compile_definitions``
 .. include:: GENEX_NOTE.txt
 
-Any leading ``-D`` on an item will be removed.  Empty items are ignored.
-For example, the following are all equivalent:
+元素前面的\ ``-D``\ 将被删除。空项被忽略。例如，以下代码都是等价的：
 
 .. code-block:: cmake
 
@@ -37,16 +34,16 @@ For example, the following are all equivalent:
   target_compile_definitions(foo PUBLIC "" FOO) # "" ignored
   target_compile_definitions(foo PUBLIC -D FOO) # -D becomes "", then ignored
 
-Definitions may optionally have values:
+定义可以有可选的值：
 
 .. code-block:: cmake
 
   target_compile_definitions(foo PUBLIC FOO=1)
 
-Note that many compilers treat ``-DFOO`` as equivalent to ``-DFOO=1``, but
-other tools may not recognize this in all circumstances (e.g. IntelliSense).
+请注意，许多编译器将\ ``-DFOO``\ 视为\ ``-DFOO=1``，但其他工具可能不能在所有情况下识别这\
+一点（例如IntelliSense）。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`add_compile_definitions`
