@@ -1,26 +1,24 @@
 add_subdirectory
 ----------------
 
-向构建添加一个子目录。
+�򹹽�����һ����Ŀ¼��
 
 .. code-block:: cmake
 
   add_subdirectory(source_dir [binary_dir] [EXCLUDE_FROM_ALL] [SYSTEM])
 
-在构建中添加一个子目录。\ ``source_dir``\ 指定了源文件\ ``CMakeLists.txt``\ 和代码文件\
-所在的目录。如果它是一个相对路径，它将相对于当前目录进行计算（典型用法），但它也可以是一个绝\
-对路径。\ ``binary_dir``\ 指定了放置输出文件的目录。如果它是一个相对路径，它将相对于当前\
-输出目录进行计算，但它也可以是一个绝对路径。如果没有指定\ ``binary_dir``\ ，则在展开任何\
-相对路径之前使用\ ``source_dir``\ 的值（典型用法）。CMake会立即处理指定源目录下的\
-``CMakeLists.txt``\ 文件，然后再处理当前输入文件。
+�ڹ���������һ����Ŀ¼��\ ``source_dir``\ ָ����Դ�ļ�\ ``CMakeLists.txt``\ �ʹ����ļ�\
+���ڵ�Ŀ¼���������һ�����·������������ڵ�ǰĿ¼���м��㣨�����÷���������Ҳ������һ����\
+��·����\ ``binary_dir``\ ָ���˷�������ļ���Ŀ¼���������һ�����·������������ڵ�ǰ\
+���Ŀ¼���м��㣬����Ҳ������һ������·�������û��ָ��\ ``binary_dir``\ ������չ���κ�\
+���·��֮ǰʹ��\ ``source_dir``\ ��ֵ�������÷�����CMake����������ָ��ԴĿ¼�µ�\
+``CMakeLists.txt``\ �ļ���Ȼ���ٴ�����ǰ�����ļ���
 
-如果提供了\ ``EXCLUDE_FROM_ALL``\ 参数，则子目录中的目标默认不会包含在父目录的\ ``ALL``\
-目标中，并且将从IDE项目文件中排除。用户必须显式地在子目录中构建目标。这适用于子目录包含项目\
-中有用但不是必需的独立部分时，例如一组示例。通常子目录应该包含它自己的\ :command:`project`\
-命令调用，以便在子目录中生成完整的构建系统（例如Visual Studio IDE解决方案文件）。请注意，\
-目标间依赖关系取代了此排除。如果父项目生成的目标依赖于子目录中的目标，则从属目标将包含在父项目\
-生成系统中以满足依赖关系。
+If the ``EXCLUDE_FROM_ALL`` argument is provided then the
+:prop_dir:`EXCLUDE_FROM_ALL` property will be set on the added directory.
+This will exclude the directory from a default build. See the directory
+property :prop_dir:`EXCLUDE_FROM_ALL` for full details.
 
 .. versionadded:: 3.25
-  如果提供了\ ``SYSTEM``\ 参数，子目录的\ :prop_dir:`SYSTEM`\ 目录属性将被设置为true。\
-  此属性用于初始化在该子目录中创建的每个未导入目标的\ :prop_tgt:`SYSTEM`\ 属性。
+  ����ṩ��\ ``SYSTEM``\ ��������Ŀ¼��\ :prop_dir:`SYSTEM`\ Ŀ¼���Խ�������Ϊtrue��\
+  ���������ڳ�ʼ���ڸ���Ŀ¼�д�����ÿ��δ����Ŀ���\ :prop_tgt:`SYSTEM`\ ���ԡ�

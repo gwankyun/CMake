@@ -3,8 +3,8 @@ CMAKE_MSVCIDE_RUN_PATH
 
 .. include:: ENV_VAR.txt
 
-ä½¿ç”¨\ :generator:`Visual Studio 9 2008`\ ï¼ˆæˆ–æ›´é«˜ç‰ˆæœ¬ï¼‰ç”Ÿæˆå™¨æ—¶ï¼Œè‡ªå®šä¹‰å‘½ä»¤çš„é¢å¤–PATH\
-ä½ç½®ã€‚
+Ê¹ÓÃ\ :generator:`Visual Studio 12 2013`\ £¨»ò¸ü¸ß°æ±¾£©Éú³ÉÆ÷Ê±£¬×Ô¶¨ÒåÃüÁîµÄ¶îÍâPATH\
+Î»ÖÃ¡£
 
 The ``CMAKE_MSVCIDE_RUN_PATH`` environment variable sets the default value for
 the :variable:`CMAKE_MSVCIDE_RUN_PATH` variable if not already explicitly set.

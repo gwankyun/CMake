@@ -156,6 +156,9 @@ The following variables can be set to guide the search for HDF5 libraries and in
 include(${CMAKE_CURRENT_LIST_DIR}/SelectLibraryConfigurations.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
 
+cmake_policy(PUSH)
+cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
+
 # We haven't found HDF5 yet. Clear its state in case it is set in the parent
 # scope somewhere else. We can't rely on it because different components may
 # have been requested for this call.
@@ -1242,3 +1245,5 @@ if (HDF5_FIND_DEBUG)
 endif()
 unset(_lang)
 unset(_HDF5_NEED_TO_SEARCH)
+
+cmake_policy(POP)

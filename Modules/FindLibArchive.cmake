@@ -30,6 +30,9 @@ The module defines the following ``IMPORTED`` targets:
 
 #]=======================================================================]
 
+cmake_policy(PUSH)
+cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
+
 find_path(LibArchive_INCLUDE_DIR
   NAMES archive.h
   PATHS
@@ -80,3 +83,5 @@ if(LibArchive_FOUND)
       INTERFACE_INCLUDE_DIRECTORIES "${LibArchive_INCLUDE_DIR}")
   endif ()
 endif()
+
+cmake_policy(POP)

@@ -27,7 +27,10 @@ cmake -P命令运行脚本。在命令行上，即使在.manifest文件中中没
 # it will put the list of versions found into the variable
 # specified by list_var
 function(crt_version file list_var)
+  cmake_policy(PUSH)
+  cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
   file(STRINGS "${file}" strings REGEX "Microsoft.VC...CRT" NEWLINE_CONSUME)
+  cmake_policy(POP)
   foreach(s ${strings})
     set(has_match 1)
     string(REGEX

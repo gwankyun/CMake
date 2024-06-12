@@ -18,7 +18,7 @@ target_link_directories
 等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
 
 The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the :ref:`scope <Target Usage Requirements>` of the items that follow
+specify the :ref:`scope <Target Command Scope>` of the items that follow
 them. ``PRIVATE`` and ``PUBLIC`` items will populate the
 :prop_tgt:`LINK_DIRECTORIES` property of ``<target>``.  ``PUBLIC`` and
 ``INTERFACE`` items will populate the :prop_tgt:`INTERFACE_LINK_DIRECTORIES`

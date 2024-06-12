@@ -40,6 +40,9 @@ Hints
 
 #]=======================================================================]
 
+cmake_policy(PUSH)
+cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
+
 find_package(PkgConfig QUIET)
 
 pkg_check_modules(PC_EXPAT QUIET expat)
@@ -155,3 +158,5 @@ if(EXPAT_FOUND)
 endif()
 
 mark_as_advanced(EXPAT_INCLUDE_DIR EXPAT_LIBRARY)
+
+cmake_policy(POP)

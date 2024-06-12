@@ -5,62 +5,124 @@ cmake-cxxmodules(7)
 
 .. versionadded:: 3.28
 
-C++ 20å¼•å…¥äº†â€œæ¨¡å—â€çš„æ¦‚å¿µã€‚è¯¥è®¾è®¡è¦æ±‚æ„å»ºç³»ç»Ÿä¹‹é—´å¯¹ç¼–è¯‘è¿›è¡Œæ’åºï¼Œä»¥å¯é åœ°æ»¡è¶³\ ``import``\
-è¯­å¥ã€‚CMakeçš„å®ç°è¦æ±‚ç¼–è¯‘å™¨åœ¨æ„å»ºè¿‡ç¨‹ä¸­æ‰«ææºæ–‡ä»¶ä¸­çš„æ¨¡å—ä¾èµ–ï¼Œæ•´ç†æ‰«æç»“æœæ¥æ¨æ–­æ’åºçº¦æŸï¼Œ\
-å¹¶å‘Šè¯‰æ„å»ºå·¥å…·å¦‚ä½•åŠ¨æ€æ›´æ–°æ„å»ºå›¾ã€‚
+C++ 20ÒıÈëÁË¡°Ä£¿é¡±µÄ¸ÅÄî¡£¸ÃÉè¼ÆÒªÇó¹¹½¨ÏµÍ³Ö®¼ä¶Ô±àÒë½øĞĞÅÅĞò£¬ÒÔ¿É¿¿µØÂú×ã\ ``import``\
+Óï¾ä¡£CMakeµÄÊµÏÖÒªÇó±àÒëÆ÷ÔÚ¹¹½¨¹ı³ÌÖĞÉ¨ÃèÔ´ÎÄ¼şÖĞµÄÄ£¿éÒÀÀµ£¬ÕûÀíÉ¨Ãè½á¹ûÀ´ÍÆ¶ÏÅÅĞòÔ¼Êø£¬\
+²¢¸æËß¹¹½¨¹¤¾ßÈçºÎ¶¯Ì¬¸üĞÂ¹¹½¨Í¼¡£
 
-æ‰«ææ§åˆ¶
+Compilation Strategy
+====================
+
+With C++ modules, compiling a set of C++ sources is no longer embarrassingly
+parallel. That is, any given source may first require the compilation of
+another source file first in order to provide a "CMI" (compiled module
+interface) or "BMI" (binary module interface) that C++ compilers use to
+satisfy ``import`` statements in other sources. With headers, sources could
+share their declarations so that any consumers could compile independently.
+With modules, declarations are now generated into these BMI files by the
+compiler during compilation based on the contents of the source file and its
+``export`` statements.
+
+The order necessary for compilation requires build-time resolution of the
+ordering because the order is controlled by the contents of the sources. This
+means that the ordering needs extracted from the source during the build to
+avoid regenerating the build graph via a configure and generate phase for
+every source change to get a correct build.
+
+The general strategy is to use a "scanner" to extract the ordering dependency
+information and update the build graph with new edges between existing edges
+by taking the per-source scan results (represented by `P1689R5`_ files) and
+"collating" the dependencies within a target and to modules produced by
+targets visible to the target. The primary task is to generate "module map"
+files to pass to each compile rule with the paths to the BMIs needed to
+satisfy ``import`` statements. The collator also has tasks to use the
+build-time information to fill out information including ``install`` rules for
+the module interface units, their BMIs, and properties for any exported
+targets with C++ modules.
+
+.. _`P1689R5`: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1689r5.html
+
+.. note:
+
+   CMake is focusing on correct builds before looking at performance
+   improvements. There are known tactics within the chosen strategy which may
+   offer build performance improvements. However, they are being deferred
+   until we have a working model against which to compare them. It is also
+   important to note that a tactic useful in one situation (e.g., clean
+   builds) may not be performant in a different situation (e.g., incremental
+   builds). Finding a balance and offering controls to select the tactics is
+   future work.
+
+É¨Ãè¿ØÖÆ
 ================
 
-æ˜¯å¦æ‰«ææºä»£ç ä»¥æŸ¥æ‰¾C++æ¨¡å—çš„ä½¿ç”¨æƒ…å†µå–å†³äºä»¥ä¸‹æŸ¥è¯¢ã€‚ä½¿ç”¨ç¬¬ä¸€ä¸ªæä¾›yes/noç­”æ¡ˆçš„æŸ¥è¯¢ã€‚
+ÊÇ·ñÉ¨ÃèÔ´´úÂëÒÔ²éÕÒC++Ä£¿éµÄÊ¹ÓÃÇé¿öÈ¡¾öÓÚÒÔÏÂ²éÑ¯¡£Ê¹ÓÃµÚÒ»¸öÌá¹©yes/no´ğ°¸µÄ²éÑ¯¡£
 
-- å¦‚æœæºæ–‡ä»¶å±äº\ ``CXX_MODULES``\ ç±»å‹çš„æ–‡ä»¶é›†ï¼Œåˆ™ä¼šå¯¹å…¶è¿›è¡Œæ‰«æã€‚
-- å¦‚æœç›®æ ‡ä¸ä½¿ç”¨è‡³å°‘C++ 20ï¼Œåˆ™ä¸ä¼šå¯¹å…¶è¿›è¡Œæ‰«æã€‚
-- å¦‚æœæºæ–‡ä»¶ä¸æ˜¯\ ``CXX``\ è¯­è¨€ï¼Œå®ƒå°†ä¸ä¼šè¢«æ‰«æã€‚
-- å¦‚æœè®¾ç½®äº†\ :prop_sf:`CXX_SCAN_FOR_MODULES`\ æºæ–‡ä»¶å±æ€§ï¼Œåˆ™å°†ä½¿ç”¨å…¶å€¼ã€‚
-- å¦‚æœè®¾ç½®äº†\ :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ ç›®æ ‡å±æ€§ï¼Œåˆ™å°†ä½¿ç”¨å…¶å€¼ã€‚è®¾ç½®\
-  :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ å˜é‡ï¼Œä»¥ä¾¿åœ¨åˆ›å»ºæ‰€æœ‰ç›®æ ‡æ—¶åˆå§‹åŒ–è¯¥å±æ€§ã€‚
-- å¦åˆ™ï¼Œå°†åœ¨ç¼–è¯‘å™¨å’Œç”Ÿæˆå™¨æ”¯æŒçš„å‰æä¸‹ï¼Œæ‰«ææºæ–‡ä»¶ã€‚å‚è§ç­–ç•¥\ :policy:`CMP0155`ã€‚
+- Èç¹ûÔ´ÎÄ¼şÊôÓÚ\ ``CXX_MODULES``\ ÀàĞÍµÄÎÄ¼ş¼¯£¬Ôò»á¶ÔÆä½øĞĞÉ¨Ãè¡£
+- Èç¹ûÄ¿±ê²»Ê¹ÓÃÖÁÉÙC++ 20£¬Ôò²»»á¶ÔÆä½øĞĞÉ¨Ãè¡£
+- Èç¹ûÔ´ÎÄ¼ş²»ÊÇ\ ``CXX``\ ÓïÑÔ£¬Ëü½«²»»á±»É¨Ãè¡£
+- Èç¹ûÉèÖÃÁË\ :prop_sf:`CXX_SCAN_FOR_MODULES`\ Ô´ÎÄ¼şÊôĞÔ£¬Ôò½«Ê¹ÓÃÆäÖµ¡£
+- Èç¹ûÉèÖÃÁË\ :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ Ä¿±êÊôĞÔ£¬Ôò½«Ê¹ÓÃÆäÖµ¡£ÉèÖÃ\
+  :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ ±äÁ¿£¬ÒÔ±ãÔÚ´´½¨ËùÓĞÄ¿±êÊ±³õÊ¼»¯¸ÃÊôĞÔ¡£
+- ·ñÔò£¬½«ÔÚ±àÒëÆ÷ºÍÉú³ÉÆ÷Ö§³ÖµÄÇ°ÌáÏÂ£¬É¨ÃèÔ´ÎÄ¼ş¡£²Î¼û²ßÂÔ\ :policy:`CMP0155`¡£
 
-è¯·æ³¨æ„ï¼Œä»»ä½•æ‰«æçš„æºä»£ç éƒ½å°†è¢«æ’é™¤åœ¨ä»»ä½•ç»Ÿä¸€æ„å»ºä¸­ï¼ˆå‚è§\ :prop_tgt:`UNITY_BUILD`ï¼‰ï¼Œ\
-å› ä¸ºä¸æ¨¡å—ç›¸å…³çš„è¯­å¥åªèƒ½å‘ç”Ÿåœ¨C++ç¿»è¯‘å•å…ƒä¸­çš„ä¸€ä¸ªåœ°æ–¹ã€‚
+Çë×¢Òâ£¬ÈÎºÎÉ¨ÃèµÄÔ´´úÂë¶¼½«±»ÅÅ³ıÔÚÈÎºÎÍ³Ò»¹¹½¨ÖĞ£¨²Î¼û\ :prop_tgt:`UNITY_BUILD`£©£¬\
+ÒòÎªÓëÄ£¿éÏà¹ØµÄÓï¾äÖ»ÄÜ·¢ÉúÔÚC++·­Òëµ¥ÔªÖĞµÄÒ»¸öµØ·½¡£
 
-ç¼–è¯‘å™¨æ”¯æŒ
+±àÒëÆ÷Ö§³Ö
 ================
 
-CMakeåŸç”Ÿæ”¯æŒæ¨¡å—ä¾èµ–æ‰«æçš„ç¼–è¯‘å™¨åŒ…æ‹¬ï¼š
+CMakeÔ­ÉúÖ§³ÖÄ£¿éÒÀÀµÉ¨ÃèµÄ±àÒëÆ÷°üÀ¨£º
 
-* MSVCå·¥å…·é›†14.34åŠæ›´æ–°ç‰ˆæœ¬ï¼ˆä¸Visual Studio 17.4åŠæ›´æ–°ç‰ˆæœ¬ä¸€èµ·æä¾›ï¼‰
-* LLVM/Clang 16.0åŠæ›´æ–°ç‰ˆæœ¬
-* GCC 14ï¼ˆå¯¹äºå¼€å‘åˆ†æ”¯ï¼Œ2023-09-20ä¹‹åï¼‰åŠæ›´æ–°ç‰ˆæœ¬
+* MSVC¹¤¾ß¼¯14.34¼°¸üĞÂ°æ±¾£¨ÓëVisual Studio 17.4¼°¸üĞÂ°æ±¾Ò»ÆğÌá¹©£©
+* LLVM/Clang 16.0¼°¸üĞÂ°æ±¾
+* GCC 14£¨¶ÔÓÚ¿ª·¢·ÖÖ§£¬2023-09-20Ö®ºó£©¼°¸üĞÂ°æ±¾
 
-ç”Ÿæˆå™¨æ”¯æŒ
+``import std`` Support
+======================
+
+Support for ``import std`` is limited to the following toolchain and standard
+library combinations:
+
+* Clang 18.1.2 and newer with ``-stdlib=libc++``
+* MSVC toolset 14.36 and newer (provided with Visual Studio 17.6 Preview 2 and
+  newer)
+
+The :variable:`CMAKE_CXX_COMPILER_IMPORT_STD` variable may be used to detect
+support for a standard level with the active C++ toolchain.
+
+.. note ::
+
+   This support is provided only when experimental support for
+   ``import std;`` has been enabled by the
+   ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD`` gate.
+
+Éú³ÉÆ÷Ö§³Ö
 =================
 
-æ”¯æŒæ‰«æC++æ¨¡å—æºçš„ç”Ÿæˆå™¨åˆ—è¡¨åŒ…æ‹¬ï¼š
+Ö§³ÖÉ¨ÃèC++Ä£¿éÔ´µÄÉú³ÉÆ÷ÁĞ±í°üÀ¨£º
 
 - :generator:`Ninja`
 - :generator:`Ninja Multi-Config`
 - :generator:`Visual Studio 17 2022`
 
-é™åˆ¶
+ÏŞÖÆ
 -----------
 
-åœ¨CMakeä¸­ï¼Œå½“å‰çš„C++æ¨¡å—æ”¯æŒæœ‰è®¸å¤šå·²çŸ¥çš„é™åˆ¶ã€‚è¿™æ²¡æœ‰è®°å½•å·²çŸ¥çš„é™åˆ¶æˆ–ç¼–è¯‘å™¨ä¸­çš„è¿™äº›bugä¼šéšç€\
-æ—¶é—´çš„æ¨ç§»è€Œæ”¹å˜ã€‚
+ÔÚCMakeÖĞ£¬µ±Ç°µÄC++Ä£¿éÖ§³ÖÓĞĞí¶àÒÑÖªµÄÏŞÖÆ¡£ÕâÃ»ÓĞ¼ÇÂ¼ÒÑÖªµÄÏŞÖÆ»ò±àÒëÆ÷ÖĞµÄÕâĞ©bug»áËæ×Å\
+Ê±¼äµÄÍÆÒÆ¶ø¸Ä±ä¡£
 
-å¯¹äºæ‰€æœ‰ç”Ÿæˆå™¨ï¼š
+¶ÔÓÚËùÓĞÉú³ÉÆ÷£º
 
-- ä¸æ”¯æŒæ ‡å¤´å•å…ƒã€‚
-- æ²¡æœ‰å¯¹\ ``import std;``\ çš„å†…ç½®æ”¯æŒï¼Œæˆ–è€…æ˜¯å…¶ä»–ç¼–è¯‘å™¨æä¾›çš„æ¨¡å—ã€‚
+- ²»Ö§³Ö±êÍ·µ¥Ôª¡£
+- Ã»ÓĞ¶Ô\ ``import std;``\ µÄÄÚÖÃÖ§³Ö£¬»òÕßÊÇÆäËû±àÒëÆ÷Ìá¹©µÄÄ£¿é¡£
 
-å¯¹äºNinjaç”Ÿæˆå™¨ï¼š
+¶ÔÓÚNinjaÉú³ÉÆ÷£º
 
-- éœ€è¦\ ``ninja`` 1.11æˆ–æ›´æ–°ç‰ˆæœ¬ã€‚
+- ĞèÒª\ ``ninja`` 1.11»ò¸üĞÂ°æ±¾¡£
 
-å¯¹äº\ :ref:`Visual Studio Generators`ï¼š
+¶ÔÓÚ\ :ref:`Visual Studio Generators`£º
 
-- ä»…æ”¯æŒVisual Studio 2022å’ŒMSVCå·¥å…·é›†14.34ï¼ˆVisual Studio 17.4ï¼‰åŠæ›´æ–°ç‰ˆæœ¬ã€‚
-- ä¸æ”¯æŒå¯¼å‡ºæˆ–å®‰è£…BMIæˆ–æ¨¡å—ä¿¡æ¯ã€‚
-- ä¸æ”¯æŒç”¨C++æ¨¡å—ä»\ ``IMPORTED``\ çš„ç›®æ ‡ç¼–è¯‘BMIã€‚
-- æ²¡æœ‰ä»\ ``PUBLIC``\ æ¨¡å—æºä¸­ä½¿ç”¨\ ``PRIVATE``\ æºæä¾›çš„æ¨¡å—è¯Šæ–­ã€‚
+- ½öÖ§³ÖVisual Studio 2022ºÍMSVC¹¤¾ß¼¯14.34£¨Visual Studio 17.4£©¼°¸üĞÂ°æ±¾¡£
+- ²»Ö§³Öµ¼³ö»ò°²×°BMI»òÄ£¿éĞÅÏ¢¡£
+- ²»Ö§³ÖÓÃC++Ä£¿é´Ó\ ``IMPORTED``\ µÄÄ¿±ê±àÒëBMI£¨°üÀ¨\ ``import std``£©¡£
+- Ã»ÓĞ´Ó\ ``PUBLIC``\ Ä£¿éÔ´ÖĞÊ¹ÓÃ\ ``PRIVATE``\ Ô´Ìá¹©µÄÄ£¿éÕï¶Ï¡£

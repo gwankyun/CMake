@@ -15,7 +15,7 @@ target_include_directories
 通过显式地使用\ ``AFTER``\ 或\ ``BEFORE``，你可以在附加和前置之间进行选择，而不依赖于默认值。
 
 The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to specify
-the :ref:`scope <Target Usage Requirements>` of the following arguments.
+the :ref:`scope <Target Command Scope>` of the following arguments.
 ``PRIVATE`` and ``PUBLIC`` items will populate the :prop_tgt:`INCLUDE_DIRECTORIES`
 property of ``<target>``. ``PUBLIC`` and ``INTERFACE`` items will populate the
 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` property of ``<target>``.

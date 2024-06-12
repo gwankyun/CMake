@@ -3,9 +3,9 @@ DEPLOYMENT_REMOTE_DIRECTORY
 
 .. versionadded:: 3.6
 
-鍦╘ :generator:`Visual Studio 9 2008`\ 鐢熸垚鍣ㄧ敓鎴愮殑\ ``.vcproj``\ 鏂囦欢涓缃甒inCE椤筡
-鐩殑\ ``DeploymentTool``\ 涓殑\ ``RemoteDirectory``\ 鍜孿 ``DebuggerTool``\ 涓殑\
-``RemoteExecutable``銆傚綋浣犳兂瑕佸湪杩滅▼WinCE璁惧涓婅皟璇曟椂锛岃繖寰堟湁鐢ㄣ�備緥濡傦細
+在\ :ref:`Visual Studio Generators`\ 生成器生成的\ ``.vcproj``\ 文件中设置WinCE项\
+目的\ ``DeploymentTool``\ 中的\ ``RemoteDirectory``\ 和\ ``DebuggerTool``\ 中的\
+``RemoteExecutable``。当你想要在远程WinCE设备上调试时，这很有用。例如：
 
 .. code-block:: cmake
 

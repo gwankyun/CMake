@@ -25,6 +25,8 @@ cmake-env-variables(7)
    /envvar/CMAKE_MAXIMUM_RECURSION_DEPTH
    /envvar/CMAKE_PREFIX_PATH
    /envvar/CMAKE_PROGRAM_PATH
+   /envvar/CMAKE_TLS_VERIFY
+   /envvar/CMAKE_TLS_VERSION
    /envvar/SSL_CERT_DIR
    /envvar/SSL_CERT_FILE
 
@@ -88,7 +90,9 @@ cmake-env-variables(7)
    /envvar/ISPC
    /envvar/ISPCFLAGS
    /envvar/OBJC
+   /envvar/OBJCFLAGS
    /envvar/OBJCXX
+   /envvar/OBJCXXFLAGS
    /envvar/RC
    /envvar/RCFLAGS
    /envvar/SWIFTC

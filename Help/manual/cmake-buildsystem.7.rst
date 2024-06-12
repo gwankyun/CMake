@@ -7,18 +7,18 @@ cmake-buildsystem(7)
 
    .. contents::
 
-å¼•è¨€
+ÒıÑÔ
 ============
 
-åŸºäºCMakeçš„æ„å»ºç³»ç»Ÿè¢«ç»„ç»‡ä¸ºä¸€ç»„é«˜çº§é€»è¾‘ç›®æ ‡ã€‚æ¯ä¸ªç›®æ ‡å¯¹åº”äºä¸€ä¸ªå¯æ‰§è¡Œæ–‡ä»¶æˆ–åº“ï¼Œæˆ–è€…æ˜¯åŒ…å«è‡ª\
-å®šä¹‰å‘½ä»¤çš„è‡ªå®šä¹‰ç›®æ ‡ã€‚ç›®æ ‡ä¹‹é—´çš„ä¾èµ–å…³ç³»åœ¨æ„å»ºç³»ç»Ÿä¸­è¡¨ç¤ºï¼Œä»¥ç¡®å®šæ„å»ºé¡ºåºå’Œå“åº”æ›´æ”¹çš„é‡æ–°ç”Ÿæˆè§„åˆ™ã€‚
+»ùÓÚCMakeµÄ¹¹½¨ÏµÍ³±»×éÖ¯ÎªÒ»×é¸ß¼¶Âß¼­Ä¿±ê¡£Ã¿¸öÄ¿±ê¶ÔÓ¦ÓÚÒ»¸ö¿ÉÖ´ĞĞÎÄ¼ş»ò¿â£¬»òÕßÊÇ°üº¬×Ô\
+¶¨ÒåÃüÁîµÄ×Ô¶¨ÒåÄ¿±ê¡£Ä¿±êÖ®¼äµÄÒÀÀµ¹ØÏµÔÚ¹¹½¨ÏµÍ³ÖĞ±íÊ¾£¬ÒÔÈ·¶¨¹¹½¨Ë³ĞòºÍÏìÓ¦¸ü¸ÄµÄÖØĞÂÉú³É¹æÔò¡£
 
-äºŒè¿›åˆ¶ç›®æ ‡
+¶ş½øÖÆÄ¿±ê
 ==============
 
-å¯æ‰§è¡Œæ–‡ä»¶å’Œåº“ä½¿ç”¨\ :command:`add_executable`\ å’Œ\ :command:`add_library`\ å‘½ä»¤å®šä¹‰ã€‚\
-ç”Ÿæˆçš„äºŒè¿›åˆ¶æ–‡ä»¶å…·æœ‰é’ˆå¯¹å¹³å°çš„é€‚å½“\ :prop_tgt:`PREFIX`ã€:prop_tgt:`SUFFIX`\ å’Œæ‰©å±•åã€‚\
-äºŒè¿›åˆ¶ç›®æ ‡ä¹‹é—´çš„ä¾èµ–å…³ç³»ä½¿ç”¨\ :command:`target_link_libraries`\ å‘½ä»¤è¡¨ç¤ºï¼š
+¿ÉÖ´ĞĞÎÄ¼şºÍ¿âÊ¹ÓÃ\ :command:`add_executable`\ ºÍ\ :command:`add_library`\ ÃüÁî¶¨Òå¡£\
+Éú³ÉµÄ¶ş½øÖÆÎÄ¼ş¾ßÓĞÕë¶ÔÆ½Ì¨µÄÊÊµ±\ :prop_tgt:`PREFIX`¡¢:prop_tgt:`SUFFIX`\ ºÍÀ©Õ¹Ãû¡£\
+¶ş½øÖÆÄ¿±êÖ®¼äµÄÒÀÀµ¹ØÏµÊ¹ÓÃ\ :command:`target_link_libraries`\ ÃüÁî±íÊ¾£º
 
 .. code-block:: cmake
 
@@ -26,35 +26,35 @@ cmake-buildsystem(7)
   add_executable(zipapp zipapp.cpp)
   target_link_libraries(zipapp archive)
 
-``archive``\ è¢«å®šä¹‰ä¸ºä¸€ä¸ª\ ``STATIC``\ åº“â€”â€”ä¸€ä¸ªåŒ…å«\ ``archive.cpp``ã€\ ``zip.cpp``\
-å’Œ\ ``lzma.cpp``\ ç¼–è¯‘å¯¹è±¡çš„å­˜æ¡£ã€‚\ ``zipapp``\ è¢«å®šä¹‰ä¸ºé€šè¿‡ç¼–è¯‘å’Œé“¾æ¥\ ``zipapp.cpp``\
-è€Œå½¢æˆçš„å¯æ‰§è¡Œæ–‡ä»¶ã€‚å½“é“¾æ¥\ ``zipapp``\ å¯æ‰§è¡Œæ–‡ä»¶æ—¶ï¼Œ\ ``archive``\ é™æ€åº“ä¼šè¢«é“¾æ¥åˆ°ã€‚
+``archive``\ ±»¶¨ÒåÎªÒ»¸ö\ ``STATIC``\ ¿â¡ª¡ªÒ»¸ö°üº¬\ ``archive.cpp``¡¢\ ``zip.cpp``\
+ºÍ\ ``lzma.cpp``\ ±àÒë¶ÔÏóµÄ´æµµ¡£\ ``zipapp``\ ±»¶¨ÒåÎªÍ¨¹ı±àÒëºÍÁ´½Ó\ ``zipapp.cpp``\
+¶øĞÎ³ÉµÄ¿ÉÖ´ĞĞÎÄ¼ş¡£µ±Á´½Ó\ ``zipapp``\ ¿ÉÖ´ĞĞÎÄ¼şÊ±£¬\ ``archive``\ ¾²Ì¬¿â»á±»Á´½Óµ½¡£
 
 .. _`Binary Executables`:
 
-äºŒè¿›åˆ¶å¯æ‰§è¡Œæ–‡ä»¶
+¶ş½øÖÆ¿ÉÖ´ĞĞÎÄ¼ş
 ------------------
 
-:command:`add_executable`\ å‘½ä»¤å®šä¹‰äº†ä¸€ä¸ªå¯æ‰§è¡Œç›®æ ‡ï¼š
+:command:`add_executable`\ ÃüÁî¶¨ÒåÁËÒ»¸ö¿ÉÖ´ĞĞÄ¿±ê£º
 
 .. code-block:: cmake
 
   add_executable(mytool mytool.cpp)
 
-åƒ\ :command:`add_custom_command`\ è¿™æ ·çš„å‘½ä»¤ï¼Œå®ƒç”Ÿæˆè¦åœ¨æ„å»ºæ—¶è¿è¡Œçš„è§„åˆ™ï¼Œ\
-å¯ä»¥é€æ˜åœ°å°†\ :prop_tgt:`EXECUTABLE <TYPE>`\ ç›®æ ‡ä½œä¸ºå¯æ‰§è¡Œ\ ``COMMAND``\ æ–‡ä»¶ä½¿ç”¨ã€‚\
-æ„å»ºç³»ç»Ÿè§„åˆ™å°†ç¡®ä¿åœ¨å°è¯•è¿è¡Œå‘½ä»¤ä¹‹å‰æ„å»ºå¯æ‰§è¡Œæ–‡ä»¶ã€‚
+Ïñ\ :command:`add_custom_command`\ ÕâÑùµÄÃüÁî£¬ËüÉú³ÉÒªÔÚ¹¹½¨Ê±ÔËĞĞµÄ¹æÔò£¬\
+¿ÉÒÔÍ¸Ã÷µØ½«\ :prop_tgt:`EXECUTABLE <TYPE>`\ Ä¿±ê×÷Îª¿ÉÖ´ĞĞ\ ``COMMAND``\ ÎÄ¼şÊ¹ÓÃ¡£\
+¹¹½¨ÏµÍ³¹æÔò½«È·±£ÔÚ³¢ÊÔÔËĞĞÃüÁîÖ®Ç°¹¹½¨¿ÉÖ´ĞĞÎÄ¼ş¡£
 
-äºŒè¿›åˆ¶åº“ç±»å‹
+¶ş½øÖÆ¿âÀàĞÍ
 --------------------
 
 .. _`Normal Libraries`:
 
-æ™®é€šåº“
+ÆÕÍ¨¿â
 ^^^^^^^^^^^^^^^^
 
-é»˜è®¤æƒ…å†µä¸‹ï¼Œ:command:`add_library`\ å‘½ä»¤å®šä¹‰äº†ä¸€ä¸ª\ ``STATIC``\ åº“ï¼Œé™¤éæŒ‡å®šäº†ç±»å‹ã€‚\
-ä½¿ç”¨è¿™ä¸ªå‘½ä»¤æ—¶ï¼Œå¯ä»¥æŒ‡å®šä¸€ä¸ªç±»å‹ï¼š
+Ä¬ÈÏÇé¿öÏÂ£¬:command:`add_library`\ ÃüÁî¶¨ÒåÁËÒ»¸ö\ ``STATIC``\ ¿â£¬³ı·ÇÖ¸¶¨ÁËÀàĞÍ¡£\
+Ê¹ÓÃÕâ¸öÃüÁîÊ±£¬¿ÉÒÔÖ¸¶¨Ò»¸öÀàĞÍ£º
 
 .. code-block:: cmake
 
@@ -64,15 +64,15 @@ cmake-buildsystem(7)
 
   add_library(archive STATIC archive.cpp zip.cpp lzma.cpp)
 
-å¯ä»¥å¯ç”¨\ :variable:`BUILD_SHARED_LIBS`\ å˜é‡æ¥æ”¹å˜\ :command:`add_library`\ çš„è¡Œä¸ºï¼Œ\
-é»˜è®¤æƒ…å†µä¸‹æ„å»ºå…±äº«åº“ã€‚
+¿ÉÒÔÆôÓÃ\ :variable:`BUILD_SHARED_LIBS`\ ±äÁ¿À´¸Ä±ä\ :command:`add_library`\ µÄĞĞÎª£¬\
+Ä¬ÈÏÇé¿öÏÂ¹¹½¨¹²Ïí¿â¡£
 
-åœ¨æ•´ä¸ªæ„å»ºç³»ç»Ÿå®šä¹‰çš„ä¸Šä¸‹è¯­å¢ƒä¸­ï¼Œç‰¹å®šçš„åº“æ˜¯\ ``SHARED``\ è¿˜æ˜¯\ ``STATIC``\ åœ¨å¾ˆå¤§ç¨‹åº¦ä¸Šæ˜¯\
-æ— å…³ç´§è¦çš„â€”â€”ä¸ç®¡åº“çš„ç±»å‹å¦‚ä½•ï¼Œå‘½ä»¤ã€ä¾èµ–è§„èŒƒå’Œå…¶ä»–APIçš„å·¥ä½œæ–¹å¼éƒ½æ˜¯ç±»ä¼¼çš„ã€‚\ ``MODULE``\
-åº“ç±»å‹çš„ä¸åŒä¹‹å¤„åœ¨äºï¼Œå®ƒé€šå¸¸ä¸ä¼šè¢«é“¾æ¥åˆ°â€”â€”å®ƒä¸ä¼šåœ¨\ :command:`target_link_libraries`\
-å‘½ä»¤çš„å³ä¾§è¢«ä½¿ç”¨ã€‚å®ƒæ˜¯ä¸€ä¸ªä½¿ç”¨è¿è¡Œæ—¶æŠ€æœ¯ä½œä¸ºæ’ä»¶åŠ è½½çš„ç±»å‹ã€‚å¦‚æœåº“ä¸å¯¼å‡ºä»»ä½•éæ‰˜ç®¡ç¬¦å·\
-ï¼ˆä¾‹å¦‚Windowsèµ„æºDLL, C++/CLI DLLï¼‰ï¼Œåˆ™è¦æ±‚åº“ä¸æ˜¯\ ``SHARED``\ åº“ï¼Œå› ä¸ºCMakeå¸Œæœ›\
-``SHARED``\ åº“è‡³å°‘å¯¼å‡ºä¸€ä¸ªç¬¦å·ã€‚
+ÔÚÕû¸ö¹¹½¨ÏµÍ³¶¨ÒåµÄÉÏÏÂÓï¾³ÖĞ£¬ÌØ¶¨µÄ¿âÊÇ\ ``SHARED``\ »¹ÊÇ\ ``STATIC``\ ÔÚºÜ´ó³Ì¶ÈÉÏÊÇ\
+ÎŞ¹Ø½ôÒªµÄ¡ª¡ª²»¹Ü¿âµÄÀàĞÍÈçºÎ£¬ÃüÁî¡¢ÒÀÀµ¹æ·¶ºÍÆäËûAPIµÄ¹¤×÷·½Ê½¶¼ÊÇÀàËÆµÄ¡£\ ``MODULE``\
+¿âÀàĞÍµÄ²»Í¬Ö®´¦ÔÚÓÚ£¬ËüÍ¨³£²»»á±»Á´½Óµ½¡ª¡ªËü²»»áÔÚ\ :command:`target_link_libraries`\
+ÃüÁîµÄÓÒ²à±»Ê¹ÓÃ¡£ËüÊÇÒ»¸öÊ¹ÓÃÔËĞĞÊ±¼¼Êõ×÷Îª²å¼ş¼ÓÔØµÄÀàĞÍ¡£Èç¹û¿â²»µ¼³öÈÎºÎ·ÇÍĞ¹Ü·ûºÅ\
+£¨ÀıÈçWindows×ÊÔ´DLL, C++/CLI DLL£©£¬ÔòÒªÇó¿â²»ÊÇ\ ``SHARED``\ ¿â£¬ÒòÎªCMakeÏ£Íû\
+``SHARED``\ ¿âÖÁÉÙµ¼³öÒ»¸ö·ûºÅ¡£
 
 .. code-block:: cmake
 
@@ -80,13 +80,13 @@ cmake-buildsystem(7)
 
 .. _`Apple Frameworks`:
 
-è‹¹æœæ¡†æ¶
+Æ»¹û¿ò¼Ü
 """"""""""""""""
 
-ä¸€ä¸ª\ ``SHARED``\ åº“å¯ä»¥è¢«æ ‡è®°ä¸º\ :prop_tgt:`FRAMEWORK`\ ç›®æ ‡å±æ€§æ¥åˆ›å»ºä¸€ä¸ªmacOSæˆ–iOS\
-æ¡†æ¶Bundleã€‚å¸¦æœ‰\ ``FRAMEWORK``\ ç›®æ ‡å±æ€§çš„åº“è¿˜åº”è¯¥è®¾ç½®\ :prop_tgt:`FRAMEWORK_VERSION`\
-ç›®æ ‡å±æ€§ã€‚æ ¹æ®macOSçº¦å®šï¼Œè¯¥å±æ€§é€šå¸¸è®¾ç½®ä¸ºâ€œAâ€ã€‚\ ``MACOSX_FRAMEWORK_IDENTIFIER``\ è®¾ç½®ä¸º\
-``CFBundleIdentifier``\ é”®ï¼Œå®ƒç”¨ä½œbundleçš„å”¯ä¸€æ ‡è¯†ã€‚
+Ò»¸ö\ ``SHARED``\ ¿â¿ÉÒÔ±»±ê¼ÇÎª\ :prop_tgt:`FRAMEWORK`\ Ä¿±êÊôĞÔÀ´´´½¨Ò»¸ömacOS»òiOS\
+¿ò¼ÜBundle¡£´øÓĞ\ ``FRAMEWORK``\ Ä¿±êÊôĞÔµÄ¿â»¹Ó¦¸ÃÉèÖÃ\ :prop_tgt:`FRAMEWORK_VERSION`\
+Ä¿±êÊôĞÔ¡£¸ù¾İmacOSÔ¼¶¨£¬¸ÃÊôĞÔÍ¨³£ÉèÖÃÎª¡°A¡±¡£\ ``MACOSX_FRAMEWORK_IDENTIFIER``\ ÉèÖÃÎª\
+``CFBundleIdentifier``\ ¼ü£¬ËüÓÃ×÷bundleµÄÎ¨Ò»±êÊ¶¡£
 
 .. code-block:: cmake
 
@@ -99,13 +99,13 @@ cmake-buildsystem(7)
 
 .. _`Object Libraries`:
 
-ç›®æ ‡åº“
+Ä¿±ê¿â
 ^^^^^^^^^^^^^^^^
 
-``OBJECT``\ åº“ç±»å‹å®šä¹‰äº†ç”±ç¼–è¯‘ç»™å®šæºæ–‡ä»¶äº§ç”Ÿçš„ç›®æ ‡æ–‡ä»¶çš„éå½’æ¡£é›†åˆã€‚\
-é€šè¿‡ä½¿ç”¨è¯­æ³•\ :genex:`$<TARGET_OBJECTS:name>`ï¼Œå¯¹è±¡æ–‡ä»¶é›†åˆå¯ä»¥ç”¨ä½œå…¶ä»–ç›®æ ‡çš„æºè¾“å…¥ã€‚\
-è¿™æ˜¯ä¸€ä¸ª\ :manual:`generator expression <cmake-generator-expressions(7)>`ï¼Œ\
-å¯ä»¥ç”¨æ¥å‘å…¶ä»–ç›®æ ‡æä¾›\ ``OBJECT``\ åº“å†…å®¹ï¼š
+``OBJECT``\ ¿âÀàĞÍ¶¨ÒåÁËÓÉ±àÒë¸ø¶¨Ô´ÎÄ¼ş²úÉúµÄÄ¿±êÎÄ¼şµÄ·Ç¹éµµ¼¯ºÏ¡£\
+Í¨¹ıÊ¹ÓÃÓï·¨\ :genex:`$<TARGET_OBJECTS:name>`£¬¶ÔÏóÎÄ¼ş¼¯ºÏ¿ÉÒÔÓÃ×÷ÆäËûÄ¿±êµÄÔ´ÊäÈë¡£\
+ÕâÊÇÒ»¸ö\ :manual:`generator expression <cmake-generator-expressions(7)>`£¬\
+¿ÉÒÔÓÃÀ´ÏòÆäËûÄ¿±êÌá¹©\ ``OBJECT``\ ¿âÄÚÈİ£º
 
 .. code-block:: cmake
 
@@ -115,9 +115,9 @@ cmake-buildsystem(7)
 
   add_executable(test_exe $<TARGET_OBJECTS:archive> test.cpp)
 
-è¿™äº›å…¶ä»–ç›®æ ‡çš„é“¾æ¥ï¼ˆæˆ–å½’æ¡£ï¼‰æ­¥éª¤å°†ä½¿ç”¨å¯¹è±¡æ–‡ä»¶é›†åˆä»¥åŠå®ƒä»¬è‡ªå·±çš„æºæ–‡ä»¶ã€‚
+ÕâĞ©ÆäËûÄ¿±êµÄÁ´½Ó£¨»ò¹éµµ£©²½Öè½«Ê¹ÓÃ¶ÔÏóÎÄ¼ş¼¯ºÏÒÔ¼°ËüÃÇ×Ô¼ºµÄÔ´ÎÄ¼ş¡£
 
-æˆ–è€…ï¼Œå¯¹è±¡åº“å¯ä»¥é“¾æ¥åˆ°å…¶ä»–ç›®æ ‡ï¼š
+»òÕß£¬¶ÔÏó¿â¿ÉÒÔÁ´½Óµ½ÆäËûÄ¿±ê£º
 
 .. code-block:: cmake
 
@@ -129,100 +129,302 @@ cmake-buildsystem(7)
   add_executable(test_exe test.cpp)
   target_link_libraries(test_exe archive)
 
-å…¶ä»–ç›®æ ‡çš„é“¾æ¥ï¼ˆæˆ–å½’æ¡£ï¼‰æ­¥éª¤å°†\ *ç›´æ¥*\ é“¾æ¥çš„\ ``OBJECT``\ åº“ä¸­çš„å¯¹è±¡æ–‡ä»¶ã€‚\
-æ­¤å¤–ï¼Œå½“åœ¨å…¶ä»–ç›®æ ‡ä¸­ç¼–è¯‘æºä»£ç æ—¶ï¼Œ``OBJECT``\ åº“çš„ä½¿ç”¨éœ€æ±‚å°†å¾—åˆ°æ»¡è¶³ã€‚\
-æ­¤å¤–ï¼Œè¿™äº›ä½¿ç”¨éœ€æ±‚å°†ä¼ é€’åˆ°é‚£äº›å…¶ä»–ç›®æ ‡çš„ä¾èµ–é¡¹ã€‚
+ÆäËûÄ¿±êµÄÁ´½Ó£¨»ò¹éµµ£©²½Öè½«\ *Ö±½Ó*\ Á´½ÓµÄ\ ``OBJECT``\ ¿âÖĞµÄ¶ÔÏóÎÄ¼ş¡£\
+´ËÍâ£¬µ±ÔÚÆäËûÄ¿±êÖĞ±àÒëÔ´´úÂëÊ±£¬``OBJECT``\ ¿âµÄÊ¹ÓÃĞèÇó½«µÃµ½Âú×ã¡£\
+´ËÍâ£¬ÕâĞ©Ê¹ÓÃĞèÇó½«´«µİµ½ÄÇĞ©ÆäËûÄ¿±êµÄÒÀÀµÏî¡£
 
-åœ¨ä½¿ç”¨\ :command:`add_custom_command(TARGET)`\ å‘½ä»¤ç­¾åæ—¶ï¼Œå¯¹è±¡åº“ä¸èƒ½ç”¨ä½œ\ ``TARGET``ã€‚\
-ä½†æ˜¯ï¼Œå¯¹è±¡åˆ—è¡¨å¯ä»¥é€šè¿‡\ :command:`add_custom_command(OUTPUT)`\ æˆ–\
-:command:`file(GENERATE)`\ ä½¿ç”¨\ ``$<TARGET_OBJECTS:objlib>``ã€‚
+ÔÚÊ¹ÓÃ\ :command:`add_custom_command(TARGET)`\ ÃüÁîÇ©ÃûÊ±£¬¶ÔÏó¿â²»ÄÜÓÃ×÷\ ``TARGET``¡£\
+µ«ÊÇ£¬¶ÔÏóÁĞ±í¿ÉÒÔÍ¨¹ı\ :command:`add_custom_command(OUTPUT)`\ »ò\
+:command:`file(GENERATE)`\ Ê¹ÓÃ\ ``$<TARGET_OBJECTS:objlib>``¡£
 
-æ„å»ºè§„èŒƒå’Œä½¿ç”¨è¦æ±‚
+¹¹½¨¹æ·¶ºÍÊ¹ÓÃÒªÇó
 ==========================================
 
-:command:`target_include_directories`ã€:command:`target_compile_definitions`\ å’Œ\
-:command:`target_compile_options`\ å‘½ä»¤æŒ‡å®šäºŒè¿›åˆ¶ç›®æ ‡çš„æ„å»ºè§„èŒƒå’Œä½¿ç”¨è¦æ±‚ã€‚\
-è¿™äº›å‘½ä»¤åˆ†åˆ«å¡«å……äº†\ :prop_tgt:`INCLUDE_DIRECTORIES`ã€:prop_tgt:`COMPILE_DEFINITIONS`\
-å’Œ\ :prop_tgt:`COMPILE_OPTIONS`\ ç›®æ ‡å±æ€§ï¼Œå¯èƒ½è¿˜æœ‰\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`ã€\
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ å’Œ\
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ ç›®æ ‡å±æ€§ã€‚
+Targets build according to their own
+`build specification <Target Build Specification_>`_ in combination with
+`usage requirements <Target Usage Requirements_>`_ propagated from their
+link dependencies.  Both may be specified using target-specific
+`commands <Target Commands_>`_.
 
-æ¯ä¸ªå‘½ä»¤éƒ½æœ‰\ ``PRIVATE``ã€\ ``PUBLIC``\ å’Œ\ ``INTERFACE``\ æ¨¡å¼ã€‚\ ``PRIVATE``\
-æ¨¡å¼åªå¡«å……ç›®æ ‡å±æ€§çš„é\ ``INTERFACE_``\ å˜é‡ï¼Œ\ ``INTERFACE``\ æ¨¡å¼åªå¡«å……\
-``INTERFACE_``\ å˜é‡ã€‚\ ``PUBLIC``\ æ¨¡å¼å¡«å……å„è‡ªç›®æ ‡å±æ€§çš„å„ä¸ªå˜é‡ã€‚æ¯ä¸ªå‘½ä»¤ä¸€æ¬¡å¯ä»¥è°ƒç”¨\
-å¤šä¸ªå…³é”®å­—ï¼š
+For example:
 
 .. code-block:: cmake
 
-  target_compile_definitions(archive
-    PRIVATE BUILDING_WITH_LZMA
-    INTERFACE USING_ARCHIVE_LIB
-  )
+  add_library(archive SHARED archive.cpp zip.cpp)
 
-æ³¨æ„ï¼Œä½¿ç”¨è¦æ±‚å¹¶ä¸æ˜¯ä¸ºäº†æ–¹ä¾¿è€Œè®©ä¸‹æ¸¸ä½¿ç”¨ç‰¹å®šçš„\ :prop_tgt:`COMPILE_OPTIONS`\ æˆ–\
-:prop_tgt:`COMPILE_OPTIONS`\ ç­‰ã€‚å±æ€§çš„å†…å®¹å¿…é¡»æ˜¯\ **è¦æ±‚**ï¼Œè€Œä¸ä»…ä»…æ˜¯å»ºè®®æˆ–æ–¹ä¾¿ã€‚
-
-è¯·å‚é˜…\ :manual:`cmake-packages(7)`\ æ‰‹å†Œçš„\ :ref:`Creating Relocatable Packages`\
-ä¸€èŠ‚ï¼Œè®¨è®ºåœ¨ä¸ºé‡æ–°åˆ†å‘åˆ›å»ºåŒ…æ—¶æŒ‡å®šä½¿ç”¨è¦æ±‚æ—¶å¿…é¡»æ³¨æ„çš„å…¶ä»–äº‹é¡¹ã€‚
-
-ç›®æ ‡å±æ€§
------------------
-
-åœ¨ç¼–è¯‘äºŒè¿›åˆ¶ç›®æ ‡çš„æºæ–‡ä»¶æ—¶ï¼Œ:prop_tgt:`INCLUDE_DIRECTORIES`ã€\
-:prop_tgt:`COMPILE_DEFINITIONS`\ å’Œ\ :prop_tgt:`COMPILE_OPTIONS`\ ç›®æ ‡å±æ€§çš„å†…å®¹ä¼š\
-è¢«é€‚å½“åœ°ä½¿ç”¨ã€‚
-
-:prop_tgt:`INCLUDE_DIRECTORIES`\ ä¸­çš„æ¡ç›®ç”¨\ ``-I``\ æˆ–\ ``-isystem``\ å‰ç¼€æŒ‰ç…§å±æ€§\
-å€¼å‡ºç°çš„é¡ºåºæ·»åŠ åˆ°ç¼–è¯‘è¡Œã€‚
-
-:prop_tgt:`COMPILE_DEFINITIONS`\ ä¸­çš„æ¡ç›®ä»¥\ ``-D``\ æˆ–\ ``/D``\ ä½œä¸ºå‰ç¼€ï¼Œå¹¶ä»¥æœªæŒ‡\
-å®šçš„é¡ºåºæ·»åŠ åˆ°ç¼–è¯‘è¡Œä¸­ã€‚:prop_tgt:`DEFINE_SYMBOL`\ ç›®æ ‡å±æ€§ä¹Ÿè¢«æ·»åŠ ä¸ºä¸€ä¸ªç¼–è¯‘å®šä¹‰ï¼Œä½œä¸º\
-``SHARED``\ åº“å’Œ ``MODULE``\ åº“ç›®æ ‡çš„ä¾¿æ·ç‰¹ä¾‹ã€‚
-
-:prop_tgt:`COMPILE_OPTIONS`\ ä¸­çš„æ¡ç›®è¢«è½¬ä¹‰ä¸ºshellï¼Œå¹¶æŒ‰ç…§å±æ€§å€¼ä¸­å‡ºç°çš„é¡ºåºæ·»åŠ ã€‚ä¸€äº›\
-ç¼–è¯‘é€‰é¡¹æœ‰ç‰¹æ®Šçš„ç‹¬ç«‹å¤„ç†ï¼Œå¦‚\ :prop_tgt:`POSITION_INDEPENDENT_CODE`ã€‚
-
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`ã€\
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ å’Œ\
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ ç›®æ ‡å±æ€§çš„å†…å®¹æ˜¯\ *ä½¿ç”¨è¦æ±‚*\ â€”â€”å®ƒä»¬æŒ‡å®šæ¶ˆè´¹è€…\
-å¿…é¡»ä½¿ç”¨å“ªäº›å†…å®¹æ¥æ­£ç¡®ç¼–è¯‘å’Œé“¾æ¥å®ƒä»¬æ‰€å‡ºç°çš„ç›®æ ‡ã€‚å¯¹äºä»»ä½•äºŒè¿›åˆ¶ç›®æ ‡ï¼Œåœ¨\
-:command:`target_link_libraries`\ å‘½ä»¤ä¸­æŒ‡å®šçš„æ¯ä¸ªç›®æ ‡ä¸Šçš„æ¯ä¸ª\ ``INTERFACE_``\ å±æ€§\
-çš„å†…å®¹éƒ½ä¼šè¢«æ¶ˆè€—ï¼š
-
-.. code-block:: cmake
-
-  set(srcs archive.cpp zip.cpp)
   if (LZMA_FOUND)
-    list(APPEND srcs lzma.cpp)
-  endif()
-  add_library(archive SHARED ${srcs})
-  if (LZMA_FOUND)
-    # The archive library sources are compiled with -DBUILDING_WITH_LZMA
+    # Add a source implementing support for lzma.
+    target_sources(archive PRIVATE lzma.cpp)
+
+    # Compile the 'archive' library sources with '-DBUILDING_WITH_LZMA'.
     target_compile_definitions(archive PRIVATE BUILDING_WITH_LZMA)
   endif()
+
   target_compile_definitions(archive INTERFACE USING_ARCHIVE_LIB)
 
-  add_executable(consumer)
-  # Link consumer to archive and consume its usage requirements. The consumer
-  # executable sources are compiled with -DUSING_ARCHIVE_LIB.
+  add_executable(consumer consumer.cpp)
+
+  # Link 'consumer' to 'archive'.  This also consumes its usage requirements,
+  # so 'consumer.cpp' is compiled with '-DUSING_ARCHIVE_LIB'.
   target_link_libraries(consumer archive)
 
-å› ä¸ºé€šå¸¸éœ€è¦å°†æºç›®å½•å’Œç›¸åº”çš„æ„å»ºç›®å½•æ·»åŠ åˆ°\ :prop_tgt:`INCLUDE_DIRECTORIES`\ ä¸­ï¼Œæ‰€ä»¥å¯\
-ä»¥å¯ç”¨\ :variable:`CMAKE_INCLUDE_CURRENT_DIR`\ å˜é‡ï¼Œæ–¹ä¾¿åœ°å°†ç›¸åº”çš„ç›®å½•æ·»åŠ åˆ°æ‰€æœ‰ç›®æ ‡çš„\
-:prop_tgt:`INCLUDE_DIRECTORIES`\ ä¸­ã€‚å¯ä»¥å¯ç”¨\
-:variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ å˜é‡ï¼Œå°†ç›¸åº”çš„ç›®å½•æ·»åŠ åˆ°æ‰€æœ‰ç›®æ ‡\
-çš„\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ä¸­ã€‚é€šè¿‡ä½¿ç”¨\
-:command:`target_link_libraries`\ å‘½ä»¤ï¼Œå¯ä»¥æ–¹ä¾¿åœ°ä½¿ç”¨å¤šä¸ªä¸åŒç›®å½•ä¸­çš„ç›®æ ‡ã€‚
 
+Target Commands
+---------------
+
+Target-specific commands populate the
+`build specification <Target Build Specification_>`_ of `Binary Targets`_ and
+`usage requirements <Target Usage Requirements_>`_ of `Binary Targets`_,
+`Interface Libraries`_, and `Imported Targets`_.
+
+.. _`Target Command Scope`:
+
+Invocations must specify scope keywords, each affecting the visibility
+of arguments following it.  The scopes are:
+
+``PUBLIC``
+  Populates both properties for `building <Target Build Specification_>`_
+  and properties for `using <Target Usage Requirements_>`_ a target.
+
+``PRIVATE``
+  Populates only properties for `building <Target Build Specification_>`_
+  a target.
+
+``INTERFACE``
+  Populates only properties for `using <Target Usage Requirements_>`_
+  a target.
+
+The commands are:
+
+:command:`target_compile_definitions`
+  Populates the :prop_tgt:`COMPILE_DEFINITIONS` build specification and
+  :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` usage requirement properties.
+
+  For example, the call
+
+  .. code-block:: cmake
+
+    target_compile_definitions(archive
+      PRIVATE   BUILDING_WITH_LZMA
+      INTERFACE USING_ARCHIVE_LIB
+    )
+
+  appends ``BUILDING_WITH_LZMA`` to the target's ``COMPILE_DEFINITIONS``
+  property and appends ``USING_ARCHIVE_LIB`` to the target's
+  ``INTERFACE_COMPILE_DEFINITIONS`` property.
+
+:command:`target_compile_options`
+  Populates the :prop_tgt:`COMPILE_OPTIONS` build specification and
+  :prop_tgt:`INTERFACE_COMPILE_OPTIONS` usage requirement properties.
+
+:command:`target_compile_features`
+  .. versionadded:: 3.1
+
+  Populates the :prop_tgt:`COMPILE_FEATURES` build specification and
+  :prop_tgt:`INTERFACE_COMPILE_FEATURES` usage requirement properties.
+
+:command:`target_include_directories`
+  Populates the :prop_tgt:`INCLUDE_DIRECTORIES` build specification
+  and :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` usage requirement
+  properties.  With the ``SYSTEM`` option, it also populates the
+  :prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES` usage requirement.
+
+  For convenience, the :variable:`CMAKE_INCLUDE_CURRENT_DIR` variable
+  may be enabled to add the source directory and corresponding build
+  directory as ``INCLUDE_DIRECTORIES`` on all targets.  Similarly,
+  the :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE` variable may
+  be enabled to add them as ``INTERFACE_INCLUDE_DIRECTORIES`` on all
+  targets.
+
+:command:`target_sources`
+  .. versionadded:: 3.1
+
+  Populates the :prop_tgt:`SOURCES` build specification and
+  :prop_tgt:`INTERFACE_SOURCES` usage requirement properties.
+
+  It also supports specifying :ref:`File Sets`, which can add C++ module
+  sources and headers not listed in the ``SOURCES`` and ``INTERFACE_SOURCES``
+  properties.  File sets may also populate the :prop_tgt:`INCLUDE_DIRECTORIES`
+  build specification and :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` usage
+  requirement properties with the include directories containing the headers.
+
+:command:`target_precompile_headers`
+  .. versionadded:: 3.16
+
+  Populates the :prop_tgt:`PRECOMPILE_HEADERS` build specification and
+  :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS` usage requirement properties.
+
+:command:`target_link_libraries`
+  Populates the :prop_tgt:`LINK_LIBRARIES` build specification
+  and :prop_tgt:`INTERFACE_LINK_LIBRARIES` usage requirement properties.
+
+  This is the primary mechanism by which link dependencies and their
+  `usage requirements <Target Usage Requirements_>`_ are transitively
+  propagated to affect compilation and linking of a target.
+
+:command:`target_link_directories`
+  .. versionadded:: 3.13
+
+  Populates the :prop_tgt:`LINK_DIRECTORIES` build specification and
+  :prop_tgt:`INTERFACE_LINK_DIRECTORIES` usage requirement properties.
+
+:command:`target_link_options`
+  .. versionadded:: 3.13
+
+  Populates the :prop_tgt:`LINK_OPTIONS` build specification and
+  :prop_tgt:`INTERFACE_LINK_OPTIONS` usage requirement properties.
+
+.. _`Target Build Specification`:
+
+Target Build Specification
+--------------------------
+
+The build specification of `Binary Targets`_ is represented by target
+properties.  For each of the following `compile <Target Compile Properties_>`_
+and `link <Target Link Properties_>`_ properties, compilation and linking
+of the target is affected both by its own value and by the corresponding
+`usage requirement <Target Usage Requirements_>`_ property, named with
+an ``INTERFACE_`` prefix, collected from the transitive closure of link
+dependencies.
+
+.. _`Target Compile Properties`:
+
+Target Compile Properties
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These represent the `build specification <Target Build Specification_>`_
+for compiling a target.
+
+:prop_tgt:`COMPILE_DEFINITIONS`
+  List of compile definitions for compiling sources in the target.
+  These are passed to the compiler with ``-D`` flags, or equivalent,
+  in an unspecified order.
+
+  The :prop_tgt:`DEFINE_SYMBOL` target property is also used
+  as a compile definition as a special convenience case for
+  ``SHARED`` and ``MODULE`` library targets.
+
+:prop_tgt:`COMPILE_OPTIONS`
+  List of compile options for compiling sources in the target.
+  These are passed to the compiler as flags, in the order of appearance.
+
+  Compile options are automatically escaped for the shell.
+
+  Some compile options are best specified via dedicated settings,
+  such as the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property.
+
+:prop_tgt:`COMPILE_FEATURES`
+  .. versionadded:: 3.1
+
+  List of :manual:`compile features <cmake-compile-features(7)>` needed
+  for compiling sources in the target.  Typically these ensure the
+  target's sources are compiled using a sufficient language standard level.
+
+:prop_tgt:`INCLUDE_DIRECTORIES`
+  List of include directories for compiling sources in the target.
+  These are passed to the compiler with ``-I`` or ``-isystem`` flags,
+  or equivalent, in the order of appearance.
+
+  For convenience, the :variable:`CMAKE_INCLUDE_CURRENT_DIR` variable
+  may be enabled to add the source directory and corresponding build
+  directory as ``INCLUDE_DIRECTORIES`` on all targets.
+
+:prop_tgt:`SOURCES`
+  List of source files associated with the target.  This includes sources
+  specified when the target was created by the :command:`add_executable`,
+  :command:`add_library`, or :command:`add_custom_target` command.
+  It also includes sources added by the :command:`target_sources` command,
+  but does not include :ref:`File Sets`.
+
+:prop_tgt:`PRECOMPILE_HEADERS`
+  .. versionadded:: 3.16
+
+  List of header files to precompile and include when compiling
+  sources in the target.
+
+:prop_tgt:`AUTOMOC_MACRO_NAMES`
+  .. versionadded:: 3.10
+
+  List of macro names used by :prop_tgt:`AUTOMOC` to determine if a
+  C++ source in the target needs to be processed by ``moc``.
+
+:prop_tgt:`AUTOUIC_OPTIONS`
+  .. versionadded:: 3.0
+
+  List of options used by :prop_tgt:`AUTOUIC` when invoking ``uic``
+  for the target.
+
+.. _`Target Link Properties`:
+
+Target Link Properties
+^^^^^^^^^^^^^^^^^^^^^^
+
+These represent the `build specification <Target Build Specification_>`_
+for linking a target.
+
+:prop_tgt:`LINK_LIBRARIES`
+  List of link libraries for linking the target, if it is an executable,
+  shared library, or module library.  Entries for `Normal Libraries`_ are
+  passed to the linker either via paths to their link artifacts, or
+  with ``-l`` flags or equivalent.  Entries for `Object Libraries`_ are
+  passed to the linker via paths to their object files.
+
+  Additionally, for compiling and linking the target itself,
+  `usage requirements <Target Usage Requirements_>`_ are propagated from
+  ``LINK_LIBRARIES`` entries naming `Normal Libraries`_,
+  `Interface Libraries`_, `Object Libraries`_, and `Imported Targets`_,
+  collected over the transitive closure of their
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES` properties.
+
+:prop_tgt:`LINK_DIRECTORIES`
+  .. versionadded:: 3.13
+
+  List of link directories for linking the target, if it is an executable,
+  shared library, or module library.  The directories are passed to the
+  linker with ``-L`` flags, or equivalent.
+
+:prop_tgt:`LINK_OPTIONS`
+  .. versionadded:: 3.13
+
+  List of link options for linking the target, if it is an executable,
+  shared library, or module library.  The options are passed to the
+  linker as flags, in the order of appearance.
+
+  Link options are automatically escaped for the shell.
+
+:prop_tgt:`LINK_DEPENDS`
+  List of files on which linking the target depends, if it is an executable,
+  shared library, or module library.  For example, linker scripts specified
+  via :prop_tgt:`LINK_OPTIONS` may be listed here such that changing them
+  causes binaries to be linked again.
 
 .. _`Target Usage Requirements`:
 
-ä¼ æ’­ä½¿ç”¨è¦æ±‚
------------------------------
+Target Usage Requirements
+-------------------------
 
-ç›®æ ‡çš„ä½¿ç”¨éœ€æ±‚å¯ä»¥ä¼ é€’åˆ°ä¾èµ–é¡¹ã€‚:command:`target_link_libraries`\ å‘½ä»¤å…·æœ‰\
-``PRIVATE``ã€\ ``INTERFACE``\ å’Œ\ ``PUBLIC``\ å…³é”®å­—æ¥æ§åˆ¶ä¼ æ’­ã€‚
+The *usage requirements* of a target are settings that propagate to consumers,
+which link to the target via :command:`target_link_libraries`, in order to
+correctly compile and link with it.  They are represented by transitive
+`compile <Transitive Compile Properties_>`_ and
+`link <Transitive Link Properties_>`_ properties.
+
+Note that usage requirements are not designed as a way to make downstreams
+use particular :prop_tgt:`COMPILE_OPTIONS`, :prop_tgt:`COMPILE_DEFINITIONS`,
+etc. for convenience only.  The contents of the properties must be
+**requirements**, not merely recommendations.
+
+See the :ref:`Creating Relocatable Packages` section of the
+:manual:`cmake-packages(7)` manual for discussion of additional care
+that must be taken when specifying usage requirements while creating
+packages for redistribution.
+
+The usage requirements of a target can transitively propagate to the dependents.
+The :command:`target_link_libraries` command has ``PRIVATE``,
+``INTERFACE`` and ``PUBLIC`` keywords to control the propagation.
+
+Ä¿±êµÄÊ¹ÓÃĞèÇó¿ÉÒÔ´«µİµ½ÒÀÀµÏî¡£:command:`target_link_libraries`\ ÃüÁî¾ßÓĞ\
+``PRIVATE``¡¢\ ``INTERFACE``\ ºÍ\ ``PUBLIC``\ ¹Ø¼ü×ÖÀ´¿ØÖÆ´«²¥¡£
 
 .. code-block:: cmake
 
@@ -242,17 +444,17 @@ cmake-buildsystem(7)
   # consumer is compiled with -DUSING_ARCHIVE_LIB
   target_link_libraries(consumer archiveExtras)
 
-å› ä¸º\ ``archive``\ æ˜¯\ ``archiveExtras``\ çš„\ ``PUBLIC``\ ä¾èµ–é¡¹ï¼Œæ‰€ä»¥å®ƒçš„ä½¿ç”¨éœ€æ±‚ä¹Ÿ\
-ä¼šä¼ æ’­ç»™\ ``consumer``ã€‚
+ÒòÎª\ ``archive``\ ÊÇ\ ``archiveExtras``\ µÄ\ ``PUBLIC``\ ÒÀÀµÏî£¬ËùÒÔËüµÄÊ¹ÓÃĞèÇóÒ²\
+»á´«²¥¸ø\ ``consumer``¡£
 
-å› ä¸º\ ``serialization``\ æ˜¯\ ``archiveExtras``\ çš„\ ``PRIVATE``\ ä¾èµ–é¡¹ï¼Œæ‰€ä»¥å®ƒçš„ä½¿\
-ç”¨éœ€æ±‚ä¸ä¼šä¼ æ’­ç»™\ ``consumer``ã€‚
+ÒòÎª\ ``serialization``\ ÊÇ\ ``archiveExtras``\ µÄ\ ``PRIVATE``\ ÒÀÀµÏî£¬ËùÒÔËüµÄÊ¹\
+ÓÃĞèÇó²»»á´«²¥¸ø\ ``consumer``¡£
 
-é€šå¸¸ï¼Œå¦‚æœä¾èµ–é¡¹åªåœ¨åº“çš„å®ç°ï¼Œè€Œä¸æ˜¯å¤´æ–‡ä»¶ä¸­ä½¿ç”¨ï¼Œåˆ™åº”è¯¥ä½¿ç”¨\
-:command:`target_link_libraries`\ å’Œ\ ``PRIVATE``\ å…³é”®å­—æŒ‡å®šä¾èµ–é¡¹ã€‚å¦‚æœä¸€ä¸ªä¾èµ–åœ¨åº“\
-çš„å¤´æ–‡ä»¶ä¸­è¢«é¢å¤–ä½¿ç”¨ï¼ˆä¾‹å¦‚ç”¨äºç±»ç»§æ‰¿ï¼‰ï¼Œé‚£ä¹ˆå®ƒåº”è¯¥è¢«æŒ‡å®šä¸º\ ``PUBLIC``\ ä¾èµ–ã€‚ä¸€ä¸ªåº“çš„å®ç°\
-ä¸­æ²¡æœ‰ä½¿ç”¨çš„ä¾èµ–é¡¹ï¼Œåªæœ‰å®ƒçš„å¤´æ–‡ä»¶æ‰ä½¿ç”¨å®ƒï¼Œåˆ™åº”è¯¥è¢«æŒ‡å®šä¸ºä¸€ä¸ª\ ``INTERFACE``\ ä¾èµ–é¡¹ã€‚\
-:command:`target_link_libraries`\ å‘½ä»¤å¯ä»¥å¯¹æ¯ä¸ªå…³é”®å­—è¿›è¡Œå¤šæ¬¡è°ƒç”¨ï¼š
+Í¨³££¬Èç¹ûÒÀÀµÏîÖ»ÔÚ¿âµÄÊµÏÖ£¬¶ø²»ÊÇÍ·ÎÄ¼şÖĞÊ¹ÓÃ£¬ÔòÓ¦¸ÃÊ¹ÓÃ\
+:command:`target_link_libraries`\ ºÍ\ ``PRIVATE``\ ¹Ø¼ü×ÖÖ¸¶¨ÒÀÀµÏî¡£Èç¹ûÒ»¸öÒÀÀµÔÚ¿â\
+µÄÍ·ÎÄ¼şÖĞ±»¶îÍâÊ¹ÓÃ£¨ÀıÈçÓÃÓÚÀà¼Ì³Ğ£©£¬ÄÇÃ´ËüÓ¦¸Ã±»Ö¸¶¨Îª\ ``PUBLIC``\ ÒÀÀµ¡£Ò»¸ö¿âµÄÊµÏÖ\
+ÖĞÃ»ÓĞÊ¹ÓÃµÄÒÀÀµÏî£¬Ö»ÓĞËüµÄÍ·ÎÄ¼ş²ÅÊ¹ÓÃËü£¬ÔòÓ¦¸Ã±»Ö¸¶¨ÎªÒ»¸ö\ ``INTERFACE``\ ÒÀÀµÏî¡£\
+:command:`target_link_libraries`\ ÃüÁî¿ÉÒÔ¶ÔÃ¿¸ö¹Ø¼ü×Ö½øĞĞ¶à´Îµ÷ÓÃ£º
 
 .. code-block:: cmake
 
@@ -261,15 +463,15 @@ cmake-buildsystem(7)
     PRIVATE serialization
   )
 
-ä½¿ç”¨è¦æ±‚æ˜¯é€šè¿‡ä»ä¾èµ–é¡¹ä¸­è¯»å–ç›®æ ‡å±æ€§çš„\ ``INTERFACE_``\ å˜é‡å¹¶å°†å€¼é™„åŠ åˆ°æ“ä½œæ•°çš„é\
-``INTERFACE_``\ å˜é‡æ¥ä¼ æ’­çš„ã€‚ä¾‹å¦‚ï¼Œè¯»å–ä¾èµ–å…³ç³»çš„\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ å¹¶å°†å…¶é™„åŠ åˆ°æ“ä½œæ•°çš„\
-:prop_tgt:`INCLUDE_DIRECTORIES`\ ä¸­ã€‚å¦‚æœé¡ºåºæ˜¯ç›¸å…³çš„ä¸”è¢«ç»´æŠ¤ï¼Œå¹¶ä¸”\
-:command:`target_link_libraries`\ è°ƒç”¨äº§ç”Ÿçš„é¡ºåºä¸å…è®¸æ­£ç¡®çš„ç¼–è¯‘ï¼Œåˆ™å¯ä»¥ä½¿ç”¨é€‚å½“çš„å‘½ä»¤\
-ç›´æ¥è®¾ç½®å±æ€§æ¥æ›´æ–°é¡ºåºã€‚
+Ê¹ÓÃÒªÇóÊÇÍ¨¹ı´ÓÒÀÀµÏîÖĞ¶ÁÈ¡Ä¿±êÊôĞÔµÄ\ ``INTERFACE_``\ ±äÁ¿²¢½«Öµ¸½¼Óµ½²Ù×÷ÊıµÄ·Ç\
+``INTERFACE_``\ ±äÁ¿À´´«²¥µÄ¡£ÀıÈç£¬¶ÁÈ¡ÒÀÀµ¹ØÏµµÄ\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ²¢½«Æä¸½¼Óµ½²Ù×÷ÊıµÄ\
+:prop_tgt:`INCLUDE_DIRECTORIES`\ ÖĞ¡£Èç¹ûË³ĞòÊÇÏà¹ØµÄÇÒ±»Î¬»¤£¬²¢ÇÒ\
+:command:`target_link_libraries`\ µ÷ÓÃ²úÉúµÄË³Ğò²»ÔÊĞíÕıÈ·µÄ±àÒë£¬Ôò¿ÉÒÔÊ¹ÓÃÊÊµ±µÄÃüÁî\
+Ö±½ÓÉèÖÃÊôĞÔÀ´¸üĞÂË³Ğò¡£
 
-ä¾‹å¦‚ï¼Œå¦‚æœä¸€ä¸ªç›®æ ‡çš„é“¾æ¥åº“å¿…é¡»æŒ‰ç…§\ ``lib1`` ``lib2`` ``lib3``\ çš„é¡ºåºæŒ‡å®šï¼Œ\
-ä½†æ˜¯åŒ…å«ç›®å½•å¿…é¡»æŒ‰ç…§\ ``lib3`` ``lib1`` ``lib2``\ çš„é¡ºåºæŒ‡å®šï¼š
+ÀıÈç£¬Èç¹ûÒ»¸öÄ¿±êµÄÁ´½Ó¿â±ØĞë°´ÕÕ\ ``lib1`` ``lib2`` ``lib3``\ µÄË³ĞòÖ¸¶¨£¬\
+µ«ÊÇ°üº¬Ä¿Â¼±ØĞë°´ÕÕ\ ``lib3`` ``lib1`` ``lib2``\ µÄË³ĞòÖ¸¶¨£º
 
 .. code-block:: cmake
 
@@ -277,18 +479,168 @@ cmake-buildsystem(7)
   target_include_directories(myExe
     PRIVATE $<TARGET_PROPERTY:lib3,INTERFACE_INCLUDE_DIRECTORIES>)
 
-è¯·æ³¨æ„ï¼Œåœ¨æŒ‡å®šå°†ä½¿ç”¨\ :command:`install(EXPORT)`\ å‘½ä»¤å¯¼å‡ºä»¥è¿›è¡Œå®‰è£…çš„ç›®æ ‡çš„ä½¿ç”¨è¦æ±‚æ—¶ï¼Œ\
-å¿…é¡»æ ¼å¤–å°å¿ƒã€‚æœ‰å…³æ›´å¤šä¿¡æ¯ï¼Œè¯·å‚é˜…\ :ref:`Creating Packages`ã€‚
+Çë×¢Òâ£¬ÔÚÖ¸¶¨½«Ê¹ÓÃ\ :command:`install(EXPORT)`\ ÃüÁîµ¼³öÒÔ½øĞĞ°²×°µÄÄ¿±êµÄÊ¹ÓÃÒªÇóÊ±£¬\
+±ØĞë¸ñÍâĞ¡ĞÄ¡£ÓĞ¹Ø¸ü¶àĞÅÏ¢£¬Çë²ÎÔÄ\ :ref:`Creating Packages`¡£
+
+.. _`Transitive Compile Properties`:
+
+Transitive Compile Properties
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These represent `usage requirements <Target Usage Requirements_>`_ for
+compiling consumers.
+
+:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`
+  List of compile definitions for compiling sources in the target's consumers.
+  Typically these are used by the target's header files.
+
+:prop_tgt:`INTERFACE_COMPILE_OPTIONS`
+  List of compile options for compiling sources in the target's consumers.
+
+:prop_tgt:`INTERFACE_COMPILE_FEATURES`
+  .. versionadded:: 3.1
+
+  List of :manual:`compile features <cmake-compile-features(7)>` needed
+  for compiling sources in the target's consumers.  Typically these
+  ensure the target's header files are processed when compiling consumers
+  using a sufficient language standard level.
+
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
+  List of include directories for compiling sources in the target's consumers.
+  Typically these are the locations of the target's header files.
+
+:prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES`
+  List of directories that, when specified as include directories, e.g., by
+  :prop_tgt:`INCLUDE_DIRECTORIES` or :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
+  should be treated as "system" include directories when compiling sources
+  in the target's consumers.
+
+:prop_tgt:`INTERFACE_SOURCES`
+  List of source files to associate with the target's consumers.
+
+:prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`
+  .. versionadded:: 3.16
+
+  List of header files to precompile and include when compiling
+  sources in the target's consumers.
+
+:prop_tgt:`INTERFACE_AUTOMOC_MACRO_NAMES`
+  .. versionadded:: 3.27
+
+  List of macro names used by :prop_tgt:`AUTOMOC` to determine if a
+  C++ source in the target's consumers needs to be processed by ``moc``.
+
+:prop_tgt:`INTERFACE_AUTOUIC_OPTIONS`
+  .. versionadded:: 3.0
+
+  List of options used by :prop_tgt:`AUTOUIC` when invoking ``uic``
+  for the target's consumers.
+
+.. _`Transitive Link Properties`:
+
+Transitive Link Properties
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These represent `usage requirements <Target Usage Requirements_>`_ for
+linking consumers.
+
+:prop_tgt:`INTERFACE_LINK_LIBRARIES`
+  List of link libraries for linking the target's consumers, for
+  those that are executables, shared libraries, or module libraries.
+  These are the transitive dependencies of the target.
+
+  Additionally, for compiling and linking the target's consumers,
+  `usage requirements <Target Usage Requirements_>`_ are collected from
+  the transitive closure of ``INTERFACE_LINK_LIBRARIES`` entries naming
+  `Normal Libraries`_, `Interface Libraries`_, `Object Libraries`_,
+  and `Imported Targets`_,
+
+:prop_tgt:`INTERFACE_LINK_DIRECTORIES`
+  .. versionadded:: 3.13
+
+  List of link directories for linking the target's consumers, for
+  those that are executables, shared libraries, or module libraries.
+
+:prop_tgt:`INTERFACE_LINK_OPTIONS`
+  .. versionadded:: 3.13
+
+  List of link options for linking the target's consumers, for
+  those that are executables, shared libraries, or module libraries.
+
+:prop_tgt:`INTERFACE_LINK_DEPENDS`
+  .. versionadded:: 3.13
+
+  List of files on which linking the target's consumers depends, for
+  those that are executables, shared libraries, or module libraries.
+
+.. _`Custom Transitive Properties`:
+
+Custom Transitive Properties
+----------------------------
+
+.. versionadded:: 3.30
+
+The :genex:`TARGET_PROPERTY` generator expression evaluates the above
+`build specification <Target Build Specification_>`_ and
+`usage requirement <Target Usage Requirements_>`_ properties
+as builtin transitive properties.  It also supports custom transitive
+properties defined by the :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`
+and :prop_tgt:`TRANSITIVE_LINK_PROPERTIES` properties on the target
+and its link dependencies.
+
+For example:
+
+.. code-block:: cmake
+
+  add_library(example INTERFACE)
+  set_target_properties(example PROPERTIES
+    TRANSITIVE_COMPILE_PROPERTIES "CUSTOM_C"
+    TRANSITIVE_LINK_PROPERTIES    "CUSTOM_L"
+
+    INTERFACE_CUSTOM_C "EXAMPLE_CUSTOM_C"
+    INTERFACE_CUSTOM_L "EXAMPLE_CUSTOM_L"
+    )
+
+  add_library(mylib STATIC mylib.c)
+  target_link_libraries(mylib PRIVATE example)
+  set_target_properties(mylib PROPERTIES
+    CUSTOM_C           "MYLIB_PRIVATE_CUSTOM_C"
+    CUSTOM_L           "MYLIB_PRIVATE_CUSTOM_L"
+    INTERFACE_CUSTOM_C "MYLIB_IFACE_CUSTOM_C"
+    INTERFACE_CUSTOM_L "MYLIB_IFACE_CUSTOM_L"
+    )
+
+  add_executable(myexe myexe.c)
+  target_link_libraries(myexe PRIVATE mylib)
+  set_target_properties(myexe PROPERTIES
+    CUSTOM_C "MYEXE_CUSTOM_C"
+    CUSTOM_L "MYEXE_CUSTOM_L"
+    )
+
+  add_custom_target(print ALL VERBATIM
+    COMMAND ${CMAKE_COMMAND} -E echo
+      # Prints "MYLIB_PRIVATE_CUSTOM_C;EXAMPLE_CUSTOM_C"
+      "$<TARGET_PROPERTY:mylib,CUSTOM_C>"
+
+      # Prints "MYLIB_PRIVATE_CUSTOM_L;EXAMPLE_CUSTOM_L"
+      "$<TARGET_PROPERTY:mylib,CUSTOM_L>"
+
+      # Prints "MYEXE_CUSTOM_C"
+      "$<TARGET_PROPERTY:myexe,CUSTOM_C>"
+
+      # Prints "MYEXE_CUSTOM_L;MYLIB_IFACE_CUSTOM_L;EXAMPLE_CUSTOM_L"
+      "$<TARGET_PROPERTY:myexe,CUSTOM_L>"
+    )
 
 .. _`Compatible Interface Properties`:
 
-å…¼å®¹çš„æ¥å£å±æ€§
+¼æÈİµÄ½Ó¿ÚÊôĞÔ
 -------------------------------
 
-ä¸€äº›ç›®æ ‡å±æ€§éœ€è¦åœ¨ç›®æ ‡å’Œæ¯ä¸ªä¾èµ–é¡¹çš„æ¥å£ä¹‹é—´å…¼å®¹ã€‚ä¾‹å¦‚ï¼Œ\
-:prop_tgt:`POSITION_INDEPENDENT_CODE`\ ç›®æ ‡å±æ€§å¯ä»¥æŒ‡å®šä¸€ä¸ªå¸ƒå°”å€¼ï¼Œè¡¨ç¤ºç›®æ ‡æ˜¯å¦åº”è¯¥è¢«\
-ç¼–è¯‘ä¸ºä½ç½®æ— å…³çš„ä»£ç ï¼Œè¿™å…·æœ‰ç‰¹å®šäºå¹³å°çš„ç»“æœã€‚ç›®æ ‡è¿˜å¯ä»¥æŒ‡å®šä½¿ç”¨è¦æ±‚\
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\ æ¥é€šçŸ¥æ¶ˆè´¹è€…å¿…é¡»è¢«ç¼–è¯‘ä¸ºä½ç½®æ— å…³ä»£ç ã€‚
+Ò»Ğ©Ä¿±êÊôĞÔĞèÒªÔÚÄ¿±êºÍÃ¿¸öÒÀÀµÏîµÄ½Ó¿ÚÖ®¼ä¼æÈİ¡£ÀıÈç£¬\
+:prop_tgt:`POSITION_INDEPENDENT_CODE`\ Ä¿±êÊôĞÔ¿ÉÒÔÖ¸¶¨Ò»¸ö²¼¶ûÖµ£¬±íÊ¾Ä¿±êÊÇ·ñÓ¦¸Ã±»\
+±àÒëÎªÎ»ÖÃÎŞ¹ØµÄ´úÂë£¬Õâ¾ßÓĞÌØ¶¨ÓÚÆ½Ì¨µÄ½á¹û¡£Ä¿±ê»¹¿ÉÒÔÖ¸¶¨Ê¹ÓÃÒªÇó\
+:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\ À´Í¨ÖªÏû·ÑÕß±ØĞë±»±àÒëÎªÎ»ÖÃÎŞ¹Ø´úÂë¡£
 
 .. code-block:: cmake
 
@@ -301,9 +653,9 @@ cmake-buildsystem(7)
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1)
 
-åœ¨è¿™é‡Œï¼Œ``exe1``\ å’Œ\ ``exe2``\ éƒ½å°†è¢«ç¼–è¯‘ä¸ºä½ç½®æ— å…³ä»£ç ã€‚``lib1``\ ä¹Ÿå°†è¢«ç¼–è¯‘ä¸ºä½ç½®æ— å…³\
-ä»£ç ï¼Œå› ä¸ºè¿™æ˜¯\ ``SHARED``\ åº“çš„é»˜è®¤è®¾ç½®ã€‚å¦‚æœä¾èµ–å…³ç³»æœ‰å†²çªçš„ã€ä¸å…¼å®¹çš„è¦æ±‚ï¼Œ\
-:manual:`cmake(1)`\ ä¼šå‘å‡ºä¸€ä¸ªè¯Šæ–­ï¼š
+ÔÚÕâÀï£¬``exe1``\ ºÍ\ ``exe2``\ ¶¼½«±»±àÒëÎªÎ»ÖÃÎŞ¹Ø´úÂë¡£``lib1``\ Ò²½«±»±àÒëÎªÎ»ÖÃÎŞ¹Ø\
+´úÂë£¬ÒòÎªÕâÊÇ\ ``SHARED``\ ¿âµÄÄ¬ÈÏÉèÖÃ¡£Èç¹ûÒÀÀµ¹ØÏµÓĞ³åÍ»µÄ¡¢²»¼æÈİµÄÒªÇó£¬\
+:manual:`cmake(1)`\ »á·¢³öÒ»¸öÕï¶Ï£º
 
 .. code-block:: cmake
 
@@ -320,25 +672,25 @@ cmake-buildsystem(7)
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1 lib2)
 
-``lib1``\ è¦æ±‚\ ``INTERFACE_POSITION_INDEPENDENT_CODE``\ ä¸\ ``exe1``\ ç›®æ ‡çš„\
-:prop_tgt:`POSITION_INDEPENDENT_CODE`\ å±æ€§ä¸â€œå…¼å®¹â€ã€‚åº“è¦æ±‚å°†æ¶ˆè´¹è€…æ„å»ºä¸ºä½ç½®æ— å…³ä»£ç ï¼Œ\
-è€Œå¯æ‰§è¡Œæ–‡ä»¶æŒ‡å®šä¸æ„å»ºä¸ºä½ç½®æ— å…³ä»£ç ï¼Œå› æ­¤ä¼šå‘å‡ºè¯Šæ–­ã€‚
+``lib1``\ ÒªÇó\ ``INTERFACE_POSITION_INDEPENDENT_CODE``\ Óë\ ``exe1``\ Ä¿±êµÄ\
+:prop_tgt:`POSITION_INDEPENDENT_CODE`\ ÊôĞÔ²»¡°¼æÈİ¡±¡£¿âÒªÇó½«Ïû·ÑÕß¹¹½¨ÎªÎ»ÖÃÎŞ¹Ø´úÂë£¬\
+¶ø¿ÉÖ´ĞĞÎÄ¼şÖ¸¶¨²»¹¹½¨ÎªÎ»ÖÃÎŞ¹Ø´úÂë£¬Òò´Ë»á·¢³öÕï¶Ï¡£
 
-``lib1``\ å’Œ\ ``lib2``\ è¦æ±‚ä¸â€œå…¼å®¹â€ã€‚å…¶ä¸­ä¸€ä¸ªè¦æ±‚å°†æ¶ˆè´¹è€…æ„å»ºä¸ºä¸ä½ç½®æ— å…³çš„ä»£ç ï¼Œè€Œå¦ä¸€\
-ä¸ªå¹¶æœªè¦æ±‚å°†æ¶ˆè´¹è€…æ„å»ºä¸ºä¸ä½ç½®æ— å…³çš„ä»£ç ã€‚å› ä¸º\ ``exe2``\ é“¾æ¥åˆ°ä¸¤è€…ï¼Œå¹¶ä¸”å®ƒä»¬æ˜¯å†²çªçš„ï¼Œæ‰€\
-ä»¥ä¼šå‘å‡ºä¸€ä¸ªCMakeé”™è¯¯æ¶ˆæ¯ï¼š ::
+``lib1``\ ºÍ\ ``lib2``\ ÒªÇó²»¡°¼æÈİ¡±¡£ÆäÖĞÒ»¸öÒªÇó½«Ïû·ÑÕß¹¹½¨ÎªÓëÎ»ÖÃÎŞ¹ØµÄ´úÂë£¬¶øÁíÒ»\
+¸ö²¢Î´ÒªÇó½«Ïû·ÑÕß¹¹½¨ÎªÓëÎ»ÖÃÎŞ¹ØµÄ´úÂë¡£ÒòÎª\ ``exe2``\ Á´½Óµ½Á½Õß£¬²¢ÇÒËüÃÇÊÇ³åÍ»µÄ£¬Ëù\
+ÒÔ»á·¢³öÒ»¸öCMake´íÎóÏûÏ¢£º ::
 
   CMake Error: The INTERFACE_POSITION_INDEPENDENT_CODE property of "lib2" does
   not agree with the value of POSITION_INDEPENDENT_CODE already determined
   for "exe2".
 
-ä¸ºäº†â€œå…¼å®¹â€ï¼Œå¦‚æœæœ‰è®¾ç½®\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ å±æ€§ï¼Œåœ¨å¸ƒå°”æ„ä¹‰ä¸Šï¼Œ\
-å¿…é¡»ä¸è®¾ç½®è¯¥å±æ€§çš„æ‰€æœ‰ä¼ é€’æŒ‡å®šä¾èµ–é¡¹çš„\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\
-å±æ€§ç›¸åŒã€‚
+ÎªÁË¡°¼æÈİ¡±£¬Èç¹ûÓĞÉèÖÃ\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ ÊôĞÔ£¬ÔÚ²¼¶ûÒâÒåÉÏ£¬\
+±ØĞëÓëÉèÖÃ¸ÃÊôĞÔµÄËùÓĞ´«µİÖ¸¶¨ÒÀÀµÏîµÄ\ :prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`\
+ÊôĞÔÏàÍ¬¡£
 
-é€šè¿‡åœ¨\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ ç›®æ ‡å±æ€§çš„å†…å®¹ä¸­æŒ‡å®šè¯¥å±æ€§ï¼Œâ€œå…¼å®¹æ¥å£è¦\
-æ±‚â€çš„å±æ€§å¯ä»¥æ‰©å±•åˆ°å…¶ä»–å±æ€§ã€‚æ¯ä¸ªæŒ‡å®šçš„å±æ€§å¿…é¡»åœ¨æ¶ˆè´¹ç›®æ ‡å’Œå¯¹åº”çš„å±æ€§ä¹‹é—´å…¼å®¹ï¼Œæ¯ä¸ªä¾èµ–éƒ½æœ‰ä¸€ä¸ª\
-``INTERFACE_``\ å‰ç¼€ï¼š
+Í¨¹ıÔÚ\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ Ä¿±êÊôĞÔµÄÄÚÈİÖĞÖ¸¶¨¸ÃÊôĞÔ£¬¡°¼æÈİ½Ó¿ÚÒª\
+Çó¡±µÄÊôĞÔ¿ÉÒÔÀ©Õ¹µ½ÆäËûÊôĞÔ¡£Ã¿¸öÖ¸¶¨µÄÊôĞÔ±ØĞëÔÚÏû·ÑÄ¿±êºÍ¶ÔÓ¦µÄÊôĞÔÖ®¼ä¼æÈİ£¬Ã¿¸öÒÀÀµ¶¼ÓĞÒ»¸ö\
+``INTERFACE_``\ Ç°×º£º
 
 .. code-block:: cmake
 
@@ -357,9 +709,9 @@ cmake-buildsystem(7)
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1Version2 lib1Version3) # Diagnostic
 
-éå¸ƒå°”å±æ€§ä¹Ÿå¯ä»¥å‚ä¸â€œå…¼å®¹æ¥å£â€è®¡ç®—ã€‚åœ¨\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ å±æ€§\
-ä¸­æŒ‡å®šçš„å±æ€§å¿…é¡»æ˜¯æœªæŒ‡å®šçš„ï¼Œæˆ–è€…ä¸æ‰€æœ‰ä¼ é€’æŒ‡å®šçš„ä¾èµ–é¡¹ä¸­çš„ç›¸åŒå­—ç¬¦ä¸²ç›¸æ¯”è¾ƒã€‚è¿™æœ‰åŠ©äºç¡®ä¿åº“çš„\
-å¤šä¸ªä¸å…¼å®¹ç‰ˆæœ¬ä¸ä¼šé€šè¿‡ç›®æ ‡çš„ä¼ é€’è¦æ±‚é“¾æ¥åœ¨ä¸€èµ·ï¼š
+·Ç²¼¶ûÊôĞÔÒ²¿ÉÒÔ²ÎÓë¡°¼æÈİ½Ó¿Ú¡±¼ÆËã¡£ÔÚ\ :prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ ÊôĞÔ\
+ÖĞÖ¸¶¨µÄÊôĞÔ±ØĞëÊÇÎ´Ö¸¶¨µÄ£¬»òÕßÓëËùÓĞ´«µİÖ¸¶¨µÄÒÀÀµÏîÖĞµÄÏàÍ¬×Ö·û´®Ïà±È½Ï¡£ÕâÓĞÖúÓÚÈ·±£¿âµÄ\
+¶à¸ö²»¼æÈİ°æ±¾²»»áÍ¨¹ıÄ¿±êµÄ´«µİÒªÇóÁ´½ÓÔÚÒ»Æğ£º
 
 .. code-block:: cmake
 
@@ -378,8 +730,8 @@ cmake-buildsystem(7)
   add_executable(exe2 exe2.cpp)
   target_link_libraries(exe2 lib1Version2 lib1Version3) # Diagnostic
 
-:prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\ ç›®æ ‡å±æ€§æŒ‡å®šå†…å®¹å°†è¢«æ•°å€¼è®¡ç®—ï¼Œå¹¶ä¸”å°†è®¡ç®—\
-æ‰€æœ‰æŒ‡å®šçš„æœ€å¤§å€¼ï¼š
+:prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\ Ä¿±êÊôĞÔÖ¸¶¨ÄÚÈİ½«±»ÊıÖµ¼ÆËã£¬²¢ÇÒ½«¼ÆËã\
+ËùÓĞÖ¸¶¨µÄ×î´óÖµ£º
 
 .. code-block:: cmake
 
@@ -400,19 +752,19 @@ cmake-buildsystem(7)
   # CONTAINER_SIZE_REQUIRED will be "1000"
   target_link_libraries(exe2 lib1Version2 lib1Version3)
 
-ç±»ä¼¼åœ°ï¼Œå¯ä»¥ä½¿ç”¨\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ ä»ä¾èµ–é¡¹ä¸­è®¡ç®—å±æ€§çš„æœ€\
-å°æ•°å€¼ã€‚
+ÀàËÆµØ£¬¿ÉÒÔÊ¹ÓÃ\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ ´ÓÒÀÀµÏîÖĞ¼ÆËãÊôĞÔµÄ×î\
+Ğ¡ÊıÖµ¡£
 
-æ¯ä¸ªè®¡ç®—å‡ºçš„â€œå…¼å®¹â€å±æ€§å€¼éƒ½å¯ä»¥åœ¨ç”Ÿæˆæ—¶ä½¿ç”¨ç”Ÿæˆå™¨è¡¨è¾¾å¼ä»æ¶ˆè´¹è€…ä¸­è¯»å–ã€‚
+Ã¿¸ö¼ÆËã³öµÄ¡°¼æÈİ¡±ÊôĞÔÖµ¶¼¿ÉÒÔÔÚÉú³ÉÊ±Ê¹ÓÃÉú³ÉÆ÷±í´ïÊ½´ÓÏû·ÑÕßÖĞ¶ÁÈ¡¡£
 
-è¯·æ³¨æ„ï¼Œå¯¹äºæ¯ä¸ªè¢«ä¾èµ–è€…ï¼Œæ¯ä¸ªå…¼å®¹æ¥å£å±æ€§ä¸­æŒ‡å®šçš„å±æ€§é›†ä¸èƒ½ä¸ä»»ä½•å…¶ä»–å±æ€§ä¸­æŒ‡å®šçš„å±æ€§é›†ç›¸äº¤ã€‚
+Çë×¢Òâ£¬¶ÔÓÚÃ¿¸ö±»ÒÀÀµÕß£¬Ã¿¸ö¼æÈİ½Ó¿ÚÊôĞÔÖĞÖ¸¶¨µÄÊôĞÔ¼¯²»ÄÜÓëÈÎºÎÆäËûÊôĞÔÖĞÖ¸¶¨µÄÊôĞÔ¼¯Ïà½»¡£
 
-å±æ€§èµ·æºè°ƒè¯•
+ÊôĞÔÆğÔ´µ÷ÊÔ
 -------------------------
 
-å› ä¸ºæ„å»ºè§„èŒƒå¯ä»¥ç”±ä¾èµ–å…³ç³»å†³å®šï¼Œåˆ›å»ºç›®æ ‡å’Œè´Ÿè´£è®¾ç½®æ„å»ºè§„èŒƒçš„ä»£ç ç¼ºä¹æœ¬åœ°åŒ–å¯èƒ½ä¼šä½¿ä»£ç æ›´éš¾æ¨\
-ç†ã€‚\ :manual:`cmake(1)`\ æä¾›äº†ä¸€ä¸ªè°ƒè¯•å·¥å…·ï¼Œæ‰“å°å±æ€§å†…å®¹çš„æ¥æºï¼Œè¿™å¯èƒ½æ˜¯ç”±ä¾èµ–å…³ç³»å†³å®š\
-çš„ã€‚å¯ä»¥è°ƒè¯•çš„å±æ€§åˆ—åœ¨\ :variable:`CMAKE_DEBUG_TARGET_PROPERTIES`\ å˜é‡æ–‡æ¡£ä¸­ï¼š
+ÒòÎª¹¹½¨¹æ·¶¿ÉÒÔÓÉÒÀÀµ¹ØÏµ¾ö¶¨£¬´´½¨Ä¿±êºÍ¸ºÔğÉèÖÃ¹¹½¨¹æ·¶µÄ´úÂëÈ±·¦±¾µØ»¯¿ÉÄÜ»áÊ¹´úÂë¸üÄÑÍÆ\
+Àí¡£\ :manual:`cmake(1)`\ Ìá¹©ÁËÒ»¸öµ÷ÊÔ¹¤¾ß£¬´òÓ¡ÊôĞÔÄÚÈİµÄÀ´Ô´£¬Õâ¿ÉÄÜÊÇÓÉÒÀÀµ¹ØÏµ¾ö¶¨\
+µÄ¡£¿ÉÒÔµ÷ÊÔµÄÊôĞÔÁĞÔÚ\ :variable:`CMAKE_DEBUG_TARGET_PROPERTIES`\ ±äÁ¿ÎÄµµÖĞ£º
 
 .. code-block:: cmake
 
@@ -425,18 +777,18 @@ cmake-buildsystem(7)
   )
   add_executable(exe1 exe1.cpp)
 
-å¯¹äºåœ¨\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ æˆ–\
-:prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ ä¸­åˆ—å‡ºçš„å±æ€§ï¼Œè°ƒè¯•è¾“å‡ºæ˜¾ç¤ºå“ªä¸ªç›®æ ‡è´Ÿè´£è®¾ç½®è¯¥\
-å±æ€§ï¼Œä»¥åŠå“ªä¸ªå…¶ä»–ä¾èµ–é¡¹ä¹Ÿå®šä¹‰äº†è¯¥å±æ€§ã€‚åœ¨\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\
-å’Œ\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ çš„æƒ…å†µä¸‹ï¼Œè°ƒè¯•è¾“å‡ºæ˜¾ç¤ºæ¯ä¸ªä¾èµ–é¡¹çš„å±\
-æ€§å€¼ï¼Œä»¥åŠè¯¥å€¼æ˜¯å¦å†³å®šäº†æ–°çš„æå€¼ã€‚
+¶ÔÓÚÔÚ\ :prop_tgt:`COMPATIBLE_INTERFACE_BOOL`\ »ò\
+:prop_tgt:`COMPATIBLE_INTERFACE_STRING`\ ÖĞÁĞ³öµÄÊôĞÔ£¬µ÷ÊÔÊä³öÏÔÊ¾ÄÄ¸öÄ¿±ê¸ºÔğÉèÖÃ¸Ã\
+ÊôĞÔ£¬ÒÔ¼°ÄÄ¸öÆäËûÒÀÀµÏîÒ²¶¨ÒåÁË¸ÃÊôĞÔ¡£ÔÚ\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\
+ºÍ\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ µÄÇé¿öÏÂ£¬µ÷ÊÔÊä³öÏÔÊ¾Ã¿¸öÒÀÀµÏîµÄÊô\
+ĞÔÖµ£¬ÒÔ¼°¸ÃÖµÊÇ·ñ¾ö¶¨ÁËĞÂµÄ¼«Öµ¡£
 
-ä½¿ç”¨ç”Ÿæˆå™¨è¡¨è¾¾å¼æ„å»ºè§„èŒƒ
+Ê¹ÓÃÉú³ÉÆ÷±í´ïÊ½¹¹½¨¹æ·¶
 ----------------------------------------------
 
-æ„å»ºè§„èŒƒå¯ä»¥ä½¿ç”¨\ :manual:`ç”Ÿæˆå™¨è¡¨è¾¾å¼ <cmake-generator-expressions(7)>`ï¼Œå…¶ä¸­åŒ…å«æœ‰\
-æ¡ä»¶çš„æˆ–åœ¨ç”Ÿæˆæ—¶æ‰çŸ¥é“çš„å†…å®¹ã€‚ä¾‹å¦‚ï¼Œè®¡ç®—å‡ºçš„å±æ€§â€œcompatibleâ€å€¼å¯ä»¥é€šè¿‡\
-``TARGET_PROPERTY``\ è¡¨è¾¾å¼è¯»å–ï¼š
+¹¹½¨¹æ·¶¿ÉÒÔÊ¹ÓÃ\ :manual:`Éú³ÉÆ÷±í´ïÊ½ <cmake-generator-expressions(7)>`£¬ÆäÖĞ°üº¬ÓĞ\
+Ìõ¼şµÄ»òÔÚÉú³ÉÊ±²ÅÖªµÀµÄÄÚÈİ¡£ÀıÈç£¬¼ÆËã³öµÄÊôĞÔ¡°compatible¡±Öµ¿ÉÒÔÍ¨¹ı\
+``TARGET_PROPERTY``\ ±í´ïÊ½¶ÁÈ¡£º
 
 .. code-block:: cmake
 
@@ -453,10 +805,10 @@ cmake-buildsystem(7)
       CONTAINER_SIZE=$<TARGET_PROPERTY:CONTAINER_SIZE_REQUIRED>
   )
 
-åœ¨æœ¬ä¾‹ä¸­ï¼Œå°†ä½¿ç”¨\ ``-DCONTAINER_SIZE=200``\ ç¼–è¯‘\ ``exe1``\ æºæ–‡ä»¶ã€‚
+ÔÚ±¾ÀıÖĞ£¬½«Ê¹ÓÃ\ ``-DCONTAINER_SIZE=200``\ ±àÒë\ ``exe1``\ Ô´ÎÄ¼ş¡£
 
-ä¸€å…ƒ\ ``TARGET_PROPERTY``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼å’Œ\ ``TARGET_POLICY``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼æ˜¯åœ¨æ¶ˆè´¹ç›®\
-æ ‡ä¸Šä¸‹æ–‡ä¸­è®¡ç®—çš„ã€‚è¿™æ„å‘³ç€ä½¿ç”¨è¦æ±‚è§„èŒƒå¯ä»¥æ ¹æ®ä½¿ç”¨è€…çš„ä¸åŒè¿›è¡Œè¯„ä¼°ï¼š
+Ò»Ôª\ ``TARGET_PROPERTY``\ Éú³ÉÆ÷±í´ïÊ½ºÍ\ ``TARGET_POLICY``\ Éú³ÉÆ÷±í´ïÊ½ÊÇÔÚÏû·ÑÄ¿\
+±êÉÏÏÂÎÄÖĞ¼ÆËãµÄ¡£ÕâÒâÎ¶×ÅÊ¹ÓÃÒªÇó¹æ·¶¿ÉÒÔ¸ù¾İÊ¹ÓÃÕßµÄ²»Í¬½øĞĞÆÀ¹À£º
 
 .. code-block:: cmake
 
@@ -475,14 +827,14 @@ cmake-buildsystem(7)
   add_library(shared_lib shared_lib.cpp)
   target_link_libraries(shared_lib lib1)
 
-``exe1``\ å¯æ‰§è¡Œæ–‡ä»¶å°†ä½¿ç”¨\ ``-DLIB1_WITH_EXE``\ ç¼–è¯‘ï¼Œ\
-è€Œ\ ``shared_lib``\ å…±äº«åº“å°†ä½¿ç”¨\ ``-DLIB1_WITH_SHARED_LIB``\ å’Œ\
-``-DCONSUMER_CMP0041_NEW``\ ç¼–è¯‘ï¼Œå› ä¸ºç­–ç•¥\ :policy:`CMP0041`\ åœ¨åˆ›å»º\
-``shared_lib``\ ç›®æ ‡çš„åœ°æ–¹æ˜¯\ ``NEW``ã€‚
+``exe1``\ ¿ÉÖ´ĞĞÎÄ¼ş½«Ê¹ÓÃ\ ``-DLIB1_WITH_EXE``\ ±àÒë£¬\
+¶ø\ ``shared_lib``\ ¹²Ïí¿â½«Ê¹ÓÃ\ ``-DLIB1_WITH_SHARED_LIB``\ ºÍ\
+``-DCONSUMER_CMP0041_NEW``\ ±àÒë£¬ÒòÎª²ßÂÔ\ :policy:`CMP0041`\ ÔÚ´´½¨\
+``shared_lib``\ Ä¿±êµÄµØ·½ÊÇ\ ``NEW``¡£
 
-``BUILD_INTERFACE``\ è¡¨è¾¾å¼åŒ…è£…çš„éœ€æ±‚ä»…åœ¨ä»åŒä¸€ä¸ªæ„å»ºç³»ç»Ÿä¸­çš„ç›®æ ‡æ¶ˆè´¹æ—¶ä½¿ç”¨ï¼Œæˆ–è€…åœ¨ä½¿ç”¨\
-:command:`export`\ å‘½ä»¤ä»å¯¼å‡ºåˆ°æ„å»ºç›®å½•çš„ç›®æ ‡æ¶ˆè´¹æ—¶ä½¿ç”¨ã€‚\ ``INSTALL_INTERFACE``\ è¡¨è¾¾\
-å¼åŒ…è£…äº†åªåœ¨ä½¿ç”¨\ :command:`install(EXPORT)`\ å‘½ä»¤å®‰è£…å¹¶å¯¼å‡ºçš„ç›®æ ‡æ—¶ä½¿ç”¨çš„éœ€æ±‚ï¼š
+``BUILD_INTERFACE``\ ±í´ïÊ½°ü×°µÄĞèÇó½öÔÚ´ÓÍ¬Ò»¸ö¹¹½¨ÏµÍ³ÖĞµÄÄ¿±êÏû·ÑÊ±Ê¹ÓÃ£¬»òÕßÔÚÊ¹ÓÃ\
+:command:`export`\ ÃüÁî´Óµ¼³öµ½¹¹½¨Ä¿Â¼µÄÄ¿±êÏû·ÑÊ±Ê¹ÓÃ¡£\ ``INSTALL_INTERFACE``\ ±í´ï\
+Ê½°ü×°ÁËÖ»ÔÚÊ¹ÓÃ\ :command:`install(EXPORT)`\ ÃüÁî°²×°²¢µ¼³öµÄÄ¿±êÊ±Ê¹ÓÃµÄĞèÇó£º
 
 .. code-block:: cmake
 
@@ -499,10 +851,10 @@ cmake-buildsystem(7)
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 ClimbingStats)
 
-åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œ\ ``exe1``\ å¯æ‰§è¡Œæ–‡ä»¶å°†ä½¿ç”¨\ ``-DClimbingStats_FROM_BUILD_LOCATION``\
-è¿›è¡Œç¼–è¯‘ã€‚å¯¼å‡ºå‘½ä»¤ç”Ÿæˆ\ :prop_tgt:`IMPORTED`\ ç›®æ ‡ï¼Œå…¶ä¸­çœç•¥äº†\ ``INSTALL_INTERFACE``\
-æˆ–\ ``BUILD_INTERFACE``ï¼Œå»æ‰äº†\ ``*_INTERFACE``\ æ ‡è®°ã€‚ä½¿ç”¨\ ``ClimbingStats``\
-åŒ…çš„ä¸€ä¸ªå•ç‹¬é¡¹ç›®å°†åŒ…å«ï¼š
+ÔÚÕâÖÖÇé¿öÏÂ£¬\ ``exe1``\ ¿ÉÖ´ĞĞÎÄ¼ş½«Ê¹ÓÃ\ ``-DClimbingStats_FROM_BUILD_LOCATION``\
+½øĞĞ±àÒë¡£µ¼³öÃüÁîÉú³É\ :prop_tgt:`IMPORTED`\ Ä¿±ê£¬ÆäÖĞÊ¡ÂÔÁË\ ``INSTALL_INTERFACE``\
+»ò\ ``BUILD_INTERFACE``£¬È¥µôÁË\ ``*_INTERFACE``\ ±ê¼Ç¡£Ê¹ÓÃ\ ``ClimbingStats``\
+°üµÄÒ»¸öµ¥¶ÀÏîÄ¿½«°üº¬£º
 
 .. code-block:: cmake
 
@@ -511,18 +863,18 @@ cmake-buildsystem(7)
   add_executable(Downstream main.cpp)
   target_link_libraries(Downstream Upstream::ClimbingStats)
 
-``Downstream``\ ç›®æ ‡å°†ä½¿ç”¨\ ``-DClimbingStats_FROM_BUILD_LOCATION``\ æˆ–\
-``-DClimbingStats_FROM_INSTALL_LOCATION``\ ç¼–è¯‘ï¼Œè¿™å–å†³äº\ ``ClimbingStats``\ åŒ…æ˜¯\
-ä»æ„å»ºä½ç½®è¿˜æ˜¯å®‰è£…ä½ç½®ä½¿ç”¨çš„ã€‚æœ‰å…³åŒ…å’Œå¯¼å‡ºçš„æ›´å¤šä¿¡æ¯ï¼Œè¯·å‚é˜…\ :manual:`cmake-packages(7)`\
-æ‰‹å†Œã€‚
+``Downstream``\ Ä¿±ê½«Ê¹ÓÃ\ ``-DClimbingStats_FROM_BUILD_LOCATION``\ »ò\
+``-DClimbingStats_FROM_INSTALL_LOCATION``\ ±àÒë£¬ÕâÈ¡¾öÓÚ\ ``ClimbingStats``\ °üÊÇ\
+´Ó¹¹½¨Î»ÖÃ»¹ÊÇ°²×°Î»ÖÃÊ¹ÓÃµÄ¡£ÓĞ¹Ø°üºÍµ¼³öµÄ¸ü¶àĞÅÏ¢£¬Çë²ÎÔÄ\ :manual:`cmake-packages(7)`\
+ÊÖ²á¡£
 
 .. _`Include Directories and Usage Requirements`:
 
-åŒ…å«ç›®å½•å’Œä½¿ç”¨è¦æ±‚
+°üº¬Ä¿Â¼ºÍÊ¹ÓÃÒªÇó
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-åŒ…å«ç›®å½•åœ¨ä½œä¸ºä½¿ç”¨è¦æ±‚æŒ‡å®šå’Œä¸ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¸€èµ·ä½¿ç”¨æ—¶éœ€è¦ä¸€äº›ç‰¹æ®Šè€ƒè™‘ã€‚\
-:command:`target_include_directories`\ å‘½ä»¤å¯ä»¥æ¥å—ç›¸å¯¹åŒ…å«ç›®å½•å’Œç»å¯¹åŒ…å«ç›®å½•ï¼š
+°üº¬Ä¿Â¼ÔÚ×÷ÎªÊ¹ÓÃÒªÇóÖ¸¶¨ºÍÓëÉú³ÉÆ÷±í´ïÊ½Ò»ÆğÊ¹ÓÃÊ±ĞèÒªÒ»Ğ©ÌØÊâ¿¼ÂÇ¡£\
+:command:`target_include_directories`\ ÃüÁî¿ÉÒÔ½ÓÊÜÏà¶Ô°üº¬Ä¿Â¼ºÍ¾ø¶Ô°üº¬Ä¿Â¼£º
 
 .. code-block:: cmake
 
@@ -532,15 +884,15 @@ cmake-buildsystem(7)
     relative/path
   )
 
-ç›¸å¯¹è·¯å¾„æ˜¯ç›¸å¯¹äºå‡ºç°å‘½ä»¤çš„æºç›®å½•è¿›è¡Œè§£é‡Šçš„ã€‚:prop_tgt:`IMPORTED`\ ç›®æ ‡çš„\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ä¸­ä¸å…è®¸æœ‰ç›¸å¯¹è·¯å¾„ã€‚
+Ïà¶ÔÂ·¾¶ÊÇÏà¶ÔÓÚ³öÏÖÃüÁîµÄÔ´Ä¿Â¼½øĞĞ½âÊÍµÄ¡£:prop_tgt:`IMPORTED`\ Ä¿±êµÄ\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ÖĞ²»ÔÊĞíÓĞÏà¶ÔÂ·¾¶¡£
 
-åœ¨ä½¿ç”¨éå¹³å‡¡ç”Ÿæˆå™¨è¡¨è¾¾å¼çš„æƒ…å†µä¸‹ï¼Œå¯ä»¥åœ¨\ ``INSTALL_INTERFACE``\ è¡¨è¾¾å¼çš„å‚æ•°ä¸­ä½¿ç”¨\
-``INSTALL_PREFIX``\ è¡¨è¾¾å¼ã€‚å®ƒæ˜¯ä¸€ä¸ªæ›¿æ¢æ ‡è®°ï¼Œåœ¨è¢«æ¶ˆè´¹é¡¹ç›®å¯¼å…¥æ—¶æ‰©å±•ä¸ºå®‰è£…å‰ç¼€ã€‚
+ÔÚÊ¹ÓÃ·ÇÆ½·²Éú³ÉÆ÷±í´ïÊ½µÄÇé¿öÏÂ£¬¿ÉÒÔÔÚ\ ``INSTALL_INTERFACE``\ ±í´ïÊ½µÄ²ÎÊıÖĞÊ¹ÓÃ\
+``INSTALL_PREFIX``\ ±í´ïÊ½¡£ËüÊÇÒ»¸öÌæ»»±ê¼Ç£¬ÔÚ±»Ïû·ÑÏîÄ¿µ¼ÈëÊ±À©Õ¹Îª°²×°Ç°×º¡£
 
-åŒ…æ‹¬æ„å»ºæ ‘å’Œå®‰è£…æ ‘ä¹‹é—´çš„ç›®å½•ä½¿ç”¨éœ€æ±‚é€šå¸¸ä¸åŒã€‚``BUILD_INTERFACE``\ å’Œ\
-``INSTALL_INTERFACE``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼å¯ç”¨äºæè¿°åŸºäºä½¿ç”¨ä½ç½®çš„å•ç‹¬ä½¿ç”¨éœ€æ±‚ã€‚\
-``INSTALL_INTERFACE``\ è¡¨è¾¾å¼ä¸­å…è®¸ä½¿ç”¨ç›¸å¯¹è·¯å¾„ï¼Œå¹¶ä¸”ç›¸å¯¹äºå®‰è£…å‰ç¼€è¿›è¡Œè§£é‡Šã€‚ä¾‹å¦‚ï¼š
+°üÀ¨¹¹½¨Ê÷ºÍ°²×°Ê÷Ö®¼äµÄÄ¿Â¼Ê¹ÓÃĞèÇóÍ¨³£²»Í¬¡£``BUILD_INTERFACE``\ ºÍ\
+``INSTALL_INTERFACE``\ Éú³ÉÆ÷±í´ïÊ½¿ÉÓÃÓÚÃèÊö»ùÓÚÊ¹ÓÃÎ»ÖÃµÄµ¥¶ÀÊ¹ÓÃĞèÇó¡£\
+``INSTALL_INTERFACE``\ ±í´ïÊ½ÖĞÔÊĞíÊ¹ÓÃÏà¶ÔÂ·¾¶£¬²¢ÇÒÏà¶ÔÓÚ°²×°Ç°×º½øĞĞ½âÊÍ¡£ÀıÈç£º
 
 .. code-block:: cmake
 
@@ -552,8 +904,8 @@ cmake-buildsystem(7)
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/$<CONFIG>/generated>
   )
 
-CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
-å˜é‡\ :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ å¯ä»¥è¢«å¯ç”¨ï¼Œå…¶ä½œç”¨ç›¸å½“äºï¼š
+CMakeÌá¹©ÁËÓë°üº¬Ä¿Â¼Ê¹ÓÃĞèÇóÏà¹ØµÄÁ½¸ö±ã½İAPI¡£\
+±äÁ¿\ :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ ¿ÉÒÔ±»ÆôÓÃ£¬Æä×÷ÓÃÏàµ±ÓÚ£º
 
 .. code-block:: cmake
 
@@ -561,8 +913,8 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_CURRENT_BINARY_DIR}>
   )
 
-å¯¹äºæ¯ä¸ªå—å½±å“çš„ç›®æ ‡ã€‚å¯¹äºå·²å®‰è£…çš„ç›®æ ‡æ¥è¯´ï¼Œ\
-ä½¿ç”¨\ :command:`install(TARGETS)`\ å‘½ä»¤å¯ä»¥æ–¹ä¾¿åœ°ä½¿ç”¨\ ``INCLUDES DESTINATION``\ ç»„ä»¶ï¼š
+¶ÔÓÚÃ¿¸öÊÜÓ°ÏìµÄÄ¿±ê¡£¶ÔÓÚÒÑ°²×°µÄÄ¿±êÀ´Ëµ£¬\
+Ê¹ÓÃ\ :command:`install(TARGETS)`\ ÃüÁî¿ÉÒÔ·½±ãµØÊ¹ÓÃ\ ``INCLUDES DESTINATION``\ ×é¼ş£º
 
 .. code-block:: cmake
 
@@ -572,27 +924,27 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
   install(EXPORT tgts ${other_args})
   install(FILES ${headers} DESTINATION include)
 
-è¿™ç›¸å½“äºåœ¨ç”±\ :command:`install(EXPORT)`\ ç”Ÿæˆçš„æ¯ä¸ªå·²å®‰è£…çš„\ :prop_tgt:`IMPORTED`\
-ç›®æ ‡çš„\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ä¸­é™„åŠ \
-``${CMAKE_INSTALL_PREFIX}/include``ã€‚
+ÕâÏàµ±ÓÚÔÚÓÉ\ :command:`install(EXPORT)`\ Éú³ÉµÄÃ¿¸öÒÑ°²×°µÄ\ :prop_tgt:`IMPORTED`\
+Ä¿±êµÄ\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ÖĞ¸½¼Ó\
+``${CMAKE_INSTALL_PREFIX}/include``¡£
 
-å½“\ :ref:`å¯¼å…¥çš„ç›®æ ‡ <Imported targets>`\ çš„\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ è¢«ä½¿ç”¨æ—¶ï¼Œè¯¥å±æ€§ä¸­çš„æ¡ç›®å¯èƒ½è¢«è§†ä¸ºç³»ç»ŸåŒ…å«\
-ç›®å½•ã€‚å…¶å½±å“å–å†³äºå·¥å…·é“¾ï¼Œä½†ä¸€ä¸ªå¸¸è§çš„å½±å“æ˜¯å¿½ç•¥åœ¨è¿™äº›ç›®å½•ä¸­æ‰¾åˆ°çš„å¤´çš„ç¼–è¯‘å™¨è­¦å‘Šã€‚å·²å®‰è£…ç›®æ ‡çš„\
-:prop_tgt:`SYSTEM`\ å±æ€§å†³å®šäº†è¿™ç§è¡Œä¸ºï¼ˆæœ‰å…³å¦‚ä½•ä¿®æ”¹ç›®æ ‡çš„å·²å®‰è£…å€¼ï¼Œè¯·å‚é˜…\
-:prop_tgt:`EXPORT_NO_SYSTEM`\ å±æ€§ï¼‰ã€‚è¿˜å¯ä»¥é€šè¿‡åœ¨\ *ä½¿ç”¨è€…*\ ä¸Šè®¾ç½®\
-:prop_tgt:`NO_SYSTEM_FROM_IMPORTED`\ ç›®æ ‡å±æ€§æ¥æ›´æ”¹ä½¿ç”¨è€…å¦‚ä½•è§£é‡Šæ‰€ä½¿ç”¨çš„å¯¼å…¥ç›®æ ‡çš„ç³»ç»Ÿ\
-è¡Œä¸ºã€‚
+µ±\ :ref:`µ¼ÈëµÄÄ¿±ê <Imported targets>`\ µÄ\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ ±»Ê¹ÓÃÊ±£¬¸ÃÊôĞÔÖĞµÄÌõÄ¿¿ÉÄÜ±»ÊÓÎªÏµÍ³°üº¬\
+Ä¿Â¼¡£ÆäÓ°ÏìÈ¡¾öÓÚ¹¤¾ßÁ´£¬µ«Ò»¸ö³£¼ûµÄÓ°ÏìÊÇºöÂÔÔÚÕâĞ©Ä¿Â¼ÖĞÕÒµ½µÄÍ·µÄ±àÒëÆ÷¾¯¸æ¡£ÒÑ°²×°Ä¿±êµÄ\
+:prop_tgt:`SYSTEM`\ ÊôĞÔ¾ö¶¨ÁËÕâÖÖĞĞÎª£¨ÓĞ¹ØÈçºÎĞŞ¸ÄÄ¿±êµÄÒÑ°²×°Öµ£¬Çë²ÎÔÄ\
+:prop_tgt:`EXPORT_NO_SYSTEM`\ ÊôĞÔ£©¡£»¹¿ÉÒÔÍ¨¹ıÔÚ\ *Ê¹ÓÃÕß*\ ÉÏÉèÖÃ\
+:prop_tgt:`NO_SYSTEM_FROM_IMPORTED`\ Ä¿±êÊôĞÔÀ´¸ü¸ÄÊ¹ÓÃÕßÈçºÎ½âÊÍËùÊ¹ÓÃµÄµ¼ÈëÄ¿±êµÄÏµÍ³\
+ĞĞÎª¡£
 
-å¦‚æœä¸€ä¸ªäºŒè¿›åˆ¶ç›®æ ‡è¢«ä¼ é€’åœ°é“¾æ¥åˆ°ä¸€ä¸ªmacOS :prop_tgt:`FRAMEWORK`ï¼Œæ¡†æ¶çš„\ ``Headers``\
-ç›®å½•ä¹Ÿè¢«è§†ä¸ºä½¿ç”¨éœ€æ±‚ã€‚è¿™ä¸å°†æ¡†æ¶ç›®å½•ä½œä¸ºåŒ…å«ç›®å½•ä¼ é€’çš„æ•ˆæœç›¸åŒã€‚
+Èç¹ûÒ»¸ö¶ş½øÖÆÄ¿±ê±»´«µİµØÁ´½Óµ½Ò»¸ömacOS :prop_tgt:`FRAMEWORK`£¬¿ò¼ÜµÄ\ ``Headers``\
+Ä¿Â¼Ò²±»ÊÓÎªÊ¹ÓÃĞèÇó¡£ÕâÓë½«¿ò¼ÜÄ¿Â¼×÷Îª°üº¬Ä¿Â¼´«µİµÄĞ§¹ûÏàÍ¬¡£
 
-é“¾æ¥åº“å’Œç”Ÿæˆå™¨è¡¨è¾¾å¼
+Á´½Ó¿âºÍÉú³ÉÆ÷±í´ïÊ½
 ----------------------------------------
 
-ä¸æ„å»ºè§„èŒƒä¸€æ ·ï¼Œå¯ä»¥ä½¿ç”¨ç”Ÿæˆå™¨è¡¨è¾¾å¼æ¡ä»¶æŒ‡å®š\ :prop_tgt:`é“¾æ¥åº“ <LINK_LIBRARIES>`ã€‚\
-ç„¶è€Œï¼Œç”±äºä½¿ç”¨éœ€æ±‚çš„æ¶ˆè€—æ˜¯åŸºäºé“¾æ¥ä¾èµ–é¡¹çš„é›†åˆï¼Œå› æ­¤æœ‰ä¸€ä¸ªé¢å¤–çš„é™åˆ¶ï¼Œå³é“¾æ¥ä¾èµ–é¡¹å¿…é¡»å½¢æˆä¸€ä¸ª\
-â€œæœ‰å‘æ— ç¯å›¾â€ã€‚ä¹Ÿå°±æ˜¯è¯´ï¼Œå¦‚æœé“¾æ¥åˆ°ç›®æ ‡ä¾èµ–äºç›®æ ‡å±æ€§çš„å€¼ï¼Œé‚£ä¹ˆç›®æ ‡å±æ€§å¯èƒ½ä¸ä¾èµ–äºé“¾æ¥çš„ä¾èµ–é¡¹ï¼š
+Óë¹¹½¨¹æ·¶Ò»Ñù£¬¿ÉÒÔÊ¹ÓÃÉú³ÉÆ÷±í´ïÊ½Ìõ¼şÖ¸¶¨\ :prop_tgt:`Á´½Ó¿â <LINK_LIBRARIES>`¡£\
+È»¶ø£¬ÓÉÓÚÊ¹ÓÃĞèÇóµÄÏûºÄÊÇ»ùÓÚÁ´½ÓÒÀÀµÏîµÄ¼¯ºÏ£¬Òò´ËÓĞÒ»¸ö¶îÍâµÄÏŞÖÆ£¬¼´Á´½ÓÒÀÀµÏî±ØĞëĞÎ³ÉÒ»¸ö\
+¡°ÓĞÏòÎŞ»·Í¼¡±¡£Ò²¾ÍÊÇËµ£¬Èç¹ûÁ´½Óµ½Ä¿±êÒÀÀµÓÚÄ¿±êÊôĞÔµÄÖµ£¬ÄÇÃ´Ä¿±êÊôĞÔ¿ÉÄÜ²»ÒÀÀµÓÚÁ´½ÓµÄÒÀÀµÏî£º
 
 .. code-block:: cmake
 
@@ -607,104 +959,104 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 lib1 lib3)
 
-ç”±äº\ ``exe1``\ ç›®æ ‡çš„\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ å±æ€§çš„å€¼ä¾èµ–äºé“¾æ¥çš„åº“\
-ï¼ˆ\ ``lib3``\ ï¼‰ï¼Œè€Œé“¾æ¥\ ``exe1``\ çš„è¾¹ç¼˜ç”±åŒä¸€ä¸ª\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\
-å±æ€§å†³å®šï¼Œå› æ­¤ä¸Šè¿°ä¾èµ–å›¾åŒ…å«ä¸€ä¸ªå¾ªç¯ã€‚:manual:`cmake(1)`\ å‘å‡ºé”™è¯¯æ¶ˆæ¯ã€‚
+ÓÉÓÚ\ ``exe1``\ Ä¿±êµÄ\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ ÊôĞÔµÄÖµÒÀÀµÓÚÁ´½ÓµÄ¿â\
+£¨\ ``lib3``\ £©£¬¶øÁ´½Ó\ ``exe1``\ µÄ±ßÔµÓÉÍ¬Ò»¸ö\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\
+ÊôĞÔ¾ö¶¨£¬Òò´ËÉÏÊöÒÀÀµÍ¼°üº¬Ò»¸öÑ­»·¡£:manual:`cmake(1)`\ ·¢³ö´íÎóÏûÏ¢¡£
 
 .. _`Output Artifacts`:
 
-è¾“å‡ºæ„ä»¶
+Êä³ö¹¹¼ş
 ----------------
 
-:command:`add_library`\ å’Œ\ :command:`add_executable`\ å‘½ä»¤åˆ›å»ºçš„æ„å»ºç³»ç»Ÿç›®æ ‡åˆ›å»ºè§„\
-åˆ™æ¥åˆ›å»ºäºŒè¿›åˆ¶è¾“å‡ºã€‚äºŒè¿›åˆ¶æ–‡ä»¶çš„å‡†ç¡®è¾“å‡ºä½ç½®åªèƒ½åœ¨ç”Ÿæˆæ—¶ç¡®å®šï¼Œå› ä¸ºå®ƒä¾èµ–äºæ„å»ºé…ç½®å’Œé“¾æ¥ä¾èµ–\
-çš„é“¾æ¥è¯­è¨€ç­‰ã€‚\ ``TARGET_FILE``ã€\ ``TARGET_LINKER_FILE``\ å’Œç›¸å…³çš„è¡¨è¾¾å¼å¯ä»¥ç”¨æ¥è®¿é—®\
-ç”Ÿæˆçš„äºŒè¿›åˆ¶æ–‡ä»¶çš„åç§°å’Œä½ç½®ã€‚ç„¶è€Œï¼Œè¿™äº›è¡¨è¾¾å¼ä¸é€‚ç”¨äº\ ``OBJECT``\ åº“ï¼Œå› ä¸ºè¿™äº›åº“æ²¡æœ‰ç”Ÿæˆ\
-ä¸è¡¨è¾¾å¼ç›¸å…³çš„å•ä¸ªæ–‡ä»¶ã€‚
+:command:`add_library`\ ºÍ\ :command:`add_executable`\ ÃüÁî´´½¨µÄ¹¹½¨ÏµÍ³Ä¿±ê´´½¨¹æ\
+ÔòÀ´´´½¨¶ş½øÖÆÊä³ö¡£¶ş½øÖÆÎÄ¼şµÄ×¼È·Êä³öÎ»ÖÃÖ»ÄÜÔÚÉú³ÉÊ±È·¶¨£¬ÒòÎªËüÒÀÀµÓÚ¹¹½¨ÅäÖÃºÍÁ´½ÓÒÀÀµ\
+µÄÁ´½ÓÓïÑÔµÈ¡£\ ``TARGET_FILE``¡¢\ ``TARGET_LINKER_FILE``\ ºÍÏà¹ØµÄ±í´ïÊ½¿ÉÒÔÓÃÀ´·ÃÎÊ\
+Éú³ÉµÄ¶ş½øÖÆÎÄ¼şµÄÃû³ÆºÍÎ»ÖÃ¡£È»¶ø£¬ÕâĞ©±í´ïÊ½²»ÊÊÓÃÓÚ\ ``OBJECT``\ ¿â£¬ÒòÎªÕâĞ©¿âÃ»ÓĞÉú³É\
+Óë±í´ïÊ½Ïà¹ØµÄµ¥¸öÎÄ¼ş¡£
 
-ç›®æ ‡å¯ä»¥æ„å»ºä¸‰ç§è¾“å‡ºå·¥ä»¶ï¼Œå…·ä½“å†…å®¹å°†åœ¨ä¸‹é¢çš„éƒ¨åˆ†ä¸­è¯¦ç»†ä»‹ç»ã€‚å®ƒä»¬çš„åˆ†ç±»åœ¨DLLå¹³å°å’ŒéDLLå¹³å°ä¹‹\
-é—´æ˜¯ä¸åŒçš„ã€‚åŒ…æ‹¬Cygwinåœ¨å†…çš„æ‰€æœ‰åŸºäºwindowsçš„ç³»ç»Ÿéƒ½æ˜¯DLLå¹³å°ã€‚
+Ä¿±ê¿ÉÒÔ¹¹½¨ÈıÖÖÊä³ö¹¤¼ş£¬¾ßÌåÄÚÈİ½«ÔÚÏÂÃæµÄ²¿·ÖÖĞÏêÏ¸½éÉÜ¡£ËüÃÇµÄ·ÖÀàÔÚDLLÆ½Ì¨ºÍ·ÇDLLÆ½Ì¨Ö®\
+¼äÊÇ²»Í¬µÄ¡£°üÀ¨CygwinÔÚÄÚµÄËùÓĞ»ùÓÚwindowsµÄÏµÍ³¶¼ÊÇDLLÆ½Ì¨¡£
 
 .. _`Runtime Output Artifacts`:
 
-è¿è¡Œæ—¶è¾“å‡ºæ„ä»¶
+ÔËĞĞÊ±Êä³ö¹¹¼ş
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-æ„å»ºç³»ç»Ÿç›®æ ‡çš„\ *è¿è¡Œæ—¶*\ è¾“å‡ºå·¥ä»¶å¯èƒ½æ˜¯ï¼š
+¹¹½¨ÏµÍ³Ä¿±êµÄ\ *ÔËĞĞÊ±*\ Êä³ö¹¤¼ş¿ÉÄÜÊÇ£º
 
-* :command:`add_executable`\ å‘½ä»¤åˆ›å»ºçš„å¯æ‰§è¡Œç›®æ ‡çš„å¯æ‰§è¡Œæ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.exe``ï¼‰ã€‚
+* :command:`add_executable`\ ÃüÁî´´½¨µÄ¿ÉÖ´ĞĞÄ¿±êµÄ¿ÉÖ´ĞĞÎÄ¼ş£¨ÀıÈç\ ``.exe``£©¡£
 
-* åœ¨DLLå¹³å°ä¸Šï¼šç”±\ :command:`add_library`\ å‘½ä»¤å’Œ\ ``SHARED``\ é€‰é¡¹åˆ›å»ºçš„å…±äº«åº“ç›®æ ‡çš„\
-  å¯æ‰§è¡Œæ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.dll``ï¼‰ã€‚
+* ÔÚDLLÆ½Ì¨ÉÏ£ºÓÉ\ :command:`add_library`\ ÃüÁîºÍ\ ``SHARED``\ Ñ¡Ïî´´½¨µÄ¹²Ïí¿âÄ¿±êµÄ\
+  ¿ÉÖ´ĞĞÎÄ¼ş£¨ÀıÈç\ ``.dll``£©¡£
 
-:prop_tgt:`RUNTIME_OUTPUT_DIRECTORY`\ å’Œ\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\
-ç›®æ ‡å±æ€§å¯ä»¥ç”¨äºæ§åˆ¶æ„å»ºæ ‘ä¸­çš„è¿è¡Œæ—¶è¾“å‡ºå·¥ä»¶ä½ç½®å’Œåç§°ã€‚
+:prop_tgt:`RUNTIME_OUTPUT_DIRECTORY`\ ºÍ\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\
+Ä¿±êÊôĞÔ¿ÉÒÔÓÃÓÚ¿ØÖÆ¹¹½¨Ê÷ÖĞµÄÔËĞĞÊ±Êä³ö¹¤¼şÎ»ÖÃºÍÃû³Æ¡£
 
 .. _`Library Output Artifacts`:
 
-åº“è¾“å‡ºæ„ä»¶
+¿âÊä³ö¹¹¼ş
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-æ„å»ºç³»ç»Ÿç›®æ ‡çš„\ *åº“*\ è¾“å‡ºå·¥ä»¶å¯èƒ½æ˜¯ï¼š
+¹¹½¨ÏµÍ³Ä¿±êµÄ\ *¿â*\ Êä³ö¹¤¼ş¿ÉÄÜÊÇ£º
 
-* ç”±\ :command:`add_library`\ å‘½ä»¤ä½¿ç”¨\ ``MODULE``\ é€‰é¡¹åˆ›å»ºçš„æ¨¡å—åº“ç›®æ ‡çš„å¯åŠ è½½æ¨¡å—æ–‡ä»¶\
-  ï¼ˆä¾‹å¦‚\ ``.dll``\ æˆ–\ ``.so``ï¼‰ã€‚
+* ÓÉ\ :command:`add_library`\ ÃüÁîÊ¹ÓÃ\ ``MODULE``\ Ñ¡Ïî´´½¨µÄÄ£¿é¿âÄ¿±êµÄ¿É¼ÓÔØÄ£¿éÎÄ¼ş\
+  £¨ÀıÈç\ ``.dll``\ »ò\ ``.so``£©¡£
 
-* åœ¨éDLLå¹³å°ä¸Šï¼šç”±\ :command:`add_library`\ å‘½ä»¤å’Œ\ ``SHARED``\ é€‰é¡¹åˆ›å»ºçš„å…±äº«åº“ç›®æ ‡\
-  çš„å…±äº«åº“æ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.so``\ æˆ–\ ``.dylib``ï¼‰ã€‚
+* ÔÚ·ÇDLLÆ½Ì¨ÉÏ£ºÓÉ\ :command:`add_library`\ ÃüÁîºÍ\ ``SHARED``\ Ñ¡Ïî´´½¨µÄ¹²Ïí¿âÄ¿±ê\
+  µÄ¹²Ïí¿âÎÄ¼ş£¨ÀıÈç\ ``.so``\ »ò\ ``.dylib``£©¡£
 
-:prop_tgt:`LIBRARY_OUTPUT_DIRECTORY`\ å’Œ\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\
-ç›®æ ‡å±æ€§å¯ä»¥ç”¨æ¥æ§åˆ¶æ„å»ºæ ‘ä¸­çš„åº“è¾“å‡ºå·¥ä»¶ä½ç½®å’Œåç§°ã€‚
+:prop_tgt:`LIBRARY_OUTPUT_DIRECTORY`\ ºÍ\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\
+Ä¿±êÊôĞÔ¿ÉÒÔÓÃÀ´¿ØÖÆ¹¹½¨Ê÷ÖĞµÄ¿âÊä³ö¹¤¼şÎ»ÖÃºÍÃû³Æ¡£
 
 .. _`Archive Output Artifacts`:
 
-æ¡£æ¡ˆè¾“å‡ºæ„ä»¶
+µµ°¸Êä³ö¹¹¼ş
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-æ„å»ºç³»ç»Ÿç›®æ ‡çš„\ *å½’æ¡£*\ è¾“å‡ºå·¥ä»¶å¯èƒ½æ˜¯ï¼š
+¹¹½¨ÏµÍ³Ä¿±êµÄ\ *¹éµµ*\ Êä³ö¹¤¼ş¿ÉÄÜÊÇ£º
 
-* ç”±\ :command:`add_library`\ å‘½ä»¤ä½¿ç”¨\ ``STATIC``\ é€‰é¡¹åˆ›å»ºçš„é™æ€åº“ç›®æ ‡çš„é™æ€åº“æ–‡ä»¶\
-  ï¼ˆä¾‹å¦‚\ ``.lib``\ æˆ–\ ``.a``ï¼‰ã€‚
+* ÓÉ\ :command:`add_library`\ ÃüÁîÊ¹ÓÃ\ ``STATIC``\ Ñ¡Ïî´´½¨µÄ¾²Ì¬¿âÄ¿±êµÄ¾²Ì¬¿âÎÄ¼ş\
+  £¨ÀıÈç\ ``.lib``\ »ò\ ``.a``£©¡£
 
-* åœ¨DLLå¹³å°ä¸Šï¼šç”±\ :command:`add_library`\ å‘½ä»¤å’Œ\ ``SHARED``\ é€‰é¡¹åˆ›å»ºçš„å…±äº«åº“ç›®æ ‡çš„\
-  å¯¼å…¥åº“æ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.lib``ï¼‰ã€‚åªæœ‰å½“åº“å¯¼å‡ºè‡³å°‘ä¸€ä¸ªéæ‰˜ç®¡ç¬¦å·æ—¶ï¼Œæ‰ä¿è¯æ­¤æ–‡ä»¶å­˜åœ¨ã€‚
+* ÔÚDLLÆ½Ì¨ÉÏ£ºÓÉ\ :command:`add_library`\ ÃüÁîºÍ\ ``SHARED``\ Ñ¡Ïî´´½¨µÄ¹²Ïí¿âÄ¿±êµÄ\
+  µ¼Èë¿âÎÄ¼ş£¨ÀıÈç\ ``.lib``£©¡£Ö»ÓĞµ±¿âµ¼³öÖÁÉÙÒ»¸ö·ÇÍĞ¹Ü·ûºÅÊ±£¬²Å±£Ö¤´ËÎÄ¼ş´æÔÚ¡£
 
-* åœ¨DLLå¹³å°ä¸Šï¼šå½“è®¾ç½®äº†å¯æ‰§è¡Œç›®æ ‡çš„\ :prop_tgt:`ENABLE_EXPORTS`\ ç›®æ ‡å±æ€§æ—¶ï¼Œ\
-  ç”±\ :command:`add_executable`\ å‘½ä»¤åˆ›å»ºçš„å¯æ‰§è¡Œç›®æ ‡çš„å¯¼å…¥åº“æ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.lib``ï¼‰ã€‚
+* ÔÚDLLÆ½Ì¨ÉÏ£ºµ±ÉèÖÃÁË¿ÉÖ´ĞĞÄ¿±êµÄ\ :prop_tgt:`ENABLE_EXPORTS`\ Ä¿±êÊôĞÔÊ±£¬\
+  ÓÉ\ :command:`add_executable`\ ÃüÁî´´½¨µÄ¿ÉÖ´ĞĞÄ¿±êµÄµ¼Èë¿âÎÄ¼ş£¨ÀıÈç\ ``.lib``£©¡£
 
-* åœ¨AIXä¸Šï¼šå½“è®¾ç½®äº†å¯æ‰§è¡Œç›®æ ‡çš„\ :prop_tgt:`ENABLE_EXPORTS`\ ç›®æ ‡å±æ€§æ—¶ï¼Œ\
-  :command:`add_executable`\ å‘½ä»¤åˆ›å»ºçš„å¯æ‰§è¡Œç›®æ ‡çš„é“¾æ¥å™¨å¯¼å…¥æ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.imp``ï¼‰ã€‚
+* ÔÚAIXÉÏ£ºµ±ÉèÖÃÁË¿ÉÖ´ĞĞÄ¿±êµÄ\ :prop_tgt:`ENABLE_EXPORTS`\ Ä¿±êÊôĞÔÊ±£¬\
+  :command:`add_executable`\ ÃüÁî´´½¨µÄ¿ÉÖ´ĞĞÄ¿±êµÄÁ´½ÓÆ÷µ¼ÈëÎÄ¼ş£¨ÀıÈç\ ``.imp``£©¡£
 
-* åœ¨macOSä¸Šï¼šå…±äº«åº“ç›®æ ‡çš„é“¾æ¥å™¨å¯¼å…¥æ–‡ä»¶ï¼ˆä¾‹å¦‚\ ``.tbd``ï¼‰ç”±\ :command:`add_library`\
-  å‘½ä»¤åˆ›å»ºï¼Œå¸¦æœ‰\ ``SHARED``\ é€‰é¡¹ï¼Œå½“å®ƒçš„\ :prop_tgt:`ENABLE_EXPORTS`\ ç›®æ ‡å±æ€§è¢«è®¾\
-  ç½®æ—¶ã€‚
+* ÔÚmacOSÉÏ£º¹²Ïí¿âÄ¿±êµÄÁ´½ÓÆ÷µ¼ÈëÎÄ¼ş£¨ÀıÈç\ ``.tbd``£©ÓÉ\ :command:`add_library`\
+  ÃüÁî´´½¨£¬´øÓĞ\ ``SHARED``\ Ñ¡Ïî£¬µ±ËüµÄ\ :prop_tgt:`ENABLE_EXPORTS`\ Ä¿±êÊôĞÔ±»Éè\
+  ÖÃÊ±¡£
 
-:prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`\ å’Œ\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
-ç›®æ ‡å±æ€§å¯ä»¥ç”¨äºæ§åˆ¶æ„å»ºæ ‘ä¸­çš„å½’æ¡£è¾“å‡ºå·¥ä»¶ä½ç½®å’Œåç§°ã€‚
+:prop_tgt:`ARCHIVE_OUTPUT_DIRECTORY`\ ºÍ\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
+Ä¿±êÊôĞÔ¿ÉÒÔÓÃÓÚ¿ØÖÆ¹¹½¨Ê÷ÖĞµÄ¹éµµÊä³ö¹¤¼şÎ»ÖÃºÍÃû³Æ¡£
 
-ç›®å½•ä½œç”¨åŸŸå‘½ä»¤
+Ä¿Â¼×÷ÓÃÓòÃüÁî
 -------------------------
 
-:command:`target_include_directories`ã€:command:`target_compile_definitions`\ å’Œ\
-:command:`target_compile_options`\ å‘½ä»¤ä¸€æ¬¡åªèƒ½å¯¹ä¸€ä¸ªç›®æ ‡äº§ç”Ÿå½±å“ã€‚\
-:command:`add_compile_definitions`ã€:command:`add_compile_options`\ å’Œ\
-:command:`include_directories`\ å‘½ä»¤å…·æœ‰ç±»ä¼¼çš„åŠŸèƒ½ï¼Œä½†ä¸ºäº†æ–¹ä¾¿èµ·è§ï¼Œå®ƒä»¬åœ¨ç›®å½•èŒƒå›´è€Œä¸æ˜¯\
-ç›®æ ‡èŒƒå›´å†…æ“ä½œã€‚
+:command:`target_include_directories`¡¢:command:`target_compile_definitions`\ ºÍ\
+:command:`target_compile_options`\ ÃüÁîÒ»´ÎÖ»ÄÜ¶ÔÒ»¸öÄ¿±ê²úÉúÓ°Ïì¡£\
+:command:`add_compile_definitions`¡¢:command:`add_compile_options`\ ºÍ\
+:command:`include_directories`\ ÃüÁî¾ßÓĞÀàËÆµÄ¹¦ÄÜ£¬µ«ÎªÁË·½±ãÆğ¼û£¬ËüÃÇÔÚÄ¿Â¼·¶Î§¶ø²»ÊÇ\
+Ä¿±ê·¶Î§ÄÚ²Ù×÷¡£
 
 .. _`Build Configurations`:
 
-æ„å»ºé…ç½®
+¹¹½¨ÅäÖÃ
 ====================
 
-é…ç½®ä¸ºç‰¹å®šç±»å‹çš„æ„å»ºç¡®å®šè§„èŒƒï¼Œä¾‹å¦‚\ ``Release``\ æˆ–\ ``Debug``ã€‚\
-æŒ‡å®šæ–¹æ³•å–å†³äºæ‰€ä½¿ç”¨çš„\ :manual:`generator <cmake-generators(7)>`\ çš„ç±»å‹ã€‚\
-å¯¹äºå•ä¸ªé…ç½®ç”Ÿæˆå™¨ï¼Œå¦‚\ :ref:`Makefile Generators`\ å’Œ\ :generator:`Ninja`ï¼Œ\
-é…ç½®æ˜¯åœ¨é…ç½®æ—¶ç”±\ :variable:`CMAKE_BUILD_TYPE`\ å˜é‡æŒ‡å®šçš„ã€‚\
-å¯¹äºåƒ\ :ref:`Visual Studio <Visual Studio Generators>`ã€:generator:`Xcode`\ å’Œ\
-:generator:`Ninja Multi-Config`\ è¿™æ ·çš„å¤šé…ç½®ç”Ÿæˆå™¨ï¼Œé…ç½®æ˜¯ç”±ç”¨æˆ·åœ¨æ„å»ºæ—¶é€‰æ‹©çš„ï¼Œ\
-:variable:`CMAKE_BUILD_TYPE`\ ä¼šè¢«å¿½ç•¥ã€‚åœ¨å¤šé…ç½®æƒ…å†µä¸‹ï¼Œ\
-*å¯ç”¨*\ é…ç½®é›†åœ¨é…ç½®æ—¶ç”±\ :variable:`CMAKE_CONFIGURATION_TYPES`\ å˜é‡æŒ‡å®šï¼Œ\
-ä½†ä½¿ç”¨çš„å®é™…é…ç½®ç›´åˆ°æ„å»ºé˜¶æ®µæ‰èƒ½çŸ¥é“ã€‚è¿™ç§å·®å¼‚ç»å¸¸è¢«è¯¯è§£ï¼Œå¯¼è‡´å‡ºç°å¦‚ä¸‹é—®é¢˜ä»£ç ï¼š
+ÅäÖÃÎªÌØ¶¨ÀàĞÍµÄ¹¹½¨È·¶¨¹æ·¶£¬ÀıÈç\ ``Release``\ »ò\ ``Debug``¡£\
+Ö¸¶¨·½·¨È¡¾öÓÚËùÊ¹ÓÃµÄ\ :manual:`generator <cmake-generators(7)>`\ µÄÀàĞÍ¡£\
+¶ÔÓÚµ¥¸öÅäÖÃÉú³ÉÆ÷£¬Èç\ :ref:`Makefile Generators`\ ºÍ\ :generator:`Ninja`£¬\
+ÅäÖÃÊÇÔÚÅäÖÃÊ±ÓÉ\ :variable:`CMAKE_BUILD_TYPE`\ ±äÁ¿Ö¸¶¨µÄ¡£\
+¶ÔÓÚÏñ\ :ref:`Visual Studio <Visual Studio Generators>`¡¢:generator:`Xcode`\ ºÍ\
+:generator:`Ninja Multi-Config`\ ÕâÑùµÄ¶àÅäÖÃÉú³ÉÆ÷£¬ÅäÖÃÊÇÓÉÓÃ»§ÔÚ¹¹½¨Ê±Ñ¡ÔñµÄ£¬\
+:variable:`CMAKE_BUILD_TYPE`\ »á±»ºöÂÔ¡£ÔÚ¶àÅäÖÃÇé¿öÏÂ£¬\
+*¿ÉÓÃ*\ ÅäÖÃ¼¯ÔÚÅäÖÃÊ±ÓÉ\ :variable:`CMAKE_CONFIGURATION_TYPES`\ ±äÁ¿Ö¸¶¨£¬\
+µ«Ê¹ÓÃµÄÊµ¼ÊÅäÖÃÖ±µ½¹¹½¨½×¶Î²ÅÄÜÖªµÀ¡£ÕâÖÖ²îÒì¾­³£±»Îó½â£¬µ¼ÖÂ³öÏÖÈçÏÂÎÊÌâ´úÂë£º
 
 .. code-block:: cmake
 
@@ -715,8 +1067,8 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
     target_compile_definitions(exe1 PRIVATE DEBUG_BUILD)
   endif()
 
-:manual:`ç”Ÿæˆå™¨è¡¨è¾¾å¼ <cmake-generator-expressions(7)>`\ åº”è¯¥ç”¨äºæ­£ç¡®å¤„ç†ç‰¹å®šäºé…ç½®çš„é€»è¾‘ï¼Œ\
-è€Œä¸ç®¡ä½¿ç”¨çš„ç”Ÿæˆå™¨æ˜¯ä»€ä¹ˆã€‚ä¾‹å¦‚ï¼š
+:manual:`Éú³ÉÆ÷±í´ïÊ½ <cmake-generator-expressions(7)>`\ Ó¦¸ÃÓÃÓÚÕıÈ·´¦ÀíÌØ¶¨ÓÚÅäÖÃµÄÂß¼­£¬\
+¶ø²»¹ÜÊ¹ÓÃµÄÉú³ÉÆ÷ÊÇÊ²Ã´¡£ÀıÈç£º
 
 .. code-block:: cmake
 
@@ -725,17 +1077,17 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
     $<$<CONFIG:Debug>:DEBUG_BUILD>
   )
 
-åœ¨\ :prop_tgt:`IMPORTED`\ ç›®æ ‡å­˜åœ¨çš„æƒ…å†µä¸‹ï¼Œ\
-:prop_tgt:`MAP_IMPORTED_CONFIG_DEBUG <MAP_IMPORTED_CONFIG_<CONFIG>>`\ çš„å†…å®¹ä¹Ÿç”±\
-ä¸Šé¢çš„\ :genex:`$<CONFIG:Debug>`\ è¡¨è¾¾å¼è´Ÿè´£ã€‚
+ÔÚ\ :prop_tgt:`IMPORTED`\ Ä¿±ê´æÔÚµÄÇé¿öÏÂ£¬\
+:prop_tgt:`MAP_IMPORTED_CONFIG_DEBUG <MAP_IMPORTED_CONFIG_<CONFIG>>`\ µÄÄÚÈİÒ²ÓÉ\
+ÉÏÃæµÄ\ :genex:`$<CONFIG:Debug>`\ ±í´ïÊ½¸ºÔğ¡£
 
 
-åŒºåˆ†å¤§å°å†™
+Çø·Ö´óĞ¡Ğ´
 ----------------
 
-:variable:`CMAKE_BUILD_TYPE`\ å’Œ\ :variable:`CMAKE_CONFIGURATION_TYPES`\ å°±åƒå…¶ä»–\
-å˜é‡ä¸€æ ·ï¼Œä¸å®ƒä»¬çš„å€¼è¿›è¡Œçš„ä»»ä½•å­—ç¬¦ä¸²æ¯”è¾ƒéƒ½æ˜¯åŒºåˆ†å¤§å°å†™çš„ã€‚:genex:`$<CONFIG>`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼\
-è¿˜ä¿ç•™ç”±ç”¨æˆ·æˆ–CMakeé»˜è®¤è®¾ç½®çš„é…ç½®å¤§å°å†™ã€‚ä¾‹å¦‚ï¼š
+:variable:`CMAKE_BUILD_TYPE`\ ºÍ\ :variable:`CMAKE_CONFIGURATION_TYPES`\ ¾ÍÏñÆäËû\
+±äÁ¿Ò»Ñù£¬ÓëËüÃÇµÄÖµ½øĞĞµÄÈÎºÎ×Ö·û´®±È½Ï¶¼ÊÇÇø·Ö´óĞ¡Ğ´µÄ¡£:genex:`$<CONFIG>`\ Éú³ÉÆ÷±í´ïÊ½\
+»¹±£ÁôÓÉÓÃ»§»òCMakeÄ¬ÈÏÉèÖÃµÄÅäÖÃ´óĞ¡Ğ´¡£ÀıÈç£º
 
 .. code-block:: cmake
 
@@ -756,82 +1108,82 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
     # ... will never get here, "Debug" != "DEBUG"
   endif()
 
-ç›¸æ¯”ä¹‹ä¸‹ï¼ŒCMakeåœ¨å†…éƒ¨æ ¹æ®é…ç½®ä¿®æ”¹è¡Œä¸ºçš„åœ°æ–¹ä½¿ç”¨é…ç½®ç±»å‹æ—¶ä¸åŒºåˆ†å¤§å°å†™ã€‚ä¾‹å¦‚ï¼Œ\
-:genex:`$<CONFIG:Debug>`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼å¯¹äºä¸ä»…æ˜¯\ ``Debug``ï¼Œè€Œä¸”æ˜¯\ ``DEBUG``ã€\
-``debug``\ ç”šè‡³\ ``DeBuG``\ çš„é…ç½®éƒ½å°†è®¡ç®—ä¸º1ã€‚å› æ­¤ï¼Œæ‚¨å¯ä»¥åœ¨\
-:variable:`CMAKE_BUILD_TYPE`\ å’Œ\ :variable:`CMAKE_CONFIGURATION_TYPES`\ ä¸­æŒ‡å®šä»»\
-æ„å¤§å°å†™æ··åˆçš„é…ç½®ç±»å‹ï¼Œå°½ç®¡æœ‰ä¸¥æ ¼çš„çº¦å®šï¼ˆè¯·å‚é˜…ä¸‹ä¸€èŠ‚ï¼‰ã€‚å¦‚æœä½ å¿…é¡»åœ¨å­—ç¬¦ä¸²æ¯”è¾ƒä¸­æµ‹è¯•å€¼ï¼Œ\
-é‚£ä¹ˆé¦–å…ˆå°†å€¼è½¬æ¢ä¸ºå¤§å†™æˆ–å°å†™ï¼Œç„¶åå†ç›¸åº”åœ°è°ƒæ•´æµ‹è¯•ã€‚
+Ïà±ÈÖ®ÏÂ£¬CMakeÔÚÄÚ²¿¸ù¾İÅäÖÃĞŞ¸ÄĞĞÎªµÄµØ·½Ê¹ÓÃÅäÖÃÀàĞÍÊ±²»Çø·Ö´óĞ¡Ğ´¡£ÀıÈç£¬\
+:genex:`$<CONFIG:Debug>`\ Éú³ÉÆ÷±í´ïÊ½¶ÔÓÚ²»½öÊÇ\ ``Debug``£¬¶øÇÒÊÇ\ ``DEBUG``¡¢\
+``debug``\ ÉõÖÁ\ ``DeBuG``\ µÄÅäÖÃ¶¼½«¼ÆËãÎª1¡£Òò´Ë£¬Äú¿ÉÒÔÔÚ\
+:variable:`CMAKE_BUILD_TYPE`\ ºÍ\ :variable:`CMAKE_CONFIGURATION_TYPES`\ ÖĞÖ¸¶¨ÈÎ\
+Òâ´óĞ¡Ğ´»ìºÏµÄÅäÖÃÀàĞÍ£¬¾¡¹ÜÓĞÑÏ¸ñµÄÔ¼¶¨£¨Çë²ÎÔÄÏÂÒ»½Ú£©¡£Èç¹ûÄã±ØĞëÔÚ×Ö·û´®±È½ÏÖĞ²âÊÔÖµ£¬\
+ÄÇÃ´Ê×ÏÈ½«Öµ×ª»»Îª´óĞ´»òĞ¡Ğ´£¬È»ºóÔÙÏàÓ¦µØµ÷Õû²âÊÔ¡£
 
-é»˜è®¤å’Œè‡ªå®šä¹‰é…ç½®
+Ä¬ÈÏºÍ×Ô¶¨ÒåÅäÖÃ
 ---------------------------------
 
-é»˜è®¤æƒ…å†µä¸‹ï¼ŒCMakeå®šä¹‰äº†è®¸å¤šæ ‡å‡†é…ç½®ï¼š
+Ä¬ÈÏÇé¿öÏÂ£¬CMake¶¨ÒåÁËĞí¶à±ê×¼ÅäÖÃ£º
 
 * ``Debug``
 * ``Release``
 * ``RelWithDebInfo``
 * ``MinSizeRel``
 
-åœ¨å¤šé…ç½®ç”Ÿæˆå™¨ä¸­ï¼Œé»˜è®¤æƒ…å†µä¸‹\ :variable:`CMAKE_CONFIGURATION_TYPES`\ å˜é‡å°†ä½¿ç”¨ä¸Šè¿°åˆ—è¡¨\
-ï¼ˆå¯èƒ½æ˜¯å…¶ä¸­çš„ä¸€ä¸ªå­é›†ï¼‰å¡«å……ï¼Œé™¤éè¢«é¡¹ç›®æˆ–ç”¨æˆ·è¦†ç›–ã€‚ä½¿ç”¨çš„å®é™…é…ç½®ç”±ç”¨æˆ·åœ¨æ„å»ºæ—¶é€‰æ‹©ã€‚
+ÔÚ¶àÅäÖÃÉú³ÉÆ÷ÖĞ£¬Ä¬ÈÏÇé¿öÏÂ\ :variable:`CMAKE_CONFIGURATION_TYPES`\ ±äÁ¿½«Ê¹ÓÃÉÏÊöÁĞ±í\
+£¨¿ÉÄÜÊÇÆäÖĞµÄÒ»¸ö×Ó¼¯£©Ìî³ä£¬³ı·Ç±»ÏîÄ¿»òÓÃ»§¸²¸Ç¡£Ê¹ÓÃµÄÊµ¼ÊÅäÖÃÓÉÓÃ»§ÔÚ¹¹½¨Ê±Ñ¡Ôñ¡£
 
-å¯¹äºå•é…ç½®ç”Ÿæˆå™¨ï¼Œé…ç½®åœ¨é…ç½®æ—¶ä½¿ç”¨\ :variable:`CMAKE_BUILD_TYPE`\ å˜é‡æŒ‡å®šï¼Œä¸èƒ½åœ¨æ„å»ºæ—¶\
-æ›´æ”¹ã€‚é»˜è®¤å€¼é€šå¸¸ä¸æ˜¯ä¸Šè¿°æ ‡å‡†é…ç½®ï¼Œè€Œæ˜¯ä¸€ä¸ªç©ºå­—ç¬¦ä¸²ã€‚ä¸€ä¸ªå¸¸è§çš„è¯¯è§£æ˜¯ï¼Œè¿™ä¸\ ``Debug``\ ç›¸åŒï¼Œ\
-ä½†äº‹å®å¹¶éå¦‚æ­¤ã€‚ç”¨æˆ·åº”è¯¥å§‹ç»ˆæ˜¾å¼åœ°æŒ‡å®šæ„å»ºç±»å‹ï¼Œä»¥é¿å…æ­¤å¸¸è§é—®é¢˜ã€‚
+¶ÔÓÚµ¥ÅäÖÃÉú³ÉÆ÷£¬ÅäÖÃÔÚÅäÖÃÊ±Ê¹ÓÃ\ :variable:`CMAKE_BUILD_TYPE`\ ±äÁ¿Ö¸¶¨£¬²»ÄÜÔÚ¹¹½¨Ê±\
+¸ü¸Ä¡£Ä¬ÈÏÖµÍ¨³£²»ÊÇÉÏÊö±ê×¼ÅäÖÃ£¬¶øÊÇÒ»¸ö¿Õ×Ö·û´®¡£Ò»¸ö³£¼ûµÄÎó½âÊÇ£¬ÕâÓë\ ``Debug``\ ÏàÍ¬£¬\
+µ«ÊÂÊµ²¢·ÇÈç´Ë¡£ÓÃ»§Ó¦¸ÃÊ¼ÖÕÏÔÊ½µØÖ¸¶¨¹¹½¨ÀàĞÍ£¬ÒÔ±ÜÃâ´Ë³£¼ûÎÊÌâ¡£
 
-ä¸Šè¿°æ ‡å‡†é…ç½®ç±»å‹åœ¨å¤§å¤šæ•°å¹³å°ä¸Šæä¾›äº†åˆç†çš„è¡Œä¸ºï¼Œä½†å®ƒä»¬å¯ä»¥è¢«æ‰©å±•ä¸ºæä¾›å…¶ä»–ç±»å‹ã€‚æ¯ä¸ªé…ç½®éƒ½ä¸º\
-æ‰€ä½¿ç”¨çš„è¯­è¨€å®šä¹‰äº†ä¸€ç»„ç¼–è¯‘å™¨å’Œé“¾æ¥å™¨æ ‡å¿—å˜é‡ã€‚è¿™äº›å˜é‡éµå¾ªæƒ¯ä¾‹\
-:variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`ï¼Œå…¶ä¸­\ ``<CONFIG>``\ æ€»æ˜¯å¤§å†™çš„é…ç½®åç§°ã€‚\
-åœ¨å®šä¹‰è‡ªå®šä¹‰é…ç½®ç±»å‹æ—¶ï¼Œç¡®ä¿é€‚å½“åœ°è®¾ç½®äº†è¿™äº›å˜é‡ï¼Œé€šå¸¸æ˜¯ç¼“å­˜å˜é‡ã€‚
+ÉÏÊö±ê×¼ÅäÖÃÀàĞÍÔÚ´ó¶àÊıÆ½Ì¨ÉÏÌá¹©ÁËºÏÀíµÄĞĞÎª£¬µ«ËüÃÇ¿ÉÒÔ±»À©Õ¹ÎªÌá¹©ÆäËûÀàĞÍ¡£Ã¿¸öÅäÖÃ¶¼Îª\
+ËùÊ¹ÓÃµÄÓïÑÔ¶¨ÒåÁËÒ»×é±àÒëÆ÷ºÍÁ´½ÓÆ÷±êÖ¾±äÁ¿¡£ÕâĞ©±äÁ¿×ñÑ­¹ßÀı\
+:variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`£¬ÆäÖĞ\ ``<CONFIG>``\ ×ÜÊÇ´óĞ´µÄÅäÖÃÃû³Æ¡£\
+ÔÚ¶¨Òå×Ô¶¨ÒåÅäÖÃÀàĞÍÊ±£¬È·±£ÊÊµ±µØÉèÖÃÁËÕâĞ©±äÁ¿£¬Í¨³£ÊÇ»º´æ±äÁ¿¡£
 
 
-ä¼ªç›®æ ‡
+Î±Ä¿±ê
 ==============
 
-æœ‰äº›ç›®æ ‡ç±»å‹ä¸è¡¨ç¤ºæ„å»ºç³»ç»Ÿçš„è¾“å‡ºï¼Œè€Œåªè¡¨ç¤ºè¾“å…¥ï¼Œå¦‚å¤–éƒ¨ä¾èµ–é¡¹ã€åˆ«åæˆ–å…¶ä»–éæ„å»ºæ„ä»¶ã€‚ç”Ÿæˆçš„æ„\
-å»ºç³»ç»Ÿä¸­ä¸è¡¨ç¤ºä¼ªç›®æ ‡ã€‚
+ÓĞĞ©Ä¿±êÀàĞÍ²»±íÊ¾¹¹½¨ÏµÍ³µÄÊä³ö£¬¶øÖ»±íÊ¾ÊäÈë£¬ÈçÍâ²¿ÒÀÀµÏî¡¢±ğÃû»òÆäËû·Ç¹¹½¨¹¹¼ş¡£Éú³ÉµÄ¹¹\
+½¨ÏµÍ³ÖĞ²»±íÊ¾Î±Ä¿±ê¡£
 
 .. _`Imported Targets`:
 
-å¯¼å…¥çš„ç›®æ ‡
+µ¼ÈëµÄÄ¿±ê
 ----------------
 
-:prop_tgt:`IMPORTED`\ ç›®æ ‡è¡¨ç¤ºé¢„å…ˆå­˜åœ¨çš„ä¾èµ–é¡¹ã€‚é€šå¸¸è¿™æ ·çš„ç”±ä¸Šæ¸¸åŒ…å®šä¹‰çš„ç›®æ ‡ï¼Œåº”è¯¥è¢«è§†ä¸º\
-ä¸å¯å˜çš„ã€‚åœ¨å£°æ˜äº†ä¸€ä¸ª\ :prop_tgt:`IMPORTED`\ ç›®æ ‡ä¹‹åï¼Œæˆ‘ä»¬å¯ä»¥åƒä½¿ç”¨å…¶ä»–å¸¸è§„ç›®æ ‡ä¸€æ ·ï¼Œ\
-ä½¿ç”¨ä¹ æƒ¯å‘½ä»¤\ :command:`target_compile_definitions`ã€\
-:command:`target_include_directories`ã€\ :command:`target_compile_options`\ æˆ–\
-:command:`target_link_libraries`\ æ¥è°ƒæ•´\
-å®ƒçš„ç›®æ ‡å±æ€§ã€‚
+:prop_tgt:`IMPORTED`\ Ä¿±ê±íÊ¾Ô¤ÏÈ´æÔÚµÄÒÀÀµÏî¡£Í¨³£ÕâÑùµÄÓÉÉÏÓÎ°ü¶¨ÒåµÄÄ¿±ê£¬Ó¦¸Ã±»ÊÓÎª\
+²»¿É±äµÄ¡£ÔÚÉùÃ÷ÁËÒ»¸ö\ :prop_tgt:`IMPORTED`\ Ä¿±êÖ®ºó£¬ÎÒÃÇ¿ÉÒÔÏñÊ¹ÓÃÆäËû³£¹æÄ¿±êÒ»Ñù£¬\
+Ê¹ÓÃÏ°¹ßÃüÁî\ :command:`target_compile_definitions`¡¢\
+:command:`target_include_directories`¡¢\ :command:`target_compile_options`\ »ò\
+:command:`target_link_libraries`\ À´µ÷Õû\
+ËüµÄÄ¿±êÊôĞÔ¡£
 
-:prop_tgt:`IMPORTED`\ çš„ç›®æ ‡å¯èƒ½æœ‰ä¸äºŒè¿›åˆ¶ç›®æ ‡ç›¸åŒçš„ä½¿ç”¨éœ€æ±‚å±æ€§ï¼Œä¾‹å¦‚\
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`ã€\
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`ã€\
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS`ã€\
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ å’Œ\
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`ã€‚
+:prop_tgt:`IMPORTED`\ µÄÄ¿±ê¿ÉÄÜÓĞÓë¶ş½øÖÆÄ¿±êÏàÍ¬µÄÊ¹ÓÃĞèÇóÊôĞÔ£¬ÀıÈç\
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`¡¢\
+:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`¡¢\
+:prop_tgt:`INTERFACE_COMPILE_OPTIONS`¡¢\
+:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ ºÍ\
+:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`¡£
 
-:prop_tgt:`LOCATION`\ ä¹Ÿå¯ä»¥ä»IMPORTEDç›®æ ‡è¯»å–ï¼Œå°½ç®¡è¿™æ ·åšçš„ç†ç”±å¾ˆå°‘ã€‚\
-:command:`add_custom_command`\ ç­‰å‘½ä»¤å¯ä»¥é€æ˜åœ°ä½¿ç”¨\
-:prop_tgt:`IMPORTED` :prop_tgt:`EXECUTABLE <TYPE>`\ ç›®æ ‡ä½œä¸º\ ``COMMAND``\ å¯æ‰§è¡Œ\
-æ–‡ä»¶ã€‚
+:prop_tgt:`LOCATION`\ Ò²¿ÉÒÔ´ÓIMPORTEDÄ¿±ê¶ÁÈ¡£¬¾¡¹ÜÕâÑù×öµÄÀíÓÉºÜÉÙ¡£\
+:command:`add_custom_command`\ µÈÃüÁî¿ÉÒÔÍ¸Ã÷µØÊ¹ÓÃ\
+:prop_tgt:`IMPORTED` :prop_tgt:`EXECUTABLE <TYPE>`\ Ä¿±ê×÷Îª\ ``COMMAND``\ ¿ÉÖ´ĞĞ\
+ÎÄ¼ş¡£
 
-:prop_tgt:`IMPORTED`\ ç›®æ ‡å®šä¹‰çš„èŒƒå›´æ˜¯å®šä¹‰å®ƒçš„ç›®å½•ã€‚å¯ä»¥ä»å­ç›®å½•è®¿é—®å’Œä½¿ç”¨å®ƒï¼Œä½†ä¸èƒ½ä»çˆ¶\
-ç›®å½•æˆ–åŒçº§ç›®å½•è®¿é—®ã€‚ä½œç”¨åŸŸç±»ä¼¼äºcmakeå˜é‡çš„ä½œç”¨åŸŸã€‚
+:prop_tgt:`IMPORTED`\ Ä¿±ê¶¨ÒåµÄ·¶Î§ÊÇ¶¨ÒåËüµÄÄ¿Â¼¡£¿ÉÒÔ´Ó×ÓÄ¿Â¼·ÃÎÊºÍÊ¹ÓÃËü£¬µ«²»ÄÜ´Ó¸¸\
+Ä¿Â¼»òÍ¬¼¶Ä¿Â¼·ÃÎÊ¡£×÷ÓÃÓòÀàËÆÓÚcmake±äÁ¿µÄ×÷ÓÃÓò¡£
 
-è¿˜å¯ä»¥å®šä¹‰ä¸€ä¸ªåœ¨æ„å»ºç³»ç»Ÿä¸­å…¨å±€è®¿é—®çš„\ ``GLOBAL`` :prop_tgt:`IMPORTED`\ ç›®æ ‡ã€‚
+»¹¿ÉÒÔ¶¨ÒåÒ»¸öÔÚ¹¹½¨ÏµÍ³ÖĞÈ«¾Ö·ÃÎÊµÄ\ ``GLOBAL`` :prop_tgt:`IMPORTED`\ Ä¿±ê¡£
 
-è¯·å‚é˜…\ :manual:`cmake-packages(7)`\ æ‰‹å†Œäº†è§£æ›´å¤šå…³äºä½¿ç”¨\ :prop_tgt:`IMPORTED`\ ç›®\
-æ ‡åˆ›å»ºåŒ…çš„ä¿¡æ¯ã€‚
+Çë²ÎÔÄ\ :manual:`cmake-packages(7)`\ ÊÖ²áÁË½â¸ü¶à¹ØÓÚÊ¹ÓÃ\ :prop_tgt:`IMPORTED`\ Ä¿\
+±ê´´½¨°üµÄĞÅÏ¢¡£
 
 .. _`Alias Targets`:
 
-åˆ«åç›®æ ‡
+±ğÃûÄ¿±ê
 -------------
 
-``ALIAS``\ ç›®æ ‡æ˜¯åœ¨åªè¯»ä¸Šä¸‹æ–‡ä¸­å¯ä»¥ä¸äºŒè¿›åˆ¶ç›®æ ‡åç§°äº’æ¢ä½¿ç”¨çš„åç§°ã€‚\
-``ALIAS``\ ç›®æ ‡çš„ä¸€ä¸ªä¸»è¦ç”¨ä¾‹æ˜¯ä¼´éšä¸€ä¸ªåº“çš„å•å…ƒæµ‹è¯•å¯æ‰§è¡Œæ–‡ä»¶ï¼Œå®ƒå¯èƒ½æ˜¯ç›¸åŒæ„å»ºç³»ç»Ÿçš„ä¸€éƒ¨åˆ†ï¼Œ\
-ä¹Ÿå¯èƒ½æ˜¯åŸºäºç”¨æˆ·é…ç½®å•ç‹¬æ„å»ºçš„ã€‚
+``ALIAS``\ Ä¿±êÊÇÔÚÖ»¶ÁÉÏÏÂÎÄÖĞ¿ÉÒÔÓë¶ş½øÖÆÄ¿±êÃû³Æ»¥»»Ê¹ÓÃµÄÃû³Æ¡£\
+``ALIAS``\ Ä¿±êµÄÒ»¸öÖ÷ÒªÓÃÀıÊÇ°éËæÒ»¸ö¿âµÄµ¥Ôª²âÊÔ¿ÉÖ´ĞĞÎÄ¼ş£¬Ëü¿ÉÄÜÊÇÏàÍ¬¹¹½¨ÏµÍ³µÄÒ»²¿·Ö£¬\
+Ò²¿ÉÄÜÊÇ»ùÓÚÓÃ»§ÅäÖÃµ¥¶À¹¹½¨µÄ¡£
 
 .. code-block:: cmake
 
@@ -841,8 +1193,8 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
 
   add_library(Upstream::lib1 ALIAS lib1)
 
-åœ¨å¦ä¸€ä¸ªç›®å½•ä¸­ï¼Œæˆ‘ä»¬å¯ä»¥æ— æ¡ä»¶åœ°é“¾æ¥åˆ°\ ``Upstream::lib1``\ ç›®æ ‡ï¼Œå®ƒå¯ä»¥æ˜¯æ¥è‡ªåŒ…çš„\
-:prop_tgt:`IMPORTED`\ ç›®æ ‡ï¼Œæˆ–è€…æ˜¯ä½œä¸ºç›¸åŒæ„å»ºç³»ç»Ÿçš„ä¸€éƒ¨åˆ†æ„å»ºçš„\ ``ALIAS``\ ç›®æ ‡ã€‚
+ÔÚÁíÒ»¸öÄ¿Â¼ÖĞ£¬ÎÒÃÇ¿ÉÒÔÎŞÌõ¼şµØÁ´½Óµ½\ ``Upstream::lib1``\ Ä¿±ê£¬Ëü¿ÉÒÔÊÇÀ´×Ô°üµÄ\
+:prop_tgt:`IMPORTED`\ Ä¿±ê£¬»òÕßÊÇ×÷ÎªÏàÍ¬¹¹½¨ÏµÍ³µÄÒ»²¿·Ö¹¹½¨µÄ\ ``ALIAS``\ Ä¿±ê¡£
 
 .. code-block:: cmake
 
@@ -852,8 +1204,8 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 Upstream::lib1)
 
-``ALIAS``\ ç›®æ ‡æ˜¯ä¸å¯å˜çš„ã€ä¸å¯å®‰è£…çš„æˆ–ä¸å¯å¯¼å‡ºçš„ã€‚å®ƒä»¬å®Œå…¨å±€é™äºæ„å»ºç³»ç»Ÿæè¿°ã€‚ä¸€ä¸ªåç§°å¯ä»¥\
-é€šè¿‡è¯»å–å®ƒçš„\ :prop_tgt:`ALIASED_TARGET`\ å±æ€§æ¥æµ‹è¯•å®ƒæ˜¯å¦æ˜¯ä¸€ä¸ª\ ``ALIAS``\ åç§°ï¼š
+``ALIAS``\ Ä¿±êÊÇ²»¿É±äµÄ¡¢²»¿É°²×°µÄ»ò²»¿Éµ¼³öµÄ¡£ËüÃÇÍêÈ«¾ÖÏŞÓÚ¹¹½¨ÏµÍ³ÃèÊö¡£Ò»¸öÃû³Æ¿ÉÒÔ\
+Í¨¹ı¶ÁÈ¡ËüµÄ\ :prop_tgt:`ALIASED_TARGET`\ ÊôĞÔÀ´²âÊÔËüÊÇ·ñÊÇÒ»¸ö\ ``ALIAS``\ Ãû³Æ£º
 
 .. code-block:: cmake
 
@@ -864,26 +1216,26 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
 
 .. _`Interface Libraries`:
 
-æ¥å£åº“
+½Ó¿Ú¿â
 -------------------
 
-``INTERFACE``\ åº“ç›®æ ‡ä¸ä¼šç¼–è¯‘æºä»£ç ï¼Œä¹Ÿä¸ä¼šåœ¨ç£ç›˜ä¸Šç”Ÿæˆåº“å·¥ä»¶ï¼Œå› æ­¤å®ƒæ²¡æœ‰\ :prop_tgt:`LOCATION`ã€‚
+``INTERFACE``\ ¿âÄ¿±ê²»»á±àÒëÔ´´úÂë£¬Ò²²»»áÔÚ´ÅÅÌÉÏÉú³É¿â¹¤¼ş£¬Òò´ËËüÃ»ÓĞ\ :prop_tgt:`LOCATION`¡£
 
-å®ƒå¯ä»¥æŒ‡å®šä½¿ç”¨è¦æ±‚ï¼Œå¦‚\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`ã€\
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`ã€:prop_tgt:`INTERFACE_COMPILE_OPTIONS`ã€\
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`ã€:prop_tgt:`INTERFACE_SOURCES`\ å’Œ\
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`ã€‚åªæœ‰\
-:command:`target_include_directories`ã€:command:`target_compile_definitions`ã€\
-:command:`target_compile_options`ã€:command:`target_sources`\ å’Œ\
-:command:`target_link_libraries`\ å‘½ä»¤çš„\ ``INTERFACE``\ æ¨¡å¼å¯ä»¥ä¸\ ``INTERFACE``\
-åº“ä¸€èµ·ä½¿ç”¨ã€‚
+Ëü¿ÉÒÔÖ¸¶¨Ê¹ÓÃÒªÇó£¬Èç\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`¡¢\
+:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`¡¢:prop_tgt:`INTERFACE_COMPILE_OPTIONS`¡¢\
+:prop_tgt:`INTERFACE_LINK_LIBRARIES`¡¢:prop_tgt:`INTERFACE_SOURCES`\ ºÍ\
+:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`¡£Ö»ÓĞ\
+:command:`target_include_directories`¡¢:command:`target_compile_definitions`¡¢\
+:command:`target_compile_options`¡¢:command:`target_sources`\ ºÍ\
+:command:`target_link_libraries`\ ÃüÁîµÄ\ ``INTERFACE``\ Ä£Ê½¿ÉÒÔÓë\ ``INTERFACE``\
+¿âÒ»ÆğÊ¹ÓÃ¡£
 
-è‡ªCMake 3.19èµ·ï¼Œä¸€ä¸ª\ ``INTERFACE``\ åº“ç›®æ ‡å¯ä»¥æœ‰é€‰æ‹©åœ°åŒ…å«æºæ–‡ä»¶ã€‚åŒ…å«æºæ–‡ä»¶çš„æ¥å£åº“å°†\
-ä½œä¸ºæ„å»ºç›®æ ‡åŒ…å«åœ¨ç”Ÿæˆçš„æ„å»ºç³»ç»Ÿä¸­ã€‚å®ƒä¸ç¼–è¯‘æºä»£ç ï¼Œä½†å¯èƒ½åŒ…å«ç”¨äºç”Ÿæˆå…¶ä»–æºä»£ç çš„è‡ªå®šä¹‰å‘½ä»¤ã€‚\
-æ­¤å¤–ï¼ŒIDEå°†æŠŠæºæ–‡ä»¶ä½œä¸ºç›®æ ‡çš„ä¸€éƒ¨åˆ†æ˜¾ç¤ºï¼Œä»¥ä¾¿è¿›è¡Œäº¤äº’å¼è¯»å–å’Œç¼–è¾‘ã€‚
+×ÔCMake 3.19Æğ£¬Ò»¸ö\ ``INTERFACE``\ ¿âÄ¿±ê¿ÉÒÔÓĞÑ¡ÔñµØ°üº¬Ô´ÎÄ¼ş¡£°üº¬Ô´ÎÄ¼şµÄ½Ó¿Ú¿â½«\
+×÷Îª¹¹½¨Ä¿±ê°üº¬ÔÚÉú³ÉµÄ¹¹½¨ÏµÍ³ÖĞ¡£Ëü²»±àÒëÔ´´úÂë£¬µ«¿ÉÄÜ°üº¬ÓÃÓÚÉú³ÉÆäËûÔ´´úÂëµÄ×Ô¶¨ÒåÃüÁî¡£\
+´ËÍâ£¬IDE½«°ÑÔ´ÎÄ¼ş×÷ÎªÄ¿±êµÄÒ»²¿·ÖÏÔÊ¾£¬ÒÔ±ã½øĞĞ½»»¥Ê½¶ÁÈ¡ºÍ±à¼­¡£
 
-``INTERFACE``\ åº“çš„ä¸€ä¸ªä¸»è¦ç”¨ä¾‹æ˜¯ä»…æœ‰å¤´æ–‡ä»¶ï¼ˆheader-onlyï¼‰çš„åº“ã€‚CMake 3.23èµ·ï¼Œ\
-å¯ä»¥é€šè¿‡ä½¿ç”¨\ :command:`target_sources`\ å‘½ä»¤å°†å¤´æ–‡ä»¶æ·»åŠ åˆ°å¤´æ–‡ä»¶é›†æ¥å°†å¤´æ–‡ä»¶å’Œåº“å…³è”ï¼š
+``INTERFACE``\ ¿âµÄÒ»¸öÖ÷ÒªÓÃÀıÊÇ½öÓĞÍ·ÎÄ¼ş£¨header-only£©µÄ¿â¡£CMake 3.23Æğ£¬\
+¿ÉÒÔÍ¨¹ıÊ¹ÓÃ\ :command:`target_sources`\ ÃüÁî½«Í·ÎÄ¼şÌí¼Óµ½Í·ÎÄ¼ş¼¯À´½«Í·ÎÄ¼şºÍ¿â¹ØÁª£º
 
 .. code-block:: cmake
 
@@ -898,10 +1250,10 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 Eigen)
 
-å½“æˆ‘ä»¬åœ¨è¿™é‡ŒæŒ‡å®š\ ``FILE_SET``\ æ—¶ï¼Œæˆ‘ä»¬å®šä¹‰çš„\ ``BASE_DIRS``\ è‡ªåŠ¨æˆä¸º\ ``Eigen``\
-ç›®æ ‡ä½¿ç”¨è¦æ±‚ä¸­çš„åŒ…å«ç›®å½•ã€‚æ¥è‡ªæ­¤ç›®æ ‡çš„ä½¿ç”¨éœ€æ±‚åœ¨ç¼–è¯‘æ—¶è¢«æ¶ˆè€—å’Œä½¿ç”¨ï¼Œä½†å®ƒå¯¹é“¾æ¥æ²¡æœ‰å½±å“ã€‚
+µ±ÎÒÃÇÔÚÕâÀïÖ¸¶¨\ ``FILE_SET``\ Ê±£¬ÎÒÃÇ¶¨ÒåµÄ\ ``BASE_DIRS``\ ×Ô¶¯³ÉÎª\ ``Eigen``\
+Ä¿±êÊ¹ÓÃÒªÇóÖĞµÄ°üº¬Ä¿Â¼¡£À´×Ô´ËÄ¿±êµÄÊ¹ÓÃĞèÇóÔÚ±àÒëÊ±±»ÏûºÄºÍÊ¹ÓÃ£¬µ«Ëü¶ÔÁ´½ÓÃ»ÓĞÓ°Ïì¡£
 
-å¦ä¸€ä¸ªç”¨ä¾‹æ˜¯å¯¹ä½¿ç”¨éœ€æ±‚é‡‡ç”¨å®Œå…¨ä»¥ç›®æ ‡ä¸ºä¸­å¿ƒçš„è®¾è®¡ï¼š
+ÁíÒ»¸öÓÃÀıÊÇ¶ÔÊ¹ÓÃĞèÇó²ÉÓÃÍêÈ«ÒÔÄ¿±êÎªÖĞĞÄµÄÉè¼Æ£º
 
 .. code-block:: cmake
 
@@ -918,10 +1270,10 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 pic_on enable_rtti)
 
-è¿™æ ·ï¼Œ``exe1``\ çš„æ„å»ºè§„èŒƒå°±å®Œå…¨è¡¨ç¤ºä¸ºé“¾æ¥çš„ç›®æ ‡ï¼Œè€Œç¼–è¯‘å™¨ç‰¹å®šæ ‡å¿—çš„å¤æ‚æ€§è¢«å°è£…åœ¨\
-``INTERFACE``\ åº“ç›®æ ‡ä¸­ã€‚
+ÕâÑù£¬``exe1``\ µÄ¹¹½¨¹æ·¶¾ÍÍêÈ«±íÊ¾ÎªÁ´½ÓµÄÄ¿±ê£¬¶ø±àÒëÆ÷ÌØ¶¨±êÖ¾µÄ¸´ÔÓĞÔ±»·â×°ÔÚ\
+``INTERFACE``\ ¿âÄ¿±êÖĞ¡£
 
-å¯ä»¥å®‰è£…å’Œå¯¼å‡º\ ``INTERFACE``\ åº“ã€‚æˆ‘ä»¬å¯ä»¥éšç€ç›®æ ‡å®‰è£…é»˜è®¤çš„å¤´æ–‡ä»¶é›†ï¼š
+¿ÉÒÔ°²×°ºÍµ¼³ö\ ``INTERFACE``\ ¿â¡£ÎÒÃÇ¿ÉÒÔËæ×ÅÄ¿±ê°²×°Ä¬ÈÏµÄÍ·ÎÄ¼ş¼¯£º
 
 .. code-block:: cmake
 
@@ -939,5 +1291,5 @@ CMakeæä¾›äº†ä¸åŒ…å«ç›®å½•ä½¿ç”¨éœ€æ±‚ç›¸å…³çš„ä¸¤ä¸ªä¾¿æ·APIã€‚\
     DESTINATION lib/cmake/Eigen
   )
 
-åœ¨è¿™é‡Œï¼Œå®šä¹‰åœ¨å¤´æ–‡ä»¶é›†ä¸­çš„å¤´æ–‡ä»¶è¢«å®‰è£…åœ¨\ ``include/Eigen``ã€‚å®‰è£…ç›®æ ‡è‡ªåŠ¨æˆä¸ºç”¨æˆ·ä½¿ç”¨è¦æ±‚\
-çš„åŒ…å«ç›®å½•ã€‚
+ÔÚÕâÀï£¬¶¨ÒåÔÚÍ·ÎÄ¼ş¼¯ÖĞµÄÍ·ÎÄ¼ş±»°²×°ÔÚ\ ``include/Eigen``¡£°²×°Ä¿±ê×Ô¶¯³ÉÎªÓÃ»§Ê¹ÓÃÒªÇó\
+µÄ°üº¬Ä¿Â¼¡£

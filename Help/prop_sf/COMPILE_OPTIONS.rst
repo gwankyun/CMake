@@ -7,8 +7,7 @@ COMPILE_OPTIONS
 
 This property holds a :ref:`semicolon-separated list <CMake Language Lists>`
 of options and will be added to the list of compile flags when this source
-file builds.  The options will be added after target-wide options (except in
-some cases not supported by the :generator:`Visual Studio 9 2008` generator).
+file builds.  The options will be added after target-wide options.
 
 Contents of ``COMPILE_OPTIONS`` may use "generator expressions" with the
 syntax ``$<...>``.  See the :manual:`cmake-generator-expressions(7)` manual

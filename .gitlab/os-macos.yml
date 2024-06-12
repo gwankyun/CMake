@@ -47,6 +47,13 @@
         CMAKE_CI_IN_SYMLINK_TREE: 1
         CMAKE_CI_BUILD_DIR: "real_work/work/build"
 
+.macos_arm64_curl:
+    extends: .macos_build
+
+    variables:
+        CMAKE_CONFIGURATION: macos_arm64_curl
+        CTEST_NO_WARNINGS_ALLOWED: 1
+
 .macos_arm64_pch:
     extends: .macos_arm64_ninja
 
@@ -175,12 +182,8 @@
 
 .before_script_macos: &before_script_macos
     - source .gitlab/ci/env.sh
-    - .gitlab/ci/cmake.sh
-    - export PATH=$PWD/.gitlab/cmake/bin:$PATH
-    - .gitlab/ci/ninja.sh
-    - export PATH=$PWD/.gitlab:$PATH
-    - cmake --version
-    - ninja --version
+    - source .gitlab/ci/cmake-env.sh
+    - source .gitlab/ci/ninja-env.sh
     # Download Qt
     - cmake -P .gitlab/ci/download_qt.cmake
     - export CMAKE_PREFIX_PATH=$PWD/.gitlab/qt${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}

@@ -1,8 +1,10 @@
 CMAKE_TLS_VERIFY
 ----------------
 
-æŒ‡å®š\ :command:`file(DOWNLOAD)`\ å’Œ\ :command:`file(UPLOAD)`\ å‘½ä»¤çš„\ ``TLS_VERIFY``\
-é€‰é¡¹çš„é»˜è®¤å€¼ã€‚å¦‚æžœæœªè®¾ç½®ï¼Œåˆ™é»˜è®¤ä¸º\ *off*ã€‚
+Ö¸¶¨\ :command:`file(DOWNLOAD)`\ ºÍ\ :command:`file(UPLOAD)`\ ÃüÁîµÄ\ ``TLS_VERIFY``\
+Ñ¡ÏîµÄÄ¬ÈÏÖµ¡£If this variable is not set, the commands check the
+:envvar:`CMAKE_TLS_VERIFY` environment variable.
+If neither is set, the default is *off*.¡£
 
 This variable is also used by the :module:`ExternalProject` and
 :module:`FetchContent` modules for internal calls to :command:`file(DOWNLOAD)`.

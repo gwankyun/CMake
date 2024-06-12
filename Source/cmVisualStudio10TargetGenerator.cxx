@@ -1177,7 +1177,7 @@ void cmVisualStudio10TargetGenerator::WriteDotNetReference(
     const char* privateReference = "True";
     if (cmValue value = this->GeneratorTarget->GetProperty(
           "VS_DOTNET_REFERENCES_COPY_LOCAL")) {
-      if (cmIsOff(*value)) {
+      if (value.IsOff()) {
         privateReference = "False";
       }
     }
@@ -1522,7 +1522,6 @@ void cmVisualStudio10TargetGenerator::WriteCEDebugProjectConfigurationValues(
 void cmVisualStudio10TargetGenerator::WriteMSToolConfigurationValues(
   Elem& e1, std::string const& config)
 {
-  cmGlobalVisualStudio10Generator* gg = this->GlobalGenerator;
   cmValue mfcFlag = this->Makefile->GetDefinition("CMAKE_MFC_FLAG");
   if (mfcFlag) {
     std::string const mfcFlagValue =
@@ -1553,12 +1552,9 @@ void cmVisualStudio10TargetGenerator::WriteMSToolConfigurationValues(
   } else {
     e1.Element("CharacterSet", "MultiByte");
   }
-  if (cmValue projectToolsetOverride =
-        this->GeneratorTarget->GetProperty("VS_PLATFORM_TOOLSET")) {
-    e1.Element("PlatformToolset", *projectToolsetOverride);
-  } else if (const char* toolset = gg->GetPlatformToolset()) {
-    e1.Element("PlatformToolset", toolset);
-  }
+
+  this->WriteMSToolConfigurationValuesCommon(e1, config);
+
   if (this->GeneratorTarget->GetPropertyAsBool("VS_WINRT_COMPONENT") ||
       this->GeneratorTarget->GetPropertyAsBool("VS_WINRT_EXTENSIONS")) {
     e1.Element("WindowsAppContainer", "true");
@@ -1589,11 +1585,9 @@ void cmVisualStudio10TargetGenerator::WriteMSToolConfigurationValuesManaged(
     return;
   }
 
-  cmGlobalVisualStudio10Generator* gg = this->GlobalGenerator;
-
   Options& o = *(this->ClOptions[config]);
 
-  if (o.IsDebug()) {
+  if (o.UsingDebugInfo()) {
     e1.Element("DebugSymbols", "true");
     e1.Element("DefineDebug", "true");
   }
@@ -1608,12 +1602,7 @@ void cmVisualStudio10TargetGenerator::WriteMSToolConfigurationValuesManaged(
     o.RemoveFlag("Platform");
   }
 
-  if (cmValue projectToolsetOverride =
-        this->GeneratorTarget->GetProperty("VS_PLATFORM_TOOLSET")) {
-    e1.Element("PlatformToolset", *projectToolsetOverride);
-  } else if (const char* toolset = gg->GetPlatformToolset()) {
-    e1.Element("PlatformToolset", toolset);
-  }
+  this->WriteMSToolConfigurationValuesCommon(e1, config);
 
   std::string postfixName =
     cmStrCat(cmSystemTools::UpperCase(config), "_POSTFIX");
@@ -1631,6 +1620,50 @@ void cmVisualStudio10TargetGenerator::WriteMSToolConfigurationValuesManaged(
 
   OptionsHelper oh(o, e1);
   oh.OutputFlagMap();
+}
+
+void cmVisualStudio10TargetGenerator::WriteMSToolConfigurationValuesCommon(
+  Elem& e1, std::string const& config)
+{
+  cmGlobalVisualStudio10Generator* gg = this->GlobalGenerator;
+  if (cmValue projectToolsetOverride =
+        this->GeneratorTarget->GetProperty("VS_PLATFORM_TOOLSET")) {
+    e1.Element("PlatformToolset", *projectToolsetOverride);
+  } else if (const char* toolset = gg->GetPlatformToolset()) {
+    e1.Element("PlatformToolset", toolset);
+  }
+
+  cm::optional<bool> maybeUseDebugLibraries;
+  if (cmValue useDebugLibrariesProp =
+        this->GeneratorTarget->GetProperty("VS_USE_DEBUG_LIBRARIES")) {
+    // The project explicitly specified a value for this target.
+    // An empty string suppresses generation of the setting altogether.
+    std::string const useDebugLibraries = cmGeneratorExpression::Evaluate(
+      *useDebugLibrariesProp, this->LocalGenerator, config);
+    if (!useDebugLibraries.empty()) {
+      maybeUseDebugLibraries = cmIsOn(useDebugLibraries);
+    }
+  } else if (this->GeneratorTarget->GetPolicyStatusCMP0162() ==
+             cmPolicies::NEW) {
+    // The project did not explicitly specify a value for this target.
+    // If the target compiles sources for a known MSVC runtime library,
+    // base our default value on that.
+    if (this->GeneratorTarget->GetType() <= cmStateEnums::OBJECT_LIBRARY) {
+      maybeUseDebugLibraries = this->ClOptions[config]->UsingDebugRuntime();
+    }
+    // For other targets, such as UTILITY targets, base our default
+    // on the configuration name.
+    if (!maybeUseDebugLibraries) {
+      maybeUseDebugLibraries = cmSystemTools::UpperCase(config) == "DEBUG"_s;
+    }
+  }
+  if (maybeUseDebugLibraries) {
+    if (*maybeUseDebugLibraries) {
+      e1.Element("UseDebugLibraries", "true");
+    } else {
+      e1.Element("UseDebugLibraries", "false");
+    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -2049,6 +2082,18 @@ void cmVisualStudio10TargetGenerator::WriteGroups()
         e2.Element("Extensions",
                    "rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;"
                    "gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms");
+      }
+    }
+    {
+      if (cmValue p = this->GeneratorTarget->GetProperty("VS_FILTER_PROPS")) {
+        auto props = *p;
+        if (!props.empty()) {
+          ConvertToWindowsSlash(props);
+          Elem(e0, "Import")
+            .Attribute("Project", props)
+            .Attribute("Condition", cmStrCat("exists('", props, "')"))
+            .Attribute("Label", "LocalAppDataPlatform");
+        }
       }
     }
   }
@@ -3168,7 +3213,10 @@ void cmVisualStudio10TargetGenerator::OutputLinkIncremental(
   Options& linkOptions = *(this->LinkOptions[configName]);
   const std::string cond = this->CalcCondition(configName);
 
-  if (this->IPOEnabledConfigurations.count(configName) == 0) {
+  if (this->IPOEnabledConfigurations.count(configName) > 0) {
+    // Suppress LinkIncremental in favor of WholeProgramOptimization.
+    e1.WritePlatformConfigTag("LinkIncremental", cond, "");
+  } else {
     const char* incremental = linkOptions.GetFlag("LinkIncremental");
     e1.WritePlatformConfigTag("LinkIncremental", cond,
                               (incremental ? incremental : "true"));
@@ -3513,6 +3561,26 @@ bool cmVisualStudio10TargetGenerator::ComputeClOptions(
     clOptions.RemoveFlag("CompileAs");
   }
 
+  if (this->ProjectType == VsProjectType::vcxproj && this->MSTools) {
+    // Suppress Microsoft.Cl.Common.props default settings for which the
+    // project specifies no flags.  Do not let UseDebugLibraries affect them.
+    if (!clOptions.HasFlag("BasicRuntimeChecks")) {
+      clOptions.AddFlag("BasicRuntimeChecks", "Default");
+    }
+    if (!clOptions.HasFlag("MinimalRebuild")) {
+      clOptions.AddFlag("MinimalRebuild", "");
+    }
+    if (!clOptions.HasFlag("Optimization")) {
+      clOptions.AddFlag("Optimization", "");
+    }
+    if (!clOptions.HasFlag("RuntimeLibrary")) {
+      clOptions.AddFlag("RuntimeLibrary", "");
+    }
+    if (!clOptions.HasFlag("SupportJustMyCode")) {
+      clOptions.AddFlag("SupportJustMyCode", "");
+    }
+  }
+
   this->ClOptions[configName] = std::move(pOptions);
   return true;
 }
@@ -3555,7 +3623,7 @@ void cmVisualStudio10TargetGenerator::WriteClOptions(
     // without value so PDBs don't get generated uselessly. Each tag
     // goes on its own line because Visual Studio corrects it this
     // way when saving the project after CMake generates it.
-    if (!clOptions.IsDebug()) {
+    if (!clOptions.UsingDebugInfo()) {
       Elem e3(e2, "DebugInformationFormat");
       e3.SetHasElements();
     }
@@ -4176,9 +4244,9 @@ void cmVisualStudio10TargetGenerator::WriteManifestOptions(
     if (dpiAware) {
       if (*dpiAware == "PerMonitor"_s) {
         e2.Element("EnableDpiAwareness", "PerMonitorHighDPIAware");
-      } else if (cmIsOn(*dpiAware)) {
+      } else if (dpiAware.IsOn()) {
         e2.Element("EnableDpiAwareness", "true");
-      } else if (cmIsOff(*dpiAware)) {
+      } else if (dpiAware.IsOff()) {
         e2.Element("EnableDpiAwareness", "false");
       } else {
         cmSystemTools::Error(

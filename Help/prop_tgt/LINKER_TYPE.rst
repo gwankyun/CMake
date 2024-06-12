@@ -8,8 +8,7 @@ LINKER_TYPE
 
 .. include:: ../variable/LINKER_PREDEFINED_TYPES.txt
 
-This property is not supported on :generator:`Green Hills MULTI` and
-:generator:`Visual Studio 9 2008` generators.
+This property is not supported on :generator:`Green Hills MULTI` generator.
 
 The implementation details for the selected linker will be provided by the
 :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>` variable. For example:

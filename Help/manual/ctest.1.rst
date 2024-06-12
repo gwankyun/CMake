@@ -5,12 +5,12 @@ ctest(1)
 
 .. contents::
 
-ç®€ä»‹
+¼ò½é
 ========
 
 .. parsed-literal::
 
- `è¿è¡Œæµ‹è¯•`_
+ `ÔËÐÐ²âÊÔ`_
   ctest [<options>] [--test-dir <path-to-build>]
 
  `Build and Test Mode`_
@@ -25,467 +25,467 @@ ctest(1)
   ctest -S <script>            [-- <dashboard-options>...]
   ctest -SP <script>           [-- <dashboard-options>...]
 
- `æŸ¥çœ‹å¸®åŠ©`_
+ `²é¿´°ïÖú`_
   ctest --help[-<topic>]
 
 
-æè¿°
+ÃèÊö
 ===========
 
-:program:`ctest`\ å¯æ‰§è¡Œæ–‡ä»¶æ˜¯CMakeæµ‹è¯•é©±åŠ¨ç¨‹åºã€‚ä¸ºä½¿ç”¨\ :command:`enable_testing`\
-å’Œ\ :command:`add_test`\ å‘½ä»¤çš„é¡¹ç›®åˆ›å»ºçš„CMakeç”Ÿæˆçš„æž„å»ºæ ‘å…·æœ‰æµ‹è¯•æ”¯æŒã€‚æ­¤ç¨‹åºå°†è¿è¡Œæµ‹è¯•\
-å¹¶æŠ¥å‘Šç»“æžœã€‚
+:program:`ctest`\ ¿ÉÖ´ÐÐÎÄ¼þÊÇCMake²âÊÔÇý¶¯³ÌÐò¡£ÎªÊ¹ÓÃ\ :command:`enable_testing`\
+ºÍ\ :command:`add_test`\ ÃüÁîµÄÏîÄ¿´´½¨µÄCMakeÉú³ÉµÄ¹¹½¨Ê÷¾ßÓÐ²âÊÔÖ§³Ö¡£´Ë³ÌÐò½«ÔËÐÐ²âÊÔ\
+²¢±¨¸æ½á¹û¡£
 
 .. _`Run Tests`:
 
-è¿è¡Œæµ‹è¯•
+ÔËÐÐ²âÊÔ
 =========
 
 .. program:: ctest
 
 .. option:: --preset <preset>, --preset=<preset>
 
- ä½¿ç”¨æµ‹è¯•é¢„è®¾æ¥æŒ‡å®šæµ‹è¯•é€‰é¡¹ã€‚é¡¹ç›®äºŒè¿›åˆ¶ç›®å½•æ˜¯ä»Ž\ ``configurePreset``\ é”®æŽ¨æ–­å‡ºæ¥çš„ã€‚å½“å‰å·¥\
- ä½œç›®å½•å¿…é¡»åŒ…å«CMakeé¢„ç½®æ–‡ä»¶ã€‚æœ‰å…³æ›´å¤šè¯¦ç»†ä¿¡æ¯ï¼Œè¯·å‚é˜…\ :manual:`preset <cmake-presets(7)>`ã€‚
+ Ê¹ÓÃ²âÊÔÔ¤ÉèÀ´Ö¸¶¨²âÊÔÑ¡Ïî¡£ÏîÄ¿¶þ½øÖÆÄ¿Â¼ÊÇ´Ó\ ``configurePreset``\ ¼üÍÆ¶Ï³öÀ´µÄ¡£µ±Ç°¹¤\
+ ×÷Ä¿Â¼±ØÐë°üº¬CMakeÔ¤ÖÃÎÄ¼þ¡£ÓÐ¹Ø¸ü¶àÏêÏ¸ÐÅÏ¢£¬Çë²ÎÔÄ\ :manual:`preset <cmake-presets(7)>`¡£
 
 .. option:: --list-presets
 
- åˆ—å‡ºå¯ç”¨çš„æµ‹è¯•é¢„è®¾ã€‚å½“å‰å·¥ä½œç›®å½•å¿…é¡»åŒ…å«CMakeé¢„ç½®æ–‡ä»¶ã€‚
+ ÁÐ³ö¿ÉÓÃµÄ²âÊÔÔ¤Éè¡£µ±Ç°¹¤×÷Ä¿Â¼±ØÐë°üº¬CMakeÔ¤ÖÃÎÄ¼þ¡£
 
 .. option:: -C <cfg>, --build-config <cfg>
 
- é€‰æ‹©è¦æµ‹è¯•çš„é…ç½®ã€‚
+ Ñ¡ÔñÒª²âÊÔµÄÅäÖÃ¡£
 
- ä¸€äº›CMakeç”Ÿæˆçš„æž„å»ºæ ‘å¯ä»¥åœ¨åŒä¸€æ ‘ä¸­æœ‰å¤šä¸ªæž„å»ºé…ç½®ã€‚æ­¤é€‰é¡¹å¯ç”¨äºŽæŒ‡å®šåº”è¯¥æµ‹è¯•å“ªä¸€ä¸ªã€‚ç¤ºä¾‹é…ç½®æ˜¯\
- ``Debug``\ å’Œ\ ``Release``ã€‚
+ Ò»Ð©CMakeÉú³ÉµÄ¹¹½¨Ê÷¿ÉÒÔÔÚÍ¬Ò»Ê÷ÖÐÓÐ¶à¸ö¹¹½¨ÅäÖÃ¡£´ËÑ¡Ïî¿ÉÓÃÓÚÖ¸¶¨Ó¦¸Ã²âÊÔÄÄÒ»¸ö¡£Ê¾ÀýÅäÖÃÊÇ\
+ ``Debug``\ ºÍ\ ``Release``¡£
 
 .. option:: --progress
 
- å¯ç”¨æµ‹è¯•çš„çŸ­è¿›åº¦è¾“å‡ºã€‚
+ ÆôÓÃ²âÊÔµÄ¶Ì½ø¶ÈÊä³ö¡£
 
- å½“\ :program:`ctest`\ çš„è¾“å‡ºç›´æŽ¥å‘é€åˆ°ç»ˆç«¯æ—¶ï¼Œé€šè¿‡æ›´æ–°åŒä¸€è¡Œæ¥æŠ¥å‘Šæµ‹è¯•é›†çš„è¿›åº¦ï¼Œè€Œä¸æ˜¯åœ¨\
- æ–°è¡Œä¸Šä¸ºæ¯ä¸ªæµ‹è¯•æ‰“å°å¼€å§‹å’Œç»“æŸæ¶ˆæ¯ã€‚è¿™å¯ä»¥æ˜¾è‘—å‡å°‘æµ‹è¯•è¾“å‡ºçš„å†—é•¿æ€§ã€‚å¯¹äºŽå¤±è´¥çš„æµ‹è¯•ï¼Œæµ‹è¯•å®Œæˆ\
- æ¶ˆæ¯ä»å°†åœ¨å…¶å•ç‹¬çš„è¡Œä¸Šè¾“å‡ºï¼Œå¹¶ä¸”ä»å°†è®°å½•æœ€ç»ˆçš„æµ‹è¯•æ‘˜è¦ã€‚
+ µ±\ :program:`ctest`\ µÄÊä³öÖ±½Ó·¢ËÍµ½ÖÕ¶ËÊ±£¬Í¨¹ý¸üÐÂÍ¬Ò»ÐÐÀ´±¨¸æ²âÊÔ¼¯µÄ½ø¶È£¬¶ø²»ÊÇÔÚ\
+ ÐÂÐÐÉÏÎªÃ¿¸ö²âÊÔ´òÓ¡¿ªÊ¼ºÍ½áÊøÏûÏ¢¡£Õâ¿ÉÒÔÏÔÖø¼õÉÙ²âÊÔÊä³öµÄÈß³¤ÐÔ¡£¶ÔÓÚÊ§°ÜµÄ²âÊÔ£¬²âÊÔÍê³É\
+ ÏûÏ¢ÈÔ½«ÔÚÆäµ¥¶ÀµÄÐÐÉÏÊä³ö£¬²¢ÇÒÈÔ½«¼ÇÂ¼×îÖÕµÄ²âÊÔÕªÒª¡£
 
- è¿™ä¸ªé€‰é¡¹ä¹Ÿå¯ä»¥é€šè¿‡è®¾ç½®çŽ¯å¢ƒå˜é‡\ :envvar:`CTEST_PROGRESS_OUTPUT`\ æ¥å¯ç”¨ã€‚
+ Õâ¸öÑ¡ÏîÒ²¿ÉÒÔÍ¨¹ýÉèÖÃ»·¾³±äÁ¿\ :envvar:`CTEST_PROGRESS_OUTPUT`\ À´ÆôÓÃ¡£
 
 .. option:: -V, --verbose
 
- å¯ç”¨æµ‹è¯•çš„è¯¦ç»†è¾“å‡ºã€‚
+ ÆôÓÃ²âÊÔµÄÏêÏ¸Êä³ö¡£
 
- æµ‹è¯•è¾“å‡ºé€šå¸¸è¢«æŠ‘åˆ¶ï¼Œåªæ˜¾ç¤ºæ‘˜è¦ä¿¡æ¯ã€‚æ­¤é€‰é¡¹å°†æ˜¾ç¤ºæ‰€æœ‰æµ‹è¯•è¾“å‡ºã€‚
+ ²âÊÔÊä³öÍ¨³£±»ÒÖÖÆ£¬Ö»ÏÔÊ¾ÕªÒªÐÅÏ¢¡£´ËÑ¡Ïî½«ÏÔÊ¾ËùÓÐ²âÊÔÊä³ö¡£
 
 .. option:: -VV, --extra-verbose
 
- ä»Žæµ‹è¯•ä¸­å¯ç”¨æ›´è¯¦ç»†çš„è¾“å‡ºã€‚
+ ´Ó²âÊÔÖÐÆôÓÃ¸üÏêÏ¸µÄÊä³ö¡£
 
- æµ‹è¯•è¾“å‡ºé€šå¸¸è¢«æŠ‘åˆ¶ï¼Œåªæ˜¾ç¤ºæ‘˜è¦ä¿¡æ¯ã€‚è¿™ä¸ªé€‰é¡¹å°†æ˜¾ç¤ºæ›´å¤šçš„æµ‹è¯•è¾“å‡ºã€‚
+ ²âÊÔÊä³öÍ¨³£±»ÒÖÖÆ£¬Ö»ÏÔÊ¾ÕªÒªÐÅÏ¢¡£Õâ¸öÑ¡Ïî½«ÏÔÊ¾¸ü¶àµÄ²âÊÔÊä³ö¡£
 
 .. option:: --debug
 
- æ˜¾ç¤ºCTestçš„æ›´è¯¦ç»†çš„å†…éƒ¨ä¿¡æ¯ã€‚
+ ÏÔÊ¾CTestµÄ¸üÏêÏ¸µÄÄÚ²¿ÐÅÏ¢¡£
 
- è¯¥ç‰¹æ€§å°†äº§ç”Ÿå¤§é‡è¾“å‡ºï¼Œè¿™äº›è¾“å‡ºå¯¹è°ƒè¯•ä»ªè¡¨æ¿é—®é¢˜éžå¸¸æœ‰ç”¨ã€‚
+ ¸ÃÌØÐÔ½«²úÉú´óÁ¿Êä³ö£¬ÕâÐ©Êä³ö¶Ôµ÷ÊÔÒÇ±í°åÎÊÌâ·Ç³£ÓÐÓÃ¡£
 
 .. option:: --output-on-failure
 
- å¦‚æžœæµ‹è¯•å¤±è´¥ï¼Œè¾“å‡ºæµ‹è¯•ç¨‹åºè¾“å‡ºçš„ä»»ä½•å†…å®¹ã€‚è¿™ä¸ªé€‰é¡¹ä¹Ÿå¯ä»¥é€šè¿‡è®¾ç½®\
- :envvar:`CTEST_OUTPUT_ON_FAILURE`\ çŽ¯å¢ƒå˜é‡æ¥å¯ç”¨ã€‚
+ Èç¹û²âÊÔÊ§°Ü£¬Êä³ö²âÊÔ³ÌÐòÊä³öµÄÈÎºÎÄÚÈÝ¡£Õâ¸öÑ¡ÏîÒ²¿ÉÒÔÍ¨¹ýÉèÖÃ\
+ :envvar:`CTEST_OUTPUT_ON_FAILURE`\ »·¾³±äÁ¿À´ÆôÓÃ¡£
 
 .. option:: --stop-on-failure
 
- å½“å‡ºçŽ°ç¬¬ä¸€ä¸ªæ•…éšœæ—¶ï¼Œåœæ­¢è¿è¡Œæµ‹è¯•ã€‚
+ µ±³öÏÖµÚÒ»¸ö¹ÊÕÏÊ±£¬Í£Ö¹ÔËÐÐ²âÊÔ¡£
 
 .. option:: -F
 
- æ”¯æŒæ•…éšœè½¬ç§»ã€‚
+ Ö§³Ö¹ÊÕÏ×ªÒÆ¡£
 
- æ­¤é€‰é¡¹å…è®¸CTestæ¢å¤å…ˆå‰ä¸­æ–­çš„æµ‹è¯•é›†æ‰§è¡Œã€‚å¦‚æžœæ²¡æœ‰ä¸­æ–­å‘ç”Ÿï¼Œ\ ``-F``\ é€‰é¡¹å°†ä¸èµ·ä½œç”¨ã€‚
+ ´ËÑ¡ÏîÔÊÐíCTest»Ö¸´ÏÈÇ°ÖÐ¶ÏµÄ²âÊÔ¼¯Ö´ÐÐ¡£Èç¹ûÃ»ÓÐÖÐ¶Ï·¢Éú£¬\ ``-F``\ Ñ¡Ïî½«²»Æð×÷ÓÃ¡£
 
 .. option:: -j [<level>], --parallel [<level>]
 
- å¹¶è¡Œè¿è¡Œæµ‹è¯•ï¼Œå¯é€‰åœ°é™åˆ¶åœ¨ç»™å®šçš„å¹¶è¡Œåº¦çº§åˆ«ã€‚
+ ²¢ÐÐÔËÐÐ²âÊÔ£¬¿ÉÑ¡µØÏÞÖÆÔÚ¸ø¶¨µÄ²¢ÐÐ¶È¼¶±ð¡£
 
  .. versionadded:: 3.29
 
-    ``<level>``\ å¯ä»¥çœç•¥æˆ–ä¸º\ ``0``ï¼Œåœ¨è¿™ç§æƒ…å†µä¸‹ï¼š
+    ``<level>``\ ¿ÉÒÔÊ¡ÂÔ»òÎª\ ``0``£¬ÔÚÕâÖÖÇé¿öÏÂ£º
 
-    * åœ¨\ `ä½œä¸šæœåŠ¡å™¨é›†æˆ`_\ ä¸‹ï¼Œå¹¶è¡Œæ€§å—åˆ°å¯ç”¨ä½œä¸šä»¤ç‰Œçš„é™åˆ¶ã€‚
+    * ÔÚ\ `×÷Òµ·þÎñÆ÷¼¯³É`_\ ÏÂ£¬²¢ÐÐÐÔÊÜµ½¿ÉÓÃ×÷ÒµÁîÅÆµÄÏÞÖÆ¡£
 
-    * å¦åˆ™ï¼Œå¦‚æžœçœç•¥è¯¥å€¼ï¼Œåˆ™å¹¶è¡Œæ€§é™åˆ¶ä¸ºå¤„ç†å™¨æ•°é‡ï¼Œæˆ–è€…ä¸º2ï¼Œä»¥è¾ƒå¤§è€…ä¸ºå‡†ã€‚
+    * ·ñÔò£¬Èç¹ûÊ¡ÂÔ¸ÃÖµ£¬Ôò²¢ÐÐÐÔÏÞÖÆÎª´¦ÀíÆ÷ÊýÁ¿£¬»òÕßÎª2£¬ÒÔ½Ï´óÕßÎª×¼¡£
 
-    * å¦åˆ™ï¼Œå¦‚æžœè¯¥å€¼ä¸º\ ``0``ï¼Œåˆ™å¹¶è¡Œåº¦ä¸å—é™åˆ¶ã€‚
+    * ·ñÔò£¬Èç¹û¸ÃÖµÎª\ ``0``£¬Ôò²¢ÐÐ¶È²»ÊÜÏÞÖÆ¡£
 
- è¿™ä¸ªé€‰é¡¹å¯ä»¥ç”±\ :envvar:`CTEST_PARALLEL_LEVEL`\ çŽ¯å¢ƒå˜é‡æŒ‡å®šã€‚
+ Õâ¸öÑ¡Ïî¿ÉÒÔÓÉ\ :envvar:`CTEST_PARALLEL_LEVEL`\ »·¾³±äÁ¿Ö¸¶¨¡£
 
- è¿™ä¸ªé€‰é¡¹å¯ä»¥ä¸Ž\ :prop_test:`PROCESSORS`\ æµ‹è¯•å±žæ€§ä¸€èµ·ä½¿ç”¨ã€‚è¯·æŸ¥çœ‹\ `æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦`_ã€‚
+ Õâ¸öÑ¡Ïî¿ÉÒÔÓë\ :prop_test:`PROCESSORS`\ ²âÊÔÊôÐÔÒ»ÆðÊ¹ÓÃ¡£Çë²é¿´\ `±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª`_¡£
 
 .. option:: --resource-spec-file <file>
 
- ä½¿ç”¨\ ``<file>``\ ä¸­æŒ‡å®šçš„\
- :ref:`èµ„æºè§„èŒƒæ–‡ä»¶ <ctest-resource-specification-file>`ï¼Œåœ¨å¯ç”¨\
- :ref:`èµ„æºåˆ†é… <ctest-resource-allocation>`\ çš„æƒ…å†µä¸‹è¿è¡ŒCTestã€‚
+ Ê¹ÓÃ\ ``<file>``\ ÖÐÖ¸¶¨µÄ\
+ :ref:`×ÊÔ´¹æ·¶ÎÄ¼þ <ctest-resource-specification-file>`£¬ÔÚÆôÓÃ\
+ :ref:`×ÊÔ´·ÖÅä <ctest-resource-allocation>`\ µÄÇé¿öÏÂÔËÐÐCTest¡£
 
- å½“\ :program:`ctest`\ ä½œä¸º\ `ä»ªè¡¨æ¿å®¢æˆ·ç«¯`_\ è¿è¡Œæ—¶ï¼Œè¿™å°†è®¾ç½®\ `CTestæµ‹è¯•æ­¥éª¤`_\ çš„\
- ``ResourceSpecFile``\ é€‰é¡¹ã€‚
+ µ±\ :program:`ctest`\ ×÷Îª\ `ÒÇ±í°å¿Í»§¶Ë`_\ ÔËÐÐÊ±£¬Õâ½«ÉèÖÃ\ `CTest²âÊÔ²½Öè`_\ µÄ\
+ ``ResourceSpecFile``\ Ñ¡Ïî¡£
 
 .. option:: --test-load <level>
 
- åœ¨å¹¶è¡Œè¿è¡Œæµ‹è¯•æ—¶ï¼ˆä¾‹å¦‚ä½¿ç”¨\ :option:`-j <ctest -j>`ï¼‰ï¼Œå½“æµ‹è¯•å¯èƒ½å¯¼è‡´CPUè´Ÿè½½è¶…è¿‡ç»™å®šé˜ˆ\
- å€¼æ—¶ï¼Œå°½é‡ä¸è¦å¯åŠ¨æµ‹è¯•ã€‚
+ ÔÚ²¢ÐÐÔËÐÐ²âÊÔÊ±£¨ÀýÈçÊ¹ÓÃ\ :option:`-j <ctest -j>`£©£¬µ±²âÊÔ¿ÉÄÜµ¼ÖÂCPU¸ºÔØ³¬¹ý¸ø¶¨ãÐ\
+ ÖµÊ±£¬¾¡Á¿²»ÒªÆô¶¯²âÊÔ¡£
 
- å½“\ :program:`ctest`\ ä½œä¸º\ `ä»ªè¡¨æ¿å®¢æˆ·ç«¯`_\ è¿è¡Œæ—¶ï¼Œè¿™å°†è®¾ç½®\ `CTestæµ‹è¯•æ­¥éª¤`_\ çš„\
- ``TestLoad``\ é€‰é¡¹ã€‚
+ µ±\ :program:`ctest`\ ×÷Îª\ `ÒÇ±í°å¿Í»§¶Ë`_\ ÔËÐÐÊ±£¬Õâ½«ÉèÖÃ\ `CTest²âÊÔ²½Öè`_\ µÄ\
+ ``TestLoad``\ Ñ¡Ïî¡£
 
 .. option:: -Q, --quiet
 
- è®©CTestä¿æŒå®‰é™ã€‚
+ ÈÃCTest±£³Ö°²¾²¡£
 
- æ­¤é€‰é¡¹å°†æŠ‘åˆ¶æ‰€æœ‰è¾“å‡ºã€‚å¦‚æžœæŒ‡å®šäº†\ :option:`--output-log <ctest --output-log>`ï¼Œä»ç„¶\
- ä¼šç”Ÿæˆè¾“å‡ºæ—¥å¿—æ–‡ä»¶ã€‚å¦‚æžœæŒ‡å®šäº†\ ``--quiet``ï¼Œé‚£ä¹ˆ\ :option:`--verbose <ctest --verbose>`ã€\
- :option:`--extra-verbose <ctest --extra-verbose>`\ å’Œ\
- :option:`--debug <ctest --debug>`\ ç­‰é€‰é¡¹å°†è¢«å¿½ç•¥ã€‚
+ ´ËÑ¡Ïî½«ÒÖÖÆËùÓÐÊä³ö¡£Èç¹ûÖ¸¶¨ÁË\ :option:`--output-log <ctest --output-log>`£¬ÈÔÈ»\
+ »áÉú³ÉÊä³öÈÕÖ¾ÎÄ¼þ¡£Èç¹ûÖ¸¶¨ÁË\ ``--quiet``£¬ÄÇÃ´\ :option:`--verbose <ctest --verbose>`¡¢\
+ :option:`--extra-verbose <ctest --extra-verbose>`\ ºÍ\
+ :option:`--debug <ctest --debug>`\ µÈÑ¡Ïî½«±»ºöÂÔ¡£
 
 .. option:: -O <file>, --output-log <file>
 
- è¾“å‡ºåˆ°æ—¥å¿—æ–‡ä»¶ã€‚
+ Êä³öµ½ÈÕÖ¾ÎÄ¼þ¡£
 
- è¯¥é€‰é¡¹å‘Šè¯‰CTestå°†å…¶æ‰€æœ‰è¾“å‡ºå†™å…¥\ ``<file>``\ æ—¥å¿—æ–‡ä»¶ã€‚
+ ¸ÃÑ¡Ïî¸æËßCTest½«ÆäËùÓÐÊä³öÐ´Èë\ ``<file>``\ ÈÕÖ¾ÎÄ¼þ¡£
 
 .. option:: --output-junit <file>
 
  .. versionadded:: 3.21
 
- ä»¥JUnitæ ¼å¼ç¼–å†™æµ‹è¯•ç»“æžœã€‚
+ ÒÔJUnit¸ñÊ½±àÐ´²âÊÔ½á¹û¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTestå°†æµ‹è¯•ç»“æžœå†™å…¥\ ``<file>``\ åœ¨JUnit XMLæ ¼å¼ã€‚å¦‚æžœ\ ``<file>``\ å·²ç»\
- å­˜åœ¨ï¼Œå®ƒå°†è¢«è¦†ç›–ã€‚å¦‚æžœä½¿ç”¨\ :option:`-S <ctest -S>`\ é€‰é¡¹è¿è¡Œä»ªè¡¨æ¿è„šæœ¬ï¼Œåˆ™ä½¿ç”¨\
- ``OUTPUT_JUNIT``\ å…³é”®å­—å’Œ\ :command:`ctest_test`\ å‘½ä»¤ä»£æ›¿ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTest½«²âÊÔ½á¹ûÐ´Èë\ ``<file>``\ ÔÚJUnit XML¸ñÊ½¡£Èç¹û\ ``<file>``\ ÒÑ¾­\
+ ´æÔÚ£¬Ëü½«±»¸²¸Ç¡£Èç¹ûÊ¹ÓÃ\ :option:`-S <ctest -S>`\ Ñ¡ÏîÔËÐÐÒÇ±í°å½Å±¾£¬ÔòÊ¹ÓÃ\
+ ``OUTPUT_JUNIT``\ ¹Ø¼ü×ÖºÍ\ :command:`ctest_test`\ ÃüÁî´úÌæ¡£
 
 .. option:: -N, --show-only[=<format>]
 
- ç¦ç”¨æµ‹è¯•çš„å®žé™…æ‰§è¡Œã€‚
+ ½ûÓÃ²âÊÔµÄÊµ¼ÊÖ´ÐÐ¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTeståˆ—å‡ºå°†è¦è¿è¡Œä½†æ²¡æœ‰å®žé™…è¿è¡Œçš„æµ‹è¯•ã€‚ä¸Ž\ :option:`-R <ctest -R>`\ å’Œ\
- :option:`-E <ctest -E>`\ é€‰é¡¹ä¸€èµ·ä½¿ç”¨ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTestÁÐ³ö½«ÒªÔËÐÐµ«Ã»ÓÐÊµ¼ÊÔËÐÐµÄ²âÊÔ¡£Óë\ :option:`-R <ctest -R>`\ ºÍ\
+ :option:`-E <ctest -E>`\ Ñ¡ÏîÒ»ÆðÊ¹ÓÃ¡£
 
  .. versionadded:: 3.14
 
-   ``--show-only``\ é€‰é¡¹æŽ¥å—\ ``<format>``\ å€¼ã€‚
+   ``--show-only``\ Ñ¡Ïî½ÓÊÜ\ ``<format>``\ Öµ¡£
 
- ``<format>``\ å¯ä»¥æ˜¯ä»¥ä¸‹å€¼ä¹‹ä¸€ã€‚
+ ``<format>``\ ¿ÉÒÔÊÇÒÔÏÂÖµÖ®Ò»¡£
 
    ``human``
-     äººæ€§åŒ–çš„è¾“å‡ºã€‚è¿™ä¸èƒ½ä¿è¯æ˜¯ç¨³å®šçš„ã€‚è¿™æ˜¯é»˜è®¤å€¼ã€‚
+     ÈËÐÔ»¯µÄÊä³ö¡£Õâ²»ÄÜ±£Ö¤ÊÇÎÈ¶¨µÄ¡£ÕâÊÇÄ¬ÈÏÖµ¡£
 
    ``json-v1``
-     ä»¥JSONæ ¼å¼è½¬å‚¨æµ‹è¯•ä¿¡æ¯ã€‚å‚è§æ˜¾ç¤ºä¸º\ `æ˜¾ç¤ºä¸ºJSONå¯¹è±¡æ¨¡åž‹`_ã€‚
+     ÒÔJSON¸ñÊ½×ª´¢²âÊÔÐÅÏ¢¡£²Î¼ûÏÔÊ¾Îª\ `ÏÔÊ¾ÎªJSON¶ÔÏóÄ£ÐÍ`_¡£
 
 .. option:: -L <regex>, --label-regex <regex>
 
- è¿è¡Œä¸Ž\ :ref:`string(REGEX) <Regex Specification>`\ ä¸‹æè¿°çš„æ­£åˆ™è¡¨è¾¾å¼åŒ¹é…çš„æ ‡ç­¾çš„æµ‹è¯•ã€‚
+ ÔËÐÐÓë\ :ref:`string(REGEX) <Regex Specification>`\ ÏÂÃèÊöµÄÕýÔò±í´ïÊ½Æ¥ÅäµÄ±êÇ©µÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTeståªè¿è¡Œæ ‡ç­¾ä¸Žç»™å®šæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…çš„æµ‹è¯•ã€‚å½“ç»™å‡ºå¤šä¸ª\ ``-L``\ é€‰é¡¹æ—¶ï¼Œåªæœ‰å½“æ¯\
- ä¸ªæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…è‡³å°‘ä¸€ä¸ªæµ‹è¯•çš„æ ‡ç­¾ï¼ˆå³å¤šä¸ª\ ``-L``\ æ ‡ç­¾å½¢æˆä¸€ä¸ª\ ``AND``\ å…³ç³»ï¼‰æ—¶ï¼Œæ‰\
- ä¼šè¿è¡Œæµ‹è¯•ã€‚å‚è§\ `æ ‡ç­¾åŒ¹é…`_ã€‚
+ ´ËÑ¡Ïî¸æËßCTestÖ»ÔËÐÐ±êÇ©Óë¸ø¶¨ÕýÔò±í´ïÊ½Æ¥ÅäµÄ²âÊÔ¡£µ±¸ø³ö¶à¸ö\ ``-L``\ Ñ¡ÏîÊ±£¬Ö»ÓÐµ±Ã¿\
+ ¸öÕýÔò±í´ïÊ½Æ¥ÅäÖÁÉÙÒ»¸ö²âÊÔµÄ±êÇ©£¨¼´¶à¸ö\ ``-L``\ ±êÇ©ÐÎ³ÉÒ»¸ö\ ``AND``\ ¹ØÏµ£©Ê±£¬²Å\
+ »áÔËÐÐ²âÊÔ¡£²Î¼û\ `±êÇ©Æ¥Åä`_¡£
 
 .. option:: -R <regex>, --tests-regex <regex>
 
- è¿è¡ŒåŒ¹é…æ­£åˆ™è¡¨è¾¾å¼çš„æµ‹è¯•ã€‚
+ ÔËÐÐÆ¥ÅäÕýÔò±í´ïÊ½µÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTeståªè¿è¡Œåç§°ä¸Žç»™å®šæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…çš„æµ‹è¯•ã€‚
+ ´ËÑ¡Ïî¸æËßCTestÖ»ÔËÐÐÃû³ÆÓë¸ø¶¨ÕýÔò±í´ïÊ½Æ¥ÅäµÄ²âÊÔ¡£
 
 .. option:: -E <regex>, --exclude-regex <regex>
 
- æŽ’é™¤åŒ¹é…æ­£åˆ™è¡¨è¾¾å¼çš„æµ‹è¯•ã€‚
+ ÅÅ³ýÆ¥ÅäÕýÔò±í´ïÊ½µÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTest\ **ä¸**\ è¿è¡Œåç§°ä¸Žç»™å®šæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…çš„æµ‹è¯•ã€‚
+ ´ËÑ¡Ïî¸æËßCTest\ **²»**\ ÔËÐÐÃû³ÆÓë¸ø¶¨ÕýÔò±í´ïÊ½Æ¥ÅäµÄ²âÊÔ¡£
 
 .. option:: -LE <regex>, --label-exclude <regex>
 
- æŽ’é™¤æ ‡ç­¾ä¸Žæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…çš„æµ‹è¯•ã€‚
+ ÅÅ³ý±êÇ©ÓëÕýÔò±í´ïÊ½Æ¥ÅäµÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTest\ **ä¸**\ è¿è¡Œæ ‡ç­¾ä¸Žç»™å®šæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…çš„æµ‹è¯•ã€‚å½“ç»™å‡ºå¤šä¸ª\ ``-LE``\ é€‰é¡¹æ—¶ï¼Œ\
- åªæœ‰å½“æ¯ä¸ªæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…è‡³å°‘ä¸€ä¸ªæµ‹è¯•çš„æ ‡ç­¾ï¼ˆå³å¤šä¸ª\ ``-LE``\ æ ‡ç­¾å½¢æˆä¸€ä¸ª\ ``AND``\
- å…³ç³»ï¼‰æ—¶ï¼Œæ‰ä¼šæŽ’é™¤æµ‹è¯•ã€‚å‚è€ƒ\ `æ ‡ç­¾åŒ¹é…`_ã€‚
+ ´ËÑ¡Ïî¸æËßCTest\ **²»**\ ÔËÐÐ±êÇ©Óë¸ø¶¨ÕýÔò±í´ïÊ½Æ¥ÅäµÄ²âÊÔ¡£µ±¸ø³ö¶à¸ö\ ``-LE``\ Ñ¡ÏîÊ±£¬\
+ Ö»ÓÐµ±Ã¿¸öÕýÔò±í´ïÊ½Æ¥ÅäÖÁÉÙÒ»¸ö²âÊÔµÄ±êÇ©£¨¼´¶à¸ö\ ``-LE``\ ±êÇ©ÐÎ³ÉÒ»¸ö\ ``AND``\
+ ¹ØÏµ£©Ê±£¬²Å»áÅÅ³ý²âÊÔ¡£²Î¿¼\ `±êÇ©Æ¥Åä`_¡£
 
 .. option:: --tests-from-file <filename>
 
  .. versionadded:: 3.29
 
- è¿è¡Œç»™å®šæ–‡ä»¶ä¸­åˆ—å‡ºçš„æµ‹è¯•ã€‚
+ ÔËÐÐ¸ø¶¨ÎÄ¼þÖÐÁÐ³öµÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTestè¿è¡Œç»™å®šæ–‡ä»¶ä¸­åˆ—å‡ºçš„æµ‹è¯•ã€‚è¯¥æ–‡ä»¶æ¯è¡Œå¿…é¡»åŒ…å«ä¸€ä¸ªç¡®åˆ‡çš„æµ‹è¯•åç§°ã€‚ä¸å®Œå…¨åŒ¹é…\
- ä»»ä½•æµ‹è¯•åç§°çš„è¡Œå°†è¢«å¿½ç•¥ã€‚æ­¤é€‰é¡¹å¯ä»¥ä¸Ž\ ``-R``ã€\ ``-E``ã€\ ``-L``\ æˆ–\ ``-LE``\ ç­‰\
- å…¶ä»–é€‰é¡¹ç»„åˆä½¿ç”¨ã€‚
+ ´ËÑ¡Ïî¸æËßCTestÔËÐÐ¸ø¶¨ÎÄ¼þÖÐÁÐ³öµÄ²âÊÔ¡£¸ÃÎÄ¼þÃ¿ÐÐ±ØÐë°üº¬Ò»¸öÈ·ÇÐµÄ²âÊÔÃû³Æ¡£²»ÍêÈ«Æ¥Åä\
+ ÈÎºÎ²âÊÔÃû³ÆµÄÐÐ½«±»ºöÂÔ¡£´ËÑ¡Ïî¿ÉÒÔÓë\ ``-R``¡¢\ ``-E``¡¢\ ``-L``\ »ò\ ``-LE``\ µÈ\
+ ÆäËûÑ¡Ïî×éºÏÊ¹ÓÃ¡£
 
 .. option:: --exclude-from-file <filename>
 
  .. versionadded:: 3.29
 
- æŽ’é™¤ç»™å®šæ–‡ä»¶ä¸­åˆ—å‡ºçš„æµ‹è¯•ã€‚
+ ÅÅ³ý¸ø¶¨ÎÄ¼þÖÐÁÐ³öµÄ²âÊÔ¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTest\ **ä¸**\ è¿è¡Œç»™å®šæ–‡ä»¶ä¸­åˆ—å‡ºçš„æµ‹è¯•ã€‚è¯¥æ–‡ä»¶æ¯è¡Œå¿…é¡»åŒ…å«ä¸€ä¸ªç¡®åˆ‡çš„æµ‹è¯•åç§°ã€‚\
- ä¸å®Œå…¨åŒ¹é…ä»»ä½•æµ‹è¯•åç§°çš„è¡Œå°†è¢«å¿½ç•¥ã€‚æ­¤é€‰é¡¹å¯ä»¥ä¸Ž\ ``-R``ã€\ ``-E``ã€\ ``-L``\ æˆ–\
- ``-LE``\ ç­‰å…¶ä»–é€‰é¡¹ç»„åˆä½¿ç”¨ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTest\ **²»**\ ÔËÐÐ¸ø¶¨ÎÄ¼þÖÐÁÐ³öµÄ²âÊÔ¡£¸ÃÎÄ¼þÃ¿ÐÐ±ØÐë°üº¬Ò»¸öÈ·ÇÐµÄ²âÊÔÃû³Æ¡£\
+ ²»ÍêÈ«Æ¥ÅäÈÎºÎ²âÊÔÃû³ÆµÄÐÐ½«±»ºöÂÔ¡£´ËÑ¡Ïî¿ÉÒÔÓë\ ``-R``¡¢\ ``-E``¡¢\ ``-L``\ »ò\
+ ``-LE``\ µÈÆäËûÑ¡Ïî×éºÏÊ¹ÓÃ¡£
 
 .. option:: -FA <regex>, --fixture-exclude-any <regex>
 
- æŽ’é™¤ä¸Ž\ ``<regex>``\ åŒ¹é…çš„fixtureè‡ªåŠ¨å‘æµ‹è¯•é›†ä¸­æ·»åŠ ä»»ä½•æµ‹è¯•ã€‚
+ ÅÅ³ýÓë\ ``<regex>``\ Æ¥ÅäµÄfixture×Ô¶¯Ïò²âÊÔ¼¯ÖÐÌí¼ÓÈÎºÎ²âÊÔ¡£
 
- å¦‚æžœè¦æ‰§è¡Œçš„æµ‹è¯•é›†ä¸­çš„ä¸€ä¸ªæµ‹è¯•éœ€è¦ä¸€ä¸ªç‰¹å®šçš„fixtureï¼Œé‚£ä¹ˆè¯¥fixtureçš„è®¾ç½®å’Œæ¸…ç†æµ‹è¯•é€šå¸¸ä¼š\
- è‡ªåŠ¨æ·»åŠ åˆ°æµ‹è¯•é›†ä¸­ã€‚æ­¤é€‰é¡¹å¯é˜²æ­¢ä¸ºåŒ¹é…\ ``<regex>``\ çš„fixtureæ·»åŠ å®‰è£…æˆ–æ¸…ç†æµ‹è¯•ã€‚æ³¨æ„ï¼Œ\
- ä¿ç•™æ‰€æœ‰å…¶ä»–fixtureè¡Œä¸ºï¼ŒåŒ…æ‹¬æµ‹è¯•ä¾èµ–é¡¹å’Œè·³è¿‡fixtureè®¾ç½®æµ‹è¯•å¤±è´¥çš„æµ‹è¯•ã€‚
+ Èç¹ûÒªÖ´ÐÐµÄ²âÊÔ¼¯ÖÐµÄÒ»¸ö²âÊÔÐèÒªÒ»¸öÌØ¶¨µÄfixture£¬ÄÇÃ´¸ÃfixtureµÄÉèÖÃºÍÇåÀí²âÊÔÍ¨³£»á\
+ ×Ô¶¯Ìí¼Óµ½²âÊÔ¼¯ÖÐ¡£´ËÑ¡Ïî¿É·ÀÖ¹ÎªÆ¥Åä\ ``<regex>``\ µÄfixtureÌí¼Ó°²×°»òÇåÀí²âÊÔ¡£×¢Òâ£¬\
+ ±£ÁôËùÓÐÆäËûfixtureÐÐÎª£¬°üÀ¨²âÊÔÒÀÀµÏîºÍÌø¹ýfixtureÉèÖÃ²âÊÔÊ§°ÜµÄ²âÊÔ¡£
 
 .. option:: -FS <regex>, --fixture-exclude-setup <regex>
 
- ä¸Ž\ :option:`-FA <ctest -FA>`\ ç›¸åŒï¼Œä½†åªæŽ’é™¤åŒ¹é…çš„è®¾ç½®æµ‹è¯•ã€‚
+ Óë\ :option:`-FA <ctest -FA>`\ ÏàÍ¬£¬µ«Ö»ÅÅ³ýÆ¥ÅäµÄÉèÖÃ²âÊÔ¡£
 
 .. option:: -FC <regex>, --fixture-exclude-cleanup <regex>
 
- ä¸Ž\ :option:`-FA <ctest -FA>`\ ç›¸åŒï¼Œä½†åªæŽ’é™¤åŒ¹é…çš„æ¸…ç†æµ‹è¯•ã€‚
+ Óë\ :option:`-FA <ctest -FA>`\ ÏàÍ¬£¬µ«Ö»ÅÅ³ýÆ¥ÅäµÄÇåÀí²âÊÔ¡£
 
 .. option:: -I [Start,End,Stride,test#,test#|Test file], --tests-information
 
- æŒ‰ç¼–å·è¿è¡Œç‰¹å®šæ•°é‡çš„æµ‹è¯•ã€‚
+ °´±àºÅÔËÐÐÌØ¶¨ÊýÁ¿µÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹ä½¿CTestè¿è¡Œä»Žç¼–å·\ ``Start``\ å¼€å§‹ï¼Œä»¥ç¼–å·\ ``End``\ ç»“æŸå¹¶æŒ‰\ ``Stride``\ é€’\
- å¢žçš„æµ‹è¯•ã€‚\ ``Stride``\ ä¹‹åŽçš„ä»»ä½•é™„åŠ æ•°å­—éƒ½è¢«è§†ä¸ºå•ç‹¬çš„æµ‹è¯•æ•°å­—ã€‚\ ``Start``ã€\ ``End``\
- å’Œ\ ``Stride``\ å¯ä»¥ä¸ºç©ºã€‚å¯ä»¥é€‰æ‹©ä¸€ä¸ªåŒ…å«ä¸Žå‘½ä»¤è¡Œç›¸åŒè¯­æ³•çš„æ–‡ä»¶ã€‚
+ ´ËÑ¡ÏîÊ¹CTestÔËÐÐ´Ó±àºÅ\ ``Start``\ ¿ªÊ¼£¬ÒÔ±àºÅ\ ``End``\ ½áÊø²¢°´\ ``Stride``\ µÝ\
+ ÔöµÄ²âÊÔ¡£\ ``Stride``\ Ö®ºóµÄÈÎºÎ¸½¼ÓÊý×Ö¶¼±»ÊÓÎªµ¥¶ÀµÄ²âÊÔÊý×Ö¡£\ ``Start``¡¢\ ``End``\
+ ºÍ\ ``Stride``\ ¿ÉÒÔÎª¿Õ¡£¿ÉÒÔÑ¡ÔñÒ»¸ö°üº¬ÓëÃüÁîÐÐÏàÍ¬Óï·¨µÄÎÄ¼þ¡£
 
 .. option:: -U, --union
 
- å–\ :option:`-I <ctest -I>`\ å’Œ\ :option:`-R <ctest -R>`\ çš„å¹¶é›†ã€‚
+ È¡\ :option:`-I <ctest -I>`\ ºÍ\ :option:`-R <ctest -R>`\ µÄ²¢¼¯¡£
 
- é»˜è®¤æƒ…å†µä¸‹ï¼ŒåŒæ—¶æŒ‡å®š\ :option:`-R <ctest -R>`\ å’Œ\ :option:`-I <ctest -I>`\ æ—¶ï¼Œå°†\
- è¿è¡Œæµ‹è¯•äº¤é›†ã€‚é€šè¿‡æŒ‡å®š\ ``-U``ï¼Œå°†è¿è¡Œæµ‹è¯•çš„å¹¶é›†ã€‚
+ Ä¬ÈÏÇé¿öÏÂ£¬Í¬Ê±Ö¸¶¨\ :option:`-R <ctest -R>`\ ºÍ\ :option:`-I <ctest -I>`\ Ê±£¬½«\
+ ÔËÐÐ²âÊÔ½»¼¯¡£Í¨¹ýÖ¸¶¨\ ``-U``£¬½«ÔËÐÐ²âÊÔµÄ²¢¼¯¡£
 
 .. option:: --rerun-failed
 
- åªè¿è¡Œå…ˆå‰å¤±è´¥çš„æµ‹è¯•ã€‚
+ Ö»ÔËÐÐÏÈÇ°Ê§°ÜµÄ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTeståªæ‰§è¡Œåœ¨ä¸Šæ¬¡è¿è¡ŒæœŸé—´å¤±è´¥çš„æµ‹è¯•ã€‚æŒ‡å®šæ­¤é€‰é¡¹åŽï¼ŒCTestå°†å¿½ç•¥ç”¨äºŽä¿®æ”¹è¦è¿è¡Œçš„æµ‹\
- è¯•åˆ—è¡¨çš„æ‰€æœ‰å…¶ä»–é€‰é¡¹ï¼ˆ:option:`-L <ctest -L>`ã€:option:`-R <ctest -R>`ã€\
- :option:`-E <ctest -E>`ã€:option:`-LE <ctest -LE>`ã€:option:`-I <ctest -I>`\ ç­‰ï¼‰ã€‚\
- å¦‚æžœCTestè¿è¡Œå¹¶ä¸”æ²¡æœ‰æµ‹è¯•å¤±è´¥ï¼Œåˆ™ä½¿ç”¨\ ``--rerun-failed``\ é€‰é¡¹å¯¹CTestçš„åŽç»­è°ƒç”¨å°†è¿è¡Œ\
- æœ€è¿‘å¤±è´¥çš„æµ‹è¯•é›†ï¼ˆå¦‚æžœæœ‰çš„è¯ï¼‰ã€‚
+ ´ËÑ¡Ïî¸æËßCTestÖ»Ö´ÐÐÔÚÉÏ´ÎÔËÐÐÆÚ¼äÊ§°ÜµÄ²âÊÔ¡£Ö¸¶¨´ËÑ¡Ïîºó£¬CTest½«ºöÂÔÓÃÓÚÐÞ¸ÄÒªÔËÐÐµÄ²â\
+ ÊÔÁÐ±íµÄËùÓÐÆäËûÑ¡Ïî£¨:option:`-L <ctest -L>`¡¢:option:`-R <ctest -R>`¡¢\
+ :option:`-E <ctest -E>`¡¢:option:`-LE <ctest -LE>`¡¢:option:`-I <ctest -I>`\ µÈ£©¡£\
+ Èç¹ûCTestÔËÐÐ²¢ÇÒÃ»ÓÐ²âÊÔÊ§°Ü£¬ÔòÊ¹ÓÃ\ ``--rerun-failed``\ Ñ¡Ïî¶ÔCTestµÄºóÐøµ÷ÓÃ½«ÔËÐÐ\
+ ×î½üÊ§°ÜµÄ²âÊÔ¼¯£¨Èç¹ûÓÐµÄ»°£©¡£
 
 .. option:: --repeat <mode>:<n>
 
-  æ ¹æ®ç»™å®šçš„\ ``<mode>``\ é‡å¤è¿è¡Œæµ‹è¯•ï¼Œæœ€å¤šå¯è¿è¡Œ\ ``<n>``\ æ¬¡ã€‚æ¨¡å¼æœ‰ï¼š
+  ¸ù¾Ý¸ø¶¨µÄ\ ``<mode>``\ ÖØ¸´ÔËÐÐ²âÊÔ£¬×î¶à¿ÉÔËÐÐ\ ``<n>``\ ´Î¡£Ä£Ê½ÓÐ£º
 
   ``until-fail``
-    è¦æ±‚æ¯ä¸ªæµ‹è¯•è¿è¡Œ\ ``<n>``\ æ¬¡è€Œä¸å¤±è´¥æ‰èƒ½é€šè¿‡ã€‚è¿™å¯¹äºŽå‘çŽ°æµ‹è¯•ç”¨ä¾‹ä¸­çš„é›¶æ˜Ÿæ•…éšœå¾ˆæœ‰ç”¨ã€‚
+    ÒªÇóÃ¿¸ö²âÊÔÔËÐÐ\ ``<n>``\ ´Î¶ø²»Ê§°Ü²ÅÄÜÍ¨¹ý¡£Õâ¶ÔÓÚ·¢ÏÖ²âÊÔÓÃÀýÖÐµÄÁãÐÇ¹ÊÕÏºÜÓÐÓÃ¡£
 
   ``until-pass``
-    å…è®¸æ¯ä¸ªæµ‹è¯•æœ€å¤šè¿è¡Œ\ ``<n>``\ æ¬¡æ‰èƒ½é€šè¿‡ã€‚å¦‚æžœæµ‹è¯•å› ä»»ä½•åŽŸå› å¤±è´¥ï¼Œåˆ™é‡å¤æµ‹è¯•ã€‚è¿™å¯¹äºŽ\
-    å®¹å¿æµ‹è¯•ç”¨ä¾‹ä¸­çš„é›¶æ˜Ÿæ•…éšœæ˜¯å¾ˆæœ‰ç”¨çš„ã€‚
+    ÔÊÐíÃ¿¸ö²âÊÔ×î¶àÔËÐÐ\ ``<n>``\ ´Î²ÅÄÜÍ¨¹ý¡£Èç¹û²âÊÔÒòÈÎºÎÔ­ÒòÊ§°Ü£¬ÔòÖØ¸´²âÊÔ¡£Õâ¶ÔÓÚ\
+    ÈÝÈÌ²âÊÔÓÃÀýÖÐµÄÁãÐÇ¹ÊÕÏÊÇºÜÓÐÓÃµÄ¡£
 
   ``after-timeout``
-    å…è®¸æ¯ä¸ªæµ‹è¯•æœ€å¤šè¿è¡Œ\ ``<n>``\ æ¬¡æ‰èƒ½é€šè¿‡ã€‚åªæœ‰å½“æµ‹è¯•è¶…æ—¶æ—¶æ‰é‡å¤æµ‹è¯•ã€‚è¿™å¯¹äºŽåœ¨ç¹å¿™çš„\
-    æœºå™¨ä¸Šå®¹å¿æµ‹è¯•ç”¨ä¾‹ä¸­çš„é›¶æ˜Ÿè¶…æ—¶éžå¸¸æœ‰ç”¨ã€‚
+    ÔÊÐíÃ¿¸ö²âÊÔ×î¶àÔËÐÐ\ ``<n>``\ ´Î²ÅÄÜÍ¨¹ý¡£Ö»ÓÐµ±²âÊÔ³¬Ê±Ê±²ÅÖØ¸´²âÊÔ¡£Õâ¶ÔÓÚÔÚ·±Ã¦µÄ\
+    »úÆ÷ÉÏÈÝÈÌ²âÊÔÓÃÀýÖÐµÄÁãÐÇ³¬Ê±·Ç³£ÓÐÓÃ¡£
 
 .. option:: --repeat-until-fail <n>
 
- ç›¸å½“äºŽ\ :option:`--repeat until-fail:\<n\> <ctest --repeat>`ã€‚
+ Ïàµ±ÓÚ\ :option:`--repeat until-fail:\<n\> <ctest --repeat>`¡£
 
 .. option:: --max-width <width>
 
- è®¾ç½®æµ‹è¯•åç§°è¾“å‡ºçš„æœ€å¤§å®½åº¦ã€‚
+ ÉèÖÃ²âÊÔÃû³ÆÊä³öµÄ×î´ó¿í¶È¡£
 
- è®¾ç½®è¦åœ¨è¾“å‡ºä¸­æ˜¾ç¤ºçš„æ¯ä¸ªæµ‹è¯•åç§°çš„æœ€å¤§å®½åº¦ã€‚è¿™å…è®¸ç”¨æˆ·æ‰©å¤§è¾“å‡ºï¼Œä»¥é¿å…å‰ªåˆ‡æµ‹è¯•åç§°ï¼Œè¿™å¯èƒ½\
- æ˜¯éžå¸¸çƒ¦äººçš„ã€‚
+ ÉèÖÃÒªÔÚÊä³öÖÐÏÔÊ¾µÄÃ¿¸ö²âÊÔÃû³ÆµÄ×î´ó¿í¶È¡£ÕâÔÊÐíÓÃ»§À©´óÊä³ö£¬ÒÔ±ÜÃâ¼ôÇÐ²âÊÔÃû³Æ£¬Õâ¿ÉÄÜ\
+ ÊÇ·Ç³£·³ÈËµÄ¡£
 
 .. option:: --interactive-debug-mode [0|1]
 
- è®¾ç½®äº¤äº’æ¨¡å¼ä¸º\ ``0``\ æˆ–\ ``1``ã€‚
+ ÉèÖÃ½»»¥Ä£Ê½Îª\ ``0``\ »ò\ ``1``¡£
 
- æ­¤é€‰é¡¹å¯ä½¿CTestä»¥äº¤äº’æ¨¡å¼æˆ–éžäº¤äº’æ¨¡å¼è¿è¡Œæµ‹è¯•ã€‚åœ¨ä»ªè¡¨æ¿æ¨¡å¼ä¸‹ï¼ˆ\ ``Experimental``ã€\
- ``Nightly``ã€\ ``Continuous``ï¼‰ï¼Œé»˜è®¤ä¸ºéžäº¤äº’å¼ã€‚åœ¨éžäº¤äº’æ¨¡å¼ä¸‹ï¼Œè®¾ç½®çŽ¯å¢ƒå˜é‡\
- :envvar:`DASHBOARD_TEST_FROM_CTEST`ã€‚
+ ´ËÑ¡Ïî¿ÉÊ¹CTestÒÔ½»»¥Ä£Ê½»ò·Ç½»»¥Ä£Ê½ÔËÐÐ²âÊÔ¡£ÔÚÒÇ±í°åÄ£Ê½ÏÂ£¨\ ``Experimental``¡¢\
+ ``Nightly``¡¢\ ``Continuous``£©£¬Ä¬ÈÏÎª·Ç½»»¥Ê½¡£ÔÚ·Ç½»»¥Ä£Ê½ÏÂ£¬ÉèÖÃ»·¾³±äÁ¿\
+ :envvar:`DASHBOARD_TEST_FROM_CTEST`¡£
 
- åœ¨CMake 3.11ä¹‹å‰ï¼ŒWindowsä¸Šçš„äº¤äº’æ¨¡å¼å…è®¸å‡ºçŽ°ç³»ç»Ÿè°ƒè¯•å¼¹å‡ºçª—å£ã€‚çŽ°åœ¨ï¼Œç”±äºŽCTestä½¿ç”¨\
- ``libuv``\ æ¥å¯åŠ¨æµ‹è¯•è¿›ç¨‹ï¼Œæ‰€æœ‰ç³»ç»Ÿè°ƒè¯•å¼¹å‡ºçª—å£æ€»æ˜¯è¢«ç¦æ­¢ã€‚
+ ÔÚCMake 3.11Ö®Ç°£¬WindowsÉÏµÄ½»»¥Ä£Ê½ÔÊÐí³öÏÖÏµÍ³µ÷ÊÔµ¯³ö´°¿Ú¡£ÏÖÔÚ£¬ÓÉÓÚCTestÊ¹ÓÃ\
+ ``libuv``\ À´Æô¶¯²âÊÔ½ø³Ì£¬ËùÓÐÏµÍ³µ÷ÊÔµ¯³ö´°¿Ú×ÜÊÇ±»½ûÖ¹¡£
 
 .. option:: --no-label-summary
 
- ç¦ç”¨æ ‡ç­¾çš„å®šæ—¶æ±‡æ€»ä¿¡æ¯ã€‚
+ ½ûÓÃ±êÇ©µÄ¶¨Ê±»ã×ÜÐÅÏ¢¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTestä¸è¦æ‰“å°ä¸Žæµ‹è¯•è¿è¡Œç›¸å…³è”çš„æ¯ä¸ªæ ‡ç­¾çš„æ‘˜è¦ä¿¡æ¯ã€‚å¦‚æžœæµ‹è¯•ä¸Šæ²¡æœ‰æ ‡ç­¾ï¼Œå°±ä¸ä¼šæ‰“\
- å°ä»»ä½•é¢å¤–çš„å†…å®¹ã€‚
+ ´ËÑ¡Ïî¸æËßCTest²»Òª´òÓ¡Óë²âÊÔÔËÐÐÏà¹ØÁªµÄÃ¿¸ö±êÇ©µÄÕªÒªÐÅÏ¢¡£Èç¹û²âÊÔÉÏÃ»ÓÐ±êÇ©£¬¾Í²»»á´ò\
+ Ó¡ÈÎºÎ¶îÍâµÄÄÚÈÝ¡£
 
- è¯·å‚é˜…\ `æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦`_ã€‚
+ Çë²ÎÔÄ\ `±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª`_¡£
 
 .. option:: --no-subproject-summary
 
- ç¦ç”¨å­é¡¹ç›®çš„å®šæ—¶æ‘˜è¦ä¿¡æ¯ã€‚
+ ½ûÓÃ×ÓÏîÄ¿µÄ¶¨Ê±ÕªÒªÐÅÏ¢¡£
 
- æ­¤é€‰é¡¹å‘Šè¯‰CTestä¸è¦æ‰“å°ä¸Žæµ‹è¯•è¿è¡Œç›¸å…³è”çš„æ¯ä¸ªå­é¡¹ç›®çš„æ‘˜è¦ä¿¡æ¯ã€‚å¦‚æžœæµ‹è¯•ä¸­æ²¡æœ‰å­é¡¹ç›®ï¼Œåˆ™ä¸ä¼š\
- æ‰“å°é¢å¤–çš„å†…å®¹ã€‚
+ ´ËÑ¡Ïî¸æËßCTest²»Òª´òÓ¡Óë²âÊÔÔËÐÐÏà¹ØÁªµÄÃ¿¸ö×ÓÏîÄ¿µÄÕªÒªÐÅÏ¢¡£Èç¹û²âÊÔÖÐÃ»ÓÐ×ÓÏîÄ¿£¬Ôò²»»á\
+ ´òÓ¡¶îÍâµÄÄÚÈÝ¡£
 
- è¯·å‚é˜…\ `æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦`_ã€‚
+ Çë²ÎÔÄ\ `±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª`_¡£
 
 .. option:: --test-dir <dir>
 
  .. versionadded:: 3.20
 
- æŒ‡å®šè¦æŸ¥æ‰¾æµ‹è¯•çš„ç›®å½•ï¼Œé€šå¸¸æ˜¯CMakeé¡¹ç›®æž„å»ºç›®å½•ã€‚å¦‚æžœæœªæŒ‡å®šï¼Œåˆ™ä½¿ç”¨å½“å‰ç›®å½•ã€‚
+ Ö¸¶¨Òª²éÕÒ²âÊÔµÄÄ¿Â¼£¬Í¨³£ÊÇCMakeÏîÄ¿¹¹½¨Ä¿Â¼¡£Èç¹ûÎ´Ö¸¶¨£¬ÔòÊ¹ÓÃµ±Ç°Ä¿Â¼¡£
 
 .. option:: --test-output-size-passed <size>
 
  .. versionadded:: 3.4
 
- å°†é€šè¿‡çš„æµ‹è¯•çš„è¾“å‡ºé™åˆ¶ä¸º\ ``<size>``\ å­—èŠ‚ã€‚
+ ½«Í¨¹ýµÄ²âÊÔµÄÊä³öÏÞÖÆÎª\ ``<size>``\ ×Ö½Ú¡£
 
 .. option:: --test-output-size-failed <size>
 
  .. versionadded:: 3.4
 
- å°†å¤±è´¥æµ‹è¯•çš„è¾“å‡ºé™åˆ¶ä¸º\ ``<size>``\ å­—èŠ‚ã€‚
+ ½«Ê§°Ü²âÊÔµÄÊä³öÏÞÖÆÎª\ ``<size>``\ ×Ö½Ú¡£
 
 .. option:: --test-output-truncation <mode>
 
  .. versionadded:: 3.24
 
- ä¸€æ—¦è¾¾åˆ°æœ€å¤§è¾“å‡ºå¤§å°ï¼Œæˆªæ–­æµ‹è¯•è¾“å‡ºçš„\ ``tail``\ ï¼ˆé»˜è®¤ï¼‰ã€\ ``middle``\ æˆ–\ ``head``ã€‚
+ Ò»µ©´ïµ½×î´óÊä³ö´óÐ¡£¬½Ø¶Ï²âÊÔÊä³öµÄ\ ``tail``\ £¨Ä¬ÈÏ£©¡¢\ ``middle``\ »ò\ ``head``¡£
 
 .. option:: --overwrite
 
- è¦†ç›–CTesté…ç½®é€‰é¡¹ã€‚
+ ¸²¸ÇCTestÅäÖÃÑ¡Ïî¡£
 
- é»˜è®¤æƒ…å†µä¸‹ï¼ŒCTestä½¿ç”¨é…ç½®æ–‡ä»¶ä¸­çš„é…ç½®é€‰é¡¹ã€‚æ­¤é€‰é¡¹å°†è¦†ç›–é…ç½®é€‰é¡¹ã€‚
+ Ä¬ÈÏÇé¿öÏÂ£¬CTestÊ¹ÓÃÅäÖÃÎÄ¼þÖÐµÄÅäÖÃÑ¡Ïî¡£´ËÑ¡Ïî½«¸²¸ÇÅäÖÃÑ¡Ïî¡£
 
 .. option:: --force-new-ctest-process
 
- å°†å­CTestå®žä¾‹ä½œä¸ºæ–°è¿›ç¨‹è¿è¡Œã€‚
+ ½«×ÓCTestÊµÀý×÷ÎªÐÂ½ø³ÌÔËÐÐ¡£
 
- é»˜è®¤æƒ…å†µä¸‹ï¼ŒCTestå°†åœ¨åŒä¸€è¿›ç¨‹ä¸­è¿è¡Œå­CTestå®žä¾‹ã€‚å¦‚æžœä¸éœ€è¦è¿™ç§è¡Œä¸ºï¼Œè¿™ä¸ªå‚æ•°å°†ä¸ºå­CTestè¿›\
- ç¨‹å¼ºåˆ¶æ–°çš„è¿›ç¨‹ã€‚
+ Ä¬ÈÏÇé¿öÏÂ£¬CTest½«ÔÚÍ¬Ò»½ø³ÌÖÐÔËÐÐ×ÓCTestÊµÀý¡£Èç¹û²»ÐèÒªÕâÖÖÐÐÎª£¬Õâ¸ö²ÎÊý½«Îª×ÓCTest½ø\
+ ³ÌÇ¿ÖÆÐÂµÄ½ø³Ì¡£
 
 .. option:: --schedule-random
 
- ä½¿ç”¨éšæœºé¡ºåºå®‰æŽ’æµ‹è¯•ã€‚
+ Ê¹ÓÃËæ»úË³Ðò°²ÅÅ²âÊÔ¡£
 
- æ­¤é€‰é¡¹å°†ä»¥éšæœºé¡ºåºè¿è¡Œæµ‹è¯•ã€‚å®ƒé€šå¸¸ç”¨äºŽæ£€æµ‹æµ‹è¯•å¥—ä»¶ä¸­çš„éšå¼ä¾èµ–å…³ç³»ã€‚
+ ´ËÑ¡Ïî½«ÒÔËæ»úË³ÐòÔËÐÐ²âÊÔ¡£ËüÍ¨³£ÓÃÓÚ¼ì²â²âÊÔÌ×¼þÖÐµÄÒþÊ½ÒÀÀµ¹ØÏµ¡£
 
 .. option:: --submit-index
 
- æ—§çš„Dart2ä»ªè¡¨æ¿æœåŠ¡å™¨åŠŸèƒ½çš„é—ç•™é€‰é¡¹ã€‚è¯·å‹¿ä½¿ç”¨ã€‚
+ ¾ÉµÄDart2ÒÇ±í°å·þÎñÆ÷¹¦ÄÜµÄÒÅÁôÑ¡Ïî¡£ÇëÎðÊ¹ÓÃ¡£
 
 .. option:: --timeout <seconds>
 
- è®¾ç½®é»˜è®¤æµ‹è¯•è¶…æ—¶æ—¶é—´ã€‚
+ ÉèÖÃÄ¬ÈÏ²âÊÔ³¬Ê±Ê±¼ä¡£
 
- æ­¤é€‰é¡¹æœ‰æ•ˆåœ°ä¸ºå°šæœªé€šè¿‡\ :prop_test:`TIMEOUT`\ å±žæ€§å¯¹å…¶è®¾ç½®è¶…æ—¶çš„æ‰€æœ‰æµ‹è¯•è®¾ç½®è¶…æ—¶ã€‚
+ ´ËÑ¡ÏîÓÐÐ§µØÎªÉÐÎ´Í¨¹ý\ :prop_test:`TIMEOUT`\ ÊôÐÔ¶ÔÆäÉèÖÃ³¬Ê±µÄËùÓÐ²âÊÔÉèÖÃ³¬Ê±¡£
 
 .. option:: --stop-time <time>
 
- è®¾ç½®æ‰€æœ‰æµ‹è¯•åº”åœæ­¢è¿è¡Œçš„æ—¶é—´ã€‚
+ ÉèÖÃËùÓÐ²âÊÔÓ¦Í£Ö¹ÔËÐÐµÄÊ±¼ä¡£
 
- è®¾ç½®ä¸€å¤©ä¸­æ‰€æœ‰æµ‹è¯•åº”è¯¥è¶…æ—¶çš„å®žé™…æ—¶é—´ã€‚ä¾‹å¦‚\ ``7:00:00 -0400``ã€‚å¯ä»¥æŽ¥å—curlæ—¥æœŸè§£æžå™¨ç†\
- è§£çš„ä»»ä½•æ—¶é—´æ ¼å¼ã€‚å¦‚æžœæ²¡æœ‰æŒ‡å®šæ—¶åŒºï¼Œåˆ™å‡å®šä¸ºæœ¬åœ°æ—¶é—´ã€‚
+ ÉèÖÃÒ»ÌìÖÐËùÓÐ²âÊÔÓ¦¸Ã³¬Ê±µÄÊµ¼ÊÊ±¼ä¡£ÀýÈç\ ``7:00:00 -0400``¡£¿ÉÒÔ½ÓÊÜcurlÈÕÆÚ½âÎöÆ÷Àí\
+ ½âµÄÈÎºÎÊ±¼ä¸ñÊ½¡£Èç¹ûÃ»ÓÐÖ¸¶¨Ê±Çø£¬Ôò¼Ù¶¨Îª±¾µØÊ±¼ä¡£
 
 .. option:: --print-labels
 
- æ‰“å°æ‰€æœ‰å¯ç”¨çš„æµ‹è¯•æ ‡ç­¾ã€‚
+ ´òÓ¡ËùÓÐ¿ÉÓÃµÄ²âÊÔ±êÇ©¡£
 
- æ­¤é€‰é¡¹ä¸ä¼šè¿è¡Œä»»ä½•æµ‹è¯•ï¼Œå®ƒåªä¼šæ‰“å°ä¸Žæµ‹è¯•é›†å…³è”çš„æ‰€æœ‰æ ‡ç­¾çš„åˆ—è¡¨ã€‚
+ ´ËÑ¡Ïî²»»áÔËÐÐÈÎºÎ²âÊÔ£¬ËüÖ»»á´òÓ¡Óë²âÊÔ¼¯¹ØÁªµÄËùÓÐ±êÇ©µÄÁÐ±í¡£
 
 .. option:: --no-tests=<action>
 
- å°†æœªå‘çŽ°çš„æµ‹è¯•è§†ä¸ºé”™è¯¯ï¼ˆå½“\ ``<action>``\ è®¾ç½®ä¸º\ ``error``\ æ—¶ï¼‰æˆ–å¿½ç•¥å®ƒï¼ˆå½“\
- ``<action>``\ è®¾ç½®ä¸º\ ``ignore``\ æ—¶ï¼‰ã€‚
+ ½«Î´·¢ÏÖµÄ²âÊÔÊÓÎª´íÎó£¨µ±\ ``<action>``\ ÉèÖÃÎª\ ``error``\ Ê±£©»òºöÂÔËü£¨µ±\
+ ``<action>``\ ÉèÖÃÎª\ ``ignore``\ Ê±£©¡£
 
- å¦‚æžœæœªæ‰¾åˆ°ä»»ä½•æµ‹è¯•ï¼ŒCTestçš„é»˜è®¤è¡Œä¸ºæ˜¯å§‹ç»ˆè®°å½•é”™è¯¯æ¶ˆæ¯ï¼Œä½†ä»…åœ¨è„šæœ¬æ¨¡å¼ä¸‹è¿”å›žé”™è¯¯ä»£ç ã€‚è¯¥é€‰é¡¹\
- é€šè¿‡åœ¨æ²¡æœ‰æ‰¾åˆ°æµ‹è¯•æ—¶è¿”å›žé”™è¯¯ä»£ç æˆ–å¿½ç•¥å®ƒæ¥ç»Ÿä¸€CTestçš„è¡Œä¸ºã€‚
+ Èç¹ûÎ´ÕÒµ½ÈÎºÎ²âÊÔ£¬CTestµÄÄ¬ÈÏÐÐÎªÊÇÊ¼ÖÕ¼ÇÂ¼´íÎóÏûÏ¢£¬µ«½öÔÚ½Å±¾Ä£Ê½ÏÂ·µ»Ø´íÎó´úÂë¡£¸ÃÑ¡Ïî\
+ Í¨¹ýÔÚÃ»ÓÐÕÒµ½²âÊÔÊ±·µ»Ø´íÎó´úÂë»òºöÂÔËüÀ´Í³Ò»CTestµÄÐÐÎª¡£
 
  .. versionadded:: 3.26
 
- è¿™ä¸ªé€‰é¡¹ä¹Ÿå¯ä»¥é€šè¿‡è®¾ç½®\ :envvar:`CTEST_NO_TESTS_ACTION`\ çŽ¯å¢ƒå˜é‡æ¥è®¾ç½®ã€‚
+ Õâ¸öÑ¡ÏîÒ²¿ÉÒÔÍ¨¹ýÉèÖÃ\ :envvar:`CTEST_NO_TESTS_ACTION`\ »·¾³±äÁ¿À´ÉèÖÃ¡£
 
-æŸ¥çœ‹å¸®åŠ©
+²é¿´°ïÖú
 =========
 
-è¦æ‰“å°ç‰ˆæœ¬è¯¦ç»†ä¿¡æ¯æˆ–ä»ŽCMakeæ–‡æ¡£ä¸­é€‰æ‹©çš„é¡µé¢ï¼Œä½¿ç”¨ä»¥ä¸‹é€‰é¡¹ä¹‹ä¸€ï¼š
+Òª´òÓ¡°æ±¾ÏêÏ¸ÐÅÏ¢»ò´ÓCMakeÎÄµµÖÐÑ¡ÔñµÄÒ³Ãæ£¬Ê¹ÓÃÒÔÏÂÑ¡ÏîÖ®Ò»£º
 
 .. include:: OPTIONS_HELP.txt
 
 .. _`Label Matching`:
 
-æ ‡ç­¾åŒ¹é…
+±êÇ©Æ¥Åä
 ==============
 
-æµ‹è¯•å¯èƒ½é™„æœ‰æ ‡ç­¾ã€‚é€šè¿‡ç­›é€‰æ ‡ç­¾ï¼Œå¯ä»¥å°†æµ‹è¯•åŒ…æ‹¬åœ¨æµ‹è¯•è¿è¡Œä¸­ï¼Œä¹Ÿå¯ä»¥å°†æµ‹è¯•æŽ’é™¤åœ¨æµ‹è¯•è¿è¡Œä¸­ã€‚æ¯\
-ä¸ªå•ç‹¬çš„è¿‡æ»¤å™¨éƒ½æ˜¯ä¸€ä¸ªæ­£åˆ™è¡¨è¾¾å¼ï¼Œåº”ç”¨äºŽé™„åŠ åˆ°æµ‹è¯•çš„æ ‡ç­¾ã€‚
+²âÊÔ¿ÉÄÜ¸½ÓÐ±êÇ©¡£Í¨¹ýÉ¸Ñ¡±êÇ©£¬¿ÉÒÔ½«²âÊÔ°üÀ¨ÔÚ²âÊÔÔËÐÐÖÐ£¬Ò²¿ÉÒÔ½«²âÊÔÅÅ³ýÔÚ²âÊÔÔËÐÐÖÐ¡£Ã¿\
+¸öµ¥¶ÀµÄ¹ýÂËÆ÷¶¼ÊÇÒ»¸öÕýÔò±í´ïÊ½£¬Ó¦ÓÃÓÚ¸½¼Óµ½²âÊÔµÄ±êÇ©¡£
 
-å½“ä½¿ç”¨\ :option:`-L <ctest -L>`\ æ—¶ï¼Œä¸ºäº†å°†æµ‹è¯•åŒ…å«åœ¨æµ‹è¯•è¿è¡Œä¸­ï¼Œæ¯ä¸ªæ­£åˆ™è¡¨è¾¾å¼å¿…é¡»åŒ¹é…\
-è‡³å°‘ä¸€ä¸ªæ ‡ç­¾ã€‚ä½¿ç”¨å¤šä¸ª\ :option:`-L <ctest -L>`\ é€‰é¡¹æ„å‘³ç€â€œåŒ¹é…\ **æ‰€æœ‰**\ è¿™äº›â€ã€‚
+µ±Ê¹ÓÃ\ :option:`-L <ctest -L>`\ Ê±£¬ÎªÁË½«²âÊÔ°üº¬ÔÚ²âÊÔÔËÐÐÖÐ£¬Ã¿¸öÕýÔò±í´ïÊ½±ØÐëÆ¥Åä\
+ÖÁÉÙÒ»¸ö±êÇ©¡£Ê¹ÓÃ¶à¸ö\ :option:`-L <ctest -L>`\ Ñ¡ÏîÒâÎ¶×Å¡°Æ¥Åä\ **ËùÓÐ**\ ÕâÐ©¡±¡£
 
-:option:`-LE <ctest -LE>`\ é€‰é¡¹çš„å·¥ä½œåŽŸç†ä¸Ž\ :option:`-L <ctest -L>`\ ç±»ä¼¼ï¼Œä½†å®ƒæŽ’é™¤\
-æµ‹è¯•è€Œä¸æ˜¯åŒ…æ‹¬æµ‹è¯•ã€‚å¦‚æžœæ¯ä¸ªæ­£åˆ™è¡¨è¾¾å¼åŒ¹é…è‡³å°‘ä¸€ä¸ªæ ‡ç­¾ï¼Œåˆ™æŽ’é™¤æµ‹è¯•ã€‚
+:option:`-LE <ctest -LE>`\ Ñ¡ÏîµÄ¹¤×÷Ô­ÀíÓë\ :option:`-L <ctest -L>`\ ÀàËÆ£¬µ«ËüÅÅ³ý\
+²âÊÔ¶ø²»ÊÇ°üÀ¨²âÊÔ¡£Èç¹ûÃ¿¸öÕýÔò±í´ïÊ½Æ¥ÅäÖÁÉÙÒ»¸ö±êÇ©£¬ÔòÅÅ³ý²âÊÔ¡£
 
-å¦‚æžœä¸€ä¸ªæµ‹è¯•æ²¡æœ‰é™„åŠ æ ‡ç­¾ï¼Œé‚£ä¹ˆ\ :option:`-L <ctest -L>`\ å°†æ°¸è¿œä¸ä¼šåŒ…æ‹¬è¯¥æµ‹è¯•ï¼Œå¹¶ä¸”\
-:option:`-LE <ctest -LE>`\ å°†æ°¸è¿œä¸ä¼šæŽ’é™¤è¯¥æµ‹è¯•ã€‚ä»¥å¸¦æ ‡ç­¾çš„æµ‹è¯•ä¸ºä¾‹ï¼Œè€ƒè™‘äº”ä¸ªæµ‹è¯•ï¼Œå®ƒä»¬\
-å¸¦æœ‰ä»¥ä¸‹æ ‡ç­¾ï¼š
+Èç¹ûÒ»¸ö²âÊÔÃ»ÓÐ¸½¼Ó±êÇ©£¬ÄÇÃ´\ :option:`-L <ctest -L>`\ ½«ÓÀÔ¶²»»á°üÀ¨¸Ã²âÊÔ£¬²¢ÇÒ\
+:option:`-LE <ctest -LE>`\ ½«ÓÀÔ¶²»»áÅÅ³ý¸Ã²âÊÔ¡£ÒÔ´ø±êÇ©µÄ²âÊÔÎªÀý£¬¿¼ÂÇÎå¸ö²âÊÔ£¬ËüÃÇ\
+´øÓÐÒÔÏÂ±êÇ©£º
 
-* *test1*\ æœ‰\ *tuesday*\ å’Œ\ *production*\ æ ‡ç­¾
-* *test2*\ æœ‰\ *tuesday*\ å’Œ\ *test*\ æ ‡ç­¾
-* *test3*\ æœ‰\ *wednesday*\ å’Œ\ *production*\ æ ‡ç­¾
-* *test4*\ æœ‰\ *wednesday*\ çš„æ ‡ç­¾
-* *test5*\ æœ‰æ ‡ç­¾\ *friday*\ å’Œ\ *test*
+* *test1*\ ÓÐ\ *tuesday*\ ºÍ\ *production*\ ±êÇ©
+* *test2*\ ÓÐ\ *tuesday*\ ºÍ\ *test*\ ±êÇ©
+* *test3*\ ÓÐ\ *wednesday*\ ºÍ\ *production*\ ±êÇ©
+* *test4*\ ÓÐ\ *wednesday*\ µÄ±êÇ©
+* *test5*\ ÓÐ±êÇ©\ *friday*\ ºÍ\ *test*
 
-ç”¨\ ``-L tuesday -L test``\ å‘½ä»¤è¿è¡Œ\ :program:`ctest`ï¼Œå°†é€‰æ‹©\ *test2*ï¼Œå®ƒæœ‰ä¸¤ä¸ªæ ‡ç­¾ã€‚\
-ä½¿ç”¨\ ``-L test``\ è¿è¡ŒCTestå°†é€‰æ‹©\ *test2*\ å’Œ\ *test5*ï¼Œå› ä¸ºå®ƒä»¬éƒ½æœ‰ä¸€ä¸ªä¸Žæ­£åˆ™è¡¨è¾¾å¼\
-åŒ¹é…çš„æ ‡ç­¾ã€‚
+ÓÃ\ ``-L tuesday -L test``\ ÃüÁîÔËÐÐ\ :program:`ctest`£¬½«Ñ¡Ôñ\ *test2*£¬ËüÓÐÁ½¸ö±êÇ©¡£\
+Ê¹ÓÃ\ ``-L test``\ ÔËÐÐCTest½«Ñ¡Ôñ\ *test2*\ ºÍ\ *test5*£¬ÒòÎªËüÃÇ¶¼ÓÐÒ»¸öÓëÕýÔò±í´ïÊ½\
+Æ¥ÅäµÄ±êÇ©¡£
 
-å› ä¸ºåŒ¹é…ä½¿ç”¨æ­£åˆ™è¡¨è¾¾å¼ï¼Œæ‰€ä»¥è¯·æ³¨æ„ï¼Œä½¿ç”¨\ ``-L es``\ è¿è¡ŒCTestå°†åŒ¹é…æ‰€æœ‰äº”ä¸ªæµ‹è¯•ã€‚è‹¥è¦åŒæ—¶\
-é€‰æ‹©\ *tuesday*\ å’Œ\ *wednesday*\ æµ‹è¯•ï¼Œè¯·ä½¿ç”¨åŒ¹é…å…¶ä¸­ä¸€ä¸ªçš„å•ä¸ªæ­£åˆ™è¡¨è¾¾å¼ï¼Œå¦‚\
-``-L "tue|wed"``ã€‚
+ÒòÎªÆ¥ÅäÊ¹ÓÃÕýÔò±í´ïÊ½£¬ËùÒÔÇë×¢Òâ£¬Ê¹ÓÃ\ ``-L es``\ ÔËÐÐCTest½«Æ¥ÅäËùÓÐÎå¸ö²âÊÔ¡£ÈôÒªÍ¬Ê±\
+Ñ¡Ôñ\ *tuesday*\ ºÍ\ *wednesday*\ ²âÊÔ£¬ÇëÊ¹ÓÃÆ¥ÅäÆäÖÐÒ»¸öµÄµ¥¸öÕýÔò±í´ïÊ½£¬Èç\
+``-L "tue|wed"``¡£
 
 .. _`Label and Subproject Summary`:
 
-æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦
+±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª
 ============================
 
-CTestæ‰“å°ä¸Žæµ‹è¯•è¿è¡Œç›¸å…³è”çš„æ¯ä¸ª\ ``LABEL``\ å’Œå­é¡¹ç›®çš„è®¡æ—¶æ‘˜è¦ä¿¡æ¯ã€‚æ ‡ç­¾æ—¶é—´æ‘˜è¦å°†ä¸åŒ…æ‹¬æ˜ \
-å°„åˆ°å­é¡¹ç›®çš„æ ‡ç­¾ã€‚
+CTest´òÓ¡Óë²âÊÔÔËÐÐÏà¹ØÁªµÄÃ¿¸ö\ ``LABEL``\ ºÍ×ÓÏîÄ¿µÄ¼ÆÊ±ÕªÒªÐÅÏ¢¡£±êÇ©Ê±¼äÕªÒª½«²»°üÀ¨Ó³\
+Éäµ½×ÓÏîÄ¿µÄ±êÇ©¡£
 
 .. versionadded:: 3.22
-  åœ¨æµ‹è¯•æ‰§è¡ŒæœŸé—´åŠ¨æ€æ·»åŠ çš„æ ‡ç­¾ä¹Ÿä¼šåœ¨è®¡æ—¶æ‘˜è¦ä¸­æŠ¥å‘Šã€‚è¯·å‚é˜…\ :ref:`Additional Labels`ã€‚
+  ÔÚ²âÊÔÖ´ÐÐÆÚ¼ä¶¯Ì¬Ìí¼ÓµÄ±êÇ©Ò²»áÔÚ¼ÆÊ±ÕªÒªÖÐ±¨¸æ¡£Çë²ÎÔÄ\ :ref:`Additional Labels`¡£
 
-å½“è®¾ç½®äº† :prop_test:`PROCESSORS` æµ‹è¯•å±žæ€§æ—¶ï¼ŒCTestå°†åœ¨æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦ä¸­æ˜¾ç¤ºåŠ æƒæµ‹è¯•è®¡æ—¶\
-ç»“æžœã€‚æ—¶é—´æ˜¯ç”¨\ `sec*proc`\ æŠ¥å‘Šçš„ï¼Œè€Œä¸ä»…ä»…æ˜¯\ `sec`ã€‚
+µ±ÉèÖÃÁË :prop_test:`PROCESSORS` ²âÊÔÊôÐÔÊ±£¬CTest½«ÔÚ±êÇ©ºÍ×ÓÏîÄ¿ÕªÒªÖÐÏÔÊ¾¼ÓÈ¨²âÊÔ¼ÆÊ±\
+½á¹û¡£Ê±¼äÊÇÓÃ\ `sec*proc`\ ±¨¸æµÄ£¬¶ø²»½ö½öÊÇ\ `sec`¡£
 
-æ¯ä¸ªæ ‡ç­¾æˆ–å­é¡¹ç›®\ ``j``\ æŠ¥å‘Šçš„åŠ æƒæ—¶é—´æ±‡æ€»è®¡ç®—ä¸ºï¼š\ ::
+Ã¿¸ö±êÇ©»ò×ÓÏîÄ¿\ ``j``\ ±¨¸æµÄ¼ÓÈ¨Ê±¼ä»ã×Ü¼ÆËãÎª£º\ ::
 
   Weighted Time Summary for Label/Subproject j =
       sum(raw_test_time[j,i] * num_processors[j,i], i=1...num_tests[j])
 
   for labels/subprojects j=1...total
 
-å…¶ä¸­ï¼š
+ÆäÖÐ£º
 
-* ``raw_test_time[j,i]``ï¼š ``j``\ æ ‡ç­¾æˆ–å­é¡¹ç›®çš„\ ``i``\ æµ‹è¯•çš„æ—¶é’Ÿæ—¶é—´
-* ``num_processors[j,i]``ï¼š ç”¨äºŽ\ ``j``\ æ ‡ç­¾æˆ–å­é¡¹ç›®çš„\ ``i``\ æµ‹è¯•çš„CTest\
-  :prop_test:`PROCESSORS`\ å±žæ€§çš„å€¼
-* ``num_tests[j]``ï¼š ä¸Ž\ ``j``\ æ ‡ç­¾æˆ–å­é¡¹ç›®å…³è”çš„æµ‹è¯•æ•°
-* ``total``ï¼š è‡³å°‘æœ‰ä¸€ä¸ªæµ‹è¯•è¿è¡Œçš„æ ‡ç­¾æˆ–å­é¡¹ç›®çš„æ€»æ•°
+* ``raw_test_time[j,i]``£º ``j``\ ±êÇ©»ò×ÓÏîÄ¿µÄ\ ``i``\ ²âÊÔµÄÊ±ÖÓÊ±¼ä
+* ``num_processors[j,i]``£º ÓÃÓÚ\ ``j``\ ±êÇ©»ò×ÓÏîÄ¿µÄ\ ``i``\ ²âÊÔµÄCTest\
+  :prop_test:`PROCESSORS`\ ÊôÐÔµÄÖµ
+* ``num_tests[j]``£º Óë\ ``j``\ ±êÇ©»ò×ÓÏîÄ¿¹ØÁªµÄ²âÊÔÊý
+* ``total``£º ÖÁÉÙÓÐÒ»¸ö²âÊÔÔËÐÐµÄ±êÇ©»ò×ÓÏîÄ¿µÄ×ÜÊý
 
-å› æ­¤ï¼Œæ¯ä¸ªæ ‡ç­¾æˆ–å­é¡¹ç›®çš„åŠ æƒæ—¶é—´æ‘˜è¦è¡¨ç¤ºCTestä¸ºæ¯ä¸ªæ ‡ç­¾æˆ–å­é¡¹ç›®è¿è¡Œæµ‹è¯•æ‰€èŠ±è´¹çš„æ—¶é—´é‡ï¼Œå¹¶å¾ˆ\
-å¥½åœ°è¡¨ç¤ºäº†ä¸Žå…¶ä»–æ ‡ç­¾æˆ–å­é¡¹ç›®ç›¸æ¯”ï¼Œæ¯ä¸ªæ ‡ç­¾æˆ–å­é¡¹ç›®çš„æµ‹è¯•æ€»è´¹ç”¨ã€‚
+Òò´Ë£¬Ã¿¸ö±êÇ©»ò×ÓÏîÄ¿µÄ¼ÓÈ¨Ê±¼äÕªÒª±íÊ¾CTestÎªÃ¿¸ö±êÇ©»ò×ÓÏîÄ¿ÔËÐÐ²âÊÔËù»¨·ÑµÄÊ±¼äÁ¿£¬²¢ºÜ\
+ºÃµØ±íÊ¾ÁËÓëÆäËû±êÇ©»ò×ÓÏîÄ¿Ïà±È£¬Ã¿¸ö±êÇ©»ò×ÓÏîÄ¿µÄ²âÊÔ×Ü·ÑÓÃ¡£
 
-ä¾‹å¦‚ï¼Œå¦‚æžœ\ ``SubprojectA``\ æ˜¾ç¤º\ ``100 sec*proc``ï¼Œè€Œ\ ``SubprojectB``\ æ˜¾ç¤º\
-``10 sec*proc``ï¼Œé‚£ä¹ˆCTeståˆ†é…å¤§çº¦10å€çš„CPU/æ ¸å¿ƒæ—¶é—´æ¥è¿è¡Œ\ ``SubprojectA``\ çš„æµ‹è¯•ï¼Œ\
-è€Œä¸æ˜¯\ ``SubprojectB``\ çš„æµ‹è¯•ï¼ˆä¾‹å¦‚ï¼Œå¦‚æžœè¦èŠ±è´¹ç²¾åŠ›æ¥å‡å°‘æ•´ä¸ªé¡¹ç›®æµ‹è¯•å¥—ä»¶çš„æˆæœ¬ï¼Œé‚£ä¹ˆå‡å°‘\
-``SubprojectA``\ æµ‹è¯•å¥—ä»¶çš„æˆæœ¬å¯èƒ½ä¼šæ¯”å‡å°‘\ ``SubprojectB``\ æµ‹è¯•å¥—ä»¶çš„æˆæœ¬äº§ç”Ÿæ›´å¤§çš„\
-å½±å“ï¼‰ã€‚
+ÀýÈç£¬Èç¹û\ ``SubprojectA``\ ÏÔÊ¾\ ``100 sec*proc``£¬¶ø\ ``SubprojectB``\ ÏÔÊ¾\
+``10 sec*proc``£¬ÄÇÃ´CTest·ÖÅä´óÔ¼10±¶µÄCPU/ºËÐÄÊ±¼äÀ´ÔËÐÐ\ ``SubprojectA``\ µÄ²âÊÔ£¬\
+¶ø²»ÊÇ\ ``SubprojectB``\ µÄ²âÊÔ£¨ÀýÈç£¬Èç¹ûÒª»¨·Ñ¾«Á¦À´¼õÉÙÕû¸öÏîÄ¿²âÊÔÌ×¼þµÄ³É±¾£¬ÄÇÃ´¼õÉÙ\
+``SubprojectA``\ ²âÊÔÌ×¼þµÄ³É±¾¿ÉÄÜ»á±È¼õÉÙ\ ``SubprojectB``\ ²âÊÔÌ×¼þµÄ³É±¾²úÉú¸ü´óµÄ\
+Ó°Ïì£©¡£
 
 .. _`Build and Test Mode`:
 
-æž„å»ºå’Œæµ‹è¯•æ¨¡å¼
+¹¹½¨ºÍ²âÊÔÄ£Ê½
 ===================
 
-CTestæä¾›äº†ä¸€ä¸ªå‘½ä»¤è¡Œç­¾åæ¥é…ç½®ï¼ˆå³è¿è¡Œcmakeï¼‰ã€æž„å»ºå’Œ/æˆ–æ‰§è¡Œæµ‹è¯•ï¼š\ ::
+CTestÌá¹©ÁËÒ»¸öÃüÁîÐÐÇ©ÃûÀ´ÅäÖÃ£¨¼´ÔËÐÐcmake£©¡¢¹¹½¨ºÍ/»òÖ´ÐÐ²âÊÔ£º\ ::
 
   ctest --build-and-test <path-to-source> <path-to-build>
         --build-generator <generator>
@@ -493,92 +493,92 @@ CTestæä¾›äº†ä¸€ä¸ªå‘½ä»¤è¡Œç­¾åæ¥é…ç½®ï¼ˆå³è¿è¡Œcmakeï¼‰ã€æž„å»ºå’Œ/æˆ–
         [--build-options <opts>...]
         [--test-command <command> [<args>...]]
 
-é…ç½®å’Œæµ‹è¯•æ­¥éª¤æ˜¯å¯é€‰çš„ã€‚è¯¥å‘½ä»¤è¡Œçš„å‚æ•°æ˜¯æºç›®å½•å’ŒäºŒè¿›åˆ¶ç›®å½•ã€‚\ *å¿…é¡»*\ æä¾›\
-``--build-generator``\ é€‰é¡¹æ‰èƒ½ä½¿ç”¨\ ``--build-and-test``ã€‚å¦‚æžœæŒ‡å®šäº†\
-``--test-command``ï¼Œé‚£ä¹ˆå®ƒå°†åœ¨æž„å»ºå®ŒæˆåŽè¿è¡Œã€‚å½±å“æ­¤æ¨¡å¼çš„å…¶ä»–é€‰é¡¹åŒ…æ‹¬ï¼š
+ÅäÖÃºÍ²âÊÔ²½ÖèÊÇ¿ÉÑ¡µÄ¡£¸ÃÃüÁîÐÐµÄ²ÎÊýÊÇÔ´Ä¿Â¼ºÍ¶þ½øÖÆÄ¿Â¼¡£\ *±ØÐë*\ Ìá¹©\
+``--build-generator``\ Ñ¡Ïî²ÅÄÜÊ¹ÓÃ\ ``--build-and-test``¡£Èç¹ûÖ¸¶¨ÁË\
+``--test-command``£¬ÄÇÃ´Ëü½«ÔÚ¹¹½¨Íê³ÉºóÔËÐÐ¡£Ó°Ïì´ËÄ£Ê½µÄÆäËûÑ¡Ïî°üÀ¨£º
 
 .. option:: --build-and-test
 
- åˆ‡æ¢åˆ°æž„å»ºå’Œæµ‹è¯•æ¨¡å¼ã€‚
+ ÇÐ»»µ½¹¹½¨ºÍ²âÊÔÄ£Ê½¡£
 
 .. option:: --build-target
 
- æŒ‡å®šè¦æž„å»ºçš„ç‰¹å®šç›®æ ‡ã€‚å¯ä»¥ä½¿ç”¨ä¸åŒçš„ç›®æ ‡å¤šæ¬¡ç»™å‡ºè¯¥é€‰é¡¹ï¼Œåœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œä¾æ¬¡æž„å»ºæ¯ä¸ªç›®æ ‡ã€‚é™¤éž\
- ç»™å‡ºäº†\ :option:`--build-noclean`\ é€‰é¡¹ï¼Œå¦åˆ™å°†åœ¨æž„å»ºæ¯ä¸ªç›®æ ‡ä¹‹å‰æ‰§è¡Œä¸€æ¬¡æ¸…ç†ã€‚
+ Ö¸¶¨Òª¹¹½¨µÄÌØ¶¨Ä¿±ê¡£¿ÉÒÔÊ¹ÓÃ²»Í¬µÄÄ¿±ê¶à´Î¸ø³ö¸ÃÑ¡Ïî£¬ÔÚÕâÖÖÇé¿öÏÂ£¬ÒÀ´Î¹¹½¨Ã¿¸öÄ¿±ê¡£³ý·Ç\
+ ¸ø³öÁË\ :option:`--build-noclean`\ Ñ¡Ïî£¬·ñÔò½«ÔÚ¹¹½¨Ã¿¸öÄ¿±êÖ®Ç°Ö´ÐÐÒ»´ÎÇåÀí¡£
 
- å¦‚æžœä¸æŒ‡å®š\ ``--build-target``ï¼Œåˆ™æž„å»º\ ``all``\ ç›®æ ‡ã€‚
+ Èç¹û²»Ö¸¶¨\ ``--build-target``£¬Ôò¹¹½¨\ ``all``\ Ä¿±ê¡£
 
 .. option:: --build-nocmake
 
- è¿è¡Œæž„å»ºï¼Œä½†ä¸è¦å…ˆè¿è¡Œcmakeã€‚
+ ÔËÐÐ¹¹½¨£¬µ«²»ÒªÏÈÔËÐÐcmake¡£
 
- è·³è¿‡cmakeæ­¥éª¤ã€‚
+ Ìø¹ýcmake²½Öè¡£
 
 .. option:: --build-run-dir
 
- æŒ‡å®šè¦è¿è¡Œç¨‹åºçš„ç›®å½•ã€‚
+ Ö¸¶¨ÒªÔËÐÐ³ÌÐòµÄÄ¿Â¼¡£
 
- ç¼–è¯‘åŽç¨‹åºæ‰€åœ¨çš„ç›®å½•ã€‚
+ ±àÒëºó³ÌÐòËùÔÚµÄÄ¿Â¼¡£
 
 .. option:: --build-two-config
 
- è¿è¡Œä¸¤æ¬¡CMakeã€‚
+ ÔËÐÐÁ½´ÎCMake¡£
 
 .. option:: --build-exe-dir
 
- æŒ‡å®šå¯æ‰§è¡Œæ–‡ä»¶çš„ç›®å½•ã€‚
+ Ö¸¶¨¿ÉÖ´ÐÐÎÄ¼þµÄÄ¿Â¼¡£
 
 .. option:: --build-generator
 
- æŒ‡å®šè¦ä½¿ç”¨çš„ç”Ÿæˆå™¨ã€‚è¯·å‚é˜…\ :manual:`cmake-generators(7)`\ æ‰‹å†Œã€‚
+ Ö¸¶¨ÒªÊ¹ÓÃµÄÉú³ÉÆ÷¡£Çë²ÎÔÄ\ :manual:`cmake-generators(7)`\ ÊÖ²á¡£
 
 .. option:: --build-generator-platform
 
- æŒ‡å®šç‰¹å®šäºŽç”Ÿæˆå™¨çš„å¹³å°ã€‚
+ Ö¸¶¨ÌØ¶¨ÓÚÉú³ÉÆ÷µÄÆ½Ì¨¡£
 
 .. option:: --build-generator-toolset
 
- æŒ‡å®šç‰¹å®šäºŽç”Ÿæˆå™¨çš„å·¥å…·é›†ã€‚
+ Ö¸¶¨ÌØ¶¨ÓÚÉú³ÉÆ÷µÄ¹¤¾ß¼¯¡£
 
 .. option:: --build-project
 
- æŒ‡å®šè¦ç”Ÿæˆçš„é¡¹ç›®çš„åç§°ã€‚
+ Ö¸¶¨ÒªÉú³ÉµÄÏîÄ¿µÄÃû³Æ¡£
 
 .. option:: --build-makeprogram
 
- æŒ‡å®šCMakeåœ¨é…ç½®å’Œæž„å»ºé¡¹ç›®æ—¶ä½¿ç”¨çš„æ˜¾å¼makeç¨‹åºã€‚ä»…é€‚ç”¨äºŽåŸºäºŽMakeå’ŒNinjaçš„ç”Ÿæˆå™¨ã€‚
+ Ö¸¶¨CMakeÔÚÅäÖÃºÍ¹¹½¨ÏîÄ¿Ê±Ê¹ÓÃµÄÏÔÊ½make³ÌÐò¡£½öÊÊÓÃÓÚ»ùÓÚMakeºÍNinjaµÄÉú³ÉÆ÷¡£
 
 .. option:: --build-noclean
 
- è·³è¿‡æ¸…ç†æ­¥éª¤ã€‚
+ Ìø¹ýÇåÀí²½Öè¡£
 
 .. option:: --build-config-sample
 
- ç”¨äºŽç¡®å®šåº”è¯¥ä½¿ç”¨çš„é…ç½®çš„ç¤ºä¾‹å¯æ‰§è¡Œæ–‡ä»¶ã€‚ä¾‹å¦‚\ ``Debug``ã€\ ``Release``\ ç­‰ã€‚
+ ÓÃÓÚÈ·¶¨Ó¦¸ÃÊ¹ÓÃµÄÅäÖÃµÄÊ¾Àý¿ÉÖ´ÐÐÎÄ¼þ¡£ÀýÈç\ ``Debug``¡¢\ ``Release``\ µÈ¡£
 
 .. option:: --build-options
 
- é…ç½®æž„å»ºçš„é™„åŠ é€‰é¡¹ï¼ˆå³CMakeï¼Œè€Œä¸æ˜¯æž„å»ºå·¥å…·ï¼‰ã€‚æ³¨æ„ï¼Œå¦‚æžœæŒ‡å®šäº†è¿™ä¸ªé€‰é¡¹ï¼Œ\
- ``--build-options``\ å…³é”®å­—åŠå…¶å‚æ•°å¿…é¡»æ˜¯å‘½ä»¤è¡Œä¸Šç»™å‡ºçš„æœ€åŽä¸€ä¸ªé€‰é¡¹ï¼Œå¯èƒ½çš„ä¾‹å¤–æ˜¯\
- ``--test-command``ã€‚
+ ÅäÖÃ¹¹½¨µÄ¸½¼ÓÑ¡Ïî£¨¼´CMake£¬¶ø²»ÊÇ¹¹½¨¹¤¾ß£©¡£×¢Òâ£¬Èç¹ûÖ¸¶¨ÁËÕâ¸öÑ¡Ïî£¬\
+ ``--build-options``\ ¹Ø¼ü×Ö¼°Æä²ÎÊý±ØÐëÊÇÃüÁîÐÐÉÏ¸ø³öµÄ×îºóÒ»¸öÑ¡Ïî£¬¿ÉÄÜµÄÀýÍâÊÇ\
+ ``--test-command``¡£
 
 .. option:: --test-command
 
- ä½¿ç”¨\ :option:`--build-and-test <ctest --build-and-test>`\ é€‰é¡¹ä½œä¸ºæµ‹è¯•æ­¥éª¤è¿è¡Œçš„\
- å‘½ä»¤ã€‚è¿™ä¸ªå…³é”®å­—åŽé¢çš„æ‰€æœ‰å‚æ•°éƒ½è¢«è®¤ä¸ºæ˜¯testå‘½ä»¤è¡Œçš„ä¸€éƒ¨åˆ†ï¼Œæ‰€ä»¥å®ƒå¿…é¡»æ˜¯ç»™å‡ºçš„æœ€åŽä¸€ä¸ªé€‰é¡¹ã€‚
+ Ê¹ÓÃ\ :option:`--build-and-test <ctest --build-and-test>`\ Ñ¡Ïî×÷Îª²âÊÔ²½ÖèÔËÐÐµÄ\
+ ÃüÁî¡£Õâ¸ö¹Ø¼ü×ÖºóÃæµÄËùÓÐ²ÎÊý¶¼±»ÈÏÎªÊÇtestÃüÁîÐÐµÄÒ»²¿·Ö£¬ËùÒÔËü±ØÐëÊÇ¸ø³öµÄ×îºóÒ»¸öÑ¡Ïî¡£
 
 .. option:: --test-timeout
 
- ä»¥ç§’ä¸ºå•ä½çš„æ—¶é—´é™åˆ¶
+ ÒÔÃëÎªµ¥Î»µÄÊ±¼äÏÞÖÆ
 
 .. _`Dashboard Client`:
 
-ä»ªè¡¨æ¿å®¢æˆ·ç«¯
+ÒÇ±í°å¿Í»§¶Ë
 ================
 
-CTestå¯ä»¥ä½œä¸º\ `CDash`_\ è½¯ä»¶è´¨é‡æŒ‡ç¤ºæ¿åº”ç”¨ç¨‹åºçš„å®¢æˆ·ç«¯æ“ä½œã€‚ä½œä¸ºä»ªè¡¨æ¿å®¢æˆ·æœºï¼ŒCTestæ‰§è¡Œ\
-ä¸€ç³»åˆ—æ­¥éª¤æ¥é…ç½®ã€æž„å»ºå’Œæµ‹è¯•è½¯ä»¶ï¼Œç„¶åŽå°†ç»“æžœæäº¤ç»™CDashæœåŠ¡å™¨ã€‚æäº¤åˆ°\ `CDash`_\ çš„å‘½ä»¤è¡Œ\
-ç­¾åæ˜¯ï¼š\ ::
+CTest¿ÉÒÔ×÷Îª\ `CDash`_\ Èí¼þÖÊÁ¿Ö¸Ê¾°åÓ¦ÓÃ³ÌÐòµÄ¿Í»§¶Ë²Ù×÷¡£×÷ÎªÒÇ±í°å¿Í»§»ú£¬CTestÖ´ÐÐ\
+Ò»ÏµÁÐ²½ÖèÀ´ÅäÖÃ¡¢¹¹½¨ºÍ²âÊÔÈí¼þ£¬È»ºó½«½á¹ûÌá½»¸øCDash·þÎñÆ÷¡£Ìá½»µ½\ `CDash`_\ µÄÃüÁîÐÐ\
+Ç©ÃûÊÇ£º\ ::
 
   ctest -D <dashboard>         [-- <dashboard-options>...]
   ctest -M <model> -T <action> [-- <dashboard-options>...]
@@ -587,879 +587,910 @@ CTestå¯ä»¥ä½œä¸º\ `CDash`_\ è½¯ä»¶è´¨é‡æŒ‡ç¤ºæ¿åº”ç”¨ç¨‹åºçš„å®¢æˆ·ç«¯æ“ä½œ
 
 .. _`CDash`: https://www.cdash.org
 
-ä»ªè¡¨æ¿å®¢æˆ·ç«¯çš„é€‰é¡¹åŒ…æ‹¬ï¼š
+ÒÇ±í°å¿Í»§¶ËµÄÑ¡Ïî°üÀ¨£º
 
 .. option:: -D <dashboard>, --dashboard <dashboard>
 
- æ‰§è¡Œä»ªè¡¨æ¿æµ‹è¯•ã€‚
+ Ö´ÐÐÒÇ±í°å²âÊÔ¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTestå……å½“ä¸€ä¸ªCDashå®¢æˆ·ç«¯å¹¶æ‰§è¡Œä¸€ä¸ªæŒ‡ç¤ºæ¿æµ‹è¯•ã€‚æ‰€æœ‰æµ‹è¯•éƒ½æ˜¯\ ``<Mode><Test>``ï¼Œ\
- å…¶ä¸­\ ``<Mode>``\ å¯ä»¥æ˜¯\ ``Experimental``ã€\ ``Nightly``\ å’Œ\ ``Continuous``ï¼Œ \
- ``<Test>``\ å¯ä»¥æ˜¯\ ``Start``ã€\ ``Update``ã€\ ``Configure``ã€\ ``Build``ã€\
- ``Test``ã€\ ``Coverage``\ å’Œ\ ``Submit``ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTest³äµ±Ò»¸öCDash¿Í»§¶Ë²¢Ö´ÐÐÒ»¸öÖ¸Ê¾°å²âÊÔ¡£ËùÓÐ²âÊÔ¶¼ÊÇ\ ``<Mode><Test>``£¬\
+ ÆäÖÐ\ ``<Mode>``\ ¿ÉÒÔÊÇ\ ``Experimental``¡¢\ ``Nightly``\ ºÍ\ ``Continuous``£¬ \
+ ``<Test>``\ ¿ÉÒÔÊÇ\ ``Start``¡¢\ ``Update``¡¢\ ``Configure``¡¢\ ``Build``¡¢\
+ ``Test``¡¢\ ``Coverage``\ ºÍ\ ``Submit``¡£
 
- å¦‚æžœ\ ``<dashboard>``\ ä¸æ˜¯å¯è¯†åˆ«çš„\ ``<Mode><Test>``\ å€¼ä¹‹ä¸€ï¼Œåˆ™å°†å…¶è§†ä¸ºå˜é‡å®šä¹‰ï¼ˆè¯·\
- å‚é˜…ä¸‹é¢çš„\ :ref:`dashboard-options <Dashboard Options>`ï¼‰ã€‚
+ Èç¹û\ ``<dashboard>``\ ²»ÊÇ¿ÉÊ¶±ðµÄ\ ``<Mode><Test>``\ ÖµÖ®Ò»£¬Ôò½«ÆäÊÓÎª±äÁ¿¶¨Òå£¨Çë\
+ ²ÎÔÄÏÂÃæµÄ\ :ref:`dashboard-options <Dashboard Options>`£©¡£
 
 .. option:: -M <model>, --test-model <model>
 
- è®¾ç½®æŒ‡ç¤ºæ¿çš„æ¨¡åž‹ã€‚
+ ÉèÖÃÖ¸Ê¾°åµÄÄ£ÐÍ¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTestå……å½“ä¸€ä¸ªCDashå®¢æˆ·ç«¯ï¼Œå…¶ä¸­\ ``<model>``\ å¯ä»¥æ˜¯\ ``Experimental``ã€\
- ``Nightly``\ å’Œ\ ``Continuous``ã€‚\ ``-M``\ å’Œ\ :option:`-T <ctest -T>`\ çš„ç»„åˆç±»\
- ä¼¼äºŽ\ :option:`-D <ctest -D>`ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTest³äµ±Ò»¸öCDash¿Í»§¶Ë£¬ÆäÖÐ\ ``<model>``\ ¿ÉÒÔÊÇ\ ``Experimental``¡¢\
+ ``Nightly``\ ºÍ\ ``Continuous``¡£\ ``-M``\ ºÍ\ :option:`-T <ctest -T>`\ µÄ×éºÏÀà\
+ ËÆÓÚ\ :option:`-D <ctest -D>`¡£
 
 .. option:: -T <action>, --test-action <action>
 
- è®¾ç½®è¦æ‰§è¡Œçš„æŒ‡ç¤ºæ¿æ“ä½œã€‚
+ ÉèÖÃÒªÖ´ÐÐµÄÖ¸Ê¾°å²Ù×÷¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTestå……å½“ä¸€ä¸ªCDashå®¢æˆ·ç«¯ï¼Œå¹¶æ‰§è¡Œä¸€äº›æ“ä½œï¼Œå¦‚\ ``start``ã€\ ``build``ã€\
- ``test``\ ç­‰ã€‚æœ‰å…³æ“ä½œçš„å®Œæ•´åˆ—è¡¨ï¼Œè¯·å‚é˜…\ `ä»ªè¡¨æ¿å®¢æˆ·ç«¯æ­¥éª¤`_ ã€‚\ :option:`-M <ctest -M>`\
- å’Œ\ ``-T``\ çš„ç»„åˆç±»ä¼¼äºŽ\ :option:`-D <ctest -D>`ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTest³äµ±Ò»¸öCDash¿Í»§¶Ë£¬²¢Ö´ÐÐÒ»Ð©²Ù×÷£¬Èç\ ``start``¡¢\ ``build``¡¢\
+ ``test``\ µÈ¡£ÓÐ¹Ø²Ù×÷µÄÍêÕûÁÐ±í£¬Çë²ÎÔÄ\ `ÒÇ±í°å¿Í»§¶Ë²½Öè`_ ¡£\ :option:`-M <ctest -M>`\
+ ºÍ\ ``-T``\ µÄ×éºÏÀàËÆÓÚ\ :option:`-D <ctest -D>`¡£
 
 .. option:: -S <script>, --script <script>
 
- ä¸ºé…ç½®æ‰§è¡ŒæŒ‡ç¤ºæ¿ã€‚
+ ÎªÅäÖÃÖ´ÐÐÖ¸Ê¾°å¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTeståŠ è½½ä¸€ä¸ªé…ç½®è„šæœ¬ï¼Œè¯¥è„šæœ¬è®¾ç½®äº†ä¸€äº›å‚æ•°ï¼Œæ¯”å¦‚äºŒè¿›åˆ¶æ–‡ä»¶å’Œæºç›®å½•ã€‚ç„¶åŽï¼Œ\
- CTestå°†æ‰§è¡Œåˆ›å»ºå’Œè¿è¡Œä»ªè¡¨æ¿æ‰€éœ€çš„æ“ä½œã€‚è¿™ä¸ªé€‰é¡¹åŸºæœ¬ä¸Šè®¾ç½®äº†ä¸€ä¸ªæŒ‡ç¤ºæ¿ï¼Œç„¶åŽä½¿ç”¨é€‚å½“çš„é€‰é¡¹\
- è¿è¡Œ\ :option:`ctest -D`ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTest¼ÓÔØÒ»¸öÅäÖÃ½Å±¾£¬¸Ã½Å±¾ÉèÖÃÁËÒ»Ð©²ÎÊý£¬±ÈÈç¶þ½øÖÆÎÄ¼þºÍÔ´Ä¿Â¼¡£È»ºó£¬\
+ CTest½«Ö´ÐÐ´´½¨ºÍÔËÐÐÒÇ±í°åËùÐèµÄ²Ù×÷¡£Õâ¸öÑ¡Ïî»ù±¾ÉÏÉèÖÃÁËÒ»¸öÖ¸Ê¾°å£¬È»ºóÊ¹ÓÃÊÊµ±µÄÑ¡Ïî\
+ ÔËÐÐ\ :option:`ctest -D`¡£
 
 .. option:: -SP <script>, --script-new-process <script>
 
- ä¸ºé…ç½®æ‰§è¡ŒæŒ‡ç¤ºæ¿ã€‚
+ ÎªÅäÖÃÖ´ÐÐÖ¸Ê¾°å¡£
 
- æ­¤é€‰é¡¹æ‰§è¡Œä¸Ž\ :option:`-S <ctest -S>`\ ç›¸åŒçš„æ“ä½œï¼Œä½†å®ƒå°†åœ¨å•ç‹¬çš„è¿›ç¨‹ä¸­æ‰§è¡Œã€‚å½“è„šæœ¬å¯èƒ½\
- ä¼šä¿®æ”¹çŽ¯å¢ƒï¼Œè€Œä½ ä¸å¸Œæœ›ä¿®æ”¹åŽçš„çŽ¯å¢ƒå½±å“å…¶ä»–\ :option:`-S <ctest -S>`\ è„šæœ¬æ—¶ï¼Œç›¸å½“æœ‰ç”¨ã€‚
+ ´ËÑ¡ÏîÖ´ÐÐÓë\ :option:`-S <ctest -S>`\ ÏàÍ¬µÄ²Ù×÷£¬µ«Ëü½«ÔÚµ¥¶ÀµÄ½ø³ÌÖÐÖ´ÐÐ¡£µ±½Å±¾¿ÉÄÜ\
+ »áÐÞ¸Ä»·¾³£¬¶øÄã²»Ï£ÍûÐÞ¸ÄºóµÄ»·¾³Ó°ÏìÆäËû\ :option:`-S <ctest -S>`\ ½Å±¾Ê±£¬Ïàµ±ÓÐÓÃ¡£
 
 .. _`Dashboard Options`:
 
-å¯ç”¨çš„\ ``<dashboard-options>``\ å¦‚ä¸‹ï¼š
+¿ÉÓÃµÄ\ ``<dashboard-options>``\ ÈçÏÂ£º
 
 .. option:: -D <var>:<type>=<value>
 
- ä¸ºè„šæœ¬æ¨¡å¼å®šä¹‰å˜é‡ã€‚
+ Îª½Å±¾Ä£Ê½¶¨Òå±äÁ¿¡£
 
- åœ¨å‘½ä»¤è¡Œä¸Šä¼ é€’å˜é‡å€¼ã€‚ä¸Ž\ :option:`-S <ctest -S>`\ ä¸€èµ·ä½¿ç”¨å¯å°†å˜é‡å€¼ä¼ é€’ç»™æŒ‡ç¤ºæ¿è„šæœ¬ã€‚\
- åªæœ‰å½“\ ``-D``\ åŽé¢çš„å€¼ä¸Žä»»ä½•å·²çŸ¥çš„æŒ‡ç¤ºæ¿ç±»åž‹ä¸åŒ¹é…æ—¶ï¼Œæ‰ä¼šå°è¯•å°†\ ``-D``\ å‚æ•°è§£æžä¸ºå˜\
- é‡å€¼ã€‚
+ ÔÚÃüÁîÐÐÉÏ´«µÝ±äÁ¿Öµ¡£Óë\ :option:`-S <ctest -S>`\ Ò»ÆðÊ¹ÓÃ¿É½«±äÁ¿Öµ´«µÝ¸øÖ¸Ê¾°å½Å±¾¡£\
+ Ö»ÓÐµ±\ ``-D``\ ºóÃæµÄÖµÓëÈÎºÎÒÑÖªµÄÖ¸Ê¾°åÀàÐÍ²»Æ¥ÅäÊ±£¬²Å»á³¢ÊÔ½«\ ``-D``\ ²ÎÊý½âÎöÎª±ä\
+ Á¿Öµ¡£
 
 .. option:: --group <group>
 
- æŒ‡å®šè¦å°†ç»“æžœæäº¤ç»™å“ªä¸ªç»„
+ Ö¸¶¨Òª½«½á¹ûÌá½»¸øÄÄ¸ö×é
 
- æäº¤ä»ªè¡¨æ¿åˆ°æŒ‡å®šç»„ï¼Œè€Œä¸æ˜¯é»˜è®¤ç»„ã€‚é»˜è®¤æƒ…å†µä¸‹ï¼Œä»ªè¡¨æ¿è¢«æäº¤åˆ°Nightlyã€Experimentalæˆ–\
- Continuousç»„ï¼Œä½†é€šè¿‡æŒ‡å®šæ­¤é€‰é¡¹ï¼Œè¯¥ç»„å¯ä»¥æ˜¯ä»»æ„çš„ã€‚
+ Ìá½»ÒÇ±í°åµ½Ö¸¶¨×é£¬¶ø²»ÊÇÄ¬ÈÏ×é¡£Ä¬ÈÏÇé¿öÏÂ£¬ÒÇ±í°å±»Ìá½»µ½Nightly¡¢Experimental»ò\
+ Continuous×é£¬µ«Í¨¹ýÖ¸¶¨´ËÑ¡Ïî£¬¸Ã×é¿ÉÒÔÊÇÈÎÒâµÄ¡£
 
- è¿™å°†å–ä»£å·²å¼ƒç”¨çš„é€‰é¡¹\ ``--track``ã€‚å°½ç®¡åç§°æ”¹å˜äº†å®ƒçš„è¡Œä¸ºæ˜¯ä¸å˜çš„ã€‚
+ Õâ½«È¡´úÒÑÆúÓÃµÄÑ¡Ïî\ ``--track``¡£¾¡¹ÜÃû³Æ¸Ä±äÁËËüµÄÐÐÎªÊÇ²»±äµÄ¡£
 
 .. option:: -A <file>, --add-notes <file>
 
- æ·»åŠ å¸¦æœ‰æäº¤çš„æ³¨é‡Šæ–‡ä»¶ã€‚
+ Ìí¼Ó´øÓÐÌá½»µÄ×¢ÊÍÎÄ¼þ¡£
 
- è¿™ä¸ªé€‰é¡¹å‘Šè¯‰CTeståœ¨æäº¤æŒ‡ç¤ºæ¿æ—¶åŒ…å«ä¸€ä¸ªæ³¨é‡Šæ–‡ä»¶ã€‚
+ Õâ¸öÑ¡Ïî¸æËßCTestÔÚÌá½»Ö¸Ê¾°åÊ±°üº¬Ò»¸ö×¢ÊÍÎÄ¼þ¡£
 
 .. option:: --tomorrow-tag
 
- ``Nightly``\ æˆ–\ ``Experimental``\ å¼€å§‹ä¸Žç¬¬äºŒå¤©æ ‡ç­¾ã€‚
+ ``Nightly``\ »ò\ ``Experimental``\ ¿ªÊ¼ÓëµÚ¶þÌì±êÇ©¡£
 
- å¦‚æžœæž„å»ºä¸èƒ½åœ¨ä¸€å¤©å†…å®Œæˆï¼Œè¿™æ˜¯å¾ˆæœ‰ç”¨çš„ã€‚
+ Èç¹û¹¹½¨²»ÄÜÔÚÒ»ÌìÄÚÍê³É£¬ÕâÊÇºÜÓÐÓÃµÄ¡£
 
 .. option:: --extra-submit <file>[;<file>]
 
- å‘ä»ªè¡¨æ¿æäº¤é¢å¤–çš„æ–‡ä»¶ã€‚
+ ÏòÒÇ±í°åÌá½»¶îÍâµÄÎÄ¼þ¡£
 
- æ­¤é€‰é¡¹å°†å‘æŒ‡ç¤ºæ¿æäº¤é¢å¤–çš„æ–‡ä»¶ã€‚
+ ´ËÑ¡Ïî½«ÏòÖ¸Ê¾°åÌá½»¶îÍâµÄÎÄ¼þ¡£
 
 .. option:: --http-header <header>
 
  .. versionadded:: 3.29
 
- æäº¤åˆ°ä»ªè¡¨æ¿æ—¶é™„åŠ HTTPå¤´ã€‚
+ Ìá½»µ½ÒÇ±í°åÊ±¸½¼ÓHTTPÍ·¡£
 
- è¿™ä¸ªé€‰é¡¹å°†å¯¼è‡´CTeståœ¨æäº¤åˆ°ä»ªè¡¨æ¿æ—¶é™„åŠ æŒ‡å®šçš„å¤´ã€‚æ­¤é€‰é¡¹å¯ä»¥æŒ‡å®šå¤šæ¬¡ã€‚
+ Õâ¸öÑ¡Ïî½«µ¼ÖÂCTestÔÚÌá½»µ½ÒÇ±í°åÊ±¸½¼ÓÖ¸¶¨µÄÍ·¡£´ËÑ¡Ïî¿ÉÒÔÖ¸¶¨¶à´Î¡£
 
 .. option:: --http1.0
 
- ä½¿ç”¨\ `HTTP 1.0`\ æäº¤ã€‚
+ Ê¹ÓÃ\ `HTTP 1.0`\ Ìá½»¡£
 
- è¿™ä¸ªé€‰é¡¹å°†å¼ºåˆ¶CTestä½¿ç”¨\ `HTTP 1.0`\ å‘ä»ªè¡¨æ¿æäº¤æ–‡ä»¶ï¼Œè€Œä¸æ˜¯\ `HTTP 1.1`ã€‚
+ Õâ¸öÑ¡Ïî½«Ç¿ÖÆCTestÊ¹ÓÃ\ `HTTP 1.0`\ ÏòÒÇ±í°åÌá½»ÎÄ¼þ£¬¶ø²»ÊÇ\ `HTTP 1.1`¡£
 
 .. option:: --no-compress-output
 
- æäº¤æ—¶ä¸è¦åŽ‹ç¼©æµ‹è¯•è¾“å‡ºã€‚
+ Ìá½»Ê±²»ÒªÑ¹Ëõ²âÊÔÊä³ö¡£
 
- æ­¤æ ‡å¿—å°†å…³é—­æµ‹è¯•è¾“å‡ºçš„è‡ªåŠ¨åŽ‹ç¼©ã€‚ä½¿ç”¨å®ƒå¯ä»¥ä¿æŒä¸Žæ—§ç‰ˆæœ¬çš„CDashçš„å…¼å®¹æ€§ï¼Œè¯¥ç‰ˆæœ¬ä¸æ”¯æŒåŽ‹ç¼©æµ‹è¯•\
- è¾“å‡ºã€‚
+ ´Ë±êÖ¾½«¹Ø±Õ²âÊÔÊä³öµÄ×Ô¶¯Ñ¹Ëõ¡£Ê¹ÓÃËü¿ÉÒÔ±£³ÖÓë¾É°æ±¾µÄCDashµÄ¼æÈÝÐÔ£¬¸Ã°æ±¾²»Ö§³ÖÑ¹Ëõ²âÊÔ\
+ Êä³ö¡£
 
-ä»ªè¡¨æ¿å®¢æˆ·ç«¯æ­¥éª¤
+ÒÇ±í°å¿Í»§¶Ë²½Öè
 ----------------------
 
-CTestå®šä¹‰äº†ä¸€ä¸ªæœ‰åºçš„æµ‹è¯•æ­¥éª¤åˆ—è¡¨ï¼Œå…¶ä¸­ä¸€äº›æˆ–å…¨éƒ¨å¯ä»¥ä½œä¸ºä»ªè¡¨æ¿å®¢æˆ·ç«¯è¿è¡Œï¼š
+CTest¶¨ÒåÁËÒ»¸öÓÐÐòµÄ²âÊÔ²½ÖèÁÐ±í£¬ÆäÖÐÒ»Ð©»òÈ«²¿¿ÉÒÔ×÷ÎªÒÇ±í°å¿Í»§¶ËÔËÐÐ£º
 
 ``Start``
-  å¯åŠ¨ä¸€ä¸ªæ–°çš„ä»ªè¡¨æ¿æäº¤ï¼Œç”±ä»¥ä¸‹æ­¥éª¤è®°å½•çš„ç»“æžœç»„æˆã€‚è¯·å‚é˜…ä¸‹é¢çš„\ `CTestå¼€å§‹æ­¥éª¤`_\ ç« èŠ‚ã€‚
+  Æô¶¯Ò»¸öÐÂµÄÒÇ±í°åÌá½»£¬ÓÉÒÔÏÂ²½Öè¼ÇÂ¼µÄ½á¹û×é³É¡£Çë²ÎÔÄÏÂÃæµÄ\ `CTest¿ªÊ¼²½Öè`_\ ÕÂ½Ú¡£
 
 ``Update``
-  ä»Žå…¶ç‰ˆæœ¬æŽ§åˆ¶å­˜å‚¨åº“æ›´æ–°æºä»£ç æ ‘ã€‚è®°å½•æ–°æ—§ç‰ˆæœ¬å’Œæ›´æ–°çš„æºæ–‡ä»¶åˆ—è¡¨ã€‚è¯·å‚é˜…ä¸‹é¢çš„\
-  `CTestæ›´æ–°æ­¥éª¤`_\ ç« èŠ‚ã€‚
+  ´ÓÆä°æ±¾¿ØÖÆ´æ´¢¿â¸üÐÂÔ´´úÂëÊ÷¡£¼ÇÂ¼ÐÂ¾É°æ±¾ºÍ¸üÐÂµÄÔ´ÎÄ¼þÁÐ±í¡£Çë²ÎÔÄÏÂÃæµÄ\
+  `CTest¸üÐÂ²½Öè`_\ ÕÂ½Ú¡£
 
 ``Configure``
-  é€šè¿‡åœ¨æž„å»ºæ ‘ä¸­è¿è¡Œå‘½ä»¤æ¥é…ç½®è½¯ä»¶ã€‚è®°å½•é…ç½®è¾“å‡ºæ—¥å¿—ã€‚è¯·å‚é˜…ä¸‹é¢çš„\ `CTesté…ç½®æ­¥éª¤`_\ ç« èŠ‚ã€‚
+  Í¨¹ýÔÚ¹¹½¨Ê÷ÖÐÔËÐÐÃüÁîÀ´ÅäÖÃÈí¼þ¡£¼ÇÂ¼ÅäÖÃÊä³öÈÕÖ¾¡£Çë²ÎÔÄÏÂÃæµÄ\ `CTestÅäÖÃ²½Öè`_\ ÕÂ½Ú¡£
 
 ``Build``
-  é€šè¿‡åœ¨æž„å»ºæ ‘ä¸­è¿è¡Œå‘½ä»¤æ¥æž„å»ºè½¯ä»¶ã€‚è®°å½•æž„å»ºè¾“å‡ºæ—¥å¿—å¹¶æ£€æµ‹è­¦å‘Šå’Œé”™è¯¯ã€‚è¯·å‚é˜…ä¸‹é¢çš„\
-  `CTestæž„å»ºæ­¥éª¤`_\ éƒ¨åˆ†ã€‚
+  Í¨¹ýÔÚ¹¹½¨Ê÷ÖÐÔËÐÐÃüÁîÀ´¹¹½¨Èí¼þ¡£¼ÇÂ¼¹¹½¨Êä³öÈÕÖ¾²¢¼ì²â¾¯¸æºÍ´íÎó¡£Çë²ÎÔÄÏÂÃæµÄ\
+  `CTest¹¹½¨²½Öè`_\ ²¿·Ö¡£
 
 ``Test``
-  é€šè¿‡ä»Žæž„å»ºæ ‘ä¸­åŠ è½½\ ``CTestTestfile.cmake``\ å¹¶æ‰§è¡Œå®šä¹‰çš„æµ‹è¯•æ¥æµ‹è¯•è½¯ä»¶ã€‚è®°å½•æ¯æ¬¡æµ‹è¯•\
-  çš„è¾“å‡ºå’Œç»“æžœã€‚è¯·å‚é˜…ä¸‹é¢çš„\ `CTestæµ‹è¯•æ­¥éª¤`_\ ç« èŠ‚ã€‚
+  Í¨¹ý´Ó¹¹½¨Ê÷ÖÐ¼ÓÔØ\ ``CTestTestfile.cmake``\ ²¢Ö´ÐÐ¶¨ÒåµÄ²âÊÔÀ´²âÊÔÈí¼þ¡£¼ÇÂ¼Ã¿´Î²âÊÔ\
+  µÄÊä³öºÍ½á¹û¡£Çë²ÎÔÄÏÂÃæµÄ\ `CTest²âÊÔ²½Öè`_\ ÕÂ½Ú¡£
 
 ``Coverage``
-  é€šè¿‡è¿è¡Œè¦†ç›–çŽ‡åˆ†æžå·¥å…·å¹¶è®°å½•å…¶è¾“å‡ºæ¥è®¡ç®—æºä»£ç çš„è¦†ç›–çŽ‡ã€‚è¯·å‚é˜…ä¸‹é¢çš„\ `CTestè¦†ç›–æ­¥éª¤`_\
-  ç« èŠ‚ã€‚
+  Í¨¹ýÔËÐÐ¸²¸ÇÂÊ·ÖÎö¹¤¾ß²¢¼ÇÂ¼ÆäÊä³öÀ´¼ÆËãÔ´´úÂëµÄ¸²¸ÇÂÊ¡£Çë²ÎÔÄÏÂÃæµÄ\ `CTest¸²¸Ç²½Öè`_\
+  ÕÂ½Ú¡£
 
 ``MemCheck``
-  é€šè¿‡å†…å­˜æ£€æŸ¥å·¥å…·è¿è¡Œè½¯ä»¶æµ‹è¯•å¥—ä»¶ã€‚è®°å½•å·¥å…·æŠ¥å‘Šçš„æµ‹è¯•è¾“å‡ºã€ç»“æžœå’Œé—®é¢˜ã€‚è¯·å‚é˜…ä¸‹é¢çš„\
-  `CTestå†…å­˜æµ‹è¯•æ­¥éª¤`_\ ç« èŠ‚ã€‚
+  Í¨¹ýÄÚ´æ¼ì²é¹¤¾ßÔËÐÐÈí¼þ²âÊÔÌ×¼þ¡£¼ÇÂ¼¹¤¾ß±¨¸æµÄ²âÊÔÊä³ö¡¢½á¹ûºÍÎÊÌâ¡£Çë²ÎÔÄÏÂÃæµÄ\
+  `CTestÄÚ´æ²âÊÔ²½Öè`_\ ÕÂ½Ú¡£
 
 ``Submit``
-  å°†å…¶ä»–æµ‹è¯•æ­¥éª¤è®°å½•çš„ç»“æžœæäº¤åˆ°è½¯ä»¶è´¨é‡ä»ªè¡¨æ¿æœåŠ¡å™¨ã€‚è¯·å‚é˜…ä¸‹é¢çš„\ `CTestæäº¤æ­¥éª¤`_\ ç« èŠ‚ã€‚
+  ½«ÆäËû²âÊÔ²½Öè¼ÇÂ¼µÄ½á¹ûÌá½»µ½Èí¼þÖÊÁ¿ÒÇ±í°å·þÎñÆ÷¡£Çë²ÎÔÄÏÂÃæµÄ\ `CTestÌá½»²½Öè`_\ ÕÂ½Ú¡£
 
-ä»ªè¡¨æ¿å®¢æˆ·ç«¯æ¨¡å¼
+ÒÇ±í°å¿Í»§¶ËÄ£Ê½
 ----------------------
 
-CTestä½œä¸ºä»ªè¡¨æ¿å®¢æˆ·ç«¯å®šä¹‰äº†ä¸‰ç§æ“ä½œæ¨¡å¼ï¼š
+CTest×÷ÎªÒÇ±í°å¿Í»§¶Ë¶¨ÒåÁËÈýÖÖ²Ù×÷Ä£Ê½£º
 
 ``Nightly``
-  æ­¤æ¨¡å¼æ‰“ç®—æ¯å¤©è°ƒç”¨ä¸€æ¬¡ï¼Œé€šå¸¸åœ¨æ™šä¸Šã€‚é»˜è®¤æƒ…å†µä¸‹ï¼Œå®ƒå¯ç”¨\ ``Start``ã€\ ``Update``ã€\
-  ``Configure``ã€\ ``Build``ã€\ ``Test``ã€\ ``Coverage``\ å’Œ\ ``Submit``\ æ­¥éª¤ã€‚\
-  å³ä½¿\ ``Update``\ æ­¥éª¤æ²¡æœ‰å‘æºæ ‘æŠ¥å‘Šä»»ä½•æ›´æ”¹ï¼Œä¹Ÿä¼šè¿è¡Œæ‰€é€‰æ­¥éª¤ã€‚
+  ´ËÄ£Ê½´òËãÃ¿Ììµ÷ÓÃÒ»´Î£¬Í¨³£ÔÚÍíÉÏ¡£Ä¬ÈÏÇé¿öÏÂ£¬ËüÆôÓÃ\ ``Start``¡¢\ ``Update``¡¢\
+  ``Configure``¡¢\ ``Build``¡¢\ ``Test``¡¢\ ``Coverage``\ ºÍ\ ``Submit``\ ²½Öè¡£\
+  ¼´Ê¹\ ``Update``\ ²½ÖèÃ»ÓÐÏòÔ´Ê÷±¨¸æÈÎºÎ¸ü¸Ä£¬Ò²»áÔËÐÐËùÑ¡²½Öè¡£
 
 ``Continuous``
-  æ­¤æ¨¡å¼æ‰“ç®—åœ¨ä¸€å¤©ä¸­åå¤è°ƒç”¨ã€‚é»˜è®¤æƒ…å†µä¸‹ï¼Œå®ƒå¯ç”¨\ ``Start``ã€\ ``Update``ã€\
-  ``Configure``ã€\ ``Build``ã€\ ``Test``ã€\ ``Coverage``\ å’Œ\ ``Submit``\ æ­¥éª¤ï¼Œ\
-  ä½†æ˜¯å¦‚æžœå®ƒæ²¡æœ‰å‘æºä»£ç æ ‘æŠ¥å‘Šä»»ä½•æ›´æ”¹ï¼Œåˆ™åœ¨\ ``Update``\ æ­¥éª¤ä¹‹åŽé€€å‡ºã€‚
+  ´ËÄ£Ê½´òËãÔÚÒ»ÌìÖÐ·´¸´µ÷ÓÃ¡£Ä¬ÈÏÇé¿öÏÂ£¬ËüÆôÓÃ\ ``Start``¡¢\ ``Update``¡¢\
+  ``Configure``¡¢\ ``Build``¡¢\ ``Test``¡¢\ ``Coverage``\ ºÍ\ ``Submit``\ ²½Öè£¬\
+  µ«ÊÇÈç¹ûËüÃ»ÓÐÏòÔ´´úÂëÊ÷±¨¸æÈÎºÎ¸ü¸Ä£¬ÔòÔÚ\ ``Update``\ ²½ÖèÖ®ºóÍË³ö¡£
 
 ``Experimental``
-  æ­¤æ¨¡å¼æ—¨åœ¨ç”±å¼€å‘äººå‘˜è°ƒç”¨ä»¥æµ‹è¯•æœ¬åœ°æ›´æ”¹ã€‚é»˜è®¤æƒ…å†µä¸‹ï¼Œå®ƒå¯ç”¨\ ``Start``ã€\ ``Configure``ã€\
-  ``Build``ã€\ ``Test``ã€\ ``Coverage``\ å’Œ\ ``Submit``\ æ­¥éª¤ã€‚
+  ´ËÄ£Ê½Ö¼ÔÚÓÉ¿ª·¢ÈËÔ±µ÷ÓÃÒÔ²âÊÔ±¾µØ¸ü¸Ä¡£Ä¬ÈÏÇé¿öÏÂ£¬ËüÆôÓÃ\ ``Start``¡¢\ ``Configure``¡¢\
+  ``Build``¡¢\ ``Test``¡¢\ ``Coverage``\ ºÍ\ ``Submit``\ ²½Öè¡£
 
-é€šè¿‡CTestå‘½ä»¤è¡Œè¿è¡Œä»ªè¡¨æ¿å®¢æˆ·ç«¯
+Í¨¹ýCTestÃüÁîÐÐÔËÐÐÒÇ±í°å¿Í»§¶Ë
 ---------------------------------------
 
-CTestå¯ä»¥åœ¨å·²ç»ç”Ÿæˆçš„æž„å»ºæ ‘ä¸Šæ‰§è¡Œæµ‹è¯•ã€‚è¿è¡Œ\ :program:`ctest`\ å‘½ä»¤ï¼Œå°†å½“å‰å·¥ä½œç›®å½•è®¾ç½®\
-ä¸ºæž„å»ºæ ‘ï¼Œå¹¶ä½¿ç”¨ä»¥\
-ä¸‹ç­¾åä¹‹ä¸€ï¼š\ ::
+CTest¿ÉÒÔÔÚÒÑ¾­Éú³ÉµÄ¹¹½¨Ê÷ÉÏÖ´ÐÐ²âÊÔ¡£ÔËÐÐ\ :program:`ctest`\ ÃüÁî£¬½«µ±Ç°¹¤×÷Ä¿Â¼ÉèÖÃ\
+Îª¹¹½¨Ê÷£¬²¢Ê¹ÓÃÒÔ\
+ÏÂÇ©ÃûÖ®Ò»£º\ ::
 
   ctest -D <mode>[<step>]
   ctest -M <mode> [-T <step>]...
 
-``<mode>``\ å¿…é¡»æ˜¯ä¸Šè¿°\ `ä»ªè¡¨æ¿å®¢æˆ·ç«¯æ¨¡å¼`_\ ä¹‹ä¸€ï¼Œæ¯ä¸ª\ ``<step>``\ å¿…é¡»æ˜¯ä¸Šè¿°\
-`ä»ªè¡¨æ¿å®¢æˆ·ç«¯æ­¥éª¤`_\ ä¹‹ä¸€ã€‚
+``<mode>``\ ±ØÐëÊÇÉÏÊö\ `ÒÇ±í°å¿Í»§¶ËÄ£Ê½`_\ Ö®Ò»£¬Ã¿¸ö\ ``<step>``\ ±ØÐëÊÇÉÏÊö\
+`ÒÇ±í°å¿Í»§¶Ë²½Öè`_\ Ö®Ò»¡£
 
-CTestä»Žæž„å»ºæ ‘ä¸­çš„ä¸€ä¸ªåä¸º\ ``CTestConfiguration.ini``\ æˆ–\ ``DartConfiguration.tcl``\
-ï¼ˆåç§°æ˜¯åŽ†å²çš„ï¼‰çš„æ–‡ä»¶ä¸­è¯»å–\ `ä»ªè¡¨æ¿å®¢æˆ·ç«¯é…ç½®`_\ è®¾ç½®ã€‚æ–‡ä»¶æ ¼å¼ä¸ºï¼š\ ::
+CTest´Ó¹¹½¨Ê÷ÖÐµÄÒ»¸öÃûÎª\ ``CTestConfiguration.ini``\ »ò\ ``DartConfiguration.tcl``\
+£¨Ãû³ÆÊÇÀúÊ·µÄ£©µÄÎÄ¼þÖÐ¶ÁÈ¡\ `ÒÇ±í°å¿Í»§¶ËÅäÖÃ`_\ ÉèÖÃ¡£ÎÄ¼þ¸ñÊ½Îª£º\ ::
 
   # Lines starting in '#' are comments.
   # Other non-blank lines are key-value pairs.
   <setting>: <value>
 
-å…¶ä¸­\ ``<setting>``\ ä¸ºè®¾ç½®åç§°ï¼Œ\ ``<value>``\ ä¸ºè®¾ç½®å€¼ã€‚
+ÆäÖÐ\ ``<setting>``\ ÎªÉèÖÃÃû³Æ£¬\ ``<value>``\ ÎªÉèÖÃÖµ¡£
 
-åœ¨CMakeç”Ÿæˆçš„æž„å»ºæ ‘ä¸­ï¼Œè¿™ä¸ªé…ç½®æ–‡ä»¶æ˜¯ç”±\ :module:`CTest`\ æ¨¡å—ç”Ÿæˆçš„ï¼Œå¦‚æžœåŒ…å«åœ¨é¡¹ç›®ä¸­ã€‚\
-è¯¥æ¨¡å—ä½¿ç”¨å˜é‡èŽ·å–æ¯ä¸ªè®¾ç½®çš„å€¼ï¼Œå¦‚ä¸‹é¢çš„è®¾ç½®æ–‡æ¡£æ‰€ç¤ºã€‚
+ÔÚCMakeÉú³ÉµÄ¹¹½¨Ê÷ÖÐ£¬Õâ¸öÅäÖÃÎÄ¼þÊÇÓÉ\ :module:`CTest`\ Ä£¿éÉú³ÉµÄ£¬Èç¹û°üº¬ÔÚÏîÄ¿ÖÐ¡£\
+¸ÃÄ£¿éÊ¹ÓÃ±äÁ¿»ñÈ¡Ã¿¸öÉèÖÃµÄÖµ£¬ÈçÏÂÃæµÄÉèÖÃÎÄµµËùÊ¾¡£
 
 .. _`CTest Script`:
 
-é€šè¿‡CTestè„šæœ¬è¿è¡Œä»ªè¡¨æ¿å®¢æˆ·ç«¯
+Í¨¹ýCTest½Å±¾ÔËÐÐÒÇ±í°å¿Í»§¶Ë
 ---------------------------------
 
-CTestå¯ä»¥æ‰§è¡Œç”±\ :manual:`cmake-language(7)`\ è„šæœ¬é©±åŠ¨çš„æµ‹è¯•ï¼Œè¯¥è„šæœ¬åˆ›å»ºå¹¶ç»´æŠ¤æºä»£ç å’Œ\
-æž„å»ºæ ‘ï¼Œä»¥åŠæ‰§è¡Œæµ‹è¯•æ­¥éª¤ã€‚è¿è¡Œ\ :program:`ctest`\ å‘½ä»¤ï¼Œå°†å½“å‰å·¥ä½œç›®å½•è®¾ç½®åœ¨ä»»ä½•æž„å»ºæ ‘ä¹‹å¤–ï¼Œ\
-å¹¶ä½¿ç”¨ä»¥ä¸‹ç­¾åä¹‹ä¸€ï¼š\ ::
+CTest¿ÉÒÔÖ´ÐÐÓÉ\ :manual:`cmake-language(7)`\ ½Å±¾Çý¶¯µÄ²âÊÔ£¬¸Ã½Å±¾´´½¨²¢Î¬»¤Ô´´úÂëºÍ\
+¹¹½¨Ê÷£¬ÒÔ¼°Ö´ÐÐ²âÊÔ²½Öè¡£ÔËÐÐ\ :program:`ctest`\ ÃüÁî£¬½«µ±Ç°¹¤×÷Ä¿Â¼ÉèÖÃÔÚÈÎºÎ¹¹½¨Ê÷Ö®Íâ£¬\
+²¢Ê¹ÓÃÒÔÏÂÇ©ÃûÖ®Ò»£º\ ::
 
   ctest -S <script>
   ctest -SP <script>
 
-``<script>``\ æ–‡ä»¶å¿…é¡»è°ƒç”¨\ :ref:`CTest Commands`\ å‘½ä»¤æ¥æ˜¾å¼åœ°è¿è¡Œæµ‹è¯•æ­¥éª¤ï¼Œå¦‚ä¸‹æ‰€ç¤ºã€‚\
-è¿™äº›å‘½ä»¤ä»Žå®ƒä»¬çš„å‚æ•°æˆ–è„šæœ¬ä¸­è®¾ç½®çš„å˜é‡ä¸­èŽ·å–\ `ä»ªè¡¨æ¿å®¢æˆ·ç«¯é…ç½®`_\ è®¾ç½®ã€‚
+``<script>``\ ÎÄ¼þ±ØÐëµ÷ÓÃ\ :ref:`CTest Commands`\ ÃüÁîÀ´ÏÔÊ½µØÔËÐÐ²âÊÔ²½Öè£¬ÈçÏÂËùÊ¾¡£\
+ÕâÐ©ÃüÁî´ÓËüÃÇµÄ²ÎÊý»ò½Å±¾ÖÐÉèÖÃµÄ±äÁ¿ÖÐ»ñÈ¡\ `ÒÇ±í°å¿Í»§¶ËÅäÖÃ`_\ ÉèÖÃ¡£
 
-ä»ªè¡¨æ¿å®¢æˆ·ç«¯é…ç½®
+ÒÇ±í°å¿Í»§¶ËÅäÖÃ
 ==============================
 
-`ä»ªè¡¨æ¿å®¢æˆ·ç«¯æ­¥éª¤`_\ æ­¥éª¤å¯ä»¥é€šè¿‡ä»¥ä¸‹éƒ¨åˆ†ä¸­è®°å½•çš„å‘½åè®¾ç½®è¿›è¡Œé…ç½®ã€‚
+`ÒÇ±í°å¿Í»§¶Ë²½Öè`_\ ²½Öè¿ÉÒÔÍ¨¹ýÒÔÏÂ²¿·ÖÖÐ¼ÇÂ¼µÄÃüÃûÉèÖÃ½øÐÐÅäÖÃ¡£
 
 .. _`CTest Start Step`:
 
-CTestå¼€å§‹æ­¥éª¤
+CTest¿ªÊ¼²½Öè
 ----------------
 
-å¯åŠ¨ä¸€ä¸ªæ–°çš„ä»ªè¡¨æ¿æäº¤ï¼Œç”±ä»¥ä¸‹æ­¥éª¤è®°å½•çš„ç»“æžœç»„æˆã€‚
+Æô¶¯Ò»¸öÐÂµÄÒÇ±í°åÌá½»£¬ÓÉÒÔÏÂ²½Öè¼ÇÂ¼µÄ½á¹û×é³É¡£
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_start`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯ä»¥æŒ‡å®š\
-ä¸€äº›æ­¥éª¤è®¾ç½®ã€‚è¯¥å‘½ä»¤é¦–å…ˆè¿è¡Œ\ ``CTEST_CHECKOUT_COMMAND`` \å˜é‡ï¼ˆå¦‚æžœè®¾ç½®äº†ï¼‰æŒ‡å®šçš„å‘½ä»¤è¡Œï¼Œ\
-ä»¥åˆå§‹åŒ–æºç›®å½•ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_start`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿ÉÒÔÖ¸¶¨\
+Ò»Ð©²½ÖèÉèÖÃ¡£¸ÃÃüÁîÊ×ÏÈÔËÐÐ\ ``CTEST_CHECKOUT_COMMAND`` \±äÁ¿£¨Èç¹ûÉèÖÃÁË£©Ö¸¶¨µÄÃüÁîÐÐ£¬\
+ÒÔ³õÊ¼»¯Ô´Ä¿Â¼¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``BuildDirectory``
-  é¡¹ç›®æž„å»ºæ ‘çš„å®Œæ•´è·¯å¾„ã€‚
+  ÏîÄ¿¹¹½¨Ê÷µÄÍêÕûÂ·¾¶¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_BINARY_DIRECTORY`
-  * :module:`CTest`\ å˜é‡ï¼š:variable:`PROJECT_BINARY_DIR`
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_BINARY_DIRECTORY`
+  * :module:`CTest`\ ±äÁ¿£º:variable:`PROJECT_BINARY_DIR`
 
 ``SourceDirectory``
-  é¡¹ç›®æºä»£ç æ ‘çš„å®Œæ•´è·¯å¾„ã€‚
+  ÏîÄ¿Ô´´úÂëÊ÷µÄÍêÕûÂ·¾¶¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SOURCE_DIRECTORY`
-  * :module:`CTest`\ å˜é‡ï¼š:variable:`PROJECT_SOURCE_DIR`
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SOURCE_DIRECTORY`
+  * :module:`CTest`\ ±äÁ¿£º:variable:`PROJECT_SOURCE_DIR`
 
 .. _`CTest Update Step`:
 
-CTestæ›´æ–°æ­¥éª¤
+CTest¸üÐÂ²½Öè
 -----------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_update`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯ä»¥æŒ‡\
-å®šä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_update`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿ÉÒÔÖ¸\
+¶¨Ò»Ð©²½ÖèÉèÖÃ¡£
 
-æŒ‡å®šç‰ˆæœ¬æŽ§åˆ¶å·¥å…·çš„é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+Ö¸¶¨°æ±¾¿ØÖÆ¹¤¾ßµÄÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``BZRCommand``
-  å¦‚æžœæºä»£ç æ ‘ç”±Bazaarç®¡ç†ï¼Œåˆ™ä½¿ç”¨\ ``bzr``\ å‘½ä»¤è¡Œå·¥å…·ã€‚
+  Èç¹ûÔ´´úÂëÊ÷ÓÉBazaar¹ÜÀí£¬ÔòÊ¹ÓÃ\ ``bzr``\ ÃüÁîÐÐ¹¤¾ß¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_BZR_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼šæ— 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_BZR_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£ºÎÞ
 
 ``BZRUpdateOptions``
-  åœ¨æ›´æ–°æºä»£ç æ—¶ï¼Œå°†å‘½ä»¤è¡Œé€‰é¡¹è®¾ç½®ä¸º\ ``BZRCommand``ã€‚
+  ÔÚ¸üÐÂÔ´´úÂëÊ±£¬½«ÃüÁîÐÐÑ¡ÏîÉèÖÃÎª\ ``BZRCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_BZR_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼šæ— 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_BZR_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£ºÎÞ
 
 ``CVSCommand``
-  å¦‚æžœæºä»£ç æ ‘ç”±CVSç®¡ç†ï¼Œåˆ™ä½¿ç”¨\ ``cvs``\ å‘½ä»¤è¡Œå·¥å…·ã€‚
+  Èç¹ûÔ´´úÂëÊ÷ÓÉCVS¹ÜÀí£¬ÔòÊ¹ÓÃ\ ``cvs``\ ÃüÁîÐÐ¹¤¾ß¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_CVS_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CVSCOMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_CVS_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CVSCOMMAND``
 
 ``CVSUpdateOptions``
-  åœ¨æ›´æ–°æºä»£ç æ—¶ï¼Œå°†å‘½ä»¤è¡Œé€‰é¡¹è®¾ç½®ä¸º\ ``CVSCommand``ã€‚
+  ÔÚ¸üÐÂÔ´´úÂëÊ±£¬½«ÃüÁîÐÐÑ¡ÏîÉèÖÃÎª\ ``CVSCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_CVS_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CVS_UPDATE_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_CVS_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CVS_UPDATE_OPTIONS``
 
 ``GITCommand``
-  ``git``\ å‘½ä»¤è¡Œå·¥å…·ï¼Œå¦‚æžœæºä»£ç æ ‘æ˜¯ç”±Gitç®¡ç†çš„ã€‚
+  ``git``\ ÃüÁîÐÐ¹¤¾ß£¬Èç¹ûÔ´´úÂëÊ÷ÊÇÓÉGit¹ÜÀíµÄ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_GIT_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``GITCOMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_GIT_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``GITCOMMAND``
 
-  æºä»£ç æ ‘é€šè¿‡\ ``git fetch``\ æ›´æ–°ï¼Œç„¶åŽ\ ``git reset --hard``\ æ›´æ–°åˆ°\ ``FETCH_HEAD``ã€‚\
-  ç»“æžœä¸Ž\ ``git pull``\ ç›¸åŒï¼Œåªæ˜¯æ‰€æœ‰çš„æœ¬åœ°ä¿®æ”¹éƒ½ä¼šè¢«è¦†ç›–ã€‚ä½¿ç”¨\ ``GITUpdateCustom``\
-  æ¥æŒ‡å®šä¸åŒçš„æ–¹æ³•ã€‚
+  Ô´´úÂëÊ÷Í¨¹ý\ ``git fetch``\ ¸üÐÂ£¬È»ºó\ ``git reset --hard``\ ¸üÐÂµ½\ ``FETCH_HEAD``¡£\
+  ½á¹ûÓë\ ``git pull``\ ÏàÍ¬£¬Ö»ÊÇËùÓÐµÄ±¾µØÐÞ¸Ä¶¼»á±»¸²¸Ç¡£Ê¹ÓÃ\ ``GITUpdateCustom``\
+  À´Ö¸¶¨²»Í¬µÄ·½·¨¡£
 
 ``GITInitSubmodules``
-  å¦‚æžœè®¾ç½®äº†ï¼ŒCTestå°†åœ¨æ›´æ–°ä¹‹å‰æ›´æ–°å­˜å‚¨åº“çš„å­æ¨¡å—ã€‚
+  Èç¹ûÉèÖÃÁË£¬CTest½«ÔÚ¸üÐÂÖ®Ç°¸üÐÂ´æ´¢¿âµÄ×ÓÄ£¿é¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_GIT_INIT_SUBMODULES`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_GIT_INIT_SUBMODULES``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_GIT_INIT_SUBMODULES`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_GIT_INIT_SUBMODULES``
 
 ``GITUpdateCustom``
-  æŒ‡å®šä¸€ä¸ªè‡ªå®šä¹‰å‘½ä»¤è¡Œï¼ˆä»¥åˆ†å·åˆ†éš”çš„åˆ—è¡¨å½¢å¼ï¼‰åœ¨æºä»£ç æ ‘ï¼ˆGitå·¥ä½œæ ‘ï¼‰ä¸­è¿è¡Œä»¥æ›´æ–°å®ƒï¼Œè€Œä¸æ˜¯\
-  è¿è¡Œ\ ``GITCommand``ã€‚
+  Ö¸¶¨Ò»¸ö×Ô¶¨ÒåÃüÁîÐÐ£¨ÒÔ·ÖºÅ·Ö¸ôµÄÁÐ±íÐÎÊ½£©ÔÚÔ´´úÂëÊ÷£¨Git¹¤×÷Ê÷£©ÖÐÔËÐÐÒÔ¸üÐÂËü£¬¶ø²»ÊÇ\
+  ÔËÐÐ\ ``GITCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_GIT_UPDATE_CUSTOM`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_GIT_UPDATE_CUSTOM``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_GIT_UPDATE_CUSTOM`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_GIT_UPDATE_CUSTOM``
 
 ``GITUpdateOptions``
-  åœ¨æ›´æ–°æºä»£ç æ—¶ï¼Œå°†å‘½ä»¤è¡Œé€‰é¡¹è®¾ç½®ä¸º\ ``GITCommand``ã€‚
+  ÔÚ¸üÐÂÔ´´úÂëÊ±£¬½«ÃüÁîÐÐÑ¡ÏîÉèÖÃÎª\ ``GITCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_GIT_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``GIT_UPDATE_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_GIT_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``GIT_UPDATE_OPTIONS``
 
 ``HGCommand``
-  å¦‚æžœæºä»£ç æ ‘ç”±Mercurialç®¡ç†ï¼Œåˆ™ä½¿ç”¨\ ``hg``\ å‘½ä»¤è¡Œå·¥å…·ã€‚
+  Èç¹ûÔ´´úÂëÊ÷ÓÉMercurial¹ÜÀí£¬ÔòÊ¹ÓÃ\ ``hg``\ ÃüÁîÐÐ¹¤¾ß¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_HG_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼šæ— 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_HG_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£ºÎÞ
 
 ``HGUpdateOptions``
-  åœ¨æ›´æ–°æºä»£ç æ—¶ï¼Œå°†å‘½ä»¤è¡Œé€‰é¡¹è®¾ç½®ä¸º\ ``HGCommand``ã€‚
+  ÔÚ¸üÐÂÔ´´úÂëÊ±£¬½«ÃüÁîÐÐÑ¡ÏîÉèÖÃÎª\ ``HGCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_HG_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼šæ— 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_HG_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£ºÎÞ
 
 ``P4Client``
-  ``P4Command``\ çš„\ ``-c``\ é€‰é¡¹çš„å€¼ã€‚
+  ``P4Command``\ µÄ\ ``-c``\ Ñ¡ÏîµÄÖµ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_P4_CLIENT`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_P4_CLIENT``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_P4_CLIENT`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_P4_CLIENT``
 
 ``P4Command``
-  ``p4``\ å‘½ä»¤è¡Œå·¥å…·ï¼Œå¦‚æžœæºä»£ç æ ‘æ˜¯ç”±Perforceç®¡ç†ã€‚
+  ``p4``\ ÃüÁîÐÐ¹¤¾ß£¬Èç¹ûÔ´´úÂëÊ÷ÊÇÓÉPerforce¹ÜÀí¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_P4_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``P4COMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_P4_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``P4COMMAND``
 
 ``P4Options``
-  ``P4Command``\ çš„å‘½ä»¤è¡Œé€‰é¡¹ï¼Œç”¨äºŽæ‰€æœ‰è°ƒç”¨ã€‚
+  ``P4Command``\ µÄÃüÁîÐÐÑ¡Ïî£¬ÓÃÓÚËùÓÐµ÷ÓÃ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_P4_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_P4_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_P4_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_P4_OPTIONS``
 
 ``P4UpdateCustom``
-  æŒ‡å®šè¦åœ¨æºæ ‘ï¼ˆPerforceæ ‘ï¼‰ä¸­è¿è¡Œçš„è‡ªå®šä¹‰å‘½ä»¤è¡Œï¼ˆä»¥åˆ†å·åˆ†éš”çš„åˆ—è¡¨å½¢å¼ï¼‰æ¥æ›´æ–°æºæ ‘ï¼Œè€Œä¸æ˜¯\
-  è¿è¡Œ\ ``P4Command``ã€‚
+  Ö¸¶¨ÒªÔÚÔ´Ê÷£¨PerforceÊ÷£©ÖÐÔËÐÐµÄ×Ô¶¨ÒåÃüÁîÐÐ£¨ÒÔ·ÖºÅ·Ö¸ôµÄÁÐ±íÐÎÊ½£©À´¸üÐÂÔ´Ê÷£¬¶ø²»ÊÇ\
+  ÔËÐÐ\ ``P4Command``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_P4_UPDATE_CUSTOM``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_P4_UPDATE_CUSTOM``
 
 ``P4UpdateOptions``
-  åœ¨æ›´æ–°æºä»£ç æ—¶å°†å‘½ä»¤è¡Œé€‰é¡¹è®¾ç½®ä¸º\ ``P4Command`` ã€‚
+  ÔÚ¸üÐÂÔ´´úÂëÊ±½«ÃüÁîÐÐÑ¡ÏîÉèÖÃÎª\ ``P4Command`` ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_P4_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_P4_UPDATE_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_P4_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_P4_UPDATE_OPTIONS``
 
 ``SVNCommand``
-  ``svn``\ å‘½ä»¤è¡Œå·¥å…·ï¼Œå¦‚æžœæºä»£ç æ ‘æ˜¯ç”±Subversionç®¡ç†çš„ã€‚
+  ``svn``\ ÃüÁîÐÐ¹¤¾ß£¬Èç¹ûÔ´´úÂëÊ÷ÊÇÓÉSubversion¹ÜÀíµÄ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SVN_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``SVNCOMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SVN_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``SVNCOMMAND``
 
 ``SVNOptions``
-  ``SVNCommand``\ æ‰€æœ‰è°ƒç”¨çš„å‘½ä»¤è¡Œé€‰é¡¹ã€‚
+  ``SVNCommand``\ ËùÓÐµ÷ÓÃµÄÃüÁîÐÐÑ¡Ïî¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SVN_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_SVN_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SVN_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_SVN_OPTIONS``
 
 ``SVNUpdateOptions``
-  æ›´æ–°æºæ—¶ï¼Œ\ ``SVNCommand``\ çš„å‘½ä»¤è¡Œé€‰é¡¹ã€‚
+  ¸üÐÂÔ´Ê±£¬\ ``SVNCommand``\ µÄÃüÁîÐÐÑ¡Ïî¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SVN_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``SVN_UPDATE_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SVN_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``SVN_UPDATE_OPTIONS``
 
 ``UpdateCommand``
-  æŒ‡å®šè¦ä½¿ç”¨çš„ç‰ˆæœ¬æŽ§åˆ¶å‘½ä»¤è¡Œå·¥å…·ï¼Œè€Œä¸æ£€æµ‹ç®¡ç†æºä»£ç æ ‘çš„VCSã€‚
+  Ö¸¶¨ÒªÊ¹ÓÃµÄ°æ±¾¿ØÖÆÃüÁîÐÐ¹¤¾ß£¬¶ø²»¼ì²â¹ÜÀíÔ´´úÂëÊ÷µÄVCS¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_UPDATE_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼šå½“\ ``UPDATE_TYPE``\ ä¸º\ ``<vcs>``\ æ—¶ä¸º\
-    ``<VCS>COMMAND``ï¼Œå¦åˆ™ä¸º\ ``UPDATE_COMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_UPDATE_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£ºµ±\ ``UPDATE_TYPE``\ Îª\ ``<vcs>``\ Ê±Îª\
+    ``<VCS>COMMAND``£¬·ñÔòÎª\ ``UPDATE_COMMAND``
 
 ``UpdateOptions``
-  ``UpdateCommand``\ çš„å‘½ä»¤è¡Œé€‰é¡¹ã€‚
+  ``UpdateCommand``\ µÄÃüÁîÐÐÑ¡Ïî¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_UPDATE_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼šå½“\ ``UPDATE_TYPE``\ ä¸º\ ``<vcs>``\ æ—¶ä¸º\
-    ``<VCS>_UPDATE_OPTIONS``ï¼Œå¦åˆ™ä¸º\ ``UPDATE_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_UPDATE_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£ºµ±\ ``UPDATE_TYPE``\ Îª\ ``<vcs>``\ Ê±Îª\
+    ``<VCS>_UPDATE_OPTIONS``£¬·ñÔòÎª\ ``UPDATE_OPTIONS``
 
 ``UpdateType``
-  å¦‚æžœæ— æ³•è‡ªåŠ¨æ£€æµ‹åˆ°æºä»£ç æ ‘ï¼Œåˆ™æŒ‡å®šç®¡ç†è¯¥æºä»£ç æ ‘çš„ç‰ˆæœ¬æŽ§åˆ¶ç³»ç»Ÿã€‚å–å€¼ä¸º\ ``bzr``ã€\ ``cvs``ã€\
-  ``git``ã€\ ``hg``ã€\ ``p4``\ åŠ\ ``svn``ã€‚
+  Èç¹ûÎÞ·¨×Ô¶¯¼ì²âµ½Ô´´úÂëÊ÷£¬ÔòÖ¸¶¨¹ÜÀí¸ÃÔ´´úÂëÊ÷µÄ°æ±¾¿ØÖÆÏµÍ³¡£È¡ÖµÎª\ ``bzr``¡¢\ ``cvs``¡¢\
+  ``git``¡¢\ ``hg``¡¢\ ``p4``\ ¼°\ ``svn``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— ï¼Œä»Žæºä»£ç æ ‘æ£€æµ‹
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``UPDATE_TYPE``ï¼Œå¦åˆ™ä¸º\
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ£¬´ÓÔ´´úÂëÊ÷¼ì²â
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``UPDATE_TYPE``£¬·ñÔòÎª\
     ``CTEST_UPDATE_TYPE``
 
 .. _`UpdateVersionOnly`:
 
 ``UpdateVersionOnly``
-  æŒ‡å®šå¸Œæœ›ç‰ˆæœ¬æŽ§åˆ¶æ›´æ–°å‘½ä»¤åªå‘çŽ°ç­¾å‡ºçš„å½“å‰ç‰ˆæœ¬ï¼Œè€Œä¸æ›´æ–°åˆ°ä¸åŒçš„ç‰ˆæœ¬ã€‚
+  Ö¸¶¨Ï£Íû°æ±¾¿ØÖÆ¸üÐÂÃüÁîÖ»·¢ÏÖÇ©³öµÄµ±Ç°°æ±¾£¬¶ø²»¸üÐÂµ½²»Í¬µÄ°æ±¾¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_UPDATE_VERSION_ONLY`
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_UPDATE_VERSION_ONLY`
 
 .. _`UpdateVersionOverride`:
 
 ``UpdateVersionOverride``
-  æŒ‡å®šæºä»£ç æ ‘çš„å½“å‰ç‰ˆæœ¬ã€‚
+  Ö¸¶¨Ô´´úÂëÊ÷µÄµ±Ç°°æ±¾¡£
 
-  å½“å°†è¯¥å˜é‡è®¾ç½®ä¸ºéžç©ºå­—ç¬¦ä¸²æ—¶ï¼ŒCTestå°†æŠ¥å‘Šä½ æŒ‡å®šçš„å€¼ï¼Œè€Œä¸æ˜¯ä½¿ç”¨updateå‘½ä»¤æ¥å‘çŽ°å·²æ£€å‡ºçš„\
-  å½“å‰ç‰ˆæœ¬ã€‚è¿™ä¸ªå˜é‡çš„ä½¿ç”¨å–ä»£äº†\ ``UpdateVersionOnly``ã€‚ä¸Ž\ ``UpdateVersionOnly``\
-  ä¸€æ ·ï¼Œä½¿ç”¨è¿™ä¸ªå˜é‡å‘Šè¯‰CTestä¸è¦å°†æºæ ‘æ›´æ–°ä¸ºä¸åŒçš„ç‰ˆæœ¬ã€‚
+  µ±½«¸Ã±äÁ¿ÉèÖÃÎª·Ç¿Õ×Ö·û´®Ê±£¬CTest½«±¨¸æÄãÖ¸¶¨µÄÖµ£¬¶ø²»ÊÇÊ¹ÓÃupdateÃüÁîÀ´·¢ÏÖÒÑ¼ì³öµÄ\
+  µ±Ç°°æ±¾¡£Õâ¸ö±äÁ¿µÄÊ¹ÓÃÈ¡´úÁË\ ``UpdateVersionOnly``¡£Óë\ ``UpdateVersionOnly``\
+  Ò»Ñù£¬Ê¹ÓÃÕâ¸ö±äÁ¿¸æËßCTest²»Òª½«Ô´Ê÷¸üÐÂÎª²»Í¬µÄ°æ±¾¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_UPDATE_VERSION_OVERRIDE`
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_UPDATE_VERSION_OVERRIDE`
 
-å…¶ä»–é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÆäËûÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``NightlyStartTime``
-  åœ¨\ ``Nightly``\ ä»ªè¡¨æ¿æ¨¡å¼ä¸‹ï¼ŒæŒ‡å®šâ€œå¤œé—´å¼€å§‹æ—¶é—´â€ã€‚ä½¿ç”¨é›†ä¸­å¼ç‰ˆæœ¬æŽ§åˆ¶ç³»ç»Ÿï¼ˆ\ ``cvs``\
-  å’Œ\ ``svn``ï¼‰ï¼Œ\ ``Update``\ æ­¥éª¤ä¼šæ£€å‡ºæ­¤æ—¶çš„è½¯ä»¶ç‰ˆæœ¬ï¼Œä»¥ä¾¿å¤šä¸ªå®¢æˆ·æœºé€‰æ‹©ä¸€ä¸ªé€šç”¨ç‰ˆæœ¬\
-  è¿›è¡Œæµ‹è¯•ã€‚è¿™åœ¨åˆ†å¸ƒå¼ç‰ˆæœ¬æŽ§åˆ¶ç³»ç»Ÿä¸­æ²¡æœ‰æ˜Žç¡®å®šä¹‰ï¼Œå› æ­¤è¯¥è®¾ç½®è¢«å¿½ç•¥ã€‚
+  ÔÚ\ ``Nightly``\ ÒÇ±í°åÄ£Ê½ÏÂ£¬Ö¸¶¨¡°Ò¹¼ä¿ªÊ¼Ê±¼ä¡±¡£Ê¹ÓÃ¼¯ÖÐÊ½°æ±¾¿ØÖÆÏµÍ³£¨\ ``cvs``\
+  ºÍ\ ``svn``£©£¬\ ``Update``\ ²½Öè»á¼ì³ö´ËÊ±µÄÈí¼þ°æ±¾£¬ÒÔ±ã¶à¸ö¿Í»§»úÑ¡ÔñÒ»¸öÍ¨ÓÃ°æ±¾\
+  ½øÐÐ²âÊÔ¡£ÕâÔÚ·Ö²¼Ê½°æ±¾¿ØÖÆÏµÍ³ÖÐÃ»ÓÐÃ÷È·¶¨Òå£¬Òò´Ë¸ÃÉèÖÃ±»ºöÂÔ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_NIGHTLY_START_TIME`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``NIGHTLY_START_TIME``ï¼Œå¦åˆ™ä¸º\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_NIGHTLY_START_TIME`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``NIGHTLY_START_TIME``£¬·ñÔòÎª\
     ``CTEST_NIGHTLY_START_TIME``
 
 .. _`CTest Configure Step`:
 
-CTesté…ç½®æ­¥éª¤
+CTestÅäÖÃ²½Öè
 --------------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_configure`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯\
-ä»¥æŒ‡å®šä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_configure`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿É\
+ÒÔÖ¸¶¨Ò»Ð©²½ÖèÉèÖÃ¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``ConfigureCommand``
-  å‘½ä»¤è¡Œå¯åŠ¨è½¯ä»¶é…ç½®è¿‡ç¨‹ã€‚å®ƒå°†åœ¨\ ``BuildDirectory``\ è®¾ç½®æŒ‡å®šçš„ä½ç½®æ‰§è¡Œã€‚
+  ÃüÁîÐÐÆô¶¯Èí¼þÅäÖÃ¹ý³Ì¡£Ëü½«ÔÚ\ ``BuildDirectory``\ ÉèÖÃÖ¸¶¨µÄÎ»ÖÃÖ´ÐÐ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_CONFIGURE_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š:variable:`CMAKE_COMMAND`ï¼ŒåŽé¢è·Ÿç€\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_CONFIGURE_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º:variable:`CMAKE_COMMAND`£¬ºóÃæ¸ú×Å\
     :variable:`PROJECT_SOURCE_DIR`
 
 ``LabelsForSubprojects``
-  æŒ‡å®šä¸€ä¸ªåˆ†å·åˆ†éš”çš„æ ‡ç­¾åˆ—è¡¨ï¼Œè¿™äº›æ ‡ç­¾å°†è¢«è§†ä¸ºå­é¡¹ç›®ã€‚å½“æäº¤é…ç½®ã€æµ‹è¯•æˆ–æž„å»ºç»“æžœæ—¶ï¼Œè¯¥æ˜ å°„å°†\
-  ä¼ é€’ç»™CDashã€‚
+  Ö¸¶¨Ò»¸ö·ÖºÅ·Ö¸ôµÄ±êÇ©ÁÐ±í£¬ÕâÐ©±êÇ©½«±»ÊÓÎª×ÓÏîÄ¿¡£µ±Ìá½»ÅäÖÃ¡¢²âÊÔ»ò¹¹½¨½á¹ûÊ±£¬¸ÃÓ³Éä½«\
+  ´«µÝ¸øCDash¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_LABELS_FOR_SUBPROJECTS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_LABELS_FOR_SUBPROJECTS``
 
-  è¯·å‚é˜…\ `æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦`_ã€‚
+  Çë²ÎÔÄ\ `±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª`_¡£
 
 .. _`CTest Build Step`:
 
-CTestæž„å»ºæ­¥éª¤
+CTest¹¹½¨²½Öè
 ----------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_build`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯ä»¥æŒ‡å®š\
-ä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_build`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿ÉÒÔÖ¸¶¨\
+Ò»Ð©²½ÖèÉèÖÃ¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``DefaultCTestConfigurationType``
-  å½“è¦å¯åŠ¨çš„æž„å»ºç³»ç»Ÿå…è®¸åœ¨æž„å»ºæ—¶é€‰æ‹©é…ç½®ï¼ˆä¾‹å¦‚\ ``Debug``ã€\ ``Release``ï¼‰æ—¶ï¼Œè¿™æŒ‡å®šäº†åœ¨\
-  æ²¡æœ‰ç»™\ :program:`ctest`\ å‘½ä»¤\ :option:`-C <ctest -C>`\ é€‰é¡¹æ—¶è¦æž„å»ºçš„é»˜è®¤é…ç½®ã€‚\
-  å¦‚æžœå‡ºçŽ°ï¼Œè¯¥å€¼å°†è¢«æ›¿æ¢ä¸º\ ``MakeCommand``\ çš„å€¼ï¼Œä»¥æ›¿æ¢æ–‡å­—å­—ç¬¦ä¸²\
-  ``${CTEST_CONFIGURATION_TYPE}`` ã€‚
+  µ±ÒªÆô¶¯µÄ¹¹½¨ÏµÍ³ÔÊÐíÔÚ¹¹½¨Ê±Ñ¡ÔñÅäÖÃ£¨ÀýÈç\ ``Debug``¡¢\ ``Release``£©Ê±£¬ÕâÖ¸¶¨ÁËÔÚ\
+  Ã»ÓÐ¸ø\ :program:`ctest`\ ÃüÁî\ :option:`-C <ctest -C>`\ Ñ¡ÏîÊ±Òª¹¹½¨µÄÄ¬ÈÏÅäÖÃ¡£\
+  Èç¹û³öÏÖ£¬¸ÃÖµ½«±»Ìæ»»Îª\ ``MakeCommand``\ µÄÖµ£¬ÒÔÌæ»»ÎÄ×Ö×Ö·û´®\
+  ``${CTEST_CONFIGURATION_TYPE}`` ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_CONFIGURATION_TYPE`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``DEFAULT_CTEST_CONFIGURATION_TYPE``ï¼Œè¢«\
-    :envvar:`CMAKE_CONFIG_TYPE`\ çŽ¯å¢ƒå˜é‡åˆå§‹å€¼ã€‚ 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_CONFIGURATION_TYPE`
+  * :module:`CTest`\ ±äÁ¿£º\ ``DEFAULT_CTEST_CONFIGURATION_TYPE``£¬±»\
+    :envvar:`CMAKE_CONFIG_TYPE`\ »·¾³±äÁ¿³õÊ¼Öµ¡£ 
 
 ``LabelsForSubprojects``
-  æŒ‡å®šä¸€ä¸ªåˆ†å·åˆ†éš”çš„æ ‡ç­¾åˆ—è¡¨ï¼Œè¿™äº›æ ‡ç­¾å°†è¢«è§†ä¸ºå­é¡¹ç›®ã€‚å½“æäº¤é…ç½®ã€æµ‹è¯•æˆ–æž„å»ºç»“æžœæ—¶ï¼Œè¯¥æ˜ å°„å°†\
-  ä¼ é€’ç»™CDashã€‚
+  Ö¸¶¨Ò»¸ö·ÖºÅ·Ö¸ôµÄ±êÇ©ÁÐ±í£¬ÕâÐ©±êÇ©½«±»ÊÓÎª×ÓÏîÄ¿¡£µ±Ìá½»ÅäÖÃ¡¢²âÊÔ»ò¹¹½¨½á¹ûÊ±£¬¸ÃÓ³Éä½«\
+  ´«µÝ¸øCDash¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_LABELS_FOR_SUBPROJECTS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_LABELS_FOR_SUBPROJECTS``
 
-  è¯·å‚é˜…\ `æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦`_ã€‚
+  Çë²ÎÔÄ\ `±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª`_¡£
 
 ``MakeCommand``
-  å‘½ä»¤è¡Œå¯åŠ¨è½¯ä»¶æž„å»ºè¿‡ç¨‹ã€‚å®ƒå°†åœ¨\ ``BuildDirectory``\ è®¾ç½®æŒ‡å®šçš„ä½ç½®æ‰§è¡Œã€‚
+  ÃüÁîÐÐÆô¶¯Èí¼þ¹¹½¨¹ý³Ì¡£Ëü½«ÔÚ\ ``BuildDirectory``\ ÉèÖÃÖ¸¶¨µÄÎ»ÖÃÖ´ÐÐ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_BUILD_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``MAKECOMMAND``ï¼Œè¢«\
-    :command:`build_command`\ å‘½ä»¤åˆå§‹å€¼ã€‚ 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_BUILD_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``MAKECOMMAND``£¬±»\
+    :command:`build_command`\ ÃüÁî³õÊ¼Öµ¡£ 
 
 ``UseLaunchers``
-  å¯¹äºŽä½¿ç”¨\ :ref:`Makefile Generators`\ æˆ–\ :generator:`Ninja`\ ç”Ÿæˆå™¨ä¹‹ä¸€çš„CMakeç”Ÿ\
-  æˆçš„æž„å»ºæ ‘ï¼ŒæŒ‡å®š\ ``CTEST_USE_LAUNCHERS``\ ç‰¹æ€§æ˜¯å¦è¢«\ :module:`CTestUseLaunchers`\
-  æ¨¡å—ï¼ˆä¹ŸåŒ…å«åœ¨\ :module:`CTest`\ æ¨¡å—ä¸­ï¼‰å¯ç”¨ã€‚å½“å¯ç”¨æ—¶ï¼Œç”Ÿæˆçš„æž„å»ºç³»ç»Ÿå°†ç¼–è¯‘å™¨ã€é“¾æŽ¥å™¨\
-  æˆ–è‡ªå®šä¹‰å‘½ä»¤è¡Œçš„æ¯æ¬¡è°ƒç”¨åŒ…è£…ä¸ºä¸€ä¸ªâ€œå¯åŠ¨å™¨â€ï¼Œè¯¥â€œå¯åŠ¨å™¨â€é€šè¿‡çŽ¯å¢ƒå˜é‡å’Œæ–‡ä»¶ä¸ŽCTesté€šä¿¡ï¼Œä»¥æŠ¥\
-  å‘Šç²’åº¦æž„å»ºè­¦å‘Šå’Œé”™è¯¯ä¿¡æ¯ã€‚å¦åˆ™ï¼ŒCTestå¿…é¡»â€œæŠ“å–â€æž„å»ºè¾“å‡ºæ—¥å¿—ä»¥è¿›è¡Œè¯Šæ–­ã€‚
+  ¶ÔÓÚÊ¹ÓÃ\ :ref:`Makefile Generators`\ »ò\ :generator:`Ninja`\ Éú³ÉÆ÷Ö®Ò»µÄCMakeÉú\
+  ³ÉµÄ¹¹½¨Ê÷£¬Ö¸¶¨\ ``CTEST_USE_LAUNCHERS``\ ÌØÐÔÊÇ·ñ±»\ :module:`CTestUseLaunchers`\
+  Ä£¿é£¨Ò²°üº¬ÔÚ\ :module:`CTest`\ Ä£¿éÖÐ£©ÆôÓÃ¡£µ±ÆôÓÃÊ±£¬Éú³ÉµÄ¹¹½¨ÏµÍ³½«±àÒëÆ÷¡¢Á´½ÓÆ÷\
+  »ò×Ô¶¨ÒåÃüÁîÐÐµÄÃ¿´Îµ÷ÓÃ°ü×°ÎªÒ»¸ö¡°Æô¶¯Æ÷¡±£¬¸Ã¡°Æô¶¯Æ÷¡±Í¨¹ý»·¾³±äÁ¿ºÍÎÄ¼þÓëCTestÍ¨ÐÅ£¬ÒÔ±¨\
+  ¸æÁ£¶È¹¹½¨¾¯¸æºÍ´íÎóÐÅÏ¢¡£·ñÔò£¬CTest±ØÐë¡°×¥È¡¡±¹¹½¨Êä³öÈÕÖ¾ÒÔ½øÐÐÕï¶Ï¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_USE_LAUNCHERS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_USE_LAUNCHERS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_USE_LAUNCHERS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_USE_LAUNCHERS``
 
 .. _`CTest Test Step`:
 
-CTestæµ‹è¯•æ­¥éª¤
+CTest²âÊÔ²½Öè
 ---------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_test`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯ä»¥æŒ‡å®š\
-ä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_test`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿ÉÒÔÖ¸¶¨\
+Ò»Ð©²½ÖèÉèÖÃ¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``ResourceSpecFile``
-  æŒ‡å®š\ :ref:`èµ„æºè§„èŒƒæ–‡ä»¶ <ctest-resource-specification-file>`ã€‚
+  Ö¸¶¨\ :ref:`×ÊÔ´¹æ·¶ÎÄ¼þ <ctest-resource-specification-file>`¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_RESOURCE_SPEC_FILE`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_RESOURCE_SPEC_FILE``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_RESOURCE_SPEC_FILE`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_RESOURCE_SPEC_FILE``
 
-  æœ‰å…³æ›´å¤šä¿¡æ¯ï¼Œè¯·å‚è§\ :ref:`ctest-resource-allocation`ã€‚
+  ÓÐ¹Ø¸ü¶àÐÅÏ¢£¬Çë²Î¼û\ :ref:`ctest-resource-allocation`¡£
 
 ``LabelsForSubprojects``
-  æŒ‡å®šä¸€ä¸ªåˆ†å·åˆ†éš”çš„æ ‡ç­¾åˆ—è¡¨ï¼Œè¿™äº›æ ‡ç­¾å°†è¢«è§†ä¸ºå­é¡¹ç›®ã€‚å½“æäº¤é…ç½®ã€æµ‹è¯•æˆ–æž„å»ºç»“æžœæ—¶ï¼Œè¯¥æ˜ å°„å°†\
-  ä¼ é€’ç»™CDashã€‚
+  Ö¸¶¨Ò»¸ö·ÖºÅ·Ö¸ôµÄ±êÇ©ÁÐ±í£¬ÕâÐ©±êÇ©½«±»ÊÓÎª×ÓÏîÄ¿¡£µ±Ìá½»ÅäÖÃ¡¢²âÊÔ»ò¹¹½¨½á¹ûÊ±£¬¸ÃÓ³Éä½«\
+  ´«µÝ¸øCDash¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_LABELS_FOR_SUBPROJECTS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_LABELS_FOR_SUBPROJECTS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_LABELS_FOR_SUBPROJECTS``
 
-  è¯·å‚é˜…\ `æ ‡ç­¾å’Œå­é¡¹ç›®æ‘˜è¦`_ã€‚
+  Çë²ÎÔÄ\ `±êÇ©ºÍ×ÓÏîÄ¿ÕªÒª`_¡£
 
 ``TestLoad``
-  åœ¨å¹¶è¡Œè¿è¡Œæµ‹è¯•æ—¶ï¼ˆä¾‹å¦‚ä½¿ç”¨\ :option:`-j <ctest -j>`ï¼‰ï¼Œå½“æµ‹è¯•å¯èƒ½å¯¼è‡´CPUè´Ÿè½½è¶…è¿‡ç»™å®šé˜ˆ\
-  å€¼æ—¶ï¼Œå°½é‡ä¸è¦å¯åŠ¨æµ‹è¯•ã€‚
+  ÔÚ²¢ÐÐÔËÐÐ²âÊÔÊ±£¨ÀýÈçÊ¹ÓÃ\ :option:`-j <ctest -j>`£©£¬µ±²âÊÔ¿ÉÄÜµ¼ÖÂCPU¸ºÔØ³¬¹ý¸ø¶¨ãÐ\
+  ÖµÊ±£¬¾¡Á¿²»ÒªÆô¶¯²âÊÔ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_TEST_LOAD`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_TEST_LOAD``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_TEST_LOAD`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_TEST_LOAD``
 
 ``TimeOut``
-  å¦‚æžœæœªç”±\ :prop_test:`TIMEOUT`\ å±žæ€§æˆ–è€…\ :option:`--timeout <ctest --timeout>`\
-  æ ‡è¯†æŒ‡å®šï¼Œåˆ™ä¸ºæ¯ä¸ªæµ‹è¯•çš„é»˜è®¤è¶…æ—¶ã€‚
+  Èç¹ûÎ´ÓÉ\ :prop_test:`TIMEOUT`\ ÊôÐÔ»òÕß\ :option:`--timeout <ctest --timeout>`\
+  ±êÊ¶Ö¸¶¨£¬ÔòÎªÃ¿¸ö²âÊÔµÄÄ¬ÈÏ³¬Ê±¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_TEST_TIMEOUT`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``DART_TESTING_TIMEOUT``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_TEST_TIMEOUT`
+  * :module:`CTest`\ ±äÁ¿£º\ ``DART_TESTING_TIMEOUT``
 
-è¦å‘CDashæŠ¥å‘Šé¢å¤–çš„æµ‹è¯•å€¼ï¼Œè¯·å‚é˜…\ :ref:`Additional Test Measurements`ã€‚
+ÒªÏòCDash±¨¸æ¶îÍâµÄ²âÊÔÖµ£¬Çë²ÎÔÄ\ :ref:`Additional Test Measurements`¡£
 
 .. _`CTest Coverage Step`:
 
-CTestè¦†ç›–æ­¥éª¤
+CTest¸²¸Ç²½Öè
 -------------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_coverage`\ å‘½ä»¤è¿è¡Œè¿™ä¸ªæ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯\
-ä»¥æŒ‡å®šä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_coverage`\ ÃüÁîÔËÐÐÕâ¸ö²½Öè¡£ÃüÁîµÄ²ÎÊý¿É\
+ÒÔÖ¸¶¨Ò»Ð©²½ÖèÉèÖÃ¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``CoverageCommand``
-  æ‰§è¡Œè½¯ä»¶è¦†ç›–çŽ‡åˆ†æžçš„å‘½ä»¤è¡Œå·¥å…·ã€‚å®ƒå°†åœ¨\ ``BuildDirectory``\ è®¾ç½®æŒ‡å®šçš„ä½ç½®æ‰§è¡Œã€‚
+  Ö´ÐÐÈí¼þ¸²¸ÇÂÊ·ÖÎöµÄÃüÁîÐÐ¹¤¾ß¡£Ëü½«ÔÚ\ ``BuildDirectory``\ ÉèÖÃÖ¸¶¨µÄÎ»ÖÃÖ´ÐÐ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_COVERAGE_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``COVERAGE_COMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_COVERAGE_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``COVERAGE_COMMAND``
 
 ``CoverageExtraFlags``
-  ä¸º\ ``CoverageCommand``\ å·¥å…·æŒ‡å®šå‘½ä»¤è¡Œé€‰é¡¹ã€‚
+  Îª\ ``CoverageCommand``\ ¹¤¾ßÖ¸¶¨ÃüÁîÐÐÑ¡Ïî¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_COVERAGE_EXTRA_FLAGS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``COVERAGE_EXTRA_FLAGS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_COVERAGE_EXTRA_FLAGS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``COVERAGE_EXTRA_FLAGS``
 
-  è¿™äº›é€‰é¡¹æ˜¯ä¼ é€’ç»™\ ``CoverageCommand``\ çš„ç¬¬ä¸€ä¸ªå‚æ•°ã€‚
+  ÕâÐ©Ñ¡ÏîÊÇ´«µÝ¸ø\ ``CoverageCommand``\ µÄµÚÒ»¸ö²ÎÊý¡£
 
 .. _`CTest MemCheck Step`:
 
-CTestå†…å­˜æµ‹è¯•æ­¥éª¤
+CTestÄÚ´æ²âÊÔ²½Öè
 -------------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_memcheck`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯ä»¥\
-æŒ‡å®šä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_memcheck`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿ÉÒÔ\
+Ö¸¶¨Ò»Ð©²½ÖèÉèÖÃ¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``MemoryCheckCommand``
-  æ‰§è¡ŒåŠ¨æ€åˆ†æžçš„å‘½ä»¤è¡Œå·¥å…·ã€‚æµ‹è¯•å‘½ä»¤è¡Œå°†é€šè¿‡è¿™ä¸ªå·¥å…·å¯åŠ¨ã€‚
+  Ö´ÐÐ¶¯Ì¬·ÖÎöµÄÃüÁîÐÐ¹¤¾ß¡£²âÊÔÃüÁîÐÐ½«Í¨¹ýÕâ¸ö¹¤¾ßÆô¶¯¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_MEMORYCHECK_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``MEMORYCHECK_COMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_MEMORYCHECK_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``MEMORYCHECK_COMMAND``
 
 ``MemoryCheckCommandOptions``
-  ä¸º\ ``MemoryCheckCommand``\ å·¥å…·æŒ‡å®šå‘½ä»¤è¡Œé€‰é¡¹ã€‚å®ƒä»¬å°†è¢«æ”¾ç½®åœ¨æµ‹è¯•å‘½ä»¤è¡Œä¹‹å‰ã€‚
+  Îª\ ``MemoryCheckCommand``\ ¹¤¾ßÖ¸¶¨ÃüÁîÐÐÑ¡Ïî¡£ËüÃÇ½«±»·ÅÖÃÔÚ²âÊÔÃüÁîÐÐÖ®Ç°¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_MEMORYCHECK_COMMAND_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``MEMORYCHECK_COMMAND_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_MEMORYCHECK_COMMAND_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``MEMORYCHECK_COMMAND_OPTIONS``
 
 ``MemoryCheckType``
-  æŒ‡å®šè¦æ‰§è¡Œçš„å†…å­˜æ£€æŸ¥ç±»åž‹ã€‚
+  Ö¸¶¨ÒªÖ´ÐÐµÄÄÚ´æ¼ì²éÀàÐÍ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_MEMORYCHECK_TYPE`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``MEMORYCHECK_TYPE``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_MEMORYCHECK_TYPE`
+  * :module:`CTest`\ ±äÁ¿£º\ ``MEMORYCHECK_TYPE``
 
 ``MemoryCheckSanitizerOptions``
-  åœ¨ä½¿ç”¨å¯ç”¨äº†æ€æ¯’åŠŸèƒ½çš„æž„å»ºè¿è¡Œæ—¶ï¼ŒæŒ‡å®šæ€æ¯’åŠŸèƒ½çš„é€‰é¡¹ã€‚
+  ÔÚÊ¹ÓÃÆôÓÃÁËÉ±¶¾¹¦ÄÜµÄ¹¹½¨ÔËÐÐÊ±£¬Ö¸¶¨É±¶¾¹¦ÄÜµÄÑ¡Ïî¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_MEMORYCHECK_SANITIZER_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``MEMORYCHECK_SANITIZER_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_MEMORYCHECK_SANITIZER_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``MEMORYCHECK_SANITIZER_OPTIONS``
 
 ``MemoryCheckSuppressionFile``
-  æŒ‡å®šåŒ…å«\ ``MemoryCheckCommand``\ å·¥å…·æŠ‘åˆ¶è§„åˆ™çš„æ–‡ä»¶ã€‚å®ƒå°†ä¸Žé€‚åˆäºŽå·¥å…·çš„é€‰é¡¹ä¸€èµ·ä¼ é€’ã€‚
+  Ö¸¶¨°üº¬\ ``MemoryCheckCommand``\ ¹¤¾ßÒÖÖÆ¹æÔòµÄÎÄ¼þ¡£Ëü½«ÓëÊÊºÏÓÚ¹¤¾ßµÄÑ¡ÏîÒ»Æð´«µÝ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_MEMORYCHECK_SUPPRESSIONS_FILE`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``MEMORYCHECK_SUPPRESSIONS_FILE``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_MEMORYCHECK_SUPPRESSIONS_FILE`
+  * :module:`CTest`\ ±äÁ¿£º\ ``MEMORYCHECK_SUPPRESSIONS_FILE``
 
-å…¶ä»–é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÆäËûÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``BoundsCheckerCommand``
-  æŒ‡å®šå·²çŸ¥ä¸Žè¾¹ç•Œæ£€æŸ¥å™¨å…¼å®¹çš„å‘½ä»¤è¡Œ\ ``MemoryCheckCommand``ã€‚
+  Ö¸¶¨ÒÑÖªÓë±ß½ç¼ì²éÆ÷¼æÈÝµÄÃüÁîÐÐ\ ``MemoryCheckCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼šæ— 
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£ºÎÞ
 
 ``PurifyCommand``
-  æŒ‡å®šä¸€ä¸ªå·²çŸ¥ä¸ŽPurifyå‘½ä»¤è¡Œå…¼å®¹çš„\ ``MemoryCheckCommand``ã€‚
+  Ö¸¶¨Ò»¸öÒÑÖªÓëPurifyÃüÁîÐÐ¼æÈÝµÄ\ ``MemoryCheckCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``PURIFYCOMMAND``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``PURIFYCOMMAND``
 
 ``ValgrindCommand``
-  æŒ‡å®šä¸€ä¸ªå·²çŸ¥ä¸ŽValgrindå‘½ä»¤è¡Œå…¼å®¹çš„\ ``MemoryCheckCommand``ã€‚
+  Ö¸¶¨Ò»¸öÒÑÖªÓëValgrindÃüÁîÐÐ¼æÈÝµÄ\ ``MemoryCheckCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``VALGRIND_COMMAND``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``VALGRIND_COMMAND``
 
 ``ValgrindCommandOptions``
-  ä¸º\ ``ValgrindCommand``\ å·¥å…·æŒ‡å®šå‘½ä»¤è¡Œé€‰é¡¹ã€‚å®ƒä»¬å°†è¢«æ”¾ç½®åœ¨æµ‹è¯•å‘½ä»¤è¡Œä¹‹å‰ã€‚
+  Îª\ ``ValgrindCommand``\ ¹¤¾ßÖ¸¶¨ÃüÁîÐÐÑ¡Ïî¡£ËüÃÇ½«±»·ÅÖÃÔÚ²âÊÔÃüÁîÐÐÖ®Ç°¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``VALGRIND_COMMAND_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``VALGRIND_COMMAND_OPTIONS``
 
 ``DrMemoryCommand``
-  æŒ‡å®šä¸€ä¸ªå·²çŸ¥ä¸ŽDrMemoryå…¼å®¹çš„å‘½ä»¤è¡Œ\ ``MemoryCheckCommand``ã€‚
+  Ö¸¶¨Ò»¸öÒÑÖªÓëDrMemory¼æÈÝµÄÃüÁîÐÐ\ ``MemoryCheckCommand``¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``DRMEMORY_COMMAND``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``DRMEMORY_COMMAND``
 
 ``DrMemoryCommandOptions``
-  ä¸º\ ``DrMemoryCommand``\ å·¥å…·æŒ‡å®šå‘½ä»¤è¡Œé€‰é¡¹ã€‚å®ƒä»¬å°†è¢«æ”¾ç½®åœ¨æµ‹è¯•å‘½ä»¤è¡Œä¹‹å‰ã€‚
+  Îª\ ``DrMemoryCommand``\ ¹¤¾ßÖ¸¶¨ÃüÁîÐÐÑ¡Ïî¡£ËüÃÇ½«±»·ÅÖÃÔÚ²âÊÔÃüÁîÐÐÖ®Ç°¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``DRMEMORY_COMMAND_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``DRMEMORY_COMMAND_OPTIONS``
 
 ``CudaSanitizerCommand``
-  æŒ‡å®šä¸€ä¸ª\ ``MemoryCheckCommand``ï¼Œå·²çŸ¥å®ƒæ˜¯ä¸Žcuda-memcheckæˆ–compute-sanitizerå…¼å®¹\
-  çš„å‘½ä»¤è¡Œã€‚
+  Ö¸¶¨Ò»¸ö\ ``MemoryCheckCommand``£¬ÒÑÖªËüÊÇÓëcuda-memcheck»òcompute-sanitizer¼æÈÝ\
+  µÄÃüÁîÐÐ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CUDA_SANITIZER_COMMAND``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``CUDA_SANITIZER_COMMAND``
 
 ``CudaSanitizerCommandOptions``
-  ä¸º\ ``CudaSanitizerCommand``\ å·¥å…·æŒ‡å®šå‘½ä»¤è¡Œé€‰é¡¹ã€‚å®ƒä»¬å°†è¢«æ”¾ç½®åœ¨æµ‹è¯•å‘½ä»¤è¡Œä¹‹å‰ã€‚
+  Îª\ ``CudaSanitizerCommand``\ ¹¤¾ßÖ¸¶¨ÃüÁîÐÐÑ¡Ïî¡£ËüÃÇ½«±»·ÅÖÃÔÚ²âÊÔÃüÁîÐÐÖ®Ç°¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— 
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CUDA_SANITIZER_COMMAND_OPTIONS``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ
+  * :module:`CTest`\ ±äÁ¿£º\ ``CUDA_SANITIZER_COMMAND_OPTIONS``
 
 .. _`CTest Submit Step`:
 
-CTestæäº¤æ­¥éª¤
+CTestÌá½»²½Öè
 -----------------
 
-åœ¨\ `CTest Script`_\ ä¸­ï¼Œ\ :command:`ctest_submit`\ å‘½ä»¤è¿è¡Œæ­¤æ­¥éª¤ã€‚å‘½ä»¤çš„å‚æ•°å¯ä»¥æŒ‡\
-å®šä¸€äº›æ­¥éª¤è®¾ç½®ã€‚
+ÔÚ\ `CTest Script`_\ ÖÐ£¬\ :command:`ctest_submit`\ ÃüÁîÔËÐÐ´Ë²½Öè¡£ÃüÁîµÄ²ÎÊý¿ÉÒÔÖ¸\
+¶¨Ò»Ð©²½ÖèÉèÖÃ¡£
 
-é…ç½®è®¾ç½®åŒ…æ‹¬ï¼š
+ÅäÖÃÉèÖÃ°üÀ¨£º
 
 ``BuildName``
-  ç”¨ä¸€ä¸ªçŸ­å­—ç¬¦ä¸²æè¿°ä»ªè¡¨æ¿å®¢æˆ·ç«¯å¹³å°ã€‚ï¼ˆæ“ä½œç³»ç»Ÿã€ç¼–è¯‘å™¨ç­‰ï¼‰
+  ÓÃÒ»¸ö¶Ì×Ö·û´®ÃèÊöÒÇ±í°å¿Í»§¶ËÆ½Ì¨¡££¨²Ù×÷ÏµÍ³¡¢±àÒëÆ÷µÈ£©
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_BUILD_NAME`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``BUILDNAME``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_BUILD_NAME`
+  * :module:`CTest`\ ±äÁ¿£º\ ``BUILDNAME``
 
 ``CDashVersion``
-  é—ç•™çš„é€‰é¡¹ã€‚ä¸ç”¨ã€‚
+  ÒÅÁôµÄÑ¡Ïî¡£²»ÓÃ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— ï¼Œç”±æœåŠ¡å™¨æ£€æµ‹
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_CDASH_VERSION``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ£¬ÓÉ·þÎñÆ÷¼ì²â
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_CDASH_VERSION``
 
 ``CTestSubmitRetryCount``
-  æŒ‡å®šåœ¨ç½‘ç»œæ•…éšœæ—¶é‡è¯•æäº¤çš„æ¬¡æ•°ã€‚
+  Ö¸¶¨ÔÚÍøÂç¹ÊÕÏÊ±ÖØÊÔÌá½»µÄ´ÎÊý¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— ï¼Œä½¿ç”¨\ :command:`ctest_submit` ``RETRY_COUNT``\ é€‰é¡¹ã€‚
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_SUBMIT_RETRY_COUNT``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ£¬Ê¹ÓÃ\ :command:`ctest_submit` ``RETRY_COUNT``\ Ñ¡Ïî¡£
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_SUBMIT_RETRY_COUNT``
 
 ``CTestSubmitRetryDelay``
-  æŒ‡å®šåœ¨ç½‘ç»œæ•…éšœæ—¶é‡è¯•æäº¤ä¹‹å‰çš„å»¶è¿Ÿã€‚
+  Ö¸¶¨ÔÚÍøÂç¹ÊÕÏÊ±ÖØÊÔÌá½»Ö®Ç°µÄÑÓ³Ù¡£
 
-  * `CTest Script`_\ å˜é‡ï¼šæ— ï¼Œä½¿ç”¨\ :command:`ctest_submit` ``RETRY_DELAY``\ é€‰é¡¹ã€‚
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_SUBMIT_RETRY_DELAY``
+  * `CTest Script`_\ ±äÁ¿£ºÎÞ£¬Ê¹ÓÃ\ :command:`ctest_submit` ``RETRY_DELAY``\ Ñ¡Ïî¡£
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_SUBMIT_RETRY_DELAY``
 
 ``CurlOptions``
-  æŒ‡å®šä¸€ä¸ªä»¥åˆ†å·åˆ†éš”çš„é€‰é¡¹åˆ—è¡¨æ¥æŽ§åˆ¶Curlåº“ï¼ŒCTeståœ¨å†…éƒ¨ä½¿ç”¨Curlåº“è¿žæŽ¥åˆ°æœåŠ¡å™¨ã€‚å¯èƒ½çš„é€‰é¡¹æ˜¯\
-  ``CURLOPT_SSL_VERIFYPEER_OFF``\ å’Œ\ ``CURLOPT_SSL_VERIFYHOST_OFF``ã€‚
+  .. deprecated:: 3.30
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_CURL_OPTIONS`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_CURL_OPTIONS``
+    Use ``TLSVerify`` instead.
+
+  Specify a semicolon-separated list of options to control the
+  Curl library that CTest uses internally to connect to the
+  server.
+
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_CURL_OPTIONS`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_CURL_OPTIONS``
+
+  Possible options are:
+
+  ``CURLOPT_SSL_VERIFYPEER_OFF``
+    Disable the ``CURLOPT_SSL_VERIFYPEER`` curl option.
+
+  ``CURLOPT_SSL_VERIFYHOST_OFF``
+    Disable the ``CURLOPT_SSL_VERIFYHOST`` curl option.
 
 ``DropLocation``
-  é—ç•™çš„é€‰æ‹©ã€‚å½“æœªè®¾ç½® ``SubmitURL`` æ—¶ï¼Œå®ƒç”±\ ``DropMethod``ã€\ ``DropSiteUser``ã€\
-  ``DropSitePassword``ã€\ ``DropSite``\ å’Œ\ ``DropLocation``\ æž„é€ ã€‚
+  ÒÅÁôµÄÑ¡Ôñ¡£µ±Î´ÉèÖÃ ``SubmitURL`` Ê±£¬ËüÓÉ\ ``DropMethod``¡¢\ ``DropSiteUser``¡¢\
+  ``DropSitePassword``¡¢\ ``DropSite``\ ºÍ\ ``DropLocation``\ ¹¹Ôì¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_DROP_LOCATION`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``DROP_LOCATION``ï¼Œå¦åˆ™\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_DROP_LOCATION`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``DROP_LOCATION``£¬·ñÔò\
     ``CTEST_DROP_LOCATION``
 
 ``DropMethod``
-  é—ç•™çš„é€‰æ‹©ã€‚å½“æœªè®¾ç½® ``SubmitURL`` æ—¶ï¼Œå®ƒç”±\ ``DropMethod``ã€\ ``DropSiteUser``ã€\
-  ``DropSitePassword``ã€\ ``DropSite``\ å’Œ\ ``DropLocation``\ æž„é€ ã€‚
+  ÒÅÁôµÄÑ¡Ôñ¡£µ±Î´ÉèÖÃ ``SubmitURL`` Ê±£¬ËüÓÉ\ ``DropMethod``¡¢\ ``DropSiteUser``¡¢\
+  ``DropSitePassword``¡¢\ ``DropSite``\ ºÍ\ ``DropLocation``\ ¹¹Ôì¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_DROP_METHOD`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``DROP_METHOD``ï¼Œå¦åˆ™\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_DROP_METHOD`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``DROP_METHOD``£¬·ñÔò\
     ``CTEST_DROP_METHOD``
 
 ``DropSite``
-  é—ç•™çš„é€‰æ‹©ã€‚å½“æœªè®¾ç½® ``SubmitURL`` æ—¶ï¼Œå®ƒç”±\ ``DropMethod``ã€\ ``DropSiteUser``ã€\
-  ``DropSitePassword``ã€\ ``DropSite``\ å’Œ\ ``DropLocation``\ æž„é€ ã€‚
+  ÒÅÁôµÄÑ¡Ôñ¡£µ±Î´ÉèÖÃ ``SubmitURL`` Ê±£¬ËüÓÉ\ ``DropMethod``¡¢\ ``DropSiteUser``¡¢\
+  ``DropSitePassword``¡¢\ ``DropSite``\ ºÍ\ ``DropLocation``\ ¹¹Ôì¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_DROP_SITE`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``DROP_SITE``ï¼Œå¦åˆ™\ ``CTEST_DROP_SITE``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_DROP_SITE`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``DROP_SITE``£¬·ñÔò\ ``CTEST_DROP_SITE``
 
 ``DropSitePassword``
-  é—ç•™çš„é€‰æ‹©ã€‚å½“æœªè®¾ç½® ``SubmitURL`` æ—¶ï¼Œå®ƒç”±\ ``DropMethod``ã€\ ``DropSiteUser``ã€\
-  ``DropSitePassword``ã€\ ``DropSite``\ å’Œ\ ``DropLocation``\ æž„é€ ã€‚
+  ÒÅÁôµÄÑ¡Ôñ¡£µ±Î´ÉèÖÃ ``SubmitURL`` Ê±£¬ËüÓÉ\ ``DropMethod``¡¢\ ``DropSiteUser``¡¢\
+  ``DropSitePassword``¡¢\ ``DropSite``\ ºÍ\ ``DropLocation``\ ¹¹Ôì¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_DROP_SITE_PASSWORD`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``DROP_SITE_PASSWORD``ï¼Œå¦åˆ™\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_DROP_SITE_PASSWORD`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``DROP_SITE_PASSWORD``£¬·ñÔò\
     ``CTEST_DROP_SITE_PASWORD``
 
 ``DropSiteUser``
-  é—ç•™çš„é€‰æ‹©ã€‚å½“æœªè®¾ç½® ``SubmitURL`` æ—¶ï¼Œå®ƒç”±\ ``DropMethod``ã€\ ``DropSiteUser``ã€\
-  ``DropSitePassword``ã€\ ``DropSite``\ å’Œ\ ``DropLocation``\ æž„é€ ã€‚
+  ÒÅÁôµÄÑ¡Ôñ¡£µ±Î´ÉèÖÃ ``SubmitURL`` Ê±£¬ËüÓÉ\ ``DropMethod``¡¢\ ``DropSiteUser``¡¢\
+  ``DropSitePassword``¡¢\ ``DropSite``\ ºÍ\ ``DropLocation``\ ¹¹Ôì¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_DROP_SITE_USER`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``DROP_SITE_USER``ï¼Œå¦åˆ™\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_DROP_SITE_USER`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``DROP_SITE_USER``£¬·ñÔò\
     ``CTEST_DROP_SITE_USER``
 
 ``IsCDash``
-  é—ç•™çš„é€‰é¡¹ã€‚ä¸ç”¨ã€‚
+  ÒÅÁôµÄÑ¡Ïî¡£²»ÓÃ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_DROP_SITE_CDASH`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_DROP_SITE_CDASH``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_DROP_SITE_CDASH`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_DROP_SITE_CDASH``
 
 ``ScpCommand``
-  é—ç•™çš„é€‰é¡¹ã€‚ä¸ç”¨ã€‚
+  ÒÅÁôµÄÑ¡Ïî¡£²»ÓÃ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SCP_COMMAND`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``SCPCOMMAND``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SCP_COMMAND`
+  * :module:`CTest`\ ±äÁ¿£º\ ``SCPCOMMAND``
 
 ``Site``
-  ç”¨çŸ­å­—ç¬¦ä¸²æè¿°ä»ªè¡¨æ¿å®¢æˆ·ç«¯ä¸»æœºç«™ç‚¹ã€‚ï¼ˆä¸»æœºåã€åŸŸåç­‰ï¼‰
+  ÓÃ¶Ì×Ö·û´®ÃèÊöÒÇ±í°å¿Í»§¶ËÖ÷»úÕ¾µã¡££¨Ö÷»úÃû¡¢ÓòÃûµÈ£©
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SITE`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``SITE``ï¼Œè¢«\ :command:`site_name`\ å‘½ä»¤åˆå§‹å€¼ã€‚ 
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SITE`
+  * :module:`CTest`\ ±äÁ¿£º\ ``SITE``£¬±»\ :command:`site_name`\ ÃüÁî³õÊ¼Öµ¡£ 
 
 ``SubmitURL``
-  å°†æäº¤å‘é€åˆ°çš„ä»ªè¡¨æ¿æœåŠ¡å™¨çš„\ ``http``\ æˆ–\ ``https`` URLã€‚
+  ½«Ìá½»·¢ËÍµ½µÄÒÇ±í°å·þÎñÆ÷µÄ\ ``http``\ »ò\ ``https`` URL¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SUBMIT_URL`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``SUBMIT_URL``ï¼Œå¦åˆ™\ ``CTEST_SUBMIT_URL``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SUBMIT_URL`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``SUBMIT_URL``£¬·ñÔò\ ``CTEST_SUBMIT_URL``
 
 ``SubmitInactivityTimeout``
-  ç­‰å¾…æäº¤çš„æ—¶é—´ï¼Œå¦‚æžœæäº¤æœªå®Œæˆï¼Œæäº¤å°†è¢«å–æ¶ˆã€‚æŒ‡å®šä¸€ä¸ªé›¶å€¼æ¥ç¦ç”¨è¶…æ—¶ã€‚
+  µÈ´ýÌá½»µÄÊ±¼ä£¬Èç¹ûÌá½»Î´Íê³É£¬Ìá½»½«±»È¡Ïû¡£Ö¸¶¨Ò»¸öÁãÖµÀ´½ûÓÃ³¬Ê±¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_SUBMIT_INACTIVITY_TIMEOUT`
-  * :module:`CTest`\ å˜é‡ï¼š\ ``CTEST_SUBMIT_INACTIVITY_TIMEOUT``
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_SUBMIT_INACTIVITY_TIMEOUT`
+  * :module:`CTest`\ ±äÁ¿£º\ ``CTEST_SUBMIT_INACTIVITY_TIMEOUT``
+
+``TLSVersion``
+  .. versionadded:: 3.30
+
+  Specify a minimum TLS version allowed when submitting to a dashboard
+  via ``https://`` URLs.
+
+  * `CTest Script`_ variable: :variable:`CTEST_TLS_VERSION`
+  * :module:`CTest` module variable: ``CTEST_TLS_VERSION``
+
+``TLSVerify``
+  .. versionadded:: 3.30
+
+  Specify a boolean value indicating whether to verify the server
+  certificate when submitting to a dashboard via ``https://`` URLs.
+
+  * `CTest Script`_ variable: :variable:`CTEST_TLS_VERIFY`
+  * :module:`CTest` module variable: ``CTEST_TLS_VERIFY``
 
 ``TriggerSite``
-  é—ç•™çš„é€‰é¡¹ã€‚ä¸ç”¨ã€‚
+  ÒÅÁôµÄÑ¡Ïî¡£²»ÓÃ¡£
 
-  * `CTest Script`_\ å˜é‡ï¼š:variable:`CTEST_TRIGGER_SITE`
-  * :module:`CTest`\ å˜é‡ï¼šå¦‚æžœè®¾ç½®äº†ï¼Œåˆ™ä¸º\ ``TRIGGER_SITE``ï¼Œå¦åˆ™\
+  * `CTest Script`_\ ±äÁ¿£º:variable:`CTEST_TRIGGER_SITE`
+  * :module:`CTest`\ ±äÁ¿£ºÈç¹ûÉèÖÃÁË£¬ÔòÎª\ ``TRIGGER_SITE``£¬·ñÔò\
     ``CTEST_TRIGGER_SITE``
 
 .. _`Show as JSON Object Model`:
 
-æ˜¾ç¤ºä¸ºJSONå¯¹è±¡æ¨¡åž‹
+ÏÔÊ¾ÎªJSON¶ÔÏóÄ£ÐÍ
 =========================
 
 .. versionadded:: 3.14
 
-å½“ç»™å‡º\ ``--show-only=json-v1``\ å‘½ä»¤è¡Œé€‰é¡¹æ—¶ï¼Œæµ‹è¯•ä¿¡æ¯ä»¥JSONæ ¼å¼è¾“å‡ºã€‚ç‰ˆæœ¬1.0çš„JSONå¯¹\
-è±¡æ¨¡åž‹å®šä¹‰å¦‚ä¸‹ï¼š
+µ±¸ø³ö\ ``--show-only=json-v1``\ ÃüÁîÐÐÑ¡ÏîÊ±£¬²âÊÔÐÅÏ¢ÒÔJSON¸ñÊ½Êä³ö¡£°æ±¾1.0µÄJSON¶Ô\
+ÏóÄ£ÐÍ¶¨ÒåÈçÏÂ£º
 
 ``kind``
-  å­—ç¬¦ä¸²â€œctestInfoâ€ã€‚
+  ×Ö·û´®¡°ctestInfo¡±¡£
 
 ``version``
-  æŒ‡å®šç‰ˆæœ¬ç»„ä»¶çš„JSONå¯¹è±¡ã€‚å…¶æˆå‘˜æ˜¯
+  Ö¸¶¨°æ±¾×é¼þµÄJSON¶ÔÏó¡£Æä³ÉÔ±ÊÇ
 
   ``major``
-    ä¸€ä¸ªéžè´Ÿæ•´æ•°ï¼ŒæŒ‡å®šä¸»ç‰ˆæœ¬ç»„ä»¶ã€‚
+    Ò»¸ö·Ç¸ºÕûÊý£¬Ö¸¶¨Ö÷°æ±¾×é¼þ¡£
   ``minor``
-    æŒ‡å®šæ¬¡è¦ç‰ˆæœ¬ç»„ä»¶çš„éžè´Ÿæ•´æ•°ã€‚
+    Ö¸¶¨´ÎÒª°æ±¾×é¼þµÄ·Ç¸ºÕûÊý¡£
 
 ``backtraceGraph``
-    JSONå¯¹è±¡ï¼Œä½¿ç”¨ä»¥ä¸‹æˆå‘˜è¡¨ç¤ºå›žæº¯ä¿¡æ¯ï¼š
+    JSON¶ÔÏó£¬Ê¹ÓÃÒÔÏÂ³ÉÔ±±íÊ¾»ØËÝÐÅÏ¢£º
 
     ``commands``
-      å‘½ä»¤åç§°åˆ—è¡¨ã€‚
+      ÃüÁîÃû³ÆÁÐ±í¡£
     ``files``
-      æ–‡ä»¶ååˆ—è¡¨ã€‚
+      ÎÄ¼þÃûÁÐ±í¡£
     ``nodes``
-      åŒ…å«æˆå‘˜çš„èŠ‚ç‚¹JSONå¯¹è±¡åˆ—è¡¨ï¼š
+      °üº¬³ÉÔ±µÄ½ÚµãJSON¶ÔÏóÁÐ±í£º
 
       ``command``
-        ç´¢å¼•åˆ°\ ``backtraceGraph``\ çš„\ ``commands``\ æˆå‘˜ã€‚
+        Ë÷Òýµ½\ ``backtraceGraph``\ µÄ\ ``commands``\ ³ÉÔ±¡£
       ``file``
-        ç´¢å¼•åˆ°\ ``backtraceGraph``\ çš„\ ``files``\ æˆå‘˜ã€‚
+        Ë÷Òýµ½\ ``backtraceGraph``\ µÄ\ ``files``\ ³ÉÔ±¡£
       ``line``
-        æ·»åŠ å›žæº¯çš„æ–‡ä»¶ä¸­çš„è¡Œå·ã€‚
+        Ìí¼Ó»ØËÝµÄÎÄ¼þÖÐµÄÐÐºÅ¡£
       ``parent``
-        ç´¢å¼•åˆ°è¡¨ç¤ºå›¾ä¸­çˆ¶èŠ‚ç‚¹çš„\ ``backtraceGraph``\ çš„\ ``nodes``\ æˆå‘˜ã€‚
+        Ë÷Òýµ½±íÊ¾Í¼ÖÐ¸¸½ÚµãµÄ\ ``backtraceGraph``\ µÄ\ ``nodes``\ ³ÉÔ±¡£
 
 ``tests``
-  ä¸€ä¸ªJSONæ•°ç»„ï¼Œåˆ—å‡ºå…³äºŽæ¯ä¸ªæµ‹è¯•çš„ä¿¡æ¯ã€‚æ¯ä¸ªæ¡ç›®éƒ½æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼ŒåŒ…å«ä»¥ä¸‹æˆå‘˜ï¼š
+  Ò»¸öJSONÊý×é£¬ÁÐ³ö¹ØÓÚÃ¿¸ö²âÊÔµÄÐÅÏ¢¡£Ã¿¸öÌõÄ¿¶¼ÊÇÒ»¸öJSON¶ÔÏó£¬°üº¬ÒÔÏÂ³ÉÔ±£º
 
   ``name``
-    æµ‹è¯•åç§°ã€‚
+    ²âÊÔÃû³Æ¡£
   ``config``
-    æµ‹è¯•å¯ä»¥è¿è¡Œçš„é…ç½®ã€‚ç©ºå­—ç¬¦ä¸²è¡¨ç¤ºä»»ä½•é…ç½®ã€‚
+    ²âÊÔ¿ÉÒÔÔËÐÐµÄÅäÖÃ¡£¿Õ×Ö·û´®±íÊ¾ÈÎºÎÅäÖÃ¡£
   ``command``
-    åˆ—è¡¨ï¼Œå…¶ä¸­ç¬¬ä¸€ä¸ªå…ƒç´ æ˜¯æµ‹è¯•å‘½ä»¤ï¼Œå…¶ä½™å…ƒç´ æ˜¯å‘½ä»¤å‚æ•°ã€‚
+    ÁÐ±í£¬ÆäÖÐµÚÒ»¸öÔªËØÊÇ²âÊÔÃüÁî£¬ÆäÓàÔªËØÊÇÃüÁî²ÎÊý¡£
   ``backtrace``
-    ç´¢å¼•åˆ°\ ``backtraceGraph``\ çš„\ ``nodes``\ æˆå‘˜ã€‚
+    Ë÷Òýµ½\ ``backtraceGraph``\ µÄ\ ``nodes``\ ³ÉÔ±¡£
   ``properties``
-    æµ‹è¯•å±žæ€§ã€‚å¯ä»¥åŒ…å«æ¯ä¸ªæ”¯æŒçš„æµ‹è¯•å±žæ€§çš„é”®ã€‚
+    ²âÊÔÊôÐÔ¡£¿ÉÒÔ°üº¬Ã¿¸öÖ§³ÖµÄ²âÊÔÊôÐÔµÄ¼ü¡£
 
 .. _`ctest-resource-allocation`:
 
-èµ„æºåˆ†é…
+×ÊÔ´·ÖÅä
 ===================
 
-CTestä¸ºæµ‹è¯•æä¾›äº†ä¸€ç§æœºåˆ¶ï¼Œä»¥ç»†ç²’åº¦çš„æ–¹å¼æŒ‡å®šå®ƒä»¬æ‰€éœ€çš„èµ„æºï¼Œå¹¶ä¸ºç”¨æˆ·æŒ‡å®šæ­£åœ¨è¿è¡Œçš„æœºå™¨ä¸Šå¯\
-ç”¨çš„èµ„æºã€‚è¿™å…è®¸CTeståœ¨å†…éƒ¨è·Ÿè¸ªå“ªäº›èµ„æºæ­£åœ¨ä½¿ç”¨ï¼Œå“ªäº›èµ„æºæ˜¯ç©ºé—²çš„ï¼Œä»¥ä¸€ç§é˜²æ­¢å®ƒä»¬è¯•å›¾å£°æ˜Žä¸\
-å¯ç”¨çš„èµ„æºçš„æ–¹å¼è°ƒåº¦æµ‹è¯•ã€‚
+CTestÎª²âÊÔÌá¹©ÁËÒ»ÖÖ»úÖÆ£¬ÒÔÏ¸Á£¶ÈµÄ·½Ê½Ö¸¶¨ËüÃÇËùÐèµÄ×ÊÔ´£¬²¢ÎªÓÃ»§Ö¸¶¨ÕýÔÚÔËÐÐµÄ»úÆ÷ÉÏ¿É\
+ÓÃµÄ×ÊÔ´¡£ÕâÔÊÐíCTestÔÚÄÚ²¿¸ú×ÙÄÄÐ©×ÊÔ´ÕýÔÚÊ¹ÓÃ£¬ÄÄÐ©×ÊÔ´ÊÇ¿ÕÏÐµÄ£¬ÒÔÒ»ÖÖ·ÀÖ¹ËüÃÇÊÔÍ¼ÉùÃ÷²»\
+¿ÉÓÃµÄ×ÊÔ´µÄ·½Ê½µ÷¶È²âÊÔ¡£
 
-å½“ä½¿ç”¨èµ„æºåˆ†é…ç‰¹æ€§æ—¶ï¼ŒCTestä¸ä¼šè¿‡åº¦è®¢é˜…èµ„æºã€‚ä¾‹å¦‚ï¼Œå¦‚æžœä¸€ä¸ªèµ„æºæœ‰8ä¸ªæ’æ§½ï¼ŒCTestå°†ä¸ä¼šè¿è¡Œä¸€\
-æ¬¡æ€»å…±ä½¿ç”¨è¶…è¿‡8ä¸ªæ’æ§½çš„æµ‹è¯•ã€‚è¿™æ ·åšçš„æ•ˆæžœæ˜¯é™åˆ¶åœ¨ä»»ä½•ç»™å®šæ—¶é—´å†…å¯ä»¥è¿è¡Œçš„æµ‹è¯•æ•°é‡ï¼Œå³ä½¿ä½¿ç”¨äº†\
-é«˜\ ``-j``\ å‚æ•°ï¼Œå¦‚æžœè¿™äº›æµ‹è¯•éƒ½ä½¿ç”¨æ¥è‡ªåŒä¸€èµ„æºçš„ä¸€äº›æ’æ§½ã€‚æ­¤å¤–ï¼Œè¿™æ„å‘³ç€å•ä¸ªæµ‹è¯•ä½¿ç”¨çš„èµ„æº\
-è¶…è¿‡äº†æœºå™¨ä¸Šå¯ç”¨çš„èµ„æºï¼Œå°†æ ¹æœ¬ä¸ä¼šè¿è¡Œï¼ˆå¹¶ä¸”å°†æŠ¥å‘Šä¸º\ ``Not Run``ï¼‰ã€‚
+µ±Ê¹ÓÃ×ÊÔ´·ÖÅäÌØÐÔÊ±£¬CTest²»»á¹ý¶È¶©ÔÄ×ÊÔ´¡£ÀýÈç£¬Èç¹ûÒ»¸ö×ÊÔ´ÓÐ8¸ö²å²Û£¬CTest½«²»»áÔËÐÐÒ»\
+´Î×Ü¹²Ê¹ÓÃ³¬¹ý8¸ö²å²ÛµÄ²âÊÔ¡£ÕâÑù×öµÄÐ§¹ûÊÇÏÞÖÆÔÚÈÎºÎ¸ø¶¨Ê±¼äÄÚ¿ÉÒÔÔËÐÐµÄ²âÊÔÊýÁ¿£¬¼´Ê¹Ê¹ÓÃÁË\
+¸ß\ ``-j``\ ²ÎÊý£¬Èç¹ûÕâÐ©²âÊÔ¶¼Ê¹ÓÃÀ´×ÔÍ¬Ò»×ÊÔ´µÄÒ»Ð©²å²Û¡£´ËÍâ£¬ÕâÒâÎ¶×Åµ¥¸ö²âÊÔÊ¹ÓÃµÄ×ÊÔ´\
+³¬¹ýÁË»úÆ÷ÉÏ¿ÉÓÃµÄ×ÊÔ´£¬½«¸ù±¾²»»áÔËÐÐ£¨²¢ÇÒ½«±¨¸æÎª\ ``Not Run``£©¡£
 
-æ­¤åŠŸèƒ½çš„ä¸€ä¸ªå¸¸è§ç”¨ä¾‹æ˜¯éœ€è¦ä½¿ç”¨GPUçš„æµ‹è¯•ã€‚å¤šä¸ªæµ‹è¯•å¯ä»¥åŒæ—¶ä»Žä¸€ä¸ªGPUåˆ†é…å†…å­˜ï¼Œä½†æ˜¯å¦‚æžœæœ‰å¤ªå¤šæµ‹\
-è¯•è¯•å›¾ä¸€æ¬¡è¿™æ ·åšï¼Œå…¶ä¸­ä¸€äº›æµ‹è¯•å°†åˆ†é…å¤±è´¥ï¼Œå¯¼è‡´æµ‹è¯•å¤±è´¥ï¼Œå³ä½¿æµ‹è¯•å¦‚æžœæ‹¥æœ‰æ‰€éœ€çš„å†…å­˜ä¹Ÿä¼šæˆåŠŸã€‚\
-é€šè¿‡ä½¿ç”¨èµ„æºåˆ†é…ç‰¹æ€§ï¼Œæ¯ä¸ªæµ‹è¯•éƒ½å¯ä»¥æŒ‡å®šå®ƒä»ŽGPUéœ€è¦å¤šå°‘å†…å­˜ï¼Œä»Žè€Œå…è®¸CTestä»¥ä¸€ç§åŒæ—¶è¿è¡Œå‡ ä¸ª\
-æµ‹è¯•è€Œä¸ä¼šè€—å°½GPUå†…å­˜æ± çš„æ–¹å¼æ¥å®‰æŽ’æµ‹è¯•ã€‚
+´Ë¹¦ÄÜµÄÒ»¸ö³£¼ûÓÃÀýÊÇÐèÒªÊ¹ÓÃGPUµÄ²âÊÔ¡£¶à¸ö²âÊÔ¿ÉÒÔÍ¬Ê±´ÓÒ»¸öGPU·ÖÅäÄÚ´æ£¬µ«ÊÇÈç¹ûÓÐÌ«¶à²â\
+ÊÔÊÔÍ¼Ò»´ÎÕâÑù×ö£¬ÆäÖÐÒ»Ð©²âÊÔ½«·ÖÅäÊ§°Ü£¬µ¼ÖÂ²âÊÔÊ§°Ü£¬¼´Ê¹²âÊÔÈç¹ûÓµÓÐËùÐèµÄÄÚ´æÒ²»á³É¹¦¡£\
+Í¨¹ýÊ¹ÓÃ×ÊÔ´·ÖÅäÌØÐÔ£¬Ã¿¸ö²âÊÔ¶¼¿ÉÒÔÖ¸¶¨Ëü´ÓGPUÐèÒª¶àÉÙÄÚ´æ£¬´Ó¶øÔÊÐíCTestÒÔÒ»ÖÖÍ¬Ê±ÔËÐÐ¼¸¸ö\
+²âÊÔ¶ø²»»áºÄ¾¡GPUÄÚ´æ³ØµÄ·½Ê½À´°²ÅÅ²âÊÔ¡£
 
-è¯·æ³¨æ„ï¼ŒCTestæ²¡æœ‰GPUæ˜¯ä»€ä¹ˆæˆ–å®ƒæœ‰å¤šå°‘å†…å­˜çš„æ¦‚å¿µã€‚å®ƒæ²¡æœ‰ä»»ä½•ä¸ŽGPUé€šä¿¡çš„æ–¹å¼æ¥æ£€ç´¢è¿™äº›ä¿¡æ¯æˆ–\
-æ‰§è¡Œä»»ä½•å†…å­˜ç®¡ç†ï¼Œå°½ç®¡é¡¹ç›®å¯ä»¥å®šä¹‰ä¸€ä¸ªæµ‹è¯•ï¼Œæä¾›æœ‰å…³æµ‹è¯•æœºå™¨çš„è¯¦ç»†ä¿¡æ¯ï¼ˆå‚è§\
-:ref:`ctest-resource-dynamically-generated-spec-file`ï¼‰ã€‚
+Çë×¢Òâ£¬CTestÃ»ÓÐGPUÊÇÊ²Ã´»òËüÓÐ¶àÉÙÄÚ´æµÄ¸ÅÄî¡£ËüÃ»ÓÐÈÎºÎÓëGPUÍ¨ÐÅµÄ·½Ê½À´¼ìË÷ÕâÐ©ÐÅÏ¢»ò\
+Ö´ÐÐÈÎºÎÄÚ´æ¹ÜÀí£¬¾¡¹ÜÏîÄ¿¿ÉÒÔ¶¨ÒåÒ»¸ö²âÊÔ£¬Ìá¹©ÓÐ¹Ø²âÊÔ»úÆ÷µÄÏêÏ¸ÐÅÏ¢£¨²Î¼û\
+:ref:`ctest-resource-dynamically-generated-spec-file`£©¡£
 
-CTestè·Ÿè¸ªæŠ½è±¡èµ„æºç±»åž‹çš„åˆ—è¡¨ï¼Œå…¶ä¸­æ¯ä¸ªç±»åž‹éƒ½æœ‰ä¸€å®šæ•°é‡çš„æ§½å¯ä¾›æµ‹è¯•ä½¿ç”¨ã€‚æ¯ä¸ªæµ‹è¯•æŒ‡å®šå®ƒä»ŽæŸä¸ª\
-èµ„æºä¸­éœ€è¦çš„æ’æ§½æ•°é‡ï¼Œç„¶åŽCTestä»¥ä¸€ç§é˜²æ­¢æ­£åœ¨ä½¿ç”¨çš„æ’æ§½æ€»æ•°è¶…è¿‡åˆ—å‡ºçš„å®¹é‡çš„æ–¹å¼è°ƒåº¦å®ƒä»¬ã€‚\
-å½“æ‰§è¡Œæµ‹è¯•æ—¶ï¼Œèµ„æºä¸­çš„æ’æ§½è¢«åˆ†é…ç»™è¯¥æµ‹è¯•ï¼Œæµ‹è¯•å¯ä»¥å‡è®¾å®ƒä»¬åœ¨æµ‹è¯•è¿›ç¨‹çš„æŒç»­æ—¶é—´å†…ç‹¬å ä½¿ç”¨è¿™äº›æ’æ§½ã€‚
+CTest¸ú×Ù³éÏó×ÊÔ´ÀàÐÍµÄÁÐ±í£¬ÆäÖÐÃ¿¸öÀàÐÍ¶¼ÓÐÒ»¶¨ÊýÁ¿µÄ²Û¿É¹©²âÊÔÊ¹ÓÃ¡£Ã¿¸ö²âÊÔÖ¸¶¨Ëü´ÓÄ³¸ö\
+×ÊÔ´ÖÐÐèÒªµÄ²å²ÛÊýÁ¿£¬È»ºóCTestÒÔÒ»ÖÖ·ÀÖ¹ÕýÔÚÊ¹ÓÃµÄ²å²Û×ÜÊý³¬¹ýÁÐ³öµÄÈÝÁ¿µÄ·½Ê½µ÷¶ÈËüÃÇ¡£\
+µ±Ö´ÐÐ²âÊÔÊ±£¬×ÊÔ´ÖÐµÄ²å²Û±»·ÖÅä¸ø¸Ã²âÊÔ£¬²âÊÔ¿ÉÒÔ¼ÙÉèËüÃÇÔÚ²âÊÔ½ø³ÌµÄ³ÖÐøÊ±¼äÄÚ¶ÀÕ¼Ê¹ÓÃÕâÐ©²å²Û¡£
 
-CTestèµ„æºåˆ†é…ç‰¹æ€§ç”±æœ€å°‘ä¸¤ä¸ªè¾“å…¥ç»„æˆï¼š
+CTest×ÊÔ´·ÖÅäÌØÐÔÓÉ×îÉÙÁ½¸öÊäÈë×é³É£º
 
-* :ref:`èµ„æºè§„èŒƒæ–‡ä»¶ <ctest-resource-specification-file>`ï¼Œå¦‚ä¸‹æ‰€è¿°ï¼Œå®ƒæè¿°äº†ç³»ç»Ÿä¸Šå¯\
-  ç”¨çš„èµ„æºã€‚
-* æµ‹è¯•çš„\ :prop_test:`RESOURCE_GROUPS`\ å±žæ€§ï¼Œå®ƒæè¿°æµ‹è¯•æ‰€éœ€çš„èµ„æºã€‚
+* :ref:`×ÊÔ´¹æ·¶ÎÄ¼þ <ctest-resource-specification-file>`£¬ÈçÏÂËùÊö£¬ËüÃèÊöÁËÏµÍ³ÉÏ¿É\
+  ÓÃµÄ×ÊÔ´¡£
+* ²âÊÔµÄ\ :prop_test:`RESOURCE_GROUPS`\ ÊôÐÔ£¬ËüÃèÊö²âÊÔËùÐèµÄ×ÊÔ´¡£
 
-å½“CTestè¿è¡Œæµ‹è¯•æ—¶ï¼Œåˆ†é…ç»™è¯¥æµ‹è¯•çš„èµ„æºä»¥ä¸€ç»„\
-:ref:`çŽ¯å¢ƒå˜é‡ <ctest-resource-environment-variables>`\ çš„å½¢å¼ä¼ é€’ï¼Œå¦‚ä¸‹æ‰€è¿°ã€‚ä½¿ç”¨æ­¤\
-ä¿¡æ¯æ¥å†³å®šå°†è¿žæŽ¥åˆ°å“ªä¸ªèµ„æºç•™ç»™æµ‹è¯•ç¼–å†™è€…ã€‚
+µ±CTestÔËÐÐ²âÊÔÊ±£¬·ÖÅä¸ø¸Ã²âÊÔµÄ×ÊÔ´ÒÔÒ»×é\
+:ref:`»·¾³±äÁ¿ <ctest-resource-environment-variables>`\ µÄÐÎÊ½´«µÝ£¬ÈçÏÂËùÊö¡£Ê¹ÓÃ´Ë\
+ÐÅÏ¢À´¾ö¶¨½«Á¬½Óµ½ÄÄ¸ö×ÊÔ´Áô¸ø²âÊÔ±àÐ´Õß¡£
 
-``RESOURCE_GROUPS``\ å±žæ€§å‘Šè¯‰CTestæµ‹è¯•æœŸæœ›ä½¿ç”¨ä»€ä¹ˆèµ„æºï¼Œä»¥å¯¹æµ‹è¯•æœ‰æ„ä¹‰çš„æ–¹å¼è¿›è¡Œåˆ†ç»„ã€‚æµ‹\
-è¯•æœ¬èº«å¿…é¡»è¯»å–\ :ref:`çŽ¯å¢ƒå˜é‡ <ctest-resource-environment-variables>`ï¼Œä»¥ç¡®å®šåˆ†é…ç»™\
-æ¯ä¸ªç»„çš„èµ„æºã€‚ä¾‹å¦‚ï¼Œæ¯ä¸ªç»„å¯èƒ½å¯¹åº”äºŽæµ‹è¯•åœ¨æ‰§è¡Œæ—¶å°†äº§ç”Ÿçš„ä¸€ä¸ªè¿›ç¨‹ã€‚
+``RESOURCE_GROUPS``\ ÊôÐÔ¸æËßCTest²âÊÔÆÚÍûÊ¹ÓÃÊ²Ã´×ÊÔ´£¬ÒÔ¶Ô²âÊÔÓÐÒâÒåµÄ·½Ê½½øÐÐ·Ö×é¡£²â\
+ÊÔ±¾Éí±ØÐë¶ÁÈ¡\ :ref:`»·¾³±äÁ¿ <ctest-resource-environment-variables>`£¬ÒÔÈ·¶¨·ÖÅä¸ø\
+Ã¿¸ö×éµÄ×ÊÔ´¡£ÀýÈç£¬Ã¿¸ö×é¿ÉÄÜ¶ÔÓ¦ÓÚ²âÊÔÔÚÖ´ÐÐÊ±½«²úÉúµÄÒ»¸ö½ø³Ì¡£
 
-æ³¨æ„ï¼Œå³ä½¿æµ‹è¯•æŒ‡å®šäº†\ ``RESOURCE_GROUPS``\ å±žæ€§ï¼Œå¦‚æžœç”¨æˆ·æ²¡æœ‰ä¼ é€’èµ„æºè§„èŒƒæ–‡ä»¶ï¼Œè¯¥æµ‹è¯•ä»ç„¶\
-æœ‰å¯èƒ½åœ¨æ²¡æœ‰ä»»ä½•èµ„æºåˆ†é…ï¼ˆå¹¶ä¸”æ²¡æœ‰ç›¸åº”çš„\
-:ref:`çŽ¯å¢ƒå˜é‡ <ctest-resource-environment-variables>`ï¼‰çš„æƒ…å†µä¸‹è¿è¡Œã€‚é€šè¿‡\
-``--resource-spec-file``\ å‘½ä»¤è¡Œå‚æ•°æˆ–\ ``RESOURCE_SPEC_FILE``\ å‚æ•°å°†è¯¥æ–‡ä»¶ä¼ é€’ç»™\
-:command:`ctest_test`ï¼Œå°†æ¿€æ´»èµ„æºåˆ†é…ç‰¹æ€§ã€‚æµ‹è¯•åº”è¯¥æ£€æŸ¥\ ``CTEST_RESOURCE_GROUP_COUNT``\
-çŽ¯å¢ƒå˜é‡ï¼Œä»¥ç¡®å®šæ˜¯å¦æ¿€æ´»äº†èµ„æºåˆ†é…ã€‚å¦‚æžœæ¿€æ´»äº†èµ„æºåˆ†é…ï¼Œè¿™ä¸ªå˜é‡å°†å§‹ç»ˆï¼ˆä¸”ä»…ï¼‰è¢«å®šä¹‰ã€‚å¦‚æžœæ²¡æœ‰\
-æ¿€æ´»èµ„æºåˆ†é…ï¼Œé‚£ä¹ˆ\ ``CTEST_RESOURCE_GROUP_COUNT``\ å˜é‡å°†ä¸å­˜åœ¨ï¼Œå³ä½¿å®ƒå­˜åœ¨äºŽçˆ¶\
-:program:`ctest`\ è¿›ç¨‹ä¸­ã€‚å¦‚æžœæµ‹è¯•ç»å¯¹å¿…é¡»æœ‰èµ„æºåˆ†é…ï¼Œé‚£ä¹ˆå®ƒå¯ä»¥è¿”å›žå¤±è´¥çš„é€€å‡ºä»£ç ï¼Œæˆ–è€…ä½¿\
-ç”¨\ :prop_test:`SKIP_RETURN_CODE`\ æˆ–\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ å±žæ€§\
-æ¥æŒ‡ç¤ºè·³è¿‡çš„æµ‹è¯•ã€‚
+×¢Òâ£¬¼´Ê¹²âÊÔÖ¸¶¨ÁË\ ``RESOURCE_GROUPS``\ ÊôÐÔ£¬Èç¹ûÓÃ»§Ã»ÓÐ´«µÝ×ÊÔ´¹æ·¶ÎÄ¼þ£¬¸Ã²âÊÔÈÔÈ»\
+ÓÐ¿ÉÄÜÔÚÃ»ÓÐÈÎºÎ×ÊÔ´·ÖÅä£¨²¢ÇÒÃ»ÓÐÏàÓ¦µÄ\
+:ref:`»·¾³±äÁ¿ <ctest-resource-environment-variables>`£©µÄÇé¿öÏÂÔËÐÐ¡£Í¨¹ý\
+``--resource-spec-file``\ ÃüÁîÐÐ²ÎÊý»ò\ ``RESOURCE_SPEC_FILE``\ ²ÎÊý½«¸ÃÎÄ¼þ´«µÝ¸ø\
+:command:`ctest_test`£¬½«¼¤»î×ÊÔ´·ÖÅäÌØÐÔ¡£²âÊÔÓ¦¸Ã¼ì²é\ ``CTEST_RESOURCE_GROUP_COUNT``\
+»·¾³±äÁ¿£¬ÒÔÈ·¶¨ÊÇ·ñ¼¤»îÁË×ÊÔ´·ÖÅä¡£Èç¹û¼¤»îÁË×ÊÔ´·ÖÅä£¬Õâ¸ö±äÁ¿½«Ê¼ÖÕ£¨ÇÒ½ö£©±»¶¨Òå¡£Èç¹ûÃ»ÓÐ\
+¼¤»î×ÊÔ´·ÖÅä£¬ÄÇÃ´\ ``CTEST_RESOURCE_GROUP_COUNT``\ ±äÁ¿½«²»´æÔÚ£¬¼´Ê¹Ëü´æÔÚÓÚ¸¸\
+:program:`ctest`\ ½ø³ÌÖÐ¡£Èç¹û²âÊÔ¾ø¶Ô±ØÐëÓÐ×ÊÔ´·ÖÅä£¬ÄÇÃ´Ëü¿ÉÒÔ·µ»ØÊ§°ÜµÄÍË³ö´úÂë£¬»òÕßÊ¹\
+ÓÃ\ :prop_test:`SKIP_RETURN_CODE`\ »ò\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ ÊôÐÔ\
+À´Ö¸Ê¾Ìø¹ýµÄ²âÊÔ¡£
 
 .. _`ctest-resource-specification-file`:
 
-èµ„æºè§„æ ¼æ–‡ä»¶
+×ÊÔ´¹æ¸ñÎÄ¼þ
 ---------------------------
 
-èµ„æºè§„èŒƒæ–‡ä»¶æ˜¯ä¸€ä¸ªJSONæ–‡ä»¶ï¼Œä»¥å¤šç§æ–¹å¼ä¼ é€’ç»™CTestã€‚å®ƒå¯ä»¥åœ¨å‘½ä»¤è¡Œä¸Šä½¿ç”¨\
-:option:`ctest --resource-spec-file`\ é€‰é¡¹æŒ‡å®šï¼Œä¹Ÿå¯ä»¥ä½¿ç”¨\ :command:`ctest_test`\
-çš„\ ``RESOURCE_SPEC_FILE``\ å‚æ•°æŒ‡å®šï¼Œæˆ–è€…å¯ä»¥ä½œä¸ºæµ‹è¯•æ‰§è¡Œçš„ä¸€éƒ¨åˆ†åŠ¨æ€ç”Ÿæˆï¼ˆå‚è§\
-:ref:`ctest-resource-dynamically-generated-spec-file`ï¼‰ã€‚
+×ÊÔ´¹æ·¶ÎÄ¼þÊÇÒ»¸öJSONÎÄ¼þ£¬ÒÔ¶àÖÖ·½Ê½´«µÝ¸øCTest¡£Ëü¿ÉÒÔÔÚÃüÁîÐÐÉÏÊ¹ÓÃ\
+:option:`ctest --resource-spec-file`\ Ñ¡ÏîÖ¸¶¨£¬Ò²¿ÉÒÔÊ¹ÓÃ\ :command:`ctest_test`\
+µÄ\ ``RESOURCE_SPEC_FILE``\ ²ÎÊýÖ¸¶¨£¬»òÕß¿ÉÒÔ×÷Îª²âÊÔÖ´ÐÐµÄÒ»²¿·Ö¶¯Ì¬Éú³É£¨²Î¼û\
+:ref:`ctest-resource-dynamically-generated-spec-file`£©¡£
 
-å¦‚æžœä½¿ç”¨ä»ªè¡¨æ¿è„šæœ¬ï¼Œå¹¶ä¸”æ²¡æœ‰æŒ‡å®š\ ``RESOURCE_SPEC_FILE``ï¼Œåˆ™ä½¿ç”¨ä»ªè¡¨æ¿è„šæœ¬ä¸­çš„\
-:variable:`CTEST_RESOURCE_SPEC_FILE`\ çš„å€¼ã€‚å¦‚æžœæ²¡æœ‰æŒ‡å®šä»ªè¡¨æ¿è„šæœ¬ä¸­çš„\
-:option:`--resource-spec-file <ctest --resource-spec-file>`ã€\
-``RESOURCE_SPEC_FILE``\ å’Œ\ :variable:`CTEST_RESOURCE_SPEC_FILE`ï¼Œåˆ™ä½¿ç”¨CMakeæž„å»º\
-ä¸­çš„\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ çš„å€¼ã€‚å¦‚æžœè¿™äº›éƒ½æ²¡æœ‰æŒ‡å®šï¼Œåˆ™ä¸ä½¿ç”¨èµ„æºè§„èŒƒæ–‡ä»¶ã€‚
+Èç¹ûÊ¹ÓÃÒÇ±í°å½Å±¾£¬²¢ÇÒÃ»ÓÐÖ¸¶¨\ ``RESOURCE_SPEC_FILE``£¬ÔòÊ¹ÓÃÒÇ±í°å½Å±¾ÖÐµÄ\
+:variable:`CTEST_RESOURCE_SPEC_FILE`\ µÄÖµ¡£Èç¹ûÃ»ÓÐÖ¸¶¨ÒÇ±í°å½Å±¾ÖÐµÄ\
+:option:`--resource-spec-file <ctest --resource-spec-file>`¡¢\
+``RESOURCE_SPEC_FILE``\ ºÍ\ :variable:`CTEST_RESOURCE_SPEC_FILE`£¬ÔòÊ¹ÓÃCMake¹¹½¨\
+ÖÐµÄ\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ µÄÖµ¡£Èç¹ûÕâÐ©¶¼Ã»ÓÐÖ¸¶¨£¬Ôò²»Ê¹ÓÃ×ÊÔ´¹æ·¶ÎÄ¼þ¡£
 
-èµ„æºè§„èŒƒæ–‡ä»¶å¿…é¡»æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ã€‚æœ¬æ–‡æ¡£ä¸­çš„æ‰€æœ‰ä¾‹å­éƒ½å‡è®¾äº†ä»¥ä¸‹èµ„æºè§„èŒƒæ–‡ä»¶ï¼š
+×ÊÔ´¹æ·¶ÎÄ¼þ±ØÐëÊÇÒ»¸öJSON¶ÔÏó¡£±¾ÎÄµµÖÐµÄËùÓÐÀý×Ó¶¼¼ÙÉèÁËÒÔÏÂ×ÊÔ´¹æ·¶ÎÄ¼þ£º
 
 .. code-block:: json
 
@@ -1499,75 +1530,75 @@ CTestèµ„æºåˆ†é…ç‰¹æ€§ç”±æœ€å°‘ä¸¤ä¸ªè¾“å…¥ç»„æˆï¼š
 
 The members are:
 
-æˆå‘˜åŒ…æ‹¬ï¼š
+³ÉÔ±°üÀ¨£º
 
 ``version``
-  åŒ…å«ä¸€ä¸ª\ ``major``\ æ•´æ•°å­—æ®µå’Œä¸€ä¸ª\ ``minor``\ æ•´æ•°å­—æ®µçš„å¯¹è±¡ã€‚ç›®å‰ï¼Œå”¯ä¸€æ”¯æŒçš„ç‰ˆæœ¬æ˜¯\
-  major ``1``, minor ``0``ã€‚ä»»ä½•å…¶ä»–å€¼éƒ½æ˜¯é”™è¯¯çš„ã€‚
+  °üº¬Ò»¸ö\ ``major``\ ÕûÊý×Ö¶ÎºÍÒ»¸ö\ ``minor``\ ÕûÊý×Ö¶ÎµÄ¶ÔÏó¡£Ä¿Ç°£¬Î¨Ò»Ö§³ÖµÄ°æ±¾ÊÇ\
+  major ``1``, minor ``0``¡£ÈÎºÎÆäËûÖµ¶¼ÊÇ´íÎóµÄ¡£
 
 ``local``
-  ç³»ç»Ÿä¸Šå‘ˆçŽ°çš„èµ„æºé›†çš„JSONæ•°ç»„ã€‚ç›®å‰ï¼Œè¿™ä¸ªæ•°ç»„çš„å¤§å°è¢«é™åˆ¶ä¸º1ã€‚
+  ÏµÍ³ÉÏ³ÊÏÖµÄ×ÊÔ´¼¯µÄJSONÊý×é¡£Ä¿Ç°£¬Õâ¸öÊý×éµÄ´óÐ¡±»ÏÞÖÆÎª1¡£
 
-  æ¯ä¸ªæ•°ç»„å…ƒç´ éƒ½æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼Œå…¶æˆå‘˜çš„åç§°ç­‰äºŽæ‰€éœ€çš„èµ„æºç±»åž‹ï¼Œä¾‹å¦‚\ ``gpus``ã€‚è¿™äº›åç§°å¿…\
-  é¡»ä»¥å°å†™å­—æ¯æˆ–ä¸‹åˆ’çº¿å¼€å¤´ï¼ŒåŽé¢çš„å­—ç¬¦å¯ä»¥æ˜¯å°å†™å­—æ¯ã€æ•°å­—æˆ–ä¸‹åˆ’çº¿ã€‚ä¸å…è®¸ä½¿ç”¨å¤§å†™å­—æ¯ï¼Œå› ä¸º\
-  æŸäº›å¹³å°æœ‰ä¸åŒºåˆ†å¤§å°å†™çš„çŽ¯å¢ƒå˜é‡ã€‚æœ‰å…³æ›´å¤šä¿¡æ¯ï¼Œè¯·å‚é˜…ä¸‹é¢çš„\ `çŽ¯å¢ƒå˜é‡`_\ éƒ¨åˆ†ã€‚å»ºè®®èµ„æº\
-  ç±»åž‹åç§°ä¸ºåè¯çš„å¤æ•°å½¢å¼ï¼Œå¦‚\ ``gpus``\ æˆ–\ ``crypto_chips``\ ï¼ˆè€Œä¸æ˜¯\ ``gpu``\ æˆ–\
-  ``crypto_chip``ï¼‰ã€‚
+  Ã¿¸öÊý×éÔªËØ¶¼ÊÇÒ»¸öJSON¶ÔÏó£¬Æä³ÉÔ±µÄÃû³ÆµÈÓÚËùÐèµÄ×ÊÔ´ÀàÐÍ£¬ÀýÈç\ ``gpus``¡£ÕâÐ©Ãû³Æ±Ø\
+  ÐëÒÔÐ¡Ð´×ÖÄ¸»òÏÂ»®Ïß¿ªÍ·£¬ºóÃæµÄ×Ö·û¿ÉÒÔÊÇÐ¡Ð´×ÖÄ¸¡¢Êý×Ö»òÏÂ»®Ïß¡£²»ÔÊÐíÊ¹ÓÃ´óÐ´×ÖÄ¸£¬ÒòÎª\
+  Ä³Ð©Æ½Ì¨ÓÐ²»Çø·Ö´óÐ¡Ð´µÄ»·¾³±äÁ¿¡£ÓÐ¹Ø¸ü¶àÐÅÏ¢£¬Çë²ÎÔÄÏÂÃæµÄ\ `»·¾³±äÁ¿`_\ ²¿·Ö¡£½¨Òé×ÊÔ´\
+  ÀàÐÍÃû³ÆÎªÃû´ÊµÄ¸´ÊýÐÎÊ½£¬Èç\ ``gpus``\ »ò\ ``crypto_chips``\ £¨¶ø²»ÊÇ\ ``gpu``\ »ò\
+  ``crypto_chip``£©¡£
 
-  è¯·æ³¨æ„ï¼Œåç§°\ ``gpus``\ å’Œ\ ``crypto_chips``\ åªæ˜¯ç¤ºä¾‹ï¼ŒCTestä¸ä¼šä»¥ä»»ä½•æ–¹å¼è§£é‡Šå®ƒä»¬ã€‚\
-  ä½ å¯ä»¥è‡ªç”±åœ°åˆ›å»ºä»»ä½•æƒ³è¦æ»¡è¶³è‡ªå·±éœ€æ±‚çš„èµ„æºç±»åž‹ã€‚
+  Çë×¢Òâ£¬Ãû³Æ\ ``gpus``\ ºÍ\ ``crypto_chips``\ Ö»ÊÇÊ¾Àý£¬CTest²»»áÒÔÈÎºÎ·½Ê½½âÊÍËüÃÇ¡£\
+  Äã¿ÉÒÔ×ÔÓÉµØ´´½¨ÈÎºÎÏëÒªÂú×ã×Ô¼ºÐèÇóµÄ×ÊÔ´ÀàÐÍ¡£
 
-  æ¯ç§èµ„æºç±»åž‹çš„å€¼éƒ½æ˜¯ç”±JSONå¯¹è±¡ç»„æˆçš„JSONæ•°ç»„ï¼Œæ¯ä¸ªå¯¹è±¡æè¿°æŒ‡å®šèµ„æºçš„ç‰¹å®šå®žä¾‹ã€‚è¿™äº›å¯¹è±¡æœ‰\
-  ä»¥ä¸‹æˆå‘˜ï¼š
+  Ã¿ÖÖ×ÊÔ´ÀàÐÍµÄÖµ¶¼ÊÇÓÉJSON¶ÔÏó×é³ÉµÄJSONÊý×é£¬Ã¿¸ö¶ÔÏóÃèÊöÖ¸¶¨×ÊÔ´µÄÌØ¶¨ÊµÀý¡£ÕâÐ©¶ÔÏóÓÐ\
+  ÒÔÏÂ³ÉÔ±£º
 
   ``id``
-    ç”±èµ„æºæ ‡è¯†ç¬¦ç»„æˆçš„å­—ç¬¦ä¸²ã€‚æ ‡è¯†ç¬¦ä¸­çš„æ¯ä¸ªå­—ç¬¦å¯ä»¥æ˜¯å°å†™å­—æ¯ã€æ•°å­—æˆ–ä¸‹åˆ’çº¿ã€‚ä¸å…è®¸ä½¿ç”¨å¤§å†™å­—æ¯ã€‚
+    ÓÉ×ÊÔ´±êÊ¶·û×é³ÉµÄ×Ö·û´®¡£±êÊ¶·ûÖÐµÄÃ¿¸ö×Ö·û¿ÉÒÔÊÇÐ¡Ð´×ÖÄ¸¡¢Êý×Ö»òÏÂ»®Ïß¡£²»ÔÊÐíÊ¹ÓÃ´óÐ´×ÖÄ¸¡£
 
-    æ ‡è¯†ç¬¦åœ¨èµ„æºç±»åž‹ä¸­å¿…é¡»æ˜¯å”¯ä¸€çš„ã€‚ä½†æ˜¯ï¼Œå®ƒä»¬ä¸å¿…åœ¨èµ„æºç±»åž‹ä¹‹é—´æ˜¯å”¯ä¸€çš„ã€‚ä¾‹å¦‚ï¼Œä¸€ä¸ªåä¸º\
-    ``0``\ çš„\ ``gpus``\ èµ„æºå’Œä¸€ä¸ªåä¸º\ ``0``\ çš„\ ``crypto_chips``\ èµ„æºæ˜¯æœ‰æ•ˆçš„ï¼Œ\
-    ä½†ä¸èƒ½ä¸¤ä¸ªéƒ½åä¸º\ ``0``\ çš„\ ``gpus``\ èµ„æºã€‚
+    ±êÊ¶·ûÔÚ×ÊÔ´ÀàÐÍÖÐ±ØÐëÊÇÎ¨Ò»µÄ¡£µ«ÊÇ£¬ËüÃÇ²»±ØÔÚ×ÊÔ´ÀàÐÍÖ®¼äÊÇÎ¨Ò»µÄ¡£ÀýÈç£¬Ò»¸öÃûÎª\
+    ``0``\ µÄ\ ``gpus``\ ×ÊÔ´ºÍÒ»¸öÃûÎª\ ``0``\ µÄ\ ``crypto_chips``\ ×ÊÔ´ÊÇÓÐÐ§µÄ£¬\
+    µ«²»ÄÜÁ½¸ö¶¼ÃûÎª\ ``0``\ µÄ\ ``gpus``\ ×ÊÔ´¡£
 
-    è¯·æ³¨æ„ï¼ŒID ``0``ã€\ ``1``ã€\ ``2``ã€\ ``3``\ å’Œ\ ``card0``\ åªæ˜¯ç¤ºä¾‹ï¼ŒCTestä¸ä¼š\
-    ä»¥ä»»ä½•æ–¹å¼è§£é‡Šå®ƒä»¬ã€‚ä½ å¯ä»¥è‡ªç”±åœ°åˆ›å»ºä»»ä½•ä½ æƒ³è¦çš„IDæ¥æ»¡è¶³ä½ è‡ªå·±çš„éœ€æ±‚ã€‚
+    Çë×¢Òâ£¬ID ``0``¡¢\ ``1``¡¢\ ``2``¡¢\ ``3``\ ºÍ\ ``card0``\ Ö»ÊÇÊ¾Àý£¬CTest²»»á\
+    ÒÔÈÎºÎ·½Ê½½âÊÍËüÃÇ¡£Äã¿ÉÒÔ×ÔÓÉµØ´´½¨ÈÎºÎÄãÏëÒªµÄIDÀ´Âú×ãÄã×Ô¼ºµÄÐèÇó¡£
 
   ``slots``
-    ä¸€ä¸ªå¯é€‰çš„æ— ç¬¦å·æ•°ï¼ŒæŒ‡å®šèµ„æºä¸Šå¯ç”¨çš„æ’æ§½æ•°ã€‚ä¾‹å¦‚ï¼Œè¿™å¯èƒ½æ˜¯GPUä¸Šçš„å…†å­—èŠ‚RAMï¼Œæˆ–è€…æ˜¯åŠ å¯†\
-    èŠ¯ç‰‡ä¸Šå¯ç”¨çš„åŠ å¯†å•å…ƒã€‚å¦‚æžœæœªæŒ‡å®š\ ``slots``ï¼Œåˆ™å‡å®šç¼ºçœå€¼ä¸º\ ``1``ã€‚
+    Ò»¸ö¿ÉÑ¡µÄÎÞ·ûºÅÊý£¬Ö¸¶¨×ÊÔ´ÉÏ¿ÉÓÃµÄ²å²ÛÊý¡£ÀýÈç£¬Õâ¿ÉÄÜÊÇGPUÉÏµÄÕ××Ö½ÚRAM£¬»òÕßÊÇ¼ÓÃÜ\
+    Ð¾Æ¬ÉÏ¿ÉÓÃµÄ¼ÓÃÜµ¥Ôª¡£Èç¹ûÎ´Ö¸¶¨\ ``slots``£¬Ôò¼Ù¶¨È±Ê¡ÖµÎª\ ``1``¡£
 
-åœ¨ä¸Šé¢çš„ç¤ºä¾‹æ–‡ä»¶ä¸­ï¼Œæœ‰å››ä¸ªIDä¸º0åˆ°3çš„GPUã€‚GPU 0æœ‰2ä¸ªæ§½ä½ï¼ŒGPU 1æœ‰4ä¸ªæ§½ä½ï¼ŒGPU 2æœ‰2ä¸ªæ§½ä½ï¼Œ\
-GPU 3é»˜è®¤æœ‰1ä¸ªæ§½ä½ã€‚è¿˜æœ‰ä¸€ä¸ªå¸¦4æ’æ§½çš„å¯†ç èŠ¯ç‰‡ã€‚
+ÔÚÉÏÃæµÄÊ¾ÀýÎÄ¼þÖÐ£¬ÓÐËÄ¸öIDÎª0µ½3µÄGPU¡£GPU 0ÓÐ2¸ö²ÛÎ»£¬GPU 1ÓÐ4¸ö²ÛÎ»£¬GPU 2ÓÐ2¸ö²ÛÎ»£¬\
+GPU 3Ä¬ÈÏÓÐ1¸ö²ÛÎ»¡£»¹ÓÐÒ»¸ö´ø4²å²ÛµÄÃÜÂëÐ¾Æ¬¡£
 
-``RESOURCE_GROUPS``\ å±žæ€§
+``RESOURCE_GROUPS``\ ÊôÐÔ
 ----------------------------
 
-æœ‰å…³æ­¤å±žæ€§çš„æè¿°ï¼Œè¯·å‚é˜…\ :prop_test:`RESOURCE_GROUPS`ã€‚
+ÓÐ¹Ø´ËÊôÐÔµÄÃèÊö£¬Çë²ÎÔÄ\ :prop_test:`RESOURCE_GROUPS`¡£
 
 .. _`ctest-resource-environment-variables`:
 
-çŽ¯å¢ƒå˜é‡
+»·¾³±äÁ¿
 ---------------------
 
-ä¸€æ—¦CTestå†³å®šå°†å“ªäº›èµ„æºåˆ†é…ç»™æµ‹è¯•ï¼Œå®ƒå°±ä¼šå°†è¿™äº›ä¿¡æ¯ä½œä¸ºä¸€ç³»åˆ—çŽ¯å¢ƒå˜é‡ä¼ é€’ç»™æµ‹è¯•å¯æ‰§è¡Œæ–‡ä»¶ã€‚\
-å¯¹äºŽä¸‹é¢çš„æ¯ä¸ªç¤ºä¾‹ï¼Œæˆ‘ä»¬å°†å‡è®¾æ‰€è®¨è®ºçš„æµ‹è¯•çš„\ :prop_test:`RESOURCE_GROUPS`\ å±žæ€§ä¸º\
-``2,gpus:2;gpus:4,gpus:1,crypto_chips:2``ã€‚
+Ò»µ©CTest¾ö¶¨½«ÄÄÐ©×ÊÔ´·ÖÅä¸ø²âÊÔ£¬Ëü¾Í»á½«ÕâÐ©ÐÅÏ¢×÷ÎªÒ»ÏµÁÐ»·¾³±äÁ¿´«µÝ¸ø²âÊÔ¿ÉÖ´ÐÐÎÄ¼þ¡£\
+¶ÔÓÚÏÂÃæµÄÃ¿¸öÊ¾Àý£¬ÎÒÃÇ½«¼ÙÉèËùÌÖÂÛµÄ²âÊÔµÄ\ :prop_test:`RESOURCE_GROUPS`\ ÊôÐÔÎª\
+``2,gpus:2;gpus:4,gpus:1,crypto_chips:2``¡£
 
-ä»¥ä¸‹å˜é‡è¢«ä¼ é€’ç»™æµ‹è¯•è¿‡ç¨‹ï¼š
+ÒÔÏÂ±äÁ¿±»´«µÝ¸ø²âÊÔ¹ý³Ì£º
 
 .. envvar:: CTEST_RESOURCE_GROUP_COUNT
 
-  :prop_test:`RESOURCE_GROUPS`\ å±žæ€§æŒ‡å®šçš„ç»„çš„æ€»æ•°ã€‚ä¾‹å¦‚ï¼š
+  :prop_test:`RESOURCE_GROUPS`\ ÊôÐÔÖ¸¶¨µÄ×éµÄ×ÜÊý¡£ÀýÈç£º
 
   * ``CTEST_RESOURCE_GROUP_COUNT=3``
 
-  åªæœ‰åœ¨ç»™\ :manual:`ctest(1)`\ æŒ‡å®šäº†\ ``--resource-spec-file``ï¼Œæˆ–è€…ç»™\
-  :command:`ctest_test`\ æŒ‡å®šäº†\ ``RESOURCE_SPEC_FILE``\ æ—¶ï¼Œæ‰ä¼šå®šä¹‰è¿™ä¸ªå˜é‡ã€‚å¦‚æžœæ²¡\
-  æœ‰ç»™å‡ºèµ„æºè§„èŒƒæ–‡ä»¶ï¼Œåˆ™ä¸ä¼šå®šä¹‰è¯¥å˜é‡ã€‚
+  Ö»ÓÐÔÚ¸ø\ :manual:`ctest(1)`\ Ö¸¶¨ÁË\ ``--resource-spec-file``£¬»òÕß¸ø\
+  :command:`ctest_test`\ Ö¸¶¨ÁË\ ``RESOURCE_SPEC_FILE``\ Ê±£¬²Å»á¶¨ÒåÕâ¸ö±äÁ¿¡£Èç¹ûÃ»\
+  ÓÐ¸ø³ö×ÊÔ´¹æ·¶ÎÄ¼þ£¬Ôò²»»á¶¨Òå¸Ã±äÁ¿¡£
 
 .. envvar:: CTEST_RESOURCE_GROUP_<num>
 
-  åˆ†é…ç»™æ¯ä¸ªç»„çš„èµ„æºç±»åž‹åˆ—è¡¨ï¼Œæ¯ä¸ªé¡¹ä¹‹é—´ç”¨é€—å·åˆ†éš”ã€‚\ ``<num>``\ æ˜¯ä¸€ä¸ªä»Žé›¶åˆ°\
-  ``CTEST_RESOURCE_GROUP_COUNT``\ å‡ä¸€çš„æ•°å­—ã€‚\ ``CTEST_RESOURCE_GROUP_<num>``\ æ˜¯\
-  ä¸ºè¿™ä¸ªèŒƒå›´ä¸­çš„æ¯ä¸ª\ ``<num>``\ å®šä¹‰çš„ã€‚ä¾‹å¦‚ï¼š
+  ·ÖÅä¸øÃ¿¸ö×éµÄ×ÊÔ´ÀàÐÍÁÐ±í£¬Ã¿¸öÏîÖ®¼äÓÃ¶ººÅ·Ö¸ô¡£\ ``<num>``\ ÊÇÒ»¸ö´ÓÁãµ½\
+  ``CTEST_RESOURCE_GROUP_COUNT``\ ¼õÒ»µÄÊý×Ö¡£\ ``CTEST_RESOURCE_GROUP_<num>``\ ÊÇ\
+  ÎªÕâ¸ö·¶Î§ÖÐµÄÃ¿¸ö\ ``<num>``\ ¶¨ÒåµÄ¡£ÀýÈç£º
 
   * ``CTEST_RESOURCE_GROUP_0=gpus``
   * ``CTEST_RESOURCE_GROUP_1=gpus``
@@ -1575,68 +1606,68 @@ GPU 3é»˜è®¤æœ‰1ä¸ªæ§½ä½ã€‚è¿˜æœ‰ä¸€ä¸ªå¸¦4æ’æ§½çš„å¯†ç èŠ¯ç‰‡ã€‚
 
 .. envvar:: CTEST_RESOURCE_GROUP_<num>_<resource-type>
 
-  èµ„æºIDçš„åˆ—è¡¨å’Œåˆ†é…ç»™ç»™å®šèµ„æºç±»åž‹çš„æ¯ä¸ªç»„çš„æ¯ä¸ªIDçš„æ’æ§½æ•°é‡ã€‚è¿™ä¸ªå˜é‡ç”±ä¸€ç³»åˆ—å¯¹ç»„æˆï¼Œæ¯ä¸€å¯¹\
-  ç”±åˆ†å·åˆ†éš”ï¼Œå…¶ä¸­çš„ä¸¤ä¸ªé¡¹ç›®ç”±é€—å·åˆ†éš”ã€‚æ¯å¯¹ä¸­çš„ç¬¬ä¸€é¡¹æ˜¯\ ``id:``\ åŽé¢æ˜¯ç±»åž‹ä¸º\
-  ``<resource-type>``\ çš„èµ„æºçš„IDï¼Œç¬¬äºŒé¡¹æ˜¯\ ``slots:``\ åŽé¢æ˜¯åˆ†é…ç»™ç»™å®šç»„çš„èµ„æºçš„æ’æ§½\
-  æ•°ã€‚ä¾‹å¦‚ï¼š
+  ×ÊÔ´IDµÄÁÐ±íºÍ·ÖÅä¸ø¸ø¶¨×ÊÔ´ÀàÐÍµÄÃ¿¸ö×éµÄÃ¿¸öIDµÄ²å²ÛÊýÁ¿¡£Õâ¸ö±äÁ¿ÓÉÒ»ÏµÁÐ¶Ô×é³É£¬Ã¿Ò»¶Ô\
+  ÓÉ·ÖºÅ·Ö¸ô£¬ÆäÖÐµÄÁ½¸öÏîÄ¿ÓÉ¶ººÅ·Ö¸ô¡£Ã¿¶ÔÖÐµÄµÚÒ»ÏîÊÇ\ ``id:``\ ºóÃæÊÇÀàÐÍÎª\
+  ``<resource-type>``\ µÄ×ÊÔ´µÄID£¬µÚ¶þÏîÊÇ\ ``slots:``\ ºóÃæÊÇ·ÖÅä¸ø¸ø¶¨×éµÄ×ÊÔ´µÄ²å²Û\
+  Êý¡£ÀýÈç£º
 
   * ``CTEST_RESOURCE_GROUP_0_GPUS=id:0,slots:2``
   * ``CTEST_RESOURCE_GROUP_1_GPUS=id:2,slots:2``
   * ``CTEST_RESOURCE_GROUP_2_GPUS=id:1,slots:4;id:3,slots:1``
   * ``CTEST_RESOURCE_GROUP_2_CRYPTO_CHIPS=id:card0,slots:2``
 
-  åœ¨æœ¬ä¾‹ä¸­ï¼Œç»„0ä»ŽGPU ``0``\ èŽ·å¾—2ä¸ªæ’æ§½ï¼Œç»„1ä»ŽGPU ``2``\ èŽ·å¾—2ä¸ªæ’æ§½ï¼Œç»„2ä»ŽGPU ``1``\
-  èŽ·å¾—4ä¸ªæ’æ§½ï¼Œä»ŽGPU ``3``\ èŽ·å¾—1ä¸ªæ’æ§½ï¼Œä»ŽåŠ å¯†èŠ¯ç‰‡\ ``card0``\ èŽ·å¾—2ä¸ªæ’æ§½ã€‚
+  ÔÚ±¾ÀýÖÐ£¬×é0´ÓGPU ``0``\ »ñµÃ2¸ö²å²Û£¬×é1´ÓGPU ``2``\ »ñµÃ2¸ö²å²Û£¬×é2´ÓGPU ``1``\
+  »ñµÃ4¸ö²å²Û£¬´ÓGPU ``3``\ »ñµÃ1¸ö²å²Û£¬´Ó¼ÓÃÜÐ¾Æ¬\ ``card0``\ »ñµÃ2¸ö²å²Û¡£
 
-  ``<num>``\ æ˜¯ä¸€ä¸ªä»Žé›¶åˆ°\ ``CTEST_RESOURCE_GROUP_COUNT``\ å‡ä¸€çš„æ•°å­—ã€‚\
-  ``<resource-type>``\ æ˜¯èµ„æºç±»åž‹çš„åç§°ï¼Œè½¬æ¢æˆå¤§å†™ã€‚\
-  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ æ˜¯ä¸ºä¸Šé¢åˆ—å‡ºçš„èŒƒå›´ä¸­çš„æ¯ä¸ª\
-  ``<num>``\ å’Œ\ ``CTEST_RESOURCE_GROUP_<num>``\ ä¸­åˆ—å‡ºçš„æ¯ä¸ªèµ„æºç±»åž‹çš„ä¹˜ç§¯å®šä¹‰çš„ã€‚
+  ``<num>``\ ÊÇÒ»¸ö´ÓÁãµ½\ ``CTEST_RESOURCE_GROUP_COUNT``\ ¼õÒ»µÄÊý×Ö¡£\
+  ``<resource-type>``\ ÊÇ×ÊÔ´ÀàÐÍµÄÃû³Æ£¬×ª»»³É´óÐ´¡£\
+  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ ÊÇÎªÉÏÃæÁÐ³öµÄ·¶Î§ÖÐµÄÃ¿¸ö\
+  ``<num>``\ ºÍ\ ``CTEST_RESOURCE_GROUP_<num>``\ ÖÐÁÐ³öµÄÃ¿¸ö×ÊÔ´ÀàÐÍµÄ³Ë»ý¶¨ÒåµÄ¡£
 
-  ç”±äºŽæŸäº›å¹³å°å¯¹çŽ¯å¢ƒå˜é‡å…·æœ‰ä¸åŒºåˆ†å¤§å°å†™çš„åç§°ï¼Œå› æ­¤èµ„æºç±»åž‹çš„åç§°åœ¨ä¸åŒºåˆ†å¤§å°å†™çš„çŽ¯å¢ƒä¸­å¯èƒ½\
-  ä¸ä¼šå†²çªã€‚å› æ­¤ï¼Œä¸ºäº†ç®€å•èµ·è§ï¼Œåœ¨\ :ref:`èµ„æºè§„èŒƒæ–‡ä»¶ <ctest-resource-specification-file>`\
-  å’Œ\ :prop_test:`RESOURCE_GROUPS`\ å±žæ€§ä¸­ï¼Œæ‰€æœ‰èµ„æºç±»åž‹éƒ½å¿…é¡»ä»¥å°å†™å½¢å¼åˆ—å‡ºï¼Œå¹¶ä¸”åœ¨\
-  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ çŽ¯å¢ƒå˜é‡ä¸­å°†å®ƒä»¬å…¨éƒ¨è½¬æ¢ä¸ºå¤§å†™å½¢å¼ã€‚
+  ÓÉÓÚÄ³Ð©Æ½Ì¨¶Ô»·¾³±äÁ¿¾ßÓÐ²»Çø·Ö´óÐ¡Ð´µÄÃû³Æ£¬Òò´Ë×ÊÔ´ÀàÐÍµÄÃû³ÆÔÚ²»Çø·Ö´óÐ¡Ð´µÄ»·¾³ÖÐ¿ÉÄÜ\
+  ²»»á³åÍ»¡£Òò´Ë£¬ÎªÁË¼òµ¥Æð¼û£¬ÔÚ\ :ref:`×ÊÔ´¹æ·¶ÎÄ¼þ <ctest-resource-specification-file>`\
+  ºÍ\ :prop_test:`RESOURCE_GROUPS`\ ÊôÐÔÖÐ£¬ËùÓÐ×ÊÔ´ÀàÐÍ¶¼±ØÐëÒÔÐ¡Ð´ÐÎÊ½ÁÐ³ö£¬²¢ÇÒÔÚ\
+  ``CTEST_RESOURCE_GROUP_<num>_<resource-type>``\ »·¾³±äÁ¿ÖÐ½«ËüÃÇÈ«²¿×ª»»Îª´óÐ´ÐÎÊ½¡£
 
 .. _`ctest-resource-dynamically-generated-spec-file`:
 
-åŠ¨æ€ç”Ÿæˆçš„èµ„æºè§„èŒƒæ–‡ä»¶
+¶¯Ì¬Éú³ÉµÄ×ÊÔ´¹æ·¶ÎÄ¼þ
 -------------------------------------------------
 
 .. versionadded:: 3.28
 
-é¡¹ç›®å¯ä»¥é€‰æ‹©æŒ‡å®šå•ä¸ªæµ‹è¯•ï¼Œè¯¥æµ‹è¯•å°†ç”¨äºŽåŠ¨æ€ç”Ÿæˆèµ„æºè§„èŒƒæ–‡ä»¶ï¼ŒCTestå°†ä½¿ç”¨è¯¥æ–‡ä»¶è°ƒåº¦ä½¿ç”¨èµ„æºçš„\
-æµ‹è¯•ã€‚ç”Ÿæˆæ–‡ä»¶çš„æµ‹è¯•å¿…é¡»è®¾ç½®\ :prop_test:`GENERATED_RESOURCE_SPEC_FILE`\ å±žæ€§ï¼Œå¹¶ä¸”åœ¨\
-å…¶\ :prop_test:`FIXTURES_SETUP`\ å±žæ€§ä¸­å¿…é¡»åªæœ‰ä¸€ä¸ªfixtureã€‚CTestè®¤ä¸ºè¿™ä¸ªfixtureå…·æœ‰\
-ç‰¹æ®Šçš„å«ä¹‰ï¼šå®ƒæ˜¯ç”Ÿæˆèµ„æºè§„èŒƒæ–‡ä»¶çš„fixtureã€‚fixtureå¯ä»¥æœ‰ä»»ä½•åç§°ã€‚å¦‚æžœå­˜åœ¨è¿™æ ·çš„fixtureï¼Œ\
-é‚£ä¹ˆè®¾ç½®äº†\ :prop_test:`RESOURCE_GROUPS`\ çš„æ‰€æœ‰æµ‹è¯•å¿…é¡»åœ¨å…¶\
-:prop_test:`FIXTURES_REQUIRED`\ ä¸­åŒ…å«è¯¥fixtureï¼Œå¹¶ä¸”èµ„æºè§„èŒƒæ–‡ä»¶ä¸èƒ½ä½¿ç”¨\
-``--resource-spec-file``\ å‚æ•°æˆ–\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ å˜é‡æŒ‡å®šã€‚
+ÏîÄ¿¿ÉÒÔÑ¡ÔñÖ¸¶¨µ¥¸ö²âÊÔ£¬¸Ã²âÊÔ½«ÓÃÓÚ¶¯Ì¬Éú³É×ÊÔ´¹æ·¶ÎÄ¼þ£¬CTest½«Ê¹ÓÃ¸ÃÎÄ¼þµ÷¶ÈÊ¹ÓÃ×ÊÔ´µÄ\
+²âÊÔ¡£Éú³ÉÎÄ¼þµÄ²âÊÔ±ØÐëÉèÖÃ\ :prop_test:`GENERATED_RESOURCE_SPEC_FILE`\ ÊôÐÔ£¬²¢ÇÒÔÚ\
+Æä\ :prop_test:`FIXTURES_SETUP`\ ÊôÐÔÖÐ±ØÐëÖ»ÓÐÒ»¸öfixture¡£CTestÈÏÎªÕâ¸öfixture¾ßÓÐ\
+ÌØÊâµÄº¬Òå£ºËüÊÇÉú³É×ÊÔ´¹æ·¶ÎÄ¼þµÄfixture¡£fixture¿ÉÒÔÓÐÈÎºÎÃû³Æ¡£Èç¹û´æÔÚÕâÑùµÄfixture£¬\
+ÄÇÃ´ÉèÖÃÁË\ :prop_test:`RESOURCE_GROUPS`\ µÄËùÓÐ²âÊÔ±ØÐëÔÚÆä\
+:prop_test:`FIXTURES_REQUIRED`\ ÖÐ°üº¬¸Ãfixture£¬²¢ÇÒ×ÊÔ´¹æ·¶ÎÄ¼þ²»ÄÜÊ¹ÓÃ\
+``--resource-spec-file``\ ²ÎÊý»ò\ :variable:`CTEST_RESOURCE_SPEC_FILE`\ ±äÁ¿Ö¸¶¨¡£
 
 .. _`ctest-job-server-integration`:
 
-ä½œä¸šæœåŠ¡å™¨é›†æˆ
+×÷Òµ·þÎñÆ÷¼¯³É
 ======================
 
 .. versionadded:: 3.29
 
-åœ¨POSIXç³»ç»Ÿä¸Šï¼Œå½“åœ¨\ `Job Server`_\ ä¸Šä¸‹æ–‡ä¸­è¿è¡Œæ—¶ï¼ŒCTestå…±äº«å…¶ä½œä¸šæ§½ã€‚è¿™ç‹¬ç«‹äºŽ\
-:prop_test:`PROCESSORS`\ æµ‹è¯•å±žæ€§ï¼Œè¯¥å±žæ€§ä»ç„¶å¯¹CTestçš„\ :option:`-j <ctest -j>`\
-å¹¶è¡Œçº§åˆ«è¿›è¡Œè®¡æ•°ã€‚CTeståœ¨è¿è¡Œæ¯ä¸ªæµ‹è¯•ä¹‹å‰ä»Žä½œä¸šæœåŠ¡å™¨èŽ·å–ä¸€ä¸ªä»¤ç‰Œï¼Œå¹¶åœ¨æµ‹è¯•ç»“æŸæ—¶è¿”å›žå®ƒã€‚
+ÔÚPOSIXÏµÍ³ÉÏ£¬µ±ÔÚ\ `Job Server`_\ ÉÏÏÂÎÄÖÐÔËÐÐÊ±£¬CTest¹²ÏíÆä×÷Òµ²Û¡£Õâ¶ÀÁ¢ÓÚ\
+:prop_test:`PROCESSORS`\ ²âÊÔÊôÐÔ£¬¸ÃÊôÐÔÈÔÈ»¶ÔCTestµÄ\ :option:`-j <ctest -j>`\
+²¢ÐÐ¼¶±ð½øÐÐ¼ÆÊý¡£CTestÔÚÔËÐÐÃ¿¸ö²âÊÔÖ®Ç°´Ó×÷Òµ·þÎñÆ÷»ñÈ¡Ò»¸öÁîÅÆ£¬²¢ÔÚ²âÊÔ½áÊøÊ±·µ»ØËü¡£
 
-ä¾‹å¦‚ï¼Œè€ƒè™‘\ ``Makefile``ï¼š
+ÀýÈç£¬¿¼ÂÇ\ ``Makefile``£º
 
 .. literalinclude:: CTEST_EXAMPLE_MAKEFILE_JOB_SERVER.make
   :language: make
 
-å½“é€šè¿‡\ ``make -j 2 test``\ è°ƒç”¨æ—¶ï¼Œ\ ``ctest``\ è¿žæŽ¥åˆ°ä½œä¸šæœåŠ¡å™¨ï¼Œä¸ºæ¯ä¸ªæµ‹è¯•èŽ·å–ä¸€ä¸ª\
-ä»¤ç‰Œï¼Œå¹¶åŒæ—¶è¿è¡Œæœ€å¤š2ä¸ªæµ‹è¯•ã€‚
+µ±Í¨¹ý\ ``make -j 2 test``\ µ÷ÓÃÊ±£¬\ ``ctest``\ Á¬½Óµ½×÷Òµ·þÎñÆ÷£¬ÎªÃ¿¸ö²âÊÔ»ñÈ¡Ò»¸ö\
+ÁîÅÆ£¬²¢Í¬Ê±ÔËÐÐ×î¶à2¸ö²âÊÔ¡£
 
-åœ¨Windowsç³»ç»Ÿä¸Šï¼Œä½œä¸šæœåŠ¡å™¨é›†æˆå°šæœªå®žçŽ°ã€‚
+ÔÚWindowsÏµÍ³ÉÏ£¬×÷Òµ·þÎñÆ÷¼¯³ÉÉÐÎ´ÊµÏÖ¡£
 
 .. _`Job Server`: https://www.gnu.org/software/make/manual/html_node/Job-Slots.html
 
-å¦è¯·å‚é˜…
+ÁíÇë²ÎÔÄ
 ========
 
 .. include:: LINKS.txt
