@@ -1,11 +1,11 @@
-CMAKE_MSVCIDE_RUN_PATH
+ï»¿CMAKE_MSVCIDE_RUN_PATH
 ----------------------
 
 .. versionadded:: 3.10
 
-ÔÚÊ¹ÓÃ\ :generator:`Visual Studio 12 2013` £¨»ò¸ü¸ß°æ±¾£©Éú³ÉÆ÷Ê±£¬ÔÚÖ´ĞĞ\
-:command:`add_custom_command`\ »ò\ :command:`add_custom_target`\ Ê±Ó¦¸ÃÊ¹ÓÃµÄ¶îÍâ\
-PATHÎ»ÖÃ¡£ÕâÔÊĞíÔËĞĞÃüÁîºÍÊ¹ÓÃIDE»·¾³²»ÖªµÀµÄdll¡£ 
+åœ¨ä½¿ç”¨\ :generator:`Visual Studio 12 2013` ï¼ˆæˆ–æ›´é«˜ç‰ˆæœ¬ï¼‰ç”Ÿæˆå™¨æ—¶ï¼Œåœ¨æ‰§è¡Œ\
+:command:`add_custom_command`\ æˆ–\ :command:`add_custom_target`\ æ—¶åº”è¯¥ä½¿ç”¨çš„é¢å¤–\
+PATHä½ç½®ã€‚è¿™å…è®¸è¿è¡Œå‘½ä»¤å’Œä½¿ç”¨IDEç¯å¢ƒä¸çŸ¥é“çš„dllã€‚
 
 If not set explicitly the value is initialized by the ``CMAKE_MSVCIDE_RUN_PATH``
 environment variable, if set, and otherwise left empty.

@@ -1,9 +1,9 @@
-CMAKE_MODULE_PATH
+ï»¿CMAKE_MODULE_PATH
 -----------------
 
-Ä¿Â¼µÄ\ :ref:`·ÖºÅ·Ö¸ôÁĞ±í <CMake Language Lists>`£¬Ê¹ÓÃÕıĞ±¸Ü±íÊ¾£¬Ö¸¶¨ÔÚ¼ì²éCMake¸½\
-´øµÄÄ¬ÈÏÄ£¿éÖ®Ç°ÓÉ\ :command:`include`\ »ò\ :command:`find_package`\ ÃüÁî¼ÓÔØµÄCMake\
-Ä£¿éµÄËÑË÷Â·¾¶¡£Ä¬ÈÏÎª¿Õ¡£ËüÊÇÓÉÏîÄ¿Éè¶¨µÄ¡£
+ç›®å½•çš„\ :ref:`åˆ†å·åˆ†éš”åˆ—è¡¨ <CMake Language Lists>`ï¼Œä½¿ç”¨æ­£æ–œæ è¡¨ç¤ºï¼ŒæŒ‡å®šåœ¨æ£€æŸ¥CMakeé™„\
+å¸¦çš„é»˜è®¤æ¨¡å—ä¹‹å‰ç”±\ :command:`include`\ æˆ–\ :command:`find_package`\ å‘½ä»¤åŠ è½½çš„CMake\
+æ¨¡å—çš„æœç´¢è·¯å¾„ã€‚é»˜è®¤ä¸ºç©ºã€‚å®ƒæ˜¯ç”±é¡¹ç›®è®¾å®šçš„ã€‚
 
 It's fairly common for a project to have a directory containing various
 ``*.cmake`` files to assist in development. Adding the directory to the

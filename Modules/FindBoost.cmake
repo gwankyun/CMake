@@ -1,4 +1,4 @@
-# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+ï»¿# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file Copyright.txt or https://cmake.org/licensing for details.
 
 #[=======================================================================[.rst:
@@ -10,7 +10,7 @@ FindBoost
   ``NEW``.  Port projects to upstream Boost's ``BoostConfig.cmake`` package
   configuration file, for which ``find_package(Boost)`` now searches.
 
-²éÕÒBoost°üº¬Ä¿Â¼ºÍ¿â
+æŸ¥æ‰¾BooståŒ…å«ç›®å½•å’Œåº“
 
 Use this module by invoking :command:`find_package` with the form:
 

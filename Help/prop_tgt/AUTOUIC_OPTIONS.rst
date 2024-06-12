@@ -1,9 +1,9 @@
-AUTOUIC_OPTIONS
+锘緼UTOUIC_OPTIONS
 ---------------
 
 .. versionadded:: 3.0
 
-使用\ :prop_tgt:`AUTOUIC`\ 时为\ ``uic``\ 提供的附加选项
+浣跨敤\ :prop_tgt:`AUTOUIC`\ 鏃朵负\ ``uic``\ 鎻愪緵鐨勯檮鍔犻�夐」
 
 This property holds additional command line options which will be used when
 ``uic`` is executed during the build via :prop_tgt:`AUTOUIC`, i.e. it is

@@ -1,4 +1,4 @@
-.. cmake-manual-description: CMake Generator Expressions
+ï»¿.. cmake-manual-description: CMake Generator Expressions
 
 cmake-generator-expressions(7)
 ******************************
@@ -7,25 +7,25 @@ cmake-generator-expressions(7)
 
    .. contents::
 
-ÒýÑÔ
+å¼•è¨€
 ============
 
-Éú³ÉÆ÷±í´ïÊ½ÔÚÉú³É¹¹½¨ÏµÍ³ÆÚ¼ä½øÐÐ¼ÆËã£¬ÒÔÉú³ÉÌØ¶¨ÓÚÃ¿¸ö¹¹½¨ÅäÖÃµÄÐÅÏ¢¡£ËüÃÇµÄÐÎÊ½ÊÇ\ ``$<...>``¡£ÀýÈç£º
+ç”Ÿæˆå™¨è¡¨è¾¾å¼åœ¨ç”Ÿæˆæž„å»ºç³»ç»ŸæœŸé—´è¿›è¡Œè®¡ç®—ï¼Œä»¥ç”Ÿæˆç‰¹å®šäºŽæ¯ä¸ªæž„å»ºé…ç½®çš„ä¿¡æ¯ã€‚å®ƒä»¬çš„å½¢å¼æ˜¯\ ``$<...>``ã€‚ä¾‹å¦‚ï¼š
 
 .. code-block:: cmake
 
   target_include_directories(tgt PRIVATE /opt/include/$<CXX_COMPILER_ID>)
 
-Õâ½«À©Õ¹µ½\ ``/opt/include/GNU``¡¢\ ``/opt/include/Clang``\ µÈ£¬ÕâÈ¡¾öÓÚËùÊ¹ÓÃµÄC++±àÒëÆ÷¡£
+è¿™å°†æ‰©å±•åˆ°\ ``/opt/include/GNU``ã€\ ``/opt/include/Clang``\ ç­‰ï¼Œè¿™å–å†³äºŽæ‰€ä½¿ç”¨çš„C++ç¼–è¯‘å™¨ã€‚
 
-Éú³ÉÆ÷±í´ïÊ½¿ÉÒÔÔÚÐí¶àÄ¿±êÊôÐÔµÄÉÏÏÂÎÄÖÐÊ¹ÓÃ£¬Èç\ :prop_tgt:`LINK_LIBRARIES`¡¢\
-:prop_tgt:`INCLUDE_DIRECTORIES`¡¢:prop_tgt:`COMPILE_DEFINITIONS`\ µÈ¡£\
-ËüÃÇÒ²¿ÉÒÔÔÚÊ¹ÓÃÃüÁîÌî³äÕâÐ©ÊôÐÔÊ±Ê¹ÓÃ£¬ÀýÈç\ :command:`target_link_libraries`¡¢\
-:command:`target_include_directories`¡¢:command:`target_compile_definitions`\ µÈ¡£\
-ËüÃÇÖ§³ÖÌõ¼þÁ´½Ó¡¢±àÒëÊ±Ê¹ÓÃµÄÌõ¼þ¶¨Òå¡¢Ìõ¼þ°üº¬Ä¿Â¼µÈµÈ¡£Ìõ¼þ¿ÉÄÜ»ùÓÚ¹¹½¨ÅäÖÃ¡¢Ä¿±êÊôÐÔ¡¢\
-Æ½Ì¨ÐÅÏ¢»òÈÎºÎÆäËû¿É²éÑ¯ÐÅÏ¢¡£
+ç”Ÿæˆå™¨è¡¨è¾¾å¼å¯ä»¥åœ¨è®¸å¤šç›®æ ‡å±žæ€§çš„ä¸Šä¸‹æ–‡ä¸­ä½¿ç”¨ï¼Œå¦‚\ :prop_tgt:`LINK_LIBRARIES`ã€\
+:prop_tgt:`INCLUDE_DIRECTORIES`ã€:prop_tgt:`COMPILE_DEFINITIONS`\ ç­‰ã€‚\
+å®ƒä»¬ä¹Ÿå¯ä»¥åœ¨ä½¿ç”¨å‘½ä»¤å¡«å……è¿™äº›å±žæ€§æ—¶ä½¿ç”¨ï¼Œä¾‹å¦‚\ :command:`target_link_libraries`ã€\
+:command:`target_include_directories`ã€:command:`target_compile_definitions`\ ç­‰ã€‚\
+å®ƒä»¬æ”¯æŒæ¡ä»¶é“¾æŽ¥ã€ç¼–è¯‘æ—¶ä½¿ç”¨çš„æ¡ä»¶å®šä¹‰ã€æ¡ä»¶åŒ…å«ç›®å½•ç­‰ç­‰ã€‚æ¡ä»¶å¯èƒ½åŸºäºŽæž„å»ºé…ç½®ã€ç›®æ ‡å±žæ€§ã€\
+å¹³å°ä¿¡æ¯æˆ–ä»»ä½•å…¶ä»–å¯æŸ¥è¯¢ä¿¡æ¯ã€‚
 
-Éú³ÉÆ÷±í´ïÊ½¿ÉÒÔÇ¶Ì×£º
+ç”Ÿæˆå™¨è¡¨è¾¾å¼å¯ä»¥åµŒå¥—ï¼š
 
 .. code-block:: cmake
 
@@ -33,18 +33,18 @@ cmake-generator-expressions(7)
     $<$<VERSION_LESS:$<CXX_COMPILER_VERSION>,4.2.0>:OLD_COMPILER>
   )
 
-Èç¹û\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\
-Ð¡ÓÚ4.2.0£¬ÔòÉÏÊöÄÚÈÝ½«À©Õ¹Îª\ ``OLD_COMPILER``¡£
+å¦‚æžœ\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\
+å°äºŽ4.2.0ï¼Œåˆ™ä¸Šè¿°å†…å®¹å°†æ‰©å±•ä¸º\ ``OLD_COMPILER``ã€‚
 
-¿Õ¸ñºÍÒýºÅ
+ç©ºæ ¼å’Œå¼•å·
 ======================
 
-Éú³ÉÆ÷±í´ïÊ½Í¨³£ÔÚÃüÁî²ÎÊýÖ®ºó½øÐÐ½âÎö¡£Èç¹ûÉú³ÉÆ÷±í´ïÊ½°üº¬¿Õ¸ñ¡¢ÐÂÐÐ¡¢·ÖºÅ»òÆäËû¿ÉÄÜ±»½âÊÍ\
-ÎªÃüÁî²ÎÊý·Ö¸ô·ûµÄ×Ö·û£¬ÔòÕû¸ö±í´ïÊ½ÔÚ´«µÝ¸øÃüÁîÊ±Ó¦¸ÃÓÃÒýºÅÀ¨ÆðÀ´¡£Èç¹û²»ÕâÑù×ö£¬¿ÉÄÜ»áµ¼ÖÂ\
-±í´ïÊ½±»²ð·Ö£¬²¢ÇÒ¿ÉÄÜ²»ÔÙ½«ÆäÊ¶±ðÎªÉú³ÉÆ÷±í´ïÊ½¡£
+ç”Ÿæˆå™¨è¡¨è¾¾å¼é€šå¸¸åœ¨å‘½ä»¤å‚æ•°ä¹‹åŽè¿›è¡Œè§£æžã€‚å¦‚æžœç”Ÿæˆå™¨è¡¨è¾¾å¼åŒ…å«ç©ºæ ¼ã€æ–°è¡Œã€åˆ†å·æˆ–å…¶ä»–å¯èƒ½è¢«è§£é‡Š\
+ä¸ºå‘½ä»¤å‚æ•°åˆ†éš”ç¬¦çš„å­—ç¬¦ï¼Œåˆ™æ•´ä¸ªè¡¨è¾¾å¼åœ¨ä¼ é€’ç»™å‘½ä»¤æ—¶åº”è¯¥ç”¨å¼•å·æ‹¬èµ·æ¥ã€‚å¦‚æžœä¸è¿™æ ·åšï¼Œå¯èƒ½ä¼šå¯¼è‡´\
+è¡¨è¾¾å¼è¢«æ‹†åˆ†ï¼Œå¹¶ä¸”å¯èƒ½ä¸å†å°†å…¶è¯†åˆ«ä¸ºç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
 
-µ±Ê¹ÓÃ\ :command:`add_custom_command`\ »ò\ :command:`add_custom_target`\ Ê±£¬\
-Ê¹ÓÃ\ ``VERBATIM``\ ºÍ\ ``COMMAND_EXPAND_LISTS``\ Ñ¡ÏîÀ´»ñµÃ½¡×³µÄ²ÎÊý·Ö¸îºÍÒýÓÃ¡£
+å½“ä½¿ç”¨\ :command:`add_custom_command`\ æˆ–\ :command:`add_custom_target`\ æ—¶ï¼Œ\
+ä½¿ç”¨\ ``VERBATIM``\ å’Œ\ ``COMMAND_EXPAND_LISTS``\ é€‰é¡¹æ¥èŽ·å¾—å¥å£®çš„å‚æ•°åˆ†å‰²å’Œå¼•ç”¨ã€‚
 
 .. code-block:: cmake
 
@@ -78,7 +78,7 @@ cmake-generator-expressions(7)
     VERBATIM
   )
 
-Ê¹ÓÃ±äÁ¿¹¹½¨¸ü¸´ÔÓµÄÉú³ÉÆ÷±í´ïÊ½Ò²ÊÇ¼õÉÙ´íÎóºÍÌá¸ß¿É¶ÁÐÔµÄºÃ·½·¨¡£ÉÏÃæµÄÀý×Ó¿ÉÒÔ½øÒ»²½¸Ä½øÈçÏÂ£º
+ä½¿ç”¨å˜é‡æž„å»ºæ›´å¤æ‚çš„ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¹Ÿæ˜¯å‡å°‘é”™è¯¯å’Œæé«˜å¯è¯»æ€§çš„å¥½æ–¹æ³•ã€‚ä¸Šé¢çš„ä¾‹å­å¯ä»¥è¿›ä¸€æ­¥æ”¹è¿›å¦‚ä¸‹ï¼š
 
 .. code-block:: cmake
 
@@ -91,7 +91,7 @@ cmake-generator-expressions(7)
     VERBATIM
   )
 
-×îºó£¬ÉÏÃæµÄÀý×Ó¿ÉÒÔÓÃÒ»ÖÖ¸ü¼òµ¥ºÍ½¡×³µÄ·½Ê½À´±í´ï£¬Ê¹ÓÃÒ»¸öÌæ´úÉú³ÉÆ÷±í´ïÊ½£º
+æœ€åŽï¼Œä¸Šé¢çš„ä¾‹å­å¯ä»¥ç”¨ä¸€ç§æ›´ç®€å•å’Œå¥å£®çš„æ–¹å¼æ¥è¡¨è¾¾ï¼Œä½¿ç”¨ä¸€ä¸ªæ›¿ä»£ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼š
 
 .. code-block:: cmake
 
@@ -101,7 +101,7 @@ cmake-generator-expressions(7)
     VERBATIM
   )
 
-Ò»¸ö³£¼ûµÄ´íÎóÊÇ³¢ÊÔÓÃËõ½ø½«Éú³ÉÆ÷±í´ïÊ½·Ö¸îµ½¶àÐÐ£º
+ä¸€ä¸ªå¸¸è§çš„é”™è¯¯æ˜¯å°è¯•ç”¨ç¼©è¿›å°†ç”Ÿæˆå™¨è¡¨è¾¾å¼åˆ†å‰²åˆ°å¤šè¡Œï¼š
 
 .. code-block:: cmake
 
@@ -114,7 +114,7 @@ cmake-generator-expressions(7)
       >:HAVE_5_OR_LATER>
   )
 
-Í¬Ñù£¬Ê¹ÓÃÃû³ÆÑ¡ÔñÁ¼ºÃµÄ¸¨Öú±äÁ¿À´¹¹½¨¿É¶ÁµÄ±í´ïÊ½£º
+åŒæ ·ï¼Œä½¿ç”¨åç§°é€‰æ‹©è‰¯å¥½çš„è¾…åŠ©å˜é‡æ¥æž„å»ºå¯è¯»çš„è¡¨è¾¾å¼ï¼š
 
 .. code-block:: cmake
 
@@ -125,82 +125,82 @@ cmake-generator-expressions(7)
     "$<${meet_requirements}:HAVE_5_OR_LATER>"
   )
 
-µ÷ÊÔ
+è°ƒè¯•
 =========
 
-ÓÉÓÚÉú³ÉÆ÷±í´ïÊ½ÊÇÔÚÉú³É¹¹½¨ÏµÍ³Ê±¼ÆËãµÄ£¬¶ø²»ÊÇÔÚ´¦Àí\ ``CMakeLists.txt``\ ÎÄ¼þÊ±¼ÆËãµÄ£¬\
-Òò´Ë²»¿ÉÄÜÊ¹ÓÃ\ :command:`message()`\ ÃüÁî¼ì²éËüÃÇµÄ½á¹û¡£Éú³Éµ÷ÊÔÏûÏ¢µÄÒ»ÖÖ¿ÉÄÜµÄ·½·¨ÊÇ\
-Ìí¼ÓÒ»¸ö×Ô¶¨ÒåÄ¿±ê£º
+ç”±äºŽç”Ÿæˆå™¨è¡¨è¾¾å¼æ˜¯åœ¨ç”Ÿæˆæž„å»ºç³»ç»Ÿæ—¶è®¡ç®—çš„ï¼Œè€Œä¸æ˜¯åœ¨å¤„ç†\ ``CMakeLists.txt``\ æ–‡ä»¶æ—¶è®¡ç®—çš„ï¼Œ\
+å› æ­¤ä¸å¯èƒ½ä½¿ç”¨\ :command:`message()`\ å‘½ä»¤æ£€æŸ¥å®ƒä»¬çš„ç»“æžœã€‚ç”Ÿæˆè°ƒè¯•æ¶ˆæ¯çš„ä¸€ç§å¯èƒ½çš„æ–¹æ³•æ˜¯\
+æ·»åŠ ä¸€ä¸ªè‡ªå®šä¹‰ç›®æ ‡ï¼š
 
 .. code-block:: cmake
 
   add_custom_target(genexdebug COMMAND ${CMAKE_COMMAND} -E echo "$<...>")
 
-ÔËÐÐ\ :program:`cmake`\ Ö®ºó£¬Äã¿ÉÒÔ¹¹½¨\ ``genexdebug``\ Ä¿±êÒÔ´òÓ¡\ ``$<...>``\
-±í´ïÊ½£¨¼´Ö´ÐÐÃüÁî\ :option:`cmake --build ... --target genexdebug <cmake--build --target>`£©¡£
+è¿è¡Œ\ :program:`cmake`\ ä¹‹åŽï¼Œä½ å¯ä»¥æž„å»º\ ``genexdebug``\ ç›®æ ‡ä»¥æ‰“å°\ ``$<...>``\
+è¡¨è¾¾å¼ï¼ˆå³æ‰§è¡Œå‘½ä»¤\ :option:`cmake --build ... --target genexdebug <cmake--build --target>`ï¼‰ã€‚
 
-ÁíÒ»ÖÖ·½·¨ÊÇÊ¹ÓÃ\ :command:`file(GENERATE)`\ ½«µ÷ÊÔÏûÏ¢Ð´ÈëÎÄ¼þ£º
+å¦ä¸€ç§æ–¹æ³•æ˜¯ä½¿ç”¨\ :command:`file(GENERATE)`\ å°†è°ƒè¯•æ¶ˆæ¯å†™å…¥æ–‡ä»¶ï¼š
 
 .. code-block:: cmake
 
   file(GENERATE OUTPUT filename CONTENT "$<...>")
 
-Éú³ÉÆ÷±í´ïÊ½²Î¿¼
+ç”Ÿæˆå™¨è¡¨è¾¾å¼å‚è€ƒ
 ==============================
 
 .. note::
 
-  Õâ¸ö²Î¿¼Æ«ÀëÁË´ó¶àÊýCMakeÎÄµµ£¬ÒòÎªËüÊ¡ÂÔÁË¼âÀ¨ºÅ\ ``<...>``\ Î§ÈÆÕ¼Î»·û£¬\ Èç\
-  ``condition``¡¢\ ``string``¡¢\ ``target``\ µÈ¡£ÕâÊÇÎªÁË·ÀÖ¹ÄÇÐ©Õ¼Î»·û±»´íÎóµØ½âÊÍ\
-  ÎªÉú³ÉÆ÷±í´ïÊ½¡£
+  è¿™ä¸ªå‚è€ƒåç¦»äº†å¤§å¤šæ•°CMakeæ–‡æ¡£ï¼Œå› ä¸ºå®ƒçœç•¥äº†å°–æ‹¬å·\ ``<...>``\ å›´ç»•å ä½ç¬¦ï¼Œ\ å¦‚\
+  ``condition``ã€\ ``string``ã€\ ``target``\ ç­‰ã€‚è¿™æ˜¯ä¸ºäº†é˜²æ­¢é‚£äº›å ä½ç¬¦è¢«é”™è¯¯åœ°è§£é‡Š\
+  ä¸ºç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
 
 .. _`Conditional Generator Expressions`:
 
-Ìõ¼þ±í´ïÊ½
+æ¡ä»¶è¡¨è¾¾å¼
 -----------------------
 
-Éú³ÉÆ÷±í´ïÊ½µÄÒ»¸ö»ù±¾Àà±ðÓëÌõ¼þÂß¼­ÓÐ¹Ø¡£Ö§³ÖÁ½ÖÖÐÎÊ½µÄÌõ¼þÉú³ÉÆ÷±í´ïÊ½£º
+ç”Ÿæˆå™¨è¡¨è¾¾å¼çš„ä¸€ä¸ªåŸºæœ¬ç±»åˆ«ä¸Žæ¡ä»¶é€»è¾‘æœ‰å…³ã€‚æ”¯æŒä¸¤ç§å½¢å¼çš„æ¡ä»¶ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼š
 
 .. genex:: $<condition:true_string>
 
-  Èç¹û\ ``condition``\ Îª\ ``1``£¬Ôò·µ»Ø\ ``true_string``£»Èç¹û\ ``condition``\ Îª\
-  ``0``£¬Ôò·µ»Ø¿Õ×Ö·û´®¡£\ ``condition``\ µÄÈÎºÎÆäËûÖµ¶¼»áµ¼ÖÂ´íÎó¡£
+  å¦‚æžœ\ ``condition``\ ä¸º\ ``1``ï¼Œåˆ™è¿”å›ž\ ``true_string``ï¼›å¦‚æžœ\ ``condition``\ ä¸º\
+  ``0``ï¼Œåˆ™è¿”å›žç©ºå­—ç¬¦ä¸²ã€‚\ ``condition``\ çš„ä»»ä½•å…¶ä»–å€¼éƒ½ä¼šå¯¼è‡´é”™è¯¯ã€‚
 
 .. genex:: $<IF:condition,true_string,false_string>
 
   .. versionadded:: 3.8
 
-  Èç¹û\ ``condition``\ Îª\ ``1``£¬Ôò·µ»Ø\ ``true_string``£»Èç¹û\ ``condition``\ Îª\
-  ``0``£¬Ôò·µ»Ø\ ``false_string``¡£\ ``condition``\ µÄÈÎºÎÆäËûÖµ¶¼»áµ¼ÖÂ´íÎó¡£
+  å¦‚æžœ\ ``condition``\ ä¸º\ ``1``ï¼Œåˆ™è¿”å›ž\ ``true_string``ï¼›å¦‚æžœ\ ``condition``\ ä¸º\
+  ``0``ï¼Œåˆ™è¿”å›ž\ ``false_string``ã€‚\ ``condition``\ çš„ä»»ä½•å…¶ä»–å€¼éƒ½ä¼šå¯¼è‡´é”™è¯¯ã€‚
 
   .. versionadded:: 3.28
 
-    Õâ¸öÉú³ÉÆ÷±í´ïÊ½»á¶ÌÂ·£¬µ±\ ``condition``\ Îª\ ``1``\ Ê±£¬\ ``false_string``\ ÖÐ\
-    µÄÉú³ÉÆ÷±í´ïÊ½²»»áÇóÖµ£¬µ±\ ``condition``\ Îª\ ``0``\ Ê±£¬\ ``true_string``\ ÖÐ\
-    µÄÉú³ÉÆ÷±í´ïÊ½²»»áÇóÖµ¡£
+    è¿™ä¸ªç”Ÿæˆå™¨è¡¨è¾¾å¼ä¼šçŸ­è·¯ï¼Œå½“\ ``condition``\ ä¸º\ ``1``\ æ—¶ï¼Œ\ ``false_string``\ ä¸­\
+    çš„ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¸ä¼šæ±‚å€¼ï¼Œå½“\ ``condition``\ ä¸º\ ``0``\ æ—¶ï¼Œ\ ``true_string``\ ä¸­\
+    çš„ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¸ä¼šæ±‚å€¼ã€‚
 
-Í¨³££¬\ ``condition``\ ±¾Éí¾ÍÊÇÒ»¸öÉú³ÉÆ÷±í´ïÊ½¡£ÀýÈç£¬µ±Ê¹ÓÃ\ ``Debug``\ ÅäÖÃÊ±£¬\
-ÏÂÃæµÄ±í´ïÊ½Õ¹¿ªÎª\ ``DEBUG_MODE``£¬¶ÔÓÚËùÓÐÆäËûÅäÖÃÔòÎª¿Õ×Ö·û´®£º
+é€šå¸¸ï¼Œ\ ``condition``\ æœ¬èº«å°±æ˜¯ä¸€ä¸ªç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚ä¾‹å¦‚ï¼Œå½“ä½¿ç”¨\ ``Debug``\ é…ç½®æ—¶ï¼Œ\
+ä¸‹é¢çš„è¡¨è¾¾å¼å±•å¼€ä¸º\ ``DEBUG_MODE``ï¼Œå¯¹äºŽæ‰€æœ‰å…¶ä»–é…ç½®åˆ™ä¸ºç©ºå­—ç¬¦ä¸²ï¼š
 
 .. code-block:: cmake
 
   $<$<CONFIG:Debug>:DEBUG_MODE>
 
-³ý\ ``1``\ »ò\ ``0``\ Ö®ÍâµÄÀàËÆ²¼¶ûµÄ\ ``condition``\ Öµ¿ÉÒÔÓÃ\ ``$<BOOL:...>``\
-Éú³ÉÆ÷±í´ïÊ½°ü¹üÀ´´¦Àí£º
+é™¤\ ``1``\ æˆ–\ ``0``\ ä¹‹å¤–çš„ç±»ä¼¼å¸ƒå°”çš„\ ``condition``\ å€¼å¯ä»¥ç”¨\ ``$<BOOL:...>``\
+ç”Ÿæˆå™¨è¡¨è¾¾å¼åŒ…è£¹æ¥å¤„ç†ï¼š
 
 .. genex:: $<BOOL:string>
 
-  ½«\ ``string``\ ×ª»»Îª\ ``0``\ »ò\ ``1``¡£Èç¹ûÒÔÏÂÈÎÒâÒ»¸öÎªÕæ£¬Ôò¼ÆËãÎª\ ``0``£º
+  å°†\ ``string``\ è½¬æ¢ä¸º\ ``0``\ æˆ–\ ``1``ã€‚å¦‚æžœä»¥ä¸‹ä»»æ„ä¸€ä¸ªä¸ºçœŸï¼Œåˆ™è®¡ç®—ä¸º\ ``0``ï¼š
 
-  * ``string``\ ÊÇ¿ÕµÄ£¬
-  * ``string``\ ²»Çø·Ö´óÐ¡Ð´£¬µÈ¼ÛÎª\ ``0``¡¢``FALSE``¡¢``OFF``¡¢``N``¡¢``NO``¡¢\
-    ``IGNORE``\ »ò\ ``NOTFOUND``£¬»ò
-  * ``string``\ ÒÔ\ ``-NOTFOUND``\ ºó×º½áÊø£¨Çø·Ö´óÐ¡Ð´£©¡£
+  * ``string``\ æ˜¯ç©ºçš„ï¼Œ
+  * ``string``\ ä¸åŒºåˆ†å¤§å°å†™ï¼Œç­‰ä»·ä¸º\ ``0``ã€``FALSE``ã€``OFF``ã€``N``ã€``NO``ã€\
+    ``IGNORE``\ æˆ–\ ``NOTFOUND``ï¼Œæˆ–
+  * ``string``\ ä»¥\ ``-NOTFOUND``\ åŽç¼€ç»“æŸï¼ˆåŒºåˆ†å¤§å°å†™ï¼‰ã€‚
 
-  ·ñÔòµÈÓÚ\ ``1``¡£
+  å¦åˆ™ç­‰äºŽ\ ``1``ã€‚
 
-µ±CMake±äÁ¿Ìá¹©\ ``condition``\ Ê±£¬Í¨³£Ê¹ÓÃ\ ``$<BOOL:...>``\ Éú³ÉÆ÷±í´ïÊ½£º
+å½“CMakeå˜é‡æä¾›\ ``condition``\ æ—¶ï¼Œé€šå¸¸ä½¿ç”¨\ ``$<BOOL:...>``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼š
 
 .. code-block:: cmake
 
@@ -209,22 +209,22 @@ cmake-generator-expressions(7)
 
 .. _`Boolean Generator Expressions`:
 
-Âß¼­ÔËËã·û
+é€»è¾‘è¿ç®—ç¬¦
 -----------------
 
-Ö§³Ö³£¼ûµÄ²¼¶ûÂß¼­ÔËËã·û£º
+æ”¯æŒå¸¸è§çš„å¸ƒå°”é€»è¾‘è¿ç®—ç¬¦ï¼š
 
 .. genex:: $<AND:conditions>
 
-  ÆäÖÐ\ ``conditions``\ ÊÇÒ»¸öÒÔ¶ººÅ·Ö¸ôµÄ²¼¶û±í´ïÊ½ÁÐ±í£¬ËùÓÐÕâÐ©±í´ïÊ½µÄÖµ±ØÐëÎª\ ``1``\
-  »ò\ ``0``¡£Èç¹ûËùÓÐÌõ¼þ¶¼Îª\ ``1``£¬ÔòÕû¸ö±í´ïÊ½µÄÖµÎª\ ``1``¡£Èç¹ûÈÎºÎÌõ¼þÎª\ ``0``£¬\
-  Õû¸ö±í´ïÊ½µÄ¼ÆËã½á¹ûÎª\ ``0``¡£
+  å…¶ä¸­\ ``conditions``\ æ˜¯ä¸€ä¸ªä»¥é€—å·åˆ†éš”çš„å¸ƒå°”è¡¨è¾¾å¼åˆ—è¡¨ï¼Œæ‰€æœ‰è¿™äº›è¡¨è¾¾å¼çš„å€¼å¿…é¡»ä¸º\ ``1``\
+  æˆ–\ ``0``ã€‚å¦‚æžœæ‰€æœ‰æ¡ä»¶éƒ½ä¸º\ ``1``ï¼Œåˆ™æ•´ä¸ªè¡¨è¾¾å¼çš„å€¼ä¸º\ ``1``ã€‚å¦‚æžœä»»ä½•æ¡ä»¶ä¸º\ ``0``ï¼Œ\
+  æ•´ä¸ªè¡¨è¾¾å¼çš„è®¡ç®—ç»“æžœä¸º\ ``0``ã€‚
 
 .. genex:: $<OR:conditions>
 
-  ÆäÖÐ\ ``conditions``\ ÊÇ¶ººÅ·Ö¸ôµÄ²¼¶û±í´ïÊ½ÁÐ±í¡£ËùÓÐÕâÐ©¶¼±ØÐëµÈÓÚ\ ``1``\ »ò\ ``0``¡£\
-  Èç¹ûÖÁÉÙÓÐÒ»¸öÌõ¼þÎª\ ``1``£¬ÔòÕû¸ö±í´ïÊ½µÄÖµÎª\ ``1``¡£Èç¹ûËùÓÐÌõ¼þµÄÖµÎª\ ``0``£¬\
-  ÔòÕû¸ö±í´ïÊ½µÄÖµÎª\ ``0``¡£
+  å…¶ä¸­\ ``conditions``\ æ˜¯é€—å·åˆ†éš”çš„å¸ƒå°”è¡¨è¾¾å¼åˆ—è¡¨ã€‚æ‰€æœ‰è¿™äº›éƒ½å¿…é¡»ç­‰äºŽ\ ``1``\ æˆ–\ ``0``ã€‚\
+  å¦‚æžœè‡³å°‘æœ‰ä¸€ä¸ªæ¡ä»¶ä¸º\ ``1``ï¼Œåˆ™æ•´ä¸ªè¡¨è¾¾å¼çš„å€¼ä¸º\ ``1``ã€‚å¦‚æžœæ‰€æœ‰æ¡ä»¶çš„å€¼ä¸º\ ``0``ï¼Œ\
+  åˆ™æ•´ä¸ªè¡¨è¾¾å¼çš„å€¼ä¸º\ ``0``ã€‚
 
 .. genex:: $<NOT:condition>
 
@@ -233,26 +233,26 @@ cmake-generator-expressions(7)
 
 .. versionadded:: 3.28
 
-  Âß¼­ÔËËã·û»á·¢Éú¶ÌÂ·£¬Ò»µ©È·¶¨ÁË·µ»ØÖµ£¬¾Í²»»á¶Ô²ÎÊýÁÐ±íÖÐµÄÉú³ÉÆ÷±í´ïÊ½½øÐÐÇóÖµ¡£
+  é€»è¾‘è¿ç®—ç¬¦ä¼šå‘ç”ŸçŸ­è·¯ï¼Œä¸€æ—¦ç¡®å®šäº†è¿”å›žå€¼ï¼Œå°±ä¸ä¼šå¯¹å‚æ•°åˆ—è¡¨ä¸­çš„ç”Ÿæˆå™¨è¡¨è¾¾å¼è¿›è¡Œæ±‚å€¼ã€‚
 
 .. _`Comparison Expressions`:
 
-Ö÷Òª±È½Ï±í´ïÊ½
+ä¸»è¦æ¯”è¾ƒè¡¨è¾¾å¼
 ------------------------------
 
-CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
-ÆäËû¸ü¾ßÌåµÄ±È½ÏÀàÐÍ½«ÔÚºóÃæµ¥¶ÀµÄ²¿·ÖÖÐ½øÐÐËµÃ÷¡£
+CMakeæ”¯æŒå„ç§ç”Ÿæˆå™¨è¡¨è¾¾å¼è¿›è¡Œæ¯”è¾ƒã€‚æœ¬èŠ‚å°†ä»‹ç»ä¸»è¦çš„å’Œæœ€å¹¿æ³›ä½¿ç”¨çš„æ¯”è¾ƒç±»åž‹ã€‚\
+å…¶ä»–æ›´å…·ä½“çš„æ¯”è¾ƒç±»åž‹å°†åœ¨åŽé¢å•ç‹¬çš„éƒ¨åˆ†ä¸­è¿›è¡Œè¯´æ˜Žã€‚
 
-×Ö·û´®±È½Ï
+å­—ç¬¦ä¸²æ¯”è¾ƒ
 ^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<STREQUAL:string1,string2>
 
-  Èç¹û\ ``string1``\ ºÍ\ ``string2``\ ÏàµÈ£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£±È½ÏÊÇÇø·Ö´ó\
-  Ð¡Ð´µÄ¡£Òª½øÐÐ²»Çø·Ö´óÐ¡Ð´µÄ±È½Ï£¬ÇëÓë\
-  :ref:`×Ö·û´®×ª»»Éú³ÉÆ÷±í´ïÊ½ <String Transforming Generator Expressions>`\ ½áºÏÊ¹\
-  ÓÃ¡£ÀýÈç£¬Èç¹û\ ``${foo}``\ ÊÇ\ ``BAR``¡¢\ ``Bar``¡¢\ ``bar``\ µÈÖÐµÄÈÎÒâÒ»¸ö£¬ÔòÏÂ\
-  ÃæµÄ¼ÆËã½á¹ûÎª\ ``1``¡£
+  å¦‚æžœ\ ``string1``\ å’Œ\ ``string2``\ ç›¸ç­‰ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚æ¯”è¾ƒæ˜¯åŒºåˆ†å¤§\
+  å°å†™çš„ã€‚è¦è¿›è¡Œä¸åŒºåˆ†å¤§å°å†™çš„æ¯”è¾ƒï¼Œè¯·ä¸Ž\
+  :ref:`å­—ç¬¦ä¸²è½¬æ¢ç”Ÿæˆå™¨è¡¨è¾¾å¼ <String Transforming Generator Expressions>`\ ç»“åˆä½¿\
+  ç”¨ã€‚ä¾‹å¦‚ï¼Œå¦‚æžœ\ ``${foo}``\ æ˜¯\ ``BAR``ã€\ ``Bar``ã€\ ``bar``\ ç­‰ä¸­çš„ä»»æ„ä¸€ä¸ªï¼Œåˆ™ä¸‹\
+  é¢çš„è®¡ç®—ç»“æžœä¸º\ ``1``ã€‚
 
   .. code-block:: cmake
 
@@ -260,110 +260,110 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
 
 .. genex:: $<EQUAL:value1,value2>
 
-  Èç¹û\ ``value1``\ ºÍ\ ``value2``\ ÔÚÊýÖµÉÏÏàµÈÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``value1``\ å’Œ\ ``value2``\ åœ¨æ•°å€¼ä¸Šç›¸ç­‰åˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
-°æ±¾±È½Ï
+ç‰ˆæœ¬æ¯”è¾ƒ
 ^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<VERSION_LESS:v1,v2>
 
-  Èç¹û\ ``v1``\ Ð¡ÓÚ\ ``v2``£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``v1``\ å°äºŽ\ ``v2``ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<VERSION_GREATER:v1,v2>
 
-  Èç¹û\ ``v1``\ ´óÓÚ\ ``v2``\ ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``v1``\ å¤§äºŽ\ ``v2``\ åˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<VERSION_EQUAL:v1,v2>
 
-  Èç¹û\ ``v1``\ ºÍ\ ``v2``\ ÊÇÍ¬Ò»¸ö°æ±¾£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``v1``\ å’Œ\ ``v2``\ æ˜¯åŒä¸€ä¸ªç‰ˆæœ¬ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<VERSION_LESS_EQUAL:v1,v2>
 
   .. versionadded:: 3.7
 
-  Èç¹û\ ``v1``\ ÊÇÐ¡ÓÚµÈÓÚ\ ``v2``\ µÄ°æ±¾£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``v1``\ æ˜¯å°äºŽç­‰äºŽ\ ``v2``\ çš„ç‰ˆæœ¬ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<VERSION_GREATER_EQUAL:v1,v2>
 
   .. versionadded:: 3.7
 
-  Èç¹û\ ``v1``\ ÊÇ´óÓÚµÈÓÚ\ ``v2``\ µÄ°æ±¾£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``v1``\ æ˜¯å¤§äºŽç­‰äºŽ\ ``v2``\ çš„ç‰ˆæœ¬ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. _`String Transforming Generator Expressions`:
 
-×Ö·û´®×ª»»
+å­—ç¬¦ä¸²è½¬æ¢
 ----------------------
 
 .. genex:: $<LOWER_CASE:string>
 
-  ×ª»»ÎªÐ¡Ð´µÄ\ ``string``\ ÄÚÈÝ¡£
+  è½¬æ¢ä¸ºå°å†™çš„\ ``string``\ å†…å®¹ã€‚
 
 .. genex:: $<UPPER_CASE:string>
 
-  ×ª»»Îª´óÐ´µÄ\ ``string``\ ÄÚÈÝ¡£
+  è½¬æ¢ä¸ºå¤§å†™çš„\ ``string``\ å†…å®¹ã€‚
 
 .. genex:: $<MAKE_C_IDENTIFIER:...>
 
-  ``...``\ µÄÄÚÈÝ×ª»»ÎªC±êÊ¶·û¡£×ª»»×ñÑ­Óë\ :command:`string(MAKE_C_IDENTIFIER)`\
-  ÏàÍ¬µÄÐÐÎª¡£
+  ``...``\ çš„å†…å®¹è½¬æ¢ä¸ºCæ ‡è¯†ç¬¦ã€‚è½¬æ¢éµå¾ªä¸Ž\ :command:`string(MAKE_C_IDENTIFIER)`\
+  ç›¸åŒçš„è¡Œä¸ºã€‚
 
-ÁÐ±í±í´ïÊ½
+åˆ—è¡¨è¡¨è¾¾å¼
 ----------------
 
-±¾½ÚÖÐµÄ´ó¶àÊý±í´ïÊ½¶¼Óë\ :command:`list`\ ÃüÁîÃÜÇÐÏà¹Ø£¬Ìá¹©ÏàÍ¬µÄ¹¦ÄÜ£¬µ«²ÉÓÃÉú³ÉÆ÷±í´ï\
-Ê½µÄÐÎÊ½¡£
+æœ¬èŠ‚ä¸­çš„å¤§å¤šæ•°è¡¨è¾¾å¼éƒ½ä¸Ž\ :command:`list`\ å‘½ä»¤å¯†åˆ‡ç›¸å…³ï¼Œæä¾›ç›¸åŒçš„åŠŸèƒ½ï¼Œä½†é‡‡ç”¨ç”Ÿæˆå™¨è¡¨è¾¾\
+å¼çš„å½¢å¼ã€‚
 
-ÔÚÒÔÏÂÃ¿¸öÓëÁÐ±íÏà¹ØµÄÉú³ÉÆ÷±í´ïÊ½ÖÐ£¬Èç¹ûÉú³ÉÆ÷±í´ïÊ½Ï£ÍûÔÚ\ ``list``\ ºóÌá¹©Ä³Ð©ÄÚÈÝ£¬Ôò¸Ã\
-``list``\ ²»µÃ°üº¬ÈÎºÎ¶ººÅ¡£ÀýÈç£¬±í´ïÊ½\ ``$<LIST:FIND,list,value>``\ ÔÚ\ ``list``\
-ºóÃæÐèÒªÒ»¸ö\ ``value``¡£ÓÉÓÚÊ¹ÓÃ¶ººÅ·Ö¸ô\ ``list``\ ºÍ\ ``value``£¬Òò´ËÁÐ±í±¾Éí²»ÄÜ°ü\
-º¬¶ººÅ¡£´ËÏÞÖÆ²»ÊÊÓÃÓÚ\ :command:`list`\ ÃüÁî£¬Ëü½öÌØ¶¨ÓÚÁÐ±í´¦ÀíÉú³ÉÆ÷±í´ïÊ½¡£
+åœ¨ä»¥ä¸‹æ¯ä¸ªä¸Žåˆ—è¡¨ç›¸å…³çš„ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¸­ï¼Œå¦‚æžœç”Ÿæˆå™¨è¡¨è¾¾å¼å¸Œæœ›åœ¨\ ``list``\ åŽæä¾›æŸäº›å†…å®¹ï¼Œåˆ™è¯¥\
+``list``\ ä¸å¾—åŒ…å«ä»»ä½•é€—å·ã€‚ä¾‹å¦‚ï¼Œè¡¨è¾¾å¼\ ``$<LIST:FIND,list,value>``\ åœ¨\ ``list``\
+åŽé¢éœ€è¦ä¸€ä¸ª\ ``value``ã€‚ç”±äºŽä½¿ç”¨é€—å·åˆ†éš”\ ``list``\ å’Œ\ ``value``ï¼Œå› æ­¤åˆ—è¡¨æœ¬èº«ä¸èƒ½åŒ…\
+å«é€—å·ã€‚æ­¤é™åˆ¶ä¸é€‚ç”¨äºŽ\ :command:`list`\ å‘½ä»¤ï¼Œå®ƒä»…ç‰¹å®šäºŽåˆ—è¡¨å¤„ç†ç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
 
 .. _GenEx List Comparisons:
 
-ÁÐ±í±È½Ï
+åˆ—è¡¨æ¯”è¾ƒ
 ^^^^^^^^^^^^^^^^
 
 .. genex:: $<IN_LIST:string,list>
 
   .. versionadded:: 3.12
 
-  Èç¹û\ ``string``\ ÊÇ·ÖºÅ·Ö¸ô\ ``list``\ ÖÐµÄÏî£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£\
-  ËüÊ¹ÓÃÇø·Ö´óÐ¡Ð´µÄ±È½Ï¡£
+  å¦‚æžœ\ ``string``\ æ˜¯åˆ†å·åˆ†éš”\ ``list``\ ä¸­çš„é¡¹ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚\
+  å®ƒä½¿ç”¨åŒºåˆ†å¤§å°å†™çš„æ¯”è¾ƒã€‚
 
 .. _GenEx List Queries:
 
-ÁÐ±í²éÑ¯
+åˆ—è¡¨æŸ¥è¯¢
 ^^^^^^^^^^^^
 
 .. genex:: $<LIST:LENGTH,list>
 
   .. versionadded:: 3.27
 
-  ·µ»Ø\ ``list``\ ÏîÊý
+  è¿”å›ž\ ``list``\ é¡¹æ•°
 
 .. genex:: $<LIST:GET,list,index,...>
 
   .. versionadded:: 3.27
 
-  ·µ»ØÁÐ±íÖÐÓÉË÷ÒýÖ¸¶¨µÄÏî\ ``list``¡£
+  è¿”å›žåˆ—è¡¨ä¸­ç”±ç´¢å¼•æŒ‡å®šçš„é¡¹\ ``list``ã€‚
 
 .. genex:: $<LIST:SUBLIST,list,begin,length>
 
   .. versionadded:: 3.27
 
-  ·µ»Ø¸ø¶¨\ ``list``\ µÄ×ÓÁÐ±í¡£Èç¹û\ ``length``\ Îª0£¬Ôò·µ»Ø¿ÕÁÐ±í¡£Èç¹û\ ``length``\
-  Îª-1»òÁÐ±íÐ¡ÓÚ\ ``begin + length``£¬Ôò·µ»Ø´Ó\ ``begin``\ ¿ªÊ¼µÄÁÐ±íµÄÆäÓàÏî¡£
+  è¿”å›žç»™å®š\ ``list``\ çš„å­åˆ—è¡¨ã€‚å¦‚æžœ\ ``length``\ ä¸º0ï¼Œåˆ™è¿”å›žç©ºåˆ—è¡¨ã€‚å¦‚æžœ\ ``length``\
+  ä¸º-1æˆ–åˆ—è¡¨å°äºŽ\ ``begin + length``ï¼Œåˆ™è¿”å›žä»Ž\ ``begin``\ å¼€å§‹çš„åˆ—è¡¨çš„å…¶ä½™é¡¹ã€‚
 
 .. genex:: $<LIST:FIND,list,value>
 
   .. versionadded:: 3.27
 
-  ``list``\ ÖÐ¾ßÓÐÖ¸¶¨\ ``value``\ µÄµÚÒ»¸öÏîµÄË÷Òý£¬Èç¹û\ ``value``\ ²»ÔÚ\ ``list``\
-  ÖÐ£¬ÔòÎª-1¡£
+  ``list``\ ä¸­å…·æœ‰æŒ‡å®š\ ``value``\ çš„ç¬¬ä¸€ä¸ªé¡¹çš„ç´¢å¼•ï¼Œå¦‚æžœ\ ``value``\ ä¸åœ¨\ ``list``\
+  ä¸­ï¼Œåˆ™ä¸º-1ã€‚
 
 .. _GenEx List Transformations:
 
-ÁÐ±í×ª»»
+åˆ—è¡¨è½¬æ¢
 ^^^^^^^^^^^^^^^^^^^^
 
 .. _GenEx LIST-JOIN:
@@ -372,56 +372,56 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
 
   .. versionadded:: 3.27
 
-  ½«\ ``list``\ ×ª»»Îªµ¥¸ö×Ö·û´®£¬²¢ÔÚÃ¿¸öÏîÖ®¼ä²åÈë\ ``glue``\ ×Ö·û´®µÄÄÚÈÝ¡£ÕâÔÚ¸ÅÄîÉÏÓë\
-  :genex:`$<JOIN:list,glue>`\ ²Ù×÷ÏàÍ¬£¬µ«ÊÇÁ½Õß¶ÔÓÚ¿ÕÏîµÄÐÐÎª²»Í¬¡£\
-  ``$<LIST:JOIN,list,glue>``\ ±£ÁôËùÓÐ¿ÕÏî£¬¶ø\ :genex:`$<JOIN:list,glue>`\ ´ÓÁÐ±í\
-  ÖÐÉ¾³ýËùÓÐ¿ÕÏî¡£
+  å°†\ ``list``\ è½¬æ¢ä¸ºå•ä¸ªå­—ç¬¦ä¸²ï¼Œå¹¶åœ¨æ¯ä¸ªé¡¹ä¹‹é—´æ’å…¥\ ``glue``\ å­—ç¬¦ä¸²çš„å†…å®¹ã€‚è¿™åœ¨æ¦‚å¿µä¸Šä¸Ž\
+  :genex:`$<JOIN:list,glue>`\ æ“ä½œç›¸åŒï¼Œä½†æ˜¯ä¸¤è€…å¯¹äºŽç©ºé¡¹çš„è¡Œä¸ºä¸åŒã€‚\
+  ``$<LIST:JOIN,list,glue>``\ ä¿ç•™æ‰€æœ‰ç©ºé¡¹ï¼Œè€Œ\ :genex:`$<JOIN:list,glue>`\ ä»Žåˆ—è¡¨\
+  ä¸­åˆ é™¤æ‰€æœ‰ç©ºé¡¹ã€‚
 
 .. genex:: $<LIST:APPEND,list,item,...>
 
   .. versionadded:: 3.27
 
-  ¸½¼ÓËùÓÐ\ ``item``\ µÄ\ ``list``¡£¶à¸öÏîÖ®¼äÓ¦¸ÃÓÃ¶ººÅ·Ö¸ô¡£
+  é™„åŠ æ‰€æœ‰\ ``item``\ çš„\ ``list``ã€‚å¤šä¸ªé¡¹ä¹‹é—´åº”è¯¥ç”¨é€—å·åˆ†éš”ã€‚
 
 .. genex:: $<LIST:PREPEND,list,item,...>
 
   .. versionadded:: 3.27
 
-  ÔÚ\ ``list``\ µÄ¿ªÍ·²åÈëÃ¿¸ö\ ``item``¡£Èç¹ûÓÐ¶à¸öÏî£¬ÔòÓ¦ÒÔ¶ººÅ·Ö¸ô£¬²¢±£ÁôÇ°ÖÃÏîµÄË³Ðò¡£
+  åœ¨\ ``list``\ çš„å¼€å¤´æ’å…¥æ¯ä¸ª\ ``item``ã€‚å¦‚æžœæœ‰å¤šä¸ªé¡¹ï¼Œåˆ™åº”ä»¥é€—å·åˆ†éš”ï¼Œå¹¶ä¿ç•™å‰ç½®é¡¹çš„é¡ºåºã€‚
 
 .. genex:: $<LIST:INSERT,list,index,item,...>
 
   .. versionadded:: 3.27
 
-  ÔÚÖ¸¶¨Ë÷Òý´¦²åÈë\ ``item``\ £¨»ò¶à¸öÏî£©µÄ\ ``list``¡£¶à¸öÏîÖ®¼äÓ¦¸ÃÓÃ¶ººÅ·Ö¸ô¡£
+  åœ¨æŒ‡å®šç´¢å¼•å¤„æ’å…¥\ ``item``\ ï¼ˆæˆ–å¤šä¸ªé¡¹ï¼‰çš„\ ``list``ã€‚å¤šä¸ªé¡¹ä¹‹é—´åº”è¯¥ç”¨é€—å·åˆ†éš”ã€‚
 
-  Ö¸¶¨³¬³ö·¶Î§µÄ\ ``index``\ ÊÇ´íÎóµÄ¡£ÓÐÐ§µÄË÷Òý·¶Î§ÊÇ0µ½N£¬ÆäÖÐNÊÇÁÐ±íµÄ³¤¶È£¬°üÀ¨ÁÐ±íµÄ\
-  ³¤¶È¡£¿ÕÁÐ±íµÄ³¤¶ÈÎª0¡£
+  æŒ‡å®šè¶…å‡ºèŒƒå›´çš„\ ``index``\ æ˜¯é”™è¯¯çš„ã€‚æœ‰æ•ˆçš„ç´¢å¼•èŒƒå›´æ˜¯0åˆ°Nï¼Œå…¶ä¸­Næ˜¯åˆ—è¡¨çš„é•¿åº¦ï¼ŒåŒ…æ‹¬åˆ—è¡¨çš„\
+  é•¿åº¦ã€‚ç©ºåˆ—è¡¨çš„é•¿åº¦ä¸º0ã€‚
 
 .. genex:: $<LIST:POP_BACK,list>
 
   .. versionadded:: 3.27
 
-  ·µ»ØÒ»¸öÉ¾³ý×îºóÒ»¸öÏîµÄ\ ``list``¡£
+  è¿”å›žä¸€ä¸ªåˆ é™¤æœ€åŽä¸€ä¸ªé¡¹çš„\ ``list``ã€‚
 
 .. genex:: $<LIST:POP_FRONT,list>
 
   .. versionadded:: 3.27
 
-  ·µ»ØÉ¾³ýµÚÒ»¸öÏîµÄ\ ``list``¡£
+  è¿”å›žåˆ é™¤ç¬¬ä¸€ä¸ªé¡¹çš„\ ``list``ã€‚
 
 .. genex:: $<LIST:REMOVE_ITEM,list,value,...>
 
   .. versionadded:: 3.27
 
-  É¾³ý¸ø¶¨\ ``value``\ £¨»ò¶à¸öÖµ£©µÄËùÓÐÊµÀýµÄ\ ``list``¡£Èç¹û¸ø³öÁË¶à¸öÖµ£¬ËüÃÇÖ®¼äÓ¦\
-  ¸ÃÓÃ¶ººÅ·Ö¸ô¡£
+  åˆ é™¤ç»™å®š\ ``value``\ ï¼ˆæˆ–å¤šä¸ªå€¼ï¼‰çš„æ‰€æœ‰å®žä¾‹çš„\ ``list``ã€‚å¦‚æžœç»™å‡ºäº†å¤šä¸ªå€¼ï¼Œå®ƒä»¬ä¹‹é—´åº”\
+  è¯¥ç”¨é€—å·åˆ†éš”ã€‚
 
 .. genex:: $<LIST:REMOVE_AT,list,index,...>
 
   .. versionadded:: 3.27
 
-  ·µ»ØÒ»¸ö\ ``list``£¬ÆäÖÐ¸ø¶¨\ ``index``\ ´¦µÄËùÓÐÖµ¶¼ÒÑÉ¾³ý¡£
+  è¿”å›žä¸€ä¸ª\ ``list``ï¼Œå…¶ä¸­ç»™å®š\ ``index``\ å¤„çš„æ‰€æœ‰å€¼éƒ½å·²åˆ é™¤ã€‚
 
 .. _GenEx LIST-REMOVE_DUPLICATES:
 
@@ -429,8 +429,8 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
 
   .. versionadded:: 3.27
 
-  ·µ»ØÉ¾³ýÖØ¸´ÏîµÄ\ ``list``¡£±£ÁôÌõÄ¿µÄÏà¶ÔË³Ðò£¬µ«Èç¹ûÓöµ½ÖØ¸´Ïî£¬ÔòÖ»±£ÁôµÚÒ»¸öÊµÀý¡£½á\
-  ¹ûÓë\ :genex:`$<REMOVE_DUPLICATES:list>`\ ÏàÍ¬¡£
+  è¿”å›žåˆ é™¤é‡å¤é¡¹çš„\ ``list``ã€‚ä¿ç•™æ¡ç›®çš„ç›¸å¯¹é¡ºåºï¼Œä½†å¦‚æžœé‡åˆ°é‡å¤é¡¹ï¼Œåˆ™åªä¿ç•™ç¬¬ä¸€ä¸ªå®žä¾‹ã€‚ç»“\
+  æžœä¸Ž\ :genex:`$<REMOVE_DUPLICATES:list>`\ ç›¸åŒã€‚
 
 .. _GenEx LIST-FILTER:
 
@@ -438,70 +438,70 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
 
   .. versionadded:: 3.27
 
-  ``list``\ ÖÐÆ¥Åä£¨\ ``INCLUDE``\ £©»ò²»Æ¥Åä£¨\ ``EXCLUDE``\ £©ÕýÔò±í´ïÊ½\ ``regex``\
-  µÄÏîµÄÁÐ±í¡£½á¹ûÓë\ :genex:`$<FILTER:list,INCLUDE|EXCLUDE,regex>`\ ÏàÍ¬¡£
+  ``list``\ ä¸­åŒ¹é…ï¼ˆ\ ``INCLUDE``\ ï¼‰æˆ–ä¸åŒ¹é…ï¼ˆ\ ``EXCLUDE``\ ï¼‰æ­£åˆ™è¡¨è¾¾å¼\ ``regex``\
+  çš„é¡¹çš„åˆ—è¡¨ã€‚ç»“æžœä¸Ž\ :genex:`$<FILTER:list,INCLUDE|EXCLUDE,regex>`\ ç›¸åŒã€‚
 
 .. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
 
   .. versionadded:: 3.27
 
-  Í¨¹ý¶Ô\ ``list``\ ÖÐµÄËùÓÐÏîÓ¦ÓÃ\ ``ACTION``\ »òÖ¸¶¨Ò»¸ö\ ``SELECTOR``£¬·µ»Ø×ª»»ºóµÄÁÐ±í¡£
+  é€šè¿‡å¯¹\ ``list``\ ä¸­çš„æ‰€æœ‰é¡¹åº”ç”¨\ ``ACTION``\ æˆ–æŒ‡å®šä¸€ä¸ª\ ``SELECTOR``ï¼Œè¿”å›žè½¬æ¢åŽçš„åˆ—è¡¨ã€‚
 
   .. note::
 
-    ``TRANSFORM``\ ×ÓÃüÁî²»¸Ä±äÁÐ±íÖÐÔªËØµÄÊýÁ¿¡£Èç¹ûÖ¸¶¨ÁË\ ``SELECTOR``£¬ÔòÖ»ÓÐÒ»Ð©Ïî\
-    »á±»¸ü¸Ä£¬ÆäËûÏî½«±£³ÖÓë×ª»»Ç°ÏàÍ¬¡£
+    ``TRANSFORM``\ å­å‘½ä»¤ä¸æ”¹å˜åˆ—è¡¨ä¸­å…ƒç´ çš„æ•°é‡ã€‚å¦‚æžœæŒ‡å®šäº†\ ``SELECTOR``ï¼Œåˆ™åªæœ‰ä¸€äº›é¡¹\
+    ä¼šè¢«æ›´æ”¹ï¼Œå…¶ä»–é¡¹å°†ä¿æŒä¸Žè½¬æ¢å‰ç›¸åŒã€‚
 
-  ``ACTION``\ Ö¸¶¨Ó¦ÓÃÓÚÁÐ±íÏîµÄ²Ù×÷¡£²Ù×÷¾ßÓÐÓë\ :command:`list(TRANSFORM)`\ ÃüÁîÍê\
-  È«ÏàÍ¬µÄÓïÒå¡£\ ``ACTION``\ ±ØÐëÊÇÒÔÏÂÑ¡ÏîÖ®Ò»£º
+  ``ACTION``\ æŒ‡å®šåº”ç”¨äºŽåˆ—è¡¨é¡¹çš„æ“ä½œã€‚æ“ä½œå…·æœ‰ä¸Ž\ :command:`list(TRANSFORM)`\ å‘½ä»¤å®Œ\
+  å…¨ç›¸åŒçš„è¯­ä¹‰ã€‚\ ``ACTION``\ å¿…é¡»æ˜¯ä»¥ä¸‹é€‰é¡¹ä¹‹ä¸€ï¼š
 
     :command:`APPEND <list(TRANSFORM_APPEND)>`, :command:`PREPEND <list(TRANSFORM_APPEND)>`
-      ½«Ö¸¶¨µÄÖµ×·¼Óµ½ÁÐ±íµÄÃ¿¸öÏî¡£
+      å°†æŒ‡å®šçš„å€¼è¿½åŠ åˆ°åˆ—è¡¨çš„æ¯ä¸ªé¡¹ã€‚
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,(APPEND|PREPEND),value[,SELECTOR]>
 
     :command:`TOLOWER <list(TRANSFORM_TOLOWER)>`, :command:`TOUPPER <list(TRANSFORM_TOLOWER)>`
-      ½«ÁÐ±íÖÐµÄÃ¿¸öÏî×ª»»Îª´óÐ¡Ð´×Ö·û¡£
+      å°†åˆ—è¡¨ä¸­çš„æ¯ä¸ªé¡¹è½¬æ¢ä¸ºå¤§å°å†™å­—ç¬¦ã€‚
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,(TOLOWER|TOUPPER)[,SELECTOR]>
 
     :command:`STRIP <list(TRANSFORM_STRIP)>`
-      ´ÓÁÐ±íµÄÃ¿¸öÏîÖÐÉ¾³ýÇ°µ¼ºÍÎ²Ëæ¿Õ¸ñ¡£
+      ä»Žåˆ—è¡¨çš„æ¯ä¸ªé¡¹ä¸­åˆ é™¤å‰å¯¼å’Œå°¾éšç©ºæ ¼ã€‚
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,STRIP[,SELECTOR]>
 
     :command:`REPLACE <list(TRANSFORM_REPLACE)>`:
-      ¾¡¿ÉÄÜ¶àµØÆ¥ÅäÕýÔò±í´ïÊ½£¬²¢ÓÃÌæ»»±í´ïÊ½Ìæ»»ÁÐ±íÖÐÃ¿¸öÏîµÄÆ¥ÅäÏî¡£
+      å°½å¯èƒ½å¤šåœ°åŒ¹é…æ­£åˆ™è¡¨è¾¾å¼ï¼Œå¹¶ç”¨æ›¿æ¢è¡¨è¾¾å¼æ›¿æ¢åˆ—è¡¨ä¸­æ¯ä¸ªé¡¹çš„åŒ¹é…é¡¹ã€‚
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,REPLACE,regular_expression,replace_expression[,SELECTOR]>
 
-  ``SELECTOR``\ ¾ö¶¨ÁÐ±íÖÐµÄÄÄÐ©Ïî½«±»×ª»»¡£Ò»´ÎÖ»ÄÜÖ¸¶¨Ò»ÖÖÀàÐÍµÄÑ¡ÔñÆ÷¡£µ±¸ø¶¨Ê±£¬\
-  ``SELECTOR``\ ±ØÐëÊÇÏÂÁÐÖ®Ò»£º
+  ``SELECTOR``\ å†³å®šåˆ—è¡¨ä¸­çš„å“ªäº›é¡¹å°†è¢«è½¬æ¢ã€‚ä¸€æ¬¡åªèƒ½æŒ‡å®šä¸€ç§ç±»åž‹çš„é€‰æ‹©å™¨ã€‚å½“ç»™å®šæ—¶ï¼Œ\
+  ``SELECTOR``\ å¿…é¡»æ˜¯ä¸‹åˆ—ä¹‹ä¸€ï¼š
 
     ``AT``
-      Ö¸¶¨Ë÷ÒýÁÐ±í¡£
+      æŒ‡å®šç´¢å¼•åˆ—è¡¨ã€‚
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,ACTION,AT,index[,index...]>
 
     ``FOR``
-      Ö¸¶¨Ò»¸ö·¶Î§£¬²¢Ê¹ÓÃ¿ÉÑ¡µÄÔöÁ¿À´µü´ú¸Ã·¶Î§¡£
+      æŒ‡å®šä¸€ä¸ªèŒƒå›´ï¼Œå¹¶ä½¿ç”¨å¯é€‰çš„å¢žé‡æ¥è¿­ä»£è¯¥èŒƒå›´ã€‚
 
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,ACTION,FOR,start,stop[,step]>
 
     ``REGEX``
-      Ö¸¶¨ÕýÔò±í´ïÊ½¡£Ö»ÓÐÆ¥ÅäÕýÔò±í´ïÊ½µÄÏî²Å»á±»×ª»»¡£
+      æŒ‡å®šæ­£åˆ™è¡¨è¾¾å¼ã€‚åªæœ‰åŒ¹é…æ­£åˆ™è¡¨è¾¾å¼çš„é¡¹æ‰ä¼šè¢«è½¬æ¢ã€‚
 
       .. code-block:: cmake
 
@@ -509,115 +509,115 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
 
 .. genex:: $<JOIN:list,glue>
 
-  ÓÃ²åÈëÔÚÃ¿¸öÏîÄ¿Ö®¼äµÄ\ ``glue``\ ×Ö·û´®ÄÚÈÝÁ¬½Ó\ ``list``¡£ÕâÔÚ¸ÅÄîÉÏÓë\
-  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ ²Ù×÷ÏàÍ¬£¬µ«ÊÇÁ½Õß¶ÔÓÚ¿ÕÏîµÄÐÐ\
-  Îª²»Í¬¡£\ :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ ±£ÁôËùÓÐ¿ÕÏî£¬¶ø\
-  ``$<JOIN,list,glue>``\ ´ÓÁÐ±íÖÐÉ¾³ýËùÓÐ¿ÕÏî¡£
+  ç”¨æ’å…¥åœ¨æ¯ä¸ªé¡¹ç›®ä¹‹é—´çš„\ ``glue``\ å­—ç¬¦ä¸²å†…å®¹è¿žæŽ¥\ ``list``ã€‚è¿™åœ¨æ¦‚å¿µä¸Šä¸Ž\
+  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ æ“ä½œç›¸åŒï¼Œä½†æ˜¯ä¸¤è€…å¯¹äºŽç©ºé¡¹çš„è¡Œ\
+  ä¸ºä¸åŒã€‚\ :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ ä¿ç•™æ‰€æœ‰ç©ºé¡¹ï¼Œè€Œ\
+  ``$<JOIN,list,glue>``\ ä»Žåˆ—è¡¨ä¸­åˆ é™¤æ‰€æœ‰ç©ºé¡¹ã€‚
 
 .. genex:: $<REMOVE_DUPLICATES:list>
 
   .. versionadded:: 3.15
 
-  É¾³ý¸ø¶¨\ ``list``\ ÖÐµÄÖØ¸´Ïî¡£±£ÁôÏîµÄÏà¶ÔË³Ðò£¬²¢ÇÒÈç¹ûÓöµ½ÖØ¸´Ïî£¬ÔòÖ»±£ÁôµÚÒ»¸öÊµÀý¡£\
-  ½á¹ûÓë\ :ref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`\
-  ÏàÍ¬¡£
+  åˆ é™¤ç»™å®š\ ``list``\ ä¸­çš„é‡å¤é¡¹ã€‚ä¿ç•™é¡¹çš„ç›¸å¯¹é¡ºåºï¼Œå¹¶ä¸”å¦‚æžœé‡åˆ°é‡å¤é¡¹ï¼Œåˆ™åªä¿ç•™ç¬¬ä¸€ä¸ªå®žä¾‹ã€‚\
+  ç»“æžœä¸Ž\ :ref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`\
+  ç›¸åŒã€‚
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
 
   .. versionadded:: 3.15
 
-  ´Ó\ ``list``\ ÖÐ°üº¬»òÉ¾³ýÓëÕýÔò±í´ïÊ½\ ``regex``\ Æ¥ÅäµÄÏî¡£½á¹ûÓë\
-  :ref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`\ ÏàÍ¬¡£
+  ä»Ž\ ``list``\ ä¸­åŒ…å«æˆ–åˆ é™¤ä¸Žæ­£åˆ™è¡¨è¾¾å¼\ ``regex``\ åŒ¹é…çš„é¡¹ã€‚ç»“æžœä¸Ž\
+  :ref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`\ ç›¸åŒã€‚
 
 .. _GenEx List Ordering:
 
-ÁÐ±íÅÅÐò
+åˆ—è¡¨æŽ’åº
 ^^^^^^^^^^^^^
 
 .. genex:: $<LIST:REVERSE,list>
 
   .. versionadded:: 3.27
 
-  ·µ»ØÏîÒÔÏà·´Ë³ÐòÅÅÁÐµÄ\ ``list``¡£
+  è¿”å›žé¡¹ä»¥ç›¸åé¡ºåºæŽ’åˆ—çš„\ ``list``ã€‚
 
 .. genex:: $<LIST:SORT,list[,(COMPARE:option|CASE:option|ORDER:option)]...>
 
   .. versionadded:: 3.27
 
-  ·µ»Ø°´Ö¸¶¨Ñ¡ÏîÅÅÐòµÄ\ ``list``¡£
+  è¿”å›žæŒ‰æŒ‡å®šé€‰é¡¹æŽ’åºçš„\ ``list``ã€‚
 
-  Ê¹ÓÃ\ ``COMPARE``\ Ñ¡ÏîÖ®Ò»À´Ñ¡ÔñÅÅÐòµÄ±È½Ï·½·¨£º
+  ä½¿ç”¨\ ``COMPARE``\ é€‰é¡¹ä¹‹ä¸€æ¥é€‰æ‹©æŽ’åºçš„æ¯”è¾ƒæ–¹æ³•ï¼š
 
     ``STRING``
-      °´×ÖÄ¸Ë³Ðò¶Ô×Ö·û´®ÁÐ±í½øÐÐÅÅÐò¡£Èç¹ûÃ»ÓÐ¸ø³ö\ ``COMPARE``\ Ñ¡Ïî£¬ÕâÊÇÄ¬ÈÏÐÐÎª¡£
+      æŒ‰å­—æ¯é¡ºåºå¯¹å­—ç¬¦ä¸²åˆ—è¡¨è¿›è¡ŒæŽ’åºã€‚å¦‚æžœæ²¡æœ‰ç»™å‡º\ ``COMPARE``\ é€‰é¡¹ï¼Œè¿™æ˜¯é»˜è®¤è¡Œä¸ºã€‚
 
     ``FILE_BASENAME``
-      °´»ù±¾Ãû³Æ¶ÔÎÄ¼þÂ·¾¶ÃûÁÐ±í½øÐÐÅÅÐò¡£
+      æŒ‰åŸºæœ¬åç§°å¯¹æ–‡ä»¶è·¯å¾„ååˆ—è¡¨è¿›è¡ŒæŽ’åºã€‚
 
     ``NATURAL``
-      Ê¹ÓÃ×ÔÈ»Ë³Ðò¶Ô×Ö·û´®ÁÐ±í½øÐÐÅÅÐò£¨Çë²ÎÔÄ\ ``strverscmp(3)``\ µÄÊÖ²áÒ³£©£¬ÒÔ±ã½«Á¬\
-      ÐøÊý×Ö×÷ÎªÕûÊý½øÐÐ±È½Ï¡£ÀýÈç£¬Èç¹ûÑ¡ÔñÁË\ ``NATURAL``\ ±È½Ï£¬ÏÂÃæµÄÁÐ±í\
-      ``10.0 1.1 2.1 8.0 2.0 3.1``\ ½«±»ÅÅÐòÎª\ ``1.1 10.0 2.0 2.1 3.1 8.0``£¬¶ø\
-      Èç¹ûÑ¡ÔñÁË\ ``STRING``\ ±È½Ï£¬Ëü½«±»ÅÅÐòÎª\ ``1.1 10.0 2.0 2.1 3.1 8.0``¡£
+      ä½¿ç”¨è‡ªç„¶é¡ºåºå¯¹å­—ç¬¦ä¸²åˆ—è¡¨è¿›è¡ŒæŽ’åºï¼ˆè¯·å‚é˜…\ ``strverscmp(3)``\ çš„æ‰‹å†Œé¡µï¼‰ï¼Œä»¥ä¾¿å°†è¿ž\
+      ç»­æ•°å­—ä½œä¸ºæ•´æ•°è¿›è¡Œæ¯”è¾ƒã€‚ä¾‹å¦‚ï¼Œå¦‚æžœé€‰æ‹©äº†\ ``NATURAL``\ æ¯”è¾ƒï¼Œä¸‹é¢çš„åˆ—è¡¨\
+      ``10.0 1.1 2.1 8.0 2.0 3.1``\ å°†è¢«æŽ’åºä¸º\ ``1.1 10.0 2.0 2.1 3.1 8.0``ï¼Œè€Œ\
+      å¦‚æžœé€‰æ‹©äº†\ ``STRING``\ æ¯”è¾ƒï¼Œå®ƒå°†è¢«æŽ’åºä¸º\ ``1.1 10.0 2.0 2.1 3.1 8.0``ã€‚
 
-  Ê¹ÓÃ\ ``CASE``\ Ñ¡ÏîÖ®Ò»À´Ñ¡ÔñÇø·Ö´óÐ¡Ð´»ò²»Çø·Ö´óÐ¡Ð´µÄÅÅÐòÄ£Ê½£º
+  ä½¿ç”¨\ ``CASE``\ é€‰é¡¹ä¹‹ä¸€æ¥é€‰æ‹©åŒºåˆ†å¤§å°å†™æˆ–ä¸åŒºåˆ†å¤§å°å†™çš„æŽ’åºæ¨¡å¼ï¼š
 
     ``SENSITIVE``
-      ÁÐ±íÏîÒÔÇø·Ö´óÐ¡Ð´µÄ·½Ê½ÅÅÐò¡£Èç¹ûÃ»ÓÐ¸ø³ö\ ``CASE``\ Ñ¡Ïî£¬ÕâÊÇÄ¬ÈÏÐÐÎª¡£
+      åˆ—è¡¨é¡¹ä»¥åŒºåˆ†å¤§å°å†™çš„æ–¹å¼æŽ’åºã€‚å¦‚æžœæ²¡æœ‰ç»™å‡º\ ``CASE``\ é€‰é¡¹ï¼Œè¿™æ˜¯é»˜è®¤è¡Œä¸ºã€‚
 
     ``INSENSITIVE``
-      ÁÐ±íÏîµÄÅÅÐò²»Çø·Ö´óÐ¡Ð´¡£½ö´óÐ¡Ð´²»Í¬µÄÏîµÄË³ÐòÎ´Ö¸¶¨¡£
+      åˆ—è¡¨é¡¹çš„æŽ’åºä¸åŒºåˆ†å¤§å°å†™ã€‚ä»…å¤§å°å†™ä¸åŒçš„é¡¹çš„é¡ºåºæœªæŒ‡å®šã€‚
 
-  Òª¿ØÖÆÅÅÐòË³Ðò£¬¿ÉÒÔ¸ø³ö\ ``ORDER``\ Ñ¡ÏîÖ®Ò»£º
+  è¦æŽ§åˆ¶æŽ’åºé¡ºåºï¼Œå¯ä»¥ç»™å‡º\ ``ORDER``\ é€‰é¡¹ä¹‹ä¸€ï¼š
 
     ``ASCENDING``
-      °´ÉýÐò¶ÔÁÐ±í½øÐÐÅÅÐò¡£ÕâÊÇÎ´¸ø³ö\ ``ORDER``\ Ñ¡ÏîÊ±µÄÄ¬ÈÏÐÐÎª¡£
+      æŒ‰å‡åºå¯¹åˆ—è¡¨è¿›è¡ŒæŽ’åºã€‚è¿™æ˜¯æœªç»™å‡º\ ``ORDER``\ é€‰é¡¹æ—¶çš„é»˜è®¤è¡Œä¸ºã€‚
 
     ``DESCENDING``
-      °´½µÐò¶ÔÁÐ±í½øÐÐÅÅÐò¡£
+      æŒ‰é™åºå¯¹åˆ—è¡¨è¿›è¡ŒæŽ’åºã€‚
 
-  ¿ÉÒÔ°´ÈÎÒâË³ÐòÖ¸¶¨¸÷ÖÖÑ¡Ïî£¬µ«¶à´ÎÖ¸¶¨ÏàÍ¬µÄÑ¡ÏîÊÇ´íÎóµÄ¡£
+  å¯ä»¥æŒ‰ä»»æ„é¡ºåºæŒ‡å®šå„ç§é€‰é¡¹ï¼Œä½†å¤šæ¬¡æŒ‡å®šç›¸åŒçš„é€‰é¡¹æ˜¯é”™è¯¯çš„ã€‚
 
   .. code-block:: cmake
 
     $<LIST:SORT,list,CASE:SENSITIVE,COMPARE:STRING,ORDER:DESCENDING>
 
-Â·¾¶±í´ïÊ½
+è·¯å¾„è¡¨è¾¾å¼
 ----------------
 
-±¾½ÚÖÐµÄ´ó¶àÊý±í´ïÊ½¶¼Óë\ :command:`cmake_path`\ ÃüÁîÃÜÇÐÏà¹Ø£¬Ìá¹©ÏàÍ¬µÄ¹¦ÄÜ£¬\
-µ«ÊÇÊÇÒÔÉú³ÉÆ÷±í´ïÊ½µÄÐÎÊ½¡£
+æœ¬èŠ‚ä¸­çš„å¤§å¤šæ•°è¡¨è¾¾å¼éƒ½ä¸Ž\ :command:`cmake_path`\ å‘½ä»¤å¯†åˆ‡ç›¸å…³ï¼Œæä¾›ç›¸åŒçš„åŠŸèƒ½ï¼Œ\
+ä½†æ˜¯æ˜¯ä»¥ç”Ÿæˆå™¨è¡¨è¾¾å¼çš„å½¢å¼ã€‚
 
-¶ÔÓÚ±¾½ÚÖÐµÄËùÓÐÉú³ÉÆ÷±í´ïÊ½£¬Â·¾¶¶¼Ó¦¸ÃÊÇcmakeÑùÊ½µÄ¸ñÊ½¡£:ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>`\
-Éú³ÉÆ÷±í´ïÊ½¿ÉÓÃÓÚ½«±¾»úÂ·¾¶×ª»»ÎªcmakeÑùÊ½µÄÂ·¾¶¡£
+å¯¹äºŽæœ¬èŠ‚ä¸­çš„æ‰€æœ‰ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼Œè·¯å¾„éƒ½åº”è¯¥æ˜¯cmakeæ ·å¼çš„æ ¼å¼ã€‚:ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>`\
+ç”Ÿæˆå™¨è¡¨è¾¾å¼å¯ç”¨äºŽå°†æœ¬æœºè·¯å¾„è½¬æ¢ä¸ºcmakeæ ·å¼çš„è·¯å¾„ã€‚
 
 .. _GenEx Path Comparisons:
 
-Â·¾¶±È½Ï
+è·¯å¾„æ¯”è¾ƒ
 ^^^^^^^^^^^^^^^^
 
 .. genex:: $<PATH_EQUAL:path1,path2>
 
   .. versionadded:: 3.24
 
-  ±È½ÏÁ½¸öÂ·¾¶µÄ´Ê·¨±íÊ¾¡£ÔÚÈÎºÎÂ·¾¶ÉÏ¶¼²»Ö´ÐÐ¹éÒ»»¯¡£Èç¹ûÂ·¾¶ÏàµÈÔò·µ»Ø\ ``1``£¬·ñÔò·µ»Ø\ ``0``¡£
+  æ¯”è¾ƒä¸¤ä¸ªè·¯å¾„çš„è¯æ³•è¡¨ç¤ºã€‚åœ¨ä»»ä½•è·¯å¾„ä¸Šéƒ½ä¸æ‰§è¡Œå½’ä¸€åŒ–ã€‚å¦‚æžœè·¯å¾„ç›¸ç­‰åˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™è¿”å›ž\ ``0``ã€‚
 
-  ÓÐ¹Ø¸ü¶àÏ¸½Ú£¬Çë²ÎÔÄ\ :ref:`cmake_path(COMPARE) <Path COMPARE>`¡£
+  æœ‰å…³æ›´å¤šç»†èŠ‚ï¼Œè¯·å‚é˜…\ :ref:`cmake_path(COMPARE) <Path COMPARE>`ã€‚
 
 .. _GenEx Path Queries:
 
-Â·¾¶²éÑ¯
+è·¯å¾„æŸ¥è¯¢
 ^^^^^^^^^^^^
 
-ÕâÐ©±í´ïÊ½Ìá¹©ÁËµÈÍ¬ÓÚ\ :command:`cmake_path`\ ÃüÁîµÄ\ :ref:`Query <Path Query>`\
-Ñ¡ÏîµÄÉú³ÉÊ±¹¦ÄÜ¡£ËùÓÐÂ·¾¶¶¼Ó¦¸ÃÊÇcmakeÑùÊ½µÄ¸ñÊ½¡£
+è¿™äº›è¡¨è¾¾å¼æä¾›äº†ç­‰åŒäºŽ\ :command:`cmake_path`\ å‘½ä»¤çš„\ :ref:`Query <Path Query>`\
+é€‰é¡¹çš„ç”Ÿæˆæ—¶åŠŸèƒ½ã€‚æ‰€æœ‰è·¯å¾„éƒ½åº”è¯¥æ˜¯cmakeæ ·å¼çš„æ ¼å¼ã€‚
 
 .. genex:: $<PATH:HAS_*,path>
 
   .. versionadded:: 3.24
 
-  Èç¹û´æÔÚÌØ¶¨µÄÂ·¾¶×é¼þ£¬Ôò·µ»Ø\ ``1``£¬·ñÔò·µ»Ø\ ``0``¡£ÓÐ¹ØÃ¿¸öÂ·¾¶×é¼þµÄº¬Òå£¬\
-  Çë²ÎÔÄ\ :ref:`Path Structure And Terminology`¡£
+  å¦‚æžœå­˜åœ¨ç‰¹å®šçš„è·¯å¾„ç»„ä»¶ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™è¿”å›ž\ ``0``ã€‚æœ‰å…³æ¯ä¸ªè·¯å¾„ç»„ä»¶çš„å«ä¹‰ï¼Œ\
+  è¯·å‚é˜…\ :ref:`Path Structure And Terminology`ã€‚
 
   ::
 
@@ -630,51 +630,51 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
     $<PATH:HAS_RELATIVE_PART,path>
     $<PATH:HAS_PARENT_PATH,path>
 
-  ×¢ÒâÒÔÏÂÌØÊâÇé¿ö£º
+  æ³¨æ„ä»¥ä¸‹ç‰¹æ®Šæƒ…å†µï¼š
 
-  * ¶ÔÓÚ\ ``HAS_ROOT_PATH``£¬Ö»ÓÐµ±\ ``root-name``\ »ò\ ``root-directory``\
-    ÖÐÖÁÉÙÓÐÒ»¸ö·Ç¿ÕÊ±£¬²Å»á·µ»Øtrue½á¹û¡£
+  * å¯¹äºŽ\ ``HAS_ROOT_PATH``ï¼Œåªæœ‰å½“\ ``root-name``\ æˆ–\ ``root-directory``\
+    ä¸­è‡³å°‘æœ‰ä¸€ä¸ªéžç©ºæ—¶ï¼Œæ‰ä¼šè¿”å›žtrueç»“æžœã€‚
 
-  * ¶ÔÓÚ\ ``HAS_PARENT_PATH``£¬¸ùÄ¿Â¼Ò²±»ÈÏÎªÓÐÒ»¸ö¸¸Ä¿Â¼£¬¼´Ëü±¾Éí¡£\
-    ³ý·ÇÂ·¾¶½öÓÉ\ :ref:`filename <FILENAME_DEF>`\ ×é³É£¬·ñÔò½á¹ûÎªÕæ¡£
+  * å¯¹äºŽ\ ``HAS_PARENT_PATH``ï¼Œæ ¹ç›®å½•ä¹Ÿè¢«è®¤ä¸ºæœ‰ä¸€ä¸ªçˆ¶ç›®å½•ï¼Œå³å®ƒæœ¬èº«ã€‚\
+    é™¤éžè·¯å¾„ä»…ç”±\ :ref:`filename <FILENAME_DEF>`\ ç»„æˆï¼Œå¦åˆ™ç»“æžœä¸ºçœŸã€‚
 
 .. genex:: $<PATH:IS_ABSOLUTE,path>
 
   .. versionadded:: 3.24
 
-  Èç¹ûÂ·¾¶ÊÇ\ :ref:`absolute <IS_ABSOLUTE>`\ Â·¾¶Ôò·µ»Ø\ ``1``£¬·ñÔò·µ»Ø\ ``0``¡£
+  å¦‚æžœè·¯å¾„æ˜¯\ :ref:`absolute <IS_ABSOLUTE>`\ è·¯å¾„åˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™è¿”å›ž\ ``0``ã€‚
 
 .. genex:: $<PATH:IS_RELATIVE,path>
 
   .. versionadded:: 3.24
 
-  Õâ½«·µ»ØÓë\ ``IS_ABSOLUTE``\ Ïà·´µÄ½á¹û¡£
+  è¿™å°†è¿”å›žä¸Ž\ ``IS_ABSOLUTE``\ ç›¸åçš„ç»“æžœã€‚
 
 .. genex:: $<PATH:IS_PREFIX[,NORMALIZE],path,input>
 
   .. versionadded:: 3.24
 
-  Èç¹û\ ``path``\ ÊÇ\ ``input``\ µÄÇ°×º£¬Ôò·µ»Ø\ ``1``£¬·ñÔò·µ»Ø\ ``0``¡£
+  å¦‚æžœ\ ``path``\ æ˜¯\ ``input``\ çš„å‰ç¼€ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™è¿”å›ž\ ``0``ã€‚
 
-  µ±Ö¸¶¨\ ``NORMALIZE``\ Ñ¡ÏîÊ±£¬\ ``path``\ ºÍ\ ``input``\ ÔÚ¼ì²éÖ®Ç°±»\
-  :ref:`normalized <Normalization>`¡£
+  å½“æŒ‡å®š\ ``NORMALIZE``\ é€‰é¡¹æ—¶ï¼Œ\ ``path``\ å’Œ\ ``input``\ åœ¨æ£€æŸ¥ä¹‹å‰è¢«\
+  :ref:`normalized <Normalization>`ã€‚
 
 .. _GenEx Path Decomposition:
 
-Â·¾¶·Ö½â
+è·¯å¾„åˆ†è§£
 ^^^^^^^^^^^^^^^^^^
 
-ÕâÐ©±í´ïÊ½Ìá¹©ÁËµÈÍ¬ÓÚ\ :command:`cmake_path`\ ÃüÁîµÄ\ :ref:`Decomposition <Path Decomposition>`\
-Ñ¡ÏîµÄÉú³ÉÊ±¹¦ÄÜ¡£ËùÓÐÂ·¾¶¶¼Ó¦¸ÃÊÇcmakeÑùÊ½µÄ¸ñÊ½¡£
+è¿™äº›è¡¨è¾¾å¼æä¾›äº†ç­‰åŒäºŽ\ :command:`cmake_path`\ å‘½ä»¤çš„\ :ref:`Decomposition <Path Decomposition>`\
+é€‰é¡¹çš„ç”Ÿæˆæ—¶åŠŸèƒ½ã€‚æ‰€æœ‰è·¯å¾„éƒ½åº”è¯¥æ˜¯cmakeæ ·å¼çš„æ ¼å¼ã€‚
 
 .. genex:: $<PATH:GET_*,...>
 
   .. versionadded:: 3.24
 
-  ÒÔÏÂ²Ù×÷´ÓÂ·¾¶ÖÐ¼ìË÷²»Í¬µÄ×é¼þ»ò×é¼þ×é¡£ÓÐ¹ØÃ¿¸öÂ·¾¶×é¼þµÄº¬Òå£¬Çë²ÎÔÄ\ :ref:`Path Structure And Terminology`¡£
+  ä»¥ä¸‹æ“ä½œä»Žè·¯å¾„ä¸­æ£€ç´¢ä¸åŒçš„ç»„ä»¶æˆ–ç»„ä»¶ç»„ã€‚æœ‰å…³æ¯ä¸ªè·¯å¾„ç»„ä»¶çš„å«ä¹‰ï¼Œè¯·å‚é˜…\ :ref:`Path Structure And Terminology`ã€‚
 
   .. versionchanged:: 3.27
-    ÏÖÔÚËùÓÐµÄ²Ù×÷¶¼½ÓÊÜÒ»¸öÂ·¾¶ÁÐ±í×÷Îª²ÎÊý¡£µ±Ö¸¶¨ÁËÂ·¾¶ÁÐ±íÊ±£¬¸Ã²Ù×÷½«Ó¦ÓÃÓÚÃ¿¸öÂ·¾¶¡£
+    çŽ°åœ¨æ‰€æœ‰çš„æ“ä½œéƒ½æŽ¥å—ä¸€ä¸ªè·¯å¾„åˆ—è¡¨ä½œä¸ºå‚æ•°ã€‚å½“æŒ‡å®šäº†è·¯å¾„åˆ—è¡¨æ—¶ï¼Œè¯¥æ“ä½œå°†åº”ç”¨äºŽæ¯ä¸ªè·¯å¾„ã€‚
 
   ::
 
@@ -687,18 +687,18 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
     $<PATH:GET_RELATIVE_PART,path...>
     $<PATH:GET_PARENT_PATH,path...>
 
-  Èç¹ûÇëÇóµÄ×é¼þ²»ÔÚÂ·¾¶ÖÐ£¬Ôò·µ»Ø¿Õ×Ö·û´®¡£
+  å¦‚æžœè¯·æ±‚çš„ç»„ä»¶ä¸åœ¨è·¯å¾„ä¸­ï¼Œåˆ™è¿”å›žç©ºå­—ç¬¦ä¸²ã€‚
 
 .. _GenEx Path Transformations:
 
-Â·¾¶×ª»»
+è·¯å¾„è½¬æ¢
 ^^^^^^^^^^^^^^^^^^^^
 
-ÕâÐ©±í´ïÊ½Ìá¹©ÁËµÈÍ¬ÓÚ\ :command:`cmake_path`\ ÃüÁîµÄ\ :ref:`Modification <Path Modification>`\
-ºÍ\ :ref:`Generation <Path Generation>`\ Ñ¡ÏîµÄÉú³ÉÊ±¹¦ÄÜ¡£ËùÓÐÂ·¾¶¶¼Ó¦¸ÃÊÇcmakeÑùÊ½µÄ¸ñÊ½¡£
+è¿™äº›è¡¨è¾¾å¼æä¾›äº†ç­‰åŒäºŽ\ :command:`cmake_path`\ å‘½ä»¤çš„\ :ref:`Modification <Path Modification>`\
+å’Œ\ :ref:`Generation <Path Generation>`\ é€‰é¡¹çš„ç”Ÿæˆæ—¶åŠŸèƒ½ã€‚æ‰€æœ‰è·¯å¾„éƒ½åº”è¯¥æ˜¯cmakeæ ·å¼çš„æ ¼å¼ã€‚
 
 .. versionchanged:: 3.27
-  ÏÖÔÚËùÓÐµÄ²Ù×÷¶¼½ÓÊÜÒ»¸öÂ·¾¶ÁÐ±í×÷Îª²ÎÊý¡£µ±Ö¸¶¨ÁËÂ·¾¶ÁÐ±íÊ±£¬¸Ã²Ù×÷½«Ó¦ÓÃÓÚÃ¿¸öÂ·¾¶¡£
+  çŽ°åœ¨æ‰€æœ‰çš„æ“ä½œéƒ½æŽ¥å—ä¸€ä¸ªè·¯å¾„åˆ—è¡¨ä½œä¸ºå‚æ•°ã€‚å½“æŒ‡å®šäº†è·¯å¾„åˆ—è¡¨æ—¶ï¼Œè¯¥æ“ä½œå°†åº”ç”¨äºŽæ¯ä¸ªè·¯å¾„ã€‚
 
 
 .. _GenEx PATH-CMAKE_PATH:
@@ -707,232 +707,232 @@ CMakeÖ§³Ö¸÷ÖÖÉú³ÉÆ÷±í´ïÊ½½øÐÐ±È½Ï¡£±¾½Ú½«½éÉÜÖ÷ÒªµÄºÍ×î¹ã·ºÊ¹ÓÃµÄ±È½ÏÀàÐÍ¡£\
 
   .. versionadded:: 3.24
 
-  ·µ»Ø\ ``path``¡£Èç¹û\ ``path``\ ÊÇÔ­ÉúÂ·¾¶£¬Ëü½«×ª»»Îª´øÓÐÕýÐ±¸Ü£¨\ ``/``\ £©µÄcmake\
-  ÑùÊ½µÄÂ·¾¶¡£ÔÚWindowsÉÏ£¬³¤ÎÄ¼þÃû±ê¼Ç»á±»¿¼ÂÇÔÚÄÚ¡£
+  è¿”å›ž\ ``path``ã€‚å¦‚æžœ\ ``path``\ æ˜¯åŽŸç”Ÿè·¯å¾„ï¼Œå®ƒå°†è½¬æ¢ä¸ºå¸¦æœ‰æ­£æ–œæ ï¼ˆ\ ``/``\ ï¼‰çš„cmake\
+  æ ·å¼çš„è·¯å¾„ã€‚åœ¨Windowsä¸Šï¼Œé•¿æ–‡ä»¶åæ ‡è®°ä¼šè¢«è€ƒè™‘åœ¨å†…ã€‚
 
-  µ±Ö¸¶¨\ ``NORMALIZE``\ Ñ¡ÏîÊ±£¬×ª»»ºó½«¶ÔÂ·¾¶½øÐÐ\ :ref:`normalized
-  <Normalization>`¡£
+  å½“æŒ‡å®š\ ``NORMALIZE``\ é€‰é¡¹æ—¶ï¼Œè½¬æ¢åŽå°†å¯¹è·¯å¾„è¿›è¡Œ\ :ref:`normalized
+  <Normalization>`ã€‚
 
 .. genex:: $<PATH:APPEND,path...,input,...>
 
   .. versionadded:: 3.24
 
-  ·µ»ØÒÔ\ ``/``\ ×÷Îª\ ``directory-separator``\ ¸½¼Óµ½\ ``path``\ µÄËùÓÐ\ ``input``\
-  ²ÎÊý¡£¸ù¾Ý\ ``input``\ µÄ²»Í¬£¬\ ``path``\ µÄÖµ¿ÉÄÜ»á±»¶ªÆú¡£
+  è¿”å›žä»¥\ ``/``\ ä½œä¸º\ ``directory-separator``\ é™„åŠ åˆ°\ ``path``\ çš„æ‰€æœ‰\ ``input``\
+  å‚æ•°ã€‚æ ¹æ®\ ``input``\ çš„ä¸åŒï¼Œ\ ``path``\ çš„å€¼å¯èƒ½ä¼šè¢«ä¸¢å¼ƒã€‚
 
-  Çë²ÎÔÄ\ :ref:`cmake_path(APPEND) <APPEND>`\ ÁË½â¸ü¶àÏêÏ¸ÐÅÏ¢¡£
+  è¯·å‚é˜…\ :ref:`cmake_path(APPEND) <APPEND>`\ äº†è§£æ›´å¤šè¯¦ç»†ä¿¡æ¯ã€‚
 
 .. genex:: $<PATH:REMOVE_FILENAME,path...>
 
   .. versionadded:: 3.24
 
-  ·µ»ØÉ¾³ýÁËÎÄ¼þÃû×é¼þ£¨ÓÉ\ ``$<PATH:GET_FILENAME>``\ ·µ»Ø£©µÄ\ ``path``¡£É¾³ýÖ®ºó£¬\
-  ÈÎºÎÎ²ËæµÄ\ ``directory-separator``\ £¨Èç¹û´æÔÚµÄ»°£©¶¼½«±£³Ö²»±ä¡£
+  è¿”å›žåˆ é™¤äº†æ–‡ä»¶åç»„ä»¶ï¼ˆç”±\ ``$<PATH:GET_FILENAME>``\ è¿”å›žï¼‰çš„\ ``path``ã€‚åˆ é™¤ä¹‹åŽï¼Œ\
+  ä»»ä½•å°¾éšçš„\ ``directory-separator``\ ï¼ˆå¦‚æžœå­˜åœ¨çš„è¯ï¼‰éƒ½å°†ä¿æŒä¸å˜ã€‚
 
-  ²Î¼û\ :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>`\ ÁË½â¸ü¶àÏ¸½Ú¡£
+  å‚è§\ :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>`\ äº†è§£æ›´å¤šç»†èŠ‚ã€‚
 
 .. genex:: $<PATH:REPLACE_FILENAME,path...,input>
 
   .. versionadded:: 3.24
 
-  ·µ»Ø\ ``path``£¬ÆäÖÐÎÄ¼þ×é¼þ±»\ ``input``\ Ìæ»»¡£Èç¹û\ ``path``\ Ã»ÓÐÎÄ¼þÃû×é¼þ\
-  £¨ÀýÈç\ ``$<PATH:HAS_FILENAME>``\ ·µ»Ø\ ``0``£©£¬\ ``path``\ ²»±ä¡£
+  è¿”å›ž\ ``path``ï¼Œå…¶ä¸­æ–‡ä»¶ç»„ä»¶è¢«\ ``input``\ æ›¿æ¢ã€‚å¦‚æžœ\ ``path``\ æ²¡æœ‰æ–‡ä»¶åç»„ä»¶\
+  ï¼ˆä¾‹å¦‚\ ``$<PATH:HAS_FILENAME>``\ è¿”å›ž\ ``0``ï¼‰ï¼Œ\ ``path``\ ä¸å˜ã€‚
 
-  ²Î¼û\ :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>`\ ÁË½â¸ü¶àÏ¸½Ú¡£
+  å‚è§\ :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>`\ äº†è§£æ›´å¤šç»†èŠ‚ã€‚
 
 .. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path...>
 
   .. versionadded:: 3.24
 
-  ·µ»ØÒÑÉ¾³ý\ :ref:`extension <EXTENSION_DEF>`\ µÄ\ ``path``£¬Èç¹ûÓÐµÄ»°¡£
+  è¿”å›žå·²åˆ é™¤\ :ref:`extension <EXTENSION_DEF>`\ çš„\ ``path``ï¼Œå¦‚æžœæœ‰çš„è¯ã€‚
 
-  ÓÐ¹ØÏêÏ¸ÐÅÏ¢£¬Çë²ÎÔÄ\ :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>`¡£
+  æœ‰å…³è¯¦ç»†ä¿¡æ¯ï¼Œè¯·å‚é˜…\ :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>`ã€‚
 
 .. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path...,input>
 
   .. versionadded:: 3.24
 
-  ·µ»Ø\ ``path``£¬ÆäÖÐ\ :ref:`extension <EXTENSION_DEF>`\ Ìæ»»Îª\ ``input``£¬\
-  Èç¹ûÓÐµÄ»°¡£
+  è¿”å›ž\ ``path``ï¼Œå…¶ä¸­\ :ref:`extension <EXTENSION_DEF>`\ æ›¿æ¢ä¸º\ ``input``ï¼Œ\
+  å¦‚æžœæœ‰çš„è¯ã€‚
 
-  ÏêÏ¸ÐÅÏ¢Çë²Î¼û\ :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>`¡£
+  è¯¦ç»†ä¿¡æ¯è¯·å‚è§\ :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>`ã€‚
 
 .. genex:: $<PATH:NORMAL_PATH,path...>
 
   .. versionadded:: 3.24
 
-  ·µ»Ø¸ù¾Ý\ :ref:`Normalization`\ ÖÐÃèÊöµÄ²½Öè¹éÒ»»¯µÄ\ ``path``¡£
+  è¿”å›žæ ¹æ®\ :ref:`Normalization`\ ä¸­æè¿°çš„æ­¥éª¤å½’ä¸€åŒ–çš„\ ``path``ã€‚
 
 .. genex:: $<PATH:RELATIVE_PATH,path...,base_directory>
 
   .. versionadded:: 3.24
 
-  ·µ»Ø\ ``path``£¬ÐÞ¸ÄºóÊ¹ÆäÏà¶ÔÓÚ\ ``base_directory``\ ²ÎÊý¡£
+  è¿”å›ž\ ``path``ï¼Œä¿®æ”¹åŽä½¿å…¶ç›¸å¯¹äºŽ\ ``base_directory``\ å‚æ•°ã€‚
 
-  ÓÐ¹Ø¸ü¶àÏ¸½Ú£¬Çë²ÎÔÄ\ :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>`¡£
+  æœ‰å…³æ›´å¤šç»†èŠ‚ï¼Œè¯·å‚é˜…\ :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>`ã€‚
 
 .. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path...,base_directory>
 
   .. versionadded:: 3.24
 
-  ·µ»Ø¾ø¶Ô\ ``path``¡£Èç¹û\ ``path``\ ÊÇÒ»¸öÏà¶ÔÂ·¾¶£¨\ ``$<PATH:IS_RELATIVE>``\ ·µ»Ø\
-  ``1``£©£¬Ëü½«Ïà¶ÔÓÚ\ ``base_directory``\ ²ÎÊýÖ¸¶¨µÄ¸ø¶¨»ùÄ¿Â¼½øÐÐ¼ÆËã¡£
+  è¿”å›žç»å¯¹\ ``path``ã€‚å¦‚æžœ\ ``path``\ æ˜¯ä¸€ä¸ªç›¸å¯¹è·¯å¾„ï¼ˆ\ ``$<PATH:IS_RELATIVE>``\ è¿”å›ž\
+  ``1``ï¼‰ï¼Œå®ƒå°†ç›¸å¯¹äºŽ\ ``base_directory``\ å‚æ•°æŒ‡å®šçš„ç»™å®šåŸºç›®å½•è¿›è¡Œè®¡ç®—ã€‚
 
-  µ±Ö¸¶¨\ ``NORMALIZE``\ Ñ¡ÏîÊ±£¬ÔÚÂ·¾¶¼ÆËãÖ®ºó¶ÔÂ·¾¶½øÐÐ\ :ref:`normalized <Normalization>`¡£
+  å½“æŒ‡å®š\ ``NORMALIZE``\ é€‰é¡¹æ—¶ï¼Œåœ¨è·¯å¾„è®¡ç®—ä¹‹åŽå¯¹è·¯å¾„è¿›è¡Œ\ :ref:`normalized <Normalization>`ã€‚
 
-  ÓÐ¹ØÏêÏ¸ÐÅÏ¢£¬Çë²ÎÔÄ\ :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>`¡£
+  æœ‰å…³è¯¦ç»†ä¿¡æ¯ï¼Œè¯·å‚é˜…\ :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>`ã€‚
 
-ShellÂ·¾¶
+Shellè·¯å¾„
 ^^^^^^^^^^^
 
 .. genex:: $<SHELL_PATH:...>
 
   .. versionadded:: 3.4
 
-  ``...``\ µÄÄÚÈÝ×ª»»ÎªshellÂ·¾¶ÑùÊ½¡£ÀýÈç£¬Windows shellÖÐ½«Ð±¸Ü×ª»»Îª·´Ð±¸Ü£¬\
-  MSYS shell½«ÅÌ·û×ª»»ÎªposixÂ·¾¶¡£\ ``...``\ ±ØÐëÎª¾ø¶ÔÂ·¾¶¡£
+  ``...``\ çš„å†…å®¹è½¬æ¢ä¸ºshellè·¯å¾„æ ·å¼ã€‚ä¾‹å¦‚ï¼ŒWindows shellä¸­å°†æ–œæ è½¬æ¢ä¸ºåæ–œæ ï¼Œ\
+  MSYS shellå°†ç›˜ç¬¦è½¬æ¢ä¸ºposixè·¯å¾„ã€‚\ ``...``\ å¿…é¡»ä¸ºç»å¯¹è·¯å¾„ã€‚
 
   .. versionadded:: 3.14
-    ``...``\ ¿ÉÒÔÊÇÒ»¸öÒÔ\ :ref:`ÒÔ·ÖºÅ·Ö¸ôµÄÁÐ±í <CMake Language Lists>`£¬\
-    ÔÚÕâÖÖÇé¿öÏÂ£¬Ã¿¸öÂ·¾¶¶¼±»µ¥¶À×ª»»£¬²¢ÇÒÊ¹ÓÃshellÂ·¾¶·Ö¸ô·û£¨\ ``:``\ Ö®ÓÚPOSIX¼°\
-    ``;``\ Ö®ÓÚWindows£©¡£ÔÚCMakeÔ´´úÂëÖÐ£¬ÇëÎñ±Ø½«°üº¬´ËgenexµÄ²ÎÊýÀ¨ÔÚË«ÒýºÅÖÐ£¬\
-    ÒÔÈ·±£²ÎÊý²»±»\ ``;``\ ¸ô¿ª¡£
+    ``...``\ å¯ä»¥æ˜¯ä¸€ä¸ªä»¥\ :ref:`ä»¥åˆ†å·åˆ†éš”çš„åˆ—è¡¨ <CMake Language Lists>`ï¼Œ\
+    åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œæ¯ä¸ªè·¯å¾„éƒ½è¢«å•ç‹¬è½¬æ¢ï¼Œå¹¶ä¸”ä½¿ç”¨shellè·¯å¾„åˆ†éš”ç¬¦ï¼ˆ\ ``:``\ ä¹‹äºŽPOSIXåŠ\
+    ``;``\ ä¹‹äºŽWindowsï¼‰ã€‚åœ¨CMakeæºä»£ç ä¸­ï¼Œè¯·åŠ¡å¿…å°†åŒ…å«æ­¤genexçš„å‚æ•°æ‹¬åœ¨åŒå¼•å·ä¸­ï¼Œ\
+    ä»¥ç¡®ä¿å‚æ•°ä¸è¢«\ ``;``\ éš”å¼€ã€‚
 
-ÅäÖÃ±í´ïÊ½
+é…ç½®è¡¨è¾¾å¼
 -------------------------
 
 .. genex:: $<CONFIG>
 
-  ÅäÖÃÃû³Æ¡£Ê¹ÓÃ´Ë±í´ïÊ½´úÌæÒÑÆúÓÃµÄ\ :genex:`CONFIGURATION`\ Éú³ÉÆ÷±í´ïÊ½¡£
+  é…ç½®åç§°ã€‚ä½¿ç”¨æ­¤è¡¨è¾¾å¼ä»£æ›¿å·²å¼ƒç”¨çš„\ :genex:`CONFIGURATION`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
 
 .. genex:: $<CONFIG:cfgs>
 
-  Èç¹ûconfigÊÇ¶ººÅ·Ö¸ôµÄÁÐ±í\ ``cfgs``\ ÖÐµÄÈÎºÎÒ»Ïî£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£\
-  ÕâÊÇÒ»¸ö²»Çø·Ö´óÐ¡Ð´µÄ±È½Ï¡£µ±ÔÚ\ :prop_tgt:`IMPORTED`\ Ä¿±êµÄÊôÐÔÉÏ¼ÆËã\
-  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`\ ÖÐµÄÓ³ÉäÊ±£¬´Ë±í´ïÊ½Ò²»á¿¼ÂÇËü¡£
+  å¦‚æžœconfigæ˜¯é€—å·åˆ†éš”çš„åˆ—è¡¨\ ``cfgs``\ ä¸­çš„ä»»ä½•ä¸€é¡¹ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚\
+  è¿™æ˜¯ä¸€ä¸ªä¸åŒºåˆ†å¤§å°å†™çš„æ¯”è¾ƒã€‚å½“åœ¨\ :prop_tgt:`IMPORTED`\ ç›®æ ‡çš„å±žæ€§ä¸Šè®¡ç®—\
+  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`\ ä¸­çš„æ˜ å°„æ—¶ï¼Œæ­¤è¡¨è¾¾å¼ä¹Ÿä¼šè€ƒè™‘å®ƒã€‚
 
   .. versionchanged:: 3.19
-    ¿ÉÒÔÎª\ ``cfgs``\ Ö¸¶¨¶àÖÖÅäÖÃ¡£CMake 3.18ºÍ¸üÔçµÄ°æ±¾Ö»½ÓÊÜµ¥Ò»ÅäÖÃ¡£
+    å¯ä»¥ä¸º\ ``cfgs``\ æŒ‡å®šå¤šç§é…ç½®ã€‚CMake 3.18å’Œæ›´æ—©çš„ç‰ˆæœ¬åªæŽ¥å—å•ä¸€é…ç½®ã€‚
 
 .. genex:: $<OUTPUT_CONFIG:...>
 
   .. versionadded:: 3.20
 
-  ½öÔÚ\ :command:`add_custom_command`\ ºÍ\ :command:`add_custom_target`\ ÖÐ×÷Îª²Î\
-  ÊýÖÐµÄ×îÍâ²ãÉú³ÉÆ÷±í´ïÊ½ÓÐÐ§¡£¶ÔÓÚ\ :generator:`Ninja Multi-Config`\ Éú³ÉÆ÷£¬Éú³ÉÆ÷±í\
-  ´ïÊ½ÔÚ\ ``...``\ Ê¹ÓÃ×Ô¶¨ÒåÃüÁîµÄ¡°Êä³öÅäÖÃ¡±½øÐÐ¼ÆËã¡£Ê¹ÓÃÆäËûÉú³ÉÆ÷£¬\ ``...``\ Õý³£¼ÆËã¡£
+  ä»…åœ¨\ :command:`add_custom_command`\ å’Œ\ :command:`add_custom_target`\ ä¸­ä½œä¸ºå‚\
+  æ•°ä¸­çš„æœ€å¤–å±‚ç”Ÿæˆå™¨è¡¨è¾¾å¼æœ‰æ•ˆã€‚å¯¹äºŽ\ :generator:`Ninja Multi-Config`\ ç”Ÿæˆå™¨ï¼Œç”Ÿæˆå™¨è¡¨\
+  è¾¾å¼åœ¨\ ``...``\ ä½¿ç”¨è‡ªå®šä¹‰å‘½ä»¤çš„â€œè¾“å‡ºé…ç½®â€è¿›è¡Œè®¡ç®—ã€‚ä½¿ç”¨å…¶ä»–ç”Ÿæˆå™¨ï¼Œ\ ``...``\ æ­£å¸¸è®¡ç®—ã€‚
 
 .. genex:: $<COMMAND_CONFIG:...>
 
   .. versionadded:: 3.20
 
-  ½öÔÚ\ :command:`add_custom_command`\ ºÍ\ :command:`add_custom_target`\ ÖÐ×÷Îª²Î\
-  ÊýÖÐµÄ×îÍâ²ãÉú³ÉÆ÷±í´ïÊ½ÓÐÐ§¡£¶ÔÓÚ\ :generator:`Ninja Multi-Config`\ Éú³ÉÆ÷£¬Éú³ÉÆ÷±í\
-  ´ïÊ½ÔÚ\ ``...``\ Ê¹ÓÃ×Ô¶¨ÒåÃüÁîµÄ¡°ÃüÁîÅäÖÃ¡±½øÐÐ¼ÆËã¡£Ê¹ÓÃÆäËûÉú³ÉÆ÷£¬\ ``...``\ Õý³£¼ÆËã¡£
+  ä»…åœ¨\ :command:`add_custom_command`\ å’Œ\ :command:`add_custom_target`\ ä¸­ä½œä¸ºå‚\
+  æ•°ä¸­çš„æœ€å¤–å±‚ç”Ÿæˆå™¨è¡¨è¾¾å¼æœ‰æ•ˆã€‚å¯¹äºŽ\ :generator:`Ninja Multi-Config`\ ç”Ÿæˆå™¨ï¼Œç”Ÿæˆå™¨è¡¨\
+  è¾¾å¼åœ¨\ ``...``\ ä½¿ç”¨è‡ªå®šä¹‰å‘½ä»¤çš„â€œå‘½ä»¤é…ç½®â€è¿›è¡Œè®¡ç®—ã€‚ä½¿ç”¨å…¶ä»–ç”Ÿæˆå™¨ï¼Œ\ ``...``\ æ­£å¸¸è®¡ç®—ã€‚
 
-¹¤¾ßÁ´ºÍÓïÑÔ±í´ïÊ½
+å·¥å…·é“¾å’Œè¯­è¨€è¡¨è¾¾å¼
 ----------------------------------
 
-Æ½Ì¨
+å¹³å°
 ^^^^^^^^
 
 .. genex:: $<PLATFORM_ID>
 
-  µ±Ç°ÏµÍ³µÄCMakeÆ½Ì¨±êÊ¶¡£²Î¿¼\ :variable:`CMAKE_SYSTEM_NAME`\ ±äÁ¿¡£
+  å½“å‰ç³»ç»Ÿçš„CMakeå¹³å°æ ‡è¯†ã€‚å‚è€ƒ\ :variable:`CMAKE_SYSTEM_NAME`\ å˜é‡ã€‚
 
 .. genex:: $<PLATFORM_ID:platform_ids>
 
-  Èç¹ûCMakeµÄÆ½Ì¨idÓë¶ººÅ·Ö¸ôµÄ\ ``platform_ids``\ ÁÐ±íÖÐµÄÈÎºÎÒ»¸öÏîÆ¥Åä£¬ÔòÎª\ ``1``£¬\
-  ·ñÔòÎª\ ``0``¡£ÁíÇë²ÎÔÄ\ :variable:`CMAKE_SYSTEM_NAME`\ ±äÁ¿¡£
+  å¦‚æžœCMakeçš„å¹³å°idä¸Žé€—å·åˆ†éš”çš„\ ``platform_ids``\ åˆ—è¡¨ä¸­çš„ä»»ä½•ä¸€ä¸ªé¡¹åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œ\
+  å¦åˆ™ä¸º\ ``0``ã€‚å¦è¯·å‚é˜…\ :variable:`CMAKE_SYSTEM_NAME`\ å˜é‡ã€‚
 
-±àÒëÆ÷°æ±¾
+ç¼–è¯‘å™¨ç‰ˆæœ¬
 ^^^^^^^^^^^^^^^^
 
-ÁíÇë²ÎÔÄ\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ ±äÁ¿£¬¸Ã±äÁ¿Óë±¾Ð¡½ÚÖÐµÄ±í´ïÊ½ÃÜÇÐÏà¹Ø¡£
+å¦è¯·å‚é˜…\ :variable:`CMAKE_<LANG>_COMPILER_VERSION`\ å˜é‡ï¼Œè¯¥å˜é‡ä¸Žæœ¬å°èŠ‚ä¸­çš„è¡¨è¾¾å¼å¯†åˆ‡ç›¸å…³ã€‚
 
 .. genex:: $<C_COMPILER_VERSION>
 
-  Ê¹ÓÃµÄC±àÒëÆ÷°æ±¾¡£
+  ä½¿ç”¨çš„Cç¼–è¯‘å™¨ç‰ˆæœ¬ã€‚
 
 .. genex:: $<C_COMPILER_VERSION:version>
 
-  Èç¹ûC±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœCç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<CXX_COMPILER_VERSION>
 
-  Ê¹ÓÃµÄCXX±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„CXXç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<CXX_COMPILER_VERSION:version>
 
-  Èç¹ûC++±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœC++ç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<CUDA_COMPILER_VERSION>
 
   .. versionadded:: 3.15
 
-  Ê¹ÓÃµÄCUDA±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„CUDAç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<CUDA_COMPILER_VERSION:version>
 
   .. versionadded:: 3.15
 
-  Èç¹ûC++±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœC++ç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<OBJC_COMPILER_VERSION>
 
   .. versionadded:: 3.16
 
-  Ê¹ÓÃµÄObjective-C±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„Objective-Cç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<OBJC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  Èç¹ûObjective-C±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœObjective-Cç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<OBJCXX_COMPILER_VERSION>
 
   .. versionadded:: 3.16
 
-  Ê¹ÓÃµÄObjective-C++±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„Objective-C++ç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<OBJCXX_COMPILER_VERSION:version>
 
   .. versionadded:: 3.16
 
-  Èç¹ûObjective-C++±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœObjective-C++ç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<Fortran_COMPILER_VERSION>
 
-  Ê¹ÓÃµÄFortran±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„Fortranç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<Fortran_COMPILER_VERSION:version>
 
-  Èç¹ûFortran±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœFortranç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<HIP_COMPILER_VERSION>
 
   .. versionadded:: 3.21
 
-  Ê¹ÓÃµÄHIP±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„HIPç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<HIP_COMPILER_VERSION:version>
 
   .. versionadded:: 3.21
 
-  Èç¹ûHIP±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœHIPç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<ISPC_COMPILER_VERSION>
 
   .. versionadded:: 3.19
 
-  Ê¹ÓÃµÄISPC±àÒëÆ÷µÄ°æ±¾¡£
+  ä½¿ç”¨çš„ISPCç¼–è¯‘å™¨çš„ç‰ˆæœ¬ã€‚
 
 .. genex:: $<ISPC_COMPILER_VERSION:version>
 
   .. versionadded:: 3.19
 
-  Èç¹ûISPC±àÒëÆ÷µÄ°æ±¾Óë\ ``version``\ Æ¥Åä£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœISPCç¼–è¯‘å™¨çš„ç‰ˆæœ¬ä¸Ž\ ``version``\ åŒ¹é…ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 Compiler Language, ID, and Frontend-Variant
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -943,104 +943,104 @@ related to most of the expressions in this sub-section.
 
 .. genex:: $<C_COMPILER_ID>
 
-  CMakeÊ¹ÓÃµÄC±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„Cç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<C_COMPILER_ID:compiler_ids>
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄC±àÒëÆ÷idÓë\ ``compiler_ids``\
-  ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„Cç¼–è¯‘å™¨idä¸Ž\ ``compiler_ids``\
+  ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
   .. versionchanged:: 3.15
-    ¿ÉÒÔÖ¸¶¨¶à¸ö\ ``compiler_ids``¡£CMake 3.14ºÍ¸üÔçµÄ°æ±¾Ö»½ÓÊÜÒ»¸ö±àÒëÆ÷ID¡£
+    å¯ä»¥æŒ‡å®šå¤šä¸ª\ ``compiler_ids``ã€‚CMake 3.14å’Œæ›´æ—©çš„ç‰ˆæœ¬åªæŽ¥å—ä¸€ä¸ªç¼–è¯‘å™¨IDã€‚
 
 .. genex:: $<CXX_COMPILER_ID>
 
-  CMakeÊ¹ÓÃµÄC++±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„C++ç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<CXX_COMPILER_ID:compiler_ids>
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄC++±àÒëÆ÷idÓë\ ``compiler_ids``\
-  ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„C++ç¼–è¯‘å™¨idä¸Ž\ ``compiler_ids``\
+  ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
   .. versionchanged:: 3.15
-    ¿ÉÒÔÖ¸¶¨¶à¸ö\ ``compiler_ids``¡£CMake 3.14ºÍ¸üÔçµÄ°æ±¾Ö»½ÓÊÜÒ»¸ö±àÒëÆ÷ID¡£
+    å¯ä»¥æŒ‡å®šå¤šä¸ª\ ``compiler_ids``ã€‚CMake 3.14å’Œæ›´æ—©çš„ç‰ˆæœ¬åªæŽ¥å—ä¸€ä¸ªç¼–è¯‘å™¨IDã€‚
 
 .. genex:: $<CUDA_COMPILER_ID>
 
   .. versionadded:: 3.15
 
-  CMakeÊ¹ÓÃµÄCUDA±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„CUDAç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<CUDA_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.15
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄCUDA±àÒëÆ÷idÓë\ ``compiler_ids``\
-  ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„CUDAç¼–è¯‘å™¨idä¸Ž\ ``compiler_ids``\
+  ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<OBJC_COMPILER_ID>
 
   .. versionadded:: 3.16
 
-  CMakeÊ¹ÓÃµÄObjective-C±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„Objective-Cç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<OBJC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄObjective-C±àÒëÆ÷idÓë\
-  ``compiler_ids``\ ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„Objective-Cç¼–è¯‘å™¨idä¸Ž\
+  ``compiler_ids``\ ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<OBJCXX_COMPILER_ID>
 
   .. versionadded:: 3.16
 
-  CMakeÊ¹ÓÃµÄObjective-C++±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„Objective-C++ç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<OBJCXX_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.16
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄObjective-C++±àÒëÆ÷idÓë\
-  ``compiler_ids``\ ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„Objective-C++ç¼–è¯‘å™¨idä¸Ž\
+  ``compiler_ids``\ ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<Fortran_COMPILER_ID>
 
-  CMakeÊ¹ÓÃµÄFortran±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„Fortranç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<Fortran_COMPILER_ID:compiler_ids>
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄFortran±àÒëÆ÷idÓë\
-  ``compiler_ids``\ ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„Fortranç¼–è¯‘å™¨idä¸Ž\
+  ``compiler_ids``\ ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
   .. versionchanged:: 3.15
-    ¿ÉÒÔÖ¸¶¨¶à¸ö\ ``compiler_ids``¡£CMake 3.14ºÍ¸üÔçµÄ°æ±¾Ö»½ÓÊÜÒ»¸ö±àÒëÆ÷ID¡£
+    å¯ä»¥æŒ‡å®šå¤šä¸ª\ ``compiler_ids``ã€‚CMake 3.14å’Œæ›´æ—©çš„ç‰ˆæœ¬åªæŽ¥å—ä¸€ä¸ªç¼–è¯‘å™¨IDã€‚
 
 .. genex:: $<HIP_COMPILER_ID>
 
   .. versionadded:: 3.21
 
-  CMakeÊ¹ÓÃµÄHIP±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„HIPç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<HIP_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.21
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄHIP±àÒëÆ÷idÓë\
-  ``compiler_ids``\ ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„HIPç¼–è¯‘å™¨idä¸Ž\
+  ``compiler_ids``\ ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<ISPC_COMPILER_ID>
 
   .. versionadded:: 3.19
 
-  CMakeÊ¹ÓÃµÄISPC±àÒëÆ÷µÄid¡£
+  CMakeä½¿ç”¨çš„ISPCç¼–è¯‘å™¨çš„idã€‚
 
 .. genex:: $<ISPC_COMPILER_ID:compiler_ids>
 
   .. versionadded:: 3.19
 
-  ÆäÖÐ\ ``compiler_ids``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹ûCMakeµÄISPC±àÒëÆ÷idÓë\
-  ``compiler_ids``\ ÖÐµÄÈÎºÎÒ»¸öÌõÄ¿Æ¥Åä£¬Ôò·µ»Ø\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å…¶ä¸­\ ``compiler_ids``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœCMakeçš„ISPCç¼–è¯‘å™¨idä¸Ž\
+  ``compiler_ids``\ ä¸­çš„ä»»ä½•ä¸€ä¸ªæ¡ç›®åŒ¹é…ï¼Œåˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<C_COMPILER_FRONTEND_VARIANT>
 
@@ -1158,9 +1158,9 @@ related to most of the expressions in this sub-section.
 
   .. versionadded:: 3.3
 
-  ¼ÆËã±àÒëÑ¡ÏîÊ±Ô´ÎÄ¼þµÄ±àÒëÓïÑÔ¡£¹ØÓÚÉú³ÉÆ÷±í´ïÊ½µÄ¿ÉÒÆÖ²ÐÔ£¬Çë²ÎÔÄ\
-  :ref:`Ïà¹ØµÄ²¼¶û±í´ïÊ½ <Boolean COMPILE_LANGUAGE Generator Expression>`\
-  ``$<COMPILE_LANGUAGE:language>``¡£
+  è®¡ç®—ç¼–è¯‘é€‰é¡¹æ—¶æºæ–‡ä»¶çš„ç¼–è¯‘è¯­è¨€ã€‚å…³äºŽç”Ÿæˆå™¨è¡¨è¾¾å¼çš„å¯ç§»æ¤æ€§ï¼Œè¯·å‚é˜…\
+  :ref:`ç›¸å…³çš„å¸ƒå°”è¡¨è¾¾å¼ <Boolean COMPILE_LANGUAGE Generator Expression>`\
+  ``$<COMPILE_LANGUAGE:language>``ã€‚
 
 .. _`Boolean COMPILE_LANGUAGE Generator Expression`:
 
@@ -1169,11 +1169,11 @@ related to most of the expressions in this sub-section.
   .. versionadded:: 3.3
 
   .. versionchanged:: 3.15
-    ¿ÉÒÔÎª\ ``languages``\ Ö¸¶¨¶àÖÖÓïÑÔ¡£CMake 3.14¼°¸üÔç°æ±¾Ö»½ÓÊÜµ¥Ò»ÓïÑÔ¡£
+    å¯ä»¥ä¸º\ ``languages``\ æŒ‡å®šå¤šç§è¯­è¨€ã€‚CMake 3.14åŠæ›´æ—©ç‰ˆæœ¬åªæŽ¥å—å•ä¸€è¯­è¨€ã€‚
 
-  µ±ÓÃÓÚ±àÒëµ¥ÔªµÄÓïÑÔÓë\ ``languages``\ ÖÐÈÎºÎÒÔ¶ººÅ·Ö¸ôµÄÌõÄ¿Æ¥ÅäÊ±£¬ÔòÎª\ ``1``£¬\
-  ·ñÔòÎª\ ``0``¡£´Ë±í´ïÊ½¿ÉÓÃÓÚÖ¸¶¨±àÒëÑ¡Ïî¡¢±àÒë¶¨Òå£¬²¢ÔÚÄ¿±êÖÐ°üº¬ÌØ¶¨ÓïÑÔµÄÔ´ÎÄ¼þµÄÄ¿Â¼¡£\
-  ÀýÈç£º
+  å½“ç”¨äºŽç¼–è¯‘å•å…ƒçš„è¯­è¨€ä¸Ž\ ``languages``\ ä¸­ä»»ä½•ä»¥é€—å·åˆ†éš”çš„æ¡ç›®åŒ¹é…æ—¶ï¼Œåˆ™ä¸º\ ``1``ï¼Œ\
+  å¦åˆ™ä¸º\ ``0``ã€‚æ­¤è¡¨è¾¾å¼å¯ç”¨äºŽæŒ‡å®šç¼–è¯‘é€‰é¡¹ã€ç¼–è¯‘å®šä¹‰ï¼Œå¹¶åœ¨ç›®æ ‡ä¸­åŒ…å«ç‰¹å®šè¯­è¨€çš„æºæ–‡ä»¶çš„ç›®å½•ã€‚\
+  ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -1189,15 +1189,15 @@ related to most of the expressions in this sub-section.
       PRIVATE $<$<COMPILE_LANGUAGE:CXX,CUDA>:/opt/foo/headers>
     )
 
-  ÕâÖ¸¶¨ÁË½öÓÃÓÚC++µÄ£¨±àÒëÆ÷id¼ì²éÊ¡ÂÔ£©\ ``-fno-exceptions``\ ±àÒëÑ¡Ïî¡¢\
-  ``COMPILING_CXX``\ ±àÒë¶¨ÒåºÍ\ ``cxx_headers``\ °üº¬Ä¿Â¼¡£Ëü»¹ÎªCUDAÖ¸¶¨ÁË\
-  ``COMPILING_CUDA``\ ±àÒë¶¨Òå¡£
+  è¿™æŒ‡å®šäº†ä»…ç”¨äºŽC++çš„ï¼ˆç¼–è¯‘å™¨idæ£€æŸ¥çœç•¥ï¼‰\ ``-fno-exceptions``\ ç¼–è¯‘é€‰é¡¹ã€\
+  ``COMPILING_CXX``\ ç¼–è¯‘å®šä¹‰å’Œ\ ``cxx_headers``\ åŒ…å«ç›®å½•ã€‚å®ƒè¿˜ä¸ºCUDAæŒ‡å®šäº†\
+  ``COMPILING_CUDA``\ ç¼–è¯‘å®šä¹‰ã€‚
 
-  ×¢Òâ£¬ÔÚ\ :ref:`Visual Studio Generators`\ ºÍ\ :generator:`Xcode`\ ÖÐ£¬\
-  Ã»ÓÐ°ì·¨±íÊ¾Ä¿±ê·¶Î§µÄ±àÒë¶¨Òå£¬Ò²Ã»ÓÐ°ì·¨·Ö±ð°üº¬\ ``C``\ ºÍ\ ``CXX``\ ÓïÑÔµÄÄ¿Â¼¡£¶øÇÒ£¬\
-  Ê¹ÓÃ\ :ref:`Visual Studio Generators`£¬ÎÞ·¨·Ö±ðÎª\ ``C``\ ÓïÑÔºÍ\ ``CXX``\ ÓïÑÔ±í\
-  Ê¾Ä¿±ê·¶Î§µÄ±êÖ¾¡£ÔÚÕâÐ©Éú³ÉÆ÷ÏÂ£¬CºÍC++Ô´µÄ±í´ïÊ½Èç¹ûÓÐÈÎºÎC++Ô´£¬½«Ê¹ÓÃ\ ``CXX``\ ÇóÖµ£¬\
-  ·ñÔòÊ¹ÓÃ\ ``C``\ ÇóÖµ¡£Ò»¸ö½â¾ö·½·¨ÊÇÎªÃ¿ÖÖÔ´ÎÄ¼þÓïÑÔ´´½¨µ¥¶ÀµÄ¿â£º
+  æ³¨æ„ï¼Œåœ¨\ :ref:`Visual Studio Generators`\ å’Œ\ :generator:`Xcode`\ ä¸­ï¼Œ\
+  æ²¡æœ‰åŠžæ³•è¡¨ç¤ºç›®æ ‡èŒƒå›´çš„ç¼–è¯‘å®šä¹‰ï¼Œä¹Ÿæ²¡æœ‰åŠžæ³•åˆ†åˆ«åŒ…å«\ ``C``\ å’Œ\ ``CXX``\ è¯­è¨€çš„ç›®å½•ã€‚è€Œä¸”ï¼Œ\
+  ä½¿ç”¨\ :ref:`Visual Studio Generators`ï¼Œæ— æ³•åˆ†åˆ«ä¸º\ ``C``\ è¯­è¨€å’Œ\ ``CXX``\ è¯­è¨€è¡¨\
+  ç¤ºç›®æ ‡èŒƒå›´çš„æ ‡å¿—ã€‚åœ¨è¿™äº›ç”Ÿæˆå™¨ä¸‹ï¼ŒCå’ŒC++æºçš„è¡¨è¾¾å¼å¦‚æžœæœ‰ä»»ä½•C++æºï¼Œå°†ä½¿ç”¨\ ``CXX``\ æ±‚å€¼ï¼Œ\
+  å¦åˆ™ä½¿ç”¨\ ``C``\ æ±‚å€¼ã€‚ä¸€ä¸ªè§£å†³æ–¹æ³•æ˜¯ä¸ºæ¯ç§æºæ–‡ä»¶è¯­è¨€åˆ›å»ºå•ç‹¬çš„åº“ï¼š
 
   .. code-block:: cmake
 
@@ -1211,11 +1211,11 @@ related to most of the expressions in this sub-section.
 
   .. versionadded:: 3.15
 
-  µ±±àÒëµ¥ÔªÊ¹ÓÃµÄÓïÑÔÓë\ ``language``\ Æ¥Åä£¬ÇÒ\ ``language``\ ±àÒëÆ÷µÄCMakeµÄ±àÒëÆ÷idÓë\
-  ``compiler_ids``\ ÖÐÈÎºÎÒ»¸öÒÔ¶ººÅ·Ö¸ôµÄÌõÄ¿Æ¥ÅäÊ±£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£Õâ¸ö±í´ïÊ½ÊÇ\
-  ``$<COMPILE_LANGUAGE:language>``\ ºÍ\ ``$<LANG_COMPILER_ID:compiler_ids>``\
-  ×éºÏµÄ¼òÐ´ÐÎÊ½¡£´Ë±í´ïÊ½¿ÉÓÃÓÚÖ¸¶¨±àÒëÑ¡Ïî¡¢±àÒë¶¨Òå£¬¼°Ä¿±êÖÐÌØ¶¨ÓïÑÔµÄÔ´ÎÄ¼þºÍ±àÒë\
-  Æ÷×éºÏµÄ°üº¬Ä¿Â¼¡£ÀýÈç£º
+  å½“ç¼–è¯‘å•å…ƒä½¿ç”¨çš„è¯­è¨€ä¸Ž\ ``language``\ åŒ¹é…ï¼Œä¸”\ ``language``\ ç¼–è¯‘å™¨çš„CMakeçš„ç¼–è¯‘å™¨idä¸Ž\
+  ``compiler_ids``\ ä¸­ä»»ä½•ä¸€ä¸ªä»¥é€—å·åˆ†éš”çš„æ¡ç›®åŒ¹é…æ—¶ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚è¿™ä¸ªè¡¨è¾¾å¼æ˜¯\
+  ``$<COMPILE_LANGUAGE:language>``\ å’Œ\ ``$<LANG_COMPILER_ID:compiler_ids>``\
+  ç»„åˆçš„ç®€å†™å½¢å¼ã€‚æ­¤è¡¨è¾¾å¼å¯ç”¨äºŽæŒ‡å®šç¼–è¯‘é€‰é¡¹ã€ç¼–è¯‘å®šä¹‰ï¼ŒåŠç›®æ ‡ä¸­ç‰¹å®šè¯­è¨€çš„æºæ–‡ä»¶å’Œç¼–è¯‘\
+  å™¨ç»„åˆçš„åŒ…å«ç›®å½•ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -1226,12 +1226,12 @@ related to most of the expressions in this sub-section.
               $<$<COMPILE_LANG_AND_ID:C,Clang>:COMPILING_C_WITH_CLANG>
     )
 
-  ÕâÖ¸¶¨ÁË»ùÓÚ±àÒëÆ÷idºÍ±àÒëÓïÑÔµÄ²»Í¬±àÒë¶¨ÒåµÄÊ¹ÓÃ¡£µ±ClangÊÇCXX±àÒëÆ÷Ê±£¬Õâ¸öÀý×Ó½«ÓÐÒ»¸ö\
-  ``COMPILING_CXX_WITH_CLANG``\ ±àÒë¶¨Òå£¬µ±IntelÊÇCXX±àÒëÆ÷Ê±£¬Õâ¸öÀý×Ó½«ÓÐÒ»¸ö\
-  ``COMPILING_CXX_WITH_INTEL``\ ±àÒë¶¨Òå¡£Í¬Ñù£¬µ±C±àÒëÆ÷ÊÇClangÊ±£¬ËüÖ»ÄÜ¿´µ½\
-  ``COMPILING_C_WITH_CLANG``\ ¶¨Òå¡£
+  è¿™æŒ‡å®šäº†åŸºäºŽç¼–è¯‘å™¨idå’Œç¼–è¯‘è¯­è¨€çš„ä¸åŒç¼–è¯‘å®šä¹‰çš„ä½¿ç”¨ã€‚å½“Clangæ˜¯CXXç¼–è¯‘å™¨æ—¶ï¼Œè¿™ä¸ªä¾‹å­å°†æœ‰ä¸€ä¸ª\
+  ``COMPILING_CXX_WITH_CLANG``\ ç¼–è¯‘å®šä¹‰ï¼Œå½“Intelæ˜¯CXXç¼–è¯‘å™¨æ—¶ï¼Œè¿™ä¸ªä¾‹å­å°†æœ‰ä¸€ä¸ª\
+  ``COMPILING_CXX_WITH_INTEL``\ ç¼–è¯‘å®šä¹‰ã€‚åŒæ ·ï¼Œå½“Cç¼–è¯‘å™¨æ˜¯Clangæ—¶ï¼Œå®ƒåªèƒ½çœ‹åˆ°\
+  ``COMPILING_C_WITH_CLANG``\ å®šä¹‰ã€‚
 
-  Èç¹ûÃ»ÓÐ\ ``COMPILE_LANG_AND_ID``\ Éú³ÉÆ÷±í´ïÊ½£¬ÏàÍ¬µÄÂß¼­½«±íÊ¾Îª£º
+  å¦‚æžœæ²¡æœ‰\ ``COMPILE_LANG_AND_ID``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼Œç›¸åŒçš„é€»è¾‘å°†è¡¨ç¤ºä¸ºï¼š
 
   .. code-block:: cmake
 
@@ -1241,20 +1241,20 @@ related to most of the expressions in this sub-section.
               $<$<AND:$<COMPILE_LANGUAGE:C>,$<C_COMPILER_ID:Clang>>:COMPILING_C_WITH_CLANG>
     )
 
-±àÒëÌØÐÔ
+ç¼–è¯‘ç‰¹æ€§
 ^^^^^^^^^^^^^^^^
 
 .. genex:: $<COMPILE_FEATURES:features>
 
   .. versionadded:: 3.1
 
-  ÆäÖÐ\ ``features``\ ÊÇÒ»¸ö¶ººÅ·Ö¸ôµÄÁÐ±í¡£Èç¹û'head'Ä¿±êµÄËùÓÐ\ ``features``\ ¶¼¿ÉÓÃ£¬\
-  Ôò·µ»Ø\ ``1``£¬·ñÔò·µ»Ø\ ``0``¡£Èç¹ûÔÚ¼ÆËãÄ¿±êµÄÁ´½ÓÊµÏÖÊ±Ê¹ÓÃ´Ë±í´ïÊ½£¬²¢ÇÒÈç¹ûÈÎºÎÒÀÀµ\
-  Ïî´«µÝÐÔµØÔö¼ÓÁË'head'Ä¿±êËùÐèµÄ\ :prop_tgt:`C_STANDARD`\ »ò\ :prop_tgt:`CXX_STANDARD`£¬\
-  Ôò»á±¨¸æ´íÎó¡£ÓÐ¹Ø±àÒëÌØÐÔµÄÐÅÏ¢ºÍÖ§³ÖµÄ±àÒëÆ÷ÁÐ±í£¬Çë²ÎÔÄ\ :manual:`cmake-compile-features(7)`\
-  ÊÖ²á¡£
+  å…¶ä¸­\ ``features``\ æ˜¯ä¸€ä¸ªé€—å·åˆ†éš”çš„åˆ—è¡¨ã€‚å¦‚æžœ'head'ç›®æ ‡çš„æ‰€æœ‰\ ``features``\ éƒ½å¯ç”¨ï¼Œ\
+  åˆ™è¿”å›ž\ ``1``ï¼Œå¦åˆ™è¿”å›ž\ ``0``ã€‚å¦‚æžœåœ¨è®¡ç®—ç›®æ ‡çš„é“¾æŽ¥å®žçŽ°æ—¶ä½¿ç”¨æ­¤è¡¨è¾¾å¼ï¼Œå¹¶ä¸”å¦‚æžœä»»ä½•ä¾èµ–\
+  é¡¹ä¼ é€’æ€§åœ°å¢žåŠ äº†'head'ç›®æ ‡æ‰€éœ€çš„\ :prop_tgt:`C_STANDARD`\ æˆ–\ :prop_tgt:`CXX_STANDARD`ï¼Œ\
+  åˆ™ä¼šæŠ¥å‘Šé”™è¯¯ã€‚æœ‰å…³ç¼–è¯‘ç‰¹æ€§çš„ä¿¡æ¯å’Œæ”¯æŒçš„ç¼–è¯‘å™¨åˆ—è¡¨ï¼Œè¯·å‚é˜…\ :manual:`cmake-compile-features(7)`\
+  æ‰‹å†Œã€‚
 
-±àÒë»·¾³
+ç¼–è¯‘çŽ¯å¢ƒ
 ^^^^^^^^^^^^^^^
 
 .. genex:: $<COMPILE_ONLY:...>
@@ -1262,29 +1262,29 @@ related to most of the expressions in this sub-section.
   .. versionadded:: 3.27
 
   Content of ``...``, when collecting
-  :ref:`transitive compile properties <Transitive Compile Properties>`£¬·ñÔòÎª¿Õ×Ö·û´®¡£ÕâÓÃ\
-  ÓÚ\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ ºÍ\ :prop_tgt:`LINK_LIBRARIES`\ Ä¿±ê\
-  ÊôÐÔ£¬Í¨³£Í¨¹ý\ :command:`target_link_libraries`\ÃüÁîÌî³ä¡£Ìá¹©±àÒëÊ¹ÓÃÐèÇó£¬¶ø²»ÐèÒª\
-  ÈÎºÎÁ´½ÓÐèÇó¡£
+  :ref:`transitive compile properties <Transitive Compile Properties>`ï¼Œå¦åˆ™ä¸ºç©ºå­—ç¬¦ä¸²ã€‚è¿™ç”¨\
+  äºŽ\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ å’Œ\ :prop_tgt:`LINK_LIBRARIES`\ ç›®æ ‡\
+  å±žæ€§ï¼Œé€šå¸¸é€šè¿‡\ :command:`target_link_libraries`\å‘½ä»¤å¡«å……ã€‚æä¾›ç¼–è¯‘ä½¿ç”¨éœ€æ±‚ï¼Œè€Œä¸éœ€è¦\
+  ä»»ä½•é“¾æŽ¥éœ€æ±‚ã€‚
 
-  ÓÃÀý°üÀ¨½öÍ·ÎÄ¼þµÄÊ¹ÓÃ£¬ÆäÖÐËùÓÐµÄÊ¹ÓÃ¶¼ÒÑÖªÃ»ÓÐÁ´½ÓÐèÇó£¨ÀýÈç£¬È«\ ``inline``\ »òC++Ä£°å¿â£©¡£
+  ç”¨ä¾‹åŒ…æ‹¬ä»…å¤´æ–‡ä»¶çš„ä½¿ç”¨ï¼Œå…¶ä¸­æ‰€æœ‰çš„ä½¿ç”¨éƒ½å·²çŸ¥æ²¡æœ‰é“¾æŽ¥éœ€æ±‚ï¼ˆä¾‹å¦‚ï¼Œå…¨\ ``inline``\ æˆ–C++æ¨¡æ¿åº“ï¼‰ã€‚
 
-  ×¢Òâ£¬ÒªÕýÈ·¼ÆËãÕâ¸ö±í´ïÊ½£¬ÐèÒª½«²ßÂÔ\ :policy:`CMP0099`\ ÉèÖÃÎª\ `NEW`¡£
+  æ³¨æ„ï¼Œè¦æ­£ç¡®è®¡ç®—è¿™ä¸ªè¡¨è¾¾å¼ï¼Œéœ€è¦å°†ç­–ç•¥\ :policy:`CMP0099`\ è®¾ç½®ä¸º\ `NEW`ã€‚
 
-Á´½ÓÆ÷ÓïÑÔºÍID
+é“¾æŽ¥å™¨è¯­è¨€å’ŒID
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<LINK_LANGUAGE>
 
   .. versionadded:: 3.18
 
-  ¼ÆËãÁ´½ÓÑ¡ÏîÊ±£¬Ä¿±êµÄÁ´½ÓÓïÑÔ¡£Çë²ÎÔÄ\ :ref:`Ïà¹ØµÄ²¼¶û±í´ïÊ½
-  <Boolean LINK_LANGUAGE Generator Expression>` ``$<LINK_LANGUAGE:languages>``£¬\
-  ÒÔÁË½â¸ÃÉú³ÉÆ÷±í´ïÊ½µÄ¿ÉÒÆÖ²ÐÔ¡£
+  è®¡ç®—é“¾æŽ¥é€‰é¡¹æ—¶ï¼Œç›®æ ‡çš„é“¾æŽ¥è¯­è¨€ã€‚è¯·å‚é˜…\ :ref:`ç›¸å…³çš„å¸ƒå°”è¡¨è¾¾å¼
+  <Boolean LINK_LANGUAGE Generator Expression>` ``$<LINK_LANGUAGE:languages>``ï¼Œ\
+  ä»¥äº†è§£è¯¥ç”Ÿæˆå™¨è¡¨è¾¾å¼çš„å¯ç§»æ¤æ€§ã€‚
 
   .. note::
 
-    Á´½Ó¿âÊôÐÔ²»Ö§³Ö´ËÉú³ÉÆ÷±í´ïÊ½£¬ÒÔ±ÜÃâÓÉÓÚÕâÐ©ÊôÐÔµÄË«ÖØÇóÖµ¶ø²úÉúµÄ¸±×÷ÓÃ¡£
+    é“¾æŽ¥åº“å±žæ€§ä¸æ”¯æŒæ­¤ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼Œä»¥é¿å…ç”±äºŽè¿™äº›å±žæ€§çš„åŒé‡æ±‚å€¼è€Œäº§ç”Ÿçš„å‰¯ä½œç”¨ã€‚
 
 
 .. _`Boolean LINK_LANGUAGE Generator Expression`:
@@ -1293,8 +1293,8 @@ related to most of the expressions in this sub-section.
 
   .. versionadded:: 3.18
 
-  µ±ÓÃÓÚÁ´½Ó²½ÖèµÄÓïÑÔÆ¥Åä\ ``languages``\ ÖÐÈÎºÎÒÔ¶ººÅ·Ö¸ôµÄÌõÄ¿Ê±£¬ÔòÎª\ ``1``£¬·ñÔòÎª\
-  ``0``¡£´Ë±í´ïÊ½¿ÉÓÃÓÚÖ¸¶¨Ä¿±êÖÐÌØ¶¨ÓïÑÔµÄÁ´½Ó¿â¡¢Á´½ÓÑ¡Ïî¡¢Á´½ÓÄ¿Â¼ºÍÁ´½ÓÒÀÀµÏî¡£ÀýÈç£º
+  å½“ç”¨äºŽé“¾æŽ¥æ­¥éª¤çš„è¯­è¨€åŒ¹é…\ ``languages``\ ä¸­ä»»ä½•ä»¥é€—å·åˆ†éš”çš„æ¡ç›®æ—¶ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\
+  ``0``ã€‚æ­¤è¡¨è¾¾å¼å¯ç”¨äºŽæŒ‡å®šç›®æ ‡ä¸­ç‰¹å®šè¯­è¨€çš„é“¾æŽ¥åº“ã€é“¾æŽ¥é€‰é¡¹ã€é“¾æŽ¥ç›®å½•å’Œé“¾æŽ¥ä¾èµ–é¡¹ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -1312,19 +1312,19 @@ related to most of the expressions in this sub-section.
     add_executable(myapp2 main.cpp)
     target_link_options(myapp2 PRIVATE api)
 
-  ÕâÖ¸¶¨Ê¹ÓÃ\ ``api``\ Ä¿±êÀ´Á´½ÓÄ¿±ê\ ``myapp1``\ ºÍ\ ``myapp2``¡£Êµ¼ÊÉÏ£¬\ ``myapp1``\
-  ½«ÓëÄ¿±ê\ ``api_C``\ ºÍÑ¡Ïî\ ``-opt_c``\ ½øÐÐÁ´½Ó£¬ÒòÎªËü½«Ê¹ÓÃ\ ``C``\ ×÷ÎªÁ´½ÓÓïÑÔ¡£\
-  ``myapp2``\ ½«Ê¹ÓÃ\ ``api_CXX``\ ºÍÑ¡Ïî\ ``-opt_cxx``\ Á´½Ó£¬ÒòÎª\ ``CXX``\ ½«ÊÇÁ´½ÓÓïÑÔ¡£
+  è¿™æŒ‡å®šä½¿ç”¨\ ``api``\ ç›®æ ‡æ¥é“¾æŽ¥ç›®æ ‡\ ``myapp1``\ å’Œ\ ``myapp2``ã€‚å®žé™…ä¸Šï¼Œ\ ``myapp1``\
+  å°†ä¸Žç›®æ ‡\ ``api_C``\ å’Œé€‰é¡¹\ ``-opt_c``\ è¿›è¡Œé“¾æŽ¥ï¼Œå› ä¸ºå®ƒå°†ä½¿ç”¨\ ``C``\ ä½œä¸ºé“¾æŽ¥è¯­è¨€ã€‚\
+  ``myapp2``\ å°†ä½¿ç”¨\ ``api_CXX``\ å’Œé€‰é¡¹\ ``-opt_cxx``\ é“¾æŽ¥ï¼Œå› ä¸º\ ``CXX``\ å°†æ˜¯é“¾æŽ¥è¯­è¨€ã€‚
 
   .. _`Constraints LINK_LANGUAGE Generator Expression`:
 
   .. note::
 
-    ÎªÁËÈ·¶¨Ä¿±êµÄÁ´½ÓÓïÑÔ£¬ÐèÒª´«µÝµØÊÕ¼¯½«Á´½Óµ½ËüµÄËùÓÐÄ¿±ê¡£Òò´Ë£¬¶ÔÓÚÁ´½Ó¿âÊôÐÔ£¬\
-    ½«½øÐÐË«ÖØ¼ÆËã¡£ÔÚµÚÒ»´ÎÇóÖµÆÚ¼ä£¬\ ``$<LINK_LANGUAGE:..>``\ ±í´ïÊ½×ÜÊÇ·µ»Ø\ ``0``¡£\
-    ÔÚµÚÒ»´Î´«µÝÖ®ºó¼ÆËãµÄÁ´½ÓÓïÑÔ½«ÓÃÓÚµÚ¶þ´Î´«µÝ¡£ÎªÁË±ÜÃâ²»Ò»ÖÂ£¬ÒªÇóµÚ¶þ´Î´«µÝ²»¸Ä±äÁ´½Ó\
-    ÓïÑÔ¡£´ËÍâ£¬ÎªÁË±ÜÃâÒâÍâµÄ¸±×÷ÓÃ£¬ÐèÒªÖ¸¶¨ÍêÕûµÄÊµÌå×÷Îª\ ``$<LINK_LANGUAGE:..>``\
-    ±í´ïÊ½¡£ÀýÈç£º
+    ä¸ºäº†ç¡®å®šç›®æ ‡çš„é“¾æŽ¥è¯­è¨€ï¼Œéœ€è¦ä¼ é€’åœ°æ”¶é›†å°†é“¾æŽ¥åˆ°å®ƒçš„æ‰€æœ‰ç›®æ ‡ã€‚å› æ­¤ï¼Œå¯¹äºŽé“¾æŽ¥åº“å±žæ€§ï¼Œ\
+    å°†è¿›è¡ŒåŒé‡è®¡ç®—ã€‚åœ¨ç¬¬ä¸€æ¬¡æ±‚å€¼æœŸé—´ï¼Œ\ ``$<LINK_LANGUAGE:..>``\ è¡¨è¾¾å¼æ€»æ˜¯è¿”å›ž\ ``0``ã€‚\
+    åœ¨ç¬¬ä¸€æ¬¡ä¼ é€’ä¹‹åŽè®¡ç®—çš„é“¾æŽ¥è¯­è¨€å°†ç”¨äºŽç¬¬äºŒæ¬¡ä¼ é€’ã€‚ä¸ºäº†é¿å…ä¸ä¸€è‡´ï¼Œè¦æ±‚ç¬¬äºŒæ¬¡ä¼ é€’ä¸æ”¹å˜é“¾æŽ¥\
+    è¯­è¨€ã€‚æ­¤å¤–ï¼Œä¸ºäº†é¿å…æ„å¤–çš„å‰¯ä½œç”¨ï¼Œéœ€è¦æŒ‡å®šå®Œæ•´çš„å®žä½“ä½œä¸º\ ``$<LINK_LANGUAGE:..>``\
+    è¡¨è¾¾å¼ã€‚ä¾‹å¦‚ï¼š
 
     .. code-block:: cmake
 
@@ -1339,20 +1339,20 @@ related to most of the expressions in this sub-section.
       add_executable(myapp2 main.c)
       target_link_libraries(myapp2 PRIVATE $<$<LINK_LANGUAGE:C>:libother>)
 
-    ÔÚ±¾ÀýÖÐ£¬¶ÔÓÚ\ ``myapp1``£¬µÚÒ»´Î´«µÝ½«ÒâÍâµØÈ·¶¨Á´½ÓÓïÑÔÊÇ\ ``CXX``£¬\
-    ÒòÎªÉú³ÉÆ÷±í´ïÊ½µÄ¼ÆËã½«ÊÇÒ»¸ö¿Õ×Ö·û´®£¬Òò´Ë\ ``myapp1``\ ½«ÒÀÀµÓÚ\ ``C++``\ µÄÄ¿±ê\
-    ``lib``¡£Ïà·´£¬¶ÔÓÚ\ ``myapp2``£¬µÚÒ»´ÎÆÀ¹À½«¸ø³ö\ ``C``\ ×÷ÎªÁ´½ÓÓïÑÔ£¬\
-    Òò´ËµÚ¶þ´ÎÆÀ¹À½«ÕýÈ·µØÌí¼ÓÄ¿±ê\ ``libother``\ ×÷ÎªÁ´½ÓÒÀÀµÏî¡£
+    åœ¨æœ¬ä¾‹ä¸­ï¼Œå¯¹äºŽ\ ``myapp1``ï¼Œç¬¬ä¸€æ¬¡ä¼ é€’å°†æ„å¤–åœ°ç¡®å®šé“¾æŽ¥è¯­è¨€æ˜¯\ ``CXX``ï¼Œ\
+    å› ä¸ºç”Ÿæˆå™¨è¡¨è¾¾å¼çš„è®¡ç®—å°†æ˜¯ä¸€ä¸ªç©ºå­—ç¬¦ä¸²ï¼Œå› æ­¤\ ``myapp1``\ å°†ä¾èµ–äºŽ\ ``C++``\ çš„ç›®æ ‡\
+    ``lib``ã€‚ç›¸åï¼Œå¯¹äºŽ\ ``myapp2``ï¼Œç¬¬ä¸€æ¬¡è¯„ä¼°å°†ç»™å‡º\ ``C``\ ä½œä¸ºé“¾æŽ¥è¯­è¨€ï¼Œ\
+    å› æ­¤ç¬¬äºŒæ¬¡è¯„ä¼°å°†æ­£ç¡®åœ°æ·»åŠ ç›®æ ‡\ ``libother``\ ä½œä¸ºé“¾æŽ¥ä¾èµ–é¡¹ã€‚
 
 .. genex:: $<LINK_LANG_AND_ID:language,compiler_ids>
 
   .. versionadded:: 3.18
 
-  µ±ÓÃÓÚÁ´½Ó²½ÖèµÄÓïÑÔÆ¥Åä\ ``language``\ ²¢ÇÒÓïÑÔÁ´½ÓÆ÷µÄCMake±àÒëÆ÷idÆ¥Åä\
-  ``compiler_ids``\ ÖÐÈÎºÎÒ»¸ö¶ººÅ·Ö¸ôµÄÌõÄ¿Ê±£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£\
-  ¸Ã±í´ïÊ½ÊÇ\ ``$<LINK_LANGUAGE:language>``\ ºÍ\ ``$<LANG_COMPILER_ID:compiler_ids>``\
-  ×éºÏµÄ¼òÐ´ÐÎÊ½¡£´Ë±í´ïÊ½¿ÉÓÃÓÚÖ¸¶¨Ä¿±êÖÐÌØ¶¨ÓïÑÔºÍÁ´½ÓÆ÷×éºÏµÄÁ´½Ó¿â¡¢Á´½ÓÑ¡Ïî¡¢Á´½ÓÄ¿Â¼ºÍ\
-  Á´½ÓÒÀÀµÏî¡£ÀýÈç£º
+  å½“ç”¨äºŽé“¾æŽ¥æ­¥éª¤çš„è¯­è¨€åŒ¹é…\ ``language``\ å¹¶ä¸”è¯­è¨€é“¾æŽ¥å™¨çš„CMakeç¼–è¯‘å™¨idåŒ¹é…\
+  ``compiler_ids``\ ä¸­ä»»ä½•ä¸€ä¸ªé€—å·åˆ†éš”çš„æ¡ç›®æ—¶ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚\
+  è¯¥è¡¨è¾¾å¼æ˜¯\ ``$<LINK_LANGUAGE:language>``\ å’Œ\ ``$<LANG_COMPILER_ID:compiler_ids>``\
+  ç»„åˆçš„ç®€å†™å½¢å¼ã€‚æ­¤è¡¨è¾¾å¼å¯ç”¨äºŽæŒ‡å®šç›®æ ‡ä¸­ç‰¹å®šè¯­è¨€å’Œé“¾æŽ¥å™¨ç»„åˆçš„é“¾æŽ¥åº“ã€é“¾æŽ¥é€‰é¡¹ã€é“¾æŽ¥ç›®å½•å’Œ\
+  é“¾æŽ¥ä¾èµ–é¡¹ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -1371,24 +1371,24 @@ related to most of the expressions in this sub-section.
               $<$<LINK_LANG_AND_ID:CXX,Intel>:libCXX_Intel>
               $<$<LINK_LANG_AND_ID:C,Intel>:libC_Intel>)
 
-  ÕâÖ¸¶¨ÁË»ùÓÚ±àÒëÆ÷idºÍÁ´½ÓÓïÑÔµÄ²»Í¬Á´½Ó¿âµÄÊ¹ÓÃ¡£µ±\ ``Clang``\ »ò\ ``AppleClang``\ ÊÇ\
-  ``CXX``\ Á´½ÓÆ÷Ê±£¬Õâ¸öÀý×Ó½«°ÑÄ¿±ê\ ``libCXX_Intel``\ ×÷ÎªÁ´½ÓÒÀÀµÏî£¬µ±\ ``Intel``\
-  ÊÇ\ ``CXX``\ Á´½ÓÆ÷Ê±£¬½«°ÑÄ¿±ê\ ``libCXX_Intel``\ ×÷ÎªÁ´½ÓÒÀÀµÏî¡£Í¬ÑùµØ£¬µ±\ ``C``\
-  Á´½ÓÆ÷ÊÇ\ ``Clang``\ »ò\ ``AppleClang``\ Ê±£¬Ä¿±ê\ ``libC_Clang``\ ½«±»Ìí¼ÓÎªÁ´½ÓÒÀ\
-  ÀµÏî£¬µ±\ ``Intel``\ ÊÇ\ ``C``\ Á´½ÓÆ÷Ê±£¬Ä¿±ê\ ``libC_Intel``\ ½«±»Ìí¼ÓÎªÁ´½ÓÒÀÀµÏî¡£
+  è¿™æŒ‡å®šäº†åŸºäºŽç¼–è¯‘å™¨idå’Œé“¾æŽ¥è¯­è¨€çš„ä¸åŒé“¾æŽ¥åº“çš„ä½¿ç”¨ã€‚å½“\ ``Clang``\ æˆ–\ ``AppleClang``\ æ˜¯\
+  ``CXX``\ é“¾æŽ¥å™¨æ—¶ï¼Œè¿™ä¸ªä¾‹å­å°†æŠŠç›®æ ‡\ ``libCXX_Intel``\ ä½œä¸ºé“¾æŽ¥ä¾èµ–é¡¹ï¼Œå½“\ ``Intel``\
+  æ˜¯\ ``CXX``\ é“¾æŽ¥å™¨æ—¶ï¼Œå°†æŠŠç›®æ ‡\ ``libCXX_Intel``\ ä½œä¸ºé“¾æŽ¥ä¾èµ–é¡¹ã€‚åŒæ ·åœ°ï¼Œå½“\ ``C``\
+  é“¾æŽ¥å™¨æ˜¯\ ``Clang``\ æˆ–\ ``AppleClang``\ æ—¶ï¼Œç›®æ ‡\ ``libC_Clang``\ å°†è¢«æ·»åŠ ä¸ºé“¾æŽ¥ä¾\
+  èµ–é¡¹ï¼Œå½“\ ``Intel``\ æ˜¯\ ``C``\ é“¾æŽ¥å™¨æ—¶ï¼Œç›®æ ‡\ ``libC_Intel``\ å°†è¢«æ·»åŠ ä¸ºé“¾æŽ¥ä¾èµ–é¡¹ã€‚
 
-  ÓÐ¹ØÊ¹ÓÃ´ËÉú³ÉÆ÷±í´ïÊ½µÄÔ¼Êø£¬Çë²ÎÔÄ\ :ref:`Ïà¹ØµÄËµÃ÷
+  æœ‰å…³ä½¿ç”¨æ­¤ç”Ÿæˆå™¨è¡¨è¾¾å¼çš„çº¦æŸï¼Œè¯·å‚é˜…\ :ref:`ç›¸å…³çš„è¯´æ˜Ž
   <Constraints LINK_LANGUAGE Generator Expression>`\
-  ``$<LINK_LANGUAGE:language>``¡£
+  ``$<LINK_LANGUAGE:language>``ã€‚
 
-Á´½ÓÌØÐÔ
+é“¾æŽ¥ç‰¹æ€§
 ^^^^^^^^^^^^^
 
 .. genex:: $<LINK_LIBRARY:feature,library-list>
 
   .. versionadded:: 3.24
 
-  Ö¸¶¨Ò»×éÒªÁ´½Óµ½Ä¿±êµÄ¿â£¬ÒÔ¼°Ìá¹©¹ØÓÚÓ¦¸Ã\ *ÈçºÎ*\ Á´½ÓËüÃÇµÄÏêÏ¸ÐÅÏ¢µÄ\ ``feature``¡£ÀýÈç£º
+  æŒ‡å®šä¸€ç»„è¦é“¾æŽ¥åˆ°ç›®æ ‡çš„åº“ï¼Œä»¥åŠæä¾›å…³äºŽåº”è¯¥\ *å¦‚ä½•*\ é“¾æŽ¥å®ƒä»¬çš„è¯¦ç»†ä¿¡æ¯çš„\ ``feature``ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -1396,46 +1396,46 @@ related to most of the expressions in this sub-section.
     add_library(lib2 ...)
     target_link_libraries(lib2 PRIVATE "$<LINK_LIBRARY:WHOLE_ARCHIVE,lib1>")
 
-  ÕâÖ¸¶¨\ ``lib2``\ Ó¦¸ÃÁ´½Óµ½\ ``lib1``£¬²¢ÔÚÕâÑù×öÊ±Ê¹ÓÃ\ ``WHOLE_ARCHIVE``\ ÌØÐÔ¡£
+  è¿™æŒ‡å®š\ ``lib2``\ åº”è¯¥é“¾æŽ¥åˆ°\ ``lib1``ï¼Œå¹¶åœ¨è¿™æ ·åšæ—¶ä½¿ç”¨\ ``WHOLE_ARCHIVE``\ ç‰¹æ€§ã€‚
 
-  ÌØÐÔÃû³ÆÇø·Ö´óÐ¡Ð´£¬Ö»ÄÜ°üº¬×ÖÄ¸¡¢Êý×ÖºÍÏÂ»®Ïß¡£ËùÓÐ´óÐ´µÄÌØÐÔÃû³Æ¶¼±£Áô¸øCMake×Ô¼ºµÄÄÚÖÃ\
-  ÌØÐÔ¡£Ô¤¶¨ÒåµÄÄÚÖÃ¿âÌØÐÔ°üÀ¨£º
+  ç‰¹æ€§åç§°åŒºåˆ†å¤§å°å†™ï¼Œåªèƒ½åŒ…å«å­—æ¯ã€æ•°å­—å’Œä¸‹åˆ’çº¿ã€‚æ‰€æœ‰å¤§å†™çš„ç‰¹æ€§åç§°éƒ½ä¿ç•™ç»™CMakeè‡ªå·±çš„å†…ç½®\
+  ç‰¹æ€§ã€‚é¢„å®šä¹‰çš„å†…ç½®åº“ç‰¹æ€§åŒ…æ‹¬ï¼š
 
   .. include:: ../variable/LINK_LIBRARY_PREDEFINED_FEATURES.txt
 
-  ÄÚÖÃºÍ×Ô¶¨Òå¿âÌØÐÔÊÇ¸ù¾ÝÒÔÏÂ±äÁ¿¶¨ÒåµÄ£º
+  å†…ç½®å’Œè‡ªå®šä¹‰åº“ç‰¹æ€§æ˜¯æ ¹æ®ä»¥ä¸‹å˜é‡å®šä¹‰çš„ï¼š
 
   * :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`
   * :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>`
   * :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`
   * :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>`
 
-  ÓÃÓÚÃ¿¸ö±äÁ¿µÄÖµÊÇÔÚ´´½¨Ä¿±êµÄÄ¿Â¼×÷ÓÃÓòµÄÄ©Î²ÉèÖÃµÄÖµ¡£ÓÃ·¨ÈçÏÂ£º
+  ç”¨äºŽæ¯ä¸ªå˜é‡çš„å€¼æ˜¯åœ¨åˆ›å»ºç›®æ ‡çš„ç›®å½•ä½œç”¨åŸŸçš„æœ«å°¾è®¾ç½®çš„å€¼ã€‚ç”¨æ³•å¦‚ä¸‹ï¼š
 
-  1. Èç¹ûÌØ¶¨ÓÚÓïÑÔµÄ\ :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`\
-     ±äÁ¿ÎªÕæ£¬Ôò¸Ã\ ``feature``\ ±ØÐëÓÉÏàÓ¦µÄ\ :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>`\
-     ±äÁ¿¶¨Òå¡£
-  2. Èç¹û²»Ö§³ÖÌØ¶¨ÓÚÓïÑÔµÄ\ ``feature``\ £¬Ôò\ :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`\
-     ±äÁ¿±ØÐëÎªÕæ£¬²¢ÇÒ¸Ã\ ``feature``\ ±ØÐëÓÉÏàÓ¦µÄ\ :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>`\
-     ±äÁ¿¶¨Òå¡£
+  1. å¦‚æžœç‰¹å®šäºŽè¯­è¨€çš„\ :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`\
+     å˜é‡ä¸ºçœŸï¼Œåˆ™è¯¥\ ``feature``\ å¿…é¡»ç”±ç›¸åº”çš„\ :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>`\
+     å˜é‡å®šä¹‰ã€‚
+  2. å¦‚æžœä¸æ”¯æŒç‰¹å®šäºŽè¯­è¨€çš„\ ``feature``\ ï¼Œåˆ™\ :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>_SUPPORTED`\
+     å˜é‡å¿…é¡»ä¸ºçœŸï¼Œå¹¶ä¸”è¯¥\ ``feature``\ å¿…é¡»ç”±ç›¸åº”çš„\ :variable:`CMAKE_LINK_LIBRARY_USING_<FEATURE>`\
+     å˜é‡å®šä¹‰ã€‚
 
-  Ó¦×¢ÒâÒÔÏÂÏÞÖÆ£º
+  åº”æ³¨æ„ä»¥ä¸‹é™åˆ¶ï¼š
 
-  * ``library-list``\ ¿ÉÒÔÖ¸¶¨CMakeÄ¿±ê»ò¿â¡£ÈÎºÎ\ :ref:`OBJECT <Object Libraries>`\
-    »ò\ :ref:`INTERFACE <Interface Libraries>`\ ÀàÐÍµÄCMakeÄ¿±ê¶¼½«ºöÂÔ±í´ïÊ½µÄÌØÕ÷·½Ãæ£¬\
-    ¶øÊÇÒÔ±ê×¼·½Ê½Á´½Ó¡£
+  * ``library-list``\ å¯ä»¥æŒ‡å®šCMakeç›®æ ‡æˆ–åº“ã€‚ä»»ä½•\ :ref:`OBJECT <Object Libraries>`\
+    æˆ–\ :ref:`INTERFACE <Interface Libraries>`\ ç±»åž‹çš„CMakeç›®æ ‡éƒ½å°†å¿½ç•¥è¡¨è¾¾å¼çš„ç‰¹å¾æ–¹é¢ï¼Œ\
+    è€Œæ˜¯ä»¥æ ‡å‡†æ–¹å¼é“¾æŽ¥ã€‚
 
-  * ``$<LINK_LIBRARY:...>``\ Éú³ÉÆ÷±í´ïÊ½Ö»ÄÜÓÃÓÚÖ¸¶¨Á´½Ó¿â¡£Êµ¼ÊÉÏ£¬ÕâÒâÎ¶×ÅËü¿ÉÒÔ³öÏÖÔÚ\
-    :prop_tgt:`LINK_LIBRARIES`¡¢:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ ºÍ\
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT`\ Ä¿±êÊôÐÔÖÐ£¬²¢ÔÚ\
-    :command:`target_link_libraries`\ ºÍ\ :command:`link_libraries`\ ÃüÁîÖÐÖ¸¶¨¡£
+  * ``$<LINK_LIBRARY:...>``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼åªèƒ½ç”¨äºŽæŒ‡å®šé“¾æŽ¥åº“ã€‚å®žé™…ä¸Šï¼Œè¿™æ„å‘³ç€å®ƒå¯ä»¥å‡ºçŽ°åœ¨\
+    :prop_tgt:`LINK_LIBRARIES`ã€:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ å’Œ\
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT`\ ç›®æ ‡å±žæ€§ä¸­ï¼Œå¹¶åœ¨\
+    :command:`target_link_libraries`\ å’Œ\ :command:`link_libraries`\ å‘½ä»¤ä¸­æŒ‡å®šã€‚
 
-  * Èç¹û\ ``$<LINK_LIBRARY:...>``\ Éú³ÉÆ÷±í´ïÊ½³öÏÖÔÚÄ¿±êµÄ\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
-    ÊôÐÔÖÐ£¬Ëü½«°üº¬ÔÚÓÉ\ :command:`install(EXPORT)`\ ÃüÁîÉú³ÉµÄµ¼ÈëÄ¿±êÖÐ¡£Ê¹ÓÃ´Ëµ¼Èë\
-    µÄ»·¾³¸ºÔð¶¨Òå´Ë±í´ïÊ½Ê¹ÓÃµÄÁ´½ÓÌØÐÔ¡£
+  * å¦‚æžœ\ ``$<LINK_LIBRARY:...>``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼å‡ºçŽ°åœ¨ç›®æ ‡çš„\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+    å±žæ€§ä¸­ï¼Œå®ƒå°†åŒ…å«åœ¨ç”±\ :command:`install(EXPORT)`\ å‘½ä»¤ç”Ÿæˆçš„å¯¼å…¥ç›®æ ‡ä¸­ã€‚ä½¿ç”¨æ­¤å¯¼å…¥\
+    çš„çŽ¯å¢ƒè´Ÿè´£å®šä¹‰æ­¤è¡¨è¾¾å¼ä½¿ç”¨çš„é“¾æŽ¥ç‰¹æ€§ã€‚
 
-  * Á´½Ó²½ÖèÖÐÉæ¼°µÄÃ¿¸öÄ¿±ê»ò¿â×î¶àÖ»ÄÜÓÐÒ»ÖÖ¿âÌØÐÔ¡£Ò»¸öÌØÐÔµÄÈ±Ê§Ò²ÓëËùÓÐÆäËûÌØÐÔ²»¼æÈÝ¡£\
-    ÀýÈç£º
+  * é“¾æŽ¥æ­¥éª¤ä¸­æ¶‰åŠçš„æ¯ä¸ªç›®æ ‡æˆ–åº“æœ€å¤šåªèƒ½æœ‰ä¸€ç§åº“ç‰¹æ€§ã€‚ä¸€ä¸ªç‰¹æ€§çš„ç¼ºå¤±ä¹Ÿä¸Žæ‰€æœ‰å…¶ä»–ç‰¹æ€§ä¸å…¼å®¹ã€‚\
+    ä¾‹å¦‚ï¼š
 
     .. code-block:: cmake
 
@@ -1450,19 +1450,19 @@ related to most of the expressions in this sub-section.
       # use of feature1 in the line above and would result in an error.
       target_link_libraries(lib3 PRIVATE lib1 lib2)
 
-    Èç¹û²»¿ÉÄÜÔÚÕû¸ö¹¹½¨¹ý³ÌÖÐ¶Ô¸ø¶¨µÄÄ¿±ê»ò¿âÊ¹ÓÃÏàÍ¬µÄÌØÐÔ£¬Ôò¿ÉÒÔÊ¹ÓÃ\
-    :prop_tgt:`LINK_LIBRARY_OVERRIDE`\ ºÍ\ :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>`\
-    Ä¿±êÊôÐÔÀ´½â¾ö´ËÀà²»¼æÈÝÐÔÎÊÌâ¡£
+    å¦‚æžœä¸å¯èƒ½åœ¨æ•´ä¸ªæž„å»ºè¿‡ç¨‹ä¸­å¯¹ç»™å®šçš„ç›®æ ‡æˆ–åº“ä½¿ç”¨ç›¸åŒçš„ç‰¹æ€§ï¼Œåˆ™å¯ä»¥ä½¿ç”¨\
+    :prop_tgt:`LINK_LIBRARY_OVERRIDE`\ å’Œ\ :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>`\
+    ç›®æ ‡å±žæ€§æ¥è§£å†³æ­¤ç±»ä¸å…¼å®¹æ€§é—®é¢˜ã€‚
 
-  * ``$<LINK_LIBRARY:...>``\ Éú³ÉÆ÷±í´ïÊ½²»±£Ö¤Ö¸¶¨Ä¿±êºÍ¿âµÄÁÐ±í½«±£³Ö·Ö×éÔÚÒ»Æð¡£\
-    ÒªÏñGNU ``ld``\ Á´½ÓÆ÷ËùÖ§³ÖµÄÄÇÑù¹ÜÀí\ ``--start-group``\ ºÍ\ ``--end-group``\
-    ÕâÑùµÄ¹¹Ôì£¬ÇëÊ¹ÓÃ\ :genex:`LINK_GROUP`\ Éú³ÉÆ÷±í´ïÊ½¡£
+  * ``$<LINK_LIBRARY:...>``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¸ä¿è¯æŒ‡å®šç›®æ ‡å’Œåº“çš„åˆ—è¡¨å°†ä¿æŒåˆ†ç»„åœ¨ä¸€èµ·ã€‚\
+    è¦åƒGNU ``ld``\ é“¾æŽ¥å™¨æ‰€æ”¯æŒçš„é‚£æ ·ç®¡ç†\ ``--start-group``\ å’Œ\ ``--end-group``\
+    è¿™æ ·çš„æž„é€ ï¼Œè¯·ä½¿ç”¨\ :genex:`LINK_GROUP`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
 
 .. genex:: $<LINK_GROUP:feature,library-list>
 
   .. versionadded:: 3.24
 
-  Ö¸¶¨ÒªÁ´½Óµ½Ä¿±êµÄ¿â×é£¬ÒÔ¼°¶¨Òå¸Ã×éÓ¦ÈçºÎÁ´½ÓµÄ\ ``feature``¡£ÀýÈç:
+  æŒ‡å®šè¦é“¾æŽ¥åˆ°ç›®æ ‡çš„åº“ç»„ï¼Œä»¥åŠå®šä¹‰è¯¥ç»„åº”å¦‚ä½•é“¾æŽ¥çš„\ ``feature``ã€‚ä¾‹å¦‚:
 
   .. code-block:: cmake
 
@@ -1470,36 +1470,36 @@ related to most of the expressions in this sub-section.
     add_library(lib2 ...)
     target_link_libraries(lib2 PRIVATE "$<LINK_GROUP:RESCAN,lib1,external>")
 
-  ÕâÖ¸¶¨\ ``lib2``\ Ó¦¸ÃÁ´½Óµ½\ ``lib1``\ ºÍ\ ``external``\ ¿â£¬²¢ÇÒ¸ù¾Ý\ ``RESCAN``\
-  ÌØÐÔµÄ¶¨Òå£¬ÕâÁ½¸ö¿â¶¼Ó¦¸Ã°üº¬ÔÚÁ´½ÓÆ÷ÃüÁîÐÐÖÐ¡£
+  è¿™æŒ‡å®š\ ``lib2``\ åº”è¯¥é“¾æŽ¥åˆ°\ ``lib1``\ å’Œ\ ``external``\ åº“ï¼Œå¹¶ä¸”æ ¹æ®\ ``RESCAN``\
+  ç‰¹æ€§çš„å®šä¹‰ï¼Œè¿™ä¸¤ä¸ªåº“éƒ½åº”è¯¥åŒ…å«åœ¨é“¾æŽ¥å™¨å‘½ä»¤è¡Œä¸­ã€‚
 
-  ÌØÐÔÃû³ÆÇø·Ö´óÐ¡Ð´£¬Ö»ÄÜ°üº¬×ÖÄ¸¡¢Êý×ÖºÍÏÂ»®Ïß¡£ËùÓÐ´óÐ´µÄÌØÐÔÃû³Æ¶¼±£Áô¸øCMake×Ô¼ºµÄÄÚÖÃ\
-  ÌØÐÔ¡£Ä¿Ç°£¬Ö»ÓÐÒ»¸öÔ¤¶¨ÒåµÄÄÚÖÃ×éÌØÐÔ£º
+  ç‰¹æ€§åç§°åŒºåˆ†å¤§å°å†™ï¼Œåªèƒ½åŒ…å«å­—æ¯ã€æ•°å­—å’Œä¸‹åˆ’çº¿ã€‚æ‰€æœ‰å¤§å†™çš„ç‰¹æ€§åç§°éƒ½ä¿ç•™ç»™CMakeè‡ªå·±çš„å†…ç½®\
+  ç‰¹æ€§ã€‚ç›®å‰ï¼Œåªæœ‰ä¸€ä¸ªé¢„å®šä¹‰çš„å†…ç½®ç»„ç‰¹æ€§ï¼š
 
   .. include:: ../variable/LINK_GROUP_PREDEFINED_FEATURES.txt
 
-  ÄÚÖÃºÍ×Ô¶¨Òå×é¹¦ÄÜÊÇ¸ù¾ÝÒÔÏÂ±äÁ¿¶¨ÒåµÄ£º
+  å†…ç½®å’Œè‡ªå®šä¹‰ç»„åŠŸèƒ½æ˜¯æ ¹æ®ä»¥ä¸‹å˜é‡å®šä¹‰çš„ï¼š
 
   * :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
   * :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`
   * :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED`
   * :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>`
 
-  ÓÃÓÚÃ¿¸ö±äÁ¿µÄÖµÊÇÔÚ´´½¨Ä¿±êµÄÄ¿Â¼×÷ÓÃÓòµÄÄ©Î²ÉèÖÃµÄÖµ¡£ÓÃ·¨ÈçÏÂ£º
+  ç”¨äºŽæ¯ä¸ªå˜é‡çš„å€¼æ˜¯åœ¨åˆ›å»ºç›®æ ‡çš„ç›®å½•ä½œç”¨åŸŸçš„æœ«å°¾è®¾ç½®çš„å€¼ã€‚ç”¨æ³•å¦‚ä¸‹ï¼š
 
-  1. Èç¹ûÌØ¶¨ÓÚÓïÑÔµÄ\ :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`\
-     ±äÁ¿ÎªÕæ£¬Ôò¸Ã\ ``feature``\ ±ØÐëÓÉÏàÓ¦µÄ\ :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`\
-     ±äÁ¿¶¨Òå¡£
-  2. Èç¹û²»Ö§³ÖÌØ¶¨ÓÚÓïÑÔµÄ ``feature``£¬Ôò\ :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED`\
-     ±äÁ¿±ØÐëÎªÕæ£¬²¢ÇÒ¸Ã\ ``feature``\ ±ØÐëÓÉÏàÓ¦µÄ\
-     :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>`\ ±äÁ¿¶¨Òå¡£
+  1. å¦‚æžœç‰¹å®šäºŽè¯­è¨€çš„\ :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>_SUPPORTED`\
+     å˜é‡ä¸ºçœŸï¼Œåˆ™è¯¥\ ``feature``\ å¿…é¡»ç”±ç›¸åº”çš„\ :variable:`CMAKE_<LANG>_LINK_GROUP_USING_<FEATURE>`\
+     å˜é‡å®šä¹‰ã€‚
+  2. å¦‚æžœä¸æ”¯æŒç‰¹å®šäºŽè¯­è¨€çš„ ``feature``ï¼Œåˆ™\ :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>_SUPPORTED`\
+     å˜é‡å¿…é¡»ä¸ºçœŸï¼Œå¹¶ä¸”è¯¥\ ``feature``\ å¿…é¡»ç”±ç›¸åº”çš„\
+     :variable:`CMAKE_LINK_GROUP_USING_<FEATURE>`\ å˜é‡å®šä¹‰ã€‚
 
-  ``LINK_GROUP``\ Éú³ÉÆ÷±í´ïÊ½Óë\ :genex:`LINK_LIBRARY`\ Éú³ÉÆ÷±í´ïÊ½¼æÈÝ¡£¿ÉÒÔÊ¹ÓÃ\
-  :genex:`LINK_LIBRARY`\ Éú³ÉÆ÷±í´ïÊ½Ö¸¶¨×éÖÐÉæ¼°µÄ¿â¡£
+  ``LINK_GROUP``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ä¸Ž\ :genex:`LINK_LIBRARY`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼å…¼å®¹ã€‚å¯ä»¥ä½¿ç”¨\
+  :genex:`LINK_LIBRARY`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼æŒ‡å®šç»„ä¸­æ¶‰åŠçš„åº“ã€‚
 
-  Á´½Ó²½ÖèÖÐÉæ¼°µÄÃ¿¸öÄ¿±ê»òÍâ²¿¿â¶¼¿ÉÒÔÊÇ¶à¸ö×éµÄÒ»²¿·Ö£¬µ«Ç°ÌáÊÇËùÓÐÉæ¼°µÄ×é¶¼Ö¸¶¨ÁËÏàÍ¬µÄ\
-  ``feature``¡£ÕâÑùµÄ×é²»»áÔÚÁ´½ÓÆ÷ÃüÁîÐÐÉÏ±»ºÏ²¢£¬µ¥¶ÀµÄ×éÈÔÈ»»á±»±£Áô¡£½ûÖ¹ÎªÏàÍ¬µÄÄ¿±ê\
-  »ò¿â»ìºÏ²»Í¬µÄ×éÌØÕ÷¡£
+  é“¾æŽ¥æ­¥éª¤ä¸­æ¶‰åŠçš„æ¯ä¸ªç›®æ ‡æˆ–å¤–éƒ¨åº“éƒ½å¯ä»¥æ˜¯å¤šä¸ªç»„çš„ä¸€éƒ¨åˆ†ï¼Œä½†å‰ææ˜¯æ‰€æœ‰æ¶‰åŠçš„ç»„éƒ½æŒ‡å®šäº†ç›¸åŒçš„\
+  ``feature``ã€‚è¿™æ ·çš„ç»„ä¸ä¼šåœ¨é“¾æŽ¥å™¨å‘½ä»¤è¡Œä¸Šè¢«åˆå¹¶ï¼Œå•ç‹¬çš„ç»„ä»ç„¶ä¼šè¢«ä¿ç•™ã€‚ç¦æ­¢ä¸ºç›¸åŒçš„ç›®æ ‡\
+  æˆ–åº“æ··åˆä¸åŒçš„ç»„ç‰¹å¾ã€‚
 
   .. code-block:: cmake
 
@@ -1518,8 +1518,8 @@ related to most of the expressions in this sub-section.
     # An error will be raised here because both lib1 and lib3 are part of two
     # groups with different features.
 
-  µ±Ä¿±ê»òÍâ²¿¿â×÷Îª×éµÄÒ»²¿·Ö²ÎÓëÁ´½Ó²½Öè£¬Í¬Ê±ÓÖ²»ÊôÓÚÈÎºÎ×éÊ±£¬ÈÎºÎ³öÏÖµÄ·Ç×éÁ´½ÓÏî¶¼½«±»\
-  ËüËùÊôµÄ×éÌæ»»¡£
+  å½“ç›®æ ‡æˆ–å¤–éƒ¨åº“ä½œä¸ºç»„çš„ä¸€éƒ¨åˆ†å‚ä¸Žé“¾æŽ¥æ­¥éª¤ï¼ŒåŒæ—¶åˆä¸å±žäºŽä»»ä½•ç»„æ—¶ï¼Œä»»ä½•å‡ºçŽ°çš„éžç»„é“¾æŽ¥é¡¹éƒ½å°†è¢«\
+  å®ƒæ‰€å±žçš„ç»„æ›¿æ¢ã€‚
 
   .. code-block:: cmake
 
@@ -1533,15 +1533,15 @@ related to most of the expressions in this sub-section.
     target_link_libraries(lib4 PRIVATE lib3 "$<LINK_GROUP:feature1,lib1,lib2>")
     # lib4 will only be linked with lib3 and the group {lib1,lib2}
 
-  ÒòÎª\ ``lib1``\ ÊÇÎª\ ``lib4``\ ¶¨ÒåµÄ×éµÄÒ»²¿·Ö£¬ËùÒÔÕâ¸ö×é½«Ó¦ÓÃ»Ø¶Ô\ ``lib3``\ Ê¹ÓÃ\
-  ``lib1``¡£×îÖÕ½á¹û¾ÍÏñ\ ``lib3``\ µÄÁ´½Ó¹ØÏµ±»Ö¸¶¨Îª£º
+  å› ä¸º\ ``lib1``\ æ˜¯ä¸º\ ``lib4``\ å®šä¹‰çš„ç»„çš„ä¸€éƒ¨åˆ†ï¼Œæ‰€ä»¥è¿™ä¸ªç»„å°†åº”ç”¨å›žå¯¹\ ``lib3``\ ä½¿ç”¨\
+  ``lib1``ã€‚æœ€ç»ˆç»“æžœå°±åƒ\ ``lib3``\ çš„é“¾æŽ¥å…³ç³»è¢«æŒ‡å®šä¸ºï¼š
 
   .. code-block:: cmake
 
     target_link_libraries(lib3 PUBLIC "$<LINK_GROUP:feature1,lib1,lib2>")
 
-  ×¢Òâ£¬×éÏà¶ÔÓÚ·Ç×éÁ´½ÓÏîµÄÓÅÏÈ¼¶¿ÉÄÜµ¼ÖÂ×éÖ®¼äµÄÑ­»·ÒÀÀµ¹ØÏµ¡£Èç¹û·¢ÉúÕâÖÖÇé¿ö£¬½«Òý·¢ÖÂÃü\
-  ´íÎó£¬ÒòÎª²»ÔÊÐí×éÊ¹ÓÃÑ­»·ÒÀÀµÏî¡£
+  æ³¨æ„ï¼Œç»„ç›¸å¯¹äºŽéžç»„é“¾æŽ¥é¡¹çš„ä¼˜å…ˆçº§å¯èƒ½å¯¼è‡´ç»„ä¹‹é—´çš„å¾ªçŽ¯ä¾èµ–å…³ç³»ã€‚å¦‚æžœå‘ç”Ÿè¿™ç§æƒ…å†µï¼Œå°†å¼•å‘è‡´å‘½\
+  é”™è¯¯ï¼Œå› ä¸ºä¸å…è®¸ç»„ä½¿ç”¨å¾ªçŽ¯ä¾èµ–é¡¹ã€‚
 
   .. code-block:: cmake
 
@@ -1561,31 +1561,31 @@ related to most of the expressions in this sub-section.
       "$<LINK_GROUP:feat,lib2A,lib2B>"
     )
 
-  ÓÉÓÚÎª\ ``lib3``\ ¶¨ÒåÁË×é£¬\ ``lib1A``\ ºÍ\ ``lib2B``\ µÄÁ´½Ó¹ØÏµÓÐÐ§µØÀ©Õ¹ÎªµÈ¼ÛµÄ£º
+  ç”±äºŽä¸º\ ``lib3``\ å®šä¹‰äº†ç»„ï¼Œ\ ``lib1A``\ å’Œ\ ``lib2B``\ çš„é“¾æŽ¥å…³ç³»æœ‰æ•ˆåœ°æ‰©å±•ä¸ºç­‰ä»·çš„ï¼š
 
   .. code-block:: cmake
 
     target_link_libraries(lib1A PUBLIC "$<LINK_GROUP:feat,lib2A,lib2B>")
     target_link_libraries(lib2B PUBLIC "$<LINK_GROUP:feat,lib1A,lib1B>")
 
-  ÕâÔÚ×éÖ®¼ä´´½¨ÁËÒ»¸öÑ­»·ÒÀÀµ£º\ ``lib1A --> lib2B --> lib1A``¡£
+  è¿™åœ¨ç»„ä¹‹é—´åˆ›å»ºäº†ä¸€ä¸ªå¾ªçŽ¯ä¾èµ–ï¼š\ ``lib1A --> lib2B --> lib1A``ã€‚
 
-  »¹Ó¦×¢ÒâÒÔÏÂÏÞÖÆ£º
+  è¿˜åº”æ³¨æ„ä»¥ä¸‹é™åˆ¶ï¼š
 
-  * ``library-list``\ ¿ÉÒÔÖ¸¶¨CMakeÄ¿±ê»ò¿â¡£ÈÎºÎ\ :ref:`OBJECT <Object Libraries>`\
-    »ò\ :ref:`INTERFACE <Interface Libraries>`\ ÀàÐÍµÄCMakeÄ¿±ê¶¼½«ºöÂÔ±í´ïÊ½µÄÌØÕ÷·½Ãæ£¬\
-    ¶øÊÇÒÔ±ê×¼·½Ê½Á´½Ó¡£
+  * ``library-list``\ å¯ä»¥æŒ‡å®šCMakeç›®æ ‡æˆ–åº“ã€‚ä»»ä½•\ :ref:`OBJECT <Object Libraries>`\
+    æˆ–\ :ref:`INTERFACE <Interface Libraries>`\ ç±»åž‹çš„CMakeç›®æ ‡éƒ½å°†å¿½ç•¥è¡¨è¾¾å¼çš„ç‰¹å¾æ–¹é¢ï¼Œ\
+    è€Œæ˜¯ä»¥æ ‡å‡†æ–¹å¼é“¾æŽ¥ã€‚
 
-  * ``$<LINK_GROUP:...>``\ Éú³ÉÆ÷±í´ïÊ½Ö»ÄÜÓÃÓÚÖ¸¶¨Á´½Ó¿â¡£Êµ¼ÊÉÏ£¬ÕâÒâÎ¶×ÅËü¿ÉÒÔ³öÏÖÔÚ\
-    :prop_tgt:`LINK_LIBRARIES`¡¢:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ ºÍ\
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT`\ Ä¿±êÊôÐÔÖÐ£¬²¢ÔÚ\
-    :command:`target_link_libraries`\ ºÍ\ :command:`link_libraries`\ ÃüÁîÖÐÖ¸¶¨¡£
+  * ``$<LINK_GROUP:...>``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼åªèƒ½ç”¨äºŽæŒ‡å®šé“¾æŽ¥åº“ã€‚å®žé™…ä¸Šï¼Œè¿™æ„å‘³ç€å®ƒå¯ä»¥å‡ºçŽ°åœ¨\
+    :prop_tgt:`LINK_LIBRARIES`ã€:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ å’Œ\
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT`\ ç›®æ ‡å±žæ€§ä¸­ï¼Œå¹¶åœ¨\
+    :command:`target_link_libraries`\ å’Œ\ :command:`link_libraries`\ å‘½ä»¤ä¸­æŒ‡å®šã€‚
 
-  * Èç¹û\ ``$<LINK_GROUP:...>``\ Éú³ÉÆ÷±í´ïÊ½³öÏÖÔÚÄ¿±êµÄ\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
-    ÊôÐÔÖÐ£¬Ëü½«°üº¬ÔÚÓÉ\ :command:`install(EXPORT)`\ ÃüÁîÉú³ÉµÄµ¼ÈëÄ¿±êÖÐ¡£Ê¹ÓÃ´Ëµ¼Èë\
-    µÄ»·¾³¸ºÔð¶¨Òå´Ë±í´ïÊ½Ê¹ÓÃµÄÁ´½ÓÌØÐÔ¡£
+  * å¦‚æžœ\ ``$<LINK_GROUP:...>``\ ç”Ÿæˆå™¨è¡¨è¾¾å¼å‡ºçŽ°åœ¨ç›®æ ‡çš„\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+    å±žæ€§ä¸­ï¼Œå®ƒå°†åŒ…å«åœ¨ç”±\ :command:`install(EXPORT)`\ å‘½ä»¤ç”Ÿæˆçš„å¯¼å…¥ç›®æ ‡ä¸­ã€‚ä½¿ç”¨æ­¤å¯¼å…¥\
+    çš„çŽ¯å¢ƒè´Ÿè´£å®šä¹‰æ­¤è¡¨è¾¾å¼ä½¿ç”¨çš„é“¾æŽ¥ç‰¹æ€§ã€‚
 
-Á´½ÓÉÏÏÂÎÄ
+é“¾æŽ¥ä¸Šä¸‹æ–‡
 ^^^^^^^^^^^^
 
 .. genex:: $<LINK_ONLY:...>
@@ -1593,34 +1593,34 @@ related to most of the expressions in this sub-section.
   .. versionadded:: 3.1
 
   Content of ``...``, except while collecting usage requirements from
-  :ref:`transitive compile properties <Transitive Compile Properties>`£¬ÔÚÕâÖÖÇé¿öÏÂ£¬\
-  ËüÊÇ¿Õ×Ö·û´®¡£ÕâÓÃÓÚ\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ Ä¿±êÊôÐÔÖÐ£¬Í¨³£Í¨¹ý\
-  :command:`target_link_libraries`\ ÃüÁîÌî³ä£¬ÒÔÖ¸¶¨Ë½ÓÐÁ´½ÓÒÀÀµ¹ØÏµ£¬¶ø²»ÐèÒªÆäËûÊ¹ÓÃ\
-  ÒªÇó¡£ÀýÈç°üº¬Ä¿Â¼»ò±àÒëÑ¡Ïî¡£
+  :ref:`transitive compile properties <Transitive Compile Properties>`ï¼Œåœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œ\
+  å®ƒæ˜¯ç©ºå­—ç¬¦ä¸²ã€‚è¿™ç”¨äºŽ\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ ç›®æ ‡å±žæ€§ä¸­ï¼Œé€šå¸¸é€šè¿‡\
+  :command:`target_link_libraries`\ å‘½ä»¤å¡«å……ï¼Œä»¥æŒ‡å®šç§æœ‰é“¾æŽ¥ä¾èµ–å…³ç³»ï¼Œè€Œä¸éœ€è¦å…¶ä»–ä½¿ç”¨\
+  è¦æ±‚ã€‚ä¾‹å¦‚åŒ…å«ç›®å½•æˆ–ç¼–è¯‘é€‰é¡¹ã€‚
 
   .. versionadded:: 3.24
-    ``LINK_ONLY``\ Ò²¿ÉÒÔÔÚ\ :prop_tgt:`LINK_LIBRARIES`\ Ä¿±êÊôÐÔÖÐÊ¹ÓÃ¡£²Î¼û²ßÂÔ\
-    :policy:`CMP0131`¡£
+    ``LINK_ONLY``\ ä¹Ÿå¯ä»¥åœ¨\ :prop_tgt:`LINK_LIBRARIES`\ ç›®æ ‡å±žæ€§ä¸­ä½¿ç”¨ã€‚å‚è§ç­–ç•¥\
+    :policy:`CMP0131`ã€‚
 
 .. genex:: $<DEVICE_LINK:list>
 
   .. versionadded:: 3.18
 
-  Èç¹ûÊÇÉè±¸Á´½Ó²½Öè£¬Ôò·µ»ØÁÐ±í£¬·ñÔò·µ»Ø¿ÕÁÐ±í¡£Éè±¸Á´½Ó²½ÖèÓÉ\ :prop_tgt:`CUDA_SEPARABLE_COMPILATION`\
-  ºÍ\ :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS`\ ÊôÐÔºÍ²ßÂÔ\ :policy:`CMP0105`\ ¿ØÖÆ¡£\
-  ´Ë±í´ïÊ½Ö»ÄÜÓÃÓÚÖ¸¶¨Á´½ÓÑ¡Ïî¡£
+  å¦‚æžœæ˜¯è®¾å¤‡é“¾æŽ¥æ­¥éª¤ï¼Œåˆ™è¿”å›žåˆ—è¡¨ï¼Œå¦åˆ™è¿”å›žç©ºåˆ—è¡¨ã€‚è®¾å¤‡é“¾æŽ¥æ­¥éª¤ç”±\ :prop_tgt:`CUDA_SEPARABLE_COMPILATION`\
+  å’Œ\ :prop_tgt:`CUDA_RESOLVE_DEVICE_SYMBOLS`\ å±žæ€§å’Œç­–ç•¥\ :policy:`CMP0105`\ æŽ§åˆ¶ã€‚\
+  æ­¤è¡¨è¾¾å¼åªèƒ½ç”¨äºŽæŒ‡å®šé“¾æŽ¥é€‰é¡¹ã€‚
 
 .. genex:: $<HOST_LINK:list>
 
   .. versionadded:: 3.18
 
-  Èç¹ûÊÇÆÕÍ¨µÄÁ´½Ó²½Öè£¬Ôò·µ»ØÁÐ±í£¬·ñÔò·µ»Ø¿ÕÁÐ±í¡£µ±»¹Éæ¼°µ½Éè±¸Á´½Ó²½ÖèÊ±£¬´Ë±í´ïÊ½Ïàµ±ÓÐÓÃ\
-  £¨Çë²ÎÔÄ\ :genex:`$<DEVICE_LINK:list>`\ Éú³ÉÆ÷±í´ïÊ½£©¡£´Ë±í´ïÊ½Ö»ÄÜÓÃÓÚÖ¸¶¨Á´½ÓÑ¡Ïî¡£
+  å¦‚æžœæ˜¯æ™®é€šçš„é“¾æŽ¥æ­¥éª¤ï¼Œåˆ™è¿”å›žåˆ—è¡¨ï¼Œå¦åˆ™è¿”å›žç©ºåˆ—è¡¨ã€‚å½“è¿˜æ¶‰åŠåˆ°è®¾å¤‡é“¾æŽ¥æ­¥éª¤æ—¶ï¼Œæ­¤è¡¨è¾¾å¼ç›¸å½“æœ‰ç”¨\
+  ï¼ˆè¯·å‚é˜…\ :genex:`$<DEVICE_LINK:list>`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼‰ã€‚æ­¤è¡¨è¾¾å¼åªèƒ½ç”¨äºŽæŒ‡å®šé“¾æŽ¥é€‰é¡¹ã€‚
 
 
 .. _`Target-Dependent Expressions`:
 
-ÒÀÀµÓÚÄ¿±êµÄ±í´ïÊ½
+ä¾èµ–äºŽç›®æ ‡çš„è¡¨è¾¾å¼
 ----------------------------
 
 Target Meta-Data
@@ -1632,15 +1632,15 @@ These expressions look up information about a target.
 
   .. versionadded:: 3.12
 
-  Èç¹û\ ``tgt``\ ×÷ÎªCMakeÄ¿±ê´æÔÚ£¬ÔòÎª\ ``1``£¬·ñÔòÎª\ ``0``¡£
+  å¦‚æžœ\ ``tgt``\ ä½œä¸ºCMakeç›®æ ‡å­˜åœ¨ï¼Œåˆ™ä¸º\ ``1``ï¼Œå¦åˆ™ä¸º\ ``0``ã€‚
 
 .. genex:: $<TARGET_NAME_IF_EXISTS:tgt>
 
   .. versionadded:: 3.12
 
-  Èç¹ûÄ¿±ê´æÔÚ£¬ÔòÄ¿±êÃû\ ``tgt``£¬·ñÔòÎª¿Õ×Ö·û´®¡£
+  å¦‚æžœç›®æ ‡å­˜åœ¨ï¼Œåˆ™ç›®æ ‡å\ ``tgt``ï¼Œå¦åˆ™ä¸ºç©ºå­—ç¬¦ä¸²ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_NAME:tgt>
 
@@ -1666,21 +1666,21 @@ These expressions look up the values of
 
 .. genex:: $<TARGET_PROPERTY:tgt,prop>
 
-  Ä¿±ê\ ``tgt``\ ÉÏµÄÊôÐÔ\ ``prop``\ µÄÖµ£¬or empty if
-  the property is not set¡£
+  ç›®æ ‡\ ``tgt``\ ä¸Šçš„å±žæ€§\ ``prop``\ çš„å€¼ï¼Œor empty if
+  the property is not setã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
   .. versionchanged:: 3.26
-    µ±ÔÚÆÀ¹À\ :ref:`Target Usage Requirements`\ ÆÚ¼äÓöµ½Ê±£¬Í¨³£ÊÇÔÚ\ ``INTERFACE_*``\
-    Ä¿±êÊôÐÔÖÐ£¬ÔÚÖ¸¶¨ÐèÇóµÄÄ¿±êµÄÄ¿Â¼ÖÐ²éÕÒ\ ``tgt``\ Ãû³Æ£¬¶ø²»ÊÇÔÚ¼ÆËã±í´ïÊ½µÄÏû·ÑÄ¿\
-    ±êµÄÄ¿Â¼ÖÐ¡£
+    å½“åœ¨è¯„ä¼°\ :ref:`Target Usage Requirements`\ æœŸé—´é‡åˆ°æ—¶ï¼Œé€šå¸¸æ˜¯åœ¨\ ``INTERFACE_*``\
+    ç›®æ ‡å±žæ€§ä¸­ï¼Œåœ¨æŒ‡å®šéœ€æ±‚çš„ç›®æ ‡çš„ç›®å½•ä¸­æŸ¥æ‰¾\ ``tgt``\ åç§°ï¼Œè€Œä¸æ˜¯åœ¨è®¡ç®—è¡¨è¾¾å¼çš„æ¶ˆè´¹ç›®\
+    æ ‡çš„ç›®å½•ä¸­ã€‚
 
 .. genex:: $<TARGET_PROPERTY:prop>
   :target: TARGET_PROPERTY:prop
 
-  ÊôÐÔ\ ``prop``\ ÔÚ±í´ïÊ½±»ÇóÖµµÄÄ¿±êÉÏµÄÖµ£¬or empty if the property is not set¡£×¢Òâ£¬¶ÔÓÚ\ :ref:`Target Usage Requirements`\
-  ÖÐµÄÉú³ÉÆ÷±í´ïÊ½£¬ÕâÊÇÏû·ÑÄ¿±ê£¬¶ø²»ÊÇÖ¸¶¨ÐèÇóµÄÄ¿±ê¡£
+  å±žæ€§\ ``prop``\ åœ¨è¡¨è¾¾å¼è¢«æ±‚å€¼çš„ç›®æ ‡ä¸Šçš„å€¼ï¼Œor empty if the property is not setã€‚æ³¨æ„ï¼Œå¯¹äºŽ\ :ref:`Target Usage Requirements`\
+  ä¸­çš„ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼Œè¿™æ˜¯æ¶ˆè´¹ç›®æ ‡ï¼Œè€Œä¸æ˜¯æŒ‡å®šéœ€æ±‚çš„ç›®æ ‡ã€‚
 
 The expressions have special evaluation rules for some properties:
 
@@ -1803,413 +1803,413 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
 
 .. genex:: $<TARGET_FILE:tgt>
 
-  ``tgt``\ ¶þ½øÖÆÎÄ¼þµÄÍêÕûÂ·¾¶¡£
+  ``tgt``\ äºŒè¿›åˆ¶æ–‡ä»¶çš„å®Œæ•´è·¯å¾„ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ£¬³ý·Ç¸Ã±í´ïÊ½ÔÚ\
-  :command:`add_custom_command`\ »ò\ :command:`add_custom_target`\ ÖÐÊ¹ÓÃ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ï¼Œé™¤éžè¯¥è¡¨è¾¾å¼åœ¨\
+  :command:`add_custom_command`\ æˆ–\ :command:`add_custom_target`\ ä¸­ä½¿ç”¨ã€‚
 
 .. genex:: $<TARGET_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  ``tgt``\ µÄ»ù±¾Ãû³Æ£¬¼´²»´øÇ°×ººÍºó×ºµÄ\ ``$<TARGET_FILE_NAME:tgt>``¡£ÀýÈç£¬Èç¹û\
-  ``tgt``\ ÎÄ¼þÃûÊÇ\ ``libbase.so``£¬»ùÃûÊÇ\ ``base``¡£
+  ``tgt``\ çš„åŸºæœ¬åç§°ï¼Œå³ä¸å¸¦å‰ç¼€å’ŒåŽç¼€çš„\ ``$<TARGET_FILE_NAME:tgt>``ã€‚ä¾‹å¦‚ï¼Œå¦‚æžœ\
+  ``tgt``\ æ–‡ä»¶åæ˜¯\ ``libbase.so``ï¼ŒåŸºåæ˜¯\ ``base``ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`OUTPUT_NAME`¡¢\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`¡¢\
-  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ ºÍ\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ Ä¿±êÊôÐÔ\
-  ¼°ÆäÌØ¶¨ÓÚÅäÖÃµÄ±äÌå\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`¡¢\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`¡¢\
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`\ ºÍ\ :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`OUTPUT_NAME`ã€\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`ã€\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ å’Œ\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ ç›®æ ‡å±žæ€§\
+  åŠå…¶ç‰¹å®šäºŽé…ç½®çš„å˜ä½“\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`ã€\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`ã€\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`\ å’Œ\ :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`ã€‚
 
-  Ò²¿ÉÒÔ¿¼ÂÇ\ :prop_tgt:`<CONFIG>_POSTFIX`\ ºÍ\ :prop_tgt:`DEBUG_POSTFIX`\ Ä¿±êÊôÐÔ¡£
+  ä¹Ÿå¯ä»¥è€ƒè™‘\ :prop_tgt:`<CONFIG>_POSTFIX`\ å’Œ\ :prop_tgt:`DEBUG_POSTFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.15
 
-  ``tgt``\ ÎÄ¼þÃûµÄÇ°×º£¨ÀýÈç\ ``lib``£©¡£
+  ``tgt``\ æ–‡ä»¶åçš„å‰ç¼€ï¼ˆä¾‹å¦‚\ ``lib``ï¼‰ã€‚
 
-  Çë²Î¼û\ :prop_tgt:`PREFIX`\ Ä¿±êÊôÐÔ¡£
+  è¯·å‚è§\ :prop_tgt:`PREFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.15
 
-  ``tgt``\ ÎÄ¼þÃûµÄºó×º£¨À©Õ¹ÃûÈç\ ``.so``\ »ò\ ``.exe``£©¡£
+  ``tgt``\ æ–‡ä»¶åçš„åŽç¼€ï¼ˆæ‰©å±•åå¦‚\ ``.so``\ æˆ–\ ``.exe``ï¼‰ã€‚
 
-  Çë²Î¼û\ :prop_tgt:`SUFFIX`\ Ä¿±êÊôÐÔ¡£
+  è¯·å‚è§\ :prop_tgt:`SUFFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_FILE_NAME:tgt>
 
-  ``tgt``\ ÎÄ¼þÃû¡£
+  ``tgt``\ æ–‡ä»¶åã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_FILE_DIR:tgt>
 
-  ``tgt``\ ¶þ½øÖÆÎÄ¼þµÄÄ¿Â¼¡£
+  ``tgt``\ äºŒè¿›åˆ¶æ–‡ä»¶çš„ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_IMPORT_FILE:tgt>
 
   .. versionadded:: 3.27
 
-  Á´½ÓÆ÷µ¼ÈëÎÄ¼þµÄÍêÕûÂ·¾¶¡£ÔÚDLLÆ½Ì¨ÉÏ£¬Ëü½«ÊÇ\ ``.lib``\ ÎÄ¼þ¡£¶ÔÓÚAIXÉÏµÄ¿ÉÖ´ÐÐÎÄ¼þ£¬\
-  ¶ÔÓÚmacOSÉÏµÄ¹²Ïí¿â£¬Ëü¿ÉÒÔ·Ö±ðÊÇ\ ``.imp``\ »ò\ ``.tbd``\ µ¼ÈëÎÄ¼þ£¬¾ßÌåÈ¡¾öÓÚ\
-  :prop_tgt:`ENABLE_EXPORTS`\ ÊôÐÔµÄÖµ¡£
+  é“¾æŽ¥å™¨å¯¼å…¥æ–‡ä»¶çš„å®Œæ•´è·¯å¾„ã€‚åœ¨DLLå¹³å°ä¸Šï¼Œå®ƒå°†æ˜¯\ ``.lib``\ æ–‡ä»¶ã€‚å¯¹äºŽAIXä¸Šçš„å¯æ‰§è¡Œæ–‡ä»¶ï¼Œ\
+  å¯¹äºŽmacOSä¸Šçš„å…±äº«åº“ï¼Œå®ƒå¯ä»¥åˆ†åˆ«æ˜¯\ ``.imp``\ æˆ–\ ``.tbd``\ å¯¼å…¥æ–‡ä»¶ï¼Œå…·ä½“å–å†³äºŽ\
+  :prop_tgt:`ENABLE_EXPORTS`\ å±žæ€§çš„å€¼ã€‚
 
-  Èç¹ûÃ»ÓÐÓëÄ¿±ê¹ØÁªµÄµ¼ÈëÎÄ¼þ£¬Ôò·µ»Ø¿Õ×Ö·û´®¡£
+  å¦‚æžœæ²¡æœ‰ä¸Žç›®æ ‡å…³è”çš„å¯¼å…¥æ–‡ä»¶ï¼Œåˆ™è¿”å›žç©ºå­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Ä¿±êÎÄ¼þÁ´½ÓÆ÷µ¼ÈëÎÄ¼þµÄ»ùÃû\ ``tgt``£¬²»´øÇ°×º»òÕßºó×º¡£ÀýÈç£¬Ä¿±êÎÄ¼þÃûÎª\
-  ``libbase.tbd``£¬Ôò»ùÎÄ¼þÃûÎª\ ``base``¡£
+  ç›®æ ‡æ–‡ä»¶é“¾æŽ¥å™¨å¯¼å…¥æ–‡ä»¶çš„åŸºå\ ``tgt``ï¼Œä¸å¸¦å‰ç¼€æˆ–è€…åŽç¼€ã€‚ä¾‹å¦‚ï¼Œç›®æ ‡æ–‡ä»¶åä¸º\
+  ``libbase.tbd``ï¼Œåˆ™åŸºæ–‡ä»¶åä¸º\ ``base``ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`OUTPUT_NAME`\ ºÍ\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ Ä¿±êÊôÐÔ\
-  ¼°ÆäÌØ¶¨ÓÚÅäÖÃµÄ±äÌå\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ ºÍ\
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`OUTPUT_NAME`\ å’Œ\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ ç›®æ ‡å±žæ€§\
+  åŠå…¶ç‰¹å®šäºŽé…ç½®çš„å˜ä½“\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ å’Œ\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`ã€‚
 
-  Ò²¿ÉÒÔ¿¼ÂÇ\ :prop_tgt:`<CONFIG>_POSTFIX`\ ºÍ\ :prop_tgt:`DEBUG_POSTFIX`\ Ä¿±êÊôÐÔ¡£
+  ä¹Ÿå¯ä»¥è€ƒè™‘\ :prop_tgt:`<CONFIG>_POSTFIX`\ å’Œ\ :prop_tgt:`DEBUG_POSTFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_IMPORT_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Ä¿±ê\ ``tgt``\ µ¼ÈëÎÄ¼þµÄÇ°×º¡£
+  ç›®æ ‡\ ``tgt``\ å¯¼å…¥æ–‡ä»¶çš„å‰ç¼€ã€‚
 
-  ÁíÇë²Î¼û\ :prop_tgt:`IMPORT_PREFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚è§\ :prop_tgt:`IMPORT_PREFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_IMPORT_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.27
 
-  Ä¿±êµ¼ÈëÎÄ¼þµÄºó×º ``tgt``¡£
+  ç›®æ ‡å¯¼å…¥æ–‡ä»¶çš„åŽç¼€ ``tgt``ã€‚
 
-  ºó×º¶ÔÓ¦ÓÚÎÄ¼þÀ©Õ¹Ãû£¨Èç\ ``.lib``\ »ò\ ``.tbd``£©¡£
+  åŽç¼€å¯¹åº”äºŽæ–‡ä»¶æ‰©å±•åï¼ˆå¦‚\ ``.lib``\ æˆ–\ ``.tbd``ï¼‰ã€‚
 
-  ÁíÇë²Î¼û\ :prop_tgt:`IMPORT_SUFFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚è§\ :prop_tgt:`IMPORT_SUFFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_IMPORT_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  ``tgt``\ Ä¿±êµÄµ¼ÈëÎÄ¼þÃû¡£
+  ``tgt``\ ç›®æ ‡çš„å¯¼å…¥æ–‡ä»¶åã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_IMPORT_FILE_DIR:tgt>
 
-  ``tgt``\ Ä¿±êµÄµ¼ÈëÎÄ¼þÄ¿Â¼¡£
+  ``tgt``\ ç›®æ ‡çš„å¯¼å…¥æ–‡ä»¶ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_FILE:tgt>
 
-  Á´½Óµ½\ ``tgt``\ Ä¿±êÊ±Ê¹ÓÃµÄÎÄ¼þ¡£ÕâÍ¨³£ÊÇ\ ``tgt``\ ±íÊ¾µÄ¿â£¨\ ``.a``¡¢\ ``.lib``¡¢\
-  ``.so``£©£¬µ«¶ÔÓÚDLLÆ½Ì¨ÉÏµÄ¹²Ïí¿â£¬Ëü½«ÊÇÓëDLL¹ØÁªµÄ\ ``.lib``\ µ¼Èë¿â¡£
+  é“¾æŽ¥åˆ°\ ``tgt``\ ç›®æ ‡æ—¶ä½¿ç”¨çš„æ–‡ä»¶ã€‚è¿™é€šå¸¸æ˜¯\ ``tgt``\ è¡¨ç¤ºçš„åº“ï¼ˆ\ ``.a``ã€\ ``.lib``ã€\
+  ``.so``ï¼‰ï¼Œä½†å¯¹äºŽDLLå¹³å°ä¸Šçš„å…±äº«åº“ï¼Œå®ƒå°†æ˜¯ä¸ŽDLLå…³è”çš„\ ``.lib``\ å¯¼å…¥åº“ã€‚
 
   .. versionadded:: 3.27
-    ÔÚmacOSÉÏ£¬Ëü¿ÉÒÔÊÇÓë¹²Ïí¿â¹ØÁªµÄ\ ``.tbd``\ µ¼ÈëÎÄ¼þ£¬¾ßÌåÈ¡¾öÓÚ\
-    :prop_tgt:`ENABLE_EXPORTS`\ ÊôÐÔµÄÖµ¡£
+    åœ¨macOSä¸Šï¼Œå®ƒå¯ä»¥æ˜¯ä¸Žå…±äº«åº“å…³è”çš„\ ``.tbd``\ å¯¼å…¥æ–‡ä»¶ï¼Œå…·ä½“å–å†³äºŽ\
+    :prop_tgt:`ENABLE_EXPORTS`\ å±žæ€§çš„å€¼ã€‚
 
-  ¸ÃÉú³ÉÆ÷±í´ïÊ½µÈ¼ÛÓÚ\ :genex:`$<TARGET_LINKER_LIBRARY_FILE>`\ »ò\
-  :genex:`$<TARGET_LINKER_IMPORT_FILE>`\ Éú³ÉÆ÷±í´ïÊ½£¬¾ßÌåÈ¡¾öÓÚÄ¿±êºÍÆ½Ì¨µÄÌØÕ÷¡£
+  è¯¥ç”Ÿæˆå™¨è¡¨è¾¾å¼ç­‰ä»·äºŽ\ :genex:`$<TARGET_LINKER_LIBRARY_FILE>`\ æˆ–\
+  :genex:`$<TARGET_LINKER_IMPORT_FILE>`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼Œå…·ä½“å–å†³äºŽç›®æ ‡å’Œå¹³å°çš„ç‰¹å¾ã€‚
 
 .. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄ»ù±¾ÎÄ¼þÃû£¬ÀýÈç\ :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` £¬\
-  ²»´øÇ°×ººÍºó×º¡£ÀýÈç£¬Ä¿±êÎÄ¼þÃûÎª\ ``libbase.a``£¬»ù±¾Ãû³ÆÎª\ ``base``¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„åŸºæœ¬æ–‡ä»¶åï¼Œä¾‹å¦‚\ :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` ï¼Œ\
+  ä¸å¸¦å‰ç¼€å’ŒåŽç¼€ã€‚ä¾‹å¦‚ï¼Œç›®æ ‡æ–‡ä»¶åä¸º\ ``libbase.a``ï¼ŒåŸºæœ¬åç§°ä¸º\ ``base``ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`OUTPUT_NAME`¡¢\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
-  ºÍ\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\ Ä¿±êÊôÐÔ¼°ÆäÌØ¶¨ÓÚÅäÖÃµÄ±äÌå\
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>`¡¢:prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
-  ºÍ\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`OUTPUT_NAME`ã€\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\
+  å’Œ\ :prop_tgt:`LIBRARY_OUTPUT_NAME`\ ç›®æ ‡å±žæ€§åŠå…¶ç‰¹å®šäºŽé…ç½®çš„å˜ä½“\
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>`ã€:prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
+  å’Œ\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`ã€‚
 
-  Ò²¿ÉÒÔ¿¼ÂÇ\ :prop_tgt:`<CONFIG>_POSTFIX`\ ºÍ\ :prop_tgt:`DEBUG_POSTFIX`\ Ä¿±êÊôÐÔ¡£
+  ä¹Ÿå¯ä»¥è€ƒè™‘\ :prop_tgt:`<CONFIG>_POSTFIX`\ å’Œ\ :prop_tgt:`DEBUG_POSTFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_LINKER_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.15
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄÎÄ¼þÇ°×º¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„æ–‡ä»¶å‰ç¼€ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`PREFIX`\ ºÍ\ :prop_tgt:`IMPORT_PREFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`PREFIX`\ å’Œ\ :prop_tgt:`IMPORT_PREFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_LINKER_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.15
 
-  ÓÃÓÚÁ´½ÓµÄÎÄ¼þºó×º£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  ç”¨äºŽé“¾æŽ¥çš„æ–‡ä»¶åŽç¼€ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
-  ºó×º¶ÔÓ¦ÓÚÎÄ¼þÀ©Õ¹Ãû£¨ÀýÈç".so"»ò".lib"£©¡£
+  åŽç¼€å¯¹åº”äºŽæ–‡ä»¶æ‰©å±•åï¼ˆä¾‹å¦‚".so"æˆ–".lib"ï¼‰ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`SUFFIX`\ ºÍ\ :prop_tgt:`IMPORT_SUFFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`SUFFIX`\ å’Œ\ :prop_tgt:`IMPORT_SUFFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_LINKER_FILE_NAME:tgt>
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄÎÄ¼þÃû¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„æ–‡ä»¶åã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_LINKER_FILE_DIR:tgt>
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄÎÄ¼þÄ¿Â¼¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„æ–‡ä»¶ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE:tgt>
 
   .. versionadded:: 3.27
 
-  Á´½Óµ½\ ``tgt``\ Ä¿±êÊ±Ê¹ÓÃµÄÎÄ¼þÊÇÖ±½ÓÊ¹ÓÃ¿âÍê³ÉµÄ£¬¶ø²»ÊÇµ¼ÈëÎÄ¼þ¡£ÕâÍ¨³£ÊÇ\ ``tgt``\
-  ±íÊ¾µÄ¿â£¨\ ``.a``¡¢\ ``.so``¡¢\ ``.dylib``£©¡£Òò´Ë£¬ÔÚDLLÆ½Ì¨ÉÏ£¬Ëü½«ÊÇÒ»¸ö¿Õ×Ö·û´®¡£
+  é“¾æŽ¥åˆ°\ ``tgt``\ ç›®æ ‡æ—¶ä½¿ç”¨çš„æ–‡ä»¶æ˜¯ç›´æŽ¥ä½¿ç”¨åº“å®Œæˆçš„ï¼Œè€Œä¸æ˜¯å¯¼å…¥æ–‡ä»¶ã€‚è¿™é€šå¸¸æ˜¯\ ``tgt``\
+  è¡¨ç¤ºçš„åº“ï¼ˆ\ ``.a``ã€\ ``.so``ã€\ ``.dylib``ï¼‰ã€‚å› æ­¤ï¼Œåœ¨DLLå¹³å°ä¸Šï¼Œå®ƒå°†æ˜¯ä¸€ä¸ªç©ºå­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄ¿âÎÄ¼þµÄ»ù±¾Ãû³Æ£¬¼´\
-  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>`£¬²»´øÇ°×ººÍºó×º¡£ÀýÈç£¬Ä¿±êÎÄ¼þÃûÎª\
-  ``libbase.a``£¬Ôò»ùÎÄ¼þÃûÎª\ ``base``¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„åº“æ–‡ä»¶çš„åŸºæœ¬åç§°ï¼Œå³\
+  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>`ï¼Œä¸å¸¦å‰ç¼€å’ŒåŽç¼€ã€‚ä¾‹å¦‚ï¼Œç›®æ ‡æ–‡ä»¶åä¸º\
+  ``libbase.a``ï¼Œåˆ™åŸºæ–‡ä»¶åä¸º\ ``base``ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`OUTPUT_NAME`¡¢\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ ºÍ\
-  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ Ä¿±êÊôÐÔ¼°ÆäÅäÖÃÌØ¶¨µÄ±äÌå\
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>`¡¢\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
-  ºÍ\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`OUTPUT_NAME`ã€\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ å’Œ\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ ç›®æ ‡å±žæ€§åŠå…¶é…ç½®ç‰¹å®šçš„å˜ä½“\
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>`ã€\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
+  å’Œ\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`ã€‚
 
-  Ò²¿ÉÒÔ¿¼ÂÇ\ :prop_tgt:`<CONFIG>_POSTFIX`\ ºÍ\ :prop_tgt:`DEBUG_POSTFIX`\ Ä¿±êÊôÐÔ¡£
+  ä¹Ÿå¯ä»¥è€ƒè™‘\ :prop_tgt:`<CONFIG>_POSTFIX`\ å’Œ\ :prop_tgt:`DEBUG_POSTFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄ¿âÎÄ¼þÇ°×º¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„åº“æ–‡ä»¶å‰ç¼€ã€‚
 
-  ÁíÇë²Î¼û\ :prop_tgt:`PREFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚è§\ :prop_tgt:`PREFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄ¿âÎÄ¼þºó×º¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„åº“æ–‡ä»¶åŽç¼€ã€‚
 
-  ºó×º¶ÔÓ¦ÓÚÎÄ¼þÀ©Õ¹Ãû£¨Èç¡°.a¡±»ò¡°.dylib¡±£©¡£
+  åŽç¼€å¯¹åº”äºŽæ–‡ä»¶æ‰©å±•åï¼ˆå¦‚â€œ.aâ€æˆ–â€œ.dylibâ€ï¼‰ã€‚
 
-  ÁíÇë²Î¼û\ :prop_tgt:`SUFFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚è§\ :prop_tgt:`SUFFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄ¿âÎÄ¼þÃû¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„åº“æ–‡ä»¶åã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_LIBRARY_FILE_DIR:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄ¿âÎÄ¼þÄ¿Â¼¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„åº“æ–‡ä»¶ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE:tgt>
 
   .. versionadded:: 3.27
 
-  Ê¹ÓÃµ¼ÈëÎÄ¼þÁ´½Óµ½\ ``tgt``\ Ä¿±êÊ±Ê¹ÓÃµÄÎÄ¼þ¡£ÕâÍ¨³£ÊÇ\ ``tgt``\ ±íÊ¾µÄµ¼ÈëÎÄ¼þ£¨\
-  ``.lib``¡¢\ ``.tbd``£©¡£Òò´Ë£¬µ±Á´½Ó²½ÖèÖÐÃ»ÓÐÉæ¼°µ¼ÈëÎÄ¼þÊ±£¬½«·µ»ØÒ»¸ö¿Õ×Ö·û´®¡£
+  ä½¿ç”¨å¯¼å…¥æ–‡ä»¶é“¾æŽ¥åˆ°\ ``tgt``\ ç›®æ ‡æ—¶ä½¿ç”¨çš„æ–‡ä»¶ã€‚è¿™é€šå¸¸æ˜¯\ ``tgt``\ è¡¨ç¤ºçš„å¯¼å…¥æ–‡ä»¶ï¼ˆ\
+  ``.lib``ã€\ ``.tbd``ï¼‰ã€‚å› æ­¤ï¼Œå½“é“¾æŽ¥æ­¥éª¤ä¸­æ²¡æœ‰æ¶‰åŠå¯¼å…¥æ–‡ä»¶æ—¶ï¼Œå°†è¿”å›žä¸€ä¸ªç©ºå­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄµ¼ÈëÎÄ¼þµÄ»ù±¾Ãû³Æ£¬¼´\
-  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>`\ £¬²»´øÇ°×ººÍºó×º¡£ÀýÈç£¬Èç¹ûÄ¿±êÎÄ\
-  ¼þÃûÎª\ ``libbase.tbd``£¬Ôò»ùÎÄ¼þÃûÎª\ ``base``¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„å¯¼å…¥æ–‡ä»¶çš„åŸºæœ¬åç§°ï¼Œå³\
+  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>`\ ï¼Œä¸å¸¦å‰ç¼€å’ŒåŽç¼€ã€‚ä¾‹å¦‚ï¼Œå¦‚æžœç›®æ ‡æ–‡\
+  ä»¶åä¸º\ ``libbase.tbd``ï¼Œåˆ™åŸºæ–‡ä»¶åä¸º\ ``base``ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`OUTPUT_NAME`\ ºÍ\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ Ä¿±êÊôÐÔ\
-  ¼°ÆäÅäÖÃÌØ¶¨µÄ±äÌå\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ ºÍ\
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`OUTPUT_NAME`\ å’Œ\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ ç›®æ ‡å±žæ€§\
+  åŠå…¶é…ç½®ç‰¹å®šçš„å˜ä½“\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ å’Œ\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`ã€‚
 
-  Ò²¿ÉÒÔ¿¼ÂÇ\ :prop_tgt:`<CONFIG>_POSTFIX`\ ºÍ\ :prop_tgt:`DEBUG_POSTFIX`\ Ä¿±êÊôÐÔ¡£
+  ä¹Ÿå¯ä»¥è€ƒè™‘\ :prop_tgt:`<CONFIG>_POSTFIX`\ å’Œ\ :prop_tgt:`DEBUG_POSTFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_PREFIX:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄµ¼ÈëÎÄ¼þµÄÇ°×º¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„å¯¼å…¥æ–‡ä»¶çš„å‰ç¼€ã€‚
 
-  ÁíÇë²Î¼û\ :prop_tgt:`IMPORT_PREFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚è§\ :prop_tgt:`IMPORT_PREFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_SUFFIX:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄµ¼ÈëÎÄ¼þµÄºó×º¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„å¯¼å…¥æ–‡ä»¶çš„åŽç¼€ã€‚
 
-  ºó×º¶ÔÓ¦ÓÚÎÄ¼þÀ©Õ¹Ãû£¨Èç¡°.lib¡±»ò¡°.tbd¡±£©¡£
+  åŽç¼€å¯¹åº”äºŽæ–‡ä»¶æ‰©å±•åï¼ˆå¦‚â€œ.libâ€æˆ–â€œ.tbdâ€ï¼‰ã€‚
 
-  ÁíÇë²Î¼û\ :prop_tgt:`IMPORT_SUFFIX`\ Ä¿±êÊôÐÔ¡£
+  å¦è¯·å‚è§\ :prop_tgt:`IMPORT_SUFFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄµ¼ÈëÎÄ¼þÃû¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„å¯¼å…¥æ–‡ä»¶åã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_LINKER_IMPORT_FILE_DIR:tgt>
 
   .. versionadded:: 3.27
 
-  ÓÃÓÚÁ´½ÓÄ¿±ê\ ``tgt``\ µÄµ¼ÈëÎÄ¼þµÄÄ¿Â¼¡£
+  ç”¨äºŽé“¾æŽ¥ç›®æ ‡\ ``tgt``\ çš„å¯¼å…¥æ–‡ä»¶çš„ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_SONAME_FILE:tgt>
 
-  ´øÓÐsoname£¨\ ``.so.3``£©µÄÎÄ¼þ£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  å¸¦æœ‰sonameï¼ˆ\ ``.so.3``ï¼‰çš„æ–‡ä»¶ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
 .. genex:: $<TARGET_SONAME_FILE_NAME:tgt>
 
-  ´øÓÐsoname£¨\ ``.so.3``£©µÄÎÄ¼þÃû¡£
+  å¸¦æœ‰sonameï¼ˆ\ ``.so.3``ï¼‰çš„æ–‡ä»¶åã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_SONAME_FILE_DIR:tgt>
 
-  soname£¨\ ``.so.3``\ £©µÄÎÄ¼þÄ¿Â¼¡£
+  sonameï¼ˆ\ ``.so.3``\ ï¼‰çš„æ–‡ä»¶ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_SONAME_IMPORT_FILE:tgt>
 
   .. versionadded:: 3.27
 
-  Ê¹ÓÃsoname£¨\ ``.3.tbd``\ £©µ¼ÈëÎÄ¼þ£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  ä½¿ç”¨sonameï¼ˆ\ ``.3.tbd``\ ï¼‰å¯¼å…¥æ–‡ä»¶ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
 .. genex:: $<TARGET_SONAME_IMPORT_FILE_NAME:tgt>
 
   .. versionadded:: 3.27
 
-  Ê¹ÓÃsoname£¨\ ``.3.tbd``\ £©µ¼ÈëÎÄ¼þµÄÃû³Æ¡£
+  ä½¿ç”¨sonameï¼ˆ\ ``.3.tbd``\ ï¼‰å¯¼å…¥æ–‡ä»¶çš„åç§°ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_SONAME_IMPORT_FILE_DIR:tgt>
 
   .. versionadded:: 3.27
 
-  Ê¹ÓÃsonname£¨\ ``.3.tbd``\ £©µ¼ÈëÎÄ¼þµÄÄ¿Â¼¡£
+  ä½¿ç”¨sonnameï¼ˆ\ ``.3.tbd``\ ï¼‰å¯¼å…¥æ–‡ä»¶çš„ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢²»ÊÇ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼ÓµÄ¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶ä¸æ˜¯ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ çš„ã€‚
 
 .. genex:: $<TARGET_PDB_FILE:tgt>
 
   .. versionadded:: 3.1
 
-  Á´½ÓÆ÷Éú³ÉµÄ³ÌÐòÊý¾Ý¿âÎÄ¼þ£¨.pdb£©µÄÍêÕûÂ·¾¶£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  é“¾æŽ¥å™¨ç”Ÿæˆçš„ç¨‹åºæ•°æ®åº“æ–‡ä»¶ï¼ˆ.pdbï¼‰çš„å®Œæ•´è·¯å¾„ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`PDB_NAME`\ ºÍ\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ Ä¿±êÊôÐÔ¼°\
-  ÆäÌØ¶¨ÓÚÅäÖÃµÄ±äÌå\ :prop_tgt:`PDB_NAME_<CONFIG>`\ ºÍ\
-  :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`PDB_NAME`\ å’Œ\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ ç›®æ ‡å±žæ€§åŠ\
+  å…¶ç‰¹å®šäºŽé…ç½®çš„å˜ä½“\ :prop_tgt:`PDB_NAME_<CONFIG>`\ å’Œ\
+  :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`ã€‚
 
 .. genex:: $<TARGET_PDB_FILE_BASE_NAME:tgt>
 
   .. versionadded:: 3.15
 
-  Á´½ÓÆ÷Éú³ÉµÄ³ÌÐòÊý¾Ý¿âÎÄ¼þ£¨.pdb£©µÄ»ù±¾Ãû³Æ£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  é“¾æŽ¥å™¨ç”Ÿæˆçš„ç¨‹åºæ•°æ®åº“æ–‡ä»¶ï¼ˆ.pdbï¼‰çš„åŸºæœ¬åç§°ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
-  »ù±¾Ãû³Æ¶ÔÓ¦ÓÚ²»´øÇ°×ººÍºó×ºµÄÄ¿±êPDBÎÄ¼þÃû£¨²Î¼û\ ``$<TARGET_PDB_FILE_NAME:tgt>``£©¡£\
-  ÀýÈç£¬Èç¹ûÄ¿±êÎÄ¼þÃûÊÇ\ ``base.pdb``£¬»ù±¾Ãû³ÆÎª\ ``base``¡£
+  åŸºæœ¬åç§°å¯¹åº”äºŽä¸å¸¦å‰ç¼€å’ŒåŽç¼€çš„ç›®æ ‡PDBæ–‡ä»¶åï¼ˆå‚è§\ ``$<TARGET_PDB_FILE_NAME:tgt>``ï¼‰ã€‚\
+  ä¾‹å¦‚ï¼Œå¦‚æžœç›®æ ‡æ–‡ä»¶åæ˜¯\ ``base.pdb``ï¼ŒåŸºæœ¬åç§°ä¸º\ ``base``ã€‚
 
-  ÁíÇë²ÎÔÄ\ :prop_tgt:`PDB_NAME`\ Ä¿±êÊôÐÔ¼°ÆäÌØ¶¨ÓÚÅäÖÃµÄ±äÌå\ :prop_tgt:`PDB_NAME_<CONFIG>`¡£
+  å¦è¯·å‚é˜…\ :prop_tgt:`PDB_NAME`\ ç›®æ ‡å±žæ€§åŠå…¶ç‰¹å®šäºŽé…ç½®çš„å˜ä½“\ :prop_tgt:`PDB_NAME_<CONFIG>`ã€‚
 
-  Ò²¿ÉÒÔ¿¼ÂÇ\ :prop_tgt:`<CONFIG>_POSTFIX`\ ºÍ\ :prop_tgt:`DEBUG_POSTFIX`\ Ä¿±êÊôÐÔ¡£
+  ä¹Ÿå¯ä»¥è€ƒè™‘\ :prop_tgt:`<CONFIG>_POSTFIX`\ å’Œ\ :prop_tgt:`DEBUG_POSTFIX`\ ç›®æ ‡å±žæ€§ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ã€‚
 
 .. genex:: $<TARGET_PDB_FILE_NAME:tgt>
 
   .. versionadded:: 3.1
 
-  Á´½ÓÆ÷Éú³ÉµÄ³ÌÐòÊý¾Ý¿âÎÄ¼þ£¨.pdb£©µÄÃû³Æ¡£
+  é“¾æŽ¥å™¨ç”Ÿæˆçš„ç¨‹åºæ•°æ®åº“æ–‡ä»¶ï¼ˆ.pdbï¼‰çš„åç§°ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_PDB_FILE_DIR:tgt>
 
   .. versionadded:: 3.1
 
-  Á´½ÓÆ÷Éú³ÉµÄ³ÌÐòÊý¾Ý¿âÎÄ¼þ£¨.pdb£©µÄÄ¿Â¼¡£
+  é“¾æŽ¥å™¨ç”Ÿæˆçš„ç¨‹åºæ•°æ®åº“æ–‡ä»¶ï¼ˆ.pdbï¼‰çš„ç›®å½•ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_BUNDLE_DIR:tgt>
 
   .. versionadded:: 3.9
 
-  bundleÄ¿Â¼µÄÍêÕûÂ·¾¶£¨\ ``/path/to/my.app``¡¢\ ``/path/to/my.framework``\ »òÕß\
-  ``/path/to/my.bundle``£©£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  bundleç›®å½•çš„å®Œæ•´è·¯å¾„ï¼ˆ\ ``/path/to/my.app``ã€\ ``/path/to/my.framework``\ æˆ–è€…\
+  ``/path/to/my.bundle``ï¼‰ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_BUNDLE_DIR_NAME:tgt>
 
   .. versionadded:: 3.24
 
-  bundleÄ¿Â¼µÄÃû³Æ£¨\ ``my.app``¡¢\ ``my.framework``\ »òÕß\ ``my.bundle``£©£¬ÆäÖÐ\
-  ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£
+  bundleç›®å½•çš„åç§°ï¼ˆ\ ``my.app``ã€\ ``my.framework``\ æˆ–è€…\ ``my.bundle``ï¼‰ï¼Œå…¶ä¸­\
+  ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_BUNDLE_CONTENT_DIR:tgt>
 
   .. versionadded:: 3.9
 
-  bundleÄÚÈÝÄ¿Â¼µÄÍêÕûÂ·¾¶£¬ÆäÖÐ\ ``tgt``\ ÊÇÄ¿±êµÄÃû³Æ¡£¶ÔÓÚmacOS SDK£¬ËüÖ¸Ïò\
-  ``/path/to/my.app/Contents``¡¢\ ``/path/to/my.framework``\ »ò\
-  ``/path/to/my.bundle/Contents``¡£¶ÔÓÚËùÓÐÆäËûSDK£¨ÀýÈçiOS£©£¬ËüÖ¸Ïò\
-  ``/path/to/my.app``¡¢\ ``/path/to/my.framework``\ »ò\ ``/path/to/my.bundle`` £¬\
-  ÒòÎªËüÃÇµÄ±âÆ½bundle½á¹¹¡£
+  bundleå†…å®¹ç›®å½•çš„å®Œæ•´è·¯å¾„ï¼Œå…¶ä¸­\ ``tgt``\ æ˜¯ç›®æ ‡çš„åç§°ã€‚å¯¹äºŽmacOS SDKï¼Œå®ƒæŒ‡å‘\
+  ``/path/to/my.app/Contents``ã€\ ``/path/to/my.framework``\ æˆ–\
+  ``/path/to/my.bundle/Contents``ã€‚å¯¹äºŽæ‰€æœ‰å…¶ä»–SDKï¼ˆä¾‹å¦‚iOSï¼‰ï¼Œå®ƒæŒ‡å‘\
+  ``/path/to/my.app``ã€\ ``/path/to/my.framework``\ æˆ–\ ``/path/to/my.bundle`` ï¼Œ\
+  å› ä¸ºå®ƒä»¬çš„æ‰å¹³bundleç»“æž„ã€‚
 
-  Çë×¢Òâ£¬\ ``tgt``\ ²¢Ã»ÓÐ×÷Îª¼ÆËã¸Ã±í´ïÊ½µÄÄ¿±êµÄÒÀÀµÏîÌí¼Ó£¨Çë²ÎÔÄ²ßÂÔ\ :policy:`CMP0112`£©¡£
+  è¯·æ³¨æ„ï¼Œ\ ``tgt``\ å¹¶æ²¡æœ‰ä½œä¸ºè®¡ç®—è¯¥è¡¨è¾¾å¼çš„ç›®æ ‡çš„ä¾èµ–é¡¹æ·»åŠ ï¼ˆè¯·å‚é˜…ç­–ç•¥\ :policy:`CMP0112`ï¼‰ã€‚
 
 .. genex:: $<TARGET_OBJECTS:tgt>
 
@@ -2222,13 +2222,13 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
 
   .. versionadded:: 3.21
 
-  Ä¿±êÔÚÔËÐÐÊ±ÒÀÀµµÄDLLÁÐ±í¡£ÕâÊÇÓÉÄ¿±êµÄ´«µÝÒÀÀµÏîÖÐËùÓÐ ``SHARED`` Ä¿±êµÄÎ»ÖÃ¾ö¶¨µÄ¡£\
-  Èç¹ûÖ»ÐèÒªDLLËùÔÚµÄÄ¿Â¼£¬Çë²Î¼û\ :genex:`TARGET_RUNTIME_DLL_DIRS`\ Éú³ÉÆ÷±í´ïÊ½¡£
-  ÔÚ¿ÉÖ´ÐÐÎÄ¼þ¡¢\ ``SHARED``\ ¿âºÍ\ ``MODULE``\ ¿âÒÔÍâµÄÄ¿±êÉÏÊ¹ÓÃ´ËÉú³ÉÆ÷±í´ïÊ½ÊÇ´íÎóµÄ¡£\
-  **ÔÚ·ÇdllÆ½Ì¨ÉÏ£¬Õâ¸ö±í´ïÊ½×ÜÊÇÇóÖµÎª¿Õ×Ö·û´®**¡£
+  ç›®æ ‡åœ¨è¿è¡Œæ—¶ä¾èµ–çš„DLLåˆ—è¡¨ã€‚è¿™æ˜¯ç”±ç›®æ ‡çš„ä¼ é€’ä¾èµ–é¡¹ä¸­æ‰€æœ‰ ``SHARED`` ç›®æ ‡çš„ä½ç½®å†³å®šçš„ã€‚\
+  å¦‚æžœåªéœ€è¦DLLæ‰€åœ¨çš„ç›®å½•ï¼Œè¯·å‚è§\ :genex:`TARGET_RUNTIME_DLL_DIRS`\ ç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
+  åœ¨å¯æ‰§è¡Œæ–‡ä»¶ã€\ ``SHARED``\ åº“å’Œ\ ``MODULE``\ åº“ä»¥å¤–çš„ç›®æ ‡ä¸Šä½¿ç”¨æ­¤ç”Ÿæˆå™¨è¡¨è¾¾å¼æ˜¯é”™è¯¯çš„ã€‚\
+  **åœ¨éždllå¹³å°ä¸Šï¼Œè¿™ä¸ªè¡¨è¾¾å¼æ€»æ˜¯æ±‚å€¼ä¸ºç©ºå­—ç¬¦ä¸²**ã€‚
 
-  ¿ÉÒÔÊ¹ÓÃ\ :option:`cmake -E copy -t <cmake-E copy>`\
-  ÃüÁî½«Ä¿±êËùÒÀÀµµÄËùÓÐDLL¸´ÖÆµ½\ ``POST_BUILD``\ ×Ô¶¨ÒåÃüÁîµÄÊä³öÄ¿Â¼ÖÐ¡£ÀýÈç£º
+  å¯ä»¥ä½¿ç”¨\ :option:`cmake -E copy -t <cmake-E copy>`\
+  å‘½ä»¤å°†ç›®æ ‡æ‰€ä¾èµ–çš„æ‰€æœ‰DLLå¤åˆ¶åˆ°\ ``POST_BUILD``\ è‡ªå®šä¹‰å‘½ä»¤çš„è¾“å‡ºç›®å½•ä¸­ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -2243,72 +2243,72 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
 
   .. note::
 
-    :ref:`Imported Targets`\ µÄÄ¿±êÖ»ÓÐÔÚÖªµÀÆä\ ``.dll``\ ÎÄ¼þµÄÎ»ÖÃÊ±²Å»á±»Ö§³Ö¡£\
-    µ¼ÈëµÄ\ ``SHARED``\ ¿â±ØÐë½«\ :prop_tgt:`IMPORTED_LOCATION`\ ÉèÖÃÎªÆä\ ``.dll``\
-    ÎÄ¼þ¡£ÓÐ¹ØÏêÏ¸ÐÅÏ¢£¬Çë²ÎÔÄ\ :ref:`add_libraryµ¼Èë¿â <add_library imported libraries>`\
-    ²¿·Ö¡£Ðí¶à²éÕÒÄ£¿éÉú³É\ ``UNKNOWN``\ ÀàÐÍµÄµ¼ÈëÄ¿±ê£¬Òò´Ë½«±»ºöÂÔ¡£
+    :ref:`Imported Targets`\ çš„ç›®æ ‡åªæœ‰åœ¨çŸ¥é“å…¶\ ``.dll``\ æ–‡ä»¶çš„ä½ç½®æ—¶æ‰ä¼šè¢«æ”¯æŒã€‚\
+    å¯¼å…¥çš„\ ``SHARED``\ åº“å¿…é¡»å°†\ :prop_tgt:`IMPORTED_LOCATION`\ è®¾ç½®ä¸ºå…¶\ ``.dll``\
+    æ–‡ä»¶ã€‚æœ‰å…³è¯¦ç»†ä¿¡æ¯ï¼Œè¯·å‚é˜…\ :ref:`add_libraryå¯¼å…¥åº“ <add_library imported libraries>`\
+    éƒ¨åˆ†ã€‚è®¸å¤šæŸ¥æ‰¾æ¨¡å—ç”Ÿæˆ\ ``UNKNOWN``\ ç±»åž‹çš„å¯¼å…¥ç›®æ ‡ï¼Œå› æ­¤å°†è¢«å¿½ç•¥ã€‚
 
-  ÔÚÖ§³ÖÔËÐÐÊ±Â·¾¶£¨\ ``RPATH``\ £©µÄÆ½Ì¨ÉÏ£¬Çë²Î¿¼\ :prop_tgt:`INSTALL_RPATH`\ Ä¿±êÊôÐÔ¡£\
-  ÔÚAppleÆ½Ì¨ÉÏ£¬Çë²Î¿¼\ :prop_tgt:`INSTALL_NAME_DIR`\ Ä¿±êÊôÐÔ¡£
+  åœ¨æ”¯æŒè¿è¡Œæ—¶è·¯å¾„ï¼ˆ\ ``RPATH``\ ï¼‰çš„å¹³å°ä¸Šï¼Œè¯·å‚è€ƒ\ :prop_tgt:`INSTALL_RPATH`\ ç›®æ ‡å±žæ€§ã€‚\
+  åœ¨Appleå¹³å°ä¸Šï¼Œè¯·å‚è€ƒ\ :prop_tgt:`INSTALL_NAME_DIR`\ ç›®æ ‡å±žæ€§ã€‚
 
 .. genex:: $<TARGET_RUNTIME_DLL_DIRS:tgt>
 
   .. versionadded:: 3.27
 
-  °üº¬Ä¿±êÔËÐÐÊ±ËùÒÀÀµµÄDLLµÄÄ¿Â¼ÁÐ±í£¨²Î¼û\ :genex:`TARGET_RUNTIME_DLLS`\ £©¡£ÕâÊÇÓÉÄ¿\
-  ±êµÄ´«µÝÒÀÀµÏîÖÐËùÓÐ\ ``SHARED``\ Ä¿±êµÄÎ»ÖÃ¾ö¶¨µÄ¡£ÔÚ¿ÉÖ´ÐÐÎÄ¼þ¡¢\ ``SHARED``\ ¿âºÍ\
-  ``MODULE``\ ¿âÒÔÍâµÄÄ¿±êÉÏÊ¹ÓÃ´ËÉú³ÉÆ÷±í´ïÊ½ÊÇ´íÎóµÄ¡£\ **ÔÚ·ÇDLLÆ½Ì¨ÉÏ£¬´Ë±í´ïÊ½µÄ¼ÆËã\
-  ½á¹ûÊ¼ÖÕÎª¿Õ×Ö·û´®**¡£
+  åŒ…å«ç›®æ ‡è¿è¡Œæ—¶æ‰€ä¾èµ–çš„DLLçš„ç›®å½•åˆ—è¡¨ï¼ˆå‚è§\ :genex:`TARGET_RUNTIME_DLLS`\ ï¼‰ã€‚è¿™æ˜¯ç”±ç›®\
+  æ ‡çš„ä¼ é€’ä¾èµ–é¡¹ä¸­æ‰€æœ‰\ ``SHARED``\ ç›®æ ‡çš„ä½ç½®å†³å®šçš„ã€‚åœ¨å¯æ‰§è¡Œæ–‡ä»¶ã€\ ``SHARED``\ åº“å’Œ\
+  ``MODULE``\ åº“ä»¥å¤–çš„ç›®æ ‡ä¸Šä½¿ç”¨æ­¤ç”Ÿæˆå™¨è¡¨è¾¾å¼æ˜¯é”™è¯¯çš„ã€‚\ **åœ¨éžDLLå¹³å°ä¸Šï¼Œæ­¤è¡¨è¾¾å¼çš„è®¡ç®—\
+  ç»“æžœå§‹ç»ˆä¸ºç©ºå­—ç¬¦ä¸²**ã€‚
 
-  Õâ¸öÉú³ÉÆ÷±í´ïÊ½¿ÉÒÔÓÃÀ´´´½¨Ò»¸öÅú´¦ÀíÎÄ¼þ£¬Ê¹ÓÃ\ :command:`file(GENERATE)`\ À´ÉèÖÃÏà\
-  Ó¦µÄPATH»·¾³±äÁ¿¡£
+  è¿™ä¸ªç”Ÿæˆå™¨è¡¨è¾¾å¼å¯ä»¥ç”¨æ¥åˆ›å»ºä¸€ä¸ªæ‰¹å¤„ç†æ–‡ä»¶ï¼Œä½¿ç”¨\ :command:`file(GENERATE)`\ æ¥è®¾ç½®ç›¸\
+  åº”çš„PATHçŽ¯å¢ƒå˜é‡ã€‚
 
-µ¼³öºÍ°²×°±í´ïÊ½
+å¯¼å‡ºå’Œå®‰è£…è¡¨è¾¾å¼
 ------------------------------
 
 .. genex:: $<INSTALL_INTERFACE:...>
 
-  ``...``\ µÄÄÚÈÝµ±Ê¹ÓÃ\ :command:`install(EXPORT)`\ µ¼³öÊôÐÔÊ±£¬·ñÔòÎª¿Õ¡£
+  ``...``\ çš„å†…å®¹å½“ä½¿ç”¨\ :command:`install(EXPORT)`\ å¯¼å‡ºå±žæ€§æ—¶ï¼Œå¦åˆ™ä¸ºç©ºã€‚
 
 .. genex:: $<BUILD_INTERFACE:...>
 
-  µ±Ê¹ÓÃ\ :command:`export`\ µ¼³öÊôÐÔÊ±µÄ\ ``...``\ ÄÚÈÝ£¬»òÕßµ±Ä¿±ê±»Í¬Ò»¹¹½¨ÏµÍ³ÖÐµÄ\
-  ÁíÒ»¸öÄ¿±êÊ¹ÓÃÊ±¡£·ñÔòÕ¹¿ªÎª¿Õ×Ö·û´®¡£
+  å½“ä½¿ç”¨\ :command:`export`\ å¯¼å‡ºå±žæ€§æ—¶çš„\ ``...``\ å†…å®¹ï¼Œæˆ–è€…å½“ç›®æ ‡è¢«åŒä¸€æž„å»ºç³»ç»Ÿä¸­çš„\
+  å¦ä¸€ä¸ªç›®æ ‡ä½¿ç”¨æ—¶ã€‚å¦åˆ™å±•å¼€ä¸ºç©ºå­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<BUILD_LOCAL_INTERFACE:...>
 
   .. versionadded:: 3.26
 
-  ``...``\ µÄÄÚÈÝµ±Ä¿±ê±»Í¬Ò»¹¹½¨ÏµÍ³ÖÐµÄÁíÒ»¸öÄ¿±êÊ¹ÓÃÊ±¡£·ñÔòÕ¹¿ªÎª¿Õ×Ö·û´®¡£
+  ``...``\ çš„å†…å®¹å½“ç›®æ ‡è¢«åŒä¸€æž„å»ºç³»ç»Ÿä¸­çš„å¦ä¸€ä¸ªç›®æ ‡ä½¿ç”¨æ—¶ã€‚å¦åˆ™å±•å¼€ä¸ºç©ºå­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<INSTALL_PREFIX>
 
-  µ±Í¨¹ý\ :command:`install(EXPORT)`\ µ¼³öÄ¿±êÊ±£¬»òÔÚ\ :prop_tgt:`INSTALL_NAME_DIR`\
-  ÊôÐÔ¡¢\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ µÄ\ ``INSTALL_NAME_DIR``\
-  ²ÎÊýÖÐÇóÖµÊ±£¬°²×°Ç°×ºµÄÄÚÈÝ£¬·ñÔòÎª¿Õ¡£
+  å½“é€šè¿‡\ :command:`install(EXPORT)`\ å¯¼å‡ºç›®æ ‡æ—¶ï¼Œæˆ–åœ¨\ :prop_tgt:`INSTALL_NAME_DIR`\
+  å±žæ€§ã€\ :command:`install(RUNTIME_DEPENDENCY_SET)`\ çš„\ ``INSTALL_NAME_DIR``\
+  å‚æ•°ä¸­æ±‚å€¼æ—¶ï¼Œå®‰è£…å‰ç¼€çš„å†…å®¹ï¼Œå¦åˆ™ä¸ºç©ºã€‚
 
   .. versionchanged:: 3.27
-    ¼ÆËãÎª\ :command:`install(CODE)`\ µÄcode²ÎÊý»ò\ :command:`install(SCRIPT)`\
-    µÄÎÄ¼þ²ÎÊýÖÐµÄ°²×°Ç°×ºÄÚÈÝ¡£
+    è®¡ç®—ä¸º\ :command:`install(CODE)`\ çš„codeå‚æ•°æˆ–\ :command:`install(SCRIPT)`\
+    çš„æ–‡ä»¶å‚æ•°ä¸­çš„å®‰è£…å‰ç¼€å†…å®¹ã€‚
 
-¶à²ã±í´ïÊ½ÇóÖµ
+å¤šå±‚è¡¨è¾¾å¼æ±‚å€¼
 ---------------------------------
 
 .. genex:: $<GENEX_EVAL:expr>
 
   .. versionadded:: 3.12
 
-  ÔÚµ±Ç°ÉÏÏÂÎÄÖÐ×÷ÎªÉú³ÉÆ÷±í´ïÊ½¼ÆËãµÄ\ ``expr``\ µÄÄÚÈÝ¡£ÕâÔÊÐíÊ¹ÓÃÉú³ÉÆ÷±í´ïÊ½£¬\
-  Æä¼ÆËã½á¹û±¾Éí¾ÍÊÇÉú³ÉÆ÷±í´ïÊ½¡£
+  åœ¨å½“å‰ä¸Šä¸‹æ–‡ä¸­ä½œä¸ºç”Ÿæˆå™¨è¡¨è¾¾å¼è®¡ç®—çš„\ ``expr``\ çš„å†…å®¹ã€‚è¿™å…è®¸ä½¿ç”¨ç”Ÿæˆå™¨è¡¨è¾¾å¼ï¼Œ\
+  å…¶è®¡ç®—ç»“æžœæœ¬èº«å°±æ˜¯ç”Ÿæˆå™¨è¡¨è¾¾å¼ã€‚
 
 .. genex:: $<TARGET_GENEX_EVAL:tgt,expr>
 
   .. versionadded:: 3.12
 
-  ``expr``\ µÄÄÚÈÝÔÚ\ ``tgt``\ Ä¿±êµÄÉÏÏÂÎÄÖÐ×÷ÎªÉú³ÉÆ÷±í´ïÊ½¼ÆËã¡£ÕâÔÊÐíÊ¹ÓÃ±¾Éí°üº¬Éú³É\
-  Æ÷±í´ïÊ½µÄ×Ô¶¨ÒåÄ¿±êÊôÐÔ¡£
+  ``expr``\ çš„å†…å®¹åœ¨\ ``tgt``\ ç›®æ ‡çš„ä¸Šä¸‹æ–‡ä¸­ä½œä¸ºç”Ÿæˆå™¨è¡¨è¾¾å¼è®¡ç®—ã€‚è¿™å…è®¸ä½¿ç”¨æœ¬èº«åŒ…å«ç”Ÿæˆ\
+  å™¨è¡¨è¾¾å¼çš„è‡ªå®šä¹‰ç›®æ ‡å±žæ€§ã€‚
 
-  µ±ÄãÏ£Íû¹ÜÀíÖ§³ÖÉú³ÉÆ÷±í´ïÊ½µÄ×Ô¶¨ÒåÊôÐÔÊ±£¬¾ßÓÐ¼ÆËãÉú³ÉÆ÷±í´ïÊ½µÄ¹¦ÄÜ·Ç³£ÓÐÓÃ¡£ÀýÈç£º
+  å½“ä½ å¸Œæœ›ç®¡ç†æ”¯æŒç”Ÿæˆå™¨è¡¨è¾¾å¼çš„è‡ªå®šä¹‰å±žæ€§æ—¶ï¼Œå…·æœ‰è®¡ç®—ç”Ÿæˆå™¨è¡¨è¾¾å¼çš„åŠŸèƒ½éžå¸¸æœ‰ç”¨ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: cmake
 
@@ -2322,11 +2322,11 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
       COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_PROPERTY:foo,CUSTOM_KEYS>
     )
 
-  ``printFooKeys``\ ×Ô¶¨ÒåÃüÁîµÄ¼òµ¥ÊµÏÖÊÇ´íÎóµÄ£¬ÒòÎª\ ``CUSTOM_KEYS``\ Ä¿±êÊôÐÔÃ»ÓÐ±»¼ÆËã£¬\
-  ²¢ÇÒÄÚÈÝ°´Ô­Ñù´«µÝ£¨¼´\ ``$<$<CONFIG:DEBUG>:FOO_EXTRA_THINGS>``£©¡£
+  ``printFooKeys``\ è‡ªå®šä¹‰å‘½ä»¤çš„ç®€å•å®žçŽ°æ˜¯é”™è¯¯çš„ï¼Œå› ä¸º\ ``CUSTOM_KEYS``\ ç›®æ ‡å±žæ€§æ²¡æœ‰è¢«è®¡ç®—ï¼Œ\
+  å¹¶ä¸”å†…å®¹æŒ‰åŽŸæ ·ä¼ é€’ï¼ˆå³\ ``$<$<CONFIG:DEBUG>:FOO_EXTRA_THINGS>``ï¼‰ã€‚
 
-  ÎªÁËµÃµ½Ô¤ÆÚµÄ½á¹û£¨ÀýÈç£¬Èç¹ûconfigÊÇ\ ``Debug``£¬Ôò\ ``FOO_EXTRA_THINGS``£©£¬\
-  ÐèÒª¼ÆËã\ ``$<TARGET_PROPERTY:foo,CUSTOM_KEYS>``\ µÄÊä³ö£º
+  ä¸ºäº†å¾—åˆ°é¢„æœŸçš„ç»“æžœï¼ˆä¾‹å¦‚ï¼Œå¦‚æžœconfigæ˜¯\ ``Debug``ï¼Œåˆ™\ ``FOO_EXTRA_THINGS``ï¼‰ï¼Œ\
+  éœ€è¦è®¡ç®—\ ``$<TARGET_PROPERTY:foo,CUSTOM_KEYS>``\ çš„è¾“å‡ºï¼š
 
   .. code-block:: cmake
 
@@ -2335,22 +2335,22 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
         echo $<TARGET_GENEX_EVAL:foo,$<TARGET_PROPERTY:foo,CUSTOM_KEYS>>
     )
 
-×ªÒå×Ö·û
+è½¬ä¹‰å­—ç¬¦
 ------------------
 
-ÕâÐ©±í´ïÊ½ÇóÖµÎªÌØ¶¨µÄ×Ö·û´®×ÖÃæÁ¿¡£Ê¹ÓÃËüÃÇÀ´´úÌæÊµ¼ÊµÄ×Ö·û´®×ÖÃæÁ¿£¬ÒÔ·ÀÖ¹ËüÃÇ¾ßÓÐÌØÊâµÄº¬Òå¡£
+è¿™äº›è¡¨è¾¾å¼æ±‚å€¼ä¸ºç‰¹å®šçš„å­—ç¬¦ä¸²å­—é¢é‡ã€‚ä½¿ç”¨å®ƒä»¬æ¥ä»£æ›¿å®žé™…çš„å­—ç¬¦ä¸²å­—é¢é‡ï¼Œä»¥é˜²æ­¢å®ƒä»¬å…·æœ‰ç‰¹æ®Šçš„å«ä¹‰ã€‚
 
 .. genex:: $<ANGLE-R>
 
-  Ò»¸ö\ ``>``\ ×ÖÃæÁ¿¡£ÀýÈç£¬ÓÃÓÚ±È½Ï°üº¬\ ``>``\ µÄ×Ö·û´®¡£
+  ä¸€ä¸ª\ ``>``\ å­—é¢é‡ã€‚ä¾‹å¦‚ï¼Œç”¨äºŽæ¯”è¾ƒåŒ…å«\ ``>``\ çš„å­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<COMMA>
 
-  Ò»¸ö\ ``,``\ ×ÖÃæÁ¿¡£ÓÃÓÚ±È½Ï°üº¬\ ``,``\ µÄ×Ö·û´®¡£
+  ä¸€ä¸ª\ ``,``\ å­—é¢é‡ã€‚ç”¨äºŽæ¯”è¾ƒåŒ…å«\ ``,``\ çš„å­—ç¬¦ä¸²ã€‚
 
 .. genex:: $<SEMICOLON>
 
-  Ò»¸ö\ ``;``\ ×ÖÃæÁ¿¡£ÓÃÓÚ·ÀÖ¹\ ``;``\ ¶Ô²ÎÊý½øÐÐÁÐ±íÀ©Õ¹¡£
+  ä¸€ä¸ª\ ``;``\ å­—é¢é‡ã€‚ç”¨äºŽé˜²æ­¢\ ``;``\ å¯¹å‚æ•°è¿›è¡Œåˆ—è¡¨æ‰©å±•ã€‚
 
 .. genex:: $<QUOTE>
 
@@ -2359,9 +2359,9 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
   A literal ``"``. Used to allow string literal quotes inside a generator expression.
 
 
-ÆúÓÃ±í´ïÊ½
+å¼ƒç”¨è¡¨è¾¾å¼
 ----------------------
 
 .. genex:: $<CONFIGURATION>
 
-  ÅäÖÃÃû³Æ¡£CMake 3.0ºóÒÑÆúÓÃ¡£ÓÃ\ :genex:`CONFIG`\ ´úÌæ¡£
+  é…ç½®åç§°ã€‚CMake 3.0åŽå·²å¼ƒç”¨ã€‚ç”¨\ :genex:`CONFIG`\ ä»£æ›¿ã€‚

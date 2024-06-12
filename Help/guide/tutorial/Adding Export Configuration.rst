@@ -1,17 +1,17 @@
-²½Öè11£ºÌí¼Óµ¼³öÅäÖÃ
+ï»¿æ­¥éª¤11ï¼šæ·»åŠ å¯¼å‡ºé…ç½®
 ====================================
 
-ÔÚ\ :guide:`°²×°ºÍ²âÊÔ <tutorial/Installing and Testing>`\ ½Ì³ÌÖĞ£¬ÎÒÃÇÔö¼ÓÁËCMake\
-°²×°ÏîÄ¿¿âºÍÍ·ÎÄ¼şµÄÄÜÁ¦¡£ÔÚ\ :guide:`¹¹½¨°²×°³ÌĞò <tutorial/Packaging an Installer>`\
-ÆÚ¼ä£¬ÎÒÃÇÌí¼ÓÁË´ò°üÕâĞ©ĞÅÏ¢µÄ¹¦ÄÜ£¬ÒÔ±ã½«Æä·Ö·¢¸øÆäËûÈË¡£
+åœ¨\ :guide:`å®‰è£…å’Œæµ‹è¯• <tutorial/Installing and Testing>`\ æ•™ç¨‹ä¸­ï¼Œæˆ‘ä»¬å¢åŠ äº†CMake\
+å®‰è£…é¡¹ç›®åº“å’Œå¤´æ–‡ä»¶çš„èƒ½åŠ›ã€‚åœ¨\ :guide:`æ„å»ºå®‰è£…ç¨‹åº <tutorial/Packaging an Installer>`\
+æœŸé—´ï¼Œæˆ‘ä»¬æ·»åŠ äº†æ‰“åŒ…è¿™äº›ä¿¡æ¯çš„åŠŸèƒ½ï¼Œä»¥ä¾¿å°†å…¶åˆ†å‘ç»™å…¶ä»–äººã€‚
 
-ÏÂÒ»²½ÊÇÌí¼Ó±ØÒªµÄĞÅÏ¢£¬ÒÔ±ãÆäËûCMakeÏîÄ¿¿ÉÒÔÊ¹ÓÃÎÒÃÇµÄÏîÄ¿£¬ÎŞÂÛÊÇÔÚ¹¹½¨Ä¿Â¼¡¢±¾µØ°²×°»¹ÊÇ\
-´ò°üÊ±¡£
+ä¸‹ä¸€æ­¥æ˜¯æ·»åŠ å¿…è¦çš„ä¿¡æ¯ï¼Œä»¥ä¾¿å…¶ä»–CMakeé¡¹ç›®å¯ä»¥ä½¿ç”¨æˆ‘ä»¬çš„é¡¹ç›®ï¼Œæ— è®ºæ˜¯åœ¨æ„å»ºç›®å½•ã€æœ¬åœ°å®‰è£…è¿˜æ˜¯\
+æ‰“åŒ…æ—¶ã€‚
 
-µÚÒ»²½ÊÇ¸üĞÂÎÒÃÇµÄ\ :command:`install(TARGETS)`\ ÃüÁî£¬²»½öÖ¸¶¨\ ``DESTINATION``£¬»¹\
-Ö¸¶¨\ ``EXPORT``¡£\ ``EXPORT``\ ¹Ø¼ü×ÖÉú³É²¢°²×°Ò»¸öCMakeÎÄ¼ş£¬ÆäÖĞ°üº¬´Ó°²×°Ê÷µ¼Èë°²×°\
-ÃüÁîÖĞÁĞ³öµÄËùÓĞÄ¿±êµÄ´úÂë¡£ËùÒÔÈÃÎÒÃÇ¼ÌĞø£¬Í¨¹ı¸üĞÂ\ ``MathFunctions/CMakeLists.txt``\
-ÖĞµÄ\ ``install``\ ÃüÁîÀ´ÏÔÊ½\ ``EXPORT`` ``MathFunctions``\ ¿â£¬ÈçÏÂËùÊ¾£º
+ç¬¬ä¸€æ­¥æ˜¯æ›´æ–°æˆ‘ä»¬çš„\ :command:`install(TARGETS)`\ å‘½ä»¤ï¼Œä¸ä»…æŒ‡å®š\ ``DESTINATION``ï¼Œè¿˜\
+æŒ‡å®š\ ``EXPORT``ã€‚\ ``EXPORT``\ å…³é”®å­—ç”Ÿæˆå¹¶å®‰è£…ä¸€ä¸ªCMakeæ–‡ä»¶ï¼Œå…¶ä¸­åŒ…å«ä»å®‰è£…æ ‘å¯¼å…¥å®‰è£…\
+å‘½ä»¤ä¸­åˆ—å‡ºçš„æ‰€æœ‰ç›®æ ‡çš„ä»£ç ã€‚æ‰€ä»¥è®©æˆ‘ä»¬ç»§ç»­ï¼Œé€šè¿‡æ›´æ–°\ ``MathFunctions/CMakeLists.txt``\
+ä¸­çš„\ ``install``\ å‘½ä»¤æ¥æ˜¾å¼\ ``EXPORT`` ``MathFunctions``\ åº“ï¼Œå¦‚ä¸‹æ‰€ç¤ºï¼š
 
 .. literalinclude:: Complete/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
@@ -19,9 +19,9 @@
   :language: cmake
   :start-after: # install libs
 
-ÏÖÔÚÎÒÃÇÒÑ¾­µ¼³öÁË\ ``MathFunctions``£¬ÎÒÃÇ»¹ĞèÒªÏÔÊ½°²×°Éú³ÉµÄ\
-``MathFunctionsTargets.cmake``\ ÎÄ¼ş¡£ÕâÊÇÍ¨¹ıÔÚ¶¥²ã\ ``CMakeLists.txt``\ µÄµ×²¿Ìí\
-¼ÓÒÔÏÂÄÚÈİÀ´ÊµÏÖµÄ£º
+ç°åœ¨æˆ‘ä»¬å·²ç»å¯¼å‡ºäº†\ ``MathFunctions``ï¼Œæˆ‘ä»¬è¿˜éœ€è¦æ˜¾å¼å®‰è£…ç”Ÿæˆçš„\
+``MathFunctionsTargets.cmake``\ æ–‡ä»¶ã€‚è¿™æ˜¯é€šè¿‡åœ¨é¡¶å±‚\ ``CMakeLists.txt``\ çš„åº•éƒ¨æ·»\
+åŠ ä»¥ä¸‹å†…å®¹æ¥å®ç°çš„ï¼š
 
 .. literalinclude:: Complete/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -30,7 +30,7 @@
   :start-after: # install the configuration targets
   :end-before: include(CMakePackageConfigHelpers)
 
-´ËÊ±£¬ÄãÓ¦¸Ã³¢ÊÔÔËĞĞCMake¡£Èç¹ûÒ»ÇĞ¶¼ÉèÖÃÕıÈ·£¬Äã»á¿´µ½CMake½«²úÉúÒ»¸ö´íÎó£¬¿´ÆğÀ´Ïñ£º
+æ­¤æ—¶ï¼Œä½ åº”è¯¥å°è¯•è¿è¡ŒCMakeã€‚å¦‚æœä¸€åˆ‡éƒ½è®¾ç½®æ­£ç¡®ï¼Œä½ ä¼šçœ‹åˆ°CMakeå°†äº§ç”Ÿä¸€ä¸ªé”™è¯¯ï¼Œçœ‹èµ·æ¥åƒï¼š
 
 .. code-block:: console
 
@@ -41,77 +41,77 @@
 
   which is prefixed in the source directory.
 
-CMakeÔÚÉú³Éµ¼³öĞÅÏ¢Ê±¸æËßÄãÕâÒ»µã
-Ëü½«µ¼³öÒ»¸ö±¾ÖÊÉÏÓëµ±Ç°»úÆ÷°ó¶¨µÄÂ·¾¶
-ÔÚÆäËû»úÆ÷ÉÏÎŞĞ§¡£½â¾öÕâ¸öÎÊÌâµÄ·½·¨ÊÇ¸üĞÂ\ ``MathFunctions``\ µÄ\
-:command:`target_include_directories`£¬ÒÔÀí½âÔÚ¹¹½¨Ä¿Â¼ºÍ°²×°/°üÖĞÊ¹ÓÃËüÊ±ĞèÒª²»Í¬µÄ\
-``INTERFACE``\ Î»ÖÃ¡£ÕâÒâÎ¶×Å½«\ ``MathFunctions``\ µÄ\
-:command:`target_include_directories` \µ÷ÓÃ×ª»»³ÉÈçÏÂËùÊ¾£º
+CMakeåœ¨ç”Ÿæˆå¯¼å‡ºä¿¡æ¯æ—¶å‘Šè¯‰ä½ è¿™ä¸€ç‚¹
+å®ƒå°†å¯¼å‡ºä¸€ä¸ªæœ¬è´¨ä¸Šä¸å½“å‰æœºå™¨ç»‘å®šçš„è·¯å¾„
+åœ¨å…¶ä»–æœºå™¨ä¸Šæ— æ•ˆã€‚è§£å†³è¿™ä¸ªé—®é¢˜çš„æ–¹æ³•æ˜¯æ›´æ–°\ ``MathFunctions``\ çš„\
+:command:`target_include_directories`ï¼Œä»¥ç†è§£åœ¨æ„å»ºç›®å½•å’Œå®‰è£…/åŒ…ä¸­ä½¿ç”¨å®ƒæ—¶éœ€è¦ä¸åŒçš„\
+``INTERFACE``\ ä½ç½®ã€‚è¿™æ„å‘³ç€å°†\ ``MathFunctions``\ çš„\
+:command:`target_include_directories` \è°ƒç”¨è½¬æ¢æˆå¦‚ä¸‹æ‰€ç¤ºï¼š
 
 .. literalinclude:: Step12/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
   :name: MathFunctions/CMakeLists.txt-target_include_directories
   :language: cmake
-  :start-after: # ÎÒÃÇ×Ô¼º³ıÍâ
-  :end-before: # ÊÇ·ñÊ¹ÓÃ×Ô¼ºµÄÊıÑ§º¯Êı
+  :start-after: # æˆ‘ä»¬è‡ªå·±é™¤å¤–
+  :end-before: # æ˜¯å¦ä½¿ç”¨è‡ªå·±çš„æ•°å­¦å‡½æ•°
 
-Ò»µ©Ëü±»¸üĞÂ£¬ÎÒÃÇ¿ÉÒÔÖØĞÂÔËĞĞCMake²¢ÑéÖ¤Ëü²»ÔÙ·¢³ö¾¯¸æ¡£
+ä¸€æ—¦å®ƒè¢«æ›´æ–°ï¼Œæˆ‘ä»¬å¯ä»¥é‡æ–°è¿è¡ŒCMakeå¹¶éªŒè¯å®ƒä¸å†å‘å‡ºè­¦å‘Šã€‚
 
-´ËÊ±£¬ÎÒÃÇÒÑ¾­ÈÃCMakeÕıÈ·µØ´ò°üÁËËùĞèµÄÄ¿±êĞÅÏ¢£¬µ«ÎÒÃÇÈÔÈ»ĞèÒªÉú³É\
-``MathFunctionsConfig.cmake``¡£ÈÃCMakeµÄ\ :command:`find_package`\ ÃüÁî¿ÉÒÔÕÒµ½ÎÒ\
-ÃÇµÄÏîÄ¿¡£Òò´Ë£¬ÈÃÎÒÃÇ¼ÌĞøÍùÏîÄ¿µÄ¶¥²ãÌí¼ÓÒ»¸öÃûÎª\ ``Config.cmake.in``\ µÄĞÂÎÄ¼ş¡£ÄÚ¸½ÒÔ\
-ÏÂÄÚÈİ£º
+æ­¤æ—¶ï¼Œæˆ‘ä»¬å·²ç»è®©CMakeæ­£ç¡®åœ°æ‰“åŒ…äº†æ‰€éœ€çš„ç›®æ ‡ä¿¡æ¯ï¼Œä½†æˆ‘ä»¬ä»ç„¶éœ€è¦ç”Ÿæˆ\
+``MathFunctionsConfig.cmake``ã€‚è®©CMakeçš„\ :command:`find_package`\ å‘½ä»¤å¯ä»¥æ‰¾åˆ°æˆ‘\
+ä»¬çš„é¡¹ç›®ã€‚å› æ­¤ï¼Œè®©æˆ‘ä»¬ç»§ç»­å¾€é¡¹ç›®çš„é¡¶å±‚æ·»åŠ ä¸€ä¸ªåä¸º\ ``Config.cmake.in``\ çš„æ–°æ–‡ä»¶ã€‚å†…é™„ä»¥\
+ä¸‹å†…å®¹ï¼š
 
 .. literalinclude:: Step12/Config.cmake.in
   :caption: Config.cmake.in
   :name: Config.cmake.in
 
-È»ºó£¬ÎªÁËÕıÈ·µØÅäÖÃºÍ°²×°¸ÃÎÄ¼ş£¬½«ÒÔÏÂÎÄ¼şÌí¼Óµ½¶¥²ã\ ``CMakeLists.txt``\ µÄµ×²¿£º
+ç„¶åï¼Œä¸ºäº†æ­£ç¡®åœ°é…ç½®å’Œå®‰è£…è¯¥æ–‡ä»¶ï¼Œå°†ä»¥ä¸‹æ–‡ä»¶æ·»åŠ åˆ°é¡¶å±‚\ ``CMakeLists.txt``\ çš„åº•éƒ¨ï¼š
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-install-Config.cmake
   :language: cmake
-  :start-after: # °²×°ÅäÖÃÄ¿±ê
-  :end-before: # Éú³É°üº¬µ¼³öµÄÅäÖÃÎÄ¼ş
+  :start-after: # å®‰è£…é…ç½®ç›®æ ‡
+  :end-before: # ç”ŸæˆåŒ…å«å¯¼å‡ºçš„é…ç½®æ–‡ä»¶
 
 
-½ÓÏÂÀ´£¬ÎÒÃÇÖ´ĞĞ\ :command:`configure_package_config_file`¡£¸ÃÃüÁî½«ÅäÖÃÌá¹©µÄÎÄ¼ş£¬\
-µ«Óë±ê×¼\ :command:`configure_file`\ ·½·¨ÓĞÒ»Ğ©ÌØ¶¨µÄÇø±ğ¡£ÎªÁËÕıÈ·µØÊ¹ÓÃÕâ¸öº¯Êı£¬³ıÁË\
-ËùĞèµÄÄÚÈİÍâ£¬ÊäÈëÎÄ¼şÓ¦¸ÃÓĞÒ»ĞĞÎÄ±¾\ ``@PACKAGE_INIT@``¡£¸Ã±äÁ¿½«±»Ò»¸ö´úÂë¿éÌæ»»£¬¸Ã´ú\
-Âë¿é½«°ÑÉèÖÃÖµ×ª»»ÎªÏà¶ÔÂ·¾¶¡£ÕâĞ©ĞÂÖµ¿ÉÒÔÍ¨¹ıÏàÍ¬µÄÃû³ÆÒıÓÃ£¬µ«¿ÉÒÔÔÚÆäÇ°Ãæ¼ÓÉÏ\
-``PACKAGE_``\ Ç°×º¡£
+æ¥ä¸‹æ¥ï¼Œæˆ‘ä»¬æ‰§è¡Œ\ :command:`configure_package_config_file`ã€‚è¯¥å‘½ä»¤å°†é…ç½®æä¾›çš„æ–‡ä»¶ï¼Œ\
+ä½†ä¸æ ‡å‡†\ :command:`configure_file`\ æ–¹æ³•æœ‰ä¸€äº›ç‰¹å®šçš„åŒºåˆ«ã€‚ä¸ºäº†æ­£ç¡®åœ°ä½¿ç”¨è¿™ä¸ªå‡½æ•°ï¼Œé™¤äº†\
+æ‰€éœ€çš„å†…å®¹å¤–ï¼Œè¾“å…¥æ–‡ä»¶åº”è¯¥æœ‰ä¸€è¡Œæ–‡æœ¬\ ``@PACKAGE_INIT@``ã€‚è¯¥å˜é‡å°†è¢«ä¸€ä¸ªä»£ç å—æ›¿æ¢ï¼Œè¯¥ä»£\
+ç å—å°†æŠŠè®¾ç½®å€¼è½¬æ¢ä¸ºç›¸å¯¹è·¯å¾„ã€‚è¿™äº›æ–°å€¼å¯ä»¥é€šè¿‡ç›¸åŒçš„åç§°å¼•ç”¨ï¼Œä½†å¯ä»¥åœ¨å…¶å‰é¢åŠ ä¸Š\
+``PACKAGE_``\ å‰ç¼€ã€‚
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-configure-package-config.cmake
   :language: cmake
-  :start-after: # °²×°ÅäÖÃÄ¿±ê
-  :end-before: # ÎªÅäÖÃÎÄ¼şÉú³É°æ±¾ÎÄ¼ş
+  :start-after: # å®‰è£…é…ç½®ç›®æ ‡
+  :end-before: # ä¸ºé…ç½®æ–‡ä»¶ç”Ÿæˆç‰ˆæœ¬æ–‡ä»¶
 
-½ÓÏÂÀ´ÊÇ\ :command:`write_basic_package_version_file`¡£¸ÃÃüÁîĞ´Èë\
-:command:`find_package`\ ÎÄµµËùÊ¹ÓÃµÄÎÄ¼ş£¬ÒÔÈ·¶¨ËùĞè°üµÄ°æ±¾ºÍ¼æÈİĞÔ¡£ÔÚÕâÀï£¬ÎÒÃÇÊ¹ÓÃ\
-``Tutorial_VERSION_*``\ ±äÁ¿£¬²¢ËµËüÓë\ ``AnyNewerVersion``\ ¼æÈİ£¬Õâ±íÊ¾¸Ã°æ±¾»òÈÎ\
-ºÎ¸ü¸ß°æ±¾ÓëÇëÇóµÄ°æ±¾¼æÈİ¡£
+æ¥ä¸‹æ¥æ˜¯\ :command:`write_basic_package_version_file`ã€‚è¯¥å‘½ä»¤å†™å…¥\
+:command:`find_package`\ æ–‡æ¡£æ‰€ä½¿ç”¨çš„æ–‡ä»¶ï¼Œä»¥ç¡®å®šæ‰€éœ€åŒ…çš„ç‰ˆæœ¬å’Œå…¼å®¹æ€§ã€‚åœ¨è¿™é‡Œï¼Œæˆ‘ä»¬ä½¿ç”¨\
+``Tutorial_VERSION_*``\ å˜é‡ï¼Œå¹¶è¯´å®ƒä¸\ ``AnyNewerVersion``\ å…¼å®¹ï¼Œè¿™è¡¨ç¤ºè¯¥ç‰ˆæœ¬æˆ–ä»»\
+ä½•æ›´é«˜ç‰ˆæœ¬ä¸è¯·æ±‚çš„ç‰ˆæœ¬å…¼å®¹ã€‚
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-basic-version-file.cmake
   :language: cmake
-  :start-after: # ÎªÅäÖÃÎÄ¼şÉú³É°æ±¾ÎÄ¼ş
-  :end-before: # °²×°Éú³ÉµÄÅäÖÃÎÄ¼ş
+  :start-after: # ä¸ºé…ç½®æ–‡ä»¶ç”Ÿæˆç‰ˆæœ¬æ–‡ä»¶
+  :end-before: # å®‰è£…ç”Ÿæˆçš„é…ç½®æ–‡ä»¶
 
-×îºó£¬½«Á½¸öÉú³ÉµÄÎÄ¼şÉèÖÃÎªĞè°²×°£º
+æœ€åï¼Œå°†ä¸¤ä¸ªç”Ÿæˆçš„æ–‡ä»¶è®¾ç½®ä¸ºéœ€å®‰è£…ï¼š
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
   :name: CMakeLists.txt-install-configured-files.cmake
   :language: cmake
-  :start-after: # °²×°Éú³ÉµÄÅäÖÃÎÄ¼ş
-  :end-before: # Îª¹¹½¨Ê÷Éú³Éµ¼³öÄ¿±ê
+  :start-after: # å®‰è£…ç”Ÿæˆçš„é…ç½®æ–‡ä»¶
+  :end-before: # ä¸ºæ„å»ºæ ‘ç”Ÿæˆå¯¼å‡ºç›®æ ‡
 
-ÖÁ´Ë£¬ÎÒÃÇÒÑ¾­ÎªÎÒÃÇµÄÏîÄ¿Éú³ÉÁËÒ»¸ö¿ÉÖØ¶¨Î»µÄCMakeÅäÖÃ£¬¿ÉÒÔÔÚ°²×°»ò´ò°üÏîÄ¿Ö®ºóÊ¹ÓÃ¡£Èç¹û\
-ÎÒÃÇÏëÒªÎÒÃÇµÄÏîÄ¿Ò²´ÓÒ»¸ö¹¹½¨Ä¿Â¼ÖĞÊ¹ÓÃ£¬ÎÒÃÇÖ»ĞèÒªÌí¼ÓÒÔÏÂ¶¥²ã\ ``CMakeLists.txt``\ µÄµ×²¿£º
+è‡³æ­¤ï¼Œæˆ‘ä»¬å·²ç»ä¸ºæˆ‘ä»¬çš„é¡¹ç›®ç”Ÿæˆäº†ä¸€ä¸ªå¯é‡å®šä½çš„CMakeé…ç½®ï¼Œå¯ä»¥åœ¨å®‰è£…æˆ–æ‰“åŒ…é¡¹ç›®ä¹‹åä½¿ç”¨ã€‚å¦‚æœ\
+æˆ‘ä»¬æƒ³è¦æˆ‘ä»¬çš„é¡¹ç›®ä¹Ÿä»ä¸€ä¸ªæ„å»ºç›®å½•ä¸­ä½¿ç”¨ï¼Œæˆ‘ä»¬åªéœ€è¦æ·»åŠ ä»¥ä¸‹é¡¶å±‚\ ``CMakeLists.txt``\ çš„åº•éƒ¨ï¼š
 
 .. literalinclude:: Step12/CMakeLists.txt
   :caption: CMakeLists.txt
@@ -119,5 +119,5 @@ CMakeÔÚÉú³Éµ¼³öĞÅÏ¢Ê±¸æËßÄãÕâÒ»µã
   :language: cmake
   :start-after: # needs to be after the install(TARGETS) command
 
-Ê¹ÓÃÕâ¸öµ¼³öµ÷ÓÃ£¬ÎÒÃÇÏÖÔÚÉú³ÉÒ»¸ö\ ``MathFunctionsTargets.cmake``£¬ÔÊĞíÅäÖÃ\
-``MathFunctionsConfig.cmake``\ ÎÄ¼ş£¬ÒÔ¹©ÆäËûÏîÄ¿Ê¹ÓÃ£¬¶øÎŞĞè°²×°¡£
+ä½¿ç”¨è¿™ä¸ªå¯¼å‡ºè°ƒç”¨ï¼Œæˆ‘ä»¬ç°åœ¨ç”Ÿæˆä¸€ä¸ª\ ``MathFunctionsTargets.cmake``ï¼Œå…è®¸é…ç½®\
+``MathFunctionsConfig.cmake``\ æ–‡ä»¶ï¼Œä»¥ä¾›å…¶ä»–é¡¹ç›®ä½¿ç”¨ï¼Œè€Œæ— éœ€å®‰è£…ã€‚

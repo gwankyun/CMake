@@ -1,7 +1,7 @@
-target_compile_definitions
+ï»¿target_compile_definitions
 --------------------------
 
-ÏòÄ¿±êÌí¼Ó±àÒë¶¨Òå¡£
+å‘ç›®æ ‡æ·»åŠ ç¼–è¯‘å®šä¹‰ã€‚
 
 .. code-block:: cmake
 
@@ -9,23 +9,23 @@ target_compile_definitions
     <INTERFACE|PUBLIC|PRIVATE> [items1...]
     [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
 
-Ö¸¶¨±àÒë¸ø¶¨\ ``<target>``\ Ê±ÒªÊ¹ÓÃµÄ±àÒë¶¨Òå¡£ÃüÃûµÄ\ ``<target>``\ ±ØÐëÊÇÓÉ\
-:command:`add_executable`\ »ò\ :command:`add_library`\ µÈÃüÁî´´½¨µÄ£¬²¢ÇÒ²»ÄÜÊÇ\
-:ref:`±ðÃûÄ¿±ê <Alias Targets>`¡£
+æŒ‡å®šç¼–è¯‘ç»™å®š\ ``<target>``\ æ—¶è¦ä½¿ç”¨çš„ç¼–è¯‘å®šä¹‰ã€‚å‘½åçš„\ ``<target>``\ å¿…é¡»æ˜¯ç”±\
+:command:`add_executable`\ æˆ–\ :command:`add_library`\ ç­‰å‘½ä»¤åˆ›å»ºçš„ï¼Œå¹¶ä¸”ä¸èƒ½æ˜¯\
+:ref:`åˆ«åç›®æ ‡ <Alias Targets>`ã€‚
 
-``INTERFACE``¡¢\ ``PUBLIC``\ ºÍ\ ``PRIVATE``\ ¹Ø¼ü×ÖÓÃÓÚÖ¸¶¨ÏÂÁÐ²ÎÊýµÄ\
-:ref:`×÷ÓÃÓò <Target Command Scope>`¡£\ ``PRIVATE``\ ºÍ\ ``PUBLIC``\ Ïî½«Ìî³ä\
-``<target>``\ µÄ\ :prop_tgt:`COMPILE_DEFINITIONS`\ ÊôÐÔ¡£\ ``PUBLIC``\ ºÍ\
-``INTERFACE``\ Ïî½«Ìî³ä\ ``<target>``\ µÄ\ :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\
-ÊôÐÔ¡£ÏÂÁÐ²ÎÊýÖ¸¶¨±àÒë¶¨Òå¡£ÖØ¸´µ÷ÓÃÏàÍ¬µÄ\ ``<target>``\ ½«ÔªËØ°´ÕÕµ÷ÓÃµÄË³ÐòÌí¼Ó¡£
+``INTERFACE``ã€\ ``PUBLIC``\ å’Œ\ ``PRIVATE``\ å…³é”®å­—ç”¨äºŽæŒ‡å®šä¸‹åˆ—å‚æ•°çš„\
+:ref:`ä½œç”¨åŸŸ <Target Command Scope>`ã€‚\ ``PRIVATE``\ å’Œ\ ``PUBLIC``\ é¡¹å°†å¡«å……\
+``<target>``\ çš„\ :prop_tgt:`COMPILE_DEFINITIONS`\ å±žæ€§ã€‚\ ``PUBLIC``\ å’Œ\
+``INTERFACE``\ é¡¹å°†å¡«å……\ ``<target>``\ çš„\ :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\
+å±žæ€§ã€‚ä¸‹åˆ—å‚æ•°æŒ‡å®šç¼–è¯‘å®šä¹‰ã€‚é‡å¤è°ƒç”¨ç›¸åŒçš„\ ``<target>``\ å°†å…ƒç´ æŒ‰ç…§è°ƒç”¨çš„é¡ºåºæ·»åŠ ã€‚
 
 .. versionadded:: 3.11
-  ÔÊÐíÔÚ\ :ref:`µ¼ÈëÄ¿±ê <Imported Targets>`\ ÉÏÉèÖÃ\ ``INTERFACE``\ Ïî¡£
+  å…è®¸åœ¨\ :ref:`å¯¼å…¥ç›®æ ‡ <Imported Targets>`\ ä¸Šè®¾ç½®\ ``INTERFACE``\ é¡¹ã€‚
 
 .. |command_name| replace:: ``target_compile_definitions``
 .. include:: GENEX_NOTE.txt
 
-ÔªËØÇ°ÃæµÄ\ ``-D``\ ½«±»É¾³ý¡£¿ÕÏî±»ºöÂÔ¡£ÀýÈç£¬ÒÔÏÂ´úÂë¶¼ÊÇµÈ¼ÛµÄ£º
+å…ƒç´ å‰é¢çš„\ ``-D``\ å°†è¢«åˆ é™¤ã€‚ç©ºé¡¹è¢«å¿½ç•¥ã€‚ä¾‹å¦‚ï¼Œä»¥ä¸‹ä»£ç éƒ½æ˜¯ç­‰ä»·çš„ï¼š
 
 .. code-block:: cmake
 
@@ -34,16 +34,16 @@ target_compile_definitions
   target_compile_definitions(foo PUBLIC "" FOO) # "" ignored
   target_compile_definitions(foo PUBLIC -D FOO) # -D becomes "", then ignored
 
-¶¨Òå¿ÉÒÔÓÐ¿ÉÑ¡µÄÖµ£º
+å®šä¹‰å¯ä»¥æœ‰å¯é€‰çš„å€¼ï¼š
 
 .. code-block:: cmake
 
   target_compile_definitions(foo PUBLIC FOO=1)
 
-Çë×¢Òâ£¬Ðí¶à±àÒëÆ÷½«\ ``-DFOO``\ ÊÓÎª\ ``-DFOO=1``£¬µ«ÆäËû¹¤¾ß¿ÉÄÜ²»ÄÜÔÚËùÓÐÇé¿öÏÂÊ¶±ðÕâ\
-Ò»µã£¨ÀýÈçIntelliSense£©¡£
+è¯·æ³¨æ„ï¼Œè®¸å¤šç¼–è¯‘å™¨å°†\ ``-DFOO``\ è§†ä¸º\ ``-DFOO=1``ï¼Œä½†å…¶ä»–å·¥å…·å¯èƒ½ä¸èƒ½åœ¨æ‰€æœ‰æƒ…å†µä¸‹è¯†åˆ«è¿™\
+ä¸€ç‚¹ï¼ˆä¾‹å¦‚IntelliSenseï¼‰ã€‚
 
-ÁíÇë²ÎÔÄ
+å¦è¯·å‚é˜…
 ^^^^^^^^
 
 * :command:`add_compile_definitions`

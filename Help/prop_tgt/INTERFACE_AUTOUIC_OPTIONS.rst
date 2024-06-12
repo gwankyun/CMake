@@ -1,9 +1,9 @@
-INTERFACE_AUTOUIC_OPTIONS
+ï»¿INTERFACE_AUTOUIC_OPTIONS
 -------------------------
 
 .. versionadded:: 3.0
 
-´«µİ¸øuicµÄ½Ó¿ÚÑ¡ÏîÁĞ±í¡£
+ä¼ é€’ç»™uicçš„æ¥å£é€‰é¡¹åˆ—è¡¨ã€‚
 
 Targets may populate this property to publish the options
 required to use when invoking ``uic``.  Consuming targets can add entries to their

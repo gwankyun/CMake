@@ -1,7 +1,7 @@
-VS_GLOBAL_KEYWORD
+ï»¿VS_GLOBAL_KEYWORD
 -----------------
 
-Visual StudioÏîÄ¿¹Ø¼ü×Ö¡£
+Visual Studioé¡¹ç›®å…³é”®å­—ã€‚
 
 Sets the "keyword" attribute for a generated Visual Studio project.
 Defaults to "Win32Proj".  You may wish to override this value with

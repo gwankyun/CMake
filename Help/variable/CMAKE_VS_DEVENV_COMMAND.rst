@@ -1,9 +1,9 @@
-CMAKE_VS_DEVENV_COMMAND
+ï»¿CMAKE_VS_DEVENV_COMMAND
 -----------------------
 
-:generator:`Visual Studio 12 2013`\ ¼°ÒÔÉÏ°æ±¾µÄÉú³ÉÆ÷½«´Ë±äÁ¿ÉèÖÃÎªÓëÏàÓ¦µÄ\
-Visual Studio°æ±¾Ò»Æğ°²×°µÄ\ ``devenv.com``\ ÃüÁî¡£×¢Òâ£¬´Ë±äÁ¿ÔÚVisual Studio Express\
-°æ±¾ÉÏ¿ÉÄÜÎª¿Õ£¬ÒòÎªËüÃÇ²»Ìá¹©´Ë¹¤¾ß¡£
+:generator:`Visual Studio 12 2013`\ åŠä»¥ä¸Šç‰ˆæœ¬çš„ç”Ÿæˆå™¨å°†æ­¤å˜é‡è®¾ç½®ä¸ºä¸ç›¸åº”çš„\
+Visual Studioç‰ˆæœ¬ä¸€èµ·å®‰è£…çš„\ ``devenv.com``\ å‘½ä»¤ã€‚æ³¨æ„ï¼Œæ­¤å˜é‡åœ¨Visual Studio Express\
+ç‰ˆæœ¬ä¸Šå¯èƒ½ä¸ºç©ºï¼Œå› ä¸ºå®ƒä»¬ä¸æä¾›æ­¤å·¥å…·ã€‚
 
 This variable is not defined by other generators even if ``devenv.com``
 is installed on the computer.

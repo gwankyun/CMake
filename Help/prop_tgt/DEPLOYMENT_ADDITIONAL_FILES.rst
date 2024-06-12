@@ -1,11 +1,11 @@
-DEPLOYMENT_ADDITIONAL_FILES
+锘緿EPLOYMENT_ADDITIONAL_FILES
 ---------------------------
 
 .. versionadded:: 3.13
 
-将\ ``DeploymentTool``\ 中的WinCE项目\ ``AdditionalFiles``\ 设置为\
-:ref:`Visual Studio Generators`\ 生成器生成的\ ``.vcproj``\ 文件。当你想要在远程\
-WinCE设备上调试时，这很有用。指定将复制到设备的其他文件。例如：
+灏哱 ``DeploymentTool``\ 涓殑WinCE椤圭洰\ ``AdditionalFiles``\ 璁剧疆涓篭
+:ref:`Visual Studio Generators`\ 鐢熸垚鍣ㄧ敓鎴愮殑\ ``.vcproj``\ 鏂囦欢銆傚綋浣犳兂瑕佸湪杩滅▼\
+WinCE璁惧涓婅皟璇曟椂锛岃繖寰堟湁鐢ㄣ�傛寚瀹氬皢澶嶅埗鍒拌澶囩殑鍏朵粬鏂囦欢銆備緥濡傦細
 
 .. code-block:: cmake
 

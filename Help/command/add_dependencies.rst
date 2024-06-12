@@ -1,22 +1,22 @@
-add_dependencies
+ï»¿add_dependencies
 ----------------
 
-Ìí¼Ó¶¥²ãÄ¿±êÖ®¼äµÄÒÀÀµ¹ØÏµ¡£
+æ·»åŠ é¡¶å±‚ç›®æ ‡ä¹‹é—´çš„ä¾èµ–å…³ç³»ã€‚
 
 .. code-block:: cmake
 
   add_dependencies(<target> [<target-dependency>]...)
 
-Ê¹Ò»¸ö¶¥²ã\ ``<target>``\ ÒÀÀµÓÚÆäËû¶¥²ãÄ¿±ê£¬ÒÔÈ·±£ËüÃÇÔÚ\ ``<target>``\ Ö®Ç°¹¹½¨¡£\
-¶¥²ãÄ¿±êÊÇÓÉ\ :command:`add_executable`¡¢\ :command:`add_library`\ »ò\
-:command:`add_custom_target`\ ÃüÁî´´½¨µÄÄ¿±ê£¨µ«²»ÊÇÓÉÈç\ ``install``\ ÕâÑùµÄCMakeÉú\
-³ÉÄ¿±ê£©¡£
+ä½¿ä¸€ä¸ªé¡¶å±‚\ ``<target>``\ ä¾èµ–äºå…¶ä»–é¡¶å±‚ç›®æ ‡ï¼Œä»¥ç¡®ä¿å®ƒä»¬åœ¨\ ``<target>``\ ä¹‹å‰æ„å»ºã€‚\
+é¡¶å±‚ç›®æ ‡æ˜¯ç”±\ :command:`add_executable`ã€\ :command:`add_library`\ æˆ–\
+:command:`add_custom_target`\ å‘½ä»¤åˆ›å»ºçš„ç›®æ ‡ï¼ˆä½†ä¸æ˜¯ç”±å¦‚\ ``install``\ è¿™æ ·çš„CMakeç”Ÿ\
+æˆç›®æ ‡ï¼‰ã€‚
 
-Ìí¼Óµ½\ :ref:`µ¼ÈëµÄÄ¿±ê <Imported Targets>`\ »ò\ :ref:`½Ó¿Ú¿â <Interface Libraries>`\
-ÖĞµÄÒÀÀµÏî»áÔÚÆäÎ»ÖÃ´«µİ£¬ÒòÎªÄ¿±ê±¾Éí²»»á¹¹½¨¡£
+æ·»åŠ åˆ°\ :ref:`å¯¼å…¥çš„ç›®æ ‡ <Imported Targets>`\ æˆ–\ :ref:`æ¥å£åº“ <Interface Libraries>`\
+ä¸­çš„ä¾èµ–é¡¹ä¼šåœ¨å…¶ä½ç½®ä¼ é€’ï¼Œå› ä¸ºç›®æ ‡æœ¬èº«ä¸ä¼šæ„å»ºã€‚
 
 .. versionadded:: 3.3
-  ÔÊĞíÏò½Ó¿Ú¿âÌí¼ÓÒÀÀµÏî¡£
+  å…è®¸å‘æ¥å£åº“æ·»åŠ ä¾èµ–é¡¹ã€‚
 
 .. versionadded:: 3.8
   Dependencies will populate the :prop_tgt:`MANUALLY_ADDED_DEPENDENCIES`
@@ -29,10 +29,10 @@ add_dependencies
   finished before sources in ``<target>`` start compiling; this
   ensures generated sources are available.
 
-ÁíÇë²ÎÔÄ
+å¦è¯·å‚é˜…
 ^^^^^^^^
 
-* :command:`add_custom_target`\ ºÍ\ :command:`add_custom_command`\ ÃüÁîµÄ\
-  ``DEPENDS``\ Ñ¡ÏîÓÃÓÚÔÚ×Ô¶¨Òå¹æÔòÖĞÌí¼ÓÎÄ¼ş¼¶ÒÀÀµÏî¡£
+* :command:`add_custom_target`\ å’Œ\ :command:`add_custom_command`\ å‘½ä»¤çš„\
+  ``DEPENDS``\ é€‰é¡¹ç”¨äºåœ¨è‡ªå®šä¹‰è§„åˆ™ä¸­æ·»åŠ æ–‡ä»¶çº§ä¾èµ–é¡¹ã€‚
 
-* :prop_sf:`OBJECT_DEPENDS`\ Ô´ÎÄ¼şÊôĞÔÓÃÓÚÏò¶ÔÏóÎÄ¼şÌí¼ÓÎÄ¼ş¼¶ÒÀÀµÏî¡£
+* :prop_sf:`OBJECT_DEPENDS`\ æºæ–‡ä»¶å±æ€§ç”¨äºå‘å¯¹è±¡æ–‡ä»¶æ·»åŠ æ–‡ä»¶çº§ä¾èµ–é¡¹ã€‚
