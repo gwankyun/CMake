@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CMake File-Based API
+.. cmake-manual-description: CMake File-Based API
 
 cmake-file-api(7)
 *****************

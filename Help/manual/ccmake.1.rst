@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CMake Curses Dialog Command-Line Reference
+.. cmake-manual-description: CMake Curses Dialog Command-Line Reference
 
 ccmake(1)
 *********

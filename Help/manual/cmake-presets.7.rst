@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CMakePresets.json
+.. cmake-manual-description: CMakePresets.json
 
 cmake-presets(7)
 ****************

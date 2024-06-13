@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CTest Command-Line Reference
+.. cmake-manual-description: CTest Command-Line Reference
 
 ctest(1)
 ********

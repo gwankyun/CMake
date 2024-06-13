@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CMake Buildsystem Reference
+.. cmake-manual-description: CMake Buildsystem Reference
 
 cmake-buildsystem(7)
 ********************

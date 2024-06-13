@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CMake Generator Expressions
+.. cmake-manual-description: CMake Generator Expressions
 
 cmake-generator-expressions(7)
 ******************************

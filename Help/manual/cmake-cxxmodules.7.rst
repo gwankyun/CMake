@@ -1,4 +1,4 @@
-﻿.. cmake-manual-description: CMake C++ Modules Support Reference
+.. cmake-manual-description: CMake C++ Modules Support Reference
 
 cmake-cxxmodules(7)
 *******************
