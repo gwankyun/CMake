@@ -3,115 +3,115 @@
 cmake(1)
 ********
 
-¸ÅÒª
+æ¦‚è¦
 ========
 
 .. parsed-literal::
 
- `Éú³ÉÒ»¸öÏîÄ¿¹¹½¨ÏµÍ³`_
+ `ç”Ÿæˆä¸€ä¸ªé¡¹ç›®æž„å»ºç³»ç»Ÿ`_
   cmake [<options>] -B <path-to-build> [-S <path-to-source>]
   cmake [<options>] <path-to-source | path-to-existing-build>
 
- `¹¹½¨Ò»¸öÏîÄ¿`_
+ `æž„å»ºä¸€ä¸ªé¡¹ç›®`_
   cmake --build <dir> [<options>] [-- <build-tool-options>]
 
- `°²×°Ò»¸öÏîÄ¿`_
+ `å®‰è£…ä¸€ä¸ªé¡¹ç›®`_
   cmake --install <dir> [<options>]
 
- `´ò¿ªÒ»¸öÏîÄ¿`_
+ `æ‰“å¼€ä¸€ä¸ªé¡¹ç›®`_
   cmake --open <dir>
 
- `ÔËÐÐ½Å±¾`_
+ `è¿è¡Œè„šæœ¬`_
   cmake [-D <var>=<value>]... -P <cmake-script-file>
 
- `ÔËÐÐÃüÁîÐÐ¹¤¾ß`_
+ `è¿è¡Œå‘½ä»¤è¡Œå·¥å…·`_
   cmake -E <command> [<options>]
 
- `ÔËÐÐ°ü²éÕÒ¹¤¾ß`_
+ `è¿è¡ŒåŒ…æŸ¥æ‰¾å·¥å…·`_
   cmake --find-package [<options>]
 
- `ÔËÐÐ¹¤×÷Á÷Ô¤Éè`_
+ `è¿è¡Œå·¥ä½œæµé¢„è®¾`_
   cmake --workflow [<options>]
 
- `²é¿´°ïÖú`_
+ `æŸ¥çœ‹å¸®åŠ©`_
   cmake --help[-<topic>]
 
-ÃèÊö
+æè¿°
 ===========
 
-:program:`cmake`\ ¿ÉÖ´ÐÐÎÄ¼þÊÇ¿çÆ½Ì¨¹¹½¨ÏµÍ³Éú³ÉÆ÷CMakeµÄÃüÁîÐÐ½çÃæ¡£ÉÏÃæ\ `¸ÅÒª`_\ ÁÐ³ö\
-ÁË¹¤¾ß¿ÉÒÔÖ´ÐÐµÄ¸÷ÖÖ²Ù×÷£¬ÈçÏÂÃæµÄ²¿·ÖËùÊö¡£
+:program:`cmake`\ å¯æ‰§è¡Œæ–‡ä»¶æ˜¯è·¨å¹³å°æž„å»ºç³»ç»Ÿç”Ÿæˆå™¨CMakeçš„å‘½ä»¤è¡Œç•Œé¢ã€‚ä¸Šé¢\ `æ¦‚è¦`_\ åˆ—å‡º\
+äº†å·¥å…·å¯ä»¥æ‰§è¡Œçš„å„ç§æ“ä½œï¼Œå¦‚ä¸‹é¢çš„éƒ¨åˆ†æ‰€è¿°ã€‚
 
-ÒªÓÃCMake¹¹½¨Ò»¸öÈí¼þÏîÄ¿£¬Çë\ `Éú³ÉÒ»¸öÏîÄ¿¹¹½¨ÏµÍ³`_¡£¿ÉÒÔÑ¡ÔñÊ¹ÓÃ\ :program:`cmake`\ À´\
-`¹¹½¨Ò»¸öÏîÄ¿`_\ ¼°\ `°²×°Ò»¸öÏîÄ¿`_£¬»òÕßÖ±½ÓÔËÐÐÏàÓ¦µÄ¹¹½¨¹¤¾ß£¨ÀýÈç\ ``make``£©¡£\
-:program:`cmake`\ Ò²¿ÉÒÔÓÃÀ´\ `²é¿´°ïÖú`_¡£
+è¦ç”¨CMakeæž„å»ºä¸€ä¸ªè½¯ä»¶é¡¹ç›®ï¼Œè¯·\ `ç”Ÿæˆä¸€ä¸ªé¡¹ç›®æž„å»ºç³»ç»Ÿ`_ã€‚å¯ä»¥é€‰æ‹©ä½¿ç”¨\ :program:`cmake`\ æ¥\
+`æž„å»ºä¸€ä¸ªé¡¹ç›®`_\ åŠ\ `å®‰è£…ä¸€ä¸ªé¡¹ç›®`_ï¼Œæˆ–è€…ç›´æŽ¥è¿è¡Œç›¸åº”çš„æž„å»ºå·¥å…·ï¼ˆä¾‹å¦‚\ ``make``ï¼‰ã€‚\
+:program:`cmake`\ ä¹Ÿå¯ä»¥ç”¨æ¥\ `æŸ¥çœ‹å¸®åŠ©`_ã€‚
 
-ÆäËû²Ù×÷ÊÇÎªÁËÈÃÈí¼þ¿ª·¢ÈËÔ±Ê¹ÓÃ\ :manual:`CMake language <cmake-language(7)>`\ ±àÐ´\
-½Å±¾À´Ö§³ÖËûÃÇµÄ¹¹½¨¡£
+å…¶ä»–æ“ä½œæ˜¯ä¸ºäº†è®©è½¯ä»¶å¼€å‘äººå‘˜ä½¿ç”¨\ :manual:`CMake language <cmake-language(7)>`\ ç¼–å†™\
+è„šæœ¬æ¥æ”¯æŒä»–ä»¬çš„æž„å»ºã€‚
 
-ÓÐ¹Ø\ :program:`cmake`\ µÄÍ¼ÐÎÓÃ»§½çÃæÌæ´ú£¬Çë²ÎÔÄ\ :manual:`ccmake <ccmake(1)>`\ ºÍ\
-:manual:`cmake-gui <cmake-gui(1)>`¡£ÓÐ¹ØCMake²âÊÔºÍ´ò°ü¹¤¾ßµÄÃüÁîÐÐ½Ó¿Ú£¬Çë²Î¿¼\
-:manual:`ctest <ctest(1)>`\ ºÍ\ :manual:`cpack <cpack(1)>`¡£
+æœ‰å…³\ :program:`cmake`\ çš„å›¾å½¢ç”¨æˆ·ç•Œé¢æ›¿ä»£ï¼Œè¯·å‚é˜…\ :manual:`ccmake <ccmake(1)>`\ å’Œ\
+:manual:`cmake-gui <cmake-gui(1)>`ã€‚æœ‰å…³CMakeæµ‹è¯•å’Œæ‰“åŒ…å·¥å…·çš„å‘½ä»¤è¡ŒæŽ¥å£ï¼Œè¯·å‚è€ƒ\
+:manual:`ctest <ctest(1)>`\ å’Œ\ :manual:`cpack <cpack(1)>`ã€‚
 
-ÓÐ¹ØCMakeµÄÏêÏ¸ÐÅÏ¢£¬Çë\ `ÁíÐÐ²ÎÔÄ`_\ ±¾ÊÖ²áÄ©Î²µÄÁ´½Ó¡£
+æœ‰å…³CMakeçš„è¯¦ç»†ä¿¡æ¯ï¼Œè¯·\ `å¦è¡Œå‚é˜…`_\ æœ¬æ‰‹å†Œæœ«å°¾çš„é“¾æŽ¥ã€‚
 
 
-½éÉÜCMake¹¹½¨ÏµÍ³
+ä»‹ç»CMakeæž„å»ºç³»ç»Ÿ
 ==================================
 
-*¹¹½¨ÏµÍ³*\ ÃèÊöÁËÈçºÎÊ¹ÓÃ\ *¹¹½¨¹¤¾ß*\ ´ÓÆäÔ´´úÂëÖÐ¹¹½¨ÏîÄ¿µÄ¿ÉÖ´ÐÐÎÄ¼þºÍ¿âµÄ×Ô¶¯»¯¹ý³Ì¡£\
-ÀýÈç£¬¹¹½¨ÏµÍ³¿ÉÄÜÊÇÒ»¸ö\ ``Makefile``\ ÎÄ¼þ£¬ÓÃÓÚÃüÁîÐÐ\ ``make``\ ¹¤¾ß»òÓÃÓÚ¼¯³É¿ª·¢»·\
-¾³£¨IDE£©µÄÏîÄ¿ÎÄ¼þ¡£ÎªÁË±ÜÃâÎ¬»¤¶à¸öÕâÑùµÄ¹¹½¨ÏµÍ³£¬ÏîÄ¿¿ÉÒÔÊ¹ÓÃ\
-:manual:`CMakeÓïÑÔ <cmake-language(7)>`\ ±àÐ´µÄÎÄ¼þ³éÏóµØÖ¸¶¨ËüµÄ¹¹½¨ÏµÍ³¡£´ÓÕâÐ©ÎÄ¼þÖÐ£¬\
-CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
+*æž„å»ºç³»ç»Ÿ*\ æè¿°äº†å¦‚ä½•ä½¿ç”¨\ *æž„å»ºå·¥å…·*\ ä»Žå…¶æºä»£ç ä¸­æž„å»ºé¡¹ç›®çš„å¯æ‰§è¡Œæ–‡ä»¶å’Œåº“çš„è‡ªåŠ¨åŒ–è¿‡ç¨‹ã€‚\
+ä¾‹å¦‚ï¼Œæž„å»ºç³»ç»Ÿå¯èƒ½æ˜¯ä¸€ä¸ª\ ``Makefile``\ æ–‡ä»¶ï¼Œç”¨äºŽå‘½ä»¤è¡Œ\ ``make``\ å·¥å…·æˆ–ç”¨äºŽé›†æˆå¼€å‘çŽ¯\
+å¢ƒï¼ˆIDEï¼‰çš„é¡¹ç›®æ–‡ä»¶ã€‚ä¸ºäº†é¿å…ç»´æŠ¤å¤šä¸ªè¿™æ ·çš„æž„å»ºç³»ç»Ÿï¼Œé¡¹ç›®å¯ä»¥ä½¿ç”¨\
+:manual:`CMakeè¯­è¨€ <cmake-language(7)>`\ ç¼–å†™çš„æ–‡ä»¶æŠ½è±¡åœ°æŒ‡å®šå®ƒçš„æž„å»ºç³»ç»Ÿã€‚ä»Žè¿™äº›æ–‡ä»¶ä¸­ï¼Œ\
+CMakeé€šè¿‡ä¸€ä¸ªç§°ä¸º\ *ç”Ÿæˆå™¨*\ çš„åŽç«¯ä¸ºæ¯ä¸ªç”¨æˆ·åœ¨æœ¬åœ°ç”Ÿæˆä¸€ä¸ªé¦–é€‰çš„æž„å»ºç³»ç»Ÿã€‚
 
-ÒªÓÃCMakeÉú³ÉÒ»¸ö¹¹½¨ÏµÍ³£¬±ØÐëÉèÖÃÒÔÏÂÑ¡Ïî£º
+è¦ç”¨CMakeç”Ÿæˆä¸€ä¸ªæž„å»ºç³»ç»Ÿï¼Œå¿…é¡»è®¾ç½®ä»¥ä¸‹é€‰é¡¹ï¼š
 
-Ô´´úÂëÊ÷
-  °üº¬ÓÉÏîÄ¿Ìá¹©µÄÔ´ÎÄ¼þµÄ¶¥²ãÄ¿Â¼¡£¸ÃÏîÄ¿Ê¹ÓÃ\ :manual:`cmake-language(7)`\ ÊÖ²áÖÐÃèÊö\
-  µÄÎÄ¼þÖ¸¶¨Æä¹¹½¨ÏµÍ³£¬´Ó¶¥²ãÎÄ¼þ\ ``CMakeLists.txt``\ ¿ªÊ¼¡£ÕâÐ©ÎÄ¼þÖ¸¶¨ÁË\
-  :manual:`cmake-buildsystem(7)`\ ÊÖ²áÖÐÃèÊöµÄ¹¹½¨Ä¿±ê¼°ÆäÒÀÀµ¹ØÏµ¡£
+æºä»£ç æ ‘
+  åŒ…å«ç”±é¡¹ç›®æä¾›çš„æºæ–‡ä»¶çš„é¡¶å±‚ç›®å½•ã€‚è¯¥é¡¹ç›®ä½¿ç”¨\ :manual:`cmake-language(7)`\ æ‰‹å†Œä¸­æè¿°\
+  çš„æ–‡ä»¶æŒ‡å®šå…¶æž„å»ºç³»ç»Ÿï¼Œä»Žé¡¶å±‚æ–‡ä»¶\ ``CMakeLists.txt``\ å¼€å§‹ã€‚è¿™äº›æ–‡ä»¶æŒ‡å®šäº†\
+  :manual:`cmake-buildsystem(7)`\ æ‰‹å†Œä¸­æè¿°çš„æž„å»ºç›®æ ‡åŠå…¶ä¾èµ–å…³ç³»ã€‚
 
-¹¹½¨Ê÷
-  ÓÃÓÚ´æ´¢¹¹½¨ÏµÍ³ÎÄ¼þºÍ¹¹½¨Êä³ö¹¤¼þ£¨ÀýÈç¿ÉÖ´ÐÐÎÄ¼þºÍ¿â£©µÄ¶¥²ãÄ¿Â¼¡£CMake½«±àÐ´Ò»¸ö\
-  ``CMakeCache.txt``\ ÎÄ¼þ£¬½«¸ÃÄ¿Â¼±êÊ¶Îª¹¹½¨Ê÷£¬²¢´æ´¢³Ö¾ÃÐÅÏ¢£¬Èç¹¹½¨ÏµÍ³ÅäÖÃÑ¡Ïî¡£
+æž„å»ºæ ‘
+  ç”¨äºŽå­˜å‚¨æž„å»ºç³»ç»Ÿæ–‡ä»¶å’Œæž„å»ºè¾“å‡ºå·¥ä»¶ï¼ˆä¾‹å¦‚å¯æ‰§è¡Œæ–‡ä»¶å’Œåº“ï¼‰çš„é¡¶å±‚ç›®å½•ã€‚CMakeå°†ç¼–å†™ä¸€ä¸ª\
+  ``CMakeCache.txt``\ æ–‡ä»¶ï¼Œå°†è¯¥ç›®å½•æ ‡è¯†ä¸ºæž„å»ºæ ‘ï¼Œå¹¶å­˜å‚¨æŒä¹…ä¿¡æ¯ï¼Œå¦‚æž„å»ºç³»ç»Ÿé…ç½®é€‰é¡¹ã€‚
 
-  ÒªÎ¬»¤Ô­Ê¼µÄÔ´´úÂëÊ÷£¬ÇëÊ¹ÓÃµ¥¶ÀµÄ×¨ÓÃ¹¹½¨Ê÷Ö´ÐÐ\ *Ô´´úÂëÍâ*\ ¹¹½¨¡£Ò²Ö§³Ö½«¹¹½¨Ê÷·ÅÖÃÔÚÓë\
-  Ô´´úÂëÊ÷ÏàÍ¬µÄÄ¿Â¼ÖÐµÄ\ *Ô´´úÂëÄÚ*\ ¹¹½¨£¬µ«²»¹ÄÀøÕâÑù×ö¡£
+  è¦ç»´æŠ¤åŽŸå§‹çš„æºä»£ç æ ‘ï¼Œè¯·ä½¿ç”¨å•ç‹¬çš„ä¸“ç”¨æž„å»ºæ ‘æ‰§è¡Œ\ *æºä»£ç å¤–*\ æž„å»ºã€‚ä¹Ÿæ”¯æŒå°†æž„å»ºæ ‘æ”¾ç½®åœ¨ä¸Ž\
+  æºä»£ç æ ‘ç›¸åŒçš„ç›®å½•ä¸­çš„\ *æºä»£ç å†…*\ æž„å»ºï¼Œä½†ä¸é¼“åŠ±è¿™æ ·åšã€‚
 
-Éú³ÉÆ÷
-  Õâ½«Ñ¡ÔñÒªÉú³ÉµÄ¹¹½¨ÏµÍ³µÄÀàÐÍ¡£Çë²ÎÔÄ\ :manual:`cmake-generators(7)`\ ÊÖ²á»ñÈ¡ËùÓÐÉú\
-  ³ÉÆ÷µÄÎÄµµ¡£ÔËÐÐ\ :option:`cmake --help`\ ²é¿´±¾µØ¿ÉÓÃµÄÉú³ÉÆ÷ÁÐ±í¡£¿ÉÒÔÑ¡ÔñÊ¹ÓÃÏÂÃæµÄ\
-  :option:`-G <cmake -G>`\ Ñ¡ÏîÀ´Ö¸¶¨Ò»¸öÉú³ÉÆ÷£¬»òÕß¼òµ¥µØ½ÓÊÜCMakeÎªµ±Ç°Æ½Ì¨Ñ¡ÔñµÄÄ¬ÈÏ\
-  Éú³ÉÆ÷¡£
+ç”Ÿæˆå™¨
+  è¿™å°†é€‰æ‹©è¦ç”Ÿæˆçš„æž„å»ºç³»ç»Ÿçš„ç±»åž‹ã€‚è¯·å‚é˜…\ :manual:`cmake-generators(7)`\ æ‰‹å†ŒèŽ·å–æ‰€æœ‰ç”Ÿ\
+  æˆå™¨çš„æ–‡æ¡£ã€‚è¿è¡Œ\ :option:`cmake --help`\ æŸ¥çœ‹æœ¬åœ°å¯ç”¨çš„ç”Ÿæˆå™¨åˆ—è¡¨ã€‚å¯ä»¥é€‰æ‹©ä½¿ç”¨ä¸‹é¢çš„\
+  :option:`-G <cmake -G>`\ é€‰é¡¹æ¥æŒ‡å®šä¸€ä¸ªç”Ÿæˆå™¨ï¼Œæˆ–è€…ç®€å•åœ°æŽ¥å—CMakeä¸ºå½“å‰å¹³å°é€‰æ‹©çš„é»˜è®¤\
+  ç”Ÿæˆå™¨ã€‚
 
-  µ±Ê¹ÓÃ\ :ref:`Command-Line Build Tool Generators`\ Ê±£¬CMakeÆÚÍû±àÒëÆ÷¹¤¾ßÁ´ËùÐèÒª\
-  µÄ»·¾³ÒÑ¾­ÔÚshellÖÐÅäÖÃºÃÁË¡£µ±Ê¹ÓÃ\ :ref:`IDE Build Tool Generators`\ Ê±£¬²»ÐèÒªÌØ\
-  ¶¨µÄ»·¾³¡£
+  å½“ä½¿ç”¨\ :ref:`Command-Line Build Tool Generators`\ æ—¶ï¼ŒCMakeæœŸæœ›ç¼–è¯‘å™¨å·¥å…·é“¾æ‰€éœ€è¦\
+  çš„çŽ¯å¢ƒå·²ç»åœ¨shellä¸­é…ç½®å¥½äº†ã€‚å½“ä½¿ç”¨\ :ref:`IDE Build Tool Generators`\ æ—¶ï¼Œä¸éœ€è¦ç‰¹\
+  å®šçš„çŽ¯å¢ƒã€‚
 
 .. _`Generate a Project Buildsystem`:
 
-Éú³ÉÒ»¸öÏîÄ¿¹¹½¨ÏµÍ³
+ç”Ÿæˆä¸€ä¸ªé¡¹ç›®æž„å»ºç³»ç»Ÿ
 ==============================
 
-Ê¹ÓÃÒÔÏÂÃüÁîÇ©ÃûÖ®Ò»ÔËÐÐCMakeÀ´Ö¸¶¨Ô´ºÍ¹¹½¨Ê÷£¬²¢Éú³ÉÒ»¸ö¹¹½¨ÏµÍ³£º
+ä½¿ç”¨ä»¥ä¸‹å‘½ä»¤ç­¾åä¹‹ä¸€è¿è¡ŒCMakeæ¥æŒ‡å®šæºå’Œæž„å»ºæ ‘ï¼Œå¹¶ç”Ÿæˆä¸€ä¸ªæž„å»ºç³»ç»Ÿï¼š
 
 ``cmake [<options>] -B <path-to-build> [-S <path-to-source>]``
 
   .. versionadded:: 3.13
 
-  Ê¹ÓÃ\ ``<path-to-build>``\ ×÷Îª¹¹½¨Ê÷£¬²¢Ê¹ÓÃ\ ``<path-to-source>``\ ×÷ÎªÔ´ÂëÊ÷¡£Ö¸\
-  ¶¨µÄÂ·¾¶¿ÉÒÔÊÇ¾ø¶ÔµÄ£¬Ò²¿ÉÒÔÊÇÏà¶ÔÓÚµ±Ç°¹¤×÷Ä¿Â¼µÄ¡£Ô´Ê÷Âë±ØÐë°üº¬Ò»¸ö\ ``CMakeLists.txt``\
-  ÎÄ¼þ¡£Èç¹û¹¹½¨Ê÷»¹²»´æÔÚ£¬½«×Ô¶¯´´½¨Ëü¡£ÀýÈç£º
+  ä½¿ç”¨\ ``<path-to-build>``\ ä½œä¸ºæž„å»ºæ ‘ï¼Œå¹¶ä½¿ç”¨\ ``<path-to-source>``\ ä½œä¸ºæºç æ ‘ã€‚æŒ‡\
+  å®šçš„è·¯å¾„å¯ä»¥æ˜¯ç»å¯¹çš„ï¼Œä¹Ÿå¯ä»¥æ˜¯ç›¸å¯¹äºŽå½“å‰å·¥ä½œç›®å½•çš„ã€‚æºæ ‘ç å¿…é¡»åŒ…å«ä¸€ä¸ª\ ``CMakeLists.txt``\
+  æ–‡ä»¶ã€‚å¦‚æžœæž„å»ºæ ‘è¿˜ä¸å­˜åœ¨ï¼Œå°†è‡ªåŠ¨åˆ›å»ºå®ƒã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: console
 
     $ cmake -S src -B build
 
 ``cmake [<options>] <path-to-source>``
-  Ê¹ÓÃµ±Ç°¹¤×÷Ä¿Â¼×÷Îª¹¹½¨Ê÷£¬²¢Ê¹ÓÃ\ ``<path-to-source>``\ ×÷ÎªÔ´Ê÷¡£Ö¸¶¨µÄÂ·¾¶¿ÉÒÔÊÇ¾ø\
-  ¶ÔÂ·¾¶£¬Ò²¿ÉÒÔÊÇÏà¶ÔÓÚµ±Ç°¹¤×÷Ä¿Â¼µÄÂ·¾¶¡£Ô´Ê÷±ØÐë°üº¬\ ``CMakeLists.txt``\ ÎÄ¼þ£¬µ«\
-  *²»ÄÜ*\ °üº¬\ ``CMakeCache.txt``\ ÎÄ¼þ£¬ÒòÎªºóÕß±êÊ¶ÁËÒ»¸öÏÖÓÐµÄ¹¹½¨Ê÷¡£ÀýÈç£º
+  ä½¿ç”¨å½“å‰å·¥ä½œç›®å½•ä½œä¸ºæž„å»ºæ ‘ï¼Œå¹¶ä½¿ç”¨\ ``<path-to-source>``\ ä½œä¸ºæºæ ‘ã€‚æŒ‡å®šçš„è·¯å¾„å¯ä»¥æ˜¯ç»\
+  å¯¹è·¯å¾„ï¼Œä¹Ÿå¯ä»¥æ˜¯ç›¸å¯¹äºŽå½“å‰å·¥ä½œç›®å½•çš„è·¯å¾„ã€‚æºæ ‘å¿…é¡»åŒ…å«\ ``CMakeLists.txt``\ æ–‡ä»¶ï¼Œä½†\
+  *ä¸èƒ½*\ åŒ…å«\ ``CMakeCache.txt``\ æ–‡ä»¶ï¼Œå› ä¸ºåŽè€…æ ‡è¯†äº†ä¸€ä¸ªçŽ°æœ‰çš„æž„å»ºæ ‘ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: console
 
@@ -119,24 +119,24 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
     $ cmake ../src
 
 ``cmake [<options>] <path-to-existing-build>``
-  Ê¹ÓÃ\ ``<path-to-existing-build>``\ ×÷Îª¹¹½¨Ê÷£¬²¢´ÓÆä\ ``CMakeCache.txt``\ ÎÄ¼þ¼Ó\
-  ÔØµ½Ô´Ê÷µÄÂ·¾¶£¬¸ÃÎÄ¼þ±ØÐëÊÇÖ®Ç°ÔËÐÐCMakeÊ±Éú³ÉµÄ¡£Ö¸¶¨µÄÂ·¾¶¿ÉÒÔÊÇ¾ø¶ÔÂ·¾¶£¬Ò²¿ÉÒÔÊÇÏà¶ÔÓÚ\
-  µ±Ç°¹¤×÷Ä¿Â¼µÄÂ·¾¶¡£ÀýÈç£º
+  ä½¿ç”¨\ ``<path-to-existing-build>``\ ä½œä¸ºæž„å»ºæ ‘ï¼Œå¹¶ä»Žå…¶\ ``CMakeCache.txt``\ æ–‡ä»¶åŠ \
+  è½½åˆ°æºæ ‘çš„è·¯å¾„ï¼Œè¯¥æ–‡ä»¶å¿…é¡»æ˜¯ä¹‹å‰è¿è¡ŒCMakeæ—¶ç”Ÿæˆçš„ã€‚æŒ‡å®šçš„è·¯å¾„å¯ä»¥æ˜¯ç»å¯¹è·¯å¾„ï¼Œä¹Ÿå¯ä»¥æ˜¯ç›¸å¯¹äºŽ\
+  å½“å‰å·¥ä½œç›®å½•çš„è·¯å¾„ã€‚ä¾‹å¦‚ï¼š
 
   .. code-block:: console
 
     $ cd build
     $ cmake .
 
-ÔÚËùÓÐÇé¿öÏÂ£¬\ ``<options>``\ ¿ÉÒÔÊÇÏÂÃæµÄÁã¸ö»ò¶à¸ö\ `Ñ¡Ïî`_¡£
+åœ¨æ‰€æœ‰æƒ…å†µä¸‹ï¼Œ\ ``<options>``\ å¯ä»¥æ˜¯ä¸‹é¢çš„é›¶ä¸ªæˆ–å¤šä¸ª\ `é€‰é¡¹`_ã€‚
 
-ÉÏÊöÓÃÓÚÖ¸¶¨Ô´Ê÷ºÍ¹¹½¨Ê÷µÄÑùÊ½¿ÉÒÔ»ìºÏÊ¹ÓÃ¡£ÓÃ\ :option:`-S <cmake -S>`\ »ò\
-:option:`-B <cmake -B>`\ Ö¸¶¨µÄÂ·¾¶×ÜÊÇ·Ö±ð¹éÀàÎªÔ´Ê÷»ò¹¹½¨Ê÷¡£Ê¹ÓÃÆÕÍ¨²ÎÊýÖ¸¶¨µÄÂ·¾¶¸ù¾Ý\
-ÆäÄÚÈÝºÍÇ°Ãæ¸ø³öµÄÂ·¾¶ÀàÐÍ½øÐÐ·ÖÀà¡£Èç¹ûÖ»¸ø³öÒ»ÖÖÀàÐÍµÄÂ·¾¶£¬ÔòÊ¹ÓÃµ±Ç°¹¤×÷Ä¿Â¼£¨cwd£©×÷ÎªÁí\
-Ò»ÖÖÀàÐÍµÄÂ·¾¶¡£ÀýÈç£º
+ä¸Šè¿°ç”¨äºŽæŒ‡å®šæºæ ‘å’Œæž„å»ºæ ‘çš„æ ·å¼å¯ä»¥æ··åˆä½¿ç”¨ã€‚ç”¨\ :option:`-S <cmake -S>`\ æˆ–\
+:option:`-B <cmake -B>`\ æŒ‡å®šçš„è·¯å¾„æ€»æ˜¯åˆ†åˆ«å½’ç±»ä¸ºæºæ ‘æˆ–æž„å»ºæ ‘ã€‚ä½¿ç”¨æ™®é€šå‚æ•°æŒ‡å®šçš„è·¯å¾„æ ¹æ®\
+å…¶å†…å®¹å’Œå‰é¢ç»™å‡ºçš„è·¯å¾„ç±»åž‹è¿›è¡Œåˆ†ç±»ã€‚å¦‚æžœåªç»™å‡ºä¸€ç§ç±»åž‹çš„è·¯å¾„ï¼Œåˆ™ä½¿ç”¨å½“å‰å·¥ä½œç›®å½•ï¼ˆcwdï¼‰ä½œä¸ºå¦\
+ä¸€ç§ç±»åž‹çš„è·¯å¾„ã€‚ä¾‹å¦‚ï¼š
 
 ============================== ============ ===========
- ÃüÁîÐÐ                          Ô´Ä¿Â¼        ¹¹½¨Ä¿Â¼
+ å‘½ä»¤è¡Œ                          æºç›®å½•        æž„å»ºç›®å½•
 ============================== ============ ===========
  ``cmake -B build``             `cwd`        ``build``
  ``cmake -B build src``         ``src``      ``build``
@@ -150,22 +150,22 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
 
 .. versionchanged:: 3.23
 
-  CMakeÔÚÖ¸¶¨¶à¸öÔ´Â·¾¶Ê±·¢³ö¾¯¸æ¡£Õâ´ÓÀ´Ã»ÓÐÕýÊ½µÄÎÄµµ»òÖ§³Ö£¬µ«½Ï¾ÉµÄ°æ±¾»áÒâÍâµØ½ÓÊÜ¶à¸ö\
-  Ô´Â·¾¶£¬²¢Ê¹ÓÃ×îºóÖ¸¶¨µÄÂ·¾¶¡£±ÜÃâ´«µÝ¶à¸öÔ´Â·¾¶²ÎÊý¡£
+  CMakeåœ¨æŒ‡å®šå¤šä¸ªæºè·¯å¾„æ—¶å‘å‡ºè­¦å‘Šã€‚è¿™ä»Žæ¥æ²¡æœ‰æ­£å¼çš„æ–‡æ¡£æˆ–æ”¯æŒï¼Œä½†è¾ƒæ—§çš„ç‰ˆæœ¬ä¼šæ„å¤–åœ°æŽ¥å—å¤šä¸ª\
+  æºè·¯å¾„ï¼Œå¹¶ä½¿ç”¨æœ€åŽæŒ‡å®šçš„è·¯å¾„ã€‚é¿å…ä¼ é€’å¤šä¸ªæºè·¯å¾„å‚æ•°ã€‚
 
-ÔÚÉú³É¹¹½¨ÏµÍ³Ö®ºó£¬¿ÉÒÔÊ¹ÓÃÏàÓ¦µÄ±¾µØ¹¹½¨¹¤¾ßÀ´¹¹½¨ÏîÄ¿¡£ÀýÈç£¬ÔÚÊ¹ÓÃ\
-:generator:`Unix Makefiles`\ Éú³ÉÆ÷ºó£¬¿ÉÒÔÖ±½ÓÔËÐÐ\ ``make``£º
+åœ¨ç”Ÿæˆæž„å»ºç³»ç»Ÿä¹‹åŽï¼Œå¯ä»¥ä½¿ç”¨ç›¸åº”çš„æœ¬åœ°æž„å»ºå·¥å…·æ¥æž„å»ºé¡¹ç›®ã€‚ä¾‹å¦‚ï¼Œåœ¨ä½¿ç”¨\
+:generator:`Unix Makefiles`\ ç”Ÿæˆå™¨åŽï¼Œå¯ä»¥ç›´æŽ¥è¿è¡Œ\ ``make``ï¼š
 
   .. code-block:: console
 
     $ make
     $ make install
 
-»òÕß£¬¿ÉÒÔÊ¹ÓÃ\ :program:`cmake`\ Í¨¹ý×Ô¶¯Ñ¡ÔñºÍµ÷ÓÃÊÊµ±µÄ±¾µØ¹¹½¨¹¤¾ßÀ´\ `¹¹½¨Ò»¸öÏîÄ¿`_¡£
+æˆ–è€…ï¼Œå¯ä»¥ä½¿ç”¨\ :program:`cmake`\ é€šè¿‡è‡ªåŠ¨é€‰æ‹©å’Œè°ƒç”¨é€‚å½“çš„æœ¬åœ°æž„å»ºå·¥å…·æ¥\ `æž„å»ºä¸€ä¸ªé¡¹ç›®`_ã€‚
 
 .. _`CMake Options`:
 
-Ñ¡Ïî
+é€‰é¡¹
 -------
 
 .. program:: cmake
@@ -176,8 +176,8 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
 
  .. versionadded:: 3.24
 
- Ö´ÐÐ¹¹½¨Ê÷µÄÐÂÅäÖÃ¡£Õâ½«É¾³ýÈÎºÎÏÖÓÐµÄ\ ``CMakeCache.txt``\ ÎÄ¼þºÍÏà¹ØµÄ\ ``CMakeFiles/``\
- Ä¿Â¼£¬²¢´ÓÍ·¿ªÊ¼ÖØÐÂ´´½¨ËüÃÇ¡£
+ æ‰§è¡Œæž„å»ºæ ‘çš„æ–°é…ç½®ã€‚è¿™å°†åˆ é™¤ä»»ä½•çŽ°æœ‰çš„\ ``CMakeCache.txt``\ æ–‡ä»¶å’Œç›¸å…³çš„\ ``CMakeFiles/``\
+ ç›®å½•ï¼Œå¹¶ä»Žå¤´å¼€å§‹é‡æ–°åˆ›å»ºå®ƒä»¬ã€‚
 
  .. versionchanged:: 3.30
 
@@ -188,132 +188,132 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
 
 .. option:: -L[A][H]
 
- ÁÐ³ö·Ç¸ß¼¶»º´æ±äÁ¿¡£
+ åˆ—å‡ºéžé«˜çº§ç¼“å­˜å˜é‡ã€‚
 
- ÁÐ±í\ ``CACHE``\ ±äÁ¿½«ÔËÐÐCMake²¢ÁÐ³öCMake ``CACHE``\ ÖÐÎ´±ê¼ÇÎª\ ``INTERNAL``\ »ò\
- :prop_cache:`ADVANCED`\ µÄËùÓÐ±äÁ¿¡£Õâ½«ÓÐÐ§µØÏÔÊ¾µ±Ç°µÄCMakeÉèÖÃ£¬È»ºó¿ÉÒÔÊ¹ÓÃ\
- :option:`-D <cmake -D>`\ Ñ¡Ïî½øÐÐ¸ü¸Ä¡£¸ü¸ÄÒ»Ð©±äÁ¿¿ÉÄÜ»áµ¼ÖÂ´´½¨¸ü¶à±äÁ¿¡£Èç¹ûÖ¸¶¨ÁË\
- ``A``£¬ÄÇÃ´ËüÒ²½«ÏÔÊ¾¸ß¼¶±äÁ¿¡£Èç¹ûÖ¸¶¨ÁË\ ``H``£¬Ëü»¹½«ÏÔÊ¾Ã¿¸ö±äÁ¿µÄ°ïÖú¡£
+ åˆ—è¡¨\ ``CACHE``\ å˜é‡å°†è¿è¡ŒCMakeå¹¶åˆ—å‡ºCMake ``CACHE``\ ä¸­æœªæ ‡è®°ä¸º\ ``INTERNAL``\ æˆ–\
+ :prop_cache:`ADVANCED`\ çš„æ‰€æœ‰å˜é‡ã€‚è¿™å°†æœ‰æ•ˆåœ°æ˜¾ç¤ºå½“å‰çš„CMakeè®¾ç½®ï¼Œç„¶åŽå¯ä»¥ä½¿ç”¨\
+ :option:`-D <cmake -D>`\ é€‰é¡¹è¿›è¡Œæ›´æ”¹ã€‚æ›´æ”¹ä¸€äº›å˜é‡å¯èƒ½ä¼šå¯¼è‡´åˆ›å»ºæ›´å¤šå˜é‡ã€‚å¦‚æžœæŒ‡å®šäº†\
+ ``A``ï¼Œé‚£ä¹ˆå®ƒä¹Ÿå°†æ˜¾ç¤ºé«˜çº§å˜é‡ã€‚å¦‚æžœæŒ‡å®šäº†\ ``H``ï¼Œå®ƒè¿˜å°†æ˜¾ç¤ºæ¯ä¸ªå˜é‡çš„å¸®åŠ©ã€‚
 
 .. option:: -N
 
- ½öÖ§³Ö²é¿´Ä£Ê½¡£
+ ä»…æ”¯æŒæŸ¥çœ‹æ¨¡å¼ã€‚
 
- Ö»¼ÓÔØ»º´æ¡£²»Êµ¼ÊÔËÐÐÅäÖÃºÍÉú³É²½Öè¡£
+ åªåŠ è½½ç¼“å­˜ã€‚ä¸å®žé™…è¿è¡Œé…ç½®å’Œç”Ÿæˆæ­¥éª¤ã€‚
 
 .. option:: --graphviz=<file>
 
- Éú³ÉÒÀÀµµÄgraphviz£¬²Î¼û\ :module:`CMakeGraphVizOptions`\ »ñÈ¡¸ü¶àÐÅÏ¢¡£
+ ç”Ÿæˆä¾èµ–çš„graphvizï¼Œå‚è§\ :module:`CMakeGraphVizOptions`\ èŽ·å–æ›´å¤šä¿¡æ¯ã€‚
 
- Éú³ÉÒ»¸ögraphvizÊäÈëÎÄ¼þ£¬¸ÃÎÄ¼þ½«°üº¬ÏîÄ¿ÖÐµÄËùÓÐ¿âºÍ¿ÉÖ´ÐÐÒÀÀµÏî¡£¸ü¶àÏ¸½ÚÇë²ÎÔÄ\
- :module:`CMakeGraphVizOptions`\ ÎÄµµ¡£
+ ç”Ÿæˆä¸€ä¸ªgraphvizè¾“å…¥æ–‡ä»¶ï¼Œè¯¥æ–‡ä»¶å°†åŒ…å«é¡¹ç›®ä¸­çš„æ‰€æœ‰åº“å’Œå¯æ‰§è¡Œä¾èµ–é¡¹ã€‚æ›´å¤šç»†èŠ‚è¯·å‚é˜…\
+ :module:`CMakeGraphVizOptions`\ æ–‡æ¡£ã€‚
 
 .. option:: --system-information [file]
 
- ×ª´¢ÏµÍ³ÐÅÏ¢¡£
+ è½¬å‚¨ç³»ç»Ÿä¿¡æ¯ã€‚
 
- ×ª´¢¹ØÓÚµ±Ç°ÏµÍ³µÄ¸÷ÖÖÐÅÏ¢¡£Èç¹û´ÓÒ»¸öCMakeÏîÄ¿µÄ¶þ½øÖÆÄ¿Â¼¶¥²ãÔËÐÐ£¬Ëü½«×ª´¢¶îÍâµÄÐÅÏ¢£¬\
- Èç»º´æ¡¢ÈÕÖ¾ÎÄ¼þµÈ¡£
+ è½¬å‚¨å…³äºŽå½“å‰ç³»ç»Ÿçš„å„ç§ä¿¡æ¯ã€‚å¦‚æžœä»Žä¸€ä¸ªCMakeé¡¹ç›®çš„äºŒè¿›åˆ¶ç›®å½•é¡¶å±‚è¿è¡Œï¼Œå®ƒå°†è½¬å‚¨é¢å¤–çš„ä¿¡æ¯ï¼Œ\
+ å¦‚ç¼“å­˜ã€æ—¥å¿—æ–‡ä»¶ç­‰ã€‚
 
 .. option:: --log-level=<level>
 
- ÉèÖÃÈÕÖ¾\ ``<level>``¡£
+ è®¾ç½®æ—¥å¿—\ ``<level>``ã€‚
 
- :command:`message`\ ÃüÁîÖ»Êä³öÖ¸¶¨ÈÕÖ¾¼¶±ð»ò¸ü¸ß¼¶±ðµÄÏûÏ¢¡£ÓÐÐ§µÄÈÕÖ¾¼¶±ð°üÀ¨\
- ``ERROR``¡¢\ ``WARNING``¡¢\ ``NOTICE``¡¢\ ``STATUS``\ £¨Ä¬ÈÏ£©¡¢\ ``VERBOSE``¡¢\
- ``DEBUG``\ »ò\ ``TRACE``¡£
+ :command:`message`\ å‘½ä»¤åªè¾“å‡ºæŒ‡å®šæ—¥å¿—çº§åˆ«æˆ–æ›´é«˜çº§åˆ«çš„æ¶ˆæ¯ã€‚æœ‰æ•ˆçš„æ—¥å¿—çº§åˆ«åŒ…æ‹¬\
+ ``ERROR``ã€\ ``WARNING``ã€\ ``NOTICE``ã€\ ``STATUS``\ ï¼ˆé»˜è®¤ï¼‰ã€\ ``VERBOSE``ã€\
+ ``DEBUG``\ æˆ–\ ``TRACE``ã€‚
 
- ÒªÔÚCMakeÔËÐÐÖ®¼ä±£³ÖÈÕÖ¾¼¶±ð£¬¿ÉÒÔ½«\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ ÉèÖÃÎª»º\
- ´æ±äÁ¿¡£Èç¹ûÍ¬Ê±¸ø³öÁËÃüÁîÐÐÑ¡ÏîºÍ±äÁ¿£¬ÔòÃüÁîÐÐÑ¡ÏîÓÅÏÈ¡£
+ è¦åœ¨CMakeè¿è¡Œä¹‹é—´ä¿æŒæ—¥å¿—çº§åˆ«ï¼Œå¯ä»¥å°†\ :variable:`CMAKE_MESSAGE_LOG_LEVEL`\ è®¾ç½®ä¸ºç¼“\
+ å­˜å˜é‡ã€‚å¦‚æžœåŒæ—¶ç»™å‡ºäº†å‘½ä»¤è¡Œé€‰é¡¹å’Œå˜é‡ï¼Œåˆ™å‘½ä»¤è¡Œé€‰é¡¹ä¼˜å…ˆã€‚
 
- ³öÓÚÏòºó¼æÈÝµÄÔ­Òò£¬\ ``--loglevel``\ Ò²±»½ÓÊÜÎª¸ÃÑ¡ÏîµÄÍ¬Òå´Ê¡£
+ å‡ºäºŽå‘åŽå…¼å®¹çš„åŽŸå› ï¼Œ\ ``--loglevel``\ ä¹Ÿè¢«æŽ¥å—ä¸ºè¯¥é€‰é¡¹çš„åŒä¹‰è¯ã€‚
 
  .. versionadded:: 3.25
-   ÓÐ¹Ø\ :ref:`²éÑ¯µ±Ç°ÏûÏ¢¼ÇÂ¼¼¶±ð <query_message_log_level>`\ µÄ·½·¨£¬Çë²ÎÔÄ\
-   :command:`cmake_language`\ ÃüÁî¡£
+   æœ‰å…³\ :ref:`æŸ¥è¯¢å½“å‰æ¶ˆæ¯è®°å½•çº§åˆ« <query_message_log_level>`\ çš„æ–¹æ³•ï¼Œè¯·å‚é˜…\
+   :command:`cmake_language`\ å‘½ä»¤ã€‚
 
 .. option:: --log-context
 
- ÆôÓÃ¸½¼Óµ½Ã¿¸öÏûÏ¢µÄ\ :command:`message`\ ÃüÁîÊä³öÉÏÏÂÎÄ¡£
+ å¯ç”¨é™„åŠ åˆ°æ¯ä¸ªæ¶ˆæ¯çš„\ :command:`message`\ å‘½ä»¤è¾“å‡ºä¸Šä¸‹æ–‡ã€‚
 
- Õâ¸öÑ¡Ïî´ò¿ª½öÏÔÊ¾µ±Ç°CMakeÔËÐÐµÄÉÏÏÂÎÄ¡£ÎªÁËÈÃËùÓÐºóÐøµÄCMakeÔËÐÐ¶¼³ÖÐøÏÔÊ¾ÉÏÏÂÎÄ£¬¿ÉÒÔ½«\
- :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ ÉèÖÃÎª»º´æ±äÁ¿¡£µ±¸ø³öÕâ¸öÃüÁîÐÐÑ¡ÏîÊ±£¬\
- :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ ½«±»ºöÂÔ¡£
+ è¿™ä¸ªé€‰é¡¹æ‰“å¼€ä»…æ˜¾ç¤ºå½“å‰CMakeè¿è¡Œçš„ä¸Šä¸‹æ–‡ã€‚ä¸ºäº†è®©æ‰€æœ‰åŽç»­çš„CMakeè¿è¡Œéƒ½æŒç»­æ˜¾ç¤ºä¸Šä¸‹æ–‡ï¼Œå¯ä»¥å°†\
+ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ è®¾ç½®ä¸ºç¼“å­˜å˜é‡ã€‚å½“ç»™å‡ºè¿™ä¸ªå‘½ä»¤è¡Œé€‰é¡¹æ—¶ï¼Œ\
+ :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ å°†è¢«å¿½ç•¥ã€‚
 
 .. option:: --debug-trycompile
 
- ²»ÒªÉ¾³ýÎª\ :command:`try_compile`\ /\ :command:`try_run`\ µ÷ÓÃ´´½¨µÄÎÄ¼þºÍÄ¿Â¼¡£\
- ÕâÔÚµ÷ÊÔÊ§°ÜµÄ¼ì²éÊ±ºÜÓÐÓÃ¡£
+ ä¸è¦åˆ é™¤ä¸º\ :command:`try_compile`\ /\ :command:`try_run`\ è°ƒç”¨åˆ›å»ºçš„æ–‡ä»¶å’Œç›®å½•ã€‚\
+ è¿™åœ¨è°ƒè¯•å¤±è´¥çš„æ£€æŸ¥æ—¶å¾ˆæœ‰ç”¨ã€‚
 
- ×¢Òâ£¬:command:`try_compile`\ µÄÄ³Ð©ÓÃ·¨¿ÉÄÜÊ¹ÓÃÏàÍ¬µÄ¹¹½¨Ê÷£¬Èç¹ûÒ»¸öÏîÄ¿Ö´ÐÐ¶à¸ö\
- :command:`try_compile`£¬Õâ½«ÏÞÖÆ¸ÃÑ¡ÏîµÄÓÐÓÃÐÔ¡£ÀýÈç£¬ÕâÑùµÄÊ¹ÓÃ¿ÉÄÜ»á¸Ä±ä½á¹û£¬ÒòÎªÀ´×Ô\
- ÏÈÇ°³¢ÊÔ±àÒëµÄ¹¤¼þ¿ÉÄÜ»áµ¼ÖÂ²»Í¬µÄ²âÊÔ´íÎóµØÍ¨¹ý»òÊ§°Ü¡£´ËÑ¡Ïî×îºÃ½öÔÚµ÷ÊÔÊ±Ê¹ÓÃ¡£
+ æ³¨æ„ï¼Œ:command:`try_compile`\ çš„æŸäº›ç”¨æ³•å¯èƒ½ä½¿ç”¨ç›¸åŒçš„æž„å»ºæ ‘ï¼Œå¦‚æžœä¸€ä¸ªé¡¹ç›®æ‰§è¡Œå¤šä¸ª\
+ :command:`try_compile`ï¼Œè¿™å°†é™åˆ¶è¯¥é€‰é¡¹çš„æœ‰ç”¨æ€§ã€‚ä¾‹å¦‚ï¼Œè¿™æ ·çš„ä½¿ç”¨å¯èƒ½ä¼šæ”¹å˜ç»“æžœï¼Œå› ä¸ºæ¥è‡ª\
+ å…ˆå‰å°è¯•ç¼–è¯‘çš„å·¥ä»¶å¯èƒ½ä¼šå¯¼è‡´ä¸åŒçš„æµ‹è¯•é”™è¯¯åœ°é€šè¿‡æˆ–å¤±è´¥ã€‚æ­¤é€‰é¡¹æœ€å¥½ä»…åœ¨è°ƒè¯•æ—¶ä½¿ç”¨ã€‚
 
- £¨ÓëÇ°ÃæµÄÃüÁîÏà±È£¬:command:`try_run`\ ÃüÁîÊµ¼ÊÉÏÊÇ\ :command:`try_compile`\ ÃüÁî¡£\
- Á½ÕßµÄÈÎºÎ×éºÏ¶¼ÊÜµ½ËùÃèÊöµÄÇ±ÔÚÎÊÌâµÄÓ°Ïì¡££©
+ ï¼ˆä¸Žå‰é¢çš„å‘½ä»¤ç›¸æ¯”ï¼Œ:command:`try_run`\ å‘½ä»¤å®žé™…ä¸Šæ˜¯\ :command:`try_compile`\ å‘½ä»¤ã€‚\
+ ä¸¤è€…çš„ä»»ä½•ç»„åˆéƒ½å—åˆ°æ‰€æè¿°çš„æ½œåœ¨é—®é¢˜çš„å½±å“ã€‚ï¼‰
 
  .. versionadded:: 3.25
 
-   ÆôÓÃ´ËÑ¡Ïîºó£¬Ã¿´Î³¢ÊÔ±àÒë¼ì²é¶¼»á´òÓ¡Ò»ÌõÈÕÖ¾ÏûÏ¢£¬±¨¸æÖ´ÐÐ¼ì²éµÄÄ¿Â¼¡£
+   å¯ç”¨æ­¤é€‰é¡¹åŽï¼Œæ¯æ¬¡å°è¯•ç¼–è¯‘æ£€æŸ¥éƒ½ä¼šæ‰“å°ä¸€æ¡æ—¥å¿—æ¶ˆæ¯ï¼ŒæŠ¥å‘Šæ‰§è¡Œæ£€æŸ¥çš„ç›®å½•ã€‚
 
 .. option:: --debug-output
 
- ½«cmakeÖÃÓÚµ÷ÊÔÄ£Ê½¡£
+ å°†cmakeç½®äºŽè°ƒè¯•æ¨¡å¼ã€‚
 
- ÔÚcmakeÔËÐÐÆÚ¼ä´òÓ¡¶îÍâµÄÐÅÏ¢£¬¾ÍÏñÊ¹ÓÃ\ :command:`message(SEND_ERROR)`\ µ÷ÓÃ½øÐÐ¶ÑÕ»¸ú×ÙÒ»Ñù¡£
+ åœ¨cmakeè¿è¡ŒæœŸé—´æ‰“å°é¢å¤–çš„ä¿¡æ¯ï¼Œå°±åƒä½¿ç”¨\ :command:`message(SEND_ERROR)`\ è°ƒç”¨è¿›è¡Œå †æ ˆè·Ÿè¸ªä¸€æ ·ã€‚
 
 .. option:: --debug-find
 
  .. versionadded:: 3.17
 
- ½«cmake findÃüÁîÖÃÓÚµ÷ÊÔÄ£Ê½¡£
+ å°†cmake findå‘½ä»¤ç½®äºŽè°ƒè¯•æ¨¡å¼ã€‚
 
- ÔÚcmakeÔËÐÐµ½±ê×¼´íÎóÊ±´òÓ¡¶îÍâµÄfindµ÷ÓÃÐÅÏ¢¡£Êä³öÊÇÎªÈËÀàÊ¹ÓÃ¶ø²»ÊÇÎª½âÎö¶øÉè¼ÆµÄ¡£ÁíÇë²ÎÔÄ\
- :variable:`CMAKE_FIND_DEBUG_MODE`\ ±äÁ¿£¬ÒÔµ÷ÊÔÏîÄ¿ÖÐ¸ü¾Ö²¿µÄ²¿·Ö¡£
+ åœ¨cmakeè¿è¡Œåˆ°æ ‡å‡†é”™è¯¯æ—¶æ‰“å°é¢å¤–çš„findè°ƒç”¨ä¿¡æ¯ã€‚è¾“å‡ºæ˜¯ä¸ºäººç±»ä½¿ç”¨è€Œä¸æ˜¯ä¸ºè§£æžè€Œè®¾è®¡çš„ã€‚å¦è¯·å‚é˜…\
+ :variable:`CMAKE_FIND_DEBUG_MODE`\ å˜é‡ï¼Œä»¥è°ƒè¯•é¡¹ç›®ä¸­æ›´å±€éƒ¨çš„éƒ¨åˆ†ã€‚
 
 .. option:: --debug-find-pkg=<pkg>[,...]
 
  .. versionadded:: 3.23
 
- ÔÚµ÷ÓÃ\ :command:`find_package(\<pkg\>) <find_package>`\ Ê±£¬½«cmake findÃüÁîÖÃÓÚ\
- µ÷ÊÔÄ£Ê½£¬ÆäÖÐ\ ``<pkg>``\ ÊÇ¸ø¶¨¶ººÅ·Ö¸ôµÄÇø·Ö´óÐ¡Ð´µÄ°üÃûÁÐ±íÖÐµÄÒ»¸öÌõÄ¿¡£
+ åœ¨è°ƒç”¨\ :command:`find_package(\<pkg\>) <find_package>`\ æ—¶ï¼Œå°†cmake findå‘½ä»¤ç½®äºŽ\
+ è°ƒè¯•æ¨¡å¼ï¼Œå…¶ä¸­\ ``<pkg>``\ æ˜¯ç»™å®šé€—å·åˆ†éš”çš„åŒºåˆ†å¤§å°å†™çš„åŒ…ååˆ—è¡¨ä¸­çš„ä¸€ä¸ªæ¡ç›®ã€‚
 
- ÀàËÆÓÚ\ :option:`--debug-find <cmake --debug-find>`£¬µ«½«×÷ÓÃÓòÏÞÖÆÎªÖ¸¶¨µÄ°ü¡£
+ ç±»ä¼¼äºŽ\ :option:`--debug-find <cmake --debug-find>`ï¼Œä½†å°†ä½œç”¨åŸŸé™åˆ¶ä¸ºæŒ‡å®šçš„åŒ…ã€‚
 
 .. option:: --debug-find-var=<var>[,...]
 
  .. versionadded:: 3.23
 
- Ê¹ÓÃ\ ``<var>``\ ½«cmake findÃüÁîÖÃÓÚµ÷ÊÔÄ£Ê½¡£×÷Îª½á¹û±äÁ¿£¬ÆäÖÐ\ ``<var>``\ ÊÇ¸ø¶¨\
- ¶ººÅ·Ö¸ôÁÐ±íÖÐµÄÌõÄ¿¡£
+ ä½¿ç”¨\ ``<var>``\ å°†cmake findå‘½ä»¤ç½®äºŽè°ƒè¯•æ¨¡å¼ã€‚ä½œä¸ºç»“æžœå˜é‡ï¼Œå…¶ä¸­\ ``<var>``\ æ˜¯ç»™å®š\
+ é€—å·åˆ†éš”åˆ—è¡¨ä¸­çš„æ¡ç›®ã€‚
 
- ÀàËÆÓÚ\ :option:`--debug-find <cmake --debug-find>`£¬µ«½«×÷ÓÃÓòÏÞÖÆÎªÖ¸¶¨µÄ±äÁ¿Ãû¡£
+ ç±»ä¼¼äºŽ\ :option:`--debug-find <cmake --debug-find>`ï¼Œä½†å°†ä½œç”¨åŸŸé™åˆ¶ä¸ºæŒ‡å®šçš„å˜é‡åã€‚
 
 .. option:: --trace
 
- ½«cmakeÖÃÓÚ¸ú×ÙÄ£Ê½¡£
+ å°†cmakeç½®äºŽè·Ÿè¸ªæ¨¡å¼ã€‚
 
- ´òÓ¡ËùÓÐºô½ÐµÄ¹ì¼£ºÍµ÷ÓÃµÄÀ´Ô´¡£
+ æ‰“å°æ‰€æœ‰å‘¼å«çš„è½¨è¿¹å’Œè°ƒç”¨çš„æ¥æºã€‚
 
 .. option:: --trace-expand
 
- ½«cmakeÖÃÓÚ¸ú×ÙÄ£Ê½¡£
+ å°†cmakeç½®äºŽè·Ÿè¸ªæ¨¡å¼ã€‚
 
- ÀàËÆÓÚ\ :option:`--trace <cmake --trace>`£¬µ«ÊÇ±äÁ¿Õ¹¿ªÁË¡£
+ ç±»ä¼¼äºŽ\ :option:`--trace <cmake --trace>`ï¼Œä½†æ˜¯å˜é‡å±•å¼€äº†ã€‚
 
 .. option:: --trace-format=<format>
 
  .. versionadded:: 3.17
 
- ½«cmakeÖÃÓÚ¸ú×ÙÄ£Ê½²¢ÉèÖÃ¸ú×ÙÊä³ö¸ñÊ½¡£
+ å°†cmakeç½®äºŽè·Ÿè¸ªæ¨¡å¼å¹¶è®¾ç½®è·Ÿè¸ªè¾“å‡ºæ ¼å¼ã€‚
 
- ``<format>``\ ¿ÉÒÔÊÇÒÔÏÂÖµÖ®Ò»¡£
+ ``<format>``\ å¯ä»¥æ˜¯ä»¥ä¸‹å€¼ä¹‹ä¸€ã€‚
 
    ``human``
-     ÒÔÈËÀà¿É¶ÁµÄ¸ñÊ½´òÓ¡Ã¿¸ö¸ú×ÙÐÐ¡£ÕâÊÇÄ¬ÈÏ¸ñÊ½¡£
+     ä»¥äººç±»å¯è¯»çš„æ ¼å¼æ‰“å°æ¯ä¸ªè·Ÿè¸ªè¡Œã€‚è¿™æ˜¯é»˜è®¤æ ¼å¼ã€‚
 
    ``json-v1``
-     ½«Ã¿Ò»ÐÐ´òÓ¡ÎªÒ»¸öµ¥¶ÀµÄJSONÎÄµµ¡£Ã¿¸öÎÄµµÓÉ»»ÐÐ·û£¨``\n``£©·Ö¸ô¡£¿ÉÒÔ±£Ö¤JSONÎÄµµÖÐ²»»á³öÏÖ»»ÐÐ·û¡£
+     å°†æ¯ä¸€è¡Œæ‰“å°ä¸ºä¸€ä¸ªå•ç‹¬çš„JSONæ–‡æ¡£ã€‚æ¯ä¸ªæ–‡æ¡£ç”±æ¢è¡Œç¬¦ï¼ˆ``\n``ï¼‰åˆ†éš”ã€‚å¯ä»¥ä¿è¯JSONæ–‡æ¡£ä¸­ä¸ä¼šå‡ºçŽ°æ¢è¡Œç¬¦ã€‚
 
      .. code-block:: json
        :caption: JSON trace format
@@ -328,39 +328,39 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
          "global_frame": 4
        }
 
-     ³ÉÔ±ÓÐ£º
+     æˆå‘˜æœ‰ï¼š
 
      ``file``
-       µ÷ÓÃº¯ÊýµÄCMakeÔ´ÎÄ¼þµÄÍêÕûÂ·¾¶¡£
+       è°ƒç”¨å‡½æ•°çš„CMakeæºæ–‡ä»¶çš„å®Œæ•´è·¯å¾„ã€‚
 
      ``line``
-       ``file``\ ÖÐº¯Êýµ÷ÓÃ¿ªÊ¼µÄÐÐ¡£
+       ``file``\ ä¸­å‡½æ•°è°ƒç”¨å¼€å§‹çš„è¡Œã€‚
 
      ``line_end``
-       Èç¹ûº¯Êýµ÷ÓÃ¿çÔ½¶àÐÐ£¬Ôò¸Ã×Ö¶Î½«ÉèÖÃÎªº¯Êýµ÷ÓÃ½áÊøµÄÐÐ¡£Èç¹ûº¯Êýµ÷ÓÃ¿çÔ½µ¥ÐÐ£¬Õâ¸ö×Ö\
-       ¶Î½«±»È¡ÏûÉèÖÃ¡£¸Ã×Ö¶ÎÊÇÔÚ\ ``json-v1``\ ¸ñÊ½µÄ´ÎÒª°æ±¾2ÖÐÌí¼ÓµÄ¡£
+       å¦‚æžœå‡½æ•°è°ƒç”¨è·¨è¶Šå¤šè¡Œï¼Œåˆ™è¯¥å­—æ®µå°†è®¾ç½®ä¸ºå‡½æ•°è°ƒç”¨ç»“æŸçš„è¡Œã€‚å¦‚æžœå‡½æ•°è°ƒç”¨è·¨è¶Šå•è¡Œï¼Œè¿™ä¸ªå­—\
+       æ®µå°†è¢«å–æ¶ˆè®¾ç½®ã€‚è¯¥å­—æ®µæ˜¯åœ¨\ ``json-v1``\ æ ¼å¼çš„æ¬¡è¦ç‰ˆæœ¬2ä¸­æ·»åŠ çš„ã€‚
 
      ``defer``
-       µ±º¯Êýµ÷ÓÃ±»\ :command:`cmake_language(DEFER)`\ ÑÓ³ÙÊ±³öÏÖµÄ¿ÉÑ¡³ÉÔ±¡£Èç¹û´æÔÚ£¬\
-       ËüµÄÖµÊÇÒ»¸ö°üº¬ÑÓ³Ùµ÷ÓÃ\ ``<id>``\ µÄ×Ö·û´®¡£
+       å½“å‡½æ•°è°ƒç”¨è¢«\ :command:`cmake_language(DEFER)`\ å»¶è¿Ÿæ—¶å‡ºçŽ°çš„å¯é€‰æˆå‘˜ã€‚å¦‚æžœå­˜åœ¨ï¼Œ\
+       å®ƒçš„å€¼æ˜¯ä¸€ä¸ªåŒ…å«å»¶è¿Ÿè°ƒç”¨\ ``<id>``\ çš„å­—ç¬¦ä¸²ã€‚
 
      ``cmd``
-       ±»µ÷ÓÃµÄº¯ÊýµÄÃû³Æ¡£
+       è¢«è°ƒç”¨çš„å‡½æ•°çš„åç§°ã€‚
 
      ``args``
-       °üº¬ËùÓÐº¯Êý²ÎÊýµÄ×Ö·û´®ÁÐ±í¡£
+       åŒ…å«æ‰€æœ‰å‡½æ•°å‚æ•°çš„å­—ç¬¦ä¸²åˆ—è¡¨ã€‚
 
      ``time``
-       º¯Êýµ÷ÓÃµÄÊ±¼ä´Á£¨×ÔepochÒÔÀ´µÄÃëÊý£©¡£
+       å‡½æ•°è°ƒç”¨çš„æ—¶é—´æˆ³ï¼ˆè‡ªepochä»¥æ¥çš„ç§’æ•°ï¼‰ã€‚
 
      ``frame``
-       ÔÚµ±Ç°ÕýÔÚ´¦ÀíµÄ\ ``CMakeLists.txt``\ µÄÉÏÏÂÎÄÖÐ£¬±»µ÷ÓÃº¯ÊýµÄ¶ÑÕ»Ö¡Éî¶È¡£
+       åœ¨å½“å‰æ­£åœ¨å¤„ç†çš„\ ``CMakeLists.txt``\ çš„ä¸Šä¸‹æ–‡ä¸­ï¼Œè¢«è°ƒç”¨å‡½æ•°çš„å †æ ˆå¸§æ·±åº¦ã€‚
 
      ``global_frame``
-       ±»µ÷ÓÃº¯ÊýµÄ¶ÑÕ»Ö¡Éî¶È£¬ÔÚ¸ú×ÙÉæ¼°µÄËùÓÐ\ ``CMakeLists.txt``\ ÎÄ¼þÖÐÈ«¾Ö¸ú×Ù¡£¸Ã\
-       ×Ö¶ÎÊÇÔÚ\ ``json-v1``\ ¸ñÊ½µÄ´ÎÒª°æ±¾2ÖÐÌí¼ÓµÄ¡£
+       è¢«è°ƒç”¨å‡½æ•°çš„å †æ ˆå¸§æ·±åº¦ï¼Œåœ¨è·Ÿè¸ªæ¶‰åŠçš„æ‰€æœ‰\ ``CMakeLists.txt``\ æ–‡ä»¶ä¸­å…¨å±€è·Ÿè¸ªã€‚è¯¥\
+       å­—æ®µæ˜¯åœ¨\ ``json-v1``\ æ ¼å¼çš„æ¬¡è¦ç‰ˆæœ¬2ä¸­æ·»åŠ çš„ã€‚
 
-     ´ËÍâ£¬Êä³öµÄµÚÒ»¸öJSONÎÄµµ°üº¬µ±Ç°Ö÷ÒªºÍ´ÎÒª°æ±¾µÄ\ ``version``\ ¼ü
+     æ­¤å¤–ï¼Œè¾“å‡ºçš„ç¬¬ä¸€ä¸ªJSONæ–‡æ¡£åŒ…å«å½“å‰ä¸»è¦å’Œæ¬¡è¦ç‰ˆæœ¬çš„\ ``version``\ é”®
 
      .. code-block:: json
        :caption: JSON version format
@@ -372,67 +372,67 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
          }
        }
 
-     ³ÉÔ±ÓÐ£º
+     æˆå‘˜æœ‰ï¼š
 
      ``version``
-       JSON¸ñÊ½µÄ°æ±¾¡£¸Ã°æ±¾¾ßÓÐ×ñÑ­ÓïÒå°æ±¾Ô¼¶¨µÄÖ÷ÒªºÍ´ÎÒª×é¼þ¡£
+       JSONæ ¼å¼çš„ç‰ˆæœ¬ã€‚è¯¥ç‰ˆæœ¬å…·æœ‰éµå¾ªè¯­ä¹‰ç‰ˆæœ¬çº¦å®šçš„ä¸»è¦å’Œæ¬¡è¦ç»„ä»¶ã€‚
 
 .. option:: --trace-source=<file>
 
- ½«cmakeÖÃÓÚ¸ú×ÙÄ£Ê½£¬µ«Ö»Êä³öÖ¸¶¨ÎÄ¼þµÄÐÐ¡£
+ å°†cmakeç½®äºŽè·Ÿè¸ªæ¨¡å¼ï¼Œä½†åªè¾“å‡ºæŒ‡å®šæ–‡ä»¶çš„è¡Œã€‚
 
- ÔÊÐí¶à¸öÑ¡Ïî¡£
+ å…è®¸å¤šä¸ªé€‰é¡¹ã€‚
 
 .. option:: --trace-redirect=<file>
 
- ½«cmakeÖÃÓÚ¸ú×ÙÄ£Ê½£¬²¢½«¸ú×ÙÊä³öÖØ¶¨Ïòµ½ÎÄ¼þ¶ø²»ÊÇstderr¡£
+ å°†cmakeç½®äºŽè·Ÿè¸ªæ¨¡å¼ï¼Œå¹¶å°†è·Ÿè¸ªè¾“å‡ºé‡å®šå‘åˆ°æ–‡ä»¶è€Œä¸æ˜¯stderrã€‚
 
 .. option:: --warn-uninitialized
 
- ¾¯¸æÎ´³õÊ¼»¯µÄÖµ¡£
+ è­¦å‘Šæœªåˆå§‹åŒ–çš„å€¼ã€‚
 
- µ±Ê¹ÓÃÎ´³õÊ¼»¯µÄ±äÁ¿Ê±´òÓ¡¾¯¸æ¡£
+ å½“ä½¿ç”¨æœªåˆå§‹åŒ–çš„å˜é‡æ—¶æ‰“å°è­¦å‘Šã€‚
 
 .. option:: --warn-unused-vars
 
- Ê²Ã´Ò²²»×ö¡£ÔÚCMake 3.2¼°ÒÔÏÂ°æ±¾ÖÐ£¬´Ë¹¦ÄÜÆôÓÃÁË¹ØÓÚÎ´Ê¹ÓÃ±äÁ¿µÄ¾¯¸æ¡£ÔÚCMake 3.3µ½\
- 3.18°æ±¾ÖÐ£¬Õâ¸öÑ¡Ïî±»ÆÆ»µÁË¡£ÔÚCMake 3.19¼°ÒÔÉÏ°æ±¾ÖÐ£¬¸ÃÑ¡ÏîÒÑ±»É¾³ý¡£
+ ä»€ä¹ˆä¹Ÿä¸åšã€‚åœ¨CMake 3.2åŠä»¥ä¸‹ç‰ˆæœ¬ä¸­ï¼Œæ­¤åŠŸèƒ½å¯ç”¨äº†å…³äºŽæœªä½¿ç”¨å˜é‡çš„è­¦å‘Šã€‚åœ¨CMake 3.3åˆ°\
+ 3.18ç‰ˆæœ¬ä¸­ï¼Œè¿™ä¸ªé€‰é¡¹è¢«ç ´åäº†ã€‚åœ¨CMake 3.19åŠä»¥ä¸Šç‰ˆæœ¬ä¸­ï¼Œè¯¥é€‰é¡¹å·²è¢«åˆ é™¤ã€‚
 
 .. option:: --no-warn-unused-cli
 
- ²»Òª¶ÔÃüÁîÐÐÑ¡Ïî·¢³ö¾¯¸æ¡£
+ ä¸è¦å¯¹å‘½ä»¤è¡Œé€‰é¡¹å‘å‡ºè­¦å‘Šã€‚
 
- ²»Òª²éÕÒÔÚÃüÁîÐÐÖÐÉùÃ÷µ«Ã»ÓÐÊ¹ÓÃµÄ±äÁ¿¡£
+ ä¸è¦æŸ¥æ‰¾åœ¨å‘½ä»¤è¡Œä¸­å£°æ˜Žä½†æ²¡æœ‰ä½¿ç”¨çš„å˜é‡ã€‚
 
 .. option:: --check-system-vars
 
- ÔÚÏµÍ³ÎÄ¼þÖÐ²éÕÒ±äÁ¿Ê¹ÓÃµÄÎÊÌâ¡£
+ åœ¨ç³»ç»Ÿæ–‡ä»¶ä¸­æŸ¥æ‰¾å˜é‡ä½¿ç”¨çš„é—®é¢˜ã€‚
 
- Í¨³££¬Î´Ê¹ÓÃºÍÎ´³õÊ¼»¯µÄ±äÁ¿Ö»ÔÚ\ :variable:`CMAKE_SOURCE_DIR`\
- ºÍ\ :variable:`CMAKE_BINARY_DIR`\ ÖÐËÑË÷¡£Õâ¸ö±êÖ¾¸æËßCMake¶ÔÆäËûÎÄ¼þÒ²·¢³ö¾¯¸æ¡£
+ é€šå¸¸ï¼Œæœªä½¿ç”¨å’Œæœªåˆå§‹åŒ–çš„å˜é‡åªåœ¨\ :variable:`CMAKE_SOURCE_DIR`\
+ å’Œ\ :variable:`CMAKE_BINARY_DIR`\ ä¸­æœç´¢ã€‚è¿™ä¸ªæ ‡å¿—å‘Šè¯‰CMakeå¯¹å…¶ä»–æ–‡ä»¶ä¹Ÿå‘å‡ºè­¦å‘Šã€‚
 
 .. option:: --compile-no-warning-as-error
 
  .. versionadded:: 3.24
 
- ºöÂÔÄ¿±êÊôÐÔ\ :prop_tgt:`COMPILE_WARNING_AS_ERROR`\ ºÍ±äÁ¿\
- :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`£¬·ÀÖ¹¾¯¸æÔÚ±àÒëÊ±±»ÊÓÎª´íÎó¡£
+ å¿½ç•¥ç›®æ ‡å±žæ€§\ :prop_tgt:`COMPILE_WARNING_AS_ERROR`\ å’Œå˜é‡\
+ :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`ï¼Œé˜²æ­¢è­¦å‘Šåœ¨ç¼–è¯‘æ—¶è¢«è§†ä¸ºé”™è¯¯ã€‚
 
 .. option:: --profiling-output=<path>
 
  .. versionadded:: 3.18
 
- Óë\ :option:`--profiling-format <cmake --profiling-format>`\ Ò»ÆðÊ¹ÓÃ£¬Êä³öµ½¸ø¶¨\
- µÄÂ·¾¶¡£
+ ä¸Ž\ :option:`--profiling-format <cmake --profiling-format>`\ ä¸€èµ·ä½¿ç”¨ï¼Œè¾“å‡ºåˆ°ç»™å®š\
+ çš„è·¯å¾„ã€‚
 
 .. option:: --profiling-format=<file>
 
- ÆôÓÃCMake½Å±¾ÒÔ¸ø¶¨¸ñÊ½Êä³ö·ÖÎöÊý¾Ý¡£
+ å¯ç”¨CMakeè„šæœ¬ä»¥ç»™å®šæ ¼å¼è¾“å‡ºåˆ†æžæ•°æ®ã€‚
 
- ÕâÓÐÖúÓÚÖ´ÐÐCMake½Å±¾µÄÐÔÄÜ·ÖÎö¡£Ó¦¸ÃÊ¹ÓÃµÚÈý·½Ó¦ÓÃ³ÌÐò½«Êä³ö´¦Àí³ÉÈËÀà¿É¶ÁµÄ¸ñÊ½¡£
+ è¿™æœ‰åŠ©äºŽæ‰§è¡ŒCMakeè„šæœ¬çš„æ€§èƒ½åˆ†æžã€‚åº”è¯¥ä½¿ç”¨ç¬¬ä¸‰æ–¹åº”ç”¨ç¨‹åºå°†è¾“å‡ºå¤„ç†æˆäººç±»å¯è¯»çš„æ ¼å¼ã€‚
 
- Ä¿Ç°Ö§³ÖµÄÖµÊÇ£º\ ``google-trace``\ Êä³ö¹È¸èTrace¸ñÊ½£¬¿ÉÒÔÍ¨¹ý¹È¸èChromeµÄ\
- about:tracing\ Ñ¡Ïî¿¨»òÊ¹ÓÃTrace CompassµÈ¹¤¾ßµÄ²å¼þ½øÐÐ½âÎö¡£
+ ç›®å‰æ”¯æŒçš„å€¼æ˜¯ï¼š\ ``google-trace``\ è¾“å‡ºè°·æ­ŒTraceæ ¼å¼ï¼Œå¯ä»¥é€šè¿‡è°·æ­ŒChromeçš„\
+ about:tracing\ é€‰é¡¹å¡æˆ–ä½¿ç”¨Trace Compassç­‰å·¥å…·çš„æ’ä»¶è¿›è¡Œè§£æžã€‚
 
 .. option:: --preset <preset>, --preset=<preset>
 
@@ -458,19 +458,19 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
 
 .. option:: --list-presets[=<type>]
 
- ÁÐ³öÖ¸¶¨\ ``<type>``\ µÄ¿ÉÓÃÔ¤Éè¡£\ ``<type>``\ µÄÓÐÐ§ÖµÊÇ\ ``configure``¡¢\
- ``build``¡¢\ ``test``¡¢\ ``package``\ »ò\ ``all``¡£Èç¹ûÊ¡ÂÔ\ ``<type>``£¬Ôò¼Ù¶¨Îª\
- ``configure``¡£The current working
+ åˆ—å‡ºæŒ‡å®š\ ``<type>``\ çš„å¯ç”¨é¢„è®¾ã€‚\ ``<type>``\ çš„æœ‰æ•ˆå€¼æ˜¯\ ``configure``ã€\
+ ``build``ã€\ ``test``ã€\ ``package``\ æˆ–\ ``all``ã€‚å¦‚æžœçœç•¥\ ``<type>``ï¼Œåˆ™å‡å®šä¸º\
+ ``configure``ã€‚The current working
  directory must contain CMake preset files unless the :option:`-S <cmake -S>`
  option is used to specify a different top level source directory.
 
 .. option:: --debugger
 
-  ÆôÓÃCMakeÓïÑÔµÄ½»»¥Ê½µ÷ÊÔ¡£CMakeÔÚÃûÎª\ :option:`--debugger-pipe <cmake --debugger-pipe>`\
-  µÄ¹ÜµÀÉÏ¹«¿ªÁËÒ»¸öµ÷ÊÔ½Ó¿Ú£¬¸Ã½Ó¿Ú·ûºÏ\ `Debug Adapter Protocol`_\ ¹æ·¶£¬²¢½øÐÐÁËÒÔÏÂÐÞ¸Ä¡£
+  å¯ç”¨CMakeè¯­è¨€çš„äº¤äº’å¼è°ƒè¯•ã€‚CMakeåœ¨åä¸º\ :option:`--debugger-pipe <cmake --debugger-pipe>`\
+  çš„ç®¡é“ä¸Šå…¬å¼€äº†ä¸€ä¸ªè°ƒè¯•æŽ¥å£ï¼Œè¯¥æŽ¥å£ç¬¦åˆ\ `Debug Adapter Protocol`_\ è§„èŒƒï¼Œå¹¶è¿›è¡Œäº†ä»¥ä¸‹ä¿®æ”¹ã€‚
 
-  ``initialize``\ ÏìÓ¦°üÀ¨Ò»¸öÃûÎª\ ``cmakeVersion``\ µÄ¸½¼Ó×Ö¶Î£¬¸Ã×Ö¶ÎÖ¸¶¨ÕýÔÚµ÷ÊÔµÄ\
-  CMake°æ±¾¡£
+  ``initialize``\ å“åº”åŒ…æ‹¬ä¸€ä¸ªåä¸º\ ``cmakeVersion``\ çš„é™„åŠ å­—æ®µï¼Œè¯¥å­—æ®µæŒ‡å®šæ­£åœ¨è°ƒè¯•çš„\
+  CMakeç‰ˆæœ¬ã€‚
 
   .. code-block:: json
     :caption: Debugger initialize response
@@ -484,170 +484,170 @@ CMakeÍ¨¹ýÒ»¸ö³ÆÎª\ *Éú³ÉÆ÷*\ µÄºó¶ËÎªÃ¿¸öÓÃ»§ÔÚ±¾µØÉú³ÉÒ»¸öÊ×Ñ¡µÄ¹¹½¨ÏµÍ³¡£
       }
     }
 
-  ³ÉÔ±°üÀ¨£º
+  æˆå‘˜åŒ…æ‹¬ï¼š
 
   ``major``
-    Ö¸¶¨Ö÷°æ±¾ºÅµÄÕûÊý¡£
+    æŒ‡å®šä¸»ç‰ˆæœ¬å·çš„æ•´æ•°ã€‚
 
   ``minor``
-    Ö¸¶¨´ÎÒª°æ±¾ºÅµÄÕûÊý¡£
+    æŒ‡å®šæ¬¡è¦ç‰ˆæœ¬å·çš„æ•´æ•°ã€‚
 
   ``patch``
-    Ö¸¶¨²¹¶¡°æ±¾ºÅµÄÕûÊý¡£
+    æŒ‡å®šè¡¥ä¸ç‰ˆæœ¬å·çš„æ•´æ•°ã€‚
 
   ``full``
-    Ö¸¶¨ÍêÕûCMake°æ±¾µÄ×Ö·û´®¡£
+    æŒ‡å®šå®Œæ•´CMakeç‰ˆæœ¬çš„å­—ç¬¦ä¸²ã€‚
 
 .. _`Debug Adapter Protocol`: https://microsoft.github.io/debug-adapter-protocol/
 
 .. option:: --debugger-pipe <pipe name>, --debugger-pipe=<pipe name>
 
-  ÓÃÓÚµ÷ÊÔÆ÷Í¨ÐÅµÄ¹ÜµÀ£¨ÔÚWindowsÉÏ£©»òÓòÌ×½Ó×Ö£¨ÔÚUnixÉÏ£©µÄÃû³Æ¡£
+  ç”¨äºŽè°ƒè¯•å™¨é€šä¿¡çš„ç®¡é“ï¼ˆåœ¨Windowsä¸Šï¼‰æˆ–åŸŸå¥—æŽ¥å­—ï¼ˆåœ¨Unixä¸Šï¼‰çš„åç§°ã€‚
 
 .. option:: --debugger-dap-log <log path>, --debugger-dap-log=<log path>
 
-  ½«ËùÓÐµ÷ÊÔÆ÷Í¨ÐÅ¼ÇÂ¼µ½Ö¸¶¨ÎÄ¼þ¡£
+  å°†æ‰€æœ‰è°ƒè¯•å™¨é€šä¿¡è®°å½•åˆ°æŒ‡å®šæ–‡ä»¶ã€‚
 
 .. _`Build Tool Mode`:
 
-¹¹½¨Ò»¸öÏîÄ¿
+æž„å»ºä¸€ä¸ªé¡¹ç›®
 ===============
 
 .. program:: cmake
 
-CMakeÌá¹©ÁËÒ»¸öÃüÁîÐÐÇ©ÃûÀ´¹¹½¨ÒÑ¾­Éú³ÉµÄÏîÄ¿¶þ²æÊ÷£º
+CMakeæä¾›äº†ä¸€ä¸ªå‘½ä»¤è¡Œç­¾åæ¥æž„å»ºå·²ç»ç”Ÿæˆçš„é¡¹ç›®äºŒå‰æ ‘ï¼š
 
 .. code-block:: shell
 
   cmake --build <dir>             [<options>] [-- <build-tool-options>]
   cmake --build --preset <preset> [<options>] [-- <build-tool-options>]
 
-Õâ½«Ê¹ÓÃÒÔÏÂÑ¡Ïî³éÏó³öÒ»¸ö±¾»ú¹¹½¨¹¤¾ßµÄÃüÁîÐÐ½çÃæ£º
+è¿™å°†ä½¿ç”¨ä»¥ä¸‹é€‰é¡¹æŠ½è±¡å‡ºä¸€ä¸ªæœ¬æœºæž„å»ºå·¥å…·çš„å‘½ä»¤è¡Œç•Œé¢ï¼š
 
 .. option:: --build <dir>
 
-  Òª¹¹½¨µÄÏîÄ¿¶þ½øÖÆÄ¿Â¼¡£ÕâÊÇ±ØÐèµÄ£¨³ý·ÇÖ¸¶¨ÁËÔ¤Éè£©£¬²¢ÇÒ±ØÐë·ÅÔÚÊ×Î»¡£
+  è¦æž„å»ºçš„é¡¹ç›®äºŒè¿›åˆ¶ç›®å½•ã€‚è¿™æ˜¯å¿…éœ€çš„ï¼ˆé™¤éžæŒ‡å®šäº†é¢„è®¾ï¼‰ï¼Œå¹¶ä¸”å¿…é¡»æ”¾åœ¨é¦–ä½ã€‚
 
 .. program:: cmake--build
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  Ê¹ÓÃ¹¹½¨Ô¤ÉèÀ´Ö¸¶¨¹¹½¨Ñ¡Ïî¡£ÏîÄ¿¶þ½øÖÆÄ¿Â¼ÊÇ´Ó\ ``configurePreset``\ ¼üÍÆ¶Ï³öÀ´µÄ¡£µ±Ç°\
-  ¹¤×÷Ä¿Â¼±ØÐë°üº¬CMakeÔ¤ÖÃÎÄ¼þ¡£ÓÐ¹Ø¸ü¶àÏêÏ¸ÐÅÏ¢£¬Çë²ÎÔÄ\ :manual:`preset <cmake-presets(7)>`¡£
+  ä½¿ç”¨æž„å»ºé¢„è®¾æ¥æŒ‡å®šæž„å»ºé€‰é¡¹ã€‚é¡¹ç›®äºŒè¿›åˆ¶ç›®å½•æ˜¯ä»Ž\ ``configurePreset``\ é”®æŽ¨æ–­å‡ºæ¥çš„ã€‚å½“å‰\
+  å·¥ä½œç›®å½•å¿…é¡»åŒ…å«CMakeé¢„ç½®æ–‡ä»¶ã€‚æœ‰å…³æ›´å¤šè¯¦ç»†ä¿¡æ¯ï¼Œè¯·å‚é˜…\ :manual:`preset <cmake-presets(7)>`ã€‚
 
 .. option:: --list-presets
 
-  ÁÐ³ö¿ÉÓÃµÄ¹¹½¨Ô¤Éè¡£µ±Ç°¹¤×÷Ä¿Â¼±ØÐë°üº¬CMakeÔ¤ÖÃÎÄ¼þ¡£
+  åˆ—å‡ºå¯ç”¨çš„æž„å»ºé¢„è®¾ã€‚å½“å‰å·¥ä½œç›®å½•å¿…é¡»åŒ…å«CMakeé¢„ç½®æ–‡ä»¶ã€‚
 
 .. option:: -j [<jobs>], --parallel [<jobs>]
 
   .. versionadded:: 3.12
 
-  ¹¹½¨Ê±ÒªÊ¹ÓÃµÄ×î´ó²¢·¢½ø³ÌÊý¡£Èç¹ûÊ¡ÂÔ\ ``<jobs>``£¬ÔòÊ¹ÓÃ±¾»ú¹¹½¨¹¤¾ßµÄÄ¬ÈÏÊý×Ö¡£
+  æž„å»ºæ—¶è¦ä½¿ç”¨çš„æœ€å¤§å¹¶å‘è¿›ç¨‹æ•°ã€‚å¦‚æžœçœç•¥\ ``<jobs>``ï¼Œåˆ™ä½¿ç”¨æœ¬æœºæž„å»ºå·¥å…·çš„é»˜è®¤æ•°å­—ã€‚
 
-  Èç¹ûÉèÖÃÁË\ :envvar:`CMAKE_BUILD_PARALLEL_LEVEL`\ »·¾³±äÁ¿£¬ÔòÔÚÎ´¸ø³ö´ËÑ¡ÏîÊ±Ö¸¶¨Ä¬\
-  ÈÏ²¢ÐÐ¼¶±ð¡£
+  å¦‚æžœè®¾ç½®äº†\ :envvar:`CMAKE_BUILD_PARALLEL_LEVEL`\ çŽ¯å¢ƒå˜é‡ï¼Œåˆ™åœ¨æœªç»™å‡ºæ­¤é€‰é¡¹æ—¶æŒ‡å®šé»˜\
+  è®¤å¹¶è¡Œçº§åˆ«ã€‚
 
-  Ò»Ð©±¾µØ¹¹½¨¹¤¾ß×ÜÊÇ²¢ÐÐ¹¹½¨¡£\ ``<jobs>``\ Öµ\ ``1``\ µÄÊ¹ÓÃ¿ÉÓÃÓÚÏÞÖÆÎªµ¥¸ö×÷Òµ¡£
+  ä¸€äº›æœ¬åœ°æž„å»ºå·¥å…·æ€»æ˜¯å¹¶è¡Œæž„å»ºã€‚\ ``<jobs>``\ å€¼\ ``1``\ çš„ä½¿ç”¨å¯ç”¨äºŽé™åˆ¶ä¸ºå•ä¸ªä½œä¸šã€‚
 
 .. option:: -t <tgt>..., --target <tgt>...
 
-  ¹¹½¨\ ``<tgt>``\ ¶ø²»ÊÇÄ¬ÈÏÄ¿±ê¡£¿ÉÒÔ¸ø³ö¶à¸öÄ¿±ê£¬ÓÃ¿Õ¸ñ·Ö¸ô¡£
+  æž„å»º\ ``<tgt>``\ è€Œä¸æ˜¯é»˜è®¤ç›®æ ‡ã€‚å¯ä»¥ç»™å‡ºå¤šä¸ªç›®æ ‡ï¼Œç”¨ç©ºæ ¼åˆ†éš”ã€‚
 
 .. option:: --config <cfg>
 
-  ¶ÔÓÚ¶àÅäÖÃ¹¤¾ß£¬Ñ¡Ôñ\ ``<cfg>``\ ÅäÖÃ¡£
+  å¯¹äºŽå¤šé…ç½®å·¥å…·ï¼Œé€‰æ‹©\ ``<cfg>``\ é…ç½®ã€‚
 
 .. option:: --clean-first
 
-  ÏÈ¹¹½¨Ä¿±ê\ ``clean``£¬È»ºóÔÙ¹¹½¨¡££¨Èç¹ûÖ»ÇåÀí£¬ÇëÊ¹ÓÃ\
-  :option:`--target clean <cmake--build --target>`¡££©
+  å…ˆæž„å»ºç›®æ ‡\ ``clean``ï¼Œç„¶åŽå†æž„å»ºã€‚ï¼ˆå¦‚æžœåªæ¸…ç†ï¼Œè¯·ä½¿ç”¨\
+  :option:`--target clean <cmake--build --target>`ã€‚ï¼‰
 
 .. option:: --resolve-package-references=<value>
 
   .. versionadded:: 3.23
 
-  ÔÚ¹¹½¨Ö®Ç°½âÎöÀ´×ÔÍâ²¿°ü¹ÜÀíÆ÷£¨ÀýÈçNuGet£©µÄÔ¶³Ì°üÒýÓÃ¡£µ±\ ``<value>``\ ÉèÖÃÎª\ ``on``\
-  £¨Ä¬ÈÏ£©Ê±£¬½«ÔÚ¹¹½¨Ä¿±êÖ®Ç°»Ö¸´°ü¡£µ±\ ``<value>``\ ÉèÖÃÎª\ ``only``\ Ê±£¬½«»Ö¸´°ü£¬\
-  µ«²»»áÖ´ÐÐ¹¹½¨¡£µ±\ ``<value>``\ ÉèÖÃÎª\ ``off``\ Ê±£¬²»»Ö¸´ÈÎºÎ°ü¡£
+  åœ¨æž„å»ºä¹‹å‰è§£æžæ¥è‡ªå¤–éƒ¨åŒ…ç®¡ç†å™¨ï¼ˆä¾‹å¦‚NuGetï¼‰çš„è¿œç¨‹åŒ…å¼•ç”¨ã€‚å½“\ ``<value>``\ è®¾ç½®ä¸º\ ``on``\
+  ï¼ˆé»˜è®¤ï¼‰æ—¶ï¼Œå°†åœ¨æž„å»ºç›®æ ‡ä¹‹å‰æ¢å¤åŒ…ã€‚å½“\ ``<value>``\ è®¾ç½®ä¸º\ ``only``\ æ—¶ï¼Œå°†æ¢å¤åŒ…ï¼Œ\
+  ä½†ä¸ä¼šæ‰§è¡Œæž„å»ºã€‚å½“\ ``<value>``\ è®¾ç½®ä¸º\ ``off``\ æ—¶ï¼Œä¸æ¢å¤ä»»ä½•åŒ…ã€‚
 
-  Èç¹ûÄ¿±êÎ´¶¨ÒåÈÎºÎ°üÒýÓÃ£¬Ôò´ËÑ¡Ïî²»Ö´ÐÐÈÎºÎ²Ù×÷¡£
+  å¦‚æžœç›®æ ‡æœªå®šä¹‰ä»»ä½•åŒ…å¼•ç”¨ï¼Œåˆ™æ­¤é€‰é¡¹ä¸æ‰§è¡Œä»»ä½•æ“ä½œã€‚
 
-  ¸ÃÉèÖÃ¿ÉÒÔÔÚ¹¹½¨Ô¤ÉèÖÐÖ¸¶¨£¨Ê¹ÓÃ\ ``resolvePackageReferences``£©¡£Èç¹ûÖ¸¶¨ÁË´ËÃüÁîÐÐÑ¡Ïî£¬\
-  Ôò½«ºöÂÔÔ¤ÉèÉèÖÃ¡£
+  è¯¥è®¾ç½®å¯ä»¥åœ¨æž„å»ºé¢„è®¾ä¸­æŒ‡å®šï¼ˆä½¿ç”¨\ ``resolvePackageReferences``ï¼‰ã€‚å¦‚æžœæŒ‡å®šäº†æ­¤å‘½ä»¤è¡Œé€‰é¡¹ï¼Œ\
+  åˆ™å°†å¿½ç•¥é¢„è®¾è®¾ç½®ã€‚
 
-  Èç¹ûÃ»ÓÐÌá¹©ÃüÁîÐÐ²ÎÊý»òÔ¤ÉèÑ¡Ïî£¬½«ÆÀ¹ÀÒ»¸öÌØ¶¨ÓÚ»·¾³µÄ»º´æ±äÁ¿£¬ÒÔ¾ö¶¨ÊÇ·ñÓ¦¸ÃÖ´ÐÐ°ü»Ö¸´¡£
+  å¦‚æžœæ²¡æœ‰æä¾›å‘½ä»¤è¡Œå‚æ•°æˆ–é¢„è®¾é€‰é¡¹ï¼Œå°†è¯„ä¼°ä¸€ä¸ªç‰¹å®šäºŽçŽ¯å¢ƒçš„ç¼“å­˜å˜é‡ï¼Œä»¥å†³å®šæ˜¯å¦åº”è¯¥æ‰§è¡ŒåŒ…æ¢å¤ã€‚
 
-  µ±Ê¹ÓÃVisual StudioÉú³ÉÆ÷Ê±£¬°üÒýÓÃÊÇÊ¹ÓÃ\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ Êô\
-  ÐÔ¶¨ÒåµÄ¡£Ê¹ÓÃNuGet»Ö¸´°üÒýÓÃ¡£¿ÉÒÔÍ¨¹ý½«\ ``CMAKE_VS_NUGET_PACKAGE_RESTORE``\ ±äÁ¿\
-  ÉèÖÃÎª\ ``OFF``\ À´½ûÓÃËü¡£
+  å½“ä½¿ç”¨Visual Studioç”Ÿæˆå™¨æ—¶ï¼ŒåŒ…å¼•ç”¨æ˜¯ä½¿ç”¨\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ å±ž\
+  æ€§å®šä¹‰çš„ã€‚ä½¿ç”¨NuGetæ¢å¤åŒ…å¼•ç”¨ã€‚å¯ä»¥é€šè¿‡å°†\ ``CMAKE_VS_NUGET_PACKAGE_RESTORE``\ å˜é‡\
+  è®¾ç½®ä¸º\ ``OFF``\ æ¥ç¦ç”¨å®ƒã€‚
 
 .. option:: --use-stderr
 
-  ºöÂÔ¡£ÐÐÎªÊÇÄ¬ÈÏµÄÔÚCMake >= 3.0¡£
+  å¿½ç•¥ã€‚è¡Œä¸ºæ˜¯é»˜è®¤çš„åœ¨CMake >= 3.0ã€‚
 
 .. option:: -v, --verbose
 
-  ÆôÓÃÏêÏ¸Êä³ö£¬Èç¹ûÖ§³ÖµÄ»°£¬°üÀ¨ÒªÖ´ÐÐµÄ¹¹½¨ÃüÁî¡£
+  å¯ç”¨è¯¦ç»†è¾“å‡ºï¼Œå¦‚æžœæ”¯æŒçš„è¯ï¼ŒåŒ…æ‹¬è¦æ‰§è¡Œçš„æž„å»ºå‘½ä»¤ã€‚
 
-  Èç¹ûÉèÖÃÁË\ :envvar:`VERBOSE`\ »·¾³±äÁ¿»ò\ :variable:`CMAKE_VERBOSE_MAKEFILE`\
-  »º´æ±äÁ¿£¬Ôò¿ÉÒÔÊ¡ÂÔ´ËÑ¡Ïî¡£
+  å¦‚æžœè®¾ç½®äº†\ :envvar:`VERBOSE`\ çŽ¯å¢ƒå˜é‡æˆ–\ :variable:`CMAKE_VERBOSE_MAKEFILE`\
+  ç¼“å­˜å˜é‡ï¼Œåˆ™å¯ä»¥çœç•¥æ­¤é€‰é¡¹ã€‚
 
 
 .. option:: --
 
-  ½«ÆäÓàÑ¡Ïî´«µÝ¸ø±¾»ú¹¤¾ß¡£
+  å°†å…¶ä½™é€‰é¡¹ä¼ é€’ç»™æœ¬æœºå·¥å…·ã€‚
 
-ÔËÐÐ\ :option:`cmake --build`£¬Ã»ÓÐ¿ìËÙ°ïÖúÑ¡Ïî¡£
+è¿è¡Œ\ :option:`cmake --build`ï¼Œæ²¡æœ‰å¿«é€Ÿå¸®åŠ©é€‰é¡¹ã€‚
 
-°²×°Ò»¸öÏîÄ¿
+å®‰è£…ä¸€ä¸ªé¡¹ç›®
 =================
 
 .. program:: cmake
 
-CMakeÌá¹©ÁËÒ»¸öÃüÁîÐÐÇ©ÃûÀ´°²×°ÒÑ¾­Éú³ÉµÄÏîÄ¿¶þ½øÖÆÊ÷£º
+CMakeæä¾›äº†ä¸€ä¸ªå‘½ä»¤è¡Œç­¾åæ¥å®‰è£…å·²ç»ç”Ÿæˆçš„é¡¹ç›®äºŒè¿›åˆ¶æ ‘ï¼š
 
 .. code-block:: shell
 
   cmake --install <dir> [<options>]
 
-Õâ¿ÉÒÔÔÚ¹¹½¨ÏîÄ¿ºóÊ¹ÓÃ£¬ÒÔÔËÐÐ°²×°£¬¶ø²»Ê¹ÓÃÉú³ÉµÄ¹¹½¨ÏµÍ³»ò±¾»ú¹¹½¨¹¤¾ß¡£Ñ¡ÏîÈçÏÂ£º
+è¿™å¯ä»¥åœ¨æž„å»ºé¡¹ç›®åŽä½¿ç”¨ï¼Œä»¥è¿è¡Œå®‰è£…ï¼Œè€Œä¸ä½¿ç”¨ç”Ÿæˆçš„æž„å»ºç³»ç»Ÿæˆ–æœ¬æœºæž„å»ºå·¥å…·ã€‚é€‰é¡¹å¦‚ä¸‹ï¼š
 
 .. option:: --install <dir>
 
-  Òª°²×°µÄÏîÄ¿¶þ½øÖÆÄ¿Â¼¡£ÕâÊÇ±ØÐëµÄ£¬¶øÇÒ±ØÐë·ÅÔÚÊ×Î»¡£
+  è¦å®‰è£…çš„é¡¹ç›®äºŒè¿›åˆ¶ç›®å½•ã€‚è¿™æ˜¯å¿…é¡»çš„ï¼Œè€Œä¸”å¿…é¡»æ”¾åœ¨é¦–ä½ã€‚
 
 .. program:: cmake--install
 
 .. option:: --config <cfg>
 
-  ¶ÔÓÚ¶àÅäÖÃÉú³ÉÆ÷£¬Ñ¡Ôñ\ ``<cfg>``\ ÅäÖÃ¡£
+  å¯¹äºŽå¤šé…ç½®ç”Ÿæˆå™¨ï¼Œé€‰æ‹©\ ``<cfg>``\ é…ç½®ã€‚
 
 .. option:: --component <comp>
 
-  »ùÓÚ×é¼þµÄ°²×°¡£Ö»°²×°\ ``<comp>``\ ×é¼þ¡£
+  åŸºäºŽç»„ä»¶çš„å®‰è£…ã€‚åªå®‰è£…\ ``<comp>``\ ç»„ä»¶ã€‚
 
 .. option:: --default-directory-permissions <permissions>
 
-  Ä¬ÈÏÄ¿Â¼°²×°È¨ÏÞ¡£È¨ÏÞÎª\ ``<u=rwx,g=rx,o=rx>``\ µÄ¸ñÊ½¡£
+  é»˜è®¤ç›®å½•å®‰è£…æƒé™ã€‚æƒé™ä¸º\ ``<u=rwx,g=rx,o=rx>``\ çš„æ ¼å¼ã€‚
 
 .. option:: --prefix <prefix>
 
-  ¸²¸Ç°²×°Ç°×º\ :variable:`CMAKE_INSTALL_PREFIX`¡£
+  è¦†ç›–å®‰è£…å‰ç¼€\ :variable:`CMAKE_INSTALL_PREFIX`ã€‚
 
 .. option:: --strip
 
-  °²×°Ç°È¥³ýÇ°ºó¿Õ¸ñ¡£
+  å®‰è£…å‰åŽ»é™¤å‰åŽç©ºæ ¼ã€‚
 
 .. option:: -v, --verbose
 
-  ÆôÓÃÏêÏ¸Êä³ö¡£
+  å¯ç”¨è¯¦ç»†è¾“å‡ºã€‚
 
-  Èç¹ûÉèÖÃÁË\ :envvar:`VERBOSE`\ »·¾³±äÁ¿£¬Ôò¿ÉÒÔÊ¡ÂÔ´ËÑ¡Ïî¡£
+  å¦‚æžœè®¾ç½®äº†\ :envvar:`VERBOSE`\ çŽ¯å¢ƒå˜é‡ï¼Œåˆ™å¯ä»¥çœç•¥æ­¤é€‰é¡¹ã€‚
 
-ÔËÐÐ\ :option:`cmake --install`£¬Ã»ÓÐ¿ìËÙ°ïÖúÑ¡Ïî¡£
+è¿è¡Œ\ :option:`cmake --install`ï¼Œæ²¡æœ‰å¿«é€Ÿå¸®åŠ©é€‰é¡¹ã€‚
 
-´ò¿ªÒ»¸öÏîÄ¿
+æ‰“å¼€ä¸€ä¸ªé¡¹ç›®
 ==============
 
 .. program:: cmake
@@ -656,12 +656,12 @@ CMakeÌá¹©ÁËÒ»¸öÃüÁîÐÐÇ©ÃûÀ´°²×°ÒÑ¾­Éú³ÉµÄÏîÄ¿¶þ½øÖÆÊ÷£º
 
   cmake --open <dir>
 
-ÔÚ¹ØÁªµÄÓ¦ÓÃ³ÌÐòÖÐ´ò¿ªÉú³ÉµÄÏîÄ¿¡£Ö»Ö§³Ö²¿·ÖÉú³ÉÆ÷¡£
+åœ¨å…³è”çš„åº”ç”¨ç¨‹åºä¸­æ‰“å¼€ç”Ÿæˆçš„é¡¹ç›®ã€‚åªæ”¯æŒéƒ¨åˆ†ç”Ÿæˆå™¨ã€‚
 
 
 .. _`Script Processing Mode`:
 
-ÔËÐÐ½Å±¾
+è¿è¡Œè„šæœ¬
 ============
 
 .. program:: cmake
@@ -674,27 +674,27 @@ CMakeÌá¹©ÁËÒ»¸öÃüÁîÐÐÇ©ÃûÀ´°²×°ÒÑ¾­Éú³ÉµÄÏîÄ¿¶þ½øÖÆÊ÷£º
 
 .. option:: -D <var>=<value>
 
- Îª½Å±¾Ä£Ê½¶¨Òå±äÁ¿¡£
+ ä¸ºè„šæœ¬æ¨¡å¼å®šä¹‰å˜é‡ã€‚
 
 .. program:: cmake
 
 .. option:: -P <cmake-script-file>
 
- ½«¸ø¶¨µÄcmakeÎÄ¼þ×÷ÎªÓÃCMakeÓïÑÔ±àÐ´µÄ½Å±¾´¦Àí¡£²»Ö´ÐÐÅäÖÃ»òÉú³É²½Öè£¬²»ÐÞ¸Ä»º´æ¡£Èç¹ûÊ¹ÓÃ\
- ``-D``\ ¶¨Òå±äÁ¿£¬Ôò±ØÐëÔÚ\ ``-P``\ ²ÎÊýÖ®Ç°½øÐÐ¡£
+ å°†ç»™å®šçš„cmakeæ–‡ä»¶ä½œä¸ºç”¨CMakeè¯­è¨€ç¼–å†™çš„è„šæœ¬å¤„ç†ã€‚ä¸æ‰§è¡Œé…ç½®æˆ–ç”Ÿæˆæ­¥éª¤ï¼Œä¸ä¿®æ”¹ç¼“å­˜ã€‚å¦‚æžœä½¿ç”¨\
+ ``-D``\ å®šä¹‰å˜é‡ï¼Œåˆ™å¿…é¡»åœ¨\ ``-P``\ å‚æ•°ä¹‹å‰è¿›è¡Œã€‚
 
-``--``\ ºóÃæµÄÈÎºÎÑ¡Ïî¶¼²»»á±»CMake½âÎö£¬µ«ËüÃÇÈÔÈ»°üº¬ÔÚ\
-:variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>`\ ´«µÝ¸ø½Å±¾µÄ±äÁ¿\£¨°üÀ¨ ``--``\ ±¾Éí£©¡£
+``--``\ åŽé¢çš„ä»»ä½•é€‰é¡¹éƒ½ä¸ä¼šè¢«CMakeè§£æžï¼Œä½†å®ƒä»¬ä»ç„¶åŒ…å«åœ¨\
+:variable:`CMAKE_ARGV<n> <CMAKE_ARGV0>`\ ä¼ é€’ç»™è„šæœ¬çš„å˜é‡\ï¼ˆåŒ…æ‹¬ ``--``\ æœ¬èº«ï¼‰ã€‚
 
 
 .. _`Run a Command-Line Tool`:
 
-ÔËÐÐÃüÁîÐÐ¹¤¾ß
+è¿è¡Œå‘½ä»¤è¡Œå·¥å…·
 =======================
 
 .. program:: cmake
 
-CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
+CMakeé€šè¿‡ç­¾åæä¾›å†…ç½®å‘½ä»¤è¡Œå·¥å…·
 
 .. code-block:: shell
 
@@ -702,83 +702,83 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
 .. option:: -E [help]
 
-  Ö´ÐÐ\ ``cmake -E``\ »ò\ ``cmake -E help``\ ²é¿´ÃüÁîÕªÒª¡£
+  æ‰§è¡Œ\ ``cmake -E``\ æˆ–\ ``cmake -E help``\ æŸ¥çœ‹å‘½ä»¤æ‘˜è¦ã€‚
 
 .. program:: cmake-E
 
-¿ÉÓÃµÄÃüÁîÓÐ£º
+å¯ç”¨çš„å‘½ä»¤æœ‰ï¼š
 
 .. option:: capabilities
 
   .. versionadded:: 3.7
 
-  JSON¸ñÊ½µÄcmake±¨±íÉú³É¹¦ÄÜ¡£Êä³öÊÇÒ»¸öJSON¶ÔÏó£¬°üº¬ÒÔÏÂ¹Ø¼ü×Ö£º
+  JSONæ ¼å¼çš„cmakeæŠ¥è¡¨ç”ŸæˆåŠŸèƒ½ã€‚è¾“å‡ºæ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼ŒåŒ…å«ä»¥ä¸‹å…³é”®å­—ï¼š
 
   ``version``
-    ´øÓÐ°æ±¾ÐÅÏ¢µÄJSON¶ÔÏó¡£¼üÊÇ£º
+    å¸¦æœ‰ç‰ˆæœ¬ä¿¡æ¯çš„JSONå¯¹è±¡ã€‚é”®æ˜¯ï¼š
 
     ``string``
-      ÍêÕû°æ±¾×Ö·û´®£¬Èç\ :option:`--version <cmake --version>`\ ËùÊ¾¡£
+      å®Œæ•´ç‰ˆæœ¬å­—ç¬¦ä¸²ï¼Œå¦‚\ :option:`--version <cmake --version>`\ æ‰€ç¤ºã€‚
     ``major``
-      ÒÔÕûÊýÐÎÊ½±íÊ¾µÄÖ÷°æ±¾ºÅ¡£
+      ä»¥æ•´æ•°å½¢å¼è¡¨ç¤ºçš„ä¸»ç‰ˆæœ¬å·ã€‚
     ``minor``
-      ÕûÊýÐÎÊ½µÄ´ÎÒª°æ±¾ºÅ¡£
+      æ•´æ•°å½¢å¼çš„æ¬¡è¦ç‰ˆæœ¬å·ã€‚
     ``patch``
-      ÕûÊýÐÎÊ½µÄ²¹¶¡¼¶±ð¡£
+      æ•´æ•°å½¢å¼çš„è¡¥ä¸çº§åˆ«ã€‚
     ``suffix``
-      cmake°æ±¾ºó×º×Ö·û´®¡£
+      cmakeç‰ˆæœ¬åŽç¼€å­—ç¬¦ä¸²ã€‚
     ``isDirty``
-      Èç¹ûÉú³ÉÀ´×ÔÔàÊ÷£¬ÔòÉèÖÃÒ»¸öboolÖµ¡£
+      å¦‚æžœç”Ÿæˆæ¥è‡ªè„æ ‘ï¼Œåˆ™è®¾ç½®ä¸€ä¸ªboolå€¼ã€‚
 
   ``generators``
-    Ò»¸ö¿ÉÓÃµÄÉú³ÉÆ÷ÁÐ±í¡£Ã¿¸öÉú³ÉÆ÷¶¼ÊÇÒ»¸öJSON¶ÔÏó£¬¾ßÓÐÒÔÏÂ¼ü£º
+    ä¸€ä¸ªå¯ç”¨çš„ç”Ÿæˆå™¨åˆ—è¡¨ã€‚æ¯ä¸ªç”Ÿæˆå™¨éƒ½æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼Œå…·æœ‰ä»¥ä¸‹é”®ï¼š
 
     ``name``
-      °üº¬Éú³ÉÆ÷Ãû³ÆµÄ×Ö·û´®¡£
+      åŒ…å«ç”Ÿæˆå™¨åç§°çš„å­—ç¬¦ä¸²ã€‚
     ``toolsetSupport``
-      Èç¹ûÉú³ÉÆ÷Ö§³Ö¹¤¾ß¼¯£¬ÔòÎª\ ``true``£¬·ñÔòÎª\ ``false``¡£
+      å¦‚æžœç”Ÿæˆå™¨æ”¯æŒå·¥å…·é›†ï¼Œåˆ™ä¸º\ ``true``ï¼Œå¦åˆ™ä¸º\ ``false``ã€‚
     ``platformSupport``
-      Èç¹ûÉú³ÉÆ÷Ö§³ÖÆ½Ì¨£¬ÔòÎª\ ``true``£¬·ñÔòÎª\ ``false``¡£
+      å¦‚æžœç”Ÿæˆå™¨æ”¯æŒå¹³å°ï¼Œåˆ™ä¸º\ ``true``ï¼Œå¦åˆ™ä¸º\ ``false``ã€‚
     ``supportedPlatforms``
       .. versionadded:: 3.21
 
-      µ±Éú³ÉÆ÷Í¨¹ý\ :variable:`CMAKE_GENERATOR_PLATFORM` (\ :option:`-A ... <cmake -A>`\ )\
-      Ö§³ÖÆ½Ì¨¹æ·¶Ê±£¬¿ÉÄÜ´æÔÚµÄ¿ÉÑ¡³ÉÔ±¡£¸ÃÖµÊÇÒÑÖªÖ§³ÖµÄÆ½Ì¨ÁÐ±í¡£
+      å½“ç”Ÿæˆå™¨é€šè¿‡\ :variable:`CMAKE_GENERATOR_PLATFORM` (\ :option:`-A ... <cmake -A>`\ )\
+      æ”¯æŒå¹³å°è§„èŒƒæ—¶ï¼Œå¯èƒ½å­˜åœ¨çš„å¯é€‰æˆå‘˜ã€‚è¯¥å€¼æ˜¯å·²çŸ¥æ”¯æŒçš„å¹³å°åˆ—è¡¨ã€‚
     ``extraGenerators``
-      ¾ßÓÐÓë¸ÃÉú³ÉÆ÷¼æÈÝµÄËùÓÐ\ :ref:`Extra Generators`\ µÄ×Ö·û´®ÁÐ±í¡£
+      å…·æœ‰ä¸Žè¯¥ç”Ÿæˆå™¨å…¼å®¹çš„æ‰€æœ‰\ :ref:`Extra Generators`\ çš„å­—ç¬¦ä¸²åˆ—è¡¨ã€‚
 
   ``fileApi``
-    :manual:`cmake-file-api(7)`\ ¿ÉÓÃÊ±³öÏÖµÄ¿ÉÑ¡³ÉÔ±¡£¸ÃÖµÊÇÒ»¸öJSON¶ÔÏó£¬Ö»ÓÐÒ»¸ö³ÉÔ±£º
+    :manual:`cmake-file-api(7)`\ å¯ç”¨æ—¶å‡ºçŽ°çš„å¯é€‰æˆå‘˜ã€‚è¯¥å€¼æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼Œåªæœ‰ä¸€ä¸ªæˆå‘˜ï¼š
 
     ``requests``
-      Ò»¸öJSONÊý×é£¬°üº¬Áã¸ö»ò¶à¸öÖ§³ÖµÄÎÄ¼þapiÇëÇó¡£Ã¿¸öÇëÇó¶¼ÊÇÒ»¸öJSON¶ÔÏó£¬°üº¬ÒÔÏÂ³ÉÔ±:
+      ä¸€ä¸ªJSONæ•°ç»„ï¼ŒåŒ…å«é›¶ä¸ªæˆ–å¤šä¸ªæ”¯æŒçš„æ–‡ä»¶apiè¯·æ±‚ã€‚æ¯ä¸ªè¯·æ±‚éƒ½æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼ŒåŒ…å«ä»¥ä¸‹æˆå‘˜:
 
       ``kind``
-        Ö¸¶¨Ö§³ÖµÄ\ :ref:`file-api object kinds`\ Ö®Ò»¡£
+        æŒ‡å®šæ”¯æŒçš„\ :ref:`file-api object kinds`\ ä¹‹ä¸€ã€‚
 
       ``version``
-        Ò»¸öJSONÊý×é£¬ÆäÃ¿¸öÔªËØ¶¼ÊÇÒ»¸öJSON¶ÔÏó£¬ÆäÖÐ°üº¬Ö¸¶¨·Ç¸ºÕûÊý°æ±¾×é¼þµÄ\ ``major``\
-        ºÍ\ ``minor``\ ³ÉÔ±¡£
+        ä¸€ä¸ªJSONæ•°ç»„ï¼Œå…¶æ¯ä¸ªå…ƒç´ éƒ½æ˜¯ä¸€ä¸ªJSONå¯¹è±¡ï¼Œå…¶ä¸­åŒ…å«æŒ‡å®šéžè´Ÿæ•´æ•°ç‰ˆæœ¬ç»„ä»¶çš„\ ``major``\
+        å’Œ\ ``minor``\ æˆå‘˜ã€‚
 
   ``serverMode``
-    Èç¹ûcmakeÖ§³Ö·þÎñÆ÷Ä£Ê½£¬ÔòÎª\ ``true``£¬·ñÔòÎª\ ``false``¡£×ÔCMake 3.20ÒÔÀ´×ÜÊÇfalse¡£
+    å¦‚æžœcmakeæ”¯æŒæœåŠ¡å™¨æ¨¡å¼ï¼Œåˆ™ä¸º\ ``true``ï¼Œå¦åˆ™ä¸º\ ``false``ã€‚è‡ªCMake 3.20ä»¥æ¥æ€»æ˜¯falseã€‚
 
   ``tls``
     .. versionadded:: 3.25
 
-    Èç¹ûÆôÓÃÁËTLSÖ§³Ö£¬ÔòÎª\ ``true``£¬·ñÔòÎª\ ``false``¡£
+    å¦‚æžœå¯ç”¨äº†TLSæ”¯æŒï¼Œåˆ™ä¸º\ ``true``ï¼Œå¦åˆ™ä¸º\ ``false``ã€‚
 
   ``debugger``
     .. versionadded:: 3.27
 
-    Èç¹ûÖ§³Ö\ :option:`--debugger <cmake --debugger>`\ Ä£Ê½£¬ÔòÎª\ ``true``£¬·ñÔòÎª\
-    ``false``¡£
+    å¦‚æžœæ”¯æŒ\ :option:`--debugger <cmake --debugger>`\ æ¨¡å¼ï¼Œåˆ™ä¸º\ ``true``ï¼Œå¦åˆ™ä¸º\
+    ``false``ã€‚
 
 .. option:: cat [--] <files>...
 
   .. versionadded:: 3.18
 
-  Á¬½ÓÎÄ¼þ²¢ÔÚ±ê×¼Êä³öÉÏ´òÓ¡¡£
+  è¿žæŽ¥æ–‡ä»¶å¹¶åœ¨æ ‡å‡†è¾“å‡ºä¸Šæ‰“å°ã€‚
 
   .. program:: cmake-E_cat
 
@@ -786,24 +786,24 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
     .. versionadded:: 3.24
 
-    Ôö¼ÓÁË¶ÔË«ÆÆÕÛºÅ²ÎÊýµÄÖ§³Ö\ ``--``¡£\ ``cat``\ µÄ»ù±¾ÊµÏÖ²»Ö§³ÖÈÎºÎÑ¡Ïî£¬Òò´ËÊ¹ÓÃÒÔ\
-    ``-``\ ¿ªÍ·µÄÑ¡Ïî½«µ¼ÖÂ´íÎó¡£ÔÚÎÄ¼þÒÔ\ ``-``\ ¿ªÍ·µÄÇé¿öÏÂ£¬Ê¹ÓÃ\ ``--``\ À´±íÊ¾Ñ¡Ïî\
-    µÄ½áÊø¡£
+    å¢žåŠ äº†å¯¹åŒç ´æŠ˜å·å‚æ•°çš„æ”¯æŒ\ ``--``ã€‚\ ``cat``\ çš„åŸºæœ¬å®žçŽ°ä¸æ”¯æŒä»»ä½•é€‰é¡¹ï¼Œå› æ­¤ä½¿ç”¨ä»¥\
+    ``-``\ å¼€å¤´çš„é€‰é¡¹å°†å¯¼è‡´é”™è¯¯ã€‚åœ¨æ–‡ä»¶ä»¥\ ``-``\ å¼€å¤´çš„æƒ…å†µä¸‹ï¼Œä½¿ç”¨\ ``--``\ æ¥è¡¨ç¤ºé€‰é¡¹\
+    çš„ç»“æŸã€‚
 
   .. versionadded:: 3.29
 
-    ``cat``\ ÏÖÔÚ¿ÉÒÔÍ¨¹ý´«µÝ\ ``-``\ ²ÎÊý´òÓ¡±ê×¼ÊäÈë¡£
+    ``cat``\ çŽ°åœ¨å¯ä»¥é€šè¿‡ä¼ é€’\ ``-``\ å‚æ•°æ‰“å°æ ‡å‡†è¾“å…¥ã€‚
 
 .. program:: cmake-E
 
 .. option:: chdir <dir> <cmd> [<arg>...]
 
-  ¸ü¸Äµ±Ç°¹¤×÷Ä¿Â¼²¢ÔËÐÐÃüÁî¡£
+  æ›´æ”¹å½“å‰å·¥ä½œç›®å½•å¹¶è¿è¡Œå‘½ä»¤ã€‚
 
 .. option:: compare_files [--ignore-eol] <file1> <file2>
 
-  ¼ì²é\ ``<file1>``\ ÊÇ·ñÓë\ ``<file2>``\ ÏàÍ¬¡£Èç¹ûÎÄ¼þÏàÍ¬£¬Ôò·µ»Ø\ ``0``£¬·ñÔò·µ»Ø\
-  ``1``¡£Èç¹û²ÎÊýÎÞÐ§£¬Ôò·µ»Ø2¡£
+  æ£€æŸ¥\ ``<file1>``\ æ˜¯å¦ä¸Ž\ ``<file2>``\ ç›¸åŒã€‚å¦‚æžœæ–‡ä»¶ç›¸åŒï¼Œåˆ™è¿”å›ž\ ``0``ï¼Œå¦åˆ™è¿”å›ž\
+  ``1``ã€‚å¦‚æžœå‚æ•°æ— æ•ˆï¼Œåˆ™è¿”å›ž2ã€‚
 
   .. program:: cmake-E_compare_files
 
@@ -811,133 +811,133 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
     .. versionadded:: 3.14
 
-    ¸ÃÑ¡Ïî°µÊ¾ÖðÐÐ±È½Ï£¬ºöÂÔLF/CRLF²îÒì¡£
+    è¯¥é€‰é¡¹æš—ç¤ºé€è¡Œæ¯”è¾ƒï¼Œå¿½ç•¥LF/CRLFå·®å¼‚ã€‚
 
 .. program:: cmake-E
 
 .. option:: copy <file>... <destination>, copy -t <destination> <file>...
 
-  ½«ÎÄ¼þ¸´ÖÆµ½\ ``<destination>``\ £¨ÎÄ¼þ»òÄ¿Â¼£©¡£Èç¹ûÖ¸¶¨ÁË¶à¸öÎÄ¼þ£¬»òÕßÖ¸¶¨ÁË\ ``-t`` £¬\
-  ``<destination>`` \ ±ØÐëÊÇÄ¿Â¼£¬²¢ÇÒ±ØÐë´æÔÚ¡£Èç¹ûÎ´Ö¸¶¨\ ``-t`` £¬Ôò¼Ù¶¨×îºóÒ»¸ö²ÎÊýÎª\
-  ``<destination>``¡£²»Ö§³ÖÍ¨Åä·û¡£\ ``copy``\ ×ñÑ­·ûºÅÁ´½Ó¡£ÕâÒâÎ¶×ÅËü²»¸´ÖÆ·ûºÅÁ´½Ó£¬\
-  ¶øÊÇ¸´ÖÆËüËùÖ¸ÏòµÄÎÄ¼þ»òÄ¿Â¼¡£
+  å°†æ–‡ä»¶å¤åˆ¶åˆ°\ ``<destination>``\ ï¼ˆæ–‡ä»¶æˆ–ç›®å½•ï¼‰ã€‚å¦‚æžœæŒ‡å®šäº†å¤šä¸ªæ–‡ä»¶ï¼Œæˆ–è€…æŒ‡å®šäº†\ ``-t`` ï¼Œ\
+  ``<destination>`` \ å¿…é¡»æ˜¯ç›®å½•ï¼Œå¹¶ä¸”å¿…é¡»å­˜åœ¨ã€‚å¦‚æžœæœªæŒ‡å®š\ ``-t`` ï¼Œåˆ™å‡å®šæœ€åŽä¸€ä¸ªå‚æ•°ä¸º\
+  ``<destination>``ã€‚ä¸æ”¯æŒé€šé…ç¬¦ã€‚\ ``copy``\ éµå¾ªç¬¦å·é“¾æŽ¥ã€‚è¿™æ„å‘³ç€å®ƒä¸å¤åˆ¶ç¬¦å·é“¾æŽ¥ï¼Œ\
+  è€Œæ˜¯å¤åˆ¶å®ƒæ‰€æŒ‡å‘çš„æ–‡ä»¶æˆ–ç›®å½•ã€‚
 
   .. versionadded:: 3.5
-    Ö§³Ö¶à¸öÊäÈëÎÄ¼þ¡£
+    æ”¯æŒå¤šä¸ªè¾“å…¥æ–‡ä»¶ã€‚
 
   .. versionadded:: 3.26
-    Ö§³Ö\ ``-t``\ ²ÎÊý¡£
+    æ”¯æŒ\ ``-t``\ å‚æ•°ã€‚
 
 .. option:: copy_directory <dir>... <destination>
 
-  ¸´ÖÆ\ ``<dir>...``\ Ä¿Â¼µ½\ ``<destination>``\ Ä¿Â¼¡£Èç¹û\ ``<destination>``\
-  Ä¿Â¼²»´æÔÚ£¬Ëü½«±»´´½¨¡£\ ``copy_directory``\ ×ñÑ­·ûºÅÁ´½Ó¡£
+  å¤åˆ¶\ ``<dir>...``\ ç›®å½•åˆ°\ ``<destination>``\ ç›®å½•ã€‚å¦‚æžœ\ ``<destination>``\
+  ç›®å½•ä¸å­˜åœ¨ï¼Œå®ƒå°†è¢«åˆ›å»ºã€‚\ ``copy_directory``\ éµå¾ªç¬¦å·é“¾æŽ¥ã€‚
 
   .. versionadded:: 3.5
-    Ö§³Ö¶à¸öÊäÈëÄ¿Â¼¡£
+    æ”¯æŒå¤šä¸ªè¾“å…¥ç›®å½•ã€‚
 
   .. versionadded:: 3.15
-    µ±Ô´Ä¿Â¼²»´æÔÚÊ±£¬¸ÃÃüÁî½«Ê§°Ü¡£Ö®Ç°£¬ËüÍ¨¹ý´´½¨Ò»¸ö¿ÕµÄÄ¿±êÄ¿Â¼¶ø³É¹¦¡£
+    å½“æºç›®å½•ä¸å­˜åœ¨æ—¶ï¼Œè¯¥å‘½ä»¤å°†å¤±è´¥ã€‚ä¹‹å‰ï¼Œå®ƒé€šè¿‡åˆ›å»ºä¸€ä¸ªç©ºçš„ç›®æ ‡ç›®å½•è€ŒæˆåŠŸã€‚
 
 .. option:: copy_directory_if_different <dir>... <destination>
 
   .. versionadded:: 3.26
 
-  ¸´ÖÆ\ ``<dir>...``\ Ä¿Â¼µÄ¸ü¸ÄÄÚÈÝµ½\ ``<destination>``\ Ä¿Â¼¡£Èç¹û\ ``<destination>``\
-  Ä¿Â¼²»´æÔÚ£¬Ëü½«±»´´½¨¡£
+  å¤åˆ¶\ ``<dir>...``\ ç›®å½•çš„æ›´æ”¹å†…å®¹åˆ°\ ``<destination>``\ ç›®å½•ã€‚å¦‚æžœ\ ``<destination>``\
+  ç›®å½•ä¸å­˜åœ¨ï¼Œå®ƒå°†è¢«åˆ›å»ºã€‚
 
-  ``copy_directory_if_different``\ ×ñÑ­·ûºÅÁ´½Ó¡£µ±Ô´Ä¿Â¼²»´æÔÚÊ±£¬ÃüÁîÖ´ÐÐÊ§°Ü¡£
+  ``copy_directory_if_different``\ éµå¾ªç¬¦å·é“¾æŽ¥ã€‚å½“æºç›®å½•ä¸å­˜åœ¨æ—¶ï¼Œå‘½ä»¤æ‰§è¡Œå¤±è´¥ã€‚
 
 .. option:: copy_if_different <file>... <destination>
 
-  Èç¹ûÎÄ¼þÒÑ¸ü¸Ä£¬Ôò½«Æä¸´ÖÆµ½\ ``<destination>``\£¨ÎÄ¼þ»òÄ¿Â¼£©¡£Èç¹ûÖ¸¶¨ÁË¶à¸öÎÄ¼þ£¬\
-  ``<destination>``\ ±ØÐëÊÇÄ¿Â¼ÇÒ±ØÐë´æÔÚ¡£\ ``copy_if_different``\ ×ñÑ­·ûºÅÁ´½Ó¡£
+  å¦‚æžœæ–‡ä»¶å·²æ›´æ”¹ï¼Œåˆ™å°†å…¶å¤åˆ¶åˆ°\ ``<destination>``\ï¼ˆæ–‡ä»¶æˆ–ç›®å½•ï¼‰ã€‚å¦‚æžœæŒ‡å®šäº†å¤šä¸ªæ–‡ä»¶ï¼Œ\
+  ``<destination>``\ å¿…é¡»æ˜¯ç›®å½•ä¸”å¿…é¡»å­˜åœ¨ã€‚\ ``copy_if_different``\ éµå¾ªç¬¦å·é“¾æŽ¥ã€‚
 
   .. versionadded:: 3.5
-    Ö§³Ö¶à¸öÊäÈëÎÄ¼þ¡£
+    æ”¯æŒå¤šä¸ªè¾“å…¥æ–‡ä»¶ã€‚
 
 .. option:: create_symlink <old> <new>
 
-  ´´½¨Ò»¸öÃüÃûÎª\ ``<old>``\ µÄ·ûºÅÁ´½Ó\ ``<new>``¡£
+  åˆ›å»ºä¸€ä¸ªå‘½åä¸º\ ``<old>``\ çš„ç¬¦å·é“¾æŽ¥\ ``<new>``ã€‚
 
   .. versionadded:: 3.13
-    Ö§³ÖÔÚWindowsÉÏ´´½¨·ûºÅÁ´½Ó¡£
+    æ”¯æŒåœ¨Windowsä¸Šåˆ›å»ºç¬¦å·é“¾æŽ¥ã€‚
 
   .. note::
-    ´´½¨\ ``<new>``\ ·ûºÅÁ´½ÓµÄÂ·¾¶±ØÐëÊÂÏÈ´æÔÚ¡£
+    åˆ›å»º\ ``<new>``\ ç¬¦å·é“¾æŽ¥çš„è·¯å¾„å¿…é¡»äº‹å…ˆå­˜åœ¨ã€‚
 
 .. option:: create_hardlink <old> <new>
 
   .. versionadded:: 3.19
 
-  ´´½¨Ò»¸öÓ²Á´½Ó\ ``<new>``\ ÃüÃûÎª\ ``<old>``¡£
+  åˆ›å»ºä¸€ä¸ªç¡¬é“¾æŽ¥\ ``<new>``\ å‘½åä¸º\ ``<old>``ã€‚
 
   .. note::
-    Òª´´½¨\ ``<new>``\ Ó²Á´½ÓµÄÂ·¾¶±ØÐëÊÂÏÈ´æÔÚ¡£\ ``<old>``\ ±ØÐëÊÂÏÈ´æÔÚ¡£
+    è¦åˆ›å»º\ ``<new>``\ ç¡¬é“¾æŽ¥çš„è·¯å¾„å¿…é¡»äº‹å…ˆå­˜åœ¨ã€‚\ ``<old>``\ å¿…é¡»äº‹å…ˆå­˜åœ¨ã€‚
 
 .. option:: echo [<string>...]
 
-  ½«²ÎÊýÏÔÊ¾ÎªÎÄ±¾¡£
+  å°†å‚æ•°æ˜¾ç¤ºä¸ºæ–‡æœ¬ã€‚
 
 .. option:: echo_append [<string>...]
 
-  ½«²ÎÊýÏÔÊ¾ÎªÎÄ±¾£¬µ«²»»»ÐÐ¡£
+  å°†å‚æ•°æ˜¾ç¤ºä¸ºæ–‡æœ¬ï¼Œä½†ä¸æ¢è¡Œã€‚
 
 .. option:: env [<options>] [--] <command> [<arg>...]
 
   .. versionadded:: 3.1
 
-  ÔÚÐÞ¸ÄºóµÄ»·¾³ÖÐÖ´ÐÐÃüÁî¡£Ñ¡ÏîÓÐ£º
+  åœ¨ä¿®æ”¹åŽçš„çŽ¯å¢ƒä¸­æ‰§è¡Œå‘½ä»¤ã€‚é€‰é¡¹æœ‰ï¼š
 
   .. program:: cmake-E_env
 
   .. option:: NAME=VALUE
 
-    ½«\ ``NAME``\ µÄµ±Ç°ÖµÌæ»»Îª\ ``VALUE``¡£
+    å°†\ ``NAME``\ çš„å½“å‰å€¼æ›¿æ¢ä¸º\ ``VALUE``ã€‚
 
   .. option:: --unset=NAME
 
-    È¡Ïû\ ``NAME``\ µÄµ±Ç°Öµ¡£
+    å–æ¶ˆ\ ``NAME``\ çš„å½“å‰å€¼ã€‚
 
   .. option:: --modify ENVIRONMENT_MODIFICATION
 
     .. versionadded:: 3.25
 
-    ¶ÔÐÞ¸ÄºóµÄ»·¾³Ó¦ÓÃµ¥¸ö\ :prop_test:`ENVIRONMENT_MODIFICATION`\ ²Ù×÷¡£
+    å¯¹ä¿®æ”¹åŽçš„çŽ¯å¢ƒåº”ç”¨å•ä¸ª\ :prop_test:`ENVIRONMENT_MODIFICATION`\ æ“ä½œã€‚
 
-    ``NAME=VALUE``\ ºÍ\ ``--unset=NAME``\ Ñ¡Ïî·Ö±ðÏàµ±ÓÚ\ ``--modify NAME=set:VALUE``\
-    ºÍ\ ``--modify NAME=unset:``¡£×¢Òâ\ ``--modify NAME=reset:``\ ½«\ ``NAME``\
-    ÖØÖÃÎª\ :program:`cmake`\ Æô¶¯£¨»òÈ¡ÏûÉèÖÃ£©Ê±µÄÖµ£¬¶ø²»ÊÇ×î½üµÄ\ ``NAME=VALUE``\ Ñ¡Ïî¡£
+    ``NAME=VALUE``\ å’Œ\ ``--unset=NAME``\ é€‰é¡¹åˆ†åˆ«ç›¸å½“äºŽ\ ``--modify NAME=set:VALUE``\
+    å’Œ\ ``--modify NAME=unset:``ã€‚æ³¨æ„\ ``--modify NAME=reset:``\ å°†\ ``NAME``\
+    é‡ç½®ä¸º\ :program:`cmake`\ å¯åŠ¨ï¼ˆæˆ–å–æ¶ˆè®¾ç½®ï¼‰æ—¶çš„å€¼ï¼Œè€Œä¸æ˜¯æœ€è¿‘çš„\ ``NAME=VALUE``\ é€‰é¡¹ã€‚
 
   .. option:: --
 
     .. versionadded:: 3.24
 
-    Ôö¼ÓÁË¶ÔË«ÆÆÕÛºÅ²ÎÊýµÄÖ§³Ö\ ``--``¡£Ê¹ÓÃ\ ``--``\ Í£Ö¹½âÊÍÑ¡Ïî/»·¾³±äÁ¿£¬²¢½«ÏÂÒ»¸ö²Î\
-    ÊýÊÓÎªÃüÁî£¬¼´Ê¹ËüÒÔ\ ``-``\ ¿ªÍ·»ò°üº¬\ ``=``¡£
+    å¢žåŠ äº†å¯¹åŒç ´æŠ˜å·å‚æ•°çš„æ”¯æŒ\ ``--``ã€‚ä½¿ç”¨\ ``--``\ åœæ­¢è§£é‡Šé€‰é¡¹/çŽ¯å¢ƒå˜é‡ï¼Œå¹¶å°†ä¸‹ä¸€ä¸ªå‚\
+    æ•°è§†ä¸ºå‘½ä»¤ï¼Œå³ä½¿å®ƒä»¥\ ``-``\ å¼€å¤´æˆ–åŒ…å«\ ``=``ã€‚
 
 .. program:: cmake-E
 
 .. option:: environment
 
-  ÏÔÊ¾µ±Ç°»·¾³±äÁ¿¡£
+  æ˜¾ç¤ºå½“å‰çŽ¯å¢ƒå˜é‡ã€‚
 
 .. option:: false
 
   .. versionadded:: 3.16
 
-  Ê²Ã´¶¼²»×ö£¬ÍË³ö´úÂëÎª1¡£
+  ä»€ä¹ˆéƒ½ä¸åšï¼Œé€€å‡ºä»£ç ä¸º1ã€‚
 
 .. option:: make_directory <dir>...
 
-  ´´½¨\ ``<dir>``\ Ä¿Â¼¡£Èç¹ûÐèÒª£¬Ò²´´½¨¸¸Ä¿Â¼¡£Èç¹ûÒ»¸öÄ¿Â¼ÒÑ¾­´æÔÚ£¬Ëü½«±»¾²Ä¬ºöÂÔ¡£
+  åˆ›å»º\ ``<dir>``\ ç›®å½•ã€‚å¦‚æžœéœ€è¦ï¼Œä¹Ÿåˆ›å»ºçˆ¶ç›®å½•ã€‚å¦‚æžœä¸€ä¸ªç›®å½•å·²ç»å­˜åœ¨ï¼Œå®ƒå°†è¢«é™é»˜å¿½ç•¥ã€‚
 
   .. versionadded:: 3.5
-    Ö§³Ö¶à¸öÊäÈëÄ¿Â¼¡£
+    æ”¯æŒå¤šä¸ªè¾“å…¥ç›®å½•ã€‚
 
 .. option:: md5sum <file>...
 
-  ÒÔ\ ``md5sum``\ ¼æÈÝ¸ñÊ½´´½¨ÎÄ¼þµÄMD5Ð£ÑéºÍ£º\ ::
+  ä»¥\ ``md5sum``\ å…¼å®¹æ ¼å¼åˆ›å»ºæ–‡ä»¶çš„MD5æ ¡éªŒå’Œï¼š\ ::
 
      351abe79cd3800b38cdfb25d45015a15  file1.txt
      052f86c15bbde68af55c7f7b340ab639  file2.txt
@@ -946,7 +946,7 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
   .. versionadded:: 3.10
 
-  ÒÔ\ ``sha1sum``\ ¼æÈÝ¸ñÊ½´´½¨ÎÄ¼þµÄSHA1Ð£ÑéºÍ£º\ ::
+  ä»¥\ ``sha1sum``\ å…¼å®¹æ ¼å¼åˆ›å»ºæ–‡ä»¶çš„SHA1æ ¡éªŒå’Œï¼š\ ::
 
      4bb7932a29e6f73c97bb9272f2bdc393122f86e0  file1.txt
      1df4c8f318665f9a5f2ed38f55adadb7ef9f559c  file2.txt
@@ -955,7 +955,7 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
   .. versionadded:: 3.10
 
-  ÒÔ\ ``sha224sum``\ ¼æÈÝ¸ñÊ½´´½¨ÎÄ¼þµÄSHA224Ð£ÑéºÍ£º\ ::
+  ä»¥\ ``sha224sum``\ å…¼å®¹æ ¼å¼åˆ›å»ºæ–‡ä»¶çš„SHA224æ ¡éªŒå’Œï¼š\ ::
 
      b9b9346bc8437bbda630b0b7ddfc5ea9ca157546dbbf4c613192f930  file1.txt
      6dfbe55f4d2edc5fe5c9197bca51ceaaf824e48eba0cc453088aee24  file2.txt
@@ -964,7 +964,7 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
   .. versionadded:: 3.10
 
-  ÒÔ\ ``sha256sum``\ ¼æÈÝ¸ñÊ½´´½¨ÎÄ¼þµÄSHA256Ð£ÑéºÍ£º\ ::
+  ä»¥\ ``sha256sum``\ å…¼å®¹æ ¼å¼åˆ›å»ºæ–‡ä»¶çš„SHA256æ ¡éªŒå’Œï¼š\ ::
 
      76713b23615d31680afeb0e9efe94d47d3d4229191198bb46d7485f9cb191acc  file1.txt
      15b682ead6c12dedb1baf91231e1e89cfc7974b3787c1e2e01b986bffadae0ea  file2.txt
@@ -973,7 +973,7 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
   .. versionadded:: 3.10
 
-  ÒÔ\ ``sha384sum``\ ¼æÈÝ¸ñÊ½´´½¨ÎÄ¼þµÄSHA384Ð£ÑéºÍ£º\ ::
+  ä»¥\ ``sha384sum``\ å…¼å®¹æ ¼å¼åˆ›å»ºæ–‡ä»¶çš„SHA384æ ¡éªŒå’Œï¼š\ ::
 
      acc049fedc091a22f5f2ce39a43b9057fd93c910e9afd76a6411a28a8f2b8a12c73d7129e292f94fc0329c309df49434  file1.txt
      668ddeb108710d271ee21c0f3acbd6a7517e2b78f9181c6a2ff3b8943af92b0195dcb7cce48aa3e17893173c0a39e23d  file2.txt
@@ -982,7 +982,7 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
   .. versionadded:: 3.10
 
-  ÒÔ\ ``sha512sum``\ ¼æÈÝ¸ñÊ½´´½¨ÎÄ¼þµÄSHA512Ð£ÑéºÍ£º\ ::
+  ä»¥\ ``sha512sum``\ å…¼å®¹æ ¼å¼åˆ›å»ºæ–‡ä»¶çš„SHA512æ ¡éªŒå’Œï¼š\ ::
 
      2a78d7a6c5328cfb1467c63beac8ff21794213901eaadafd48e7800289afbc08e5fb3e86aa31116c945ee3d7bf2a6194489ec6101051083d1108defc8e1dba89  file1.txt
      7a0b54896fe5e70cca6dd643ad6f672614b189bf26f8153061c4d219474b05dad08c4e729af9f4b009f1a1a280cb625454bf587c690f4617c27e3aebdf3b7a2d  file2.txt
@@ -991,43 +991,43 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
   .. deprecated:: 3.17
 
-  É¾³ýÎÄ¼þ¡£¼Æ»®µÄÐÐÎªÊÇ£¬Èç¹ûÁÐ³öµÄÈÎºÎÎÄ¼þÒÑ¾­²»´æÔÚ£¬¸ÃÃüÁî·µ»Ø·ÇÁãÍË³ö´úÂë£¬µ«²»¼ÇÂ¼ÈÎºÎ\
-  ÏûÏ¢¡£ÔÚÕâÖÖÇé¿öÏÂ£¬\ ``-f``\ Ñ¡Ïî½«ÐÐÎª¸ü¸ÄÎª·µ»ØÁãÍË³ö´úÂë£¨¼´³É¹¦£©¡£\ ``remove``\
-  ²»¸úËæ·ûºÅÁ´½Ó¡£ÕâÒâÎ¶×ÅËüÖ»É¾³ý·ûºÅÁ´½Ó£¬¶ø²»É¾³ýËüÖ¸ÏòµÄÎÄ¼þ¡£
+  åˆ é™¤æ–‡ä»¶ã€‚è®¡åˆ’çš„è¡Œä¸ºæ˜¯ï¼Œå¦‚æžœåˆ—å‡ºçš„ä»»ä½•æ–‡ä»¶å·²ç»ä¸å­˜åœ¨ï¼Œè¯¥å‘½ä»¤è¿”å›žéžé›¶é€€å‡ºä»£ç ï¼Œä½†ä¸è®°å½•ä»»ä½•\
+  æ¶ˆæ¯ã€‚åœ¨è¿™ç§æƒ…å†µä¸‹ï¼Œ\ ``-f``\ é€‰é¡¹å°†è¡Œä¸ºæ›´æ”¹ä¸ºè¿”å›žé›¶é€€å‡ºä»£ç ï¼ˆå³æˆåŠŸï¼‰ã€‚\ ``remove``\
+  ä¸è·Ÿéšç¬¦å·é“¾æŽ¥ã€‚è¿™æ„å‘³ç€å®ƒåªåˆ é™¤ç¬¦å·é“¾æŽ¥ï¼Œè€Œä¸åˆ é™¤å®ƒæŒ‡å‘çš„æ–‡ä»¶ã€‚
 
-  Õâ¸öÊµÏÖÓÐºÜ¶àÎÊÌâ£¬×ÜÊÇ·µ»Ø0¡£Èç¹û²»ÆÆ»µÏòºó¼æÈÝÐÔ£¬¾ÍÎÞ·¨ÐÞ¸´Ëü¡£ÇëÊ¹ÓÃ\ ``rm``\ ´úÌæ¡£
+  è¿™ä¸ªå®žçŽ°æœ‰å¾ˆå¤šé—®é¢˜ï¼Œæ€»æ˜¯è¿”å›ž0ã€‚å¦‚æžœä¸ç ´åå‘åŽå…¼å®¹æ€§ï¼Œå°±æ— æ³•ä¿®å¤å®ƒã€‚è¯·ä½¿ç”¨\ ``rm``\ ä»£æ›¿ã€‚
 
 .. option:: remove_directory <dir>...
 
   .. deprecated:: 3.17
 
-  É¾³ý\ ``<dir>``\ Ä¿Â¼¼°ÆäÄÚÈÝ¡£Èç¹ûÒ»¸öÄ¿Â¼²»´æÔÚ£¬Ëü½«±»¾²Ä¬ºöÂÔ¡£Ê¹ÓÃ\ ``rm``\ ´úÌæ¡£
+  åˆ é™¤\ ``<dir>``\ ç›®å½•åŠå…¶å†…å®¹ã€‚å¦‚æžœä¸€ä¸ªç›®å½•ä¸å­˜åœ¨ï¼Œå®ƒå°†è¢«é™é»˜å¿½ç•¥ã€‚ä½¿ç”¨\ ``rm``\ ä»£æ›¿ã€‚
 
   .. versionadded:: 3.15
-    Ö§³Ö¶à¸öÄ¿Â¼¡£
+    æ”¯æŒå¤šä¸ªç›®å½•ã€‚
 
   .. versionadded:: 3.16
-    Èç¹û\ ``<dir>``\ ÊÇÖ¸ÏòÄ¿Â¼µÄ·ûºÅÁ´½Ó£¬ÔòÖ»É¾³ý·ûºÅÁ´½Ó¡£
+    å¦‚æžœ\ ``<dir>``\ æ˜¯æŒ‡å‘ç›®å½•çš„ç¬¦å·é“¾æŽ¥ï¼Œåˆ™åªåˆ é™¤ç¬¦å·é“¾æŽ¥ã€‚
 
 .. option:: rename <oldname> <newname>
 
-  ÖØÃüÃûÎÄ¼þ»òÄ¿Â¼£¨ÔÚÒ»¸ö¾íÉÏ£©¡£Èç¹ûÃû³ÆÎª\ ``<newname>``\ µÄÎÄ¼þÒÑ¾­´æÔÚ£¬ÄÇÃ´Ëü½«±»¾²Ä¬Ìæ»»¡£
+  é‡å‘½åæ–‡ä»¶æˆ–ç›®å½•ï¼ˆåœ¨ä¸€ä¸ªå·ä¸Šï¼‰ã€‚å¦‚æžœåç§°ä¸º\ ``<newname>``\ çš„æ–‡ä»¶å·²ç»å­˜åœ¨ï¼Œé‚£ä¹ˆå®ƒå°†è¢«é™é»˜æ›¿æ¢ã€‚
 
 .. option:: rm [-rRf] [--] <file|dir>...
 
   .. versionadded:: 3.17
 
-  É¾³ýÎÄ¼þ\ ``<file>``\ »òÄ¿Â¼\ ``<dir>``¡£Ê¹ÓÃ\ ``-r`` »ò ``-R``\ µÝ¹éµØÉ¾³ýÄ¿Â¼¼°Æä\
-  ÄÚÈÝ¡£Èç¹ûÁÐ³öµÄÈÎºÎÎÄ¼þ/Ä¿Â¼²»´æÔÚ£¬¸ÃÃüÁî·µ»ØÒ»¸ö·ÇÁãÍË³ö´úÂë£¬µ«²»¼ÇÂ¼ÈÎºÎÏûÏ¢¡£ÔÚÕâÖÖÇé\
-  ¿öÏÂ£¬\ ``-f``\ Ñ¡Ïî½«ÐÐÎª¸ü¸ÄÎª·µ»ØÁãÍË³ö´úÂë£¨¼´³É¹¦£©¡£Ê¹ÓÃ\ ``--``\ Í£Ö¹½âÊÍÑ¡Ïî£¬²¢\
-  ½«ËùÓÐÊ£ÓàµÄ²ÎÊýÊÓÎªÂ·¾¶£¬¼´Ê¹ËüÃÇÒÔ\ ``-``\ ¿ªÍ·¡£
+  åˆ é™¤æ–‡ä»¶\ ``<file>``\ æˆ–ç›®å½•\ ``<dir>``ã€‚ä½¿ç”¨\ ``-r`` æˆ– ``-R``\ é€’å½’åœ°åˆ é™¤ç›®å½•åŠå…¶\
+  å†…å®¹ã€‚å¦‚æžœåˆ—å‡ºçš„ä»»ä½•æ–‡ä»¶/ç›®å½•ä¸å­˜åœ¨ï¼Œè¯¥å‘½ä»¤è¿”å›žä¸€ä¸ªéžé›¶é€€å‡ºä»£ç ï¼Œä½†ä¸è®°å½•ä»»ä½•æ¶ˆæ¯ã€‚åœ¨è¿™ç§æƒ…\
+  å†µä¸‹ï¼Œ\ ``-f``\ é€‰é¡¹å°†è¡Œä¸ºæ›´æ”¹ä¸ºè¿”å›žé›¶é€€å‡ºä»£ç ï¼ˆå³æˆåŠŸï¼‰ã€‚ä½¿ç”¨\ ``--``\ åœæ­¢è§£é‡Šé€‰é¡¹ï¼Œå¹¶\
+  å°†æ‰€æœ‰å‰©ä½™çš„å‚æ•°è§†ä¸ºè·¯å¾„ï¼Œå³ä½¿å®ƒä»¬ä»¥\ ``-``\ å¼€å¤´ã€‚
 
 .. option:: sleep <number>
 
   .. versionadded:: 3.0
 
-  Ë¯Ãß¸ø¶¨µÄÃë\ ``<number>``¡£\ ``<number>``\ ¿ÉÒÔÊÇ¸¡µãÊý¡£ÓÉÓÚÆô¶¯/Í£Ö¹CMake¿ÉÖ´ÐÐÎÄ\
-  ¼þµÄ¿ªÏú£¬Êµ¼ÊµÄ×îÐ¡Öµ´óÔ¼ÊÇ0.1Ãë¡£ÕâÔÚCMake½Å±¾ÖÐ²åÈëÑÓ³ÙÊÇºÜÓÐÓÃµÄ£º
+  ç¡çœ ç»™å®šçš„ç§’\ ``<number>``ã€‚\ ``<number>``\ å¯ä»¥æ˜¯æµ®ç‚¹æ•°ã€‚ç”±äºŽå¯åŠ¨/åœæ­¢CMakeå¯æ‰§è¡Œæ–‡\
+  ä»¶çš„å¼€é”€ï¼Œå®žé™…çš„æœ€å°å€¼å¤§çº¦æ˜¯0.1ç§’ã€‚è¿™åœ¨CMakeè„šæœ¬ä¸­æ’å…¥å»¶è¿Ÿæ˜¯å¾ˆæœ‰ç”¨çš„ï¼š
 
   .. code-block:: cmake
 
@@ -1036,215 +1036,215 @@ CMakeÍ¨¹ýÇ©ÃûÌá¹©ÄÚÖÃÃüÁîÐÐ¹¤¾ß
 
 .. option:: tar [cxt][vf][zjJ] file.tar [<options>] [--] [<pathname>...]
 
-  ´´½¨»òÌáÈ¡Ò»¸ötar»òzip¹éµµÎÄ¼þ¡£Ñ¡ÏîÓÐ£º
+  åˆ›å»ºæˆ–æå–ä¸€ä¸ªtaræˆ–zipå½’æ¡£æ–‡ä»¶ã€‚é€‰é¡¹æœ‰ï¼š
 
   .. program:: cmake-E_tar
 
   .. option:: c
 
-    ´´½¨°üº¬Ö¸¶¨ÎÄ¼þµÄÐÂ´æµµ¡£Èç¹ûÊ¹ÓÃ\ ``<pathname>...``\ ²ÎÊýÊÇÇ¿ÖÆÐÔµÄ¡£
+    åˆ›å»ºåŒ…å«æŒ‡å®šæ–‡ä»¶çš„æ–°å­˜æ¡£ã€‚å¦‚æžœä½¿ç”¨\ ``<pathname>...``\ å‚æ•°æ˜¯å¼ºåˆ¶æ€§çš„ã€‚
 
   .. option:: x
 
-    ´Ó¹éµµÎÄ¼þÖÐÌáÈ¡µ½´ÅÅÌ¡£
+    ä»Žå½’æ¡£æ–‡ä»¶ä¸­æå–åˆ°ç£ç›˜ã€‚
 
     .. versionadded:: 3.15
-      ``<pathname>...``\ ²ÎÊý¿ÉÓÃÓÚ½öÌáÈ¡Ñ¡¶¨µÄÎÄ¼þ»òÄ¿Â¼¡£ÔÚÌáÈ¡Ñ¡¶¨µÄÎÄ¼þ»òÄ¿Â¼Ê±£¬±ØÐë\
-      Ìá¹©ËüÃÇµÄÈ·ÇÐÃû³Æ£¬°üÀ¨Â·¾¶£¬ÈçÁÐ±í´òÓ¡£¨\ ``-t``\ £©ËùÊ¾¡£
+      ``<pathname>...``\ å‚æ•°å¯ç”¨äºŽä»…æå–é€‰å®šçš„æ–‡ä»¶æˆ–ç›®å½•ã€‚åœ¨æå–é€‰å®šçš„æ–‡ä»¶æˆ–ç›®å½•æ—¶ï¼Œå¿…é¡»\
+      æä¾›å®ƒä»¬çš„ç¡®åˆ‡åç§°ï¼ŒåŒ…æ‹¬è·¯å¾„ï¼Œå¦‚åˆ—è¡¨æ‰“å°ï¼ˆ\ ``-t``\ ï¼‰æ‰€ç¤ºã€‚
 
   .. option:: t
 
-    ÁÐ³ö´æµµÄÚÈÝ¡£
+    åˆ—å‡ºå­˜æ¡£å†…å®¹ã€‚
 
     .. versionadded:: 3.15
-      ``<pathname>...``\ ²ÎÊý¿ÉÓÃÓÚ½öÁÐ³öÑ¡¶¨µÄÎÄ¼þ»òÄ¿Â¼¡£
+      ``<pathname>...``\ å‚æ•°å¯ç”¨äºŽä»…åˆ—å‡ºé€‰å®šçš„æ–‡ä»¶æˆ–ç›®å½•ã€‚
 
   .. option:: v
 
-    ²úÉúÏêÏ¸µÄÊä³ö¡£
+    äº§ç”Ÿè¯¦ç»†çš„è¾“å‡ºã€‚
 
   .. option:: z
 
-    Ê¹ÓÃgzipÑ¹ËõÉú³ÉµÄ¹éµµÎÄ¼þ¡£
+    ä½¿ç”¨gzipåŽ‹ç¼©ç”Ÿæˆçš„å½’æ¡£æ–‡ä»¶ã€‚
 
   .. option:: j
 
-    Ê¹ÓÃbzip2Ñ¹ËõÉú³ÉµÄ¹éµµÎÄ¼þ¡£
+    ä½¿ç”¨bzip2åŽ‹ç¼©ç”Ÿæˆçš„å½’æ¡£æ–‡ä»¶ã€‚
 
   .. option:: J
 
     .. versionadded:: 3.1
 
-    Ê¹ÓÃXZÑ¹ËõÉú³ÉµÄ¹éµµÎÄ¼þ¡£
+    ä½¿ç”¨XZåŽ‹ç¼©ç”Ÿæˆçš„å½’æ¡£æ–‡ä»¶ã€‚
 
   .. option:: --zstd
 
     .. versionadded:: 3.15
 
-    Ê¹ÓÃZstandardÑ¹ËõÉú³ÉµÄ¹éµµÎÄ¼þ¡£
+    ä½¿ç”¨ZstandardåŽ‹ç¼©ç”Ÿæˆçš„å½’æ¡£æ–‡ä»¶ã€‚
 
   .. option:: --files-from=<file>
 
     .. versionadded:: 3.1
 
-    ´Ó¸ø¶¨µÄÎÄ¼þÖÐ¶ÁÈ¡ÎÄ¼þÃû£¬Ã¿ÐÐÒ»¸ö¡£¿ÕÐÐ½«±»ºöÂÔ¡£ÐÐ²»ÄÜÒÔ\ ``-``\ ¿ªÍ·£¬³ý·Ç\
-    ``--add-file=<name>``\ Ìí¼ÓÎÄ¼þÃûÒÔ\ ``-``\ ¿ªÍ·µÄÎÄ¼þ¡£
+    ä»Žç»™å®šçš„æ–‡ä»¶ä¸­è¯»å–æ–‡ä»¶åï¼Œæ¯è¡Œä¸€ä¸ªã€‚ç©ºè¡Œå°†è¢«å¿½ç•¥ã€‚è¡Œä¸èƒ½ä»¥\ ``-``\ å¼€å¤´ï¼Œé™¤éž\
+    ``--add-file=<name>``\ æ·»åŠ æ–‡ä»¶åä»¥\ ``-``\ å¼€å¤´çš„æ–‡ä»¶ã€‚
 
   .. option:: --format=<format>
 
     .. versionadded:: 3.3
 
-    Ö¸¶¨Òª´´½¨µÄ¹éµµÎÄ¼þµÄ¸ñÊ½¡£Ö§³ÖµÄ¸ñÊ½ÓÐ£º\ ``7zip``¡¢\ ``gnutar``¡¢\ ``pax``¡¢\
-    ``paxr``\ £¨ÊÜÏÞpax£¬Ä¬ÈÏ£©ºÍ\ ``zip``¡£
+    æŒ‡å®šè¦åˆ›å»ºçš„å½’æ¡£æ–‡ä»¶çš„æ ¼å¼ã€‚æ”¯æŒçš„æ ¼å¼æœ‰ï¼š\ ``7zip``ã€\ ``gnutar``ã€\ ``pax``ã€\
+    ``paxr``\ ï¼ˆå—é™paxï¼Œé»˜è®¤ï¼‰å’Œ\ ``zip``ã€‚
 
   .. option:: --mtime=<date>
 
     .. versionadded:: 3.1
 
-    Ö¸¶¨ÔÚtarballÌõÄ¿ÖÐ¼ÇÂ¼µÄÐÞ¸ÄÊ±¼ä¡£
+    æŒ‡å®šåœ¨tarballæ¡ç›®ä¸­è®°å½•çš„ä¿®æ”¹æ—¶é—´ã€‚
 
   .. option:: --touch
 
     .. versionadded:: 3.24
 
-    Ê¹ÓÃµ±Ç°±¾µØÊ±¼ä´Á£¬¶ø²»ÊÇ´Ó´æµµÖÐÌáÈ¡ÎÄ¼þÊ±¼ä´Á¡£
+    ä½¿ç”¨å½“å‰æœ¬åœ°æ—¶é—´æˆ³ï¼Œè€Œä¸æ˜¯ä»Žå­˜æ¡£ä¸­æå–æ–‡ä»¶æ—¶é—´æˆ³ã€‚
 
   .. option:: --
 
     .. versionadded:: 3.1
 
-    Í£Ö¹½âÊÍÑ¡Ïî£¬²¢½«ËùÓÐÊ£ÓàµÄ²ÎÊýÊÓÎªÎÄ¼þÃû£¬¼´Ê¹ËüÃÇÒÔ\ ``-``\ ¿ªÍ·¡£
+    åœæ­¢è§£é‡Šé€‰é¡¹ï¼Œå¹¶å°†æ‰€æœ‰å‰©ä½™çš„å‚æ•°è§†ä¸ºæ–‡ä»¶åï¼Œå³ä½¿å®ƒä»¬ä»¥\ ``-``\ å¼€å¤´ã€‚
 
   .. versionadded:: 3.1
-    Ö§³ÖLZMA £¨7zip£©¡£
+    æ”¯æŒLZMA ï¼ˆ7zipï¼‰ã€‚
 
   .. versionadded:: 3.15
-    ¸ÃÃüÁîÏÖÔÚ¼ÌÐøÏò´æµµÖÐÌí¼ÓÎÄ¼þ£¬¼´Ê¹ÆäÖÐÒ»Ð©ÎÄ¼þ²»¿É¶Á¡£ÕâÖÖÐÐÎªÓë¾­µäµÄ\ ``tar``\ ¹¤¾ß\
-    ¸ü¼ÓÒ»ÖÂ¡£¸ÃÃüÁîÏÖÔÚ»¹½âÎöËùÓÐ±êÖ¾£¬Èç¹ûÌá¹©ÁËÎÞÐ§±êÖ¾£¬Ôò·¢³ö¾¯¸æ¡£
+    è¯¥å‘½ä»¤çŽ°åœ¨ç»§ç»­å‘å­˜æ¡£ä¸­æ·»åŠ æ–‡ä»¶ï¼Œå³ä½¿å…¶ä¸­ä¸€äº›æ–‡ä»¶ä¸å¯è¯»ã€‚è¿™ç§è¡Œä¸ºä¸Žç»å…¸çš„\ ``tar``\ å·¥å…·\
+    æ›´åŠ ä¸€è‡´ã€‚è¯¥å‘½ä»¤çŽ°åœ¨è¿˜è§£æžæ‰€æœ‰æ ‡å¿—ï¼Œå¦‚æžœæä¾›äº†æ— æ•ˆæ ‡å¿—ï¼Œåˆ™å‘å‡ºè­¦å‘Šã€‚
 
 .. program:: cmake-E
 
 .. option:: time <command> [<args>...]
 
-  ÔËÐÐ\ ``<command>``\ ²¢ÏÔÊ¾ÔËÐÐÊ±¼ä¡££¨°üÀ¨CMakeÇ°¶ËµÄ¿ªÏú£©¡£
+  è¿è¡Œ\ ``<command>``\ å¹¶æ˜¾ç¤ºè¿è¡Œæ—¶é—´ã€‚ï¼ˆåŒ…æ‹¬CMakeå‰ç«¯çš„å¼€é”€ï¼‰ã€‚
 
   .. versionadded:: 3.5
-    ¸ÃÃüÁîÏÖÔÚÕýÈ·µØ½«´øÓÐ¿Õ¸ñ»òÌØÊâ×Ö·ûµÄ²ÎÊý´«µÝ¸ø×Ó½ø³Ì¡£Õâ¿ÉÄÜ»áÆÆ»µÄÇÐ©Ê¹ÓÃ×Ô¼ºµÄ¶îÍâÒý\
-    ÓÃ»ò×ªÒåÀ´½â¾ö´íÎóµÄ½Å±¾¡£
+    è¯¥å‘½ä»¤çŽ°åœ¨æ­£ç¡®åœ°å°†å¸¦æœ‰ç©ºæ ¼æˆ–ç‰¹æ®Šå­—ç¬¦çš„å‚æ•°ä¼ é€’ç»™å­è¿›ç¨‹ã€‚è¿™å¯èƒ½ä¼šç ´åé‚£äº›ä½¿ç”¨è‡ªå·±çš„é¢å¤–å¼•\
+    ç”¨æˆ–è½¬ä¹‰æ¥è§£å†³é”™è¯¯çš„è„šæœ¬ã€‚
 
 .. option:: touch <file>...
 
-  Èç¹ûÎÄ¼þ²»´æÔÚ£¬Ôò´´½¨\ ``<file>``¡£Èç¹û\ ``<file>``\ ´æÔÚ£¬ËüÕýÔÚ¸Ä±ä\ ``<file>``\
-  µÄ·ÃÎÊºÍÐÞ¸ÄÊ±¼ä¡£
+  å¦‚æžœæ–‡ä»¶ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»º\ ``<file>``ã€‚å¦‚æžœ\ ``<file>``\ å­˜åœ¨ï¼Œå®ƒæ­£åœ¨æ”¹å˜\ ``<file>``\
+  çš„è®¿é—®å’Œä¿®æ”¹æ—¶é—´ã€‚
 
 .. option:: touch_nocreate <file>...
 
-  ´¥ÃþÒ»¸öÎÄ¼þ£¬Èç¹ûËü´æÔÚ£¬µ«²»´´½¨Ëü¡£Èç¹ûÒ»¸öÎÄ¼þ²»´æÔÚ£¬Ëü½«±»¾²Ä¬ºöÂÔ¡£
+  è§¦æ‘¸ä¸€ä¸ªæ–‡ä»¶ï¼Œå¦‚æžœå®ƒå­˜åœ¨ï¼Œä½†ä¸åˆ›å»ºå®ƒã€‚å¦‚æžœä¸€ä¸ªæ–‡ä»¶ä¸å­˜åœ¨ï¼Œå®ƒå°†è¢«é™é»˜å¿½ç•¥ã€‚
 
 .. option:: true
 
   .. versionadded:: 3.16
 
-  Ê²Ã´¶¼²»×ö£¬ÍË³ö´úÂëÎª0¡£
+  ä»€ä¹ˆéƒ½ä¸åšï¼Œé€€å‡ºä»£ç ä¸º0ã€‚
 
-WindowsÌØ¶¨ÃüÁîÐÐ¹¤³Ì
+Windowsç‰¹å®šå‘½ä»¤è¡Œå·¥ç¨‹
 -----------------------------------
 
-ÒÔÏÂ\ ``cmake -E``\ ÃüÁî½öÔÚWindows²Ù×÷ÏµÍ³ÏÂ¿ÉÓÃ£º
+ä»¥ä¸‹\ ``cmake -E``\ å‘½ä»¤ä»…åœ¨Windowsæ“ä½œç³»ç»Ÿä¸‹å¯ç”¨ï¼š
 
 .. option:: delete_regv <key>
 
-  É¾³ýWindows×¢²á±íÖµ¡£
+  åˆ é™¤Windowsæ³¨å†Œè¡¨å€¼ã€‚
 
 .. option:: env_vs8_wince <sdkname>
 
   .. versionadded:: 3.2
 
-  ÏÔÊ¾Ò»¸öÅú´¦ÀíÎÄ¼þ£¬¸ÃÎÄ¼þÎªVS2005ÖÐ°²×°µÄWindows CE SDKÉèÖÃ»·¾³¡£
+  æ˜¾ç¤ºä¸€ä¸ªæ‰¹å¤„ç†æ–‡ä»¶ï¼Œè¯¥æ–‡ä»¶ä¸ºVS2005ä¸­å®‰è£…çš„Windows CE SDKè®¾ç½®çŽ¯å¢ƒã€‚
 
 .. option:: env_vs9_wince <sdkname>
 
   .. versionadded:: 3.2
 
-  ÏÔÊ¾Ò»¸öÅú´¦ÀíÎÄ¼þ£¬¸ÃÎÄ¼þÎª°²×°ÔÚVS2008ÖÐÌá¹©µÄWindows CE SDKÉèÖÃ»·¾³¡£
+  æ˜¾ç¤ºä¸€ä¸ªæ‰¹å¤„ç†æ–‡ä»¶ï¼Œè¯¥æ–‡ä»¶ä¸ºå®‰è£…åœ¨VS2008ä¸­æä¾›çš„Windows CE SDKè®¾ç½®çŽ¯å¢ƒã€‚
 
 .. option:: write_regv <key> <value>
 
-  Ð´ÈëWindows×¢²á±íÖµ¡£
+  å†™å…¥Windowsæ³¨å†Œè¡¨å€¼ã€‚
 
 .. _`Find-Package Tool Mode`:
 
-ÔËÐÐ°ü²éÕÒ¹¤¾ß
+è¿è¡ŒåŒ…æŸ¥æ‰¾å·¥å…·
 =========================
 
 .. program:: cmake--find-package
 
-CMakeÎª»ùÓÚMakefileµÄÏîÄ¿Ìá¹©ÁËÒ»¸öÀàËÆpkg-configµÄÖúÊÖ£º
+CMakeä¸ºåŸºäºŽMakefileçš„é¡¹ç›®æä¾›äº†ä¸€ä¸ªç±»ä¼¼pkg-configçš„åŠ©æ‰‹ï¼š
 
 .. code-block:: shell
 
   cmake --find-package [<options>]
 
-ËüÊ¹ÓÃ\ :command:`find_package()`\ ËÑË÷°ü£¬²¢½«½á¹û±ê¼Ç´òÓ¡µ½stdout¡£Õâ¿ÉÒÔ´úÌæ\
-pkg-configÔÚÆÕÍ¨µÄ»ùÓÚMakefileµÄÏîÄ¿»ò»ùÓÚautoconfµÄÏîÄ¿ÖÐÕÒµ½ÒÑ°²×°µÄ¿â£¨Í¨¹ý\
-``share/aclocal/cmake.m4``£©¡£
+å®ƒä½¿ç”¨\ :command:`find_package()`\ æœç´¢åŒ…ï¼Œå¹¶å°†ç»“æžœæ ‡è®°æ‰“å°åˆ°stdoutã€‚è¿™å¯ä»¥ä»£æ›¿\
+pkg-configåœ¨æ™®é€šçš„åŸºäºŽMakefileçš„é¡¹ç›®æˆ–åŸºäºŽautoconfçš„é¡¹ç›®ä¸­æ‰¾åˆ°å·²å®‰è£…çš„åº“ï¼ˆé€šè¿‡\
+``share/aclocal/cmake.m4``ï¼‰ã€‚
 
 .. note::
-  ÓÉÓÚÒ»Ð©¼¼ÊõÏÞÖÆ£¬ÕâÖÖÄ£Ê½Ã»ÓÐµÃµ½ºÜºÃµÄÖ§³Ö¡£±£ÁôËüÊÇÎªÁË¼æÈÝ£¬µ«²»Ó¦¸ÃÔÚÐÂÏîÄ¿ÖÐÊ¹ÓÃ¡£
+  ç”±äºŽä¸€äº›æŠ€æœ¯é™åˆ¶ï¼Œè¿™ç§æ¨¡å¼æ²¡æœ‰å¾—åˆ°å¾ˆå¥½çš„æ”¯æŒã€‚ä¿ç•™å®ƒæ˜¯ä¸ºäº†å…¼å®¹ï¼Œä½†ä¸åº”è¯¥åœ¨æ–°é¡¹ç›®ä¸­ä½¿ç”¨ã€‚
 
 .. _`Workflow Mode`:
 
-ÔËÐÐ¹¤×÷Á÷Ô¤Éè
+è¿è¡Œå·¥ä½œæµé¢„è®¾
 =====================
 
 .. versionadded:: 3.25
 
 .. program:: cmake
 
-:manual:`CMakeÔ¤Éè <cmake-presets(7)>`\ Ìá¹©ÁËÒ»ÖÖ°´Ë³ÐòÖ´ÐÐ¶à¸ö¹¹½¨²½ÖèµÄ·½·¨£º
+:manual:`CMakeé¢„è®¾ <cmake-presets(7)>`\ æä¾›äº†ä¸€ç§æŒ‰é¡ºåºæ‰§è¡Œå¤šä¸ªæž„å»ºæ­¥éª¤çš„æ–¹æ³•ï¼š
 
 .. code-block:: shell
 
   cmake --workflow [<options>]
 
-Ñ¡ÏîÓÐ£º
+é€‰é¡¹æœ‰ï¼š
 
 .. option:: --workflow
 
-  Ê¹ÓÃÒÔÏÂÑ¡ÏîÖ®Ò»Ñ¡Ôñ\ :ref:`Workflow Preset` ¡£
+  ä½¿ç”¨ä»¥ä¸‹é€‰é¡¹ä¹‹ä¸€é€‰æ‹©\ :ref:`Workflow Preset` ã€‚
 
 .. program:: cmake--workflow
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  Ê¹ÓÃ¹¤×÷Á÷Ô¤ÉèÀ´Ö¸¶¨¹¤×÷Á÷¡£ÏîÄ¿¶þ½øÖÆÄ¿Â¼ÊÇ´Ó³õÊ¼ÅäÖÃÔ¤ÉèÍÆ¶Ï³öÀ´µÄ¡£µ±Ç°¹¤×÷Ä¿Â¼±ØÐë°üº¬\
-  CMakeÔ¤ÖÃÎÄ¼þ¡£ÓÐ¹Ø¸ü¶àÏêÏ¸ÐÅÏ¢£¬Çë²ÎÔÄ\ :manual:`preset <cmake-presets(7)>` ¡£
+  ä½¿ç”¨å·¥ä½œæµé¢„è®¾æ¥æŒ‡å®šå·¥ä½œæµã€‚é¡¹ç›®äºŒè¿›åˆ¶ç›®å½•æ˜¯ä»Žåˆå§‹é…ç½®é¢„è®¾æŽ¨æ–­å‡ºæ¥çš„ã€‚å½“å‰å·¥ä½œç›®å½•å¿…é¡»åŒ…å«\
+  CMakeé¢„ç½®æ–‡ä»¶ã€‚æœ‰å…³æ›´å¤šè¯¦ç»†ä¿¡æ¯ï¼Œè¯·å‚é˜…\ :manual:`preset <cmake-presets(7)>` ã€‚
 
 .. option:: --list-presets
 
-  ÁÐ³ö¿ÉÓÃµÄ¹¤×÷Á÷Ô¤Éè¡£µ±Ç°¹¤×÷Ä¿Â¼±ØÐë°üº¬CMakeÔ¤ÉèÎÄ¼þ¡£
+  åˆ—å‡ºå¯ç”¨çš„å·¥ä½œæµé¢„è®¾ã€‚å½“å‰å·¥ä½œç›®å½•å¿…é¡»åŒ…å«CMakeé¢„è®¾æ–‡ä»¶ã€‚
 
 .. option:: --fresh
 
-  Ö´ÐÐ¹¹½¨Ê÷µÄÐÂÅäÖÃ¡£which has the same effect
-  as :option:`cmake --fresh`¡£
+  æ‰§è¡Œæž„å»ºæ ‘çš„æ–°é…ç½®ã€‚which has the same effect
+  as :option:`cmake --fresh`ã€‚
 
-²é¿´°ïÖú
+æŸ¥çœ‹å¸®åŠ©
 =========
 
 .. program:: cmake
 
-Òª´ÓCMakeÎÄµµÖÐ´òÓ¡Ñ¡¶¨µÄÒ³Ãæ£¬Ê¹ÓÃ
+è¦ä»ŽCMakeæ–‡æ¡£ä¸­æ‰“å°é€‰å®šçš„é¡µé¢ï¼Œä½¿ç”¨
 
 .. code-block:: shell
 
   cmake --help[-<topic>]
 
-ÓÐÏÂÁÐÆäÖÐÒ»ÖÖÑ¡Ôñ£º
+æœ‰ä¸‹åˆ—å…¶ä¸­ä¸€ç§é€‰æ‹©ï¼š
 
 .. include:: OPTIONS_HELP.txt
 
-ÈôÒª²é¿´ÏîÄ¿¿ÉÓÃµÄÔ¤Éè£¬ÇëÊ¹ÓÃ
+è‹¥è¦æŸ¥çœ‹é¡¹ç›®å¯ç”¨çš„é¢„è®¾ï¼Œè¯·ä½¿ç”¨
 
 .. code-block:: shell
 
@@ -1253,16 +1253,16 @@ pkg-configÔÚÆÕÍ¨µÄ»ùÓÚMakefileµÄÏîÄ¿»ò»ùÓÚautoconfµÄÏîÄ¿ÖÐÕÒµ½ÒÑ°²×°µÄ¿â£¨Í¨¹ý\
 
 .. _`CMake Exit Code`:
 
-·µ»ØÖµ£¨ÍË³öÂë£©
+è¿”å›žå€¼ï¼ˆé€€å‡ºç ï¼‰
 ========================
 
-ÔÚ³£¹æÖÕÖ¹Ê±£¬:program:`cmake`\ ¿ÉÖ´ÐÐÎÄ¼þ·µ»ØÍË³öÂë\ ``0``¡£
+åœ¨å¸¸è§„ç»ˆæ­¢æ—¶ï¼Œ:program:`cmake`\ å¯æ‰§è¡Œæ–‡ä»¶è¿”å›žé€€å‡ºç \ ``0``ã€‚
 
-Èç¹ûÖÕÖ¹ÊÇÓÉÃüÁîÏûÏ¢\ :command:`message(FATAL_ERROR)`\ »òÆäËû´íÎóÌõ¼þÒýÆðµÄ£¬Ôò·µ»ØÒ»¸ö\
-·ÇÁãÍË³ö´úÂë¡£
+å¦‚æžœç»ˆæ­¢æ˜¯ç”±å‘½ä»¤æ¶ˆæ¯\ :command:`message(FATAL_ERROR)`\ æˆ–å…¶ä»–é”™è¯¯æ¡ä»¶å¼•èµ·çš„ï¼Œåˆ™è¿”å›žä¸€ä¸ª\
+éžé›¶é€€å‡ºä»£ç ã€‚
 
 
-ÁíÐÐ²ÎÔÄ
+å¦è¡Œå‚é˜…
 ========
 
 .. include:: LINKS.txt
