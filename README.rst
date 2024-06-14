@@ -1,35 +1,35 @@
 CMake
 *****
 
-¼ò½é
+ç®€ä»‹
 ============
 
-`ÖĞÎÄ·­ÒëËµÃ÷`_
+`ä¸­æ–‡ç¿»è¯‘è¯´æ˜`_
 
-.. _`ÖĞÎÄ·­ÒëËµÃ÷`: zh_CN.rst
+.. _`ä¸­æ–‡ç¿»è¯‘è¯´æ˜`: zh_CN.rst
 
-CMakeÊÇÒ»¸ö¿çÆ½Ì¨¡¢¿ªÔ´µÄ¹¹½¨ÏµÍ³Éú³ÉÆ÷¡£ÍêÕûµÄÎÄµµÇë·ÃÎÊ\ `CMakeÖ÷Ò³`_\ ºÍ\
-`CMakeÎÄµµÒ³`_¡£Ò²¿ÉÒÔÈ¥\ `CMakeÉçÇøÎ¬»ù`_\ ²Î¿¼ÓĞÓÃµÄ×ÊÁÏ¡£
+CMakeæ˜¯ä¸€ä¸ªè·¨å¹³å°ã€å¼€æºçš„æ„å»ºç³»ç»Ÿç”Ÿæˆå™¨ã€‚å®Œæ•´çš„æ–‡æ¡£è¯·è®¿é—®\ `CMakeä¸»é¡µ`_\ å’Œ\
+`CMakeæ–‡æ¡£é¡µ`_ã€‚ä¹Ÿå¯ä»¥å»\ `CMakeç¤¾åŒºç»´åŸº`_\ å‚è€ƒæœ‰ç”¨çš„èµ„æ–™ã€‚
 
-.. _`CMakeÖ÷Ò³`: https://cmake.org
-.. _`CMakeÎÄµµÒ³`: https://cmake.org/documentation
-.. _`CMakeÉçÇøÎ¬»ù`: https://gitlab.kitware.com/cmake/community/-/wikis/home
+.. _`CMakeä¸»é¡µ`: https://cmake.org
+.. _`CMakeæ–‡æ¡£é¡µ`: https://cmake.org/documentation
+.. _`CMakeç¤¾åŒºç»´åŸº`: https://gitlab.kitware.com/cmake/community/-/wikis/home
 
-`Kitware`_\ Î¬»¤ºÍÖ§³ÖCMake£¬Óë´ËÍ¬Ê±Ò²ºÍÓë¸»ÓĞ³ÉĞ§µÄ¹±Ï×ÕßÉçÇøºÏ×÷¡£
+`Kitware`_\ ç»´æŠ¤å’Œæ”¯æŒCMakeï¼Œä¸æ­¤åŒæ—¶ä¹Ÿå’Œä¸å¯Œæœ‰æˆæ•ˆçš„è´¡çŒ®è€…ç¤¾åŒºåˆä½œã€‚
 
 .. _`Kitware`: https://www.kitware.com/cmake
 
-Ğí¿É
+è®¸å¯
 =======
 
-CMakeÊÇÔÚOSIÈÏÖ¤BSD 3Ìõ¿îĞí¿ÉÏÂ·¢²¼µÄ¡£ÏêÇé¼û\ `Copyright.txt`_¡£
+CMakeæ˜¯åœ¨OSIè®¤è¯BSD 3æ¡æ¬¾è®¸å¯ä¸‹å‘å¸ƒçš„ã€‚è¯¦æƒ…è§\ `Copyright.txt`_ã€‚
 
 .. _`Copyright.txt`: Copyright.txt
 
-¹¹½¨CMake
+æ„å»ºCMake
 ==============
 
-Ö§³ÖµÄÆ½Ì¨
+æ”¯æŒçš„å¹³å°
 -------------------
 
 * Microsoft Windows
@@ -40,45 +40,43 @@ CMakeÊÇÔÚOSIÈÏÖ¤BSD 3Ìõ¿îĞí¿ÉÏÂ·¢²¼µÄ¡£ÏêÇé¼û\ `Copyright.txt`_¡£
 * Solaris
 * AIX
 
-ÆäËûÀàUNIX²Ù×÷ÏµÍ³Ó¦¸ÃÒ²ÄÜ¿ªÏä¼´ÓÃ£¬Èç¹û²»ÊÇµÄ»°£¬½«CMakeÒÆÖ²µ½Õâ¸öÆ½Ì¨Ó¦¸Ã²»ÊÇÊ²Ã´´óÎÊÌâ¡£\
-ÇëÔÚ\ `CMakeÂÛÌ³`_\ ·¢ÌûÑ¯ÎÊÆäËûÈËÊÇ·ñÓĞ¸ÃÆ½Ì¨µÄÏà¹Ø¾­Ñé¡£
+å…¶ä»–ç±»UNIXæ“ä½œç³»ç»Ÿåº”è¯¥ä¹Ÿèƒ½å¼€ç®±å³ç”¨ï¼Œå¦‚æœä¸æ˜¯çš„è¯ï¼Œå°†CMakeç§»æ¤åˆ°è¿™ä¸ªå¹³å°åº”è¯¥ä¸æ˜¯ä»€ä¹ˆå¤§é—®é¢˜ã€‚\
+è¯·åœ¨\ `CMakeè®ºå›`_\ å‘å¸–è¯¢é—®å…¶ä»–äººæ˜¯å¦æœ‰è¯¥å¹³å°çš„ç›¸å…³ç»éªŒã€‚
 
-.. _`CMakeÂÛÌ³`: https://discourse.cmake.org
+.. _`CMakeè®ºå›`: https://discourse.cmake.org
 
-Building CMake with CMake
+ç”¨CMakeæ„å»ºCMake
 -------------------------
 
-You can build CMake as any other project with a CMake-based build system:
-run the installed CMake on the sources of this CMake with your preferred
-options and generators. Then build it and install it.
-For instructions how to do this, see documentation on `Running CMake`_.
+ä½ å¯ä»¥ä½¿ç”¨åŸºäºCMakeçš„æ„å»ºç³»ç»Ÿå°†CMakeæ„å»ºä¸ºä»»ä½•å…¶ä»–é¡¹ç›®ï¼šä½¿ç”¨ä½ é¦–é€‰çš„é€‰é¡¹å’Œç”Ÿæˆå™¨åœ¨æ­¤CMake\
+æºä¸Šè¿è¡Œå·²å®‰è£…çš„CMakeã€‚ç„¶åæ„å»ºå¹¶å®‰è£…å®ƒã€‚æœ‰å…³å¦‚ä½•æ‰§è¡Œæ­¤æ“ä½œçš„è¯´æ˜ï¼Œè¯·å‚é˜…æœ‰å…³\
+`Running CMake`_\ çš„æ–‡æ¡£ã€‚
 
 .. _`Running CMake`: https://cmake.org/runningcmake
 
-To build the documentation, install `Sphinx`_ and configure CMake with
-``-DSPHINX_HTML=ON`` and/or ``-DSPHINX_MAN=ON`` to enable the "html" or
-"man" builder.  Add ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build`` if the
-tool is not found automatically.
+è¦æ„å»ºæ–‡æ¡£ï¼Œè¯·å®‰è£…\ `Sphinx`_\ å¹¶ä½¿ç”¨\ ``-DSPHINX_HTML=ON``\ å’Œ/æˆ–\ ``-DSPHINX_MAN=ON``\
+é…ç½®CMakeä»¥å¯ç”¨"html"æˆ–"man"æ„å»ºå™¨ã€‚å¦‚æœæ²¡æœ‰è‡ªåŠ¨æ‰¾åˆ°sphinx-buildå·¥å…·ï¼Œè¯·æ·»åŠ \
+``-DSPHINX_EXECUTABLE=/path/to/sphinx-build``ã€‚
 
 .. _`Sphinx`: https://sphinx-doc.org
 
-´ÓÍ·¿ªÊ¼½¨ÔìCMake
+ä»å¤´å¼€å§‹å»ºé€ CMake
 ---------------------------
 
 UNIX/Mac OSX/MinGW/MSYS/Cygwin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ÄãĞèÒªÓĞÒ»¸öÖ§³ÖC++11µÄC++±àÒëÆ÷ºÍÒ»¸ö\ ``make``¡£ÔËĞĞÄãÔÚCMakeµÄÔ´Ä¿Â¼ÖĞÕÒµ½µÄ\
-``bootstrap``\ ½Å±¾¡£¿ÉÒÔÊ¹ÓÃ\ ``--help``\ Ñ¡ÏîÀ´²é¿´Ö§³ÖµÄÑ¡Ïî¡£¿ÉÒÔÊ¹ÓÃ\
-``--prefix=<install_prefix>``\ Ñ¡ÏîÖ¸¶¨CMakeµÄ×Ô¶¨Òå°²×°Ä¿Â¼¡£Ö´ĞĞÎŞÎóºó£¬ÔËĞĞ\
-``make``\ ºÍ\ ``make install``¡£
+ä½ éœ€è¦æœ‰ä¸€ä¸ªæ”¯æŒC++11çš„C++ç¼–è¯‘å™¨å’Œä¸€ä¸ª\ ``make``ã€‚è¿è¡Œä½ åœ¨CMakeçš„æºç›®å½•ä¸­æ‰¾åˆ°çš„\
+``bootstrap``\ è„šæœ¬ã€‚å¯ä»¥ä½¿ç”¨\ ``--help``\ é€‰é¡¹æ¥æŸ¥çœ‹æ”¯æŒçš„é€‰é¡¹ã€‚å¯ä»¥ä½¿ç”¨\
+``--prefix=<install_prefix>``\ é€‰é¡¹æŒ‡å®šCMakeçš„è‡ªå®šä¹‰å®‰è£…ç›®å½•ã€‚æ‰§è¡Œæ— è¯¯åï¼Œè¿è¡Œ\
+``make``\ å’Œ\ ``make install``ã€‚
 
-ÀıÈç£¬Èç¹ûÄãÖ»ÊÇÏë´ÓÔ´´úÂë¹¹½¨ºÍ°²×°CMake£¬Äã¿ÉÒÔÖ±½ÓÔÚÔ´´úÂëÊ÷ÖĞ¹¹½¨£º\ ::
+ä¾‹å¦‚ï¼Œå¦‚æœä½ åªæ˜¯æƒ³ä»æºä»£ç æ„å»ºå’Œå®‰è£…CMakeï¼Œä½ å¯ä»¥ç›´æ¥åœ¨æºä»£ç æ ‘ä¸­æ„å»ºï¼š\ ::
 
   $ ./bootstrap && make && sudo make install
 
-»òÕß£¬Èç¹ûÄã¼Æ»®¿ª·¢CMake»òÒÔÆäËû·½Ê½ÔËĞĞ²âÊÔÌ×¼ş£¬´´½¨
-Ò»¸öµ¥¶ÀµÄ¹¹½¨Ê÷£º\ ::
+æˆ–è€…ï¼Œå¦‚æœä½ è®¡åˆ’å¼€å‘CMakeæˆ–ä»¥å…¶ä»–æ–¹å¼è¿è¡Œæµ‹è¯•å¥—ä»¶ï¼Œåˆ›å»º
+ä¸€ä¸ªå•ç‹¬çš„æ„å»ºæ ‘ï¼š\ ::
 
   $ mkdir build && cd build
   $ ../bootstrap && make
@@ -86,46 +84,38 @@ UNIX/Mac OSX/MinGW/MSYS/Cygwin
 Windows
 ^^^^^^^
 
-ÔÚWindowsÏÂÓĞÁ½ÖÖ¹¹½¨CMakeµÄ·½·¨£º
-   
-1. Ê¹ÓÃVS 2015»ò¸ü¸ß°æ±¾VSµÄMSVC±àÒëÆ÷¡£
-   ÄãĞèÒªÏÂÔØ²¢°²×°CMakeµÄ¶ş½øÖÆ°æ±¾¡£¿ÉÒÔ´Ó\ `CMakeÏÂÔØÒ³`_\ »ñµÃÕâĞ©°æ±¾¡£È»ºó¼ÌĞø\
-   `Ê¹ÓÃCMake¹¹½¨CMake`_\ µÄ²½Öè¡£
-   
-2. Ê¹ÓÃMSYS2ÏÂµÄMinGW¡£
-   ÏÂÔØ²¢°²×°\ `MSYS2`_¡£È»ºó°²×°ËùĞèµÄ¹¹½¨¹¤¾ß£º\ ::
+åœ¨Windowsä¸‹æœ‰ä¸¤ç§æ„å»ºCMakeçš„æ–¹æ³•ï¼š
 
-1. Compile with MSVC from VS 2015 or later.
-   You need to download and install a binary release of CMake.  You can get
-   these releases from the `CMake Download Page`_.  Then proceed with the
-   instructions above for `Building CMake with CMake`_.
+1. ä½¿ç”¨VS 2015æˆ–æ›´é«˜ç‰ˆæœ¬VSçš„MSVCç¼–è¯‘å™¨ã€‚
+   ä½ éœ€è¦ä¸‹è½½å¹¶å®‰è£…CMakeçš„äºŒè¿›åˆ¶ç‰ˆæœ¬ã€‚å¯ä»¥ä»\ `CMakeä¸‹è½½é¡µ`_\ è·å¾—è¿™äº›ç‰ˆæœ¬ã€‚ç„¶åç»§ç»­\
+   `ä½¿ç”¨CMakeæ„å»ºCMake`_\ çš„æ­¥éª¤ã€‚
 
-2. Bootstrap with MinGW under MSYS2.
-   Download and install `MSYS2`_.  Then install the required build tools::
+2. ä½¿ç”¨MSYS2ä¸‹çš„MinGWã€‚
+   ä¸‹è½½å¹¶å®‰è£…\ `MSYS2`_ã€‚ç„¶åå®‰è£…æ‰€éœ€çš„æ„å»ºå·¥å…·ï¼š\ ::
 
      $ pacman -S --needed git base-devel mingw-w64-x86_64-gcc
-     
-   È»ºóºÍÉÏÃæÒ»ÑùÒıµ¼¡£
 
-.. _`CMakeÏÂÔØÒ³`: https://cmake.org/download
+   ç„¶åå’Œä¸Šé¢ä¸€æ ·å¼•å¯¼ã€‚
+
+.. _`CMakeä¸‹è½½é¡µ`: https://cmake.org/download
 .. _`MSYS2`: https://www.msys2.org/
 
-±¨¸æ´íÎó
+æŠ¥å‘Šé”™è¯¯
 ==============
 
-Èç¹ûÄã·¢ÏÖÁË´íÎó£º
-   
-1. Èç¹ûÄúÓĞ²¹¶¡£¬ÇëÔÄ¶Á\ `CONTRIBUTING.rst`_\ ÎÄµµ¡£
+å¦‚æœä½ å‘ç°äº†é”™è¯¯ï¼š
 
-2. ·ñÔò£¬Çë·¢²¼µ½\ `CMakeÂÛÌ³`_£¬Ñ¯ÎÊÔ¤ÆÚºÍ¹Û²ìµ½µÄĞĞÎª£¬ÒÔÈ·¶¨ËüÊÇ·ñÊÇÒ»¸öÕæÕıµÄ´íÎó¡£
+1. å¦‚æœæ‚¨æœ‰è¡¥ä¸ï¼Œè¯·é˜…è¯»\ `CONTRIBUTING.rst`_\ æ–‡æ¡£ã€‚
 
-3. ×îºó£¬Èç¹ûÉÏÊö²½Öè²»ÄÜ½â¾öÎÊÌâ£¬ÔÚ\ `CMakeÎÊÌâ¸ú×Ù`_\ ÖĞĞÂ¿ªÒ»¸öÌõÄ¿¡£
+2. å¦åˆ™ï¼Œè¯·å‘å¸ƒåˆ°\ `CMakeè®ºå›`_ï¼Œè¯¢é—®é¢„æœŸå’Œè§‚å¯Ÿåˆ°çš„è¡Œä¸ºï¼Œä»¥ç¡®å®šå®ƒæ˜¯å¦æ˜¯ä¸€ä¸ªçœŸæ­£çš„é”™è¯¯ã€‚
 
-.. _`CMakeÎÊÌâ¸ú×Ù`: https://gitlab.kitware.com/cmake/cmake/-/issues
+3. æœ€åï¼Œå¦‚æœä¸Šè¿°æ­¥éª¤ä¸èƒ½è§£å†³é—®é¢˜ï¼Œåœ¨\ `CMakeé—®é¢˜è·Ÿè¸ª`_\ ä¸­æ–°å¼€ä¸€ä¸ªæ¡ç›®ã€‚
 
-¹±Ï×
+.. _`CMakeé—®é¢˜è·Ÿè¸ª`: https://gitlab.kitware.com/cmake/cmake/-/issues
+
+è´¡çŒ®
 ============
 
-Çë²ÎÔÄ\ `CONTRIBUTING.rst`_£¬ÁË½âÈçºÎ¹±Ï×¡£
+è¯·å‚é˜…\ `CONTRIBUTING.rst`_ï¼Œäº†è§£å¦‚ä½•è´¡çŒ®ã€‚
 
 .. _`CONTRIBUTING.rst`: CONTRIBUTING.rst
