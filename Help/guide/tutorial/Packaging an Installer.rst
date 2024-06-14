@@ -15,9 +15,8 @@ CPack创建不同平台的安装包。应该在顶层\ ``CMakeLists.txt``\ 开�
 这就是我们对它的所有修改。我们在开始包含\ :module:`InstallRequiredSystemLibraries`。\
 这个模块会包含当前项目在当前平台下所需的运行时库。接着我们用一些CPack变量以设置当前项目的许\
 可证及版本号。版本号在教程之前的步骤中已经设置，``license.txt``\ 已经添加在源码目录的最高层。\
-The :variable:`CPACK_GENERATOR` and
-:variable:`CPACK_SOURCE_GENERATOR` variables select the generators used for
-binary and source installations, respectively.
+:variable:`CPACK_GENERATOR`\ 和\ :variable:`CPACK_SOURCE_GENERATOR`\ 变量分别选择\
+用于二进制和源代码安装的生成器。
 
 最终我们引用\ :module:`CPack module <CPack>`\ 以使用这些变量或者其他属性以我于安装包。
 

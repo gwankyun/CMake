@@ -1,7 +1,7 @@
 CPack WIX Generator
 -------------------
 
-Use the `WiX Toolset`_ to produce a Windows Installer ``.msi`` database.
+使用\ `WiX Toolset`_\ 生成Windows Installer ``.msi``\ 数据库。
 
 .. _`WiX Toolset`: https://wixtoolset.org/
 

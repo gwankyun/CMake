@@ -41,12 +41,10 @@
 
   which is prefixed in the source directory.
 
-CMake在生成导出信息时告诉你这一点
-它将导出一个本质上与当前机器绑定的路径
-在其他机器上无效。解决这个问题的方法是更新\ ``MathFunctions``\ 的\
-:command:`target_include_directories`，以理解在构建目录和安装/包中使用它时需要不同的\
-``INTERFACE``\ 位置。这意味着将\ ``MathFunctions``\ 的\
-:command:`target_include_directories` \调用转换成如下所示：
+CMake在生成导出信息时告诉你这一点：它将导出一个本质上与当前机器绑定的路径，即在其他机器上无效。\
+解决这个问题的方法是更新\ ``MathFunctions``\ 的\ :command:`target_include_directories`，\
+以理解在构建目录和安装/包中使用它时需要不同的\ ``INTERFACE``\ 位置。这意味着将\
+``MathFunctions``\ 的\ :command:`target_include_directories`\ 调用转换成如下所示：
 
 .. literalinclude:: Step12/MathFunctions/CMakeLists.txt
   :caption: MathFunctions/CMakeLists.txt
