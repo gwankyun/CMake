@@ -3,7 +3,7 @@ CMAKE_HIP_KNOWN_FEATURES
 
 .. versionadded:: 3.30
 
-List of HIP features known to this version of CMake.
+这个版本的CMake已知的HIP功能列表。
 
 The features listed in this global property may be known to be available to the
 HIP compiler.  If the feature is available with the HIP compiler, it will

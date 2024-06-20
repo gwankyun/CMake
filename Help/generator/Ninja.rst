@@ -1,7 +1,7 @@
 Ninja
 -----
 
-Generates a ``build.ninja`` file into the build tree.
+在构建树中生成一个\ ``build.ninja``\ 文件。
 
 Builtin Targets
 ^^^^^^^^^^^^^^^

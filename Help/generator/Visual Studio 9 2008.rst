@@ -1,9 +1,7 @@
 Visual Studio 9 2008
 --------------------
 
-Removed.  This once generated Visual Studio 9 2008 project files, but
-the generator has been removed since CMake 3.30.  It is still possible
-to build with VS 9 2008 tools using the :generator:`Visual Studio 14 2015`
-generator (or above, and with VS 10 2010 also installed) with
-:variable:`CMAKE_GENERATOR_TOOLSET` set to ``v90``, or by using
-the :generator:`NMake Makefiles` generator.
+移除。这个生成器曾经生成过Visual Studio 9 2008的项目文件，但是从CMake 3.30开始，这个\
+生成器就被删除了。使用\ :generator:`Visual Studio 14 2015`\ 生成器（或更高版本，并且还\
+安装了VS 10 2010）将\ :variable:`CMAKE_GENERATOR_TOOLSET`\ 设置为\ ``v90``，或者使用\
+:generator:`NMake Makefiles`\ 生成器，仍然可以使用VS 9 2008工具进行构建。

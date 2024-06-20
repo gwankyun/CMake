@@ -3,7 +3,7 @@ INSTALL_PARALLEL
 
 .. versionadded:: 3.30
 
-Enables parallel installation option for the Ninja generator.
+启用Ninja生成器的并行安装选项。
 
 When this property is ``ON``, ``install/local`` targets have the
 console pool disabled, allowing them to run concurrently.
