@@ -3,8 +3,7 @@ CXX_MODULE_STD
 
 .. versionadded:: 3.30
 
-``CXX_MODULE_STD`` is a boolean specifying whether the target may use
-``import std;`` its C++ sources or not.
+``CXX_MODULE_STD``\ 是一个布尔值，指定了目标是否可以使用\ ``import std;``，是否为C++源代码。
 
 .. note ::
 

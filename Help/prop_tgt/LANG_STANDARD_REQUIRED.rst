@@ -10,12 +10,10 @@
 * :prop_tgt:`OBJC_STANDARD_REQUIRED`
 * :prop_tgt:`OBJCXX_STANDARD_REQUIRED`
 
-These properties specify whether the value of :prop_tgt:`<LANG>_STANDARD` is a
-requirement.  When false or unset, the :prop_tgt:`<LANG>_STANDARD` target
-property is treated as optional and may "decay" to a previous standard if the
-requested standard is not available.  When ``<LANG>_STANDARD_REQUIRED`` is set
-to true, :prop_tgt:`<LANG>_STANDARD` becomes a hard requirement and a fatal
-error will be issued if that requirement cannot be met.
+这些属性指定\ :prop_tgt:`<LANG>_STANDARD`\ 的值是否是必需的。当false或未设置时，\
+:prop_tgt:`<LANG>_STANDARD`\ 目标属性被视为可选属性，如果请求的标准不可用，则可能“衰减”\
+到前一个标准。当\ ``<LANG>_STANDARD_REQUIRED``\ 设置为true时，\
+:prop_tgt:`<LANG>_STANDARD`\ 将成为硬性要求，如果不能满足该要求，将发出致命错误。
 
 Note that the actual language standard used may be higher than that specified
 by :prop_tgt:`<LANG>_STANDARD`, regardless of the value of

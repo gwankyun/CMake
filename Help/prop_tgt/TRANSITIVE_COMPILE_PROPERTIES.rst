@@ -3,10 +3,8 @@ TRANSITIVE_COMPILE_PROPERTIES
 
 .. versionadded:: 3.30
 
-Properties that the :genex:`TARGET_PROPERTY` generator expression, on the
-target and its dependents, evaluates as the union of values collected from
-the transitive closure of link dependencies, excluding entries guarded by
-:genex:`LINK_ONLY`.
+目标及其依赖项上的\ :genex:`TARGET_PROPERTY`\ 生成器表达式计算为从链接依赖项的传递闭包中\
+收集的值的联合，不包括由\ :genex:`LINK_ONLY`\ 保护的条目。
 
 The value is a :ref:`semicolon-separated list <CMake Language Lists>`
 of :ref:`custom transitive property <Custom Transitive Properties>` names.

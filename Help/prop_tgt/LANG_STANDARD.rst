@@ -10,10 +10,8 @@
 * :prop_tgt:`OBJC_STANDARD`
 * :prop_tgt:`OBJCXX_STANDARD`
 
-These properties specify language standard versions which are requested. When a
-newer standard is specified than is supported by the compiler, then it will
-fallback to the latest supported standard. This "decay" behavior may be
-controlled with the :prop_tgt:`<LANG>_STANDARD_REQUIRED` target property.
+这些属性指定所请求的语言标准版本。当指定的标准比编译器支持的新时，它将回退到最新支持的标准。\
+这种“衰减”行为可以通过\ :prop_tgt:`<LANG>_STANDARD_REQUIRED`\ 目标属性来控制。
 
 Note that the actual language standard used may be higher than that specified
 by ``<LANG>_STANDARD``, regardless of the value of
