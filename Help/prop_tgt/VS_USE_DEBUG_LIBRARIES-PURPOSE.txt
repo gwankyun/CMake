@@ -1,6 +1,5 @@
-Indicate to :ref:`Visual Studio Generators` what configurations are considered
-debug configurations.  This controls the ``UseDebugLibraries`` setting in
-each configuration of a ``.vcxproj`` file.
+向\ :ref:`Visual Studio Generators`\ 指出哪些配置被认为是调试配置。这控制了\ ``.vcxproj``\
+文件的每个配置中的\ ``UseDebugLibraries``\ 设置。
 
 The "Use Debug Libraries" setting in Visual Studio projects, despite its
 specific-sounding name, is a general-purpose indicator of what configurations
