@@ -3,10 +3,9 @@ CTEST_TLS_VERSION
 
 .. versionadded:: 3.30
 
-Specify the CTest ``TLSVersion`` setting in a :manual:`ctest(1)`
-:ref:`Dashboard Client` script or in project ``CMakeLists.txt`` code
-before including the :module:`CTest` module.  The value is a minimum
-TLS version allowed when submitting to a dashboard via ``https://`` URLs.
+在包含\ :module:`CTest`\ 模块之前，在\ :manual:`ctest(1)` :ref:`Dashboard Client`\
+脚本或\ ``CMakeLists.txt``\ 项目代码中指定CTest ``TLSVersion``\ 设置。该值是通过\
+``https://`` URL提交到仪表板时允许的最小TLS版本。
 
 The value may be one of:
 

@@ -3,12 +3,9 @@ CMAKE_<LANG>_STANDARD_LATEST
 
 .. versionadded:: 3.30
 
-This variable represents the minimum between the latest version of the
-standard for language ``<LANG>`` which is supported by the current compiler
-and the latest version which is supported by CMake. Its value will be set to
-one of the supported values of the corresponding :prop_tgt:`<LANG>_STANDARD`
-target property; see the documentation of that property for a list of
-supported languages.
+该变量表示当前编译器支持的语言\ ``<LANG>``\ 标准的最新版本与CMake支持的最新版本之间的最小值。\
+它的值将设置为对应的\ :prop_tgt:`<LANG>_STANDARD`\ 目标属性支持的值之一；有关支持的语言\
+列表，请参阅该属性的文档。
 
 See the :manual:`cmake-compile-features(7)` manual for information on compile
 features and a list of supported compilers.
