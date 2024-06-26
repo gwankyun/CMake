@@ -9,35 +9,23 @@ C++ 20引入了“模块”的概念。该设计要求构建系统之间对编�
 语句。CMake的实现要求编译器在构建过程中扫描源文件中的模块依赖，整理扫描结果来推断排序约束，\
 并告诉构建工具如何动态更新构建图。
 
-Compilation Strategy
+编译策略
 ====================
 
-With C++ modules, compiling a set of C++ sources is no longer embarrassingly
-parallel. That is, any given source may first require the compilation of
-another source file first in order to provide a "CMI" (compiled module
-interface) or "BMI" (binary module interface) that C++ compilers use to
-satisfy ``import`` statements in other sources. With headers, sources could
-share their declarations so that any consumers could compile independently.
-With modules, declarations are now generated into these BMI files by the
-compiler during compilation based on the contents of the source file and its
-``export`` statements.
+有了C++模块，编译一组C++源代码不再是令人尴尬的并行。也就是说，为了提供“CMI”（已编译模块接口）\
+或“BMI”（二进制模块接口），任何给定的源文件都可能首先要求编译另一个源文件，C++编译器使用这些\
+文件来满足其他源文件中的\ ``import``\ 语句。有了头文件，源代码可以共享它们的声明，以便任何\
+使用者都可以独立编译。对于模块，编译器现在根据源文件的内容及其\ ``export``\ 语句生成声明到\
+这些BMI文件中。
 
-The order necessary for compilation requires build-time resolution of the
-ordering because the order is controlled by the contents of the sources. This
-means that the ordering needs extracted from the source during the build to
-avoid regenerating the build graph via a configure and generate phase for
-every source change to get a correct build.
+编译所需的顺序需要在构建时解析该顺序，因为该顺序由源代码的内容控制。这意味着在构建过程中从源\
+代码中提取排序需求，以避免通过配置和生成阶段为每个源更改重新生成构建图，以获得正确的构建。
 
-The general strategy is to use a "scanner" to extract the ordering dependency
-information and update the build graph with new edges between existing edges
-by taking the per-source scan results (represented by `P1689R5`_ files) and
-"collating" the dependencies within a target and to modules produced by
-targets visible to the target. The primary task is to generate "module map"
-files to pass to each compile rule with the paths to the BMIs needed to
-satisfy ``import`` statements. The collator also has tasks to use the
-build-time information to fill out information including ``install`` rules for
-the module interface units, their BMIs, and properties for any exported
-targets with C++ modules.
+一般的策略是使用“扫描器”来提取顺序依赖信息，并通过获取每个源的扫描结果（由\ `P1689R5`_\
+文件表示）和“整理”目标内的依赖关系以及目标可见的目标产生的模块，在现有的边之间使用新边更新\
+构建图。主要任务是生成传递给每个编译规则的“模块映射”文件，其中包含满足\ ``import``\ 语句所\
+需的BMI的路径。collator还具有使用构建时信息来填写信息的任务，包括模块接口单元的\ ``install``\
+规则、它们的BMI，以及C++模块的任何导出目标属性。
 
 .. _`P1689R5`: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1689r5.html
 
@@ -77,24 +65,21 @@ CMake原生支持模块依赖扫描的编译器包括：
 * LLVM/Clang 16.0及更新版本
 * GCC 14（对于开发分支，2023-09-20之后）及更新版本
 
-``import std`` Support
+``import std``\ 支持
 ======================
 
-Support for ``import std`` is limited to the following toolchain and standard
-library combinations:
+对\ ``import std``\ 的支持仅限于以下工具链和标准库组合：
 
-* Clang 18.1.2 and newer with ``-stdlib=libc++``
-* MSVC toolset 14.36 and newer (provided with Visual Studio 17.6 Preview 2 and
-  newer)
+* Clang 18.1.2及更新版本的\ ``-stdlib=libc++``
+* MSVC工具集14.36及更新版本（与Visual Studio 17.6预览版2及更新版本一起提供）
 
-The :variable:`CMAKE_CXX_COMPILER_IMPORT_STD` variable may be used to detect
-support for a standard level with the active C++ toolchain.
+:variable:`CMAKE_CXX_COMPILER_IMPORT_STD`\ 变量可用于检测当前C++工具链对标准级别的支持\
+情况。
 
 .. note ::
 
-   This support is provided only when experimental support for
-   ``import std;`` has been enabled by the
-   ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD`` gate.
+   只有在实验性支持\ ``import std;``\ 并已开启\ ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD``\
+   开关时才提供这种支持。
 
 生成器支持
 =================

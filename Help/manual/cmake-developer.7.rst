@@ -107,7 +107,7 @@ CMake提供了一些工具来访问\ ``Windows``\ 平台上的注册表。
 
 更现代的方法是通过提供\ :ref:`导入目标 <Imported targets>`，尽可能地像\
 :ref:`配置文件包 <Config File Packages>`\ 文件那样运行。这样可以将\
-:ref:`usage requirements <Target Usage Requirements>`\ 给消费者。
+:ref:`使用需求 <Target Usage Requirements>`\ 传给消费者。
 
 在任何一种情况下（甚至在同时提供变量和导入目标时），查找模块都应该提供与具有相同名称的旧版\
 本的向后兼容性。

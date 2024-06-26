@@ -86,9 +86,8 @@
 
  .. versionadded:: 3.21
 
- 指定交叉编译工具链文件，相当于设置\ :variable:`CMAKE_TOOLCHAIN_FILE`\ 变量。 Relative paths are interpreted as
- relative to the build directory, and if not found, relative to the source
- directory.
+ 指定交叉编译工具链文件，相当于设置\ :variable:`CMAKE_TOOLCHAIN_FILE`\ 变量。相对路径\
+ 被解释为相对于构建目录，如果没有找到，则相对于源目录。
 
 .. option:: --install-prefix <directory>
 
