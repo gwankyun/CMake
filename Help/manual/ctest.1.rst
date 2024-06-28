@@ -1257,7 +1257,7 @@ CTest提交步骤
 ``CurlOptions``
   .. deprecated:: 3.30
 
-    Use ``TLSVerify`` instead.
+    使用\ ``TLSVerify``\ 代替。
 
   Specify a semicolon-separated list of options to control the
   Curl library that CTest uses internally to connect to the
@@ -1346,20 +1346,18 @@ CTest提交步骤
 ``TLSVersion``
   .. versionadded:: 3.30
 
-  Specify a minimum TLS version allowed when submitting to a dashboard
-  via ``https://`` URLs.
+  通过\ ``https://`` URL提交到仪表板时，指定允许的最低TLS版本。
 
-  * `CTest Script`_ variable: :variable:`CTEST_TLS_VERSION`
-  * :module:`CTest` module variable: ``CTEST_TLS_VERSION``
+  * `CTest Script`_\ 变量：\ :variable:`CTEST_TLS_VERSION`
+  * :module:`CTest`\ 模块变量：\ ``CTEST_TLS_VERSION``
 
 ``TLSVerify``
   .. versionadded:: 3.30
 
-  Specify a boolean value indicating whether to verify the server
-  certificate when submitting to a dashboard via ``https://`` URLs.
+  指定一个布尔值，表示通过\ ``https://`` URL提交给仪表板时是否验证服务器证书。
 
-  * `CTest Script`_ variable: :variable:`CTEST_TLS_VERIFY`
-  * :module:`CTest` module variable: ``CTEST_TLS_VERIFY``
+  * `CTest Script`_\ 变量：\ :variable:`CTEST_TLS_VERIFY`
+  * :module:`CTest`\ 模块变量：\ ``CTEST_TLS_VERIFY``
 
 ``TriggerSite``
   遗留的选项。不用。

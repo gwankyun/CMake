@@ -129,10 +129,9 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 ``CMakePresets.json``\ 中直接或间接包含的文件应保证由项目提供。\ ``CMakeUserPresets.json``\
 可以包含来自任何地方的文件。
 
-从版本\ ``7``\ 开始，\ ``include``\ 字段支持\ `宏扩展`_，但只支持\ ``$penv{}``\ 宏扩展。 Starting from version
-``9``, other macro expansions are also available, except for ``$env{}`` and
-preset-specific macros, i.e., those derived from the fields inside a preset's
-definition like ``presetName``.
+从版本\ ``7``\ 开始，\ ``include``\ 字段支持\ `宏扩展`_，但只支持\ ``$penv{}``\ 宏扩展。\
+从版本\ ``9``\ 开始，也可以使用其他宏扩展，除了\ ``$env{}``\ 和预设特定的宏，即那些从预设\
+定义中的字段派生的宏，如\ ``presetName``。
 
 配置预设
 ^^^^^^^^^^^^^^^^
@@ -955,13 +954,13 @@ definition like ``presetName``.
 ``${presetName}``
   在预设的\ ``name``\ 字段中指定的名称。
 
-  This is a preset-specific macro.
+  这是一个预设特定的宏。
 
 ``${generator}``
   在预设的\ ``generator``\ 字段中指定的生成器。对于构建和测试预设，这将计算为\
   ``configurePreset``\ 指定的生成器。
 
-  This is a preset-specific macro.
+  这是一个预设特定的宏。
 
 ``${hostSystemName}``
   主机操作系统的名称。与\ :variable:`CMAKE_HOST_SYSTEM_NAME`\ 相同。这在指定版本\

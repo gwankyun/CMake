@@ -1254,42 +1254,38 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     可选成员，如果路径指定了CMake安装中的文件，则以布尔值\ ``true``\ 出现。
 
 ``globsDependent``
-  Optional member that is present when the project calls :command:`file(GLOB)`
-  or :command:`file(GLOB_RECURSE)` with the ``CONFIGURE_DEPENDS`` option.
-  The value is a JSON array of JSON objects, each specifying a globbing
-  expression and the list of paths it matched.  If the globbing expression
-  no longer matches the same list of paths, CMake considers the build system
-  to be out of date.
+  当项目使用\ ``CONFIGURE_DEPENDS``\ 选项调用\ :command:`file(GLOB)`\ 或\
+  :command:`file(GLOB_RECURSE)`\ 时出现的可选成员。这个值是一个JSON对象的JSON数组，\
+  每个对象指定一个通配表达式和它匹配的路径列表。如果通配表达式不再匹配相同的路径列表，CMake\
+  将认为构建系统过时。
 
-  This field was added in ``cmakeFiles`` version 1.1.
+  该字段是在\ ``cmakeFiles`` 1.1版本中添加的。
 
-  The members of each entry are:
+  每个条目的成员如下：
 
   ``expression``
-    A string specifying the globbing expression.
+    指定通配表达式的字符串。
 
   ``recurse``
-    Optional member that is present with boolean value ``true``
-    if the entry corresponds to a :command:`file(GLOB_RECURSE)` call.
-    Otherwise the entry corresponds to a :command:`file(GLOB)` call.
+    可选成员，如果条目对应于\ :command:`file(GLOB_RECURSE)`\ 调用，布尔值为\ ``true``。\
+    否则，该项对应于\ :command:`file(GLOB)`\ 调用。
 
   ``listDirectories``
-    Optional member that is present with boolean value ``true`` if
-    :command:`file(GLOB)` was called without ``LIST_DIRECTORIES false`` or
-    :command:`file(GLOB_RECURSE)` was called with ``LIST_DIRECTORIES true``.
+    该成员为可选成员，如果调用\ :command:`file(GLOB)`\ 时不带\
+    ``LIST_DIRECTORIES false``，或者调用\ :command:`file(GLOB_RECURSE)`\ 时带\
+    ``LIST_DIRECTORIES true``，布尔值为\ ``true``
 
   ``followSymlinks``
-    Optional member that is present with boolean value ``true`` if
-    :command:`file(GLOB)` was called with the ``FOLLOW_SYMLINKS`` option.
+    可选成员，如果使用\ ``FOLLOW_SYMLINKS``\ 选项调用\ :command:`file(GLOB)`，\
+    则布尔值为\ ``true``。
 
   ``relative``
-    Optional member that is present if :command:`file(GLOB)` was called
-    with the ``RELATIVE <path>`` option.  The value is a string containing
-    the ``<path>`` given.
+    如果使用\ ``RELATIVE <path>``\ 选项调用\ :command:`file(GLOB)`，则存在的可选成员。\
+    该值是一个字符串，包含给定的\ ``<path>``。
 
   ``paths``
-    A JSON array of strings specifying the paths matched by the call
-    to :command:`file(GLOB)` or :command:`file(GLOB_RECURSE)`.
+    一个JSON字符串数组，指定调用\ :command:`file(GLOB)`\ 或\
+    :command:`file(GLOB_RECURSE)`\ 匹配的路径。
 
 “toolchains”对象类型
 ------------------------

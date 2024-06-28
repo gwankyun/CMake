@@ -181,10 +181,9 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  .. versionchanged:: 3.30
 
-   For dependencies previously populated by :module:`FetchContent` with the
-   ``NEW`` setting for policy :policy:`CMP0168`, their stamp and script files
-   from any previous run will be removed. The download, update, and patch
-   steps will therefore be forced to re-execute.
+   对于之前由\ :module:`FetchContent`\ 使用策略\ :policy:`CMP0168`\ 的\ ``NEW``\
+   设置填充的依赖项，将删除它们以前运行的戳码和脚本文件。因此，下载、更新和补丁步骤将被迫重新\
+   执行。
 
 .. option:: -L[A][H]
 
@@ -436,33 +435,26 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --preset <preset>, --preset=<preset>
 
- Reads a :manual:`preset <cmake-presets(7)>` from ``CMakePresets.json`` and
- ``CMakeUserPresets.json`` files, which must be located in the same directory
- as the top level ``CMakeLists.txt`` file. The preset may specify the
- generator, the build directory, a list of variables, and other arguments to
- pass to CMake. At least one of ``CMakePresets.json`` or
- ``CMakeUserPresets.json`` must be present.
- The :manual:`CMake GUI <cmake-gui(1)>` also recognizes and supports
- ``CMakePresets.json`` and ``CMakeUserPresets.json`` files. For full details
- on these files, see :manual:`cmake-presets(7)`.
+ 从\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 文件中读取\
+ :manual:`preset <cmake-presets(7)>`，这些文件必须与顶层的\ ``CMakeLists.txt``\
+ 文件位于同一个目录中。preset可以指定生成器、构建目录、变量列表和传递给CMake的其他参数。\
+ 至少存在一个\ ``CMakePresets.json``\ 或\ ``CMakeUserPresets.json``。\
+ :manual:`CMake GUI <cmake-gui(1)>`\ 识别并支持\ ``CMakePresets.json``\ 和\
+ ``CMakeUserPresets.json``\ 文件。有关这些文件的详细信息，请参阅\ :manual:`cmake-presets(7)`。
 
- The presets are read before all other command line options, although the
- :option:`-S <cmake -S>` option can be used to specify the source directory
- containing the ``CMakePresets.json`` and ``CMakeUserPresets.json`` files.
- If :option:`-S <cmake -S>` is not given, the current directory is assumed to
- be the top level source directory and must contain the presets files. The
- options specified by the chosen preset (variables, generator, etc.) can all
- be overridden by manually specifying them on the command line. For example,
- if the preset sets a variable called ``MYVAR`` to ``1``, but the user sets
- it to ``2`` with a ``-D`` argument, the value ``2`` is preferred.
+ 虽然\ :option:`-S <cmake -S>`\ 选项可以用来指定包含\ ``CMakePresets.json``\ 和\
+ ``CMakeUserPresets.json``\ 文件的源目录，但预设值会在所有其他命令行选项之前读取。如果\
+ 没有给出 :option:`-S <cmake -S>`，则假定当前目录是顶层源目录，并且必须包含预设的文件。\
+ 由所选预设（变量、生成器等）指定的选项都可以通过在命令行中手动指定来覆盖。例如，如果预设设置\
+ 了一个名为\ ``MYVAR``\ 的变量为\ ``1``，但用户通过\ ``-D``\ 参数将其设置为\ ``2``，\
+ 那么值\ ``2``\ 是首选值。
 
 .. option:: --list-presets[=<type>]
 
  列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值是\ ``configure``、\
  ``build``、\ ``test``、\ ``package``\ 或\ ``all``。如果省略\ ``<type>``，则假定为\
- ``configure``。The current working
- directory must contain CMake preset files unless the :option:`-S <cmake -S>`
- option is used to specify a different top level source directory.
+ ``configure``。除非使用\ :option:`-S <cmake -S>`\ 选项指定另一个顶层源目录，否则当前\
+ 工作目录必须包含CMake预设文件。
 
 .. option:: --debugger
 
@@ -1226,8 +1218,7 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 
 .. option:: --fresh
 
-  执行构建树的新配置。which has the same effect
-  as :option:`cmake --fresh`。
+  对构建树执行一个新配置，其效果与\ :option:`cmake --fresh`\ 相同。
 
 查看帮助
 =========

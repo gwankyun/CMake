@@ -3,11 +3,9 @@ CMAKE_LINK_LIBRARY_<FEATURE>_ATTRIBUTES
 
 .. versionadded:: 3.30
 
-This variable defines the behavior of the specified link library
-``<FEATURE>``. It specifies how the ``<FEATURE>`` interacts with other
-features, when the ``<FEATURE>`` should be applied, and aspects of how the
-``<FEATURE>`` should be handled when CMake assembles the final linker
-command line (e.g. de-duplication).
+这个变量定义了指定的链接库\ ``<FEATURE>``\ 的行为。它指定了\ ``<FEATURE>``\ 如何与其他\
+功能交互，何时应该应用\ ``<FEATURE>``，以及当CMake组装最终链接器命令行时如何处理\
+``<FEATURE>``\ 的方面（例如，去重）。
 
 The syntax of the linker flags for the ``<FEATURE>`` are controlled by the
 :variable:`CMAKE_<LANG>_LINK_LIBRARY_USING_<FEATURE>` and
