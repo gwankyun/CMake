@@ -934,12 +934,12 @@ Shell路径
 
   如果ISPC编译器的版本与\ ``version``\ 匹配，则为\ ``1``，否则为\ ``0``。
 
-Compiler Language, ID, and Frontend-Variant
+编译语言、ID和前端变体
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See also the :variable:`CMAKE_<LANG>_COMPILER_ID` and
-:variable:`CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT` variables, which are closely
-related to most of the expressions in this sub-section.
+另请参阅\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 和\
+:variable:`CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT`\ 变量，它们与本节中的大多数表达式\
+密切相关。
 
 .. genex:: $<C_COMPILER_ID>
 
@@ -1046,113 +1046,105 @@ related to most of the expressions in this sub-section.
 
   .. versionadded:: 3.30
 
-  CMake's compiler frontend variant of the C compiler used.
+  CMake编译器使用的C编译器前端变体。
 
 .. genex:: $<C_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the C compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果C编译器的CMake编译器前端版本匹配\
+  ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CXX_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler frontend variant of the C++ compiler used.
+  CMake编译器使用的C++编译器前端变体。
 
 .. genex:: $<CXX_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the C++ compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake的C++编译器前端版本匹配\
+  ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<CUDA_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler id of the CUDA compiler used.
+  CMake使用的CUDA编译器的编译器id。
 
 .. genex:: $<CUDA_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the CUDA compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CUDA编译器的CMake编译器前端变体匹配\
+  ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJC_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler frontend variant of the Objective-C compiler used.
+  CMake使用的Objective-C编译器前端变种。
 
 .. genex:: $<OBJC_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the Objective-C compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake编译器前端版本的Objective-C\
+  编译器匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<OBJCXX_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler frontend variant of the Objective-C++ compiler used.
+  CMake使用的Objective-C++编译器前端变种。
 
 .. genex:: $<OBJCXX_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the Objective-C++ compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake编译器前端版本的Objective-C++\
+  编译器匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<Fortran_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler id of the Fortran compiler used.
+  CMake使用的Fortran编译器id。
 
 .. genex:: $<Fortran_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the Fortran compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake编译器前端版本的Fortran编译器\
+  匹配\ ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<HIP_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler id of the HIP compiler used.
+  CMake使用的HIP编译器id。
 
 .. genex:: $<HIP_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the HIP compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake编译器前端版本的HIP编译器匹配\
+  ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<ISPC_COMPILER_FRONTEND_VARIANT>
 
   .. versionadded:: 3.30
 
-  CMake's compiler id of the ISPC compiler used.
+  CMake使用的ISPC编译器id。
 
 .. genex:: $<ISPC_COMPILER_FRONTEND_VARIANT:compiler_ids>
 
   .. versionadded:: 3.30
 
-  where ``compiler_ids`` is a comma-separated list.
-  ``1`` if CMake's compiler frontend variant of the ISPC compiler matches any one
-  of the entries in ``compiler_ids``, otherwise ``0``.
+  其中\ ``compiler_ids``\ 是一个逗号分隔的列表。如果CMake编译器前端版本的ISPC编译器匹配\
+  ``compiler_ids``\ 中的任何一个条目，则为\ ``1``，否则为\ ``0``。
 
 .. genex:: $<COMPILE_LANGUAGE>
 
@@ -1261,11 +1253,10 @@ related to most of the expressions in this sub-section.
 
   .. versionadded:: 3.27
 
-  Content of ``...``, when collecting
-  :ref:`transitive compile properties <Transitive Compile Properties>`，否则为空字符串。这用\
-  于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\ :prop_tgt:`LINK_LIBRARIES`\ 目标\
-  属性，通常通过\ :command:`target_link_libraries`\命令填充。提供编译使用需求，而不需要\
-  任何链接需求。
+  当收集\ :ref:`可传递的编译属性 <Transitive Compile Properties>`\ 时，\ ``...``\
+  的内容，否则为空字符串。这用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 和\
+  :prop_tgt:`LINK_LIBRARIES`\ 目标属性，通常通过\ :command:`target_link_libraries`\
+  命令填充。提供编译使用需求，而不需要任何链接需求。
 
   用例包括仅头文件的使用，其中所有的使用都已知没有链接需求（例如，全\ ``inline``\ 或C++模板库）。
 
