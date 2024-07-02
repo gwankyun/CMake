@@ -1583,11 +1583,10 @@ Shell路径
 
   .. versionadded:: 3.1
 
-  Content of ``...``, except while collecting usage requirements from
-  :ref:`transitive compile properties <Transitive Compile Properties>`，在这种情况下，\
-  它是空字符串。这用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 目标属性中，通常通过\
-  :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖关系，而不需要其他使用\
-  要求。例如包含目录或编译选项。
+  ``...``\ 的内容，除了从\ :ref:`传递编译属性 <Transitive Compile Properties>`\ 收集\
+  使用需求时，在这种情况下，它是空字符串。这用于\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+  目标属性中，通常通过\ :command:`target_link_libraries`\ 命令填充，以指定私有链接依赖\
+  关系，而不需要其他使用要求。例如包含目录或编译选项。
 
   .. versionadded:: 3.24
     ``LINK_ONLY``\ 也可以在\ :prop_tgt:`LINK_LIBRARIES`\ 目标属性中使用。参见策略\
@@ -1614,10 +1613,10 @@ Shell路径
 依赖于目标的表达式
 ----------------------------
 
-Target Meta-Data
+目标元数据
 ^^^^^^^^^^^^^^^^
 
-These expressions look up information about a target.
+这些表达式用于查找目标的信息。
 
 .. genex:: $<TARGET_EXISTS:tgt>
 
@@ -1635,136 +1634,117 @@ These expressions look up information about a target.
 
 .. genex:: $<TARGET_NAME:tgt>
 
-  The target name ``tgt`` as written.  This marks ``tgt`` as being the name
-  of a target inside a larger expression, which is required if exporting
-  targets to multiple dependent export sets.  The ``tgt`` text must be a
-  literal name of a target; it may not contain generator expressions.
-  The target does not have to exist.
+  目标名称为\ ``tgt``。这将\ ``tgt``\ 标记为较大表达式中目标的名称，如果将目标导出到多个\
+  依赖导出集，则需要此名称。\ ``tgt``\ 文本必须是目标的字面名称；它不能包含生成器表达式。\
+  目标不一定存在。
 
 .. genex:: $<TARGET_POLICY:policy>
 
-  ``1`` if the ``policy`` was ``NEW`` when the 'head' target was created,
-  else ``0``.  If the ``policy`` was not set, the warning message for the policy
-  will be emitted. This generator expression only works for a subset of
-  policies.
+  如果'head'目标创建时\ ``policy``\ 是\ ``NEW``\ 的，为\ ``1``，否则为\ ``0``。如果未\
+  设置\ ``policy``，则会发出策略的警告消息。这个生成器表达式只适用于策略的一个子集。
 
 
-Target Properties
+目标属性
 ^^^^^^^^^^^^^^^^^
 
-These expressions look up the values of
-:ref:`target properties <Target Properties>`.
+这些表达式查找\ :ref:`目标属性 <Target Properties>`\ 的值。
 
 .. genex:: $<TARGET_PROPERTY:tgt,prop>
 
-  目标\ ``tgt``\ 上的属性\ ``prop``\ 的值，or empty if
-  the property is not set。
+  目标\ ``tgt``\ 上的属性\ ``prop``\ 的值，如果未设置该属性，则为空。
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
   .. versionchanged:: 3.26
-    当在评估\ :ref:`Target Usage Requirements`\ 期间遇到时，通常是在\ ``INTERFACE_*``\
-    目标属性中，在指定需求的目标的目录中查找\ ``tgt``\ 名称，而不是在计算表达式的消费目\
-    标的目录中。
+    当在评估\ :ref:`目标使用要求 <Target Usage Requirements>`\ 期间遇到时，通常是在\
+    ``INTERFACE_*``\ 目标属性中，在指定需求的目标的目录中查找\ ``tgt``\ 名称，而不是在\
+    计算表达式的消费目标的目录中。
 
 .. genex:: $<TARGET_PROPERTY:prop>
   :target: TARGET_PROPERTY:prop
 
-  属性\ ``prop``\ 在表达式被求值的目标上的值，or empty if the property is not set。注意，对于\ :ref:`Target Usage Requirements`\
-  中的生成器表达式，这是消费目标，而不是指定需求的目标。
+  属性\ ``prop``\ 在表达式被求值的目标上的值，如果未设置该属性，则为空。注意，对于\
+  :ref:`目标使用要求 <Target Usage Requirements>`\ 中的生成器表达式，这是消费目标，而\
+  不是指定需求的目标。
 
-The expressions have special evaluation rules for some properties:
+这些表达式对某些属性有特殊的求值规则：
 
-:ref:`Target Build Specification Properties <Target Build Specification>`
-  These evaluate as a :ref:`semicolon-separated list <CMake Language Lists>`
-  representing the union of the value on the target itself with the values
-  of the corresponding :ref:`Target Usage Requirements` on targets named by
-  the target's :prop_tgt:`LINK_LIBRARIES`:
+:ref:`目标构建规范属性 <Target Build Specification>`
+  这些值是一个\ :ref:`分号分隔列表 <CMake Language Lists>`，表示目标本身上的值与目标的\
+  相应\ :ref:`目标使用要求 <Target Usage Requirements>`\ 的值的并集，这些值由目标的\
+  :prop_tgt:`LINK_LIBRARIES`\ 命名：
 
-  * For :ref:`Target Compile Properties`, evaluation of corresponding usage
-    requirements is transitive over the closure of the linked targets'
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES` *excluding* entries guarded by the
-    :genex:`LINK_ONLY` generator expression.
+  * 对于\ :ref:`目标编译属性 <Transitive Compile Properties>`，对相应使用需求的评估\
+    传递到链接目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包，\ *不包括*\ 由\
+    :genex:`LINK_ONLY`\ 生成器表达式保护的条目。
 
-  * For :ref:`Target Link Properties`, evaluation of corresponding usage
-    requirements is transitive over the closure of the linked targets'
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES` *including* entries guarded by the
-    :genex:`LINK_ONLY` generator expression.  See policy :policy:`CMP0166`.
+  * 对于\ :ref:`目标链接属性 <Transitive Link Properties>`,，对相应使用需求的评估传递\
+    到链接目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包，其中\ *包括*\ 由\
+    :genex:`LINK_ONLY`\ 生成器表达式保护的条目。参见策略\ :policy:`CMP0166`。
 
-  Evaluation of :prop_tgt:`LINK_LIBRARIES` itself is not transitive.
+  :prop_tgt:`LINK_LIBRARIES`\ 本身的求值不是传递的。
 
-:ref:`Target Usage Requirement Properties <Target Usage Requirements>`
-  These evaluate as a :ref:`semicolon-separated list <CMake Language Lists>`
-  representing the union of the value on the target itself with the values
-  of the same properties on targets named by the target's
-  :prop_tgt:`INTERFACE_LINK_LIBRARIES`:
+:ref:`目标使用要求属性 <Target Usage Requirements>`
+  这些值是一个\ :ref:`分号分隔列表 <CMake Language Lists>`，表示目标本身上的值与目标的\
+  相应目标使用要求的值的并集，这些值由目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+  命名：
 
-  * For :ref:`Transitive Compile Properties`, evaluation is transitive over
-    the closure of the target's :prop_tgt:`INTERFACE_LINK_LIBRARIES`
-    *excluding* entries guarded by the :genex:`LINK_ONLY` generator expression.
+  * 对于\ :ref:`目标编译属性 <Transitive Compile Properties>`，对相应使用需求的评估\
+    传递到链接目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包，\ *不包括*\ 由\
+    :genex:`LINK_ONLY`\ 生成器表达式保护的条目。
 
-  * For :ref:`Transitive Link Properties`, evaluation is transitive over
-    the closure of the target's :prop_tgt:`INTERFACE_LINK_LIBRARIES`
-    *including* entries guarded by the :genex:`LINK_ONLY` generator expression.
-    See policy :policy:`CMP0166`.
+  * 对于\ :ref:`目标链接属性 <Transitive Link Properties>`,，对相应使用需求的评估传递\
+    到链接目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包，其中\ *包括*\ 由\
+    :genex:`LINK_ONLY`\ 生成器表达式保护的条目。参见策略\ :policy:`CMP0166`。
 
-  Evaluation of :prop_tgt:`INTERFACE_LINK_LIBRARIES` itself is not transitive.
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 本身的求值不是传递的。
 
-:ref:`Custom Transitive Properties`
+:ref:`自定义传递属性 <Custom Transitive Properties>`
   .. versionadded:: 3.30
 
-  These are processed during evaluation as follows:
+  这些在评估过程中处理如下：
 
-  * Evaluation of :genex:`$<TARGET_PROPERTY:tgt,PROP>` for some property
-    ``PROP``, named without an ``INTERFACE_`` prefix,
-    checks the :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`
-    and :prop_tgt:`TRANSITIVE_LINK_PROPERTIES` properties on target ``tgt``,
-    on targets named by its :prop_tgt:`LINK_LIBRARIES`, and on the
-    transitive closure of targets named by the linked targets'
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES`.
+  * :genex:`$<TARGET_PROPERTY:tgt,PROP>`\ 的求值对于某些属性\ ``PROP``，命名时没有\
+    ``INTERFACE_``\ 前缀，检查目标\ ``tgt``\ 上的\
+    :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`\ 和\
+    :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 属性，目标由其\
+    :prop_tgt:`LINK_LIBRARIES`\ 命名，目标的传递闭包由链接目标的\
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 命名。
 
-    If ``PROP`` is listed by one of those properties, then it evaluates as
-    a :ref:`semicolon-separated list <CMake Language Lists>` representing
-    the union of the value on the target itself with the values of the
-    corresponding ``INTERFACE_PROP`` on targets named by the target's
-    :prop_tgt:`LINK_LIBRARIES`:
+    如果\ ``PROP``\ 包含在其中一个属性中，那么它的计算结果为一个\
+    :ref:`分号分隔列表 <CMake Language Lists>`，表示目标本身的值与目标的\
+    :prop_tgt:`LINK_LIBRARIES`\ 命名的相应\ ``INTERFACE_PROP``\ 的值的联合：
 
-    * If ``PROP`` is named by :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`,
-      evaluation of the corresponding ``INTERFACE_PROP`` is transitive over
-      the closure of the linked targets' :prop_tgt:`INTERFACE_LINK_LIBRARIES`,
-      excluding entries guarded by the :genex:`LINK_ONLY` generator expression.
+    * 如果\ ``PROP``\ 是由\ :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`\ 命名的，\
+      那么对应的\ ``INTERFACE_PROP``\ 的计算将通过链接目标的\
+      :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包传递，不包括由\ :genex:`LINK_ONLY`\
+      生成器表达式保护的项。
 
-    * If ``PROP`` is named by :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`,
-      evaluation of the corresponding ``INTERFACE_PROP`` is transitive over
-      the closure of the linked targets' :prop_tgt:`INTERFACE_LINK_LIBRARIES`,
-      including entries guarded by the :genex:`LINK_ONLY` generator expression.
+    * 如果\ ``PROP``\ 是由\ :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 命名的，那么相应的\
+      ``INTERFACE_PROP``\ 的计算将通过链接目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+      的闭包传递，包括由\ :genex:`LINK_ONLY`\ 生成器表达式保护的项。
 
-  * Evaluation of :genex:`$<TARGET_PROPERTY:tgt,INTERFACE_PROP>` for some
-    property ``INTERFACE_PROP``, named with an ``INTERFACE_`` prefix,
-    checks the :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`
-    and :prop_tgt:`TRANSITIVE_LINK_PROPERTIES` properties on target ``tgt``,
-    and on the transitive closure of targets named by its
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES`.
+  * 以\ ``INTERFACE_``\ 前缀命名的属性\ ``INTERFACE_PROP``\ 的\
+    :genex:`$<TARGET_PROPERTY:tgt,INTERFACE_PROP>`\ 的计算，检查\ ``tgt``\ 目标上的\
+    :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`\ 和\
+    :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 属性，以及以其\
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 命名的目标的传递闭包。
 
-    If the corresponding ``PROP`` is listed by one of those properties,
-    then ``INTERFACE_PROP`` evaluates as a
-    :ref:`semicolon-separated list <CMake Language Lists>` representing the
-    union of the value on the target itself with the value of the same
-    property on targets named by the target's
-    :prop_tgt:`INTERFACE_LINK_LIBRARIES`:
+    如果对应的\ ``PROP``\ 被这些属性之一列出，那么\ ``INTERFACE_PROP``\ 的计算结果为一个\
+    :ref:`分号分隔列表 <CMake Language Lists>`，表示目标本身上的值与目标的\
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 命名的相同属性的值的联合：
 
-    * If ``PROP`` is named by :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`,
-      evaluation of the corresponding ``INTERFACE_PROP`` is transitive over
-      the closure of the target's :prop_tgt:`INTERFACE_LINK_LIBRARIES`,
-      excluding entries guarded by the :genex:`LINK_ONLY` generator expression.
+    * 如果\ ``PROP``\ 是由\ :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`\ 命名的，\
+      那么对应的 ``INTERFACE_PROP`` 的求值会传递到目标的\
+      :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包中，不包括由\ :genex:`LINK_ONLY`\
+      生成器表达式保护的项。
 
-    * If ``PROP`` is named by :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`,
-      evaluation of the corresponding ``INTERFACE_PROP`` is transitive over
-      the closure of the target's :prop_tgt:`INTERFACE_LINK_LIBRARIES`,
-      including entries guarded by the :genex:`LINK_ONLY` generator expression.
+    * 如果\ ``PROP``\ 是由\ :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 命名的，那么相应的\
+      ``INTERFACE_PROP``\ 的计算是通过目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+      的闭包传递的，包括由\ :genex:`LINK_ONLY`\ 生成器表达式保护的项。
 
-  If a ``PROP`` is named by both :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`
-  and :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`, the latter takes precedence.
+  如果\ ``PROP``\ 同时由\ :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`\ 和\
+  :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 命名，则后者优先。
 
 :ref:`Compatible Interface Properties`
   These evaluate as a single value combined from the target itself,
