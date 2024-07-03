@@ -1747,30 +1747,24 @@ Shell路径
   :prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 命名，则后者优先。
 
 :ref:`Compatible Interface Properties`
-  These evaluate as a single value combined from the target itself,
-  from targets named by the target's :prop_tgt:`LINK_LIBRARIES`, and
-  from the transitive closure of the linked targets'
-  :prop_tgt:`INTERFACE_LINK_LIBRARIES`.  Values of a compatible
-  interface property from multiple targets combine based on the type
-  of compatibility required by the ``COMPATIBLE_INTERFACE_*`` property
-  defining it.
+  这些值由目标本身及目标的\ :prop_tgt:`LINK_LIBRARIES`\ 命名的目标以及被链接目标的\
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的传递闭包组合而成。来自多个目标的compatible\
+  接口属性的值根据定义它的 ``COMPATIBLE_INTERFACE_*``\ 属性所需的兼容性类型组合。
 
 
-Target Artifacts
+目标工件
 ^^^^^^^^^^^^^^^^
 
-These expressions look up information about artifacts associated with
-a given target ``tgt``.  Unless otherwise stated, this can be any
-runtime artifact, namely:
+这些表达式查找与给定目标\ ``tgt``\ 相关联的工件的信息。除非另有说明，这可以是任何运行时工件，\
+即：
 
-* An executable target created by :command:`add_executable`.
-* A shared library target (``.so``, ``.dll`` but not their ``.lib`` import
-  library) created by :command:`add_library`.
-* A static library target created by :command:`add_library`.
+* :command:`add_executable`\ 创建的可执行目标。
+* :command:`add_library`\ 创建的共享库目标（\ ``.so``、\ ``.dll``，但不是它们的\
+  ``.lib``\ 导入库）。
+* :command:`add_library`\ 创建的静态库目标。
 
-In the following, the phrase "the ``tgt`` filename" means the name of the
-``tgt`` binary file. This has to be distinguished from the phrase
-"the target name", which is just the string ``tgt``.
+在下面的代码中，短语“the ``tgt`` filename”表示\ ``tgt``\ 二进制文件的名称。这必须与短语\
+“目标名称”区分开来，它只是字符串\ ``tgt``。
 
 .. genex:: $<TARGET_FILE:tgt>
 
@@ -2186,8 +2180,7 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
 
   .. versionadded:: 3.1
 
-  List of objects resulting from building ``tgt``.  This would typically be
-  used on :ref:`object library <Object Libraries>` targets.
+  构建\ ``tgt``\ 产生的对象列表。这通常用于\ :ref:`对象库 <Object Libraries>`\ 目标。
 
 .. genex:: $<TARGET_RUNTIME_DLLS:tgt>
 
@@ -2327,7 +2320,7 @@ In the following, the phrase "the ``tgt`` filename" means the name of the
 
   .. versionadded:: 3.30
 
-  A literal ``"``. Used to allow string literal quotes inside a generator expression.
+  ``"``\ 字面量。用于允许在生成器表达式中使用字符串字面量引号。
 
 
 弃用表达式
