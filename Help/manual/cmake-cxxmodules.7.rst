@@ -29,7 +29,7 @@ C++ 20引入了“模块”的概念。该设计要求构建系统之间对编�
 
 .. _`P1689R5`: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1689r5.html
 
-.. note:
+.. note::
 
    CMake is focusing on correct builds before looking at performance
    improvements. There are known tactics within the chosen strategy which may
