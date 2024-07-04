@@ -104,8 +104,8 @@ cmake-buildsystem(7)
 
 ``OBJECT``\ 库类型定义了由编译给定源文件产生的目标文件的非归档集合。\
 通过使用语法\ :genex:`$<TARGET_OBJECTS:name>`，对象文件集合可以用作其他目标的源输入。\
-这是一个\ :manual:`generator expression <cmake-generator-expressions(7)>`，\
-可以用来向其他目标提供\ ``OBJECT``\ 库内容：
+这是一个\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`，可以用来向其他目标\
+提供\ ``OBJECT``\ 库内容：
 
 .. code-block:: cmake
 
@@ -140,13 +140,11 @@ cmake-buildsystem(7)
 构建规范和使用要求
 ==========================================
 
-Targets build according to their own
-`build specification <Target Build Specification_>`_ in combination with
-`usage requirements <Target Usage Requirements_>`_ propagated from their
-link dependencies.  Both may be specified using target-specific
-`commands <Target Commands_>`_.
+目标根据它们自己的\ `构建规范 <Target Build Specification_>`_，结合从它们的链接依赖项\
+传播的\ `使用要求 <Target Usage Requirements_>`_\ 来构建。两者都可以使用特定于目标的\
+`命令 <目标命令_>`_\ 来指定。
 
-For example:
+例如：
 
 .. code-block:: cmake
 
@@ -169,32 +167,28 @@ For example:
   target_link_libraries(consumer archive)
 
 
-Target Commands
+目标命令
 ---------------
 
-Target-specific commands populate the
-`build specification <Target Build Specification_>`_ of `二进制目标`_ and
-`usage requirements <Target Usage Requirements_>`_ of `二进制目标`_,
-`Interface Libraries`_, and `Imported Targets`_.
+特定于目标的命令填充\ `二进制目标`_\ 的\ `构建规范 <Target Build Specification_>`_\
+以及\ `二进制目标`_、\ `接口库 <Interface Libraries>`_\ 和\
+`导入目标 <Imported Targets>`_\ 的\ `使用要求 <Target Usage Requirements_>`_。
 
 .. _`Target Command Scope`:
 
-Invocations must specify scope keywords, each affecting the visibility
-of arguments following it.  The scopes are:
+调用必须指定作用域关键字，每个关键字都会影响其后的参数的可见性。作用域是：
 
 ``PUBLIC``
-  Populates both properties for `building <Target Build Specification_>`_
-  and properties for `using <Target Usage Requirements_>`_ a target.
+  填充用于\ `构建 <Target Build Specification_>`_\ 的属性和用于\
+  `使用 <Target Usage Requirements_>`_\ 目标的属性。
 
 ``PRIVATE``
-  Populates only properties for `building <Target Build Specification_>`_
-  a target.
+  只填充用于\ `构建 <Target Build Specification_>`_\ 目标的属性。
 
 ``INTERFACE``
-  Populates only properties for `using <Target Usage Requirements_>`_
-  a target.
+  只填充用于\ `使用 <Target Usage Requirements_>`_\ 目标的属性。
 
-The commands are:
+这些命令如下：
 
 :command:`target_compile_definitions`
   Populates the :prop_tgt:`COMPILE_DEFINITIONS` build specification and

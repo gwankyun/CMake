@@ -31,14 +31,10 @@ C++ 20引入了“模块”的概念。该设计要求构建系统之间对编�
 
 .. note::
 
-   CMake is focusing on correct builds before looking at performance
-   improvements. There are known tactics within the chosen strategy which may
-   offer build performance improvements. However, they are being deferred
-   until we have a working model against which to compare them. It is also
-   important to note that a tactic useful in one situation (e.g., clean
-   builds) may not be performant in a different situation (e.g., incremental
-   builds). Finding a balance and offering controls to select the tactics is
-   future work.
+   CMake在关注性能改进之前，先关注正确的构建。在选择的策略中有一些已知的策略可以提供构建性能\
+   的改进。然而，它们被推迟了，直到我们有一个可以比较它们的工作模型。同样需要注意的是，在一种\
+   情况下有用的策略（例如，干净构建）可能在另一种情况下不有效（例如，增量构建）。找到平衡并\
+   提供控制来选择策略是未来的工作。
 
 扫描控制
 ================
