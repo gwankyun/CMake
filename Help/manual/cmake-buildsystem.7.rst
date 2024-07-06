@@ -191,10 +191,10 @@ cmake-buildsystem(7)
 这些命令如下：
 
 :command:`target_compile_definitions`
-  Populates the :prop_tgt:`COMPILE_DEFINITIONS` build specification and
-  :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS` usage requirement properties.
+  填充\ :prop_tgt:`COMPILE_DEFINITIONS`\ 构建规范和\
+  :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`\ 使用需求属性。
 
-  For example, the call
+  例如，调用
 
   .. code-block:: cmake
 
@@ -203,74 +203,67 @@ cmake-buildsystem(7)
       INTERFACE USING_ARCHIVE_LIB
     )
 
-  appends ``BUILDING_WITH_LZMA`` to the target's ``COMPILE_DEFINITIONS``
-  property and appends ``USING_ARCHIVE_LIB`` to the target's
-  ``INTERFACE_COMPILE_DEFINITIONS`` property.
+  将\ ``BUILDING_WITH_LZMA``\ 添加到目标的\ ``COMPILE_DEFINITIONS``\ 属性，将\
+  ``USING_ARCHIVE_LIB``\ 添加到目标的\ ``INTERFACE_COMPILE_DEFINITIONS``\ 属性。
 
 :command:`target_compile_options`
-  Populates the :prop_tgt:`COMPILE_OPTIONS` build specification and
-  :prop_tgt:`INTERFACE_COMPILE_OPTIONS` usage requirement properties.
+  生成\ :prop_tgt:`COMPILE_OPTIONS`\ 构建说明和\
+  :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 使用需求属性。
 
 :command:`target_compile_features`
   .. versionadded:: 3.1
 
-  Populates the :prop_tgt:`COMPILE_FEATURES` build specification and
-  :prop_tgt:`INTERFACE_COMPILE_FEATURES` usage requirement properties.
+  填充\ :prop_tgt:`COMPILE_FEATURES`\ 构建规范和\
+  :prop_tgt:`INTERFACE_COMPILE_FEATURES`\ 使用需求属性。
 
 :command:`target_include_directories`
-  Populates the :prop_tgt:`INCLUDE_DIRECTORIES` build specification
-  and :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` usage requirement
-  properties.  With the ``SYSTEM`` option, it also populates the
-  :prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES` usage requirement.
+  填充\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 构建规范和\
+  :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 使用要求属性。使用\ ``SYSTEM``\ 选项，\
+  它还填充\ :prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES`\ 的使用需求。
 
-  For convenience, the :variable:`CMAKE_INCLUDE_CURRENT_DIR` variable
-  may be enabled to add the source directory and corresponding build
-  directory as ``INCLUDE_DIRECTORIES`` on all targets.  Similarly,
-  the :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE` variable may
-  be enabled to add them as ``INTERFACE_INCLUDE_DIRECTORIES`` on all
-  targets.
+  为方便起见，可以启用\ :variable:`CMAKE_INCLUDE_CURRENT_DIR`\ 变量来在所有目标上添加\
+  源目录和相应的构建目录作为\ ``INCLUDE_DIRECTORIES``。类似地，可以启用\
+  :variable:`CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE`\ 变量，在所有目标上将它们添加为\
+  ``INTERFACE_INCLUDE_DIRECTORIES``。
 
 :command:`target_sources`
   .. versionadded:: 3.1
 
-  Populates the :prop_tgt:`SOURCES` build specification and
-  :prop_tgt:`INTERFACE_SOURCES` usage requirement properties.
+  填充\ :prop_tgt:`SOURCES`\ 构建规范和\ :prop_tgt:`INTERFACE_SOURCES`\ 使用需求属性。
 
-  It also supports specifying :ref:`File Sets`, which can add C++ module
-  sources and headers not listed in the ``SOURCES`` and ``INTERFACE_SOURCES``
-  properties.  File sets may also populate the :prop_tgt:`INCLUDE_DIRECTORIES`
-  build specification and :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES` usage
-  requirement properties with the include directories containing the headers.
+  它还支持指定\ :ref:`File Sets`，这可以添加C++模块源和未列在\ ``SOURCES``\ 和\
+  ``INTERFACE_SOURCES``\ 属性中的头。文件集也可以用包含头文件的include目录来填充\
+  :prop_tgt:`INCLUDE_DIRECTORIES`\ 构建规范和\
+  :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 使用要求属性。
 
 :command:`target_precompile_headers`
   .. versionadded:: 3.16
 
-  Populates the :prop_tgt:`PRECOMPILE_HEADERS` build specification and
-  :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS` usage requirement properties.
+  填充\ :prop_tgt:`PRECOMPILE_HEADERS`\ 构建规范和\
+  :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`\ 使用要求属性。
 
 :command:`target_link_libraries`
-  Populates the :prop_tgt:`LINK_LIBRARIES` build specification
-  and :prop_tgt:`INTERFACE_LINK_LIBRARIES` usage requirement properties.
+  填充\ :prop_tgt:`LINK_LIBRARIES`\ 构建规范和\
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 使用需求属性。
 
-  This is the primary mechanism by which link dependencies and their
-  `usage requirements <Target Usage Requirements_>`_ are transitively
-  propagated to affect compilation and linking of a target.
+  这是传递链接依赖项及其\ `使用需求 <Target Usage Requirements_>`_\ 以影响目标编译和\
+  链接的主要机制。
 
 :command:`target_link_directories`
   .. versionadded:: 3.13
 
-  Populates the :prop_tgt:`LINK_DIRECTORIES` build specification and
-  :prop_tgt:`INTERFACE_LINK_DIRECTORIES` usage requirement properties.
+  填充\ :prop_tgt:`LINK_DIRECTORIES`\ 构建规范和\ :prop_tgt:`INTERFACE_LINK_DIRECTORIES`\
+  使用要求属性。
 
 :command:`target_link_options`
   .. versionadded:: 3.13
 
-  Populates the :prop_tgt:`LINK_OPTIONS` build specification and
-  :prop_tgt:`INTERFACE_LINK_OPTIONS` usage requirement properties.
+  填充\ :prop_tgt:`LINK_OPTIONS`\ 构建规范和\ :prop_tgt:`INTERFACE_LINK_OPTIONS`\
+  使用要求属性。
 
 .. _`Target Build Specification`:
 
-Target Build Specification
+目标构建规范
 --------------------------
 
 The build specification of `二进制目标`_ is represented by target
@@ -283,7 +276,7 @@ dependencies.
 
 .. _`Target Compile Properties`:
 
-Target Compile Properties
+目标编译属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 These represent the `build specification <Target Build Specification_>`_
@@ -350,7 +343,7 @@ for compiling a target.
 
 .. _`Target Link Properties`:
 
-Target Link Properties
+目标链接属性
 ^^^^^^^^^^^^^^^^^^^^^^
 
 These represent the `build specification <Target Build Specification_>`_
@@ -394,7 +387,7 @@ for linking a target.
 
 .. _`Target Usage Requirements`:
 
-Target Usage Requirements
+目标使用需求
 -------------------------
 
 The *usage requirements* of a target are settings that propagate to consumers,
@@ -478,7 +471,7 @@ The :command:`target_link_libraries` command has ``PRIVATE``,
 
 .. _`Transitive Compile Properties`:
 
-Transitive Compile Properties
+可传递的编译属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 These represent `usage requirements <Target Usage Requirements_>`_ for
@@ -532,7 +525,7 @@ compiling consumers.
 
 .. _`Transitive Link Properties`:
 
-Transitive Link Properties
+可传递的链接属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 These represent `usage requirements <Target Usage Requirements_>`_ for
@@ -569,7 +562,7 @@ linking consumers.
 
 .. _`Custom Transitive Properties`:
 
-Custom Transitive Properties
+自定义传递属性
 ----------------------------
 
 .. versionadded:: 3.30
