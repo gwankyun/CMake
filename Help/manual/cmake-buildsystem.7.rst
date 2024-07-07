@@ -266,88 +266,70 @@ cmake-buildsystem(7)
 目标构建规范
 --------------------------
 
-The build specification of `二进制目标`_ is represented by target
-properties.  For each of the following `compile <Target Compile Properties_>`_
-and `link <Target Link Properties_>`_ properties, compilation and linking
-of the target is affected both by its own value and by the corresponding
-`usage requirement <Target Usage Requirements_>`_ property, named with
-an ``INTERFACE_`` prefix, collected from the transitive closure of link
-dependencies.
+`二进制目标`_\ 的构建规范由目标属性表示。对于下面的每一个\
+`compile <Target Compile Properties_>`_\ 和\ `link <Target Link Properties_>`_\
+属性，目标的编译和链接都受到其自身值和相应的\ `使用需求 <Target Usage Requirements_>`_\
+属性的影响，该属性以\ ``INTERFACE_``\ 前缀命名，从链接依赖的传递闭包中收集。
 
 .. _`Target Compile Properties`:
 
 目标编译属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These represent the `build specification <Target Build Specification_>`_
-for compiling a target.
+这些表示编译目标的\ `构建规范 <Target Build Specification_>`_。
 
 :prop_tgt:`COMPILE_DEFINITIONS`
-  List of compile definitions for compiling sources in the target.
-  These are passed to the compiler with ``-D`` flags, or equivalent,
-  in an unspecified order.
+  目标中的编译源的编译定义列表。这些参数以未指定的顺序以\ ``-D``\ 标志或等效参数传递给编译器。
 
-  The :prop_tgt:`DEFINE_SYMBOL` target property is also used
-  as a compile definition as a special convenience case for
-  ``SHARED`` and ``MODULE`` library targets.
+  目标属性\ :prop_tgt:`DEFINE_SYMBOL`\ 也用作编译定义，这是\ ``SHARED``\ 库和\
+  ``MODULE``\ 库目标的一种特殊便利情况。
 
 :prop_tgt:`COMPILE_OPTIONS`
-  List of compile options for compiling sources in the target.
-  These are passed to the compiler as flags, in the order of appearance.
+  编译目标中的源代码的编译选项列表。它们按照出现的顺序作为标志传递给编译器。
 
-  Compile options are automatically escaped for the shell.
+  编译选项会为shell自动转义。
 
-  Some compile options are best specified via dedicated settings,
-  such as the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property.
+  有些编译选项最好通过专用设置来指定，例如目标属性\ :prop_tgt:`POSITION_INDEPENDENT_CODE` 。
 
 :prop_tgt:`COMPILE_FEATURES`
   .. versionadded:: 3.1
 
-  List of :manual:`compile features <cmake-compile-features(7)>` needed
-  for compiling sources in the target.  Typically these ensure the
-  target's sources are compiled using a sufficient language standard level.
+  编译目标中的源代码所需的\ :manual:`编译特性 <cmake-compile-features(7)>`\ 列表。\
+  通常，这确保目标的源代码使用足够的语言标准级别进行编译。
 
 :prop_tgt:`INCLUDE_DIRECTORIES`
-  List of include directories for compiling sources in the target.
-  These are passed to the compiler with ``-I`` or ``-isystem`` flags,
-  or equivalent, in the order of appearance.
+  用于编译目标中的源代码的include目录列表。它们以\ ``-I``\ 或\ ``-isystem``\ 标志或等价\
+  的方式，按照出现的顺序传递给编译器。
 
-  For convenience, the :variable:`CMAKE_INCLUDE_CURRENT_DIR` variable
-  may be enabled to add the source directory and corresponding build
-  directory as ``INCLUDE_DIRECTORIES`` on all targets.
+  为方便起见，可以启用\ :variable:`CMAKE_INCLUDE_CURRENT_DIR`\ 变量来在所有目标上添加\
+  源目录和相应的构建目录作为\ ``INCLUDE_DIRECTORIES``。
 
 :prop_tgt:`SOURCES`
-  List of source files associated with the target.  This includes sources
-  specified when the target was created by the :command:`add_executable`,
-  :command:`add_library`, or :command:`add_custom_target` command.
-  It also includes sources added by the :command:`target_sources` command,
-  but does not include :ref:`File Sets`.
+  与目标关联的源文件列表。这包括\ :command:`add_executable`、\ :command:`add_library`\
+  或\ :command:`add_custom_target`\ 命令创建目标时指定的源。它还包括\
+  :command:`target_sources`\ 命令添加的源代码，但不包括\ :ref:`File Sets`。
 
 :prop_tgt:`PRECOMPILE_HEADERS`
   .. versionadded:: 3.16
 
-  List of header files to precompile and include when compiling
-  sources in the target.
+  在目标中编译源代码时要预编译和包含的头文件列表。
 
 :prop_tgt:`AUTOMOC_MACRO_NAMES`
   .. versionadded:: 3.10
 
-  List of macro names used by :prop_tgt:`AUTOMOC` to determine if a
-  C++ source in the target needs to be processed by ``moc``.
+  :prop_tgt:`AUTOMOC`\ 使用的宏名称列表，用于确定目标中的C++源是否需要由\ ``moc``\ 处理。
 
 :prop_tgt:`AUTOUIC_OPTIONS`
   .. versionadded:: 3.0
 
-  List of options used by :prop_tgt:`AUTOUIC` when invoking ``uic``
-  for the target.
+  :prop_tgt:`AUTOUIC`\ 在为目标调用\ ``uic``\ 时使用的选项列表。
 
 .. _`Target Link Properties`:
 
 目标链接属性
 ^^^^^^^^^^^^^^^^^^^^^^
 
-These represent the `build specification <Target Build Specification_>`_
-for linking a target.
+这些表示链接目标的\ `构建规范 <Target Build Specification_>`_。
 
 :prop_tgt:`LINK_LIBRARIES`
   List of link libraries for linking the target, if it is an executable,
@@ -474,15 +456,13 @@ The :command:`target_link_libraries` command has ``PRIVATE``,
 可传递的编译属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These represent `usage requirements <Target Usage Requirements_>`_ for
-compiling consumers.
+这些代表编译使用者的\ `使用需求 <Target Usage Requirements_>`_。
 
 :prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`
-  List of compile definitions for compiling sources in the target's consumers.
-  Typically these are used by the target's header files.
+  目标使用者中的编译源的编译定义列表。通常这些由目标的头文件使用。
 
 :prop_tgt:`INTERFACE_COMPILE_OPTIONS`
-  List of compile options for compiling sources in the target's consumers.
+  用于编译目标使用者中的源代码的编译选项列表。
 
 :prop_tgt:`INTERFACE_COMPILE_FEATURES`
   .. versionadded:: 3.1
@@ -503,33 +483,30 @@ compiling consumers.
   in the target's consumers.
 
 :prop_tgt:`INTERFACE_SOURCES`
-  List of source files to associate with the target's consumers.
+  与目标使用者关联的源文件列表。
 
 :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`
   .. versionadded:: 3.16
 
-  List of header files to precompile and include when compiling
-  sources in the target's consumers.
+  要预编译的头文件列表，以及在编译目标使用者中的源文件时要包含的头文件列表。
 
 :prop_tgt:`INTERFACE_AUTOMOC_MACRO_NAMES`
   .. versionadded:: 3.27
 
-  List of macro names used by :prop_tgt:`AUTOMOC` to determine if a
-  C++ source in the target's consumers needs to be processed by ``moc``.
+  :prop_tgt:`AUTOMOC`\ 使用的宏名称列表，用于确定目标使用者中的C++源是否需要由\ ``moc``\
+  处理。
 
 :prop_tgt:`INTERFACE_AUTOUIC_OPTIONS`
   .. versionadded:: 3.0
 
-  List of options used by :prop_tgt:`AUTOUIC` when invoking ``uic``
-  for the target's consumers.
+  :prop_tgt:`AUTOUIC`\ 为目标客户调用\ ``uic``\ 时使用的选项列表。
 
 .. _`Transitive Link Properties`:
 
 可传递的链接属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-These represent `usage requirements <Target Usage Requirements_>`_ for
-linking consumers.
+这些表示连接使用者的\ `使用需求 <Target Usage Requirements_>`_。
 
 :prop_tgt:`INTERFACE_LINK_LIBRARIES`
   List of link libraries for linking the target's consumers, for
@@ -545,20 +522,17 @@ linking consumers.
 :prop_tgt:`INTERFACE_LINK_DIRECTORIES`
   .. versionadded:: 3.13
 
-  List of link directories for linking the target's consumers, for
-  those that are executables, shared libraries, or module libraries.
+  用于链接目标使用者的链接目录列表，这些使用者是可执行程序、共享库或模块库。
 
 :prop_tgt:`INTERFACE_LINK_OPTIONS`
   .. versionadded:: 3.13
 
-  List of link options for linking the target's consumers, for
-  those that are executables, shared libraries, or module libraries.
+  用于链接目标使用者的链接选项列表，这些使用者是可执行程序、共享库或模块库。
 
 :prop_tgt:`INTERFACE_LINK_DEPENDS`
   .. versionadded:: 3.13
 
-  List of files on which linking the target's consumers depends, for
-  those that are executables, shared libraries, or module libraries.
+  链接目标使用者所依赖的文件列表，包括可执行文件、共享库或模块库。
 
 .. _`Custom Transitive Properties`:
 
