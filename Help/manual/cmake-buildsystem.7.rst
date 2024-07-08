@@ -99,7 +99,7 @@ cmake-buildsystem(7)
 
 .. _`Object Libraries`:
 
-目标库
+对象库
 ^^^^^^^^^^^^^^^^
 
 ``OBJECT``\ 库类型定义了由编译给定源文件产生的目标文件的非归档集合。\
@@ -332,65 +332,49 @@ cmake-buildsystem(7)
 这些表示链接目标的\ `构建规范 <Target Build Specification_>`_。
 
 :prop_tgt:`LINK_LIBRARIES`
-  List of link libraries for linking the target, if it is an executable,
-  shared library, or module library.  Entries for `Normal Libraries`_ are
-  passed to the linker either via paths to their link artifacts, or
-  with ``-l`` flags or equivalent.  Entries for `Object Libraries`_ are
-  passed to the linker via paths to their object files.
+  用于链接目标的链接库列表，如果目标是可执行文件、共享库或模块库。\
+  `普通库 <Normal Libraries>`_\ 的条目要么通过链接工件的路径传递给链接器，要么带有\
+  ``-l``\ 标志或等价的参数。\ `对象库 <Object Libraries>`_\ 的条目通过对象文件的路径\
+  传递给链接器。
 
-  Additionally, for compiling and linking the target itself,
-  `usage requirements <Target Usage Requirements_>`_ are propagated from
-  ``LINK_LIBRARIES`` entries naming `Normal Libraries`_,
-  `Interface Libraries`_, `Object Libraries`_, and `Imported Targets`_,
-  collected over the transitive closure of their
-  :prop_tgt:`INTERFACE_LINK_LIBRARIES` properties.
+  此外，对于编译和链接目标本身，\ `使用需求 <Target Usage Requirements_>`_\ 从\
+  ``LINK_LIBRARIES``\ 项传播，这些项分别命名\ `普通库 <Normal Libraries>`_、\
+  `接口库 <Interface Libraries>`_、\ `对象库 <Object Libraries>`_\ 和\
+  `导入目标 <Imported Targets>`_，通过它们的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+  属性的传递闭包收集。
 
 :prop_tgt:`LINK_DIRECTORIES`
   .. versionadded:: 3.13
 
-  List of link directories for linking the target, if it is an executable,
-  shared library, or module library.  The directories are passed to the
-  linker with ``-L`` flags, or equivalent.
+  用于链接目标的链接目录列表，如果目标是可执行文件、共享库或模块库。这些目录被传递给链接器，\
+  带有\ ``-L``\ 标志，或等价的值。
 
 :prop_tgt:`LINK_OPTIONS`
   .. versionadded:: 3.13
 
-  List of link options for linking the target, if it is an executable,
-  shared library, or module library.  The options are passed to the
-  linker as flags, in the order of appearance.
+  如果目标是可执行文件、共享库或模块库，用于链接目标的链接选项列表。选项按照出现的顺序作为\
+  标志传递给链接器。
 
-  Link options are automatically escaped for the shell.
+  链接选项会为shell自动转义。
 
 :prop_tgt:`LINK_DEPENDS`
-  List of files on which linking the target depends, if it is an executable,
-  shared library, or module library.  For example, linker scripts specified
-  via :prop_tgt:`LINK_OPTIONS` may be listed here such that changing them
-  causes binaries to be linked again.
+  链接目标所依赖的文件列表，如果目标是可执行文件、共享库或模块库。例如，可以在此处列出通过\
+  :prop_tgt:`LINK_OPTIONS`\ 指定的链接器脚本，以便更改它们会导致再次链接二进制文件。
 
 .. _`Target Usage Requirements`:
 
 目标使用需求
 -------------------------
 
-The *usage requirements* of a target are settings that propagate to consumers,
-which link to the target via :command:`target_link_libraries`, in order to
-correctly compile and link with it.  They are represented by transitive
-`compile <Transitive Compile Properties_>`_ and
-`link <Transitive Link Properties_>`_ properties.
+目标的\ *使用需求*\ 是传播给消费者的设置，消费者通过\ :command:`target_link_libraries`\
+链接到目标，以便正确编译和链接它。它们由传递的\ `compile <Transitive Compile Properties_>`_\
+和\ `link <Transitive Link Properties_>`_\ 属性表示。
 
-Note that usage requirements are not designed as a way to make downstreams
-use particular :prop_tgt:`COMPILE_OPTIONS`, :prop_tgt:`COMPILE_DEFINITIONS`,
-etc. for convenience only.  The contents of the properties must be
-**requirements**, not merely recommendations.
+请注意，使用需求并不是仅仅为了方便而设计让下游使用特定的\ :prop_tgt:`COMPILE_OPTIONS`、\
+:prop_tgt:`COMPILE_DEFINITIONS`\ 等。属性的内容必须是\ **需求**，而不仅仅是建议。
 
-See the :ref:`Creating Relocatable Packages` section of the
-:manual:`cmake-packages(7)` manual for discussion of additional care
-that must be taken when specifying usage requirements while creating
-packages for redistribution.
-
-The usage requirements of a target can transitively propagate to the dependents.
-The :command:`target_link_libraries` command has ``PRIVATE``,
-``INTERFACE`` and ``PUBLIC`` keywords to control the propagation.
+请参阅\ :manual:`cmake-packages(7)`\ 手册的创建\ :ref:`Creating Relocatable Packages`\
+章节，以讨论在创建用于重新分发的包时指定使用需求时必须采取的额外注意事项。
 
 目标的使用需求可以传递到依赖项。:command:`target_link_libraries`\ 命令具有\
 ``PRIVATE``、\ ``INTERFACE``\ 和\ ``PUBLIC``\ 关键字来控制传播。
@@ -467,20 +451,16 @@ The :command:`target_link_libraries` command has ``PRIVATE``,
 :prop_tgt:`INTERFACE_COMPILE_FEATURES`
   .. versionadded:: 3.1
 
-  List of :manual:`compile features <cmake-compile-features(7)>` needed
-  for compiling sources in the target's consumers.  Typically these
-  ensure the target's header files are processed when compiling consumers
-  using a sufficient language standard level.
+  在目标用户中编译源代码所需的\ :manual:`编译特性 <cmake-compile-features(7)>`\ 列表。\
+  通常，这可以确保在使用足够的语言标准级别编译消费者时处理目标的头文件。
 
 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
-  List of include directories for compiling sources in the target's consumers.
-  Typically these are the locations of the target's header files.
+  包含目录列表，用于在目标的消费者中编译源代码。通常这些是目标头文件的位置。
 
 :prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES`
-  List of directories that, when specified as include directories, e.g., by
-  :prop_tgt:`INCLUDE_DIRECTORIES` or :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`,
-  should be treated as "system" include directories when compiling sources
-  in the target's consumers.
+  当指定为包含目录时，例如通过\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 或\
+  :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`\ 指定的目录列表，当在目标的消费者中编译\
+  源代码时，应视为“系统”包含目录。
 
 :prop_tgt:`INTERFACE_SOURCES`
   与目标使用者关联的源文件列表。
@@ -509,15 +489,12 @@ The :command:`target_link_libraries` command has ``PRIVATE``,
 这些表示连接使用者的\ `使用需求 <Target Usage Requirements_>`_。
 
 :prop_tgt:`INTERFACE_LINK_LIBRARIES`
-  List of link libraries for linking the target's consumers, for
-  those that are executables, shared libraries, or module libraries.
-  These are the transitive dependencies of the target.
+  用于链接目标使用者的链接库列表，这些使用者是可执行程序、共享库或模块库。这些是目标的传递依赖。
 
-  Additionally, for compiling and linking the target's consumers,
-  `usage requirements <Target Usage Requirements_>`_ are collected from
-  the transitive closure of ``INTERFACE_LINK_LIBRARIES`` entries naming
-  `Normal Libraries`_, `Interface Libraries`_, `Object Libraries`_,
-  and `Imported Targets`_,
+  此外，为了编译和链接目标的使用者，\ `使用需求 <Target Usage Requirements_>`_\ 从\
+  ``INTERFACE_LINK_LIBRARIES``\ 条目的传递闭包中收集，这些条目命名为\
+  `普通库 <Normal Libraries>`_、\ `接口库 <Interface Libraries>`_、\
+  `对象库 <Object Libraries>`_\ 和\ `导入目录 <Imported Targets>`_。
 
 :prop_tgt:`INTERFACE_LINK_DIRECTORIES`
   .. versionadded:: 3.13
@@ -541,15 +518,12 @@ The :command:`target_link_libraries` command has ``PRIVATE``,
 
 .. versionadded:: 3.30
 
-The :genex:`TARGET_PROPERTY` generator expression evaluates the above
-`build specification <Target Build Specification_>`_ and
-`usage requirement <Target Usage Requirements_>`_ properties
-as builtin transitive properties.  It also supports custom transitive
-properties defined by the :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`
-and :prop_tgt:`TRANSITIVE_LINK_PROPERTIES` properties on the target
-and its link dependencies.
+:genex:`TARGET_PROPERTY`\ 生成器表达式将上述\ `构建规范 <Target Build Specification_>`_\
+和使用\ `需求属性 <Target Usage Requirements_>`_\ 作为内建传递属性进行计算。它还支持由\
+目标及其链接依赖项上的\ :prop_tgt:`TRANSITIVE_COMPILE_PROPERTIES`\ 和\
+:prop_tgt:`TRANSITIVE_LINK_PROPERTIES`\ 属性定义的自定义传递属性。
 
-For example:
+例如：
 
 .. code-block:: cmake
 
