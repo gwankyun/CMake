@@ -14,10 +14,8 @@
 相对路径之前使用\ ``source_dir``\ 的值（典型用法）。CMake会立即处理指定源目录下的\
 ``CMakeLists.txt``\ 文件，然后再处理当前输入文件。
 
-If the ``EXCLUDE_FROM_ALL`` argument is provided then the
-:prop_dir:`EXCLUDE_FROM_ALL` property will be set on the added directory.
-This will exclude the directory from a default build. See the directory
-property :prop_dir:`EXCLUDE_FROM_ALL` for full details.
+如果提供了\ ``EXCLUDE_FROM_ALL``\ 参数，则会在添加的目录上设置\ :prop_dir:`EXCLUDE_FROM_ALL`\
+属性。这将从默认构建中排除该目录。详情请参阅目录属性\ :prop_dir:`EXCLUDE_FROM_ALL`。
 
 .. versionadded:: 3.25
   如果提供了\ ``SYSTEM``\ 参数，子目录的\ :prop_dir:`SYSTEM`\ 目录属性将被设置为true。\

@@ -68,10 +68,8 @@ Windows上总是有一个关联的导入库。
 
 .. versionchanged:: 3.30
 
-  On platforms that do not support shared libraries, ``add_library``
-  now fails on calls creating ``SHARED`` libraries instead of
-  automatically converting them to ``STATIC`` libraries as before.
-  See policy :policy:`CMP0164`.
+  在不支持共享库的平台上，\ ``add_library``\ 现在在调用创建\ ``SHARED``\ 库时失败，\
+  而不是像以前那样自动将它们转换为\ ``STATIC``\ 库。参见策略\ :policy:`CMP0164`。
 
 对象库
 ^^^^^^^^^^^^^^^^
