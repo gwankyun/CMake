@@ -18,35 +18,30 @@ target_sources
 :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 .. versionadded:: 3.20
-  ``<target>`` can be a custom target.
+  ``<target>``\ 可以是自定义目标。
 
-The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the :ref:`scope <Target Command Scope>` of the source file paths
-(``<items>``) that follow them.  ``PRIVATE`` and ``PUBLIC`` items will
-populate the :prop_tgt:`SOURCES` property of ``<target>``, which are used when
-building the target itself. ``PUBLIC`` and ``INTERFACE`` items will populate the
-:prop_tgt:`INTERFACE_SOURCES` property of ``<target>``, which are used
-when building dependents.  A target created by :command:`add_custom_target`
-can only have ``PRIVATE`` scope.
+``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字需要指定源文件路径的\
+:ref:`范围 <Target Command Scope>` （\ ``<items>``\）。\ ``PRIVATE``\ 和\ ``PUBLIC``\
+项将填充\ ``<target>``\ 的\ :prop_tgt:`SOURCES`\ 属性，该属性在构建目标本身时使用。\
+``PUBLIC``\ 和\ ``INTERFACE``\ 项将填充\ ``<target>``\ 的\
+:prop_tgt:`INTERFACE_SOURCES`\ 属性，该属性在构建依赖项时使用。\
+:command:`add_custom_target`\ 创建的目标只能有\ ``PRIVATE``\ 作用域。
 
-Repeated calls for the same ``<target>`` append items in the order called.
+重复调用相同的\ ``<target>``\ 将元素按照调用的顺序添加。
 
 .. versionadded:: 3.3
-  Allow exporting targets with :prop_tgt:`INTERFACE_SOURCES`.
+  允许使用\ :prop_tgt:`INTERFACE_SOURCES`\ 导出目标。
 
 .. versionadded:: 3.11
-  Allow setting ``INTERFACE`` items on
-  :ref:`IMPORTED targets <Imported Targets>`.
+  允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
 .. versionchanged:: 3.13
-  Relative source file paths are interpreted as being relative to the current
-  source directory (i.e. :variable:`CMAKE_CURRENT_SOURCE_DIR`).
-  See policy :policy:`CMP0076`.
+  相对源文件路径被解释为相对于当前源目录（即\ :variable:`CMAKE_CURRENT_SOURCE_DIR`\ ）。\
+  参见策略\ :policy:`CMP0076`。
 
-A path that begins with a generator expression is left unmodified.
-When a target's :prop_tgt:`SOURCE_DIR` property differs from
-:variable:`CMAKE_CURRENT_SOURCE_DIR`, use absolute paths in generator
-expressions to ensure the sources are correctly assigned to the target.
+以生成器表达式开始的路径不会被修改。当目标的\ :prop_tgt:`SOURCE_DIR`\ 属性不同于\
+:variable:`CMAKE_CURRENT_SOURCE_DIR`\ 时，在生成器表达式中使用绝对路径来确保源被正确地\
+分配给目标。
 
 .. code-block:: cmake
 
@@ -56,8 +51,7 @@ expressions to ensure the sources are correctly assigned to the target.
   # CORRECT: absolute path used inside the generator expression
   target_sources(MyTarget PRIVATE "$<$<CONFIG:Debug>:${CMAKE_CURRENT_SOURCE_DIR}/dbgsrc.cpp>")
 
-See the :manual:`cmake-buildsystem(7)` manual for more on defining
-buildsystem properties.
+有关定义buildsystem属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
 .. _`File Sets`:
 
