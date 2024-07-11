@@ -16,26 +16,22 @@ target_compile_options
 
 .. note::
 
-  These options are not used when linking the target.
-  See the :command:`target_link_options` command for that.
+  链接目标时不使用这些选项。参见\ :command:`target_link_options`\ 命令。
 
-Arguments
+参数
 ^^^^^^^^^
 
-If ``BEFORE`` is specified, the content will be prepended to the property
-instead of being appended.  See policy :policy:`CMP0101` which affects
-whether ``BEFORE`` will be ignored in certain cases.
+如果指定\ ``BEFORE``，则内容将被添加到属性的前面，而不是被添加到后面。参见策略\
+:policy:`CMP0101`，它影响在某些情况下\ ``BEFORE``\ 是否会被忽略。
 
-The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the :ref:`scope <Target Command Scope>` of the following arguments.
-``PRIVATE`` and ``PUBLIC`` items will populate the :prop_tgt:`COMPILE_OPTIONS`
-property of ``<target>``.  ``PUBLIC`` and ``INTERFACE`` items will populate the
-:prop_tgt:`INTERFACE_COMPILE_OPTIONS` property of ``<target>``.
-The following arguments specify compile options.  Repeated calls for the same
-``<target>`` append items in the order called.
+``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字用于指定下列参数的\
+:ref:`作用域 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充
+``<target>``\ 的\ :prop_tgt:`COMPILE_OPTIONS`\ 属性。\ ``PUBLIC``\ 和\ ``INTERFACE``\
+项将填充\ ``<target>``\ 的\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 属性。下列参数\
+指定编译选项。重复调用相同的\ ``<target>``\ 将元素按照调用的顺序添加。
 
 .. versionadded:: 3.11
-  Allow setting ``INTERFACE`` items on :ref:`IMPORTED targets <Imported Targets>`.
+  允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
 .. |command_name| replace:: ``target_compile_options``
 .. include:: GENEX_NOTE.txt
