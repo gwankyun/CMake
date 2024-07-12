@@ -38,21 +38,18 @@ target_compile_options
 
 .. include:: OPTIONS_SHELL.txt
 
-See Also
+另请参阅
 ^^^^^^^^
 
-* This command can be used to add any options. However, for adding
-  preprocessor definitions and include directories it is recommended
-  to use the more specific commands :command:`target_compile_definitions`
-  and :command:`target_include_directories`.
+* 这个命令可以用来添加任何选项。但是，对于添加预处理器定义和包含目录，建议使用更具体的命令\
+  :command:`target_compile_definitions`\ 和\ :command:`target_include_directories`。
 
-* For directory-wide settings, there is the command :command:`add_compile_options`.
+* 对于目录范围的设置，可以使用\ :command:`add_compile_options`\ 命令。
 
-* For file-specific settings, there is the source file property :prop_sf:`COMPILE_OPTIONS`.
+* 对于特定于文件的设置，有一个源文件属性\ :prop_sf:`COMPILE_OPTIONS`。
 
-* This command adds compile options for all languages in a target.
-  Use the :genex:`COMPILE_LANGUAGE` generator expression to specify
-  per-language compile options.
+* 此命令为目标中所有语言添加编译选项。使用\ :genex:`COMPILE_LANGUAGE`\ 生成器表达式指定\
+  每种语言的编译选项。
 
 * :command:`target_compile_features`
 * :command:`target_link_libraries`
@@ -61,6 +58,5 @@ See Also
 * :command:`target_precompile_headers`
 * :command:`target_sources`
 
-* :variable:`CMAKE_<LANG>_FLAGS` and :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`
-  add language-wide flags passed to all invocations of the compiler.
-  This includes invocations that drive compiling and those that drive linking.
+* :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
+  添加传递给编译器所有调用的语言范围内的标志。这包括驱动编译的调用和驱动链接的调用。
