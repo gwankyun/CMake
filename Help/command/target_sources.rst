@@ -73,17 +73,15 @@ target_sources
 
 ``HEADERS``
 
-  Sources intended to be used via a language's ``#include`` mechanism.
+  打算通过语言的\ ``#include``\ 机制使用的源文件。
 
 ``CXX_MODULES``
   .. versionadded:: 3.28
 
-  Sources which contain C++ interface module or partition units (i.e., those
-  using the ``export`` keyword). This file set type may not have an
-  ``INTERFACE`` scope except on ``IMPORTED`` targets.
+  包含C++接口模块或分区单元的源代码（即使用\ ``export``\ 关键字的源代码）。除了\
+  ``IMPORTED``\ 目标之外，此文件集类型不能有\ ``INTERFACE``\ 范围。
 
-The optional default file sets are named after their type. The target may not
-be a custom target or :prop_tgt:`FRAMEWORK` target.
+可选的默认文件集以其类型命名。目标可能不是自定义目标或\ :prop_tgt:`FRAMEWORK`\ 目标。
 
 Files in a ``PRIVATE`` or ``PUBLIC`` file set are marked as source files for
 the purposes of IDE integration. Additionally, files in ``HEADERS`` file sets
@@ -141,7 +139,7 @@ Each ``target_sources(FILE_SET)`` entry starts with ``INTERFACE``, ``PUBLIC``, o
 The following target properties are set by ``target_sources(FILE_SET)``,
 but they should not generally be manipulated directly:
 
-For file sets of type ``HEADERS``:
+对于\ ``HEADERS``\ 类型文件集：
 
 * :prop_tgt:`HEADER_SETS`
 * :prop_tgt:`INTERFACE_HEADER_SETS`
@@ -150,7 +148,7 @@ For file sets of type ``HEADERS``:
 * :prop_tgt:`HEADER_DIRS`
 * :prop_tgt:`HEADER_DIRS_<NAME>`
 
-For file sets of type ``CXX_MODULES``:
+对于\ ``CXX_MODULES``\ 类型文件集：
 
 * :prop_tgt:`CXX_MODULE_SETS`
 * :prop_tgt:`INTERFACE_CXX_MODULE_SETS`
@@ -159,8 +157,7 @@ For file sets of type ``CXX_MODULES``:
 * :prop_tgt:`CXX_MODULE_DIRS`
 * :prop_tgt:`CXX_MODULE_DIRS_<NAME>`
 
-Target properties related to include directories are also modified by
-``target_sources(FILE_SET)`` as follows:
+与include目录相关的目标属性也由\ ``target_sources(FILE_SET)``\ 修改，如下所示：
 
 :prop_tgt:`INCLUDE_DIRECTORIES`
 
