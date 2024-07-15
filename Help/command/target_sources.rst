@@ -83,61 +83,46 @@ target_sources
 
 可选的默认文件集以其类型命名。目标可能不是自定义目标或\ :prop_tgt:`FRAMEWORK`\ 目标。
 
-Files in a ``PRIVATE`` or ``PUBLIC`` file set are marked as source files for
-the purposes of IDE integration. Additionally, files in ``HEADERS`` file sets
-have their :prop_sf:`HEADER_FILE_ONLY` property set to ``TRUE``. Files in an
-``INTERFACE`` or ``PUBLIC`` file set can be installed with the
-:command:`install(TARGETS)` command, and exported with the
-:command:`install(EXPORT)` and :command:`export` commands.
+为了集成IDE，\ ``PRIVATE``\ 或\ ``PUBLIC``\ 文件集中的文件被标记为源文件。此外，在\
+``HEADERS``\ 文件集中的文件的\ :prop_sf:`HEADER_FILE_ONLY`\ 属性被设置为\ ``TRUE``。\
+``INTERFACE``\ 或\ ``PUBLIC``\ 文件集中的文件可以用\ :command:`install(TARGETS)`\
+命令安装，也可以用\ :command:`install(EXPORT)`\ 和\ :command:`export`\ 命令导出。
 
-Each ``target_sources(FILE_SET)`` entry starts with ``INTERFACE``, ``PUBLIC``, or
-``PRIVATE`` and accepts the following arguments:
+每个\ ``target_sources(FILE_SET)``\ 项都以\ ``INTERFACE``、\ ``PUBLIC``\ 或\
+``PRIVATE``\ 开头，接受下列参数：
 
 ``FILE_SET <set>``
 
-  The name of the file set to create or add to. It must contain only letters,
-  numbers and underscores. Names starting with a capital letter are reserved
-  for built-in file sets predefined by CMake. The only predefined set names
-  are those matching the acceptable types. All other set names must not start
-  with a capital letter or
-  underscore.
+  要创建或添加到其中的文件集的名称。只能包含字母、数字和下划线。以大写字母开头的名称是为\
+  CMake预定义的内置文件集保留的。唯一预定义的集合名称是那些与可接受的类型匹配的。所有其他\
+  集合名称不得以大写字母或下划线开头。
 
 ``TYPE <type>``
 
-  Every file set is associated with a particular type of file. Only types
-  specified above may be used and it is an error to specify anything else. As
-  a special case, if the name of the file set is one of the types, the type
-  does not need to be specified and the ``TYPE <type>`` arguments can be
-  omitted. For all other file set names, ``TYPE`` is required.
+  每个文件集都与特定类型的文件相关联。只有上面指定的类型才能使用，其他类型都是错误的。作为\
+  一个特殊情况，如果文件集的名称是类型之一，则不需要指定类型，并且可以省略\ ``TYPE <type>``\
+  参数。对于所有其他文件集名称，\ ``TYPE``\ 是必需的。
 
 ``BASE_DIRS <dirs>...``
 
-  An optional list of base directories of the file set. Any relative path
-  is treated as relative to the current source directory
-  (i.e. :variable:`CMAKE_CURRENT_SOURCE_DIR`). If no ``BASE_DIRS`` are
-  specified when the file set is first created, the value of
-  :variable:`CMAKE_CURRENT_SOURCE_DIR` is added. This argument supports
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  文件集基本目录的可选列表。任何相对路径都被视为相对于当前源目录（即\
+  :variable:`CMAKE_CURRENT_SOURCE_DIR`\ ）。如果在第一次创建文件集时没有指定\
+  ``BASE_DIRS``，则添加\ :variable:`CMAKE_CURRENT_SOURCE_DIR`\ 的值。这个参数支持\
+  :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
-  No two base directories for a file set may be sub-directories of each other.
-  This requirement must be met across all base directories added to a file set,
-  not just those within a single call to ``target_sources()``.
+  一个文件集的两个基本目录不能互为子目录。添加到文件集中的所有基本目录都必须满足这个要求，\
+  而不仅仅是那些在一次\ ``target_sources()``\ 调用中添加的目录。
 
 ``FILES <files>...``
 
-  An optional list of files to add to the file set. Each file must be in
-  one of the base directories, or a subdirectory of one of the base
-  directories. This argument supports
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  要添加到文件集的可选文件列表。每个文件必须位于其中一个基目录中，或其中一个基目录的子目录中。\
+  这个参数支持\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
-  If relative paths are specified, they are considered relative to
-  :variable:`CMAKE_CURRENT_SOURCE_DIR` at the time ``target_sources()`` is
-  called. An exception to this is a path starting with ``$<``. Such paths
-  are treated as relative to the target's source directory after evaluation
-  of generator expressions.
+  如果指定了相对路径，它们被认为是在调用\ ``target_sources()``\ 时相对于\
+  :variable:`CMAKE_CURRENT_SOURCE_DIR`\ 的路径。一个例外是以\ ``$<``\ 开始的路径。\
+  在生成器表达式求值之后，这些路径被视为相对于目标的源目录的路径。
 
-The following target properties are set by ``target_sources(FILE_SET)``,
-but they should not generally be manipulated directly:
+下列目标属性由\ ``target_sources(FILE_SET)``\ 设置，但通常不应该直接操作。
 
 对于\ ``HEADERS``\ 类型文件集：
 
@@ -161,15 +146,15 @@ but they should not generally be manipulated directly:
 
 :prop_tgt:`INCLUDE_DIRECTORIES`
 
-  If the ``TYPE`` is ``HEADERS``, and the scope of the file set is ``PRIVATE``
-  or ``PUBLIC``, all of the ``BASE_DIRS`` of the file set are wrapped in
-  :genex:`$<BUILD_INTERFACE>` and appended to this property.
+  如果\ ``TYPE``\ 是\ ``HEADERS``，并且文件集的作用域是\ ``PRIVATE``\ 或\ ``PUBLIC``，\
+  则文件集的所有\ ``BASE_DIRS``\ 都包装在\ :genex:`$<BUILD_INTERFACE>`\ 中，并附加到\
+  此属性。
 
 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
 
-  If the ``TYPE`` is ``HEADERS``, and the scope of the file set is
-  ``INTERFACE`` or ``PUBLIC``, all of the ``BASE_DIRS`` of the file set are
-  wrapped in :genex:`$<BUILD_INTERFACE>` and appended to this property.
+  如果\ ``TYPE``\ 是\ ``HEADERS``，并且文件集的范围是\ ``INTERFACE``\ 或\ ``PUBLIC``，\
+  则文件集的所有\ ``BASE_DIRS``\ 都包装在\ :genex:`$<BUILD_INTERFACE>`\ 中，并附加到\
+  此属性。
 
 另请参阅
 ^^^^^^^^
