@@ -17,19 +17,15 @@ target_link_directories
 命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
 等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
 
-The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the :ref:`scope <Target Command Scope>` of the items that follow
-them. ``PRIVATE`` and ``PUBLIC`` items will populate the
-:prop_tgt:`LINK_DIRECTORIES` property of ``<target>``.  ``PUBLIC`` and
-``INTERFACE`` items will populate the :prop_tgt:`INTERFACE_LINK_DIRECTORIES`
-property of ``<target>`` (:ref:`IMPORTED targets <Imported Targets>` only
-support ``INTERFACE`` items).
-Each item specifies a link directory and will be converted to an absolute
-path if necessary before adding it to the relevant property.  Repeated
-calls for the same ``<target>`` append items in the order called.
+``INTERFACE``、\ ``PUBLIC``\ 和\ ``PUBLIC``\ 关键字用于指定它们后面的项目的\
+:ref:`范围 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\
+``<target>``\ 的\ :prop_tgt:`LINK_DIRECTORIES`\ 属性。\ ``PUBLIC``\ 和\
+``INTERFACE``\ 项将填充\ ``<target>``\ 的\ :prop_tgt:`INTERFACE_LINK_DIRECTORIES`\
+属性（\ :ref:`IMPORTED targets <Imported Targets>`\ 只支持\ ``INTERFACE``\ 项）。\
+每个项目指定一个链接目录，如果有必要，将在将其添加到相关属性之前转换为绝对路径。重复调用相同的\
+``<target>``\ 将元素按照调用的顺序添加。
 
-If ``BEFORE`` is specified, the content will be prepended to the relevant
-property instead of being appended.
+如果指定了\ ``BEFORE``，内容将被添加到相关属性的前面，而不是被添加到后面。
 
 .. |command_name| replace:: ``target_link_directories``
 .. include:: GENEX_NOTE.txt
