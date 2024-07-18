@@ -32,23 +32,16 @@ target_link_directories
 
 .. note::
 
-  This command is rarely necessary and should be avoided where there are
-  other choices.  Prefer to pass full absolute paths to libraries where
-  possible, since this ensures the correct library will always be linked.
-  The :command:`find_library` command provides the full path, which can
-  generally be used directly in calls to :command:`target_link_libraries`.
-  Situations where a library search path may be needed include:
+  这个命令很少需要，如果有其他选择，应该避免使用。在可能的情况下，最好将完整的绝对路径传递给库，\
+  因为这可以确保始终链接正确的库。\ :command:`find_library`\ 命令提供了完整的路径，通常\
+  可以在调用\ :command:`target_link_libraries`\ 时直接使用。可能需要库的搜索路径的情况包括：
 
-  - Project generators like Xcode where the user can switch target
-    architecture at build time, but a full path to a library cannot
-    be used because it only provides one architecture (i.e. it is not
-    a universal binary).
-  - Libraries may themselves have other private library dependencies
-    that expect to be found via ``RPATH`` mechanisms, but some linkers
-    are not able to fully decode those paths (e.g. due to the presence
-    of things like ``$ORIGIN``).
+  - 像Xcode这样的项目生成器，用户可以在构建时切换目标架构，但不能使用库的完整路径，因为它只\
+    提供了一种架构（即它不是通用的二进制文件）。
+  - 库本身可能有其他期望通过\ ``RPATH``\ 机制找到的私有库依赖项，但一些链接器无法完全解码\
+    这些路径（例如，由于\ ``$ORIGIN``\ 之类的东西的存在）。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`link_directories`
