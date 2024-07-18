@@ -675,7 +675,6 @@ CTest相关变量
    /variable/CTEST_CONFIGURE_COMMAND
    /variable/CTEST_COVERAGE_COMMAND
    /variable/CTEST_COVERAGE_EXTRA_FLAGS
-   /variable/CTEST_CURL_OPTIONS
    /variable/CTEST_CUSTOM_COVERAGE_EXCLUDE
    /variable/CTEST_CUSTOM_ERROR_EXCEPTION
    /variable/CTEST_CUSTOM_ERROR_MATCH
@@ -845,6 +844,7 @@ CMake有许多内部变量。它们中的大部分都未公开。然而，其中
 .. toctree::
    :maxdepth: 1
 
+   /variable/CTEST_CURL_OPTIONS
    /variable/CTEST_CVS_CHECKOUT
    /variable/CTEST_SCP_COMMAND
    /variable/CTEST_TRIGGER_SITE

@@ -110,7 +110,6 @@ cmake-modules(7)
    /module/FindBacktrace
    /module/FindBISON
    /module/FindBLAS
-   /module/FindBoost
    /module/FindBullet
    /module/FindBZip2
    /module/FindCABLE
@@ -289,6 +288,7 @@ cmake-modules(7)
 .. toctree::
    :maxdepth: 1
 
+   /module/FindBoost
    /module/FindCUDA
    /module/FindDart
    /module/FindITK
