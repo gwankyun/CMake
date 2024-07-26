@@ -8,7 +8,7 @@ target_precompile_headers
 预编译头文件可以通过创建某些头文件的部分处理版本来加快编译速度，然后在编译期间使用该版本，而\
 不是重复解析原始头文件。
 
-Main Form
+主要形式
 ^^^^^^^^^
 
 .. code-block:: cmake
@@ -17,47 +17,36 @@ Main Form
     <INTERFACE|PUBLIC|PRIVATE> [header1...]
     [<INTERFACE|PUBLIC|PRIVATE> [header2...] ...])
 
-The command adds header files to the :prop_tgt:`PRECOMPILE_HEADERS` and/or
-:prop_tgt:`INTERFACE_PRECOMPILE_HEADERS` target properties of ``<target>``.
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.
+该命令将头文件添加到\ ``<target>``\ 的\ :prop_tgt:`PRECOMPILE_HEADERS`\ 和/或\
+:prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`\ 目标属性中。命名\ ``<target>``\ 必须是由\
+:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\
+:ref:`别名目标 <Alias Targets>`。
 
-The ``INTERFACE``, ``PUBLIC`` and ``PRIVATE`` keywords are required to
-specify the :ref:`scope <Target Command Scope>` of the following arguments.
-``PRIVATE`` and ``PUBLIC`` items will populate the :prop_tgt:`PRECOMPILE_HEADERS`
-property of ``<target>``.  ``PUBLIC`` and ``INTERFACE`` items will populate the
-:prop_tgt:`INTERFACE_PRECOMPILE_HEADERS` property of ``<target>``
-(:ref:`IMPORTED targets <Imported Targets>` only support ``INTERFACE`` items).
-Repeated calls for the same ``<target>`` will append items in the order called.
+``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字用于指定下列参数的\
+:ref:`作用域 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\
+``<target>``\ 的\ :prop_tgt:`PRECOMPILE_HEADERS`\ 属性。\ ``PUBLIC``\ 和\
+``INTERFACE`` 项将填充\ ``<target>``\ 的\ :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`\
+属性（:ref:`导入目标 <Imported Targets>`\ 只支持\ ``INTERFACE``\ 项）。重复调用相同的\
+``<target>``\ 会按照调用的顺序添加元素。
 
-Projects should generally avoid using ``PUBLIC`` or ``INTERFACE`` for targets
-that will be :command:`exported <install(EXPORT)>`, or they should at least use
-the :genex:`$<BUILD_INTERFACE:...>` generator expression to prevent precompile
-headers from appearing in an installed exported target.  Consumers of a target
-should typically be in control of what precompile headers they use, not have
-precompile headers forced on them by the targets being consumed (since
-precompile headers are not typically usage requirements).  A notable exception
-to this is where an :ref:`interface library <Interface Libraries>` is created
-to define a commonly used set of precompile headers in one place and then other
-targets link to that interface library privately.  In this case, the interface
-library exists specifically to propagate the precompile headers to its
-consumers and the consumer is effectively still in control, since it decides
-whether to link to the interface library or not.
+项目通常应该避免使用\ ``PUBLIC``\ 或\ ``INTERFACE``\ 来\
+:command:`导出 <install(EXPORT)>`\ 目标，或者至少应该使用\
+:genex:`$<BUILD_INTERFACE:...>`\ 生成器表达式，以防止预编译头出现在已安装的导出目标中。\
+目标的消费者通常应该控制他们使用的预编译头，而不是被消费的目标强制使用预编译头（因为预编译头\
+通常不是使用要求）。一个明显的例外是，创建\ :ref:`接口库 <Interface Libraries>`\ 时在一个\
+地方定义一组常用的预编译头，然后其他目标私有地链接到该接口库。在这种情况下，接口库的存在是为了\
+将预编译头信息传播给它的使用者，而使用者实际上仍然处于控制之中，因为它可以决定是否链接到接口库。
 
-The list of header files is used to generate a header file named
-``cmake_pch.h|xx`` which is used to generate the precompiled header file
-(``.pch``, ``.gch``, ``.pchi``) artifact.  The ``cmake_pch.h|xx`` header
-file will be force included (``-include`` for GCC, ``/FI`` for MSVC) to
-all source files, so sources do not need to have ``#include "pch.h"``.
+头文件列表用于生成一个名为\ ``cmake_pch.h|xx``\ 的头文件，该文件用于生成预编译头文件（\
+``.pch``、\ ``.gch``、\ ``.pchi``）工件。\ ``cmake_pch.h|xx``\ 头文件将强制包含（\
+``-include``\ 对于GCC， \ ``/FI``\ 对于MSVC）到所有源文件中，因此源文件不需要\
+``#include "pch.h"``。
 
-Header file names specified with angle brackets (e.g. ``<unordered_map>``) or
-explicit double quotes (escaped for the :manual:`cmake-language(7)`,
-e.g. ``[["other_header.h"]]``) will be treated as is, and include directories
-must be available for the compiler to find them.  Other header file names
-(e.g. ``project_header.h``) are interpreted as being relative to the current
-source directory (e.g. :variable:`CMAKE_CURRENT_SOURCE_DIR`) and will be
-included by absolute path.  For example:
+用尖括号指定的头文件名（例如\ ``<unordered_map>``\ ）或显式的双引号（针对\
+:manual:`cmake-language(7)`\ 进行转义，例如\ ``[["other_header.h"]]``\ ）将被视为\
+原样，并且编译器必须能够找到它们的include目录。其他头文件名（例如\ ``project_header.h``\
+）被解释为相对于当前源目录（例如\ :variable:`CMAKE_CURRENT_SOURCE_DIR`\ ），并包含在\
+绝对路径中。例如：
 
 .. code-block:: cmake
 
