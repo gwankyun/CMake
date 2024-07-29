@@ -59,13 +59,10 @@ target_precompile_headers
   )
 
 .. |command_name| replace:: ``target_precompile_headers``
-.. |more_see_also| replace:: The :genex:`$<COMPILE_LANGUAGE:...>` generator
-   expression is particularly useful for specifying a language-specific header
-   to precompile for only one language (e.g. ``CXX`` and not ``C``).  In this
-   case, header file names that are not explicitly in double quotes or angle
-   brackets must be specified by absolute path.  Also, when specifying angle
-   brackets inside a generator expression, be sure to encode the closing
-   ``>`` as :genex:`$<ANGLE-R>`.  For example:
+.. |more_see_also| replace:: :genex:`$<COMPILE_LANGUAGE:...>`\ 生成器表达式特别适用\
+   于指定特定于语言的头文件，只对一种语言进行预编译（例如\ ``CXX`` ，而不是\ ``C``）。\
+   在这种情况下，没有显式用双引号或尖括号括起来的头文件名称必须用绝对路径指定。此外，当在\
+   生成器表达式中指定尖括号时，请确保将结束的\ ``>``\ 编码为\ :genex:`$<ANGLE-R>`。例如：
 .. include:: GENEX_NOTE.txt
    :start-line: 1
 
@@ -78,38 +75,34 @@ target_precompile_headers
   )
 
 
-Reusing Precompile Headers
+重用预编译头文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The command also supports a second signature which can be used to specify that
-one target reuses a precompiled header file artifact from another target
-instead of generating its own:
+该命令还支持第二个签名，可以用来指定一个目标重用另一个目标的预编译头文件工件，而不是生成自己\
+的头文件：
 
 .. code-block:: cmake
 
   target_precompile_headers(<target> REUSE_FROM <other_target>)
 
-This form sets the :prop_tgt:`PRECOMPILE_HEADERS_REUSE_FROM` property to
-``<other_target>`` and adds a dependency such that ``<target>`` will depend
-on ``<other_target>``.  CMake will halt with an error if the
-:prop_tgt:`PRECOMPILE_HEADERS` property of ``<target>`` is already set when
-the ``REUSE_FROM`` form is used.
+这种形式将\ :prop_tgt:`PRECOMPILE_HEADERS_REUSE_FROM`\ 属性设置为\ ``<other_target>``，\
+并添加了一个依赖项，使得\ ``<target>``\ 依赖于\ ``<other_target>``。如果在使用\
+``REUSE_FROM``\ 表单时已经设置了\ ``<target>``\ 的\ :prop_tgt:`PRECOMPILE_HEADERS`\
+属性，那么CMake将停止并报错。
 
 .. note::
 
-  The ``REUSE_FROM`` form requires the same set of compiler options,
-  compiler flags and compiler definitions for both ``<target>`` and
-  ``<other_target>``.  Some compilers (e.g. GCC) may issue a warning if the
-  precompiled header file cannot be used (``-Winvalid-pch``).
+  ``REUSE_FROM``\ 形式需要\ ``<target>``\ 和\ ``<other_target>``\ 相同的编译器选项、\
+  编译器标志和的编译器定义。如果预编译的头文件不能使用，某些编译器（例如GCC）可能会发出警告（\
+  ``-Winvalid-pch``\ ）。
 
-See Also
+另请参阅
 ^^^^^^^^
 
-* To disable precompile headers for specific targets, see the
-  :prop_tgt:`DISABLE_PRECOMPILE_HEADERS` target property.
+* 要禁用特定目标的预编译头，请参阅\ :prop_tgt:`DISABLE_PRECOMPILE_HEADERS`\ 目标属性。
 
-* To prevent precompile headers from being used when compiling a specific
-  source file, see the :prop_sf:`SKIP_PRECOMPILE_HEADERS` source file property.
+* 要阻止在编译特定源文件时使用预编译头，请参阅\ :prop_sf:`SKIP_PRECOMPILE_HEADERS`\
+  源文件属性。
 
 * :command:`target_compile_definitions`
 * :command:`target_compile_features`
