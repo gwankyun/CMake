@@ -9,103 +9,77 @@ target_link_libraries
 :ref:`使用需求 <Target Usage Requirements>`\ 将被传递下去。目标依赖项的使用需求会影响\
 其自身源代码的编译。
 
-Overview
+概述
 ^^^^^^^^
 
-This command has several signatures as detailed in subsections below.
-All of them have the general form
+该命令有几个签名，详细内容将在下面的小节中介绍。它们都有一般格式
 
 .. code-block:: cmake
 
   target_link_libraries(<target> ... <item>... ...)
 
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library` and must not be an
-:ref:`ALIAS target <Alias Targets>`.  If policy :policy:`CMP0079` is not
-set to ``NEW`` then the target must have been created in the current
-directory.  Repeated calls for the same ``<target>`` append items in
-the order called.
+命名\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
+等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。如果策略\ :policy:`CMP0079`\
+没有设置为\ ``NEW``，则目标必须已经在当前目录下创建。重复调用相同的\ ``<target>``\ 将元素\
+按照调用的顺序添加。
 
 .. versionadded:: 3.13
-  The ``<target>`` doesn't have to be defined in the same directory as the
-  ``target_link_libraries`` call.
+  ``<target>``\ 不必定义在\ ``target_link_libraries``\ 调用所在的目录中。
 
-Each ``<item>`` may be:
+每个\ ``<item>``\ 可能是：
 
-* **A library target name**: The generated link line will have the
-  full path to the linkable library file associated with the target.
-  The buildsystem will have a dependency to re-link ``<target>`` if
-  the library file changes.
+* **库目标名**: 生成的链接行将具有与目标相关联的可链接库文件的完整路径。如果库文件发生更改，\
+  构建系统将依赖于重新链接\ ``<target>``。
 
-  The named target must be created by :command:`add_library` within
-  the project or as an :ref:`IMPORTED library <Imported Targets>`.
-  If it is created within the project an ordering dependency will
-  automatically be added in the build system to make sure the named
-  library target is up-to-date before the ``<target>`` links.
+  命名目标必须由\ :command:`add_library`\ 在项目中创建，或者作为\
+  :ref:`导入库 <Imported Targets>`\ 创建。如果它是在项目中创建的，那么将自动在构建系统中\
+  添加一个排序依赖项，以确保命名库目标在\ ``<target>``\ 链接之前是最新的。
 
-  If an imported library has the :prop_tgt:`IMPORTED_NO_SONAME`
-  target property set, CMake may ask the linker to search for
-  the library instead of using the full path
-  (e.g. ``/usr/lib/libfoo.so`` becomes ``-lfoo``).
+  如果导入库设置了\ :prop_tgt:`IMPORTED_NO_SONAME`\ 目标属性，CMake可能会要求链接器\
+  搜索该库而不是使用完整的路径（例如\ ``/usr/lib/libfoo.so``\ 变成\ ``-lfoo``）。
 
-  The full path to the target's artifact will be quoted/escaped for
-  the shell automatically.
+  目标工作的完整路径会被shell自动引用/转义。
 
-* **A full path to a library file**: The generated link line will
-  normally preserve the full path to the file. The buildsystem will
-  have a dependency to re-link ``<target>`` if the library file changes.
+* **库文件的完整路径**: 生成的链接行通常会保留文件的完整路径。如果库文件发生更改，构建系统将\
+  依赖于重新链接\ ``<target>`` 。
 
-  There are some cases where CMake may ask the linker to search for
-  the library (e.g. ``/usr/lib/libfoo.so`` becomes ``-lfoo``), such
-  as when a shared library is detected to have no ``SONAME`` field.
-  See policy :policy:`CMP0060` for discussion of another case.
+  在某些情况下，CMake可能会要求链接器搜索该库（例如\ ``/usr/lib/libfoo.so``\ 变成\
+  ``-lfoo``），例如当检测到共享库没有\ ``SONAME``\ 字段时。有关另一个案例的讨论，请参阅策略\
+  :policy:`CMP0060`。
 
-  If the library file is in a macOS framework, the ``Headers`` directory
-  of the framework will also be processed as a
-  :ref:`usage requirement <Target Usage Requirements>`.  This has the same
-  effect as passing the framework directory as an include directory.
+  如果库文件在macOS框架中，框架的\ ``Headers``\ 目录也会作为\
+  :ref:`使用需求 <Target Usage Requirements>`\ 进行处理。这与将框架目录作为include目录\
+  传递的效果相同。
 
   .. versionadded:: 3.28
 
-    The library file may point to a ``.xcframework`` folder on Apple platforms.
-    If it does, the target will get the selected library's ``Headers``
-    directory as a usage requirement.
+    在苹果平台上，库文件可能指向一个\ ``.xcframework``\ 文件夹。如果是，目标将获得所选库的\
+    ``Headers``\ 目录作为使用要求。
 
   .. versionadded:: 3.8
-    On :ref:`Visual Studio Generators` for VS 2010 and above, library files
-    ending in ``.targets`` will be treated as MSBuild targets files and
-    imported into generated project files.  This is not supported by other
-    generators.
+    在VS 2010及更高版本的\ :ref:`Visual Studio Generators`\ 上，以\ ``.targets``\
+    结尾的库文件将被视为MSBuild目标文件并导入生成的项目文件。其他生成器不支持此功能。
 
-  The full path to the library file will be quoted/escaped for
-  the shell automatically.
+  库文件的完整路径将自动被引号/转义以供shell使用。
 
-* **A plain library name**: The generated link line will ask the linker
-  to search for the library (e.g. ``foo`` becomes ``-lfoo`` or ``foo.lib``).
+* **普通的库名**: 生成的链接行将要求链接器搜索该库（例如\ ``foo``\ 变为\ ``-lfoo``\ 或\
+  ``foo.lib``）。
 
-  The library name/flag is treated as a command-line string fragment and
-  will be used with no extra quoting or escaping.
+  库名/标志被视为命令行字符串片段，在使用时不需要额外的引号或转义。
 
-* **A link flag**: Item names starting with ``-``, but not ``-l`` or
-  ``-framework``, are treated as linker flags.  Note that such flags will
-  be treated like any other library link item for purposes of transitive
-  dependencies, so they are generally safe to specify only as private link
-  items that will not propagate to dependents.
+* **链接标志**: 以\ ``-``\ 开头，但不是\ ``-l``\ 或\ ``-framework``\ 的项目名称被视为\
+  链接标志。注意，对于传递依赖，这些标志会像其他任何库链接项一样被处理，所以通常只指定为不会\
+  传播到依赖项的私有链接项是安全的。
 
-  Link flags specified here are inserted into the link command in the same
-  place as the link libraries. This might not be correct, depending on
-  the linker. Use the :prop_tgt:`LINK_OPTIONS` target property or
-  :command:`target_link_options` command to add link
-  flags explicitly. The flags will then be placed at the toolchain-defined
-  flag position in the link command.
+  这里指定的链接标志会插入到链接命令中与链接库相同的位置。根据链接器的不同，这可能不正确。\
+  使用\ :prop_tgt:`LINK_OPTIONS`\ 目标属性或\ :command:`target_link_options`\
+  命令显式添加链接标志。然后，这些标志将放置在链接命令中工具链定义的标志位置。
 
   .. versionadded:: 3.13
-    :prop_tgt:`LINK_OPTIONS` target property and :command:`target_link_options`
-    command.  For earlier versions of CMake, use :prop_tgt:`LINK_FLAGS`
-    property instead.
+    :prop_tgt:`LINK_OPTIONS`\ 目标属性和\ :command:`target_link_options`\ 命令。\
+    对于CMake的早期版本，请使用\ :prop_tgt:`LINK_FLAGS`\ 属性。
 
-  The link flag is treated as a command-line string fragment and
-  will be used with no extra quoting or escaping.
+  链接标志被视为命令行字符串片段，使用时不需要额外的引号或转义。
 
 * **A generator expression**: A ``$<...>`` :manual:`generator expression
   <cmake-generator-expressions(7)>` may evaluate to any of the above
