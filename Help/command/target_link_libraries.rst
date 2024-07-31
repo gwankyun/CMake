@@ -81,42 +81,30 @@ target_link_libraries
 
   链接标志被视为命令行字符串片段，使用时不需要额外的引号或转义。
 
-* **A generator expression**: A ``$<...>`` :manual:`generator expression
-  <cmake-generator-expressions(7)>` may evaluate to any of the above
-  items or to a :ref:`semicolon-separated list <CMake Language Lists>` of them.
-  If the ``...`` contains any ``;`` characters, e.g. after evaluation
-  of a ``${list}`` variable, be sure to use an explicitly quoted
-  argument ``"$<...>"`` so that this command receives it as a
-  single ``<item>``.
+* **生成器表达式**: 一个\ ``$<...>``\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\
+  可以求值为上述任何项或它们的\ :ref:`分号分隔列表 <CMake Language Lists>`。如果\ ``...``\
+  包含任何\ ``;``\ 字符，例如，在\ ``${list}``\ 变量求值之后，一定要使用一个显式引用的参数\
+  ``"$<...>"``\ 以便该命令接收它作为单个\ ``<item>``。
 
-  Additionally, a generator expression may be used as a fragment of
-  any of the above items, e.g. ``foo$<1:_d>``.
+  此外，生成器表达式可以用作上述任何项的片段，例如\ ``foo$<1:_d>``。
 
-  Note that generator expressions will not be used in OLD handling of
-  policy :policy:`CMP0003` or policy :policy:`CMP0004`.
+  请注意，生成器表达式将不会用于策略\ :policy:`CMP0003`\ 或策略\ :policy:`CMP0004`\
+  的旧处理。
 
-* A ``debug``, ``optimized``, or ``general`` keyword immediately followed
-  by another ``<item>``.  The item following such a keyword will be used
-  only for the corresponding build configuration.  The ``debug`` keyword
-  corresponds to the ``Debug`` configuration (or to configurations named
-  in the :prop_gbl:`DEBUG_CONFIGURATIONS` global property if it is set).
-  The ``optimized`` keyword corresponds to all other configurations.  The
-  ``general`` keyword corresponds to all configurations, and is purely
-  optional.  Higher granularity may be achieved for per-configuration
-  rules by creating and linking to
-  :ref:`IMPORTED library targets <Imported Targets>`.
-  These keywords are interpreted immediately by this command and therefore
-  have no special meaning when produced by a generator expression.
+* 一个\ ``debug``、\ ``optimized``\ 或\ ``general``\ 关键字，紧跟着另一个\ ``<item>``。\
+  关键字后面的项将仅用于相应的构建配置。\ ``debug``\ 关键字对应\ ``Debug``\ 配置（如果\
+  设置了全局属性\ :prop_gbl:`DEBUG_CONFIGURATIONS`，则对应全局配置）。\ ``optimized``\
+  关键字对应所有其他配置。\ ``general``\ 关键字对应所有配置，纯粹是可选的。通过创建和链接到\
+  :ref:`导入库目标 <Imported Targets>`，可以为每个配置规则实现更高的粒度。这些关键字由该\
+  命令立即解释，因此当由生成器表达式生成时，没有特殊含义。
 
-Items containing ``::``, such as ``Foo::Bar``, are assumed to be
-:ref:`IMPORTED <Imported Targets>` or :ref:`ALIAS <Alias Targets>` library
-target names and will cause an error if no such target exists.
-See policy :policy:`CMP0028`.
+包含\ ``::``\ 的项，如\ ``Foo::Bar``，被认为是\ :ref:`导入 <Imported Targets>`\ 或\
+:ref:`别名 <Alias Targets>`\ 库目标名，如果不存在这样的目标，将导致错误。参见策略\
+:policy:`CMP0028`。
 
-See the :manual:`cmake-buildsystem(7)` manual for more on defining
-buildsystem properties.
+有关定义构建属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
-Libraries for a Target and/or its Dependents
+目标和/或其依赖的库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
@@ -125,33 +113,25 @@ Libraries for a Target and/or its Dependents
                         <PRIVATE|PUBLIC|INTERFACE> <item>...
                        [<PRIVATE|PUBLIC|INTERFACE> <item>...]...)
 
-The ``PUBLIC``, ``PRIVATE`` and ``INTERFACE``
-:ref:`scope <Target Command Scope>` keywords can be used to
-specify both the link dependencies and the link interface in one command.
+``PUBLIC``、\ ``PRIVATE``\ 和\ ``INTERFACE``\ :ref:`作用域 <Target Command Scope>`\
+关键字可以在一个命令中同时指定链接依赖关系和链接接口。
 
-Libraries and targets following ``PUBLIC`` are linked to, and are made
-part of the link interface.  Libraries and targets following ``PRIVATE``
-are linked to, but are not made part of the link interface.  Libraries
-following ``INTERFACE`` are appended to the link interface and are not
-used for linking ``<target>``.
+``PUBLIC``\ 之后的库和目标被链接到，并成为链接接口的一部分。\ ``PRIVATE``\ 之后的库和目标\
+链接到，但不构成链接接口的一部分。\ ``INTERFACE``\ 之后的库附加到链接接口，不用于链接\
+``<target>``。
 
-Libraries for both a Target and its Dependents
+目标及其依赖的库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
 
   target_link_libraries(<target> <item>...)
 
-Library dependencies are transitive by default with this signature.
-When this target is linked into another target then the libraries
-linked to this target will appear on the link line for the other
-target too.  This transitive "link interface" is stored in the
-:prop_tgt:`INTERFACE_LINK_LIBRARIES` target property and may be overridden
-by setting the property directly.  When :policy:`CMP0022` is not set to
-``NEW``, transitive linking is built in but may be overridden by the
-:prop_tgt:`LINK_INTERFACE_LIBRARIES` property.  Calls to other signatures
-of this command may set the property making any libraries linked
-exclusively by this signature private.
+默认情况下，库依赖是可传递的。当这个目标链接到另一个目标时，链接到这个目标的库也会出现在另一个\
+目标的链接行上。这个可传递的“链接接口”存储在\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+目标属性中，可以通过直接设置该属性来覆盖。当\ :policy:`CMP0022`\ 没有设置为\ ``NEW``\ 时，\
+传递链接是内置的，但可能会被\ :prop_tgt:`LINK_INTERFACE_LIBRARIES`\ 属性覆盖。对该命令\
+的其他签名的调用可能会设置属性，使由该签名独家链接的任何库变为私有。
 
 Libraries for a Target and/or its Dependents (Legacy)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -204,14 +184,13 @@ is not ``NEW``, they are also appended to the
 ``general`` (or without any keyword) are treated as if specified for both
 ``debug`` and ``optimized``.
 
-Linking Object Libraries
+链接对象库
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. versionadded:: 3.12
 
-:ref:`Object Libraries` may be used as the ``<target>`` (first) argument
-of ``target_link_libraries`` to specify dependencies of their sources
-on other libraries.  For example, the code
+:ref:`Object Libraries`\ 可以用作\ ``target_link_libraries``\ 的\ ``<target>``\
+（第一个）参数，以指定其源对其他库的依赖关系。例如，代码
 
 .. code-block:: cmake
 
@@ -222,35 +201,29 @@ on other libraries.  For example, the code
   target_compile_definitions(obj PUBLIC OBJ)
   target_link_libraries(obj PUBLIC A)
 
-compiles ``obj.c`` with ``-DA -DOBJ`` and establishes usage requirements
-for ``obj`` that propagate to its dependents.
+用\ ``-DA -DOBJ``\ 编译\ ``obj.c``，并建立传播到其依赖项的\ ``obj``\ 的使用需求。
 
-Normal libraries and executables may link to :ref:`Object Libraries`
-to get their objects and usage requirements.  Continuing the above
-example, the code
+普通库和可执行文件可能会链接到\ :ref:`Object Libraries`\ 以获取它们的对象和使用需求。\
+继续上面的例子，代码
 
 .. code-block:: cmake
 
   add_library(B SHARED b.c)
   target_link_libraries(B PUBLIC obj)
 
-compiles ``b.c`` with ``-DA -DOBJ``, creates shared library ``B``
-with object files from ``b.c`` and ``obj.c``, and links ``B`` to ``A``.
-Furthermore, the code
+用\ ``-DA -DOBJ``\ 编译\ ``b.c`` ，用来自\ ``b.c``\ 和\ ``obj.c``\ 的对象文件创建\
+共享库\ ``B``，并将\ ``B``\ 链接到\ ``A``。此外，代码
 
 .. code-block:: cmake
 
   add_executable(main main.c)
   target_link_libraries(main B)
 
-compiles ``main.c`` with ``-DA -DOBJ`` and links executable ``main``
-to ``B`` and ``A``.  The object library's usage requirements are
-propagated transitively through ``B``, but its object files are not.
+用\ ``-DA -DOBJ``\ 编译\ ``main.c``，并将可执行的\ ``main``\ 链接到\ ``B``\ 和\
+``A``。对象库的使用需求通过\ ``B``\ 传递，但它的目标文件不是。
 
-:ref:`Object Libraries` may "link" to other object libraries to get
-usage requirements, but since they do not have a link step nothing
-is done with their object files.  Continuing from the above example,
-the code:
+:ref:`Object Libraries`\ 可能“链接”到其他对象库以获得使用需求，但由于它们没有链接步骤，\
+因此对它们的对象文件什么也做不了。继续上面的例子，代码：
 
 .. code-block:: cmake
 
@@ -260,15 +233,12 @@ the code:
   add_executable(main2 main2.c)
   target_link_libraries(main2 obj2)
 
-compiles ``obj2.c`` with ``-DA -DOBJ``, creates executable ``main2``
-with object files from ``main2.c`` and ``obj2.c``, and links ``main2``
-to ``A``.
+用\ ``-DA -DOBJ``\ 编译\ ``obj2.c``，用\ ``main2.c``\ 和\ ``obj2.c``\ 的对象文件\
+创建可执行的\ ``main2``，并将\ ``main2``\ 链接到\ ``A``。
 
-In other words, when :ref:`Object Libraries` appear in a target's
-:prop_tgt:`INTERFACE_LINK_LIBRARIES` property they will be
-treated as :ref:`Interface Libraries`, but when they appear in
-a target's :prop_tgt:`LINK_LIBRARIES` property their object files
-will be included in the link too.
+换句话说，当\ :ref:`Object Libraries`\ 出现在目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+属性中时，它们将被视为\ :ref:`Interface Libraries`，但当它们出现在目标的\
+:prop_tgt:`LINK_LIBRARIES`\ 属性中时，它们的目标文件也将包含在链接中。
 
 .. _`Linking Object Libraries via $<TARGET_OBJECTS>`:
 
