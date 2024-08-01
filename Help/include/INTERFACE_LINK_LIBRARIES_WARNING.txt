@@ -1,10 +1,6 @@
 
-Note that it is not advisable to populate the
-|INTERFACE_PROPERTY_LINK| of a target with absolute paths to dependencies.
-That would hard-code into installed packages the library file paths
-for dependencies **as found on the machine the package was made on**.
+请注意，用依赖项的绝对路径填充目标的\ |INTERFACE_PROPERTY_LINK|\ 是不可取的。这将把安装包\
+**所在机器上的**\ 依赖库文件路径硬编码到安装包中。
 
-See the :ref:`Creating Relocatable Packages` section of the
-:manual:`cmake-packages(7)` manual for discussion of additional care
-that must be taken when specifying usage requirements while creating
-packages for redistribution.
+请参阅\ :manual:`cmake-packages(7)`\ 手册的\ :ref:`Creating Relocatable Packages`\
+部分，以讨论在创建用于重新分发的包时指定使用要求时必须采取的额外注意事项。

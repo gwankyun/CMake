@@ -133,7 +133,7 @@ target_link_libraries
 传递链接是内置的，但可能会被\ :prop_tgt:`LINK_INTERFACE_LIBRARIES`\ 属性覆盖。对该命令\
 的其他签名的调用可能会设置属性，使由该签名独家链接的任何库变为私有。
 
-Libraries for a Target and/or its Dependents (Legacy)
+用于目标和/或其依赖项的库（遗留）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
@@ -155,7 +155,7 @@ made part of the :prop_tgt:`INTERFACE_LINK_LIBRARIES`.  If policy
 ``LINK_PRIVATE`` are linked to, but are not made part of the
 :prop_tgt:`INTERFACE_LINK_LIBRARIES` (or :prop_tgt:`LINK_INTERFACE_LIBRARIES`).
 
-Libraries for Dependents Only (Legacy)
+仅用于依赖的库（遗留）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
@@ -242,17 +242,14 @@ is not ``NEW``, they are also appended to the
 
 .. _`Linking Object Libraries via $<TARGET_OBJECTS>`:
 
-Linking Object Libraries via ``$<TARGET_OBJECTS>``
+通过\ ``$<TARGET_OBJECTS>``\ 链接对象库
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 .. versionadded:: 3.21
 
-The object files associated with an object library may be referenced
-by the :genex:`$<TARGET_OBJECTS>` generator expression.  Such object
-files are placed on the link line *before* all libraries, regardless
-of their relative order.  Additionally, an ordering dependency will be
-added to the build system to make sure the object library is up-to-date
-before the dependent target links.  For example, the code
+与对象库关联的对象文件可以通过\ :genex:`$<TARGET_OBJECTS>`\ 生成器表达式引用。这样的目标\
+文件放在链接行中所有库的\ *前面*，不管它们的相对顺序如何。此外，还会在构建系统中添加一个顺序\
+依赖项，以确保对象库在依赖目标链接之前是最新的。例如，代码
 
 .. code-block:: cmake
 
@@ -262,37 +259,30 @@ before the dependent target links.  For example, the code
   add_executable(main3 main3.c)
   target_link_libraries(main3 PRIVATE a3 $<TARGET_OBJECTS:obj3> b3)
 
-links executable ``main3`` with object files from ``main3.c``
-and ``obj3.c`` followed by the ``a3`` and ``b3`` libraries.
-``main3.c`` is *not* compiled with usage requirements from ``obj3``,
-such as ``-DOBJ3``.
+将可执行文件\ ``main3``\ 与\ ``main3.c``\ 和\ ``obj3.c``\ 的对象文件链接起来，然后是\
+``a3``\ 和\ ``b3``\ 库。\ ``main3.c``\ 编译时\ *没有*\ 考虑\ ``obj3``\ 的使用需求，\
+例如\ ``-DOBJ3``。
 
-This approach can be used to achieve transitive inclusion of object
-files in link lines as usage requirements.  Continuing the above
-example, the code
+这种方法可以根据使用要求在链接行中实现目标文件的传递包含。继续上面的例子，代码
 
 .. code-block:: cmake
 
   add_library(iface_obj3 INTERFACE)
   target_link_libraries(iface_obj3 INTERFACE obj3 $<TARGET_OBJECTS:obj3>)
 
-creates an interface library ``iface_obj3`` that forwards the ``obj3``
-usage requirements and adds the ``obj3`` object files to dependents'
-link lines.  The code
+创建一个接口库\ ``iface_obj3``，它转发\ ``obj3``\ 的使用需求，并将\ ``obj3``\ 对象文件\
+添加到依赖的链接行。代码如下
 
 .. code-block:: cmake
 
   add_executable(use_obj3 use_obj3.c)
   target_link_libraries(use_obj3 PRIVATE iface_obj3)
 
-compiles ``use_obj3.c`` with ``-DOBJ3`` and links executable ``use_obj3``
-with object files from ``use_obj3.c`` and ``obj3.c``.
+使用\ ``-DOBJ3``\ 编译\ ``use_obj3.c``，并将可执行文件\ ``use_obj3``\ 与\
+``use_obj3.c``\ 和\ ``obj3.c``\ 中的目标文件链接起来。
 
-This also works transitively through a static library.  Since a static
-library does not link, it does not consume the object files from
-object libraries referenced this way.  Instead, the object files
-become transitive link dependencies of the static library.
-Continuing the above example, the code
+这也可以通过静态库传递。因为静态库没有链接，所以它不会使用以这种方式引用的对象库中的对象文件。\
+相反，目标文件变成了静态库的传递链接依赖。继续上面的例子，代码
 
 .. code-block:: cmake
 
@@ -302,37 +292,29 @@ Continuing the above example, the code
   add_executable(use_static3 use_static3.c)
   target_link_libraries(use_static3 PRIVATE static3)
 
-compiles ``static3.c`` with ``-DOBJ3`` and creates ``libstatic3.a``
-using only its own object file.  ``use_static3.c`` is compiled *without*
-``-DOBJ3`` because the usage requirement is not transitive through
-the private dependency of ``static3``.  However, the link dependencies
-of ``static3`` are propagated, including the ``iface_obj3`` reference
-to ``$<TARGET_OBJECTS:obj3>``.  The ``use_static3`` executable is
-created with object files from ``use_static3.c`` and ``obj3.c``, and
-linked to library ``libstatic3.a``.
+使用\ ``-DOBJ3``\ 编译\ ``static3.c``\ 并创建\ ``libstatic3.a``\ 只使用自己的目标文件。\
+编译\ ``use_static3.c``\ 时\ *没有*\ 使用\ ``-DOBJ3``，因为使用需求不能通过\
+``static3``\ 的私有依赖传递。但是，\ ``static3``\ 的链接依赖会传播，包括\ ``iface_obj3``\
+对\ ``$<TARGET_OBJECTS:obj3>``\ 的引用。\ ``use_static3``\ 可执行文件是由\
+``use_static3.c``\ 和\ ``obj3.c``\ 的对象文件创建的，并链接到\ ``libstatic3.a``\ 库。
 
-When using this approach, it is the project's responsibility to avoid
-linking multiple dependent binaries to ``iface_obj3``, because they will
-all get the ``obj3`` object files on their link lines.
+当使用这种方法时，项目有责任避免将多个有此依赖的二进制文件再次链接到\ ``iface_obj3``，\
+因为它们都将在链接行上获得\ ``obj3``\ 对象文件。
 
 .. note::
 
-  Referencing :genex:`$<TARGET_OBJECTS>` in ``target_link_libraries``
-  calls worked in versions of CMake prior to 3.21 for some cases,
-  but was not fully supported:
+  在\ ``target_link_libraries``\ 调用中引用\ :genex:`$<TARGET_OBJECTS>`\ 在某些情况\
+  下在3.21之前的CMake版本中工作，但不完全支持：
 
-  * It did not place the object files before libraries on link lines.
-  * It did not add an ordering dependency on the object library.
-  * It did not work in Xcode with multiple architectures.
+  * 它没有将目标文件放在库的链接行之前。
+  * 它没有在对象库上添加顺序依赖项。
+  * 它不能在Xcode中支持多种架构。
 
-Cyclic Dependencies of Static Libraries
+静态库的循环依赖
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The library dependency graph is normally acyclic (a DAG), but in the case
-of mutually-dependent ``STATIC`` libraries CMake allows the graph to
-contain cycles (strongly connected components).  When another target links
-to one of the libraries, CMake repeats the entire connected component.
-For example, the code
+库依赖图通常是无环的（DAG），但在相互依赖的\ ``STATIC``\ 库的情况下，CMake允许图包含循环\
+（强连接组件）。当另一个目标链接到其中一个库时，CMake会重复整个连接的组件。例如，代码
 
 .. code-block:: cmake
 
@@ -343,21 +325,18 @@ For example, the code
   add_executable(main main.c)
   target_link_libraries(main A)
 
-links ``main`` to ``A B A B``.  While one repetition is usually
-sufficient, pathological object file and symbol arrangements can require
-more.  One may handle such cases by using the
-:prop_tgt:`LINK_INTERFACE_MULTIPLICITY` target property or by manually
-repeating the component in the last ``target_link_libraries`` call.
-However, if two archives are really so interdependent they should probably
-be combined into a single archive, perhaps by using :ref:`Object Libraries`.
+链接\ ``main``\ 到\ ``A B A B``，虽然一个重复通常是足够的，病态的目标文件和符号安排可能\
+需要更多。我们可以使用\ :prop_tgt:`LINK_INTERFACE_MULTIPLICITY`\ 目标属性来处理这种情况，\
+或者在最后一次\ ``target_link_libraries``\ 调用中手动重复组件。然而，如果两个归档文件真的\
+如此相互依赖，那么它们可能应该组合成一个单独的归档文件，可以使用\ :ref:`Object Libraries`。
 
-Creating Relocatable Packages
+创建可重定位包
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. |INTERFACE_PROPERTY_LINK| replace:: :prop_tgt:`INTERFACE_LINK_LIBRARIES`
 .. include:: /include/INTERFACE_LINK_LIBRARIES_WARNING.txt
 
-See Also
+另外参阅
 ^^^^^^^^
 
 * :command:`target_compile_definitions`
