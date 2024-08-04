@@ -1394,7 +1394,7 @@ hash=${hash}
       DEPENDS \${depends}
       DEPENDEES mkdir
       ${log}
-  ${uses_terminal}
+      ${uses_terminal}
     )"
   )
 endfunction()
@@ -1495,10 +1495,10 @@ function(_ep_add_update_command name)
       set(svn_interactive_args "--non-interactive")
     endif()
     set(svn_user_pw_args "")
-    if(DEFINED svn_username)
+    if(DEFINED _EP_SVN_USERNAME)
       set(svn_user_pw_args ${svn_user_pw_args} "--username=${svn_username}")
     endif()
-    if(DEFINED svn_password)
+    if(DEFINED _EP_SVN_PASSWORD)
       set(svn_user_pw_args ${svn_user_pw_args} "--password=${svn_password}")
     endif()
     if(svn_trust_cert)
@@ -1534,6 +1534,12 @@ function(_ep_add_update_command name)
     set(work_dir ${source_dir})
     set(comment "Performing update step for '${name}'")
     set(comment_disconnected "Performing disconnected update step for '${name}'")
+
+    if(update_disconnected)
+      set(can_fetch_default NO)
+    else()
+      set(can_fetch_default YES)
+    endif()
 
     set(git_tag "${_EP_GIT_TAG}")
     if(NOT git_tag)
@@ -1602,11 +1608,6 @@ function(_ep_add_update_command name)
     set(always 1)
 
     if(arg_SCRIPT_FILE)
-      if(update_disconnected)
-        set(can_fetch_default NO)
-      else()
-        set(can_fetch_default YES)
-      endif()
       set(step_script_contents "include(\"${update_script}\")")
     endif()
 
@@ -1719,7 +1720,7 @@ Update to Mercurial >= 2.1.1.
       DEPENDEES download
       DEPENDS \${file_deps}
       ${log}
-  ${uses_terminal}
+      ${uses_terminal}
     )"
   )
   if(update_disconnected)
@@ -1740,7 +1741,7 @@ Update to Mercurial >= 2.1.1.
         DEPENDEES download
         DEPENDS \${file_deps}
         ${log}
-    ${uses_terminal}
+        ${uses_terminal}
       )"
     )
   endif()
@@ -1831,7 +1832,7 @@ function(_ep_add_patch_command name)
       DEPENDEES update
       DEPENDS \${patch_info_file}
       ${log}
-  ${uses_terminal}
+      ${uses_terminal}
     )"
   )
 
@@ -1844,7 +1845,7 @@ function(_ep_add_patch_command name)
         DEPENDEES update_disconnected
         DEPENDS \${patch_info_file}
         ${log}
-    ${uses_terminal}
+        ${uses_terminal}
       )"
     )
   endif()
