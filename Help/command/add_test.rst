@@ -10,86 +10,72 @@ add_test
            [WORKING_DIRECTORY <dir>]
            [COMMAND_EXPAND_LISTS])
 
-Adds a test called ``<name>``.  The test name may contain arbitrary
-characters, expressed as a :ref:`Quoted Argument` or :ref:`Bracket Argument`
-if necessary.  See policy :policy:`CMP0110`.
+​添加一个名为\ ``<name>``\ 的测试。测试名可以包含任意字符，必要时用\ :ref:`Quoted Argument`\
+或\ :ref:`Bracket Argument`\ 表示。参见策略\ :policy:`CMP0110`。
 
-CMake only generates tests if the :command:`enable_testing` command has been
-invoked.  The :module:`CTest` module invokes ``enable_testing`` automatically
-unless ``BUILD_TESTING`` is set to ``OFF``.
+​CMake仅在调用\ :command:`enable_testing`\ 命令时生成测试。除非\ ``BUILD_TESTING``\
+设置为\ ``OFF``，否则\ :module:`CTest`\ 模块会自动调用\ ``enable_testing``。
 
-Tests added with the ``add_test(NAME)`` signature support using
-:manual:`generator expressions <cmake-generator-expressions(7)>`
-in test properties set by :command:`set_property(TEST)` or
-:command:`set_tests_properties`. Test properties may only be set in the
-directory the test is created in.
+​通过\ ``add_test(NAME)``\ 签名添加的测试支持在\ :command:`set_property(TEST)`\ 或\
+:command:`set_tests_properties`\ 设置的测试属性中使用\
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`。测试属性只能在创建测试的目录中设置。
 
-``add_test`` options are:
+``add_test``\ 选项有：
 
 ``COMMAND``
-  Specify the test command-line.
+  ​指定测试命令行。
 
-  If ``<command>`` specifies an executable target created by
-  :command:`add_executable`:
+  ​如果\ ``<command>``\ 指定由\ :command:`add_executable`\ 创建的可执行目标：
 
-  * It will automatically be replaced by the location of the executable
-    created at build time.
+  * ​它将自动被构建时创建的可执行文件的位置替换。
 
   * .. versionadded:: 3.3
 
-      The target's :prop_tgt:`CROSSCOMPILING_EMULATOR`, if set, will be
-      used to run the command on the host::
+      目标的\ :prop_tgt:`CROSSCOMPILING_EMULATOR`，如果设置了，将用于在主机上运行命令：\ ::
 
         <emulator> <command>
 
       .. versionchanged:: 3.29
 
-        The emulator is used only when
-        :variable:`cross-compiling <CMAKE_CROSSCOMPILING>`.
-        See policy :policy:`CMP0158`.
+        仅在\ :variable:`交叉编译 <CMAKE_CROSSCOMPILING>`\ 时使用模拟器。参见策略\
+        :policy:`CMP0158`。
 
   * .. versionadded:: 3.29
 
-      The target's :prop_tgt:`TEST_LAUNCHER`, if set, will be
-      used to launch the command::
+      如果设置了目标的\ :prop_tgt:`TEST_LAUNCHER`，将用于启动命令：\ ::
 
         <launcher> <command>
 
-      If the :prop_tgt:`CROSSCOMPILING_EMULATOR` is also set, both are used::
+      ​如果也设置了\ :prop_tgt:`CROSSCOMPILING_EMULATOR`，则两者都会使用：\ ::
 
         <launcher> <emulator> <command>
 
-  The command may be specified using
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  ​该命令可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 指定。
 
 ``CONFIGURATIONS``
-  Restrict execution of the test only to the named configurations.
+  ​限制只对命名配置执行测试。
 
 ``WORKING_DIRECTORY``
-  Set the test property :prop_test:`WORKING_DIRECTORY` in which to execute the
-  test. If not specified, the test will be run in
-  :variable:`CMAKE_CURRENT_BINARY_DIR`. The working directory may be specified
-  using :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  ​设置测试属性\ :prop_test:`WORKING_DIRECTORY`，在其中执行测试。如果没有指定，将在\
+  :variable:`CMAKE_CURRENT_BINARY_DIR`\ 中运行测试。工作目录可以使用\
+  :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 指定。
 
 ``COMMAND_EXPAND_LISTS``
   .. versionadded:: 3.16
 
-  Lists in ``COMMAND`` arguments will be expanded, including those created with
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  ``COMMAND``\ 参数中的列表将被扩展，包括那些用\
+  :manual:`生器表达式 <cmake-generator-expressions(7)>`\ 创建的列表。
 
-If the test command exits with code ``0`` the test passes. Non-zero exit code
-is a "failed" test. The test property :prop_test:`WILL_FAIL` inverts this
-logic. Note that system-level test failures such as segmentation faults or
-heap errors will still fail the test even if ``WILL_FAIL`` is true. Output
-written to stdout or stderr is captured by :manual:`ctest(1)` and only
-affects the pass/fail status via the :prop_test:`PASS_REGULAR_EXPRESSION`,
-:prop_test:`FAIL_REGULAR_EXPRESSION`, or :prop_test:`SKIP_REGULAR_EXPRESSION`
-test properties.
+​如果测试命令以代码\ ``0``\ 退出，则测试通过。非零的退出代码是一个“失败”的测试。测试属性\
+:prop_test:`WILL_FAIL`\ 会反转​这个逻辑。请注意，系统级测试，如分段错误或堆错误，总会失败，\
+即使\ ``WILL_FAIL``\ 为true。写入stdout或stderr的输出由\ :manual:`ctest(1)`\ 捕获，\
+仅通过\ :prop_test:`PASS_REGULAR_EXPRESSION`、\ :prop_test:`FAIL_REGULAR_EXPRESSION`\
+或\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ 测试属性影响通过/失败状态。
 
 .. versionadded:: 3.16
-  Added :prop_test:`SKIP_REGULAR_EXPRESSION` property.
+  添加了\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ 属性。
 
-Example usage:
+​使用示例：
 
 .. code-block:: cmake
 
@@ -97,21 +83,18 @@ Example usage:
            COMMAND testDriver --config $<CONFIG>
                               --exe $<TARGET_FILE:myexe>)
 
-This creates a test ``mytest`` whose command runs a ``testDriver`` tool
-passing the configuration name and the full path to the executable
-file produced by target ``myexe``.
+这创建了一个\ ``mytest``\ 测试，它的命令运行一个\ ``testDriver``\ 工具，将配置名称和\
+完整路径传递给目标\ ``myexe``\ 生成的可执行文件。
 
 ---------------------------------------------------------------------
 
-The command syntax above is recommended over the older, less flexible form:
+​上面的命令语法比旧的、不太灵活的形式更推荐使用：
 
 .. code-block:: cmake
 
   add_test(<name> <command> [<arg>...])
 
-Add a test called ``<name>`` with the given command-line.
+​使用给定的命令行添加一个名为\ ``<name>``\ 的测试。
 
-Unlike the above ``NAME`` signature, target names are not supported
-in the command-line.  Furthermore, tests added with this signature do not
-support :manual:`generator expressions <cmake-generator-expressions(7)>`
-in the command-line or test properties.
+​与上面的\ ``NAME``\ 签名不同，在命令行中不支持目标名称。此外，添加此签名的测试在命令行或\
+测试属性中不支持\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
