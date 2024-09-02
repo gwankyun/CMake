@@ -18,29 +18,24 @@ find_package
 找到一个包（通常由项目外部提供），并加载其特定于包的详细信息。对该命令的调用也可能被\
 :ref:`dependency providers <dependency_providers>`\ 拦截。
 
-Typical Usage
+典型用法
 ^^^^^^^^^^^^^
 
-Most calls to ``find_package()`` typically have the following form:
+大多数对\ ``find_package()``\ 的调用通常是以下格式：
 
 .. parsed-literal::
 
   find_package(<PackageName> [<version>] [REQUIRED] [COMPONENTS <components>...])
 
-The ``<PackageName>`` is the only mandatory argument.  The ``<version>`` is
-often omitted, and ``REQUIRED`` should be given if the project cannot be
-configured successfully without the package.  Some more complicated packages
-support components which can be selected with the ``COMPONENTS`` keyword, but
-most packages don't have that level of complexity.
+``<PackageName>``\ 是唯一的强制参数。\ ``<version>``\ 通常省略，如果没有包就不能成功配置\
+项目，则应该给出\ ``REQUIRED``。一些更复杂的包支持可以使用\ ``COMPONENTS``\ 关键字选择\
+组件，但大多数包没有那么复杂的级别。
 
-The above is a reduced form of the `basic signature`_.  Where possible,
-projects should find packages using this form.  This reduces complexity and
-maximizes the ways in which the package can be found or provided.
+以上是\ `basic signature`_\ 的简化形式。在可能的情况下，项目应该使用这种形式找到包。这降低\
+了复杂性，并最大化了找到或提供包的方式。
 
-Understanding the `basic signature`_ should be enough for general usage of
-``find_package()``.  Project maintainers who intend to provide a config
-package should understand the bigger picture, as explained in
-:ref:`Full Signature` and all subsequent sections on this page.
+了解\ `basic signature`_\ 就足以了解\ ``find_package()``\ 的一般用法了。打算提供配置包\
+的项目维护者应该了解更大的图景，在\ :ref:`Full Signature`\ 和本页的所有后续部分中有解释。
 
 Search Modes
 ^^^^^^^^^^^^
