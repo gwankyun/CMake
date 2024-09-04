@@ -37,70 +37,51 @@ find_package
 了解\ `basic signature`_\ 就足以了解\ ``find_package()``\ 的一般用法了。打算提供配置包\
 的项目维护者应该了解更大的图景，在\ :ref:`Full Signature`\ 和本页的所有后续部分中有解释。
 
-Search Modes
+搜索模式
 ^^^^^^^^^^^^
 
-The command has a few modes by which it searches for packages:
+这个命令有几种搜索包的模式：
 
-**Module mode**
-  In this mode, CMake searches for a file called ``Find<PackageName>.cmake``,
-  looking first in the locations listed in the :variable:`CMAKE_MODULE_PATH`,
-  then among the :ref:`Find Modules` provided by the CMake installation.
-  If the file is found, it is read and processed by CMake.  It is responsible
-  for finding the package, checking the version, and producing any needed
-  messages.  Some Find modules provide limited or no support for versioning;
-  check the Find module's documentation.
+**模块模式**
+  在这种模式下，CMake搜索名为\ ``Find<PackageName>.cmake``\ 的文件。首先在\
+  :variable:`CMAKE_MODULE_PATH`\ 中列出的位置中查找，然后在CMake安装提供的\
+  :ref:`Find Modules`\ 中查找。如果找到该文件，则由CMake读取和处理。它负责查找包，检查版本，\
+  并生成任何需要的消息。有些Find模块对版本控制的支持有限，甚至没有；请查看Find模块的文档。
 
-  The ``Find<PackageName>.cmake`` file is not typically provided by the
-  package itself.  Rather, it is normally provided by something external to
-  the package, such as the operating system, CMake itself, or even the project
-  from which the ``find_package()`` command was called.  Being externally
-  provided, :ref:`Find Modules` tend to be heuristic in nature and are
-  susceptible to becoming out-of-date.  They typically search for certain
-  libraries, files and other package artifacts.
+  ``Find<PackageName>.cmake``\ 文件通常不是由包本身提供的。相反，它通常是由包之外的东西\
+  提供的，例如操作系统、CMake本身，甚至调用\ ``find_package()``\ 命令的项目。由于是外部\
+  提供的，\ :ref:`Find Modules`\ 在本质上往往是启发式的，很容易过时。它们通常搜索特定的库、\
+  文件和其他包工件。
 
-  Module mode is only supported by the
-  :ref:`basic command signature <Basic Signature>`.
+  模块模式仅支持\ :ref:`基本命令签名 <Basic Signature>`。
 
-**Config mode**
-  In this mode, CMake searches for a file called
-  ``<lowercasePackageName>-config.cmake`` or ``<PackageName>Config.cmake``.
-  It will also look for ``<lowercasePackageName>-config-version.cmake`` or
-  ``<PackageName>ConfigVersion.cmake`` if version details were specified
-  (see :ref:`version selection` for an explanation of how these separate
-  version files are used).
+**配置模式**
+  在这种模式下，CMake搜索名为\ ``<lowercasePackageName>-config.cmake``\ 或者\
+  ``<PackageName>Config.cmake``\ 的文件。它还将查找\
+  ``<lowercasePackageName>-config-version.cmake``\ 或者\
+  ``<PackageName>ConfigVersion.cmake``，如果指定了版本细节（有关如何使用这些单独的版本\
+  文件的解释，请参见\ :ref:`version selection`）。
 
-  In config mode, the command can be given a list of names to search for
-  as package names.  The locations where CMake searches for the config and
-  version files is considerably more complicated than for Module mode
-  (see :ref:`search procedure`).
+  在配置模式下，可以给这个命令一个要搜索的包名列表。CMake搜索配置和版本文件的位置比模块模式\
+  要复杂得多（请参阅\ :ref:`search procedure`）。
 
-  The config and version files are typically installed as part of the
-  package, so they tend to be more reliable than Find modules.  They usually
-  contain direct knowledge of the package contents, so no searching or
-  heuristics are needed within the config or version files themselves.
+  配置文件和版本文件通常是作为包的一部分安装的，所以它们往往比Find模块更可靠。它们通常包含包\
+  内容的直接信息，因此不需要在配置文件或版本文件本身中搜索或启发式使用。
 
-  Config mode is supported by both the :ref:`basic <Basic Signature>` and
-  :ref:`full <Full Signature>` command signatures.
+  :ref:`基本 <Basic Signature>`\ 和\ :ref:`完整 <Full Signature>`\ 都支持配置模式。
 
-**FetchContent redirection mode**
+**FetchContent重定向模式**
   .. versionadded:: 3.24
-    A call to ``find_package()`` can be redirected internally to a package
-    provided by the :module:`FetchContent` module.  To the caller, the behavior
-    will appear similar to Config mode, except that the search logic is
-    by-passed and the component information is not used.  See
-    :command:`FetchContent_Declare` and :command:`FetchContent_MakeAvailable`
-    for further details.
+    ``find_package()``\ 的调用可以在内部重定向到\ :module:`FetchContent`\ 模块提供的包。\
+    对于调用者来说，该行为看起来类似于配置模式，只是省略了搜索逻辑，并且没有使用组件信息。\
+    更多细节请参见\ :command:`FetchContent_Declare`\ 和\
+    :command:`FetchContent_MakeAvailable`。
 
-When not redirected to a package provided by :module:`FetchContent`, the
-command arguments determine whether Module or Config mode is used.  When the
-`basic signature`_ is used, the command searches in Module mode first.
-If the package is not found, the search falls back to Config mode.
-A user may set the :variable:`CMAKE_FIND_PACKAGE_PREFER_CONFIG` variable
-to true to reverse the priority and direct CMake to search using Config mode
-first before falling back to Module mode.  The basic signature can also be
-forced to use only Module mode with a ``MODULE`` keyword.  If the
-`full signature`_ is used, the command only searches in Config mode.
+当没有重定向到\ :module:`FetchContent`\ 提供的包时，命令参数决定是使用模块模式还是配置模式。\
+当使用\ `basic signature`_\ 时，该命令首先以模块模式进行搜索。如果没有找到包，搜索将退回到\
+配置模式。用户可以将\ :variable:`CMAKE_FIND_PACKAGE_PREFER_CONFIG`\ 变量设置为true来\
+逆转优先级，并在回退到模块模式之前，让CMake首先使用配置模式进行搜索。使用\ ``MODULE``\
+关键字还可以强制基本签名只使用模块模式。如果使用\ `full signature`_，只能在配置模式下进行搜索。
 
 .. _`basic signature`:
 
