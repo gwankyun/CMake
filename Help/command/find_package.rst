@@ -85,7 +85,7 @@ find_package
 
 .. _`basic signature`:
 
-Basic Signature
+基本签名
 ^^^^^^^^^^^^^^^
 
 .. parsed-literal::
@@ -98,88 +98,57 @@ Basic Signature
                [NO_POLICY_SCOPE]
                [BYPASS_PROVIDER])
 
-The basic signature is supported by both Module and Config modes.
-The ``MODULE`` keyword implies that only Module mode can be used to find
-the package, with no fallback to Config mode.
+模块模式和配置模式都支持基本签名。\ ``MODULE``\ 关键字意味着只能使用模块模式来查找包，而不\
+能返回到配置模式。
 
-Regardless of the mode used, a ``<PackageName>_FOUND`` variable will be
-set to indicate whether the package was found.  When the package is found,
-package-specific information may be provided through other variables and
-:ref:`Imported Targets` documented by the package itself.  The
-``QUIET`` option disables informational messages, including those indicating
-that the package cannot be found if it is not ``REQUIRED``.  The ``REQUIRED``
-option stops processing with an error message if the package cannot be found.
+无论使用的模式是什么，都将设置一个\ ``<PackageName>_FOUND``\ 变量，表示是否找到了包。\
+找到包后，可以通过包本身记录的其他变量和\ :ref:`Imported Targets`\ 提供特定于包的信息。\
+``QUIET``\ 选项禁用信息性消息，包括那些指示在不\ ``REQUIRED``\ 时无法找到包的消息。如果\
+找不到包，\ ``REQUIRED``\ 选项将停止处理并显示错误消息。
 
-A package-specific list of required components may be listed after the
-``COMPONENTS`` keyword.  If any of these components are not able to be
-satisfied, the package overall is considered to be not found.  If the
-``REQUIRED`` option is also present, this is treated as a fatal error,
-otherwise execution still continues.  As a form of shorthand, if the
-``REQUIRED`` option is present, the ``COMPONENTS`` keyword can be omitted
-and the required components can be listed directly after ``REQUIRED``.
+特定于包的所需组件列表可以在\ ``COMPONENTS``\ 关键字之后列出。如果这些组件中的任何一个不能\
+被满足，则认为整个包没有被找到。如果\ ``REQUIRED``\ 选项也存在，则将其视为致命错误，否则执\
+行仍然继续。作为一种简写形式，如果\ ``REQUIRED``\ 选项存在，\ ``COMPONENTS``\ 关键字可\
+以省略，并且必要组件可以直接列在\ ``REQUIRED``\ 之后。
 
-Additional optional components may be listed after
-``OPTIONAL_COMPONENTS``.  If these cannot be satisfied, the package overall
-can still be considered found, as long as all required components are
-satisfied.
+其他可选组件可以列在\ ``OPTIONAL_COMPONENTS``\ 之后。如果这些不能满足，仍然可以考虑找到\
+整体的包，只要所有需要的组件都满足。
 
-The set of available components and their meaning are defined by the
-target package.  Formally, it is up to the target package how to
-interpret the component information given to it, but it should follow
-the expectations stated above.  For calls where no components are specified,
-there is no single expected behavior and target packages should clearly
-define what occurs in such cases.  Common arrangements include assuming it
-should find all components, no components or some well-defined subset of the
-available components.
+可用组件的集合及其含义由目标包定义。形式上，如何解释提供给它的组件信息取决于目标包，但它应该\
+遵循上面所述的期望。对于没有指定组件的调用，没有单一的预期行为，目标包应该清楚地定义在这种情\
+况下会发生什么。常见的安排包括假设它应该找到所有组件，没有组件或可用组件的一些定义良好的子集。
 
 .. versionadded:: 3.24
-  The ``REGISTRY_VIEW`` keyword specifies which registry views should be
-  queried. This keyword is only meaningful on ``Windows`` platforms and will
-  be ignored on all others. Formally, it is up to the target package how to
-  interpret the registry view information given to it.
+  ``REGISTRY_VIEW``\ 关键字指定应该查询哪些注册表视图。这个关键字只在\ ``Windows``\
+  平台上有意义，在其他平台上会被忽略。形式上，如何解释提供给它的注册表视图信息由目标包决定。
 
 .. versionadded:: 3.24
-  Specifying the ``GLOBAL`` keyword will promote all imported targets to
-  a global scope in the importing project. Alternatively, this functionality
-  can be enabled by setting the :variable:`CMAKE_FIND_PACKAGE_TARGETS_GLOBAL`
-  variable.
+  指定 ``GLOBAL`` 关键字将把导入项目中的所有导入目标提升到全局作用域。或者，可以通过设置\
+  :variable:`CMAKE_FIND_PACKAGE_TARGETS_GLOBAL`\ 变量来启用该功能。
 
 .. _FIND_PACKAGE_VERSION_FORMAT:
 
-The ``[version]`` argument requests a version with which the package found
-should be compatible. There are two possible forms in which it may be
-specified:
+参数\ ``[version]``\ 请求与找到的包兼容的版本。它有两种可能的形式：
 
-  * A single version with the format ``major[.minor[.patch[.tweak]]]``, where
-    each component is a numeric value.
-  * A version range with the format ``versionMin...[<]versionMax`` where
-    ``versionMin`` and ``versionMax`` have the same format and constraints
-    on components being integers as the single version.  By default, both end
-    points are included.  By specifying ``<``, the upper end point will be
-    excluded. Version ranges are only supported with CMake 3.19 or later.
+  * 单个版本，格式为\ ``major[.minor[.patch[.tweak]]]``，其中每个分量都是数值。
+  * 版本范围，格式为\ ``versionMin...[<]versionMax``，其中\ ``versionMin``\ 和\
+    ``versionMax``\ 的格式和约束与单个版本相同，都是整数。默认情况下，包含两个端点。通过\
+    指定\ ``<``，上端点将被排除。版本范围仅支持CMake 3.19或更高版本。
 
-The ``EXACT`` option requests that the version be matched exactly. This option
-is incompatible with the specification of a version range.
+``EXACT``\ 选项要求版本完全匹配。此选项与版本范围的规范不兼容。
 
-If no ``[version]`` and/or component list is given to a recursive invocation
-inside a find-module, the corresponding arguments are forwarded
-automatically from the outer call (including the ``EXACT`` flag for
-``[version]``).  Version support is currently provided only on a
-package-by-package basis (see the `Version Selection`_ section below).
-When a version range is specified but the package is only designed to expect
-a single version, the package will ignore the upper end point of the range and
-only take the single version at the lower end of the range into account.
+如果没有\ ``[version]``\ 和/或组件列表提供给find-module中的递归调用，则会自动从外部调用\
+转发相应的参数（包括\ ``[version]``\ 的\ ``EXACT``\ 标志）。版本支持目前只在包的基础上提\
+供（参见下面的\ `Version Selection`_\ 部分）。当指定了版本范围，但包只设计为期望单一版本时，\
+包将忽略范围的上限，只考虑范围下限的单一版本。
 
-See the :command:`cmake_policy` command documentation for discussion
-of the ``NO_POLICY_SCOPE`` option.
+有关\ ``NO_POLICY_SCOPE``\ 选项的讨论，请参阅\ :command:`cmake_policy`\ 命令文档。
 
 .. versionadded:: 3.24
-  The ``BYPASS_PROVIDER`` keyword is only allowed when ``find_package()`` is
-  being called by a :ref:`dependency provider <dependency_providers>`.
-  It can be used by providers to call the built-in ``find_package()``
-  implementation directly and prevent that call from being re-routed back to
-  itself.  Future versions of CMake may detect attempts to use this keyword
-  from places other than a dependency provider and halt with a fatal error.
+  只有\ :ref:`dependency provider <dependency_providers>`\ 调用\ ``find_package()``\
+  时，才允许使用\ ``BYPASS_PROVIDER``\ 关键字。提供程序可以使用它直接调用内置的\
+  ``find_package()``\ 实现，并防止该调用被重新路由回自身。CMake的未来版本可能会检测到来\
+  自依赖提供程序以外的地方使用此关键字的尝试，并终止并抛出致命错误。
 
 .. _`full signature`:
 
