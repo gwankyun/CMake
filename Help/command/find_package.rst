@@ -152,7 +152,7 @@ find_package
 
 .. _`full signature`:
 
-Full Signature
+完整签名
 ^^^^^^^^^^^^^^
 
 .. parsed-literal::
@@ -184,44 +184,31 @@ Full Signature
                 ONLY_CMAKE_FIND_ROOT_PATH |
                 NO_CMAKE_FIND_ROOT_PATH])
 
-The ``CONFIG`` option, the synonymous ``NO_MODULE`` option, or the use
-of options not specified in the `basic signature`_ all enforce pure Config
-mode.  In pure Config mode, the command skips Module mode search and
-proceeds at once with Config mode search.
+``CONFIG``\ 选项、同义的\ ``NO_MODULE``\ 选项，或使用\ `basic signature`_\ 中没有指定\
+的选项，都强制执行纯配置模式。在纯配置模式下，该命令跳过模块模式搜索，并立即进行配置模式搜索。
 
-Config mode search attempts to locate a configuration file provided by the
-package to be found.  A cache entry called ``<PackageName>_DIR`` is created to
-hold the directory containing the file.  By default, the command searches for
-a package with the name ``<PackageName>``.  If the ``NAMES`` option is given,
-the names following it are used instead of ``<PackageName>``.  The names are
-also considered when determining whether to redirect the call to a package
-provided by :module:`FetchContent`.
+配置模式搜索试图定位要查找的包提供的配置文件。创建了一个名为\ ``<PackageName>_DIR``\ 的\
+缓存项，用于保存包含该文件的目录。缺省情况下，搜索名称为\ ``<PackageName>``\ 的包。如果指\
+定了\ ``NAMES``\ 选项，则使用后面的名称，而不是\ ``<PackageName>``。在决定是否将调用重\
+定向到\ :module:`FetchContent`\ 提供的包时，也要考虑名称。
 
-The command searches for a file called ``<PackageName>Config.cmake`` or
-``<lowercasePackageName>-config.cmake`` for each name specified.
-A replacement set of possible configuration file names may be given
-using the ``CONFIGS`` option.  The :ref:`search procedure` is specified below.
-Once found, any :ref:`version constraint <version selection>` is checked,
-and if satisfied, the configuration file is read and processed by CMake.
-Since the file is provided by the package it already knows the
-location of package contents.  The full path to the configuration file
-is stored in the cmake variable ``<PackageName>_CONFIG``.
+该命令搜索名为\ ``<PackageName>Config.cmake``\ 的文件或\
+``<lowercasePackageName>-config.cmake``\ 用于指定的每个名称。可以使用\ ``CONFIGS``\
+选项给出可能配置文件名称的替换集。:ref:`search procedure`\ 如下所示。一旦找到，就检查任何\
+:ref:`版本约束 <version selection>`，如果满足，就由CMake读取和处理配置文件。因为文件是由\
+包提供的，所以它已经知道包内容的位置。配置文件的完整路径保存在cmake变量\
+``<PackageName>_CONFIG``\ 中。
 
-All configuration files which have been considered by CMake while
-searching for the package with an appropriate version are stored in the
-``<PackageName>_CONSIDERED_CONFIGS`` variable, and the associated versions
-in the ``<PackageName>_CONSIDERED_VERSIONS`` variable.
+CMake在搜索具有适当版本的包时考虑的所有配置文件都存储在\
+``<PackageName>_CONSIDERED_CONFIGS``\ 变量中，而相关的版本存储在\
+``<PackageName>_CONSIDERED_VERSIONS``\ 变量中。
 
-If the package configuration file cannot be found CMake will generate
-an error describing the problem unless the ``QUIET`` argument is
-specified.  If ``REQUIRED`` is specified and the package is not found a
-fatal error is generated and the configure step stops executing.  If
-``<PackageName>_DIR`` has been set to a directory not containing a
-configuration file CMake will ignore it and search from scratch.
+如果找不到包配置文件，除非指定\ ``QUIET``\ 参数，否则CMake将生成一个描述问题的错误。如果指\
+定了\ ``REQUIRED``，并且没有找到包，则会生成致命错误，配置步骤将停止执行。如果\
+``<PackageName>_DIR``\ 被设置为一个不包含配置文件的目录，CMake将忽略它并从头开始搜索。
 
-Package maintainers providing CMake package configuration files are
-encouraged to name and install them such that the :ref:`search procedure`
-outlined below will find them without requiring use of additional options.
+建议提供CMake包配置文件的包维护者命名和安装它们，以便下面概述的\ :ref:`search procedure`\
+可以找到它们，而不需要使用其他选项。
 
 .. _`search procedure`:
 
