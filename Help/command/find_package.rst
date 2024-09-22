@@ -212,30 +212,25 @@ CMake在搜索具有适当版本的包时考虑的所有配置文件都存储在
 
 .. _`search procedure`:
 
-Config Mode Search Procedure
+配置模式搜索
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
-  When Config mode is used, this search procedure is applied regardless of
-  whether the :ref:`full <full signature>` or :ref:`basic <basic signature>`
-  signature was given.
+  在使用配置模式时，无论给出的是\ :ref:`完整签名 <full signature>`\ 还是\
+  :ref:`基本签名 <basic signature>`，都会应用这个搜索过程。
 
 .. versionadded:: 3.24
-  All calls to ``find_package()`` (even in Module mode) first look for a config
-  package file in the :variable:`CMAKE_FIND_PACKAGE_REDIRECTS_DIR` directory.
-  The :module:`FetchContent` module, or even the project itself, may write files
-  to that location to redirect ``find_package()`` calls to content already
-  provided by the project.  If no config package file is found in that location,
-  the search proceeds with the logic described below.
+  所有对\ ``find_package()``\ 的调用（即使在模块模式下）都首先在\
+  :variable:`CMAKE_FIND_PACKAGE_REDIRECTS_DIR`\ 目录中查找配置包文件。\
+  :module:`FetchContent`\ 模块，甚至是项目本身，都可以向该位置写入文件，将\
+  ``find_package()``\ 调用重定向到项目已经提供的内容。如果在该位置没有找到配置包文件，\
+  搜索将按照下面描述的逻辑进行。
 
-CMake constructs a set of possible installation prefixes for the
-package.  Under each prefix several directories are searched for a
-configuration file.  The tables below show the directories searched.
-Each entry is meant for installation trees following Windows (``W``), UNIX
-(``U``), or Apple (``A``) conventions:
+CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目录以查找配置文件。下表显示了搜索的目录。\
+每个条目都是按照Windows（\ ``W``\ ）、UNIX（\ ``U``\ ）或Apple（\ ``A``\ ）约定的安装树：
 
 ==================================================================== ==========
- Entry                                                               Convention
+ 条目                                                                 约定
 ==================================================================== ==========
  ``<prefix>/``                                                          W
  ``<prefix>/(cmake|CMake)/``                                            W
@@ -252,12 +247,11 @@ Each entry is meant for installation trees following Windows (``W``), UNIX
 
 .. [#] .. versionadded:: 3.25
 
-On systems supporting macOS :prop_tgt:`FRAMEWORK` and :prop_tgt:`BUNDLE`, the
-following directories are searched for Frameworks or Application Bundles
-containing a configuration file:
+在支持macOS :prop_tgt:`FRAMEWORK`\ 和\ :prop_tgt:`BUNDLE`\ 的系统中，可以在以下目录\
+中搜索包含配置文件的框架或应用包：
 
 =========================================================== ==========
- Entry                                                      Convention
+ 条目                                                        约定
 =========================================================== ==========
  ``<prefix>/<name>.framework/Resources/``                      A
  ``<prefix>/<name>.framework/Resources/CMake/``                A
@@ -267,30 +261,29 @@ containing a configuration file:
  ``<prefix>/<name>.app/Contents/Resources/CMake/``             A
 =========================================================== ==========
 
-In all cases the ``<name>`` is treated as case-insensitive and corresponds
-to any of the names specified (``<PackageName>`` or names given by ``NAMES``).
+在所有情况下，\ ``<name>``\ 都是不区分大小写的，对应于指定的任何名称（\ ``<PackageName>``\
+或由\ ``NAMES``\ 给出的名称）。
 
-If at least one compiled language has been enabled, the architecture-specific
-``lib/<arch>`` and ``lib*`` directories may be searched based on the compiler's
-target architecture, in the following order:
+如果至少启用了一种编译语言，那么可以根据编译器的目标体系结构搜索特定于体系结构的\
+``lib/<arch>``\ 和\ ``lib*``\ 目录，顺序如下：
 
 ``lib/<arch>``
-  Searched if the :variable:`CMAKE_LIBRARY_ARCHITECTURE` variable is set.
+  如果设置了\ :variable:`CMAKE_LIBRARY_ARCHITECTURE`\ 变量，则进行搜索。
 
 ``lib64``
-  Searched on 64 bit platforms (:variable:`CMAKE_SIZEOF_VOID_P` is 8) and the
-  :prop_gbl:`FIND_LIBRARY_USE_LIB64_PATHS` property is set to ``TRUE``.
+  在64位平台上搜索（\ :variable:`CMAKE_SIZEOF_VOID_P`\ 为8），\
+  :prop_gbl:`FIND_LIBRARY_USE_LIB64_PATHS`\ 属性设置为\ ``TRUE``。
 
 ``lib32``
-  Searched on 32 bit platforms (:variable:`CMAKE_SIZEOF_VOID_P` is 4) and the
-  :prop_gbl:`FIND_LIBRARY_USE_LIB32_PATHS` property is set to ``TRUE``.
+  在32位平台上搜索（\ :variable:`CMAKE_SIZEOF_VOID_P`\ 为4），\
+  :prop_gbl:`FIND_LIBRARY_USE_LIB32_PATHS`\ 属性设置为\ ``TRUE``。
 
 ``libx32``
-  Searched on platforms using the x32 ABI
-  if the :prop_gbl:`FIND_LIBRARY_USE_LIBX32_PATHS` property is set to ``TRUE``.
+  如果\ :prop_gbl:`FIND_LIBRARY_USE_LIBX32_PATHS`\ 属性设置为\ ``TRUE``，则在平台上\
+  使用x32 ABI进行搜索。
 
 ``lib``
-  Always searched.
+  总是搜索。
 
 .. versionchanged:: 3.24
   On ``Windows`` platform, it is possible to include registry queries as part
