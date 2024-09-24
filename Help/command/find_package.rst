@@ -286,19 +286,17 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
   总是搜索。
 
 .. versionchanged:: 3.24
-  On ``Windows`` platform, it is possible to include registry queries as part
-  of the directories specified through ``HINTS`` and ``PATHS`` keywords, using
-  a :ref:`dedicated syntax <Find Using Windows Registry>`. Such specifications
-  will be ignored on all other platforms.
+  在\ ``Windows``\ 平台上，可以使用\ :ref:`专用的语法 <Find Using Windows Registry>`，\
+  将注册表查询作为通过\ ``HINTS``\ 和\ ``PATHS``\ 关键字指定的目录的一部分。在所有其他平\
+  台上，这些规范将被忽略。
 
 .. versionadded:: 3.24
-  ``REGISTRY_VIEW`` can be specified to manage ``Windows`` registry queries
-  specified as part of ``PATHS`` and ``HINTS``.
+  可以指定\ ``REGISTRY_VIEW``\ 来管理作为\ ``PATHS``\ 和\ ``HINTS``\ 的一部分指定的\
+  ``Windows``\ 注册表查询。
 
   .. include:: FIND_XXX_REGISTRY_VIEW.txt
 
-If ``PATH_SUFFIXES`` is specified, the suffixes are appended to each
-(``W``) or (``U``) directory entry one-by-one.
+如果指定了\ ``PATH_SUFFIXES``，则后缀将逐个添加到每个（\ ``W``\ ）或（\ ``U``\ )目录项。
 
 This set of directories is intended to work in cooperation with
 projects that provide configuration files in their installation trees.
