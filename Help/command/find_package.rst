@@ -298,21 +298,13 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 如果指定了\ ``PATH_SUFFIXES``，则后缀将逐个添加到每个（\ ``W``\ ）或（\ ``U``\ )目录项。
 
-This set of directories is intended to work in cooperation with
-projects that provide configuration files in their installation trees.
-Directories above marked with (``W``) are intended for installations on
-Windows where the prefix may point at the top of an application's
-installation directory.  Those marked with (``U``) are intended for
-installations on UNIX platforms where the prefix is shared by multiple
-packages.  This is merely a convention, so all (``W``) and (``U``) directories
-are still searched on all platforms.  Directories marked with (``A``) are
-intended for installations on Apple platforms.  The
-:variable:`CMAKE_FIND_FRAMEWORK` and :variable:`CMAKE_FIND_APPBUNDLE`
-variables determine the order of preference.
+这组目录旨在与在其安装树中提供配置文件的项目协同工作。上面标有（\ ``W``\ ）的目录用于Windows\
+上的安装，其中前缀可能指向应用程序安装目录的顶部。标记为（\ ``U``\ ）的用于UNIX平台上的安装，\
+其中前缀由多个包共享。这只是一种约定，因此所有（\ ``W``\ ）和（\ ``U``\ ）目录仍然会在所有\
+平台上被搜索。标有（\ ``A``\ ）的目录用于在Apple平台上安装。:variable:`CMAKE_FIND_FRAMEWORK`\
+和\ :variable:`CMAKE_FIND_APPBUNDLE`\ 变量决定了偏好的顺序。
 
-The set of installation prefixes is constructed using the following
-steps.  If ``NO_DEFAULT_PATH`` is specified all ``NO_*`` options are
-enabled.
+安装前缀的集合使用以下步骤构建。如果指定\ ``NO_DEFAULT_PATH``，则启用所有\ ``NO_*``\ 选项。
 
 1. Search prefixes unique to the current ``<PackageName>`` being found.
    See policy :policy:`CMP0074`.
