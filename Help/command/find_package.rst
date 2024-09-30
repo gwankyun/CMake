@@ -306,37 +306,31 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 安装前缀的集合使用以下步骤构建。如果指定\ ``NO_DEFAULT_PATH``，则启用所有\ ``NO_*``\ 选项。
 
-1. Search prefixes unique to the current ``<PackageName>`` being found.
-   See policy :policy:`CMP0074`.
+1. 搜索当前找到的\ ``<PackageName>``\ 的唯一前缀。参见策略\ :policy:`CMP0074`。
 
    .. versionadded:: 3.12
 
-   Specifically, search prefixes specified by the following variables,
-   in order:
+   具体来说，按照以下变量指定的顺序搜索前缀：
 
-   a. :variable:`<PackageName>_ROOT` CMake variable,
-      where ``<PackageName>`` is the case-preserved package name.
+   a. :variable:`<PackageName>_ROOT` CMake变量，其中\ ``<PackageName>``\ 是保留大小\
+      写的包名。
 
-   b. :variable:`<PACKAGENAME>_ROOT` CMake variable,
-      where ``<PACKAGENAME>`` is the upper-cased package name.
-      See policy :policy:`CMP0144`.
+   b. :variable:`<PACKAGENAME>_ROOT` CMake变量，其中\ ``<PACKAGENAME>``\ 为大写的\
+      包名。参见策略\ :policy:`CMP0144`。
 
       .. versionadded:: 3.27
 
-   c. :envvar:`<PackageName>_ROOT` environment variable,
-      where ``<PackageName>`` is the case-preserved package name.
+   c. :envvar:`<PackageName>_ROOT`\ 环境变量，其中\ ``<PackageName>``\ 是保留大小写\
+      的包名。
 
-   d. :envvar:`<PACKAGENAME>_ROOT` environment variable,
-      where ``<PACKAGENAME>`` is the upper-cased package name.
-      See policy :policy:`CMP0144`.
+   d. :envvar:`<PACKAGENAME>_ROOT`\ 环境变量，其中\ ``<PACKAGENAME>``\ 为大写的包名。\
+      参见策略\ :policy:`CMP0144`。
 
       .. versionadded:: 3.27
 
-   The package root variables are maintained as a stack so if
-   called from within a find module, root paths from the parent's find
-   module will also be searched after paths for the current package.
-   This can be skipped if ``NO_PACKAGE_ROOT_PATH`` is passed or by setting
-   the :variable:`CMAKE_FIND_USE_PACKAGE_ROOT_PATH` to ``FALSE``.
+   包根变量作为栈维护，因此如果从查找模块中调用，则父查找模块的根路径也将搜索当前包的路径。\
+   如果传递了\ ``NO_PACKAGE_ROOT_PATH``，或者将\
+   :variable:`CMAKE_FIND_USE_PACKAGE_ROOT_PATH`\ 设置为\ ``FALSE``，则可以跳过该操作。
 
 2. Search paths specified in cmake-specific cache variables.  These
    are intended to be used on the command line with a :option:`-DVAR=VALUE <cmake -D>`.
