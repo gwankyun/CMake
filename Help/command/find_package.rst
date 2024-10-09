@@ -332,38 +332,31 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
    如果传递了\ ``NO_PACKAGE_ROOT_PATH``，或者将\
    :variable:`CMAKE_FIND_USE_PACKAGE_ROOT_PATH`\ 设置为\ ``FALSE``，则可以跳过该操作。
 
-2. Search paths specified in cmake-specific cache variables.  These
-   are intended to be used on the command line with a :option:`-DVAR=VALUE <cmake -D>`.
-   The values are interpreted as :ref:`semicolon-separated lists <CMake Language Lists>`.
-   This can be skipped if ``NO_CMAKE_PATH`` is passed or by setting the
-   :variable:`CMAKE_FIND_USE_CMAKE_PATH` to ``FALSE``:
+2. 搜索指定在cmake专用缓存变量中的路径。它们通常在命令行中使用\ :option:`-DVAR=VALUE <cmake -D>`。\
+   这些值被解释为\ :ref:`以分号分隔的列表 <CMake Language Lists>`。如果传递了\
+   ``NO_CMAKE_PATH``\ 参数，或者将\ :variable:`CMAKE_FIND_USE_CMAKE_PATH`\ 设置为\
+   ``FALSE``，则可以跳过该操作：
 
    * :variable:`CMAKE_PREFIX_PATH`
    * :variable:`CMAKE_FRAMEWORK_PATH`
    * :variable:`CMAKE_APPBUNDLE_PATH`
 
-3. Search paths specified in cmake-specific environment variables.
-   These are intended to be set in the user's shell configuration,
-   and therefore use the host's native path separator
-   (``;`` on Windows and ``:`` on UNIX).
-   This can be skipped if ``NO_CMAKE_ENVIRONMENT_PATH`` is passed or by setting
-   the :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH` to ``FALSE``:
+3. 在cmake特定的环境变量中搜索指定的路径。这些分隔符需要在用户的shell配置中设置，因此要使用\
+   主机的本地路径分隔符（在Windows上为\ ``;``，而在UNIX上则为\ ``:``）。如果传递了\
+   ``NO_CMAKE_ENVIRONMENT_PATH``，或者将\
+   :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`\ 设置为\ ``FALSE``，则可以跳过：
 
    * ``<PackageName>_DIR``
    * :envvar:`CMAKE_PREFIX_PATH`
    * :envvar:`CMAKE_FRAMEWORK_PATH`
    * :envvar:`CMAKE_APPBUNDLE_PATH`
 
-4. Search paths specified by the ``HINTS`` option.  These should be paths
-   computed by system introspection, such as a hint provided by the
-   location of another item already found.  Hard-coded guesses should
-   be specified with the ``PATHS`` option.
+4. 搜索路径指定的\ ``HINTS``\ 选项。这些路径应该是由系统自省计算出来的，例如由已经找到的另\
+   一项的位置提供的提示。硬编码的猜测应该用\ ``PATHS``\ 选项指定。
 
-5. Search the standard system environment variables.  This can be
-   skipped if ``NO_SYSTEM_ENVIRONMENT_PATH`` is passed  or by setting the
-   :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH` to ``FALSE``. Path entries
-   ending in ``/bin`` or ``/sbin`` are automatically converted to their
-   parent directories:
+5. 搜索标准系统环境变量。如果传递了\ ``NO_SYSTEM_ENVIRONMENT_PATH``，或者将\
+   :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH`\ 设置为\ ``FALSE``，就可以跳\
+   过这一步。以\ ``/bin``\ 或\ ``/sbin``\ 结尾的路径项会自动转换到它们的父目录：
 
    * ``PATH``
 
