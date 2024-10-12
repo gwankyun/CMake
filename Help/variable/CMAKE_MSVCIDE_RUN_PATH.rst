@@ -1,9 +1,9 @@
-﻿CMAKE_MSVCIDE_RUN_PATH
+CMAKE_MSVCIDE_RUN_PATH
 ----------------------
 
 .. versionadded:: 3.10
 
-在使用\ :generator:`Visual Studio 12 2013` （或更高版本）生成器时，在执行\
+在使用\ :ref:`Visual Studio Generators`\ 生成器时，在执行\
 :command:`add_custom_command`\ 或\ :command:`add_custom_target`\ 时应该使用的额外\
 PATH位置。这允许运行命令和使用IDE环境不知道的dll。
 

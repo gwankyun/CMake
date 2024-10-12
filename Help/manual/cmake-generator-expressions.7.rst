@@ -1660,6 +1660,14 @@ Shell路径
     ``INTERFACE_*``\ 目标属性中，在指定需求的目标的目录中查找\ ``tgt``\ 名称，而不是在\
     计算表达式的消费目标的目录中。
 
+  .. versionchanged:: 3.31
+    Generator expressions for transitive interface properties, such as
+    ``$<TARGET_PROPERTY:target,INTERFACE_*>``, now correctly handle
+    repeated evaluations within nested generator expressions.
+    Previously, these repeated evaluations returned empty values due
+    to an optimization for transitive closures.
+    This change ensures consistent evaluation for non-union operations.
+
 .. genex:: $<TARGET_PROPERTY:prop>
   :target: TARGET_PROPERTY:prop
 

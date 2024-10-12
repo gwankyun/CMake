@@ -31,7 +31,7 @@ cmake(1)
   cmake --find-package [<options>]
 
  `运行工作流预设`_
-  cmake --workflow [<options>]
+  cmake --workflow <options>
 
  `查看帮助`_
   cmake --help[-<topic>]
@@ -194,6 +194,17 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  :option:`-D <cmake -D>`\ 选项进行更改。更改一些变量可能会导致创建更多变量。如果指定了\
  ``A``，那么它也将显示高级变量。如果指定了\ ``H``，它还将显示每个变量的帮助。
 
+.. option:: -LR[A][H] <regex>
+
+ .. versionadded:: 3.31
+
+ Show specific non-advanced cached variables
+
+ Show non-``INTERNAL`` nor :prop_cache:`ADVANCED` variables from the CMake
+ ``CACHE`` that match the given regex. If ``A`` is specified, then it
+ will also show advanced variables.  If ``H`` is specified, it will also
+ display help for each variable.
+
 .. option:: -N
 
  仅支持查看模式。
@@ -214,7 +225,17 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  转储关于当前系统的各种信息。如果从一个CMake项目的二进制目录顶层运行，它将转储额外的信息，\
  如缓存、日志文件等。
 
+.. option:: --print-config-dir
+
+ .. versionadded:: 3.31
+
+ Print CMake config directory for user-wide FileAPI queries.
+
+ See :envvar:`CMAKE_CONFIG_DIR` for more details.
+
 .. option:: --log-level=<level>
+
+ .. versionadded:: 3.16
 
  设置日志\ ``<level>``。
 
@@ -636,6 +657,15 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
   启用详细输出。
 
   如果设置了\ :envvar:`VERBOSE`\ 环境变量，则可以省略此选项。
+
+.. option:: -j <jobs>, --parallel <jobs>
+
+  .. versionadded:: 3.31
+
+  Install in parallel using the given number of jobs. Only available if
+  :prop_gbl:`INSTALL_PARALLEL` is enabled. The
+  :envvar:`CMAKE_INSTALL_PARALLEL_LEVEL` environment variable specifies a
+  default parallel level when this option is not provided.
 
 运行\ :option:`cmake --install`，没有快速帮助选项。
 
@@ -1197,7 +1227,7 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 
 .. code-block:: shell
 
-  cmake --workflow [<options>]
+  cmake --workflow <options>
 
 选项有：
 
@@ -1211,6 +1241,15 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 
   使用工作流预设来指定工作流。项目二进制目录是从初始配置预设推断出来的。当前工作目录必须包含\
   CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>` 。
+
+  .. versionchanged:: 3.31
+    When following immediately after the ``--workflow`` option,
+    the ``--preset`` argument can be omitted and just the ``<preset>``
+    name can be given.  This means the following syntax is valid:
+
+    .. code-block:: console
+
+      $ cmake --workflow my-preset
 
 .. option:: --list-presets
 

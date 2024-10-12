@@ -8,5 +8,5 @@ VS_DEBUGGER_COMMAND
 件中的\ ``<LocalDebuggerCommand>``\ 中定义的。如果在创建目标时设置该属性，则该属性由变量\
 :variable:`CMAKE_VS_DEBUGGER_COMMAND`\ 的值初始化。
 
-This property only works for Visual Studio 12 2013 and above;
+This property only works for :ref:`Visual Studio Generators`;
 it is ignored on other generators.

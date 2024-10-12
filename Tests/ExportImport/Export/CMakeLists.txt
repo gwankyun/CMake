@@ -1,5 +1,5 @@
 set(CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_DEPENDENCIES "1942b4fa-b2c5-4546-9385-83f254070067")
-cmake_minimum_required (VERSION 2.7.20090711)
+cmake_minimum_required(VERSION 2.8.11) # old enough to not set CMP0022
 if(POLICY CMP0129)
   cmake_policy(SET CMP0129 NEW)
 endif()
@@ -482,6 +482,9 @@ add_library(testMod1 MODULE empty.cpp)
 add_library(testMod2 MODULE empty.cpp)
 set_property(TARGET testMod2 PROPERTY BUNDLE 1)
 
+add_library(testSharedLibArchiveAIX SHARED testSharedLibArchiveAIX.c)
+set_property(TARGET testSharedLibArchiveAIX PROPERTY AIX_SHARED_LIBRARY_ARCHIVE 1)
+
 install(TARGETS testLibRequired
         EXPORT RequiredExp DESTINATION lib
         INCLUDES DESTINATION
@@ -622,6 +625,7 @@ install(
   systemlib
   testInterfaceIncludeUser
   testInterfaceIncludeUser2
+  testSharedLibArchiveAIX
   EXPORT exp
   RUNTIME DESTINATION $<1:bin>$<0:/wrong>
   LIBRARY DESTINATION $<1:lib>$<0:/wrong> NAMELINK_SKIP
@@ -699,6 +703,7 @@ export(TARGETS testExe2 testLib4 testLib5 testLib6 testLib7 testExe3 testExe4 te
   testExeWithPluginHelper testExePluginHelperObj
   testMod1 testMod2
   testLibPerConfigDest
+  testSharedLibArchiveAIX
   NAMESPACE bld_
   APPEND FILE ExportBuildTree.cmake
   )

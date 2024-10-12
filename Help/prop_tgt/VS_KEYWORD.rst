@@ -5,4 +5,4 @@ VS_KEYWORD
 关键字，但所有这些生成器都被删除了。
 
 Use the :prop_tgt:`VS_GLOBAL_KEYWORD` target property to set the
-keyword for Visual Studio 12 (2013) and newer.
+keyword for remaining :ref:`Visual Studio Generators`.

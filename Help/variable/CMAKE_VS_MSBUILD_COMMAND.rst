@@ -1,12 +1,11 @@
 CMAKE_VS_MSBUILD_COMMAND
 ------------------------
 
-:generator:`Visual Studio 12 2013`\ åŠä»¥ä¸Šç‰ˆæœ¬çš„ç”Ÿæˆå™¨å°†æ­¤å˜é‡è®¾ç½®ä¸ºä¸ç›¸åº”çš„\
-Visual Studioç‰ˆæœ¬ä¸€èµ·å®‰è£…çš„\ ``MSBuild.exe``\ å‘½ä»¤ã€‚
+:ref:`Visual Studio Generators`\ ¼°ÒÔÉÏ°æ±¾µÄÉú³ÉÆ÷½«´Ë±äÁ¿ÉèÖÃÎªÓëÏàÓ¦µÄ\
+Visual Studio°æ±¾Ò»Æğ°²×°µÄ\ ``MSBuild.exe``\ ÃüÁî¡£
 
 This variable is not defined by other generators even if ``MSBuild.exe``
 is installed on the computer.
 
-The :variable:`CMAKE_VS_DEVENV_COMMAND` is also provided for the
-non-Express editions of Visual Studio.
-See also the :variable:`CMAKE_MAKE_PROGRAM` variable.
+See also the :variable:`CMAKE_VS_DEVENV_COMMAND` and
+:variable:`CMAKE_MAKE_PROGRAM` variables.

@@ -102,6 +102,11 @@ target_link_libraries
 :ref:`别名 <Alias Targets>`\ 库目标名，如果不存在这样的目标，将导致错误。参见策略\
 :policy:`CMP0028`。
 
+See the :variable:`CMAKE_LINK_LIBRARIES_STRATEGY` variable and
+corresponding :prop_tgt:`LINK_LIBRARIES_STRATEGY` target property
+for details on how CMake orders direct link dependencies on linker
+command lines.
+
 有关定义构建属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
 目标和/或其依赖的库

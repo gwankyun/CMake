@@ -1,7 +1,8 @@
 include_external_msproject
 --------------------------
 
-在工作区中包含一个外部Microsoft项目文件。
+Include an external Microsoft project file in the solution file produced
+by :ref:`Visual Studio Generators`. Ignored on other generators.
 
 .. code-block:: cmake
 
@@ -11,9 +12,9 @@ include_external_msproject
                              [PLATFORM platformName]
                              dep1 dep2 ...)
 
-Includes an external Microsoft project in the generated workspace
-file.  Currently does nothing on UNIX.  This will create a target
-named ``[projectname]``.  This can be used in the :command:`add_dependencies`
+Includes an external Microsoft project in the generated solution file.
+This will create a target named ``[projectname]``.
+This can be used in the :command:`add_dependencies`
 command to make things depend on the external project.
 
 ``TYPE``, ``GUID`` and ``PLATFORM`` are optional parameters that allow one to

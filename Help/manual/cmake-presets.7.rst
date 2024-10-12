@@ -34,6 +34,9 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 .. literalinclude:: presets/example.json
   :language: json
 
+Preset files specifying version ``10`` or above may include comments using the
+key ``$comment`` at any level within the JSON object to provide documentation.
+
 根对象识别以下字段：
 
 ``$schema``
@@ -71,6 +74,9 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
   ``9``
     .. versionadded:: 3.30
+
+  ``10``
+    .. versionadded:: 3.31
 
 ``cmakeMinimumRequired``
   一个可选对象，表示构建此项目所需的CMake的最小版本。该节点由以下字段组成：
@@ -215,6 +221,16 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   :variable:`CMAKE_TOOLCHAIN_FILE`\ 的任何值。在指定版本\ ``3``\ 或更高版本的预设文件\
   中允许使用。
 
+``graphviz``
+  An optional string representing the path to the graphviz input file,
+  that will contain all the library and executable dependencies
+  in the project. See the documentation for :module:`CMakeGraphVizOptions`
+  for more details.
+
+  This field supports `macro expansion`_. If a relative path is specified,
+  it is calculated relative to the current working directory. It is allowed
+  in preset files specifying version ``10`` or above.
+
 ``binaryDir``
   一个可选字符串，表示输出二进制目录的路径。该字段支持\ `宏扩展`_.。如果指定了相对路径，则计\
   算相对于源目录的路径。如果未指定\ ``binaryDir``，则必须从\ ``inherits``\ 预设继承（除\
@@ -247,10 +263,15 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``environment``
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
-  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持\ `宏扩展`_，并且该\
-  映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
-  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不可是\ ``$env{ENV_1}``）。
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
+  This field supports `macro expansion`_, and environment variables in this map
+  may reference each other, and may be listed in any order, as long as such
+  references do not cause a cycle (for example, if ``ENV_1`` is
+  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
+  allows one to prepend or append values to existing environment variables by
+  accessing only values from the parent environment.
+  
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来自\
   所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
   ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是从另一\
@@ -390,9 +411,14 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``environment``
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
-  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中\
-  的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
-  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不能是\ ``$env{ENV_1}``）。
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
+
+  This field supports `macro expansion`_, and environment variables in this map
+  may reference each other, and may be listed in any order, as long as such
+  references do not cause a cycle (for example, if ``ENV_1`` is
+  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
+  allows one to prepend or append values to existing environment variables by
+  accessing only values from the parent environment.
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
   自所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
@@ -508,9 +534,14 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``environment``
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
-  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中\
-  的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
-  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不可是\ ``$env{ENV_1}``）。
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。。
+
+  This field supports `macro expansion`_, and environment variables in this map
+  may reference each other, and may be listed in any order, as long as such
+  references do not cause a cycle (for example, if ``ENV_1`` is
+  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
+  allows one to prepend or append values to existing environment variables by
+  accessing only values from the parent environment.
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
   自所有父\ ``environment``\ 环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
@@ -773,9 +804,14 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``environment``
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
-  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。该字段支持宏扩展，并且该映射中\
-  的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引用不引起循环（例如，如果\
-  ``ENV_1``\ 是\ ``$env{ENV_2}``，则\ ``ENV_2``\ 不能是\ ``$env{ENV_1}``）。
+  量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
+
+  This field supports `macro expansion`_, and environment variables in this map
+  may reference each other, and may be listed in any order, as long as such
+  references do not cause a cycle (for example, if ``ENV_1`` is
+  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
+  allows one to prepend or append values to existing environment variables by
+  accessing only values from the parent environment.
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
   自所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
@@ -990,7 +1026,7 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``$penv{<variable-name>}``
   类似于\ ``$env{<variable-name>}``，不同之处在于该值只来自父环境，而不来自\
-  ``environment``\ 字段。这允许你在现有环境变量上添加或追加值。例如，将\ ``PATH``\ 设置为\
+  ``environment``\ 字段。这允许在现有环境变量上添加或追加值。例如，将\ ``PATH``\ 设置为\
   ``/path/to/ninja/bin:$penv{PATH}``\ 将把\ ``/path/to/ninja/bin``\ 添加到\ ``PATH``\
   环境变量中。这是必需的，因为\ ``$env{<variable-name>}``\ 不允许循环引用。
 

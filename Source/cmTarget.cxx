@@ -407,6 +407,8 @@ TargetProperty const StaticTargetProperties[] = {
   { "VS_USE_DEBUG_LIBRARIES"_s, IC::NonImportedTarget },
   // ---- OpenWatcom
   { "WATCOM_RUNTIME_LIBRARY"_s, IC::CanCompileSources },
+  // ---- AIX
+  { "AIX_SHARED_LIBRARY_ARCHIVE"_s, IC::SharedLibraryTarget },
   // -- Language
   // ---- C
   COMMON_LANGUAGE_PROPERTIES(C),
@@ -464,6 +466,7 @@ TargetProperty const StaticTargetProperties[] = {
   { "LINKER_TYPE"_s, IC::CanCompileSources },
   { "ENABLE_EXPORTS"_s, IC::TargetWithSymbolExports },
   { "LINK_LIBRARIES_ONLY_TARGETS"_s, IC::NormalNonImportedTarget },
+  { "LINK_LIBRARIES_STRATEGY"_s, IC::NormalNonImportedTarget },
   { "LINK_SEARCH_START_STATIC"_s, IC::CanCompileSources },
   { "LINK_SEARCH_END_STATIC"_s, IC::CanCompileSources },
   // Initialize per-configuration name postfix property from the variable only
@@ -596,6 +599,7 @@ TargetProperty const StaticTargetProperties[] = {
 
   // Metadata
   { "CROSSCOMPILING_EMULATOR"_s, IC::ExecutableTarget },
+  { "EXPORT_BUILD_DATABASE"_s, IC::CanCompileSources },
   { "EXPORT_COMPILE_COMMANDS"_s, IC::CanCompileSources },
   { "FOLDER"_s },
   { "TEST_LAUNCHER"_s, IC::ExecutableTarget },
@@ -643,6 +647,7 @@ public:
   cmStateEnums::TargetType TargetType;
   cmMakefile* Makefile;
   cmPolicies::PolicyMap PolicyMap;
+  cmTarget const* TemplateTarget;
   std::string Name;
   std::string InstallPath;
   std::string RuntimeInstallPath;
@@ -657,6 +662,7 @@ public:
   bool PerConfig;
   cmTarget::Visibility TargetVisibility;
   std::set<BT<std::pair<std::string, bool>>> Utilities;
+  std::set<std::string> CodegenDependencies;
   std::vector<cmCustomCommand> PreBuildCommands;
   std::vector<cmCustomCommand> PreLinkCommands;
   std::vector<cmCustomCommand> PostBuildCommands;
@@ -928,6 +934,7 @@ cmTarget::cmTarget(std::string const& name, cmStateEnums::TargetType type,
   this->impl->TargetType = type;
   this->impl->Makefile = mf;
   this->impl->Name = name;
+  this->impl->TemplateTarget = nullptr;
   this->impl->IsGeneratorProvided = false;
   this->impl->HaveInstallRule = false;
   this->impl->IsDLLPlatform = false;
@@ -1183,6 +1190,14 @@ const std::string& cmTarget::GetName() const
   return this->impl->Name;
 }
 
+const std::string& cmTarget::GetTemplateName() const
+{
+  if (this->impl->TemplateTarget) {
+    return this->impl->TemplateTarget->GetTemplateName();
+  }
+  return this->impl->Name;
+}
+
 cmPolicies::PolicyStatus cmTarget::GetPolicyStatus(
   cmPolicies::PolicyID policy) const
 {
@@ -1238,6 +1253,16 @@ void cmTarget::AddUtility(BT<std::pair<std::string, bool>> util)
   this->impl->Utilities.emplace(std::move(util));
 }
 
+void cmTarget::AddCodegenDependency(std::string const& name)
+{
+  this->impl->CodegenDependencies.emplace(name);
+}
+
+std::set<std::string> const& cmTarget::GetCodegenDeps() const
+{
+  return this->impl->CodegenDependencies;
+}
+
 std::set<BT<std::pair<std::string, bool>>> const& cmTarget::GetUtilities()
   const
 {
@@ -1271,6 +1296,12 @@ bool cmTarget::IsFrameworkOnApple() const
   return ((this->GetType() == cmStateEnums::SHARED_LIBRARY ||
            this->GetType() == cmStateEnums::STATIC_LIBRARY) &&
           this->IsApple() && this->GetPropertyAsBool("FRAMEWORK"));
+}
+
+bool cmTarget::IsArchivedAIXSharedLibrary() const
+{
+  return (this->GetType() == cmStateEnums::SHARED_LIBRARY && this->IsAIX() &&
+          this->GetPropertyAsBool("AIX_SHARED_LIBRARY_ARCHIVE"));
 }
 
 bool cmTarget::IsAppBundleOnApple() const
@@ -1765,6 +1796,7 @@ void cmTarget::CopyPolicyStatuses(cmTarget const* tgt)
   assert(tgt->IsImported());
 
   this->impl->PolicyMap = tgt->impl->PolicyMap;
+  this->impl->TemplateTarget = tgt;
 }
 
 void cmTarget::CopyImportedCxxModulesEntries(cmTarget const* tgt)
@@ -1865,6 +1897,10 @@ void cmTarget::CopyImportedCxxModulesProperties(cmTarget const* tgt)
     // Metadata
     "EchoString",
     "EXPORT_COMPILE_COMMANDS",
+    // Do *not* copy this property; it should be re-initialized at synthesis
+    // time from the `CMAKE_EXPORT_BUILD_DATABASE` variable as `IMPORTED`
+    // targets ignore the property initialization.
+    // "EXPORT_BUILD_DATABASE",
     "FOLDER",
     "LABELS",
     "PROJECT_LABEL",
@@ -2986,7 +3022,9 @@ const char* cmTarget::GetSuffixVariableInternal(
     case cmStateEnums::SHARED_LIBRARY:
       switch (artifact) {
         case cmStateEnums::RuntimeBinaryArtifact:
-          return "CMAKE_SHARED_LIBRARY_SUFFIX";
+          return this->IsArchivedAIXSharedLibrary()
+            ? "CMAKE_SHARED_LIBRARY_ARCHIVE_SUFFIX"
+            : "CMAKE_SHARED_LIBRARY_SUFFIX";
         case cmStateEnums::ImportLibraryArtifact:
           return this->IsApple() ? "CMAKE_APPLE_IMPORT_FILE_SUFFIX"
                                  : "CMAKE_IMPORT_LIBRARY_SUFFIX";

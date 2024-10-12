@@ -7,7 +7,7 @@ CheckFortranSourceRuns
 
 .. versionadded:: 3.14
 
-检查给定的Fortran源代码是否可以编译并链接到可执行文件中，并且随后可以运行。
+检查一次给定的Fortran源代码是否可以编译并链接到可执行文件中，并且随后可以运行。
 
 .. command:: check_fortran_source_runs
 
@@ -16,9 +16,13 @@ CheckFortranSourceRuns
     check_fortran_source_runs(<code> <resultVar>
         [SRC_EXT <extension>])
 
-  Check that the source supplied in ``<code>`` can be compiled as a Fortran source
-  file, linked as an executable and then run. The ``<code>`` must be a Fortran
-  ``program``.
+  Check once that the source supplied in ``<code>`` can be built, linked as an
+  executable, and then run. The ``<code>`` must contain a Fortran ``program``.
+
+  The result is stored in the internal cache variable specified by
+  ``<resultVar>``. Success of build and run is indicated by boolean ``true``.
+  Failure to build or run is indicated by boolean ``false`` such as an empty
+  string or an error message.
 
   .. code-block:: cmake
 
@@ -28,25 +32,10 @@ CheckFortranSourceRuns
     end program"
     HAVE_COARRAY)
 
-  This command can help avoid costly build processes when a compiler lacks support
-  for a necessary feature, or a particular vendor library is not compatible with
-  the Fortran compiler version being used. Some of these failures only occur at runtime
-  instead of linktime, and a trivial runtime example can catch the issue before the
-  main build process.
-
-  If the ``<code>`` could be built and run
-  successfully, the internal cache variable specified by ``<resultVar>`` will
-  be set to 1, otherwise it will be set to an value that evaluates to boolean
-  false (e.g. an empty string or an error message).
-
   By default, the test source file will be given a ``.F90`` file extension. The
   ``SRC_EXT`` option can be used to override this with ``.<extension>`` instead.
 
-  The check is only performed once, with the result cached in the variable named
-  by ``<resultVar>``. Every subsequent CMake run will reuse this cached value
-  rather than performing the check again, even if the ``<code>`` changes. In
-  order to force the check to be re-evaluated, the variable named by
-  ``<resultVar>`` must be manually removed from the cache.
+  See also :command:`check_source_runs` for a more general command syntax.
 
   The compile and link commands can be influenced by setting any of the
   following variables prior to calling ``check_fortran_source_runs()``:
@@ -60,6 +49,8 @@ CheckFortranSourceRuns
 .. include:: /module/CMAKE_REQUIRED_LINK_OPTIONS.txt
 
 .. include:: /module/CMAKE_REQUIRED_LIBRARIES.txt
+
+.. include:: /module/CMAKE_REQUIRED_LINK_DIRECTORIES.txt
 
 .. include:: /module/CMAKE_REQUIRED_QUIET.txt
 

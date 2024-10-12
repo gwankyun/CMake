@@ -54,7 +54,6 @@ cmake-modules(7)
    /module/CMakeBackwardCompatibilityCXX
    /module/CMakeDependentOption
    /module/CMakeFindDependencyMacro
-   /module/CMakeFindFrameworks
    /module/CMakeFindPackageMode
    /module/CMakeGraphVizOptions
    /module/CMakePackageConfigHelpers
@@ -267,6 +266,7 @@ cmake-modules(7)
    /module/AddFileDependencies
    /module/CMakeDetermineVSServicePack
    /module/CMakeExpandImportedTargets
+   /module/CMakeFindFrameworks
    /module/CMakeForceCompiler
    /module/CMakeParseArguments
    /module/Dart

@@ -45,7 +45,7 @@
 ### Debian
 
 .debian12:
-    image: "kitware/cmake:ci-debian12-x86_64-2024-03-04"
+    image: "kitware/cmake:ci-debian12-x86_64-2024-08-27"
 
     variables:
         GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake ci"
@@ -69,7 +69,7 @@
 ### Fedora
 
 .fedora40:
-    image: "kitware/cmake:ci-fedora40-x86_64-2024-04-24"
+    image: "kitware/cmake:ci-fedora40-x86_64-2024-07-23"
 
     variables:
         GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake ci/long file name for testing purposes"
@@ -234,6 +234,25 @@
         CMAKE_CONFIGURATION: fedora40_makefiles_clang
         CMAKE_GENERATOR: "Unix Makefiles"
 
+.fedora40_makefiles_lfortran:
+    extends: .fedora40
+
+    variables:
+        # FIXME(lfortran): -rpath flags with spaces not forwarded
+        GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake-ci"
+        CMAKE_CONFIGURATION: fedora40_makefiles_lfortran
+        CMAKE_GENERATOR: "Unix Makefiles"
+        CTEST_LABELS: "Fortran"
+
+.fedora40_ninja_lfortran:
+    extends: .fedora40
+
+    variables:
+        # FIXME(lfortran): -rpath flags with spaces not forwarded
+        GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake-ci"
+        CMAKE_CONFIGURATION: fedora40_ninja_lfortran
+        CTEST_LABELS: "Fortran"
+
 .fedora40_ninja_clang:
     extends: .fedora40
 
@@ -377,7 +396,7 @@
 
 .cuda12.2:
     extends: .cuda
-    image: "kitware/cmake:ci-cuda12.2-x86_64-2024-04-05"
+    image: "kitware/cmake:ci-cuda12.2-x86_64-2024-09-25"
     variables:
         CMAKE_ARCH: x86_64
 
@@ -385,6 +404,12 @@
     extends: .cuda12.2
     variables:
         CMAKE_CONFIGURATION: cuda12.2_nvidia
+        CTEST_NO_WARNINGS_ALLOWED: 1
+
+.cuda12.2_nvidia_clang:
+    extends: .cuda12.2
+    variables:
+        CMAKE_CONFIGURATION: cuda12.2_nvidia_clang
         CTEST_NO_WARNINGS_ALLOWED: 1
 
 .cuda12.2_clang:

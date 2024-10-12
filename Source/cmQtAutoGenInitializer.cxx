@@ -357,7 +357,7 @@ void cmQtAutoGenInitializer::AddAutogenExecutableToDependencies(
   cmQtAutoGenInitializer::GenVarsT const& genVars,
   std::vector<std::string>& dependencies) const
 {
-  if (genVars.ExecutableTarget != nullptr) {
+  if (genVars.ExecutableTarget) {
     dependencies.push_back(genVars.ExecutableTarget->Target->GetName());
   } else if (this->MultiConfig && this->UseBetterGraph) {
     cm::string_view const& configGenexWithCommandConfig =
@@ -1340,9 +1340,12 @@ bool cmQtAutoGenInitializer::InitAutogenTarget()
   }
 
   if (this->Uic.Enabled) {
-    for (const auto& file : this->Uic.UiHeaders) {
+    // Make all ui_*.h files byproducts of the ${target}_autogen/timestamp
+    // custom command if the generation of depfile is enabled.
+    auto& byProducts = useDepfile ? timestampByproducts : autogenByproducts;
+    for (auto const& file : this->Uic.UiHeaders) {
       this->AddGeneratedSource(file.first, this->Uic);
-      autogenByproducts.push_back(file.second);
+      byProducts.push_back(file.second);
     }
   }
 
@@ -1480,6 +1483,16 @@ bool cmQtAutoGenInitializer::InitAutogenTarget()
       }
     }
 
+    // For the Ninja, Makefile and Qt >= 5.15, add custom commands that create
+    // XXX_autogen/timestamp files. Those custom commands have a depfile
+    // assigned that is generated from the depfiles that were created by moc.
+    //
+    // The XXX_autogen targets merely wrap the XXX_autogen/timestamp custom
+    // commands.
+    // The dependency tree would then look like
+    // the original dependencies of '_autogen' target <-'/timestamp' file
+    // <- '_autogen' target
+
     cmTarget* timestampTarget = nullptr;
     std::vector<std::string> dependencies(
       this->AutogenTarget.DependFiles.begin(),
@@ -1487,40 +1500,6 @@ bool cmQtAutoGenInitializer::InitAutogenTarget()
     if (useDepfile) {
       // Create a custom command that generates a timestamp file and
       // has a depfile assigned. The depfile is created by JobDepFilesMergeT.
-      //
-      // Also create an additional '_autogen_timestamp_deps' that the custom
-      // command will depend on. It will have no sources or commands to
-      // execute, but it will have dependencies that would originally be
-      // assigned to the pre-Qt 5.15 'autogen' target. These dependencies will
-      // serve as a list of order-only dependencies for the custom command,
-      // without forcing the custom command to re-execute.
-      //
-      // The dependency tree would then look like
-      // '_autogen_timestamp_deps (order-only)' <- '/timestamp' file <-
-      // '_autogen' target.
-      const auto timestampTargetName =
-        cmStrCat(this->GenTarget->GetName(), "_autogen_timestamp_deps");
-
-      auto cc = cm::make_unique<cmCustomCommand>();
-      cc->SetWorkingDirectory(this->Dir.Work.c_str());
-      cc->SetDepends(dependencies);
-      cc->SetEscapeOldStyle(false);
-      timestampTarget = this->LocalGen->AddUtilityCommand(timestampTargetName,
-                                                          true, std::move(cc));
-
-      this->LocalGen->AddGeneratorTarget(
-        cm::make_unique<cmGeneratorTarget>(timestampTarget, this->LocalGen));
-
-      // Set FOLDER property on the timestamp target, so it appears in the
-      // appropriate folder in an IDE or in the file api.
-      if (!this->TargetsFolder.empty()) {
-        timestampTarget->SetProperty("FOLDER", this->TargetsFolder);
-      }
-
-      // Make '/timestamp' file depend on '_autogen_timestamp_deps' and on the
-      // moc and uic executables (whichever are enabled).
-      dependencies.clear();
-      dependencies.push_back(timestampTargetName);
 
       AddAutogenExecutableToDependencies(this->Moc, dependencies);
       AddAutogenExecutableToDependencies(this->Uic, dependencies);
@@ -1565,7 +1544,7 @@ bool cmQtAutoGenInitializer::InitAutogenTarget()
           { cmSystemTools::GetCMakeCommand(), "-E", "touch", outputFile }));
         this->AddGeneratedSource(outputFile, this->Moc);
       }
-      cc = cm::make_unique<cmCustomCommand>();
+      auto cc = cm::make_unique<cmCustomCommand>();
       cc->SetOutputs(outputFile);
       cc->SetByproducts(timestampByproducts);
       cc->SetDepends(dependencies);
@@ -1634,13 +1613,17 @@ void cmQtAutoGenInitializer::AddCMakeProcessToCommandLines(
   std::string const& infoFile, std::string const& processName,
   cmCustomCommandLines& commandLines)
 {
+  std::vector<std::string> autogenConfigs;
+  this->GlobalGen->GetQtAutoGenConfigs(autogenConfigs);
   if (this->CrossConfig && this->UseBetterGraph) {
     commandLines.push_back(cmMakeCommandLine(
       { cmSystemTools::GetCMakeCommand(), "-E", processName, infoFile,
         "$<CONFIG>", "$<COMMAND_CONFIG:$<CONFIG>>" }));
   } else if ((this->MultiConfig && this->GlobalGen->IsXcode()) ||
              this->CrossConfig) {
-    for (std::string const& config : this->ConfigsList) {
+    const auto& configs =
+      processName == "cmake_autorcc" ? this->ConfigsList : autogenConfigs;
+    for (std::string const& config : configs) {
       commandLines.push_back(
         cmMakeCommandLine({ cmSystemTools::GetCMakeCommand(), "-E",
                             processName, infoFile, config }));
@@ -1650,9 +1633,7 @@ void cmQtAutoGenInitializer::AddCMakeProcessToCommandLines(
     if (this->MultiConfig) {
       autoInfoFileConfig = "$<CONFIG>";
     } else {
-      std::vector<std::string> configs;
-      this->GlobalGen->GetQtAutoGenConfigs(configs);
-      autoInfoFileConfig = configs[0];
+      autoInfoFileConfig = autogenConfigs[0];
     }
     commandLines.push_back(
       cmMakeCommandLine({ cmSystemTools::GetCMakeCommand(), "-E", processName,
@@ -1671,13 +1652,10 @@ bool cmQtAutoGenInitializer::InitRccTargets()
       sf->SetProperty("SKIP_UNITY_BUILD_INCLUSION", "On");
     }
 
-    std::vector<std::string> ccOutput;
-    ccOutput.push_back(qrc.OutputFile);
+    std::vector<std::string> ccOutput{ qrc.OutputFile };
 
-    std::vector<std::string> ccDepends;
     // Add the .qrc and info file to the custom command dependencies
-    ccDepends.push_back(qrc.QrcFile);
-    ccDepends.push_back(qrc.InfoFile);
+    std::vector<std::string> ccDepends{ qrc.QrcFile, qrc.InfoFile };
 
     cmCustomCommandLines commandLines;
     AddCMakeProcessToCommandLines(qrc.InfoFile, "cmake_autorcc", commandLines);

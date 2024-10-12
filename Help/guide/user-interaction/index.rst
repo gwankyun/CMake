@@ -187,13 +187,30 @@ Visual Studio工具集可以通过\ :option:`cmake -T`\ 选项指定：
 ========================================== ============================================================
  变量                                       意义
 ========================================== ============================================================
- :variable:`CMAKE_PREFIX_PATH`              :guide:`依赖包 <使用依赖项指南>`\ 搜索路径
- :variable:`CMAKE_MODULE_PATH`              额外的CMake模块搜索路径
- :variable:`CMAKE_BUILD_TYPE`               构建配置，如\ ``Debug``\ 或\ ``Release``\ 确定调试/优化标志。这只与单配置构建系统相关，比如\ ``Makefile``\ 和\ ``Ninja``。Visual Studio和Xcode等多配置构建系统忽略了这个设置。
- :variable:`CMAKE_INSTALL_PREFIX`           使用\ ``install``\ 构建目标安装软件的位置
- :variable:`CMAKE_TOOLCHAIN_FILE`           包含交叉编译数据的文件，例如\ :manual:`toolchains and sysroots <cmake-toolchains(7)>`。
- :variable:`BUILD_SHARED_LIBS`              是否为未指定类型的\ :command:`add_library`\ 命令构建共享库而非静态库
- :variable:`CMAKE_EXPORT_COMPILE_COMMANDS`  使用基于clang的工具生成一个 ``compile_commands.json`` 文件
+ :variable:`CMAKE_PREFIX_PATH`              Path to search for
+                                            :guide:`dependent packages <Using Dependencies Guide>`
+ :variable:`CMAKE_MODULE_PATH`              Path to search for additional CMake modules
+ :variable:`CMAKE_BUILD_TYPE`               Build configuration, such as
+                                            ``Debug`` or ``Release``, determining
+                                            debug/optimization flags.  This is only
+                                            relevant for single-configuration buildsystems such
+                                            as ``Makefile`` and ``Ninja``.  Multi-configuration
+                                            buildsystems such as those for Visual Studio and Xcode
+                                            ignore this setting.
+ :variable:`CMAKE_INSTALL_PREFIX`           Location to install the
+                                            software to with the
+                                            ``install`` build target
+ :variable:`CMAKE_TOOLCHAIN_FILE`           File containing cross-compiling
+                                            data such as
+                                            :manual:`toolchains and sysroots <cmake-toolchains(7)>`.
+ :variable:`BUILD_SHARED_LIBS`              Whether to build shared
+                                            instead of static libraries
+                                            for :command:`add_library`
+                                            commands used without a type
+ :variable:`CMAKE_EXPORT_COMPILE_COMMANDS`  Generate a ``compile_commands.json``
+                                            file for use with clang-based tools
+ :variable:`CMAKE_EXPORT_BUILD_DATABASE`    Generate a ``build_database.json``
+                                            file for use with clang-based tools
 ========================================== ============================================================
 
 其他特定于项目的变量可以用于控制构建，例如启用或禁用项目的组件。

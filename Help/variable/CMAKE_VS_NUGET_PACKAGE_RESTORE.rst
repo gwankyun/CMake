@@ -7,9 +7,10 @@ CMAKE_VS_NUGET_PACKAGE_RESTORE
 NuGet包可以使用目标上的\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属性来定义。如果没有定义\
 包引用，此设置将不执行任何操作。
 
-The command line option ``--resolve-package-references`` can be used
-alternatively to control the resolve behavior globally. This option
-will take precedence over the cache variable.
+The command line option
+:option:`--resolve-package-references <cmake--build --resolve-package-references>`
+can be used alternatively to control the resolve behavior globally.
+This option will take precedence over the cache variable.
 
 Targets that use the :prop_tgt:`DOTNET_SDK` are required to run a
 restore before building. Disabling this option may cause the build
