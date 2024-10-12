@@ -1,8 +1,8 @@
 CMAKE_VS_MSBUILD_COMMAND
 ------------------------
 
-:ref:`Visual Studio Generators`\ ¼°ÒÔÉÏ°æ±¾µÄÉú³ÉÆ÷½«´Ë±äÁ¿ÉèÖÃÎªÓëÏàÓ¦µÄ\
-Visual Studio°æ±¾Ò»Æğ°²×°µÄ\ ``MSBuild.exe``\ ÃüÁî¡£
+:ref:`Visual Studio Generators`\ ç”Ÿæˆå™¨å°†æ­¤å˜é‡è®¾ç½®ä¸ºä¸ç›¸åº”çš„\
+Visual Studioç‰ˆæœ¬ä¸€èµ·å®‰è£…çš„\ ``MSBuild.exe``\ å‘½ä»¤ã€‚
 
 This variable is not defined by other generators even if ``MSBuild.exe``
 is installed on the computer.

@@ -188,7 +188,7 @@ Visual Studio工具集可以通过\ :option:`cmake -T`\ 选项指定：
  变量                                       意义
 ========================================== ============================================================
  :variable:`CMAKE_PREFIX_PATH`              Path to search for
-                                            :guide:`dependent packages <Using Dependencies Guide>`
+                                            :guide:`dependent packages <使用依赖项指南>`
  :variable:`CMAKE_MODULE_PATH`              Path to search for additional CMake modules
  :variable:`CMAKE_BUILD_TYPE`               Build configuration, such as
                                             ``Debug`` or ``Release``, determining

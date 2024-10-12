@@ -227,7 +227,7 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   in the project. See the documentation for :module:`CMakeGraphVizOptions`
   for more details.
 
-  This field supports `macro expansion`_. If a relative path is specified,
+  This field supports `宏扩展`_. If a relative path is specified,
   it is calculated relative to the current working directory. It is allowed
   in preset files specifying version ``10`` or above.
 
@@ -265,13 +265,13 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
-  This field supports `macro expansion`_, and environment variables in this map
+  This field supports `宏扩展`_, and environment variables in this map
   may reference each other, and may be listed in any order, as long as such
   references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
   allows one to prepend or append values to existing environment variables by
   accessing only values from the parent environment.
-  
+
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来自\
   所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
   ``inherits``\ 的标准规则。将变量设置为\ ``null``\ 将导致不设置该变量，即使该值是从另一\
@@ -413,7 +413,7 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
-  This field supports `macro expansion`_, and environment variables in this map
+  This field supports `宏扩展`_, and environment variables in this map
   may reference each other, and may be listed in any order, as long as such
   references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
@@ -536,7 +536,7 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。。
 
-  This field supports `macro expansion`_, and environment variables in this map
+  This field supports `宏扩展`_, and environment variables in this map
   may reference each other, and may be listed in any order, as long as such
   references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
@@ -806,7 +806,7 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
-  This field supports `macro expansion`_, and environment variables in this map
+  This field supports `宏扩展`_, and environment variables in this map
   may reference each other, and may be listed in any order, as long as such
   references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
