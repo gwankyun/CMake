@@ -1661,12 +1661,9 @@ Shell路径
     计算表达式的消费目标的目录中。
 
   .. versionchanged:: 3.31
-    Generator expressions for transitive interface properties, such as
-    ``$<TARGET_PROPERTY:target,INTERFACE_*>``, now correctly handle
-    repeated evaluations within nested generator expressions.
-    Previously, these repeated evaluations returned empty values due
-    to an optimization for transitive closures.
-    This change ensures consistent evaluation for non-union operations.
+    传递接口属性的生成器表达式，如\ ``$<TARGET_PROPERTY:target,INTERFACE_*>``，现在可\
+    以正确地处理嵌套生成器表达式中的重复求值。以前，由于对传递闭包进行了优化，这些重复的求值\
+    返回空值。这一更改确保了对非联合操作的一致求值。
 
 .. genex:: $<TARGET_PROPERTY:prop>
   :target: TARGET_PROPERTY:prop

@@ -40,8 +40,8 @@ API v1位于\ ``<build>/.cmake/api/v1/``\ 目录下。它有以下子目录：
   监视它是否出现新的应答索引文件。
 
 .. versionadded:: 3.31
-  Users can add query files to ``api/v1/query`` inside the
-  :envvar:`CMAKE_CONFIG_DIR` to create user-wide queries for all CMake projects.
+  用户可以在\ :envvar:`CMAKE_CONFIG_DIR`\ 的\ ``api/v1/query``\ 中添加查询文件，\
+  为所有CMake项目创建用户范围的查询。
 
 v1共享无状态查询文件
 -------------------------------
