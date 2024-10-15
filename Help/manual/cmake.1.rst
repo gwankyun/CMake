@@ -198,12 +198,11 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  .. versionadded:: 3.31
 
- Show specific non-advanced cached variables
+ 显示特定的非高级缓存变量
 
- Show non-``INTERNAL`` nor :prop_cache:`ADVANCED` variables from the CMake
- ``CACHE`` that match the given regex. If ``A`` is specified, then it
- will also show advanced variables.  If ``H`` is specified, it will also
- display help for each variable.
+ 显示CMake ``CACHE``\ 中与给定正则表达式匹配的非\ ``INTERNAL``\ 或\
+ :prop_cache:`ADVANCED`\ 变量。如果指定了\ ``A``，那么它也会显示高级变量。如果指定了\
+ ``H``，它还会显示每个变量的帮助信息。
 
 .. option:: -N
 
@@ -229,9 +228,9 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  .. versionadded:: 3.31
 
- Print CMake config directory for user-wide FileAPI queries.
+ 打印CMake config目录，用于用户范围的FileAPI查询。
 
- See :envvar:`CMAKE_CONFIG_DIR` for more details.
+ 参见\ :envvar:`CMAKE_CONFIG_DIR`\ 了解更多细节。
 
 .. option:: --log-level=<level>
 
@@ -662,10 +661,8 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
   .. versionadded:: 3.31
 
-  Install in parallel using the given number of jobs. Only available if
-  :prop_gbl:`INSTALL_PARALLEL` is enabled. The
-  :envvar:`CMAKE_INSTALL_PARALLEL_LEVEL` environment variable specifies a
-  default parallel level when this option is not provided.
+  使用给定的作业数量并行安装。只有在启用\ :prop_gbl:`INSTALL_PARALLEL`\ 时才可用。当不\
+  提供此选项时，\ :envvar:`CMAKE_INSTALL_PARALLEL_LEVEL`\ 环境变量指定默认的并行级别。
 
 运行\ :option:`cmake --install`，没有快速帮助选项。
 
@@ -1243,9 +1240,8 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
   CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>` 。
 
   .. versionchanged:: 3.31
-    When following immediately after the ``--workflow`` option,
-    the ``--preset`` argument can be omitted and just the ``<preset>``
-    name can be given.  This means the following syntax is valid:
+    当紧跟在\ ``--workflow``\ 选项后面时，可以省略\ ``--preset``\ 参数，只提供\
+    ``<preset>``\ 名称。这意味着下面的语法是有效的：
 
     .. code-block:: console
 

@@ -1352,8 +1352,7 @@ CTest提交步骤
   * :module:`CTest`\ 模块变量：\ ``CTEST_TLS_VERSION``
 
   .. versionchanged:: 3.31
-    The default is TLS 1.2.
-    Previously, no minimum version was enforced by default.
+    默认是TLS 1.2。以前，默认情况下没有强制执行最低版本。
 
 ``TLSVerify``
   .. versionadded:: 3.30
@@ -1364,9 +1363,8 @@ CTest提交步骤
   * :module:`CTest`\ 模块变量：\ ``CTEST_TLS_VERIFY``
 
   .. versionchanged:: 3.31
-    The default is on.  Previously, the default was off.
-    Users may set the :envvar:`CMAKE_TLS_VERIFY` environment
-    variable to ``0`` to restore the old default.
+    默认为开启。之前，默认是关闭的。用户可以将\ :envvar:`CMAKE_TLS_VERIFY`\ 环境变量设置为\
+    ``0``\ 以恢复旧的默认值。
 
 ``TriggerSite``
   遗留的选项。不用。

@@ -34,8 +34,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 .. literalinclude:: presets/example.json
   :language: json
 
-Preset files specifying version ``10`` or above may include comments using the
-key ``$comment`` at any level within the JSON object to provide documentation.
+指定版本\ ``10``\ 或更高的预设文件可以包含使用键\ ``$comment``\ 在JSON对象中的任何级别的\
+注释，以提供文档。
 
 根对象识别以下字段：
 
@@ -222,14 +222,11 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   中允许使用。
 
 ``graphviz``
-  An optional string representing the path to the graphviz input file,
-  that will contain all the library and executable dependencies
-  in the project. See the documentation for :module:`CMakeGraphVizOptions`
-  for more details.
+  表示graphviz输入文件路径的可选字符串，它将包含项目中所有的库和可执行依赖项。更多细节请参阅\
+  :module:`CMakeGraphVizOptions`\ 的文档。
 
-  This field supports `宏扩展`_. If a relative path is specified,
-  it is calculated relative to the current working directory. It is allowed
-  in preset files specifying version ``10`` or above.
+  该字段支持\ `宏扩展`_。如果指定了相对路径，它是相对于当前工作目录计算的。它允许在指定版本\
+  ``10``\ 或以上的预设文件中使用。
 
 ``binaryDir``
   一个可选字符串，表示输出二进制目录的路径。该字段支持\ `宏扩展`_.。如果指定了相对路径，则计\
@@ -265,12 +262,10 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
-  This field supports `宏扩展`_, and environment variables in this map
-  may reference each other, and may be listed in any order, as long as such
-  references do not cause a cycle (for example, if ``ENV_1`` is
-  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
-  allows one to prepend or append values to existing environment variables by
-  accessing only values from the parent environment.
+  该字段支持\ `宏扩展`_，该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引\
+  用不引起循环（例如，如果\ ``ENV_1``\ 是\ ``$env{ENV_2}``，\ ``ENV_2``\ 不能是\
+  ``$env{ENV_1}``）。\ ``$penv{NAME}``\ 允许通过只访问父环境中的值来给现有的环境变量预加\
+  或附加值。
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来自\
   所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
@@ -413,12 +408,10 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
-  This field supports `宏扩展`_, and environment variables in this map
-  may reference each other, and may be listed in any order, as long as such
-  references do not cause a cycle (for example, if ``ENV_1`` is
-  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
-  allows one to prepend or append values to existing environment variables by
-  accessing only values from the parent environment.
+  该字段支持\ `宏扩展`_，该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引\
+  用不引起循环（例如，如果\ ``ENV_1``\ 是\ ``$env{ENV_2}``，\ ``ENV_2``\ 不能是\
+  ``$env{ENV_1}``）。\ ``$penv{NAME}``\ 允许通过只访问父环境中的值来给现有的环境变量预加\
+  或附加值。
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
   自所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
@@ -536,12 +529,10 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。。
 
-  This field supports `宏扩展`_, and environment variables in this map
-  may reference each other, and may be listed in any order, as long as such
-  references do not cause a cycle (for example, if ``ENV_1`` is
-  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
-  allows one to prepend or append values to existing environment variables by
-  accessing only values from the parent environment.
+  该字段支持\ `宏扩展`_，该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引\
+  用不引起循环（例如，如果\ ``ENV_1``\ 是\ ``$env{ENV_2}``，\ ``ENV_2``\ 不能是\
+  ``$env{ENV_1}``）。\ ``$penv{NAME}``\ 允许通过只访问父环境中的值来给现有的环境变量预加\
+  或附加值。
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
   自所有父\ ``environment``\ 环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
@@ -806,12 +797,10 @@ key ``$comment`` at any level within the JSON object to provide documentation.
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
 
-  This field supports `宏扩展`_, and environment variables in this map
-  may reference each other, and may be listed in any order, as long as such
-  references do not cause a cycle (for example, if ``ENV_1`` is
-  ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``).  ``$penv{NAME}``
-  allows one to prepend or append values to existing environment variables by
-  accessing only values from the parent environment.
+  该字段支持\ `宏扩展`_，该映射中的环境变量可以相互引用，并且可以以任何顺序列出，只要这些引\
+  用不引起循环（例如，如果\ ``ENV_1``\ 是\ ``$env{ENV_2}``，\ ``ENV_2``\ 不能是\
+  ``$env{ENV_1}``）。\ ``$penv{NAME}``\ 允许通过只访问父环境中的值来给现有的环境变量预加\
+  或附加值。
 
   环境变量通过\ ``inherits``\ 字段继承，预设的环境将是它自己的\ ``environment``\ 和来\
   自所有父\ ``environment``\ 的环境的结合。如果此联合中的多个预设定义了相同的变量，则应用\
