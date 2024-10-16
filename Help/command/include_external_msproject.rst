@@ -1,8 +1,8 @@
 include_external_msproject
 --------------------------
 
-Include an external Microsoft project file in the solution file produced
-by :ref:`Visual Studio Generators`. Ignored on other generators.
+在\ :ref:`Visual Studio Generators`\ 生成的解决方案文件中包含外部Microsoft项目文件。\
+在其他生成器上被忽略。
 
 .. code-block:: cmake
 

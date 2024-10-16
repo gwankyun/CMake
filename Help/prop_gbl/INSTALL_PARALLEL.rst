@@ -3,8 +3,7 @@ INSTALL_PARALLEL
 
 .. versionadded:: 3.30
 
-Enables parallel installation option for a project. The install code for each
-subdirectory added with ``add_subdirectory`` can run independently.
+为项目启用并行安装选项。使用\ ``add_subdirectory``\ 添加的每个子目录的安装代码可以独立运行。
 
 When using the Ninja generator, setting this property to ``ON``, causes
 ``install/local`` targets have the console pool disabled, allowing them to run
