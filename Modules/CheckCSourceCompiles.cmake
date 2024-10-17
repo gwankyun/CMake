@@ -5,7 +5,7 @@
 CheckCSourceCompiles
 --------------------
 
-Check once if C source code can be built.
+检查一次是否可以构建C源代码。
 
 .. command:: check_c_source_compiles
 

@@ -5,7 +5,7 @@
 CheckCXXSourceCompiles
 ----------------------
 
-Check once if C++ source code can be built.
+检查一次是否可以构建C++源代码。
 
 .. command:: check_cxx_source_compiles
 

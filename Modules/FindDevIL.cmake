@@ -5,11 +5,7 @@
 FindDevIL
 ---------
 
-This module locates the Developer's Image Library,
-`DevIL <https://openil.sourceforge.net/>`_.
-
-
-该模块定位开发人员的映像库，`DevIL <https://openil.sourceforge.net/>`_。
+该模块定位开发人员映像库，`DevIL <https://openil.sourceforge.net/>`_。
 
 IMPORTED Targets
 ^^^^^^^^^^^^^^^^

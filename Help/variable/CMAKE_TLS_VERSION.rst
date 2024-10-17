@@ -3,11 +3,9 @@ CMAKE_TLS_VERSION
 
 .. versionadded:: 3.30
 
-Specify the default value for the :command:`file(DOWNLOAD)` and
-:command:`file(UPLOAD)` commands' ``TLS_VERSION`` option.
-If this variable is not set, the commands check the
-:envvar:`CMAKE_TLS_VERSION` environment variable.
-If neither is set, the default is TLS 1.2.
+指定\ :command:`file(DOWNLOAD)`\ 和\ :command:`file(UPLOAD)`\ 命令的\ ``TLS_VERSION``\
+选项的默认值。如果没有设置该变量，命令会检查环境变量\ :envvar:`CMAKE_TLS_VERSION`。如果\
+两者都没有设置，默认是TLS 1.2。
 
 .. versionchanged:: 3.31
   The default is TLS 1.2.
