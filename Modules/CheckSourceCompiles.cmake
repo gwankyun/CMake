@@ -8,7 +8,7 @@ CheckSourceCompiles
 
 .. versionadded:: 3.19
 
-Check once if source code can be built for a given language.
+检查一下是否可以为给定的语言构建源代码。
 
 .. command:: check_source_compiles
 

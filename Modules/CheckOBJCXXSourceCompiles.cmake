@@ -7,7 +7,7 @@ CheckOBJCXXSourceCompiles
 
 .. versionadded:: 3.16
 
-Check once if Objective-C++ source can be built.
+检查一下是否可以构建Objective-C++源代码。
 
 .. command:: check_objcxx_source_compiles
 

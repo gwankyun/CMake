@@ -5,7 +5,7 @@
 CheckLibraryExists
 ------------------
 
-Check once if the function exists in system or specified library.
+检查一下该函数是否存在于系统或指定的库中。
 
 .. command:: CHECK_LIBRARY_EXISTS
 

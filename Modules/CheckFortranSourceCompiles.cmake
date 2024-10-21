@@ -7,7 +7,7 @@ CheckFortranSourceCompiles
 
 .. versionadded:: 3.1
 
-Check once if Fortran source code can be built.
+检查一下Fortran源代码是否可以编译。
 
 .. command:: check_fortran_source_compiles
 
