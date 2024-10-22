@@ -3,8 +3,7 @@ AIX_SHARED_LIBRARY_ARCHIVE
 
 .. versionadded:: 3.31
 
-On AIX, enable creation of a shared library archive.  This places
-the shared object ``.so`` file inside an archive ``.a`` file.
+在AIX上，启用创建共享库归档。这将把共享对象\ ``.so``\ 文件放在一个归档文件\ ``.a``\ 中。
 
 By default, CMake creates shared libraries on AIX as plain
 shared object ``.so`` files for consistency with other UNIX platforms.

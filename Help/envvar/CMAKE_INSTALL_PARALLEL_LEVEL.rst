@@ -5,7 +5,6 @@ CMAKE_INSTALL_PARALLEL_LEVEL
 
 .. include:: ENV_VAR.txt
 
-Specifies the default maximum number of concurrent processes to use when
-installing using ``cmake --install``.
+指定使用\ ``cmake --install``\ 安装时使用的默认最大并发进程数。
 
 This has no impact unless :prop_gbl:`INSTALL_PARALLEL` is enabled.

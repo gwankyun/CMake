@@ -7,7 +7,7 @@ cmake_pkg_config
 
    .. contents::
 
-Process pkg-config format package files.
+处理pkg-config格式的包文件。
 
 Synopsis
 ^^^^^^^^
