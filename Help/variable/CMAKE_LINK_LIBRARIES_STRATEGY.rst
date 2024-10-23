@@ -3,8 +3,7 @@ CMAKE_LINK_LIBRARIES_STRATEGY
 
 .. versionadded:: 3.31
 
-Specify a strategy for ordering targets' direct link dependencies
-on linker command lines.
+指定在链接器命令行上对目标的直接链接依赖进行排序的策略。
 
 The value of this variable initializes the :prop_tgt:`LINK_LIBRARIES_STRATEGY`
 target property of targets as they are created.  Set that property directly

@@ -3,8 +3,8 @@ CMAKE_HOST_EXECUTABLE_SUFFIX
 
 .. versionadded:: 3.31
 
-The suffix for executables on the host platform.  This may differ from
-the suffix for the target platform, :variable:`CMAKE_EXECUTABLE_SUFFIX`.
+主机平台上可执行文件的后缀。这可能与目标平台的后缀\ :variable:`CMAKE_EXECUTABLE_SUFFIX`\
+不同。
 
 The suffix to use for the end of an executable filename if any, ``.exe``
 on Windows.

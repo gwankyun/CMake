@@ -3,5 +3,5 @@ WASI
 
 .. versionadded:: 3.31
 
-Set to ``1`` when the target system is WebAssembly System Interface
-(:variable:`CMAKE_SYSTEM_NAME` is ``WASI``).
+当目标系统为WebAssembly System Interface（:variable:`CMAKE_SYSTEM_NAME`\ 为\
+``WASI``）时，设置为\ ``1``。

@@ -5,11 +5,10 @@ CMAKE_EXPORT_BUILD_DATABASE
 
 .. note ::
 
-   This variable is meaningful only when experimental support for build
-   databases has been enabled by the
-   ``CMAKE_EXPERIMENTAL_EXPORT_BUILD_DATABASE`` gate.
+   只有在\ ``CMAKE_EXPERIMENTAL_EXPORT_BUILD_DATABASE``\ 开关启用了对构建数据库的实验\
+   性支持时，该变量才有意义。
 
-Enable/Disable output of module compile commands during the build.
+在构建过程中启用/禁用模块编译命令的输出。
 
 If enabled, generates a ``build_database.json`` file containing the
 information necessary to compile a target's C++ module sources with any
