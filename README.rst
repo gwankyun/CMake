@@ -48,19 +48,17 @@ CMake是在OSI认证BSD 3条款许可下发布的。详情见\ `Copyright.txt`_�
 用CMake构建CMake
 -------------------------
 
-You can build CMake as any other project with a CMake-based build system:
-run an already-installed CMake on this source tree with your preferred
-generator and options.  Then build it and install it.
+你可以使用基于CMake的构建系统将CMake构建为任何其他项目：使用你首选的生成器和选项在此源树上\
+运行已经安装的CMake。然后构建并安装它。
 
 要构建文档，请安装\ `Sphinx`_\ 并使用\ ``-DSPHINX_HTML=ON``\ 和/或\ ``-DSPHINX_MAN=ON``\
 配置CMake以启用"html"或"man"构建器。如果没有自动找到sphinx-build工具，请添加\
 ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build``。
 
-To run the test suite, run ``ctest`` in the CMake build directory after
-building.  See the `CMake Testing Guide`_ for details.
+要运行测试套件，构建后在CMake构建目录下运行\ ``ctest``。详情请参阅\ `CMake测试指南`_ 。
 
 .. _`Sphinx`: https://sphinx-doc.org
-.. _`CMake Testing Guide`: Help/dev/testing.rst
+.. _`CMake测试指南`: Help/dev/testing.rst
 
 从头开始建造CMake
 ---------------------------
@@ -90,7 +88,7 @@ Windows
 
 1. 使用VS 2015或更高版本VS的MSVC编译器。
    你需要下载并安装CMake的二进制版本。可以从\ `CMake下载页`_\ 获得这些版本。然后继续\
-   `使用CMake构建CMake`_\ 的步骤。
+   `用CMake构建CMake`_\ 的步骤。
 
 2. 使用MSYS2下的MinGW。
    下载并安装\ `MSYS2`_。然后安装所需的构建工具：\ ::
