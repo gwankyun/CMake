@@ -360,51 +360,42 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
    * ``PATH``
 
-6. Search paths stored in the CMake :ref:`User Package Registry`.
-   This can be skipped if ``NO_CMAKE_PACKAGE_REGISTRY`` is passed or by
-   setting the variable :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY`
-   to ``FALSE`` or the deprecated variable
-   :variable:`CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY` to ``TRUE``.
+6. 搜索存储在CMake\ :ref:`User Package Registry`\ 的路径。如果传递了\
+   ``NO_CMAKE_PACKAGE_REGISTRY``，这可以跳过，或者将变量\
+   :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY`\ 设置为\ ``FALSE``，或者将已弃用的变\
+   量\ :variable:`CMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY`\ 设置为\ ``TRUE``。
 
-   See the :manual:`cmake-packages(7)` manual for details on the user
-   package registry.
+   有关用户包注册表的详细信息，请参阅\ :manual:`cmake-packages(7)`\ 手册。
 
-7. Search cmake variables defined in the Platform files for the
-   current system. The searching of :variable:`CMAKE_INSTALL_PREFIX` and
-   :variable:`CMAKE_STAGING_PREFIX` can be
-   skipped if ``NO_CMAKE_INSTALL_PREFIX`` is passed or by setting the
-   :variable:`CMAKE_FIND_USE_INSTALL_PREFIX` to ``FALSE``. All these locations
-   can be skipped if ``NO_CMAKE_SYSTEM_PATH`` is passed or by setting the
-   :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH` to ``FALSE``:
+7. 在平台文件中搜索当前系统中定义的cmake变量。如果传递了\ ``NO_CMAKE_INSTALL_PREFIX``\
+   或将\ :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`\ 设置为\ ``FALSE``，可以跳过对\
+   :variable:`CMAKE_INSTALL_PREFIX`\ 和\ :variable:`CMAKE_STAGING_PREFIX`\ 的搜索。\
+   如果传递了\ ``NO_CMAKE_SYSTEM_PATH``，或者将\
+   :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH`\ 设置为\ ``FALSE``，那么可以跳过所\
+   有这些位置：
 
    * :variable:`CMAKE_SYSTEM_PREFIX_PATH`
    * :variable:`CMAKE_SYSTEM_FRAMEWORK_PATH`
    * :variable:`CMAKE_SYSTEM_APPBUNDLE_PATH`
 
-   The platform paths that these variables contain are locations that
-   typically include installed software. An example being ``/usr/local`` for
-   UNIX based platforms.
+   这些变量包含的平台路径通常包含已安装软件的位置。一个例子是基于UNIX平台的\ ``/usr/local``。
 
-8. Search paths stored in the CMake :ref:`System Package Registry`.
-   This can be skipped if ``NO_CMAKE_SYSTEM_PACKAGE_REGISTRY`` is passed
-   or by setting the :variable:`CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY`
-   variable to ``FALSE`` or the deprecated variable
-   :variable:`CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY` to ``TRUE``.
+8. 搜索存储在CMake\ :ref:`System Package Registry`\ 中的路径。如果传递了\
+   ``NO_CMAKE_SYSTEM_PACKAGE_REGISTRY``，这可以跳过，或者将\
+   :variable:`CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY`\ 变量设置为\ ``FALSE``，或者\
+   将已弃用的变量\ :variable:`CMAKE_FIND_PACKAGE_NO_SYSTEM_PACKAGE_REGISTRY`\ 设置\
+   为\ ``TRUE``。
 
-   See the :manual:`cmake-packages(7)` manual for details on the system
-   package registry.
+   有关系统包注册表的详细信息，请参阅\ :manual:`cmake-packages(7)`\ 手册。
 
-9. Search paths specified by the ``PATHS`` option.  These are typically
-   hard-coded guesses.
+9. 搜索由\ ``PATHS``\ 选项指定的路径。这些通常是硬编码的猜测。
 
-The :variable:`CMAKE_IGNORE_PATH`, :variable:`CMAKE_IGNORE_PREFIX_PATH`,
-:variable:`CMAKE_SYSTEM_IGNORE_PATH` and
-:variable:`CMAKE_SYSTEM_IGNORE_PREFIX_PATH` variables can also cause some
-of the above locations to be ignored.
+:variable:`CMAKE_IGNORE_PATH`、\ :variable:`CMAKE_IGNORE_PREFIX_PATH`、\
+:variable:`CMAKE_SYSTEM_IGNORE_PATH`\ 和\
+:variable:`CMAKE_SYSTEM_IGNORE_PREFIX_PATH`\ 变量也可能导致上述一些位置被忽略。
 
 .. versionadded:: 3.16
-   Added the ``CMAKE_FIND_USE_<CATEGORY>`` variables to globally disable
-   various search locations.
+   添加了\ ``CMAKE_FIND_USE_<CATEGORY>``\ 变量来全局禁用各种搜索位置。
 
 .. include:: FIND_XXX_ROOT.txt
 .. include:: FIND_XXX_ORDER.txt
