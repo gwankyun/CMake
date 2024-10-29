@@ -3,7 +3,7 @@ LINK_LIBRARIES_STRATEGY
 
 .. versionadded:: 3.31
 
-指定在链接器命令行上对目标的直接链接依赖进行排序的策略。This property is initialized by the value of the
+鎸囧畾鍦ㄩ摼鎺ュ櫒鍛戒护琛屼笂瀵圭洰鏍囩殑鐩存帴閾炬帴渚濊禆杩涜鎺掑簭鐨勭瓥鐣ャ�俆his property is initialized by the value of the
 :variable:`CMAKE_LINK_LIBRARIES_STRATEGY` variable if it is set when a
 target is created.
 
