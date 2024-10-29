@@ -3,8 +3,8 @@ CMAKE_FIND_PACKAGE_TARGETS_GLOBAL
 
 .. versionadded:: 3.24
 
-è®¾ç½®ä¸º\ ``TRUE``\ å°†\ :command:`find_package`\ å‘ç°çš„æ‰€æœ‰\ :prop_tgt:`IMPORTED`\
-ç›®æ ‡æå‡åˆ°\ ``GLOBAL``\ ä½œç”¨åŸŸã€‚
+ÉèÖÃÎª\ ``TRUE``\ ½«\ :command:`find_package`\ ·¢ÏÖµÄËùÓĞ\ :prop_tgt:`IMPORTED`\
+Ä¿±êÌáÉıµ½\ ``GLOBAL``\ ×÷ÓÃÓò¡£
 
 
 Setting this to ``TRUE`` is akin to specifying ``GLOBAL``
