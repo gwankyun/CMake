@@ -1,29 +1,21 @@
-The CMake variable :variable:`CMAKE_FIND_ROOT_PATH` specifies one or more
-directories to be prepended to all other search directories.  This
-effectively "re-roots" the entire search under given locations.
-Paths which are descendants of the :variable:`CMAKE_STAGING_PREFIX` are excluded
-from this re-rooting, because that variable is always a path on the host system.
-By default the :variable:`CMAKE_FIND_ROOT_PATH` is empty.
+CMake变量\ :variable:`CMAKE_FIND_ROOT_PATH`\ 指定一个或多个目录，放在所有其他搜索目录\
+的前面。这有效地“重新定位”了给定位置下的整个搜索。:variable:`CMAKE_STAGING_PREFIX`\ 的\
+后代路径被排除在这种重定根目录之外，因为该变量始终是主机系统上的一个路径。默认情况下，\
+:variable:`CMAKE_FIND_ROOT_PATH`\ 为空。
 
-The :variable:`CMAKE_SYSROOT` variable can also be used to specify exactly one
-directory to use as a prefix.  Setting :variable:`CMAKE_SYSROOT` also has other
-effects.  See the documentation for that variable for more.
+:variable:`CMAKE_SYSROOT`\ 变量也可以指定一个目录作为前缀。设置\ :variable:`CMAKE_SYSROOT`\
+还有其他作用。有关该变量的更多信息，请参阅文档。
 
-These variables are especially useful when cross-compiling to
-point to the root directory of the target environment and CMake will
-search there too.  By default at first the directories listed in
-:variable:`CMAKE_FIND_ROOT_PATH` are searched, then the :variable:`CMAKE_SYSROOT`
-directory is searched, and then the non-rooted directories will be
-searched.  The default behavior can be adjusted by setting
-|CMAKE_FIND_ROOT_PATH_MODE_XXX|.  This behavior can be manually
-overridden on a per-call basis using options:
+当交叉编译指向目标环境的根目录时，这些变量特别有用，CMake也会在那里搜索。默认情况下，首先搜索\
+:variable:`CMAKE_FIND_ROOT_PATH`\ 中列出的目录，然后搜索\ :variable:`CMAKE_SYSROOT`\
+目录，然后搜索非根目录。可以通过设置\ |CMAKE_FIND_ROOT_PATH_MODE_XXX|\ 来调整默认行为。\
+这种行为可以使用选项手动覆盖每次调用的基础：
 
 ``CMAKE_FIND_ROOT_PATH_BOTH``
-  Search in the order described above.
+  按上述顺序搜索。
 
 ``NO_CMAKE_FIND_ROOT_PATH``
-  Do not use the :variable:`CMAKE_FIND_ROOT_PATH` variable.
+  不要使用\ :variable:`CMAKE_FIND_ROOT_PATH`\ 变量。
 
 ``ONLY_CMAKE_FIND_ROOT_PATH``
-  Search only the re-rooted directories and directories below
-  :variable:`CMAKE_STAGING_PREFIX`.
+  只搜索重定根目录和\ :variable:`CMAKE_STAGING_PREFIX`\ 以下的目录。

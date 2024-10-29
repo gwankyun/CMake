@@ -400,31 +400,28 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 .. include:: FIND_XXX_ROOT.txt
 .. include:: FIND_XXX_ORDER.txt
 
-By default the value stored in the result variable will be the path at
-which the file is found.  The :variable:`CMAKE_FIND_PACKAGE_RESOLVE_SYMLINKS`
-variable may be set to ``TRUE`` before calling ``find_package`` in order
-to resolve symbolic links and store the real path to the file.
+默认情况下，保存在结果变量中的值是找到文件的路径。在调用\ ``find_package``\ 之前，可以将\
+:variable:`CMAKE_FIND_PACKAGE_RESOLVE_SYMLINKS`\ 变量设置为\ ``TRUE``，以便解析符号\
+链接并存储文件的真实路径。
 
-Every non-REQUIRED ``find_package`` call can be disabled or made REQUIRED:
+每个非必需的\ ``find_package``\ 调用都可以禁用或变为必需：
 
-* Setting the :variable:`CMAKE_DISABLE_FIND_PACKAGE_<PackageName>` variable
-  to ``TRUE`` disables the package.  This also disables redirection to a
-  package provided by :module:`FetchContent`.
+* 设置\ :variable:`CMAKE_DISABLE_FIND_PACKAGE_<PackageName>`\ 变量为\ ``TRUE``\
+  禁用包。这也禁用了重定向到\ :module:`FetchContent`\ 提供的包。
 
-* Setting the :variable:`CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>` variable
-  to ``TRUE`` makes the package REQUIRED.
+* 将\ :variable:`CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>`\ 变量设置为\ ``TRUE``\
+  使该包是必需的。
 
-Setting both variables to ``TRUE`` simultaneously is an error.
+将这两个变量同时设置为\ ``TRUE``\ 将导致错误。
 
 .. _`version selection`:
 
-Config Mode Version Selection
+配置模式版本选择
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
-  When Config mode is used, this version selection process is applied
-  regardless of whether the :ref:`full <full signature>` or
-  :ref:`basic <basic signature>` signature was given.
+  当使用配置模式时，无论给出的是\ :ref:`完整 <full signature>`\ 签名还是\
+  :ref:`基础 <basic signature>`\ 签名，都会执行这个版本选择过程。
 
 When the ``[version]`` argument is given, Config mode will only find a
 version of the package that claims compatibility with the requested
