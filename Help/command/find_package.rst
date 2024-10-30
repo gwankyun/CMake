@@ -394,17 +394,12 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 :variable:`CMAKE_SYSTEM_IGNORE_PATH`\ 和\
 :variable:`CMAKE_SYSTEM_IGNORE_PREFIX_PATH`\ 变量也可能导致上述一些位置被忽略。
 
-Paths are searched in the order described above.  The first viable package
-configuration file found is used, even if a newer version of the package
-resides later in the list of search paths.
+按上述顺序搜索路径。使用找到的第一个可行的包配置文件，即使较新的包版本位于搜索路径列表的后面。
 
-For search paths which contain ``<name>*``, the order among matching paths
-is unspecified unless the :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` variable
-is set.  This variable, along with the
-:variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION` variable, determines the order
-in which CMake considers paths that match a single search path containing
-``<name>*``.  For example, if the file system contains the package
-configuration files
+对于包含\ ``<name>*``\ 的搜索路径，匹配路径之间的顺序是未指定的，除非设置了\
+:variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`\ 变量。该变量与\
+:variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION`\ 变量一起确定了CMake考虑匹配包含\
+``<name>*``\ 的单个搜索路径的路径的顺序。例如，文件系统中包含包配置文件
 
 ::
 
@@ -412,23 +407,21 @@ configuration files
   <prefix>/example-1.10/example-config.cmake
   <prefix>/share/example-2.0/example-config.cmake
 
-it is unspecified (when the aforementioned variables are unset) whether
-``find_package(example)`` will find ``example-1.2`` or ``example-1.10``
-(assuming that both are viable), but ``find_package`` will *not* find
-``example-2.0``, because one of the other two will be found first.
+``find_package(example)``\ 找到的是\ ``example-1.2``\ 还是\ ``example-1.10``\
+（假设这两个都是可行的），这是未知的（在未设置前述变量时），但\ ``find_package``\ *找不到* \
+``example-2.0``，因为会先找到另外两个。
 
-To control the order in which ``find_package`` searches directories that match
-a glob expression, use :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` and
-:variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION`.
-For instance, to cause the above example to select ``example-1.10``,
-one can set
+要控制 ``find_package`` 搜索匹配glob表达式的目录的顺序，可以使用\
+:variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`\ 和\
+:variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION`。例如，要使上面的示例选择\
+``example-1.10``，可以设置
 
 .. code-block:: cmake
 
   SET(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
   SET(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
 
-before calling ``find_package``.
+在调用\ ``find_package``\ 之前。
 
 .. versionadded:: 3.16
    添加了\ ``CMAKE_FIND_USE_<CATEGORY>``\ 变量来全局禁用各种搜索位置。
