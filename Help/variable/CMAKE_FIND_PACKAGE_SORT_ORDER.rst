@@ -3,9 +3,8 @@ CMAKE_FIND_PACKAGE_SORT_ORDER
 
 .. versionadded:: 3.7
 
-The default order for sorting directories which match a search path containing
-a glob expression found using :command:`find_package`.  It can assume one of
-the following values:
+目录排序的默认顺序，与使用\ :command:`find_package`\ 找到的包含通配表达式的搜索路径匹配。\
+它可以假定为下列值之一：
 
 ``NONE``
   Default.  No attempt is done to sort directories.

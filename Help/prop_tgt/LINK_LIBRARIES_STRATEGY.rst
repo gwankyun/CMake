@@ -3,9 +3,8 @@ LINK_LIBRARIES_STRATEGY
 
 .. versionadded:: 3.31
 
-指定在链接器命令行上对目标的直接链接依赖进行排序的策略。This property is initialized by the value of the
-:variable:`CMAKE_LINK_LIBRARIES_STRATEGY` variable if it is set when a
-target is created.
+指定在链接器命令行上对目标的直接链接依赖进行排序的策略。如果在创建目标时设置了\
+:variable:`CMAKE_LINK_LIBRARIES_STRATEGY`\ 变量，则该属性由该变量的值初始化。
 
 CMake generates a target's link line using its :ref:`Target Link Properties`.
 In particular, the :prop_tgt:`LINK_LIBRARIES` target property records the
