@@ -35,25 +35,20 @@
 ``<VAR>``\ 命名的普通变量）来存储此命令的结果。如果找到了\ |SEARCH_XXX| ，则结果将存储在\
 变量中，除非清除该变量，否则将不会重复搜索。如果没有找到，结果将是\ ``<VAR>-NOTFOUND``。
 
-Options include:
+选项包括：
 
 ``NAMES``
-  Specify one or more possible names for the |SEARCH_XXX|.
+  为\ |SEARCH_XXX|\ 指定一个或多个可能的名称。
 
-  When using this to specify names with and without a version
-  suffix, we recommend specifying the unversioned name first
-  so that locally-built packages can be found before those
-  provided by distributions.
+  当使用它来指定带有或不带版本后缀的名称时，我们建议先指定未版本化的名称，这样本地构建的包就\
+  可以在发行版提供的包之前找到。
 
 ``HINTS``, ``PATHS``
-  Specify directories to search in addition to the default locations.
-  The ``ENV var`` sub-option reads paths from a system environment
-  variable.
+  除了默认位置之外，指定要搜索的目录。\ ``ENV var``\ 子选项从系统环境变量中读取路径。
 
   .. versionchanged:: 3.24
-    On ``Windows`` platform, it is possible to include registry queries as part
-    of the directories, using a :ref:`dedicated syntax <Find Using Windows Registry>`.
-    Such specifications will be ignored on all other platforms.
+    在\ ``Windows``\ 平台上，可以使用\ :ref:`专用语法 <Find Using Windows Registry>`\
+    将注册表查询包含在目录中。在所有其他平台上，这些规范将被忽略。
 
 ``REGISTRY_VIEW``
   .. versionadded:: 3.24
@@ -61,19 +56,15 @@ Options include:
   .. include:: FIND_XXX_REGISTRY_VIEW.txt
 
 ``PATH_SUFFIXES``
-  Specify additional subdirectories to check below each directory
-  location otherwise considered.
+  在每个目录位置下面指定要检查的附加子目录。
 
 ``VALIDATOR``
   .. versionadded:: 3.25
 
-  Specify a :command:`function` to be called for each candidate item found
-  (a :command:`macro` cannot be provided, that will result in an error).
-  Two arguments will be passed to the validator function: the name of a
-  result variable, and the absolute path to the candidate item.  The item
-  will be accepted and the search will end unless the function sets the
-  value in the result variable to false in the calling scope.  The result
-  variable will hold a true value when the validator function is entered.
+  指定要为找到的每个候选项调用的\ :command:`function`\ （无法提供\ :command:`macro`，会\
+  导致错误）。有两个参数将传递给验证函数：结果变量的名称和候选项的绝对路径。除非函数在调用作用\
+  域中将result变量的值设置为false，否则该项将被接受并结束搜索。当输入验证函数时，result变\
+  量将保存true值。
 
   .. parsed-literal::
 
@@ -85,166 +76,136 @@ Options include:
 
      |FIND_XXX| (result NAMES ... VALIDATOR my_check)
 
-  Note that if a cached result is used, the search is skipped and any
-  ``VALIDATOR`` is ignored.  The cached result is not required to pass the
-  validation function.
+  注意，如果使用缓存的结果，则跳过搜索，并忽略任何\ ``VALIDATOR``。缓存的结果不需要传递验证\
+  函数。
 
 ``DOC``
-  Specify the documentation string for the ``<VAR>`` cache entry.
+  为\ ``<VAR>``\ 缓存项指定文档字符串。
 
 ``NO_CACHE``
   .. versionadded:: 3.21
 
-  The result of the search will be stored in a normal variable rather than
-  a cache entry.
+  搜索结果将存储在普通变量中，而不是缓存项中。
 
   .. note::
 
-    If the variable is already set before the call (as a normal or cache
-    variable) then the search will not occur.
+    如果该变量在调用之前已经设置（作为普通变量或缓存变量），则不会进行搜索。
 
   .. warning::
 
-    This option should be used with caution because it can greatly increase
-    the cost of repeated configure steps.
+    应该谨慎使用这个选项，因为它会大大增加重复配置步骤的成本。
 
 ``REQUIRED``
   .. versionadded:: 3.18
 
-  Stop processing with an error message if nothing is found, otherwise
-  the search will be attempted again the next time |FIND_XXX| is invoked
-  with the same variable.
+  如果没有找到，则停止处理，并给出错误消息，否则在下次用相同的变量调用\ |FIND_XXX|\ 时，\
+  将再次尝试搜索。
 
-If ``NO_DEFAULT_PATH`` is specified, then no additional paths are
-added to the search.
-If ``NO_DEFAULT_PATH`` is not specified, the search process is as follows:
+如果指定了\ ``NO_DEFAULT_PATH``，则不会向搜索添加其他路径。如果没有指定\ ``NO_DEFAULT_PATH``，\
+搜索过程如下：
 
 .. |FIND_PACKAGE_ROOT_PREFIX_PATH_XXX_SUBDIR| replace::
-   |prefix_XXX_SUBDIR| for each ``<prefix>`` in the
-   :variable:`<PackageName>_ROOT` CMake variable and the
-   :envvar:`<PackageName>_ROOT` environment variable if
-   called from within a find module loaded by
-   :command:`find_package(<PackageName>)`
+   对于\ :variable:`<PackageName>_ROOT` CMake变量中每个\ ``<prefix>``\ 的\
+   |prefix_XXX_SUBDIR|\ 及如果在查找模块调用中被\ :command:`find_package(<PackageName>)`\
+   加载的\ :envvar:`<PackageName>_ROOT`\ 环境变量
 
 .. |CMAKE_PREFIX_PATH_XXX_SUBDIR| replace::
-   |prefix_XXX_SUBDIR| for each ``<prefix>`` in :variable:`CMAKE_PREFIX_PATH`
+   对于\ :variable:`CMAKE_PREFIX_PATH`\ 中的每个\ ``<prefix>``\ 的\ |prefix_XXX_SUBDIR|
 
 .. |ENV_CMAKE_PREFIX_PATH_XXX_SUBDIR| replace::
-   |prefix_XXX_SUBDIR| for each ``<prefix>`` in :envvar:`CMAKE_PREFIX_PATH`
+   对于\ :envvar:`CMAKE_PREFIX_PATH`\ 中的每个\ ``<prefix>``\ 的\ |prefix_XXX_SUBDIR|
 
 .. |SYSTEM_ENVIRONMENT_PREFIX_PATH_XXX_SUBDIR| replace::
-   |prefix_XXX_SUBDIR| for each ``<prefix>/[s]bin`` in ``PATH``, and
-   |entry_XXX_SUBDIR| for other entries in ``PATH``
+   对于\ ``PATH``\ 中的每个\ ``<prefix>/[s]bin``\ 的\ |prefix_XXX_SUBDIR|，以及对于\
+   ``PATH``\ 中的其他条目的\ |entry_XXX_SUBDIR|
 
 .. |CMAKE_SYSTEM_PREFIX_PATH_XXX_SUBDIR| replace::
-   |prefix_XXX_SUBDIR| for each ``<prefix>`` in
-   :variable:`CMAKE_SYSTEM_PREFIX_PATH`
+   对于\ :variable:`CMAKE_SYSTEM_PREFIX_PATH`\ 中的每个\ ``<prefix>``\ 的\ |prefix_XXX_SUBDIR|
 
-1. If called from within a find module or any other script loaded by a call to
-   :command:`find_package(<PackageName>)`, search prefixes unique to the
-   current package being found.  See policy :policy:`CMP0074`.
+1. 如果在查找模块中调用，或者调用\ :command:`find_package(<PackageName>)`\ 加载的任何\
+   其他脚本中调用，搜索前缀与当前查找的包是唯一的。参见策略\ :policy:`CMP0074`。
 
    .. versionadded:: 3.12
 
-   Specifically, search paths specified by the following variables, in order:
+   具体来说，按以下变量指定的顺序搜索路径：
 
-   a. :variable:`<PackageName>_ROOT` CMake variable,
-      where ``<PackageName>`` is the case-preserved package name.
+   a. :variable:`<PackageName>_ROOT` CMake变量，其中\ ``<PackageName>``\ 是保留大小\
+      写的包名。
 
-   b. :variable:`<PACKAGENAME>_ROOT` CMake variable,
-      where ``<PACKAGENAME>`` is the upper-cased package name.
-      See policy :policy:`CMP0144`.
-
-      .. versionadded:: 3.27
-
-   c. :envvar:`<PackageName>_ROOT` environment variable,
-      where ``<PackageName>`` is the case-preserved package name.
-
-   d. :envvar:`<PACKAGENAME>_ROOT` environment variable,
-      where ``<PACKAGENAME>`` is the upper-cased package name.
-      See policy :policy:`CMP0144`.
+   b. :variable:`<PACKAGENAME>_ROOT` CMake变量，其中\ ``<PACKAGENAME>``\ 为大写的\
+      包名。参见策略\ :policy:`CMP0144`。
 
       .. versionadded:: 3.27
 
-   The package root variables are maintained as a stack, so if called from
-   nested find modules or config packages, root paths from the parent's find
-   module or config package will be searched after paths from the current
-   module or package.  In other words, the search order would be
-   ``<CurrentPackage>_ROOT``, ``ENV{<CurrentPackage>_ROOT}``,
-   ``<ParentPackage>_ROOT``, ``ENV{<ParentPackage>_ROOT}``, etc.
-   This can be skipped if ``NO_PACKAGE_ROOT_PATH`` is passed or by setting
-   the :variable:`CMAKE_FIND_USE_PACKAGE_ROOT_PATH` to ``FALSE``.
+   c. :envvar:`<PackageName>_ROOT`\ 环境变量，其中\ ``<PackageName>``\ 是保留大小写\
+      的包名。
+
+   d. :envvar:`<PACKAGENAME>_ROOT`\ 环境变量，其中\ ``<PACKAGENAME>``\ 为大写的包名。\
+      参见策略\ :policy:`CMP0144`。
+
+      .. versionadded:: 3.27
+
+   包的根变量以栈的形式维护，因此如果从嵌套的查找模块或配置包中调用，则将在当前模块或包的路径\
+   之后搜索父模块的查找模块或配置包的根路径。也就是说，查找顺序为\ ``<CurrentPackage>_ROOT``、\
+   ``ENV{<CurrentPackage>_ROOT}``、\ ``<ParentPackage>_ROOT``、\
+   ``ENV{<ParentPackage>_ROOT}``\ 等等。如果传递了\ ``NO_PACKAGE_ROOT_PATH``，或者将\
+   :variable:`CMAKE_FIND_USE_PACKAGE_ROOT_PATH`\ 设置为\ ``FALSE``，则可以跳过该操作。
 
    * |FIND_PACKAGE_ROOT_PREFIX_PATH_XXX|
 
-2. Search paths specified in cmake-specific cache variables.
-   These are intended to be used on the command line with a ``-DVAR=value``.
-   The values are interpreted as :ref:`semicolon-separated lists <CMake Language Lists>`.
-   This can be skipped if ``NO_CMAKE_PATH`` is passed or by setting the
-   :variable:`CMAKE_FIND_USE_CMAKE_PATH` to ``FALSE``.
+2. 搜索指定在cmake专用缓存变量中的路径。它们通常在命令行中使用\ ``-DVAR=value``。这些值被\
+   解释为\ :ref:`以分号分隔的列表 <CMake Language Lists>`。如果传递了\ ``NO_CMAKE_PATH``，\
+   或者将\ :variable:`CMAKE_FIND_USE_CMAKE_PATH`\ 设置为\ ``FALSE``，则可以跳过该操作。
 
    * |CMAKE_PREFIX_PATH_XXX|
    * |CMAKE_XXX_PATH|
    * |CMAKE_XXX_MAC_PATH|
 
-3. Search paths specified in cmake-specific environment variables.
-   These are intended to be set in the user's shell configuration,
-   and therefore use the host's native path separator
-   (``;`` on Windows and ``:`` on UNIX).
-   This can be skipped if ``NO_CMAKE_ENVIRONMENT_PATH`` is passed or
-   by setting the :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH` to ``FALSE``.
+3. 在cmake特定的环境变量中搜索指定的路径。这些分隔符需要在用户的shell配置中设置，因此要使用\
+   主机的本地路径分隔符（\ ``;``\ 在Windows和\ ``:``\ 在UNIX上）。如果传递了\
+   ``NO_CMAKE_ENVIRONMENT_PATH``，或者将\ :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`\
+   设置为\ ``FALSE``，则可以跳过此操作。
 
    * |ENV_CMAKE_PREFIX_PATH_XXX|
    * |ENV_CMAKE_XXX_PATH|
    * |ENV_CMAKE_XXX_MAC_PATH|
 
-4. Search the paths specified by the ``HINTS`` option.
-   These should be paths computed by system introspection, such as a
-   hint provided by the location of another item already found.
-   Hard-coded guesses should be specified with the ``PATHS`` option.
+4. 搜索由\ ``HINTS``\ 选项指定的路径。这些路径应该是由系统自省计算出来的，例如由已经找到的\
+   另一项的位置提供的提示。硬编码的猜测应该用\ ``PATHS``\ 选项指定。
 
-5. Search the standard system environment variables.
-   This can be skipped if ``NO_SYSTEM_ENVIRONMENT_PATH`` is passed or by
-   setting the :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH` to ``FALSE``.
+5. 搜索标准系统环境变量。如果传递了\ ``NO_SYSTEM_ENVIRONMENT_PATH``，或者将\
+   :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH`\ 设置为\ ``FALSE``，就可以\
+   跳过这一步。
 
    * |SYSTEM_ENVIRONMENT_PATH_XXX|
 
    |SYSTEM_ENVIRONMENT_PATH_WINDOWS_XXX|
 
-6. Search cmake variables defined in the Platform files
-   for the current system.  The searching of ``CMAKE_INSTALL_PREFIX`` and
-   ``CMAKE_STAGING_PREFIX`` can be
-   skipped if ``NO_CMAKE_INSTALL_PREFIX`` is passed or by setting the
-   :variable:`CMAKE_FIND_USE_INSTALL_PREFIX` to ``FALSE``. All these locations
-   can be skipped if ``NO_CMAKE_SYSTEM_PATH`` is passed or by setting the
-   :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH` to ``FALSE``.
+6. 在平台文件中搜索当前系统中定义的cmake变量。如果传递了\ ``NO_CMAKE_INSTALL_PREFIX``\
+   或将\ :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`\ 设置为\ ``FALSE``.，可以跳过对\
+   ``CMAKE_INSTALL_PREFIX`` 和\ ``CMAKE_STAGING_PREFIX``\ 的搜索。如果传递了\
+   ``NO_CMAKE_SYSTEM_PATH``，或者将\ :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH`\
+   设置为\ ``FALSE``，那么可以跳过所有这些位置。
 
    * |CMAKE_SYSTEM_PREFIX_PATH_XXX|
    * |CMAKE_SYSTEM_XXX_PATH|
    * |CMAKE_SYSTEM_XXX_MAC_PATH|
 
-   The platform paths that these variables contain are locations that
-   typically include installed software. An example being ``/usr/local`` for
-   UNIX based platforms.
+   这些变量包含的平台路径通常包含已安装软件的位置。一个例子是基于UNIX平台的\ ``/usr/local``。
 
-7. Search the paths specified by the PATHS option
-   or in the short-hand version of the command.
-   These are typically hard-coded guesses.
+7. 搜索由\ ``PATHS``\ 选项或简写版命令指定的路径。这些通常是硬编码的猜测。
 
-The :variable:`CMAKE_IGNORE_PATH`, :variable:`CMAKE_IGNORE_PREFIX_PATH`,
-:variable:`CMAKE_SYSTEM_IGNORE_PATH` and
-:variable:`CMAKE_SYSTEM_IGNORE_PREFIX_PATH` variables can also cause some
-of the above locations to be ignored.
+:variable:`CMAKE_IGNORE_PATH`、\ :variable:`CMAKE_IGNORE_PREFIX_PATH`、\
+:variable:`CMAKE_SYSTEM_IGNORE_PATH`\ 和\ :variable:`CMAKE_SYSTEM_IGNORE_PREFIX_PATH`\
+变量也可能导致上述一些位置被忽略。
 
 .. versionadded:: 3.16
-  Added ``CMAKE_FIND_USE_<CATEGORY>_PATH`` variables to globally disable
-  various search locations.
+  增加了\ ``CMAKE_FIND_USE_<CATEGORY>_PATH``\ 变量来全局禁用各种搜索位置。
 
 .. |FIND_ARGS_XXX| replace:: <VAR> NAMES name
 
-On macOS the :variable:`CMAKE_FIND_FRAMEWORK` and
-:variable:`CMAKE_FIND_APPBUNDLE` variables determine the order of
-preference between Apple-style and unix-style package components.
+在macOS上，\ :variable:`CMAKE_FIND_FRAMEWORK`\ 和\ :variable:`CMAKE_FIND_APPBUNDLE`\
+变量决定了苹果风格的包组件和unix风格的包组件的偏好顺序。
 
 .. include:: FIND_XXX_ROOT.txt
 .. include:: FIND_XXX_ORDER.txt

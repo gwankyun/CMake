@@ -452,205 +452,174 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
   当使用配置模式时，无论给出的是\ :ref:`完整 <full signature>`\ 签名还是\
   :ref:`基础 <basic signature>`\ 签名，都会执行这个版本选择过程。
 
-When the ``[version]`` argument is given, Config mode will only find a
-version of the package that claims compatibility with the requested
-version (see :ref:`format specification <FIND_PACKAGE_VERSION_FORMAT>`). If the
-``EXACT`` option is given, only a version of the package claiming an exact match
-of the requested version may be found.  CMake does not establish any
-convention for the meaning of version numbers.  Package version
-numbers are checked by "version" files provided by the packages themselves
-or by :module:`FetchContent`.  For a candidate package configuration file
-``<config-file>.cmake`` the corresponding version file is located next
-to it and named either ``<config-file>-version.cmake`` or
-``<config-file>Version.cmake``.  If no such version file is available
-then the configuration file is assumed to not be compatible with any
-requested version.  A basic version file containing generic version
-matching code can be created using the
-:module:`CMakePackageConfigHelpers` module.  When a version file
-is found it is loaded to check the requested version number.  The
-version file is loaded in a nested scope in which the following
-variables have been defined:
+当给出\ ``[version]``\ 参数时，配置模式将只查找声明与属性兼容的包的版本请求的版本（参见\
+:ref:`格式规范 <FIND_PACKAGE_VERSION_FORMAT>`）。如果给出了\ ``EXACT``\ 选项，则只有一\
+个包的版本声明精确匹配可以找到所请求版本的。CMake没有为版本号的含义建立任何约定。包版本数字\
+由包本身提供的“版本”文件或\ :module:`FetchContent`\ 检查。候选包配置文件\
+``<config-file>.cmake``\ 对应的版本文件位于它旁边，并命名为\
+``<config-file>-version.cmake``\ 或\ ``<config-file>Version.cmake``。如果没有可用\
+的版本文件，则假定没有可用的配置文件与任何请求的版本兼容。创建包含通用版本匹配代码的基本版本\
+文件的方法是使用\ :module:`CMakePackageConfigHelpers`\ 模块。当找到一个版本文件时，将\
+加载它以检查所请求的版本号。版本文件在一个嵌套作用域中加载，其中定义了以下变量：
 
 ``PACKAGE_FIND_NAME``
-  The ``<PackageName>``
+  ``<PackageName>``
 ``PACKAGE_FIND_VERSION``
-  Full requested version string
+  完整请求的版本字符串
 ``PACKAGE_FIND_VERSION_MAJOR``
-  Major version if requested, else 0
+  如果请求，则为主版本，否则为0
 ``PACKAGE_FIND_VERSION_MINOR``
-  Minor version if requested, else 0
+  如果请求，则为次版本，否则为0
 ``PACKAGE_FIND_VERSION_PATCH``
-  Patch version if requested, else 0
+  如果请求，则为补丁版本，否则为0
 ``PACKAGE_FIND_VERSION_TWEAK``
-  Tweak version if requested, else 0
+  如果请求，则为调整版本，否则为0
 ``PACKAGE_FIND_VERSION_COUNT``
-  Number of version components, 0 to 4
+  版本组件数量，0至4
 
-When a version range is specified, the above version variables will hold
-values based on the lower end of the version range.  This is to preserve
-compatibility with packages that have not been implemented to expect version
-ranges.  In addition, the version range will be described by the following
-variables:
+如果指定了版本范围，上述版本变量中的值将基于版本范围的下限。这是为了保持与未实现的包的兼容性，\
+以期望的版本范围。此外，版本范围由以下变量描述：
 
 ``PACKAGE_FIND_VERSION_RANGE``
-  Full requested version range string
+  完整请求的版本范围字符串
 ``PACKAGE_FIND_VERSION_RANGE_MIN``
-  This specifies whether the lower end point of the version range should be
-  included or excluded.  Currently, the only supported value for this variable
-  is ``INCLUDE``.
+  这指定了应该包含还是不包含版本范围的下限。目前，这个变量唯一支持的值是\ ``INCLUDE``。
+
 ``PACKAGE_FIND_VERSION_RANGE_MAX``
-  This specifies whether the upper end point of the version range should be
-  included or excluded.  The supported values for this variable are
-  ``INCLUDE`` and ``EXCLUDE``.
+  这指定了应该包含还是不包含版本范围的上限端点。该变量支持的值\ ``INCLUDE``\ 和\ ``EXCLUDE``。
 
 ``PACKAGE_FIND_VERSION_MIN``
-  Full requested version string of the lower end point of the range
+  完整请求的下限版本字符串范围的
 ``PACKAGE_FIND_VERSION_MIN_MAJOR``
-  Major version of the lower end point if requested, else 0
+  如有请求，则为低端点的主版本，否则为0
 ``PACKAGE_FIND_VERSION_MIN_MINOR``
-  Minor version of the lower end point if requested, else 0
+  如有请求，则为低端点的次版本，否则为0
 ``PACKAGE_FIND_VERSION_MIN_PATCH``
-  Patch version of the lower end point if requested, else 0
+  如有请求，则为低端点的补丁版本，否则为0
 ``PACKAGE_FIND_VERSION_MIN_TWEAK``
-  Tweak version of the lower end point if requested, else 0
+  如有请求，则为低端点的调整版本，否则为0
 ``PACKAGE_FIND_VERSION_MIN_COUNT``
-  Number of version components of the lower end point, 0 to 4
+  分量数目的下限，0到4
 
 ``PACKAGE_FIND_VERSION_MAX``
-  Full requested version string of the upper end point of the range
+  完整请求的版本字符串范围的上限
 ``PACKAGE_FIND_VERSION_MAX_MAJOR``
-  Major version of the upper end point if requested, else 0
+  如有请求，则为上端点的主版本号，否则为0
 ``PACKAGE_FIND_VERSION_MAX_MINOR``
-  Minor version of the upper end point if requested, else 0
+  如有请求，则为上端点的次版本号，否则为0
 ``PACKAGE_FIND_VERSION_MAX_PATCH``
-  Patch version of the upper end point if requested, else 0
+  如有请求，则为上端点的补丁版本号，否则为0
 ``PACKAGE_FIND_VERSION_MAX_TWEAK``
-  Tweak version of the upper end point if requested, else 0
+  如有请求，则为上端点的调整版本号，否则为0
 ``PACKAGE_FIND_VERSION_MAX_COUNT``
-  Number of version components of the upper end point, 0 to 4
+  上端点的版本分量数目，0到4
 
-Regardless of whether a single version or a version range is specified, the
-variable ``PACKAGE_FIND_VERSION_COMPLETE`` will be defined and will hold
-the full requested version string as specified.
+不管指定的是一个版本号还是一个版本范围，变量\ ``PACKAGE_FIND_VERSION_COMPLETE``\ 将保存\
+指定的完整版本号字符串。
 
-The version file checks whether it satisfies the requested version and
-sets these variables:
+版本文件检查它是否满足要求的版本号，并设置以下变量：
 
 ``PACKAGE_VERSION``
-  Full provided version string
+  完整提供的版本字符串
 ``PACKAGE_VERSION_EXACT``
-  True if version is exact match
+  如果版本完全匹配，返回True
 ``PACKAGE_VERSION_COMPATIBLE``
-  True if version is compatible
+  如果版本兼容，返回True
 ``PACKAGE_VERSION_UNSUITABLE``
-  True if unsuitable as any version
+  如果不适合任何版本，则为True
 
-These variables are checked by the ``find_package`` command to determine
-whether the configuration file provides an acceptable version.  They
-are not available after the ``find_package`` call returns.  If the version
-is acceptable the following variables are set:
+``find_package``\ 命令检查这些变量，以确定配置文件是否提供了可接受的版本。在\ ``find_package``\
+调用返回后，它们就不可用了。如果版本可以接受，则设置以下变量：
 
 ``<PackageName>_VERSION``
-  Full provided version string
+  完整提供的版本字符串
 ``<PackageName>_VERSION_MAJOR``
-  Major version if provided, else 0
+  如果提供了，为主版本，否则为0
 ``<PackageName>_VERSION_MINOR``
-  Minor version if provided, else 0
+  如果提供了，为次版本，否则为0
 ``<PackageName>_VERSION_PATCH``
-  Patch version if provided, else 0
+  如果提供了，为补丁版本，否则为0
 ``<PackageName>_VERSION_TWEAK``
-  Tweak version if provided, else 0
+  如果提供了，为调整版本，否则为0
 ``<PackageName>_VERSION_COUNT``
-  Number of version components, 0 to 4
+  版本分量数目，0至4
 
-and the corresponding package configuration file is loaded.
+并加载相应的包配置文件。
 
-Package File Interface Variables
+包文件接口变量
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When loading a find module or package configuration file ``find_package``
-defines variables to provide information about the call arguments (and
-restores their original state before returning):
+在加载查找模块或包配置文件时，\ ``find_package``\ 定义了一些变量来提供调用参数的信息（并在\
+返回之前恢复它们的原始状态）：
 
 ``CMAKE_FIND_PACKAGE_NAME``
-  The ``<PackageName>`` which is searched for
+  要搜索的\ ``<PackageName>``
 ``<PackageName>_FIND_REQUIRED``
-  True if ``REQUIRED`` option was given
+  如果提供了\ ``REQUIRED``\ 选项，则为True
 ``<PackageName>_FIND_QUIETLY``
-  True if ``QUIET`` option was given
+  如果提供了\ ``QUIET``\ 选项，则为True
 ``<PackageName>_FIND_REGISTRY_VIEW``
-  The requested view if ``REGISTRY_VIEW`` option was given
+  如果指定了\ ``REGISTRY_VIEW``\ 选项，则返回请求视图
 ``<PackageName>_FIND_VERSION``
-  Full requested version string
+  完整请求的版本字符串
 ``<PackageName>_FIND_VERSION_MAJOR``
-  Major version if requested, else 0
+  如有请求，为主版本，否则为0
 ``<PackageName>_FIND_VERSION_MINOR``
-  Minor version if requested, else 0
+  如有请求，为次版本，否则为0
 ``<PackageName>_FIND_VERSION_PATCH``
-  Patch version if requested, else 0
+  如有请求，为补丁版本，否则为0
 ``<PackageName>_FIND_VERSION_TWEAK``
-  Tweak version if requested, else 0
+  如有请求，为调整版本，否则为0
 ``<PackageName>_FIND_VERSION_COUNT``
-  Number of version components, 0 to 4
+  版本组件数量，0至4
 ``<PackageName>_FIND_VERSION_EXACT``
-  True if ``EXACT`` option was given
+  如果给出了\ ``EXACT``\ 选项，返回True
 ``<PackageName>_FIND_COMPONENTS``
-  List of specified components (required and optional)
+  指定组件列表（必需和可选）
 ``<PackageName>_FIND_REQUIRED_<c>``
-  True if component ``<c>`` is required,
-  false if component ``<c>`` is optional
+  如果组件\ ``<c>``\ 必需，返回True；如果组件\ ``<c>``\ 可选，返回false
 
-When a version range is specified, the above version variables will hold
-values based on the lower end of the version range.  This is to preserve
-compatibility with packages that have not been implemented to expect version
-ranges.  In addition, the version range will be described by the following
-variables:
+如果指定了版本范围，上述版本变量中的值将基于版本范围的下限。这是为了保持与未实现的包的兼容性，\
+以期望的版本范围。此外，版本范围由以下变量描述：
 
 ``<PackageName>_FIND_VERSION_RANGE``
-  Full requested version range string
+  完整请求的版本范围字符串
 ``<PackageName>_FIND_VERSION_RANGE_MIN``
-  This specifies whether the lower end point of the version range is
-  included or excluded.  Currently, ``INCLUDE`` is the only supported value.
+  这指定是包含还是排除版本范围的下限。目前，\ ``INCLUDE``\ 是唯一支持的值。
+
 ``<PackageName>_FIND_VERSION_RANGE_MAX``
-  This specifies whether the upper end point of the version range is
-  included or excluded.  The possible values for this variable are
-  ``INCLUDE`` or ``EXCLUDE``.
+  此参数指定是否包含或排除版本范围的上限。此变量的可能值为\ ``INCLUDE``\ 或\ ``EXCLUDE``。
 
 ``<PackageName>_FIND_VERSION_MIN``
-  Full requested version string of the lower end point of the range
+  下限版本字符串范围的完整请求
 ``<PackageName>_FIND_VERSION_MIN_MAJOR``
-  Major version of the lower end point if requested, else 0
+  如有请求，则为下限的主版本，否则为0
 ``<PackageName>_FIND_VERSION_MIN_MINOR``
-  Minor version of the lower end point if requested, else 0
+  如有请求，则为下限的次版本，否则为0
 ``<PackageName>_FIND_VERSION_MIN_PATCH``
-  Patch version of the lower end point if requested, else 0
+  如有请求，则为下限的补丁版本，否则为0
 ``<PackageName>_FIND_VERSION_MIN_TWEAK``
-  Tweak version of the lower end point if requested, else 0
+  如有请求，则为下限的调整版本，否则为0
 ``<PackageName>_FIND_VERSION_MIN_COUNT``
-  Number of version components of the lower end point, 0 to 4
+  下限版本的组件数量，0到4
 
 ``<PackageName>_FIND_VERSION_MAX``
-  Full requested version string of the upper end point of the range
+  完整请求的版本字符串范围的上限
 ``<PackageName>_FIND_VERSION_MAX_MAJOR``
-  Major version of the upper end point if requested, else 0
+  如果需要，则为上限的主版本号，否则为0
 ``<PackageName>_FIND_VERSION_MAX_MINOR``
-  Minor version of the upper end point if requested, else 0
+  如果需要，则为上限的次版本号，否则为0
 ``<PackageName>_FIND_VERSION_MAX_PATCH``
-  Patch version of the upper end point if requested, else 0
+  如果需要，则为上限的补丁版本号，否则为0
 ``<PackageName>_FIND_VERSION_MAX_TWEAK``
-  Tweak version of the upper end point if requested, else 0
+  如果需要，则为上限的调整版本号，否则为0
 ``<PackageName>_FIND_VERSION_MAX_COUNT``
-  Number of version components of the upper end point, 0 to 4
+  上限版本的组件数量，0到4
 
-Regardless of whether a single version or a version range is specified, the
-variable ``<PackageName>_FIND_VERSION_COMPLETE`` will be defined and will hold
-the full requested version string as specified.
+无论指定的是单个版本还是版本范围，都将定义\ ``<PackageName>_FIND_VERSION_COMPLETE``\
+变量，该变量将保存指定的完整版本字符串。
 
-In Module mode the loaded find module is responsible to honor the
-request detailed by these variables; see the find module for details.
-In Config mode ``find_package`` handles ``REQUIRED``, ``QUIET``, and
-``[version]`` options automatically but leaves it to the package
-configuration file to handle components in a way that makes sense
-for the package.  The package configuration file may set
-``<PackageName>_FOUND`` to false to tell ``find_package`` that component
-requirements are not satisfied.
+在模块模式下，加载的查找模块负责执行由这些变量详细描述的请求；详情参见查找模块。在配置模式下，\
+``find_package``\ 自动处理\ ``REQUIRED``、\ ``QUIET``\ 和\ ``[version]``\ 选项，但\
+将其留给包配置文件，以对包有意义的方式处理组件。包配置文件可以将\ ``<PackageName>_FOUND``\
+设置为false，以告诉\ ``find_package``\ 组件需求不满足。
