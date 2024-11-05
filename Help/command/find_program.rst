@@ -22,7 +22,7 @@ find_program
 .. |ENV_CMAKE_XXX_PATH| replace:: :envvar:`CMAKE_PROGRAM_PATH`
 .. |ENV_CMAKE_XXX_MAC_PATH| replace:: :envvar:`CMAKE_APPBUNDLE_PATH`
 
-.. |SYSTEM_ENVIRONMENT_PATH_XXX| replace:: The directories in ``PATH`` itself.
+.. |SYSTEM_ENVIRONMENT_PATH_XXX| replace:: ``PATH``\ 本身中的目录。
 .. |SYSTEM_ENVIRONMENT_PATH_WINDOWS_XXX| replace:: \
 
 .. |CMAKE_SYSTEM_PREFIX_PATH_XXX| replace::
@@ -37,20 +37,16 @@ find_program
 
 .. include:: FIND_XXX.txt
 
-When more than one value is given to the ``NAMES`` option this command by
-default will consider one name at a time and search every directory
-for it.  The ``NAMES_PER_DIR`` option tells this command to consider one
-directory at a time and search for all names in it.
+当\ ``NAMES``\ 选项有多个值时，此命令默认一次只考虑一个名称，并在每个目录中搜索它。\
+``NAMES_PER_DIR``\ 选项告诉这个命令一次只考虑一个目录，并在其中搜索所有名称。
 
-The set of files considered to be programs is platform-specific:
+被认为是程序的文件集合是特定于平台的：
 
-* On Windows, filename suffixes are considered in order ``.com``, ``.exe``,
-  and no suffix.
+* 在Windows上，文件名后缀的顺序是\ ``.com``、\ ``.exe``\ 和没有后缀。
 
-* On non-Windows systems, no filename suffix is considered, but files
-  must have execute permission (see policy :policy:`CMP0109`).
+* 在非Windows系统上，不考虑文件名后缀，但文件必须具有执行权限（参见策略\ :policy:`CMP0109`）。
 
-To search for scripts, specify an extension explicitly:
+要搜索脚本，需显式指定一个扩展名：
 
 .. code-block:: cmake
 

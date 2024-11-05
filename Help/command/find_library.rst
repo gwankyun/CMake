@@ -11,31 +11,29 @@ find_library
 .. |FIND_XXX_REGISTRY_VIEW_DEFAULT| replace:: ``TARGET``
 
 .. |FIND_PACKAGE_ROOT_PREFIX_PATH_XXX| replace::
-   ``<prefix>/lib/<arch>`` if :variable:`CMAKE_LIBRARY_ARCHITECTURE` is set,
-   and |FIND_PACKAGE_ROOT_PREFIX_PATH_XXX_SUBDIR|
+   ``<prefix>/lib/<arch>``，如果设置了\ :variable:`CMAKE_LIBRARY_ARCHITECTURE`，\
+   以及\ |FIND_PACKAGE_ROOT_PREFIX_PATH_XXX_SUBDIR|
 .. |CMAKE_PREFIX_PATH_XXX| replace::
-   ``<prefix>/lib/<arch>`` if :variable:`CMAKE_LIBRARY_ARCHITECTURE` is set,
-   and |CMAKE_PREFIX_PATH_XXX_SUBDIR|
+   ``<prefix>/lib/<arch>``，如果设置了\ :variable:`CMAKE_LIBRARY_ARCHITECTURE`，\
+   以及\ |CMAKE_PREFIX_PATH_XXX_SUBDIR|
 .. |CMAKE_XXX_PATH| replace:: :variable:`CMAKE_LIBRARY_PATH`
 .. |CMAKE_XXX_MAC_PATH| replace:: :variable:`CMAKE_FRAMEWORK_PATH`
 
 .. |ENV_CMAKE_PREFIX_PATH_XXX| replace::
-   ``<prefix>/lib/<arch>`` if :variable:`CMAKE_LIBRARY_ARCHITECTURE` is set,
-   and |ENV_CMAKE_PREFIX_PATH_XXX_SUBDIR|
+   ``<prefix>/lib/<arch>``，如果设置了\ :variable:`CMAKE_LIBRARY_ARCHITECTURE`，\
+   以及\ |ENV_CMAKE_PREFIX_PATH_XXX_SUBDIR|
 .. |ENV_CMAKE_XXX_PATH| replace:: :envvar:`CMAKE_LIBRARY_PATH`
 .. |ENV_CMAKE_XXX_MAC_PATH| replace:: :envvar:`CMAKE_FRAMEWORK_PATH`
 
-.. |SYSTEM_ENVIRONMENT_PATH_XXX| replace:: The directories in ``LIB``
-   and ``PATH``.
+.. |SYSTEM_ENVIRONMENT_PATH_XXX| replace:: ``LIB``\ 和\ ``PATH``\ 中的目录。
 .. |SYSTEM_ENVIRONMENT_PATH_WINDOWS_XXX| replace::
-   On Windows hosts, CMake 3.3 through 3.27 searched additional paths:
-   ``<prefix>/lib/<arch>`` if :variable:`CMAKE_LIBRARY_ARCHITECTURE`
-   is set, and |SYSTEM_ENVIRONMENT_PREFIX_PATH_XXX_SUBDIR|.
-   This behavior was removed by CMake 3.28.
+   在Windows主机上，CMake 3.3到3.27会搜索额外的路径：\ ``<prefix>/lib/<arch>``，\
+   如果设置了\ :variable:`CMAKE_LIBRARY_ARCHITECTURE`，以及\
+   |SYSTEM_ENVIRONMENT_PREFIX_PATH_XXX_SUBDIR|。这个行为在CMake 3.28被移除。
 
 .. |CMAKE_SYSTEM_PREFIX_PATH_XXX| replace::
-   ``<prefix>/lib/<arch>`` if :variable:`CMAKE_LIBRARY_ARCHITECTURE` is set,
-   and |CMAKE_SYSTEM_PREFIX_PATH_XXX_SUBDIR|
+   ``<prefix>/lib/<arch>``，如果设置了\ :variable:`CMAKE_LIBRARY_ARCHITECTURE`，\
+   以及\ |CMAKE_SYSTEM_PREFIX_PATH_XXX_SUBDIR|
 .. |CMAKE_SYSTEM_XXX_PATH| replace::
    :variable:`CMAKE_SYSTEM_LIBRARY_PATH`
 .. |CMAKE_SYSTEM_XXX_MAC_PATH| replace::
@@ -46,51 +44,36 @@ find_library
 
 .. include:: FIND_XXX.txt
 
-When more than one value is given to the ``NAMES`` option this command by
-default will consider one name at a time and search every directory
-for it.  The ``NAMES_PER_DIR`` option tells this command to consider one
-directory at a time and search for all names in it.
+当\ ``NAMES``\ 选项有多个值时，此命令默认一次只考虑一个名称，并在每个目录中搜索它。\
+``NAMES_PER_DIR``\ 选项告诉这个命令一次只考虑一个目录，并在其中搜索所有名称。
 
-Each library name given to the ``NAMES`` option is first considered
-as a library file name and then considered with platform-specific
-prefixes (e.g. ``lib``) and suffixes (e.g. ``.so``).  Therefore one
-may specify library file names such as ``libfoo.a`` directly.
-This can be used to locate static libraries on UNIX-like systems.
+``NAMES``\ 选项中的每个库名首先被认为是一个库文件名，然后与平台相关的前缀（例如\ ``lib``\ ）\
+和后缀（例如\ ``.so``\ ）一起考虑。因此，可以直接指定库文件名，如\ ``libfoo.a``。这可以\
+用于在类UNIX系统上定位静态库。
 
-If the library found is a framework, then ``<VAR>`` will be set to the full
-path to the framework ``<fullPath>/A.framework``.  When a full path to a
-framework is used as a library, CMake will use a ``-framework A``, and a
-``-F<fullPath>`` to link the framework to the target.
+如果找到的库是一个框架，那么\ ``<VAR>``\ 将被设置为框架\ ``<fullPath>/A.framework``\
+的完整路径。当一个框架的完整路径被用作库时，CMake将使用\ ``-framework A``\ 和\
+``-F<fullPath>``\ 将框架链接到目标。
 
 .. versionadded:: 3.28
 
-  The library found can now be a ``.xcframework`` folder.
+  现在找到的库可以在\ ``.xcframework``\ 文件夹中。
 
-If the :variable:`CMAKE_FIND_LIBRARY_CUSTOM_LIB_SUFFIX` variable is set all
-search paths will be tested as normal, with the suffix appended, and with
-all matches of ``lib/`` replaced with
-``lib${CMAKE_FIND_LIBRARY_CUSTOM_LIB_SUFFIX}/``.  This variable overrides
-the :prop_gbl:`FIND_LIBRARY_USE_LIB32_PATHS`,
-:prop_gbl:`FIND_LIBRARY_USE_LIBX32_PATHS`,
-and :prop_gbl:`FIND_LIBRARY_USE_LIB64_PATHS` global properties.
+如果设置了\ :variable:`CMAKE_FIND_LIBRARY_CUSTOM_LIB_SUFFIX`\ 变量，则所有搜索路径都\
+将被正常测试，后缀被附加，并且所有匹配的\ ``lib/``\ 都将被\
+``lib${CMAKE_FIND_LIBRARY_CUSTOM_LIB_SUFFIX}/``\ 替换。该变量覆盖了\
+:prop_gbl:`FIND_LIBRARY_USE_LIB32_PATHS`、\ :prop_gbl:`FIND_LIBRARY_USE_LIBX32_PATHS`\
+和\ :prop_gbl:`FIND_LIBRARY_USE_LIB64_PATHS`\ 全局属性。
 
-If the :prop_gbl:`FIND_LIBRARY_USE_LIB32_PATHS` global property is set
-all search paths will be tested as normal, with ``32/`` appended, and
-with all matches of ``lib/`` replaced with ``lib32/``.  This property is
-automatically set for the platforms that are known to need it if at
-least one of the languages supported by the :command:`project` command
-is enabled.
+如果设置了\ :prop_gbl:`FIND_LIBRARY_USE_LIB32_PATHS`\ 全局属性，那么所有搜索路径都将被\
+正常测试，其中附加了\ ``32/``，并且所有匹配\ ``lib/``\ 的路径都将被替换为\ ``lib32/``。\
+对于已知需要该属性的平台，如果至少启用了\ :command:`project`\ 命令支持的一种语言，则会自动\
+设置该属性。
 
-If the :prop_gbl:`FIND_LIBRARY_USE_LIBX32_PATHS` global property is set
-all search paths will be tested as normal, with ``x32/`` appended, and
-with all matches of ``lib/`` replaced with ``libx32/``.  This property is
-automatically set for the platforms that are known to need it if at
-least one of the languages supported by the :command:`project` command
-is enabled.
+如果设置了\ :prop_gbl:`FIND_LIBRARY_USE_LIBX32_PATHS`\ 全局属性，所有搜索路径都将正常\
+测试，添加\ ``x32/``，并且\ ``lib/``\ 的所有匹配都将替换为\ ``libx32/``。对于已知需要该\
+属性的平台，如果至少启用了\ :command:`project`\ 命令支持的一种语言，则会自动设置该属性。
 
-If the :prop_gbl:`FIND_LIBRARY_USE_LIB64_PATHS` global property is set
-all search paths will be tested as normal, with ``64/`` appended, and
-with all matches of ``lib/`` replaced with ``lib64/``.  This property is
-automatically set for the platforms that are known to need it if at
-least one of the languages supported by the :command:`project` command
-is enabled.
+如果设置了\ :prop_gbl:`FIND_LIBRARY_USE_LIB64_PATHS`\ 全局属性，所有搜索路径将被正常\
+测试，附加\ ``64/``，并且\ ``lib/``\ 的所有匹配都被替换为\ ``lib64/``。对于已知需要该\
+属性的平台，如果至少启用了\ :command:`project`\ 命令支持的一种语言，则会自动设置该属性。
