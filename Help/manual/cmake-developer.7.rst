@@ -330,7 +330,9 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
 .. code-block:: cmake
 
   find_package(PkgConfig)
-  pkg_check_modules(PC_Foo QUIET Foo)
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_Foo QUIET Foo)
+  endif()
 
 这应该定义一些从\ ``PC_Foo_``\ 开始的变量，其中包含来自\ ``Foo.pc``\ 文件的信息。
 
