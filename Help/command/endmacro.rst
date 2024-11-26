@@ -7,8 +7,7 @@ endmacro
 
   endmacro([<name>])
 
-See the :command:`macro` command.
+参见\ :command:`macro`\ 命令。
 
-The optional ``<name>`` argument is supported for backward compatibility
-only. If used it must be a verbatim repeat of the ``<name>`` argument
-of the opening ``macro`` command.
+支持可选的\ ``<condition>``\ 参数只是为了向后兼容。如果使用，它必须是开头\ ``macro``\
+命令的\ ``<name>``\ 参数的逐字重复。

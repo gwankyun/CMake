@@ -7,8 +7,7 @@ endwhile
 
   endwhile([<condition>])
 
-See the :command:`while` command.
+参见\ :command:`while`\ 命令。
 
-The optional ``<condition>`` argument is supported for backward compatibility
-only. If used it must be a verbatim repeat of the argument of the opening
-``while`` clause.
+支持可选的\ ``<condition>``\ 参数只是为了向后兼容。如果使用，它必须是开头\ ``while``\ 子句\
+的实参的逐字重复。

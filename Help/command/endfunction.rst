@@ -7,8 +7,7 @@ endfunction
 
   endfunction([<name>])
 
-See the :command:`function` command.
+参见\ :command:`function`\ 命令。
 
-The optional ``<name>`` argument is supported for backward compatibility
-only. If used it must be a verbatim repeat of the ``<name>`` argument
-of the opening ``function`` command.
+支持可选的\ ``<name>``\ 参数只是为了向后兼容。如果使用，它必须是开头\ ``function``\ 命令的\
+``<name>``\ 参数的逐字重复。

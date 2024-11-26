@@ -7,8 +7,7 @@ endif
 
   endif([<condition>])
 
-See the :command:`if` command.
+参见\ :command:`if`\ 命令。
 
-The optional ``<condition>`` argument is supported for backward compatibility
-only. If used it must be a verbatim repeat of the argument of the opening
-``if`` clause.
+支持可选的\ ``<condition>``\ 参数只是为了向后兼容。如果使用，它必须是开头\ ``if``\ 子句\
+的实参的逐字重复。

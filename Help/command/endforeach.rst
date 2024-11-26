@@ -7,8 +7,7 @@ endforeach
 
   endforeach([<loop_var>])
 
-See the :command:`foreach` command.
+参见\ :command:`foreach`\ 命令。
 
-The optional ``<loop_var>`` argument is supported for backward compatibility
-only. If used it must be a verbatim repeat of the ``<loop_var>`` argument of
-the opening ``foreach`` clause.
+支持可选的\ ``<loop_var>``\ 参数只是为了向后兼容。如果使用，它必须是开头\ ``foreach``\
+子句的\ ``<loop_var>``\ 参数的完全重复。
