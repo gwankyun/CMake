@@ -9,27 +9,22 @@ function
     <commands>
   endfunction()
 
-Defines a function named ``<name>`` that takes arguments named
-``<arg1>``, ...  The ``<commands>`` in the function definition
-are recorded; they are not executed until the function is invoked.
+定义了一个名为\ ``<name>``\ 的函数，它接受名为\ ``<arg1>``\ 等参数用于记录函数定义中的\
+``<commands>``。在调用函数之前，它们不会执行。
 
-Per legacy, the :command:`endfunction` command admits an optional
-``<name>`` argument. If used, it must be a verbatim repeat of the
-argument of the opening ``function`` command.
+根据传统，\ :command:`endfunction`\ 命令允许一个可选的\ ``<name>``\ 参数。如果使用，\
+它必须是开始\ ``function``\ 命令的参数的逐字重复。
 
-A function opens a new scope: see :command:`set(var PARENT_SCOPE)` for
-details.
+函数会打开一个新的作用域：详情参见\ :command:`set(var PARENT_SCOPE)`。
 
-See the :command:`cmake_policy()` command documentation for the behavior
-of policies inside functions.
+有关函数中策略的行为，请参阅\ :command:`cmake_policy()`\ 命令文档。
 
-See the :command:`macro()` command documentation for differences
-between CMake functions and macros.
+有关CMake函数和宏之间的区别，请参阅\ :command:`macro()`\ 命令文档。
 
-Invocation
+调用
 ^^^^^^^^^^
 
-The function invocation is case-insensitive. A function defined as
+函数调用不区分大小写。定义为：
 
 .. code-block:: cmake
 
@@ -37,7 +32,7 @@ The function invocation is case-insensitive. A function defined as
     <commands>
   endfunction()
 
-can be invoked through any of
+可以通过任何方式调用
 
 .. code-block:: cmake
 
@@ -46,35 +41,26 @@ can be invoked through any of
   FOO()
   cmake_language(CALL foo)
 
-and so on. However, it is strongly recommended to stay with the
-case chosen in the function definition. Typically functions use
-all-lowercase names.
+等等。但是，强烈建议使用函数定义中选择的情况。通常函数使用全小写的名称。
 
 .. versionadded:: 3.18
-  The :command:`cmake_language(CALL ...)` command can also be used to
-  invoke the function.
+  :command:`cmake_language(CALL ...)`\ 命令也可以用来调用该函数。
 
-Arguments
+参数
 ^^^^^^^^^
 
-When the function is invoked, the recorded ``<commands>`` are first
-modified by replacing formal parameters (``${arg1}``, ...) with the
-arguments passed, and then invoked as normal commands.
+当调用该函数时，记录的\ ``<commands>``\ 首先通过用传递的参数替换形式参数（\ ``${arg1}``\
+等）来修改，然后作为普通命令调用。
 
-In addition to referencing the formal parameters you can reference the
-``ARGC`` variable which will be set to the number of arguments passed
-into the function as well as ``ARGV0``, ``ARGV1``, ``ARGV2``, ...  which
-will have the actual values of the arguments passed in.  This facilitates
-creating functions with optional arguments.
+除了引用形式参数之外，你还可以引用\ ``ARGC``\ 变量，该变量将被设置为传入函数的参数数量，\
+以及\ ``ARGV0``、\ ``ARGV1``、\ ``ARGV2``\ 等它将具有传入的参数的实际值。这有助于创建带\
+有可选参数的函数。
 
-Furthermore, ``ARGV`` holds the list of all arguments given to the
-function and ``ARGN`` holds the list of arguments past the last expected
-argument.  Referencing to ``ARGV#`` arguments beyond ``ARGC`` have
-undefined behavior.  Checking that ``ARGC`` is greater than ``#`` is
-the only way to ensure that ``ARGV#`` was passed to the function as an
-extra argument.
+此外，\ ``ARGV``\ 保存给函数的所有参数的列表，\ ``ARGN``\ 保存最后一个预期参数之后的参数\
+列表。在\ ``ARGC``\ 之外引用\ ``ARGV#``\ 参数有未定义的行为。检查\ ``ARGC``\ 是否大于\
+``#``\ 是确保\ ``ARGV#``\ 作为额外参数传递给函数的唯一方法。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`cmake_parse_arguments`
