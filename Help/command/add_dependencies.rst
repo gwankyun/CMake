@@ -19,15 +19,11 @@
   允许向接口库添加依赖项。
 
 .. versionadded:: 3.8
-  Dependencies will populate the :prop_tgt:`MANUALLY_ADDED_DEPENDENCIES`
-  property of ``<target>``.
+  依赖项将填充\ ``<target>``\ 的\ :prop_tgt:`MANUALLY_ADDED_DEPENDENCIES`\ 属性。
 
 .. versionchanged:: 3.9
-  The :ref:`Ninja Generators` use weaker ordering than
-  other generators in order to improve available concurrency.
-  They only guarantee that the dependencies' custom commands are
-  finished before sources in ``<target>`` start compiling; this
-  ensures generated sources are available.
+  为了提高可用的并发性，\ :ref:`Ninja Generators`\ 使用了比其他生成器更弱的顺序。它们只\
+  保证依赖项的自定义命令在\ ``<target>``\ 中的源开始编译之前完成；这确保了生成的源是可用的。
 
 另请参阅
 ^^^^^^^^

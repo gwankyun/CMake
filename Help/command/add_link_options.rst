@@ -9,17 +9,14 @@ add_link_options
 
   add_link_options(<option> ...)
 
-This command can be used to add any link options, but alternative commands
-exist to add libraries (:command:`target_link_libraries` or
-:command:`link_libraries`).  See documentation of the
-:prop_dir:`directory <LINK_OPTIONS>` and
-:prop_tgt:`target <LINK_OPTIONS>` ``LINK_OPTIONS`` properties.
+这个命令可以用来添加任何链接选项，但也有其他添加库的命令（\ :command:`target_link_libraries`\
+或\ :command:`link_libraries`\ ）。请参阅\ :prop_dir:`directory <LINK_OPTIONS>`\ 和\
+:prop_tgt:`target <LINK_OPTIONS>` ``LINK_OPTIONS``\ 属性的文档。
 
 .. note::
 
-  This command cannot be used to add options for static library targets,
-  since they do not use a linker.  To add archiver or MSVC librarian flags,
-  see the :prop_tgt:`STATIC_LIBRARY_OPTIONS` target property.
+  此命令不能用于为静态库目标添加选项，因为它们不使用链接器。要添加archiver或MSVC库标志，\
+  请参阅\ :prop_tgt:`STATIC_LIBRARY_OPTIONS`\ 目标属性。
 
 .. |command_name| replace:: ``add_link_options``
 .. include:: GENEX_NOTE.txt
@@ -30,13 +27,12 @@ exist to add libraries (:command:`target_link_libraries` or
 
 .. include:: LINK_OPTIONS_LINKER.txt
 
-See Also
+另外参阅
 ^^^^^^^^
 
 * :command:`link_libraries`
 * :command:`target_link_libraries`
 * :command:`target_link_options`
 
-* :variable:`CMAKE_<LANG>_FLAGS` and :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`
-  add language-wide flags passed to all invocations of the compiler.
-  This includes invocations that drive compiling and those that drive linking.
+* :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
+  添加传递给编译器所有调用的语言范围的标志。这包括驱动编译的调用和驱动链接的调用。
