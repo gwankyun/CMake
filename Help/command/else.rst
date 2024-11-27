@@ -7,4 +7,4 @@ else
 
   else([<condition>])
 
-See the :command:`if` command.
+请参阅\ :command:`if`\ 命令。

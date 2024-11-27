@@ -7,5 +7,4 @@ elseif
 
   elseif(<condition>)
 
-See the :command:`if` command, especially for the syntax and logic
-of the ``<condition>``.
+请参阅\ :command:`if`\ 命令，特别是\ ``<condition>``\ 的语法和逻辑。

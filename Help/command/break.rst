@@ -7,6 +7,6 @@ break
 
   break()
 
-Breaks from an enclosing :command:`foreach` or :command:`while` loop.
+脱离封闭的\ :command:`foreach`\ 或\ :command:`while`\ 循环。
 
-See also the :command:`continue` command.
+另请参见\ :command:`continue`\ 命令。

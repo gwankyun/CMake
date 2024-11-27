@@ -9,8 +9,7 @@ continue
 
   continue()
 
-The ``continue()`` command allows a cmake script to abort the rest of the
-current iteration of a :command:`foreach` or :command:`while` loop, and start
-at the top of the next iteration.
+``continue()``\ 命令允许cmake脚本中止\ :command:`foreach`\ 或\ :command:`while`\
+循环当前迭代的其余部分，并从下一次迭代的开头开始。
 
-See also the :command:`break` command.
+另请参见\ :command:`break`\ 命令。
