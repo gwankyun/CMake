@@ -7,6 +7,5 @@ site_name
 
   site_name(variable)
 
-On UNIX-like platforms, if the variable ``HOSTNAME`` is set, its value
-will be executed as a command expected to print out the host name,
-much like the ``hostname`` command-line tool.
+在类UNIX平台上，如果设置了\ ``HOSTNAME``\ 变量，它的值将作为一个命令执行，期望打印出主机名，\
+这与\ ``hostname``\ 命令行工具非常相似。

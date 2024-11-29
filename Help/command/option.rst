@@ -7,12 +7,10 @@ option
 
   option(<variable> "<help_text>" [value])
 
-If no initial ``<value>`` is provided, boolean ``OFF`` is the default value.
-If ``<variable>`` is already set as a normal or cache variable,
-then the command does nothing (see policy :policy:`CMP0077`).
+如果没有提供初始\ ``<value>``，则默认值为boolean ``OFF``。如果\ ``<variable>``\ 已经\
+设置为普通变量或缓存变量，那么该命令什么也不做（参见策略\ :policy:`CMP0077`\ ）。
 
-For options that depend on the values of other options, see
-the module help for :module:`CMakeDependentOption`.
+对于依赖于其他选项值的选项，请参阅\ :module:`CMakeDependentOption`\ 模块的帮助。
 
-In CMake project mode, a boolean cache variable is created with the option
-value. In CMake script mode, a boolean variable is set with the option value.
+在CMake项目模式下，使用option值创建一个布尔缓存变量。在CMake脚本模式下，使用option值设置\
+一个布尔变量。
