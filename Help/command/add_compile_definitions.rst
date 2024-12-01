@@ -9,25 +9,22 @@ add_compile_definitions
 
   add_compile_definitions(<definition> ...)
 
-Adds preprocessor definitions to the compiler command line.
+将预处理器定义添加到编译器命令行。
 
-The preprocessor definitions are added to the :prop_dir:`COMPILE_DEFINITIONS`
-directory property for the current ``CMakeLists`` file. They are also added to
-the :prop_tgt:`COMPILE_DEFINITIONS` target property for each target in the
-current ``CMakeLists`` file.
+预处理器定义被添加到当前\ ``CMakeLists``\ 文件的\ :prop_dir:`COMPILE_DEFINITIONS`\
+目录属性中。它们还被添加到当前\ ``CMakeLists``\ 文件中每个目标的\
+:prop_tgt:`COMPILE_DEFINITIONS`\ 目标属性中。
 
-Definitions are specified using the syntax ``VAR`` or ``VAR=value``.
-Function-style definitions are not supported. CMake will automatically
-escape the value correctly for the native build system (note that CMake
-language syntax may require escapes to specify some values).
+定义使用\ ``VAR``\ 或\ ``VAR=value``\ 语法指定。不支持函数式定义。CMake将自动为本机构建\
+系统正确转义值（注意，CMake语言语法可能需要转义来指定某些值）。
 
 .. versionadded:: 3.26
-  Any leading ``-D`` on an item will be removed.
+  元素前面的\ ``-D``\ 将被删除。
 
 .. |command_name| replace:: ``add_compile_definitions``
 .. include:: GENEX_NOTE.txt
 
-See Also
+另请参阅
 ^^^^^^^^
 
-* The command :command:`target_compile_definitions` adds target-specific definitions.
+* :command:`target_compile_definitions`\ 命令用于添加特定于目标的定义。
