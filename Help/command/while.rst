@@ -9,22 +9,17 @@ while
     <commands>
   endwhile()
 
-All commands between while and the matching :command:`endwhile` are recorded
-without being invoked.  Once the :command:`endwhile` is evaluated, the
-recorded list of commands is invoked as long as the ``<condition>`` is true.
+在while和匹配的\ :command:`endwhile`\ 之间的所有命令都被记录下来，而不被调用。一旦调用了\
+:command:`endwhile`，只要\ ``<condition>``\ 为真，就会调用记录的命令列表。
 
-The ``<condition>`` has the same syntax and is evaluated using the same logic
-as described at length for the :command:`if` command.
+``<condition>``\ 具有相同的语法，并使用与\ :command:`if`\ 命令相同的逻辑进行计算。
 
-The commands :command:`break` and :command:`continue` provide means to
-escape from the normal control flow.
+命令\ :command:`break`\ 和\ :command:`continue`\ 提供了跳出正常控制流的方法。
 
-Per legacy, the :command:`endwhile` command admits
-an optional ``<condition>`` argument.
-If used, it must be a verbatim repeat of the argument of the opening
-``while`` command.
+对于遗留版本，\ :command:`endwhile`\ 命令允许一个可选的\ ``<condition>``\ 参数。如果使用，\
+它必须是开头\ ``while``\ 命令参数的逐字重复。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`break`

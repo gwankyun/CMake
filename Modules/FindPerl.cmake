@@ -5,7 +5,7 @@
 FindPerl
 --------
 
-Find a Perl interpreter.
+查找Perl解释器。
 
 This module defines the following variables:
 

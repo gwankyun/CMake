@@ -5,8 +5,7 @@
 FindRuby
 --------
 
-This module determines if Ruby is installed and finds the locations of its
-include files and libraries. Ruby 1.8 through 3.4 are supported.
+这个模块检测是否安装Ruby，找到其包含文件和库的位置。支持Ruby 1.8到Ruby 3.4。
 
 The minimum required version of Ruby can be specified using the
 standard syntax, e.g.

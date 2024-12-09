@@ -7,17 +7,15 @@ set_directory_properties
 
   set_directory_properties(PROPERTIES <prop1> <value1> [<prop2> <value2>] ...)
 
-Sets properties of the current directory and its subdirectories in key-value
-pairs.
+以键值对的形式设置当前目录及其子目录的属性。
 
-See also the :command:`set_property(DIRECTORY)` command.
+另请参见\ :command:`set_property(DIRECTORY)`\ 命令。
 
-See :ref:`Directory Properties` for the list of properties known to CMake
-and their individual documentation for the behavior of each property.
+有关CMake已知的属性列表以及每个属性的行为的单独文档，请参阅\ :ref:`Directory Properties`。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
 * :command:`get_directory_property`
-* the more general :command:`set_property` command
+* 更通用的\ :command:`set_property`\ 命令

@@ -7,5 +7,4 @@ remove_definitions
 
   remove_definitions(-DFOO -DBAR ...)
 
-Removes flags (added by :command:`add_definitions`) from the compiler
-command line for sources in the current directory and below.
+从编译器命令行中删除当前目录及以下目录中的源代码的标志（由\ :command:`add_definitions`\ 添加）。
