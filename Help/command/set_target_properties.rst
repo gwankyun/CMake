@@ -9,18 +9,16 @@ set_target_properties
                         PROPERTIES <prop1> <value1>
                         [<prop2> <value2>] ...)
 
-Sets properties on targets.  The syntax for the command is to list all
-the targets you want to change, and then provide the values you want to
-set next.  You can use any prop value pair you want and extract it
-later with the :command:`get_property` or :command:`get_target_property`
-command.
+设置目标的属性。该命令的语法是列出所有要修改的目标，然后提供下一步要设置的值。你可以使用任何\
+你想要的属性值对，然后使用\ :command:`get_property`\ 或\ :command:`get_target_property`\
+命令提取它。
 
-:ref:`Alias Targets` do not support setting target properties.
+:ref:`Alias Targets`\ 不支持设置目标属性。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
 * :command:`get_target_property`
-* the more general :command:`set_property` command
-* :ref:`Target Properties` for the list of properties known to CMake
+* 更通用的\ :command:`set_property`\ 命令
+* CMake已知属性列表的\ :ref:`Target Properties` 

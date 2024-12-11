@@ -7,14 +7,10 @@ enable_testing
 
   enable_testing()
 
-Enables testing for this directory and below.
+启用此目录及以下目录的测试。
 
-This command should be in the source directory root
-because ctest expects to find a test file in the build
-directory root.
+这个命令应该放在源目录的根目录中，因为ctest希望在构建目录的根目录中找到一个测试文件。
 
-This command is automatically invoked when the :module:`CTest`
-module is included, except if the ``BUILD_TESTING`` option is
-turned off.
+当包含\ :module:`CTest`\ 模块时，将自动调用此命令，除非关闭\ ``BUILD_TESTING``\ 选项。
 
-See also the :command:`add_test` command.
+另见\ :command:`add_test`\ 命令。
