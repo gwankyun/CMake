@@ -8,12 +8,10 @@ link_libraries
   link_libraries([item1 [item2 [...]]]
                  [[debug|optimized|general] <item>] ...)
 
-Specify libraries or flags to use when linking any targets created later in
-the current directory or below by commands such as :command:`add_executable`
-or :command:`add_library`.  See the :command:`target_link_libraries` command
-for meaning of arguments.
+指定当使用\ :command:`add_executable`\ 或\ :command:`add_library`\ 等命令链接在当前\
+目录或目录下稍后创建的任何目标时要使用的库或标志。有关参数的含义，请参见\
+:command:`target_link_libraries`\ 命令。
 
 .. note::
-  The :command:`target_link_libraries` command should be preferred whenever
-  possible.  Library dependencies are chained automatically, so directory-wide
-  specification of link libraries is rarely needed.
+  只要可能，应该优先使用\ :command:`target_link_libraries`\ 命令。库依赖关系是自动链接的，\
+  因此很少需要在目录范围内指定链接库。

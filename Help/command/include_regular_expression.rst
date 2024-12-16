@@ -7,10 +7,8 @@ include_regular_expression
 
   include_regular_expression(regex_match [regex_complain])
 
-Sets the regular expressions used in dependency checking.  Only files
-matching ``regex_match`` will be traced as dependencies.  Only files
-matching ``regex_complain`` will generate warnings if they cannot be found
-(standard header paths are not searched).  The defaults are:
+设置依赖检查中使用的正则表达式。只有匹配\ ``regex_match``\ 的文件才会被作为依赖项跟踪。\
+只有匹配\ ``regex_complain``\ 的文件在找不到时才会生成警告（不搜索标准头路径）。默认值是：
 
 ::
 
