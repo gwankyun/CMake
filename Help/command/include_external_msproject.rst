@@ -12,17 +12,12 @@ include_external_msproject
                              [PLATFORM platformName]
                              dep1 dep2 ...)
 
-Includes an external Microsoft project in the generated solution file.
-This will create a target named ``[projectname]``.
-This can be used in the :command:`add_dependencies`
-command to make things depend on the external project.
+在生成的解决方案文件中包含一个外部Microsoft项目。这将创建一个名为\ ``[projectname]``\
+的目标。这可以在\ :command:`add_dependencies`\ 命令中使用，使一些事物依赖于外部项目。
 
-``TYPE``, ``GUID`` and ``PLATFORM`` are optional parameters that allow one to
-specify the type of project, id (``GUID``) of the project and the name of
-the target platform.  This is useful for projects requiring values
-other than the default (e.g.  WIX projects).
+``TYPE``、\ ``GUID``\ 和\ ``PLATFORM``\ 是可选参数，允许指定项目的类型、项目的id （\
+``GUID``\ ）和目标平台的名称。这对于需要默认值以外的项目（例如WIX项目）很有用。
 
 .. versionadded:: 3.9
-  If the imported project has different configuration names than the
-  current project, set the :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`
-  target property to specify the mapping.
+  如果导入的项目与当前项目具有不同的配置名称，则设置\ :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`\
+  目标属性来指定映射。
