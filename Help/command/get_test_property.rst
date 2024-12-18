@@ -7,29 +7,23 @@ get_test_property
 
   get_test_property(<test> <property> [DIRECTORY <dir>] <variable>)
 
-Get a property from the test.  The value of the property is stored in
-the specified ``<variable>``.  If the ``<test>`` is not defined, or the
-test property is not found, ``<variable>`` will be set to ``NOTFOUND``.
-If the test property was defined to be an ``INHERITED`` property (see
-:command:`define_property`), the search will include the relevant parent
-scopes, as described for the :command:`define_property` command.
+从测试中获取一个属性。属性的值存储在指定的\ ``<variable>``\ 中。如果\ ``<test>``\ 没有\
+定义，或者测试属性没有找到，\ ``<variable>``\ 将被设置为\ ``NOTFOUND``。如果测试属性被定\
+义为一个\ ``INHERITED``\ 属性（参见\ :command:`define_property`\ ），那么搜索将包括相关\
+的父作用域，正如\ :command:`define_property`\ 命令所描述的那样。
 
-For a list of standard properties you can type
-:option:`cmake --help-property-list`.
+对于标准属性列表，可以输入\ :option:`cmake --help-property-list`。
 
 .. versionadded:: 3.28
-  Directory scope can be overridden with the following sub-option:
+  目录范围可以用以下子选项覆盖：
 
   ``DIRECTORY <dir>``
-    The test property will be read from the ``<dir>`` directory's
-    scope.  CMake must already know about that source directory, either by
-    having added it through a call to :command:`add_subdirectory` or ``<dir>``
-    being the top level source directory.  Relative paths are treated as
-    relative to the current source directory. ``<dir>`` may reference a binary
-    directory.
+    测试属性将从\ ``<dir>``\ 目录的作用域读取。CMake必须已经知道源目录，要么通过调用\
+    :command:`add_subdirectory`\ 添加它，要么\ ``<dir>``\ 是顶层源目录。相对路径被视\
+    为相对于当前源目录。\ ``<dir>``\ 可以引用二进制目录。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
-* the more general :command:`get_property` command
+* 更通用的\ :command:`get_property`\ 命令

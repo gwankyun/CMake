@@ -7,23 +7,19 @@ get_target_property
 
   get_target_property(<variable> <target> <property>)
 
-Get a property from a target.  The value of the property is stored in the
-specified ``<variable>``.  If the target property is not found, ``<variable>``
-will be set to ``<variable>-NOTFOUND``.  If the target property was defined to
-be an ``INHERITED`` property (see :command:`define_property`), the search will
-include the relevant parent scopes, as described for the
-:command:`define_property` command.
+从目标获取一个属性。属性的值存储在指定的\ ``<variable>``\ 中。如果没有找到目标属性，\
+``<variable>``\ 将被设置为\ ``<variable>-NOTFOUND``。如果目标属性被定义为一个\
+``INHERITED``\ 属性（参见\ :command:`define_property`\ ），那么搜索将包括相关的父作用域，\
+正如\ :command:`define_property`\ 命令所描述的那样。
 
-Use :command:`set_target_properties` to set target property values.
-Properties are usually used to control how a target is built, but some
-query the target instead.  This command can get properties for any
-target so far created.  The targets do not need to be in the current
-``CMakeLists.txt`` file.
+使用\ :command:`set_target_properties`\ 设置目标属性值。属性通常用于控制如何构建目标，\
+但也有一些用于查询目标。这个命令可以获取到目前为止创建的任何目标的属性。目标不需要在当前的\
+``CMakeLists.txt``\ 文件中。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
-* the more general :command:`get_property` command
+* 更通用的\ :command:`get_property`\ 命令
 * :command:`set_target_properties`
-* :ref:`Target Properties` for the list of properties known to CMake
+* CMake已知属性列表的\ :ref:`Target Properties`
