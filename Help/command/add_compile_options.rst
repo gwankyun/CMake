@@ -7,16 +7,14 @@ add_compile_options
 
   add_compile_options(<option> ...)
 
-Adds options to the :prop_dir:`COMPILE_OPTIONS` directory property.
-These options are used when compiling targets from the current
-directory and below.
+向\ :prop_dir:`COMPILE_OPTIONS`\ 目录属性添加选项。当从当前目录及以下目录编译目标时，\
+将使用这些选项。
 
 .. note::
 
-  These options are not used when linking.
-  See the :command:`add_link_options` command for that.
+  链接时不使用这些选项。参见\ :command:`add_link_options`\ 命令。
 
-Arguments
+参数
 ^^^^^^^^^
 
 .. |command_name| replace:: ``add_compile_options``
@@ -24,11 +22,10 @@ Arguments
 
 .. include:: OPTIONS_SHELL.txt
 
-Example
+示例
 ^^^^^^^
 
-Since different compilers support different options, a typical use of
-this command is in a compiler-specific conditional clause:
+由于不同的编译器支持不同的选项，该命令的典型用法是在编译器特定的条件子句中：
 
 .. code-block:: cmake
 
@@ -40,28 +37,23 @@ this command is in a compiler-specific conditional clause:
       add_compile_options(-Wall -Wextra -Wpedantic)
   endif()
 
-To set per-language options, use the :genex:`$<COMPILE_LANGUAGE>`
-or :genex:`$<COMPILE_LANGUAGE:languages>` generator expressions.
+要设置每种语言的选项，请使用\ :genex:`$<COMPILE_LANGUAGE>`\ 或\
+:genex:`$<COMPILE_LANGUAGE:languages>`\ 生成器表达式。
 
-See Also
+另请参阅
 ^^^^^^^^
 
-* This command can be used to add any options. However, for
-  adding preprocessor definitions and include directories it is recommended
-  to use the more specific commands :command:`add_compile_definitions`
-  and :command:`include_directories`.
+* 这个命令可以用来添加任何选项。但是，对于添加预处理器定义和包含目录，建议使用更具体的命令\
+  :command:`add_compile_definitions`\ 和\ :command:`include_directories`。
 
-* The command :command:`target_compile_options` adds target-specific options.
+* :command:`target_compile_options`\ 命令用于添加特定于目标的选项。
 
-* This command adds compile options for all languages.
-  Use the :genex:`COMPILE_LANGUAGE` generator expression to specify
-  per-language compile options.
+* 此命令为所有语言添加编译选项。使用\ :genex:`COMPILE_LANGUAGE`\ 生成器表达式指定每种语言\
+  的编译选项。
 
-* The source file property :prop_sf:`COMPILE_OPTIONS` adds options to one
-  source file.
+* 源文件属性\ :prop_sf:`COMPILE_OPTIONS`\ 为一个源文件添加选项。
 
-* :command:`add_link_options` adds options for linking.
+* :command:`add_link_options`\ 添加链接选项。
 
-* :variable:`CMAKE_<LANG>_FLAGS` and :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`
-  add language-wide flags passed to all invocations of the compiler.
-  This includes invocations that drive compiling and those that drive linking.
+* :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
+  添加传递给编译器所有调用的语言范围内的标志。这包括驱动编译的调用和驱动链接的调用。
