@@ -3,8 +3,7 @@ CMP0174
 
 .. versionadded:: 3.31
 
-:command:`cmake_parse_arguments(PARSE_ARGV)` defines a variable for an empty
-string after a single-value keyword.
+:command:`cmake_parse_arguments(PARSE_ARGV)`\ 在单值关键字之后定义一个空字符串变量。
 
 One of the main reasons for using the ``PARSE_ARGV`` form of the
 :command:`cmake_parse_arguments` command is to more robustly handle corner

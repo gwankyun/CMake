@@ -8,18 +8,13 @@ include
   include(<file|module> [OPTIONAL] [RESULT_VARIABLE <var>]
                         [NO_POLICY_SCOPE])
 
-Loads and runs CMake code from the file given.  Variable reads and
-writes access the scope of the caller (dynamic scoping).  If ``OPTIONAL``
-is present, then no error is raised if the file does not exist.  If
-``RESULT_VARIABLE`` is given the variable ``<var>`` will be set to the
-full filename which has been included or ``NOTFOUND`` if it failed.
+加载并运行给定文件中的CMake代码。变量读写访问调用者的作用域（动态作用域）。如果\ ``OPTIONAL``\
+存在，那么如果文件不存在，则不会引发错误。如果给定了\ ``RESULT_VARIABLE``，变量\ ``<var>``\
+将被设置为已包含的完整文件名，如果失败则为\ ``NOTFOUND``。
 
-If a module is specified instead of a file, the file with name
-``<modulename>.cmake`` is searched first in :variable:`CMAKE_MODULE_PATH`,
-then in the CMake module directory.  There is one exception to this: if
-the file which calls ``include()`` is located itself in the CMake builtin
-module directory, then first the CMake builtin module directory is searched and
-:variable:`CMAKE_MODULE_PATH` afterwards.  See also policy :policy:`CMP0017`.
+如果指定的是模块而不是文件，则首先在\ :variable:`CMAKE_MODULE_PATH`\ 中搜索名为\
+``<modulename>.cmake``\ 的文件，然后在CMake模块目录中搜索。有一个例外：如果调用\
+``include()``\ 的文件本身位于CMake内置模块目录中，那么首先搜索CMake内置模块目录，然后搜索\
+:variable:`CMAKE_MODULE_PATH`。另见策略\ :policy:`CMP0017`。
 
-See the :command:`cmake_policy` command documentation for discussion of the
-``NO_POLICY_SCOPE`` option.
+有关\ ``NO_POLICY_SCOPE``\ 选项的讨论，请参阅\ :command:`cmake_policy`\ 命令文档。

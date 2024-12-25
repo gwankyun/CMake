@@ -3,7 +3,7 @@ CMP0176
 
 .. versionadded:: 3.31
 
-:command:`execute_process` ``ENCODING`` is ``UTF-8`` by default.
+默认情况下，:command:`execute_process` ``ENCODING``\ 是\ ``UTF-8``。
 
 The ``ENCODING`` option is meaningful only on Windows.  It specifies the
 character encoding expected in the process's output on stdout and stderr.

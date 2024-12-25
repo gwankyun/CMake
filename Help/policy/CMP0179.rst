@@ -3,7 +3,7 @@ CMP0179
 
 .. versionadded:: 3.31
 
-De-duplication of static libraries on link lines keeps first occurrence.
+删除链接上的重复静态库保留第一个发现。\
 This policy is only relevant when policy :policy:`CMP0156` is set to ``NEW``.
 
 Based on the linker capabilities, the static libraries can

@@ -3,8 +3,7 @@ CMP0172
 
 .. versionadded:: 3.31
 
-The :module:`CPack` module enables per-machine installation by default
-in the :cpack_gen:`CPack WIX Generator`.
+:module:`CPack`\ 模块默认在\ :cpack_gen:`CPack WIX Generator`\ 中启用各自机器安装。
 
 The :cpack_gen:`CPack WIX Generator`'s :variable:`CPACK_WIX_INSTALL_SCOPE`
 option controls the scope of the generated Windows Installer package.

@@ -7,18 +7,11 @@ aux_source_directory
 
   aux_source_directory(<dir> <variable>)
 
-Collects the names of all the source files in the specified directory
-and stores the list in the ``<variable>`` provided.  This command is
-intended to be used by projects that use explicit template
-instantiation.  Template instantiation files can be stored in a
-``Templates`` subdirectory and collected automatically using this
-command to avoid manually listing all instantiations.
+收集指定目录中所有源文件的名称，并将该列表存储在提供的\ ``<variable>``\ 中。此命令用于使用\
+显式模板实例化的项目。模板实例化文件可以存储在\ ``Templates``\ 子目录中，并使用此命令自动\
+收集，以避免手动列出所有实例化。
 
-It is tempting to use this command to avoid writing the list of source
-files for a library or executable target.  While this seems to work,
-there is no way for CMake to generate a build system that knows when a
-new source file has been added.  Normally the generated build system
-knows when it needs to rerun CMake because the ``CMakeLists.txt`` file is
-modified to add a new source.  When the source is just added to the
-directory without modifying this file, one would have to manually
-rerun CMake to generate a build system incorporating the new file.
+很容易使用这个命令来避免为库或可执行目标编写源文件列表。虽然这似乎可以工作，但CMake无法生成\
+一个知道何时添加了新源文件的构建系统。通常生成的构建系统知道何时需要重新运行CMake，因为\
+``CMakeLists.txt``\ 文件被修改以添加新源。如果只是将源代码添加到目录中，而没有修改此文件，\
+则必须手动重新运行CMake以生成包含新文件的构建系统。

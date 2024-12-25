@@ -3,7 +3,7 @@ CMP0175
 
 .. versionadded:: 3.31
 
-:command:`add_custom_command` rejects invalid arguments.
+:command:`add_custom_command`\ 拒绝无效参数。
 
 CMake 3.30 and earlier silently ignored unsupported keywords and missing or
 invalid arguments for the different forms of the :command:`add_custom_command`

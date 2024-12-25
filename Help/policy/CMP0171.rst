@@ -3,7 +3,7 @@ CMP0171
 
 .. versionadded:: 3.31
 
-``codegen`` is a reserved target name.
+``codegen``\ 是保留的目标名称。
 
 CMake 3.30 and earlier did not reserve ``codegen`` as a builtin target name,
 leaving projects free to create their own target with that name.

@@ -3,7 +3,7 @@ CMP0177
 
 .. versionadded:: 3.31
 
-:command:`install` ``DESTINATION`` paths are normalized.
+规范\ :command:`install` ``DESTINATION``\ 路径。
 
 The :command:`install` command has a number of different forms, and most of
 them take a ``DESTINATION`` keyword, some in more than one place.

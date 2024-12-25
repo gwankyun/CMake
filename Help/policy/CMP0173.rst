@@ -3,7 +3,7 @@ CMP0173
 
 .. versionadded:: 3.31
 
-The :module:`CMakeFindFrameworks` module is removed.
+:module:`CMakeFindFrameworks`\ 模块被移除。
 
 CMake's framework handling has evolved well beyond what the
 ``CMakeFindFrameworks`` module supports. The module lacks any handling of

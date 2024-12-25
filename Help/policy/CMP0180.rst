@@ -3,7 +3,7 @@ CMP0180
 
 .. versionadded:: 3.31
 
-:command:`project` always sets ``<PROJECT-NAME>_*`` as normal variables.
+:command:`project`\ 总是将\ ``<PROJECT-NAME>_*``\ 设置为普通变量。
 
 In CMake 3.29 and below, the :command:`project` command set
 :variable:`<PROJECT-NAME>_SOURCE_DIR`, :variable:`<PROJECT-NAME>_BINARY_DIR`,

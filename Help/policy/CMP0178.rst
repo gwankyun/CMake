@@ -3,7 +3,7 @@ CMP0178
 
 .. versionadded:: 3.31
 
-Test command lines preserve empty arguments.
+测试命令行保留空参数。
 
 Empty values in the :prop_tgt:`TEST_LAUNCHER` and
 :prop_tgt:`CROSSCOMPILING_EMULATOR` target properties are now preserved
