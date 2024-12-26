@@ -3,8 +3,7 @@ CMP0166
 
 .. versionadded:: 3.30
 
-:genex:`TARGET_PROPERTY` evaluates link properties transitively over private
-dependencies of static libraries.
+:genex:`TARGET_PROPERTY`\ 在静态库的私有依赖项上传递计算链接属性。
 
 In CMake 3.29 and below, the :genex:`TARGET_PROPERTY` generator expression
 evaluates properties :prop_tgt:`INTERFACE_LINK_OPTIONS`,

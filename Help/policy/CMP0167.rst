@@ -3,7 +3,7 @@ CMP0167
 
 .. versionadded:: 3.30
 
-The :module:`FindBoost` module is removed.
+删除\ :module:`FindBoost`\ 模块。
 
 CMake 3.29 and below provide a ``FindBoost`` module, but it needs constant
 updates to keep up with upstream Boost releases.  Upstream Boost 1.70

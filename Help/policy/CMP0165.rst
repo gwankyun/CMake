@@ -3,7 +3,7 @@ CMP0165
 
 .. versionadded:: 3.30
 
-:command:`enable_language` must not be called before :command:`project`.
+在调用\ :command:`project`\ 之前不能调用\ :command:`enable_language`。
 
 In CMake 3.29 and below, if a project called :command:`enable_language`
 before the first call to :command:`project`, the language would be enabled

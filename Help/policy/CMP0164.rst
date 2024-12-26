@@ -3,8 +3,7 @@ CMP0164
 
 .. versionadded:: 3.30
 
-:command:`add_library` rejects ``SHARED`` libraries when not supported by
-the platform.
+:command:`add_library`\ 拒绝平台不支持的\ ``SHARED``\ 库。
 
 In CMake 3.29 and below, on platforms that do not support shared libraries
 (:prop_gbl:`TARGET_SUPPORTS_SHARED_LIBS` is false), the

@@ -3,9 +3,9 @@ CMP0170
 
 .. versionadded:: 3.30
 
-When ``FETCHCONTENT_FULLY_DISCONNECTED`` is set to true,
-:command:`FetchContent_MakeAvailable` and :command:`FetchContent_Populate`
-enforce the constraint that their source directory must already be populated.
+当\ ``FETCHCONTENT_FULLY_DISCONNECTED``\ 设置为true时，\
+:command:`FetchContent_MakeAvailable`\ 和\ :command:`FetchContent_Populate`\
+会强制要求它们的源目录必须已经被填充。\
 The requirement has always been documented, but it was not checked or enforced
 with CMake 3.29 or older.  This sometimes led to hard-to-trace errors when a
 project expected a dependency to have been populated, but its population was

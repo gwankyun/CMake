@@ -3,8 +3,7 @@ CMP0169
 
 .. versionadded:: 3.30
 
-Calling :command:`FetchContent_Populate` with a single argument (the name of
-a declared dependency) is deprecated.
+单个参数（声明的依赖项名称）调用\ :command:`FetchContent_Populate`\ 已被弃用。
 
 Prior to the introduction of :command:`FetchContent_MakeAvailable`, projects
 populated previously declared content (with :command:`FetchContent_Declare`)

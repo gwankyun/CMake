@@ -3,7 +3,7 @@ CMP0162
 
 .. versionadded:: 3.30
 
-:ref:`Visual Studio Generators` add ``UseDebugLibraries`` indicators by default.
+:ref:`Visual Studio Generators`\ 默认添加\ ``UseDebugLibraries``\ 指示符。
 
 The "Use Debug Libraries" setting in Visual Studio projects indicates what
 configurations are considered debug configurations.  In standalone projects,

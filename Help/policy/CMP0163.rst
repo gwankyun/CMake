@@ -3,7 +3,7 @@ CMP0163
 
 .. versionadded:: 3.30
 
-The :prop_sf:`GENERATED` source file property is now visible in all directories.
+:prop_sf:`GENERATED`\ 源文件属性现在在所有目录中可见。
 
 In CMake 3.29 and below, the :prop_sf:`GENERATED` source file property,
 like other source file properties, was scoped in every directory separately.

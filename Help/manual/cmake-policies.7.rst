@@ -57,21 +57,21 @@ CMake 3.31引入的策略
    CMP0172: CPack模块默认在CPack WIX生成器中启用各自机器安装。 </policy/CMP0172>
    CMP0171: 'codegen'是保留的目标名称。 </policy/CMP0171>
 
-Policies Introduced by CMake 3.30
+CMake 3.30引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0170: FETCHCONTENT_FULLY_DISCONNECTED requirements are enforced. </policy/CMP0170>
-   CMP0169: FetchContent_Populate(depName) single-argument signature is deprecated. </policy/CMP0169>
-   CMP0168: FetchContent implements steps directly instead of through a sub-build. </policy/CMP0168>
-   CMP0167: The FindBoost module is removed. </policy/CMP0167>
-   CMP0166: TARGET_PROPERTY evaluates link properties transitively over private dependencies of static libraries. </policy/CMP0166>
-   CMP0165: enable_language() must not be called before project(). </policy/CMP0165>
-   CMP0164: add_library() rejects SHARED libraries when not supported by the platform. </policy/CMP0164>
-   CMP0163: The GENERATED source file property is now visible in all directories. </policy/CMP0163>
-   CMP0162: Visual Studio generators add UseDebugLibraries indicators by default. </policy/CMP0162>
+   CMP0170: 强制执行FETCHCONTENT_FULLY_DISCONNECTED需求。 </policy/CMP0170>
+   CMP0169: FetchContent_Populate(depName)单参数签名被废弃。 </policy/CMP0169>
+   CMP0168: FetchContent直接实现步骤，而不是通过子构建。 </policy/CMP0168>
+   CMP0167: 删除FindBoost模块。 </policy/CMP0167>
+   CMP0166: TARGET_PROPERTY在静态库的私有依赖项上传递计算链接属性。 </policy/CMP0166>
+   CMP0165: 在调用project()之前不能调用enable_language()。 </policy/CMP0165>
+   CMP0164: add_library()拒绝平台不支持的SHARED库。 </policy/CMP0164>
+   CMP0163: GENERATED源文件属性现在在所有目录中可见。 </policy/CMP0163>
+   CMP0162: Visual Studio生成器默认添加UseDebugLibraries指示符。 </policy/CMP0162>
 
 Policies Introduced by CMake 3.29
 =================================

@@ -3,8 +3,7 @@ CMP0168
 
 .. versionadded:: 3.30
 
-The :module:`FetchContent` module implements steps directly instead of through
-a sub-build.
+:module:`FetchContent`\ 直接实现步骤，而不是通过子构建。
 
 CMake 3.29 and below implement FetchContent as a separate sub-build.
 This required configuring that separate project and using a build tool.
