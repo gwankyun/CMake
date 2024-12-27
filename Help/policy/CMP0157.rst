@@ -3,7 +3,7 @@ CMP0157
 
 .. versionadded:: 3.29
 
-Swift compilation mode is selected by an abstraction.
+Swift编译模式由抽象选择。
 
 The Swift compiler can compile modules in different modes. The desired build
 mode depends whether the developer is iterating and wants to incrementally make

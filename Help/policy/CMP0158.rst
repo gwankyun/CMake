@@ -3,8 +3,8 @@ CMP0158
 
 .. versionadded:: 3.29
 
-:command:`add_test` honors :variable:`CMAKE_CROSSCOMPILING_EMULATOR` only
-when :variable:`cross-compiling <CMAKE_CROSSCOMPILING>`.
+:command:`add_test`\ 仅在\ :variable:`交叉编译 <CMAKE_CROSSCOMPILING>`\ 时启用\
+:variable:`CMAKE_CROSSCOMPILING_EMULATOR`。
 
 In CMake 3.28 and below, :command:`add_test` unconditionally used the
 :prop_tgt:`CROSSCOMPILING_EMULATOR` target property (initialized by the

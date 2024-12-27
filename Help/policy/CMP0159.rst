@@ -3,7 +3,7 @@ CMP0159
 
 .. versionadded:: 3.29
 
-:command:`file(STRINGS)` with ``REGEX`` updates :variable:`CMAKE_MATCH_<n>`.
+:command:`file(STRINGS)`\ 用\ ``REGEX``\ 更新\ :variable:`CMAKE_MATCH_<n>`。
 
 In CMake 3.28 and below the :command:`file(STRINGS)` command's ``REGEX``
 option does not affect :variable:`CMAKE_MATCH_<n>` variables.  CMake 3.29

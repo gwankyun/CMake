@@ -73,18 +73,18 @@ CMake 3.30引入的策略
    CMP0163: GENERATED源文件属性现在在所有目录中可见。 </policy/CMP0163>
    CMP0162: Visual Studio生成器默认添加UseDebugLibraries指示符。 </policy/CMP0162>
 
-Policies Introduced by CMake 3.29
+CMake 3.29引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0161: CPACK_PRODUCTBUILD_DOMAINS defaults to true. </policy/CMP0161>
-   CMP0160: More read-only target properties now error when trying to set them. </policy/CMP0160>
-   CMP0159: file(STRINGS) with REGEX updates CMAKE_MATCH_<n>. </policy/CMP0159>
-   CMP0158: add_test() honors CMAKE_CROSSCOMPILING_EMULATOR only when cross-compiling. </policy/CMP0158>
-   CMP0157: Swift compilation mode is selected by an abstraction. </policy/CMP0157>
-   CMP0156: De-duplicate libraries on link lines based on linker capabilities. </policy/CMP0156>
+   CMP0161: CPACK_PRODUCTBUILD_DOMAINS默认值为true。 </policy/CMP0161>
+   CMP0160: 更多只读目标属性在试图设置它们时报错。 </policy/CMP0160>
+   CMP0159: file(STRINGS)用REGEX更新CMAKE_MATCH_<n>。 </policy/CMP0159>
+   CMP0158: add_test()仅在交叉编译时启用CMAKE_CROSSCOMPILING_EMULATOR。 </policy/CMP0158>
+   CMP0157: Swift编译模式由抽象选择。 </policy/CMP0157>
+   CMP0156: 基于链接器功能对链接上的库进行去重。 </policy/CMP0156>
 
 Policies Introduced by CMake 3.28
 =================================

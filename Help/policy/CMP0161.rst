@@ -3,7 +3,7 @@ CMP0161
 
 .. versionadded:: 3.29
 
-The :variable:`CPACK_PRODUCTBUILD_DOMAINS` variable defaults to true.
+:variable:`CPACK_PRODUCTBUILD_DOMAINS`\ 默认值为true。
 
 Before CMake 3.29, the :variable:`CPACK_PRODUCTBUILD_DOMAINS` variable is
 unset by default.  When using the :cpack_gen:`CPack productbuild Generator`,

@@ -3,7 +3,7 @@ CMP0156
 
 .. versionadded:: 3.29
 
-De-duplicate libraries on link lines based on linker capabilities.
+基于链接器功能对链接上的库进行去重。
 
 Traditional linkers maintain a set of undefined symbols during linking. The
 linker processes each file in the order in which it appears on the command

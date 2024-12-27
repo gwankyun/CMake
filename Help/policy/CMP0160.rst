@@ -3,7 +3,7 @@ CMP0160
 
 .. versionadded:: 3.29
 
-More read-only target properties now error when trying to set them.
+更多只读目标属性在试图设置它们时报错。
 
 The :command:`set_target_properties` and :command:`set_property` commands
 are intended to error out on all read-only properties. However, CMake 3.28 and
