@@ -3,7 +3,7 @@ CMP0152
 
 .. versionadded:: 3.28
 
-:command:`file(REAL_PATH)` resolves symlinks before collapsing ../ components.
+:command:`file(REAL_PATH)`\ 在解析符号链接之前折叠../组件。
 
 In CMake 3.27 and below, :command:`file(REAL_PATH)` collapsed any ``../``
 components in a path before resolving symlinks.  This produced incorrect

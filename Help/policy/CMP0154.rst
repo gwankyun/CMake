@@ -3,7 +3,7 @@ CMP0154
 
 .. versionadded:: 3.28
 
-Generated files are private by default in targets using :ref:`file sets`.
+生成的文件在使用\ :ref:`file sets`\ 的目标中默认是私有的。 
 
 CMake 3.27 and below assume that any file generated as an output or byproduct
 of :command:`add_custom_command` or :command:`add_custom_target` may be a

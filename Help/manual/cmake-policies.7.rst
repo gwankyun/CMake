@@ -86,16 +86,16 @@ CMake 3.29引入的策略
    CMP0157: Swift编译模式由抽象选择。 </policy/CMP0157>
    CMP0156: 基于链接器功能对链接上的库进行去重。 </policy/CMP0156>
 
-Policies Introduced by CMake 3.28
+CMake 3.28引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0155: C++ sources in targets with at least C++20 are scanned for imports when supported. </policy/CMP0155>
-   CMP0154: Generated files are private by default in targets using file sets. </policy/CMP0154>
-   CMP0153: The exec_program command should not be called. </policy/CMP0153>
-   CMP0152: file(REAL_PATH) resolves symlinks before collapsing ../ components.  </policy/CMP0152>
+   CMP0155: 在支持的情况下，会扫描目标中C++源代码，至少需要C++20支持。 </policy/CMP0155>
+   CMP0154: 生成的文件在使用文件集的目标中默认是私有的。 </policy/CMP0154>
+   CMP0153: 不应该调用exec_program命令。 </policy/CMP0153>
+   CMP0152: file(REAL_PATH)在解析符号链接之前折叠../组件。 </policy/CMP0152>
 
 Policies Introduced by CMake 3.27
 =================================
