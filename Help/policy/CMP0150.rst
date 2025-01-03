@@ -3,9 +3,8 @@ CMP0150
 
 .. versionadded:: 3.27
 
-:command:`ExternalProject_Add` and :command:`FetchContent_Declare` commands
-treat relative ``GIT_REPOSITORY`` paths as being relative to the parent
-project's remote.
+:command:`ExternalProject_Add`\ 和\ :command:`FetchContent_Declare`\ 将相对\
+``GIT_REPOSITORY``\ 路径视为相对于父项目的远程仓库相对路径。
 
 Earlier versions of these commands always treated relative paths in
 ``GIT_REPOSITORY`` as local paths, but the base directory it was treated

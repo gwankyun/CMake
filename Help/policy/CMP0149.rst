@@ -3,7 +3,7 @@ CMP0149
 
 .. versionadded:: 3.27
 
-:ref:`Visual Studio Generators` select latest Windows SDK by default.
+:ref:`Visual Studio Generators`\ 默认选择最新的Windows SDK。
 
 Visual Studio Generators select a Windows SDK version to put in the
 ``WindowsTargetPlatformVersion`` setting in ``.vcxproj`` files.

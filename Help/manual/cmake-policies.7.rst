@@ -97,38 +97,38 @@ CMake 3.28引入的策略
    CMP0153: 不应该调用exec_program命令。 </policy/CMP0153>
    CMP0152: file(REAL_PATH)在解析符号链接之前折叠../组件。 </policy/CMP0152>
 
-Policies Introduced by CMake 3.27
+CMake 3.27引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0151: AUTOMOC include directory is a system include directory by default. </policy/CMP0151>
-   CMP0150: ExternalProject_Add and FetchContent_Declare treat relative git repository paths as being relative to parent project's remote. </policy/CMP0150>
-   CMP0149: Visual Studio generators select latest Windows SDK by default. </policy/CMP0149>
-   CMP0148: The FindPythonInterp and FindPythonLibs modules are removed. </policy/CMP0148>
-   CMP0147: Visual Studio generators build custom commands in parallel. </policy/CMP0147>
-   CMP0146: The FindCUDA module is removed. </policy/CMP0146>
-   CMP0145: The Dart and FindDart modules are removed. </policy/CMP0145>
-   CMP0144: find_package uses upper-case PACKAGENAME_ROOT variables. </policy/CMP0144>
+   CMP0151: AUTOMOC包含目录默认为系统包含目录。 </policy/CMP0151>
+   CMP0150: ExternalProject_Add和FetchContent_Declare将相对git仓库路径视为相对于父项目的远程仓库的相对路径。 </policy/CMP0150>
+   CMP0149: Visual Studio生成器默认选择最新的Windows SDK。 </policy/CMP0149>
+   CMP0148: FindPythonInterp和FindPythonLibs模块被删除。 </policy/CMP0148>
+   CMP0147: Visual Studio生成器可以并行构建自定义命令。 </policy/CMP0147>
+   CMP0146: FindCUDA模块被移除。 </policy/CMP0146>
+   CMP0145: Dart和FindDart模块被移除。 </policy/CMP0145>
+   CMP0144: find_package使用大写的PACKAGENAME_ROOT变量。 </policy/CMP0144>
 
-Policies Introduced by CMake 3.26
+CMake 3.26引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0143: USE_FOLDERS global property is treated as ON by default. </policy/CMP0143>
+   CMP0143: USE_FOLDERS全局属性默认为ON。 </policy/CMP0143>
 
-Policies Introduced by CMake 3.25
+CMake 3.25引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0142: The Xcode generator does not append per-config suffixes to library search paths. </policy/CMP0142>
-   CMP0141: MSVC debug information format flags are selected by an abstraction. </policy/CMP0141>
-   CMP0140: The return() command checks its arguments. </policy/CMP0140>
+   CMP0142: Xcode生成器不会为库搜索路径附加每个配置的后缀。 </policy/CMP0142>
+   CMP0141: MSVC调试信息格式标志是由一个抽象选择的。 </policy/CMP0141>
+   CMP0140: return()命令检查其参数。 </policy/CMP0140>
 
 Policies Introduced by CMake 3.24
 =================================

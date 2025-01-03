@@ -3,7 +3,7 @@ CMP0140
 
 .. versionadded:: 3.25
 
-The :command:`return` command checks its parameters.
+:command:`return`\ 命令检查其参数。
 
 The ``OLD`` behavior for this policy is to ignore any parameters given to the
 command.

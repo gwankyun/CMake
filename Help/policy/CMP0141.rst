@@ -3,7 +3,7 @@ CMP0141
 
 .. versionadded:: 3.25
 
-MSVC debug information format flags are selected by an abstraction.
+MSVC调试信息格式标志是由一个抽象选择的。
 
 Compilers targeting the MSVC ABI have flags to select the debug information
 format. Debug information format selection typically varies with build

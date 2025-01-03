@@ -3,7 +3,7 @@ CMP0148
 
 .. versionadded:: 3.27
 
-The :module:`FindPythonInterp` and :module:`FindPythonLibs` modules are removed.
+:module:`FindPythonInterp`\ 和\ :module:`FindPythonLibs`\ 模块被删除。
 
 These modules have been deprecated since CMake 3.12.
 CMake 3.27 and above prefer to not provide the modules.

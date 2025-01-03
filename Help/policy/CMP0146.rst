@@ -3,7 +3,7 @@ CMP0146
 
 .. versionadded:: 3.27
 
-The :module:`FindCUDA` module is removed.
+:module:`FindCUDA`\ 模块被移除。
 
 The :module:`FindCUDA` module has been deprecated since CMake 3.10.
 CMake 3.27 and above prefer to not provide the module.

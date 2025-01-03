@@ -3,7 +3,7 @@ CMP0145
 
 .. versionadded:: 3.27
 
-The :module:`Dart` and :module:`FindDart` modules are removed.
+:module:`Dart`\ 和\ :module:`FindDart`\ 模块被移除。
 
 These modules were added very early in CMake's development to support
 driving tests with a "DART" tool, but DART has not been distributed or

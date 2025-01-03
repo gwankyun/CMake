@@ -3,7 +3,7 @@ CMP0143
 
 .. versionadded:: 3.26
 
-:prop_gbl:`USE_FOLDERS` global property is treated as ``ON`` by default.
+:prop_gbl:`USE_FOLDERS`\ 全局属性默认为\ ``ON``。
 
 When using CMake 3.25 or earlier, :prop_gbl:`USE_FOLDERS` is treated
 as ``OFF`` by default unless projects enable the feature.  For example:

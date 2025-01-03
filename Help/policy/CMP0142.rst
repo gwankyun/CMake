@@ -3,8 +3,7 @@ CMP0142
 
 .. versionadded:: 3.25
 
-The :generator:`Xcode` generator does not append per-config suffixes to
-library search paths.
+:generator:`Xcode`\ 不会为库搜索路径附加每个配置的后缀。
 
 In CMake 3.24 and below, the :generator:`Xcode` generator preceded each
 entry of a library search path with a copy of itself appended with
