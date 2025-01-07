@@ -3,7 +3,7 @@ CMP0137
 
 .. versionadded:: 3.24
 
-:command:`try_compile` passes platform variables in project mode.
+:command:`try_compile`\ 在项目模式下传递平台变量。
 
 The :command:`try_compile` command :ref:`source file <Try Compiling Source
 Files>` signature propagates CMake variables containing platform settings,

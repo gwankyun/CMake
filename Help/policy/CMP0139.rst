@@ -3,8 +3,7 @@ CMP0139
 
 .. versionadded:: 3.24
 
-The :command:`if` command supports path comparisons using ``PATH_EQUAL``
-operator.
+:command:`if`\ 命令支持使用\ ``PATH_EQUAL``\ 操作符比较路径。
 
 The ``OLD`` behavior for this policy is to ignore the ``PATH_EQUAL`` operator.
 The ``NEW`` behavior is to interpret the ``PATH_EQUAL`` operator.

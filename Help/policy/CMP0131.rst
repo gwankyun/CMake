@@ -3,8 +3,7 @@ CMP0131
 
 .. versionadded:: 3.24
 
-:prop_tgt:`LINK_LIBRARIES` supports the :genex:`$<LINK_ONLY:...>`
-generator expression.
+:prop_tgt:`LINK_LIBRARIES`\ 支持\ :genex:`$<LINK_ONLY:...>`\ 生成器表达式。
 
 CMake 3.23 and below documented the :genex:`$<LINK_ONLY:...>` generator
 expression only for use in :prop_tgt:`INTERFACE_LINK_LIBRARIES`.

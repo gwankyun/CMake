@@ -3,7 +3,7 @@ CMP0136
 
 .. versionadded:: 3.24
 
-Watcom runtime library flags are selected by an abstraction.
+Watcom运行时库标志是由抽象选择的。
 
 Compilers targeting the Watcom ABI have flags to select the Watcom runtime
 library.

@@ -3,7 +3,7 @@ CMP0130
 
 .. versionadded:: 3.24
 
-:command:`while` diagnoses condition evaluation errors.
+:command:`while`\ 诊断条件评估错误。
 
 CMake 3.23 and below accidentally tolerated errors encountered while
 evaluating the condition passed to the :command:`while` command

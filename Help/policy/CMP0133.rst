@@ -3,8 +3,7 @@ CMP0133
 
 .. versionadded:: 3.24
 
-The :module:`CPack` module disables SLA by default in the
-:cpack_gen:`CPack DragNDrop Generator`.
+:module:`CPack`\ 模块默认在\ :cpack_gen:`CPack DragNDrop Generator`\ 中禁用SLA。
 
 The :cpack_gen:`CPack DragNDrop Generator` in CMake 3.22 and below attach a
 Software License Agreement (SLA) to ``.dmg`` files using the file specified

@@ -3,9 +3,9 @@ CMP0134
 
 .. versionadded:: 3.24
 
-The default registry view is ``TARGET`` for the :command:`find_file`,
-:command:`find_path`, :command:`find_library`, and :command:`find_package`
-commands and ``BOTH`` for the :command:`find_program` command.
+默认的注册表视图是\ :command:`find_file`、\ :command:`find_path`、\
+:command:`find_library`\ 和\ :command:`find_package`\ 命令的\ ``TARGET``，也是\
+:command:`find_program`\ 命令的\ ``BOTH``。
 
 The default registry views in CMake 3.23 and below are selected using the
 following rules:

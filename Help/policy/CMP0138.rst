@@ -3,7 +3,7 @@ CMP0138
 
 .. versionadded:: 3.24
 
-:module:`CheckIPOSupported` uses flags from calling project.
+:module:`CheckIPOSupported`\ 使用调用项目的标志。
 
 The :module:`CheckIPOSupported` module :command:`check_ipo_supported`
 command compiles a test project to determine whether the toolchain

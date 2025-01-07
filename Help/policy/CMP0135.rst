@@ -3,17 +3,13 @@ CMP0135
 
 .. versionadded:: 3.24
 
-When using the ``URL`` download method with the :command:`ExternalProject_Add`
-or :command:`FetchContent_Declare` commands, CMake 3.23 and below sets the
-timestamps of the extracted contents to the same as the timestamps in the
-archive. When the ``URL`` changes, the new archive is downloaded and extracted,
-but the timestamps of the extracted contents might not be newer than the
-previous contents. Anything that depends on the extracted contents might not
-be rebuilt, even though the contents may change.
+当使用带有\ :command:`ExternalProject_Add`\ 或\ :command:`FetchContent_Declare`\
+命令的\ ``URL``\ 下载方法时，CMake 3.23及以下版本将提取的内容的时间戳设置为与存档中的时间\
+戳相同。当\ ``URL``\ 更改时，将下载并提取新的归档文件，但提取的内容的时间戳可能不会比以前的\
+内容更新。任何依赖于提取的内容的东西都可能不会被重建，即使内容可能会改变。
 
-CMake 3.24 and above prefers to set the timestamps of all extracted contents
-to the time of the extraction. This ensures that anything that depends on the
-extracted contents will be rebuilt whenever the ``URL`` changes.
+CMake 3.24及以上版本倾向于将所有提取内容的时间戳设置为提取的时间。这确保了任何依赖于所提取\
+内容的内容都会在\ ``URL``\ 更改时重新构建。
 
 The ``DOWNLOAD_EXTRACT_TIMESTAMP`` option to the :command:`ExternalProject_Add`
 and :command:`FetchContent_Declare` commands can be used to explicitly specify

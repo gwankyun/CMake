@@ -130,22 +130,22 @@ CMake 3.25引入的策略
    CMP0141: MSVC调试信息格式标志是由一个抽象选择的。 </policy/CMP0141>
    CMP0140: return()命令检查其参数。 </policy/CMP0140>
 
-Policies Introduced by CMake 3.24
+CMake 3.24引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0139: The if() command supports path comparisons using PATH_EQUAL operator. </policy/CMP0139>
-   CMP0138: CheckIPOSupported uses flags from calling project. </policy/CMP0138>
-   CMP0137: try_compile() passes platform variables in project mode. </policy/CMP0137>
-   CMP0136: Watcom runtime library flags are selected by an abstraction. </policy/CMP0136>
-   CMP0135: ExternalProject and FetchContent ignore timestamps in archives by default for the URL download method. </policy/CMP0135>
-   CMP0134: Fallback to "HOST" Windows registry view when "TARGET" view is not usable. </policy/CMP0134>
-   CMP0133: The CPack module disables SLA by default in the CPack DragNDrop Generator. </policy/CMP0133>
-   CMP0132: Do not set compiler environment variables on first run. </policy/CMP0132>
-   CMP0131: LINK_LIBRARIES supports the LINK_ONLY generator expression. </policy/CMP0131>
-   CMP0130: while() diagnoses condition evaluation errors. </policy/CMP0130>
+   CMP0139: if()命令支持使用PATH_EQUAL操作符比较路径。 </policy/CMP0139>
+   CMP0138: CheckIPOSupported使用调用项目的标志。 </policy/CMP0138>
+   CMP0137: try_compile()在项目模式下传递平台变量。 </policy/CMP0137>
+   CMP0136: Watcom运行时库标志是由抽象选择的。 </policy/CMP0136>
+   CMP0135: ExternalProject和FetchContent默认忽略URL下载方法存档中的时间戳。 </policy/CMP0135>
+   CMP0134: 当“TARGET”视图不可用时，回退到“HOST”Windows注册表视图。 </policy/CMP0134>
+   CMP0133: CPack模块默认在CPack DragNDrop Generator中禁用SLA。 </policy/CMP0133>
+   CMP0132: 不要在第一次运行时设置编译器环境变量。 </policy/CMP0132>
+   CMP0131: LINK_LIBRARIES支持LINK_ONLY生成器表达式。 </policy/CMP0131>
+   CMP0130: while()诊断条件评估错误。 </policy/CMP0130>
 
 Policies Introduced by CMake 3.23
 =================================
