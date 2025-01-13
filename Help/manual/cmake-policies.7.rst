@@ -147,22 +147,22 @@ CMake 3.24引入的策略
    CMP0131: LINK_LIBRARIES支持LINK_ONLY生成器表达式。 </policy/CMP0131>
    CMP0130: while()诊断条件评估错误。 </policy/CMP0130>
 
-Policies Introduced by CMake 3.23
+CMake 3.23引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0129: Compiler id for MCST LCC compilers is now LCC, not GNU. </policy/CMP0129>
+   CMP0129: MCST LCC编译器的编译器id现在是LCC，而不是GNU。 </policy/CMP0129>
 
-Policies Introduced by CMake 3.22
+CMake 3.22引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0128: Selection of language standard and extension flags improved. </policy/CMP0128>
-   CMP0127: cmake_dependent_option() supports full Condition Syntax. </policy/CMP0127>
+   CMP0128: 改进语言标准和扩展标志选择。 </policy/CMP0128>
+   CMP0127: cmake_dependent_option()支持所有条件语法。 </policy/CMP0127>
 
 Policies Introduced by CMake 3.21
 =================================
