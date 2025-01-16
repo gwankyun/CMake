@@ -1,28 +1,20 @@
 mark_as_advanced
 ----------------
 
-将cmke缓存变量标记为高级。
+将cmake缓存变量标记为高级。
 
 .. code-block:: cmake
 
   mark_as_advanced([CLEAR|FORCE] <var1> ...)
 
-Sets the advanced/non-advanced state of the named
-cached variables.
+设置已命名缓存变量的高级/非高级状态。
 
-An advanced variable will not be displayed in any
-of the cmake GUIs unless the ``show advanced`` option is on.
-In script mode, the advanced/non-advanced state has no effect.
+除非\ ``show advanced``\ 选项开启，否则在任何cmake GUI中都不会显示advanced变量。在脚本\
+模式下，“高级/非高级”状态无效。
 
-If the keyword ``CLEAR`` is given
-then advanced variables are changed back to unadvanced.
-If the keyword ``FORCE`` is given
-then the variables are made advanced.
-If neither ``FORCE`` nor ``CLEAR`` is specified,
-new values will be marked as advanced, but if a
-variable already has an advanced/non-advanced state,
-it will not be changed.
+如果给出了\ ``CLEAR``\ 关键字，则高级变量会变回非高级。如果给出了关键字\ ``FORCE``，则变量\
+将设为高级。如果既没有指定\ ``FORCE``\ 也没有指定\ ``CLEAR``，则新值将标记为高级，但如果\
+变量已经具有高级/非高级状态，则不会更改它。
 
 .. versionchanged:: 3.17
-  Variables passed to this command which are not already in the cache
-  are ignored. See policy :policy:`CMP0102`.
+  传递给此命令的变量如果不在缓存中则会被忽略。参见策略\ :policy:`CMP0102`。

@@ -164,18 +164,18 @@ CMake 3.22引入的策略
    CMP0128: 改进语言标准和扩展标志选择。 </policy/CMP0128>
    CMP0127: cmake_dependent_option()支持所有条件语法。 </policy/CMP0127>
 
-Policies Introduced by CMake 3.21
+CMake 3.21引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0126: set(CACHE) does not remove a normal variable of the same name. </policy/CMP0126>
-   CMP0125: find_(path|file|library|program) have consistent behavior for cache variables. </policy/CMP0125>
-   CMP0124: foreach() loop variables are only available in the loop scope. </policy/CMP0124>
-   CMP0123: ARMClang cpu/arch compile and link flags must be set explicitly. </policy/CMP0123>
-   CMP0122: UseSWIG use standard library name conventions for csharp language. </policy/CMP0122>
-   CMP0121: The list command detects invalid indices. </policy/CMP0121>
+   CMP0126: set(CACHE)不会移除同名的普通变量。 </policy/CMP0126>
+   CMP0125: find_(path|file|library|program)具有一致的缓存变量行为。 </policy/CMP0125>
+   CMP0124: foreach()循环变量仅在循环作用域中可用。 </policy/CMP0124>
+   CMP0123: ARMClang必须显式设置cpu/arch编译和链接标志。 </policy/CMP0123>
+   CMP0122: UseSWIG使用csharp语言的标准库命名约定。 </policy/CMP0122>
+   CMP0121: list命令会检测无效索引。 </policy/CMP0121>
 
 Policies Introduced by CMake 3.20
 =================================
