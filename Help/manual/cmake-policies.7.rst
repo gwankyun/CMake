@@ -177,18 +177,18 @@ CMake 3.21引入的策略
    CMP0122: UseSWIG使用csharp语言的标准库命名约定。 </policy/CMP0122>
    CMP0121: list命令会检测无效索引。 </policy/CMP0121>
 
-Policies Introduced by CMake 3.20
+CMake 3.20引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0120: The WriteCompilerDetectionHeader module is removed. </policy/CMP0120>
-   CMP0119: LANGUAGE source file property explicitly compiles as language. </policy/CMP0119>
-   CMP0118: GENERATED sources may be used across directories without manual marking. </policy/CMP0118>
-   CMP0117: MSVC RTTI flag /GR is not added to CMAKE_CXX_FLAGS by default. </policy/CMP0117>
-   CMP0116: Ninja generators transform DEPFILEs from add_custom_command(). </policy/CMP0116>
-   CMP0115: Source file extensions must be explicit. </policy/CMP0115>
+   CMP0120: 移除WriteCompilerDetectionHeader模块。 </policy/CMP0120>
+   CMP0119: LANGUAGE源文件属性显式编译为语言。 </policy/CMP0119>
+   CMP0118: GENERATED源代码可以跨目录使用，无需手动标记。 </policy/CMP0118>
+   CMP0117: MSVC RTTI标志/GR默认不添加到CMAKE_CXX_FLAGS中。 </policy/CMP0117>
+   CMP0116: Ninja生成器从add_custom_command()转换DEPFILE。 </policy/CMP0116>
+   CMP0115: 源文件扩展名必须显示指定。 </policy/CMP0115>
 
 Policies Introduced by CMake 3.19
 =================================
