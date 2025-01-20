@@ -190,53 +190,53 @@ CMake 3.20引入的策略
    CMP0116: Ninja生成器从add_custom_command()转换DEPFILE。 </policy/CMP0116>
    CMP0115: 源文件扩展名必须显示指定。 </policy/CMP0115>
 
-Policies Introduced by CMake 3.19
+CMake 3.19引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0114: ExternalProject step targets fully adopt their steps. </policy/CMP0114>
-   CMP0113: Makefile generators do not repeat custom commands from target dependencies. </policy/CMP0113>
-   CMP0112: Target file component generator expressions do not add target dependencies. </policy/CMP0112>
-   CMP0111: An imported target missing its location property fails during generation. </policy/CMP0111>
-   CMP0110: add_test() supports arbitrary characters in test names. </policy/CMP0110>
-   CMP0109: find_program() requires permission to execute but not to read. </policy/CMP0109>
+   CMP0114: ExternalProject步骤目标完全采用他们的步骤。 </policy/CMP0114>
+   CMP0113: Makefile生成器不会重复目标依赖中的自定义命令。 </policy/CMP0113>
+   CMP0112: 目标文件组件生成器表达式不添加目标依赖项。 </policy/CMP0112>
+   CMP0111: 导入目标缺少其location属性会导致在生成过程中失败。 </policy/CMP0111>
+   CMP0110: add_test()支持测试名中的任意字符。 </policy/CMP0110>
+   CMP0109: find_program()需要执行权限，不需要读取权限。 </policy/CMP0109>
 
-Policies Introduced by CMake 3.18
+CMake 3.18引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0108: A target cannot link to itself through an alias. </policy/CMP0108>
-   CMP0107: An ALIAS target cannot overwrite another target. </policy/CMP0107>
-   CMP0106: The Documentation module is removed. </policy/CMP0106>
-   CMP0105: Device link step uses the link options. </policy/CMP0105>
-   CMP0104: CMAKE_CUDA_ARCHITECTURES now detected for NVCC, empty CUDA_ARCHITECTURES not allowed. </policy/CMP0104>
-   CMP0103: Multiple export() with same FILE without APPEND is not allowed. </policy/CMP0103>
+   CMP0108: 目标不能通过别名链接自己。 </policy/CMP0108>
+   CMP0107: ALIAS目标不能覆盖其他目标。 </policy/CMP0107>
+   CMP0106: Documentation模块被移除。 </policy/CMP0106>
+   CMP0105: 设备链接步骤使用链接选项。 </policy/CMP0105>
+   CMP0104: CMAKE_CUDA_ARCHITECTURES现在检测到NVCC时，不允许空的CUDA_ARCHITECTURES。 </policy/CMP0104>
+   CMP0103: 不允许对同一个FILE进行多次export()而不进行APPEND。 </policy/CMP0103>
 
-Policies Introduced by CMake 3.17
+CMake 3.17引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0102: mark_as_advanced() does nothing if a cache entry does not exist. </policy/CMP0102>
-   CMP0101: target_compile_options honors BEFORE keyword in all scopes. </policy/CMP0101>
-   CMP0100: Let AUTOMOC and AUTOUIC process .hh header files. </policy/CMP0100>
-   CMP0099: Link properties are transitive over private dependencies of static libraries. </policy/CMP0099>
-   CMP0098: FindFLEX runs flex in CMAKE_CURRENT_BINARY_DIR when executing. </policy/CMP0098>
+   CMP0102: 如果缓存项不存在，mark_as_advanced()什么也不做。 </policy/CMP0102>
+   CMP0101: target_compile_options在所有作用域中都是BEFORE关键字。 </policy/CMP0101>
+   CMP0100: 让AUTOMOC和AUTOUIC处理.hh头文件。 </policy/CMP0100>
+   CMP0099: 链接属性在静态库的私有依赖关系之上是传递的。 </policy/CMP0099>
+   CMP0098: FindFLEX执行时在CMAKE_CURRENT_BINARY_DIR中运行flex。 </policy/CMP0098>
 
-Policies Introduced by CMake 3.16
+CMake 3.16引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0097: ExternalProject_Add with GIT_SUBMODULES "" initializes no submodules. </policy/CMP0097>
-   CMP0096: project() preserves leading zeros in version components. </policy/CMP0096>
-   CMP0095: RPATH entries are properly escaped in the intermediary CMake install script. </policy/CMP0095>
+   CMP0097: 用GIT_SUBMODULES ""参数调用ExternalProject_Add不初始化子模块。 </policy/CMP0097>
+   CMP0096: project()保留版本组件中的前面的零。 </policy/CMP0096>
+   CMP0095: RPATH条目在中间的CMake安装脚本中被正确转义。 </policy/CMP0095>
 
 Policies Introduced by CMake 3.15
 =================================
