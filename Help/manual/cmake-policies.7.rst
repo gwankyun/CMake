@@ -238,18 +238,18 @@ CMake 3.16引入的策略
    CMP0096: project()保留版本组件中的前面的零。 </policy/CMP0096>
    CMP0095: RPATH条目在中间的CMake安装脚本中被正确转义。 </policy/CMP0095>
 
-Policies Introduced by CMake 3.15
+CMake 3.15引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0094: FindPython3, FindPython2 and FindPython use LOCATION for lookup strategy. </policy/CMP0094>
-   CMP0093: FindBoost reports Boost_VERSION in x.y.z format. </policy/CMP0093>
-   CMP0092: MSVC warning flags are not in CMAKE_{C,CXX}_FLAGS by default. </policy/CMP0092>
-   CMP0091: MSVC runtime library flags are selected by an abstraction. </policy/CMP0091>
-   CMP0090: export(PACKAGE) does not populate package registry by default. </policy/CMP0090>
-   CMP0089: Compiler id for IBM Clang-based XL compilers is now XLClang. </policy/CMP0089>
+   CMP0094: FindPython3、FindPython2和FindPython都使用LOCATION作为查找策略。 </policy/CMP0094>
+   CMP0093: FindBoost以x.y.z格式报告Boost_VERSION。 </policy/CMP0093>
+   CMP0092: 默认情况下，MSVC警告标志不在CMAKE_{C，CXX}_FLAGS中。 </policy/CMP0092>
+   CMP0091: MSVC运行时库标志是由抽象选择的。 </policy/CMP0091>
+   CMP0090: export(PACKAGE)默认不填充包注册表。 </policy/CMP0090>
+   CMP0089: 现在基于IBM clang的XL编译器id是XLClang。 </policy/CMP0089>
 
 Policies Introduced by CMake 3.14
 =================================
