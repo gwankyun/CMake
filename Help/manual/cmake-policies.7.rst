@@ -251,33 +251,33 @@ CMake 3.15引入的策略
    CMP0090: export(PACKAGE)默认不填充包注册表。 </policy/CMP0090>
    CMP0089: 现在基于IBM clang的XL编译器id是XLClang。 </policy/CMP0089>
 
-Policies Introduced by CMake 3.14
+CMake 3.14引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0088: FindBISON runs bison in CMAKE_CURRENT_BINARY_DIR when executing. </policy/CMP0088>
-   CMP0087: install(SCRIPT | CODE) supports generator expressions. </policy/CMP0087>
-   CMP0086: UseSWIG honors SWIG_MODULE_NAME via -module flag. </policy/CMP0086>
-   CMP0085: IN_LIST generator expression handles empty list items. </policy/CMP0085>
-   CMP0084: The FindQt module does not exist for find_package(). </policy/CMP0084>
-   CMP0083: Add PIE options when linking executable. </policy/CMP0083>
-   CMP0082: Install rules from add_subdirectory() are interleaved with those in caller. </policy/CMP0082>
+   CMP0088: FindBISON执行时在CMAKE_CURRENT_BINARY_DIR中运行bison。 </policy/CMP0088>
+   CMP0087: install(SCRIPT | CODE)支持生成器表达式。 </policy/CMP0087>
+   CMP0086: UseSWIG通过-module标志来命名SWIG_MODULE_NAME。 </policy/CMP0086>
+   CMP0085: IN_LIST生成器表达式处理空列表项。 </policy/CMP0085>
+   CMP0084: find_package()不存在FindQt模块。 </policy/CMP0084>
+   CMP0083: 链接可执行文件时添加PIE选项。 </policy/CMP0083>
+   CMP0082: 来自add_subdirectory()的安装规则与调用者中的规则交叉。 </policy/CMP0082>
 
 
-Policies Introduced by CMake 3.13
+CMake 3.13引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0081: Relative paths not allowed in LINK_DIRECTORIES target property. </policy/CMP0081>
-   CMP0080: BundleUtilities cannot be included at configure time. </policy/CMP0080>
-   CMP0079: target_link_libraries allows use with targets in other directories. </policy/CMP0079>
-   CMP0078: UseSWIG generates standard target names. </policy/CMP0078>
-   CMP0077: option() honors normal variables. </policy/CMP0077>
-   CMP0076: target_sources() command converts relative paths to absolute. </policy/CMP0076>
+   CMP0081: 相对路径不允许在LINK_DIRECTORIES目标属性。 </policy/CMP0081>
+   CMP0080: 在配置时不能包含BundleUtilities。 </policy/CMP0080>
+   CMP0079: target_link_libraries允许使用其他目录中的目标。 </policy/CMP0079>
+   CMP0078: UseSWIG生成标准目标名称。 </policy/CMP0078>
+   CMP0077: option()支持普通变量。 </policy/CMP0077>
+   CMP0076: target_sources()命令将相对路径转换为绝对路径。 </policy/CMP0076>
 
 Policies Introduced by CMake 3.12
 =================================
