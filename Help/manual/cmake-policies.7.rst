@@ -279,66 +279,66 @@ CMake 3.13引入的策略
    CMP0077: option()支持普通变量。 </policy/CMP0077>
    CMP0076: target_sources()命令将相对路径转换为绝对路径。 </policy/CMP0076>
 
-Policies Introduced by CMake 3.12
+CMake 3.12引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0075: Include file check macros honor CMAKE_REQUIRED_LIBRARIES. </policy/CMP0075>
-   CMP0074: find_package uses PackageName_ROOT variables. </policy/CMP0074>
-   CMP0073: Do not produce legacy _LIB_DEPENDS cache entries. </policy/CMP0073>
+   CMP0075: 包含文件检查宏遵循CMAKE_REQUIRED_LIBRARIES。 </policy/CMP0075>
+   CMP0074: find_package使用PackageName_ROOT变量。 </policy/CMP0074>
+   CMP0073: 不生成遗留的_LIB_DEPENDS缓存条目。 </policy/CMP0073>
 
-Policies Introduced by CMake 3.11
+CMake 3.11引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0072: FindOpenGL prefers GLVND by default when available. </policy/CMP0072>
+   CMP0072: 当GLVND可用时，FindOpenGL默认选择GLVND。 </policy/CMP0072>
 
-Policies Introduced by CMake 3.10
+CMake 3.10引入的策略
 =================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0071: Let AUTOMOC and AUTOUIC process GENERATED files. </policy/CMP0071>
-   CMP0070: Define file(GENERATE) behavior for relative paths. </policy/CMP0070>
+   CMP0071: 让AUTOMOC和AUTOUIC处理GENERATED文件。 </policy/CMP0071>
+   CMP0070: 定义相对路径的file(GENERATE)行为。 </policy/CMP0070>
 
-Policies Introduced by CMake 3.9
+CMake 3.9引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0069: INTERPROCEDURAL_OPTIMIZATION is enforced when enabled. </policy/CMP0069>
-   CMP0068: RPATH settings on macOS do not affect install_name. </policy/CMP0068>
+   CMP0069: INTERPROCEDURAL_OPTIMIZATION启用时强制执行。 </policy/CMP0069>
+   CMP0068: macOS上的RPATH设置不影响install_name。 </policy/CMP0068>
 
-Policies Introduced by CMake 3.8
+CMake 3.8引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0067: Honor language standard in try_compile() source-file signature. </policy/CMP0067>
+   CMP0067: 尊重try_compile()源文件签名中的语言标准。 </policy/CMP0067>
 
-Policies Introduced by CMake 3.7
+CMake 3.7引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0066: Honor per-config flags in try_compile() source-file signature. </policy/CMP0066>
+   CMP0066: 尊重try_compile()源文件签名中每个配置的标志。 </policy/CMP0066>
 
-Policies Introduced by CMake 3.4
+CMake 3.4引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0065: Do not add flags to export symbols from executables without the ENABLE_EXPORTS target property. </policy/CMP0065>
-   CMP0064: Support new TEST if() operator. </policy/CMP0064>
+   CMP0065: 在没有ENABLE_EXPORTS目标属性的情况下，不要为从可执行文件中导出符号添加标志。 </policy/CMP0065>
+   CMP0064: if()支持新的TEST运算符。 </policy/CMP0064>
 
 Policies Introduced by CMake 3.3
 ================================
