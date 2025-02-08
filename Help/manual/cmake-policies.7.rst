@@ -340,19 +340,19 @@ CMake 3.4引入的策略
    CMP0065: 在没有ENABLE_EXPORTS目标属性的情况下，不要为从可执行文件中导出符号添加标志。 </policy/CMP0065>
    CMP0064: if()支持新的TEST运算符。 </policy/CMP0064>
 
-Policies Introduced by CMake 3.3
+CMake 3.3引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0063: Honor visibility properties for all target types. </policy/CMP0063>
-   CMP0062: Disallow install() of export() result. </policy/CMP0062>
-   CMP0061: CTest does not by default tell make to ignore errors (-i). </policy/CMP0061>
-   CMP0060: Link libraries by full path even in implicit directories. </policy/CMP0060>
-   CMP0059: Do not treat DEFINITIONS as a built-in directory property. </policy/CMP0059>
-   CMP0058: Ninja requires custom command byproducts to be explicit. </policy/CMP0058>
-   CMP0057: Support new IN_LIST if() operator. </policy/CMP0057>
+   CMP0063: 尊重所有目标类型的可见属性。 </policy/CMP0063>
+   CMP0062: 不允许export()结果的install()。 </policy/CMP0062>
+   CMP0061: 默认情况下CTest不会告诉make忽略错误(-i)。 </policy/CMP0061>
+   CMP0060: 通过全路径链接库，即使在隐式目录。 </policy/CMP0060>
+   CMP0059: 不要将DEFINITIONS视为内置目录属性。 </policy/CMP0059>
+   CMP0058: Ninja需要自定义的命令副产品是显式的。 </policy/CMP0058>
+   CMP0057: if()支持新的IN_LIST运算符。 </policy/CMP0057>
 
 Policies Introduced by CMake 3.2
 ================================
