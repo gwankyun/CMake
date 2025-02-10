@@ -354,25 +354,25 @@ CMake 3.3引入的策略
    CMP0058: Ninja需要自定义的命令副产品是显式的。 </policy/CMP0058>
    CMP0057: if()支持新的IN_LIST运算符。 </policy/CMP0057>
 
-Policies Introduced by CMake 3.2
+CMake 3.2引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0056: Honor link flags in try_compile() source-file signature. </policy/CMP0056>
-   CMP0055: Strict checking for break() command. </policy/CMP0055>
+   CMP0056: 尊敬try_compile()源文件签名中的链接标志。 </policy/CMP0056>
+   CMP0055: 严格检查break()命令。 </policy/CMP0055>
 
-Policies Introduced by CMake 3.1
+CMake 3.1引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0054: Only interpret if() arguments as variables or keywords when unquoted. </policy/CMP0054>
-   CMP0053: Simplify variable reference and escape sequence evaluation. </policy/CMP0053>
-   CMP0052: Reject source and build dirs in installed INTERFACE_INCLUDE_DIRECTORIES. </policy/CMP0052>
-   CMP0051: List TARGET_OBJECTS in SOURCES target property. </policy/CMP0051>
+   CMP0054: 只有当if()参数未加引号时，才将其解释为变量或关键字。 </policy/CMP0054>
+   CMP0053: 简化变量引用和转义序列的计算。 </policy/CMP0053>
+   CMP0052: 拒绝在已安装的INTERFACE_INCLUDE_DIRECTORIES目录下的源目录和构建目录。 </policy/CMP0052>
+   CMP0051: 在SOURCES目标属性中列出TARGET_OBJECTS。 </policy/CMP0051>
 
 Policies Introduced by CMake 3.0
 ================================
