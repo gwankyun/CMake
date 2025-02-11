@@ -374,23 +374,23 @@ CMake 3.1引入的策略
    CMP0052: 拒绝在已安装的INTERFACE_INCLUDE_DIRECTORIES目录下的源目录和构建目录。 </policy/CMP0052>
    CMP0051: 在SOURCES目标属性中列出TARGET_OBJECTS。 </policy/CMP0051>
 
-Policies Introduced by CMake 3.0
+CMake 3.0引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0050: Disallow add_custom_command SOURCE signatures. </policy/CMP0050>
-   CMP0049: Do not expand variables in target source entries. </policy/CMP0049>
-   CMP0048: project() command manages VERSION variables. </policy/CMP0048>
-   CMP0047: Use QCC compiler id for the qcc drivers on QNX. </policy/CMP0047>
-   CMP0046: Error on non-existent dependency in add_dependencies. </policy/CMP0046>
-   CMP0045: Error on non-existent target in get_target_property. </policy/CMP0045>
-   CMP0044: Case sensitive Lang_COMPILER_ID generator expressions. </policy/CMP0044>
-   CMP0043: Ignore COMPILE_DEFINITIONS_Config properties. </policy/CMP0043>
-   CMP0042: MACOSX_RPATH is enabled by default. </policy/CMP0042>
-   CMP0041: Error on relative include with generator expression. </policy/CMP0041>
-   CMP0040: The target in the TARGET signature of add_custom_command() must exist. </policy/CMP0040>
+   CMP0050: 禁止add_custom_command SOURCE签名。 </policy/CMP0050>
+   CMP0049: 不要在目标源条目中展开变量。 </policy/CMP0049>
+   CMP0048: project()命令管理VERSION变量。 </policy/CMP0048>
+   CMP0047: 为QNX上的qcc驱动程序使用QCC编译器id。 </policy/CMP0047>
+   CMP0046: 在add_dependencies中出现不存在依赖时报错。 </policy/CMP0046>
+   CMP0045: 在get_target_property中不存在目标时报错。 </policy/CMP0045>
+   CMP0044: Lang_COMPILER_ID生成器表达式区分大小写。 </policy/CMP0044>
+   CMP0043: 忽略COMPILE_DEFINITIONS_Config属性。 </policy/CMP0043>
+   CMP0042: 默认开启MACOSX_RPATH。 </policy/CMP0042>
+   CMP0041: 生成器表达式使用相对包含会报错。 </policy/CMP0041>
+   CMP0040: add_custom_command()的TARGET签名中的目标必须存在。 </policy/CMP0040>
    CMP0039: Utility targets may not have link dependencies. </policy/CMP0039>
    CMP0038: Targets may not link directly to themselves. </policy/CMP0038>
    CMP0037: Target names should not be reserved and should match a validity pattern. </policy/CMP0037>
