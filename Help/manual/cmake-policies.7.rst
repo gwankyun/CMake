@@ -391,22 +391,22 @@ CMake 3.0引入的策略
    CMP0042: 默认开启MACOSX_RPATH。 </policy/CMP0042>
    CMP0041: 生成器表达式使用相对包含会报错。 </policy/CMP0041>
    CMP0040: add_custom_command()的TARGET签名中的目标必须存在。 </policy/CMP0040>
-   CMP0039: Utility targets may not have link dependencies. </policy/CMP0039>
-   CMP0038: Targets may not link directly to themselves. </policy/CMP0038>
-   CMP0037: Target names should not be reserved and should match a validity pattern. </policy/CMP0037>
-   CMP0036: The build_name command should not be called. </policy/CMP0036>
-   CMP0035: The variable_requires command should not be called. </policy/CMP0035>
-   CMP0034: The utility_source command should not be called. </policy/CMP0034>
-   CMP0033: The export_library_dependencies command should not be called. </policy/CMP0033>
-   CMP0032: The output_required_files command should not be called. </policy/CMP0032>
-   CMP0031: The load_command command should not be called. </policy/CMP0031>
-   CMP0030: The use_mangled_mesa command should not be called. </policy/CMP0030>
-   CMP0029: The subdir_depends command should not be called. </policy/CMP0029>
-   CMP0028: Double colon in target name means ALIAS or IMPORTED target. </policy/CMP0028>
-   CMP0027: Conditionally linked imported targets with missing include directories. </policy/CMP0027>
-   CMP0026: Disallow use of the LOCATION target property. </policy/CMP0026>
-   CMP0025: Compiler id for Apple Clang is now AppleClang. </policy/CMP0025>
-   CMP0024: Disallow include export result. </policy/CMP0024>
+   CMP0039: Utility目标可能没有链接依赖。 </policy/CMP0039>
+   CMP0038: 目标不能直接链接到自己。 </policy/CMP0038>
+   CMP0037: 目标名称不应该保留，并且应该匹配有效模式。 </policy/CMP0037>
+   CMP0036: 不应该调用build_name命令。 </policy/CMP0036>
+   CMP0035: 不应该调用variable_requires命令。 </policy/CMP0035>
+   CMP0034: 不应该调用utility_source命令。 </policy/CMP0034>
+   CMP0033: 不应该调用export_library_dependencies命令。 </policy/CMP0033>
+   CMP0032: 不应该调用output_required_files命令。 </policy/CMP0032>
+   CMP0031: 不应该调用load_command命令。 </policy/CMP0031>
+   CMP0030: 不应该调用use_mangled_mesa命令。 </policy/CMP0030>
+   CMP0029: 不应该调用subdir_depends命令。 </policy/CMP0029>
+   CMP0028: 目标名称中双冒号表示ALIAS或IMPORTED目标。 </policy/CMP0028>
+   CMP0027: 条件链接的导入目标缺少include目录。 </policy/CMP0027>
+   CMP0026: 禁止使用LOCATION目标属性。 </policy/CMP0026>
+   CMP0025: Apple Clang的编译器id现在是AppleClang。 </policy/CMP0025>
+   CMP0024: 不允许包含导出结果。 </policy/CMP0024>
 
 Policies Introduced by CMake 2.8
 ================================
