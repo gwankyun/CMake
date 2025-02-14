@@ -408,24 +408,24 @@ CMake 3.0引入的策略
    CMP0025: Apple Clang的编译器id现在是AppleClang。 </policy/CMP0025>
    CMP0024: 不允许包含导出结果。 </policy/CMP0024>
 
-Policies Introduced by CMake 2.8
+CMake 2.8引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0023: Plain and keyword target_link_libraries signatures cannot be mixed. </policy/CMP0023>
-   CMP0022: INTERFACE_LINK_LIBRARIES defines the link interface. </policy/CMP0022>
-   CMP0021: Fatal error on relative paths in INCLUDE_DIRECTORIES target property. </policy/CMP0021>
-   CMP0020: Automatically link Qt executables to qtmain target on Windows. </policy/CMP0020>
-   CMP0019: Do not re-expand variables in include and link information. </policy/CMP0019>
-   CMP0018: Ignore CMAKE_SHARED_LIBRARY_Lang_FLAGS variable. </policy/CMP0018>
-   CMP0017: Prefer files from the CMake module directory when including from there. </policy/CMP0017>
-   CMP0016: target_link_libraries() reports error if its only argument is not a target. </policy/CMP0016>
-   CMP0015: link_directories() treats paths relative to the source dir. </policy/CMP0015>
-   CMP0014: Input directories must have CMakeLists.txt. </policy/CMP0014>
-   CMP0013: Duplicate binary directories are not allowed. </policy/CMP0013>
-   CMP0012: if() recognizes numbers and boolean constants. </policy/CMP0012>
+   CMP0023: 无修饰和关键字target_link_libraries签名不能混合使用。 </policy/CMP0023>
+   CMP0022: INTERFACE_LINK_LIBRARIES定义链接接口。 </policy/CMP0022>
+   CMP0021: 在INCLUDE_DIRECTORIES目标属性的相对路径上发生致命错误。 </policy/CMP0021>
+   CMP0020: Windows上自动连接Qt可执行文件到qtmain目标。 </policy/CMP0020>
+   CMP0019: 不要在包含和链接信息中重新扩展变量。 </policy/CMP0019>
+   CMP0018: 忽略CMAKE_SHARED_LIBRARY_Lang_FLAGS变量。 </policy/CMP0018>
+   CMP0017: 优先选择CMake模块目录下的文件。 </policy/CMP0017>
+   CMP0016: 如果target_link_libraries()的唯一参数不是目标，它会报告错误。 </policy/CMP0016>
+   CMP0015: link_directories()处理相对于源目录的路径。 </policy/CMP0015>
+   CMP0014: 输入目录必须有CMakeLists.txt文件。 </policy/CMP0014>
+   CMP0013: 不允许重复的二进制目录。 </policy/CMP0013>
+   CMP0012: if()可以识别数字和布尔常量。 </policy/CMP0012>
 
 Policies Introduced by CMake 2.6
 ================================
