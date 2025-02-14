@@ -427,21 +427,21 @@ CMake 2.8引入的策略
    CMP0013: 不允许重复的二进制目录。 </policy/CMP0013>
    CMP0012: if()可以识别数字和布尔常量。 </policy/CMP0012>
 
-Policies Introduced by CMake 2.6
+CMake 2.6引入的策略
 ================================
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0011: Included scripts do automatic cmake_policy PUSH and POP. </policy/CMP0011>
-   CMP0010: Bad variable reference syntax is an error. </policy/CMP0010>
-   CMP0009: FILE GLOB_RECURSE calls should not follow symlinks by default. </policy/CMP0009>
-   CMP0008: Libraries linked by full-path must have a valid library file name. </policy/CMP0008>
-   CMP0007: list command no longer ignores empty elements. </policy/CMP0007>
-   CMP0006: Installing MACOSX_BUNDLE targets requires a BUNDLE DESTINATION. </policy/CMP0006>
-   CMP0005: Preprocessor definition values are now escaped automatically. </policy/CMP0005>
-   CMP0004: Libraries linked may not have leading or trailing whitespace. </policy/CMP0004>
-   CMP0003: Libraries linked via full path no longer produce linker search paths. </policy/CMP0003>
-   CMP0002: Logical target names must be globally unique. </policy/CMP0002>
-   CMP0001: CMAKE_BACKWARDS_COMPATIBILITY should no longer be used. </policy/CMP0001>
-   CMP0000: A minimum required CMake version must be specified. </policy/CMP0000>
+   CMP0011: 包含的脚本可以自动PUSH和POP cmake_policy。 </policy/CMP0011>
+   CMP0010: 坏变量引用语法是错误的。 </policy/CMP0010>
+   CMP0009: 默认情况下，FILE的GLOB_RECURSE调用不应该跟随符号链接。 </policy/CMP0009>
+   CMP0008: 通过全路径链接的库必须有一个有效的库文件名。 </policy/CMP0008>
+   CMP0007: list命令不再忽略空元素。 </policy/CMP0007>
+   CMP0006: 安装MACOSX_BUNDLE目标需要一个BUNDLE DESTINATION。 </policy/CMP0006>
+   CMP0005: 预处理器定义值现在自动转义。 </policy/CMP0005>
+   CMP0004: 链接的库前后不能有空格。 </policy/CMP0004>
+   CMP0003: 通过全路径链接的库不再产生链接器搜索路径。 </policy/CMP0003>
+   CMP0002: 逻辑目标名称必须全局唯一。 </policy/CMP0002>
+   CMP0001: CMAKE_BACKWARDS_COMPATIBILITY不应该再使用。 </policy/CMP0001>
+   CMP0000: 必须指定CMake的最小版本号。 </policy/CMP0000>
