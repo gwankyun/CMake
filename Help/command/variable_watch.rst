@@ -7,42 +7,34 @@ variable_watch
 
   variable_watch(<variable> [<command>])
 
-If the specified ``<variable>`` changes and no ``<command>`` is given,
-a message will be printed to inform about the change.
+如果指定的\ ``<variable>``\ 发生变化，且未提供\ ``<command>``，则会打印一条消息来告知该变化。
 
-If ``<command>`` is given, this command will be executed instead.
-The command will receive the following arguments:
+如果指定了\ ``<command>`` ，则会执行该命令。该命令将接收以下参数：\
 ``COMMAND(<variable> <access> <value> <current_list_file> <stack>)``
 
 ``<variable>``
- Name of the variable being accessed.
+ 正在被访问的变量的名称。
 
 ``<access>``
- One of ``READ_ACCESS``, ``UNKNOWN_READ_ACCESS``, ``MODIFIED_ACCESS``,
- ``UNKNOWN_MODIFIED_ACCESS``, or ``REMOVED_ACCESS``.  The ``UNKNOWN_``
- values are only used when the variable has never been set.  Once set,
- they are never used again during the same CMake run, even if the
- variable is later unset.
+ ``READ_ACCESS``、\ ``UNKNOWN_READ_ACCESS``、\ ``MODIFIED_ACCESS``、\
+ ``UNKNOWN_MODIFIED_ACCESS``\ 或\ ``REMOVED_ACCESS``\ 之一。\ ``UNKNOWN_``\ 前缀的\
+ 值仅在变量从未被设置过时使用。一旦变量被设置，在同一次CMake运行过程中，即使该变量随后被取消\
+ 设置，也不会再使用这些值。
 
 ``<value>``
- The value of the variable.  On a modification, this is the new
- (modified) value of the variable.  On removal, the value is empty.
+ 变量的值。当变量被修改时，此为变量的新（已修改）值。当变量被移除时，该值为空。
 
 ``<current_list_file>``
- Full path to the file doing the access.
+ 正在访问操作文件的完整路径。
 
 ``<stack>``
- List of absolute paths of all files currently on the stack of file
- inclusion, with the bottom-most file first and the currently
- processed file (that is, ``current_list_file``) last.
+ 当前文件包含栈上所有文件的绝对路径列表，列表中最底部的文件排在最前，当前正在处理的文件（即\
+ ``current_list_file``\ ）排在最后。
 
-Note that for some accesses such as :command:`list(APPEND)`, the watcher
-is executed twice, first with a read access and then with a write one.
-Also note that an :command:`if(DEFINED)` query on the variable does not
-register as an access and the watcher is not executed.
+请注意，对于某些访问操作，例如\ :command:`list(APPEND)`，监控器会执行两次，第一次是读访问，\
+然后是写访问。另请注意，对变量使用\ :command:`if(DEFINED)`\ 进行查询不会被视为一次访问，\
+监控器也不会被执行。
 
-Only non-cache variables can be watched using this command.  Access to
-cache variables is never watched.  However, the existence of a cache
-variable ``var`` causes accesses to the non-cache variable ``var`` to
-not use the ``UNKNOWN_`` prefix, even if a non-cache variable ``var``
-has never existed.
+此命令仅可用于监控非缓存变量。对缓存变量的访问不会被监控。然而，若存在一个名为\ ``var``\
+的缓存变量，那么对非缓存变量\ ``var``\ 的访问将不会使用\ ``UNKNOWN_``\ 前缀，即便非缓存\
+变量\ ``var``\ 从未存在过。

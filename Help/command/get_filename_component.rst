@@ -4,15 +4,14 @@ get_filename_component
 获取完整文件名的特定组件。
 
 .. versionchanged:: 3.20
-  This command has been superseded by the :command:`cmake_path` command, except
-  for ``REALPATH``, which is now offered by :command:`file(REAL_PATH)`, and
-  ``PROGRAM``, now available in :command:`separate_arguments(PROGRAM)`.
+  除了\ ``REALPATH``\ 和\ ``PROGRAM``\ 模式外，此命令已被\ :command:`cmake_path`\
+  命令取代。其中，\ ``REALPATH``\ 模式现在由\ :command:`file(REAL_PATH)`\ 提供，\
+  ``PROGRAM``\ 模式现在可通过\ :command:`separate_arguments(PROGRAM)`\ 实现。
 
 .. versionchanged:: 3.24
-  The undocumented feature offering the capability to query the ``Windows``
-  registry is superseded by
-  :ref:`cmake_host_system_information(QUERY WINDOWS_REGISTRY)<Query Windows registry>`
-  command.
+  原有的一项未文档化用于查询\ ``Windows``\ 注册表的功能，现已被\
+  :ref:`cmake_host_system_information(QUERY WINDOWS_REGISTRY)<Query Windows registry>`\
+  命令所取代。
 
 .. code-block:: cmake
 
