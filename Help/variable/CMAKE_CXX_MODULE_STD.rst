@@ -5,7 +5,7 @@ CMAKE_CXX_MODULE_STD
 
 是否将实用程序目标作为依赖项添加到\ ``cxx_std_23``\ 以上的目标。
 
-.. note ::
+.. note::
 
    This setting is meaningful only when experimental support for ``import
    std;`` has been enabled by the ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD`` gate.

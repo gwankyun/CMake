@@ -355,6 +355,9 @@ function(run_TestOutputSize)
   set(RunCMake_TEST_NO_CLEAN 1)
   file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
   file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl" "
+BuildDirectory: ${RunCMake_TEST_BINARY_DIR}
+")
   file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
   add_test(PassingTest \"${CMAKE_COMMAND}\" -E echo PassingTestOutput)
   add_test(FailingTest \"${CMAKE_COMMAND}\" -E no_such_command)
@@ -375,6 +378,9 @@ function(run_TestOutputTruncation mode expected)
   set(TRUNCATED_OUTPUT ${expected})  # used in TestOutputTruncation-check.cmake
   file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
   file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl" "
+BuildDirectory: ${RunCMake_TEST_BINARY_DIR}
+")
   file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
   add_test(Truncation_${mode} \"${CMAKE_COMMAND}\" -E echo 123456789)
 ")
@@ -463,10 +469,14 @@ function(run_ShowOnly)
   file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
     add_test(ShowOnly \"${CMAKE_COMMAND}\" -E echo)
     set_tests_properties(ShowOnly PROPERTIES
-      WILL_FAIL true
+      GENERATED_RESOURCE_SPEC_FILE \"/Path/Does/Not/Exist\"
       RESOURCE_GROUPS \"2,threads:2,gpus:4;gpus:2,threads:4\"
       REQUIRED_FILES RequiredFileDoesNotExist
       _BACKTRACE_TRIPLES \"file1;1;add_test;file0;;\"
+      TIMEOUT 1234.5
+      TIMEOUT_SIGNAL_NAME SIGINT
+      TIMEOUT_SIGNAL_GRACE_PERIOD 2.1
+      WILL_FAIL true
       USER_DEFINED_A \"User defined property A value\"
       USER_DEFINED_B \"User defined property B value\"
       )

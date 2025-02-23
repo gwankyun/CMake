@@ -410,14 +410,6 @@ if(KWSYS_USE_DynamicLoader)
 endif()
 
 if(KWSYS_USE_SystemTools)
-  if (NOT DEFINED KWSYS_SYSTEMTOOLS_USE_TRANSLATION_MAP)
-    set(KWSYS_SYSTEMTOOLS_USE_TRANSLATION_MAP 1)
-  endif ()
-  if (KWSYS_SYSTEMTOOLS_USE_TRANSLATION_MAP)
-    set(KWSYS_SYSTEMTOOLS_USE_TRANSLATION_MAP 1)
-  else ()
-    set(KWSYS_SYSTEMTOOLS_USE_TRANSLATION_MAP 0)
-  endif ()
   KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_SETENV
     "Checking whether CXX compiler has setenv" DIRECT)
   KWSYS_PLATFORM_CXX_TEST(KWSYS_CXX_HAS_UNSETENV
@@ -466,7 +458,7 @@ if(KWSYS_USE_SystemInformation)
     COMPILE_DEFINITIONS SIZEOF_VOID_P=${CMAKE_SIZEOF_VOID_P})
   if(NOT CYGWIN)
     include(CheckIncludeFiles)
-    CHECK_INCLUDE_FILES("sys/types.h;ifaddrs.h" KWSYS_SYS_HAS_IFADDRS_H)
+    check_include_files("sys/types.h;ifaddrs.h" KWSYS_SYS_HAS_IFADDRS_H)
     if(KWSYS_SYS_HAS_IFADDRS_H)
       set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_IFADDRS_H=1)
@@ -475,7 +467,7 @@ if(KWSYS_USE_SystemInformation)
   if(WIN32)
     include(CheckSymbolExists)
     set(CMAKE_REQUIRED_LIBRARIES psapi)
-    CHECK_SYMBOL_EXISTS(GetProcessMemoryInfo "windows.h;psapi.h" KWSYS_SYS_HAS_PSAPI)
+    check_symbol_exists(GetProcessMemoryInfo "windows.h;psapi.h" KWSYS_SYS_HAS_PSAPI)
     unset(CMAKE_REQUIRED_LIBRARIES)
     if(KWSYS_SYS_HAS_PSAPI)
       set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
@@ -487,14 +479,14 @@ if(KWSYS_USE_SystemInformation)
     endif()
   endif()
   if(CMAKE_SYSTEM MATCHES "HP-UX")
-    CHECK_INCLUDE_FILES("sys/mpctl.h" KWSYS_SYS_HAS_MPCTL_H)
+    check_include_files("sys/mpctl.h" KWSYS_SYS_HAS_MPCTL_H)
     if(KWSYS_SYS_HAS_MPCTL_H)
       set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_MPCTL_H=1)
     endif()
   endif()
   if(CMAKE_SYSTEM MATCHES "BSD")
-    CHECK_INCLUDE_FILES("machine/cpu.h" KWSYS_SYS_HAS_MACHINE_CPU_H)
+    check_include_files("machine/cpu.h" KWSYS_SYS_HAS_MACHINE_CPU_H)
     if(KWSYS_SYS_HAS_MACHINE_CPU_H)
       set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
         COMPILE_DEFINITIONS KWSYS_SYS_HAS_MACHINE_CPU_H=1)
@@ -517,7 +509,7 @@ if(KWSYS_USE_SystemInformation)
     if (NOT EXECINFO_LIB)
       set(EXECINFO_LIB "")
     endif()
-    CHECK_INCLUDE_FILE_CXX("execinfo.h" KWSYS_CXX_HAS_EXECINFOH)
+    check_include_file_cxx("execinfo.h" KWSYS_CXX_HAS_EXECINFOH)
     if (KWSYS_CXX_HAS_EXECINFOH)
       # we have the backtrace header check if it
       # can be used with this compiler
@@ -531,7 +523,7 @@ if(KWSYS_USE_SystemInformation)
         set_property(SOURCE SystemInformation.cxx APPEND PROPERTY
           COMPILE_DEFINITIONS KWSYS_SYSTEMINFORMATION_HAS_BACKTRACE=1)
         # check for symbol lookup using dladdr
-        CHECK_INCLUDE_FILE_CXX("dlfcn.h" KWSYS_CXX_HAS_DLFCNH)
+        check_include_file_cxx("dlfcn.h" KWSYS_CXX_HAS_DLFCNH)
         if (KWSYS_CXX_HAS_DLFCNH)
           # we have symbol lookup libraries and headers
           # check if they can be used with this compiler
@@ -548,7 +540,7 @@ if(KWSYS_USE_SystemInformation)
         endif()
         # c++ demangling support
         # check for cxxabi headers
-        CHECK_INCLUDE_FILE_CXX("cxxabi.h" KWSYS_CXX_HAS_CXXABIH)
+        check_include_file_cxx("cxxabi.h" KWSYS_CXX_HAS_CXXABIH)
         if (KWSYS_CXX_HAS_CXXABIH)
           # check if cxxabi can be used with this
           # system and compiler.
@@ -692,7 +684,7 @@ foreach(c IN LISTS KWSYS_CLASSES)
 
   # Configure the header for this class.
   configure_file(${PROJECT_SOURCE_DIR}/${c}.hxx.in ${KWSYS_HEADER_DIR}/${c}.hxx
-                 @ONLY IMMEDIATE)
+                 @ONLY)
   set(KWSYS_CXX_SRCS ${KWSYS_CXX_SRCS} ${KWSYS_HEADER_DIR}/${c}.hxx)
 
   # Create an install target for the header.
@@ -707,7 +699,7 @@ endforeach()
 foreach(h IN LISTS KWSYS_H_FILES)
   # Configure the header into the given directory.
   configure_file(${PROJECT_SOURCE_DIR}/${h}.h.in ${KWSYS_HEADER_DIR}/${h}.h
-                 @ONLY IMMEDIATE)
+                 @ONLY)
   set(KWSYS_C_SRCS ${KWSYS_C_SRCS} ${KWSYS_HEADER_DIR}/${h}.h)
 
   # Create an install target for the header.
@@ -722,7 +714,7 @@ endforeach()
 foreach(h IN LISTS KWSYS_HXX_FILES)
   # Configure the header into the given directory.
   configure_file(${PROJECT_SOURCE_DIR}/${h}.hxx.in ${KWSYS_HEADER_DIR}/${h}.hxx
-                 @ONLY IMMEDIATE)
+                 @ONLY)
   set(KWSYS_CXX_SRCS ${KWSYS_CXX_SRCS} ${KWSYS_HEADER_DIR}/${h}.hxx)
 
   # Create an install target for the header.

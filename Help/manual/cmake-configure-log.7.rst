@@ -16,7 +16,9 @@ CMake写一个运行日志，称为\ *configure log*，记录在配置步骤中�
 包含配置项目时打印的所有输出、错误或消息的日志。它是关于特定事件的详细信息的日志，例如由\
 :command:`try_compile`\ 进行的工具链检查，用于调试构建树的配置。
 
-对于人类使用，这个版本的CMake将配置日志写入文件::
+对于人类使用，这个版本的CMake将配置日志写入文件：
+
+.. code-block:: cmake
 
   ${CMAKE_BINARY_DIR}/CMakeFiles/CMakeConfigureLog.yaml
 

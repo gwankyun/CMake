@@ -347,7 +347,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
   {
     "kind": "codemodel",
-    "version": { "major": 2, "minor": 7 },
+    "version": { "major": 2, "minor": 8 },
     "paths": {
       "source": "/path/to/top-level-source-dir",
       "build": "/path/to/top-level-build-dir"
@@ -867,6 +867,22 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     可选成员，当启用链接时间优化（也称为过程间优化或链接时间代码生成）时，以布尔值\ ``true``\
     出现。
 
+``debugger``
+  Optional member that is present when the target has one of the
+  following fields set.
+  The value is a JSON object of entries corresponding to
+  debugger specific values set.
+
+  This field was added in codemodel version 2.8.
+
+  ``workingDirectory``
+    Optional member that is present when the DEBUGGER_WORKING_DIRECTORY
+    target property is set.
+    The member will also be present in Visual Studio Generator
+    scenarios when VS_DEBUGGER_WORKING_DIRECTORY is set.
+
+    This field was added in codemodel version 2.8.
+
 ``dependencies``
   当目标依赖于其他目标时出现的可选成员。该值是一个JSON数组，包含与依赖项对应的条目。每个条目\
   都是一个JSON对象，包含以下成员：
@@ -1077,6 +1093,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
 “configureLog”对象类型
 --------------------------
+
+.. versionadded:: 3.26
 
 ``configureLog``\ 对象类型描述了\ :manual:`cmake-configure-log(7)`\ 文件的位置和内容。
 

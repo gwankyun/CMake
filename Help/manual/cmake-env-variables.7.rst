@@ -18,6 +18,8 @@ cmake-env-variables(7)
 .. toctree::
    :maxdepth: 1
 
+   /envvar/CLICOLOR
+   /envvar/CLICOLOR_FORCE
    /envvar/CMAKE_APPBUNDLE_PATH
    /envvar/CMAKE_FRAMEWORK_PATH
    /envvar/CMAKE_INCLUDE_PATH
@@ -112,7 +114,9 @@ CTest相关环境变量
    /envvar/CTEST_OUTPUT_ON_FAILURE
    /envvar/CTEST_PARALLEL_LEVEL
    /envvar/CTEST_PROGRESS_OUTPUT
+   /envvar/CTEST_USE_INSTRUMENTATION
    /envvar/CTEST_USE_LAUNCHERS_DEFAULT
+   /envvar/CTEST_USE_VERBOSE_INSTRUMENTATION
    /envvar/DASHBOARD_TEST_FROM_CTEST
 
 CMake curses界面相关的环境变量

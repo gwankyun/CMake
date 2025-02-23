@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "cmGeneratorOptions.h"
 #include "cmLocalCommonGenerator.h"
 #include "cmNinjaTypes.h"
 #include "cmOutputConverter.h"
@@ -42,16 +43,19 @@ public:
 
   void Generate() override;
 
-  std::unique_ptr<cmRulePlaceholderExpander> CreateRulePlaceholderExpander()
-    const override;
+  std::unique_ptr<cmRulePlaceholderExpander> CreateRulePlaceholderExpander(
+    cmBuildStep buildStep = cmBuildStep::Compile) const override;
+  std::unique_ptr<cmRulePlaceholderExpander> CreateRulePlaceholderExpander(
+    cmBuildStep buildStep, cmGeneratorTarget const* target,
+    std::string const& language) override;
 
   std::string GetTargetDirectory(
     cmGeneratorTarget const* target) const override;
 
-  const cmGlobalNinjaGenerator* GetGlobalNinjaGenerator() const;
+  cmGlobalNinjaGenerator const* GetGlobalNinjaGenerator() const;
   cmGlobalNinjaGenerator* GetGlobalNinjaGenerator();
 
-  const cmake* GetCMakeInstance() const;
+  cmake const* GetCMakeInstance() const;
   cmake* GetCMakeInstance();
 
   std::string const& GetWorkingDirectory() const override;
@@ -72,10 +76,10 @@ public:
     cmGeneratorTarget const* target = nullptr) const;
 
   void AppendTargetOutputs(cmGeneratorTarget* target, cmNinjaDeps& outputs,
-                           const std::string& config);
+                           std::string const& config);
   void AppendTargetDepends(cmGeneratorTarget* target, cmNinjaDeps& outputs,
-                           const std::string& config,
-                           const std::string& fileConfig,
+                           std::string const& config,
+                           std::string const& fileConfig,
                            cmNinjaTargetDepends depends);
 
   std::string CreateUtilityOutput(std::string const& targetName,
@@ -91,7 +95,7 @@ public:
                                 std::vector<std::string>& cmdLines);
   void AppendCustomCommandDeps(cmCustomCommandGenerator const& ccg,
                                cmNinjaDeps& ninjaDeps,
-                               const std::string& config);
+                               std::string const& config);
 
   bool HasUniqueByproducts(std::vector<std::string> const& byproducts,
                            cmListFileBacktrace const& bt);
@@ -104,7 +108,7 @@ protected:
     std::string const& path, cmOutputConverter::OutputFormat format) override;
 
 private:
-  cmGeneratedFileStream& GetImplFileStream(const std::string& config) const;
+  cmGeneratedFileStream& GetImplFileStream(std::string const& config) const;
   cmGeneratedFileStream& GetCommonFileStream() const;
   cmGeneratedFileStream& GetRulesFileStream() const;
 
@@ -112,7 +116,7 @@ private:
   void WriteProjectHeader(std::ostream& os);
   void WriteNinjaRequiredVersion(std::ostream& os);
   void WriteNinjaConfigurationVariable(std::ostream& os,
-                                       const std::string& config);
+                                       std::string const& config);
   void WriteNinjaFilesInclusionConfig(std::ostream& os);
   void WriteNinjaFilesInclusionCommon(std::ostream& os);
   void WriteNinjaWorkDir(std::ostream& os);
@@ -120,10 +124,10 @@ private:
   void WritePools(std::ostream& os);
 
   void WriteCustomCommandBuildStatement(
-    cmCustomCommand const* cc, const std::set<cmGeneratorTarget*>& targets,
-    const std::string& config);
+    cmCustomCommand const* cc, std::set<cmGeneratorTarget*> const& targets,
+    std::string const& config);
 
-  void WriteCustomCommandBuildStatements(const std::string& config);
+  void WriteCustomCommandBuildStatements(std::string const& config);
 
   std::string MakeCustomLauncher(cmCustomCommandGenerator const& ccg);
 
@@ -133,7 +137,7 @@ private:
                                  std::string const& customStep,
                                  cmGeneratorTarget const* target) const;
 
-  void AdditionalCleanFiles(const std::string& config);
+  void AdditionalCleanFiles(std::string const& config);
 
   std::string HomeRelativeOutputPath;
 

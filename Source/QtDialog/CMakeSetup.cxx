@@ -23,12 +23,12 @@
 #include "cmake.h"
 
 namespace {
-const cmDocumentationEntry cmDocumentationName = {
+cmDocumentationEntry const cmDocumentationName = {
   {},
   "  cmake-gui - CMake GUI."
 };
 
-const cmDocumentationEntry cmDocumentationUsage = {
+cmDocumentationEntry const cmDocumentationUsage = {
   {},
   "  cmake-gui [options]\n"
   "  cmake-gui [options] <path-to-source>\n"
@@ -37,7 +37,7 @@ const cmDocumentationEntry cmDocumentationUsage = {
   "  cmake-gui [options] --browse-manual [<filename>]"
 };
 
-const cmDocumentationEntry cmDocumentationOptions[3] = {
+cmDocumentationEntry const cmDocumentationOptions[3] = {
   { "-S <path-to-source>", "Explicitly specify a source directory." },
   { "-B <path-to-build>", "Explicitly specify a build directory." },
   { "--preset=<preset>", "Specify a configure preset." }
@@ -62,7 +62,7 @@ Q_IMPORT_PLUGIN(QWindowsVistaStylePlugin);
 
 int CMakeGUIExec(CMakeSetupDialog* window);
 void SetupDefaultQSettings();
-void OpenReferenceManual(const QString& filename);
+void OpenReferenceManual(QString const& filename);
 
 int main(int argc, char** argv)
 {
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
   std::string sourceDirectory;
   std::string presetName;
   for (int i = 1; i < args.size(); ++i) {
-    const QString& arg = args[i];
+    QString const& arg = args[i];
     if (arg.startsWith("-S")) {
       QString path = arg.mid(2);
       if (path.isEmpty()) {
@@ -172,8 +172,8 @@ int main(int argc, char** argv)
         }
       }
 
-      sourceDirectory = cmSystemTools::CollapseFullPath(path.toStdString());
-      cmSystemTools::ConvertToUnixSlashes(sourceDirectory);
+      sourceDirectory =
+        cmSystemTools::ToNormalizedPathOnDisk(path.toStdString());
     } else if (arg.startsWith("-B")) {
       QString path = arg.mid(2);
       if (path.isEmpty()) {
@@ -189,8 +189,8 @@ int main(int argc, char** argv)
         }
       }
 
-      binaryDirectory = cmSystemTools::CollapseFullPath(path.toStdString());
-      cmSystemTools::ConvertToUnixSlashes(binaryDirectory);
+      binaryDirectory =
+        cmSystemTools::ToNormalizedPathOnDisk(path.toStdString());
     } else if (arg.startsWith("--preset=")) {
       QString preset = arg.mid(cmStrLen("--preset="));
       if (preset.isEmpty()) {
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
   } else {
     if (args.count() == 2) {
       std::string filePath =
-        cmSystemTools::CollapseFullPath(args[1].toStdString());
+        cmSystemTools::ToNormalizedPathOnDisk(args[1].toStdString());
 
       // check if argument is a directory containing CMakeCache.txt
       std::string buildFilePath = cmStrCat(filePath, "/CMakeCache.txt");
@@ -243,7 +243,7 @@ int main(int argc, char** argv)
       } else if (cmSystemTools::FileExists(srcFilePath.c_str())) {
         dialog.setSourceDirectory(QString::fromStdString(filePath));
         dialog.setBinaryDirectory(
-          QString::fromStdString(cmSystemTools::CollapseFullPath(".")));
+          QString::fromStdString(cmSystemTools::GetLogicalWorkingDirectory()));
       }
     }
   }

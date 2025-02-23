@@ -43,7 +43,7 @@ struct cmDebuggerVariableEntry
     , Type("string")
   {
   }
-  cmDebuggerVariableEntry(std::string name, const char* value)
+  cmDebuggerVariableEntry(std::string name, char const* value)
     : Name(std::move(name))
     , Value(value ? value : "")
     , Type("string")
@@ -88,7 +88,7 @@ class cmDebuggerVariables
   friend class cmDebuggerVariablesManager;
 
 protected:
-  const bool SupportsVariableType;
+  bool const SupportsVariableType;
   std::shared_ptr<cmDebuggerVariablesManager> VariablesManager;
   void EnumerateSubVariablesIfAny(
     dap::array<dap::Variable>& toBeReturned) const;
@@ -102,22 +102,16 @@ public:
     std::shared_ptr<cmDebuggerVariablesManager> variablesManager,
     std::string name, bool supportsVariableType,
     std::function<std::vector<cmDebuggerVariableEntry>()> getKeyValuesFunc);
-  inline int64_t GetId() const noexcept { return this->Id; }
-  inline std::string GetName() const noexcept { return this->Name; }
-  inline std::string GetValue() const noexcept { return this->Value; }
-  inline void SetValue(std::string const& value) noexcept
-  {
-    this->Value = value;
-  }
+  int64_t GetId() const noexcept { return this->Id; }
+  std::string GetName() const noexcept { return this->Name; }
+  std::string GetValue() const noexcept { return this->Value; }
+  void SetValue(std::string const& value) noexcept { this->Value = value; }
   void AddSubVariables(std::shared_ptr<cmDebuggerVariables> const& variables);
-  inline void SetIgnoreEmptyStringEntries(bool value) noexcept
+  void SetIgnoreEmptyStringEntries(bool value) noexcept
   {
     this->IgnoreEmptyStringEntries = value;
   }
-  inline void SetEnableSorting(bool value) noexcept
-  {
-    this->EnableSorting = value;
-  }
+  void SetEnableSorting(bool value) noexcept { this->EnableSorting = value; }
   virtual ~cmDebuggerVariables();
 };
 

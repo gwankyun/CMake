@@ -3,6 +3,13 @@ CMAKE_<LANG>_LINK_WHAT_YOU_USE_FLAG
 
 .. versionadded:: 3.22
 
-用于配置链接器的链接器标志，以便将命令行上的所有指定库链接到目标中。
+Linker flag used by :prop_tgt:`LINK_WHAT_YOU_USE` to tell the linker to
+link all shared libraries specified on the command line even if none
+of their symbols is needed.  This is an implementation detail used so
+that the command in :variable:`CMAKE_LINK_WHAT_YOU_USE_CHECK` can check
+the binary for unnecessarily-linked shared libraries.
 
-See also variable :variable:`CMAKE_LINK_WHAT_YOU_USE_CHECK`.
+.. note::
+
+  Do not rely on this abstraction to intentionally link to
+  shared libraries whose symbols are not needed.

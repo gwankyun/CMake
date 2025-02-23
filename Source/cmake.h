@@ -26,10 +26,11 @@
 #include "cmState.h"
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
-#include "cmSystemTools.h"
 #include "cmValue.h"
 
 #if !defined(CMAKE_BOOTSTRAP)
+#  include <type_traits>
+
 #  include <cm/optional>
 
 #  include <cm3p/json/value.h>
@@ -48,6 +49,7 @@ class cmDebuggerAdapter;
 
 class cmExternalMakefileProjectGeneratorFactory;
 class cmFileAPI;
+class cmInstrumentation;
 class cmFileTimeCache;
 class cmGlobalGenerator;
 class cmMakefile;
@@ -154,8 +156,8 @@ public:
 
   using InstalledFilesMap = std::map<std::string, cmInstalledFile>;
 
-  static const int NO_BUILD_PARALLEL_LEVEL = -1;
-  static const int DEFAULT_BUILD_PARALLEL_LEVEL = 0;
+  static int const NO_BUILD_PARALLEL_LEVEL = -1;
+  static int const DEFAULT_BUILD_PARALLEL_LEVEL = 0;
 
   /// Default constructor
   cmake(Role role, cmState::Mode mode,
@@ -194,9 +196,9 @@ public:
    * home directory is the top directory of the project. It is the
    * path-to-source cmake was run with.
    */
-  void SetHomeDirectory(const std::string& dir);
+  void SetHomeDirectory(std::string const& dir);
   std::string const& GetHomeDirectory() const;
-  void SetHomeOutputDirectory(const std::string& dir);
+  void SetHomeOutputDirectory(std::string const& dir);
   std::string const& GetHomeOutputDirectory() const;
   //@}
 
@@ -211,11 +213,11 @@ public:
   /**
    * Handle a command line invocation of cmake.
    */
-  int Run(const std::vector<std::string>& args)
+  int Run(std::vector<std::string> const& args)
   {
     return this->Run(args, false);
   }
-  int Run(const std::vector<std::string>& args, bool noconfigure);
+  int Run(std::vector<std::string> const& args, bool noconfigure);
 
   /**
    * Run the global generator Generate step.
@@ -232,29 +234,29 @@ public:
   int ActualConfigure();
 
   //! Break up a line like VAR:type="value" into var, type and value
-  static bool ParseCacheEntry(const std::string& entry, std::string& var,
+  static bool ParseCacheEntry(std::string const& entry, std::string& var,
                               std::string& value,
                               cmStateEnums::CacheEntryType& type);
 
   int LoadCache();
-  bool LoadCache(const std::string& path);
-  bool LoadCache(const std::string& path, bool internal,
+  bool LoadCache(std::string const& path);
+  bool LoadCache(std::string const& path, bool internal,
                  std::set<std::string>& excludes,
                  std::set<std::string>& includes);
-  bool SaveCache(const std::string& path);
-  bool DeleteCache(const std::string& path);
+  bool SaveCache(std::string const& path);
+  bool DeleteCache(std::string const& path);
   void PreLoadCMakeFiles();
 
   //! Create a GlobalGenerator
   std::unique_ptr<cmGlobalGenerator> CreateGlobalGenerator(
-    const std::string& name, bool allowArch = true);
+    std::string const& name);
 
   //! Create a GlobalGenerator and set it as our own
-  bool CreateAndSetGlobalGenerator(const std::string& name, bool allowArch);
+  bool CreateAndSetGlobalGenerator(std::string const& name);
 
 #ifndef CMAKE_BOOTSTRAP
   //! Print list of configure presets
-  void PrintPresetList(const cmCMakePresetsGraph& graph) const;
+  void PrintPresetList(cmCMakePresetsGraph const& graph) const;
 #endif
 
   //! Return the global generator assigned to this instance of cmake
@@ -263,20 +265,19 @@ public:
     return this->GlobalGenerator.get();
   }
   //! Return the global generator assigned to this instance of cmake, const
-  const cmGlobalGenerator* GetGlobalGenerator() const
+  cmGlobalGenerator const* GetGlobalGenerator() const
   {
     return this->GlobalGenerator.get();
   }
 
   //! Return the full path to where the CMakeCache.txt file should be.
-  static std::string FindCacheFile(const std::string& binaryDir);
+  static std::string FindCacheFile(std::string const& binaryDir);
 
   //! Return the global generator assigned to this instance of cmake
   void SetGlobalGenerator(std::unique_ptr<cmGlobalGenerator>);
 
   //! Get the names of the current registered generators
-  void GetRegisteredGenerators(std::vector<GeneratorInfo>& generators,
-                               bool includeNamesWithPlatform = true) const;
+  void GetRegisteredGenerators(std::vector<GeneratorInfo>& generators) const;
 
   //! Set the name of the selected generator-specific instance.
   void SetGeneratorInstance(std::string const& instance)
@@ -300,12 +301,7 @@ public:
   }
 
   //! Set the name of the graphviz file.
-  void SetGraphVizFile(std::string const& ts)
-  {
-    std::string path = cmSystemTools::CollapseFullPath(ts);
-    cmSystemTools::ConvertToUnixSlashes(path);
-    this->GraphVizFile = path;
-  }
+  void SetGraphVizFile(std::string const& ts) { this->GraphVizFile = ts; }
 
   bool IsAKnownSourceExtension(cm::string_view ext) const
   {
@@ -327,7 +323,7 @@ public:
 
   std::vector<std::string> GetAllExtensions() const;
 
-  const std::vector<std::string>& GetHeaderExtensions() const
+  std::vector<std::string> const& GetHeaderExtensions() const
   {
     return this->HeaderFileExtensions.ordered;
   }
@@ -338,31 +334,31 @@ public:
   }
 
   // Strips the extension (if present and known) from a filename
-  std::string StripExtension(const std::string& file) const;
+  std::string StripExtension(std::string const& file) const;
 
   /**
    * Given a variable name, return its value (as a string).
    */
-  cmValue GetCacheDefinition(const std::string&) const;
+  cmValue GetCacheDefinition(std::string const&) const;
   //! Add an entry into the cache
-  void AddCacheEntry(const std::string& key, const std::string& value,
-                     const std::string& helpString, int type)
+  void AddCacheEntry(std::string const& key, std::string const& value,
+                     std::string const& helpString, int type)
   {
     this->AddCacheEntry(key, cmValue{ value }, cmValue{ helpString }, type);
   }
-  void AddCacheEntry(const std::string& key, cmValue value,
-                     const std::string& helpString, int type)
+  void AddCacheEntry(std::string const& key, cmValue value,
+                     std::string const& helpString, int type)
   {
     this->AddCacheEntry(key, value, cmValue{ helpString }, type);
   }
-  void AddCacheEntry(const std::string& key, cmValue value, cmValue helpString,
+  void AddCacheEntry(std::string const& key, cmValue value, cmValue helpString,
                      int type);
 
   bool DoWriteGlobVerifyTarget() const;
   std::string const& GetGlobVerifyScript() const;
   std::string const& GetGlobVerifyStamp() const;
-  void AddGlobCacheEntry(const cmGlobCacheEntry& entry,
-                         const std::string& variable,
+  void AddGlobCacheEntry(cmGlobCacheEntry const& entry,
+                         std::string const& variable,
                          cmListFileBacktrace const& bt);
   std::vector<cmGlobCacheEntry> GetGlobCacheEntries() const;
 
@@ -375,15 +371,15 @@ public:
   void LoadEnvironmentPresets();
 
   //! Parse command line arguments
-  void SetArgs(const std::vector<std::string>& args);
+  void SetArgs(std::vector<std::string> const& args);
 
   //! Is this cmake running as a result of a TRY_COMPILE command
   bool GetIsInTryCompile() const;
 
 #ifndef CMAKE_BOOTSTRAP
-  void SetWarningFromPreset(const std::string& name,
-                            const cm::optional<bool>& warning,
-                            const cm::optional<bool>& error);
+  void SetWarningFromPreset(std::string const& name,
+                            cm::optional<bool> const& warning,
+                            cm::optional<bool> const& error);
   void ProcessPresetVariables();
   void PrintPresetVariables();
   void ProcessPresetEnvironment();
@@ -391,12 +387,12 @@ public:
 #endif
 
   //! Parse command line arguments that might set cache values
-  bool SetCacheArgs(const std::vector<std::string>&);
+  bool SetCacheArgs(std::vector<std::string> const&);
 
-  void ProcessCacheArg(const std::string& var, const std::string& value,
+  void ProcessCacheArg(std::string const& var, std::string const& value,
                        cmStateEnums::CacheEntryType type);
 
-  using ProgressCallbackType = std::function<void(const std::string&, float)>;
+  using ProgressCallbackType = std::function<void(std::string const&, float)>;
   /**
    *  Set the function used by GUIs to receive progress updates
    *  Function gets passed: message as a const char*, a progress
@@ -407,7 +403,7 @@ public:
   void SetProgressCallback(ProgressCallbackType f);
 
   //! this is called by generators to update the progress
-  void UpdateProgress(const std::string& msg, float prog);
+  void UpdateProgress(std::string const& msg, float prog);
 
 #if !defined(CMAKE_BOOTSTRAP)
   //! Get the variable watch object
@@ -417,25 +413,25 @@ public:
   std::vector<cmDocumentationEntry> GetGeneratorsDocumentation();
 
   //! Set/Get a property of this target file
-  void SetProperty(const std::string& prop, cmValue value);
-  void SetProperty(const std::string& prop, std::nullptr_t)
+  void SetProperty(std::string const& prop, cmValue value);
+  void SetProperty(std::string const& prop, std::nullptr_t)
   {
     this->SetProperty(prop, cmValue{ nullptr });
   }
-  void SetProperty(const std::string& prop, const std::string& value)
+  void SetProperty(std::string const& prop, std::string const& value)
   {
     this->SetProperty(prop, cmValue(value));
   }
-  void AppendProperty(const std::string& prop, const std::string& value,
+  void AppendProperty(std::string const& prop, std::string const& value,
                       bool asString = false);
-  cmValue GetProperty(const std::string& prop);
-  bool GetPropertyAsBool(const std::string& prop);
+  cmValue GetProperty(std::string const& prop);
+  bool GetPropertyAsBool(std::string const& prop);
 
   //! Get or create an cmInstalledFile instance and return a pointer to it
   cmInstalledFile* GetOrCreateInstalledFile(cmMakefile* mf,
-                                            const std::string& name);
+                                            std::string const& name);
 
-  cmInstalledFile const* GetInstalledFile(const std::string& name) const;
+  cmInstalledFile const* GetInstalledFile(std::string const& name) const;
 
   InstalledFilesMap const& GetInstalledFiles() const
   {
@@ -469,7 +465,7 @@ public:
   void SetLogLevel(Message::LogLevel level) { this->MessageLogLevel = level; }
   static Message::LogLevel StringToLogLevel(cm::string_view levelStr);
   static std::string LogLevelToString(Message::LogLevel level);
-  static TraceFormat StringToTraceFormat(const std::string& levelStr);
+  static TraceFormat StringToTraceFormat(std::string const& levelStr);
 
   bool HasCheckInProgress() const
   {
@@ -548,10 +544,24 @@ public:
   void SetWarnUnusedCli(bool b) { this->WarnUnusedCli = b; }
   bool GetCheckSystemVars() const { return this->CheckSystemVars; }
   void SetCheckSystemVars(bool b) { this->CheckSystemVars = b; }
-  bool GetIgnoreWarningAsError() const { return this->IgnoreWarningAsError; }
-  void SetIgnoreWarningAsError(bool b) { this->IgnoreWarningAsError = b; }
+  bool GetIgnoreCompileWarningAsError() const
+  {
+    return this->IgnoreCompileWarningAsError;
+  }
+  void SetIgnoreCompileWarningAsError(bool b)
+  {
+    this->IgnoreCompileWarningAsError = b;
+  }
+  bool GetIgnoreLinkWarningAsError() const
+  {
+    return this->IgnoreLinkWarningAsError;
+  }
+  void SetIgnoreLinkWarningAsError(bool b)
+  {
+    this->IgnoreLinkWarningAsError = b;
+  }
 
-  void MarkCliAsUsed(const std::string& variable);
+  void MarkCliAsUsed(std::string const& variable);
 
   /** Get the list of configurations (in upper case) considered to be
       debugging configurations.*/
@@ -567,6 +577,15 @@ public:
   }
 
   cmMessenger* GetMessenger() const { return this->Messenger.get(); }
+
+#ifndef CMAKE_BOOTSTRAP
+  /// Get the SARIF file path if set manually for this run
+  cm::optional<std::string> GetSarifFilePath() const
+  {
+    return (this->SarifFileOutput ? cm::make_optional(this->SarifFilePath)
+                                  : cm::nullopt);
+  }
+#endif
 
   /**
    * Get the state of the suppression of developer (author) warnings.
@@ -621,10 +640,11 @@ public:
   int Build(int jobs, std::string dir, std::vector<std::string> targets,
             std::string config, std::vector<std::string> nativeOptions,
             cmBuildOptions& buildOptions, bool verbose,
-            const std::string& presetName, bool listPresets);
+            std::string const& presetName, bool listPresets,
+            std::vector<std::string> const& args);
 
   //! run the --open option
-  bool Open(const std::string& dir, bool dryRun);
+  bool Open(std::string const& dir, bool dryRun);
 
   //! run the --workflow option
   enum class WorkflowListPresets
@@ -637,14 +657,18 @@ public:
     No,
     Yes,
   };
-  int Workflow(const std::string& presetName, WorkflowListPresets listPresets,
+  int Workflow(std::string const& presetName, WorkflowListPresets listPresets,
                WorkflowFresh fresh);
 
-  void UnwatchUnusedCli(const std::string& var);
-  void WatchUnusedCli(const std::string& var);
+  void UnwatchUnusedCli(std::string const& var);
+  void WatchUnusedCli(std::string const& var);
 
 #if !defined(CMAKE_BOOTSTRAP)
   cmFileAPI* GetFileAPI() const { return this->FileAPI.get(); }
+  cmInstrumentation* GetInstrumentation() const
+  {
+    return this->Instrumentation.get();
+  }
 #endif
 
   cmState* GetState() const { return this->State.get(); }
@@ -656,12 +680,15 @@ public:
 
   bool GetRegenerateDuringBuild() const { return this->RegenerateDuringBuild; }
 
+  void SetCMakeListName(std::string const& name);
+  std::string GetCMakeListFile(std::string const& dir) const;
+
 #if !defined(CMAKE_BOOTSTRAP)
   cmMakefileProfilingData& GetProfilingOutput();
   bool IsProfilingEnabled() const;
 
   cm::optional<cmMakefileProfilingData::RAII> CreateProfilingEntry(
-    const std::string& category, const std::string& name)
+    std::string const& category, std::string const& name)
   {
     return this->CreateProfilingEntry(
       category, name, []() -> cm::nullopt_t { return cm::nullopt; });
@@ -669,7 +696,7 @@ public:
 
   template <typename ArgsFunc>
   cm::optional<cmMakefileProfilingData::RAII> CreateProfilingEntry(
-    const std::string& category, const std::string& name, ArgsFunc&& argsFunc)
+    std::string const& category, std::string const& name, ArgsFunc&& argsFunc)
   {
     if (this->IsProfilingEnabled()) {
       return cm::make_optional<cmMakefileProfilingData::RAII>(
@@ -698,7 +725,7 @@ public:
 
 protected:
   void RunCheckForUnusedVariables();
-  int HandleDeleteCacheVariables(const std::string& var);
+  int HandleDeleteCacheVariables(std::string const& var);
 
   using RegisteredGeneratorsVector =
     std::vector<std::unique_ptr<cmGlobalGeneratorFactory>>;
@@ -720,13 +747,13 @@ protected:
   bool GeneratorToolsetSet = false;
 
   //! read in a cmake list file to initialize the cache
-  void ReadListFile(const std::vector<std::string>& args,
-                    const std::string& path);
-  bool FindPackage(const std::vector<std::string>& args);
+  void ReadListFile(std::vector<std::string> const& args,
+                    std::string const& path);
+  bool FindPackage(std::vector<std::string> const& args);
 
   //! Check if CMAKE_CACHEFILE_DIR is set. If it is not, delete the log file.
   ///  If it is set, truncate it to 50kb
-  void TruncateOutputLog(const char* fname);
+  void TruncateOutputLog(char const* fname);
 
   /**
    * Method called to check build system integrity at build time.
@@ -734,15 +761,16 @@ protected:
    */
   int CheckBuildSystem();
 
-  bool SetDirectoriesFromFile(const std::string& arg);
+  bool SetDirectoriesFromFile(std::string const& arg);
 
   //! Make sure all commands are what they say they are and there is no
   /// macros.
   void CleanupCommandsAndMacros();
 
-  void GenerateGraphViz(const std::string& fileName) const;
+  void GenerateGraphViz(std::string const& fileName) const;
 
 private:
+  std::vector<std::string> cmdArgs;
   std::string CMakeWorkingDirectory;
   ProgressCallbackType ProgressCallback;
   WorkingMode CurrentWorkingMode = NORMAL_MODE;
@@ -759,7 +787,8 @@ private:
   bool WarnUninitialized = false;
   bool WarnUnusedCli = true;
   bool CheckSystemVars = false;
-  bool IgnoreWarningAsError = false;
+  bool IgnoreCompileWarningAsError = false;
+  bool IgnoreLinkWarningAsError = false;
   std::map<std::string, bool> UsedCliVariables;
   std::string CMakeEditCommand;
   std::string CXXEnvironment;
@@ -779,6 +808,7 @@ private:
   bool DebugTryCompile = false;
   bool FreshCache = false;
   bool RegenerateDuringBuild = false;
+  std::string CMakeListName;
   std::unique_ptr<cmFileTimeCache> FileTimeCache;
   std::string GraphVizFile;
   InstalledFilesMap InstalledFiles;
@@ -792,11 +822,17 @@ private:
 #if !defined(CMAKE_BOOTSTRAP)
   std::unique_ptr<cmVariableWatch> VariableWatch;
   std::unique_ptr<cmFileAPI> FileAPI;
+  std::unique_ptr<cmInstrumentation> Instrumentation;
 #endif
 
   std::unique_ptr<cmState> State;
   cmStateSnapshot CurrentSnapshot;
   std::unique_ptr<cmMessenger> Messenger;
+
+#ifndef CMAKE_BOOTSTRAP
+  bool SarifFileOutput = false;
+  std::string SarifFilePath;
+#endif
 
   std::vector<std::string> TraceOnlyThisSources;
 
@@ -811,8 +847,6 @@ private:
 
   std::unique_ptr<cmGlobalGenerator> GlobalGenerator;
 
-  void UpdateConversionPathTable();
-
   //! Print a list of valid generators to stderr.
   void PrintGeneratorList();
 
@@ -824,12 +858,12 @@ private:
 
 #if !defined(CMAKE_BOOTSTRAP)
   template <typename T>
-  const T* FindPresetForWorkflow(
+  T const* FindPresetForWorkflow(
     cm::static_string_view type,
-    const std::map<std::string, cmCMakePresetsGraph::PresetPair<T>>& presets,
-    const cmCMakePresetsGraph::WorkflowPreset::WorkflowStep& step);
+    std::map<std::string, cmCMakePresetsGraph::PresetPair<T>> const& presets,
+    cmCMakePresetsGraph::WorkflowPreset::WorkflowStep const& step);
 
-  std::function<int()> BuildWorkflowStep(const std::vector<std::string>& args);
+  std::function<int()> BuildWorkflowStep(std::vector<std::string> const& args);
 #endif
 
 #if !defined(CMAKE_BOOTSTRAP)
@@ -850,7 +884,7 @@ public:
   void SetScriptModeExitCode(int code) { ScriptModeExitCode = code; }
   int GetScriptModeExitCode() const { return ScriptModeExitCode.value_or(-1); }
 
-  static cmDocumentationEntry CMAKE_STANDARD_OPTIONS_TABLE[18];
+  static cmDocumentationEntry CMAKE_STANDARD_OPTIONS_TABLE[19];
 };
 
 #define FOR_EACH_C90_FEATURE(F) F(c_function_prototypes)

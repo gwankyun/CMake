@@ -48,12 +48,6 @@ struct cmFindProgramHelper
   // Current names under consideration.
   std::vector<std::string> Names;
 
-  // Current name with extension under consideration.
-  std::string TestNameExt;
-
-  // Current full path under consideration.
-  std::string TestPath;
-
   // Debug state
   cmFindBaseDebugState DebugSearches;
   cmMakefile* Makefile;
@@ -81,8 +75,6 @@ struct cmFindProgramHelper
   {
     return std::any_of(this->Names.begin(), this->Names.end(),
                        [this, &path](std::string const& n) -> bool {
-                         // Only perform search relative to current directory
-                         // if the file name contains a directory separator.
                          return this->CheckDirectoryForName(path, n);
                        });
   }
@@ -93,20 +85,23 @@ struct cmFindProgramHelper
                          if (!ext.empty() && cmHasSuffix(name, ext)) {
                            return false;
                          }
-                         this->TestNameExt = cmStrCat(name, ext);
-                         this->TestPath = cmSystemTools::CollapseFullPath(
-                           this->TestNameExt, path);
-                         bool exists = this->FileIsValid(this->TestPath);
-                         exists ? this->DebugSearches.FoundAt(this->TestPath)
-                                : this->DebugSearches.FailedAt(this->TestPath);
-                         if (exists) {
-                           this->BestPath = this->TestPath;
-                           return true;
+                         std::string testNameExt = cmStrCat(name, ext);
+                         std::string testPath =
+                           cmSystemTools::CollapseFullPath(testNameExt, path);
+                         if (this->FileIsExecutable(testPath)) {
+                           testPath =
+                             cmSystemTools::ToNormalizedPathOnDisk(testPath);
+                           if (this->FindBase->Validate(testPath)) {
+                             this->BestPath = testPath;
+                             this->DebugSearches.FoundAt(testPath);
+                             return true;
+                           }
                          }
+                         this->DebugSearches.FailedAt(testPath);
                          return false;
                        });
   }
-  bool FileIsValid(std::string const& file) const
+  bool FileIsExecutable(std::string const& file) const
   {
     if (!this->FileIsExecutableCMP0109(file)) {
       return false;
@@ -122,7 +117,7 @@ struct cmFindProgramHelper
       }
     }
 #endif
-    return this->FindBase->Validate(file);
+    return true;
   }
   bool FileIsExecutableCMP0109(std::string const& file) const
   {
@@ -130,8 +125,6 @@ struct cmFindProgramHelper
       case cmPolicies::OLD:
         return cmSystemTools::FileExists(file, true);
       case cmPolicies::NEW:
-      case cmPolicies::REQUIRED_ALWAYS:
-      case cmPolicies::REQUIRED_IF_USED:
         return cmSystemTools::FileIsExecutable(file);
       default:
         break;
@@ -328,7 +321,7 @@ std::string cmFindProgramCommand::GetBundleExecutable(
   CFURLRef executableURL = CFBundleCopyExecutableURL(appBundle);
 
   if (executableURL) {
-    const int MAX_OSX_PATH_SIZE = 1024;
+    int const MAX_OSX_PATH_SIZE = 1024;
     UInt8 buffer[MAX_OSX_PATH_SIZE];
 
     if (CFURLGetFileSystemRepresentation(executableURL, false, buffer,

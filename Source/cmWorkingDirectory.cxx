@@ -2,13 +2,12 @@
    file Copyright.txt or https://cmake.org/licensing for details.  */
 #include "cmWorkingDirectory.h"
 
-#include <cerrno>
-
+#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 
 cmWorkingDirectory::cmWorkingDirectory(std::string const& newdir)
 {
-  this->OldDir = cmSystemTools::GetCurrentWorkingDirectory();
+  this->OldDir = cmSystemTools::GetLogicalWorkingDirectory();
   this->SetDirectory(newdir);
 }
 
@@ -19,11 +18,13 @@ cmWorkingDirectory::~cmWorkingDirectory()
 
 bool cmWorkingDirectory::SetDirectory(std::string const& newdir)
 {
-  if (cmSystemTools::ChangeDirectory(newdir)) {
-    this->ResultCode = 0;
+  cmsys::Status status = cmSystemTools::SetLogicalWorkingDirectory(newdir);
+  if (status) {
+    this->Error.clear();
     return true;
   }
-  this->ResultCode = errno;
+  this->Error = cmStrCat("Failed to change working directory to \"", newdir,
+                         "\": ", status.GetString());
   return false;
 }
 

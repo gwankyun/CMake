@@ -47,9 +47,13 @@ find_library
 当\ ``NAMES``\ 选项有多个值时，此命令默认一次只考虑一个名称，并在每个目录中搜索它。\
 ``NAMES_PER_DIR``\ 选项告诉这个命令一次只考虑一个目录，并在其中搜索所有名称。
 
-``NAMES``\ 选项中的每个库名首先被认为是一个库文件名，然后与平台相关的前缀（例如\ ``lib``\ ）\
-和后缀（例如\ ``.so``\ ）一起考虑。因此，可以直接指定库文件名，如\ ``libfoo.a``。这可以\
-用于在类UNIX系统上定位静态库。
+Each library name given to the ``NAMES`` option is first considered
+as is, if it contains a library suffix, and then considered with
+platform-specific prefixes (e.g. ``lib``) and suffixes (e.g. ``.so``),
+as defined by the variables :variable:`CMAKE_FIND_LIBRARY_PREFIXES` and
+:variable:`CMAKE_FIND_LIBRARY_SUFFIXES`. Therefore one
+may specify library file names such as ``libfoo.a`` directly.
+This can be used to locate static libraries on UNIX-like systems.
 
 如果找到的库是一个框架，那么\ ``<VAR>``\ 将被设置为框架\ ``<fullPath>/A.framework``\
 的完整路径。当一个框架的完整路径被用作库时，CMake将使用\ ``-framework A``\ 和\

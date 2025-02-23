@@ -12,17 +12,21 @@
 #include "cmUVProcessChain.h"
 #include "cmUVStream.h"
 
+class cmInstrumentation;
+
 class cmInstallScriptHandler
 {
 public:
   cmInstallScriptHandler() = default;
-  cmInstallScriptHandler(std::string, std::string, std::vector<std::string>&);
-  bool isParallel();
-  int install(unsigned int j);
+  cmInstallScriptHandler(std::string, std::string, std::string,
+                         std::vector<std::string>&);
+  bool IsParallel();
+  int Install(unsigned int j, cmInstrumentation& instrumentation);
+  std::vector<std::vector<std::string>> GetCommands() const;
   class InstallScript
   {
   public:
-    InstallScript(const std::vector<std::string>&);
+    InstallScript(std::vector<std::string> const&);
     void start(cm::uv_loop_ptr&, std::function<void()>);
     void printResult(std::size_t n, std::size_t total);
 
@@ -38,6 +42,8 @@ public:
 private:
   std::vector<std::vector<std::string>> commands;
   std::vector<std::string> directories;
+  std::vector<std::string> configs;
   std::string binaryDir;
   std::string component;
+  bool parallel;
 };

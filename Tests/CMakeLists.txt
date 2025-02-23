@@ -351,7 +351,8 @@ if(BUILD_TESTING)
 
   # add a bunch of standard build-and-test style tests
   ADD_TEST_MACRO(CommandLineTest CommandLineTest)
-  ADD_TEST_MACRO(FindPackageTest FindPackageTest)
+  ADD_TEST_MACRO(FindPackageCMakeTest FindPackageCMakeTest)
+  ADD_TEST_MACRO(FindPackageCpsTest FindPackageCpsTest)
   ADD_TEST_MACRO(StringFileTest StringFileTest)
   ADD_TEST_MACRO(TryCompile TryCompile)
   ADD_TEST_MACRO(SystemInformation SystemInformation)
@@ -467,9 +468,6 @@ if(BUILD_TESTING)
   ADD_TEST_MACRO(SetLang SetLangX)
   ADD_TEST_MACRO(EmptyProperty EmptyProperty)
   ADD_TEST_MACRO(ExternalOBJ ExternalOBJ)
-  if(NOT CMake_TEST_EXTERNAL_CMAKE)
-    ADD_TEST_MACRO(LoadCommand LoadedCommand)
-  endif()
   ADD_TEST_MACRO(LinkDirectory bin/LinkDirectory)
   ADD_TEST_MACRO(LinkLanguage LinkLanguage)
   ADD_TEST_MACRO(LinkLine LinkLine)
@@ -544,9 +542,6 @@ if(BUILD_TESTING)
   ADD_TEST_MACRO(CrossCompile CrossCompile)
   set_tests_properties(CrossCompile PROPERTIES
     PASS_REGULAR_EXPRESSION "try_run.. invoked in cross-compiling mode")
-  if("${CMAKE_GENERATOR}" MATCHES "Make")
-    ADD_TEST_MACRO(Policy0002 Policy0002)
-  endif()
   if(CMake_TEST_XCODE_VERSION)
     set(Architecture_BUILD_OPTIONS -DCMake_TEST_XCODE_VERSION=${CMake_TEST_XCODE_VERSION})
     ADD_TEST_MACRO(Architecture Architecture)
@@ -577,7 +572,7 @@ if(BUILD_TESTING)
     set(CMAKE_REQUIRED_INCLUDES ${QT_INCLUDES})
     set(CMAKE_REQUIRED_LIBRARIES ${QT_QTCORE_LIBRARIES})
 
-    CHECK_CXX_SOURCE_COMPILES("#include <QCoreApplication>\n int main() {return (qApp == 0 ? 0 : 1); }\n"
+    check_cxx_source_compiles("#include <QCoreApplication>\n int main() {return (qApp == 0 ? 0 : 1); }\n"
                               QT4_WORKS)
 
     set(CMAKE_REQUIRED_INCLUDES "${_save_CMAKE_REQUIRED_INCLUDES}")
@@ -663,7 +658,6 @@ if(BUILD_TESTING)
     ${build_generator_args}
     --build-project ExternalDataTest
     --build-noclean
-    --force-new-ctest-process
     --build-options
       -DMAKE_SUPPORTS_SPACES=${MAKE_SUPPORTS_SPACES}
     --test-command ${CMAKE_CTEST_COMMAND} -C \${CTEST_CONFIGURATION_TYPE} -V
@@ -1337,18 +1331,6 @@ if(BUILD_TESTING)
     set_property(TEST CMakeTestAllGenerators PROPERTY RUN_SERIAL 1)
   endif()
 
-  if(NOT CMake_TEST_EXTERNAL_CMAKE)
-    add_test(LoadedCommandOneConfig  ${CMAKE_CTEST_COMMAND}
-      --build-and-test
-      "${CMake_SOURCE_DIR}/Tests/LoadCommandOneConfig"
-      "${CMake_BINARY_DIR}/Tests/LoadCommandOneConfig"
-      ${build_generator_args}
-      --build-project LoadCommand
-      --test-command  LoadedCommand
-      )
-    list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/LoadCommandOneConfig")
-  endif()
-
   add_test(complex  ${CMAKE_CTEST_COMMAND}
     --build-and-test
     "${CMake_SOURCE_DIR}/Tests/Complex"
@@ -1383,7 +1365,6 @@ if(BUILD_TESTING)
     ${build_generator_args}
     --build-project EnvironmentProj
     --build-exe-dir "${CMake_BINARY_DIR}/Tests/Environment"
-    --force-new-ctest-process
     --test-command ${CMAKE_CTEST_COMMAND} -V
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/Environment")
@@ -1422,7 +1403,6 @@ if(BUILD_TESTING)
       ${build_generator_args}
       --build-project Qt4Targets
       --build-exe-dir "${CMake_BINARY_DIR}/Tests/Qt4Targets"
-      --force-new-ctest-process
       --build-options
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
       --test-command ${CMAKE_CTEST_COMMAND} -V
@@ -1437,7 +1417,6 @@ if(BUILD_TESTING)
         ${build_generator_args}
         --build-project Qt4And5Automoc
         --build-exe-dir "${CMake_BINARY_DIR}/Tests/Qt4And5AutomocForward"
-        --force-new-ctest-process
         --test-command ${CMAKE_CTEST_COMMAND} -V
         )
       list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/Qt4And5AutomocForward")
@@ -1448,7 +1427,6 @@ if(BUILD_TESTING)
         ${build_generator_args}
         --build-project Qt4And5Automoc
         --build-exe-dir "${CMake_BINARY_DIR}/Tests/Qt4And5AutomocReverse"
-        --force-new-ctest-process
         --build-options -DQT_REVERSE_FIND_ORDER=1
         --test-command ${CMAKE_CTEST_COMMAND} -V
         )
@@ -1645,7 +1623,6 @@ if(BUILD_TESTING)
     ${build_generator_args}
     --build-project ExternalProjectTest
     --build-exe-dir "${CMake_BINARY_DIR}/Tests/ExternalProject"
-    --force-new-ctest-process
     --build-options ${ExternalProject_BUILD_OPTIONS}
     --test-command ${CMAKE_CTEST_COMMAND} -V
     )
@@ -1662,7 +1639,6 @@ if(BUILD_TESTING)
     "${CMake_BINARY_DIR}/Tests/ExternalProjectSubdir"
     ${build_generator_args}
     --build-project ExternalProjectSubdir
-    --force-new-ctest-process
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/ExternalProjectSubdir")
 
@@ -1673,7 +1649,6 @@ if(BUILD_TESTING)
     "${CMake_BINARY_DIR}/Tests/ExternalProjectSourceSubdir"
     ${build_generator_args}
     --build-project ExternalProjectSourceSubdir
-    --force-new-ctest-process
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/ExternalProjectSourceSubdir")
 
@@ -1684,7 +1659,6 @@ if(BUILD_TESTING)
     "${CMake_BINARY_DIR}/Tests/ExternalProjectSourceSubdirNotCMake"
     ${build_generator_args}
     --build-project ExternalProjectSourceSubdirNotCMake
-    --force-new-ctest-process
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/ExternalProjectSourceSubdirNotCMake")
 
@@ -1695,7 +1669,6 @@ if(BUILD_TESTING)
     ${build_generator_args}
     --build-project ExternalProjectLocalTest
     --build-exe-dir "${CMake_BINARY_DIR}/Tests/ExternalProjectLocal"
-    --force-new-ctest-process
     --test-command ${CMAKE_CTEST_COMMAND} -V
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/ExternalProjectLocal")
@@ -1710,7 +1683,6 @@ if(BUILD_TESTING)
     ${build_generator_args}
     --build-project ExternalProjectUpdateTest
     --build-exe-dir "${CMake_BINARY_DIR}/Tests/ExternalProjectUpdate"
-    --force-new-ctest-process
     --test-command ${CMAKE_CTEST_COMMAND} -V
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/ExternalProjectUpdate")
@@ -1766,7 +1738,6 @@ if(BUILD_TESTING)
         ${build_generator_args}
         --build-project superpro
         --build-exe-dir "${CMake_BINARY_DIR}/Tests/InstallMode-${_mode}"
-        --force-new-ctest-process
         --build-options
           ${_maybe_BUILD_OPTIONS}
           "-DCMAKE_INSTALL_PREFIX:PATH=${CMake_BINARY_DIR}/Tests/InstallMode-${_mode}/install"
@@ -2157,6 +2128,14 @@ if(BUILD_TESTING)
     set_property(TEST MSVCDebugInformationFormat APPEND
       PROPERTY LABELS "CUDA" "Fortran")
 
+    set(MSVCRuntimeChecks_BUILD_OPTIONS -DCMake_TEST_CUDA=${CMake_TEST_CUDA})
+    if(CMAKE_Fortran_COMPILER)
+      list(APPEND MSVCRuntimeChecks_BUILD_OPTIONS -DCMake_TEST_Fortran=1)
+    endif()
+    ADD_TEST_MACRO(MSVCRuntimeChecks)
+    set_property(TEST MSVCRuntimeChecks APPEND
+      PROPERTY LABELS "CUDA" "Fortran")
+
     set(MSVCRuntimeLibrary_BUILD_OPTIONS -DCMake_TEST_CUDA=${CMake_TEST_CUDA})
     ADD_TEST_MACRO(MSVCRuntimeLibrary)
     set_property(TEST MSVCRuntimeLibrary APPEND
@@ -2363,7 +2342,6 @@ if(BUILD_TESTING)
         --build-generator "Green Hills MULTI"
         --build-project test
         --build-config $<CONFIGURATION>
-        --force-new-ctest-process
         --build-options ${ghs_target_arch} ${ghs_toolset_name} ${ghs_toolset_root} ${ghs_target_platform}
           ${ghs_os_root} ${ghs_os_dir} ${ghs_bsp_name} ${_ghs_build_opts} ${_ghs_toolset_extra}
           ${_ghs_test_command}
@@ -2577,7 +2555,6 @@ if(BUILD_TESTING)
     ${build_generator_args}
     --build-project TestsWorkingDirectoryProj
     --build-exe-dir "${CMake_BINARY_DIR}/Tests/TestsWorkingDirectory"
-    --force-new-ctest-process
     --test-command ${CMAKE_CTEST_COMMAND} -V -C \${CTEST_CONFIGURATION_TYPE}
     )
   list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/TestsWorkingDirectory")
@@ -2589,9 +2566,9 @@ if(BUILD_TESTING)
   # A simple test for ctest in script mode
   configure_file("${CMake_SOURCE_DIR}/Tests/CTestScriptMode/CTestTestScriptMode.cmake.in"
           "${CMake_BINARY_DIR}/Tests/CTestScriptMode/CTestTestScriptMode.cmake" @ONLY)
-#  add_test(CTest.ScriptMode ${CMAKE_CTEST_COMMAND}
-#        -S "${CMake_BINARY_DIR}/Tests/CTestScriptMode/CTestTestScriptMode.cmake"
-#        )
+  add_test(CTest.ScriptMode ${CMAKE_CTEST_COMMAND}
+    -S "${CMake_BINARY_DIR}/Tests/CTestScriptMode/CTestTestScriptMode.cmake"
+    )
 
   # Test CTest Update with Subversion
   if(NOT DEFINED CMake_TEST_CTestUpdate_SVN OR CMake_TEST_CTestUpdate_SVN)
@@ -3032,7 +3009,6 @@ if(BUILD_TESTING)
   )
 
   if(NOT BORLAND)
-    set(CTestLimitDashJ_CTEST_OPTIONS --force-new-ctest-process)
     add_test_macro(CTestLimitDashJ ${CMAKE_CTEST_COMMAND} -j 4
       --output-on-failure -C "\${CTestTest_CONFIG}")
   endif()

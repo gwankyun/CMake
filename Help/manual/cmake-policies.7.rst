@@ -10,38 +10,102 @@ cmake-policies(7)
 引言
 ============
 
-CMake中的策略用于保持跨多个版本的向后兼容行为。当引入新策略时，新的CMake版本将开始警告向后\
-兼容行为。可以通过使用\ :command:`cmake_policy`\ 命令显式请求OLD或向后兼容行为来禁用警告。\
-也可以请求\ ``NEW``\ 或策略的非向后兼容行为，这样也可以避免警告。还可以在命令行中用\
-:variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>`\ 变量显式地将每个策略设置为\ ``NEW``\
-或\ ``OLD``\ 行为。
+CMake policies introduce behavior changes while preserving compatibility
+for existing project releases.  Policies are deprecation mechanisms, not
+feature toggles.  Each policy documents a deprecated ``OLD`` behavior and
+a preferred ``NEW`` behavior.  Projects must be updated over time to
+use the ``NEW`` behavior, but their existing releases will continue to
+work with the ``OLD`` behavior.
 
-策略是一种弃用机制，不是可靠的特性切换。策略几乎不应该设置为\ ``OLD``，除非在冻结或稳定的代\
-码库中冻结警告，或者暂时作为更大迁移路径的一部分。每个策略的\ ``OLD``\ 行为都是不可取的，\
-并将在未来的版本中被错误条件替换。
+Updating Projects
+-----------------
 
-如果使用太旧的CMake版本构建项目，:command:`cmake_minimum_required`\ 命令的作用不仅仅是\
-报告错误。它还将该CMake版本或更早版本中引入的所有策略设置为\ ``NEW``\ 行为。如果需要管理策\
-略而不增加CMake的最低版本，可以使用\ :command:`if(POLICY)`\ 命令：
+When policies are newly introduced by a version of CMake, their ``OLD``
+behaviors are immediately deprecated by that version of CMake and later.
+Projects should be updated to use the ``NEW`` behaviors of the policies
+as soon as possible.
+
+Use the :command:`cmake_minimum_required` command to record the latest
+version of CMake for which a project has been updated.
+For example:
+
+..
+  Sync this cmake_minimum_required example with ``Help/dev/maint.rst``.
 
 .. code-block:: cmake
 
-  if(POLICY CMP0990)
-    cmake_policy(SET CMP0990 NEW)
-  endif()
+  cmake_minimum_required(VERSION 3.10...3.31)
 
-这就产生了在用户可能正在使用的较新的CMake版本中使用\ ``NEW``\ 行为而不发出兼容性警告的效果。
+This uses the ``<min>...<max>`` syntax to enable the ``NEW`` behaviors
+of policies introduced in CMake 3.31 and earlier while only requiring a
+minimum version of CMake 3.10.  The project is expected to work with
+both the ``OLD`` and ``NEW`` behaviors of policies introduced between
+those versions.
 
-在某些情况下，策略的设置被限制为不传播到父作用域。例如，如果\ :command:`include`\ 命令或\
-:command:`find_package`\ 命令读取的文件包含使用了\ :command:`cmake_policy`，默认情况下，\
-该策略设置不会影响调用者。这两个命令都接受一个可选的\ ``NO_POLICY_SCOPE``\ 关键字来控制此\
-行为。
+Transition Schedule
+-------------------
 
-:variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量也可以用来决定是否报告在使用弃用宏或\
-函数时的错误。
+To help projects port to the ``NEW`` behaviors of policies on their own
+schedule, CMake offers a transition period:
 
-CMake 3.31引入的策略
-=================================
+* If a policy is not set by a project, CMake uses its ``OLD`` behavior,
+  but may warn that the policy has not been set.
+
+  * Users running CMake may silence the warning without modifying a
+    project by setting the :variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>`
+    variable as a cache entry on the :manual:`cmake(1)` command line:
+
+    .. code-block:: shell
+
+      cmake -DCMAKE_POLICY_DEFAULT_CMP0990=OLD ...
+
+  * Projects may silence the warning by using the :command:`cmake_policy`
+    command to explicitly set the policy to ``OLD`` or ``NEW`` behavior:
+
+    .. code-block:: cmake
+
+      if(POLICY CMP0990)
+        cmake_policy(SET CMP0990 NEW)
+      endif()
+
+    .. note::
+
+      A policy should almost never be set to ``OLD``, except to silence
+      warnings in an otherwise frozen or stable codebase, or temporarily
+      as part of a larger migration path.
+
+* If a policy is set to ``OLD`` by a project, CMake versions released
+  at least |POLICY_OLD_DELAY_WARNING| after the version that introduced
+  a policy may issue a warning that the policy's ``OLD`` behavior will
+  be removed from a future version of CMake.
+
+* If a policy is not set to ``NEW`` by a project, CMake versions released
+  at least |POLICY_OLD_DELAY_ERROR| after the version that introduced a
+  policy, and whose major version number is higher, may issue an error
+  that the policy's ``OLD`` behavior has been removed.
+
+.. |POLICY_OLD_DELAY_WARNING| replace:: 2 years
+.. |POLICY_OLD_DELAY_ERROR| replace:: 6 years
+
+Supported Policies
+==================
+
+The following policies are supported.
+
+Policies Introduced by CMake 4.0
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0185: FindRuby no longer provides upper-case RUBY_* variables. </policy/CMP0185>
+   CMP0184: MSVC runtime checks flags are selected by an abstraction. </policy/CMP0184>
+   CMP0183: add_feature_info() supports full Condition Syntax. </policy/CMP0183>
+   CMP0182: Create shared library archives by default on AIX. </policy/CMP0182>
+   CMP0181: Link command-line fragment variables are parsed and re-quoted. </policy/CMP0181>
+
+Policies Introduced by CMake 3.31
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -58,7 +122,7 @@ CMake 3.31引入的策略
    CMP0171: 'codegen'是保留的目标名称。 </policy/CMP0171>
 
 CMake 3.30引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -74,7 +138,7 @@ CMake 3.30引入的策略
    CMP0162: Visual Studio生成器默认添加UseDebugLibraries指示符。 </policy/CMP0162>
 
 CMake 3.29引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -87,7 +151,7 @@ CMake 3.29引入的策略
    CMP0156: 基于链接器功能对链接上的库进行去重。 </policy/CMP0156>
 
 CMake 3.28引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -98,7 +162,7 @@ CMake 3.28引入的策略
    CMP0152: file(REAL_PATH)在解析符号链接之前折叠../组件。 </policy/CMP0152>
 
 CMake 3.27引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -113,7 +177,7 @@ CMake 3.27引入的策略
    CMP0144: find_package使用大写的PACKAGENAME_ROOT变量。 </policy/CMP0144>
 
 CMake 3.26引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -121,7 +185,7 @@ CMake 3.26引入的策略
    CMP0143: USE_FOLDERS全局属性默认为ON。 </policy/CMP0143>
 
 CMake 3.25引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -131,7 +195,7 @@ CMake 3.25引入的策略
    CMP0140: return()命令检查其参数。 </policy/CMP0140>
 
 CMake 3.24引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -148,7 +212,7 @@ CMake 3.24引入的策略
    CMP0130: while()诊断条件评估错误。 </policy/CMP0130>
 
 CMake 3.23引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -156,7 +220,7 @@ CMake 3.23引入的策略
    CMP0129: MCST LCC编译器的编译器id现在是LCC，而不是GNU。 </policy/CMP0129>
 
 CMake 3.22引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -165,7 +229,7 @@ CMake 3.22引入的策略
    CMP0127: cmake_dependent_option()支持所有条件语法。 </policy/CMP0127>
 
 CMake 3.21引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -178,7 +242,7 @@ CMake 3.21引入的策略
    CMP0121: list命令会检测无效索引。 </policy/CMP0121>
 
 CMake 3.20引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -191,7 +255,7 @@ CMake 3.20引入的策略
    CMP0115: 源文件扩展名必须显示指定。 </policy/CMP0115>
 
 CMake 3.19引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -204,7 +268,7 @@ CMake 3.19引入的策略
    CMP0109: find_program()需要执行权限，不需要读取权限。 </policy/CMP0109>
 
 CMake 3.18引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -217,7 +281,7 @@ CMake 3.18引入的策略
    CMP0103: 不允许对同一个FILE进行多次export()而不进行APPEND。 </policy/CMP0103>
 
 CMake 3.17引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -229,7 +293,7 @@ CMake 3.17引入的策略
    CMP0098: FindFLEX执行时在CMAKE_CURRENT_BINARY_DIR中运行flex。 </policy/CMP0098>
 
 CMake 3.16引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -239,7 +303,7 @@ CMake 3.16引入的策略
    CMP0095: RPATH条目在中间的CMake安装脚本中被正确转义。 </policy/CMP0095>
 
 CMake 3.15引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -252,7 +316,7 @@ CMake 3.15引入的策略
    CMP0089: 现在基于IBM clang的XL编译器id是XLClang。 </policy/CMP0089>
 
 CMake 3.14引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -267,7 +331,7 @@ CMake 3.14引入的策略
 
 
 CMake 3.13引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -280,7 +344,7 @@ CMake 3.13引入的策略
    CMP0076: target_sources()命令将相对路径转换为绝对路径。 </policy/CMP0076>
 
 CMake 3.12引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -290,7 +354,7 @@ CMake 3.12引入的策略
    CMP0073: 不生成遗留的_LIB_DEPENDS缓存条目。 </policy/CMP0073>
 
 CMake 3.11引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -298,7 +362,7 @@ CMake 3.11引入的策略
    CMP0072: 当GLVND可用时，FindOpenGL默认选择GLVND。 </policy/CMP0072>
 
 CMake 3.10引入的策略
-=================================
+---------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -307,7 +371,7 @@ CMake 3.10引入的策略
    CMP0070: 定义相对路径的file(GENERATE)行为。 </policy/CMP0070>
 
 CMake 3.9引入的策略
-================================
+--------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -316,7 +380,7 @@ CMake 3.9引入的策略
    CMP0068: macOS上的RPATH设置不影响install_name。 </policy/CMP0068>
 
 CMake 3.8引入的策略
-================================
+--------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -324,15 +388,25 @@ CMake 3.8引入的策略
    CMP0067: 尊重try_compile()源文件签名中的语言标准。 </policy/CMP0067>
 
 CMake 3.7引入的策略
-================================
+--------------------------------
 
 .. toctree::
    :maxdepth: 1
 
    CMP0066: 尊重try_compile()源文件签名中每个配置的标志。 </policy/CMP0066>
 
-CMake 3.4引入的策略
-================================
+Unsupported Policies
+====================
+
+The following policies are no longer supported.
+Projects' calls to :command:`cmake_minimum_required(VERSION)` or
+:command:`cmake_policy(VERSION)` must set them to ``NEW``.
+Their ``OLD`` behaviors have been removed from CMake.
+
+.. _`Policies Introduced by CMake 3.4`:
+
+Policies Introduced by CMake 3.4, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -340,8 +414,10 @@ CMake 3.4引入的策略
    CMP0065: 在没有ENABLE_EXPORTS目标属性的情况下，不要为从可执行文件中导出符号添加标志。 </policy/CMP0065>
    CMP0064: if()支持新的TEST运算符。 </policy/CMP0064>
 
-CMake 3.3引入的策略
-================================
+.. _`Policies Introduced by CMake 3.3`:
+
+Policies Introduced by CMake 3.3, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -354,8 +430,10 @@ CMake 3.3引入的策略
    CMP0058: Ninja需要自定义的命令副产品是显式的。 </policy/CMP0058>
    CMP0057: if()支持新的IN_LIST运算符。 </policy/CMP0057>
 
-CMake 3.2引入的策略
-================================
+.. _`Policies Introduced by CMake 3.2`:
+
+Policies Introduced by CMake 3.2, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -363,8 +441,10 @@ CMake 3.2引入的策略
    CMP0056: 尊敬try_compile()源文件签名中的链接标志。 </policy/CMP0056>
    CMP0055: 严格检查break()命令。 </policy/CMP0055>
 
-CMake 3.1引入的策略
-================================
+.. _`Policies Introduced by CMake 3.1`:
+
+Policies Introduced by CMake 3.1, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -374,8 +454,10 @@ CMake 3.1引入的策略
    CMP0052: 拒绝在已安装的INTERFACE_INCLUDE_DIRECTORIES目录下的源目录和构建目录。 </policy/CMP0052>
    CMP0051: 在SOURCES目标属性中列出TARGET_OBJECTS。 </policy/CMP0051>
 
-CMake 3.0引入的策略
-================================
+.. _`Policies Introduced by CMake 3.0`:
+
+Policies Introduced by CMake 3.0, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -408,8 +490,10 @@ CMake 3.0引入的策略
    CMP0025: Apple Clang的编译器id现在是AppleClang。 </policy/CMP0025>
    CMP0024: 不允许包含导出结果。 </policy/CMP0024>
 
-CMake 2.8引入的策略
-================================
+.. _`Policies Introduced by CMake 2.8`:
+
+Policies Introduced by CMake 2.8, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -427,8 +511,10 @@ CMake 2.8引入的策略
    CMP0013: 不允许重复的二进制目录。 </policy/CMP0013>
    CMP0012: if()可以识别数字和布尔常量。 </policy/CMP0012>
 
-CMake 2.6引入的策略
-================================
+.. _`Policies Introduced by CMake 2.6`:
+
+Policies Introduced by CMake 2.6, Removed by CMake 4.0
+------------------------------------------------------
 
 .. toctree::
    :maxdepth: 1

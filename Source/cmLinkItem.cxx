@@ -11,9 +11,7 @@
 #include "cmGeneratorTarget.h"
 #include "cmStringAlgorithms.h"
 
-const std::string cmLinkItem::DEFAULT = "DEFAULT";
-
-cmLinkItem::cmLinkItem() = default;
+std::string const cmLinkItem::DEFAULT = "DEFAULT";
 
 cmLinkItem::cmLinkItem(std::string n, bool c, cmListFileBacktrace bt,
                        std::string feature)
@@ -73,20 +71,14 @@ std::ostream& operator<<(std::ostream& os, cmLinkItem const& item)
   return os << item.AsStr();
 }
 
-cmLinkImplItem::cmLinkImplItem()
-  : cmLinkItem()
-{
-}
-
-cmLinkImplItem::cmLinkImplItem(cmLinkItem item, bool checkCMP0027)
+cmLinkImplItem::cmLinkImplItem(cmLinkItem item)
   : cmLinkItem(std::move(item))
-  , CheckCMP0027(checkCMP0027)
 {
 }
 
 namespace {
-const cm::string_view LL_BEGIN = "<LINK_LIBRARY:"_s;
-const cm::string_view LL_END = "</LINK_LIBRARY:"_s;
+cm::string_view const LL_BEGIN = "<LINK_LIBRARY:"_s;
+cm::string_view const LL_END = "</LINK_LIBRARY:"_s;
 }
 cm::optional<std::string> ParseLinkFeature(std::string const& item)
 {

@@ -7,11 +7,11 @@ CheckIncludeFile
 
 提供一个宏来检查头文件是否可以包含在\ ``C``\ 语言中。
 
-.. command:: CHECK_INCLUDE_FILE
+.. command:: check_include_file
 
   .. code-block:: cmake
 
-    CHECK_INCLUDE_FILE(<include> <variable> [<flags>])
+    check_include_file(<include> <variable> [<flags>])
 
   Check if the given ``<include>`` file may be included in a ``C``
   source file and store the result in an internal cache entry named

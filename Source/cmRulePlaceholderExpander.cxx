@@ -9,10 +9,11 @@
 #include "cmSystemTools.h"
 
 cmRulePlaceholderExpander::cmRulePlaceholderExpander(
-  std::map<std::string, std::string> compilers,
+  cmBuildStep buildStep, std::map<std::string, std::string> compilers,
   std::map<std::string, std::string> variableMappings,
   std::string compilerSysroot, std::string linkerSysroot)
-  : Compilers(std::move(compilers))
+  : BuildStep(buildStep)
+  , Compilers(std::move(compilers))
   , VariableMappings(std::move(variableMappings))
   , CompilerSysroot(std::move(compilerSysroot))
   , LinkerSysroot(std::move(linkerSysroot))
@@ -260,6 +261,13 @@ std::string cmRulePlaceholderExpander::ExpandVariable(
       return this->ReplaceValues->CMTargetType;
     }
   }
+  if (variable == "TARGET_LABELS") {
+    if (this->ReplaceValues->CMTargetLabels) {
+      return this->ReplaceValues->CMTargetLabels;
+    }
+    return "";
+  }
+
   if (this->ReplaceValues->Output) {
     if (variable == "OUTPUT") {
       return this->ReplaceValues->Output;
@@ -268,6 +276,18 @@ std::string cmRulePlaceholderExpander::ExpandVariable(
   if (variable == "CMAKE_COMMAND") {
     return this->OutputConverter->ConvertToOutputFormat(
       cmSystemTools::GetCMakeCommand(), cmOutputConverter::SHELL);
+  }
+  if (variable == "ROLE") {
+    if (this->ReplaceValues->Role) {
+      return this->ReplaceValues->Role;
+    }
+    return "";
+  }
+  if (variable == "CONFIG") {
+    if (this->ReplaceValues->Config) {
+      return this->ReplaceValues->Config;
+    }
+    return "";
   }
 
   auto compIt = this->Compilers.find(variable);
@@ -320,9 +340,8 @@ std::string cmRulePlaceholderExpander::ExpandVariable(
     }
     std::string sysroot;
     // Some platforms may use separate sysroots for compiling and linking.
-    // If we detect link flags, then we pass the link sysroot instead.
-    // FIXME: Use a more robust way to detect link line expansion.
-    if (this->ReplaceValues->LinkFlags) {
+    // When the build step is link, pass the link sysroot instead.
+    if (this->BuildStep == cmBuildStep::Link) {
       sysroot = this->LinkerSysroot;
     } else {
       sysroot = this->CompilerSysroot;
@@ -347,7 +366,7 @@ std::string cmRulePlaceholderExpander::ExpandVariable(
 
 void cmRulePlaceholderExpander::ExpandRuleVariables(
   cmOutputConverter* outputConverter, std::string& s,
-  const RuleVariables& replaceValues)
+  RuleVariables const& replaceValues)
 {
   this->OutputConverter = outputConverter;
   this->ReplaceValues = &replaceValues;

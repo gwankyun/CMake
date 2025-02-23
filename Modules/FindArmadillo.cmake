@@ -12,7 +12,7 @@ FindArmadillo
 
 Using Armadillo:
 
-::
+.. code-block:: cmake
 
   find_package(Armadillo REQUIRED)
   include_directories(${ARMADILLO_INCLUDE_DIRS})
@@ -80,7 +80,7 @@ if(EXISTS "${ARMADILLO_INCLUDE_DIR}/armadillo_bits/config.hpp")
   string(REGEX MATCH "ARMA_USE_HDF5" _ARMA_USE_HDF5 "${_ARMA_CONFIG_CONTENTS}")
 endif()
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 # If _ARMA_USE_WRAPPER is set, then we just link to armadillo, but if it's not then we need support libraries instead
 set(_ARMA_SUPPORT_LIBRARIES)
@@ -98,8 +98,13 @@ if(_ARMA_USE_WRAPPER)
   mark_as_advanced(ARMADILLO_LIBRARY)
   set(_ARMA_REQUIRED_VARS ARMADILLO_LIBRARY)
 else()
-  # Link directly to individual components.
   set(ARMADILLO_LIBRARY "")
+endif()
+
+# Transitive linking with the wrapper does not work with MSVC,
+# so we must *also* link against Armadillo's dependencies.
+if(NOT _ARMA_USE_WRAPPER OR MSVC)
+  # Link directly to individual components.
   foreach(pkg
       LAPACK
       BLAS

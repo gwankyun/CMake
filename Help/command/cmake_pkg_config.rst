@@ -12,7 +12,7 @@ cmake_pkg_config
 Synopsis
 ^^^^^^^^
 
-.. parsed-literal::
+.. code-block:: cmake
 
   cmake_pkg_config(EXTRACT <package> [<version>] [...])
 

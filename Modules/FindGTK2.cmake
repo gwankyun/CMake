@@ -914,7 +914,7 @@ endif()
 
 set(_GTK2_did_we_find_everything true)  # This gets set to GTK2_FOUND
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 foreach(_GTK2_component ${GTK2_FIND_COMPONENTS})
     string(TOUPPER ${_GTK2_component} _COMPONENT_UPPER)
@@ -923,7 +923,7 @@ foreach(_GTK2_component ${GTK2_FIND_COMPONENTS})
 
     set(FPHSA_NAME_MISMATCHED 1)
     if(_GTK2_component STREQUAL "gtk")
-        FIND_PACKAGE_HANDLE_STANDARD_ARGS(GTK2_${_COMPONENT_UPPER} "Some or all of the gtk libraries were not found."
+        find_package_handle_standard_args(GTK2_${_COMPONENT_UPPER} "Some or all of the gtk libraries were not found."
             GTK2_GTK_LIBRARY
             GTK2_GTK_INCLUDE_DIR
 
@@ -936,7 +936,7 @@ foreach(_GTK2_component ${GTK2_FIND_COMPONENTS})
             GTK2_GLIB_LIBRARY
         )
     elseif(_GTK2_component STREQUAL "gtkmm")
-        FIND_PACKAGE_HANDLE_STANDARD_ARGS(GTK2_${_COMPONENT_UPPER} "Some or all of the gtkmm libraries were not found."
+        find_package_handle_standard_args(GTK2_${_COMPONENT_UPPER} "Some or all of the gtkmm libraries were not found."
             GTK2_GTKMM_LIBRARY
             GTK2_GTKMM_INCLUDE_DIR
             GTK2_GTKMMCONFIG_INCLUDE_DIR
@@ -953,12 +953,12 @@ foreach(_GTK2_component ${GTK2_FIND_COMPONENTS})
             FREETYPE_INCLUDE_DIR_freetype2
         )
     elseif(_GTK2_component STREQUAL "glade")
-        FIND_PACKAGE_HANDLE_STANDARD_ARGS(GTK2_${_COMPONENT_UPPER} "The glade library was not found."
+        find_package_handle_standard_args(GTK2_${_COMPONENT_UPPER} "The glade library was not found."
             GTK2_GLADE_LIBRARY
             GTK2_GLADE_INCLUDE_DIR
         )
     elseif(_GTK2_component STREQUAL "glademm")
-        FIND_PACKAGE_HANDLE_STANDARD_ARGS(GTK2_${_COMPONENT_UPPER} "The glademm library was not found."
+        find_package_handle_standard_args(GTK2_${_COMPONENT_UPPER} "The glademm library was not found."
             GTK2_GLADEMM_LIBRARY
             GTK2_GLADEMM_INCLUDE_DIR
             GTK2_GLADEMMCONFIG_INCLUDE_DIR

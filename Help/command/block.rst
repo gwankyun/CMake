@@ -7,7 +7,7 @@ block
 
 .. code-block:: cmake
 
-  block([SCOPE_FOR [POLICIES] [VARIABLES] ] [PROPAGATE <var-name>...])
+  block([SCOPE_FOR [POLICIES] [VARIABLES]] [PROPAGATE <var-name>...])
     <commands>
   endblock()
 

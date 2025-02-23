@@ -13,7 +13,7 @@ add_test
 ​添加一个名为\ ``<name>``\ 的测试。测试名可以包含任意字符，必要时用\ :ref:`Quoted Argument`\
 或\ :ref:`Bracket Argument`\ 表示。参见策略\ :policy:`CMP0110`。
 
-​CMake仅在调用\ :command:`enable_testing`\ 命令时生成测试。除非\ ``BUILD_TESTING``\
+​CMake仅在调用\ :command:`enable_testing`\ 命令时生成测试。除非\ :variable:`BUILD_TESTING`\
 设置为\ ``OFF``，否则\ :module:`CTest`\ 模块会自动调用\ ``enable_testing``。
 
 ​通过\ ``add_test(NAME)``\ 签名添加的测试支持在\ :command:`set_property(TEST)`\ 或\

@@ -7,11 +7,11 @@ CheckIncludeFiles
 
 提供一个宏，用于检查是否可以将一个或多个头文件的列表包含在一起。
 
-.. command:: CHECK_INCLUDE_FILES
+.. command:: check_include_files
 
   .. code-block:: cmake
 
-    CHECK_INCLUDE_FILES("<includes>" <variable> [LANGUAGE <language>])
+    check_include_files("<includes>" <variable> [LANGUAGE <language>])
 
   Check if the given ``<includes>`` list may be included together
   in a source file and store the result in an internal cache

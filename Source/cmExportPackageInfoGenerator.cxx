@@ -26,7 +26,7 @@
 #include "cmTarget.h"
 #include "cmValue.h"
 
-static const std::string kCPS_VERSION_STR = "0.12.0";
+static std::string const kCPS_VERSION_STR = "0.13.0";
 
 cmExportPackageInfoGenerator::cmExportPackageInfoGenerator(
   std::string packageName, std::string version, std::string versionCompat,
@@ -127,9 +127,22 @@ void cmExportPackageInfoGenerator::GeneratePackageRequires(
 {
   if (!this->Requirements.empty()) {
     Json::Value& requirements = package["requires"];
+
+    // Build description for each requirement.
     for (auto const& requirement : this->Requirements) {
+      auto data = Json::Value{ Json::objectValue };
+
+      // Add required components.
+      if (!requirement.second.empty()) {
+        auto components = Json::Value{ Json::arrayValue };
+        for (std::string const& component : requirement.second) {
+          components.append(component);
+        }
+        data["components"] = components;
+      }
+
       // TODO: version, hint
-      requirements[requirement] = Json::Value{};
+      requirements[requirement.first] = data;
     }
   }
 }
@@ -257,17 +270,17 @@ bool cmExportPackageInfoGenerator::NoteLinkedTarget(
       return false;
     }
 
+    std::string component = linkedName.substr(prefix.length());
+    this->LinkTargets.emplace(linkedName, cmStrCat(pkgName, ':', component));
     // TODO: Record package version, hint.
-    this->Requirements.emplace(pkgName);
-    this->LinkTargets.emplace(
-      linkedName, cmStrCat(pkgName, ':', linkedName.substr(prefix.length())));
+    this->Requirements[pkgName].emplace(std::move(component));
     return true;
   }
 
-  // Target belongs to another export from this build.
+  // Target belongs to multiple namespaces or multiple export sets.
   auto const& exportInfo = this->FindExportInfo(linkedTarget);
-  if (exportInfo.first.size() == 1) {
-    auto const& linkNamespace = exportInfo.second;
+  if (exportInfo.Namespaces.size() == 1 && exportInfo.Sets.size() == 1) {
+    auto const& linkNamespace = *exportInfo.Namespaces.begin();
     if (!cmHasSuffix(linkNamespace, "::")) {
       target->Makefile->IssueMessage(
         MessageType::FATAL_ERROR,
@@ -278,22 +291,19 @@ bool cmExportPackageInfoGenerator::NoteLinkedTarget(
       return false;
     }
 
-    auto pkgName =
-      cm::string_view{ linkNamespace.data(), linkNamespace.size() - 2 };
-
+    std::string pkgName{ linkNamespace.data(), linkNamespace.size() - 2 };
+    std::string component = linkedTarget->GetExportName();
     if (pkgName == this->GetPackageName()) {
-      this->LinkTargets.emplace(linkedName,
-                                cmStrCat(':', linkedTarget->GetExportName()));
+      this->LinkTargets.emplace(linkedName, cmStrCat(':', component));
     } else {
-      this->Requirements.emplace(pkgName);
-      this->LinkTargets.emplace(
-        linkedName, cmStrCat(pkgName, ':', linkedTarget->GetExportName()));
+      this->LinkTargets.emplace(linkedName, cmStrCat(pkgName, ':', component));
+      this->Requirements[pkgName].emplace(std::move(component));
     }
     return true;
   }
 
   // cmExportFileGenerator::HandleMissingTarget should have complained about
-  // this already. (In fact, we probably shouldn't ever get here.)
+  // this already.
   return false;
 }
 

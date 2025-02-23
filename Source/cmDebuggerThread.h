@@ -23,6 +23,11 @@ class cmDebuggerVariables;
 class cmDebuggerVariablesManager;
 }
 
+namespace dap {
+template <typename T>
+class optional;
+}
+
 namespace cmDebugger {
 
 class cmDebuggerThread
@@ -41,7 +46,7 @@ class cmDebuggerThread
 public:
   cmDebuggerThread(int64_t id, std::string name);
   int64_t GetId() const { return this->Id; }
-  const std::string& GetName() const { return this->Name; }
+  std::string const& GetName() const { return this->Name; }
   void PushStackFrame(cmMakefile* mf, std::string const& sourcePath,
                       cmListFileFunction const& lff);
   void PopStackFrame();
@@ -53,7 +58,8 @@ public:
   dap::VariablesResponse GetVariablesResponse(
     dap::VariablesRequest const& request);
   friend dap::StackTraceResponse GetStackTraceResponse(
-    std::shared_ptr<cmDebuggerThread> const& thread);
+    std::shared_ptr<cmDebuggerThread> const& thread,
+    dap::optional<dap::StackFrameFormat> format);
 };
 
 } // namespace cmDebugger

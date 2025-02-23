@@ -23,7 +23,7 @@ find_package
 
 大多数对\ ``find_package()``\ 的调用通常是以下格式：
 
-.. parsed-literal::
+.. code-block:: cmake
 
   find_package(<PackageName> [<version>] [REQUIRED] [COMPONENTS <components>...])
 
@@ -34,7 +34,7 @@ find_package
 以上是\ `basic signature`_\ 的简化形式。在可能的情况下，项目应该使用这种形式找到包。这降低\
 了复杂性，并最大化了找到或提供包的方式。
 
-了解\ `basic signature`_\ 就足以了解\ ``find_package()``\ 的一般用法了。打算提供配置包\
+了解\ `basic signature`_\ 就足以了解\ ``find_package()``\ 的一般用法了。打算提供包配置文件\
 的项目维护者应该了解更大的图景，在\ :ref:`Full Signature`\ 和本页的所有后续部分中有解释。
 
 搜索模式
@@ -62,6 +62,20 @@ find_package
   ``<PackageName>ConfigVersion.cmake``，如果指定了版本细节（有关如何使用这些单独的版本\
   文件的解释，请参见\ :ref:`version selection`）。
 
+  .. note::
+    If the experimental ``CMAKE_EXPERIMENTAL_FIND_CPS_PACKAGES`` is enabled,
+    files named ``<PackageName>.cps`` and ``<lowercasePackageName>.cps`` are
+    also considered.  These files provide package information according to the
+    |CPS|_ (CPS), which is more portable than CMake script.  Aside from any
+    explicitly noted exceptions, any references to "config files", "config
+    mode", "package configuration files", and so forth refer equally to both
+    CPS and CMake-script files.  This functionality is a work in progress, and
+    some features may be missing.
+
+    Search is implemented in a manner that will tend to prefer |CPS| files
+    over CMake-script config files in most cases.  Specifying ``CONFIGS``
+    suppresses consideration of CPS files.
+
   在配置模式下，可以给这个命令一个要搜索的包名列表。CMake搜索配置和版本文件的位置比模块模式\
   要复杂得多（请参阅\ :ref:`search procedure`）。
 
@@ -88,7 +102,7 @@ find_package
 基本签名
 ^^^^^^^^^^^^^^^
 
-.. parsed-literal::
+.. code-block:: cmake
 
   find_package(<PackageName> [version] [EXACT] [QUIET] [MODULE]
                [REQUIRED] [[COMPONENTS] [components...]]
@@ -114,9 +128,22 @@ find_package
 其他可选组件可以列在\ ``OPTIONAL_COMPONENTS``\ 之后。如果这些不能满足，仍然可以考虑找到\
 整体的包，只要所有需要的组件都满足。
 
-可用组件的集合及其含义由目标包定义。形式上，如何解释提供给它的组件信息取决于目标包，但它应该\
+.. TODO Once CPS honors COMPONENTS, note that OPTIONAL_COMPONENTS will cause
+   CMake to attempt to locate dependencies for optional components.  Also note
+   that CMake will *not* load any appendices that don't include COMPONENTS or
+   OPTIONAL_COMPONENTS.  (That isn't the case now, but will be when we don't
+   just ignore COMPONENTS.)  The following paragraph will also need changes.
+
+可用组件的集合及其含义由目标包定义。对于CMake脚本包配置文件，在形式上如何解释提供给它的组件信息取决于目标包，但它应该\
 遵循上面所述的期望。对于没有指定组件的调用，没有单一的预期行为，目标包应该清楚地定义在这种情\
 况下会发生什么。常见的安排包括假设它应该找到所有组件，没有组件或可用组件的一些定义良好的子集。
+
+.. note::
+
+  If the experimental ``CMAKE_EXPERIMENTAL_FIND_CPS_PACKAGES`` is enabled,
+  CMake currently imports all available components if the located package
+  configuration file is a |CPS| file.  At this time, ``COMPONENTS`` and
+  ``OPTIONAL_COMPONENTS`` have no effect when considering a CPS file.
 
 .. versionadded:: 3.24
   ``REGISTRY_VIEW``\ 关键字指定应该查询哪些注册表视图。这个关键字只在\ ``Windows``\
@@ -130,17 +157,26 @@ find_package
 
 参数\ ``[version]``\ 请求与找到的包兼容的版本。它有两种可能的形式：
 
-  * 单个版本，格式为\ ``major[.minor[.patch[.tweak]]]``，其中每个分量都是数值。
-  * 版本范围，格式为\ ``versionMin...[<]versionMax``，其中\ ``versionMin``\ 和\
-    ``versionMax``\ 的格式和约束与单个版本相同，都是整数。默认情况下，包含两个端点。通过\
-    指定\ ``<``，上端点将被排除。版本范围仅支持CMake 3.19或更高版本。
+* 单个版本，格式为\ ``major[.minor[.patch[.tweak]]]``，其中每个分量都是数值。
+* 版本范围，格式为\ ``versionMin...[<]versionMax``，其中\ ``versionMin``\ 和\
+  ``versionMax``\ 的格式和约束与单个版本相同，都是整数。默认情况下，包含两个端点。通过\
+  指定\ ``<``，上端点将被排除。版本范围仅支持CMake 3.19或更高版本。
+
+.. note::
+  With the exception of CPS packages, version support is currently provided
+  only on a package-by-package basis.  When a version range is specified but
+  the package is only designed to expect a single version, the package will
+  ignore the upper end point of the range and only take the single version at
+  the lower end of the range into account.  Non-CPS packages that do support
+  version ranges do so in a manner that is determined by the individual
+  package.  See the `Version Selection`_ section below for details and
+  important caveats.
 
 ``EXACT``\ 选项要求版本完全匹配。此选项与版本范围的规范不兼容。
 
 如果没有\ ``[version]``\ 和/或组件列表提供给find-module中的递归调用，则会自动从外部调用\
 转发相应的参数（包括\ ``[version]``\ 的\ ``EXACT``\ 标志）。版本支持目前只在包的基础上提\
-供（参见下面的\ `Version Selection`_\ 部分）。当指定了版本范围，但包只设计为期望单一版本时，\
-包将忽略范围的上限，只考虑范围下限的单一版本。
+供（参见下面的\ `Version Selection`_\ 部分）。
 
 有关\ ``NO_POLICY_SCOPE``\ 选项的讨论，请参阅\ :command:`cmake_policy`\ 命令文档。
 
@@ -155,7 +191,7 @@ find_package
 完整签名
 ^^^^^^^^^^^^^^
 
-.. parsed-literal::
+.. code-block:: cmake
 
   find_package(<PackageName> [version] [EXACT] [QUIET]
                [REQUIRED] [[COMPONENTS] [components...]]
@@ -166,8 +202,8 @@ find_package
                [BYPASS_PROVIDER]
                [NAMES name1 [name2 ...]]
                [CONFIGS config1 [config2 ...]]
-               [HINTS path1 [path2 ... ]]
-               [PATHS path1 [path2 ... ]]
+               [HINTS path1 [path2 ...]]
+               [PATHS path1 [path2 ...]]
                [REGISTRY_VIEW  (64|32|64_32|32_64|HOST|TARGET|BOTH)]
                [PATH_SUFFIXES suffix1 [suffix2 ...]]
                [NO_DEFAULT_PATH]
@@ -196,8 +232,14 @@ find_package
 ``<lowercasePackageName>-config.cmake``\ 用于指定的每个名称。可以使用\ ``CONFIGS``\
 选项给出可能配置文件名称的替换集。:ref:`search procedure`\ 如下所示。一旦找到，就检查任何\
 :ref:`版本约束 <version selection>`，如果满足，就由CMake读取和处理配置文件。因为文件是由\
-包提供的，所以它已经知道包内容的位置。配置文件的完整路径保存在cmake变量\
+包提供的，所以它已经知道包内容的位置。配置文件的完整路径保存在CMake变量\
 ``<PackageName>_CONFIG``\ 中。
+
+.. note::
+
+  If the experimental ``CMAKE_EXPERIMENTAL_FIND_CPS_PACKAGES`` is enabled,
+  files named ``<PackageName>.cps`` and ``<lowercasePackageName>.cps`` are
+  also considered, unless ``CONFIGS`` is given.
 
 CMake在搜索具有适当版本的包时考虑的所有配置文件都存储在\
 ``<PackageName>_CONSIDERED_CONFIGS``\ 变量中，而相关的版本存储在\
@@ -207,7 +249,7 @@ CMake在搜索具有适当版本的包时考虑的所有配置文件都存储在
 定了\ ``REQUIRED``，并且没有找到包，则会生成致命错误，配置步骤将停止执行。如果\
 ``<PackageName>_DIR``\ 被设置为一个不包含配置文件的目录，CMake将忽略它并从头开始搜索。
 
-建议提供CMake包配置文件的包维护者命名和安装它们，以便下面概述的\ :ref:`search procedure`\
+建议提供包配置文件的包维护者命名和安装它们，以便下面概述的\ :ref:`search procedure`\
 可以找到它们，而不需要使用其他选项。
 
 .. _`search procedure`:
@@ -232,11 +274,19 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 ==================================================================== ==========
  条目                                                                 约定
 ==================================================================== ==========
+ ``<prefix>/<name>/cps/`` [#p2]_                                        W
+ ``<prefix>/<name>/*/cps/`` [#p2]_                                      W
+ ``<prefix>/cps/<name>/`` [#p2]_                                        W
+ ``<prefix>/cps/<name>/*/`` [#p2]_                                      W
+ ``<prefix>/cps/`` [#p2]_                                               W
  ``<prefix>/``                                                          W
  ``<prefix>/(cmake|CMake)/``                                            W
  ``<prefix>/<name>*/``                                                  W
  ``<prefix>/<name>*/(cmake|CMake)/``                                    W
- ``<prefix>/<name>*/(cmake|CMake)/<name>*/`` [#]_                       W
+ ``<prefix>/<name>*/(cmake|CMake)/<name>*/`` [#p1]_                     W
+ ``<prefix>/(lib/<arch>|lib*|share)/cps/<name>/`` [#p2]_                U
+ ``<prefix>/(lib/<arch>|lib*|share)/cps/<name>/*/`` [#p2]_              U
+ ``<prefix>/(lib/<arch>|lib*|share)/cps/`` [#p2]_                       U
  ``<prefix>/(lib/<arch>|lib*|share)/cmake/<name>*/``                    U
  ``<prefix>/(lib/<arch>|lib*|share)/<name>*/``                          U
  ``<prefix>/(lib/<arch>|lib*|share)/<name>*/(cmake|CMake)/``            U
@@ -245,24 +295,36 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
  ``<prefix>/<name>*/(lib/<arch>|lib*|share)/<name>*/(cmake|CMake)/``    W/U
 ==================================================================== ==========
 
-.. [#] .. versionadded:: 3.25
+.. [#p1] .. versionadded:: 3.25
+
+.. [#p2] .. versionadded:: 4.0
 
 在支持macOS :prop_tgt:`FRAMEWORK`\ 和\ :prop_tgt:`BUNDLE`\ 的系统中，可以在以下目录\
 中搜索包含配置文件的框架或应用包：
 
-=========================================================== ==========
- 条目                                                        约定
-=========================================================== ==========
- ``<prefix>/<name>.framework/Resources/``                      A
- ``<prefix>/<name>.framework/Resources/CMake/``                A
- ``<prefix>/<name>.framework/Versions/*/Resources/``           A
- ``<prefix>/<name>.framework/Versions/*/Resources/CMake/``     A
- ``<prefix>/<name>.app/Contents/Resources/``                   A
- ``<prefix>/<name>.app/Contents/Resources/CMake/``             A
-=========================================================== ==========
+=============================================================== ==========
+ Entry                                                          Convention
+=============================================================== ==========
+ ``<prefix>/<name>.framework/Versions/*/Resources/CPS/`` [#p3]_    A
+ ``<prefix>/<name>.framework/Resources/CPS/`` [#p3]_               A
+ ``<prefix>/<name>.framework/Resources/``                          A
+ ``<prefix>/<name>.framework/Resources/CMake/``                    A
+ ``<prefix>/<name>.framework/Versions/*/Resources/``               A
+ ``<prefix>/<name>.framework/Versions/*/Resources/CMake/``         A
+ ``<prefix>/<name>.app/Contents/Resources/CPS/`` [#p3]_            A
+ ``<prefix>/<name>.app/Contents/Resources/``                       A
+ ``<prefix>/<name>.app/Contents/Resources/CMake/``                 A
+=============================================================== ==========
+
+.. [#p3] .. versionadded:: 4.0
+
+When searching the above paths, ``find_package`` will only look for ``.cps``
+files in search paths which contain ``/cps/``, and will only look for
+``.cmake`` files otherwise.  (This only applies to the paths as specified and
+does not consider the contents of ``<prefix>`` or ``<name>``.)
 
 在所有情况下，\ ``<name>``\ 都是不区分大小写的，对应于指定的任何名称（\ ``<PackageName>``\
-或由\ ``NAMES``\ 给出的名称）。
+或由\ ``NAMES``\ 给出的名称）
 
 如果至少启用了一种编译语言，那么可以根据编译器的目标体系结构搜索特定于体系结构的\
 ``lib/<arch>``\ 和\ ``lib*``\ 目录，顺序如下：
@@ -304,6 +366,13 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 平台上被搜索。标有（\ ``A``\ ）的目录用于在Apple平台上安装。:variable:`CMAKE_FIND_FRAMEWORK`\
 和\ :variable:`CMAKE_FIND_APPBUNDLE`\ 变量决定了偏好的顺序。
 
+.. warning::
+
+  Setting :variable:`CMAKE_FIND_FRAMEWORK` or :variable:`CMAKE_FIND_APPBUNDLE`
+  to values other than ``FIRST`` (the default) will cause CMake to search for
+  |CPS| files in an order that is different from the order set forth in the
+  specification.
+
 安装前缀的集合使用以下步骤构建。如果指定\ ``NO_DEFAULT_PATH``，则启用所有\ ``NO_*``\ 选项。
 
 1. 搜索当前找到的\ ``<PackageName>``\ 的唯一前缀。参见策略\ :policy:`CMP0074`。
@@ -332,7 +401,7 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
    如果传递了\ ``NO_PACKAGE_ROOT_PATH``，或者将\
    :variable:`CMAKE_FIND_USE_PACKAGE_ROOT_PATH`\ 设置为\ ``FALSE``，则可以跳过该操作。
 
-2. 搜索指定在cmake专用缓存变量中的路径。它们通常在命令行中使用\ :option:`-DVAR=VALUE <cmake -D>`。\
+2. 搜索指定在CMake专用缓存变量中的路径。它们通常在命令行中使用\ :option:`-DVAR=VALUE <cmake -D>`。\
    这些值被解释为\ :ref:`以分号分隔的列表 <CMake Language Lists>`。如果传递了\
    ``NO_CMAKE_PATH``\ 参数，或者将\ :variable:`CMAKE_FIND_USE_CMAKE_PATH`\ 设置为\
    ``FALSE``，则可以跳过该操作：
@@ -341,7 +410,7 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
    * :variable:`CMAKE_FRAMEWORK_PATH`
    * :variable:`CMAKE_APPBUNDLE_PATH`
 
-3. 在cmake特定的环境变量中搜索指定的路径。这些分隔符需要在用户的shell配置中设置，因此要使用\
+3. 在CMake特定的环境变量中搜索指定的路径。这些分隔符需要在用户的shell配置中设置，因此要使用\
    主机的本地路径分隔符（在Windows上为\ ``;``，而在UNIX上则为\ ``:``）。如果传递了\
    ``NO_CMAKE_ENVIRONMENT_PATH``，或者将\
    :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`\ 设置为\ ``FALSE``，则可以跳过：
@@ -367,7 +436,8 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
    有关用户包注册表的详细信息，请参阅\ :manual:`cmake-packages(7)`\ 手册。
 
-7. 在平台文件中搜索当前系统中定义的cmake变量。如果传递了\ ``NO_CMAKE_INSTALL_PREFIX``\
+   :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH` to ``FALSE``:
+7. 在平台文件中搜索当前系统中定义的ake变量。如果传递了\ ``NO_CMAKE_INSTALL_PREFIX``\
    或将\ :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`\ 设置为\ ``FALSE``，可以跳过对\
    :variable:`CMAKE_INSTALL_PREFIX`\ 和\ :variable:`CMAKE_STAGING_PREFIX`\ 的搜索。\
    如果传递了\ ``NO_CMAKE_SYSTEM_PATH``，或者将\
@@ -396,10 +466,12 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 按上述顺序搜索路径。使用找到的第一个可行的包配置文件，即使较新的包版本位于搜索路径列表的后面。
 
-对于包含\ ``<name>*``\ 的搜索路径，匹配路径之间的顺序是未指定的，除非设置了\
-:variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`\ 变量。该变量与\
-:variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION`\ 变量一起确定了CMake考虑匹配包含\
-``<name>*``\ 的单个搜索路径的路径的顺序。例如，文件系统中包含包配置文件
+For search paths which contain glob expressions (``*``), the order in which
+directories matching the glob are searched is unspecified unless the
+:variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` variable is set.  This variable,
+along with the :variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION` variable,
+determines the order in which CMake considers glob matches.  For example, if
+the file system contains the package configuration files
 
 ::
 
@@ -418,13 +490,21 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 .. code-block:: cmake
 
-  SET(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
-  SET(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
+  set(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
+  set(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
 
 在调用\ ``find_package``\ 之前。
 
 .. versionadded:: 3.16
    添加了\ ``CMAKE_FIND_USE_<CATEGORY>``\ 变量来全局禁用各种搜索位置。
+
+.. versionchanged:: 4.0
+   The variables :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` and
+   :variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION` now also control the order
+   in which ``find_package`` searches directories matching the glob expression
+   in the search paths ``<prefix>/<name>.framework/Versions/*/Resources/``
+   and ``<prefix>/<name>.framework/Versions/*/Resources/CMake``.  In previous
+   versions of CMake, this order was unspecified.
 
 .. include:: FIND_XXX_ROOT.txt
 .. include:: FIND_XXX_ORDER.txt
@@ -452,10 +532,17 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
   当使用配置模式时，无论给出的是\ :ref:`完整 <full signature>`\ 签名还是\
   :ref:`基础 <basic signature>`\ 签名，都会执行这个版本选择过程。
 
-当给出\ ``[version]``\ 参数时，配置模式将只查找声明与属性兼容的包的版本请求的版本（参见\
-:ref:`格式规范 <FIND_PACKAGE_VERSION_FORMAT>`）。如果给出了\ ``EXACT``\ 选项，则只有一\
-个包的版本声明精确匹配可以找到所请求版本的。CMake没有为版本号的含义建立任何约定。包版本数字\
-由包本身提供的“版本”文件或\ :module:`FetchContent`\ 检查。候选包配置文件\
+When the ``[version]`` argument is given, Config mode will only find a
+version of the package that claims compatibility with the requested
+version (see :ref:`format specification <FIND_PACKAGE_VERSION_FORMAT>`).  If
+the ``EXACT`` option is given, only a version of the package claiming an exact
+match of the requested version may be found.  CMake does not establish any
+convention for the meaning of version numbers.
+
+CMake-script
+""""""""""""
+
+对于CMake脚本包配置文件\
 ``<config-file>.cmake``\ 对应的版本文件位于它旁边，并命名为\
 ``<config-file>-version.cmake``\ 或\ ``<config-file>Version.cmake``。如果没有可用\
 的版本文件，则假定没有可用的配置文件与任何请求的版本兼容。创建包含通用版本匹配代码的基本版本\
@@ -546,10 +633,98 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 并加载相应的包配置文件。
 
+.. note::
+  While the exact behavior of version matching is determined by the individual
+  package, many packages use :command:`write_basic_package_version_file` to
+  supply this logic.  The version check scripts this produces have some notable
+  caveats with respect to version ranges:
+
+  * The upper end of a version range acts as a hard limit on what versions will
+    be accepted.  Thus, while a request for version ``1.4.0`` might be
+    satisfied by a package whose version is ``1.6.0`` and which advertises
+    'same major version' compatibility, the same package will be rejected if
+    the requested version range is ``1.4.0...1.5.0``.
+
+  * Both ends of the version range must match the package's advertised
+    compatibility level. For example, if a package advertises 'same major and
+    minor version' compatibility, requesting the version range
+    ``1.4.0...<1.5.5`` or ``1.4.0...1.5.0`` will result in that package being
+    rejected, even if the package version is ``1.4.1``.
+
+  As a result, it is not possible to use a version range to extend the range
+  of compatible package versions that will be accepted.
+
+|CPS|
+"""""
+
+For |CPS| package configuration files, package version numbers are checked by
+CMake according to the set of recognized version schemas. At present, the
+following schemas are recognized:
+
+  ``simple``
+    Version numbers are a tuple of integers followed by an optional trailing
+    segment which is ignored with respect to version comparisons.
+
+  ``custom``
+    The mechanism for interpreting version numbers is unspecified.  The version
+    strings must match exactly for the package to be accepted.
+
+Refer to |cps-version_schema|_ for a more detailed explanation of each schema
+and how comparisons for each are performed.  Note that the specification may
+include schemas that are not supported by CMake.
+
+In addition to the package's ``version``, CPS allows packages to optionally
+specify a |cps-compat_version|_, which is the oldest version for which the
+package provides compatibility.  That is, the package warrants that a consumer
+expecting the ``compat_version`` should be able to use the package, even if the
+package's actual version is newer.  If not specified, the ``compat_version``
+is implicitly equal to the package version, i.e. no backwards compatibility is
+provided.
+
+When a package uses a recognized schema, CMake will determine the package's
+acceptability according to the following rules:
+
+* If ``EXACT`` was specified, or if the package does not supply a
+  ``compat_version``, the package's ``version`` must equal the requested
+  version.
+
+* Otherwise:
+
+  * The package's ``version`` must be greater than or equal to the requested
+    (minimum) version, and
+
+  * the package's ``compat_version`` must be less than or equal to the
+    requested (minimum) version, and
+
+  * if a requested maximum version was given, it must be greater than (or equal
+    to, depending on whether the maximum version is specified as inclusive or
+    exclusive) the package's ``version``.
+
+.. note::
+  This implementation of range matching was chosen in order to most closely
+  match the behavior of :command:`write_basic_package_version_file`, albeit
+  without the case where an overly broad range matches nothing.
+
+For packages using the ``simple`` version schema, if the version is acceptable,
+the following variables are set:
+
+``<PackageName>_VERSION``
+  Full provided version string
+``<PackageName>_VERSION_MAJOR``
+  Major version if provided, else 0
+``<PackageName>_VERSION_MINOR``
+  Minor version if provided, else 0
+``<PackageName>_VERSION_PATCH``
+  Patch version if provided, else 0
+``<PackageName>_VERSION_TWEAK``
+  Tweak version if provided, else 0
+``<PackageName>_VERSION_COUNT``
+  Number of version components, non-negative
+
 包文件接口变量
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-在加载查找模块或包配置文件时，\ ``find_package``\ 定义了一些变量来提供调用参数的信息（并在\
+在加载查找模块或CMake脚本配置文件时，\ ``find_package``\ 定义了一些变量来提供调用参数的信息（并在\
 返回之前恢复它们的原始状态）：
 
 ``CMAKE_FIND_PACKAGE_NAME``
@@ -623,3 +798,12 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 ``find_package``\ 自动处理\ ``REQUIRED``、\ ``QUIET``\ 和\ ``[version]``\ 选项，但\
 将其留给包配置文件，以对包有意义的方式处理组件。包配置文件可以将\ ``<PackageName>_FOUND``\
 设置为false，以告诉\ ``find_package``\ 组件需求不满足。
+
+.. _CPS: https://cps-org.github.io/cps/
+.. |CPS| replace:: Common Package Specification
+
+.. _cps-compat_version: https://cps-org.github.io/cps/schema.html#compat-version
+.. |cps-compat_version| replace:: ``compat_version``
+
+.. _cps-version_schema: https://cps-org.github.io/cps/schema.html#version-schema
+.. |cps-version_schema| replace:: ``version_schema``

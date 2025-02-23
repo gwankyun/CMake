@@ -138,12 +138,12 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 ============================== ============ ===========
  命令行                          源目录        构建目录
 ============================== ============ ===========
- ``cmake -B build``             `cwd`        ``build``
+ ``cmake -B build``             *cwd*        ``build``
  ``cmake -B build src``         ``src``      ``build``
  ``cmake -B build -S src``      ``src``      ``build``
- ``cmake src``                  ``src``      `cwd`
- ``cmake build`` (existing)     `loaded`     ``build``
- ``cmake -S src``               ``src``      `cwd`
+ ``cmake src``                  ``src``      *cwd*
+ ``cmake build`` (existing)     *loaded*     ``build``
+ ``cmake -S src``               ``src``      *cwd*
  ``cmake -S src build``         ``src``      ``build``
  ``cmake -S src -B build``      ``src``      ``build``
 ============================== ============ ===========
@@ -259,6 +259,16 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 设置为缓存变量。当给出这个命令行选项时，\
  :variable:`CMAKE_MESSAGE_CONTEXT_SHOW`\ 将被忽略。
 
+.. option:: --sarif-output=<path>
+
+ .. versionadded:: 4.0
+
+ Enable logging of diagnostic messages produced by CMake in the SARIF format.
+
+ Write diagnostic messages to a SARIF file at the path specified. Projects can
+ also set :variable:`CMAKE_EXPORT_SARIF` to ``ON`` to enable this feature for a
+ build tree.
+
 .. option:: --debug-trycompile
 
  不要删除为\ :command:`try_compile`\ /\ :command:`try_run`\ 调用创建的文件和目录。\
@@ -332,7 +342,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
      以人类可读的格式打印每个跟踪行。这是默认格式。
 
    ``json-v1``
-     将每一行打印为一个单独的JSON文档。每个文档由换行符（``\n``）分隔。可以保证JSON文档中不会出现换行符。
+     将每一行打印为一个单独的JSON文档。每个文档由换行符（ ``\n`` ）分隔。可以保证JSON文档中不会出现换行符。
 
      .. code-block:: json
        :caption: JSON trace format
@@ -436,6 +446,14 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  忽略目标属性\ :prop_tgt:`COMPILE_WARNING_AS_ERROR`\ 和变量\
  :variable:`CMAKE_COMPILE_WARNING_AS_ERROR`，防止警告在编译时被视为错误。
+
+.. option:: --link-no-warning-as-error
+
+ .. versionadded:: 4.0
+
+ Ignore target property :prop_tgt:`LINK_WARNING_AS_ERROR` and variable
+ :variable:`CMAKE_LINK_WARNING_AS_ERROR`, preventing warnings from being
+ treated as errors on link.
 
 .. option:: --profiling-output=<path>
 

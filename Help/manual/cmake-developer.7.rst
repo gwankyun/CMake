@@ -112,7 +112,9 @@ CMake提供了一些工具来访问\ ``Windows``\ 平台上的注册表。
 在任何一种情况下（甚至在同时提供变量和导入目标时），查找模块都应该提供与具有相同名称的旧版\
 本的向后兼容性。
 
-FindFoo.cmake模块通常通过以下命令加载：\ ::
+FindFoo.cmake模块通常通过以下命令加载：
+
+.. code-block:: cmake
 
   find_package(Foo [major[.minor[.patch[.tweak]]]]
                [EXACT] [QUIET] [REQUIRED]
@@ -177,7 +179,11 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
   可选地，在一个变量中列出供客户端代码使用的库目录的最终集。这不应该是缓存项。
 
 ``Xxx_ROOT_DIR``
-  在哪里可以找到模块的基目录。
+  The base directory of the installation of ``Xxx`` that can be optionally set
+  by the find module if ``Xxx`` is found. This is useful for large packages
+  where many files need to be referenced relative to a common base (or root)
+  directory. Not to be confused with the ``Xxx_ROOT`` hint variable set from the
+  outside for the find module to know where to look for the ``Xxx``.
 
 ``Xxx_VERSION_VV``
   该表单的变量指定所提供的\ ``Xxx``\ 模块是否为该模块的\ ``VV``\ 版本。对于给定的模块，\
@@ -336,19 +342,20 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
 
 这应该定义一些从\ ``PC_Foo_``\ 开始的变量，其中包含来自\ ``Foo.pc``\ 文件的信息。
 
-现在我们需要找到库并包含文件；我们使用\ ``pkg-config``\ 中的信息为CMake提供有关查找位置的\
-提示。
+Now we need to find the libraries and include files; we use the
+information from ``pkg-config`` to provide hints to CMake about where to
+look before checking other default paths.
 
 .. code-block:: cmake
 
   find_path(Foo_INCLUDE_DIR
     NAMES foo.h
-    PATHS ${PC_Foo_INCLUDE_DIRS}
+    HINTS ${PC_Foo_INCLUDE_DIRS}
     PATH_SUFFIXES Foo
   )
   find_library(Foo_LIBRARY
     NAMES foo
-    PATHS ${PC_Foo_LIBRARY_DIRS}
+    HINTS ${PC_Foo_LIBRARY_DIRS}
   )
 
 或者，如果库有多个配置可用，你可以使用\ :module:`SelectLibraryConfigurations`\ 来自动\
@@ -358,11 +365,11 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
 
   find_library(Foo_LIBRARY_RELEASE
     NAMES foo
-    PATHS ${PC_Foo_LIBRARY_DIRS}/Release
+    HINTS ${PC_Foo_LIBRARY_DIRS}/Release
   )
   find_library(Foo_LIBRARY_DEBUG
     NAMES foo
-    PATHS ${PC_Foo_LIBRARY_DIRS}/Debug
+    HINTS ${PC_Foo_LIBRARY_DIRS}/Debug
   )
 
   include(SelectLibraryConfigurations)
@@ -382,7 +389,6 @@ FindFoo.cmake模块通常通过以下命令加载：\ ::
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Foo
-    FOUND_VAR Foo_FOUND
     REQUIRED_VARS
       Foo_LIBRARY
       Foo_INCLUDE_DIR

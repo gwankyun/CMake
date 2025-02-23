@@ -72,7 +72,7 @@ CMake原生支持模块依赖扫描的编译器包括：
 :variable:`CMAKE_CXX_COMPILER_IMPORT_STD`\ 变量可用于检测当前C++工具链对标准级别的支持\
 情况。
 
-.. note ::
+.. note::
 
    只有在实验性支持\ ``import std;``\ 并已开启\ ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD``\
    开关时才提供这种支持。

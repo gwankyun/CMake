@@ -267,7 +267,7 @@ CMake在何处安装这些目标。
 
    include(GNUInstallDirs)
    include(${INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/MathFunctions/MathFunctionTargets.cmake)
-   add_executable(myexe src1.c src2.c )
+   add_executable(myexe src1.c src2.c)
    target_link_libraries(myexe PRIVATE MathFunctions::MathFunctions)
 
 第2行加载目标CMake文件。尽管我们只导出了一个目标，但该文件可以导入任意数量的目标。它们的位置\
@@ -327,7 +327,7 @@ CMake在何处安装这些目标。
   :start-after: # create config file
   :end-before: # install config files
 
-使用\ :command:`INSTALL(files)`\ 命令安装生成的配置文件。\
+使用\ :command:`install(FILES)`\ 命令安装生成的配置文件。\
 ``MathFunctionsConfigVersion.cmake``\ 和\ ``MathFunctionsConfig.cmake``\ 都安装在\
 相同的位置，组成一个包。
 

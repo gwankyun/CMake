@@ -207,7 +207,7 @@ Usage of mpiexec
 When using ``MPIEXEC_EXECUTABLE`` to execute MPI applications, you should typically
 use all of the ``MPIEXEC_EXECUTABLE`` flags as follows:
 
-::
+.. code-block:: cmake
 
    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
      ${MPIEXEC_PREFLAGS} EXECUTABLE ${MPIEXEC_POSTFLAGS} ARGS
@@ -264,10 +264,9 @@ Additionally, the following variables are deprecated:
 #]=======================================================================]
 
 cmake_policy(PUSH)
-cmake_policy(SET CMP0057 NEW) # if IN_LIST
 cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 find_package(PkgConfig QUIET)
 
 # Generic compiler names
@@ -439,25 +438,25 @@ function (_MPI_interrogate_compiler LANG)
   # It's possible to have a per-compiler configuration in these MPI implementations and
   # a particular MPICH derivate might check compiler interoperability.
   # Intel MPI in particular does this with I_MPI_CHECK_COMPILER.
-  file(TO_NATIVE_PATH "${CMAKE_${LANG}_COMPILER}" _MPI_UNDERLAYING_COMPILER)
+  file(TO_NATIVE_PATH "${CMAKE_${LANG}_COMPILER}" _MPI_UNDERLYING_COMPILER)
   # On Windows, the Intel MPI batch scripts can only work with filenames - Full paths will break them.
   # Due to the lack of other MPICH-based wrappers for Visual C++, we may treat this as default.
   if(MSVC)
-    get_filename_component(_MPI_UNDERLAYING_COMPILER "${_MPI_UNDERLAYING_COMPILER}" NAME)
+    get_filename_component(_MPI_UNDERLYING_COMPILER "${_MPI_UNDERLYING_COMPILER}" NAME)
   endif()
   if(LANG STREQUAL "C")
-    _MPI_env_set_ifnot(I_MPI_CC _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(MPICH_CC _MPI_UNDERLAYING_COMPILER)
+    _MPI_env_set_ifnot(I_MPI_CC _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(MPICH_CC _MPI_UNDERLYING_COMPILER)
   elseif(LANG STREQUAL "CXX")
-    _MPI_env_set_ifnot(I_MPI_CXX _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(MPICH_CXX _MPI_UNDERLAYING_COMPILER)
+    _MPI_env_set_ifnot(I_MPI_CXX _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(MPICH_CXX _MPI_UNDERLYING_COMPILER)
   elseif(LANG STREQUAL "Fortran")
-    _MPI_env_set_ifnot(I_MPI_FC _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(MPICH_FC _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(I_MPI_F77 _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(MPICH_F77 _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(I_MPI_F90 _MPI_UNDERLAYING_COMPILER)
-    _MPI_env_set_ifnot(MPICH_F90 _MPI_UNDERLAYING_COMPILER)
+    _MPI_env_set_ifnot(I_MPI_FC _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(MPICH_FC _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(I_MPI_F77 _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(MPICH_F77 _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(I_MPI_F90 _MPI_UNDERLYING_COMPILER)
+    _MPI_env_set_ifnot(MPICH_F90 _MPI_UNDERLYING_COMPILER)
   endif()
 
   # Set these two variables for Intel MPI:
@@ -618,11 +617,13 @@ function (_MPI_interrogate_compiler LANG)
     # At this point, we obtained some output from a compiler wrapper that works.
     # We'll now try to parse it into variables with meaning to us.
     if(LANG STREQUAL "Fortran")
+      # noqa: spellcheck off
       # If MPICH (and derivates) didn't recognize the Fortran compiler include flag during configuration,
       # they'll return a set of three commands, consisting out of a symlink command for mpif.h,
       # the actual compiler command and deletion of the created symlink.
       # Especially with M(VA)PICH-1, this appears to happen erroneously, and therefore we should translate
       # this output into an additional include directory and then drop it from the output.
+      # noqa: spellcheck on
       if(MPI_COMPILE_CMDLINE MATCHES "^ln -s ([^\" ]+|\"[^\"]+\") mpif.h")
         get_filename_component(MPI_INCLUDE_DIRS_WORK "${CMAKE_MATCH_1}" DIRECTORY)
         string(REGEX REPLACE "^ln -s ([^\" ]+|\"[^\"]+\") mpif.h\n" "" MPI_COMPILE_CMDLINE "${MPI_COMPILE_CMDLINE}")
@@ -687,7 +688,7 @@ function (_MPI_interrogate_compiler LANG)
     MPI_ALL_INCLUDE_PATHS "${MPI_COMPILE_CMDLINE}")
 
   # If extracting failed to work, we'll try using -showme:incdirs.
-  # Unlike before, we do this without the environment variables set up, but since only MPICH derivates are affected by any of them, and
+  # Unlike before, we do this without the environment variables set up, but since only MPICH derivatives are affected by any of them, and
   # -showme:... is only supported by Open MPI and LAM/MPI, this isn't a concern.
   if (NOT MPI_ALL_INCLUDE_PATHS)
     _MPI_check_compiler(${LANG} "-showme:incdirs" MPI_INCDIRS_CMDLINE MPI_INCDIRS_COMPILER_RETURN)
@@ -955,6 +956,7 @@ function(_MPI_guess_settings LANG)
         # Should a user be employing PGI or have built its own set and provided it via cache variables, the
         # splitting routine would have located the module files.
 
+        # noqa: spellcheck off
         # For C and C++, we're done here (MSMPI does not ship the MPI-2 C++ bindings) - however, for Fortran
         # we need some extra library to glue Fortran support together:
         # MSMPI ships 2-4 Fortran libraries, each for different Fortran compiler behaviors. The library names
@@ -964,6 +966,7 @@ function(_MPI_guess_settings LANG)
         # The second difference is the last but one letter, if it's an e(nd), the length of a string argument is
         # passed by the Fortran compiler after all other arguments on the parameter list, if it's an m(ixed),
         # it's passed immediately after the string address.
+        # noqa: spellcheck on
 
         # To summarize:
         #   - msmpifec: CHARACTER length passed after the parameter list and using cdecl calling convention
@@ -1313,7 +1316,7 @@ macro(_MPI_check_lang_works LANG SUPPRESS_ERRORS)
           set(MPI_${LANG}_HAVE_${mpimethod} FALSE)
         endif()
       endforeach()
-      # MPI-1 versions had no MPI_INTGER_KIND defined, so we need to try without it.
+      # MPI-1 versions had no MPI_INTEGER_KIND defined, so we need to try without it.
       # However, MPI-1 also did not define the Fortran 90 and 08 modules, so we only try the F77 header.
       unset(MPI_Fortran_INTEGER_LINE)
       if(NOT MPI_${LANG}_WORKS)

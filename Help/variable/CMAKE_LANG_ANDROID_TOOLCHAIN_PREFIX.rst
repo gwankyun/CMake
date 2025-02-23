@@ -9,6 +9,8 @@ CMAKE_<LANG>_ANDROID_TOOLCHAIN_PREFIX
 See also :variable:`CMAKE_<LANG>_ANDROID_TOOLCHAIN_SUFFIX`
 and :variable:`CMAKE_<LANG>_ANDROID_TOOLCHAIN_MACHINE`.
 
-For example, the path to the linker is::
+For example, the path to the linker is:
+
+.. code-block:: cmake
 
   ${CMAKE_CXX_ANDROID_TOOLCHAIN_PREFIX}ld${CMAKE_CXX_ANDROID_TOOLCHAIN_SUFFIX}

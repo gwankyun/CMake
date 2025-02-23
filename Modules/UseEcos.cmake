@@ -62,7 +62,7 @@ else ()
   message(STATUS "tlcsh found: ${TCL_TCLSH}")
 endif ()
 
-#add the globale include-diretories
+#add the global include-directories
 #usage: ECOS_ADD_INCLUDE_DIRECTORIES()
 macro(ECOS_ADD_INCLUDE_DIRECTORIES)
 #check for ProjectSources.txt one level higher
@@ -243,4 +243,3 @@ macro(ECOS_ADD_EXECUTABLE _exe_NAME )
     COMMAND ${ECOS_ARCH_PREFIX}objdump -S -x -d -C ${CMAKE_CURRENT_BINARY_DIR}/${_exe_NAME}.elf >> ${CMAKE_CURRENT_BINARY_DIR}/${_exe_NAME}.lst )
 
 endmacro()
-

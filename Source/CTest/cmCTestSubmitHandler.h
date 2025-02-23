@@ -4,7 +4,6 @@
 
 #include "cmConfigure.h" // IWYU pragma: keep
 
-#include <cstddef>
 #include <iosfwd>
 #include <set>
 #include <string>
@@ -24,20 +23,13 @@ class cmCTestSubmitHandler : public cmCTestGenericHandler
 public:
   using Superclass = cmCTestGenericHandler;
 
-  cmCTestSubmitHandler();
+  cmCTestSubmitHandler(cmCTest* ctest);
   ~cmCTestSubmitHandler() override { this->LogFile = nullptr; }
 
   /*
    * The main entry point for this class
    */
   int ProcessHandler() override;
-
-  void Initialize() override;
-
-  //! Set all the submit arguments
-  int ProcessCommandLineArguments(const std::string& currentArg, size_t& idx,
-                                  const std::vector<std::string>& allArgs,
-                                  bool& validArg) override;
 
   /** Specify a set of parts (by name) to submit.  */
   void SelectParts(std::set<cmCTest::Part> const& parts);
@@ -50,12 +42,7 @@ public:
 
   void SetHttpHeaders(std::vector<std::string> const& v)
   {
-    if (this->CommandLineHttpHeaders.empty()) {
-      this->HttpHeaders = v;
-    } else {
-      this->HttpHeaders = this->CommandLineHttpHeaders;
-      this->HttpHeaders.insert(this->HttpHeaders.end(), v.begin(), v.end());
-    }
+    this->HttpHeaders.insert(this->HttpHeaders.end(), v.begin(), v.end());
   }
 
 private:
@@ -64,10 +51,10 @@ private:
   /**
    * Submit file using various ways
    */
-  bool SubmitUsingHTTP(const std::string& localprefix,
-                       const std::vector<std::string>& files,
-                       const std::string& remoteprefix,
-                       const std::string& url);
+  bool SubmitUsingHTTP(std::string const& localprefix,
+                       std::vector<std::string> const& files,
+                       std::string const& remoteprefix,
+                       std::string const& url);
 
   using cmCTestSubmitHandlerVectorOfChar = std::vector<char>;
 
@@ -79,13 +66,22 @@ private:
   class ResponseParser;
 
   std::string HTTPProxy;
-  int HTTPProxyType;
+  int HTTPProxyType = 0;
   std::string HTTPProxyAuth;
-  std::ostream* LogFile;
+  std::ostream* LogFile = nullptr;
   bool SubmitPart[cmCTest::PartCount];
-  bool HasWarnings;
-  bool HasErrors;
+  bool HasWarnings = false;
+  bool HasErrors = false;
   std::set<std::string> Files;
-  std::vector<std::string> CommandLineHttpHeaders;
   std::vector<std::string> HttpHeaders;
+
+  bool CDashUpload = false;
+  bool InternalTest = false;
+
+  std::string CDashUploadFile;
+  std::string CDashUploadType;
+  std::string RetryCount;
+  std::string RetryDelay;
+
+  friend class cmCTestSubmitCommand;
 };

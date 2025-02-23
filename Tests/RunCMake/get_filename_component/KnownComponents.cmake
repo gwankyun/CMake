@@ -1,7 +1,7 @@
 # Assertion macro
 macro(check desc actual expect)
   if(NOT "x${actual}" STREQUAL "x${expect}")
-    message(SEND_ERROR "${desc}: got \"${actual}\", not \"${expect}\"")
+    message(SEND_ERROR "${desc}: got\n  \"${actual}\"\nnot\n  \"${expect}\"")
   endif()
 endmacro()
 
@@ -159,3 +159,11 @@ foreach(thisVar ${non_cache_vars})
     message(SEND_ERROR "${thisVar} not found in regular variable list.")
   endif()
 endforeach()
+
+if(UNIX)
+  file(MAKE_DIRECTORY . "${CMAKE_CURRENT_BINARY_DIR}/subdir")
+  file(CREATE_LINK . "${CMAKE_CURRENT_BINARY_DIR}/subdir/symlink-to-dot" SYMBOLIC)
+  get_filename_component(realpath_actual "${CMAKE_CURRENT_BINARY_DIR}/subdir/symlink-to-dot/.." REALPATH)
+  get_filename_component(realpath_expect "${CMAKE_CURRENT_BINARY_DIR}" REALPATH)
+  check("symlink parent" "${realpath_actual}" "${realpath_expect}")
+endif(UNIX)

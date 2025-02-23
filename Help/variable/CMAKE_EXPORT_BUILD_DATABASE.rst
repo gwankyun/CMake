@@ -3,7 +3,7 @@ CMAKE_EXPORT_BUILD_DATABASE
 
 .. versionadded:: 3.31
 
-.. note ::
+.. note::
 
    只有在\ ``CMAKE_EXPERIMENTAL_EXPORT_BUILD_DATABASE``\ 开关启用了对构建数据库的实验\
    性支持时，该变量才有意义。

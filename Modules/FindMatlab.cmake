@@ -109,7 +109,7 @@ behavior:
   additional versions of Matlab for the automatic retrieval of the installed
   versions.
 
-Imported targets
+Imported Targets
 ^^^^^^^^^^^^^^^^
 
 .. versionadded:: 3.22
@@ -277,7 +277,9 @@ Reference
 
   If set, specifies additional versions of Matlab that may be looked for.
   The variable should be a list of strings, organized by pairs of release
-  name and versions, such as follows::
+  name and versions, such as follows:
+
+  .. code-block:: cmake
 
     set(MATLAB_ADDITIONAL_VERSIONS
         "release_name1=corresponding_version1"
@@ -285,7 +287,9 @@ Reference
         ...
         )
 
-  Example::
+  Example:
+
+  .. code-block:: cmake
 
     set(MATLAB_ADDITIONAL_VERSIONS
         "R2013b=8.2"
@@ -298,12 +302,11 @@ Reference
 #]=======================================================================]
 
 cmake_policy(PUSH)
-cmake_policy(SET CMP0057 NEW) # if IN_LIST
 cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 
 set(_FindMatlab_SELF_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 if(NOT WIN32 AND NOT APPLE AND NOT Threads_FOUND
     AND (CMAKE_C_COMPILER_LOADED OR CMAKE_CXX_COMPILER_LOADED))
@@ -2080,7 +2083,6 @@ set(Matlab_VERSION ${Matlab_VERSION_STRING})
 
 find_package_handle_standard_args(
   Matlab
-  FOUND_VAR Matlab_FOUND
   REQUIRED_VARS ${_matlab_required_variables}
   VERSION_VAR Matlab_VERSION
   HANDLE_VERSION_RANGE

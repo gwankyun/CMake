@@ -7,7 +7,9 @@ CMakeFindDependencyMacro
 
 .. command:: find_dependency
 
-  ``find_dependency()``\ 宏封装了对包依赖的\ :command:`find_package`\ 调用：\ ::
+  ``find_dependency()``\ 宏封装了对包依赖的\ :command:`find_package`\ 调用：
+
+  .. code-block:: cmake
 
     find_dependency(<dep> [...])
 

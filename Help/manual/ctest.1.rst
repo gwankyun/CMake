@@ -296,16 +296,31 @@ ctest(1)
  设置要在输出中显示的每个测试名称的最大宽度。这允许用户扩大输出，以避免剪切测试名称，这可能\
  是非常烦人的。
 
-.. option:: --interactive-debug-mode [0|1]
+.. option:: --interactive-debug-mode <0|1>
 
- 设置交互模式为\ ``0``\ 或\ ``1``。
+ Disable (``0``) or enable (``1``) interactive debug mode.
 
  此选项可使CTest以交互模式或非交互模式运行测试。在仪表板模式下（\ ``Experimental``、\
  ``Nightly``、\ ``Continuous``），默认为非交互式。在非交互模式下，设置环境变量\
  :envvar:`DASHBOARD_TEST_FROM_CTEST`。
 
- 在CMake 3.11之前，Windows上的交互模式允许出现系统调试弹出窗口。现在，由于CTest使用\
- ``libuv``\ 来启动测试进程，所有系统调试弹出窗口总是被禁止。
+ Interactive Mode allows Windows Error Reporting (WER) to show debug popup
+ windows and to create core dumps.  To enable core dumps in tests,
+ use interactive mode, and follow the Windows documentation
+ on `Collecting User-Mode Dumps`_.
+
+ .. versionchanged:: 4.0
+   Windows Error Reporting (WER) is enabled in interactive mode, so
+   test processes may show debug popup windows and create core dumps.
+   This was made possible by updates to ``libuv``.
+
+ .. versionchanged:: 3.11
+   Windows Error Reporting (WER) is disabled in both interactive and
+   non-interactive modes, so test processes do not show popup windows
+   or create core dumps.  This is due to launching test processes with
+   ``libuv``.
+
+.. _`Collecting User-Mode Dumps`: https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps
 
 .. option:: --no-label-summary
 
@@ -357,10 +372,8 @@ ctest(1)
 
 .. option:: --force-new-ctest-process
 
- 将子CTest实例作为新进程运行。
-
- 默认情况下，CTest将在同一进程中运行子CTest实例。如果不需要这种行为，这个参数将为子CTest进\
- 程强制新的进程。
+ Ignored.  This option once disabled a now-removed optimization
+ for tests running ``ctest`` itself.
 
 .. option:: --schedule-random
 
@@ -454,7 +467,7 @@ CTest打印与测试运行相关联的每个\ ``LABEL``\ 和子项目的计时�
   在测试执行期间动态添加的标签也会在计时摘要中报告。请参阅\ :ref:`Additional Labels`。
 
 当设置了 :prop_test:`PROCESSORS` 测试属性时，CTest将在标签和子项目摘要中显示加权测试计时\
-结果。时间是用\ `sec*proc`\ 报告的，而不仅仅是\ `sec`。
+结果。时间是用\ ``sec * proc``\ 报告的，而不仅仅是\ ``sec``。
 
 每个标签或子项目\ ``j``\ 报告的加权时间汇总计算为：\ ::
 
@@ -667,9 +680,8 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
 
 .. option:: --extra-submit <file>[;<file>]
 
- 向仪表板提交额外的文件。
-
- 此选项将向指示板提交额外的文件。
+ Submit extra ``.xml`` part files to the dashboard.
+ See the :command:`ctest_submit` command's ``PARTS ExtraFiles`` option.
 
 .. option:: --http-header <header>
 
@@ -681,9 +693,9 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
 
 .. option:: --http1.0
 
- 使用\ `HTTP 1.0`\ 提交。
+ 使用\ ``HTTP 1.0``\ 提交。
 
- 这个选项将强制CTest使用\ `HTTP 1.0`\ 向仪表板提交文件，而不是\ `HTTP 1.1`。
+ 这个选项将强制CTest使用\ ``HTTP 1.0``\ 向仪表板提交文件，而不是\ ``HTTP 1.1``。
 
 .. option:: --no-compress-output
 
@@ -1303,7 +1315,7 @@ CTest提交步骤
 
   * `CTest Script`_\ 变量：:variable:`CTEST_DROP_SITE_PASSWORD`
   * :module:`CTest`\ 变量：如果设置了，则为\ ``DROP_SITE_PASSWORD``，否则\
-    ``CTEST_DROP_SITE_PASWORD``
+    ``CTEST_DROP_SITE_PASSWORD``
 
 ``DropSiteUser``
   遗留的选择。当未设置 ``SubmitURL`` 时，它由\ ``DropMethod``、\ ``DropSiteUser``、\

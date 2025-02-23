@@ -15,7 +15,6 @@
 
 #include "cmEvaluatedTargetProperty.h"
 #include "cmGeneratorExpressionDAGChecker.h"
-#include "cmGlobalGenerator.h"
 #include "cmLinkItem.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
@@ -60,8 +59,6 @@ void processLinkDirectories(cmGeneratorTarget const* tgt,
             case cmPolicies::OLD:
               noMessage = true;
               break;
-            case cmPolicies::REQUIRED_IF_USED:
-            case cmPolicies::REQUIRED_ALWAYS:
             case cmPolicies::NEW:
               // Issue the fatal message.
               break;
@@ -100,8 +97,8 @@ void processLinkDirectories(cmGeneratorTarget const* tgt,
 }
 
 void cmGeneratorTarget::GetLinkDirectories(std::vector<std::string>& result,
-                                           const std::string& config,
-                                           const std::string& language) const
+                                           std::string const& config,
+                                           std::string const& language) const
 {
   std::vector<BT<std::string>> tmp =
     this->GetLinkDirectories(config, language);
@@ -133,9 +130,7 @@ std::vector<BT<std::string>> cmGeneratorTarget::GetLinkDirectories(
   bool debugDirectories = !this->DebugLinkDirectoriesDone &&
     cm::contains(debugProperties, "LINK_DIRECTORIES");
 
-  if (this->GlobalGenerator->GetConfigureDoneCMP0026()) {
-    this->DebugLinkDirectoriesDone = true;
-  }
+  this->DebugLinkDirectoriesDone = true;
 
   EvaluatedTargetPropertyEntries entries = EvaluateTargetPropertyEntries(
     this, config, language, &dagChecker, this->LinkDirectoriesEntries);

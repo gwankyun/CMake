@@ -3,7 +3,9 @@
   和\ :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>`\ 目标属性一起使用。
 
 ``WHOLE_ARCHIVE``
-  强制包含静态库的所有成员。此功能仅支持以下平台，其局限性如下所示：
+  Force inclusion of all members of a static library when linked as a
+  dependency of consuming :ref:`Executables`, :ref:`Shared Libraries`,
+  and :ref:`Module Libraries`.此功能仅支持以下平台，其局限性如下所示：
 
   * Linux.
   * 所有BSD变体.
@@ -14,6 +16,14 @@
   * Windows。当使用MSVC或类似MSVC的工具链时，MSVC版本必须大于1900。
   * Cygwin.
   * MSYS.
+
+  .. note::
+
+    Since :ref:`Static Libraries` are archives and not linked binaries,
+    CMake records their link dependencies for transitive use when linking
+    consuming binaries.  Therefore ``WHOLE_ARCHIVE`` does not cause a
+    static library's objects to be included in other static libraries.
+    Use :ref:`Object Libraries` for that.
 
 ``FRAMEWORK``
   该选项告诉链接器使用\ ``-framework``\ 链接器选项搜索指定的框架。它只能在苹果平台上使用，\
@@ -33,9 +43,9 @@
 
   文件路径必须符合以下模式之一（``*``\ 为通配符，可选部分显示为\ ``[...]``）：
 
-     * ``[/path/to/]FwName[.framework]``
-     * ``[/path/to/]FwName.framework/FwName[suffix]``
-     * ``[/path/to/]FwName.framework/Versions/*/FwName[suffix]``
+  * ``[/path/to/]FwName[.framework]``
+  * ``[/path/to/]FwName.framework/FwName[suffix]``
+  * ``[/path/to/]FwName.framework/Versions/*/FwName[suffix]``
 
   注意，CMake识别并自动处理框架目标，即使不使用\ :genex:`$<LINK_LIBRARY:FRAMEWORK,...>`\
   表达式。生成器表达式仍然可以与CMake目标一起使用，如果项目想显式地使用它，但并不要求这样做。\

@@ -12,6 +12,8 @@ if(CMAKE_GENERATOR MATCHES "Visual Studio")
   # MSBuild invokes the "link" tool directly.
   set(_IntelLLVM_LINKER_WRAPPER_FLAG "")
   set(_IntelLLVM_LINKER_WRAPPER_FLAG_SEP "")
+
+  set(CMAKE_${lang}_LINK_MODE LINKER)
 else()
   # Our rules below drive linking through the compiler front-end.
   # Wrap flags meant for the linker.
@@ -27,6 +29,10 @@ macro(__windows_compiler_intel lang)
 
   set(CMAKE_${lang}_LINKER_WRAPPER_FLAG "${_IntelLLVM_LINKER_WRAPPER_FLAG}")
   set(CMAKE_${lang}_LINKER_WRAPPER_FLAG_SEP "${_IntelLLVM_LINKER_WRAPPER_FLAG_SEP}")
+  # ARCHIVER: prefix use same values as LINKER: one.
+  set(CMAKE_${lang}_ARCHIVER_WRAPPER_FLAG "${CMAKE_${lang}_LINKER_WRAPPER_FLAG}")
+  set(CMAKE_${lang}_ARCHIVER_WRAPPER_FLAG_SEP "${CMAKE_${lang}_LINKER_WRAPPER_FLAG_SEP}")
+
   set(CMAKE_${lang}_CREATE_WIN32_EXE "${CMAKE_${lang}_LINKER_WRAPPER_FLAG}/subsystem:windows")
   set(CMAKE_${lang}_CREATE_CONSOLE_EXE "${CMAKE_${lang}_LINKER_WRAPPER_FLAG}/subsystem:console")
   set(CMAKE_LINK_DEF_FILE_FLAG "${CMAKE_${lang}_LINKER_WRAPPER_FLAG}/DEF:")

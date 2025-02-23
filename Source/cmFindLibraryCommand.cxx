@@ -3,10 +3,13 @@
 #include "cmFindLibraryCommand.h"
 
 #include <algorithm>
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <set>
 #include <utility>
+
+#include <cm/optional>
 
 #include "cmsys/RegularExpression.hxx"
 
@@ -76,7 +79,7 @@ bool cmFindLibraryCommand::InitialPass(std::vector<std::string> const& argsIn)
   return true;
 }
 
-void cmFindLibraryCommand::AddArchitecturePaths(const char* suffix)
+void cmFindLibraryCommand::AddArchitecturePaths(char const* suffix)
 {
   std::vector<std::string> original;
   original.swap(this->SearchPaths);
@@ -105,7 +108,7 @@ static bool cmLibDirsLinked(std::string const& l, std::string const& r)
 }
 
 void cmFindLibraryCommand::AddArchitecturePath(
-  std::string const& dir, std::string::size_type start_pos, const char* suffix,
+  std::string const& dir, std::string::size_type start_pos, char const* suffix,
   bool fresh)
 {
   std::string::size_type pos = dir.find("lib/", start_pos);
@@ -200,7 +203,9 @@ struct cmFindLibraryHelper
   cmList Prefixes;
   cmList Suffixes;
   std::string PrefixRegexStr;
+  std::string ICasePrefixRegexStr; // case insensitive
   std::string SuffixRegexStr;
+  std::string ICaseSuffixRegexStr; // case insensitive
 
   // Keep track of the best library file found so far.
   using size_type = std::vector<std::string>::size_type;
@@ -217,14 +222,14 @@ struct cmFindLibraryHelper
     bool TryRaw = false;
     std::string Raw;
     cmsys::RegularExpression Regex;
+    cmsys::RegularExpression ICaseRegex; // case insensitive
   };
   std::vector<Name> Names;
 
-  // Current full path under consideration.
-  std::string TestPath;
-
-  void RegexFromLiteral(std::string& out, std::string const& in);
-  void RegexFromList(std::string& out, cmList const& in);
+  void RegexFromLiteral(std::string& out, std::string const& in,
+                        cmSystemTools::DirCase dirCase);
+  void RegexFromList(std::string& out, cmList const& in,
+                     cmSystemTools::DirCase dirCase);
   size_type GetPrefixIndex(std::string const& prefix)
   {
     return std::find(this->Prefixes.begin(), this->Prefixes.end(), prefix) -
@@ -241,7 +246,7 @@ struct cmFindLibraryHelper
   bool CheckDirectory(std::string const& path);
   bool CheckDirectoryForName(std::string const& path, Name& name);
 
-  bool Validate(const std::string& path) const
+  bool Validate(std::string const& path) const
   {
     return this->FindBase->Validate(path);
   }
@@ -253,9 +258,9 @@ struct cmFindLibraryHelper
     if (this->DebugMode) {
       // To improve readability of the debug output, if there is only one
       // prefix/suffix, use the plain prefix/suffix instead of the regex.
-      const auto& prefix = (this->Prefixes.size() == 1) ? this->Prefixes[0]
+      auto const& prefix = (this->Prefixes.size() == 1) ? this->Prefixes[0]
                                                         : this->PrefixRegexStr;
-      const auto& suffix = (this->Suffixes.size() == 1) ? this->Suffixes[0]
+      auto const& suffix = (this->Suffixes.size() == 1) ? this->Suffixes[0]
                                                         : this->SuffixRegexStr;
 
       auto regexName = cmStrCat(prefix, name, suffix);
@@ -316,8 +321,14 @@ cmFindLibraryHelper::cmFindLibraryHelper(std::string debugName, cmMakefile* mf,
 
   this->Prefixes.assign(prefixes_list, cmList::EmptyElements::Yes);
   this->Suffixes.assign(suffixes_list, cmList::EmptyElements::Yes);
-  this->RegexFromList(this->PrefixRegexStr, this->Prefixes);
-  this->RegexFromList(this->SuffixRegexStr, this->Suffixes);
+  this->RegexFromList(this->PrefixRegexStr, this->Prefixes,
+                      cmSystemTools::DirCase::Sensitive);
+  this->RegexFromList(this->ICasePrefixRegexStr, this->Prefixes,
+                      cmSystemTools::DirCase::Insensitive);
+  this->RegexFromList(this->SuffixRegexStr, this->Suffixes,
+                      cmSystemTools::DirCase::Sensitive);
+  this->RegexFromList(this->ICaseSuffixRegexStr, this->Suffixes,
+                      cmSystemTools::DirCase::Insensitive);
 
   // Check whether to use OpenBSD-style library version comparisons.
   this->IsOpenBSD = this->Makefile->GetState()->GetGlobalPropertyAsBool(
@@ -325,7 +336,8 @@ cmFindLibraryHelper::cmFindLibraryHelper(std::string debugName, cmMakefile* mf,
 }
 
 void cmFindLibraryHelper::RegexFromLiteral(std::string& out,
-                                           std::string const& in)
+                                           std::string const& in,
+                                           cmSystemTools::DirCase dirCase)
 {
   for (char ch : in) {
     if (ch == '[' || ch == ']' || ch == '(' || ch == ')' || ch == '\\' ||
@@ -333,27 +345,28 @@ void cmFindLibraryHelper::RegexFromLiteral(std::string& out,
         ch == '^' || ch == '$') {
       out += "\\";
     }
-#if defined(_WIN32) || defined(__APPLE__)
-    out += static_cast<char>(tolower(ch));
-#else
-    out += ch;
-#endif
+    if (dirCase == cmSystemTools::DirCase::Insensitive) {
+      out += static_cast<char>(tolower(ch));
+    } else {
+      out += ch;
+    }
   }
 }
 
-void cmFindLibraryHelper::RegexFromList(std::string& out, cmList const& in)
+void cmFindLibraryHelper::RegexFromList(std::string& out, cmList const& in,
+                                        cmSystemTools::DirCase dirCase)
 {
   // Surround the list in parens so the '|' does not apply to anything
   // else and the result can be checked after matching.
   out += "(";
-  const char* sep = "";
+  char const* sep = "";
   for (auto const& s : in) {
     // Separate from previous item.
     out += sep;
     sep = "|";
 
     // Append this item.
-    this->RegexFromLiteral(out, s);
+    this->RegexFromLiteral(out, s, dirCase);
   }
   out += ")";
 }
@@ -387,14 +400,29 @@ void cmFindLibraryHelper::AddName(std::string const& name)
   entry.Raw = name;
 
   // Build a regular expression to match library names.
-  std::string regex = cmStrCat('^', this->PrefixRegexStr);
-  this->RegexFromLiteral(regex, name);
-  regex += this->SuffixRegexStr;
-  if (this->IsOpenBSD) {
-    regex += "(\\.[0-9]+\\.[0-9]+)?";
+  {
+    std::string regex = cmStrCat('^', this->PrefixRegexStr);
+    this->RegexFromLiteral(regex, name, cmSystemTools::DirCase::Sensitive);
+    regex += this->SuffixRegexStr;
+    if (this->IsOpenBSD) {
+      regex += "(\\.[0-9]+\\.[0-9]+)?";
+    }
+    regex += "$";
+    entry.Regex.compile(regex);
   }
-  regex += "$";
-  entry.Regex.compile(regex);
+
+  // case insensitive version
+  {
+    std::string regex = cmStrCat('^', this->ICasePrefixRegexStr);
+    this->RegexFromLiteral(regex, name, cmSystemTools::DirCase::Insensitive);
+    regex += this->ICaseSuffixRegexStr;
+    if (this->IsOpenBSD) {
+      regex += "(\\.[0-9]+\\.[0-9]+)?";
+    }
+    regex += "$";
+    entry.ICaseRegex.compile(regex);
+  }
+
   this->Names.push_back(std::move(entry));
 }
 
@@ -423,20 +451,17 @@ bool cmFindLibraryHelper::CheckDirectoryForName(std::string const& path,
   // one cannot tell just from the library name whether it is a static
   // library or an import library).
   if (name.TryRaw) {
-    this->TestPath = cmStrCat(path, name.Raw);
+    std::string testPath = cmStrCat(path, name.Raw);
 
-    const bool exists = cmSystemTools::FileExists(this->TestPath, true);
-    if (!exists) {
-      this->DebugLibraryFailed(name.Raw, path);
-    } else {
-      auto testPath = cmSystemTools::CollapseFullPath(this->TestPath);
+    if (cmSystemTools::FileExists(testPath, true)) {
+      testPath = cmSystemTools::ToNormalizedPathOnDisk(testPath);
       if (this->Validate(testPath)) {
         this->DebugLibraryFound(name.Raw, path);
         this->BestPath = testPath;
         return true;
       }
-      this->DebugLibraryFailed(name.Raw, path);
     }
+    this->DebugLibraryFailed(name.Raw, path);
   }
 
   // No library file has yet been found.
@@ -446,41 +471,45 @@ bool cmFindLibraryHelper::CheckDirectoryForName(std::string const& path,
   unsigned int bestMinor = 0;
 
   // Search for a file matching the library name regex.
-  std::string dir = path;
-  cmSystemTools::ConvertToUnixSlashes(dir);
-  std::set<std::string> const& files = this->GG->GetDirectoryContent(dir);
+  cm::optional<cmSystemTools::DirCase> dirCase =
+    cmSystemTools::GetDirCase(path).value_or(
+      cmSystemTools::DirCase::Sensitive);
+  cmsys::RegularExpression& regex =
+    dirCase == cmSystemTools::DirCase::Insensitive ? name.ICaseRegex
+                                                   : name.Regex;
+  std::set<std::string> const& files = this->GG->GetDirectoryContent(path);
   for (std::string const& origName : files) {
-#if defined(_WIN32) || defined(__APPLE__)
-    std::string testName = cmSystemTools::LowerCase(origName);
-#else
-    std::string const& testName = origName;
-#endif
-    if (name.Regex.find(testName)) {
-      this->TestPath = cmStrCat(path, origName);
+    std::string testName = dirCase == cmSystemTools::DirCase::Insensitive
+      ? cmSystemTools::LowerCase(origName)
+      : origName;
+
+    if (regex.find(testName)) {
+      std::string testPath = cmStrCat(path, origName);
       // Make sure the path is readable and is not a directory.
-      if (cmSystemTools::FileExists(this->TestPath, true)) {
-        if (!this->Validate(cmSystemTools::CollapseFullPath(this->TestPath))) {
+      if (cmSystemTools::FileExists(testPath, true)) {
+        testPath = cmSystemTools::ToNormalizedPathOnDisk(testPath);
+        if (!this->Validate(testPath)) {
           continue;
         }
 
-        this->DebugLibraryFound(name.Raw, dir);
+        this->DebugLibraryFound(name.Raw, path);
         // This is a matching file.  Check if it is better than the
         // best name found so far.  Earlier prefixes are preferred,
         // followed by earlier suffixes.  For OpenBSD, shared library
         // version extensions are compared.
-        size_type prefix = this->GetPrefixIndex(name.Regex.match(1));
-        size_type suffix = this->GetSuffixIndex(name.Regex.match(2));
+        size_type prefix = this->GetPrefixIndex(regex.match(1));
+        size_type suffix = this->GetSuffixIndex(regex.match(2));
         unsigned int major = 0;
         unsigned int minor = 0;
         if (this->IsOpenBSD) {
-          sscanf(name.Regex.match(3).c_str(), ".%u.%u", &major, &minor);
+          sscanf(regex.match(3).c_str(), ".%u.%u", &major, &minor);
         }
         if (this->BestPath.empty() || prefix < bestPrefix ||
             (prefix == bestPrefix && suffix < bestSuffix) ||
             (prefix == bestPrefix && suffix == bestSuffix &&
              (major > bestMajor ||
               (major == bestMajor && minor > bestMinor)))) {
-          this->BestPath = this->TestPath;
+          this->BestPath = testPath;
           bestPrefix = prefix;
           bestSuffix = suffix;
           bestMajor = major;
@@ -491,7 +520,7 @@ bool cmFindLibraryHelper::CheckDirectoryForName(std::string const& path,
   }
 
   if (this->BestPath.empty()) {
-    this->DebugLibraryFailed(name.Raw, dir);
+    this->DebugLibraryFailed(name.Raw, path);
   } else {
     this->DebugLibraryFound(name.Raw, this->BestPath);
   }
@@ -560,7 +589,7 @@ std::string cmFindLibraryCommand::FindFrameworkLibraryNamesPerDir()
     for (std::string const& n : this->Names) {
       fwPath = cmStrCat(d, n, ".xcframework");
       if (cmSystemTools::FileIsDirectory(fwPath)) {
-        auto finalPath = cmSystemTools::CollapseFullPath(fwPath);
+        auto finalPath = cmSystemTools::ToNormalizedPathOnDisk(fwPath);
         if (this->Validate(finalPath)) {
           return finalPath;
         }
@@ -568,7 +597,7 @@ std::string cmFindLibraryCommand::FindFrameworkLibraryNamesPerDir()
 
       fwPath = cmStrCat(d, n, ".framework");
       if (cmSystemTools::FileIsDirectory(fwPath)) {
-        auto finalPath = cmSystemTools::CollapseFullPath(fwPath);
+        auto finalPath = cmSystemTools::ToNormalizedPathOnDisk(fwPath);
         if (this->Validate(finalPath)) {
           return finalPath;
         }
@@ -588,7 +617,7 @@ std::string cmFindLibraryCommand::FindFrameworkLibraryDirsPerName()
     for (std::string const& d : this->SearchPaths) {
       fwPath = cmStrCat(d, n, ".xcframework");
       if (cmSystemTools::FileIsDirectory(fwPath)) {
-        auto finalPath = cmSystemTools::CollapseFullPath(fwPath);
+        auto finalPath = cmSystemTools::ToNormalizedPathOnDisk(fwPath);
         if (this->Validate(finalPath)) {
           return finalPath;
         }
@@ -596,7 +625,7 @@ std::string cmFindLibraryCommand::FindFrameworkLibraryDirsPerName()
 
       fwPath = cmStrCat(d, n, ".framework");
       if (cmSystemTools::FileIsDirectory(fwPath)) {
-        auto finalPath = cmSystemTools::CollapseFullPath(fwPath);
+        auto finalPath = cmSystemTools::ToNormalizedPathOnDisk(fwPath);
         if (this->Validate(finalPath)) {
           return finalPath;
         }

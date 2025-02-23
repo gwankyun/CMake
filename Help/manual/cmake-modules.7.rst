@@ -84,7 +84,6 @@ cmake-modules(7)
    /module/InstallRequiredSystemLibraries
    /module/ProcessorCount
    /module/SelectLibraryConfigurations
-   /module/SquishTestScript
    /module/TestForANSIForScope
    /module/TestForANSIStreamHeaders
    /module/TestForSSTREAM
@@ -273,12 +272,13 @@ cmake-modules(7)
    /module/Documentation
    /module/GetPrerequisites
    /module/MacroAddFileDependencies
+   /module/SquishTestScript
    /module/TestBigEndian
    /module/TestCXXAcceptsFlag
+   /module/Use_wxWindows
    /module/UseJavaClassFilelist
    /module/UseJavaSymlinks
    /module/UsePkgConfig
-   /module/Use_wxWindows
    /module/WriteBasicConfigVersionFile
    /module/WriteCompilerDetectionHeader
 

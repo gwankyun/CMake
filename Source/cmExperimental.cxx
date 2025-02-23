@@ -30,7 +30,7 @@ cmExperimental::FeatureData LookupTable[] = {
     false },
   // WindowsKernelModeDriver
   { "WindowsKernelModeDriver",
-    "fac18f65-504e-4dbb-b068-f356bb1f2ddb",
+    "9157bf90-2313-44d6-aefa-67cd83c8be7c",
     "CMAKE_EXPERIMENTAL_WINDOWS_KERNEL_MODE_DRIVER",
     "CMake's Windows kernel-mode driver support is experimental. It is meant "
     "only for experimentation and feedback to CMake developers.",
@@ -39,10 +39,20 @@ cmExperimental::FeatureData LookupTable[] = {
     false },
   // CxxImportStd
   { "CxxImportStd",
-    "0e5b6991-d74f-4b3d-a41c-cf096e0b2508",
+    "a9e1cf81-9932-4810-974b-6eccaf14e457",
     "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD",
     "CMake's support for `import std;` in C++23 and newer is experimental. It "
     "is meant only for experimentation and feedback to CMake developers.",
+    {},
+    cmExperimental::TryCompileCondition::Always,
+    false },
+  // ImportPackageInfo
+  { "ImportPackageInfo",
+    "e82e467b-f997-4464-8ace-b00808fff261",
+    "CMAKE_EXPERIMENTAL_FIND_CPS_PACKAGES",
+    "CMake's support for importing package information in the Common Package "
+    "Specification format (via find_package) is experimental. It is meant "
+    "only for experimentation and feedback to CMake developers.",
     {},
     cmExperimental::TryCompileCondition::Always,
     false },
@@ -65,6 +75,15 @@ cmExperimental::FeatureData LookupTable[] = {
     {},
     cmExperimental::TryCompileCondition::Never,
     false },
+  // Instrumentation
+  { "Instrumentation",
+    "a37d1069-1972-4901-b9c9-f194aaf2b6e0",
+    "CMAKE_EXPERIMENTAL_INSTRUMENTATION",
+    "CMake's support for collecting instrumentation data is experimental. It "
+    "is meant only for experimentation and feedback to CMake developers.",
+    {},
+    cmExperimental::TryCompileCondition::Never,
+    false },
 };
 static_assert(sizeof(LookupTable) / sizeof(LookupTable[0]) ==
                 static_cast<size_t>(cmExperimental::Feature::Sentinel),
@@ -77,7 +96,7 @@ cmExperimental::FeatureData& DataForFeature(cmExperimental::Feature f)
 }
 }
 
-const cmExperimental::FeatureData& cmExperimental::DataForFeature(Feature f)
+cmExperimental::FeatureData const& cmExperimental::DataForFeature(Feature f)
 {
   return ::DataForFeature(f);
 }

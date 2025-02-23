@@ -5,7 +5,7 @@ INSTALL_PARALLEL
 
 为项目启用并行安装选项。使用\ ``add_subdirectory``\ 添加的每个子目录的安装代码可以独立运行。
 
-When using the Ninja generator, setting this property to ``ON``, causes
+When using the :ref:`Ninja Generators`, enabling this property causes
 ``install/local`` targets have the console pool disabled, allowing them to run
 concurrently.
 
@@ -14,7 +14,7 @@ explicit dependency on the ``install/local`` target for each subdirectory.
 
   .. versionadded:: 3.31
 
-  When this property is ``ON``, ``cmake --install`` can be given the ``-j <jobs>``
+  When this property is enabled, ``cmake --install`` can be given the ``-j <jobs>``
   or ``--parallel <jobs>`` option to specify a maximum number of jobs.
   The :envvar:`CMAKE_INSTALL_PARALLEL_LEVEL` environment variable specifies a
   default parallel level if this option is not provided.

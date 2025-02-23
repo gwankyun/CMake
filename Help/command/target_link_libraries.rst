@@ -44,8 +44,8 @@ target_link_libraries
   依赖于重新链接\ ``<target>`` 。
 
   在某些情况下，CMake可能会要求链接器搜索该库（例如\ ``/usr/lib/libfoo.so``\ 变成\
-  ``-lfoo``），例如当检测到共享库没有\ ``SONAME``\ 字段时。有关另一个案例的讨论，请参阅策略\
-  :policy:`CMP0060`。
+  ``-lfoo``），例如当检测到共享库没有\ ``SONAME``\ 字段时。In CMake versions prior to 4.0, see policy :policy:`CMP0060` for
+  discussion of another case.
 
   如果库文件在macOS框架中，框架的\ ``Headers``\ 目录也会作为\
   :ref:`使用需求 <Target Usage Requirements>`\ 进行处理。这与将框架目录作为include目录\
@@ -88,9 +88,6 @@ target_link_libraries
 
   此外，生成器表达式可以用作上述任何项的片段，例如\ ``foo$<1:_d>``。
 
-  请注意，生成器表达式将不会用于策略\ :policy:`CMP0003`\ 或策略\ :policy:`CMP0004`\
-  的旧处理。
-
 * 一个\ ``debug``、\ ``optimized``\ 或\ ``general``\ 关键字，紧跟着另一个\ ``<item>``。\
   关键字后面的项将仅用于相应的构建配置。\ ``debug``\ 关键字对应\ ``Debug``\ 配置（如果\
   设置了全局属性\ :prop_gbl:`DEBUG_CONFIGURATIONS`，则对应全局配置）。\ ``optimized``\
@@ -108,6 +105,8 @@ for details on how CMake orders direct link dependencies on linker
 command lines.
 
 有关定义构建属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
+
+.. include:: ../command/LINK_LIBRARIES_LINKER.txt
 
 目标和/或其依赖的库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -134,12 +133,17 @@ command lines.
 
 默认情况下，库依赖是可传递的。当这个目标链接到另一个目标时，链接到这个目标的库也会出现在另一个\
 目标的链接行上。这个可传递的“链接接口”存储在\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
-目标属性中，可以通过直接设置该属性来覆盖。当\ :policy:`CMP0022`\ 没有设置为\ ``NEW``\ 时，\
-传递链接是内置的，但可能会被\ :prop_tgt:`LINK_INTERFACE_LIBRARIES`\ 属性覆盖。对该命令\
-的其他签名的调用可能会设置属性，使由该签名独家链接的任何库变为私有。
+目标属性中，可以通过直接设置该属性来覆盖。In CMake versions prior to 4.0, if :policy:`CMP0022` is not set to ``NEW``,
+transitive linking is built in but may be overridden by the
+:prop_tgt:`LINK_INTERFACE_LIBRARIES` property.  Calls to other signatures
+of this command may set the property making any libraries linked
+exclusively by this signature private.
 
 用于目标和/或其依赖项的库（遗留）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This signature is for compatibility only.  Prefer the ``PUBLIC`` or
+``PRIVATE`` keywords instead.
 
 .. code-block:: cmake
 
@@ -150,18 +154,20 @@ command lines.
 The ``LINK_PUBLIC`` and ``LINK_PRIVATE`` modes can be used to specify both
 the link dependencies and the link interface in one command.
 
-This signature is for compatibility only.  Prefer the ``PUBLIC`` or
-``PRIVATE`` keywords instead.
-
 Libraries and targets following ``LINK_PUBLIC`` are linked to, and are
-made part of the :prop_tgt:`INTERFACE_LINK_LIBRARIES`.  If policy
-:policy:`CMP0022` is not ``NEW``, they are also made part of the
-:prop_tgt:`LINK_INTERFACE_LIBRARIES`.  Libraries and targets following
-``LINK_PRIVATE`` are linked to, but are not made part of the
-:prop_tgt:`INTERFACE_LINK_LIBRARIES` (or :prop_tgt:`LINK_INTERFACE_LIBRARIES`).
+made part of the :prop_tgt:`INTERFACE_LINK_LIBRARIES`.
+
+In CMake versions prior to 4.0, if policy :policy:`CMP0022` is not ``NEW``,
+they are also made part of the :prop_tgt:`LINK_INTERFACE_LIBRARIES`.
+Libraries and targets following ``LINK_PRIVATE`` are linked to, but are
+not made part of the :prop_tgt:`INTERFACE_LINK_LIBRARIES`
+(or :prop_tgt:`LINK_INTERFACE_LIBRARIES`).
 
 仅用于依赖的库（遗留）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This signature is for compatibility only.  Prefer the ``INTERFACE`` mode
+instead.
 
 .. code-block:: cmake
 
@@ -169,25 +175,13 @@ made part of the :prop_tgt:`INTERFACE_LINK_LIBRARIES`.  If policy
 
 The ``LINK_INTERFACE_LIBRARIES`` mode appends the libraries to the
 :prop_tgt:`INTERFACE_LINK_LIBRARIES` target property instead of using them
-for linking.  If policy :policy:`CMP0022` is not ``NEW``, then this mode
-also appends libraries to the :prop_tgt:`LINK_INTERFACE_LIBRARIES` and its
-per-configuration equivalent.
+for linking.
 
-This signature is for compatibility only.  Prefer the ``INTERFACE`` mode
-instead.
+In CMake versions prior to 4.0, if policy :policy:`CMP0022` is not ``NEW``,
+then this mode also appends libraries to the
+:prop_tgt:`LINK_INTERFACE_LIBRARIES` and its per-configuration equivalent.
 
-Libraries specified as ``debug`` are wrapped in a generator expression to
-correspond to debug builds.  If policy :policy:`CMP0022` is
-not ``NEW``, the libraries are also appended to the
-:prop_tgt:`LINK_INTERFACE_LIBRARIES_DEBUG <LINK_INTERFACE_LIBRARIES_<CONFIG>>`
-property (or to the properties corresponding to configurations listed in
-the :prop_gbl:`DEBUG_CONFIGURATIONS` global property if it is set).
-Libraries specified as ``optimized`` are appended to the
-:prop_tgt:`INTERFACE_LINK_LIBRARIES` property.  If policy :policy:`CMP0022`
-is not ``NEW``, they are also appended to the
-:prop_tgt:`LINK_INTERFACE_LIBRARIES` property.  Libraries specified as
-``general`` (or without any keyword) are treated as if specified for both
-``debug`` and ``optimized``.
+.. _`Linking Object Libraries`:
 
 链接对象库
 ^^^^^^^^^^^^^^^^^^^^^^^^

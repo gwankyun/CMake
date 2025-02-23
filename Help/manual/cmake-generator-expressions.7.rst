@@ -619,7 +619,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   如果存在特定的路径组件，则返回\ ``1``，否则返回\ ``0``。有关每个路径组件的含义，\
   请参阅\ :ref:`Path Structure And Terminology`。
 
-  ::
+  .. code-block:: cmake
 
     $<PATH:HAS_ROOT_NAME,path>
     $<PATH:HAS_ROOT_DIRECTORY,path>
@@ -676,7 +676,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   .. versionchanged:: 3.27
     现在所有的操作都接受一个路径列表作为参数。当指定了路径列表时，该操作将应用于每个路径。
 
-  ::
+  .. code-block:: cmake
 
     $<PATH:GET_ROOT_NAME,path...>
     $<PATH:GET_ROOT_DIRECTORY,path...>
@@ -712,6 +712,16 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   当指定\ ``NORMALIZE``\ 选项时，转换后将对路径进行\ :ref:`normalized
   <Normalization>`。
+
+.. genex:: $<PATH:NATIVE_PATH[,NORMALIZE],path...>
+
+  .. versionadded:: 4.0
+
+  Returns ``path`` converted into a native format with platform-specific
+  slashes (``\`` on Windows hosts and ``/`` elsewhere).
+
+  When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
+  <Normalization>` before the conversion.
 
 .. genex:: $<PATH:APPEND,path...,input,...>
 
@@ -1260,7 +1270,7 @@ Shell路径
 
   用例包括仅头文件的使用，其中所有的使用都已知没有链接需求（例如，全\ ``inline``\ 或C++模板库）。
 
-  注意，要正确计算这个表达式，需要将策略\ :policy:`CMP0099`\ 设置为\ `NEW`。
+  注意，要正确计算这个表达式，需要将策略\ :policy:`CMP0099`\ 设置为\ ``NEW``。
 
 链接器语言和ID
 ^^^^^^^^^^^^^^^^^^^^^^

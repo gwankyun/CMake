@@ -50,9 +50,20 @@ cmLocalNinjaGenerator::cmLocalNinjaGenerator(cmGlobalGenerator* gg,
 // Virtual public methods.
 
 std::unique_ptr<cmRulePlaceholderExpander>
-cmLocalNinjaGenerator::CreateRulePlaceholderExpander() const
+cmLocalNinjaGenerator::CreateRulePlaceholderExpander(
+  cmBuildStep buildStep) const
 {
-  auto ret = this->cmLocalGenerator::CreateRulePlaceholderExpander();
+  auto ret = this->cmLocalGenerator::CreateRulePlaceholderExpander(buildStep);
+  ret->SetTargetImpLib("$TARGET_IMPLIB");
+  return std::unique_ptr<cmRulePlaceholderExpander>(std::move(ret));
+}
+std::unique_ptr<cmRulePlaceholderExpander>
+cmLocalNinjaGenerator::CreateRulePlaceholderExpander(
+  cmBuildStep buildStep, cmGeneratorTarget const* target,
+  std::string const& language)
+{
+  auto ret = this->cmLocalGenerator::CreateRulePlaceholderExpander(
+    buildStep, target, language);
   ret->SetTargetImpLib("$TARGET_IMPLIB");
   return std::unique_ptr<cmRulePlaceholderExpander>(std::move(ret));
 }
@@ -85,7 +96,7 @@ void cmLocalNinjaGenerator::Generate()
 
     this->WritePools(this->GetRulesFileStream());
 
-    const std::string& showIncludesPrefix =
+    std::string const& showIncludesPrefix =
       this->GetMakefile()->GetSafeDefinition("CMAKE_CL_SHOWINCLUDES_PREFIX");
     if (!showIncludesPrefix.empty()) {
       cmGlobalNinjaGenerator::WriteComment(this->GetRulesFileStream(),
@@ -100,7 +111,7 @@ void cmLocalNinjaGenerator::Generate()
     }
   }
 
-  for (const auto& target : this->GetGeneratorTargets()) {
+  for (auto const& target : this->GetGeneratorTargets()) {
     if (!target->IsInBuildSystem()) {
       continue;
     }
@@ -177,10 +188,10 @@ std::string cmLocalNinjaGenerator::GetTargetDirectory(
 
 // Non-virtual public methods.
 
-const cmGlobalNinjaGenerator* cmLocalNinjaGenerator::GetGlobalNinjaGenerator()
+cmGlobalNinjaGenerator const* cmLocalNinjaGenerator::GetGlobalNinjaGenerator()
   const
 {
-  return static_cast<const cmGlobalNinjaGenerator*>(
+  return static_cast<cmGlobalNinjaGenerator const*>(
     this->GetGlobalGenerator());
 }
 
@@ -220,7 +231,7 @@ std::string cmLocalNinjaGenerator::ConvertToIncludeReference(
 // Private methods.
 
 cmGeneratedFileStream& cmLocalNinjaGenerator::GetImplFileStream(
-  const std::string& config) const
+  std::string const& config) const
 {
   return *this->GetGlobalNinjaGenerator()->GetImplFileStream(config);
 }
@@ -235,7 +246,7 @@ cmGeneratedFileStream& cmLocalNinjaGenerator::GetRulesFileStream() const
   return *this->GetGlobalNinjaGenerator()->GetRulesFileStream();
 }
 
-const cmake* cmLocalNinjaGenerator::GetCMakeInstance() const
+cmake const* cmLocalNinjaGenerator::GetCMakeInstance() const
 {
   return this->GetGlobalGenerator()->GetCMakeInstance();
 }
@@ -272,8 +283,10 @@ void cmLocalNinjaGenerator::WriteBuildFileTop()
 void cmLocalNinjaGenerator::WriteProjectHeader(std::ostream& os)
 {
   cmGlobalNinjaGenerator::WriteDivider(os);
-  os << "# Project: " << this->GetProjectName() << '\n'
-     << "# Configurations: " << cmJoin(this->GetConfigNames(), ", ") << '\n';
+  os << "# Project: " << this->GetProjectName()
+     << "\n"
+        "# Configurations: "
+     << cmJoin(this->GetConfigNames(), ", ") << '\n';
   cmGlobalNinjaGenerator::WriteDivider(os);
 }
 
@@ -304,7 +317,7 @@ void cmLocalNinjaGenerator::WriteNinjaRequiredVersion(std::ostream& os)
 }
 
 void cmLocalNinjaGenerator::WriteNinjaConfigurationVariable(
-  std::ostream& os, const std::string& config)
+  std::ostream& os, std::string const& config)
 {
   cmGlobalNinjaGenerator::WriteVariable(
     os, "CONFIGURATION", config,
@@ -325,7 +338,7 @@ void cmLocalNinjaGenerator::WritePools(std::ostream& os)
       os, "Pools defined by global property JOB_POOLS");
     cmList pools{ *jobpools };
     for (std::string const& pool : pools) {
-      const std::string::size_type eq = pool.find('=');
+      std::string::size_type const eq = pool.find('=');
       unsigned int jobs;
       if (eq != std::string::npos &&
           sscanf(pool.c_str() + eq, "=%u", &jobs) == 1) {
@@ -349,7 +362,7 @@ void cmLocalNinjaGenerator::WriteNinjaFilesInclusionConfig(std::ostream& os)
   std::string const commonFilePath = ng->EncodePath(ninjaCommonFile);
   cmGlobalNinjaGenerator::WriteInclude(os, commonFilePath,
                                        "Include common file.");
-  os << "\n";
+  os << '\n';
 }
 
 void cmLocalNinjaGenerator::WriteNinjaFilesInclusionCommon(std::ostream& os)
@@ -362,7 +375,7 @@ void cmLocalNinjaGenerator::WriteNinjaFilesInclusionCommon(std::ostream& os)
   std::string const rulesFilePath = ng->EncodePath(ninjaRulesFile);
   cmGlobalNinjaGenerator::WriteInclude(os, rulesFilePath,
                                        "Include rules file.");
-  os << "\n";
+  os << '\n';
 }
 
 void cmLocalNinjaGenerator::WriteNinjaWorkDir(std::ostream& os)
@@ -380,8 +393,8 @@ void cmLocalNinjaGenerator::WriteProcessedMakefile(std::ostream& os)
 {
   cmGlobalNinjaGenerator::WriteDivider(os);
   os << "# Write statements declared in CMakeLists.txt:\n"
-     << "# " << this->Makefile->GetSafeDefinition("CMAKE_CURRENT_LIST_FILE")
-     << '\n';
+        "# "
+     << this->Makefile->GetSafeDefinition("CMAKE_CURRENT_LIST_FILE") << '\n';
   if (this->IsRootMakefile()) {
     os << "# Which is the root file.\n";
   }
@@ -391,7 +404,7 @@ void cmLocalNinjaGenerator::WriteProcessedMakefile(std::ostream& os)
 
 void cmLocalNinjaGenerator::AppendTargetOutputs(cmGeneratorTarget* target,
                                                 cmNinjaDeps& outputs,
-                                                const std::string& config)
+                                                std::string const& config)
 {
   this->GetGlobalNinjaGenerator()->AppendTargetOutputs(target, outputs, config,
                                                        DependOnTargetArtifact);
@@ -399,8 +412,8 @@ void cmLocalNinjaGenerator::AppendTargetOutputs(cmGeneratorTarget* target,
 
 void cmLocalNinjaGenerator::AppendTargetDepends(cmGeneratorTarget* target,
                                                 cmNinjaDeps& outputs,
-                                                const std::string& config,
-                                                const std::string& fileConfig,
+                                                std::string const& config,
+                                                std::string const& fileConfig,
                                                 cmNinjaTargetDepends depends)
 {
   this->GetGlobalNinjaGenerator()->AppendTargetDepends(target, outputs, config,
@@ -409,7 +422,7 @@ void cmLocalNinjaGenerator::AppendTargetDepends(cmGeneratorTarget* target,
 
 void cmLocalNinjaGenerator::AppendCustomCommandDeps(
   cmCustomCommandGenerator const& ccg, cmNinjaDeps& ninjaDeps,
-  const std::string& config)
+  std::string const& config)
 {
   for (std::string const& i : ccg.GetDepends()) {
     std::string dep;
@@ -610,8 +623,8 @@ void cmLocalNinjaGenerator::AppendCustomCommandLines(
 }
 
 void cmLocalNinjaGenerator::WriteCustomCommandBuildStatement(
-  cmCustomCommand const* cc, const std::set<cmGeneratorTarget*>& targets,
-  const std::string& fileConfig)
+  cmCustomCommand const* cc, std::set<cmGeneratorTarget*> const& targets,
+  std::string const& fileConfig)
 {
   cmGlobalNinjaGenerator* gg = this->GetGlobalNinjaGenerator();
   if (gg->SeenCustomCommand(cc, fileConfig)) {
@@ -653,8 +666,8 @@ void cmLocalNinjaGenerator::WriteCustomCommandBuildStatement(
       }
     }
 
-    const std::vector<std::string>& outputs = ccg.GetOutputs();
-    const std::vector<std::string>& byproducts = ccg.GetByproducts();
+    std::vector<std::string> const& outputs = ccg.GetOutputs();
+    std::vector<std::string> const& byproducts = ccg.GetByproducts();
 
     bool symbolic = false;
     for (std::string const& output : outputs) {
@@ -719,8 +732,6 @@ void cmLocalNinjaGenerator::WriteCustomCommandBuildStatement(
             CM_FALLTHROUGH;
           case cmPolicies::OLD:
             break;
-          case cmPolicies::REQUIRED_IF_USED:
-          case cmPolicies::REQUIRED_ALWAYS:
           case cmPolicies::NEW:
             depfile = ccg.GetInternalDepfile();
             break;
@@ -822,8 +833,6 @@ cmLocalNinjaGenerator::MakeCustomCommandGenerators(
       CM_FALLTHROUGH;
     case cmPolicies::OLD:
       break;
-    case cmPolicies::REQUIRED_IF_USED:
-    case cmPolicies::REQUIRED_ALWAYS:
     case cmPolicies::NEW:
       transformDepfile = true;
       break;
@@ -879,7 +888,7 @@ void cmLocalNinjaGenerator::AddCustomCommandTarget(cmCustomCommand const* cc,
 }
 
 void cmLocalNinjaGenerator::WriteCustomCommandBuildStatements(
-  const std::string& fileConfig)
+  std::string const& fileConfig)
 {
   for (cmCustomCommand const* customCommand : this->CustomCommands) {
     auto i = this->CustomCommandTargets.find(customCommand);
@@ -902,15 +911,20 @@ std::string cmLocalNinjaGenerator::MakeCustomLauncher(
   cmRulePlaceholderExpander::RuleVariables vars;
 
   std::string output;
-  const std::vector<std::string>& outputs = ccg.GetOutputs();
-  if (!outputs.empty()) {
-    output = outputs[0];
-    if (ccg.GetWorkingDirectory().empty()) {
-      output = this->MaybeRelativeToCurBinDir(output);
+  std::vector<std::string> const& outputs = ccg.GetOutputs();
+  for (size_t i = 0; i < outputs.size(); ++i) {
+    output = cmStrCat(output,
+                      this->ConvertToOutputFormat(
+                        ccg.GetWorkingDirectory().empty()
+                          ? this->MaybeRelativeToCurBinDir(outputs[i])
+                          : outputs[i],
+                        cmOutputConverter::SHELL));
+    if (i != outputs.size() - 1) {
+      output = cmStrCat(output, ",");
     }
-    output = this->ConvertToOutputFormat(output, cmOutputConverter::SHELL);
   }
   vars.Output = output.c_str();
+  vars.Role = ccg.GetCC().GetRole().c_str();
 
   auto rulePlaceholderExpander = this->CreateRulePlaceholderExpander();
 
@@ -923,7 +937,7 @@ std::string cmLocalNinjaGenerator::MakeCustomLauncher(
   return launcher;
 }
 
-void cmLocalNinjaGenerator::AdditionalCleanFiles(const std::string& config)
+void cmLocalNinjaGenerator::AdditionalCleanFiles(std::string const& config)
 {
   if (cmValue prop_value =
         this->Makefile->GetProperty("ADDITIONAL_CLEAN_FILES")) {

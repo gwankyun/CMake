@@ -5,3 +5,5 @@ CMAKE_SHARED_LINKER_FLAGS_<CONFIG>
 
 Same as ``CMAKE_C_FLAGS_*`` but used by the linker when creating shared
 libraries.
+
+.. include:: ../variable/LINKER_FLAGS.txt

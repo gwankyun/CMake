@@ -50,22 +50,23 @@ CMake被广泛用于C和C++，但它也可以用于构建其他语言的源代�
    cmake-compile-features(7)</manual/cmake-compile-features.7>
    cmake-configure-log(7)</manual/cmake-configure-log.7>
    /manual/cmake-cxxmodules.7
-   cmake-developer(7)</manual/cmake-developer.7>
-   cmake-env-variables(7)</manual/cmake-env-variables.7>
-   cmake-file-api(7)</manual/cmake-file-api.7>
-   cmake-generator-expressions(7)</manual/cmake-generator-expressions.7>
-   cmake-generators(7)</manual/cmake-generators.7>
-   cmake-language(7)</manual/cmake-language.7>
-   cmake-modules(7)</manual/cmake-modules.7>
-   cmake-packages(7)</manual/cmake-packages.7>
-   cmake-policies(7)</manual/cmake-policies.7>
-   cmake-presets(7)</manual/cmake-presets.7>
-   cmake-properties(7)</manual/cmake-properties.7>
-   cmake-qt(7)</manual/cmake-qt.7>
-   cmake-server(7)</manual/cmake-server.7>
-   cmake-toolchains(7)</manual/cmake-toolchains.7>
-   cmake-variables(7)</manual/cmake-variables.7>
-   cpack-generators(7)</manual/cpack-generators.7>
+   /manual/cmake-developer.7
+   /manual/cmake-env-variables.7
+   /manual/cmake-file-api.7
+   /manual/cmake-generator-expressions.7
+   /manual/cmake-generators.7
+   /manual/cmake-instrumentation.7
+   /manual/cmake-language.7
+   /manual/cmake-modules.7
+   /manual/cmake-packages.7
+   /manual/cmake-policies.7
+   /manual/cmake-presets.7
+   /manual/cmake-properties.7
+   /manual/cmake-qt.7
+   /manual/cmake-server.7
+   /manual/cmake-toolchains.7
+   /manual/cmake-variables.7
+   /manual/cpack-generators.7
 
 .. only:: not man
 

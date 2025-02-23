@@ -21,6 +21,9 @@ macro(add_RunCMake_test test)
   if(CMAKE_C_COMPILER_ID STREQUAL "LCC")
     list(APPEND TEST_ARGS -DRunCMake_TEST_LCC=1)
   endif()
+  if(DEFINED CMake_TEST_E2K_BROKEN_LIBC)
+    list(APPEND TEST_ARGS -DRunCMake_TEST_E2K_BROKEN_LIBC=${CMake_TEST_E2K_BROKEN_LIBC})
+  endif()
   add_test(NAME RunCMake.${test} COMMAND ${CMAKE_CMAKE_COMMAND}
     -DCMAKE_MODULE_PATH=${CMAKE_CURRENT_SOURCE_DIR}
     -DRunCMake_GENERATOR_IS_MULTI_CONFIG=${_isMultiConfig}
@@ -107,11 +110,9 @@ add_RunCMake_test(CMP0041)
 if(CMAKE_SYSTEM_NAME MATCHES Darwin AND CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG)
   add_RunCMake_test(CMP0042)
 endif()
-add_RunCMake_test(CMP0043)
 add_RunCMake_test(CMP0045)
 add_RunCMake_test(CMP0046)
 add_RunCMake_test(CMP0049)
-add_RunCMake_test(CMP0050)
 add_RunCMake_test(CMP0051)
 add_RunCMake_test(CMP0053)
 add_RunCMake_test(CMP0054)
@@ -240,6 +241,7 @@ if(CMAKE_GENERATOR MATCHES "Ninja")
   set_property(TEST RunCMake.Ninja APPEND PROPERTY LABELS "Fortran")
   set(NinjaMultiConfig_ARGS
     -DCYGWIN=${CYGWIN} -DMSYS=${MSYS}
+    -DCMAKE_EXECUTABLE_SUFFIX=${CMAKE_EXECUTABLE_SUFFIX}
     )
   if(ninja_test_with_qt_version)
     list(APPEND NinjaMultiConfig_ARGS
@@ -394,6 +396,7 @@ set_property(TEST RunCMake.CompilerId APPEND PROPERTY LABELS "CUDA" "HIP" "ISPC"
 add_RunCMake_test(CompilerTest ${CMake_TEST_LANG_VARS})
 set_property(TEST RunCMake.CompilerTest APPEND PROPERTY LABELS "CUDA" "HIP" "ISPC" "Fortran")
 add_RunCMake_test(Configure -DMSVC_IDE=${MSVC_IDE})
+add_RunCMake_test(CpsExportImport)
 add_RunCMake_test(DisallowedCommands)
 if("${CMAKE_GENERATOR}" MATCHES "Unix Makefiles|Ninja")
   add_RunCMake_test(ExportCompileCommands)
@@ -412,6 +415,9 @@ if(CMAKE_USE_SYSTEM_JSONCPP)
 endif()
 add_RunCMake_test(FileAPI -DPython_EXECUTABLE=${Python_EXECUTABLE}
                           -DCMAKE_CXX_COMPILER_ID=${CMAKE_CXX_COMPILER_ID})
+if(CMAKE_GENERATOR MATCHES "Make|Ninja")
+  add_RunCMake_test(Instrumentation)
+endif()
 add_RunCMake_test(ConfigDir)
 add_RunCMake_test(FindBoost)
 add_RunCMake_test(FindLua)
@@ -473,10 +479,12 @@ set_property(TEST RunCMake.LanguageStandards APPEND PROPERTY LABELS "CUDA" "HIP"
 
 add_RunCMake_test(LinkItemValidation)
 add_RunCMake_test(LinkStatic)
+add_RunCMake_test(ARCHIVER-prefix -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID})
 if(CMAKE_CXX_COMPILER_ID MATCHES "^(Cray|PGI|NVHPC|XL|XLClang|IBMClang|Fujitsu|FujitsuClang)$")
   add_RunCMake_test(MetaCompileFeatures)
 endif()
 if(MSVC)
+  add_RunCMake_test(MSVCRuntimeChecks)
   add_RunCMake_test(MSVCRuntimeLibrary)
   add_RunCMake_test(MSVCRuntimeTypeInfo)
   add_RunCMake_test(MSVCWarningFlags)
@@ -506,6 +514,13 @@ add_RunCMake_test(ToolchainFile)
 add_RunCMake_test(find_dependency)
 add_RunCMake_test(CompileDefinitions)
 add_RunCMake_test(CompileWarningAsError -DCMake_TEST_CUDA=${CMake_TEST_CUDA})
+if((CMAKE_C_COMPILER_ID MATCHES "AppleClang|MSVC"
+    OR (CMAKE_SYSTEM_NAME MATCHES "Linux|Windows" AND CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+    OR (CMAKE_SYSTEM_NAME STREQUAL "SunOS" AND CMAKE_C_COMPILER_ID STREQUAL "SunPro")
+    OR (CMAKE_SYSTEM_NAME STREQUAL "AIX" AND CMAKE_C_COMPILER_ID STREQUAL "XL"))
+  AND CMAKE_C_COMPILER_LINKER_ID)
+  add_RunCMake_test(LinkWarningAsError)
+endif()
 set_property(TEST RunCMake.CompileWarningAsError APPEND PROPERTY LABELS "CUDA")
 add_RunCMake_test(CompileFeatures -DCMake_NO_C_STANDARD=${CMake_NO_C_STANDARD} -DCMake_NO_CXX_STANDARD=${CMake_NO_CXX_STANDARD})
 add_RunCMake_test(Policy)
@@ -591,6 +606,9 @@ add_RunCMake_test(ctest_upload)
 add_RunCMake_test(ctest_environment)
 add_RunCMake_test(ctest_empty_binary_directory)
 add_RunCMake_test(ctest_fixtures)
+if(CMAKE_GENERATOR MATCHES "Make|Ninja")
+  add_RunCMake_test(ctest_instrumentation)
+endif()
 add_RunCMake_test(define_property)
 add_RunCMake_test(file -DCYGWIN=${CYGWIN} -DMSYS=${MSYS})
 add_RunCMake_test(file-CHMOD -DMSYS=${MSYS})
@@ -615,6 +633,7 @@ add_RunCMake_test(file-STRINGS)
 add_RunCMake_test(find_file -DMINGW=${MINGW})
 add_RunCMake_test(find_library -DMINGW=${MINGW} -DCYGWIN=${CYGWIN} -DMSYS=${MSYS} -DMSVC=${MSVC})
 add_RunCMake_test(find_package -DMINGW=${MINGW} -DMSYS=${MSYS})
+add_RunCMake_test(find_package-CPS)
 add_RunCMake_test(find_path -DMINGW=${MINGW})
 add_RunCMake_test(find_program -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME})
 add_RunCMake_test(foreach)
@@ -637,6 +656,7 @@ add_RunCMake_test(project_injected)
 add_RunCMake_test(property_init)
 add_RunCMake_test(DependencyProviders)
 add_RunCMake_test(return)
+add_RunCMake_test(SarifOutput)
 add_RunCMake_test(separate_arguments)
 add_RunCMake_test(set_property)
 add_RunCMake_test(string)
@@ -875,6 +895,9 @@ add_RunCMake_test(target_link_libraries-LINK_GROUP -DCMAKE_SYSTEM_NAME=${CMAKE_S
                                                    -DCMAKE_IMPORT_LIBRARY_PREFIX=${CMAKE_IMPORT_LIBRARY_PREFIX}
                                                    -DCMAKE_IMPORT_LIBRARY_SUFFIX=${CMAKE_IMPORT_LIBRARY_SUFFIX}
                                                    -DCMAKE_LINK_LIBRARY_FLAG=${CMAKE_LINK_LIBRARY_FLAG})
+add_RunCMake_test(target_link_libraries-LINKER-prefix -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
+                                                      -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
+                                                      -DCMAKE_C_COMPILER_FRONTEND_VARIANT=${CMAKE_C_COMPILER_FRONTEND_VARIANT})
 add_RunCMake_test(add_link_options -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID})
 add_RunCMake_test(target_link_options -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
                                       -DCMake_TEST_CUDA=${CMake_TEST_CUDA})
@@ -1108,6 +1131,7 @@ set(cpack_tests
   RPM.COMPONENT_WITH_SPECIAL_CHARS
 
   7Z
+  TAR
   TBZ2
   TGZ
   TXZ
@@ -1246,6 +1270,8 @@ add_RunCMake_test(CMakePresetsWorkflow
 
 add_RunCMake_test(VerifyHeaderSets)
 add_RunCMake_test(set_tests_properties)
+
+add_RunCMake_test(CMakeListFileName)
 
 if(CMAKE_GENERATOR MATCHES "Make|Ninja")
   add_RunCMake_test(Codegen)

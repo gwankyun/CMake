@@ -30,7 +30,7 @@
 namespace {
 
 inline int runTests(std::initializer_list<std::function<bool()>> const& tests,
-                    const bool fail_fast = true)
+                    bool const fail_fast = true)
 {
   int result = 0;
   for (auto const& test : tests) {
@@ -40,10 +40,9 @@ inline int runTests(std::initializer_list<std::function<bool()>> const& tests,
         break;
       }
     }
-    std::cout << '.';
   }
-  if (!result) {
-    std::cout << " Passed\n";
+  if (result == 0) {
+    std::cout << "Passed\n";
   }
   return result;
 }

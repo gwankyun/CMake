@@ -3,8 +3,14 @@
 
 include_guard()
 
-include(Linker/GNU)
-
 macro(__linker_lld lang)
-  __linker_gnu(${lang})
+  if(CMAKE_${lang}_COMPILER_LINKER_FRONTEND_VARIANT STREQUAL "MSVC")
+    include(Linker/MSVC)
+
+    __linker_msvc(${lang})
+  else()
+    include(Linker/GNU)
+
+    __linker_gnu(${lang})
+  endif()
 endmacro()

@@ -29,7 +29,9 @@ The following cache variables are also available to set or use:
   The directory holding the ``backtrace(3)`` header.
 
 Typical usage is to generate of header file using :command:`configure_file`
-with the contents like the following::
+with the contents like the following:
+
+.. code-block:: c
 
  #cmakedefine01 Backtrace_FOUND
  #if Backtrace_FOUND
@@ -52,16 +54,16 @@ This module defines the following :prop_tgt:`IMPORTED` targets:
 
 include(CMakePushCheckState)
 include(CheckSymbolExists)
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 # List of variables to be provided to find_package_handle_standard_args()
 set(_Backtrace_STD_ARGS Backtrace_INCLUDE_DIR)
 
 if(Backtrace_HEADER)
   set(_Backtrace_HEADER_TRY "${Backtrace_HEADER}")
-else(Backtrace_HEADER)
+else()
   set(_Backtrace_HEADER_TRY "execinfo.h")
-endif(Backtrace_HEADER)
+endif()
 
 find_path(Backtrace_INCLUDE_DIR "${_Backtrace_HEADER_TRY}")
 set(Backtrace_INCLUDE_DIRS ${Backtrace_INCLUDE_DIR})
@@ -99,7 +101,7 @@ endif()
 set(Backtrace_LIBRARIES ${Backtrace_LIBRARY})
 set(Backtrace_HEADER "${_Backtrace_HEADER_TRY}" CACHE STRING "Header providing backtrace(3) facility")
 
-find_package_handle_standard_args(Backtrace FOUND_VAR Backtrace_FOUND REQUIRED_VARS ${_Backtrace_STD_ARGS})
+find_package_handle_standard_args(Backtrace REQUIRED_VARS ${_Backtrace_STD_ARGS})
 mark_as_advanced(Backtrace_HEADER Backtrace_INCLUDE_DIR Backtrace_LIBRARY)
 
 if(Backtrace_FOUND AND NOT TARGET Backtrace::Backtrace)

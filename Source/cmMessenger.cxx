@@ -10,6 +10,8 @@
 
 #if !defined(CMAKE_BOOTSTRAP)
 #  include "cmsys/SystemInformation.hxx"
+
+#  include "cmSarifLog.h"
 #endif
 
 #include <sstream>
@@ -22,7 +24,7 @@
 #endif
 
 namespace {
-const char* getMessageTypeStr(MessageType t)
+char const* getMessageTypeStr(MessageType t)
 {
   switch (t) {
     case MessageType::FATAL_ERROR:
@@ -102,11 +104,10 @@ void displayMessage(MessageType t, std::ostringstream& msg)
       t == MessageType::DEPRECATION_ERROR || t == MessageType::AUTHOR_ERROR) {
     cmSystemTools::SetErrorOccurred();
     md.title = "Error";
-    cmSystemTools::Message(msg.str(), md);
   } else {
     md.title = "Warning";
-    cmSystemTools::Message(msg.str(), md);
   }
+  cmSystemTools::Message(msg.str(), md);
 }
 
 void PrintCallStack(std::ostream& out, cmListFileBacktrace bt,
@@ -117,6 +118,7 @@ void PrintCallStack(std::ostream& out, cmListFileBacktrace bt,
   if (bt.Empty()) {
     return;
   }
+  std::string lastFilePath = bt.Top().FilePath;
   bt = bt.Pop();
   if (bt.Empty()) {
     return;
@@ -126,15 +128,19 @@ void PrintCallStack(std::ostream& out, cmListFileBacktrace bt,
   for (; !bt.Empty(); bt = bt.Pop()) {
     cmListFileContext lfc = bt.Top();
     if (lfc.Name.empty() &&
-        lfc.Line != cmListFileContext::DeferPlaceholderLine) {
-      // Skip this whole-file scope.  When we get here we already will
-      // have printed a more-specific context within the file.
+        lfc.Line != cmListFileContext::DeferPlaceholderLine &&
+        lfc.FilePath == lastFilePath) {
+      // An entry with no function name is frequently preceded (in the stack)
+      // by a more specific entry.  When this happens (as verified by the
+      // preceding entry referencing the same file path), skip the less
+      // specific entry, as we have already printed the more specific one.
       continue;
     }
     if (first) {
       first = false;
       out << "Call Stack (most recent call first):\n";
     }
+    lastFilePath = lfc.FilePath;
     if (topSource) {
       lfc.FilePath = cmSystemTools::RelativeIfUnder(*topSource, lfc.FilePath);
     }
@@ -180,8 +186,8 @@ bool cmMessenger::IsMessageTypeVisible(MessageType t) const
   return true;
 }
 
-void cmMessenger::IssueMessage(MessageType t, const std::string& text,
-                               const cmListFileBacktrace& backtrace) const
+void cmMessenger::IssueMessage(MessageType t, std::string const& text,
+                               cmListFileBacktrace const& backtrace) const
 {
   bool force = false;
   // override the message type, if needed, for warnings and errors
@@ -196,8 +202,8 @@ void cmMessenger::IssueMessage(MessageType t, const std::string& text,
   }
 }
 
-void cmMessenger::DisplayMessage(MessageType t, const std::string& text,
-                                 const cmListFileBacktrace& backtrace) const
+void cmMessenger::DisplayMessage(MessageType t, std::string const& text,
+                                 cmListFileBacktrace const& backtrace) const
 {
   std::ostringstream msg;
 
@@ -213,6 +219,11 @@ void cmMessenger::DisplayMessage(MessageType t, const std::string& text,
   PrintCallStack(msg, backtrace, this->TopSource);
 
   displayMessage(t, msg);
+
+#ifndef CMAKE_BOOTSTRAP
+  // Add message to SARIF logs
+  this->SarifLog.LogMessage(t, text, backtrace);
+#endif
 
 #ifdef CMake_ENABLE_DEBUGGER
   if (DebuggerAdapter) {

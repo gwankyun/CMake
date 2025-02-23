@@ -71,11 +71,9 @@ mark_as_advanced(LibUUID_INCLUDE_DIR)
 
 #-----------------------------------------------------------------------------
 include(${CMAKE_CURRENT_LIST_DIR}/../../Modules/FindPackageHandleStandardArgs.cmake)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibUUID
-  FOUND_VAR LibUUID_FOUND
+find_package_handle_standard_args(LibUUID
   REQUIRED_VARS LibUUID_LIBRARY LibUUID_INCLUDE_DIR
   )
-set(LIBUUID_FOUND ${LibUUID_FOUND})
 
 #-----------------------------------------------------------------------------
 # Provide documented result variables and targets.

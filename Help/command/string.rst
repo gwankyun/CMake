@@ -163,10 +163,14 @@ The following characters have special meaning in regular expressions:
     :command:`if(MATCHES)`, save subgroup matches in the variables
     :variable:`CMAKE_MATCH_<n>` for ``<n>`` 0..9.
 
+.. noqa: spellcheck off
+
 ``*``, ``+`` and ``?`` have higher precedence than concatenation.  ``|``
 has lower precedence than concatenation.  This means that the regular
 expression ``^ab+d$`` matches ``abbd`` but not ``ababd``, and the regular
 expression ``^(ab|cd)$`` matches ``ab`` but not ``abd``.
+
+.. noqa: spellcheck on
 
 CMake language :ref:`Escape Sequences` such as ``\t``, ``\r``, ``\n``,
 and ``\\`` may be used to construct literal tabs, carriage returns,
@@ -474,10 +478,8 @@ Generation
 
   If no explicit ``<format_string>`` is given, it will default to:
 
-  ::
-
-    %Y-%m-%dT%H:%M:%S    for local time.
-    %Y-%m-%dT%H:%M:%SZ   for UTC.
+  * ``%Y-%m-%dT%H:%M:%S`` for local time.
+  * ``%Y-%m-%dT%H:%M:%SZ`` for UTC.
 
   .. versionadded:: 3.8
     If the ``SOURCE_DATE_EPOCH`` environment variable is set,
@@ -518,6 +520,10 @@ Functionality for querying a JSON string.
   is no relevant path.  If an error occurs but the ``ERROR_VARIABLE``
   option is not present, a fatal error message is generated.  If no error
   occurs, the ``<error-variable>`` will be set to ``NOTFOUND``.
+
+In the following subcommands, the ``<json-string>`` argument should
+be written as a :ref:`Quoted Argument` to ensure the entire JSON
+string is passed as a single argument even if it contains semicolons.
 
 .. signature::
   string(JSON <out-var> [ERROR_VARIABLE <error-variable>]

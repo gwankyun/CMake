@@ -62,7 +62,7 @@ help this module find the correct files::
 cmake_policy(PUSH)
 cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include(FindPackageHandleStandardArgs)
 
 #=============================================================================
 # If the user has provided ``GSL_ROOT_DIR``, use it!  Choose items found
@@ -153,8 +153,6 @@ endif()
 # handle the QUIETLY and REQUIRED arguments and set GSL_FOUND to TRUE if all
 # listed variables are TRUE
 find_package_handle_standard_args( GSL
-  FOUND_VAR
-    GSL_FOUND
   REQUIRED_VARS
     GSL_INCLUDE_DIR
     GSL_LIBRARY

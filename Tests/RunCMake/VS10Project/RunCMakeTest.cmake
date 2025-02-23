@@ -1,7 +1,4 @@
-cmake_policy(SET CMP0057 NEW)
-
 include(RunCMake)
-cmake_policy(SET CMP0054 NEW)
 
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 19.27)
   run_cmake(LanguageStandard)
@@ -10,6 +7,7 @@ endif()
 run_cmake(CustomCommandGenex)
 if(NOT RunCMake_GENERATOR MATCHES "^Visual Studio 1[1-5] ")
   run_cmake(CustomCommandParallel)
+  run_cmake(CustomCommandParallelDisable)
 endif()
 run_cmake_with_options(VsCharacterSet -DSET_CHARSET=MultiByte)
 run_cmake_with_options(VsCharacterSet -DSET_CHARSET=Unicode)
