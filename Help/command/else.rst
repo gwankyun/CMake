@@ -9,5 +9,4 @@ else
 
 请参阅\ :command:`if`\ 命令。
 
-The optional ``<condition>`` argument is supported for backward compatibility
-only and is not evaluated.
+可选的\ ``<condition>``\ 参数仅为向后兼容而提供，不会对其进行求值。

@@ -298,29 +298,24 @@ ctest(1)
 
 .. option:: --interactive-debug-mode <0|1>
 
- Disable (``0``) or enable (``1``) interactive debug mode.
+ 禁用（\ ``0``\ ）或启用（\ ``1``\ ）交互式调试模式。
 
  此选项可使CTest以交互模式或非交互模式运行测试。在仪表板模式下（\ ``Experimental``、\
  ``Nightly``、\ ``Continuous``），默认为非交互式。在非交互模式下，设置环境变量\
  :envvar:`DASHBOARD_TEST_FROM_CTEST`。
 
- Interactive Mode allows Windows Error Reporting (WER) to show debug popup
- windows and to create core dumps.  To enable core dumps in tests,
- use interactive mode, and follow the Windows documentation
- on `Collecting User-Mode Dumps`_.
+ 交互模式允许Windows错误报告（WER）显示调试弹出窗口并创建核心转储文件。若要在测试中启用核心\
+ 转储功能，请使用交互模式，并参考Windows文档中关于\ `收集用户模式转储文件`_\ 的内容。
 
  .. versionchanged:: 4.0
-   Windows Error Reporting (WER) is enabled in interactive mode, so
-   test processes may show debug popup windows and create core dumps.
-   This was made possible by updates to ``libuv``.
+   在交互模式下，Windows错误报告（WER）功能会被启用，因此测试进程可能会显示调试弹出窗口并\
+   创建核心转储文件。这得益于\ ``libuv``\ 的更新才得以实现。
 
  .. versionchanged:: 3.11
-   Windows Error Reporting (WER) is disabled in both interactive and
-   non-interactive modes, so test processes do not show popup windows
-   or create core dumps.  This is due to launching test processes with
-   ``libuv``.
+   在交互模式和非交互模式下，Windows错误报告（WER）功能均被禁用，因此测试进程不会显示弹出窗口，\
+   也不会创建核心转储文件。这是因为使用\ ``libuv``\ 来启动测试进程所致。
 
-.. _`Collecting User-Mode Dumps`: https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps
+.. _`收集用户模式转储文件`: https://learn.microsoft.com/en-us/windows/win32/wer/collecting-user-mode-dumps
 
 .. option:: --no-label-summary
 
@@ -372,7 +367,7 @@ ctest(1)
 
 .. option:: --force-new-ctest-process
 
- Ignored.  This option once disabled a now-removed optimization
+ 已忽略。  This option once disabled a now-removed optimization
  for tests running ``ctest`` itself.
 
 .. option:: --schedule-random
@@ -680,8 +675,8 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
 
 .. option:: --extra-submit <file>[;<file>]
 
- Submit extra ``.xml`` part files to the dashboard.
- See the :command:`ctest_submit` command's ``PARTS ExtraFiles`` option.
+ 向仪表板提交额外的\ ``.xml``\ 部分文件。
+ 请参阅\ :command:`ctest_submit`\ 命令的\ ``PARTS ExtraFiles``\ 选项。
 
 .. option:: --http-header <header>
 

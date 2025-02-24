@@ -1,9 +1,8 @@
 load_cache
 ----------
 
-Load in the values from another project's ``CMakeCache.txt`` cache file.  This
-is useful for projects that depend on another project built in a separate
-directory tree.
+从另一个项目的\ ``CMakeCache.txt``\ 缓存文件中加载值。这对于依赖于在单独目录树中构建的另一个\
+项目的项目很有用。
 
 This command has two signatures.  The recommended signature is:
 

@@ -99,20 +99,17 @@
 
  .. versionadded:: 4.0
 
- Specify an alternate project file name.
+ 指定一个替代的项目文件名。
 
- This determines the top-level file processed by CMake when configuring a
- project, and the file processed by :command:`add_subdirectory`.
+ 这决定了在配置项目时CMake处理的顶层文件，以及\ :command:`add_subdirectory`\ 命令处理的文件。
 
- By default, this is ``CMakeLists.txt``. If set to anything else,
- ``CMakeLists.txt`` will be used as a fallback whenever the specified file
- cannot be found within a project subdirectory.
+ 默认情况下，该文件为\ ``CMakeLists.txt``。如果将其设置为其他名称，当在项目子目录中找不到\
+ 指定文件时，将使用\ ``CMakeLists.txt``\ 作为备用文件。
 
  .. note::
 
-  This feature is intended for temporary use by developers during an incremental
-  transition and not for publication of a final product. CMake will always emit
-  a warning when the project file is anything other than ``CMakeLists.txt``.
+  此功能旨在供开发人员在渐进式过渡期间临时使用，而非用于最终产品的发布。当项目文件不是\
+  ``CMakeLists.txt``\ 时，CMake总会发出警告。
 
 .. option:: -Wno-dev
 

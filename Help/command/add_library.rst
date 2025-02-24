@@ -19,15 +19,15 @@ add_library
   可选的\ ``<type>``\ 指定要创建的库的类型：
 
   ``STATIC``
-    A :ref:`Static Library <Static Libraries>`:
+    一个\ :ref:`静态库 <Static Libraries>`:
     目标文件的存档，用于链接其他目标时使用。
 
   ``SHARED``
-    A :ref:`Shared Library <Shared Libraries>`:
+    一个\ :ref:`共享库 <Shared Libraries>`:
     可以被其他目标链接并在运行时加载的动态库。
 
   ``MODULE``
-    A :ref:`Module Library <Module Libraries>`:
+    一个\ :ref:`模块库 <Module Libraries>`:
     一个插件，它可能不会被其他目标链接，但可以在运行时使用类似于dlopen的功能动态加载。
 
   如果没有给出\ ``<type>``，则根据\ :variable:`BUILD_SHARED_LIBS`\ 变量的值默认为\

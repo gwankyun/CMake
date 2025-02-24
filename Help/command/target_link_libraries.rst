@@ -44,8 +44,8 @@ target_link_libraries
   依赖于重新链接\ ``<target>`` 。
 
   在某些情况下，CMake可能会要求链接器搜索该库（例如\ ``/usr/lib/libfoo.so``\ 变成\
-  ``-lfoo``），例如当检测到共享库没有\ ``SONAME``\ 字段时。In CMake versions prior to 4.0, see policy :policy:`CMP0060` for
-  discussion of another case.
+  ``-lfoo``），例如当检测到共享库没有\ ``SONAME``\ 字段时。在CMake 4.0之前的版本中，\
+  另一种情况的讨论请参考策略\ :policy:`CMP0060`。
 
   如果库文件在macOS框架中，框架的\ ``Headers``\ 目录也会作为\
   :ref:`使用需求 <Target Usage Requirements>`\ 进行处理。这与将框架目录作为include目录\
@@ -99,10 +99,9 @@ target_link_libraries
 :ref:`别名 <Alias Targets>`\ 库目标名，如果不存在这样的目标，将导致错误。参见策略\
 :policy:`CMP0028`。
 
-See the :variable:`CMAKE_LINK_LIBRARIES_STRATEGY` variable and
-corresponding :prop_tgt:`LINK_LIBRARIES_STRATEGY` target property
-for details on how CMake orders direct link dependencies on linker
-command lines.
+有关\ CMake\ 如何在链接器命令行上对直接链接依赖项进行排序的详细信息，请参阅\
+:variable:`CMAKE_LINK_LIBRARIES_STRATEGY`\ 变量以及对应的\
+:prop_tgt:`LINK_LIBRARIES_STRATEGY`\ 目标属性。
 
 有关定义构建属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
@@ -133,11 +132,10 @@ command lines.
 
 默认情况下，库依赖是可传递的。当这个目标链接到另一个目标时，链接到这个目标的库也会出现在另一个\
 目标的链接行上。这个可传递的“链接接口”存储在\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
-目标属性中，可以通过直接设置该属性来覆盖。In CMake versions prior to 4.0, if :policy:`CMP0022` is not set to ``NEW``,
-transitive linking is built in but may be overridden by the
-:prop_tgt:`LINK_INTERFACE_LIBRARIES` property.  Calls to other signatures
-of this command may set the property making any libraries linked
-exclusively by this signature private.
+目标属性中，可以通过直接设置该属性来覆盖。\
+在CMake 4.0之前的版本中，如果策略\ :policy:`CMP0022`\ 未设置为\ ``NEW``，则传递链接是\
+内置的，但可以通过\ :prop_tgt:`LINK_INTERFACE_LIBRARIES`\ 属性进行覆盖。调用此命令的\
+其他签名形式可能会设置该属性，从而使仅通过此签名形式链接的任何库变为私有库。
 
 用于目标和/或其依赖项的库（遗留）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -263,11 +263,10 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  .. versionadded:: 4.0
 
- Enable logging of diagnostic messages produced by CMake in the SARIF format.
+ 启用以SARIF格式记录CMake生成的诊断消息。
 
- Write diagnostic messages to a SARIF file at the path specified. Projects can
- also set :variable:`CMAKE_EXPORT_SARIF` to ``ON`` to enable this feature for a
- build tree.
+ 将诊断消息写入指定路径的SARIF文件。项目也可以将\ :variable:`CMAKE_EXPORT_SARIF`\ 设置为\
+ ``ON`` ，以便为构建树启用此功能。
 
 .. option:: --debug-trycompile
 
@@ -451,9 +450,8 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  .. versionadded:: 4.0
 
- Ignore target property :prop_tgt:`LINK_WARNING_AS_ERROR` and variable
- :variable:`CMAKE_LINK_WARNING_AS_ERROR`, preventing warnings from being
- treated as errors on link.
+ 忽略目标属性\ :prop_tgt:`LINK_WARNING_AS_ERROR`\ 和变量\
+ :variable:`CMAKE_LINK_WARNING_AS_ERROR`，防止链接时将警告视为错误。
 
 .. option:: --profiling-output=<path>
 

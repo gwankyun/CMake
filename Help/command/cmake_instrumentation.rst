@@ -5,11 +5,10 @@ cmake_instrumentation
 
 .. note::
 
-   This command is only available when experimental support for instrumentation
-   has been enabled by the ``CMAKE_EXPERIMENTAL_INSTRUMENTATION`` gate.
+   仅当通过\ ``CMAKE_EXPERIMENTAL_INSTRUMENTATION``\ 开关启用了对检测功能的实验性支持时，\
+   此命令才可用。
 
-Enables interacting with the
-:manual:`CMake Instrumentation API <cmake-instrumentation(7)>`.
+开启与\ :manual:`CMake Instrumentation API <cmake-instrumentation(7)>`\ 交互。
 
 This allows for configuring instrumentation at the project-level.
 

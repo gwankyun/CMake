@@ -14,7 +14,7 @@ add_executable
   add_executable(<name> <options>... <sources>...)
   :target: normal
 
-  添加一个名为\ ``<name>``\ 的\ :ref:`executable <Executables>`，以便从命令调用中列出的源文件构建。
+  添加一个名为\ ``<name>``\ 的\ :ref:`可执行文件 <Executables>`，以便从命令调用中列出的源文件构建。
 
   选项有：
 
