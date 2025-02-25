@@ -717,11 +717,10 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 4.0
 
-  Returns ``path`` converted into a native format with platform-specific
-  slashes (``\`` on Windows hosts and ``/`` elsewhere).
+  返回转换为具有特定平台斜杠的原生格式的\ ``path``\ （在Windows主机上使用反斜杠\ ``\``，\
+  在其他系统上使用正斜杠\ ``/``）。
 
-  When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
-  <Normalization>` before the conversion.
+  当指定\ ``NORMALIZE``\ 选项时，路径会在转换之前进行\ :ref:`规范化 <Normalization>`\ 处理。
 
 .. genex:: $<PATH:APPEND,path...,input,...>
 

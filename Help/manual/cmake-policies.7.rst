@@ -10,24 +10,17 @@ cmake-policies(7)
 引言
 ============
 
-CMake policies introduce behavior changes while preserving compatibility
-for existing project releases.  Policies are deprecation mechanisms, not
-feature toggles.  Each policy documents a deprecated ``OLD`` behavior and
-a preferred ``NEW`` behavior.  Projects must be updated over time to
-use the ``NEW`` behavior, but their existing releases will continue to
-work with the ``OLD`` behavior.
+CMake策略在引入行为变更的同时，会保留现有项目版本的兼容性。策略是一种弃用机制，而非功能开关。\
+每个策略都会记录已弃用的\ ``OLD``\ 行为和推荐的\ ``NEW``\ 行为。随着时间推移，项目必须更新\
+以使用\ ``NEW``\ 行为，但现有版本仍可继续使用\ ``OLD``\ 行为。
 
-Updating Projects
+更新项目
 -----------------
 
-When policies are newly introduced by a version of CMake, their ``OLD``
-behaviors are immediately deprecated by that version of CMake and later.
-Projects should be updated to use the ``NEW`` behaviors of the policies
-as soon as possible.
+当某个版本的CMake引入新策略时，这些策略的\ ``OLD``\ 行为会立即被该版本及后续版本的CMake\
+标记为弃用。项目应尽快更新以使用这些策略的\ ``NEW``\ 行为。
 
-Use the :command:`cmake_minimum_required` command to record the latest
-version of CMake for which a project has been updated.
-For example:
+使用\ :command:`cmake_minimum_required`\ 命令来记录项目已更新到的最新CMak 版本。例如：
 
 ..
   Sync this cmake_minimum_required example with ``Help/dev/maint.rst``.
@@ -36,31 +29,27 @@ For example:
 
   cmake_minimum_required(VERSION 3.10...3.31)
 
-This uses the ``<min>...<max>`` syntax to enable the ``NEW`` behaviors
-of policies introduced in CMake 3.31 and earlier while only requiring a
-minimum version of CMake 3.10.  The project is expected to work with
-both the ``OLD`` and ``NEW`` behaviors of policies introduced between
-those versions.
+这使用了\ ``<min>...<max>``\ 语法，以启用CMake 3.31及更早版本引入的策略的\ ``NEW``\ 行为，\
+同时仅要求最低版本为CMake 3.10。预计该项目在这两个版本之间引入的策略的\ ``OLD``\ 行为和\
+``NEW``\ 行为下都能正常工作。
 
-Transition Schedule
+过渡时间表
 -------------------
 
-To help projects port to the ``NEW`` behaviors of policies on their own
-schedule, CMake offers a transition period:
+为了帮助项目按照自身计划迁移到策略的\ ``NEW``\ 行为，CMake 提供了一个过渡时期：
 
-* If a policy is not set by a project, CMake uses its ``OLD`` behavior,
-  but may warn that the policy has not been set.
+* 如果项目未对某个策略进行设置，CMake将使用该策略的\ ``OLD``\ 行为，但可能会发出警告，提示\
+  该策略未被设置。
 
-  * Users running CMake may silence the warning without modifying a
-    project by setting the :variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>`
-    variable as a cache entry on the :manual:`cmake(1)` command line:
+  * 运行CMake的用户可以在不修改项目的情况下，通过在\ :manual:`cmake(1)`\ 命令行中将\
+    :variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>`\ 变量设置为缓存项来消除该警告：
 
     .. code-block:: shell
 
       cmake -DCMAKE_POLICY_DEFAULT_CMP0990=OLD ...
 
-  * Projects may silence the warning by using the :command:`cmake_policy`
-    command to explicitly set the policy to ``OLD`` or ``NEW`` behavior:
+  * 项目可以通过使用\ :command:`cmake_policy`\ 命令显式地将策略设置为\ ``OLD``\ 行为或\
+    ``NEW``\ 行为来消除该警告：
 
     .. code-block:: cmake
 
@@ -70,41 +59,38 @@ schedule, CMake offers a transition period:
 
     .. note::
 
-      A policy should almost never be set to ``OLD``, except to silence
-      warnings in an otherwise frozen or stable codebase, or temporarily
-      as part of a larger migration path.
+      几乎不应该将策略设置为\ ``OLD``\ 行为，除非是为了在已冻结或稳定的代码库中消除警告，\
+      或者作为更大规模迁移过程中的临时举措。
 
-* If a policy is set to ``OLD`` by a project, CMake versions released
-  at least |POLICY_OLD_DELAY_WARNING| after the version that introduced
-  a policy may issue a warning that the policy's ``OLD`` behavior will
-  be removed from a future version of CMake.
+* 如果某个项目将某个策略设置为\ ``OLD``\ 行为，那么自引入该策略的版本发布至少\
+  |POLICY_OLD_DELAY_WARNING|\ 之后发布的CMake版本，可能会发出警告，提示该策略的\ ``OLD``\
+  行为将在未来的CMake版本中被移除。
 
-* If a policy is not set to ``NEW`` by a project, CMake versions released
-  at least |POLICY_OLD_DELAY_ERROR| after the version that introduced a
-  policy, and whose major version number is higher, may issue an error
-  that the policy's ``OLD`` behavior has been removed.
+* 如果一个项目没有将某个策略设置为\ ``NEW``\ 行为，那么在引入该策略的版本发布至少\
+  |POLICY_OLD_DELAY_ERROR|\ 之后发布且主版本号更高的CMake版本，可能会报错，提示该策略的\
+  ``OLD``\ 行为已被移除。
 
-.. |POLICY_OLD_DELAY_WARNING| replace:: 2 years
-.. |POLICY_OLD_DELAY_ERROR| replace:: 6 years
+.. |POLICY_OLD_DELAY_WARNING| replace:: 两年
+.. |POLICY_OLD_DELAY_ERROR| replace:: 六年
 
-Supported Policies
+受支持的策略
 ==================
 
-The following policies are supported.
+以下策略是受支持的。
 
-Policies Introduced by CMake 4.0
+CMake 4.0引入的策略
 --------------------------------
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0185: FindRuby no longer provides upper-case RUBY_* variables. </policy/CMP0185>
-   CMP0184: MSVC runtime checks flags are selected by an abstraction. </policy/CMP0184>
-   CMP0183: add_feature_info() supports full Condition Syntax. </policy/CMP0183>
-   CMP0182: Create shared library archives by default on AIX. </policy/CMP0182>
-   CMP0181: Link command-line fragment variables are parsed and re-quoted. </policy/CMP0181>
+   CMP0185: FindRuby不再提供大写的 RUBY_* 变量。 </policy/CMP0185>
+   CMP0184: MSVC运行时检查标志由抽象方式选择。 </policy/CMP0184>
+   CMP0183: add_feature_info()支持完整的条件语法。 </policy/CMP0183>
+   CMP0182: 在AIX系统上默认创建共享库存档文件。 </policy/CMP0182>
+   CMP0181: 链接命令行片段变量会被解析并重新加引号。 </policy/CMP0181>
 
-Policies Introduced by CMake 3.31
+CMake 3.31引入的策略
 ---------------------------------
 
 .. toctree::
@@ -395,17 +381,16 @@ CMake 3.7引入的策略
 
    CMP0066: 尊重try_compile()源文件签名中每个配置的标志。 </policy/CMP0066>
 
-Unsupported Policies
+不支持的策略
 ====================
 
-The following policies are no longer supported.
-Projects' calls to :command:`cmake_minimum_required(VERSION)` or
-:command:`cmake_policy(VERSION)` must set them to ``NEW``.
-Their ``OLD`` behaviors have been removed from CMake.
+以下策略不再受支持。 项目调用\ :command:`cmake_minimum_required(VERSION)`\ 或\
+:command:`cmake_policy(VERSION)`\ 时，必须将这些策略设置为\ ``NEW``\ 行为。这些策略的\
+``OLD``\ 行为已从CMake中移除。
 
 .. _`Policies Introduced by CMake 3.4`:
 
-Policies Introduced by CMake 3.4, Removed by CMake 4.0
+CMake 3.4引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::
@@ -416,7 +401,7 @@ Policies Introduced by CMake 3.4, Removed by CMake 4.0
 
 .. _`Policies Introduced by CMake 3.3`:
 
-Policies Introduced by CMake 3.3, Removed by CMake 4.0
+CMake 3.3引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::
@@ -432,7 +417,7 @@ Policies Introduced by CMake 3.3, Removed by CMake 4.0
 
 .. _`Policies Introduced by CMake 3.2`:
 
-Policies Introduced by CMake 3.2, Removed by CMake 4.0
+CMake 3.2引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::
@@ -443,7 +428,7 @@ Policies Introduced by CMake 3.2, Removed by CMake 4.0
 
 .. _`Policies Introduced by CMake 3.1`:
 
-Policies Introduced by CMake 3.1, Removed by CMake 4.0
+CMake 3.1引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::
@@ -456,7 +441,7 @@ Policies Introduced by CMake 3.1, Removed by CMake 4.0
 
 .. _`Policies Introduced by CMake 3.0`:
 
-Policies Introduced by CMake 3.0, Removed by CMake 4.0
+CMake 3.0引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::
@@ -492,7 +477,7 @@ Policies Introduced by CMake 3.0, Removed by CMake 4.0
 
 .. _`Policies Introduced by CMake 2.8`:
 
-Policies Introduced by CMake 2.8, Removed by CMake 4.0
+CMake 2.8引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::
@@ -513,7 +498,7 @@ Policies Introduced by CMake 2.8, Removed by CMake 4.0
 
 .. _`Policies Introduced by CMake 2.6`:
 
-Policies Introduced by CMake 2.6, Removed by CMake 4.0
+CMake 2.6引入，CMake 4.0移除的策略
 ------------------------------------------------------
 
 .. toctree::

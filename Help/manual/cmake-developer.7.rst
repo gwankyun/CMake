@@ -179,11 +179,9 @@ FindFoo.cmake模块通常通过以下命令加载：
   可选地，在一个变量中列出供客户端代码使用的库目录的最终集。这不应该是缓存项。
 
 ``Xxx_ROOT_DIR``
-  The base directory of the installation of ``Xxx`` that can be optionally set
-  by the find module if ``Xxx`` is found. This is useful for large packages
-  where many files need to be referenced relative to a common base (or root)
-  directory. Not to be confused with the ``Xxx_ROOT`` hint variable set from the
-  outside for the find module to know where to look for the ``Xxx``.
+  如果找到了\ ``Xxx``，查找模块可以选择设置\ ``Xxx``\ 安装的基础目录。对于大型包而言，\
+  这非常有用，因为许多文件需要相对于一个公共的基础（或根）目录进行引用。不要将其与从外部设置的\
+  ``Xxx_ROOT``\ 提示变量相混淆，该提示变量是为了让查找模块知道在哪里查找\ ``Xxx``。
 
 ``Xxx_VERSION_VV``
   该表单的变量指定所提供的\ ``Xxx``\ 模块是否为该模块的\ ``VV``\ 版本。对于给定的模块，\
@@ -342,9 +340,8 @@ FindFoo.cmake模块通常通过以下命令加载：
 
 这应该定义一些从\ ``PC_Foo_``\ 开始的变量，其中包含来自\ ``Foo.pc``\ 文件的信息。
 
-Now we need to find the libraries and include files; we use the
-information from ``pkg-config`` to provide hints to CMake about where to
-look before checking other default paths.
+现在我们需要找到库文件和头文件；我们使用\ ``pkg-config``\ 提供的信息，在检查其他默认路径之前，\
+为CMake提供查找位置的提示。
 
 .. code-block:: cmake
 

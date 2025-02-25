@@ -868,20 +868,15 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     出现。
 
 ``debugger``
-  Optional member that is present when the target has one of the
-  following fields set.
-  The value is a JSON object of entries corresponding to
-  debugger specific values set.
+  可选成员，当目标设置了以下字段之一时会出现。 该值是一个JSON对象，其条目对应于所设置的调试器特定值。
 
-  This field was added in codemodel version 2.8.
+  此字段在代码模型2.8版本中添加。
 
   ``workingDirectory``
-    Optional member that is present when the DEBUGGER_WORKING_DIRECTORY
-    target property is set.
-    The member will also be present in Visual Studio Generator
-    scenarios when VS_DEBUGGER_WORKING_DIRECTORY is set.
+    可选成员，当设置了目标属性DEBUGGER_WORKING_DIRECTORY时会出现。 在使用Visual Studio\
+    生成器的场景中，当设置了VS_DEBUGGER_WORKING_DIRECTORY时，该成员也会出现。
 
-    This field was added in codemodel version 2.8.
+    此字段在代码模型2.8版本中添加。
 
 ``dependencies``
   当目标依赖于其他目标时出现的可选成员。该值是一个JSON数组，包含与依赖项对应的条目。每个条目\
