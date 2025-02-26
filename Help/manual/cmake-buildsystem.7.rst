@@ -35,8 +35,8 @@ cmake-buildsystem(7)
 可执行文件
 ------------------
 
-Executables are binaries created by linking object files together,
-one of which contains a program entry point, e.g., ``main``.
+可执行文件是通过将目标文件链接在一起而创建的二进制文件，其中一个目标文件包含程序入口点，例如\
+``main``\ 函数。
 
 :command:`add_executable`\ 命令定义了一个可执行目标：
 
@@ -44,13 +44,10 @@ one of which contains a program entry point, e.g., ``main``.
 
   add_executable(mytool mytool.cpp)
 
-CMake generates build rules to compile the source files into object
-files and link them into an executable.
+CMake会生成构建规则，将源文件编译成目标文件，然后将这些目标文件链接成一个可执行文件。
 
-Link dependencies of executables may be specified using the
-:command:`target_link_libraries` command.  Linkers start with the
-object files compiled from the executable's own source files, and
-then resolve remaining symbol dependencies by searching linked libraries.
+可执行文件的链接依赖项可以使用\ :command:`target_link_libraries`\ 命令来指定。链接器会\
+从可执行文件自身源文件编译得到的目标文件开始，然后通过搜索链接库来解决剩余的符号依赖问题。
 
 像\ :command:`add_custom_command`\ 这样的命令，它生成要在构建时运行的规则，\
 可以透明地将\ :prop_tgt:`EXECUTABLE <TYPE>`\ 目标作为可执行\ ``COMMAND``\ 文件使用。\
@@ -58,88 +55,74 @@ then resolve remaining symbol dependencies by searching linked libraries.
 
 .. _`Static Libraries`:
 
-Static Libraries
+静态库
 ----------------
 
-Static libraries are archives of object files.  They are produced by an
-archiver, not a linker.  `Executables`_, `Shared Libraries`_, and
-`Module Libraries`_ may link to static libraries as dependencies.
-Linkers select subsets of object files from static libraries as needed
-to resolve symbols and link them into consuming binaries.  Each binary
-that links to a static library gets its own copy of the symbols, and
-the static library itself is not needed at runtime.
+静态库是目标文件的存档。它们由存档工具生成，而非链接器。\ `可执行文件 <Executables>`_、\
+`共享库 <Shared Libraries>`_\ 和\ `模块库 <Module Libraries>`_\ 可以将静态库作为依赖\
+项进行链接。链接器会根据需要从静态库中选择目标文件的子集，以解析符号并将它们链接到消费二进制\
+文件中。每个链接到静态库的二进制文件都会获得其自身的符号副本，并且在运行时不需要静态库本身。
 
-The :command:`add_library` command defines a static library target
-when called with the ``STATIC`` library type:
+当以\ ``STATIC``\ 库类型调用\ :command:`add_library`\ 命令时，该命令会定义一个静态库目标：
 
 .. code-block:: cmake
 
   add_library(archive STATIC archive.cpp zip.cpp lzma.cpp)
 
-or, when the :variable:`BUILD_SHARED_LIBS` variable is false, with no type:
+或者，当\ :variable:`BUILD_SHARED_LIBS`\ 变量为假时，不指定库类型：
 
 .. code-block:: cmake
 
   add_library(archive archive.cpp zip.cpp lzma.cpp)
 
-CMake generates build rules to compile the source files into object
-files and archive them into a static library.
+CMake会生成构建规则，将源文件编译成目标文件，然后将这些目标文件归档成一个静态库。
 
-Link dependencies of static libraries may be specified using the
-:command:`target_link_libraries` command.  Since static libraries are
-archives rather than linked binaries, object files from their link
-dependencies are not included in the libraries themselves (except for
-`Object Libraries`_ specified as *direct* link dependencies).
-Instead, CMake records static libraries' link dependencies for
-transitive use when linking consuming binaries.
+可以使用\ :command:`target_link_libraries`\ 命令指定静态库的链接依赖项。由于静态库是目标\
+文件的归档文件，而非链接生成的二进制文件，因此其链接依赖项中的目标文件不会包含在静态库本身中\
+（除非是被指定为\ *直接*\ 链接依赖项的\ `对象库 <Object Libraries>`_）。相反，CMake会记录\
+静态库的链接依赖项，以便在链接使用这些静态库的二进制文件时进行传递使用。
 
 .. _`Shared Libraries`:
 
-Shared Libraries
+共享库
 ----------------
 
-Shared libraries are binaries created by linking object files together.
-`Executables`_, other shared libraries, and `Module Libraries`_ may link
-to shared libraries as dependencies.  Linkers record references to shared
-libraries in consuming binaries.  At runtime, a dynamic loader searches
-for referenced shared libraries on disk and loads their symbols.
+共享库是通过将目标文件链接在一起而创建的二进制文件。\ `可执行文件 <Executables>`_、其他\
+共享库和\ `模块库 <Module Libraries>`_\ 可以将共享库作为依赖项进行链接。链接器会在消费\
+二进制文件中记录对共享库的引用。在运行时，动态加载器会在磁盘上搜索被引用的共享库并加载它们的符号。
 
-The :command:`add_library` command defines a shared library target
-when called with the ``SHARED`` library type:
+当以\ ``SHARED``\ 库类型调用\ :command:`add_library`\ 命令时，该命令会定义一个共享库目标：
 
 .. code-block:: cmake
 
   add_library(archive SHARED archive.cpp zip.cpp lzma.cpp)
 
-or, when the :variable:`BUILD_SHARED_LIBS` variable is true, with no type:
+或者，当\ :variable:`BUILD_SHARED_LIBS`\ 变量为真时，不指定库类型：
 
 .. code-block:: cmake
 
   add_library(archive archive.cpp zip.cpp lzma.cpp)
 
-CMake generates build rules to compile the source files into object
-files and link them into a shared library.
+CMake会生成构建规则，将源文件编译成目标文件，然后将这些目标文件链接成一个共享库。
 
-Link dependencies of shared libraries may be specified using the
-:command:`target_link_libraries` command.  Linkers start with the
-object files compiled from the shared library's own source files, and
-then resolve remaining symbol dependencies by searching linked libraries.
+共享库的链接依赖项可以使用\ :command:`target_link_libraries`\ 命令来指定。链接器会从共\
+享库自身源文件编译得到的目标文件开始，然后通过搜索链接库来解决剩余的符号依赖问题。
 
 .. note::
 
-  CMake expects shared libraries to export at least one symbol.  If a library
-  does not export any unmanaged symbols, e.g., a Windows resource DLL or
-  C++/CLI DLL, make it a `Module Library <Module Libraries_>`_ instead.
+  CMake期望共享库至少导出一个符号。如果某个库不导出任何非托管符号，例如Windows资源DLL或\
+  C++/CLI DLL，那么应将其创建为一个\ `模块库 <Module Libraries_>`_。
 
 .. _`Apple Frameworks`:
 
 苹果框架
 ----------------
 
-`Shared Libraries`_ and `Static Libraries`_ may be marked with the
-:prop_tgt:`FRAMEWORK` target property to create a macOS or iOS Framework.带有\ ``FRAMEWORK``\ 目标属性的库还应该设置\ :prop_tgt:`FRAMEWORK_VERSION`\
-目标属性。根据macOS约定，该属性通常设置为“A”。\ ``MACOSX_FRAMEWORK_IDENTIFIER``\ 设置为\
-``CFBundleIdentifier``\ 键，它用作bundle的唯一标识。
+`共享库 <Shared Libraries>`_\ 和 `静态库 <Static Libraries>`_\ 可以通过设置\
+:prop_tgt:`FRAMEWORK`\ 目标属性来创建macOS或iOS框架。带有\ ``FRAMEWORK``\ 目标属性的\
+库还应该设置\ :prop_tgt:`FRAMEWORK_VERSION`\ 目标属性。根据macOS约定，该属性通常设置为\
+“A”。\ ``MACOSX_FRAMEWORK_IDENTIFIER``\ 设置为\ ``CFBundleIdentifier``\ 键，\
+它用作bundle的唯一标识。
 
 .. code-block:: cmake
 
@@ -152,53 +135,44 @@ then resolve remaining symbol dependencies by searching linked libraries.
 
 .. _`Module Libraries`:
 
-Module Libraries
+模块库
 ----------------
 
-Module libraries are binaries created by linking object files together.
-Unlike `Shared Libraries`_, module libraries may not be linked by other
-binaries as dependencies -- do not name them in the right-hand side of
-the :command:`target_link_libraries` command.  Instead, module libraries
-are plugins that an application can dynamically load on-demand at runtime,
-e.g., by ``dlopen``.
+模块库是通过将目标文件链接在一起而创建的二进制文件。与\ `共享库 <Shared Libraries>`_\ 不同，\
+模块库不能作为依赖项被其他二进制文件链接 —— 不要在\ :command:`target_link_libraries`\
+命令的右侧指定它们。相反，模块库是应用程序可以在运行时按需动态加载的插件，例如通过\ ``dlopen``\
+函数加载。
 
-The :command:`add_library` command defines a module library target
-when called with the ``MODULE`` library type:
+当以\ ``MODULE``\ 库类型调用\ :command:`add_library`\ 命令时，该命令会定义一个模块库目标：
 
 .. code-block:: cmake
 
   add_library(archivePlugin MODULE 7z.cpp)
 
-CMake generates build rules to compile the source files into object
-files and link them into a module library.
+CMake会生成构建规则，将源文件编译成目标文件，并将这些目标文件链接成一个模块库。
 
-Link dependencies of module libraries may be specified using the
-:command:`target_link_libraries` command.  Linkers start with the
-object files compiled from the module library's own source files, and
-then resolve remaining symbol dependencies by searching linked libraries.
+可以使用\ :command:`target_link_libraries`\ 命令指定模块库的链接依赖项。链接器会从模块库\
+自身源文件编译得到的目标文件开始，然后通过搜索链接库来解决剩余的符号依赖问题。
 
 .. _`Object Libraries`:
 
 对象库
 ----------------
 
-Object libraries are collections of object files created by compiling
-source files without any archiving or linking.  The object files may be
-used when linking `Executables`_, `Shared Libraries`_, and
-`Module Libraries`_, or when archiving `Static Libraries`_.
+对象库是通过编译源文件而创建的目标文件集合，这些源文件在编译过程中既不进行归档操作，也不进行\
+链接操作。这些目标文件可在链接\ `可执行文件 <Executables>`_、\ `共享库 <Shared Libraries>`_\ 和\
+`模块库 <Module Libraries>`_\ 时使用，也可在归档\ `静态库 <Static Libraries>`_\ 时使用。
 
-The :command:`add_library` command defines an object library target
-when called with the ``OBJECT`` library type:
+当使用\ ``OBJECT``\ 库类型调用\ :command:`add_library`\ 命令时，该命令会定义一个对象库目标：
 
 .. code-block:: cmake
 
   add_library(archiveObjs OBJECT archive.cpp zip.cpp lzma.cpp)
 
-CMake generates build rules to compile the source files into object files.
+CMake会生成构建规则，将源文件编译为目标文件。
 
-Other targets may specify the object files as source inputs by using the
-:manual:`generator expression <cmake-generator-expressions(7)>` syntax
-:genex:`$<TARGET_OBJECTS:name>`:
+其他目标可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 语法\
+:genex:`$<TARGET_OBJECTS:name>`\ 将这些目标文件指定为源输入：
 
 .. code-block:: cmake
 
@@ -206,11 +180,9 @@ Other targets may specify the object files as source inputs by using the
 
   add_executable(test_exe $<TARGET_OBJECTS:archiveObjs> test.cpp)
 
-The consuming targets are linked (or archived) using object files
-both from their own sources and from the named object libraries.
+消费目标在链接（或打包）时会使用对象文件，这些对象文件既来自其自身的源文件，也来自指定名称的对象库。
 
-Alternatively, object libraries may be specified as link dependencies
-of other targets:
+或者，对象库也可以被指定为其他目标的链接依赖项：
 
 .. code-block:: cmake
 
@@ -220,10 +192,9 @@ of other targets:
   add_executable(test_exe test.cpp)
   target_link_libraries(test_exe archiveObjs)
 
-The consuming targets are linked (or archived) using object files
-both from their own sources and from object libraries specified as
-*direct* link dependencies by :command:`target_link_libraries`.
-See :ref:`Linking Object Libraries`.
+消费目标在链接（或打包）时会使用对象文件，这些对象文件既来自其自身的源文件，也来自通过\
+:command:`target_link_libraries`\ 命令指定为\ *直接*\ 链接依赖项的对象库。请参阅\
+:ref:`Linking Object Libraries`。
 
 在使用\ :command:`add_custom_command(TARGET)`\ 命令签名时，对象库不能用作\ ``TARGET``。\
 但是，对象列表可以通过\ :command:`add_custom_command(OUTPUT)`\ 或\
