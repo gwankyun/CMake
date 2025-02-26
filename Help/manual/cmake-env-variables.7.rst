@@ -25,6 +25,7 @@ cmake-env-variables(7)
    /envvar/CMAKE_INCLUDE_PATH
    /envvar/CMAKE_LIBRARY_PATH
    /envvar/CMAKE_MAXIMUM_RECURSION_DEPTH
+   /envvar/CMAKE_POLICY_VERSION_MINIMUM
    /envvar/CMAKE_PREFIX_PATH
    /envvar/CMAKE_PROGRAM_PATH
    /envvar/CMAKE_TLS_VERIFY
