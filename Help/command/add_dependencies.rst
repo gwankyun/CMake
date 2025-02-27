@@ -10,8 +10,8 @@ add_dependencies
 使一个顶层\ ``<target>``\ 依赖于其他顶层目标，以确保它们在\ ``<target>``\ 之前构建。\
 顶层目标是由\ :command:`add_executable`、\ :command:`add_library`\ 或\
 :command:`add_custom_target`\ 命令创建的目标（但不是由如\ ``install``\ 这样的CMake生\
-成目标）。
-At least one ``<target-dependency>`` must be given.
+成目标）。\
+必须至少提供一个\ ``<target-dependency>``。
 
 添加到\ :ref:`导入的目标 <Imported Targets>`\ 或\ :ref:`接口库 <Interface Libraries>`\
 中的依赖项会在其位置传递，因为目标本身不会构建。

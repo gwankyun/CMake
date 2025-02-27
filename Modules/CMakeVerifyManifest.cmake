@@ -5,8 +5,7 @@
 CMakeVerifyManifest
 -------------------
 
-Use this script to verify that embedded manifests and side-by-side
-manifests for a project match.
+使用此脚本验证项目的嵌入式清单和并行清单是否匹配。
 
 This script first recursively globs ``*.manifest`` files from
 the current directory and creates a list of allowed version.

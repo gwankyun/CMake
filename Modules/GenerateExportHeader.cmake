@@ -5,8 +5,7 @@
 GenerateExportHeader
 --------------------
 
-This module provides the ``generate_export_header()`` function to generate
-export macros for libraries.
+此模块提供了\ ``generate_export_header()``\ 函数，用于为库生成导出宏。
 
 .. versionadded:: 3.12
   Added support for C projects.  Previous versions supported C++ project only.

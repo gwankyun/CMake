@@ -5,7 +5,6 @@ CMAKE_POLICY_VERSION_MINIMUM
 
 .. include:: ENV_VAR.txt
 
-The default value for :variable:`CMAKE_POLICY_VERSION_MINIMUM` when there
-is no explicit configuration given on the first run while creating a new
-build tree.  On later runs in an existing build tree the value persists in
-the cache as :variable:`CMAKE_POLICY_VERSION_MINIMUM`.
+当首次创建新的构建树且未给出显式配置时，\ :variable:`CMAKE_POLICY_VERSION_MINIMUM`\
+的默认值。在现有构建树的后续运行中，该值会作为\ :variable:`CMAKE_POLICY_VERSION_MINIMUM`\
+持久保存在缓存中。

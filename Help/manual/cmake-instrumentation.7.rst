@@ -9,24 +9,21 @@ cmake-instrumentation(7)
 
   .. contents::
 
-Introduction
+引言
 ============
 
 .. note::
 
-   This feature is only available when experimental support for instrumentation
-   has been enabled by the ``CMAKE_EXPERIMENTAL_INSTRUMENTATION`` gate.
+   只有当通过\ ``CMAKE_EXPERIMENTAL_INSTRUMENTATION``\ 开关启用了对插桩的实验性支持时，\
+   此功能才可用。
 
-The CMake Instrumentation API allows for the collection of timing data, target
-information and system diagnostic information during the configure, generate,
-build, test and install steps for a CMake project.
+CMake插桩API允许在CMake项目的配置、生成、构建、测试和安装步骤期间收集计时数据、目标信息以及\
+系统诊断信息。
 
-This feature is only available for projects using the :ref:`Makefile Generators`
-or the :ref:`Ninja Generators`.
+此功能仅适用于使用\ :ref:`Makefile Generators`\ 或\ :ref:`Ninja Generators`\ 的项目。
 
-All interactions with the CMake instrumentation API must specify both an API
-version and a Data version. At this time, there is only one version for each of
-these: the `API v1`_ and `Data v1`_.
+与CMake插桩API进行的所有交互都必须同时指定API版本和数据版本。目前，这两者都只有一个版本：\
+`API v1`_\ 和\ `Data v1`_。
 
 Data Collection
 ---------------

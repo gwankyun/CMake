@@ -5,7 +5,7 @@
 CheckPrototypeDefinition
 ------------------------
 
-Check if a ``C`` function has the expected prototype.
+检查一个\ ``C``\ 函数是否具有预期的原型。
 
 .. command:: check_prototype_definition
 
