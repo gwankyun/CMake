@@ -1,9 +1,8 @@
 CMAKE_OBJDUMP
 -------------
 
-Path to the ``objdump`` executable on the host system.  This tool, typically
-part of the Binutils collection on Unix-like systems, provides information
-about compiled object files.
+主机系统上\ ``objdump``\ 可执行文件的路径。这个工具通常是类Unix系统上Binutils工具集的一部分，\
+用于提供已编译目标文件的相关信息。
 
 This cache variable may be populated by CMake when project languages are
 enabled using the :command:`project` or :command:`enable_language` commands.

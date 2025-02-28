@@ -1,5 +1,5 @@
 CTEST_NOTES_FILES
 -----------------
 
-Specify files for :command:`ctest_submit(PARTS Notes)` to submit
-in a :manual:`ctest(1)` dashboard client script.
+指定在\ :manual:`ctest(1)`\ 仪表盘客户端脚本中，供\ :command:`ctest_submit(PARTS Notes)`\
+命令提交的文件。

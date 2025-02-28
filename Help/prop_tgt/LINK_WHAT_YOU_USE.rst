@@ -3,9 +3,8 @@ LINK_WHAT_YOU_USE
 
 .. versionadded:: 3.7
 
-This is a boolean option that, when set to ``TRUE``, adds a link-time check
-to print a list of shared libraries that are being linked but provide no symbols
-used by the target.  This is intended as a lint.
+这是一个布尔选项，当设置为\ ``TRUE``\ 时，会添加一个链接时检查，用于打印出那些被链接但未为\
+目标提供任何符号的共享库列表。此功能旨在进行代码检查。
 
 The flag specified by :variable:`CMAKE_<LANG>_LINK_WHAT_YOU_USE_FLAG` will
 be passed to the linker so that all libraries specified on the command line

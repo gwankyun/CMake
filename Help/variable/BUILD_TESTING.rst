@@ -1,7 +1,7 @@
 BUILD_TESTING
 -------------
 
-Control whether the :module:`CTest` module invokes :command:`enable_testing`.
+控制\ :module:`CTest`\ 模块是否调用\ :command:`enable_testing`。
 
 The :module:`CTest` module, when loaded by ``include(CTest)``,
 runs code of the form:

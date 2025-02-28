@@ -3,7 +3,7 @@ CMAKE_COLOR_DIAGNOSTICS
 
 .. versionadded:: 3.24
 
-Enable color diagnostics throughout the generated build system.
+在生成的构建系统中启用彩色诊断信息。
 
 This variable uses three states: ``ON``, ``OFF`` and not defined.
 

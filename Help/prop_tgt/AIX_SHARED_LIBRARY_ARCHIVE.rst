@@ -3,8 +3,7 @@ AIX_SHARED_LIBRARY_ARCHIVE
 
 .. versionadded:: 3.31
 
-On AIX, enable or disable creation of a shared library archive
-for a ``SHARED`` library target:
+在AIX系统上，启用或禁用为\ ``SHARED``\ 库目标创建共享库归档文件：
 
 * If enabled, the shared object ``.so`` file is placed inside
   an archive ``.a`` file.  This is the preferred convention on AIX.
