@@ -3,7 +3,7 @@ MSVC_RUNTIME_CHECKS
 
 .. versionadded:: 4.0
 
-Select the list of enabled runtime checks when targeting the MSVC ABI.
+当目标平台采用MSVC ABI时，选择要启用的运行时检查列表。
 
 The allowed values are:
 

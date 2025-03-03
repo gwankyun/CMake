@@ -3,10 +3,10 @@ LINK_WARNING_AS_ERROR
 
 .. versionadded:: 4.0
 
-Specify whether to treat warnings on link as errors.
-If enabled, adds a flag to treat warnings on link as errors.
-If the :option:`cmake --link-no-warning-as-error` option is given
-on the :manual:`cmake(1)` command line, this property is ignored.
+指定是否将链接时的警告视为错误。\
+如果启用，会添加一个标志，将链接时的警告视为错误。\
+如果在\ :manual:`cmake(1)`\ 命令行中给出了\ :option:`cmake --link-no-warning-as-error`\
+选项，则此属性将被忽略。
 
 This property takes a :ref:`semicolon-separated-list <CMake Language Lists>` of
 the following values:

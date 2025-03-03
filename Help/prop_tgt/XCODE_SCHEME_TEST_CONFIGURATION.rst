@@ -3,7 +3,7 @@ XCODE_SCHEME_TEST_CONFIGURATION
 
 .. versionadded:: 4.0
 
-Set the build configuration to test the target.
+设置用于测试目标的构建配置。
 
 This property is initialized by the value of the variable
 :variable:`CMAKE_XCODE_SCHEME_TEST_CONFIGURATION`

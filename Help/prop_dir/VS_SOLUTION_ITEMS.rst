@@ -3,7 +3,7 @@ VS_SOLUTION_ITEMS
 
 .. versionadded:: 4.0
 
-Specify solution level items included in the generated Visual Studio solution.
+指定生成的Visual Studio解决方案中包含的解决方案级别的项目。
 
 The :ref:`Visual Studio Generators` create a ``.sln`` file for each directory
 whose ``CMakeLists.txt`` file calls the :command:`project` command. Append paths

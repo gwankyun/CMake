@@ -3,10 +3,8 @@ UNITY_BUILD_RELOCATABLE
 
 .. versionadded:: 4.0
 
-By default, the unity file generated when :prop_tgt:`UNITY_BUILD` is enabled
-uses absolute paths to reference the original source files. This causes the
-unity file to result in a different output depending on the location of the
-source files.
+默认情况下，当启用\ :prop_tgt:`UNITY_BUILD`\ 时生成的统一文件会使用绝对路径来引用原始源文件。\
+这会导致统一文件根据源文件的位置产生不同的输出。
 
 When this property is set to true, the ``#include`` lines inside the generated
 unity source files will attempt to use relative paths to the original source

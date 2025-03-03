@@ -3,9 +3,8 @@ XCODE_SCHEME_LLDB_INIT_FILE
 
 .. versionadded:: 4.0
 
-Property value for ``LLDB Init File`` in the Info section of the
-generated Xcode scheme. In case the value contains generator
-expressions those are evaluated.
+在生成的Xcode方案的信息部分中，此属性用于指定\ ``LLDB Init File``\ 的值。若该值包含生成器\
+表达式，则会对这些表达式进行求值。
 
 This property is initialized by the value of the variable
 :variable:`CMAKE_XCODE_SCHEME_LLDB_INIT_FILE` if it is set
