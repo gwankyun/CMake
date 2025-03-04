@@ -3,9 +3,8 @@ CMAKE_<LANG>_ARCHIVER_WRAPPER_FLAG
 
 .. versionadded:: 4.0
 
-Defines the syntax of compiler driver option to pass options to the archiver
-tool. It will be used to translate the ``ARCHIVER:`` prefix in the static
-library options (see :prop_tgt:`STATIC_LIBRARY_OPTIONS`).
+定义了编译器驱动选项的语法，用于将选项传递给归档工具。它将用于转换静态库选项中的\ ``ARCHIVER:``\
+前缀（请参阅\ :prop_tgt:`STATIC_LIBRARY_OPTIONS`）。
 
 This variable holds a :ref:`semicolon-separated list <CMake Language Lists>` of
 tokens. If a space (i.e. " ") is specified as last token, flag and

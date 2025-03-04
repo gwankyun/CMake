@@ -3,7 +3,5 @@ CMAKE_EXECUTE_PROCESS_COMMAND_ERROR_IS_FATAL
 
 .. versionadded:: 4.0
 
-Specify a default for the :command:`execute_process` command's
-``COMMAND_ERROR_IS_FATAL`` option. This variable is ignored when a
-``RESULTS_VARIABLE`` or ``RESULT_VARIABLE`` keyword is supplied to
-the command.
+为\ :command:`execute_process`\ 命令的\ ``COMMAND_ERROR_IS_FATAL``\ 选项指定默认值。\
+当命令中提供了\ ``RESULTS_VARIABLE``\ 或\ ``RESULT_VARIABLE``\ 关键字时，此变量将被忽略。

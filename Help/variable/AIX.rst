@@ -3,4 +3,4 @@ AIX
 
 .. versionadded:: 4.0
 
-Set to true when the target system is AIX.
+当目标系统为AIX时，此变量设置为true。

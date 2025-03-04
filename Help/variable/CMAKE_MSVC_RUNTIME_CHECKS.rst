@@ -3,11 +3,9 @@ CMAKE_MSVC_RUNTIME_CHECKS
 
 .. versionadded:: 4.0
 
-Select the list of enabled runtime checks when targeting the MSVC ABI.
-This variable is used to initialize the
-:prop_tgt:`MSVC_RUNTIME_CHECKS` property on all targets as they are
-created. It is also propagated by calls to the :command:`try_compile` command
-into the test project.
+当目标平台采用MSVC ABI时，用于选择要启用的运行时检查列表。\
+此变量用于在所有目标创建时初始化其\ :prop_tgt:`MSVC_RUNTIME_CHECKS`\ 属性。\
+它也会通过调用\ :command:`try_compile`\ 命令传递到测试项目中。
 
 The allowed values are:
 

@@ -3,9 +3,8 @@ CMAKE_LIST_FILE_NAME
 
 .. versionadded:: 4.0
 
-The name of the CMake project files. This determines the top-level file
-processed when CMake is configured, and the file processed by
-:command:`add_subdirectory`.
+CMake项目文件的名称。它决定了在配置CMake时处理的顶层文件，以及由\ :command:`add_subdirectory`\
+命令处理的文件。
 
 By default, this is ``CMakeLists.txt``. If set to anything else,
 ``CMakeLists.txt`` will be used as a fallback whenever the specified file

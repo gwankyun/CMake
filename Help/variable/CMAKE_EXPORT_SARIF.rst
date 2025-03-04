@@ -3,7 +3,7 @@ CMAKE_EXPORT_SARIF
 
 .. versionadded:: 4.0
 
-Enable or disable CMake diagnostics output in SARIF format for a project.
+启用或禁用项目中以SARIF格式输出的CMake诊断信息。
 
 If enabled, CMake will generate a SARIF log file containing diagnostic messages
 output by CMake when running in a project. By default, the log file is written

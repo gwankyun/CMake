@@ -3,9 +3,9 @@ CMAKE_POLICY_VERSION_MINIMUM
 
 .. versionadded:: 4.0
 
-Specify a minimum :ref:`Policy Version` for a project without modifying
-its calls to :command:`cmake_minimum_required(VERSION)` and
-:command:`cmake_policy(VERSION)`.
+为项目指定一个最小的\ :ref:`Policy Version`，而无需修改其对\
+:command:`cmake_minimum_required(VERSION)`\ 和\ :command:`cmake_policy(VERSION)`\
+的调用。
 
 This variable should not be set by a project in CMake code as a way to
 set its own policy version.  Use :command:`cmake_minimum_required(VERSION)`

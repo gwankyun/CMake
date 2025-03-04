@@ -3,7 +3,7 @@ CMAKE_<LANG>_DEVICE_LINK_MODE
 
 .. versionadded:: 4.0
 
-Defines how the device link step is done. The possible values are:
+定义了设备链接步骤的执行方式。可能的值如下：
 
 ``DRIVER``
   The compiler is used as driver for the device link step.

@@ -3,7 +3,7 @@ CMAKE_<LANG>_LINK_MODE
 
 .. versionadded:: 4.0
 
-Defines how the link step is done. The possible values are:
+定义了链接步骤的执行方式。可能的值如下：
 
 ``DRIVER``
   The compiler is used as driver for the link step.

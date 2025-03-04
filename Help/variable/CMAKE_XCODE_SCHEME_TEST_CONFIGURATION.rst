@@ -3,7 +3,7 @@ CMAKE_XCODE_SCHEME_TEST_CONFIGURATION
 
 .. versionadded:: 4.0
 
-Set the build configuration to test the target.
+设置用于测试目标的构建配置。
 
 This variable initializes the :prop_tgt:`XCODE_SCHEME_TEST_CONFIGURATION`
 property on all targets.
