@@ -124,21 +124,25 @@ find_package
 其他可选组件可以列在\ ``OPTIONAL_COMPONENTS``\ 之后。如果这些不能满足，仍然可以考虑找到\
 整体的包，只要所有需要的组件都满足。
 
-.. TODO Once CPS honors COMPONENTS, note that OPTIONAL_COMPONENTS will cause
-   CMake to attempt to locate dependencies for optional components.  Also note
-   that CMake will *not* load any appendices that don't include COMPONENTS or
-   OPTIONAL_COMPONENTS.  (That isn't the case now, but will be when we don't
-   just ignore COMPONENTS.)  The following paragraph will also need changes.
+The set of available components and their meaning are defined by the
+target package:
 
-可用组件的集合及其含义由目标包定义。对于CMake脚本包配置文件，在形式上如何解释提供给它的组件信息取决于目标包，但它应该\
-遵循上面所述的期望。对于没有指定组件的调用，没有单一的预期行为，目标包应该清楚地定义在这种情\
-况下会发生什么。常见的安排包括假设它应该找到所有组件，没有组件或可用组件的一些定义良好的子集。
+* For CMake-script package configuration files, it is formally up to the target
+  package how to interpret the component information given to it, but it should
+  follow the expectations stated above.  For calls where no components are
+  specified, there is no single expected behavior and target packages should
+  clearly define what occurs in such cases.  Common arrangements include
+  assuming it should find all components, no components or some well-defined
+  subset of the available components.
 
-.. note::
-
-  如果启用了实验性的\ ``CMAKE_EXPERIMENTAL_FIND_CPS_PACKAGES``，那么当找到的包配置文件是\
-  |CPS|\ 文件时，CMake当前会导入所有可用的组件。此时，在考虑CPS文件时，\ ``COMPONENTS``\
-  和\ ``OPTIONAL_COMPONENTS``\ 选项不起作用。
+* |CPS| packages consist of a root configuration file and zero or more
+  appendices, each of which provide components and may have dependencies.
+  CMake always attempts to load the root configuration file.  Appendices are
+  only loaded if their dependencies can be satisfied, and if they either
+  provide requested components, or if no components were requested.  If the
+  dependencies of an appendix providing a required component cannot be
+  satisfied, the package is considered not found.  Otherwise, that appendix
+  is ignored.
 
 .. versionadded:: 3.24
   ``REGISTRY_VIEW``\ 关键字指定应该查询哪些注册表视图。这个关键字只在\ ``Windows``\

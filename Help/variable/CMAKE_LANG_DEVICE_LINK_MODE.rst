@@ -10,3 +10,5 @@ CMAKE_<LANG>_DEVICE_LINK_MODE
 
 ``LINKER``
   The linker is used directly for the device link step.
+
+This variable is read-only. Setting it is undefined behavior.
