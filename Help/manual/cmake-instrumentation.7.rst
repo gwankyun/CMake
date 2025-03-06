@@ -45,55 +45,45 @@ CMake会设置全局属性\ :prop_gbl:`RULE_LAUNCH_COMPILE`、\ :prop_gbl:`RULE_
 
 也可以通过手动调用\ ``ctest --collect-instrumentation <build>``\ 来生成索引。
 
-Callbacks
+回调函数
 ---------
 
-As part of the `v1 Query Files`_, users can provide a list of callbacks
-intended to handle data collected by this feature.
+作为\ `v1 Query Files`_\ 的一部分，用户可以提供一个回调函数列表，用于处理此功能收集的数据。
 
-Whenever `索引`_ occurs, each provided callback is executed, passing the
-path to the generated index file as an argument.
+每当\ `索引`_\ 操作发生时，每个提供的回调函数都会被执行，并将生成的索引文件的路径作为参数传递。
 
-These callbacks, defined either at the user-level or project-level should read
-the instrumentation data and perform any desired handling of it. The index file
-and its listed snippets are automatically deleted by CMake once all callbacks
-have completed. Note that a callback should never move or delete these data
-files manually as they may be needed by other callbacks.
+这些回调函数可以在用户级别或项目级别定义，应该读取插桩数据并执行任何所需的处理。一旦所有回调\
+函数执行完毕，CMake会自动删除索引文件及其列出的片段文件。请注意，回调函数绝不应手动移动或\
+删除这些数据文件，因为其他回调函数可能还需要它们。
 
-Enabling Instrumentation
+启用插桩功能
 ========================
 
-Instrumentation can be enabled either for an individual CMake project, or
-for all CMake projects configured and built by a user. For both cases,
-see the `v1 Query Files`_ for details on configuring this feature.
+插桩功能可以为单个CMake项目启用，也可以为用户配置和构建的所有CMake项目启用。有关这两种情况的\
+详细配置信息，请参阅\ `v1 Query Files`_。
 
-Enabling Instrumentation at the Project-Level
+在项目级别启用插桩功能
 ---------------------------------------------
 
-Project code can contain instrumentation queries with the
-:command:`cmake_instrumentation` command.
+项目代码可以使用\ :command:`cmake_instrumentation`\ 命令包含插桩查询。
 
-In addition, query files can be placed manually under
-``<build>/.cmake/instrumentation/<version>/query/`` at the top of a build tree.
-This version of CMake supports only one version schema, `API v1`_.
+此外，查询文件可以手动放置在构建树顶部的\ ``<build>/.cmake/instrumentation/<version>/query/``\
+目录下。此版本的CMake仅支持一种版本模式，即\ `API v1`_。
 
-Enabling Instrumentation at the User-Level
+在用户级别启用插桩功能
 ------------------------------------------
 
-Instrumentation can be configured at the user-level by placing query files in
-the :envvar:`CMAKE_CONFIG_DIR` under
-``<config_dir>/instrumentation/<version>/query/``.
+可以通过将查询文件放置在\ :envvar:`CMAKE_CONFIG_DIR`\ 下的\
+``<config_dir>/instrumentation/<version>/query/``\ 目录中来在用户级别配置插桩功能。
 
-Enabling Instrumentation for CDash Submissions
+为CDash提交启用插桩功能
 ----------------------------------------------
 
-You can enable instrumentation when using CTest in :ref:`Dashboard Client`
-mode by setting the :envvar:`CTEST_USE_INSTRUMENTATION` environment variable
-to the current UUID for the ``CMAKE_EXPERIMENTAL_INSTRUMENTATION`` feature.
-Doing so automatically enables the ``dynamicSystemInformation`` query.
+在以\ :ref:`Dashboard Client`\ 模式使用CTest时，可以通过将\ :envvar:`CTEST_USE_INSTRUMENTATION`\
+环境变量设置为\ ``CMAKE_EXPERIMENTAL_INSTRUMENTATION``\ 功能的当前UUID来启用插桩功能。\
+这样做会自动启用\ ``dynamicSystemInformation``\ 查询。
 
-The following table shows how each type of instrumented command gets mapped
-to a corresponding type of CTest XML file.
+下表显示了每种插桩命令类型如何映射到相应类型的CTest XML文件。
 
 =================================================== ==================
 :ref:`Snippet Role <cmake-instrumentation Data v1>` CTest XML File
@@ -111,9 +101,8 @@ to a corresponding type of CTest XML file.
 ``test``                                            ``Test.xml``
 =================================================== ==================
 
-By default the command line reported to CDash is truncated at the first space.
-You can instead choose to report the full command line (including arguments)
-by setting :envvar:`CTEST_USE_VERBOSE_INSTRUMENTATION` to 1.
+默认情况下，报告给CDash的命令行在第一个空格处截断。你可以通过将\
+:envvar:`CTEST_USE_VERBOSE_INSTRUMENTATION`\ 设置为1来选择报告完整的命令行（包括参数）。
 
 .. _`cmake-instrumentation API v1`:
 
@@ -142,7 +131,7 @@ subdirectories:
 ``data/``
   Holds instrumentation data collected on the project. CMake owns all data
   files, they should never be removed by other processes. Data collected here
-  remains until after `索引`_ occurs and all `Callbacks`_ are executed.
+  remains until after `索引`_ occurs and all `回调函数`_ are executed.
 
 ``cdash/``
   Holds temporary files used internally to generate XML content to be submitted
@@ -164,14 +153,14 @@ key is required, but all other fields are optional.
   supported version is ``1``.
 
 ``callbacks``
-  A list of command-line strings for `Callbacks`_ to handle collected
+  A list of command-line strings for `回调函数`_ to handle collected
   instrumentation data. Whenever these callbacks are executed, the full path to
   a `v1 Index File`_ is appended to the arguments included in the string.
 
 ``hooks``
   A list of strings specifying when `索引`_ should occur automatically.
   These are the intervals when instrumentation data should be collated and user
-  `Callbacks`_ should be invoked to handle the data. Elements in this list
+  `回调函数`_ should be invoked to handle the data. Elements in this list
   should be one of the following:
 
   * ``postGenerate``
@@ -263,7 +252,7 @@ the command executed. Additionally, snippet files are created for the following:
 * Each individual test executed by ``ctest``.
 
 These files remain in the build tree until after `索引`_ occurs and any
-user-specified `Callbacks`_ are executed.
+user-specified `回调函数`_ are executed.
 
 Snippet files have a filename with the syntax ``<role>-<timestamp>-<hash>.json``
 and contain the following data:
@@ -384,7 +373,7 @@ v1 Index File
 
 Index files contain a list of `v1 Snippet File`_. It serves as an entry point
 for navigating the instrumentation data. They are generated whenever `索引`_
-occurs and deleted after any user-specified `Callbacks`_ are executed.
+occurs and deleted after any user-specified `回调函数`_ are executed.
 
 ``version``
   The Data version of the index file, an integer. Currently the version is
