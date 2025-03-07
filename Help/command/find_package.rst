@@ -124,25 +124,16 @@ find_package
 其他可选组件可以列在\ ``OPTIONAL_COMPONENTS``\ 之后。如果这些不能满足，仍然可以考虑找到\
 整体的包，只要所有需要的组件都满足。
 
-The set of available components and their meaning are defined by the
-target package:
+可用组件的集合及其含义由目标包定义：
 
-* For CMake-script package configuration files, it is formally up to the target
-  package how to interpret the component information given to it, but it should
-  follow the expectations stated above.  For calls where no components are
-  specified, there is no single expected behavior and target packages should
-  clearly define what occurs in such cases.  Common arrangements include
-  assuming it should find all components, no components or some well-defined
-  subset of the available components.
+* 对于CMake脚本包配置文件，正式来说，目标包如何解释提供给它的组件信息由其自行决定，但它应该\
+  遵循上述期望。对于未指定任何组件的调用，没有单一的预期行为，目标包应该明确定义在这种情况下\
+  会发生什么。常见的安排包括假设应该找到所有组件、不找任何组件或找到可用组件的某个明确定义的子集。
 
-* |CPS| packages consist of a root configuration file and zero or more
-  appendices, each of which provide components and may have dependencies.
-  CMake always attempts to load the root configuration file.  Appendices are
-  only loaded if their dependencies can be satisfied, and if they either
-  provide requested components, or if no components were requested.  If the
-  dependencies of an appendix providing a required component cannot be
-  satisfied, the package is considered not found.  Otherwise, that appendix
-  is ignored.
+* |CPS|\ 包由一个根配置文件和零个或多个附录组成，每个附录都提供组件并且可能有依赖项。CMake\
+  总是尝试加载根配置文件。只有当附录的依赖项可以满足，并且它们要么提供了请求的组件，要么没有\
+  请求任何组件时，才会加载附录。如果提供必需组件的附录的依赖项无法满足，则认为该包未找到。否则，\
+  该附录将被忽略。
 
 .. versionadded:: 3.24
   ``REGISTRY_VIEW``\ 关键字指定应该查询哪些注册表视图。这个关键字只在\ ``Windows``\
