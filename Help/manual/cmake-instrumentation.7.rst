@@ -215,109 +215,98 @@ Data v1
 v1片段文件
 ---------------
 
-Snippet files are generated for every compile, link and custom command invoked
-as part of the CMake build or install step and contain instrumentation data about
-the command executed. Additionally, snippet files are created for the following:
+片段文件会为CMake构建或安装步骤中调用的每个编译、链接和自定义命令生成，并包含有关执行命令的\
+插桩数据。此外，还会为以下情况创建片段文件：
 
-* The CMake configure step
-* The CMake generate step
-* Entire build step (executed with ``cmake --build``)
-* Entire install step (executed with ``cmake --install``)
-* Each ``ctest`` invocation
-* Each individual test executed by ``ctest``.
+* CMake配置步骤
+* CMake生成步骤
+* 整个构建步骤（使用\ ``cmake --build``\ 执行）
+* 整个安装步骤（使用\ ``cmake --install``\ 执行）
+* 每次\ ``ctest``\ 调用
+* ``ctest``\ 执行的每个单独测试。
 
-These files remain in the build tree until after `索引`_ occurs and any
-user-specified `回调函数`_ are executed.
+这些文件会一直保留在构建树中，直到\ `索引`_\ 操作完成且任何用户指定的\ `回调函数`_\ 执行完毕。
 
-Snippet files have a filename with the syntax ``<role>-<timestamp>-<hash>.json``
-and contain the following data:
+片段文件的文件名语法为\ ``<role>-<timestamp>-<hash>.json``，并包含以下数据：
 
   ``version``
-    The Data version of the snippet file, an integer. Currently the version is
-    always ``1``.
+    片段文件的数据版本，一个整数。目前版本始终为\ ``1``。
 
   ``command``
-    The full command executed. Excluded when ``role`` is ``build``.
+    执行的完整命令。当\ ``role``\ 为\ ``build``\ 时排除。
 
   ``result``
-    The exit-value of the command, an integer.
+    命令的退出值，一个整数。
 
   ``role``
-    The type of command executed, which will be one of the following values:
+    执行的命令类型，将是以下值之一：
 
-    * ``configure``: the CMake configure step
-    * ``generate``: the CMake generate step
-    * ``compile``: an individual compile step invoked during the build
-    * ``link``: an individual link step invoked during the build
-    * ``custom``: an individual custom command invoked during the build
-    * ``build``: a complete ``make`` or ``ninja`` invocation. Only generated if ``preBuild`` or ``postBuild`` hooks are enabled.
-    * ``cmakeBuild``: a complete ``cmake --build`` invocation
-    * ``cmakeInstall``: a complete ``cmake --install`` invocation
-    * ``install``: an individual ``cmake -P cmake_install.cmake`` invocation
-    * ``ctest``: a complete ``ctest`` invocation
-    * ``test``: a single test executed by CTest
+    * ``configure``：CMake配置步骤
+    * ``generate``：CMake生成步骤
+    * ``compile``：构建期间调用的单个编译步骤
+    * ``link``：构建期间调用的单个链接步骤
+    * ``custom``：构建期间调用的单个自定义命令
+    * ``build``：完整的\ ``make``\ 或\ ``ninja``\ 调用。仅当启用\ ``preBuild``\ 或\
+      ``postBuild``\ 钩子时生成。
+    * ``cmakeBuild``：完整的\ ``cmake --build``\ 调用
+    * ``cmakeInstall``：完整的\ ``cmake --install``\ 调用
+    * ``install``：单个\ ``cmake -P cmake_install.cmake``\ 调用
+    * ``ctest``：完整的\ ``ctest``\ 调用
+    * ``test``：CTest执行的单个测试
 
   ``target``
-    The CMake target associated with the command. Only included when ``role`` is
-    ``compile`` or ``link``.
+    与命令关联的CMake目标。仅当\ ``role``\ 为\ ``compile``\ 或 ``link``\ 时包含。
 
   ``targetType``
-    The :prop_tgt:`TYPE` of the target. Only included when ``role`` is
-    ``link``.
+    目标的\ :prop_tgt:`TYPE`。仅当\ ``role``\ 为\ ``link``\ 时包含。
 
   ``targetLabels``
-    The :prop_tgt:`LABELS` of the target. Only included when ``role`` is
-    ``link``.
+    目标的\ :prop_tgt:`LABELS`。仅当\ ``role``\ 为\ ``link``\ 时包含。
 
   ``timeStart``
-    Time at which the command started, expressed as the number of milliseconds
-    since the system epoch.
+    命令开始的时间，以自系统纪元以来的毫秒数表示。
 
   ``duration``
-    The duration that the command ran for, expressed in milliseconds.
+    命令运行的持续时间，以毫秒表示。
 
   ``outputs``
-    The command's output file(s), an array. Only included when ``role`` is one
-    of: ``compile``, ``link``, ``custom``.
+    命令的输出文件数组。仅当\ ``role``\ 为以下之一时包含：\ ``compile``、\ ``link``、\
+    ``custom``。
 
   ``outputSizes``
-    The size(s) in bytes of the ``outputs``, an array. For files which do not
-    exist, the size is 0. Included under the same conditions as the ``outputs``
-    field.
+    ``outputs``\ 的大小数组，以字节为单位。对于不存在的文件，大小为0。在与\ ``outputs``\
+    字段相同的条件下包含。
 
   ``source``
-    The source file being compiled. Only included when ``role`` is ``compile``.
+    正在编译的源文件。仅当\ ``role``\ 为\ ``compile``\ 时包含。
 
   ``language``
-    The language of the source file being compiled. Only included when ``role`` is
-    ``compile``.
+    正在编译的源文件的语言。仅当\ ``role``\ 为\ ``compile``\ 时包含。
 
   ``testName``
-    The name of the test being executed. Only included when ``role`` is ``test``.
+    正在执行的测试的名称。仅当\ ``role``\ 为\ ``test``\ 时包含。
 
   ``config``
-    The type of build, such as ``Release`` or ``Debug``. Only included when
-    ``role`` is ``compile``, ``link`` or ``test``.
+    构建类型，如\ ``Release``\ 或\ ``Debug``。仅当\ ``role``\ 为\ ``compile``、\
+    ``link``\ 或\ ``test``\ 时包含。
 
   ``dynamicSystemInformation``
-    Specifies the dynamic information collected about the host machine
-    CMake is being run from. Data is collected for every snippet file
-    generated by CMake, with data immediately before and after the command is
-    executed. Only included when enabled by the `v1查询文件`_.
+    指定收集的有关运行CMake的主机的动态信息。为CMake生成的每个片段文件收集数据，包括命令执行\
+    前后的数据。仅当由\ `v1查询文件`_\ 启用时包含。
 
     ``beforeHostMemoryUsed``
-      The Host Memory Used in KiB at ``timeStart``.
+      在\ ``timeStart``\ 时使用的主机内存，以KiB为单位。
 
     ``afterHostMemoryUsed``
-      The Host Memory Used in KiB at ``timeStop``.
+      在\ ``timeStop``\ 时使用的主机内存，以KiB为单位。
 
     ``beforeCPULoadAverage``
-      The Average CPU Load at ``timeStart``.
+      在\ ``timeStart``\ 时的平均CPU负载。
 
     ``afterCPULoadAverage``
-      The Average CPU Load at ``timeStop``.
+      在\ ``timeStop``\ 时的平均CPU负载。
 
-Example:
+示例：
 
 .. code-block:: json
 
@@ -346,34 +335,28 @@ Example:
 v1索引文件
 -------------
 
-Index files contain a list of `v1片段文件`_. It serves as an entry point
-for navigating the instrumentation data. They are generated whenever `索引`_
-occurs and deleted after any user-specified `回调函数`_ are executed.
+索引文件包含一个\ `v1片段文件`_\ 列表。它作为导航插桩数据的入口点。每当\ `索引`_\ 操作发生\
+时生成，并在任何用户指定的\ `回调函数`_\ 执行完毕后删除。
 
 ``version``
-  The Data version of the index file, an integer. Currently the version is
-  always ``1``.
+  索引文件的数据版本，一个整数。目前版本始终为\ ``1``。
 
 ``buildDir``
-  The build directory of the CMake project.
+  CMake项目的构建目录。
 
 ``dataDir``
-  The full path to the ``<build>/.cmake/instrumentation/v1/data/`` directory.
+  ``<build>/.cmake/instrumentation/v1/data/``\ 目录的完整路径。
 
 ``hook``
-  The name of the hook responsible for generating the index file. In addition
-  to the hooks that can be specified by one of the `v1查询文件`_, this value may
-  be set to ``manual`` if indexing is performed by invoking
-  ``ctest --collect-instrumentation <build>``.
+  负责生成索引文件的钩子名称。除了可以由\ `v1查询文件`_\ 指定的钩子之外，如果通过调用\
+  ``ctest --collect-instrumentation <build>``\ 执行索引，此值可能设置为\ ``manual``。
 
 ``snippets``
-  Contains a list of `v1片段文件`_. This includes all snippet files
-  generated since the previous index file was created. The file paths are
-  relative to ``dataDir``.
+  包含一个\ `v1片段文件`_\ 列表。这包括自上一个索引文件创建以来生成的所有片段文件。文件路径\
+  相对于\ ``dataDir``。
 
 ``staticSystemInformation``
-  Specifies the static information collected about the host machine
-  CMake is being run from. Only included when enabled by the `v1查询文件`_.
+  指定收集的有关运行CMake的主机的静态信息。仅当由\ `v1查询文件`_\ 启用时包含。
 
   * ``OSName``
   * ``OSPlatform``
@@ -394,7 +377,7 @@ occurs and deleted after any user-specified `回调函数`_ are executed.
   * ``vendorID``
   * ``vendorString``
 
-Example:
+示例：
 
 .. code-block:: json
 
