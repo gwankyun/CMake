@@ -441,9 +441,11 @@ public:
   /** Convert an input path to an absolute path with no '/..' components.
       Backslashes in the input path are converted to forward slashes.
       Relative paths are interpreted w.r.t. GetLogicalWorkingDirectory.
-      On Windows, the on-disk capitalization is loaded for existing paths.
       This is similar to 'realpath', but preserves symlinks that are
-      not erased by '../' components.  */
+      not erased by '../' components.
+
+      On Windows and macOS, the on-disk capitalization is loaded for
+      existing paths.  */
   static std::string ToNormalizedPathOnDisk(std::string p);
 
 #ifndef CMAKE_BOOTSTRAP
@@ -648,6 +650,12 @@ public:
   /** Attempt to get full path to COMSPEC, default "cmd.exe" */
   static std::string GetComspec();
 #endif
+
+  /** Get the real path for a given path, removing all symlinks.
+      This variant of GetRealPath also works on Windows but will
+      resolve subst drives too.  */
+  static std::string GetRealPathResolvingWindowsSubst(
+    std::string const& path, std::string* errorMessage = nullptr);
 
   /** Get the real path for a given path, removing all symlinks.  */
   static std::string GetRealPath(std::string const& path,
