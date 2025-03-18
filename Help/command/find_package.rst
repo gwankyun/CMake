@@ -16,7 +16,7 @@ find_package
   建议在阅读下面的细节之前先阅读一下这本指南。
 
 找到一个包（通常由项目外部提供），并加载其特定于包的详细信息。对该命令的调用也可能被\
-:ref:`dependency providers <dependency_providers>`\ 拦截。
+:ref:`依赖提供者 <dependency_providers>`\ 拦截。
 
 典型用法
 ^^^^^^^^^^^^^
@@ -31,11 +31,12 @@ find_package
 项目，则应该给出\ ``REQUIRED``。一些更复杂的包支持可以使用\ ``COMPONENTS``\ 关键字选择\
 组件，但大多数包没有那么复杂的级别。
 
-以上是\ `basic signature`_\ 的简化形式。在可能的情况下，项目应该使用这种形式找到包。这降低\
-了复杂性，并最大化了找到或提供包的方式。
+以上是\ `基本签名 <basic signature>`_\ 的简化形式。在可能的情况下，项目应该使用这种形式找\
+到包。这降低了复杂性，并最大化了找到或提供包的方式。
 
-了解\ `basic signature`_\ 就足以了解\ ``find_package()``\ 的一般用法了。打算提供包配置文件\
-的项目维护者应该了解更大的图景，在\ :ref:`Full Signature`\ 和本页的所有后续部分中有解释。
+了解\ `基本签名 <basic signature>`_\ 就足以了解\ ``find_package()``\ 的一般用法了。\
+打算提供包配置文件的项目维护者应该了解更大的图景，在\ :ref:`Full Signature`\ 和本页的所有\
+后续部分中有解释。
 
 搜索模式
 ^^^^^^^^^^^^
@@ -88,10 +89,11 @@ find_package
     :command:`FetchContent_MakeAvailable`。
 
 当没有重定向到\ :module:`FetchContent`\ 提供的包时，命令参数决定是使用模块模式还是配置模式。\
-当使用\ `basic signature`_\ 时，该命令首先以模块模式进行搜索。如果没有找到包，搜索将退回到\
-配置模式。用户可以将\ :variable:`CMAKE_FIND_PACKAGE_PREFER_CONFIG`\ 变量设置为true来\
-逆转优先级，并在回退到模块模式之前，让CMake首先使用配置模式进行搜索。使用\ ``MODULE``\
-关键字还可以强制基本签名只使用模块模式。如果使用\ `full signature`_，只能在配置模式下进行搜索。
+当使用\ `基本签名 <basic signature>`_\ 时，该命令首先以模块模式进行搜索。如果没有找到包，\
+搜索将退回到配置模式。用户可以将\ :variable:`CMAKE_FIND_PACKAGE_PREFER_CONFIG`\ 变量\
+设置为true来逆转优先级，并在回退到模块模式之前，让CMake首先使用配置模式进行搜索。使用\
+``MODULE``\ 关键字还可以强制基本签名只使用模块模式。如果使用\ `完整签名 <full signature>`_，\
+只能在配置模式下进行搜索。
 
 .. _`basic signature`:
 
@@ -155,18 +157,18 @@ find_package
 .. note::
   除CPS包外，目前版本支持是按单个包分别提供的。当指定了版本范围，但包仅被设计为支持单个版本时，\
   该包将忽略版本范围的上限，仅考虑范围下限的单个版本。支持版本范围的非CPS包，其支持方式由各个\
-  包自行决定。有关详细信息和重要注意事项，请参阅下面的\ `Version Selection`_\ 部分。
+  包自行决定。有关详细信息和重要注意事项，请参阅下面的\ `版本选择 <Version Selection>`_\ 部分。
 
 ``EXACT``\ 选项要求版本完全匹配。此选项与版本范围的规范不兼容。
 
 如果没有\ ``[version]``\ 和/或组件列表提供给find-module中的递归调用，则会自动从外部调用\
 转发相应的参数（包括\ ``[version]``\ 的\ ``EXACT``\ 标志）。版本支持目前只在包的基础上提\
-供（参见下面的\ `Version Selection`_\ 部分）。
+供（参见下面的\ `版本选择 <Version Selection>`_\ 部分）。
 
 有关\ ``NO_POLICY_SCOPE``\ 选项的讨论，请参阅\ :command:`cmake_policy`\ 命令文档。
 
 .. versionadded:: 3.24
-  只有\ :ref:`dependency provider <dependency_providers>`\ 调用\ ``find_package()``\
+  只有\ :ref:`依赖提供者 <dependency_providers>`\ 调用\ ``find_package()``\
   时，才允许使用\ ``BYPASS_PROVIDER``\ 关键字。提供程序可以使用它直接调用内置的\
   ``find_package()``\ 实现，并防止该调用被重新路由回自身。CMake的未来版本可能会检测到来\
   自依赖提供程序以外的地方使用此关键字的尝试，并终止并抛出致命错误。
@@ -205,8 +207,9 @@ find_package
                 ONLY_CMAKE_FIND_ROOT_PATH |
                 NO_CMAKE_FIND_ROOT_PATH])
 
-``CONFIG``\ 选项、同义的\ ``NO_MODULE``\ 选项，或使用\ `basic signature`_\ 中没有指定\
-的选项，都强制执行纯配置模式。在纯配置模式下，该命令跳过模块模式搜索，并立即进行配置模式搜索。
+``CONFIG``\ 选项、同义的\ ``NO_MODULE``\ 选项，或使用\ `基本签名 <basic signature>`_\
+中没有指定的选项，都强制执行纯配置模式。在纯配置模式下，该命令跳过模块模式搜索，并立即进行配置\
+模式搜索。
 
 配置模式搜索试图定位要查找的包提供的配置文件。创建了一个名为\ ``<PackageName>_DIR``\ 的\
 缓存项，用于保存包含该文件的目录。缺省情况下，搜索名称为\ ``<PackageName>``\ 的包。如果指\
@@ -765,36 +768,24 @@ CMake脚本
 .. _cps-version_schema: https://cps-org.github.io/cps/schema.html#version-schema
 .. |cps-version_schema| replace:: ``version_schema``
 
-CPS Transitive Requirements
+CPS传递依赖
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A |CPS| package description consists of one or more components which may in
-turn depend on other components either internal or external to the package.
-When external components are required, the providing package is noted as
-a package-level requirement of the package.  Additionally, the set of required
-components is typically noted in said external package requirement.
+一个符合\ |CPS|\ 规范的包描述包含一个或多个组件，这些组件可能依赖于包内部或外部的其他组件。\
+当需要外部组件时，提供该组件的包会被记录为包的包级依赖。此外，所需组件的集合通常会在该外部包\
+需求中注明。
 
-Where a CMake-script package description would use the
-:command:`find_dependency` command to handle transitive dependencies, CMake
-handles transitive dependencies for CPS itself using an internally nested
-``find_package`` call.  This call can resolve CPS package dependencies via
-*either* another CPS package, or via a CMake-script package.  The manner in
-which the CPS component dependencies are handled is subject to some caveats.
+在CMake脚本包描述中，通常会使用\ :command:`find_dependency`\ 命令来处理传递依赖，而CMake\
+本身则通过内部嵌套的\ ``find_package``\ 调用来处理CPS的传递依赖。这个调用可以通过\ *另一个*\
+CPS包或CMake脚本包来解析CPS包依赖。处理CPS组件依赖的方式有一些需要注意的事项。
 
-When the candidate for resolving a transitive dependency is another CPS
-package, things are simple; ``COMPONENTS`` and CPS "components" are directly
-comparable (and are effectively synonymous with CMake "imported targets").
-CMake-script packages, however, are encouraged to (and often do) check that
-required components were found, whether or not the package describes separate
-components.  Additionally, even those that do describe components typically do
-not have the same correlation to imported targets that is normal for CPS.  As
-a result, passing the set of required components declared by a CPS package to
-``COMPONENTS`` would result in spurious failures to resolve dependencies.
+当解析传递依赖的候选者是另一个CPS包时，事情很简单；\ ``COMPONENTS``\ 和CPS的“组件”可以直接\
+比较（并且实际上与CMake的“导入目标”是同义词）。然而，CMake脚本包通常会\（并且经常这样做）检查\
+是否找到了所需的组件，无论该包是否描述了单独的组件。此外，即使那些确实描述了组件的包，通常也\
+不具有与CPS中常见的导入目标相同的关联性。因此，将CPS包声明的所需组件集合传递给\ ``COMPONENTS``\
+会导致解析依赖时出现不必要的失败。
 
-To address this, if a candidate for resolving a CPS transitive dependency is a
-CMake-script package, CMake passes the required components as declared by the
-consuming CPS package as ``OPTIONAL_COMPONENTS`` and performs a separate,
-internal check that the candidate package supplied the required imported
-targets.  Those targets must be named ``<PackageName>::<ComponentName>``, in
-conformance with CPS convention, or the check will consider the package not
-found.
+为了解决这个问题，如果解析CPS传递依赖的候选者是CMake脚本包，CMake会将消费CPS包声明的所需组件\
+作为\ ``OPTIONAL_COMPONENTS``\ 传递，并执行一个单独的内部检查，以确保候选包提供了所需的\
+导入目标。这些目标必须命名为\ ``<PackageName>::<ComponentName>``，以符合CPS的约定，否则\
+检查会认为该包未找到。
