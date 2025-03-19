@@ -7,19 +7,16 @@ return
 
   return([PROPAGATE <var-name>...])
 
-When this command is encountered in an included file (via :command:`include` or
-:command:`find_package`), it causes processing of the current file to stop
-and control is returned to the including file.  If it is encountered in a
-file which is not included by another file, e.g. a ``CMakeLists.txt``,
-deferred calls scheduled by :command:`cmake_language(DEFER)` are invoked and
-control is returned to the parent directory if there is one.
+当在包含的文件中（通过\ :command:`include`\ 或\ :command:`find_package`\ ）遇到此命令时，\
+它将停止当前文件的处理，并将控制权返回给包含它的文件。如果在一个没有被其他文件包含的文件中遇到\
+该命令，例如一个\ ``CMakeLists.txt``\ 文件，则会调用由\ :command:`cmake_language(DEFER)`\
+安排的延迟调用，并且如果有父目录，控制权将返回给父目录。
 
-If ``return()`` is called in a function, control is returned to the caller
-of that function.  Note that a :command:`macro`, unlike a :command:`function`,
-is expanded in place and therefore cannot handle ``return()``.
+如果在函数中调用\ ``return()``，控制权将返回给该函数的调用者。需要注意的是，与\
+:command:`function`\ 不同，\ :command:`macro`\ 是就地展开的，因此无法处理\ ``return()``。
 
-Policy :policy:`CMP0140` controls the behavior regarding the arguments of the
-command.  All arguments are ignored unless that policy is set to ``NEW``.
+策略\ :policy:`CMP0140`\ 控制着该命令参数的行为。除非该策略设置为\ ``NEW``，否则所有参数\
+都将被忽略。
 
 ``PROPAGATE``
   .. versionadded:: 3.25
