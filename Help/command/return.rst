@@ -21,18 +21,14 @@ return
 ``PROPAGATE``
   .. versionadded:: 3.25
 
-  This option sets or unsets the specified variables in the parent directory or
-  function caller scope. This is equivalent to :command:`set(PARENT_SCOPE)` or
-  :command:`unset(PARENT_SCOPE)` commands, except for the way it interacts
-  with the :command:`block` command, as described below.
+  此选项会在父目录或函数调用者的作用域中设置或取消设置指定的变量。这等同于使用\
+  :command:`set(PARENT_SCOPE)`\ 或\ :command:`unset(PARENT_SCOPE)`\ 命令，不过在与\
+  :command:`block`\ 命令交互的方式上有所不同，具体如下所述。
 
-  The ``PROPAGATE`` option can be very useful in conjunction with the
-  :command:`block` command.  A ``return`` will propagate the
-  specified variables through any enclosing block scopes created by the
-  :command:`block` commands.  Inside a function, this ensures the variables
-  are propagated to the function's caller, regardless of any blocks within
-  the function.  If not inside a function, it ensures the variables are
-  propagated to the parent file or directory scope. For example:
+  ``PROPAGATE``\ 选项与\ :command:`block`\ 命令结合使用时非常有用。使用\ ``return``\
+  命令时，它会将指定的变量传播到由\ :command:`block`\ 命令创建的任何封闭块作用域中。\
+  在函数内部，这可以确保变量被传播到函数的调用者，无论函数内部是否有块。如果不在函数内部，\
+  它可以确保变量被传播到父文件或目录作用域。例如：
 
   .. code-block:: cmake
     :caption: CMakeLists.txt
@@ -44,23 +40,23 @@ return
 
     block(SCOPE_FOR VARIABLES)
       add_subdirectory(subDir)
-      # var1 has the value "block-nested"
+      # var1的值为"block-nested"
     endblock()
 
-    # var1 has the value "top-value"
+    # var1的值为"top-value"
 
   .. code-block:: cmake
     :caption: subDir/CMakeLists.txt
 
     function(multi_scopes result_var1 result_var2)
       block(SCOPE_FOR VARIABLES)
-        # This would only propagate out of the immediate block, not to
-        # the caller of the function.
+        # 这只会将变量传播出当前所在的块作用域，而不会传播到
+        # 函数的调用者。
         #set(${result_var1} "new-value" PARENT_SCOPE)
         #unset(${result_var2} PARENT_SCOPE)
 
-        # This propagates the variables through the enclosing block and
-        # out to the caller of the function.
+        # 这会将变量通过封闭块传播出去，并传递给
+        # 函数的调用者。
         set(${result_var1} "new-value")
         unset(${result_var2})
         return(PROPAGATE ${result_var1} ${result_var2})
@@ -71,18 +67,18 @@ return
     set(var2 "another-value")
 
     multi_scopes(var1 var2)
-    # Now var1 will hold "new-value" and var2 will be unset
+    # 现在，var1的值将为"new-value"，而var2将被取消设置。
 
     block(SCOPE_FOR VARIABLES)
-      # This return() will set var1 in the directory scope that included us
-      # via add_subdirectory(). The surrounding block() here does not limit
-      # propagation to the current file, but the block() in the parent
-      # directory scope does prevent propagation going any further.
+      # 这个return()语句会在通过add_subdirectory()包含
+      # 当前文件的目录作用域中设置var1。此处周围的block()
+      # 不会将传播范围限制在当前文件内，但父目录作用域中的
+      # block()会阻止其进一步传播。
       set(var1 "block-nested")
       return(PROPAGATE var1)
     endblock()
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`block`

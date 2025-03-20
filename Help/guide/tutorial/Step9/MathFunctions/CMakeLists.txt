@@ -26,6 +26,7 @@ if (USE_MYMATH)
                              )
 
   # link SqrtLibrary to tutorial_compiler_flags
+  # 将SqrtLibrary库链接到tutorial_compiler_flags
   target_link_libraries(SqrtLibrary PUBLIC tutorial_compiler_flags)
 
   target_link_libraries(MathFunctions PRIVATE SqrtLibrary)

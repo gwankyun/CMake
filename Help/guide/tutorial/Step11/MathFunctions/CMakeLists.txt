@@ -27,6 +27,7 @@ if(USE_MYMATH)
                              )
 
   # state that SqrtLibrary need PIC when the default is shared libraries
+  # 声明当默认使用共享库时，SqrtLibrary需要使用位置无关代码（PIC）
   set_target_properties(SqrtLibrary PROPERTIES
                         POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
                         )
@@ -41,7 +42,8 @@ endif()
 target_link_libraries(MathFunctions PUBLIC tutorial_compiler_flags)
 
 # define the symbol stating we are using the declspec(dllexport) when
-# 在windows构建时
+# building on windows
+# 定义一个符号，表明在Windows系统上进行构建时我们正在使用declspec(dllexport)
 target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
 
 # install libs

@@ -58,5 +58,5 @@ endif()
 install(TARGETS ${installable_libs}
         EXPORT MathFunctionsTargets
         DESTINATION lib)
-# install include headers
+# 安装包含头文件
 install(FILES MathFunctions.h DESTINATION include)
