@@ -9,36 +9,27 @@ include_guard
 
   include_guard([DIRECTORY|GLOBAL])
 
-Sets up an include guard for the current CMake file (see the
-:variable:`CMAKE_CURRENT_LIST_FILE` variable documentation).
+为当前的CMake文件设置包含保护（请参阅\ :variable:`CMAKE_CURRENT_LIST_FILE`\ 变量文档）。
 
-CMake will end its processing of the current file at the location of the
-``include_guard`` command if the current file has already been
-processed for the applicable scope (see below). This provides functionality
-similar to the include guards commonly used in source headers or to the
-``#pragma once`` directive. If the current file has been processed previously
-for the applicable scope, the effect is as though :command:`return` had been
-called. Do not call this command from inside a function being defined within
-the current file.
+如果当前文件已经在适用的作用域（见下文）中被处理过，CMake将在\ ``include_guard``\ 命令处\
+结束对当前文件的处理。这提供了类似于源文件头中常用的包含保护或\ ``#pragma once``\ 指令的功能。\
+如果当前文件先前已经在适用的作用域中被处理过，其效果就如同调用了\ :command:`return`\ 命令一样。\
+请勿在当前文件中定义的函数内部调用此命令。
 
-An optional argument specifying the scope of the guard may be provided.
-Possible values for the option are:
+可以提供一个可选参数来指定保护的作用域。\
+该选项可能的值如下：
 
 ``DIRECTORY``
-  The include guard applies within the current directory and below. The file
-  will only be included once within this directory scope, but may be included
-  again by other files outside of this directory (i.e. a parent directory or
-  another directory not pulled in by :command:`add_subdirectory` or
-  :command:`include` from the current file or its children).
+  包含保护适用于当前目录及其子目录。在这个目录作用域内，该文件只会被包含一次，但可能会被此目录\
+  之外的其他文件再次包含（例如，父目录，或者不是通过当前文件或其子文件中的\
+  :command:`add_subdirectory`\ 或\ :command:`include`\ 命令引入的其他目录）。
 
 ``GLOBAL``
-  The include guard applies globally to the whole build. The current file
-  will only be included once regardless of the scope.
+  包含保护在整个构建过程中全局生效。无论在何种作用域下，当前文件都只会被包含一次。
 
-If no arguments given, ``include_guard`` has the same scope as a variable,
-meaning that the include guard effect is isolated by the most recent
-function scope or current directory if no inner function scopes exist.
-In this case the command behavior is the same as:
+如果不提供任何参数，\ ``include_guard``\ 的作用域与变量相同，\
+这意味着包含保护的效果会被最近的函数作用域隔离；若不存在内部函数作用域，则会被当前目录隔离。\
+在这种情况下，该命令的行为与以下代码相同：
 
 .. code-block:: cmake
 
