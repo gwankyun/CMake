@@ -11,33 +11,29 @@ block
     <commands>
   endblock()
 
-All commands between ``block()`` and the matching :command:`endblock` are
-recorded without being invoked.  Once the :command:`endblock` is evaluated, the
-recorded list of commands is invoked inside the requested scopes, then the
-scopes created by the ``block()`` command are removed.
+在\ ``block()``\ 和与之匹配的\ :command:`endblock`\ 之间的所有命令都会被记录下来，但不会\
+被立即执行。当\ :command:`endblock`\ 被求值时，记录的命令列表会在请求的作用域内被执行，\
+然后由\ ``block()``\ 命令创建的作用域会被移除。
 
 ``SCOPE_FOR``
-  Specify which scopes must be created.
+  指定必须创建哪些作用域。
 
   ``POLICIES``
-    Create a new policy scope. This is equivalent to
-    :command:`cmake_policy(PUSH)` with an automatic
-    :command:`cmake_policy(POP)` when leaving the block scope.
+    创建一个新的策略作用域。这等同于\ :command:`cmake_policy(PUSH)`，并在离开块作用域时\
+    自动执行\ :command:`cmake_policy(POP)`。
 
   ``VARIABLES``
-    Create a new variable scope.
+    创建一个新的变量作用域。
 
-  If ``SCOPE_FOR`` is not specified, this is equivalent to:
+  如果未指定\ ``SCOPE_FOR``，则等同于：
 
   .. code-block:: cmake
 
     block(SCOPE_FOR VARIABLES POLICIES)
 
 ``PROPAGATE``
-  When a variable scope is created by the :command:`block` command, this
-  option sets or unsets the specified variables in the parent scope. This is
-  equivalent to :command:`set(PARENT_SCOPE)` or :command:`unset(PARENT_SCOPE)`
-  commands.
+  当\ :command:`block`\ 命令创建了一个变量作用域时，此选项会在父作用域中设置或取消设置指定的\
+  变量。这等同于\ :command:`set(PARENT_SCOPE)`\ 或\ :command:`unset(PARENT_SCOPE)`\ 命令。
 
   .. code-block:: cmake
 
@@ -49,27 +45,25 @@ scopes created by the ``block()`` command are removed.
       unset(var2)
     endblock()
 
-    # Now var1 holds VALUE1, and var2 is unset
+    # 现在var1的值为VALUE1，而var2被取消设置
 
-  This option is only allowed when a variable scope is created. An error will
-  be raised in the other cases.
+  此选项仅在创建变量作用域时允许使用。在其他情况下会引发错误。
 
-When the ``block()`` is inside a :command:`foreach` or :command:`while`
-command, the :command:`break` and :command:`continue` commands can be used
-inside the block.
+当\ ``block()``\ 位于\ :command:`foreach`\ 或\ :command:`while`\ 命令内部时，\
+:command:`break`\ 和\ :command:`continue`\ 命令可在块内部使用。
 
 .. code-block:: cmake
 
   while(TRUE)
     block()
        ...
-       # the break() command will terminate the while() command
+       # break()命令将终止while()命令
        break()
     endblock()
   endwhile()
 
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`endblock`
