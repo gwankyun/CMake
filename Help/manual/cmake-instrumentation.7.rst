@@ -196,9 +196,9 @@ v1查询文件
   }
 
 在这个示例中，每次调用\ ``cmake --build``\ 或\ ``cmake --install``\ 后，会在\
-``<build>/.cmake/instrumentation/v1/data``\ 中生成一个索引文件\ ``index-<hash>.json``，\
-其中包含自上次索引以来创建的数据片段文件列表。命令\ ``/usr/bin/python callback.py index-<hash>.json``\
-和\ ``/usr/bin/cmake -P callback.cmake arg index-<hash>.json``\ 将按此顺序执行。\
+``<build>/.cmake/instrumentation/v1/data``\ 中生成一个索引文件\ ``index-<timestamp>.json``，\
+其中包含自上次索引以来创建的数据片段文件列表。命令\ ``/usr/bin/python callback.py index-<timestamp>.json``\
+和\ ``/usr/bin/cmake -P callback.cmake arg index-<timestamp>.json``\ 将按此顺序执行。\
 索引文件将包含\ ``staticSystemInformation``\ 数据，索引中列出的每个片段文件将包含\
 ``dynamicSystemInformation``\ 数据。一旦两个回调都完成，索引文件和它列出的所有片段文件将\
 从项目构建树中删除。
@@ -227,13 +227,16 @@ v1片段文件
 
 这些文件会一直保留在构建树中，直到\ `索引`_\ 操作完成且任何用户指定的\ `回调函数`_\ 执行完毕。
 
-片段文件的文件名语法为\ ``<role>-<timestamp>-<hash>.json``，并包含以下数据：
+片段文件的文件名语法为\ ``<role>-<hash>-<timestamp>.json``，并包含以下数据：
 
   ``version``
     片段文件的数据版本，一个整数。目前版本始终为\ ``1``。
 
   ``command``
     执行的完整命令。当\ ``role``\ 为\ ``build``\ 时排除。
+
+  ``workingDir``
+    The working directory in which the ``command`` was executed.
 
   ``result``
     命令的退出值，一个整数。
@@ -387,14 +390,14 @@ v1索引文件
     "buildDir": "<build>",
     "dataDir": "<build>/.cmake/instrumentation/v1/data",
     "snippets": [
-      "configure-<timestamp>-<hash>.json",
-      "generate-<timestamp>-<hash>.json",
-      "compile-<timestamp>-<hash>.json",
-      "compile-<timestamp>-<hash>.json",
-      "link-<timestamp>-<hash>.json",
-      "install-<timestamp>-<hash>.json",
-      "ctest-<timestamp>-<hash>.json",
-      "test-<timestamp>-<hash>.json",
-      "test-<timestamp>-<hash>.json",
+      "configure-<hash>-<timestamp>.json",
+      "generate-<hash>-<timestamp>.json",
+      "compile-<hash>-<timestamp>.json",
+      "compile-<hash>-<timestamp>.json",
+      "link-<hash>-<timestamp>.json",
+      "install-<hash>-<timestamp>.json",
+      "ctest-<hash>-<timestamp>.json",
+      "test-<hash>-<timestamp>.json",
+      "test-<hash>-<timestamp>.json",
     ]
   }
