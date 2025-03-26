@@ -3,6 +3,5 @@ CMAKE_PKG_CONFIG_PC_PATH
 
 .. versionadded:: 4.0
 
-:ref:`Semicolon-separated list <CMake Language Lists>` of supplementary paths
-which the :command:`cmake_pkg_config` command will search for package files by
-efault. Also used to derive the ``pc_path`` package variable.
+:ref:`以分号分隔的补充路径列表 <CMake Language Lists>`，\ :command:`cmake_pkg_config`\
+命令默认会在这些路径中搜索包文件。该列表也用于推导\ ``pc_path``\ 包变量。

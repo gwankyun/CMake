@@ -3,7 +3,5 @@ CMAKE_PKG_CONFIG_DISABLE_UNINSTALLED
 
 .. versionadded:: 4.0
 
-Enable / Disable the default "uninstalled" search behavior of the
-:command:`cmake_pkg_config` command. When this variable is false, package files
-with an "-uninstalled" suffix have higher priority than exact package name
-matches.
+启用/禁用\ :command:`cmake_pkg_config`\ 命令默认的“未安装（uninstalled）”搜索行为。\
+当此变量为false时，带有“-uninstalled”后缀的包文件比精确匹配包名的文件具有更高的优先级。
