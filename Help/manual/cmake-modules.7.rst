@@ -130,7 +130,6 @@ cmake-modules(7)
    /module/FindFontconfig
    /module/FindFreetype
    /module/FindGCCXML
-   /module/FindGDAL
    /module/FindGettext
    /module/FindGIF
    /module/FindGit
@@ -291,6 +290,7 @@ cmake-modules(7)
    /module/FindBoost
    /module/FindCUDA
    /module/FindDart
+   /module/FindGDAL
    /module/FindITK
    /module/FindPythonInterp
    /module/FindPythonLibs
