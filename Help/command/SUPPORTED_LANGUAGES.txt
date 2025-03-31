@@ -1,25 +1,26 @@
 
-Supported languages are ``C``, ``CXX`` (i.e.  C++), ``CSharp`` (i.e.  C#), ``CUDA``,
-``OBJC`` (i.e. Objective-C), ``OBJCXX`` (i.e. Objective-C++), ``Fortran``, ``HIP``,
-``ISPC``, ``Swift``, ``ASM``, ``ASM_NASM``, ``ASM_MARMASM``, ``ASM_MASM``, and ``ASM-ATT``.
+支持的语言包括 ``C``、\ ``CXX``\ （即C++）、\ ``CSharp``\ （即C#）、\ ``CUDA``、\
+``OBJC``\ （即Objective-C）、\ ``OBJCXX``\ （即Objective-C++）、\ ``Fortran``、\
+``HIP``、\ ``ISPC``、\ ``Swift``、\ ``ASM``、\ ``ASM_NASM``、\ ``ASM_MARMASM``、\
+``ASM_MASM``\ 和\ ``ASM-ATT``。
 
   .. versionadded:: 3.8
-    Added ``CSharp`` and ``CUDA`` support.
+    增加了对\ ``CSharp``\ 和\ ``CUDA``\ 的支持。
 
   .. versionadded:: 3.15
-    Added ``Swift`` support.
+    增加了对\ ``Swift``\ 的支持。
 
   .. versionadded:: 3.16
-    Added ``OBJC`` and ``OBJCXX`` support.
+    增加了对\ ``OBJC``\ 和\ ``OBJCXX``\ 的支持。
 
   .. versionadded:: 3.18
-    Added ``ISPC`` support.
+    增加了对\ ``ISPC``\ 的支持。
 
   .. versionadded:: 3.21
-    Added ``HIP`` support.
+    增加了对\ ``HIP``\ 的支持。
 
   .. versionadded:: 3.26
-    Added ``ASM_MARMASM`` support.
+    增加了对\ ``ASM_MARMASM``\ 的支持。
 
-If enabling ``ASM``, list it last so that CMake can check whether
-compilers for other languages like ``C`` work for assembly too.
+如果要启用\ ``ASM``，请将其列在最后，以便CMake能够检查其他语言（如\ ``C``\ ）的编译器是否\
+也适用于汇编语言。

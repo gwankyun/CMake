@@ -6,22 +6,18 @@ enable_language
 
   enable_language(<lang>... [OPTIONAL])
 
-Enables support for the named languages in CMake.  This is the same as
-the :command:`project` command but does not create any of the extra
-variables that are created by the :command:`project` command.
+在CMake中启用对指定语言的支持。这与\ :command:`project`\ 命令的功能相同，但不会创建由\
+:command:`project`\ 命令所创建的任何额外变量。
 
 .. include:: SUPPORTED_LANGUAGES.txt
 
-The following restrictions apply to where ``enable_language()`` may be called:
+以下是对\ ``enable_language()``\ 调用位置的限制：
 
-* It must be called in file scope, not in a function call.
-* It must not be called before the first call to :command:`project`.
-  See policy :policy:`CMP0165`.
-* It must be called in the highest directory common to all targets
-  using the named language directly for compiling sources or
-  indirectly through link dependencies.  It is simplest to enable all
-  needed languages in the top-level directory of a project.
+* 它必须在文件作用域中调用，而不能在函数调用中使用。
+* 在首次调用\ :command:`project`\ 命令之前，不得调用此命令。\
+  请参阅策略\ :policy:`CMP0165`。
+* 它必须在所有直接使用指定语言编译源文件或通过链接依赖间接使用该语言的目标的公共最高级目录中\
+  调用。最简单的做法是在项目的顶层目录中启用所有需要的语言。
 
-The ``OPTIONAL`` keyword is a placeholder for future implementation and
-does not currently work. Instead you can use the :module:`CheckLanguage`
-module to verify support before enabling.
+``OPTIONAL``\ 关键字是为未来实现预留的占位符，目前不起作用。相反，你可以使用\
+:module:`CheckLanguage`\ 模块在启用语言之前验证其是否受支持。
