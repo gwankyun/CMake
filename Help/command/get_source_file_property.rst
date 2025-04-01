@@ -9,42 +9,34 @@ get_source_file_property
                            [DIRECTORY <dir> | TARGET_DIRECTORY <target>]
                            <property>)
 
-Gets a property from a source file.  The value of the property is stored in
-the specified ``<variable>``.  If the ``<file>`` is not a source file, or the
-source property is not found, ``<variable>`` will be set to ``NOTFOUND``.
-If the source property was defined to be an ``INHERITED`` property (see
-:command:`define_property`), the search will include the relevant parent
-scopes, as described for the :command:`define_property` command.
+从源文件中获取一个属性。该属性的值将存储在指定的\ ``<variable>``\ 中。如果\ ``<file>``\
+不是源文件，或者未找到该源属性，则\ ``<variable>``\ 将被设置为\ ``NOTFOUND``。\
+如果源属性被定义为\ ``INHERITED``\ 属性（请参阅\ :command:`define_property`\ ），则搜索\
+将包括相关的父作用域，具体规则与\ :command:`define_property`\ 命令中描述的一致。
 
-By default, the source file's property will be read from the current source
-directory's scope.
+默认情况下，源文件的属性将从当前源目录的作用域中读取。
 
 .. versionadded:: 3.18
-  Directory scope can be overridden with one of the following sub-options:
+  可以使用以下子选项之一来覆盖目录作用域：
 
   ``DIRECTORY <dir>``
-    The source file property will be read from the ``<dir>`` directory's
-    scope.  CMake must already know about that source directory, either by
-    having added it through a call to :command:`add_subdirectory` or ``<dir>``
-    being the top level source directory.  Relative paths are treated as
-    relative to the current source directory.
+    源文件属性将从\ ``<dir>``\ 目录的作用域中读取。CMake必须已经知晓该源目录，这可以通过\
+    调用\ :command:`add_subdirectory`\ 来添加该目录，或者\ ``<dir>``\ 是顶层源目录。\
+    相对路径将被视为相对于当前源目录的路径。
 
   ``TARGET_DIRECTORY <target>``
-    The source file property will be read from the directory scope in which
-    ``<target>`` was created (``<target>`` must therefore already exist).
+    源文件属性将从创建\ ``<target>``\ 所在的目录作用域中读取（因此\ ``<target>``\ 必须已经存在）。
 
-Use :command:`set_source_files_properties` to set property values.  Source
-file properties usually control how the file is built. One property that is
-always there is :prop_sf:`LOCATION`.
+使用\ :command:`set_source_files_properties`\ 来设置属性值。源文件属性通常控制文件的\
+构建方式。其中一个始终存在的属性是\ :prop_sf:`LOCATION`。
 
 .. note::
 
-  The :prop_sf:`GENERATED` source file property may be globally visible.
-  See its documentation for details.
+  源文件属性\ :prop_sf:`GENERATED`\ 可能全局可见。详情请参阅其文档。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
-* the more general :command:`get_property` command
+* 更通用的\ :command:`get_property`\ 命令
 * :command:`set_source_files_properties`
