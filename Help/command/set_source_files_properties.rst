@@ -11,38 +11,32 @@ set_source_files_properties
                               PROPERTIES <prop1> <value1>
                               [<prop2> <value2>] ...)
 
-Sets properties associated with source files using a key/value paired
-list.
+使用键值对列表设置与源文件关联的属性。
 
 .. versionadded:: 3.18
-  By default, source file properties are only visible to targets added in the
-  same directory (``CMakeLists.txt``).  Visibility can be set in other directory
-  scopes using one or both of the following options:
+  默认情况下，源文件属性仅对在同一目录（\ ``CMakeLists.txt``\ ）中添加的目标可见。可以使用\
+  以下一个或两个选项在其他目录作用域中设置可见性：
 
   ``DIRECTORY <dirs>...``
-    The source file properties will be set in each of the ``<dirs>``
-    directories' scopes.  CMake must already know about each of these
-    source directories, either by having added them through a call to
-    :command:`add_subdirectory` or it being the top level source directory.
-    Relative paths are treated as relative to the current source directory.
+    源文件属性将在每个\ ``<dirs>``\ 目录的作用域中设置。CMake必须已经知晓这些源目录，\
+    这可以通过调用\ :command:`add_subdirectory`\ 命令添加这些目录，或者这些目录是顶层源\
+    目录来实现。\
+    相对路径会被视为相对于当前源目录。
 
   ``TARGET_DIRECTORY <targets>...``
-    The source file properties will be set in each of the directory scopes
-    where any of the specified ``<targets>`` were created (the ``<targets>``
-    must therefore already exist).
+    源文件属性将在指定的每个\ ``<targets>``\ 被创建的目录作用域中设置（因此，这些\
+    ``<targets>``\ 必须已经存在）。
 
-Use :command:`get_source_file_property` to get property values.
-See also the :command:`set_property(SOURCE)` command.
+使用\ :command:`get_source_file_property`\ 来获取属性值。\
+另请参阅\ :command:`set_property(SOURCE)`\ 命令。
 
 .. note::
 
-  The :prop_sf:`GENERATED` source file property may be globally visible.
-  See its documentation for details.
+  :prop_sf:`GENERATED`\ 源文件属性可能是全局可见的。具体细节请参阅其文档。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
 * :command:`get_source_file_property`
-* :ref:`Source File Properties` for the list of properties known
-  to CMake
+* 有关CMake已知的属性列表，请参阅\ :ref:`Source File Properties`
