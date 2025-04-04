@@ -10,7 +10,7 @@ cmake_instrumentation
 
 开启与\ :manual:`CMake Instrumentation API <cmake-instrumentation(7)>`\ 交互。
 
-This allows for configuring instrumentation at the project-level.
+这允许在项目级别配置检测功能。
 
 .. code-block:: cmake
 
@@ -22,24 +22,21 @@ This allows for configuring instrumentation at the project-level.
     [CALLBACK <callback>]
   )
 
-The ``API_VERSION`` and ``DATA_VERSION`` must always be given.  Currently, the
-only supported value for both fields is 1.  See :ref:`cmake-instrumentation API v1`
-for details of the ``API_VERSION`` and :ref:`cmake-instrumentation Data v1` for details
-of the ``DATA_VERSION``.
+必须始终指定\ ``API_VERSION``\ 和\ ``DATA_VERSION``。目前，这两个字段仅支持的值为1。\
+有关\ ``API_VERSION``\ 的详细信息，请参阅\ :ref:`cmake-instrumentation API v1`；有关\
+``DATA_VERSION``\ 的详细信息，请参阅\ :ref:`cmake-instrumentation Data v1`。
 
-Each of the optional keywords ``HOOKS``, ``QUERIES``, and ``CALLBACK``
-correspond to one of the parameters to the :ref:`cmake-instrumentation v1 Query Files`.
-The ``CALLBACK`` keyword can be provided multiple times to create multiple callbacks.
+可选关键字 ``HOOKS``、\ ``QUERIES``\ 和\ ``CALLBACK``\ 分别对应于\
+:ref:`cmake-instrumentation v1 Query Files`\ 中的一个参数。\
+``CALLBACK``\ 关键字可以多次使用，以创建多个回调。
 
-Whenever ``cmake_instrumentation`` is invoked, a query file is generated in
-``<build>/.cmake/instrumentation/v1/query/generated`` to enable instrumentation
-with the provided arguments.
+每当调用\ ``cmake_instrumentation``\ 时，会在\ ``<build>/.cmake/instrumentation/v1/query/generated``\
+目录下生成一个查询文件，以便使用所提供的参数启用检测功能。
 
-Example
+示例
 ^^^^^^^
 
-The following example shows an invocation of the command and its
-equivalent JSON query file.
+以下示例展示了该命令的调用方式以及与之等效的JSON查询文件。
 
 .. code-block:: cmake
 
