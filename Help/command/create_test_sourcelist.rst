@@ -8,54 +8,49 @@ create_test_sourcelist
   create_test_sourcelist(<sourceListName> <driverName> <test>... <options>...)
   :target: original
 
-  Generate a test driver source file from a list of individual test sources
-  and provide a combined list of sources that can be built as an executable.
+  从各个测试源文件列表中生成一个测试驱动源文件，并提供一个可编译成可一个执行文件的源文件列表。
 
-  The options are:
+  可用的选项如下：
 
   ``<sourceListName>``
-    The name of a variable in which to store the list of source files needed
-    to build the test driver.  The list will contain the ``<test>...`` sources
-    and the generated ``<driverName>`` source.
+    用于存储构建测试驱动程序所需的源文件列表的变量名。该列表将包含\ ``<test>...``\ 源文件\
+    以及生成的\ ``<driverName>``\ 源文件。
 
     .. versionchanged:: 3.29
 
-      The test driver source is listed by absolute path in the build tree.
-      Previously it was listed only as ``<driverName>``.
+      在构建树中，测试驱动源文件以绝对路径列出。之前仅以\ ``<driverName>``\ 的形式列出。
 
   ``<driverName>``
-    Name of the test driver source file to be generated into the build tree.
-    The source file will contain a ``main()`` program entry point that
-    dispatches to whatever test is named on the command line.
+    要生成到构建树中的测试驱动源文件的名称。\
+    该源文件将包含一个\ ``main()``\ 程序入口点，该入口点会调度到命令行中指定名称的任何测试。
 
   ``<test>...``
-    Test source files to be added to the driver binary.  Each test source
-    file must have a function in it that is the same name as the file with the
-    extension removed.  For example, a ``foo.cxx`` test source might contain:
+    要添加到驱动程序二进制文件中的测试源文件。每个测试源文件中必须包含一个函数，该函数的名称\
+    与去掉扩展名后的文件名相同。例如，一个\ ``foo.cxx``\ 测试源文件可能包含：
 
     .. code-block:: c++
 
       int foo(int argc, char** argv)
 
   ``EXTRA_INCLUDE <header>``
-    Specify a header file to ``#include`` in the generated test driver source.
+    指定一个头文件，以便在生成的测试驱动源文件中使用\ ``#include``\ 指令包含该头文件。
 
   ``FUNCTION <function>``
-    Specify a function to be called with pointers to ``argc`` and ``argv``.
-    The function may be provided in the ``EXTRA_INCLUDE`` header:
+    指定一个函数，该函数将使用指向\ ``argc``\ 和\ ``argv``\ 的指针进行调用。\
+    该函数可以在\ ``EXTRA_INCLUDE``\ 头文件中提供：
 
     .. code-block:: c++
 
       void function(int* pargc, char*** pargv)
 
-    This can be used to add extra command line processing to each test.
+    这可用于为每个测试添加额外的命令行处理。
 
-Additionally, some CMake variables affect test driver generation:
+此外，一些CMake变量会影响测试驱动程序的生成：
 
 .. variable:: CMAKE_TESTDRIVER_BEFORE_TESTMAIN
 
-  Code to be placed directly before calling each test's function.
+  在调用每个测试函数之前直接插入的代码。
 
 .. variable:: CMAKE_TESTDRIVER_AFTER_TESTMAIN
 
-  Code to be placed directly after the call to each test's function.
+  在调用每个测试函数之后直接插入的代码。
