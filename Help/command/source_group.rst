@@ -8,45 +8,34 @@ source_group
   source_group(<name> [FILES <src>...] [REGULAR_EXPRESSION <regex>])
   source_group(TREE <root> [PREFIX <prefix>] [FILES <src>...])
 
-Defines a group into which sources will be placed in project files.
-This is intended to set up file tabs in Visual Studio.
-The group is scoped in the directory where the command is called,
-and applies to sources in targets created in that directory.
+定义一个组，项目文件中的源文件将被放入该组中。这旨在为Visual Studio设置文件选项卡。\
+该组的作用域为调用此命令的目录，并且适用于在该目录中创建的目标中的源文件。
 
-The options are:
+选项如下：
 
 ``TREE``
  .. versionadded:: 3.8
 
- CMake will automatically detect, from ``<src>`` files paths, source groups
- it needs to create, to keep structure of source groups analogically to the
- actual files and directories structure in the project. Paths of ``<src>``
- files will be cut to be relative to ``<root>``. The command fails if the
- paths within ``src`` do not start with ``root``.
+ CMake将根据\ ``<src>``\ 文件的路径自动检测需要创建的源文件组，以使源文件组的结构与项目中\
+ 实际的文件和目录结构相似。\ ``<src>``\ 文件的路径将被截取为相对于\ ``<root>``\ 的路径。\
+ 如果\ ``src``\ 中的路径不是以\ ``root``\ 开头，该命令将失败。
 
 ``PREFIX``
  .. versionadded:: 3.8
 
- Source group and files located directly in ``<root>`` path, will be placed
- in ``<prefix>`` source groups.
+ 直接位于\ ``<root>``\ 路径下的源文件组和文件将被放置在\ ``<prefix>``\ 源文件组中。
 
 ``FILES``
- Any source file specified explicitly will be placed in group
- ``<name>``.  Relative paths are interpreted with respect to the
- current source directory.
+ 任何显式指定的源文件都将被放入名为\ ``<name>``\ 的组中。相对路径是相对于当前源目录来解释的。
 
 ``REGULAR_EXPRESSION``
- Any source file whose name matches the regular expression will
- be placed in group ``<name>``.
+ 任何文件名与正则表达式匹配的源文件都将被放入名为\ ``<name>``\ 的组中。
 
-If a source file matches multiple groups, the *last* group that
-explicitly lists the file with ``FILES`` will be favored, if any.
-If no group explicitly lists the file, the *last* group whose
-regular expression matches the file will be favored.
+如果一个源文件匹配多个组，若有使用\ ``FILES``\ 显式列出该文件的组，则优先选择\ *最后一个*\
+这样的组。如果没有组显式列出该文件，则优先选择正则表达式匹配该文件的\ *最后一个*\ 组。
 
-The ``<name>`` of the group and ``<prefix>`` argument may contain forward
-slashes or backslashes to specify subgroups.  Backslashes need to be escaped
-appropriately:
+组的名称\ ``<name>``\ 和前缀参数\ ``<prefix>``\ 可以包含正斜杠或反斜杠，以指定子组。\
+反斜杠需要进行适当的转义：
 
 .. code-block:: cmake
 
@@ -55,15 +44,15 @@ appropriately:
   source_group(TREE <root> PREFIX sources\\inc ...)
 
 .. versionadded:: 3.18
-  Allow using forward slashes (``/``) to specify subgroups.
+  允许使用正斜杠（\ ``/``\ ）来指定子组。
 
-For backwards compatibility, the short-hand signature
+为了实现向后兼容，提供了以下简写形式：
 
 .. code-block:: cmake
 
   source_group(<name> <regex>)
 
-is equivalent to
+相当于
 
 .. code-block:: cmake
 
