@@ -911,10 +911,16 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
         this->VersionExact = this->Makefile->IsOn(exact);
       }
       if (this->Components.empty()) {
-        std::string const components_var = this->Name + "_FIND_COMPONENTS";
-        this->Components = this->Makefile->GetSafeDefinition(components_var);
+        std::string const componentsVar = this->Name + "_FIND_COMPONENTS";
+        this->Components = this->Makefile->GetSafeDefinition(componentsVar);
         for (auto const& component : cmList{ this->Components }) {
-          this->RequiredComponents.insert(component);
+          std::string const crVar =
+            cmStrCat(this->Name, "_FIND_REQUIRED_"_s, component);
+          if (this->Makefile->GetDefinition(crVar).IsOn()) {
+            this->RequiredComponents.insert(component);
+          } else {
+            this->OptionalComponents.insert(component);
+          }
         }
       }
     }
@@ -1516,6 +1522,7 @@ bool cmFindPackageCommand::HandlePackageMode(
     }
   }
 
+  std::string const fileVar = cmStrCat(this->Name, "_CONFIG");
   std::string const foundVar = cmStrCat(this->Name, "_FOUND");
   std::string const notFoundMessageVar =
     cmStrCat(this->Name, "_NOT_FOUND_MESSAGE");
@@ -1546,7 +1553,15 @@ bool cmFindPackageCommand::HandlePackageMode(
     if (this->CpsReader) {
       // The package has been found.
       found = true;
-      result = this->ReadPackage();
+
+      // Don't read a CPS file if we've already read it.
+      cmValue const& previousFileFound =
+        this->Makefile->GetDefinition(fileVar);
+      if (previousFileFound.Compare(this->FileFound) == 0) {
+        result = true;
+      } else {
+        result = this->ReadPackage();
+      }
     } else if (this->ReadListFile(this->FileFound, DoPolicyScope)) {
       // The package has been found.
       found = true;
@@ -1719,7 +1734,6 @@ bool cmFindPackageCommand::HandlePackageMode(
   this->Makefile->AddDefinition(foundVar, found ? "1" : "0");
 
   // Set a variable naming the configuration file that was found.
-  std::string const fileVar = cmStrCat(this->Name, "_CONFIG");
   if (found) {
     this->Makefile->AddDefinition(fileVar, this->FileFound);
   } else {
