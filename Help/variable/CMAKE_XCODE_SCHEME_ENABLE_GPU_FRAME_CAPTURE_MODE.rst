@@ -3,9 +3,8 @@ CMAKE_XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE
 
 .. versionadded:: 3.23
 
-Populate ``GPU Frame Capture`` in the Options section of
-the generated Xcode scheme. Example values are ``Metal`` and
-``Disabled``.
+在生成的Xcode方案的“选项”部分填充\ ``GPU Frame Capture``。示例值包括\ ``Metal``\ 和\
+``Disabled``。
 
 This variable initializes the
 :prop_tgt:`XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE`

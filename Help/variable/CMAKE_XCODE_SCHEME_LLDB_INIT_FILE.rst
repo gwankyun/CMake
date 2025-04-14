@@ -3,8 +3,7 @@ CMAKE_XCODE_SCHEME_LLDB_INIT_FILE
 
 .. versionadded:: 4.0
 
-Populate ``LLDB Init File`` in the Info section of the generated Xcode
-scheme.
+在生成的Xcode方案的“信息”部分填充\ ``LLDB Init File``。
 
 This variable initializes the :prop_tgt:`XCODE_SCHEME_LLDB_INIT_FILE` property
 on all targets.
