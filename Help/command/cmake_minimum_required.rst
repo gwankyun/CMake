@@ -8,52 +8,42 @@ cmake版本的最低要求。
   cmake_minimum_required(VERSION <min>[...<policy_max>] [FATAL_ERROR])
 
 .. versionadded:: 3.12
-  The optional ``<policy_max>`` version behavior; ignored in older CMake.
+  可选的\ ``<policy_max>``\ 版本行为；在旧版本的CMake中会被忽略。
 
-Sets the minimum required version of cmake for a project.
-Also updates the policy settings as explained below.
+为项目设置所需的CMake最低版本。\
+同时按如下说明更新策略设置。
 
-``<min>`` and the optional ``<policy_max>`` are each CMake versions of the
-form ``major.minor[.patch[.tweak]]``, and the ``...`` is literal.
+``<min>``\ 和可选的\ ``<policy_max>``\ 均为CMake版本号，格式为\
+``major.minor[.patch[.tweak]]``，其中\ ``...``\ 为字面符号。
 
-If the running version of CMake is lower than the ``<min>`` required
-version it will stop processing the project and report an error.
-The optional ``<policy_max>`` version, if specified, must be at least the
-``<min>`` version and sets the `Policy Version`_.
-If the running version of CMake is older than 3.12, the extra ``...``
-dots will be seen as version component separators, resulting in the
-``...<max>`` part being ignored and preserving the pre-3.12 behavior
-of basing policies on ``<min>``.
+如果当前运行的CMake版本低于所需的\ ``<min>``\ 版本，它将停止处理该项目并报告错误。\
+可选的\ ``<policy_max>``\ 版本（若指定）必须至少与\ ``<min>``\ 版本相同，并且会设置\
+`Policy Version`_。\
+如果运行的CMake版本早于3.12，额外的\ ``...``\ 会被视为版本号组件的分隔符，导致\ ``...<max>``\
+部分被忽略，从而保留3.12之前基于\ ``<min>``\ 设置策略的行为。
 
-This command will set the value of the
-:variable:`CMAKE_MINIMUM_REQUIRED_VERSION` variable to ``<min>``.
+此命令会将\ :variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量的值设置为\ ``<min>``。
 
-The ``FATAL_ERROR`` option is accepted but ignored by CMake 2.6 and
-higher.  It should be specified so CMake versions 2.4 and lower fail
-with an error instead of just a warning.
+``FATAL_ERROR``\ 选项可被CMake 2.6及更高版本接受，但会被忽略。不过仍应指定该选项，这样在\
+使用CMake 2.4及更低版本时，系统会报错而非仅给出警告。
 
 .. note::
-  Call the ``cmake_minimum_required()`` command at the beginning of
-  the top-level ``CMakeLists.txt`` file even before calling the
-  :command:`project` command.  It is important to establish version
-  and policy settings before invoking other commands whose behavior
-  they may affect.  See also policy :policy:`CMP0000`.
+  请在顶层\ ``CMakeLists.txt``\ 文件开头调用\ ``cmake_minimum_required()``\ 命令，\
+  甚至要在调用\ :command:`project`\ 命令之前执行。在调用其他可能受版本和策略设置影响的命令\
+  之前，先确定版本和策略设置至关重要。另请参阅策略\ :policy:`CMP0000`。
 
-  Calling ``cmake_minimum_required()`` inside a :command:`function`
-  limits some effects to the function scope when invoked.  For example,
-  the :variable:`CMAKE_MINIMUM_REQUIRED_VERSION` variable won't be set
-  in the calling scope.  Functions do not introduce their own policy
-  scope though, so policy settings of the caller *will* be affected
-  (see below).  Due to this mix of things that do and do not affect the
-  calling scope, calling ``cmake_minimum_required()`` inside a function
-  is generally discouraged.
+  在\ :command:`function`\ 内调用\ ``cmake_minimum_required()``\ 时，部分效果会被限制\
+  在函数作用域内。例如，:variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量不会在调用作用\
+  域中被设置。不过，函数不会引入自己的策略作用域，因此调用者的策略设置\ *会*\ 受到影响（见下文）。\
+  由于这种部分影响调用作用域、部分不影响的情况，通常不建议在函数内调用\
+  ``cmake_minimum_required()``。
 
 .. _`Policy Version`:
 
-Policy Version
+策略版本
 ^^^^^^^^^^^^^^
 
-``cmake_minimum_required(VERSION <min>[...<max>])`` implicitly invokes
+``cmake_minimum_required(VERSION <min>[...<max>])``\ 会隐式调用
 
 .. code-block:: cmake
 
@@ -63,7 +53,7 @@ Policy Version
 
 .. include:: DEPRECATED_POLICY_VERSIONS.txt
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`cmake_policy`
