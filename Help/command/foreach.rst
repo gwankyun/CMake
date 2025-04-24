@@ -9,59 +9,45 @@ foreach
     <commands>
   endforeach()
 
-where ``<items>`` is a list of items that are separated by
-semicolon or whitespace.
-All commands between ``foreach`` and the matching ``endforeach`` are recorded
-without being invoked.  Once the ``endforeach`` is evaluated, the recorded
-list of commands is invoked once for each item in ``<items>``.
-At the beginning of each iteration the variable ``<loop_var>`` will be set
-to the value of the current item.
+其中\ ``<items>``\ 是一个由分号或空格分隔的元素列表。\
+从\ ``foreach``\ 到与之匹配的\ ``endforeach``\ 之间的所有命令都会被记录下来，但不会立即执行。\
+一旦\ ``endforeach``\ 被求值，记录下来的命令列表就会针对\ ``<items>``\ 中的每个元素执行一次。\
+在每次迭代开始时，变量\ ``<loop_var>``\ 将被设置为当前元素的值。
 
-The scope of ``<loop_var>`` is restricted to the loop scope. See policy
-:policy:`CMP0124` for details.
+变量\ ``<loop_var>``\ 的作用域仅限于循环范围。详情请参阅策略\ :policy:`CMP0124`。
 
-The commands :command:`break` and :command:`continue` provide means to
-escape from the normal control flow.
+:command:`break`\ 和\ :command:`continue`\ 命令提供了跳出正常控制流的方法。
 
-Per legacy, the :command:`endforeach` command admits
-an optional ``<loop_var>`` argument.
-If used, it must be a verbatim
-repeat of the argument of the opening
-``foreach`` command.
+按照传统，:command:`endforeach`\ 命令允许使用一个可选的\ ``<loop_var>``\ 参数。\
+如果使用该参数，它必须与开头\ ``foreach``\ 命令的参数完全一致。
 
 .. code-block:: cmake
 
   foreach(<loop_var> RANGE <stop>)
 
-In this variant, ``foreach`` iterates over the numbers
-0, 1, ... up to (and including) the nonnegative integer ``<stop>``.
+在这种变体中，\ ``foreach``\ 会对从0、1开始，一直到（包含）非负整数\ ``<stop>``\ 的数字进行迭代。
 
 .. code-block:: cmake
 
   foreach(<loop_var> RANGE <start> <stop> [<step>])
 
-In this variant, ``foreach`` iterates over the numbers from
-``<start>`` up to at most ``<stop>`` in steps of ``<step>``.
-If ``<step>`` is not specified, then the step size is 1.
-The three arguments ``<start>`` ``<stop>`` ``<step>`` must
-all be nonnegative integers, and ``<stop>`` must not be
-smaller than ``<start>``; otherwise you enter the danger zone
-of undocumented behavior that may change in future releases.
+在这种变体中，\ ``foreach``\ 会以\ ``<step>``\ 为步长，对从\ ``<start>``\ 开始，至多到\
+``<stop>``\ 的数字进行迭代。\
+如果未指定\ ``<step>``，则步长为1。\
+三个参数\ ``<start>``、\ ``<stop>``\ 和\ ``<step>``\ 都必须是非负整数，并且\ ``<stop>``\
+不能小于\ ``<start>``；否则，你将面临未文档化行为的风险，这些行为可能会在未来版本中发生变化。
 
 .. code-block:: cmake
 
   foreach(<loop_var> IN [LISTS [<lists>]] [ITEMS [<items>]])
 
-In this variant, ``<lists>`` is a whitespace or semicolon
-separated list of list-valued variables. The ``foreach``
-command iterates over each item in each given list.
-The ``<items>`` following the ``ITEMS`` keyword are processed
-as in the first variant of the ``foreach`` command.
-The forms ``LISTS A`` and ``ITEMS ${A}`` are
-equivalent.
+在这种变体中，\ ``<lists>``\ 是一个由空格或分号分隔的列表变量列表。\ ``foreach``\ 命令会\
+对每个给定列表中的每个元素进行迭代。\
+跟在\ ``ITEMS``\ 关键字后面的\ ``<items>``\ 会按照\ ``foreach``\ 命令第一种变体的方式\
+进行处理。\
+``LISTS A``\ 和\ ``ITEMS ${A}``\ 这两种形式是等效的。
 
-The following example shows how the ``LISTS`` option is
-processed:
+以下示例展示了如何处理\ ``LISTS``\ 选项：
 
 .. code-block:: cmake
 
@@ -92,18 +78,13 @@ yields::
 
 .. versionadded:: 3.17
 
-In this variant, ``<lists>`` is a whitespace or semicolon
-separated list of list-valued variables. The ``foreach``
-command iterates over each list simultaneously setting the
-iteration variables as follows:
+在这种变体中，\ ``<lists>``\ 是一个由空格或分号分隔的列表变量列表。\ ``foreach``\ 命令会\
+同时遍历每个列表，并按如下方式设置迭代变量：
 
-- if the only ``loop_var`` given, then it sets a series of
-  ``loop_var_N`` variables to the current item from the
-  corresponding list;
-- if multiple variable names passed, their count should match
-  the lists variables count;
-- if any of the lists are shorter, the corresponding iteration
-  variable is not defined for the current iteration.
+- 如果只提供了一个\ ``loop_var``，那么它会将一系列\ ``loop_var_N``\ 变量设置为对应列表中\
+  的当前项；
+- 如果传入多个变量名，它们的数量应该与列表变量的数量相匹配；
+- 如果任何一个列表较短，在当前迭代中，对应的迭代变量将不会被定义。
 
 .. noqa: spellcheck off
 
@@ -120,7 +101,7 @@ iteration variables as follows:
       message(STATUS "en=${en}, ba=${ba}")
   endforeach()
 
-yields::
+产生：\ ::
 
   -- num_0=one, num_1=satu
   -- num_0=two, num_1=dua
@@ -133,7 +114,7 @@ yields::
 
 .. noqa: spellcheck on
 
-See Also
+另读参阅
 ^^^^^^^^
 
 * :command:`break`
