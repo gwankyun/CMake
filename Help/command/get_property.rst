@@ -19,100 +19,86 @@ get_property
                PROPERTY <name>
                [SET | DEFINED | BRIEF_DOCS | FULL_DOCS])
 
-Gets one property from one object in a scope.
+从某个作用域中的一个对象获取一个属性。
 
-The first argument specifies the variable in which to store the result.
-The second argument determines the scope from which to get the property.
-It must be one of the following:
+第一个参数指定用于存储结果的变量。\
+第二个参数决定从哪个作用域获取属性。\
+它必须是以下之一：
 
 ``GLOBAL``
-  Scope is unique and does not accept a name.
+  作用域是唯一的，且不接受名称参数。
 
 ``DIRECTORY``
-  Scope defaults to the current directory, but another
-  directory (already processed by CMake) may be named by the
-  full or relative path ``<dir>``.
-  Relative paths are treated as relative to the current source directory.
-  See also the :command:`get_directory_property` command.
+  作用域默认是当前目录，但也可以通过完整路径或相对路径\ ``<dir>``\ 指定另一个已由CMake处理过的目录。\
+  相对路径会被视为相对于当前源目录。另请参阅\ :command:`get_directory_property`\ 命令。
 
   .. versionadded:: 3.19
-    ``<dir>`` may reference a binary directory.
+    ``<dir>``\ 可以引用一个二进制目录。
 
 ``TARGET``
-  Scope must name one existing target.
-  See also the :command:`get_target_property` command.
+  作用域必须指定一个已存在的目标。\
+  另请参阅\ :command:`get_target_property`\ 命令。
 
 ``SOURCE``
-  Scope must name one source file.  By default, the source file's property
-  will be read from the current source directory's scope.
+  作用域必须指定一个源文件。默认情况下，源文件的属性将从当前源目录的作用域中读取。
 
   .. versionadded:: 3.18
-    Directory scope can be overridden with one of the following sub-options:
+    目录作用域可以通过以下子选项之一进行覆盖：
 
     ``DIRECTORY <dir>``
-      The source file property will be read from the ``<dir>`` directory's
-      scope.  CMake must already know about
-      the directory, either by having added it through a call
-      to :command:`add_subdirectory` or ``<dir>`` being the top level directory.
-      Relative paths are treated as relative to the current source directory.
+      源文件属性将从\ ``<dir>``\ 目录的作用域中读取。CMake必须已经知晓该目录，这可以通过调用\
+      :command:`add_subdirectory`\ 命令添加该目录，或者\ ``<dir>``\ 为顶级目录来实现。\
+      相对路径会被视为相对于当前源目录。
 
       .. versionadded:: 3.19
-        ``<dir>`` may reference a binary directory.
+        ``<dir>``\ 可以引用一个二进制目录。
 
     ``TARGET_DIRECTORY <target>``
-      The source file property will be read from the directory scope in which
-      ``<target>`` was created (``<target>`` must therefore already exist).
+      源文件属性将从创建\ ``<target>``\ 所在目录的作用域中读取（因此\ ``<target>``\ 必须\
+      已经存在）。
 
-  See also the :command:`get_source_file_property` command.
+  另请参阅\ :command:`get_source_file_property`\ 命令。
 
 ``INSTALL``
   .. versionadded:: 3.1
 
-  Scope must name one installed file path.
+  作用域必须指定一个已安装文件的路径。
 
 ``TEST``
-  Scope must name one existing test.
-  See also the :command:`get_test_property` command.
+  作用域必须指定一个已存在的测试。\
+  另请参阅\ :command:`get_test_property`\ 命令。
 
   .. versionadded:: 3.28
-    Directory scope can be overridden with the following sub-option:
+    目录作用域可以通过以下子选项进行覆盖：
 
     ``DIRECTORY <dir>``
-      The test property will be read from the ``<dir>`` directory's
-      scope.  CMake must already know about the directory, either by having
-      added it through a call to :command:`add_subdirectory` or ``<dir>`` being
-      the top level directory. Relative paths are treated as relative to the
-      current source directory. ``<dir>`` may reference a binary directory.
+      测试属性将从\ ``<dir>``\ 目录的作用域中读取。CMake必须已经知晓该目录，这可以通过调用\
+      :command:`add_subdirectory`\ 命令添加该目录，或者\ ``<dir>``\ 为顶级目录来实现。\
+      相对路径会被视为相对于当前源目录。\ ``<dir>``\ 可以引用一个二进制目录。
 
 ``CACHE``
-  Scope must name one cache entry.
+  作用域必须指定一个缓存项。
 
 ``VARIABLE``
-  Scope is unique and does not accept a name.
+  作用域是唯一的，且不接受名称参数。
 
-The required ``PROPERTY`` option is immediately followed by the name of
-the property to get.  If the property is not set, the named ``<variable>``
-will be unset in the calling scope upon return, although some properties
-support inheriting from a parent scope if defined to behave that way
-(see :command:`define_property`).
+必需的\ ``PROPERTY``\ 选项后面需紧接着要获取的属性名称。如果该属性未设置，返回时指定的\
+``<variable>``\ 将在调用作用域中被取消设置。不过，某些属性如果被定义为可从父作用域继承，\
+则会遵循继承规则（详见\ :command:`define_property`\ 命令）。
 
-If the ``SET`` option is given, the variable is set to a boolean
-value indicating whether the property has been set.  If the ``DEFINED``
-option is given, the variable is set to a boolean value indicating
-whether the property has been defined, such as with the
-:command:`define_property` command.
+如果指定了\ ``SET``\ 选项，变量将被设置为一个布尔值，用于指示该属性是否已被设置。如果指定了\
+``DEFINED``\ 选项，变量将被设置为一个布尔值，用于指示该属性是否已被定义，例如通过\
+:command:`define_property`\ 命令进行定义。
 
-If ``BRIEF_DOCS`` or ``FULL_DOCS`` is given, then the variable is set to a
-string containing documentation for the requested property.  If
-documentation is requested for a property that has not been defined,
-``NOTFOUND`` is returned.
+如果指定了\ ``BRIEF_DOCS``\ 或\ ``FULL_DOCS``\ 选项，变量将被设置为一个字符串，其中包含\
+所请求属性的文档。如果请求的是一个未定义属性的文档，则返回\ ``NOTFOUND``。
 
 .. note::
 
-  The :prop_sf:`GENERATED` source file property may be globally visible.
-  See its documentation for details.
+  源文件属性\ :prop_sf:`GENERATED`\ 可能是全局可见的。\
+  有关详细信息，请参阅其文档。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
