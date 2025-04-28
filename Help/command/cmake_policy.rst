@@ -78,21 +78,19 @@ CMake还会为通过\ :command:`include`\ 和\ :command:`find_package`\ 命令�
 
   移除使用\ ``cmake_policy(PUSH)``\ 创建的策略栈的最后一个条目。
 
-Each ``PUSH`` must have a matching ``POP`` to erase any changes.
-This is useful to make temporary changes to policy settings.
-Calls to the :command:`cmake_minimum_required(VERSION)`,
-:command:`cmake_policy(VERSION)`, or :command:`cmake_policy(SET)` commands
-influence only the current top of the policy stack.
+每次调用\ ``PUSH``\ 都必须有对应的\ ``POP``\ 来消除所做的任何更改。\
+这对于对策略设置进行临时修改很有用。\
+调用\ :command:`cmake_minimum_required(VERSION)`、\ :command:`cmake_policy(VERSION)`\
+或\ :command:`cmake_policy(SET)`\ 命令仅影响策略栈的当前栈顶。
 
 .. versionadded:: 3.25
-  The :command:`block(SCOPE_FOR POLICIES)` command offers a more flexible
-  and more secure way to manage the policy stack. The pop action is done
-  automatically when leaving the block scope, so there is no need to
-  precede each :command:`return` with a call to :command:`cmake_policy(POP)`.
+  :command:`block(SCOPE_FOR POLICIES)`\ 命令提供了一种更灵活、更安全的策略栈管理方式。\
+  当离开block作用域时，弹出操作会自动执行，因此无需在每个\ :command:`return`\ 语句前调用\
+  :command:`cmake_policy(POP)`。
 
   .. code-block:: cmake
 
-    # stack management with cmake_policy()
+    # 使用cmake_policy()进行栈管理
     function(my_func)
       cmake_policy(PUSH)
       cmake_policy(SET ...)
@@ -109,7 +107,7 @@ influence only the current top of the policy stack.
       cmake_policy(POP)
     endfunction()
 
-    # stack management with block()/endblock()
+    # 使用block()/endblock()进行栈管理
     function(my_func)
       block(SCOPE_FOR POLICIES)
         cmake_policy(SET ...)
@@ -124,14 +122,11 @@ influence only the current top of the policy stack.
       endblock()
     endfunction()
 
-Commands created by the :command:`function` and :command:`macro`
-commands record policy settings when they are created and
-use the pre-record policies when they are invoked.  If the function or
-macro implementation sets policies, the changes automatically
-propagate up through callers until they reach the closest nested
-policy stack entry.
+由\ :command:`function`\ 和\ :command:`macro`\ 命令创建的指令会在创建时记录策略设置，\
+并在调用时使用预先记录的策略。\
+如果函数或宏的实现中设置了策略，这些更改会自动向上传播，经过调用者，直到到达最近的嵌套策略栈条目。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`cmake_minimum_required`
