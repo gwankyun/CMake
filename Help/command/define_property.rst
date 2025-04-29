@@ -12,65 +12,59 @@ define_property
                    [FULL_DOCS <full-doc> [docs...]]
                    [INITIALIZE_FROM_VARIABLE <variable>])
 
-Defines one property in a scope for use with the :command:`set_property` and
-:command:`get_property` commands. It is mainly useful for defining the way
-a property is initialized or inherited. Historically, the command also
-associated documentation with a property, but that is no longer considered a
-primary use case.
+在某个作用域中定义一个属性，供\ :command:`set_property`\ 和\ :command:`get_property`\
+命令使用。\
+它主要用于定义属性的初始化或继承方式。\
+从历史上看，该命令还会为属性关联文档，但这已不再被视为主要用例。
 
-The first argument determines the kind of scope in which the property should
-be used.  It must be one of the following:
+第一个参数决定了该属性应使用的作用域类型。\
+它必须是以下之一：
 
-* ``GLOBAL``          - associated with the global namespace.
-* ``DIRECTORY``       - associated with one directory.
-* ``TARGET``          - associated with one target.
-* ``SOURCE``          - associated with one source file.
-* ``TEST``            - associated with a test named with :command:`add_test`.
-* ``VARIABLE``        - documents a CMake language variable.
-* ``CACHED_VARIABLE`` - documents a CMake cache variable.
+* ``GLOBAL``          - 与全局命名空间关联。
+* ``DIRECTORY``       - 与一个目录关联。
+* ``TARGET``          - 与一个目标关联。
+* ``SOURCE``          - 与一个源文件关联。
+* ``TEST``            - 与通过\ :command:`add_test`\ 命令命名的测试关联。
+* ``VARIABLE``        - 记录一个CMake语言变量。
+* ``CACHED_VARIABLE`` - 记录一个CMake缓存变量。
 
-Note that unlike :command:`set_property` and :command:`get_property` no
-actual scope needs to be given; only the kind of scope is important.
+请注意，与\ :command:`set_property`\ 和\ :command:`get_property`\ 不同，此命令\
+无需指定实际的作用域，仅作用域的类型是重要的。
 
-The required ``PROPERTY`` option is immediately followed by the name of
-the property being defined.
+必需的\ ``PROPERTY``\ 选项之后需紧跟要定义的属性名称。
 
-If the ``INHERITED`` option is given, then the :command:`get_property` command
-will chain up to the next higher scope when the requested property is not set
-in the scope given to the command.
+如果指定了\ ``INHERITED``\ 选项，那么当请求的属性在\ :command:`get_property`\
+命令指定的作用域中未设置时，该命令会向上级作用域进行查找。
 
-* ``DIRECTORY`` scope chains to its parent directory's scope, continuing the
-  walk up parent directories until a directory has the property set or there
-  are no more parents.  If still not found at the top level directory, it
-  chains to the ``GLOBAL`` scope.
-* ``TARGET``, ``SOURCE`` and ``TEST`` properties chain to ``DIRECTORY`` scope,
-  including further chaining up the directories, etc. as needed.
+* ``DIRECTORY``\ 作用域会链接到其父目录的作用域，继续向上遍历父目录，直到某个目录\
+  设置了该属性，或者已经没有更多父目录为止。\
+  如果在顶级目录仍未找到该属性，则会链接到\ ``GLOBAL``\ 作用域。
+* ``TARGET``、\ ``SOURCE``\ 和\ ``TEST``\ 属性会链接到\ ``DIRECTORY``\ 作用域，\
+  必要时还会进一步向上遍历目录，依此类推。
 
-Note that this scope chaining behavior only applies to calls to
-:command:`get_property`, :command:`get_directory_property`,
-:command:`get_target_property`, :command:`get_source_file_property` and
-:command:`get_test_property`.  There is no inheriting behavior when *setting*
-properties, so using ``APPEND`` or ``APPEND_STRING`` with the
-:command:`set_property` command will not consider inherited values when working
-out the contents to append to.
+请注意，这种作用域链式查找行为仅适用于调用\ :command:`get_property`、\
+:command:`get_directory_property`、\ :command:`get_target_property`、\
+:command:`get_source_file_property`\ 和\ :command:`get_test_property`\ 命令的情况。\
+在\ *设置*\ 属性时不存在继承行为，因此在使用\ :command:`set_property`\ 命令搭配\
+``APPEND``\ 或\ ``APPEND_STRING``\ 选项时，确定要追加的内容时不会考虑继承的值。
 
-The ``BRIEF_DOCS`` and ``FULL_DOCS`` options are followed by strings to be
-associated with the property as its brief and full documentation.
-CMake does not use this documentation other than making it available to the
-project via corresponding options to the :command:`get_property` command.
+``BRIEF_DOCS``\ 和\ ``FULL_DOCS``\ 选项之后需紧跟字符串，这些字符串将分别作为该\
+属性的简要文档和完整文档。\
+CMake不会直接使用这些文档，仅通过\ :command:`get_property`\ 命令的相应选项将其\
+提供给项目使用。
 
 .. versionchanged:: 3.23
 
-  The ``BRIEF_DOCS`` and ``FULL_DOCS`` options are optional.
+  ``BRIEF_DOCS``\ 和\ ``FULL_DOCS``\ 选项是可选的。
 
 .. versionadded:: 3.23
 
-  The ``INITIALIZE_FROM_VARIABLE`` option specifies a variable from which the
-  property should be initialized. It can only be used with target properties.
-  The ``<variable>`` name must end with the property name and must not begin
-  with ``CMAKE_`` or ``_CMAKE_``. The property name must contain at least one
-  underscore. It is recommended that the property name have a prefix specific
-  to the project.
+  ``INITIALIZE_FROM_VARIABLE``\ 选项指定了一个变量，属性将从该变量进行初始化。\
+  它仅可用于目标属性。\
+  变量名\ ``<variable>``\ 必须以属性名结尾，且不能以\ ``CMAKE_``\ 或\ ``_CMAKE_``\
+  开头。\
+  属性名必须至少包含一个下划线。\
+  建议属性名使用特定于项目的前缀。
 
 Property Redefinition
 ^^^^^^^^^^^^^^^^^^^^^
