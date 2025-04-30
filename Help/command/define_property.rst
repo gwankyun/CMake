@@ -66,27 +66,26 @@ CMake不会直接使用这些文档，仅通过\ :command:`get_property`\ 命令
   属性名必须至少包含一个下划线。\
   建议属性名使用特定于项目的前缀。
 
-Property Redefinition
+属性重定义
 ^^^^^^^^^^^^^^^^^^^^^
 
-Once a property is defined for a particular type of scope, it cannot be
-redefined. Attempts to redefine an existing property by calling
-:command:`define_property` with the same scope type and property name
-will be silently ignored. Defining the same property name for two different
-kinds of scope is valid.
+一旦为特定类型的作用域定义了属性，就无法对其进行重新定义。\
+使用相同的作用域类型和属性名调用\ :command:`define_property`\ 命令尝试重新定义\
+现有属性时，该操作将被静默忽略。\
+为两种不同类型的作用域定义相同的属性名是有效的。
 
-:command:`get_property` can be used to determine whether a property is
-already defined for a particular kind of scope, and if so, to examine its
-definition. For example:
+:command:`get_property`\ 命令可用于判断某个属性是否已针对特定类型的作用域进行了定义。\
+若已定义，则可使用该命令查看其定义。\
+例如：
 
 .. code-block:: cmake
 
-  # Initial definition
+  # 初始定义
   define_property(TARGET PROPERTY MY_NEW_PROP
     BRIEF_DOCS "My new custom property"
   )
 
-  # Later examination
+  # 后续检查
   get_property(my_new_prop_exists
     TARGET NONE
     PROPERTY MY_NEW_PROP
@@ -99,10 +98,10 @@ definition. For example:
       PROPERTY MY_NEW_PROP
       BRIEF_DOCS
     )
-    # ${my_new_prop_docs} is now set to "My new custom property"
+    # 现在${my_new_prop_docs}被设置为"My new custom property"
   endif()
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`get_property`
