@@ -10,3 +10,5 @@ VS_DEBUGGER_WORKING_DIRECTORY
 
 This property only works for :ref:`Visual Studio Generators`;
 it is ignored on other generators.
+
+See also :prop_tgt:`DEBUGGER_WORKING_DIRECTORY`.

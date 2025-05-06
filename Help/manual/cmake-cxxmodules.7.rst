@@ -68,6 +68,7 @@ CMake原生支持模块依赖扫描的编译器包括：
 
 * Clang 18.1.2及更新版本的\ ``-stdlib=libc++``
 * MSVC工具集14.36及更新版本（与Visual Studio 17.6预览版2及更新版本一起提供）
+* GCC 15 and newer.
 
 :variable:`CMAKE_CXX_COMPILER_IMPORT_STD`\ 变量可用于检测当前C++工具链对标准级别的支持\
 情况。
