@@ -9,25 +9,22 @@ macro
     <commands>
   endmacro()
 
-Defines a macro named ``<name>`` that takes arguments named
-``<arg1>``, ... Commands listed after macro, but before the
-matching :command:`endmacro()`, are not executed until the macro
-is invoked.
+定义一个名为\ ``<name>``\ 的宏，该宏接受名为\ ``<arg1>``\ 等的参数。在macro命令之后、\
+对应的\ :command:`endmacro()`\ 命令之前列出的命令，直到该宏被调用时才会执行。
 
-Per legacy, the :command:`endmacro` command admits an optional
-``<name>`` argument. If used, it must be a verbatim repeat of the
-argument of the opening ``macro`` command.
+按照传统做法，\ :command:`endmacro`\ 命令允许使用一个可选的\ ``<name>``\ 参数。\
+如果使用该参数，它必须与开头\ ``macro``\ 命令的参数完全一致。
 
-See the :command:`cmake_policy()` command documentation for the behavior
-of policies inside macros.
+有关宏内部策略的行为，请参阅\ :command:`cmake_policy()`\ 命令文档。
 
-See the :ref:`Macro vs Function` section below for differences
-between CMake macros and :command:`functions <function>`.
+有关CMake宏与\ :command:`functions <function>`\ 之间的差异，请参阅下面的\
+:ref:`Macro vs Function`\ 部分。
 
-Invocation
+调用
 ^^^^^^^^^^
 
-The macro invocation is case-insensitive. A macro defined as
+宏调用不区分大小写。\
+一个宏定义如下
 
 .. code-block:: cmake
 
@@ -35,7 +32,7 @@ The macro invocation is case-insensitive. A macro defined as
     <commands>
   endmacro()
 
-can be invoked through any of
+可以通过以下任意一种方式调用
 
 .. code-block:: cmake
 
@@ -44,42 +41,34 @@ can be invoked through any of
   FOO()
   cmake_language(CALL foo)
 
-and so on. However, it is strongly recommended to stay with the
-case chosen in the macro definition.  Typically macros use
-all-lowercase names.
+等等。不过，强烈建议使用宏定义时采用的大小写形式。通常，宏使用全小写名称。
 
 .. versionadded:: 3.18
-  The :command:`cmake_language(CALL ...)` command can also be used to
-  invoke the macro.
+  :command:`cmake_language(CALL ...)`\ 命令同样可用于调用宏。
 
-Arguments
+参数
 ^^^^^^^^^
 
-When a macro is invoked, the commands recorded in the macro are
-first modified by replacing formal parameters (``${arg1}``, ...)
-with the arguments passed, and then invoked as normal commands.
+当宏被调用时，宏中记录的命令首先会将形式参数（如\ ``${arg1}``\ 等）替换为传入的\
+实际参数，然后再作为普通命令执行。
 
-In addition to referencing the formal parameters you can reference the
-values ``${ARGC}`` which will be set to the number of arguments passed
-into the macro as well as ``${ARGV0}``, ``${ARGV1}``, ``${ARGV2}``,
-...  which will have the actual values of the arguments passed in.
-This facilitates creating macros with optional arguments.
+除了引用形式参数外，你还可以引用\ ``${ARGC}``\ 的值，它会被设置为传递给宏的参数数量。\
+同时，还能引用\ ``${ARGV0}``、\ ``${ARGV1}``、\ ``${ARGV2}``\ 等，这些变量将包含\
+传入参数的实际值。\
+这有助于创建带有可选参数的宏。
 
-Furthermore, ``${ARGV}`` holds the list of all arguments given to the
-macro and ``${ARGN}`` holds the list of arguments past the last expected
-argument.
-Referencing to ``${ARGV#}`` arguments beyond ``${ARGC}`` have undefined
-behavior. Checking that ``${ARGC}`` is greater than ``#`` is the only
-way to ensure that ``${ARGV#}`` was passed to the function as an extra
-argument.
+此外，\ ``${ARGV}``\ 包含传递给宏的所有参数列表，而\ ``${ARGN}``\ 包含超出最后一个\
+预期参数的所有参数列表。\
+引用超出\ ``${ARGC}``\ 范围的\ ``${ARGV#}``\ 参数会产生未定义行为。要确保\ ``${ARGV#}``\
+作为额外参数传递给宏，唯一的方法是检查\ ``${ARGC}``\ 是否大于\ ``#``。
 
 .. _`Macro vs Function`:
 
-Macro vs Function
+宏对比函数
 ^^^^^^^^^^^^^^^^^
 
-The ``macro`` command is very similar to the :command:`function` command.
-Nonetheless, there are a few important differences.
+``macro``\ 命令与\ :command:`function`\ 命令非常相似。\
+不过，二者仍存在一些重要差异。
 
 In a function, ``ARGN``, ``ARGC``, ``ARGV`` and ``ARGV0``, ``ARGV1``, ...
 are true variables in the usual CMake sense.  In a macro, they are not,
