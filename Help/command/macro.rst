@@ -70,56 +70,50 @@ macro
 ``macro``\ 命令与\ :command:`function`\ 命令非常相似。\
 不过，二者仍存在一些重要差异。
 
-In a function, ``ARGN``, ``ARGC``, ``ARGV`` and ``ARGV0``, ``ARGV1``, ...
-are true variables in the usual CMake sense.  In a macro, they are not,
-they are string replacements much like the C preprocessor would do
-with a macro.  This has a number of consequences, as explained in
-the :ref:`Argument Caveats` section below.
+在函数里，\ ``ARGN``、\ ``ARGC``、\ ``ARGV``\ 以及\ ``ARGV0``、\ ``ARGV1``\ 等，\
+在常规CMake概念里属于真正的变量。\
+在宏中，它们并非真正的变量，而是类似于C预处理器处理宏时所做的字符串替换。\
+这会产生一些影响，具体内容将在下面的\ :ref:`Argument Caveats`\ 部分进行解释。
 
-Another difference between macros and functions is the control flow.
-A function is executed by transferring control from the calling
-statement to the function body.  A macro is executed as if the macro
-body were pasted in place of the calling statement.  This has the
-consequence that a :command:`return()` in a macro body does not
-just terminate execution of the macro; rather, control is returned
-from the scope of the macro call.  To avoid confusion, it is recommended
-to avoid :command:`return()` in macros altogether.
+宏和函数之间的另一个区别在于控制流。\
+函数的执行是通过将控制权从调用语句转移到函数体来实现的。\
+宏的执行就好像将宏体直接粘贴到调用语句的位置一样。\
+这就导致了在宏体中使用\ :command:`return()`\ 命令时，它不仅仅是终止宏的执行，\
+而是从宏调用所在的作用域返回控制权。\
+为避免混淆，建议在宏中完全避免使用\ :command:`return()`\ 命令。
 
-Unlike a function, the :variable:`CMAKE_CURRENT_FUNCTION`,
-:variable:`CMAKE_CURRENT_FUNCTION_LIST_DIR`,
-:variable:`CMAKE_CURRENT_FUNCTION_LIST_FILE`,
-:variable:`CMAKE_CURRENT_FUNCTION_LIST_LINE` variables are not
-set for a macro.
+与函数不同，宏不会设置\ :variable:`CMAKE_CURRENT_FUNCTION`、\
+:variable:`CMAKE_CURRENT_FUNCTION_LIST_DIR`、\ :variable:`CMAKE_CURRENT_FUNCTION_LIST_FILE`\
+和\ :variable:`CMAKE_CURRENT_FUNCTION_LIST_LINE`\ 这些变量。
 
 .. _`Argument Caveats`:
 
-Argument Caveats
+参数注意事项
 ^^^^^^^^^^^^^^^^
 
-Since ``ARGN``, ``ARGC``, ``ARGV``, ``ARGV0`` etc. are not variables,
-you will NOT be able to use commands like
+由于\ ``ARGN``、\ ``ARGC``、\ ``ARGV``、\ ``ARGV0``\ 等并非变量，你将\ **无法**\
+使用类似如下的命令
 
 .. code-block:: cmake
 
- if(ARGV1) # ARGV1 is not a variable
- if(DEFINED ARGV2) # ARGV2 is not a variable
- if(ARGC GREATER 2) # ARGC is not a variable
- foreach(loop_var IN LISTS ARGN) # ARGN is not a variable
+ if(ARGV1) # ARGV1不是一个变量
+ if(DEFINED ARGV2) # ARGV2不是一个变量
+ if(ARGC GREATER 2) # ARGC不是一个变量
+ foreach(loop_var IN LISTS ARGN) # ARGN不是一个变量
 
-In the first case, you can use ``if(${ARGV1})``.  In the second and
-third case, the proper way to check if an optional variable was
-passed to the macro is to use ``if(${ARGC} GREATER 2)``.  In the
-last case, you can use ``foreach(loop_var ${ARGN})`` but this will
-skip empty arguments.  If you need to include them, you can use
+在第一种情况下，你可以使用\ ``if(${ARGV1})``。\
+在第二和第三种情况下，检查是否有可选变量传递给宏的正确方法是使用\
+``if(${ARGC} GREATER 2)``。\
+在最后一种情况下，你可以使用\ ``foreach(loop_var ${ARGN})``，但这会跳过空参数。\
+如果你需要包含这些空参数，你可以使用
 
 .. code-block:: cmake
 
  set(list_var "${ARGN}")
  foreach(loop_var IN LISTS list_var)
 
-Note that if you have a variable with the same name in the scope from
-which the macro is called, using unreferenced names will use the
-existing variable instead of the arguments. For example:
+请注意，如果在调用宏的作用域中存在同名变量，使用未引用的名称时将使用现有变量，\
+而不是宏的参数。例如：
 
 .. code-block:: cmake
 
@@ -135,11 +129,10 @@ existing variable instead of the arguments. For example:
 
  foo(a b c)
 
-Will loop over ``a;b;c`` and not over ``x;y;z`` as one might have expected.
-If you want true CMake variables and/or better CMake scope control you
-should look at the function command.
+将会遍历\ ``a;b;c``，而不是像人们可能预期的那样遍历\ ``x;y;z``。\
+如果你想要真正的CMake变量和（或）更好的CMake作用域控制，你应该使用function命令。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`cmake_parse_arguments`
