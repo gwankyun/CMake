@@ -5,124 +5,112 @@ set
 :ref:`cmake-language(7)变量 <CMake Language Variables>`，了解普通变量和缓存\
 项的作用域和交互。
 
-Signatures of this command that specify a ``<value>...`` placeholder
-expect zero or more arguments.  Multiple arguments will be joined as
-a :ref:`semicolon-separated list <CMake Language Lists>` to form the
-actual variable value to be set.
+此命令的签名中若指定了\ ``<value>...``\ 占位符，则表示该命令可接受零个或多个参数。\
+多个参数将被合并为一个\ :ref:`以分号分隔的列表 <CMake Language Lists>`，以此构成\
+要设置的实际变量值。
 
-Set Normal Variable
+设置普通变量
 ^^^^^^^^^^^^^^^^^^^
 
 .. signature::
   set(<variable> <value>... [PARENT_SCOPE])
   :target: normal
 
-  Set or unset ``<variable>`` in the current function or directory scope:
+  在当前函数或目录作用域中设置或取消设置\ ``<variable>``：
 
-  * If at least one ``<value>...`` is given, set the variable to that value.
-  * If no value is given, unset the variable.  This is equivalent to
-    :command:`unset(<variable>) <unset>`.
+  * 如果至少提供一个\ ``<value>...``\ 参数，则将该变量设置为这些值。
+  * 如果未提供任何值，则取消设置该变量。这等效于\ :command:`unset(<variable>) <unset>`。
 
-  If the ``PARENT_SCOPE`` option is given the variable will be set in
-  the scope above the current scope.  Each new directory or :command:`function`
-  command creates a new scope.  A scope can also be created with the
-  :command:`block` command. ``set(PARENT_SCOPE)`` will set the value
-  of a variable into the parent directory, calling function, or
-  encompassing scope (whichever is applicable to the case at hand).
-  The previous state of the variable's value stays the same in the
-  current scope (e.g., if it was undefined before, it is still undefined
-  and if it had a value, it is still that value).
+  如果指定了\ ``PARENT_SCOPE``\ 选项，变量将在当前作用域的上一级作用域中设置。\
+  每个新目录或\ :command:`function`\ 命令都会创建一个新的作用域。\
+  也可以使用\ :command:`block`\ 命令创建一个作用域。\
+  ``set(PARENT_SCOPE)``\ 会将变量的值设置到父目录、调用函数或包含当前作用域的\
+  上一级作用域中（具体取决于实际情况）。\
+  变量的值在当前作用域中的先前状态保持不变（例如，如果之前未定义，现在仍然未定义；\
+  如果之前有值，现在仍然是该值）。
 
-  The :command:`block(PROPAGATE)` and :command:`return(PROPAGATE)` commands
-  can be used as an alternate method to the :command:`set(PARENT_SCOPE)`
-  and :command:`unset(PARENT_SCOPE)` commands to update the parent scope.
+  :command:`block(PROPAGATE)`\ 和\ :command:`return(PROPAGATE)`\ 命令可作为\
+  :command:`set(PARENT_SCOPE)`\ 和\ :command:`unset(PARENT_SCOPE)`\ 命令的替代方法，\
+  用于更新父作用域。
 
 .. include:: UNSET_NOTE.txt
 
-Set Cache Entry
+设置缓存条目
 ^^^^^^^^^^^^^^^
 
 .. signature::
   set(<variable> <value>... CACHE <type> <docstring> [FORCE])
   :target: CACHE
 
-  Sets the given cache ``<variable>`` (cache entry).  Since cache entries
-  are meant to provide user-settable values this does not overwrite
-  existing cache entries by default.  Use the ``FORCE`` option to
-  overwrite existing entries.
+  设置给定的缓存\ ``<variable>``\ （缓存条目）。\
+  由于缓存条目旨在提供用户可设置的值，因此默认情况下不会覆盖现有的缓存条目。\
+  使用\ ``FORCE``\ 选项来覆盖现有的条目。
 
-  The ``<type>`` must be specified as one of:
+  ``<type>``\ 必须指定为以下类型之一：
 
     ``BOOL``
-      Boolean ``ON/OFF`` value.
-      :manual:`cmake-gui(1)` offers a checkbox.
+      布尔类型的\ ``ON/OFF``\ 值。\
+      :manual:`cmake-gui(1)`\ 提供一个复选框。
 
     ``FILEPATH``
-      Path to a file on disk.
-      :manual:`cmake-gui(1)` offers a file dialog.
+      磁盘上文件的路径。\
+      :manual:`cmake-gui(1)`\ 提供一个文件选择对话框。
 
     ``PATH``
-      Path to a directory on disk.
-      :manual:`cmake-gui(1)` offers a file dialog.
+      磁盘上某个目录的路径。\
+      :manual:`cmake-gui(1)`\ 提供一个文件选择对话框。
 
     ``STRING``
-      A line of text.
-      :manual:`cmake-gui(1)` offers a text field or a drop-down selection
-      if the :prop_cache:`STRINGS` cache entry property is set.
+      一行文本。\
+      如果设置了\ :prop_cache:`STRINGS`\ 缓存项属性，\ :manual:`cmake-gui(1)`\
+      将提供一个文本框或下拉选择框。
 
     ``INTERNAL``
-      A line of text.
-      :manual:`cmake-gui(1)` does not show internal entries.
-      They may be used to store variables persistently across runs.
-      Use of this type implies ``FORCE``.
+      一行文本。\
+      :manual:`cmake-gui(1)`\ 不会显示内部条目。\
+      它们可用于在多次运行之间持久存储变量。\
+      使用此类型意味着隐含\ ``FORCE``\ 选项。
 
-  The ``<docstring>`` must be specified as a line of text
-  providing a quick summary of the option
-  for presentation to :manual:`cmake-gui(1)` users.
+  必须将\ ``<docstring>``\ 指定为一行文本，用于快速概述该选项，以供\
+  :manual:`cmake-gui(1)`\ 用户查看。
 
-  If the cache entry does not exist prior to the call or the ``FORCE``
-  option is given then the cache entry will be set to the given value.
+  如果在调用此命令之前缓存条目不存在，或者指定了\ ``FORCE``\ 选项，那么缓存条目\
+  将被设置为给定的值。
 
   .. note::
 
-    The content of the cache variable will not be directly accessible
-    if a normal variable of the same name already exists
-    (see :ref:`rules of variable evaluation <CMake Language Variables>`).
-    If policy :policy:`CMP0126` is set to ``OLD``, any normal variable
-    binding in the current scope will be removed.
+    如果同名的普通变量已经存在，缓存变量的内容将无法直接访问（请参阅\
+    :ref:`变量计算规则 <CMake Language Variables>`）。\
+    如果策略\ :policy:`CMP0126`\ 设置为\ ``OLD``，当前作用域内的任何普通变量绑定\
+    都将被移除。
 
-  It is possible for the cache entry to exist prior to the call but
-  have no type set if it was created on the :manual:`cmake(1)` command
-  line by a user through the :option:`-D\<var\>=\<value\> <cmake -D>` option
-  without specifying a type.  In this case the ``set`` command will add the
-  type.  Furthermore, if the ``<type>`` is ``PATH`` or ``FILEPATH``
-  and the ``<value>`` provided on the command line is a relative path,
-  then the ``set`` command will treat the path as relative to the
-  current working directory and convert it to an absolute path.
+  在调用此命令之前，缓存条目就可能已经存在，但如果用户是通过\ :manual:`cmake(1)`\
+  命令行，使用\ :option:`-D\<var\>=\<value\> <cmake -D>`\ 选项创建该条目且未指定类型，\
+  那么该缓存条目将不会设置类型。\
+  在这种情况下，\ ``set``\ 命令会添加类型。\
+  此外，如果\ ``<type>``\ 为\ ``PATH``\ 或\ ``FILEPATH``，并且命令行中提供的\
+  ``<value>``\ 是相对路径，那么\ ``set``\ 命令会将该路径视为相对于当前工作目录的\
+  路径，并将其转换为绝对路径。
 
-Set Environment Variable
+设置环境变量
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. signature::
   set(ENV{<variable>} [<value>])
   :target: ENV
 
-  Sets an :manual:`Environment Variable <cmake-env-variables(7)>`
-  to the given value.
-  Subsequent calls of ``$ENV{<variable>}`` will return this new value.
+  将一个\ :manual:`环境变量 <cmake-env-variables(7)>`\ 设置为给定的值。\
+  后续调用\ ``$ENV{<variable>}``\ 时将返回这个新值。
 
-  This command affects only the current CMake process, not the process
-  from which CMake was called, nor the system environment at large,
-  nor the environment of subsequent build or test processes.
+  此命令仅影响当前的CMake进程，不会影响调用CMake的进程，也不会影响整个系统环境，\
+  同样不会影响后续构建或测试进程的环境。
 
-  If no argument is given after ``ENV{<variable>}`` or if ``<value>`` is
-  an empty string, then this command will clear any existing value of the
-  environment variable.
+  如果在\ ``ENV{<variable>}``\ 之后未提供任何参数，或者\ ``<value>``\ 为空字符串，\
+  那么此命令将清除环境变量的任何现有值。
 
-  Arguments after ``<value>`` are ignored. If extra arguments are found,
-  then an author warning is issued.
+  ``<value>``\ 之后的参数将被忽略。如果发现额外的参数，将会发出作者警告。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`unset`
