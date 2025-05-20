@@ -18,65 +18,61 @@ set_property
                [APPEND] [APPEND_STRING]
                PROPERTY <name> [<value1> ...])
 
-Sets one property on zero or more objects of a scope.
+在某个作用域的零个或多个对象上设置一个属性。
 
-The first argument determines the scope in which the property is set.
-It must be one of the following:
+第一个参数决定了属性设置的作用域。\
+它必须是以下之一：
 
 ``GLOBAL``
-  Scope is unique and does not accept a name.
+  作用域是唯一的，且不接受名称参数。
 
 ``DIRECTORY``
-  Scope defaults to the current directory but other directories
-  (already processed by CMake) may be named by full or relative path.
-  Relative paths are treated as relative to the current source directory.
-  See also the :command:`set_directory_properties` command.
+  作用域默认是当前目录，但也可以通过完整路径或相对路径指定其他目录（这些目录需\
+  已由CMake处理过）。\
+  相对路径会被视作相对于当前源目录。\
+  另请参阅\ :command:`set_directory_properties`\ 命令。
 
   .. versionadded:: 3.19
-    ``<dir>`` may reference a binary directory.
+    ``<dir>``\ 可以引用一个二进制目录。
 
 ``TARGET``
-  Scope may name zero or more existing targets.
-  See also the :command:`set_target_properties` command.
+  作用域可以指定零个或多个已存在的目标。\
+  另请参阅\ :command:`set_target_properties`\ 命令。
 
-  :ref:`Alias Targets` do not support setting target properties.
+  :ref:`Alias Targets`\ 不支持设置目标属性。
 
 ``SOURCE``
-  Scope may name zero or more source files.  By default, source file properties
-  are only visible to targets added in the same directory (``CMakeLists.txt``).
+  作用域可以指定零个或多个源文件。\
+  默认情况下，源文件属性仅对同一目录（\ ``CMakeLists.txt``\ ）中添加的目标可见。
 
   .. versionadded:: 3.18
-    Visibility can be set in other directory scopes using one or both of the
-    following sub-options:
+    可以使用以下一个或两个子选项在其他目录作用域中设置可见性：
 
     ``DIRECTORY <dirs>...``
-      The source file property will be set in each of the ``<dirs>``
-      directories' scopes.  CMake must already know about
-      each of these directories, either by having added them through a call to
-      :command:`add_subdirectory` or it being the top level source directory.
-      Relative paths are treated as relative to the current source directory.
+      源文件属性将在每个\ ``<dirs>``\ 目录的作用域中设置。\
+      CMake必须已经知晓这些目录中的每一个，要么是通过调用\ :command:`add_subdirectory`\
+      添加的，要么它是顶层源目录。\
+      相对路径会被视作相对于当前源目录。
 
       .. versionadded:: 3.19
-        ``<dirs>`` may reference a binary directory.
+        ``<dirs>``\ 可以引用一个二进制目录。
 
     ``TARGET_DIRECTORY <targets>...``
-      The source file property will be set in each of the directory scopes
-      where any of the specified ``<targets>`` were created (the ``<targets>``
-      must therefore already exist).
+      源文件属性将在指定的每个\ ``<targets>``\ 被创建的目录作用域中设置（因此\
+      ``<targets>``\ 必须已经存在）。
 
-  See also the :command:`set_source_files_properties` command.
+  另请参阅\ :command:`set_source_files_properties`\ 命令。
 
 ``INSTALL``
   .. versionadded:: 3.1
 
-  Scope may name zero or more installed file paths.
-  These are made available to CPack to influence deployment.
+  作用域可以指定零个或多个已安装文件的路径。\
+  这些信息会提供给CPack，以影响部署过程。
 
-  Both the property key and value may use generator expressions.
-  Specific properties may apply to installed files and/or directories.
+  属性键和属性值都可以使用生成器表达式。\
+  特定属性可能适用于已安装的文件和/或目录。
 
-  Path components have to be separated by forward slashes,
-  must be normalized and are case sensitive.
+  路径组件必须使用正斜杠分隔，必须经过规范化处理，并且区分大小写。
 
   To reference the installation prefix itself with a relative path use ``.``.
 
