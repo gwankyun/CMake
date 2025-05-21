@@ -74,37 +74,35 @@ set_property
 
   路径组件必须使用正斜杠分隔，必须经过规范化处理，并且区分大小写。
 
-  To reference the installation prefix itself with a relative path use ``.``.
+  若要使用相对路径引用安装前缀本身，请使用\ ``.``。
 
-  Currently installed file properties are only defined for
-  the WIX generator where the given paths are relative
-  to the installation prefix.
+  当前已安装文件的属性仅针对WIX生成器进行了定义，在该生成器中，给定的路径是相对于\
+  安装前缀的。
 
 ``TEST``
-  Scope is limited to the directory the command is called in. It may name zero
-  or more existing tests. See also command :command:`set_tests_properties`.
+  作用域仅限于调用该命令所在的目录。\
+  它可以指定零个或多个已存在的测试。\
+  另请参阅\ :command:`set_tests_properties`\ 命令。
 
-  Test property values may be specified using
-  :manual:`generator expressions <cmake-generator-expressions(7)>`
-  for tests created by the :command:`add_test(NAME)` signature.
+  对于通过\ :command:`add_test(NAME)`\ 形式创建的测试，其测试属性值可以使用\
+  :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 来指定。
 
   .. versionadded:: 3.28
 
-    Visibility can be set in other directory scopes using the following sub-option:
+    可以使用以下子选项在其他目录作用域中设置可见性：
 
     ``DIRECTORY <dir>``
-      The test property will be set in the ``<dir>`` directory's scope. CMake must
-      already know about this directory, either by having added it through a call
-      to :command:`add_subdirectory` or it being the top level source directory.
-      Relative paths are treated as relative to the current source directory.
-      ``<dir>`` may reference a binary directory.
+      测试属性将在\ ``<dir>``\ 目录的作用域中设置。\
+      CMake必须已经知晓这个目录，要么是通过调用\ :command:`add_subdirectory`\
+      添加的，要么它是顶层源目录。\
+      相对路径会被视作相对于当前源目录。\
+      ``<dir>``\ 可以引用一个二进制目录。
 
 ``CACHE``
-  Scope must name zero or more existing cache entries.
+  作用域必须指定零个或多个已存在的缓存条目。
 
-The required ``PROPERTY`` option is immediately followed by the name of
-the property to set.  Remaining arguments are used to compose the
-property value in the form of a semicolon-separated list.
+必需的\ ``PROPERTY``\ 选项后面需紧跟要设置的属性名称。\
+其余参数用于以分号分隔的列表形式构成属性值。
 
 If the ``APPEND`` option is given the list is appended to any existing
 property value (except that empty values are ignored and not appended).
