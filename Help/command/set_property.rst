@@ -104,26 +104,23 @@ set_property
 必需的\ ``PROPERTY``\ 选项后面需紧跟要设置的属性名称。\
 其余参数用于以分号分隔的列表形式构成属性值。
 
-If the ``APPEND`` option is given the list is appended to any existing
-property value (except that empty values are ignored and not appended).
-If the ``APPEND_STRING`` option is given the string is
-appended to any existing property value as string, i.e. it results in a
-longer string and not a list of strings.  When using ``APPEND`` or
-``APPEND_STRING`` with a property defined to support ``INHERITED``
-behavior (see :command:`define_property`), no inheriting occurs when
-finding the initial value to append to.  If the property is not already
-directly set in the nominated scope, the command will behave as though
-``APPEND`` or ``APPEND_STRING`` had not been given.
+如果指定了\ ``APPEND``\ 选项，则会将列表追加到任何现有属性值之后（空值会被忽略，\
+不会被追加）。\
+如果指定了\ ``APPEND_STRING``\ 选项，该字符串将以字符串形式追加到任何现有属性值之后，\
+即最终会得到一个更长的字符串，而非字符串列表。\
+当对定义为支持\ ``INHERITED``\ 行为的属性使用\ ``APPEND``\ 或\ ``APPEND_STRING``\
+选项时（参见\ :command:`define_property`\ ），在查找要追加的初始值时不会发生继承操作。\
+如果该属性在指定作用域中尚未直接设置，则此命令的行为将如同未指定\ ``APPEND``\ 或\
+``APPEND_STRING``\ 选项一样。
 
 .. note::
 
-  The :prop_sf:`GENERATED` source file property may be globally visible.
-  See its documentation for details.
+  :prop_sf:`GENERATED`\ 源文件属性可能具有全局可见性。\
+  详情请参阅其文档。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`define_property`
 * :command:`get_property`
-* The :manual:`cmake-properties(7)` manual for a list of properties
-  in each scope.
+* 有关每个作用域中的属性列表，请参阅\ :manual:`cmake-properties(7)`\ 手册。
