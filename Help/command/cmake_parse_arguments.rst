@@ -12,31 +12,26 @@ cmake_parse_arguments
                         <one_value_keywords> <multi_value_keywords>)
 
 .. versionadded:: 3.5
-  This command is implemented natively.  Previously, it has been defined in the
-  module :module:`CMakeParseArguments`.
+  此命令为原生实现。\
+  此前，它是在\ :module:`CMakeParseArguments`\ 模块中定义的。
 
-This command is for use in macros or functions.
-It processes the arguments given to that macro or function,
-and defines a set of variables which hold the values of the
-respective options.
+此命令用于宏或函数中。\
+它会处理传递给该宏或函数的参数，并定义一组变量，这些变量将存储相应选项的值。
 
-The first signature reads arguments passed in the ``<args>...``.
-This may be used in either a :command:`macro` or a :command:`function`.
+第一个函数签名读取传递给\ ``<args>...``\ 的参数。\
+这既可以在\ :command:`macro`\ 中使用，也可以在\ :command:`function`\ 中使用。
 
 .. versionadded:: 3.7
-  The ``PARSE_ARGV`` signature is only for use in a :command:`function`
-  body.  In this case, the arguments that are parsed come from the
-  ``ARGV#`` variables of the calling function.  The parsing starts with
-  the ``<N>``-th argument, where ``<N>`` is an unsigned integer.
-  This allows for the values to have special characters like ``;`` in them.
+  ``PARSE_ARGV``\ 签名仅适用于\ :command:`function`\ 主体中。\
+  在这种情况下，被解析的参数来自调用函数的\ ``ARGV#``\ 变量。\
+  解析从第\ ``<N>``\ 个参数开始，其中\ ``<N>``\ 是一个无符号整数。\
+  这使得参数值中可以包含像\ ``;``\ 这样的特殊字符。
 
-The ``<options>`` argument contains all options for the respective function
-or macro. These are keywords that have no value following them, like the
-``OPTIONAL`` keyword of the :command:`install` command.
+``<options>``\ 参数包含了相应函数或宏的所有选项。\
+这些关键字后面不跟随值，例如\ :command:`install`\ 命令中的\ ``OPTIONAL``\ 关键字。
 
-The ``<one_value_keywords>`` argument contains all keywords for this function
-or macro which are followed by one value, like the ``DESTINATION`` keyword of
-the :command:`install` command.
+``<one_value_keywords>``\ 参数包含了该函数或宏的所有需要跟随一个值的关键字，例如\
+:command:`install`\ 命令中的\ ``DESTINATION``\ 关键字。
 
 The ``<multi_value_keywords>`` argument contains all keywords for this
 function or macro which can be followed by more than one value, like the
