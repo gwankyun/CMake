@@ -33,31 +33,27 @@ cmake_parse_arguments
 ``<one_value_keywords>``\ 参数包含了该函数或宏的所有需要跟随一个值的关键字，例如\
 :command:`install`\ 命令中的\ ``DESTINATION``\ 关键字。
 
-The ``<multi_value_keywords>`` argument contains all keywords for this
-function or macro which can be followed by more than one value, like the
-``TARGETS`` or ``FILES`` keywords of the :command:`install` command.
+``<multi_value_keywords>``\ 参数包含了该函数或宏的所有可跟随多个值的关键字，例如\
+:command:`install`\ 命令中的\ ``TARGETS``\ 或\ ``FILES``\ 关键字。
 
 .. versionchanged:: 3.5
-  All keywords must be unique.  Each keyword can only be specified
-  once in any of the ``<options>``, ``<one_value_keywords>``, or
-  ``<multi_value_keywords>``. A warning will be emitted if uniqueness is
-  violated.
+  所有关键字必须唯一。\
+  每个关键字只能在\ ``<options>``、\ ``<one_value_keywords>``\
+  或\ ``<multi_value_keywords>``\ 中指定一次。\
+  若违反唯一性原则，将会发出警告。
 
-When done, ``cmake_parse_arguments`` will consider for each of the
-keywords listed in ``<options>``, ``<one_value_keywords>``, and
-``<multi_value_keywords>``, a variable composed of the given ``<prefix>``
-followed by ``"_"`` and the name of the respective keyword.  For
-``<one_value_keywords>`` and ``<multi_value_keywords>``, these variables
-will then hold the respective value(s) from the argument list, or be undefined
-if the associated keyword was not given (policy :policy:`CMP0174` can also
-affect the behavior for ``<one_value_keywords>``).  For the ``<options>``
-keywords, these variables will always be defined, and they will be set to
-``TRUE`` if the keyword is present, or ``FALSE`` if it is not.
+执行完毕后，\ ``cmake_parse_arguments``\ 会针对\ ``<options>``、\
+``<one_value_keywords>``\ 和\ ``<multi_value_keywords>``\ 中列出的每个关键字，\
+生成一个变量。该变量由给定的\ ``<prefix>``\ 加上\ ``"_"``\ 以及相应关键字的名称组成。\
+对于\ ``<one_value_keywords>``\ 和\ ``<multi_value_keywords>``，这些变量将存储\
+参数列表中对应的一个或多个值；如果相关关键字未被提供，则这些变量将未定义（策略\
+:policy:`CMP0174`\ 也可能影响\ ``<one_value_keywords>``\ 的行为）。\
+对于\ ``<options>``\ 中的关键字，这些变量将始终被定义。若关键字存在，则变量将被\
+设置为\ ``TRUE``；若不存在，则设置为\ ``FALSE``。
 
-All remaining arguments are collected in a variable
-``<prefix>_UNPARSED_ARGUMENTS`` that will be undefined if all arguments
-were recognized. This can be checked afterwards to see
-whether your macro or function was called with unrecognized parameters.
+所有未被识别的参数将被收集到变量\ ``<prefix>_UNPARSED_ARGUMENTS``\ 中。若所有\
+参数都被识别，该变量将未被定义。\
+之后可以检查这个变量，以确定调用宏或函数时是否传入了未被识别的参数。
 
 .. versionadded:: 3.15
    ``<one_value_keywords>`` and ``<multi_value_keywords>`` that were given no
