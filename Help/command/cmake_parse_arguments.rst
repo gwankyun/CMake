@@ -56,23 +56,21 @@ cmake_parse_arguments
 之后可以检查这个变量，以确定调用宏或函数时是否传入了未被识别的参数。
 
 .. versionadded:: 3.15
-   ``<one_value_keywords>`` and ``<multi_value_keywords>`` that were given no
-   values at all are collected in a variable
-   ``<prefix>_KEYWORDS_MISSING_VALUES`` that will be undefined if all keywords
-   received values. This can be checked to see if there were keywords without
-   any values given.
+   那些完全没有被赋予值的\ ``<one_value_keywords>``\ 和\ ``<multi_value_keywords>``\
+   会被收集到变量\ ``<prefix>_KEYWORDS_MISSING_VALUES``\ 中。如果所有关键字都有值，\
+   那么该变量将未被定义。\
+   可以检查这个变量，以确定是否存在未被赋予任何值的关键字。
 
 .. versionchanged:: 3.31
-   If a ``<one_value_keyword>`` is followed by an empty string as its value,
-   policy :policy:`CMP0174` controls whether a corresponding
-   ``<prefix>_<keyword>`` variable is defined or not.
+   如果\ ``<one_value_keyword>``\ 后面跟着一个空字符串作为其值，策略\ :policy:`CMP0174`\
+   将控制相应的\ ``<prefix>_<keyword>``\ 变量是否被定义。
 
-Choose a ``<prefix>`` carefully to avoid clashing with existing variable names.
-When used inside a function, it is usually suitable to use the prefix ``arg``.
-There is a very strong convention that all keywords are fully uppercase, so
-this prefix results in variables of the form ``arg_SOME_KEYWORD``.  This makes
-the code more readable, and it minimizes the chance of clashing with cache
-variables, which also have a strong convention of being all uppercase.
+请谨慎选择\ ``<prefix>``，以避免与现有变量名冲突。\
+当在函数内部使用时，通常适合使用前缀\ ``arg``。\
+有一个非常普遍的约定，即所有关键字都采用全大写形式，因此使用这个前缀会生成形如\
+``arg_SOME_KEYWORD``\ 的变量。\
+这使得代码更具可读性，并且能最大程度降低与缓存变量发生命名冲突的可能性，因为缓存\
+变量也普遍遵循全大写的命名约定。
 
 .. code-block:: cmake
 
@@ -84,7 +82,7 @@ variables, which also have a strong convention of being all uppercase.
            "${options}" "${oneValueArgs}" "${multiValueArgs}"
        )
 
-       # The above will set or unset variables with the following names:
+       # 上述操作将设置或取消设置以下名称的变量：
        #   arg_OPTIONAL
        #   arg_FAST
        #   arg_DESTINATION
@@ -92,7 +90,7 @@ variables, which also have a strong convention of being all uppercase.
        #   arg_TARGETS
        #   arg_CONFIGURATIONS
        #
-       # The following will also be set or unset:
+       # 以下变量也将被设置或取消设置：
        #   arg_UNPARSED_ARGUMENTS
        #   arg_KEYWORDS_MISSING_VALUES
 
