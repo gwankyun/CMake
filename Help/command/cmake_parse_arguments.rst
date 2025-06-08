@@ -94,13 +94,11 @@ cmake_parse_arguments
        #   arg_UNPARSED_ARGUMENTS
        #   arg_KEYWORDS_MISSING_VALUES
 
-When used inside a macro, ``arg`` might not be a suitable prefix because the
-code will affect the calling scope.  If another macro also called in the same
-scope were to use ``arg`` in its own call to ``cmake_parse_arguments()``,
-and if there are any common keywords between the two macros, the later call's
-variables can overwrite or remove those of the earlier macro's call.
-Therefore, it is advisable to incorporate something unique from the macro name
-in the ``<prefix>``, such as ``arg_lowercase_macro_name``.
+在宏内部使用时，\ ``arg``\ 可能不是一个合适的前缀，因为代码会影响调用作用域。\
+如果在同一作用域内调用的另一个宏，在其自身对\ ``cmake_parse_arguments()``\
+的调用中也使用\ ``arg``\ 作为前缀，并且这两个宏之间存在任何相同的关键字，那么后\
+调用的宏所设置的变量可能会覆盖或移除先调用的宏所设置的变量。\
+因此，建议在\ ``<prefix>``\ 中加入宏名称里的独特元素，例如\ ``arg_lowercase_macro_name``。
 
 .. code-block:: cmake
 
@@ -116,7 +114,7 @@ in the ``<prefix>``, such as ``arg_lowercase_macro_name``.
    endmacro()
 
    macro(my_special_install)
-       # NOTE: Has the same keywords as my_install()
+       # 注意：与my_install()宏具有相同的关键字
        set(options OPTIONAL FAST)
        set(oneValueArgs DESTINATION RENAME)
        set(multiValueArgs TARGETS CONFIGURATIONS)
@@ -127,46 +125,44 @@ in the ``<prefix>``, such as ``arg_lowercase_macro_name``.
        # ...
    endmacro()
 
-Suppose the above macros are called one after the other, like so:
+假设上述宏按如下方式依次调用：
 
 .. code-block:: cmake
 
    my_install(TARGETS foo bar DESTINATION bin OPTIONAL blub CONFIGURATIONS)
    my_special_install(TARGETS barry DESTINATION sbin RENAME FAST)
 
-After these two calls, the following describes the variables that will be
-set or unset::
+在这两次调用之后，以下内容描述了将会被设置或未被设置的变量::
 
    arg_my_install_OPTIONAL = TRUE
-   arg_my_install_FAST = FALSE # was not present in call to my_install
+   arg_my_install_FAST = FALSE # 在调用my_install时未出现
    arg_my_install_DESTINATION = "bin"
-   arg_my_install_RENAME <UNSET> # was not present
+   arg_my_install_RENAME <UNSET> # 未出现
    arg_my_install_TARGETS = "foo;bar"
-   arg_my_install_CONFIGURATIONS <UNSET> # was not present
-   arg_my_install_UNPARSED_ARGUMENTS = "blub" # nothing expected after "OPTIONAL"
-   arg_my_install_KEYWORDS_MISSING_VALUES = "CONFIGURATIONS" # value was missing
+   arg_my_install_CONFIGURATIONS <UNSET> # 未出现
+   arg_my_install_UNPARSED_ARGUMENTS = "blub" # "OPTIONAL"之后不应有其他内容
+   arg_my_install_KEYWORDS_MISSING_VALUES = "CONFIGURATIONS" # 缺少值
 
-   arg_my_special_install_OPTIONAL = FALSE # was not present
+   arg_my_special_install_OPTIONAL = FALSE # 未出现
    arg_my_special_install_FAST = TRUE
    arg_my_special_install_DESTINATION = "sbin"
-   arg_my_special_install_RENAME <UNSET> # value was missing
+   arg_my_special_install_RENAME <UNSET> # 缺少值
    arg_my_special_install_TARGETS = "barry"
-   arg_my_special_install_CONFIGURATIONS <UNSET> # was not present
+   arg_my_special_install_CONFIGURATIONS <UNSET> # 未出现
    arg_my_special_install_UNPARSED_ARGUMENTS <UNSET>
    arg_my_special_install_KEYWORDS_MISSING_VALUES = "RENAME"
 
-Keywords terminate lists of values. If a keyword is given directly after a
-``<one_value_keyword>``, that preceding ``<one_value_keyword>`` receives no
-value and the keyword is added to the ``<prefix>_KEYWORDS_MISSING_VALUES``
-variable. In the above example, the call to ``my_special_install()`` contains
-the ``RENAME`` keyword immediately followed by the ``FAST`` keyword.
-In this case, ``FAST`` terminates processing of the ``RENAME`` keyword.
-``arg_my_special_install_FAST`` is set to ``TRUE``,
-``arg_my_special_install_RENAME`` is unset, and
-``arg_my_special_install_KEYWORDS_MISSING_VALUES`` contains the value
-``RENAME``.
+关键字会终止值列表。如果在一个\ ``<one_value_keyword>``\ 之后紧接着出现另一个\
+关键字，那么前一个\ ``<one_value_keyword>``\  将不会接收到值，并且该关键字会被\
+添加到\ ``<prefix>_KEYWORDS_MISSING_VALUES``\ 变量中。在上述示例中，对\
+``my_special_install()``\ 的调用包含了\ ``RENAME``\ 关键字，其后紧接着是\ ``FAST``\
+关键字。\
+在这种情况下，\ ``FAST``\ 终止了对\ ``RENAME``\ 关键字的处理。\
+``arg_my_special_install_FAST``\ 被设置为\ ``TRUE``，\ ``arg_my_special_install_RENAME``\
+未被设置，并且\ ``arg_my_special_install_KEYWORDS_MISSING_VALUES``\ 包含值
+``RENAME``。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`function`
