@@ -15,71 +15,65 @@ configure_file
                  [COPYONLY] [ESCAPE_QUOTES] [@ONLY]
                  [NEWLINE_STYLE [UNIX|DOS|WIN32|LF|CRLF]])
 
-Copies an ``<input>`` file to an ``<output>`` file while performing
-`transformations`_ of the input file content.
+在对输入文件内容进行\ `替换处理`_\ 的同时，将\ ``<input>``\ 文件复制到\
+``<output>``\ 文件。
 
-If the input file is modified the build system will re-run CMake to
-re-configure the file and generate the build system again.
-The generated file is modified and its timestamp updated on subsequent
-cmake runs only if its content is changed.
+如果输入文件被修改，构建系统将重新运行CMake来重新配置该文件，并再次生成构建系统。\
+仅当生成文件的内容发生变化时，后续运行CMake才会修改该文件并更新其时间戳。
 
-Options
+选项
 ^^^^^^^
 
-The options are:
+选项如下：
 
 ``<input>``
-  Path to the input file.  A relative path is treated with respect to
-  the value of :variable:`CMAKE_CURRENT_SOURCE_DIR`.  The input path
-  must be a file, not a directory.
+  输入文件的路径。\
+  相对路径会相对于\ :variable:`CMAKE_CURRENT_SOURCE_DIR`\ 变量的值进行处理。\
+  输入路径必须是一个文件，而不能是一个目录。
 
 ``<output>``
-  Path to the output file or directory.  A relative path is treated
-  with respect to the value of :variable:`CMAKE_CURRENT_BINARY_DIR`.
-  If the path names an existing directory the output file is placed
-  in that directory with the same file name as the input file.
-  If the path contains non-existent directories, they are created.
+  输出文件或目录的路径。\
+  相对路径会相对于\ :variable:`CMAKE_CURRENT_BINARY_DIR`\ 变量的值进行处理。\
+  如果该路径指定的是一个已存在的目录，输出文件将被放置在该目录下，并且文件名与\
+  输入文件相同。\
+  如果该路径包含不存在的目录，这些目录将被创建。
 
 ``NO_SOURCE_PERMISSIONS``
   .. versionadded:: 3.19
 
-  Do not transfer the permissions of the input file to the output file.
-  The copied file permissions default to the standard 644 value
-  (-rw-r--r--).
+  不要将输入文件的权限传递给输出文件。\
+  复制后的文件权限默认采用标准的644值（-rw-r--r--）。
 
 ``USE_SOURCE_PERMISSIONS``
   .. versionadded:: 3.20
 
-  Transfer the permissions of the input file to the output file.
-  This is already the default behavior if none of the three permissions-related
-  keywords are given (``NO_SOURCE_PERMISSIONS``, ``USE_SOURCE_PERMISSIONS``
-  or ``FILE_PERMISSIONS``).  The ``USE_SOURCE_PERMISSIONS`` keyword mostly
-  serves as a way of making the intended behavior clearer at the call site.
+  将输入文件的权限传递给输出文件。\
+  如果未指定三个与权限相关的关键字（\ ``NO_SOURCE_PERMISSIONS``、\
+  ``USE_SOURCE_PERMISSIONS``\ 或\ ``FILE_PERMISSIONS``）中的任何一个，这已经是\
+  默认行为。关键字\ ``USE_SOURCE_PERMISSIONS``\ 主要用于在调用处更清晰地表明预期行为。
 
 ``FILE_PERMISSIONS <permissions>...``
   .. versionadded:: 3.20
 
-  Ignore the input file's permissions and use the specified ``<permissions>``
-  for the output file instead.
+  忽略输入文件的权限，而是为输出文件使用指定的\ ``<permissions>``。
 
 ``COPYONLY``
-  Copy the file without replacing any variable references or other
-  content.  This option may not be used with ``NEWLINE_STYLE``.
+  复制文件时不替换任何变量引用或其他内容。\
+  此选项不能与\ ``NEWLINE_STYLE``\ 一起使用。
 
 ``ESCAPE_QUOTES``
-  Escape any substituted quotes with backslashes (C-style).
+  使用反斜杠（C风格）对所有替换后的引号进行转义。
 
 ``@ONLY``
-  Restrict variable replacement to references of the form ``@VAR@``.
-  This is useful for configuring scripts that use ``${VAR}`` syntax.
+  将变量替换限制为\ ``@VAR@``\ 格式的引用。\
+  这对于配置使用\ ``${VAR}``\ 语法的脚本很有用。
 
 ``NEWLINE_STYLE <style>``
-  Specify the newline style for the output file.  Specify
-  ``UNIX`` or ``LF`` for ``\n`` newlines, or specify
-  ``DOS``, ``WIN32``, or ``CRLF`` for ``\r\n`` newlines.
-  This option may not be used with ``COPYONLY``.
+  指定输出文件的换行符风格。指定\ ``UNIX``\ 或\ ``LF``\ 表示使用\ ``\n``\ 作为\
+  换行符，指定\ ``DOS``、\ ``WIN32``\ 或\ ``CRLF``\ 表示使用\ ``\r\n``\ 作为换行符。\
+  此选项不能与\ ``COPYONLY``\ 一起使用。
 
-Transformations
+替换处理
 ^^^^^^^^^^^^^^^
 
 :ref:`Variables <CMake Language Variables>` referenced in the input
