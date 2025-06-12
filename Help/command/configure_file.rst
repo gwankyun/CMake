@@ -76,36 +76,34 @@ configure_file
 替换处理
 ^^^^^^^^^^^^^^^
 
-:ref:`Variables <CMake Language Variables>` referenced in the input
-file content as ``@VAR@``, ``${VAR}``, ``$CACHE{VAR}``, and
-:ref:`environment variables <CMake Language Environment Variables>`
-referenced as ``$ENV{VAR}``, will each be replaced with the current value
-of the variable, or the empty string if the variable is not defined.
-Furthermore, input lines of the form
+在输入文件内容里引用的\ :ref:`变量 <CMake Language Variables>`，其形式为\
+``@VAR@``、\ ``${VAR}``、\ ``$CACHE{VAR}``，以及引用的\
+:ref:`环境变量 <CMake Language Environment Variables>`，其形式为\ ``$ENV{VAR}``，\
+都将被替换为变量的当前值，若变量未定义，则替换为空字符串。\
+此外，以下格式的输入行
 
 .. code-block:: c
 
   #cmakedefine VAR ...
 
-will be replaced with either
+将被替换为以下两种之一
 
 .. code-block:: c
 
   #define VAR ...
 
-or
+或者
 
 .. code-block:: c
 
   /* #undef VAR */
 
-depending on whether ``VAR`` is set in CMake to any value not considered
-a false constant by the :command:`if` command.  The "..." content on the
-line after the variable name, if any, is processed as above.
+这取决于在CMake中设置的\ ``VAR``\ 值是否被\ :command:`if`\ 命令视为非假常量。\
+变量名后一行中的“...”内容（如果有的话），将按上述方式处理。
 
-Unlike lines of the form ``#cmakedefine VAR ...``, in lines of the form
-``#cmakedefine01 VAR``, ``VAR`` itself will expand to ``VAR 0`` or ``VAR 1``
-rather than being assigned the value ``...``. Therefore, input lines of the form
+与\ ``#cmakedefine VAR ...``\ 形式的行不同，在\ ``#cmakedefine01 VAR``\ 形式的行中，\
+``VAR``\ 本身将展开为\ ``VAR 0``\ 或\ ``VAR 1``，而不是被赋值为\ ``...``。\
+因此，以下格式的输入行
 
 .. code-block:: c
 
