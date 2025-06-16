@@ -1,7 +1,7 @@
 CMAKE_OSX_SYSROOT
 -----------------
 
-Specify the location or name of the macOS platform SDK to be used.
+指定要使用的macOS平台SDK的位置或名称。
 
 If not set explicitly, the value is initialized by the ``SDKROOT``
 environment variable, if set.  Otherwise, the value defaults to empty,

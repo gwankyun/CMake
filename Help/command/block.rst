@@ -47,7 +47,7 @@ block
       set(var3 "VALUE3")
     endblock()
 
-    # 现在var1的值为VALUE1，var2被取消设置, and var3 holds the initial value INIT3
+    # 现在var1的值为VALUE1，var2被取消设置, 并且var3保持初始值INIT3
 
   此选项仅在创建变量作用域时允许使用。在其他情况下会引发错误。
 

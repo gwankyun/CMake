@@ -66,10 +66,9 @@ CMake原生支持模块依赖扫描的编译器包括：
 
 对\ ``import std``\ 的支持仅限于以下工具链和标准库组合：
 
-* Clang 18.1.2 and newer with ``-stdlib=libc++`` or ``-stdlib=libstdc++``
-* MSVC toolset 14.36 and newer (provided with Visual Studio 17.6 Preview 2 and
-  newer)
-* GCC 15 and newer.
+* Clang 18.1.2及更高版本搭配\ ``-stdlib=libc++``\ 或\ ``-stdlib=libstdc++``\ 选项
+* MSVC工具集14.36及更高版本（随Visual Studio 17.6预览版2及更高版本提供）
+* GCC 15及更高版本。
 
 :variable:`CMAKE_CXX_COMPILER_IMPORT_STD`\ 变量可用于检测当前C++工具链对标准级别的支持\
 情况。
