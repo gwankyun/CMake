@@ -109,52 +109,49 @@ configure_file
 
   #cmakedefine01 VAR
 
-will be replaced with either
+将被替换为以下两者之一
 
 .. code-block:: c
 
   #define VAR 0
 
-or
+或者
 
 .. code-block:: c
 
   #define VAR 1
 
-Input lines of the form ``#cmakedefine01 VAR ...`` will expand
-as ``#cmakedefine01 VAR ... 0`` or ``#cmakedefine01 VAR ... 1``,
-which may lead to undefined behavior.
+格式为\ ``#cmakedefine01 VAR ...``\ 的输入行将展开为\ ``#cmakedefine01 VAR ... 0``\
+或者\ ``#cmakedefine01 VAR ... 1``，这可能会导致未定义行为。
 
 .. versionadded:: 3.10
-  The result lines (with the exception of the ``#undef`` comments) can be
-  indented using spaces and/or tabs between the ``#`` character
-  and the ``cmakedefine`` or ``cmakedefine01`` words. This whitespace
-  indentation will be preserved in the output lines:
+  结果行（不包括\ ``#undef``\ 注释）可以在\ ``#``\ 字符与\ ``cmakedefine``\ 或\
+  ``cmakedefine01``\ 之间使用空格和/或制表符进行缩进。\
+  这种空白缩进在输出行中将会被保留：
 
   .. code-block:: c
 
     #  cmakedefine VAR
     #  cmakedefine01 VAR
 
-  will be replaced, if ``VAR`` is defined, with
+  如果定义了\ ``VAR``，则将被替换为
 
   .. code-block:: c
 
     #  define VAR
     #  define VAR 1
 
-Example
+示例
 ^^^^^^^
 
-Consider a source tree containing a ``foo.h.in`` file:
+假设有一个源文件目录，其中包含一个\ ``foo.h.in``\ 文件：
 
 .. code-block:: c
 
   #cmakedefine FOO_ENABLE
   #cmakedefine FOO_STRING "@FOO_STRING@"
 
-An adjacent ``CMakeLists.txt`` may use ``configure_file`` to
-configure the header:
+相邻的\ ``CMakeLists.txt``\ 文件可以使用\ ``configure_file``\ 命令来配置该头文件：
 
 .. code-block:: cmake
 
@@ -164,32 +161,30 @@ configure the header:
   endif()
   configure_file(foo.h.in foo.h @ONLY)
 
-This creates a ``foo.h`` in the build directory corresponding to
-this source directory.  If the ``FOO_ENABLE`` option is on, the
-configured file will contain:
+这会在与该源目录对应的构建目录中创建一个\ ``foo.h``\ 文件。\
+如果\ ``FOO_ENABLE``\ 选项处于开启状态，配置后的文件将包含：
 
 .. code-block:: c
 
   #define FOO_ENABLE
   #define FOO_STRING "foo"
 
-Otherwise it will contain:
+否则，它将包含：
 
 .. code-block:: c
 
   /* #undef FOO_ENABLE */
   /* #undef FOO_STRING */
 
-One may then use the :command:`target_include_directories` command to
-specify the output directory as an include directory:
+然后，用户可以使用\ :command:`target_include_directories`\ 命令将输出目录指定为包含目录：
 
 .. code-block:: cmake
 
   target_include_directories(<target> [SYSTEM] <INTERFACE|PUBLIC|PRIVATE> "${CMAKE_CURRENT_BINARY_DIR}")
 
-so that sources may include the header as ``#include <foo.h>``.
+这样源文件就可以使用\ ``#include <foo.h>``\ 来包含该头文件。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`file(GENERATE)`
