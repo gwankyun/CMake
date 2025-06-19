@@ -7,7 +7,7 @@ try_run
 
 尝试编译并运行一些代码。
 
-Try Compiling and Running Source Files
+尝试编译并运行源文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
@@ -39,26 +39,24 @@ Try Compiling and Running Source Files
 
 .. versionadded:: 3.25
 
-Try building an executable from one or more source files.  Build success
-returns boolean ``true`` and build failure returns boolean ``false`` in
-``<compileResultVar>`` (cached unless ``NO_CACHE`` is specified).
-If the build succeeds, this runs the executable and stores the exit code
-in ``<runResultVar>`` (cached unless ``NO_CACHE`` is specified).
-If the executable was built, but failed to run, then ``<runResultVar>``
-will be set to ``FAILED_TO_RUN``.  See command :command:`try_compile` for
-documentation of options common to both commands, and for information on
-how the test project is constructed to build the source file.
+尝试从一个或多个源文件构建可执行文件。\
+构建成功时，会在\ ``<compileResultVar>``\ 中返回布尔值\ ``true``；构建失败时，\
+则返回布尔值\ ``false``\ （该变量会被缓存，除非指定了\ ``NO_CACHE``\ 选项）。\
+如果构建成功，该命令将运行可执行文件，并将退出代码存储在\ ``<runResultVar>``\ 中\
+（该变量会被缓存，除非指定了\ ``NO_CACHE``\ 选项）。\
+如果可执行文件构建成功，但运行失败，那么\ ``<runResultVar>``\ 将被设置为\ ``FAILED_TO_RUN``。\
+有关这两个命令的通用选项文档，以及测试项目如何构建源文件的相关信息，请参阅\
+:command:`try_compile`\ 命令。
 
-One or more source files must be provided. Additionally, one of ``SOURCES``
-and/or ``SOURCE_FROM_*`` must precede other keywords.
+必须提供一个或多个源文件。此外，\ ``SOURCES``\ 和/或\ ``SOURCE_FROM_*``\ 其中之一\
+必须位于其他关键字之前。
 
 .. versionadded:: 3.26
-  This command records a
-  :ref:`configure-log try_run event <try_run configure-log event>`
-  if the ``NO_LOG`` option is not specified.
+  如果未指定\ ``NO_LOG``\ 选项，此命令将记录一个\
+  :ref:`配置日志try_run事件 <try_run configure-log event>`。
 
-This command supports an alternate signature for CMake older than 3.25.
-The signature above is recommended for clarity.
+此命令支持CMake 3.25版本之前的另一种签名形式。\
+为保证清晰性，建议使用上述签名形式。
 
 .. code-block:: cmake
 
@@ -82,13 +80,13 @@ The signature above is recommended for clarity.
 
 .. _`try_run Options`:
 
-Options
+选项
 ^^^^^^^
 
-The options specific to ``try_run`` are:
+``try_run``\ 特有的选项如下：
 
 ``COMPILE_OUTPUT_VARIABLE <var>``
-  Report the compile step build output in a given variable.
+  将编译步骤的构建输出记录到指定变量中。
 
 ``OUTPUT_VARIABLE <var>``
   Report the compile build output and the output from running the executable
