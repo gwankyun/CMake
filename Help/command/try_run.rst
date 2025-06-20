@@ -89,50 +89,46 @@ try_run
   将编译步骤的构建输出记录到指定变量中。
 
 ``OUTPUT_VARIABLE <var>``
-  Report the compile build output and the output from running the executable
-  in the given variable.  This option exists for legacy reasons and is only
-  supported by the old ``try_run`` signature.
-  Prefer ``COMPILE_OUTPUT_VARIABLE`` and ``RUN_OUTPUT_VARIABLE`` instead.
+  将编译构建输出以及可执行文件运行时的输出记录到指定变量中。\
+  此选项因遗留原因而存在，且仅受旧版\ ``try_run``\ 签名支持。\
+  建议使用\ ``COMPILE_OUTPUT_VARIABLE``\ 和\ ``RUN_OUTPUT_VARIABLE``\ 替代。
 
 ``RUN_OUTPUT_VARIABLE <var>``
-  Report the output from running the executable in a given variable.
+  将可执行文件运行时的输出记录到指定变量中。
 
 ``RUN_OUTPUT_STDOUT_VARIABLE <var>``
   .. versionadded:: 3.25
 
-  Report the output of stdout from running the executable in a given variable.
+  将可执行文件运行时的标准输出记录到指定变量中。
 
 ``RUN_OUTPUT_STDERR_VARIABLE <var>``
   .. versionadded:: 3.25
 
-  Report the output of stderr from running the executable in a given variable.
+  将可执行文件运行时的标准错误输出记录到指定变量中。
 
 ``WORKING_DIRECTORY <var>``
   .. versionadded:: 3.20
 
-  Run the executable in the given directory. If no ``WORKING_DIRECTORY`` is
-  specified, the executable will run in ``<bindir>`` or the current build
-  directory.
+  在指定目录中运行可执行文件。如果未指定\ ``WORKING_DIRECTORY``，可执行文件将在\
+  ``<bindir>``\ 或当前构建目录中运行。
 
 ``ARGS <args>...``
-  Additional arguments to pass to the executable when running it.
+  运行可执行文件时要传递给它的额外参数。
 
-Other Behavior Settings
+其他行为设置
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Set variable :variable:`CMAKE_TRY_COMPILE_CONFIGURATION` to choose a build
-configuration:
+设置变量\ :variable:`CMAKE_TRY_COMPILE_CONFIGURATION`\ 以选择构建配置：
 
-* For multi-config generators, this selects which configuration to build.
+* 对于多配置生成器，这将选择要构建的配置。
 
-* For single-config generators, this sets :variable:`CMAKE_BUILD_TYPE` in
-  the test project.
+* 对于单配置生成器，这会在测试项目中设置\ :variable:`CMAKE_BUILD_TYPE`。
 
-Behavior when Cross Compiling
+交叉编译时的行为
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. versionadded:: 3.3
-  Use ``CMAKE_CROSSCOMPILING_EMULATOR`` when running cross-compiled binaries.
+  运行交叉编译的二进制文件时，请使用\ ``CMAKE_CROSSCOMPILING_EMULATOR``。
 
 When cross compiling, the executable compiled in the first step
 usually cannot be run on the build host.  The ``try_run`` command checks
