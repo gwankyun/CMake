@@ -130,31 +130,25 @@ try_run
 .. versionadded:: 3.3
   运行交叉编译的二进制文件时，请使用\ ``CMAKE_CROSSCOMPILING_EMULATOR``。
 
-When cross compiling, the executable compiled in the first step
-usually cannot be run on the build host.  The ``try_run`` command checks
-the :variable:`CMAKE_CROSSCOMPILING` variable to detect whether CMake is in
-cross-compiling mode.  If that is the case, it will still try to compile
-the executable, but it will not try to run the executable unless the
-:variable:`CMAKE_CROSSCOMPILING_EMULATOR` variable is set.  Instead it
-will create cache variables which must be filled by the user or by
-presetting them in some CMake script file to the values the executable
-would have produced if it had been run on its actual target platform.
-These cache entries are:
+在交叉编译时，第一步编译出的可执行文件通常无法在构建主机上运行。\
+``try_run``\ 命令会检查\ :variable:`CMAKE_CROSSCOMPILING`\ 变量，以判断CMake是否\
+处于交叉编译模式。\
+如果处于交叉编译模式，这命令仍会尝试编译可执行文件，但除非设置了\
+:variable:`CMAKE_CROSSCOMPILING_EMULATOR`\ 变量，否则不会尝试运行该可执行文件。\
+相反，它会创建缓存变量，这些变量必须由用户填充，或者通过在某些CMake脚本文件中预先\
+设置，使其值等同于可执行文件在实际目标平台上运行时所产生的值。\
+这些缓存项如下：
 
 ``<runResultVar>``
-  Exit code if the executable were to be run on the target platform.
+  可执行文件在目标平台上运行时的退出代码。
 
 ``<runResultVar>__TRYRUN_OUTPUT``
-  Output from stdout and stderr if the executable were to be run on
-  the target platform.  This is created only if the
-  ``RUN_OUTPUT_VARIABLE`` or ``OUTPUT_VARIABLE`` option was used.
+  可执行文件在目标平台上运行时的标准输出和标准错误输出。\
+  仅当使用了\ ``RUN_OUTPUT_VARIABLE``\ 或\ ``OUTPUT_VARIABLE``\ 选项时，才会创建此项。
 
-In order to make cross compiling your project easier, use ``try_run``
-only if really required.  If you use ``try_run``, use the
-``RUN_OUTPUT_STDOUT_VARIABLE``, ``RUN_OUTPUT_STDERR_VARIABLE``,
-``RUN_OUTPUT_VARIABLE`` or ``OUTPUT_VARIABLE`` options only if really
-required.  Using them will require that when cross-compiling, the cache
-variables will have to be set manually to the output of the executable.
-You can also "guard" the calls to ``try_run`` with an :command:`if`
-block checking the :variable:`CMAKE_CROSSCOMPILING` variable and
-provide an easy-to-preset alternative for this case.
+为了让项目的交叉编译过程更加简便，仅在确实必要时使用\ ``try_run``\ 命令。\
+如果你使用\ ``try_run``\ 命令，仅在确实必要时使用\ ``RUN_OUTPUT_STDOUT_VARIABLE``、\
+``RUN_OUTPUT_STDERR_VARIABLE``、\ ``RUN_OUTPUT_VARIABLE``\ 或\ ``OUTPUT_VARIABLE``\ 选项。\
+使用这些选项意味着在进行交叉编译时，必须手动将缓存变量设置为可执行文件的输出。\
+你也可以使用\ :command:`if`\ 代码块来 “保护” 对\ ``try_run``\ 的调用，检查\
+:variable:`CMAKE_CROSSCOMPILING`\ 变量，并针对这种情况提供一个易于预设的替代方案。
