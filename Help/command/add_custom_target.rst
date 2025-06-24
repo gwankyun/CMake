@@ -17,33 +17,26 @@ add_custom_target
                     [COMMAND_EXPAND_LISTS]
                     [SOURCES src1 [src2...]])
 
-Adds a target with the given name that executes the given commands.
-The target has no output file and is *always considered out of date*
-even if the commands try to create a file with the name of the target.
-Use the :command:`add_custom_command` command to generate a file with
-dependencies.  By default nothing depends on the custom target.  Use
-the :command:`add_dependencies` command to add dependencies to or
-from other targets.
+添加一个具有指定名称的目标，该目标会执行给定的命令。\
+该目标没有输出文件，并且\ *始终被视为过期状态*，即使命令试图创建一个与目标同名的\
+文件也是如此。\
+使用\ :command:`add_custom_command`\ 命令来生成具有依赖关系的文件。\
+默认情况下，没有任何内容依赖于该自定义目标。\
+使用\ :command:`add_dependencies`\ 命令来添加与其他目标之间的依赖关系。
 
-The options are:
+选项如下：
 
 ``ALL``
-  Indicate that this target should be added to the default build
-  target so that it will be run every time (the command cannot be
-  called ``ALL``).
+  表示该目标应被添加到默认构建目标中，这样每次构建时都会执行它（命令名不能为\ ``ALL``）。
 
 ``BYPRODUCTS``
   .. versionadded:: 3.2
 
-  Specify the files the command is expected to produce but whose
-  modification time may or may not be updated on subsequent builds.
-  If a byproduct name is a relative path it will be interpreted
-  relative to the build tree directory corresponding to the
-  current source directory.
-  Each byproduct file will be marked with the :prop_sf:`GENERATED`
-  source file property automatically.
+  指定命令预期生成的文件，这些文件的修改时间在后续构建时可能更新，也可能不更新。\
+  如果副产品文件名是相对路径，则会将其解释为相对于当前源目录对应的构建树目录。\
+  每个副产品文件都会自动标记为具有\ :prop_sf:`GENERATED`\ 源文件属性。
 
-  *See policy* :policy:`CMP0058` *for the motivation behind this feature.*
+  *有关此功能的设计动机*，\ *请参阅策略*\ :policy:`CMP0058`。
 
   Explicit specification of byproducts is supported by the
   :generator:`Ninja` generator to tell the ``ninja`` build tool
