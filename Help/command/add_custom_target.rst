@@ -38,52 +38,43 @@ add_custom_target
 
   *有关此功能的设计动机*，\ *请参阅策略*\ :policy:`CMP0058`。
 
-  Explicit specification of byproducts is supported by the
-  :generator:`Ninja` generator to tell the ``ninja`` build tool
-  how to regenerate byproducts when they are missing.  It is
-  also useful when other build rules (e.g. custom commands)
-  depend on the byproducts.  Ninja requires a build rule for any
-  generated file on which another rule depends even if there are
-  order-only dependencies to ensure the byproducts will be
-  available before their dependents build.
+  :generator:`Ninja`\ 生成器支持显式指定副产品，以此告知\ ``ninja``\ 构建工具在\
+  副产品缺失时如何重新生成它们。\
+  当其他构建规则（例如自定义命令）依赖于这些副产品时，显式指定副产品同样有用。\
+  Ninja要求，对于任何被其他规则依赖的生成文件，都必须有对应的构建规则，即便这些\
+  依赖关系只是顺序依赖。这样做是为了确保在依赖这些副产品的规则执行之前，这些副产\
+  品已经生成并可用。
 
-  The :ref:`Makefile Generators` will remove ``BYPRODUCTS`` and other
-  :prop_sf:`GENERATED` files during ``make clean``.
+  在执行\ ``make clean``\ 时，:ref:`Makefile Generators`\ 会移除\ ``BYPRODUCTS``\
+  以及其他具有\ :prop_sf:`GENERATED`\ 属性的文件。
 
   .. versionadded:: 3.20
-    Arguments to ``BYPRODUCTS`` may use a restricted set of
-    :manual:`generator expressions <cmake-generator-expressions(7)>`.
-    :ref:`Target-dependent expressions <Target-Dependent Expressions>`
-    are not permitted.
+    ``BYPRODUCTS``\ 的参数可以使用一组有限的\
+    :manual:`生成器表达式 <cmake-generator-expressions(7)>`。\
+    不允许使用\ :ref:`依赖于目标的表达式 <Target-Dependent Expressions>`。
 
   .. versionchanged:: 3.28
-    In custom targets using :ref:`file sets`, byproducts are now
-    considered private unless they are listed in a non-private file set.
-    See policy :policy:`CMP0154`.
+    在使用\ :ref:`file sets`\ 的自定义目标中，除非副产品被列入非私有文件集，\
+    否则它们现在被视为私有。请参阅策略\ :policy:`CMP0154`。
 
 ``COMMAND``
-  Specify the command-line(s) to execute at build time.
-  If more than one ``COMMAND`` is specified they will be executed in order,
-  but *not* necessarily composed into a stateful shell or batch script.
-  (To run a full script, use the :command:`configure_file` command or the
-  :command:`file(GENERATE)` command to create it, and then specify
-  a ``COMMAND`` to launch it.)
+  指定在构建时要执行的命令行。\
+  如果指定了多个\ ``COMMAND``，它们将按顺序执行，但\ *不*\ 一定会组合成一个有状态\
+  的shell脚本或批处理脚本。\
+  （若要运行完整脚本，可使用\ :command:`configure_file`\ 命令或\ :command:`file(GENERATE)`\
+  命令创建脚本，然后指定一个\ ``COMMAND``\ 来启动它。）
 
-  If ``COMMAND`` specifies an executable target name (created by the
-  :command:`add_executable` command), it will automatically be replaced
-  by the location of the executable created at build time if either of
-  the following is true:
+  如果\ ``COMMAND``\ 指定了一个可执行目标名称（由\ :command:`add_executable`\
+  命令创建），在满足以下任一条件时，它将自动被构建时生成的可执行文件的路径所替换：
 
-  * The target is not being cross-compiled (i.e. the
-    :variable:`CMAKE_CROSSCOMPILING` variable is not set to true).
+  * 该目标未进行交叉编译（即\ :variable:`CMAKE_CROSSCOMPILING`\ 变量未设置为true）。
   * .. versionadded:: 3.6
-      The target is being cross-compiled and an emulator is provided (i.e.
-      its :prop_tgt:`CROSSCOMPILING_EMULATOR` target property is set).
-      In this case, the contents of :prop_tgt:`CROSSCOMPILING_EMULATOR` will be
-      prepended to the command before the location of the target executable.
+      该目标正在进行交叉编译，并且提供了一个模拟器（即其\
+      :prop_tgt:`CROSSCOMPILING_EMULATOR`\ 目标属性已设置）。\
+      在这种情况下，:prop_tgt:`CROSSCOMPILING_EMULATOR`\ 的内容将被添加到命令前，\
+      置于目标可执行文件路径之前。
 
-  If neither of the above conditions are met, it is assumed that the
-  command name is a program to be found on the ``PATH`` at build time.
+  如果上述条件均不满足，则假定该命令名是一个在构建时可从\ ``PATH``\ 环境变量中找到的程序。
 
   Arguments to ``COMMAND`` may use
   :manual:`generator expressions <cmake-generator-expressions(7)>`.
