@@ -76,46 +76,37 @@ add_custom_target
 
   如果上述条件均不满足，则假定该命令名是一个在构建时可从\ ``PATH``\ 环境变量中找到的程序。
 
-  Arguments to ``COMMAND`` may use
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
-  Use the :genex:`TARGET_FILE` generator expression to refer to the location
-  of a target later in the command line (i.e. as a command argument rather
-  than as the command to execute).
+  ``COMMAND``\ 的参数可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
+  使用\ :genex:`TARGET_FILE`\ 生成器表达式，在后续命令行里引用某个目标文件的位置\
+  （即作为命令参数，而非作为要执行的命令）。
 
-  Whenever one of the following target based generator expressions are used as
-  a command to execute or is mentioned in a command argument, a target-level
-  dependency will be added automatically so that the mentioned target will be
-  built before this custom target (see policy :policy:`CMP0112`).
+  当以下基于目标的生成器表达式中的任意一个被用作要执行的命令，或在命令参数中被提及，\
+  CMake会自动添加一个目标级别的依赖项，确保被提及的目标在这个自定义目标构建之前\
+  完成构建（详见策略\ :policy:`CMP0112`）。
 
   * ``TARGET_FILE``
   * ``TARGET_LINKER_FILE``
   * ``TARGET_SONAME_FILE``
   * ``TARGET_PDB_FILE``
 
-  The command and arguments are optional and if not specified an empty
-  target will be created.
+  命令和参数是可选的。如果未指定，将创建一个空目标。
 
 ``COMMENT``
-  Display the given message before the commands are executed at
-  build time.
+  在构建时执行命令之前，显示给定的消息。
 
   .. versionadded:: 3.26
-    Arguments to ``COMMENT`` may use
-    :manual:`generator expressions <cmake-generator-expressions(7)>`.
+    ``COMMENT``\ 的参数可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 ``DEPENDS``
-  Reference files and outputs of custom commands created with
-  :command:`add_custom_command` command calls in the same directory
-  (``CMakeLists.txt`` file).  They will be brought up to date when
-  the target is built.
+  引用同一目录（即\ ``CMakeLists.txt``\ 文件所在目录）下通过\
+  :command:`add_custom_command`\ 命令创建的自定义命令所涉及的文件和输出内容。\
+  当该目标构建时，这些文件和输出内容将被更新到最新状态。
 
   .. versionchanged:: 3.16
-    A target-level dependency is added if any dependency is a byproduct
-    of a target or any of its build events in the same directory to ensure
-    the byproducts will be available before this target is built.
+    如果任意依赖项是同一目录下某个目标或其任意构建事件的副产品，将添加一个目标\
+    级别的依赖项，以确保在构建此目标之前，这些副产品可用。
 
-  Use the :command:`add_dependencies` command to add dependencies
-  on other targets.
+  使用\ :command:`add_dependencies`\ 命令添加与其他目标之间的依赖关系。
 
 ``COMMAND_EXPAND_LISTS``
   .. versionadded:: 3.8
