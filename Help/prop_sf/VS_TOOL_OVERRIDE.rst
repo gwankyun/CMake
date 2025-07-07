@@ -3,4 +3,13 @@ VS_TOOL_OVERRIDE
 
 .. versionadded:: 3.7
 
-使用不基于文件扩展名的新工具覆盖默认Visual Studio工具，其将应用于源文件。
+Override the MSBuild item type of a source file in a Visual Studio project.
+
+Together with :prop_sf:`VS_SETTINGS`, this property can be used to configure
+items for custom MSBuild tasks.
+
+Setting the item type to ``None`` will exclude the file from the build.
+
+.. versionchanged:: 3.31
+  This property is honored for all source file types.
+  Previously, it only worked for source types unknown to CMake.

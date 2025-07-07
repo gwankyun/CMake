@@ -18,6 +18,7 @@
 #include "cmCustomCommand.h" // IWYU pragma: keep
 #include "cmCustomCommandGenerator.h"
 #include "cmGeneratedFileStream.h"
+#include "cmGeneratorExpression.h"
 #include "cmGeneratorOptions.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalNinjaGenerator.h"
@@ -203,24 +204,24 @@ std::string cmNinjaNormalTargetGenerator::LanguageLinkerRule(
   std::string const& config) const
 {
   return cmStrCat(
-    this->TargetLinkLanguage(config), "_",
+    this->TargetLinkLanguage(config), '_',
     cmState::GetTargetTypeName(this->GetGeneratorTarget()->GetType()),
     "_LINKER__",
     cmGlobalNinjaGenerator::EncodeRuleName(
       this->GetGeneratorTarget()->GetName()),
-    "_", config);
+    '_', config);
 }
 
 std::string cmNinjaNormalTargetGenerator::LanguageLinkerDeviceRule(
   std::string const& config) const
 {
   return cmStrCat(
-    this->TargetLinkLanguage(config), "_",
+    this->TargetLinkLanguage(config), '_',
     cmState::GetTargetTypeName(this->GetGeneratorTarget()->GetType()),
     "_DEVICE_LINKER__",
     cmGlobalNinjaGenerator::EncodeRuleName(
       this->GetGeneratorTarget()->GetName()),
-    "_", config);
+    '_', config);
 }
 
 std::string cmNinjaNormalTargetGenerator::LanguageLinkerCudaDeviceRule(
@@ -355,8 +356,7 @@ void cmNinjaNormalTargetGenerator::WriteNvidiaDeviceLinkRule(
 
     auto rulePlaceholderExpander =
       this->GetLocalGenerator()->CreateRulePlaceholderExpander(
-        cmBuildStep::Link, this->GetGeneratorTarget(),
-        this->TargetLinkLanguage(config));
+        cmBuildStep::Link);
 
     // Rule for linking library/executable.
     std::vector<std::string> linkCmds = this->ComputeDeviceLinkCmd();
@@ -423,8 +423,7 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkRules(
     "CMAKE_CUDA_DEVICE_LINK_COMPILE");
   auto rulePlaceholderExpander =
     this->GetLocalGenerator()->CreateRulePlaceholderExpander(
-      cmBuildStep::Link, this->GetGeneratorTarget(),
-      this->TargetLinkLanguage(config));
+      cmBuildStep::Link);
   rulePlaceholderExpander->ExpandRuleVariables(this->GetLocalGenerator(),
                                                compileCmd, vars);
 
@@ -446,8 +445,10 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkRules(
   this->GetGlobalGenerator()->AddRule(rule);
 }
 
-void cmNinjaNormalTargetGenerator::WriteLinkRule(bool useResponseFile,
-                                                 std::string const& config)
+void cmNinjaNormalTargetGenerator::WriteLinkRule(
+  bool useResponseFile, std::string const& config,
+  std::vector<std::string> const& preLinkComments,
+  std::vector<std::string> const& postBuildComments)
 {
   cmStateEnums::TargetType targetType = this->GetGeneratorTarget()->GetType();
 
@@ -581,8 +582,7 @@ void cmNinjaNormalTargetGenerator::WriteLinkRule(bool useResponseFile,
 
     auto rulePlaceholderExpander =
       this->GetLocalGenerator()->CreateRulePlaceholderExpander(
-        cmBuildStep::Link, this->GetGeneratorTarget(),
-        this->TargetLinkLanguage(config));
+        cmBuildStep::Link);
 
     // Rule for linking library/executable.
     std::vector<std::string> linkCmds = this->ComputeLinkCmd(config);
@@ -604,9 +604,19 @@ void cmNinjaNormalTargetGenerator::WriteLinkRule(bool useResponseFile,
     rule.Comment =
       cmStrCat("Rule for linking ", this->TargetLinkLanguage(config), ' ',
                this->GetVisibleTypeName(), '.');
-    rule.Description =
-      cmStrCat("Linking ", this->TargetLinkLanguage(config), ' ',
-               this->GetVisibleTypeName(), " $TARGET_FILE");
+    char const* presep = "";
+    char const* postsep = "";
+    auto prelink = cmJoin(preLinkComments, "; ");
+    if (!prelink.empty()) {
+      presep = "; ";
+    }
+    auto postbuild = cmJoin(postBuildComments, "; ");
+    if (!postbuild.empty()) {
+      postsep = "; ";
+    }
+    rule.Description = cmStrCat(
+      prelink, presep, "Linking ", this->TargetLinkLanguage(config), ' ',
+      this->GetVisibleTypeName(), " $TARGET_FILE", postsep, postbuild);
     rule.Restat = "$RESTAT";
     this->GetGlobalGenerator()->AddRule(rule);
   }
@@ -831,8 +841,9 @@ void cmNinjaNormalTargetGenerator::WriteDeviceLinkStatement(
     this->Makefile->GetSafeDefinition("CMAKE_CUDA_OUTPUT_EXTENSION");
 
   std::string targetOutputDir =
-    cmStrCat(this->GetLocalGenerator()->GetTargetDirectory(genTarget),
-             globalGen->ConfigDirectory(config), "/");
+    this->GetLocalGenerator()->MaybeRelativeToTopBinDir(
+      cmStrCat(genTarget->GetSupportDirectory(),
+               globalGen->ConfigDirectory(config), '/'));
   targetOutputDir = globalGen->ExpandCFGIntDir(targetOutputDir, config);
 
   std::string targetOutputReal =
@@ -967,8 +978,9 @@ void cmNinjaNormalTargetGenerator::WriteNvidiaDeviceLinkStatement(
 
   if (config != fileConfig) {
     std::string targetOutputFileConfigDir =
-      cmStrCat(this->GetLocalGenerator()->GetTargetDirectory(genTarget),
-               globalGen->ConfigDirectory(fileConfig), "/");
+      this->GetLocalGenerator()->MaybeRelativeToTopBinDir(
+        cmStrCat(genTarget->GetSupportDirectory(),
+                 globalGen->ConfigDirectory(config), '/'));
     targetOutputFileConfigDir =
       globalGen->ExpandCFGIntDir(outputDir, fileConfig);
     if (outputDir == targetOutputFileConfigDir) {
@@ -1398,12 +1410,19 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
     &gt->GetPostBuildCommands()
   };
 
+  std::vector<std::string> preLinkComments;
+  std::vector<std::string> postBuildComments;
+
   std::vector<std::string> preLinkCmdLines;
   std::vector<std::string> postBuildCmdLines;
 
+  std::vector<std::string>* cmdComments[3] = { &preLinkComments,
+                                               &preLinkComments,
+                                               &postBuildComments };
   std::vector<std::string>* cmdLineLists[3] = { &preLinkCmdLines,
                                                 &preLinkCmdLines,
                                                 &postBuildCmdLines };
+  cmGeneratorExpression ge(*this->GetLocalGenerator()->GetCMakeInstance());
 
   for (unsigned i = 0; i != 3; ++i) {
     for (cmCustomCommand const& cc : *cmdLists[i]) {
@@ -1413,6 +1432,11 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
         cmCustomCommandGenerator ccg(cc, fileConfig, this->GetLocalGenerator(),
                                      true, config);
         localGen.AppendCustomCommandLines(ccg, *cmdLineLists[i]);
+        if (cc.GetComment()) {
+          auto cge = ge.Parse(cc.GetComment());
+          cmdComments[i]->emplace_back(
+            cge->Evaluate(this->GetLocalGenerator(), config));
+        }
         std::vector<std::string> const& ccByproducts = ccg.GetByproducts();
         byproducts.Add(ccByproducts);
         std::transform(
@@ -1421,6 +1445,14 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
           this->MapToNinjaPath());
       }
     }
+  }
+
+  // If we have any PRE_LINK commands, we need to go back to CMAKE_BINARY_DIR
+  // for the link commands.
+  if (!preLinkCmdLines.empty()) {
+    std::string const homeOutDir = localGen.ConvertToOutputFormat(
+      localGen.GetBinaryDirectory(), cmOutputConverter::SHELL);
+    preLinkCmdLines.push_back("cd " + homeOutDir);
   }
 
   // maybe create .def file from list of objects
@@ -1462,13 +1494,6 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
     for (cmSourceFile const* src : mdi->Sources) {
       fout << src->GetFullPath() << "\n";
     }
-  }
-  // If we have any PRE_LINK commands, we need to go back to CMAKE_BINARY_DIR
-  // for the link commands.
-  if (!preLinkCmdLines.empty()) {
-    std::string const homeOutDir = localGen.ConvertToOutputFormat(
-      localGen.GetBinaryDirectory(), cmOutputConverter::SHELL);
-    preLinkCmdLines.push_back("cd " + homeOutDir);
   }
 
   vars["PRE_LINK"] = localGen.BuildCommandLine(
@@ -1566,7 +1591,8 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
   bool usedResponseFile = false;
   globalGen->WriteBuild(this->GetImplFileStream(fileConfig), linkBuild,
                         commandLineLengthLimit, &usedResponseFile);
-  this->WriteLinkRule(usedResponseFile, config);
+  this->WriteLinkRule(usedResponseFile, config, preLinkComments,
+                      postBuildComments);
 
   if (symlinkNeeded) {
     if (targetType == cmStateEnums::EXECUTABLE) {

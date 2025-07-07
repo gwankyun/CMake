@@ -20,7 +20,7 @@ ErrorGenerator EXPECTED_TYPE(std::string const& type)
       state->AddErrorAtValue(cmStrCat("Expected ", type), value);
       return;
     }
-    std::string errMsg = cmStrCat("\"", state->key(), "\" expected ", type);
+    std::string errMsg = cmStrCat('"', state->key(), "\" expected ", type);
     if (value && value->isConvertibleTo(Json::ValueType::stringValue)) {
       errMsg = cmStrCat(errMsg, ", got: ", value->asString());
     }
@@ -52,6 +52,11 @@ ObjectErrorGenerator INVALID_NAMED_OBJECT(
   std::function<std::string(Json::Value const*, cmJSONState*)> const&
     nameGenerator)
 {
+#if defined(__GNUC__) && __GNUC__ >= 15
+#  define CM_GCC_diagnostic_push_Wmaybe_uninitialized
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
   return [nameGenerator](
            ObjectError errorType,
            Json::Value::Members const& extraFields) -> ErrorGenerator {
@@ -85,6 +90,10 @@ ObjectErrorGenerator INVALID_NAMED_OBJECT(
       }
     };
   };
+#ifdef CM_GCC_diagnostic_push_Wmaybe_uninitialized
+#  pragma GCC diagnostic pop
+#  undef CM_GCC_diagnostic_push_Wmaybe_uninitialized
+#endif
 }
 
 ErrorGenerator INVALID_OBJECT(ObjectError errorType,
@@ -105,7 +114,7 @@ ErrorGenerator INVALID_NAMED_OBJECT_KEY(
         if (it->first.rfind("$vector_item_", 0) == 0) {
           continue;
         }
-        return cmStrCat("\"", it->first, "\"");
+        return cmStrCat('"', it->first, '"');
       }
       return "root";
     })(errorType, extraFields);

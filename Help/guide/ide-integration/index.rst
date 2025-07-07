@@ -85,7 +85,7 @@ IDE不应该在Makefile或Ninja生成器中使用“额外的生成器”，这�
 建议IDE使用\ :option:`--build <cmake --build>`\ 参数调用\ :manual:`cmake(1)`，这将\
 反过来调用适当的构建工具。
 
-如果使用了IDE项目生成器，比如\ :generator:`Xcode`\ 或Visual Studio生成器，并且IDE理解\
+如果使用了IDE项目生成器，比如\ :generator:`Xcode`\ 或\ :ref:`Visual Studio Generators`，并且IDE理解\
 所使用的项目格式，那么IDE应该读取项目文件，并以相同的方式构建它。
 
 :manual:`File API <cmake-file-api(7)>`\ 可以用于从构建树中获取构建配置的列表，IDE应该\

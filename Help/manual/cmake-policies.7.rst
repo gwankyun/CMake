@@ -27,9 +27,9 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 .. code-block:: cmake
 
-  cmake_minimum_required(VERSION 3.10...3.31)
+  cmake_minimum_required(VERSION 3.10...4.0)
 
-这使用了\ ``<min>...<max>``\ 语法，以启用CMake 3.31及更早版本引入的策略的\ ``NEW``\ 行为，\
+这使用了\ ``<min>...<max>``\ 语法，以启用CMake 4.0及更早版本引入的策略的\ ``NEW``\ 行为，\
 同时仅要求最低版本为CMake 3.10。预计该项目在这两个版本之间引入的策略的\ ``OLD``\ 行为和\
 ``NEW``\ 行为下都能正常工作。
 
@@ -78,7 +78,26 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 以下策略是受支持的。
 
-CMake 4.0引入的策略
+CMake 4.1引入的策略
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0197: MSVC link -machine: flag is not in CMAKE_*_LINKER_FLAGS. </policy/CMP0197>
+   CMP0196: The CMakeDetermineVSServicePack module is removed. </policy/CMP0196>
+   CMP0195: Swift modules in build trees use the Swift module directory structure. </policy/CMP0195>
+   CMP0194: MSVC is not an assembler for language ASM. </policy/CMP0194>
+   CMP0193: GNUInstallDirs caches CMAKE_INSTALL_* with leading 'usr/' for install prefix '/'. </policy/CMP0193>
+   CMP0192: GNUInstallDirs uses absolute SYSCONFDIR, LOCALSTATEDIR, and RUNSTATEDIR in special prefixes. </policy/CMP0192>
+   CMP0191: The FindCABLE module is removed. </policy/CMP0191>
+   CMP0190: FindPython enforce consistency in cross-compiling mode. </policy/CMP0190>
+   CMP0189: TARGET_PROPERTY evaluates LINK_LIBRARIES properties transitively. </policy/CMP0189>
+   CMP0188: The FindGCCXML module is removed. </policy/CMP0188>
+   CMP0187: Include source file without an extension after the same name with an extension. </policy/CMP0187>
+   CMP0186: Regular expressions match ^ at most once in repeated searches. </policy/CMP0186>
+
+Policies Introduced by CMake 4.0
 --------------------------------
 
 .. toctree::

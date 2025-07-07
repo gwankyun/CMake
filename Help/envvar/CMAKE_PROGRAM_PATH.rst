@@ -1,7 +1,7 @@
 CMAKE_PROGRAM_PATH
 ------------------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 可以将\ ``CMAKE_PROGRAM_PATH``\ 环境变量设置为\ :command:`find_program`\ 命令要搜索\
 的目录列表。

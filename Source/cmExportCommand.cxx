@@ -21,11 +21,13 @@
 #include "cmExportBuildAndroidMKGenerator.h"
 #include "cmExportBuildCMakeConfigGenerator.h"
 #include "cmExportBuildFileGenerator.h"
+#include "cmExportBuildPackageInfoGenerator.h"
 #include "cmExportSet.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGlobalGenerator.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
+#include "cmPackageInfoArguments.h"
 #include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmStateTypes.h"
@@ -61,14 +63,14 @@ bool cmExportCommand(std::vector<std::string> const& args,
     return HandlePackage(args, status);
   }
 
-  struct Arguments
+  struct Arguments : cmPackageInfoArguments
   {
-    std::string ExportSetName;
     cm::optional<ArgumentParser::MaybeEmpty<std::vector<std::string>>> Targets;
-    std::string Namespace;
-    std::string Filename;
-    std::string AndroidMKFile;
-    std::string CxxModulesDirectory;
+    ArgumentParser::NonEmpty<std::string> ExportSetName;
+    ArgumentParser::NonEmpty<std::string> Namespace;
+    ArgumentParser::NonEmpty<std::string> Filename;
+    ArgumentParser::NonEmpty<std::string> AndroidMKFile;
+    ArgumentParser::NonEmpty<std::string> CxxModulesDirectory;
     bool Append = false;
     bool ExportOld = false;
 
@@ -92,6 +94,10 @@ bool cmExportCommand(std::vector<std::string> const& args,
       parser.Bind("EXPORT_PACKAGE_DEPENDENCIES"_s,
                   &Arguments::ExportPackageDependencies);
     }
+    if (cmExperimental::HasSupportEnabled(
+          status.GetMakefile(), cmExperimental::Feature::ExportPackageInfo)) {
+      cmPackageInfoArguments::Bind(parser);
+    }
   } else if (args[0] == "SETUP") {
     parser.Bind("SETUP"_s, &Arguments::ExportSetName);
     if (cmExperimental::HasSupportEnabled(
@@ -108,7 +114,7 @@ bool cmExportCommand(std::vector<std::string> const& args,
   }
 
   std::vector<std::string> unknownArgs;
-  Arguments const arguments = parser.Parse(args, &unknownArgs);
+  Arguments arguments = parser.Parse(args, &unknownArgs);
 
   if (!unknownArgs.empty()) {
     status.SetError("Unknown argument: \"" + unknownArgs.front() + "\".");
@@ -163,7 +169,7 @@ bool cmExportCommand(std::vector<std::string> const& args,
         } else {
           status.SetError(
             cmStrCat("Invalid enable setting for package dependency: \"",
-                     packageDependencyArguments.Enabled, "\""));
+                     packageDependencyArguments.Enabled, '"'));
           return false;
         }
       }
@@ -200,19 +206,43 @@ bool cmExportCommand(std::vector<std::string> const& args,
     return true;
   }
 
+  if (arguments.PackageName.empty()) {
+    if (!arguments.Check(status, false)) {
+      return false;
+    }
+  } else {
+    if (!arguments.Filename.empty()) {
+      status.SetError("PACKAGE_INFO and FILE are mutually exclusive.");
+      return false;
+    }
+    if (!arguments.Namespace.empty()) {
+      status.SetError("PACKAGE_INFO and NAMESPACE are mutually exclusive.");
+      return false;
+    }
+    if (!arguments.Check(status) ||
+        !arguments.SetMetadataFromProject(status)) {
+      return false;
+    }
+  }
+
   std::string fname;
   bool android = false;
+  bool cps = false;
   if (!arguments.AndroidMKFile.empty()) {
     fname = arguments.AndroidMKFile;
     android = true;
-  }
-  if (arguments.Filename.empty() && fname.empty()) {
+  } else if (arguments.Filename.empty()) {
     if (args[0] != "EXPORT") {
       status.SetError("FILE <filename> option missing.");
       return false;
     }
-    fname = arguments.ExportSetName + ".cmake";
-  } else if (fname.empty()) {
+    if (arguments.PackageName.empty()) {
+      fname = arguments.ExportSetName + ".cmake";
+    } else {
+      fname = arguments.GetPackageFileName();
+      cps = true;
+    }
+  } else {
     // Make sure the file has a .cmake extension.
     if (cmSystemTools::GetFilenameLastExtension(arguments.Filename) !=
         ".cmake") {
@@ -298,11 +328,17 @@ bool cmExportCommand(std::vector<std::string> const& args,
   // and APPEND is not specified, if CMP0103 is OLD ignore previous definition
   // else raise an error
   if (gg->GetExportedTargetsFile(fname)) {
+    if (cps) {
+      status.SetError(cmStrCat("command already specified for the file "_s,
+                               cmSystemTools::GetFilenameName(fname), '.'));
+      return false;
+    }
     switch (mf.GetPolicyStatus(cmPolicies::CMP0103)) {
       case cmPolicies::WARN:
         mf.IssueMessage(
           MessageType::AUTHOR_WARNING,
-          cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0103), '\n',
+          cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0103),
+                   "\n"
                    "export() command already specified for the file\n  ",
                    arguments.Filename, "\nDid you miss 'APPEND' keyword?"));
         CM_FALLTHROUGH;
@@ -316,21 +352,25 @@ bool cmExportCommand(std::vector<std::string> const& args,
     }
   }
 
-  // Setup export file generation.
+  // Set up export file generation.
   std::unique_ptr<cmExportBuildFileGenerator> ebfg = nullptr;
   if (android) {
     auto ebag = cm::make_unique<cmExportBuildAndroidMKGenerator>();
+    ebag->SetNamespace(arguments.Namespace);
     ebag->SetAppendMode(arguments.Append);
     ebfg = std::move(ebag);
+  } else if (cps) {
+    auto ebpg = cm::make_unique<cmExportBuildPackageInfoGenerator>(arguments);
+    ebfg = std::move(ebpg);
   } else {
     auto ebcg = cm::make_unique<cmExportBuildCMakeConfigGenerator>();
+    ebcg->SetNamespace(arguments.Namespace);
     ebcg->SetAppendMode(arguments.Append);
     ebcg->SetExportOld(arguments.ExportOld);
     ebcg->SetExportPackageDependencies(arguments.ExportPackageDependencies);
     ebfg = std::move(ebcg);
   }
   ebfg->SetExportFile(fname.c_str());
-  ebfg->SetNamespace(arguments.Namespace);
   ebfg->SetCxxModuleDirectory(arguments.CxxModulesDirectory);
   if (exportSet) {
     ebfg->SetExportSet(exportSet);

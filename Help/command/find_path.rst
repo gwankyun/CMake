@@ -42,7 +42,7 @@ find_path
 .. |CMAKE_FIND_ROOT_PATH_MODE_XXX| replace::
    :variable:`CMAKE_FIND_ROOT_PATH_MODE_INCLUDE`
 
-.. include:: FIND_XXX.txt
+.. include:: include/FIND_XXX.rst
 
 当搜索框架时，如果文件被指定为\ ``A/b.h``，那么框架搜索将查找\ ``A.framework/Headers/b.h``。\
 如果找到，该路径将被设置为框架的路径。CMake会将其转换为正确的\ ``-F``\ 选项以包含该文件。

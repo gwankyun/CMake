@@ -3,7 +3,7 @@ SWIFTC
 
 .. versionadded:: 3.15
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``Swift``\ 语言文件的首选可执行文件。只会被CMake在第一次配置时使用来决定\ ``Swift``\
 编译器，之后\ ``SWIFTC``\ 的值被存储在缓存中作为\

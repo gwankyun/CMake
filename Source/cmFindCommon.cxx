@@ -18,6 +18,18 @@
 #include "cmValue.h"
 #include "cmake.h"
 
+#ifndef CMAKE_BOOTSTRAP
+#  include <deque>
+#  include <iterator>
+
+#  include <cm/optional>
+#  include <cm/string_view>
+#  include <cmext/string_view>
+
+#  include "cmConfigureLog.h"
+#  include "cmRange.h"
+#endif
+
 cmFindCommon::PathGroup cmFindCommon::PathGroup::All("ALL");
 cmFindCommon::PathLabel cmFindCommon::PathLabel::PackageRoot(
   "PackageName_ROOT");
@@ -35,6 +47,7 @@ cmFindCommon::cmFindCommon(cmExecutionStatus& status)
   , Status(status)
 {
   this->FindRootPathMode = RootPathModeBoth;
+  this->FullDebugMode = false;
   this->NoDefaultPath = false;
   this->NoPackageRootPath = false;
   this->NoCMakePath = false;
@@ -59,8 +72,6 @@ cmFindCommon::cmFindCommon(cmExecutionStatus& status)
 
   this->InitializeSearchPathGroups();
 
-  this->DebugMode = false;
-
   // Windows Registry views
   // When policy CMP0134 is not NEW, rely on previous behavior:
   if (this->Makefile->GetPolicyStatus(cmPolicies::CMP0134) !=
@@ -73,9 +84,16 @@ cmFindCommon::cmFindCommon(cmExecutionStatus& status)
   }
 }
 
+cmFindCommon::~cmFindCommon() = default;
+
 void cmFindCommon::SetError(std::string const& e)
 {
   this->Status.SetError(e);
+}
+
+bool cmFindCommon::DebugModeEnabled() const
+{
+  return this->FullDebugMode;
 }
 
 void cmFindCommon::DebugMessage(std::string const& msg) const
@@ -96,6 +114,14 @@ bool cmFindCommon::ComputeIfDebugModeWanted(std::string const& var)
 {
   return this->ComputeIfDebugModeWanted() ||
     this->Makefile->GetCMakeInstance()->GetDebugFindOutput(var);
+}
+
+bool cmFindCommon::ComputeIfImplicitDebugModeSuppressed()
+{
+  // XXX(find-events): In the future, mirror the `ComputeIfDebugModeWanted`
+  // methods if more control is desired.
+  return this->Makefile->IsOn(
+    "CMAKE_FIND_DEBUG_MODE_NO_IMPLICIT_CONFIGURE_LOG");
 }
 
 void cmFindCommon::InitializeSearchPathGroups()
@@ -226,14 +252,14 @@ void cmFindCommon::RerootPaths(std::vector<std::string>& paths,
     return;
   }
 
-  if (this->DebugMode && debugBuffer) {
+  if (this->DebugModeEnabled() && debugBuffer) {
     *debugBuffer = cmStrCat(
       *debugBuffer, "Prepending the following roots to each prefix:\n");
   }
 
   auto debugRoot = [this, debugBuffer](std::string const& name,
                                        cmValue value) {
-    if (this->DebugMode && debugBuffer) {
+    if (this->DebugModeEnabled() && debugBuffer) {
       *debugBuffer = cmStrCat(*debugBuffer, name, '\n');
       cmList roots{ value };
       if (roots.empty()) {
@@ -456,4 +482,185 @@ void cmFindCommon::ComputeFinalPaths(IgnorePaths ignorePaths,
                     s += '/';
                   }
                 });
+}
+
+cmFindCommonDebugState::cmFindCommonDebugState(std::string name,
+                                               cmFindCommon const* findCommand)
+  : FindCommand(findCommand)
+  , CommandName(std::move(name))
+  // Strip the `find_` prefix.
+  , Mode(this->CommandName.substr(5))
+{
+}
+
+void cmFindCommonDebugState::FoundAt(std::string const& path,
+                                     std::string regexName)
+{
+  this->IsFound = true;
+
+  if (!this->TrackSearchProgress()) {
+    return;
+  }
+
+  this->FoundAtImpl(path, regexName);
+}
+
+void cmFindCommonDebugState::FailedAt(std::string const& path,
+                                      std::string regexName)
+{
+  if (!this->TrackSearchProgress()) {
+    return;
+  }
+
+  this->FailedAtImpl(path, regexName);
+}
+
+bool cmFindCommonDebugState::ShouldImplicitlyLogEvents() const
+{
+  return true;
+}
+
+void cmFindCommonDebugState::Write()
+{
+  auto const* const fc = this->FindCommand;
+
+#ifndef CMAKE_BOOTSTRAP
+  // Write find event to the configure log if the log exists
+  if (cmConfigureLog* log =
+        fc->Makefile->GetCMakeInstance()->GetConfigureLog()) {
+    // Write event if any of:
+    //   - debug mode is enabled
+    //   - implicit logging should happen and:
+    //     - the variable was not defined (first run)
+    //     - the variable found state does not match the new found state (state
+    //       transition)
+    if (fc->DebugModeEnabled() ||
+        (this->ShouldImplicitlyLogEvents() &&
+         (!fc->IsDefined() || fc->IsFound() != this->IsFound))) {
+      this->WriteEvent(*log, *fc->Makefile);
+    }
+  }
+#endif
+
+  if (fc->DebugModeEnabled()) {
+    this->WriteDebug();
+  }
+}
+
+#ifndef CMAKE_BOOTSTRAP
+void cmFindCommonDebugState::WriteSearchVariables(cmConfigureLog& log,
+                                                  cmMakefile const& mf) const
+{
+  auto WriteString = [&log, &mf](std::string const& name) {
+    if (cmValue value = mf.GetDefinition(name)) {
+      log.WriteValue(name, *value);
+    }
+  };
+  auto WriteCMakeList = [&log, &mf](std::string const& name) {
+    if (cmValue value = mf.GetDefinition(name)) {
+      cmList values{ *value };
+      if (!values.empty()) {
+        log.WriteValue(name, values);
+      }
+    }
+  };
+  auto WriteEnvList = [&log](std::string const& name) {
+    if (auto value = cmSystemTools::GetEnvVar(name)) {
+      auto values = cmSystemTools::SplitEnvPath(*value);
+      if (!values.empty()) {
+        log.WriteValue(cmStrCat("ENV{", name, '}'), values);
+      }
+    }
+  };
+
+  auto const* fc = this->FindCommand;
+  log.BeginObject("search_context"_s);
+  auto const& packageRootStack = mf.FindPackageRootPathStack;
+  if (!packageRootStack.empty()) {
+    bool havePaths =
+      std::any_of(packageRootStack.begin(), packageRootStack.end(),
+                  [](std::vector<std::string> const& entry) -> bool {
+                    return !entry.empty();
+                  });
+    if (havePaths) {
+      log.BeginObject("package_stack");
+      log.BeginArray();
+      for (auto const& pkgPaths : cmReverseRange(packageRootStack)) {
+        if (!pkgPaths.empty()) {
+          log.NextArrayElement();
+          log.WriteValue("package_paths", pkgPaths);
+        }
+      }
+      log.EndArray();
+      log.EndObject();
+    }
+  }
+  auto cmakePathVar = cmStrCat("CMAKE_", fc->CMakePathName, "_PATH");
+  WriteCMakeList(cmakePathVar);
+  WriteCMakeList("CMAKE_PREFIX_PATH");
+  if (fc->CMakePathName == "PROGRAM"_s) {
+    WriteCMakeList("CMAKE_APPBUNDLE_PATH");
+  } else {
+    WriteCMakeList("CMAKE_FRAMEWORK_PATH");
+  }
+  // Same as above, but ask the environment instead.
+  WriteEnvList(cmakePathVar);
+  WriteEnvList("CMAKE_PREFIX_PATH");
+  if (fc->CMakePathName == "PROGRAM"_s) {
+    WriteEnvList("CMAKE_APPBUNDLE_PATH");
+  } else {
+    WriteEnvList("CMAKE_FRAMEWORK_PATH");
+  }
+  WriteEnvList("PATH");
+  WriteString("CMAKE_INSTALL_PREFIX");
+  WriteString("CMAKE_STAGING_PREFIX");
+  WriteCMakeList("CMAKE_SYSTEM_PREFIX_PATH");
+  auto systemPathVar = cmStrCat("CMAKE_SYSTEM_", fc->CMakePathName, "_PATH");
+  WriteCMakeList(systemPathVar);
+  // Sysroot paths.
+  WriteString("CMAKE_SYSROOT");
+  WriteString("CMAKE_SYSROOT_COMPILE");
+  WriteString("CMAKE_SYSROOT_LINK");
+  WriteString("CMAKE_FIND_ROOT_PATH");
+  // Write out paths which are ignored.
+  WriteCMakeList("CMAKE_IGNORE_PATH");
+  WriteCMakeList("CMAKE_IGNORE_PREFIX_PATH");
+  WriteCMakeList("CMAKE_SYSTEM_IGNORE_PATH");
+  WriteCMakeList("CMAKE_SYSTEM_IGNORE_PREFIX_PATH");
+  if (fc->CMakePathName == "PROGRAM"_s) {
+    WriteCMakeList("CMAKE_SYSTEM_APPBUNDLE_PATH");
+  } else {
+    WriteCMakeList("CMAKE_SYSTEM_FRAMEWORK_PATH");
+  }
+  for (auto const& extraVar : this->ExtraSearchVariables()) {
+    switch (extraVar.first) {
+      case VariableSource::String:
+        WriteString(extraVar.second);
+        break;
+      case VariableSource::PathList:
+        WriteCMakeList(extraVar.second);
+        break;
+      case VariableSource::EnvironmentList:
+        WriteEnvList(extraVar.second);
+        break;
+    }
+  }
+  log.EndObject();
+}
+
+std::vector<std::pair<cmFindCommonDebugState::VariableSource, std::string>>
+cmFindCommonDebugState::ExtraSearchVariables() const
+{
+  return {};
+}
+#endif
+
+bool cmFindCommonDebugState::TrackSearchProgress() const
+{
+  // Track search progress if debugging or logging the configure.
+  return this->FindCommand->DebugModeEnabled()
+#ifndef CMAKE_BOOTSTRAP
+    || this->FindCommand->Makefile->GetCMakeInstance()->GetConfigureLog()
+#endif
+    ;
 }

@@ -963,6 +963,10 @@ if(wxWidgets_FIND_STYLE STREQUAL "unix")
     foreach(_wx_lib_ ${wxWidgets_LIBRARIES})
       if("${_wx_lib_}" MATCHES "^-l(.*)")
         set(_wx_lib_name "${CMAKE_MATCH_1}")
+        if(_wx_lib_name STREQUAL "atomic")
+          continue()
+        endif()
+
         unset(_wx_lib_found CACHE)
         find_library(_wx_lib_found NAMES ${_wx_lib_name} HINTS ${wxWidgets_LIBRARY_DIRS})
         if(_wx_lib_found STREQUAL _wx_lib_found-NOTFOUND)
@@ -1057,8 +1061,8 @@ find_program(wxWidgets_wxrc_EXECUTABLE
 #
 # NOTE: This is a generic piece of code that should be renamed to
 # SPLIT_ARGUMENTS_ON and put in a file serving the same purpose as
-# FindPackageStandardArgs.cmake. At the time of this writing
-# FindQt4.cmake has a QT4_EXTRACT_OPTIONS, which I basically copied
+# FindPackageHandleStandardArgs.cmake. At the time of this writing
+# FindQt4.cmake has a qt4_extract_options(), which I basically copied
 # here a bit more generalized. So, there are already two find modules
 # using this approach.
 #

@@ -7,6 +7,7 @@
 #include <deque>
 #include <iterator>
 #include <map>
+#include <memory>
 #include <utility>
 
 #include <cm/optional>
@@ -14,6 +15,7 @@
 #include <cmext/string_view>
 
 #include "cmCMakePath.h"
+#include "cmConfigureLog.h"
 #include "cmExecutionStatus.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
@@ -34,6 +36,13 @@ cmFindBase::cmFindBase(std::string findCommandName, cmExecutionStatus& status)
   : cmFindCommon(status)
   , FindCommandName(std::move(findCommandName))
 {
+}
+
+cmFindBase::~cmFindBase()
+{
+  if (this->DebugState) {
+    this->DebugState->Write();
+  }
 }
 
 bool cmFindBase::ParseArguments(std::vector<std::string> const& argsIn)
@@ -79,8 +88,12 @@ bool cmFindBase::ParseArguments(std::vector<std::string> const& argsIn)
     return false;
   }
   this->VariableName = args[0];
-  if (this->CheckForVariableDefined()) {
-    this->AlreadyDefined = true;
+  this->InitialState = this->GetInitialState();
+  if (this->IsFound()) {
+    if (this->DebugState) {
+      this->DebugState->FoundAt(
+        *this->Makefile->GetDefinition(this->VariableName));
+    }
     return true;
   }
 
@@ -94,6 +107,7 @@ bool cmFindBase::ParseArguments(std::vector<std::string> const& argsIn)
   this->SelectDefaultMacMode();
 
   bool newStyle = false;
+  bool haveRequiredOrOptional = false;
   enum Doing
   {
     DoingNone,
@@ -129,8 +143,21 @@ bool cmFindBase::ParseArguments(std::vector<std::string> const& argsIn)
       this->NoDefaultPath = true;
     } else if (args[j] == "REQUIRED") {
       doing = DoingNone;
+      if (haveRequiredOrOptional && !this->Required) {
+        this->SetError("cannot be both REQUIRED and OPTIONAL");
+        return false;
+      }
       this->Required = true;
       newStyle = true;
+      haveRequiredOrOptional = true;
+    } else if (args[j] == "OPTIONAL") {
+      doing = DoingNone;
+      if (haveRequiredOrOptional && this->Required) {
+        this->SetError("cannot be both REQUIRED and OPTIONAL");
+        return false;
+      }
+      newStyle = true;
+      haveRequiredOrOptional = true;
     } else if (args[j] == "REGISTRY_VIEW") {
       if (++j == args.size()) {
         this->SetError("missing required argument for REGISTRY_VIEW");
@@ -185,6 +212,10 @@ bool cmFindBase::ParseArguments(std::vector<std::string> const& argsIn)
         this->AddPathSuffix(args[j]);
       }
     }
+  }
+
+  if (!haveRequiredOrOptional) {
+    this->Required = this->Makefile->IsOn("CMAKE_FIND_REQUIRED");
   }
 
   if (this->VariableDocumentation.empty()) {
@@ -452,7 +483,7 @@ void cmFindBase::FillUserGuessPath()
   paths.AddSuffixes(this->SearchPathSuffixes);
 }
 
-bool cmFindBase::CheckForVariableDefined()
+cmFindBase::FindState cmFindBase::GetInitialState()
 {
   if (cmValue value = this->Makefile->GetDefinition(this->VariableName)) {
     cmState* state = this->Makefile->GetState();
@@ -478,14 +509,26 @@ bool cmFindBase::CheckForVariableDefined()
       if (cached && cacheType == cmStateEnums::UNINITIALIZED) {
         this->AlreadyInCacheWithoutMetaInfo = true;
       }
-      return true;
+      return FindState::Found;
     }
+    return FindState::NotFound;
   }
-  return false;
+  return FindState::Undefined;
+}
+
+bool cmFindBase::IsFound() const
+{
+  return this->InitialState == FindState::Found;
+}
+
+bool cmFindBase::IsDefined() const
+{
+  return this->InitialState != FindState::Undefined;
 }
 
 void cmFindBase::NormalizeFindResult()
 {
+  std::string foundValue;
   if (this->Makefile->GetPolicyStatus(cmPolicies::CMP0125) ==
       cmPolicies::NEW) {
     // ensure the path returned by find_* command is absolute
@@ -504,6 +547,7 @@ void cmFindBase::NormalizeFindResult()
       }
     }
 
+    foundValue = value;
     if (this->StoreResultInCache) {
       // If the user specifies the entry on the command line without a
       // type we should add the type and docstring but keep the original
@@ -533,6 +577,10 @@ void cmFindBase::NormalizeFindResult()
     // type we should add the type and docstring but keep the original
     // value.
     if (this->StoreResultInCache) {
+      auto const& existingValue =
+        this->Makefile->GetCMakeInstance()->GetCacheDefinition(
+          this->VariableName);
+      foundValue = *existingValue;
       if (this->AlreadyInCacheWithoutMetaInfo) {
         this->Makefile->AddCacheDefinition(this->VariableName, "",
                                            this->VariableDocumentation,
@@ -540,18 +588,19 @@ void cmFindBase::NormalizeFindResult()
         if (this->Makefile->GetPolicyStatus(cmPolicies::CMP0126) ==
               cmPolicies::NEW &&
             this->Makefile->IsNormalDefinitionSet(this->VariableName)) {
-          this->Makefile->AddDefinition(
-            this->VariableName,
-            *this->Makefile->GetCMakeInstance()->GetCacheDefinition(
-              this->VariableName));
+          this->Makefile->AddDefinition(this->VariableName, *existingValue);
         }
       }
     } else {
+      auto const& existingValue =
+        this->Makefile->GetSafeDefinition(this->VariableName);
+      foundValue = existingValue;
       // ensure a normal variable is defined.
-      this->Makefile->AddDefinition(
-        this->VariableName,
-        this->Makefile->GetSafeDefinition(this->VariableName));
+      this->Makefile->AddDefinition(this->VariableName, existingValue);
     }
+  }
+  if (this->DebugState) {
+    this->DebugState->FoundAt(foundValue);
   }
 }
 
@@ -573,6 +622,10 @@ void cmFindBase::StoreFindResult(std::string const& value)
       }
     } else {
       this->Makefile->AddDefinition(this->VariableName, value);
+    }
+
+    if (this->DebugState) {
+      this->DebugState->FoundAt(value);
     }
 
     return;
@@ -604,35 +657,44 @@ void cmFindBase::StoreFindResult(std::string const& value)
   }
 }
 
-cmFindBaseDebugState::cmFindBaseDebugState(std::string commandName,
-                                           cmFindBase const* findBase)
-  : FindCommand(findBase)
-  , CommandName(std::move(commandName))
+cmFindBaseDebugState::cmFindBaseDebugState(cmFindBase const* findBase)
+  : cmFindCommonDebugState(findBase->FindCommandName, findBase)
+  , FindBaseCommand(findBase)
 {
 }
 
-cmFindBaseDebugState::~cmFindBaseDebugState()
-{
-  if (!this->FindCommand->DebugMode) {
-    return;
-  }
+cmFindBaseDebugState::~cmFindBaseDebugState() = default;
 
+void cmFindBaseDebugState::FoundAtImpl(std::string const& path,
+                                       std::string regexName)
+{
+  this->FoundSearchLocation = DebugLibState{ std::move(regexName), path };
+}
+
+void cmFindBaseDebugState::FailedAtImpl(std::string const& path,
+                                        std::string regexName)
+{
+  this->FailedSearchLocations.emplace_back(std::move(regexName), path);
+}
+
+void cmFindBaseDebugState::WriteDebug() const
+{
   // clang-format off
   auto buffer =
     cmStrCat(
       this->CommandName, " called with the following settings:"
-      "\n  VAR: ", this->FindCommand->VariableName,
-      "\n  NAMES: ", cmWrap('"', this->FindCommand->Names, '"', "\n         "),
-      "\n  Documentation: ", this->FindCommand->VariableDocumentation,
+      "\n  VAR: ", this->FindBaseCommand->VariableName,
+      "\n  NAMES: ", cmWrap('"', this->FindBaseCommand->Names, '"', "\n         "),
+      "\n  Documentation: ", this->FindBaseCommand->VariableDocumentation,
       "\n  Framework"
-      "\n    Only Search Frameworks: ", this->FindCommand->SearchFrameworkOnly,
-      "\n    Search Frameworks Last: ", this->FindCommand->SearchFrameworkLast,
-      "\n    Search Frameworks First: ", this->FindCommand->SearchFrameworkFirst,
+      "\n    Only Search Frameworks: ", this->FindBaseCommand->SearchFrameworkOnly,
+      "\n    Search Frameworks Last: ", this->FindBaseCommand->SearchFrameworkLast,
+      "\n    Search Frameworks First: ", this->FindBaseCommand->SearchFrameworkFirst,
       "\n  AppBundle"
-      "\n    Only Search AppBundle: ", this->FindCommand->SearchAppBundleOnly,
-      "\n    Search AppBundle Last: ", this->FindCommand->SearchAppBundleLast,
-      "\n    Search AppBundle First: ", this->FindCommand->SearchAppBundleFirst,
-      "\n"
+      "\n    Only Search AppBundle: ", this->FindBaseCommand->SearchAppBundleOnly,
+      "\n    Search AppBundle Last: ", this->FindBaseCommand->SearchAppBundleLast,
+      "\n    Search AppBundle First: ", this->FindBaseCommand->SearchAppBundleFirst,
+      '\n'
     );
   // clang-format on
 
@@ -646,7 +708,7 @@ cmFindBaseDebugState::~cmFindBaseDebugState()
       "\n  CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: ", !this->FindCommand->NoSystemEnvironmentPath,
       "\n  CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: ", !this->FindCommand->NoCMakeSystemPath,
       "\n  CMAKE_FIND_USE_INSTALL_PREFIX: ", !this->FindCommand->NoCMakeInstallPath,
-      "\n"
+      '\n'
      );
     // clang-format on
   }
@@ -661,7 +723,7 @@ cmFindBaseDebugState::~cmFindBaseDebugState()
     buffer += cmStrCat(path, '\n');
   }
 
-  if (!this->FoundSearchLocation.path.empty()) {
+  if (this->HasBeenFound()) {
     buffer += cmStrCat("The item was found at\n  ",
                        this->FoundSearchLocation.path, '\n');
   } else {
@@ -671,18 +733,81 @@ cmFindBaseDebugState::~cmFindBaseDebugState()
   this->FindCommand->DebugMessage(buffer);
 }
 
-void cmFindBaseDebugState::FoundAt(std::string const& path,
-                                   std::string regexName)
+#ifndef CMAKE_BOOTSTRAP
+void cmFindBaseDebugState::WriteEvent(cmConfigureLog& log,
+                                      cmMakefile const& mf) const
 {
-  if (this->FindCommand->DebugMode) {
-    this->FoundSearchLocation = DebugLibState{ std::move(regexName), path };
+  log.BeginEvent("find-v1", mf);
+
+  // Mode is the Command name without the "find_" prefix
+  log.WriteValue("mode"_s, this->CommandName.substr(5));
+  log.WriteValue("variable"_s, this->FindBaseCommand->VariableName);
+  log.WriteValue("description"_s,
+                 this->FindBaseCommand->VariableDocumentation);
+
+  // Yes, this needs to return a `std::string`. If it returns a `const char*`,
+  // the `WriteValue` method prefers the `bool` overload. There's no overload
+  // for a `cm::string_view` because the underlying JSON library doesn't
+  // support `string_view` arguments itself.
+  auto search_opt_to_str = [](bool first, bool last,
+                              bool only) -> std::string {
+    return first ? "FIRST" : (last ? "LAST" : (only ? "ONLY" : "NEVER"));
+  };
+  log.BeginObject("settings"_s);
+  log.WriteValue("SearchFramework"_s,
+                 search_opt_to_str(this->FindCommand->SearchFrameworkFirst,
+                                   this->FindCommand->SearchFrameworkLast,
+                                   this->FindCommand->SearchFrameworkOnly));
+  log.WriteValue("SearchAppBundle"_s,
+                 search_opt_to_str(this->FindCommand->SearchAppBundleFirst,
+                                   this->FindCommand->SearchAppBundleLast,
+                                   this->FindCommand->SearchAppBundleOnly));
+  log.WriteValue("CMAKE_FIND_USE_CMAKE_PATH"_s,
+                 !this->FindCommand->NoCMakePath);
+  log.WriteValue("CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH"_s,
+                 !this->FindCommand->NoCMakeEnvironmentPath);
+  log.WriteValue("CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH"_s,
+                 !this->FindCommand->NoSystemEnvironmentPath);
+  log.WriteValue("CMAKE_FIND_USE_CMAKE_SYSTEM_PATH"_s,
+                 !this->FindCommand->NoCMakeSystemPath);
+  log.WriteValue("CMAKE_FIND_USE_INSTALL_PREFIX"_s,
+                 !this->FindCommand->NoCMakeInstallPath);
+  log.EndObject();
+
+  if (!this->FindBaseCommand->Names.empty()) {
+    log.WriteValue("names"_s, this->FindBaseCommand->Names);
   }
+  std::vector<std::string> directories;
+  directories.reserve(this->FailedSearchLocations.size());
+  for (auto const& location : this->FailedSearchLocations) {
+    directories.push_back(location.path);
+  }
+  if (!this->FindCommand->SearchPaths.empty()) {
+    log.WriteValue("candidate_directories"_s, this->FindCommand->SearchPaths);
+  }
+  if (!directories.empty()) {
+    log.WriteValue("searched_directories"_s, directories);
+  }
+  if (!this->FoundSearchLocation.path.empty()) {
+    log.WriteValue("found"_s, this->FoundSearchLocation.path);
+  } else {
+    log.WriteValue("found"_s, false);
+  }
+
+  this->WriteSearchVariables(log, mf);
+
+  log.EndEvent();
 }
 
-void cmFindBaseDebugState::FailedAt(std::string const& path,
-                                    std::string regexName)
+std::vector<std::pair<cmFindCommonDebugState::VariableSource, std::string>>
+cmFindBaseDebugState::ExtraSearchVariables() const
 {
-  if (this->FindCommand->DebugMode) {
-    this->FailedSearchLocations.emplace_back(std::move(regexName), path);
+  std::vector<std::pair<cmFindCommonDebugState::VariableSource, std::string>>
+    extraSearches;
+  if (!this->FindBaseCommand->EnvironmentPath.empty()) {
+    extraSearches.emplace_back(VariableSource::EnvironmentList,
+                               this->FindBaseCommand->EnvironmentPath);
   }
+  return extraSearches;
 }
+#endif

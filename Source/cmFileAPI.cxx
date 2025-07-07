@@ -105,14 +105,20 @@ std::vector<unsigned long> cmFileAPI::GetConfigureLogVersions()
   return versions;
 }
 
-void cmFileAPI::WriteReplies()
+void cmFileAPI::WriteReplies(IndexFor indexFor)
 {
+  bool const success = indexFor == IndexFor::Success;
+  this->ReplyIndexFor = indexFor;
+
   if (this->QueryExists) {
     cmSystemTools::MakeDirectory(this->APIv1 + "/reply");
-    this->WriteJsonFile(this->BuildReplyIndex(), "index", ComputeSuffixTime);
+    this->WriteJsonFile(this->BuildReplyIndex(), success ? "index" : "error",
+                        ComputeSuffixTime);
   }
 
-  this->RemoveOldReplyFiles();
+  if (success) {
+    this->RemoveOldReplyFiles();
+  }
 }
 
 std::vector<std::string> cmFileAPI::LoadDir(std::string const& dir)
@@ -136,7 +142,7 @@ void cmFileAPI::RemoveOldReplyFiles()
   std::vector<std::string> files = this->LoadDir(reply_dir);
   for (std::string const& f : files) {
     if (this->ReplyFiles.find(f) == this->ReplyFiles.end()) {
-      std::string file = cmStrCat(reply_dir, "/", f);
+      std::string file = cmStrCat(reply_dir, '/', f);
       cmSystemTools::RemoveFile(file);
     }
   }
@@ -201,7 +207,7 @@ std::string cmFileAPI::WriteJsonFile(
 
   // Compute the final name for the file.
   std::string suffix = computeSuffix(tmpFile);
-  std::string suffixWithExtension = cmStrCat("-", suffix, ".json");
+  std::string suffixWithExtension = cmStrCat('-', suffix, ".json");
   fileName = cmStrCat(prefix, suffixWithExtension);
 
   // Truncate the file name length
@@ -219,7 +225,7 @@ std::string cmFileAPI::WriteJsonFile(
     suffix = cmCryptoHash(cmCryptoHash::AlgoSHA256)
                .HashString(toBeRemoved)
                .substr(0, newHashLength);
-    suffixWithExtension = cmStrCat("-", suffix, ".json");
+    suffixWithExtension = cmStrCat('-', suffix, ".json");
     fileName.replace(startPos, overLength, suffixWithExtension);
   }
 
@@ -442,13 +448,30 @@ Json::Value cmFileAPI::BuildReply(Query const& q)
   Json::Value reply = Json::objectValue;
   for (Object const& o : q.Known) {
     std::string const& name = ObjectName(o);
-    reply[name] = this->AddReplyIndexObject(o);
+    reply[name] = this->BuildReplyEntry(o);
   }
 
   for (std::string const& name : q.Unknown) {
     reply[name] = cmFileAPI::BuildReplyError("unknown query file");
   }
   return reply;
+}
+
+Json::Value cmFileAPI::BuildReplyEntry(Object const& object)
+{
+  if (this->ReplyIndexFor != IndexFor::Success) {
+    switch (object.Kind) {
+      case ObjectKind::ConfigureLog:
+        break;
+      case ObjectKind::CodeModel:
+      case ObjectKind::Cache:
+      case ObjectKind::CMakeFiles:
+      case ObjectKind::Toolchains:
+      case ObjectKind::InternalTest:
+        return this->BuildReplyError("no buildsystem generated");
+    }
+  }
+  return this->AddReplyIndexObject(object);
 }
 
 Json::Value cmFileAPI::BuildReplyError(std::string const& error)
@@ -681,7 +704,7 @@ Json::Value cmFileAPI::BuildClientReplyResponse(ClientRequest const& request)
     response = this->BuildReplyError(request.Error);
     return response;
   }
-  response = this->AddReplyIndexObject(request);
+  response = this->BuildReplyEntry(request);
   return response;
 }
 

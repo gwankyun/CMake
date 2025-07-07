@@ -5,40 +5,111 @@
 FindosgUtil
 -----------
 
+Finds the osgUtil library from the OpenSceneGraph toolkit.
 
+.. note::
 
-这是\ ``Findosg*``\ 套件的一部分，用于查找OpenSceneGraph组件。每个组件都是独立的，你必\
-须选择加入每个模块。你还必须选择OpenGL和OpenThreads（和生产者，如果需要的话），因为这些模\
-块不会为你做。这是为了在需要退出某些组件或更改特定模块的Find行为（可能是因为默认\
-:module:`FindOpenGL`\ 模块不能与你的系统一起工作）时，允许你逐个控制自己的系统。如果你想\
-使用一个更方便的模块，包括一切，使用\ :module:`FindOpenSceneGraph`\ 而不是\
-``Findosg*.cmake``\ 模块。
+  In most cases, it's recommended to use the :module:`FindOpenSceneGraph` module
+  instead and list osgUtil as a component.  This will automatically handle
+  dependencies such as the OpenThreads and core osg libraries:
 
-定位osgUtil，该模块定义：
+  .. code-block:: cmake
 
-``OSGUTIL_FOUND``
-  Was osgUtil found?
-``OSGUTIL_INCLUDE_DIR``
-  Where to find the headers
+    find_package(OpenSceneGraph COMPONENTS osgUtil)
+
+This module is used internally by :module:`FindOpenSceneGraph` to find the
+osgUtil library.  It is not intended to be included directly during typical
+use of the :command:`find_package` command.  However, it is available as a
+standalone module for advanced use cases where finer control over detection is
+needed.  For example, to find the osgUtil explicitly or bypass automatic
+component detection:
+
+.. code-block:: cmake
+
+  find_package(osgUtil)
+
+OpenSceneGraph and osgUtil headers are intended to be included in C++ project
+source code as:
+
+.. code-block:: c++
+  :caption: ``example.cxx``
+
+  #include <osg/PositionAttitudeTransform>
+  #include <osgUtil/SceneView>
+  // ...
+
+When working with the OpenSceneGraph toolkit, other libraries such as OpenGL may
+also be required.
+
+Result Variables
+^^^^^^^^^^^^^^^^
+
+This module defines the following variables:
+
+``osgUtil_FOUND``
+  Boolean indicating whether the osgUtil library of the OpenSceneGraph
+  toolkit is found.  For backward compatibility, the ``OSGUTIL_FOUND`` variable
+  is also set to the same value.
+
 ``OSGUTIL_LIBRARIES``
-  The libraries to link for osgUtil (use this)
+  The libraries needed to link against to use osgUtil.
+
 ``OSGUTIL_LIBRARY``
-  The osgUtil library
+  A result variable that is set to the same value as the ``OSGUTIL_LIBRARIES``
+  variable.
+
+Cache Variables
+^^^^^^^^^^^^^^^
+
+The following cache variables may also be set:
+
+``OSGUTIL_INCLUDE_DIR``
+  The include directory containing headers needed to use osgUtil.
+
 ``OSGUTIL_LIBRARY_DEBUG``
-  The osgUtil debug library
+  The path to the osgUtil debug library.
 
-``$OSGDIR`` is an environment variable that would correspond to::
+Hints
+^^^^^
 
-  ./configure --prefix=$OSGDIR
+This module accepts the following variables:
 
-used in building osg.
+``OSGDIR``
+  Environment variable that can be set to help locate the OpenSceneGraph
+  toolkit, including its osgUtil library, when installed in a custom
+  location.  It should point to the OpenSceneGraph installation prefix used when
+  it was configured, built, and installed: ``./configure --prefix=$OSGDIR``.
 
-Created by Eric Wing.
+Examples
+^^^^^^^^
+
+Finding osgUtil explicitly with this module and creating an interface
+:ref:`imported target <Imported Targets>` that encapsulates its usage
+requirements for linking it to a project target:
+
+.. code-block:: cmake
+
+  find_package(osgUtil)
+
+  if(osgUtil_FOUND AND NOT TARGET osgUtil::osgUtil)
+    add_library(osgUtil::osgUtil INTERFACE IMPORTED)
+    set_target_properties(
+      osgUtil::osgUtil
+      PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${OSGUTIL_INCLUDE_DIR}"
+        INTERFACE_LINK_LIBRARIES "${OSGUTIL_LIBRARIES}"
+    )
+  endif()
+
+  target_link_libraries(example PRIVATE osgUtil::osgUtil)
+
+See Also
+^^^^^^^^
+
+* The :module:`FindOpenSceneGraph` module to find OpenSceneGraph toolkit.
 #]=======================================================================]
 
-# Header files are presumed to be included like
-# #include <osg/PositionAttitudeTransform>
-# #include <osgUtil/SceneView>
+# Created by Eric Wing.
 
 include(${CMAKE_CURRENT_LIST_DIR}/Findosg_functions.cmake)
 OSG_FIND_PATH   (OSGUTIL osgUtil/SceneView)

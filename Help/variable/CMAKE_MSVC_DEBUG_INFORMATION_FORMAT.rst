@@ -9,7 +9,7 @@ CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 
 The allowed values are:
 
-.. include:: ../prop_tgt/MSVC_DEBUG_INFORMATION_FORMAT-VALUES.txt
+.. include:: ../prop_tgt/include/MSVC_DEBUG_INFORMATION_FORMAT-VALUES.rst
 
 Use :manual:`generator expressions <cmake-generator-expressions(7)>` to
 support per-configuration specification.  For example, the code:

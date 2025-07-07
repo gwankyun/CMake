@@ -5,12 +5,15 @@ VS_CSHARP_<tagname>
 
 Visual Studio和CSharp特定于源文件的配置。
 
-Tell the :manual:`Visual Studio generators <cmake-generators(7)>`
+Tell the :ref:`Visual Studio Generators`
 to set the source file tag ``<tagname>``
 to a given value in the generated Visual Studio CSharp
 project. Ignored on other generators and languages. This property
 can be used to define dependencies between source files or set any
 other Visual Studio specific parameters.
+
+Examples
+^^^^^^^^
 
 Example usage:
 
@@ -20,3 +23,8 @@ Example usage:
            PROPERTIES
            VS_CSHARP_DependentUpon <other file>
            VS_CSHARP_SubType "Form")
+
+See Also
+^^^^^^^^
+
+* The :module:`CSharpUtilities` module for configuring CSharp/.NET targets.

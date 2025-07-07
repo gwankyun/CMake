@@ -11,6 +11,11 @@
 
 #include <cm3p/curl/curl.h>
 
+// curl versions before 7.87.0 did not provide CURL_WRITEFUNC_ERROR
+#if defined(LIBCURL_VERSION_NUM) && LIBCURL_VERSION_NUM < 0x075700
+#  define CURL_WRITEFUNC_ERROR 0xFFFFFFFF
+#endif
+
 cm::optional<int> cmCurlParseTLSVersion(cm::string_view tls_version);
 cm::optional<std::string> cmCurlPrintTLSVersion(int curl_tls_version);
 std::string cmCurlSetCAInfo(::CURL* curl, std::string const& cafile = {});

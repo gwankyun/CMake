@@ -198,6 +198,8 @@ public:
   std::string GetScheduleType() const;
   void SetScheduleType(std::string const& type);
 
+  cm::optional<unsigned int> GetRandomSeed() const;
+
   /** The max output width */
   int GetMaxTestNameWidth() const;
   void SetMaxTestNameWidth(int w);
@@ -452,11 +454,6 @@ private:
 
   /** set command line arguments read from a test preset */
   bool SetArgsFromPreset(std::string const& presetName, bool listPresets);
-
-#if !defined(_WIN32)
-  /** returns true iff the console supports progress output */
-  static bool ConsoleIsNotDumb();
-#endif
 
   /** returns true iff the console supports progress output */
   static bool ProgressOutputSupportedByConsole();

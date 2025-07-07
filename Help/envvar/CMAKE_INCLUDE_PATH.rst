@@ -1,7 +1,7 @@
 CMAKE_INCLUDE_PATH
 ------------------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 ``CMAKE_INCLUDE_PATH``\ 环境变量可以设置为\ :command:`find_file`\ 和\
 :command:`find_path`\ 命令要搜索的目录列表。

@@ -80,7 +80,7 @@ cmake-gui工具
 Visual Studio提供了多个命令提示符和\ ``vcvarsall.bat``\ 脚本，用于为命令行构建系统设置\
 正确的环境。虽然在使用Visual Studio生成器时并不一定需要使用相应的命令行环境，但这样做无坏处。
 
-当使用Xcode时，可以安装多个Xcode版本。使用哪种方法可以有很多不同的选择，但最常见的方法是：
+当使用\ :generator:`Xcode`\ 时，可以安装多个Xcode版本。使用哪种方法可以有很多不同的选择，但最常见的方法是：
 
 * 在Xcode IDE的首选项中设置默认版本。
 * 通过\ ``xcode-select``\ 命令行工具设置默认版本。
@@ -121,7 +121,7 @@ Visual Studio版本可以通过IDE的产品名来指定，其中包含一个四�
   $ cmake .. -G "Visual Studio 16"
   $ cmake .. -G "Visual Studio 16 2019"
 
-Visual Studio生成器可以针对不同的体系结构。可以使用\ :option:`-A <cmake -A>`\ 选项指\
+:ref:`Visual Studio Generators`\ 可以针对不同的体系结构。可以使用\ :option:`-A <cmake -A>`\ 选项指\
 定目标架构：
 
 .. code-block:: console
@@ -189,9 +189,14 @@ Visual Studio工具集可以通过\ :option:`cmake -T`\ 选项指定：
 ========================================== ============================================================
  :variable:`CMAKE_PREFIX_PATH`              搜索\ :guide:`依赖包 <使用依赖项指南>`\ 的路径
  :variable:`CMAKE_MODULE_PATH`              搜索其他CMake模块的路径
- :variable:`CMAKE_BUILD_TYPE`               构建配置，如\ ``Debug``\ 或\ ``Release``，确定调试/优化标志。\
-                                            这只适用于单配置构建系统，如 ``Makefile`` 和 ``Ninja``。像\
-                                            Visual Studio和Xcode这样的多配置构建系统会忽略这个设置。
+ :variable:`CMAKE_BUILD_TYPE`               Build configuration, such as
+                                            ``Debug`` or ``Release``, determining
+                                            debug/optimization flags.  This is only
+                                            relevant for single-configuration buildsystems such
+                                            as :ref:`Makefile Generators` and
+                                            :ref:`Ninja Generators`.
+                                            Multi-configuration buildsystems such as those for
+                                            :ref:`Visual Studio Generators` and :generator:`Xcode`
  :variable:`CMAKE_INSTALL_PREFIX`           使用\ ``install``\ 构建目标安装软件的位置
  :variable:`CMAKE_TOOLCHAIN_FILE`           包含交叉编译数据的文件，如\ :manual:`工具链和sysroot <cmake-toolchains(7)>`。
  :variable:`BUILD_SHARED_LIBS`              是否为没有类型的\ :command:`add_library`\ 命令构建共享库而不是静态库
@@ -383,14 +388,20 @@ CMake文件中描述的每个可执行文件和库都是一个构建目标，构
 CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 
 ``all``
-  ``Makefile``\ 和\ ``Ninja``\ 生成器使用的默认目标。构建构建系统中的所有目标，除了那些\
-  被它们的\ :prop_tgt:`EXCLUDE_FROM_ALL`\ 目标属性或\ :prop_dir:`EXCLUDE_FROM_ALL`\
-  目录属性排除的目标。名称\ ``ALL_BUILD``\ 用于Xcode和Visual Studio生成器。
+  The default target used by :ref:`Makefile Generators`
+  and :ref:`Ninja Generators`.  Builds all targets in
+  the buildsystem, except those which are excluded by
+  their :prop_tgt:`EXCLUDE_FROM_ALL` target property or
+  :prop_dir:`EXCLUDE_FROM_ALL` directory property.  The
+  name ``ALL_BUILD`` is used for this purpose for the
+  :generator:`Xcode` and :ref:`Visual Studio Generators`.
 ``help``
-  列出可用于生成的目标。当使用\ :generator:`Unix Makefiles`\ 或\ :generator:`Ninja`\
-  生成器时，可以使用此目标，并且确切的输出是特定于工具的。
+  Lists the targets available for build.  This target is
+  available when using the :ref:`Makefile Generators` or
+  :ref:`Ninja Generators`, and the exact output is
+  tool-specific.
 ``clean``
-  删除已构建的目标文件和其他输出文件。基于\ ``Makefile``\ 的生成器为每个目录创建一个\
+  删除已构建的目标文件和其他输出文件。基于\ :ref:`Makefile Generators`\ 为每个目录创建一个\
   ``clean``\ 目标，以便可以清理单个目录。``Ninja``\ 工具提供了自己的颗粒\ ``-t clean``\
   系统。
 ``test``
@@ -403,11 +414,15 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 ``package_source``
   创建源包。这个目标只有在CMake文件提供基于CPack的包时才自动可用。
 
-对于基于\ ``Makefile``\ 的系统，提供了二进制构建目标的\ ``/fast``\ 变体。\ ``/fast``\
-变体用于构建指定的目标，而不考虑其依赖关系。不检查依赖项，如果过期也不会重新生成依赖项。\
-:generator:`Ninja`\ 生成器在检查依赖项时速度足够快，以确保没有为该生成器提供此类目标。
+For :ref:`Makefile Generators`, ``/fast`` variants of binary
+build targets are provided. The ``/fast`` variants are used
+to build the specified target without regard for its
+dependencies.  The dependencies are not checked and
+are not rebuilt if out of date.  The :ref:`Ninja Generators`
+are sufficiently fast at dependency checking that
+such targets are not provided for that generator.
 
-基于\ ``Makefile``\ 的系统还提供构建目标来预处理、组装和编译特定目录中的单个文件。
+:ref:`Makefile Generators`\ 的系统还提供构建目标来预处理、组装和编译特定目录中的单个文件。
 
 .. code-block:: console
 

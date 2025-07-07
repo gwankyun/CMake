@@ -68,6 +68,7 @@ function(compiler_id_detection outvar lang)
       GHS
       Tasking
       OrangeC
+      Renesas
     )
     if ("x${lang}" STREQUAL "xC")
       list(APPEND ordered_compilers
@@ -89,6 +90,7 @@ function(compiler_id_detection outvar lang)
       MSVC
       ADSP
       IAR
+      Diab
     )
     if ("x${lang}" STREQUAL "xC")
       list(APPEND ordered_compilers

@@ -23,7 +23,7 @@
   允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
 .. |command_name| replace:: ``target_compile_definitions``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
 元素前面的\ ``-D``\ 将被删除。空项被忽略。例如，以下代码都是等价的：
 

@@ -5,42 +5,73 @@
 FindHg
 ------
 
-从mercurial工作副本中提取信息。
-
-The module defines the following variables:
-
-::
-
-   HG_EXECUTABLE - path to mercurial command line client (hg)
-   HG_FOUND - true if the command line client was found
-   HG_VERSION_STRING - the version of mercurial found
-
-.. versionadded:: 3.1
-  If the command line client executable is found the following macro is defined:
+Finds the Mercurial command-line client executable (``hg``) and provides a
+command for extracting information from a Mercurial working copy:
 
 .. code-block:: cmake
 
-  HG_WC_INFO(<dir> <var-prefix>)
+  find_package(Hg [<version>] [...])
 
-Hg_WC_INFO extracts information of a mercurial working copy
-at a given location.  This macro defines the following variables:
+Result Variables
+^^^^^^^^^^^^^^^^
 
-::
+This module defines the following variables:
 
-  <var-prefix>_WC_CHANGESET - current changeset
-  <var-prefix>_WC_REVISION - current revision
+``Hg_FOUND``
+  Boolean indicating whether (the requested version of) Mercurial client is
+  found.  For backward compatibility, the ``HG_FOUND`` variable is also set
+  to the same value.
 
-Example usage:
+``HG_VERSION_STRING``
+  The version of Mercurial found.
+
+Cache Variables
+^^^^^^^^^^^^^^^
+
+The following cache variables may also be set:
+
+``HG_EXECUTABLE``
+  Absolute path to the Mercurial command-line client (``hg``).
+
+Commands
+^^^^^^^^
+
+This module provides the following command when Mercurial client (``hg``) is
+found:
+
+.. command:: Hg_WC_INFO
+
+  .. versionadded:: 3.1
+
+  Extracts information of a Mercurial working copy:
+
+  .. code-block:: cmake
+
+    Hg_WC_INFO(<dir> <var-prefix>)
+
+  This command defines the following variables if running Mercurial client on
+  working copy located at a given location ``<dir>`` succeeds; otherwise a
+  ``SEND_ERROR`` message is generated:
+
+  ``<var-prefix>_WC_CHANGESET``
+    Current changeset.
+  ``<var-prefix>_WC_REVISION``
+    Current revision.
+
+Examples
+^^^^^^^^
+
+Finding the Mercurial client and retrieving information about the current
+project's working copy:
 
 .. code-block:: cmake
 
-   find_package(Hg)
-   if(HG_FOUND)
-     message("hg found: ${HG_EXECUTABLE}")
-     HG_WC_INFO(${PROJECT_SOURCE_DIR} Project)
-     message("Current revision is ${Project_WC_REVISION}")
-     message("Current changeset is ${Project_WC_CHANGESET}")
-   endif()
+  find_package(Hg)
+  if(Hg_FOUND)
+    Hg_WC_INFO(${PROJECT_SOURCE_DIR} Project)
+    message("Current revision is ${Project_WC_REVISION}")
+    message("Current changeset is ${Project_WC_CHANGESET}")
+  endif()
 #]=======================================================================]
 
 find_program(HG_EXECUTABLE

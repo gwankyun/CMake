@@ -170,7 +170,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. program:: cmake
 
-.. include:: OPTIONS_BUILD.txt
+.. include:: include/OPTIONS_BUILD.rst
 
 .. option:: --fresh
 
@@ -606,7 +606,7 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
   如果没有提供命令行参数或预设选项，将评估一个特定于环境的缓存变量，以决定是否应该执行包恢复。
 
-  当使用Visual Studio生成器时，包引用是使用\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属\
+  当使用\ :ref:`Visual Studio Generators`\ 时，包引用是使用\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属\
   性定义的。使用NuGet恢复包引用。可以通过将\ ``CMAKE_VS_NUGET_PACKAGE_RESTORE``\ 变量\
   设置为\ ``OFF``\ 来禁用它。
 
@@ -627,6 +627,19 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
   将其余选项传递给本机工具。
 
 运行\ :option:`cmake --build`，没有快速帮助选项。
+
+Generator-Specific Build Tool Behavior
+--------------------------------------
+
+``cmake --build`` has special behavior with some generators:
+
+:generator:`Xcode`
+
+  .. versionadded:: 4.1
+
+    If a third-party tool has written a ``.xcworkspace`` next to
+    the CMake-generated ``.xcodeproj``, ``cmake --build`` drives
+    the build through the workspace instead.
 
 安装一个项目
 =================
@@ -1220,12 +1233,50 @@ CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
 
   cmake --find-package [<options>]
 
-它使用\ :command:`find_package()`\ 搜索包，并将结果标记打印到stdout。这可以代替\
-pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到已安装的库（通过\
-``share/aclocal/cmake.m4``）。
-
 .. note::
   由于一些技术限制，这种模式没有得到很好的支持。保留它是为了兼容，但不应该在新项目中使用。
+
+.. option:: --find-package
+
+  It searches a package using the :command:`find_package` command and prints the
+  resulting flags to stdout.  This can be used instead of pkg-config to find
+  installed libraries in plain Makefile-based projects or in Autoconf-based
+  projects, using auxiliary macros installed in ``share/aclocal/cmake.m4`` on
+  the system.
+
+  When using this option, the following variables are expected:
+
+  ``NAME``
+    Name of the package as called in ``find_package(<PackageName>)``.
+
+  ``COMPILER_ID``
+    :variable:`Compiler ID <CMAKE_<LANG>_COMPILER_ID>` used for searching the
+    package, i.e. GNU/Intel/Clang/MSVC, etc.
+
+  ``LANGUAGE``
+    Language used for searching the package, i.e. C/CXX/Fortran/ASM, etc.
+
+  ``MODE``
+    The package search mode.  Value can be one of:
+
+    ``EXIST``
+      Only checks for existence of the given package.
+
+    ``COMPILE``
+      Prints the flags needed for compiling an object file which uses the given
+      package.
+
+    ``LINK``
+      Prints the flags needed for linking when using the given package.
+
+  ``SILENT``
+    (Optional) If TRUE, find result message is not printed.
+
+  For example:
+
+  .. code-block:: shell
+
+    cmake --find-package -DNAME=CURL -DCOMPILER_ID=GNU -DLANGUAGE=C -DMODE=LINK
 
 .. _`Workflow Mode`:
 
@@ -1284,7 +1335,7 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 
 有下列其中一种选择：
 
-.. include:: OPTIONS_HELP.txt
+.. include:: include/OPTIONS_HELP.rst
 
 若要查看项目可用的预设，请使用
 
@@ -1307,4 +1358,4 @@ pkg-config在普通的基于Makefile的项目或基于autoconf的项目中找到
 另行参阅
 ========
 
-.. include:: LINKS.txt
+.. include:: include/LINKS.rst

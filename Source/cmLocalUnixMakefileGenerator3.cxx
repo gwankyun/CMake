@@ -6,6 +6,7 @@
 #include <cassert>
 #include <cstdio>
 #include <functional>
+#include <iostream>
 #include <utility>
 
 #include <cm/memory>
@@ -16,7 +17,6 @@
 #include <cmext/string_view>
 
 #include "cmsys/FStream.hxx"
-#include "cmsys/Terminal.h"
 
 #include "cmCMakePath.h"
 #include "cmCustomCommand.h" // IWYU pragma: keep
@@ -41,6 +41,8 @@
 #include "cmState.h"
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
+#include "cmStdIoStream.h"
+#include "cmStdIoTerminal.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTargetDepend.h"
@@ -222,8 +224,7 @@ void cmLocalUnixMakefileGenerator3::GetLocalObjectFiles(
     std::vector<cmSourceFile const*> objectSources;
     gt->GetObjectSources(objectSources, this->GetConfigName());
     // Compute full path to object file directory for this target.
-    std::string dir = cmStrCat(gt->LocalGenerator->GetCurrentBinaryDirectory(),
-                               '/', this->GetTargetDirectory(gt.get()), '/');
+    std::string dir = cmStrCat(gt->GetSupportDirectory(), '/');
     // Compute the name of each object file.
     for (cmSourceFile const* sf : objectSources) {
       bool hasSourceExtension = true;
@@ -247,7 +248,7 @@ void cmLocalUnixMakefileGenerator3::GetIndividualFileTargets(
   for (auto const& localObjectFile : localObjectFiles) {
     targets.push_back(localObjectFile.first);
 
-    std::string::size_type dot_pos = localObjectFile.first.rfind(".");
+    std::string::size_type dot_pos = localObjectFile.first.rfind('.');
     std::string base = localObjectFile.first.substr(0, dot_pos);
     if (localObjectFile.second.HasPreprocessRule) {
       targets.push_back(base + ".i");
@@ -889,9 +890,7 @@ void cmLocalUnixMakefileGenerator3::WriteConvenienceRule(
 std::string cmLocalUnixMakefileGenerator3::GetRelativeTargetDirectory(
   cmGeneratorTarget const* target) const
 {
-  std::string dir =
-    cmStrCat(this->HomeRelativeOutputPath, this->GetTargetDirectory(target));
-  return dir;
+  return this->MaybeRelativeToTopBinDir(target->GetSupportDirectory());
 }
 
 void cmLocalUnixMakefileGenerator3::AppendFlags(
@@ -1046,7 +1045,7 @@ void cmLocalUnixMakefileGenerator3::AppendCustomCommand(
                                 : outputs[i],
                               cmOutputConverter::SHELL));
           if (i != outputs.size() - 1) {
-            output = cmStrCat(output, ",");
+            output = cmStrCat(output, ',');
           }
         }
         vars.Output = output.c_str();
@@ -1107,7 +1106,7 @@ void cmLocalUnixMakefileGenerator3::AppendCustomCommand(
   // Prefix the commands with the jobserver prefix "+"
   if (ccg.GetCC().GetJobserverAware() && gg->IsGNUMakeJobServerAware()) {
     std::transform(commands1.begin(), commands1.end(), commands1.begin(),
-                   [](std::string const& cmd) { return cmStrCat("+", cmd); });
+                   [](std::string const& cmd) { return cmStrCat('+', cmd); });
   }
 
   // push back the custom commands
@@ -1118,9 +1117,8 @@ void cmLocalUnixMakefileGenerator3::AppendCleanCommand(
   std::vector<std::string>& commands, std::set<std::string> const& files,
   cmGeneratorTarget* target, char const* filename)
 {
-  std::string currentBinDir = this->GetCurrentBinaryDirectory();
-  std::string cleanfile = cmStrCat(
-    currentBinDir, '/', this->GetTargetDirectory(target), "/cmake_clean");
+  std::string cleanfile =
+    cmStrCat(target->GetSupportDirectory(), "/cmake_clean");
   if (filename) {
     cleanfile += "_";
     cleanfile += filename;
@@ -1152,11 +1150,13 @@ void cmLocalUnixMakefileGenerator3::AppendCleanCommand(
     std::set<std::string> languages;
     target->GetLanguages(
       languages, this->Makefile->GetSafeDefinition("CMAKE_BUILD_TYPE"));
+    auto langFileDir = cmSystemTools::GetFilenamePath(
+      this->MaybeRelativeToCurBinDir(cleanfile));
     /* clang-format off */
     fout << "\n"
             "# Per-language clean rules from dependency scanning.\n"
             "foreach(lang " << cmJoin(languages, " ") << ")\n"
-            "  include(" << this->GetTargetDirectory(target)
+            "  include(" << langFileDir
          << "/cmake_clean_${lang}.cmake OPTIONAL)\n"
             "endforeach()\n";
     /* clang-format on */
@@ -1376,6 +1376,18 @@ bool cmLocalUnixMakefileGenerator3::UpdateDependencies(
   // Check if any multiple output pairs have a missing file.
   this->CheckMultipleOutputs(verbose);
 
+  auto echoColor = [color](std::string const& m) {
+    cm::StdIo::TermAttrSet attrs;
+    if (color) {
+      attrs = {
+        cm::StdIo::TermAttr::ForegroundMagenta,
+        cm::StdIo::TermAttr::ForegroundBold,
+      };
+    }
+    Print(cm::StdIo::Out(), attrs, m);
+    std::cout << std::endl;
+  };
+
   std::string const targetDir = cmSystemTools::GetFilenamePath(tgtInfo);
   if (!this->Makefile->GetSafeDefinition("CMAKE_DEPENDS_LANGUAGES").empty()) {
     // dependencies are managed by CMake itself
@@ -1452,10 +1464,7 @@ bool cmLocalUnixMakefileGenerator3::UpdateDependencies(
         targetName = targetName.substr(0, targetName.length() - 4);
         std::string message =
           cmStrCat("Scanning dependencies of target ", targetName);
-        cmSystemTools::MakefileColorEcho(
-          cmsysTerminal_Color_ForegroundMagenta |
-            cmsysTerminal_Color_ForegroundBold,
-          message.c_str(), true, color);
+        echoColor(message);
       }
 
       status = this->ScanDependencies(targetDir, dependFile,
@@ -1493,10 +1502,7 @@ bool cmLocalUnixMakefileGenerator3::UpdateDependencies(
         auto message =
           cmStrCat("Consolidate compiler generated dependencies of target ",
                    targetName);
-        cmSystemTools::MakefileColorEcho(
-          cmsysTerminal_Color_ForegroundMagenta |
-            cmsysTerminal_Color_ForegroundBold,
-          message.c_str(), true, color);
+        echoColor(message);
       }
 
       // Open the make depends file.  This should be copy-if-different
@@ -2236,18 +2242,6 @@ std::string cmLocalUnixMakefileGenerator3::ConvertToQuotedOutputPath(
   }
 
   return result;
-}
-
-std::string cmLocalUnixMakefileGenerator3::GetTargetDirectory(
-  cmGeneratorTarget const* target) const
-{
-  std::string dir = cmStrCat("CMakeFiles/", target->GetName());
-#if defined(__VMS)
-  dir += "_dir";
-#else
-  dir += ".dir";
-#endif
-  return dir;
 }
 
 cmLocalUnixMakefileGenerator3::ImplicitDependLanguageMap const&

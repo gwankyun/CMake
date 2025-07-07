@@ -34,9 +34,9 @@ target_compile_options
   允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
 .. |command_name| replace:: ``target_compile_options``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
-.. include:: OPTIONS_SHELL.txt
+.. include:: include/OPTIONS_SHELL.rst
 
 另请参阅
 ^^^^^^^^
@@ -60,3 +60,6 @@ target_compile_options
 
 * :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
   添加传递给编译器所有调用的语言范围内的标志。这包括驱动编译的调用和驱动链接的调用。
+
+* The :module:`CheckCompilerFlag` module to check whether the compiler
+  supports a given flag.

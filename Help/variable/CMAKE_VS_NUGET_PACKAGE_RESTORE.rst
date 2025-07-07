@@ -3,7 +3,7 @@ CMAKE_VS_NUGET_PACKAGE_RESTORE
 
 .. versionadded:: 3.23
 
-当使用Visual Studio生成器时，这个缓存变量控制msbuild是否应该在构建之前自动尝试恢复NuGet包。\
+当使用\ :ref:`Visual Studio Generators`\ 时，这个缓存变量控制msbuild是否应该在构建之前自动尝试恢复NuGet包。\
 NuGet包可以使用目标上的\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属性来定义。如果没有定义\
 包引用，此设置将不执行任何操作。
 

@@ -26,3 +26,8 @@ the specified location is a sub-folder of ``Resources``, it will be placed
 into the respective sub-folder. Note: For iOS Apple uses a flat bundle layout
 where no ``Resources`` folder exist. Therefore CMake strips the ``Resources``
 folder name from the specified location.
+
+.. versionadded:: 4.1
+
+  ``MACOSX_PACKAGE_LOCATION`` may be set on a source directory
+  to copy its entire tree into the bundle.

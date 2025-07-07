@@ -617,7 +617,7 @@ void cmCTestTestHandler::LogFailedTests(std::vector<std::string> const& failed,
           testColor = cmCTest::Color::YELLOW;
         }
         std::string ft_name_and_status =
-          cmStrCat(ft.Name, " (", this->GetTestStatus(ft), ")");
+          cmStrCat(ft.Name, " (", this->GetTestStatus(ft), ')');
         std::string labels;
         cmCTestTestProperties const& p = *ft.Properties;
         if (!p.Labels.empty()) {
@@ -1324,7 +1324,14 @@ bool cmCTestTestHandler::ProcessDirectory(std::vector<std::string>& passed,
 
   bool randomSchedule = this->CTest->GetScheduleType() == "Random";
   if (randomSchedule) {
-    srand(static_cast<unsigned>(time(nullptr)));
+    cm::optional<unsigned int> scheduleRandomSeed =
+      this->CTest->GetRandomSeed();
+    if (!scheduleRandomSeed.has_value()) {
+      scheduleRandomSeed = static_cast<unsigned int>(time(nullptr));
+    }
+    srand(*scheduleRandomSeed);
+    *this->LogFile << "Test order random seed: " << *scheduleRandomSeed
+                   << std::endl;
   }
 
   for (cmCTestTestProperties& p : this->TestList) {

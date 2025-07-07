@@ -3,7 +3,7 @@ CUDAHOSTCXX
 
 .. versionadded:: 3.8
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``CUDA``\ 语言文件时编译主机代码的首选可执行文件。将仅由CMake在第一次配置中使用，以\
 确定\ ``CUDA``\ 主机编译器，之后\ ``CUDAHOSTCXX``\ 的值存储在缓存中为\

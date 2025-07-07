@@ -33,7 +33,8 @@ macro(__windows_compiler_clang_gnu lang)
   set(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
   set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll.a" ".a" ".lib")
   set(CMAKE_SUPPORT_WINDOWS_EXPORT_ALL_SYMBOLS 1)
-  set (CMAKE_LINK_DEF_FILE_FLAG "-Xlinker /DEF:")
+  set(CMAKE_${lang}_LINK_DEF_FILE_FLAG "-Xlinker /DEF:")
+  set(CMAKE_LINK_DEF_FILE_FLAG "${CMAKE_${lang}_LINK_DEF_FILE_FLAG}")
 
   set(CMAKE_${lang}_LINKER_WRAPPER_FLAG "-Xlinker" " ")
   set(CMAKE_${lang}_LINKER_WRAPPER_FLAG_SEP)
@@ -84,10 +85,10 @@ macro(__windows_compiler_clang_gnu lang)
   set(CMAKE_${lang}_ARCHIVE_APPEND "<CMAKE_AR> q <TARGET> <LINK_FLAGS> <OBJECTS>")
   set(CMAKE_${lang}_ARCHIVE_FINISH "<CMAKE_RANLIB> <TARGET>")
   set(CMAKE_${lang}_CREATE_SHARED_LIBRARY
-    "<CMAKE_${lang}_COMPILER> -nostartfiles -nostdlib <CMAKE_SHARED_LIBRARY_${lang}_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> <CMAKE_SHARED_LIBRARY_CREATE_${lang}_FLAGS> -o <TARGET> ${CMAKE_GNULD_IMAGE_VERSION} -Xlinker /MANIFEST:EMBED -Xlinker /implib:<TARGET_IMPLIB> -Xlinker /pdb:<TARGET_PDB> -Xlinker /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR> <OBJECTS> <LINK_LIBRARIES> <MANIFESTS>")
+    "<CMAKE_${lang}_COMPILER> -nostartfiles -nostdlib <CMAKE_SHARED_LIBRARY_${lang}_FLAGS> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> -o <TARGET> ${CMAKE_GNULD_IMAGE_VERSION} -Xlinker /MANIFEST:EMBED -Xlinker /implib:<TARGET_IMPLIB> -Xlinker /pdb:<TARGET_PDB> -Xlinker /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR> <OBJECTS> <LINK_LIBRARIES> <MANIFESTS>")
   set(CMAKE_${lang}_CREATE_SHARED_MODULE ${CMAKE_${lang}_CREATE_SHARED_LIBRARY})
   set(CMAKE_${lang}_LINK_EXECUTABLE
-    "<CMAKE_${lang}_COMPILER> -nostartfiles -nostdlib <FLAGS> <CMAKE_${lang}_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> -Xlinker /MANIFEST:EMBED -Xlinker /implib:<TARGET_IMPLIB> -Xlinker /pdb:<TARGET_PDB> -Xlinker /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR> ${CMAKE_GNULD_IMAGE_VERSION} <LINK_LIBRARIES> <MANIFESTS>")
+    "<CMAKE_${lang}_COMPILER> -nostartfiles -nostdlib <FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> -Xlinker /MANIFEST:EMBED -Xlinker /implib:<TARGET_IMPLIB> -Xlinker /pdb:<TARGET_PDB> -Xlinker /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR> ${CMAKE_GNULD_IMAGE_VERSION} <LINK_LIBRARIES> <MANIFESTS>")
 
   set(CMAKE_${lang}_CREATE_WIN32_EXE "-Xlinker /subsystem:windows")
   set(CMAKE_${lang}_CREATE_CONSOLE_EXE "-Xlinker /subsystem:console")
@@ -228,7 +229,7 @@ if("x${CMAKE_C_SIMULATE_ID}" STREQUAL "xMSVC"
       set(CMAKE_INCLUDE_SYSTEM_FLAG_${lang} "-imsvc")
 
       set(CMAKE_${lang}_LINK_MODE LINKER)
-endmacro()
+    endmacro()
   else()
     cmake_policy(GET CMP0091 __WINDOWS_CLANG_CMP0091)
     if(__WINDOWS_CLANG_CMP0091 STREQUAL "NEW")

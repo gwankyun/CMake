@@ -18,9 +18,9 @@ add_compile_options
 ^^^^^^^^^
 
 .. |command_name| replace:: ``add_compile_options``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
-.. include:: OPTIONS_SHELL.txt
+.. include:: include/OPTIONS_SHELL.rst
 
 示例
 ^^^^^^^
@@ -38,7 +38,7 @@ add_compile_options
   endif()
 
 要设置每种语言的选项，请使用\ :genex:`$<COMPILE_LANGUAGE>`\ 或\
-:genex:`$<COMPILE_LANGUAGE:languages>`\ 生成器表达式。
+:genex:`$<COMPILE_LANGUAGE:languages> <COMPILE_LANGUAGE:languages>`\ 生成器表达式。
 
 另请参阅
 ^^^^^^^^

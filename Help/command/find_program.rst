@@ -35,7 +35,7 @@ find_program
 .. |CMAKE_FIND_ROOT_PATH_MODE_XXX| replace::
    :variable:`CMAKE_FIND_ROOT_PATH_MODE_PROGRAM`
 
-.. include:: FIND_XXX.txt
+.. include:: include/FIND_XXX.rst
 
 当\ ``NAMES``\ 选项有多个值时，此命令默认一次只考虑一个名称，并在每个目录中搜索它。\
 ``NAMES_PER_DIR``\ 选项告诉这个命令一次只考虑一个目录，并在其中搜索所有名称。

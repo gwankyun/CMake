@@ -16,6 +16,7 @@
 #include <vector>
 
 #include <cm/optional>
+#include <cm/string_view>
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
@@ -681,6 +682,9 @@ public:
     return configs;
   }
 
+  bool ShouldWarnExperimental(cm::string_view featureName,
+                              cm::string_view featureUuid);
+
 protected:
   // for a project collect all its targets by following depend
   // information, and also collect all the targets
@@ -725,8 +729,9 @@ protected:
   void CheckTargetProperties();
   bool IsExcluded(cmStateSnapshot const& root,
                   cmStateSnapshot const& snp) const;
-  bool IsExcluded(cmLocalGenerator* root, cmLocalGenerator* gen) const;
-  bool IsExcluded(cmLocalGenerator* root,
+  bool IsExcluded(cmLocalGenerator const* root,
+                  cmLocalGenerator const* gen) const;
+  bool IsExcluded(cmLocalGenerator const* root,
                   cmGeneratorTarget const* target) const;
   virtual void InitializeProgressMarks() {}
 
@@ -906,6 +911,8 @@ private:
 
   // track targets to issue CMP0068 warning for.
   std::set<std::string> CMP0068WarnTargets;
+
+  std::unordered_set<std::string> WarnedExperimental;
 
   mutable std::map<cmSourceFile*, std::set<cmGeneratorTarget const*>>
     FilenameTargetDepends;

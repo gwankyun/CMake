@@ -234,8 +234,7 @@ void cmMakefileExecutableTargetGenerator::WriteNvidiaDeviceExecutableRule(
     }
 
     auto rulePlaceholderExpander =
-      this->LocalGenerator->CreateRulePlaceholderExpander(
-        cmBuildStep::Link, this->GeneratorTarget, linkLanguage);
+      this->LocalGenerator->CreateRulePlaceholderExpander(cmBuildStep::Link);
 
     // Expand placeholders in the commands.
     rulePlaceholderExpander->SetTargetImpLib(targetOutput);
@@ -371,6 +370,8 @@ void cmMakefileExecutableTargetGenerator::WriteExecutableRule(bool relink)
   std::string linkFlags;
 
   // Add flags to create an executable.
+  this->LocalGenerator->AppendTargetCreationLinkFlags(
+    linkFlags, this->GeneratorTarget, linkLanguage);
   this->LocalGenerator->AddConfigVariableFlags(
     linkFlags, "CMAKE_EXE_LINKER_FLAGS", this->GeneratorTarget,
     cmBuildStep::Link, linkLanguage, this->GetConfigName());
@@ -421,7 +422,7 @@ void cmMakefileExecutableTargetGenerator::WriteExecutableRule(bool relink)
 
     this->LocalGenerator->AppendModuleDefinitionFlag(
       linkFlags, this->GeneratorTarget, linkLineComputer.get(),
-      this->GetConfigName());
+      this->GetConfigName(), linkLanguage);
   }
 
   this->LocalGenerator->AppendIPOLinkerFlags(
@@ -608,8 +609,7 @@ void cmMakefileExecutableTargetGenerator::WriteExecutableRule(bool relink)
     }
 
     auto rulePlaceholderExpander =
-      this->LocalGenerator->CreateRulePlaceholderExpander(
-        cmBuildStep::Link, this->GeneratorTarget, linkLanguage);
+      this->LocalGenerator->CreateRulePlaceholderExpander(cmBuildStep::Link);
 
     // Expand placeholders in the commands.
     rulePlaceholderExpander->SetTargetImpLib(targetOutPathImport);

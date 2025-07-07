@@ -5,12 +5,13 @@
 Findosg_functions
 -----------------
 
+.. note::
 
-
-
-
-这个CMake文件包含两个宏来帮助搜索OSG库和nodekit。请参阅\ :module:`FindOpenSceneGraph`\
-以获取完整的文档。
+  This module is not intended to be included or invoked directly by project code
+  during typical use of :command:`find_package` command.  It is internally used
+  by OpenSceneGraph (OSG) find modules to assist with searching for OSG
+  libraries and NodeKits.  For usage details refer to the
+  :module:`FindOpenSceneGraph` module.
 #]=======================================================================]
 
 include(${CMAKE_CURRENT_LIST_DIR}/SelectLibraryConfigurations.cmake)

@@ -935,6 +935,7 @@ public:
 
   /** Get a build-tree directory in which to place target support files.  */
   std::string GetSupportDirectory() const;
+  std::string GetCMFSupportDirectory() const;
 
   /** Return whether this target may be used to link another target.  */
   bool IsLinkable() const;
@@ -953,7 +954,7 @@ public:
   /** Return whether this target is an executable Bundle on Apple.  */
   bool IsAppBundleOnApple() const;
 
-  /** Return whether this target is a XCTest on Apple.  */
+  /** Return whether this target is an XCTest on Apple.  */
   bool IsXCTestOnApple() const;
 
   /** Return whether this target is a CFBundle (plugin) on Apple.  */
@@ -1371,6 +1372,9 @@ private:
 
   using OutputInfoMapType = std::map<std::string, OutputInfo>;
   mutable OutputInfoMapType OutputInfoMap;
+
+  using PdbOutputNameMapType = std::map<std::string, std::string>;
+  mutable PdbOutputNameMapType PdbOutputNameMap;
 
   using ModuleDefinitionInfoMapType =
     std::map<std::string, ModuleDefinitionInfo>;

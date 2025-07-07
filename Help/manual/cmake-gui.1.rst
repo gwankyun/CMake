@@ -47,9 +47,9 @@ CMake是一个跨平台的构建系统生成器。项目使用与平台无关的
  在浏览器中打开CMake参考手册并立即退出。如果指定了\ ``<filename>``，则在参考手册中打开该\
  文件，而非\ ``index.html``。
 
-.. include:: OPTIONS_HELP.txt
+.. include:: include/OPTIONS_HELP.rst
 
 另行参阅
 ========
 
-.. include:: LINKS.txt
+.. include:: include/LINKS.rst

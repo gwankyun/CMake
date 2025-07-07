@@ -44,11 +44,11 @@ cpack(1)
   并根据\ ``CPackConfig.cmake``\ 配置文件中提供的详细信息以该生成器的格式生成包。如果没有\
   给出这个选项，:variable:`CPACK_GENERATOR`\ 变量决定将使用的默认生成器集。
 
-.. option:: -C <configs>
+.. option:: -C <configurations>
 
-  指定要打包的项目配置（例如\ ``Debug``、\ ``Release``\ 等），其中\ ``<configs>``\ 是\
-  :ref:`以分号分隔的列表 <CMake Language Lists>`。当CMake项目使用多配置生成器（如Xcode\
-  或Visual Studio）时，需要这个选项来告诉\ :program:`cpack`\ 哪些构建的可执行文件要包含\
+  指定要打包的项目配置（例如\ ``Debug``、\ ``Release``\ 等），其中\ ``<configurations>``\ 是\
+  :ref:`以分号分隔的列表 <CMake Language Lists>`。当CMake项目使用多配置生成器（如\ :generator:`Xcode`\
+  或\ :ref:`Visual Studio <Visual Studio Generators>`）时，需要这个选项来告诉\ :program:`cpack`\ 哪些构建的可执行文件要包含\
   在包中。用户有责任确保在调用\ :program:`cpack`\ 之前已经构建了列出的配置。
 
 .. option:: -D <var>=<value>
@@ -109,9 +109,9 @@ cpack(1)
 
   从\ :manual:`cmake-presets(7)`\ 中列出预设。
 
-.. include:: OPTIONS_HELP.txt
+.. include:: include/OPTIONS_HELP.rst
 
 另行参阅
 ========
 
-.. include:: LINKS.txt
+.. include:: include/LINKS.rst

@@ -61,6 +61,7 @@
 #  if !defined(siginfo_t)
 using siginfo_t = int;
 #  endif
+#  include <powerbase.h>
 #else
 #  include <sys/types.h>
 
@@ -1804,6 +1805,8 @@ int SystemInformationImplementation::GetProcessorCacheXSize(
       return this->Features.L2CacheSize;
     case SystemInformation::CPU_FEATURE_L3CACHE:
       return this->Features.L3CacheSize;
+    default:
+      break;
   }
   return -1;
 }
@@ -2487,38 +2490,61 @@ bool SystemInformationImplementation::RetrieveClassicalCPUCacheDetails()
 #endif
 }
 
+#if defined(_WIN32)
+typedef struct _PROCESSOR_POWER_INFORMATION
+{
+  ULONG Number;
+  ULONG MaxMhz;
+  ULONG CurrentMhz;
+  ULONG MhzLimit;
+  ULONG MaxIdleState;
+  ULONG CurrentIdleState;
+} PROCESSOR_POWER_INFORMATION, *PPROCESSOR_POWER_INFORMATION;
+#endif
+
 /** */
 bool SystemInformationImplementation::RetrieveCPUClockSpeed()
 {
   bool retrieved = false;
 
 #if defined(_WIN32)
-  unsigned int uiRepetitions = 1;
-  unsigned int uiMSecPerRepetition = 50;
-  __int64 i64Total = 0;
-  __int64 i64Overhead = 0;
+  PROCESSOR_POWER_INFORMATION powerInfo[64];
+  NTSTATUS status =
+    CallNtPowerInformation(ProcessorInformation, nullptr, 0, powerInfo,
+                           sizeof(PROCESSOR_POWER_INFORMATION) * 64);
 
-  // Check if the TSC implementation works at all
-  if (this->Features.HasTSC &&
-      GetCyclesDifference(SystemInformationImplementation::Delay,
-                          uiMSecPerRepetition) > 0) {
-    for (unsigned int nCounter = 0; nCounter < uiRepetitions; nCounter++) {
-      i64Total += GetCyclesDifference(SystemInformationImplementation::Delay,
-                                      uiMSecPerRepetition);
-      i64Overhead += GetCyclesDifference(
-        SystemInformationImplementation::DelayOverhead, uiMSecPerRepetition);
-    }
-
-    // Calculate the MHz speed.
-    i64Total -= i64Overhead;
-    i64Total /= uiRepetitions;
-    i64Total /= uiMSecPerRepetition;
-    i64Total /= 1000;
-
-    // Save the CPU speed.
-    this->CPUSpeedInMHz = (float)i64Total;
-
+  if (status == 0) {
+    this->CPUSpeedInMHz = (float)powerInfo[0].MaxMhz;
     retrieved = true;
+  }
+
+  if (!retrieved) {
+    unsigned int uiRepetitions = 1;
+    unsigned int uiMSecPerRepetition = 50;
+    __int64 i64Total = 0;
+    __int64 i64Overhead = 0;
+
+    // Check if the TSC implementation works at all
+    if (this->Features.HasTSC &&
+        GetCyclesDifference(SystemInformationImplementation::Delay,
+                            uiMSecPerRepetition) > 0) {
+      for (unsigned int nCounter = 0; nCounter < uiRepetitions; nCounter++) {
+        i64Total += GetCyclesDifference(SystemInformationImplementation::Delay,
+                                        uiMSecPerRepetition);
+        i64Overhead += GetCyclesDifference(
+          SystemInformationImplementation::DelayOverhead, uiMSecPerRepetition);
+      }
+
+      // Calculate the MHz speed.
+      i64Total -= i64Overhead;
+      i64Total /= uiRepetitions;
+      i64Total /= uiMSecPerRepetition;
+      i64Total /= 1000;
+
+      // Save the CPU speed.
+      this->CPUSpeedInMHz = (float)i64Total;
+      retrieved = true;
+    }
   }
 
   // If RDTSC is not supported, we fallback to trying to read this value
@@ -2804,14 +2830,13 @@ bool SystemInformationImplementation::RetrieveCPUPowerManagement()
 
 #if USE_CPUID
 // Used only in USE_CPUID implementation below.
-static void SystemInformationStripLeadingSpace(std::string& str)
+static void SystemInformationTrimSpace(std::string& s)
 {
-  // Because some manufacturers have leading white space - we have to
-  // post-process the name.
-  std::string::size_type pos = str.find_first_not_of(" ");
-  if (pos != std::string::npos) {
-    str.erase(0, pos);
-  }
+  // Because some manufacturers have leading and/or trailing white space,
+  // we have to post-process the name.
+  auto const not_space = [](char c) { return c != ' '; };
+  s.erase(s.begin(), std::find_if(s.begin(), s.end(), not_space));
+  s.erase(std::find_if(s.rbegin(), s.rend(), not_space).base(), s.end());
 }
 #endif
 
@@ -2857,9 +2882,10 @@ bool SystemInformationImplementation::RetrieveExtendedCPUIdentity()
   this->ChipID.ProcessorName = nbuf;
   this->ChipID.ModelName = nbuf;
 
-  // Because some manufacturers have leading white space - we have to
-  // post-process the name.
-  SystemInformationStripLeadingSpace(this->ChipID.ProcessorName);
+  // Because some manufacturers have leading and/or trailing white space,
+  // we have to post-process the names.
+  SystemInformationTrimSpace(this->ChipID.ProcessorName);
+  SystemInformationTrimSpace(this->ChipID.ModelName);
   return true;
 #else
   return false;
@@ -4814,6 +4840,8 @@ std::string SystemInformationImplementation::RunProcess(
       std::cerr << "Unexpected ending state after running " << args[0]
                 << std::endl;
     } break;
+    default:
+      break;
   }
   kwsysProcess_Delete(gp);
   if (result) {

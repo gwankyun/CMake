@@ -7,7 +7,7 @@ Swift_COMPILATION_MODE
 
 The allowed values are:
 
-.. include:: Swift_COMPILATION_MODE-VALUES.txt
+.. include:: include/Swift_COMPILATION_MODE-VALUES.rst
 
 Use :manual:`generator expressions <cmake-generator-expressions(7)>` to support
 per-configuration specification. For example, the code:

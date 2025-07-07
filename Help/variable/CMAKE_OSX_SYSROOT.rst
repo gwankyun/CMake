@@ -28,4 +28,4 @@ Notes:
   if :variable:`CMAKE_OSX_SYSROOT` is empty, CMake will automatically pass
   ``-isysroot`` with the macOS SDK printed by ``xcrun --show-sdk-path``.
 
-.. include:: CMAKE_OSX_VARIABLE.txt
+.. include:: include/CMAKE_OSX_VARIABLE.rst

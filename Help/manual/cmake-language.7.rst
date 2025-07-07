@@ -473,7 +473,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 :manual:`cmake-variables(7)`\ 手册记录了许多由CMake提供的变量，或者由项目代码设置的对\
 CMake有意义的变量。
 
-.. include:: ID_RESERVE.txt
+.. include:: include/ID_RESERVE.rst
 
 .. _`CMake Language Environment Variables`:
 

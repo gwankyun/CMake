@@ -165,10 +165,10 @@ void cmMakefileTargetGenerator::GetTargetLinkFlags(
 void cmMakefileTargetGenerator::CreateRuleFile()
 {
   // Create a directory for this target.
-  this->TargetBuildDirectory =
-    this->LocalGenerator->GetTargetDirectory(this->GeneratorTarget);
   this->TargetBuildDirectoryFull =
-    this->LocalGenerator->ConvertToFullPath(this->TargetBuildDirectory);
+    this->GeneratorTarget->GetSupportDirectory();
+  this->TargetBuildDirectory = this->LocalGenerator->MaybeRelativeToCurBinDir(
+    this->TargetBuildDirectoryFull);
   cmSystemTools::MakeDirectory(this->TargetBuildDirectoryFull);
 
   // Construct the rule file name.
@@ -617,7 +617,9 @@ void cmMakefileTargetGenerator::MacOSXContentGeneratorType::operator()(
   this->Generator->LocalGenerator->AppendEcho(
     commands, copyEcho, cmLocalUnixMakefileGenerator3::EchoBuild);
   std::string copyCommand =
-    cmStrCat("$(CMAKE_COMMAND) -E copy ",
+    cmStrCat(cmSystemTools::FileIsDirectory(input)
+               ? "$(CMAKE_COMMAND) -E copy_directory "
+               : "$(CMAKE_COMMAND) -E copy ",
              this->Generator->LocalGenerator->ConvertToOutputFormat(
                input, cmOutputConverter::SHELL),
              ' ',
@@ -653,8 +655,7 @@ void cmMakefileTargetGenerator::WriteObjectRuleFiles(
   std::string const& objectName =
     this->GeneratorTarget->GetObjectName(&source);
   std::string const obj =
-    cmStrCat(this->LocalGenerator->GetTargetDirectory(this->GeneratorTarget),
-             '/', objectName);
+    cmStrCat(this->TargetBuildDirectory, '/', objectName);
 
   // Avoid generating duplicate rules.
   if (this->ObjectFiles.find(obj) == this->ObjectFiles.end()) {
@@ -751,7 +752,7 @@ void cmMakefileTargetGenerator::WriteObjectRuleFiles(
 
   // Add language-specific flags.
   std::string const langFlags =
-    cmStrCat("$(", lang, "_FLAGS", filterArch, ")");
+    cmStrCat("$(", lang, "_FLAGS", filterArch, ')');
   this->LocalGenerator->AppendFlags(flags, langFlags);
 
   cmGeneratorExpressionInterpreter genexInterpreter(
@@ -1006,7 +1007,7 @@ void cmMakefileTargetGenerator::WriteObjectRuleFiles(
             "CUDA_SEPARABLE_COMPILATION")) {
         std::string const& rdcFlag =
           this->Makefile->GetRequiredDefinition("_CMAKE_CUDA_RDC_FLAG");
-        cudaCompileMode = cmStrCat(cudaCompileMode, rdcFlag, " ");
+        cudaCompileMode = cmStrCat(cudaCompileMode, rdcFlag, ' ');
       }
 
       static std::array<cm::string_view, 4> const compileModes{
@@ -1417,26 +1418,28 @@ std::string cmMakefileTargetGenerator::GetClangTidyReplacementsFilePath(
 {
   (void)config;
   auto const& objectName = this->GeneratorTarget->GetObjectName(&source);
-  auto fixesFile = cmSystemTools::CollapseFullPath(cmStrCat(
-    directory, '/',
-    this->GeneratorTarget->GetLocalGenerator()->MaybeRelativeToTopBinDir(
-      cmStrCat(this->GeneratorTarget->GetLocalGenerator()
-                 ->GetCurrentBinaryDirectory(),
-               '/',
-               this->GeneratorTarget->GetLocalGenerator()->GetTargetDirectory(
-                 this->GeneratorTarget),
-               '/', objectName, ".yaml"))));
+  // NOTE: This may be better to use `this->TargetBuildDirectory` instead of
+  // `MaybeRelativeToTopBinDir(this->TargetBuildDirectoryFull)` here. The main
+  // difference is that the current behavior looks odd to relative
+  // `<LANG>_CLANG_TIDY_EXPORT_FIXES_DIR` settings. Each subdirectory has its
+  // own export fixes directory *and* adds its relative-from-root path
+  // underneath it. However, when using an absolute export fixes directory, the
+  // source directory structure is preserved. The main benefit of the former is
+  // shorter paths everywhere versus the status quo of the existing code.
+  cmLocalGenerator* lg = this->GeneratorTarget->GetLocalGenerator();
+  auto fixesFile = cmSystemTools::CollapseFullPath(
+    cmStrCat(directory, '/',
+             lg->CreateSafeObjectFileName(
+               lg->MaybeRelativeToTopBinDir(this->TargetBuildDirectoryFull)),
+             '/', objectName, ".yaml"));
   return fixesFile;
 }
 
 void cmMakefileTargetGenerator::WriteTargetDependRules()
 {
   // must write the targets depend info file
-  std::string dir =
-    this->LocalGenerator->GetTargetDirectory(this->GeneratorTarget);
-  this->InfoFileNameFull = cmStrCat(dir, "/DependInfo.cmake");
   this->InfoFileNameFull =
-    this->LocalGenerator->ConvertToFullPath(this->InfoFileNameFull);
+    cmStrCat(this->TargetBuildDirectoryFull, "/DependInfo.cmake");
   this->InfoFileStream =
     cm::make_unique<cmGeneratedFileStream>(this->InfoFileNameFull);
   if (!this->InfoFileStream) {
@@ -1711,8 +1714,8 @@ void cmMakefileTargetGenerator::WriteDeviceLinkRule(
   vars.Flags = flags.c_str();
 
   std::string compileCmd = this->GetLinkRule("CMAKE_CUDA_DEVICE_LINK_COMPILE");
-  auto rulePlaceholderExpander = localGen->CreateRulePlaceholderExpander(
-    cmBuildStep::Link, this->GetGeneratorTarget(), "CUDA");
+  auto rulePlaceholderExpander =
+    localGen->CreateRulePlaceholderExpander(cmBuildStep::Link);
   rulePlaceholderExpander->ExpandRuleVariables(localGen, compileCmd, vars);
 
   commands.emplace_back(compileCmd);

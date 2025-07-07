@@ -22,7 +22,7 @@ add_compile_definitions
   元素前面的\ ``-D``\ 将被删除。
 
 .. |command_name| replace:: ``add_compile_definitions``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
 另请参阅
 ^^^^^^^^

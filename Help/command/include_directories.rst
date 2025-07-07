@@ -22,7 +22,7 @@ include_directories
 具体请参阅编译器文档。
 
 .. |command_name| replace:: ``include_directories``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
 .. note::
 

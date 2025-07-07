@@ -148,8 +148,6 @@ add_library(
   cmComputeTargetDepends.cxx
   cmConfigureLog.h
   cmConfigureLog.cxx
-  cmConsoleBuf.h
-  cmConsoleBuf.cxx
   cmConstStack.h
   cmConstStack.tcc
   cmCPackPropertiesGenerator.h
@@ -186,8 +184,6 @@ add_library(
   cmDependsCompiler.h
   cmDocumentation.cxx
   cmDocumentationFormatter.cxx
-  cmDynamicLoader.cxx
-  cmDynamicLoader.h
   cmDyndepCollation.cxx
   cmDyndepCollation.h
   cmELF.h
@@ -203,6 +199,8 @@ add_library(
   cmExportBuildCMakeConfigGenerator.cxx
   cmExportBuildFileGenerator.h
   cmExportBuildFileGenerator.cxx
+  cmExportBuildPackageInfoGenerator.h
+  cmExportBuildPackageInfoGenerator.cxx
   cmExportCMakeConfigGenerator.h
   cmExportCMakeConfigGenerator.cxx
   cmExportFileGenerator.h
@@ -411,8 +409,11 @@ add_library(
   cmNewLineStyle.cxx
   cmOrderDirectories.cxx
   cmOrderDirectories.h
+  cmPackageInfoArguments.cxx
+  cmPackageInfoArguments.h
   cmPackageInfoReader.cxx
   cmPackageInfoReader.h
+  cmPackageState.h
   cmPathResolver.cxx
   cmPathResolver.h
   cmPlistParser.cxx
@@ -467,6 +468,14 @@ add_library(
   cmStateSnapshot.cxx
   cmStateSnapshot.h
   cmStateTypes.h
+  cmStdIoConsole.h
+  cmStdIoConsole.cxx
+  cmStdIoInit.h
+  cmStdIoInit.cxx
+  cmStdIoStream.h
+  cmStdIoStream.cxx
+  cmStdIoTerminal.h
+  cmStdIoTerminal.cxx
   cmStringAlgorithms.cxx
   cmStringAlgorithms.h
   cmSyntheticTargetCache.h

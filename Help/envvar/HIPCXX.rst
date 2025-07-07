@@ -3,7 +3,7 @@ HIPCXX
 
 .. versionadded:: 3.21
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``HIP``\ 语言文件的首选可执行文件。只有CMake在第一次配置时使用它来确定\ ``HIP``\
 编译器，之后\ ``HIP``\ 的值存储在缓存中为\

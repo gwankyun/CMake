@@ -33,7 +33,7 @@ set
   :command:`set(PARENT_SCOPE)`\ 和\ :command:`unset(PARENT_SCOPE)`\ 命令的替代方法，\
   用于更新父作用域。
 
-.. include:: UNSET_NOTE.txt
+.. include:: include/UNSET_NOTE.rst
 
 设置缓存条目
 ^^^^^^^^^^^^^^^

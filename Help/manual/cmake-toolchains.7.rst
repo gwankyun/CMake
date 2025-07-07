@@ -69,7 +69,7 @@ CMake需要一种方法来确定使用哪个编译器来调用链接器。这是
 工具链特性
 ==================
 
-CMake提供了\ :command:`try_compile`\ 命令和包装器宏，如\
+CMake提供了\ :command:`try_compile`\ 命令和模块，如\
 :module:`CheckSourceCompiles`、\ :module:`CheckCXXSymbolExists`\ 和\
 :module:`CheckIncludeFile`\ 来测试各种工具链功能的能力和可用性。这些API以某种方式测试工\
 具链并缓存结果，以便下次CMake运行时不必再次执行测试。
@@ -207,7 +207,7 @@ Windows CE交叉编译
 Windows CE的交叉编译需要在系统上安装相应的SDK。这些SDK通常安装在\
 ``C:/Program Files (x86)/Windows CE Tools/SDKs``\ 下。
 
-为Windows CE配置Visual Studio生成器的工具链文件可能如下所示：
+为Windows CE配置\ :ref:`Visual Studio Generators`\ 的工具链文件可能如下所示：
 
 .. code-block:: cmake
 
@@ -243,7 +243,7 @@ Windows SDK。
 Windows Phone交叉编译
 ---------------------------------
 
-为Windows Phone配置Visual Studio生成器的工具链文件可能是这样的：
+为Windows Phone配置\ :ref:`Visual Studio Generators`\ 的工具链文件可能是这样的：
 
 .. code-block:: cmake
 
@@ -253,7 +253,7 @@ Windows Phone交叉编译
 Windows Store交叉编译
 ---------------------------------
 
-为Windows Store配置Visual Studio生成器的工具链文件可能如下所示：
+为Windows Store配置\ :ref:`Visual Studio Generators`\ 的工具链文件可能如下所示：
 
 .. code-block:: cmake
 

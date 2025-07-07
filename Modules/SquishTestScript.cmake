@@ -6,12 +6,12 @@ SquishTestScript
 ----------------
 .. deprecated:: 3.0
 
-该脚本使用Squish启动GUI测试。你不应该直接调用脚本；相反，你应该通过FindSquish.cmake中定义\
-的SQUISH_ADD_TEST宏来访问它。
+.. note::
 
-This script starts the Squish server, launches the test on the client,
-and finally stops the squish server.  If any of these steps fail
-(including if the tests do not pass) then a fatal error is raised.
+  This module is not intended to be included directly in a CMake project.  It is
+  an internal CMake test script used to launch GUI tests with Squish.  For usage
+  details, refer to the :command:`squish_add_test` command documentation in the
+  ``FindSquish`` module.
 #]=======================================================================]
 
 # print out the variable that we are using

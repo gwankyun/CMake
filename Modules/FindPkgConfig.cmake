@@ -15,8 +15,6 @@ following variables will also be set:
   True if a pkg-config executable was found.
 
 ``PKG_CONFIG_VERSION_STRING``
-  .. versionadded:: 2.8.8
-
   The version of pkg-config that was found.
 
 ``PKG_CONFIG_EXECUTABLE``
@@ -391,7 +389,7 @@ macro(_pkg_set_path_internal)
     # the system
     set(_lib_dirs)
     if(NOT DEFINED CMAKE_SYSTEM_NAME
-        OR (CMAKE_SYSTEM_NAME MATCHES "^(Linux|kFreeBSD|GNU)$"
+        OR (CMAKE_SYSTEM_NAME MATCHES "^(Linux|GNU)$"
             AND NOT CMAKE_CROSSCOMPILING))
       if(EXISTS "/etc/debian_version") # is this a debian system ?
         if(CMAKE_LIBRARY_ARCHITECTURE)

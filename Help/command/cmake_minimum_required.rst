@@ -49,9 +49,9 @@ cmake版本的最低要求。
 
   cmake_policy(VERSION <min>[...<max>])
 
-.. include:: POLICY_VERSION.txt
+.. include:: include/POLICY_VERSION.rst
 
-.. include:: DEPRECATED_POLICY_VERSIONS.txt
+.. include:: include/DEPRECATED_POLICY_VERSIONS.rst
 
 另请参阅
 ^^^^^^^^

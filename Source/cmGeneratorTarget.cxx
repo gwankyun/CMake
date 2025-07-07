@@ -461,7 +461,7 @@ cmValue cmGeneratorTarget::GetFilePrefixInternal(
   if (!targetPrefix) {
     char const* prefixVar = this->Target->GetPrefixVariableInternal(artifact);
     if (!language.empty() && cmNonempty(prefixVar)) {
-      std::string langPrefix = cmStrCat(prefixVar, "_", language);
+      std::string langPrefix = cmStrCat(prefixVar, '_', language);
       targetPrefix = this->Makefile->GetDefinition(langPrefix);
     }
 
@@ -512,7 +512,7 @@ cmValue cmGeneratorTarget::GetFileSuffixInternal(
   if (!targetSuffix) {
     char const* suffixVar = this->Target->GetSuffixVariableInternal(artifact);
     if (!language.empty() && cmNonempty(suffixVar)) {
-      std::string langSuffix = cmStrCat(suffixVar, "_", language);
+      std::string langSuffix = cmStrCat(suffixVar, '_', language);
       targetSuffix = this->Makefile->GetDefinition(langSuffix);
     }
 
@@ -605,7 +605,7 @@ void cmGeneratorTarget::AddSystemIncludeDirectory(std::string const& inc,
       cmSystemTools::ReplaceString(inc_with_config, "$<CONFIG>", config);
       config_upper = cmSystemTools::UpperCase(config);
     }
-    auto const& key = cmStrCat(config_upper, "/", lang);
+    auto const& key = cmStrCat(config_upper, '/', lang);
     this->Target->AddSystemIncludeDirectories({ inc_with_config });
     if (this->SystemIncludesCache.find(key) ==
         this->SystemIncludesCache.end()) {
@@ -1274,16 +1274,20 @@ std::string cmGeneratorTarget::GetCompilePDBName(
   std::string configProp = cmStrCat("COMPILE_PDB_NAME_", configUpper);
   cmValue config_name = this->GetProperty(configProp);
   if (cmNonempty(config_name)) {
+    std::string pdbName = cmGeneratorExpression::Evaluate(
+      *config_name, this->LocalGenerator, config, this);
     NameComponents const& components = GetFullNameInternalComponents(
       config, cmStateEnums::RuntimeBinaryArtifact);
-    return components.prefix + *config_name + ".pdb";
+    return components.prefix + pdbName + ".pdb";
   }
 
   cmValue name = this->GetProperty("COMPILE_PDB_NAME");
   if (cmNonempty(name)) {
+    std::string pdbName = cmGeneratorExpression::Evaluate(
+      *name, this->LocalGenerator, config, this);
     NameComponents const& components = GetFullNameInternalComponents(
       config, cmStateEnums::RuntimeBinaryArtifact);
-    return components.prefix + *name + ".pdb";
+    return components.prefix + pdbName + ".pdb";
   }
 
   return "";
@@ -2847,14 +2851,14 @@ std::string cmGeneratorTarget::GetPchHeader(std::string const& config,
       { "OBJCXX", ".objcxx.hxx" }
     };
 
-    filename = generatorTarget->GetSupportDirectory();
+    filename = generatorTarget->GetCMFSupportDirectory();
 
     if (this->GetGlobalGenerator()->IsMultiConfig()) {
-      filename = cmStrCat(filename, "/", config);
+      filename = cmStrCat(filename, '/', config);
     }
 
     filename =
-      cmStrCat(filename, "/cmake_pch", arch.empty() ? "" : cmStrCat("_", arch),
+      cmStrCat(filename, "/cmake_pch", arch.empty() ? "" : cmStrCat('_', arch),
                languageToExtension.at(language));
 
     std::string const filename_tmp = cmStrCat(filename, ".tmp");
@@ -2940,7 +2944,8 @@ std::string cmGeneratorTarget::GetPchSource(std::string const& config,
         this->GetGlobalGenerator()->FindGeneratorTarget(*pchReuseFrom);
     }
 
-    filename = cmStrCat(generatorTarget->GetSupportDirectory(), "/cmake_pch");
+    filename =
+      cmStrCat(generatorTarget->GetCMFSupportDirectory(), "/cmake_pch");
 
     // For GCC the source extension will be transformed into .h[xx].gch
     if (!this->Makefile->IsOn("CMAKE_LINK_PCH")) {
@@ -2951,14 +2956,14 @@ std::string cmGeneratorTarget::GetPchSource(std::string const& config,
         { "OBJCXX", ".objcxx.hxx.mm" }
       };
 
-      filename = cmStrCat(filename, arch.empty() ? "" : cmStrCat("_", arch),
+      filename = cmStrCat(filename, arch.empty() ? "" : cmStrCat('_', arch),
                           languageToExtension.at(language));
     } else {
       std::map<std::string, std::string> const languageToExtension = {
         { "C", ".c" }, { "CXX", ".cxx" }, { "OBJC", ".m" }, { "OBJCXX", ".mm" }
       };
 
-      filename = cmStrCat(filename, arch.empty() ? "" : cmStrCat("_", arch),
+      filename = cmStrCat(filename, arch.empty() ? "" : cmStrCat('_', arch),
                           languageToExtension.at(language));
     }
 
@@ -3069,7 +3074,7 @@ std::string cmGeneratorTarget::GetPchCreateCompileOptions(
       std::string instantiateOption =
         this->Makefile->GetSafeDefinition(varName);
       if (!instantiateOption.empty()) {
-        createOptionList = cmStrCat(createOptionList, ";", instantiateOption);
+        createOptionList = cmStrCat(createOptionList, ';', instantiateOption);
       }
     }
 
@@ -3077,7 +3082,7 @@ std::string cmGeneratorTarget::GetPchCreateCompileOptions(
       cmStrCat("CMAKE_", language, "_COMPILE_OPTIONS_CREATE_PCH");
 
     createOptionList = cmStrCat(
-      createOptionList, ";", this->Makefile->GetSafeDefinition(createOptVar));
+      createOptionList, ';', this->Makefile->GetSafeDefinition(createOptVar));
 
     std::string const pchHeader = this->GetPchHeader(config, language, arch);
     std::string const pchFile = this->GetPchFile(config, language, arch);
@@ -3109,7 +3114,7 @@ std::string cmGeneratorTarget::GetPchUseCompileOptions(
       this->GetSafeProperty(useOptVar);
 
     useOptionList = cmStrCat(
-      useOptionList, ";",
+      useOptionList, ';',
       useOptionListProperty.empty()
         ? this->Makefile->GetSafeDefinition(cmStrCat("CMAKE_", useOptVar))
         : useOptionListProperty);
@@ -3771,26 +3776,50 @@ bool cmGeneratorTarget::LinkerEnforcesNoAllowShLibUndefined(
 std::string cmGeneratorTarget::GetPDBOutputName(
   std::string const& config) const
 {
-  std::string base =
-    this->GetOutputName(config, cmStateEnums::RuntimeBinaryArtifact);
+  // Lookup/compute/cache the pdb output name for this configuration.
+  auto i = this->PdbOutputNameMap.find(config);
+  if (i == this->PdbOutputNameMap.end()) {
+    // Add empty name in map to detect potential recursion.
+    PdbOutputNameMapType::value_type entry(config, "");
+    i = this->PdbOutputNameMap.insert(entry).first;
 
-  std::vector<std::string> props;
-  std::string configUpper = cmSystemTools::UpperCase(config);
-  if (!configUpper.empty()) {
-    // PDB_NAME_<CONFIG>
-    props.push_back("PDB_NAME_" + configUpper);
-  }
-
-  // PDB_NAME
-  props.emplace_back("PDB_NAME");
-
-  for (std::string const& p : props) {
-    if (cmValue outName = this->GetProperty(p)) {
-      base = *outName;
-      break;
+    // Compute output name.
+    std::vector<std::string> props;
+    std::string configUpper = cmSystemTools::UpperCase(config);
+    if (!configUpper.empty()) {
+      // PDB_NAME_<CONFIG>
+      props.push_back("PDB_NAME_" + configUpper);
     }
+
+    // PDB_NAME
+    props.emplace_back("PDB_NAME");
+
+    std::string outName;
+    for (std::string const& p : props) {
+      if (cmValue outNameProp = this->GetProperty(p)) {
+        outName = *outNameProp;
+        break;
+      }
+    }
+
+    // Now evaluate genex and update the previously-prepared map entry.
+    if (outName.empty()) {
+      i->second =
+        this->GetOutputName(config, cmStateEnums::RuntimeBinaryArtifact) +
+        this->GetFilePostfix(config);
+    } else {
+      i->second =
+        cmGeneratorExpression::Evaluate(outName, this->LocalGenerator, config);
+    }
+  } else if (i->second.empty()) {
+    // An empty map entry indicates we have been called recursively
+    // from the above block.
+    this->LocalGenerator->GetCMakeInstance()->IssueMessage(
+      MessageType::FATAL_ERROR,
+      "Target '" + this->GetName() + "' PDB_NAME depends on itself.",
+      this->GetBacktrace());
   }
-  return base;
+  return i->second;
 }
 
 std::string cmGeneratorTarget::GetPDBName(std::string const& config) const
@@ -3798,22 +3827,9 @@ std::string cmGeneratorTarget::GetPDBName(std::string const& config) const
   NameComponents const& parts = this->GetFullNameInternalComponents(
     config, cmStateEnums::RuntimeBinaryArtifact);
 
-  std::vector<std::string> props;
-  std::string configUpper = cmSystemTools::UpperCase(config);
-  if (!configUpper.empty()) {
-    // PDB_NAME_<CONFIG>
-    props.push_back("PDB_NAME_" + configUpper);
-  }
+  std::string base = this->GetPDBOutputName(config);
 
-  // PDB_NAME
-  props.emplace_back("PDB_NAME");
-
-  for (std::string const& p : props) {
-    if (cmValue outName = this->GetProperty(p)) {
-      return parts.prefix + *outName + ".pdb";
-    }
-  }
-  return parts.prefix + parts.base + ".pdb";
+  return parts.prefix + base + ".pdb";
 }
 
 std::string cmGeneratorTarget::GetObjectDirectory(
@@ -5202,14 +5218,20 @@ bool cmGeneratorTarget::NeedImportLibraryName(std::string const& config) const
 
 std::string cmGeneratorTarget::GetSupportDirectory() const
 {
-  std::string dir = cmStrCat(this->LocalGenerator->GetCurrentBinaryDirectory(),
-                             "/CMakeFiles/", this->GetName());
-#if defined(__VMS)
-  dir += "_dir";
-#else
-  dir += ".dir";
-#endif
-  return dir;
+  cmLocalGenerator* lg = this->GetLocalGenerator();
+  return cmStrCat(lg->GetObjectOutputRoot(), '/',
+                  lg->GetTargetDirectory(this));
+}
+
+std::string cmGeneratorTarget::GetCMFSupportDirectory() const
+{
+  cmLocalGenerator* lg = this->GetLocalGenerator();
+  if (!lg->AlwaysUsesCMFPaths()) {
+    return cmStrCat(lg->GetCurrentBinaryDirectory(), "/CMakeFiles/",
+                    lg->GetTargetDirectory(this));
+  }
+  return cmStrCat(lg->GetObjectOutputRoot(), '/',
+                  lg->GetTargetDirectory(this));
 }
 
 bool cmGeneratorTarget::IsLinkable() const
@@ -5474,7 +5496,7 @@ bool cmGeneratorTarget::AddHeaderSetVerification()
           }
 
           if (fileCgesContextSensitive) {
-            filename = cmStrCat("$<$<CONFIG:", config, ">:", filename, ">");
+            filename = cmStrCat("$<$<CONFIG:", config, ">:", filename, '>');
           }
           verifyTarget->AddSource(filename);
         }
@@ -5755,7 +5777,8 @@ void cmGeneratorTarget::CheckCxxModuleStatus(std::string const& config) const
       cmStrCat("The target named \"", this->GetName(),
                "\" has C++ sources that may use modules, but modules are not "
                "supported by this generator:\n  ",
-               this->GetGlobalGenerator()->GetName(), '\n',
+               this->GetGlobalGenerator()->GetName(),
+               "\n"
                "Modules are supported only by Ninja, Ninja Multi-Config, "
                "and Visual Studio generators for VS 17.4 and newer.  "
                "See the cmake-cxxmodules(7) manual for details.  "
@@ -5986,8 +6009,15 @@ std::string cmGeneratorTarget::GetSwiftModuleName() const
 
 std::string cmGeneratorTarget::GetSwiftModuleFileName() const
 {
-  return this->GetPropertyOrDefault(
+  std::string moduleFilename = this->GetPropertyOrDefault(
     "Swift_MODULE", this->GetSwiftModuleName() + ".swiftmodule");
+  if (this->GetPolicyStatusCMP0195() == cmPolicies::NEW) {
+    if (cmValue moduleTriple =
+          this->Makefile->GetDefinition("CMAKE_Swift_MODULE_TRIPLE")) {
+      moduleFilename += "/" + *moduleTriple + ".swiftmodule";
+    }
+  }
+  return moduleFilename;
 }
 
 std::string cmGeneratorTarget::GetSwiftModuleDirectory(

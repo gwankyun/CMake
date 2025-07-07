@@ -45,6 +45,7 @@ run_cmake(ProjectIsTopLevel)
 run_cmake(ProjectIsTopLevelMultiple)
 run_cmake(ProjectIsTopLevelSubdirectory)
 run_cmake(ProjectTwice)
+run_cmake(Omissions)
 run_cmake(VersionAndLanguagesEmpty)
 run_cmake(VersionEmpty)
 run_cmake(VersionInvalid)
@@ -52,6 +53,19 @@ run_cmake(VersionMissingLanguages)
 run_cmake(VersionMissingValueOkay)
 run_cmake(VersionTwice)
 run_cmake(VersionMax)
+
+set(opts
+  "-DCMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO=b80be207-778e-46ba-8080-b23bba22639e"
+  "-Wno-dev"
+)
+
+run_cmake_with_options(ProjectCompatVersion ${opts})
+run_cmake_with_options(ProjectCompatVersion2 ${opts})
+run_cmake_with_options(ProjectCompatVersionEqual ${opts})
+run_cmake_with_options(ProjectCompatVersionInvalid ${opts})
+run_cmake_with_options(ProjectCompatVersionMissingVersion ${opts})
+run_cmake_with_options(ProjectCompatVersionNewer ${opts})
+run_cmake_with_options(ProjectCompatVersionNoArg ${opts})
 
 run_cmake(CMP0048-NEW)
 

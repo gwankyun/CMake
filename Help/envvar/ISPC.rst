@@ -3,7 +3,7 @@ ISPC
 
 .. versionadded:: 3.19
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``ISPC``\ 语言文件的首选可执行文件。只在CMake第一次配置时使用它来确定\ ``ISPC``\
 编译器，之后\ ``ISPC``\ 的值存储在缓存中为\

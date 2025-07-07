@@ -7,7 +7,7 @@ MSVC_DEBUG_INFORMATION_FORMAT
 
 The allowed values are:
 
-.. include:: MSVC_DEBUG_INFORMATION_FORMAT-VALUES.txt
+.. include:: include/MSVC_DEBUG_INFORMATION_FORMAT-VALUES.rst
 
 Use :manual:`generator expressions <cmake-generator-expressions(7)>` to
 support per-configuration specification.  For example, the code:

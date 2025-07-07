@@ -1,7 +1,7 @@
 RC
 --
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``resource``\ 文件的首选可执行文件。将只被CMake在第一次配置时使用，以确定\
 ``resource``\ 编译器，之后\ ``RC``\ 的值存储在缓存中为\

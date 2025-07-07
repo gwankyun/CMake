@@ -29,6 +29,7 @@
 #include "cmGeneratorExpression.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
+#include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmStringAlgorithms.h"
 #include "cmStringReplaceHelper.h"
@@ -141,8 +142,7 @@ bool HandleHexCommand(std::vector<std::string> const& args,
 
   std::string::size_type hexIndex = 0;
   for (auto const& c : instr) {
-    snprintf(&output[hexIndex], 3, "%.2x",
-             static_cast<unsigned char>(c) & 0xFF);
+    snprintf(&output[hexIndex], 3, "%.2x", c & 0xFFu);
     hexIndex += 2;
   }
 
@@ -171,7 +171,7 @@ bool HandleConfigureCommand(std::vector<std::string> const& args,
     } else if (args[i] == "ESCAPE_QUOTES") {
       escapeQuotes = true;
     } else {
-      status.SetError(cmStrCat("Unrecognized argument \"", args[i], "\""));
+      status.SetError(cmStrCat("Unrecognized argument \"", args[i], '"'));
       return false;
     }
   }
@@ -250,15 +250,7 @@ bool RegexMatch(std::vector<std::string> const& args,
   std::string output;
   if (re.find(input)) {
     status.GetMakefile().StoreMatches(re);
-    std::string::size_type l = re.start();
-    std::string::size_type r = re.end();
-    if (r - l == 0) {
-      std::string e = "sub-command REGEX, mode MATCH regex \"" + regex +
-        "\" matched an empty string.";
-      status.SetError(e);
-      return false;
-    }
-    output = input.substr(l, r - l);
+    output = re.match();
   }
 
   // Store the output in the provided variable.
@@ -288,25 +280,33 @@ bool RegexMatchAll(std::vector<std::string> const& args,
   // Concatenate all the last arguments together.
   std::string input = cmJoin(cmMakeRange(args).advance(4), std::string());
 
+  unsigned optAnchor = 0;
+  if (status.GetMakefile().GetPolicyStatus(cmPolicies::CMP0186) !=
+      cmPolicies::NEW) {
+    optAnchor = cmsys::RegularExpression::BOL_AT_OFFSET;
+  }
+
   // Scan through the input for all matches.
   std::string output;
-  char const* p = input.c_str();
-  while (re.find(p)) {
+  std::string::size_type base = 0;
+  unsigned optNonEmpty = 0;
+  while (re.find(input, base, optAnchor | optNonEmpty)) {
     status.GetMakefile().ClearMatches();
     status.GetMakefile().StoreMatches(re);
-    std::string::size_type l = re.start();
-    std::string::size_type r = re.end();
-    if (r - l == 0) {
-      std::string e = "sub-command REGEX, mode MATCHALL regex \"" + regex +
-        "\" matched an empty string.";
-      status.SetError(e);
-      return false;
-    }
-    if (!output.empty()) {
+    if (!output.empty() || optNonEmpty) {
       output += ";";
     }
-    output += std::string(p + l, r - l);
-    p += r;
+    output += re.match();
+    base = re.end();
+
+    if (re.start() == input.length()) {
+      break;
+    }
+    if (re.start() == re.end()) {
+      optNonEmpty = cmsys::RegularExpression::NONEMPTY_AT_OFFSET;
+    } else {
+      optNonEmpty = 0;
+    }
   }
 
   // Store the output in the provided variable.

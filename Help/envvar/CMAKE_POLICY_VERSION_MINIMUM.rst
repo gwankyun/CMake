@@ -3,7 +3,7 @@ CMAKE_POLICY_VERSION_MINIMUM
 
 .. versionadded:: 4.0
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 当首次创建新的构建树且未给出显式配置时，\ :variable:`CMAKE_POLICY_VERSION_MINIMUM`\
 的默认值。在现有构建树的后续运行中，该值会作为\ :variable:`CMAKE_POLICY_VERSION_MINIMUM`\

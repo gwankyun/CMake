@@ -1,7 +1,7 @@
 DESTDIR
 -------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 在UNIX上，可以使用\ ``DESTDIR``\ 机制来重新定位整个安装。\ ``DESTDIR``\ 表示目的目录。\
 它通常被打包者用来在暂存目录中安装软件。

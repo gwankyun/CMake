@@ -3,6 +3,7 @@
 #include "cmcmd.h"
 
 #include <functional>
+#include <iomanip>
 #include <iterator>
 
 #include <cm/optional>
@@ -12,19 +13,22 @@
 #include <fcntl.h>
 
 #include "cmCommandLineArgument.h"
-#include "cmConsoleBuf.h"
 #include "cmCryptoHash.h"
 #include "cmDuration.h"
 #include "cmGlobalGenerator.h"
 #include "cmList.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
+#include "cmProcessOutput.h"
 #include "cmQtAutoMocUic.h"
 #include "cmQtAutoRcc.h"
 #include "cmRange.h"
 #include "cmState.h"
 #include "cmStateDirectory.h"
 #include "cmStateSnapshot.h"
+#include "cmStdIoConsole.h"
+#include "cmStdIoStream.h"
+#include "cmStdIoTerminal.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTransformDepfile.h"
@@ -72,7 +76,6 @@
 #include "cmsys/Directory.hxx"
 #include "cmsys/FStream.hxx"
 #include "cmsys/RegularExpression.hxx"
-#include "cmsys/Terminal.h"
 
 int cmcmd_cmake_ninja_depends(std::vector<std::string>::const_iterator argBeg,
                               std::vector<std::string>::const_iterator argEnd);
@@ -513,6 +516,55 @@ int HandleCppCheck(std::string const& runCmd, std::string const& sourceFile,
   return ret;
 }
 
+int HandleIcstat(std::string const& runCmd, std::string const& sourceFile,
+                 std::vector<std::string> const& orig_cmd)
+{
+  // Construct the IAR C-STAT command line.
+  cmList icstat_cmd{ runCmd, cmList::EmptyElements::Yes };
+  std::string icstat_analyze{ "analyze" };
+  std::string icstat_dashdash{ "--" };
+  std::string stdOut;
+  std::string stdErr;
+  int ret;
+
+  icstat_cmd.push_back(icstat_analyze);
+  icstat_cmd.push_back(sourceFile);
+  icstat_cmd.push_back(icstat_dashdash);
+
+  for (auto const& cmd : orig_cmd) {
+    icstat_cmd.push_back(cmd);
+  }
+
+  // Create the default manifest ruleset file when not found
+  if (!cmSystemTools::FileExists("cstat_sel_checks.txt")) {
+    std::string ichecks_cmd = cmSystemTools::GetFilenamePath(orig_cmd[0]);
+    ichecks_cmd = cmStrCat(ichecks_cmd, "/ichecks --default stdchecks");
+    if (!cmSystemTools::RunSingleCommand(ichecks_cmd, &stdOut, &stdErr, &ret,
+                                         nullptr,
+                                         cmSystemTools::OUTPUT_NONE)) {
+      std::cerr << "Error generating default manifest file '" << ichecks_cmd
+                << "'. " << stdOut << '\n';
+      return 1;
+    }
+  }
+
+  // Run the IAR C-STAT command line. Capture its output.
+  if (!cmSystemTools::RunSingleCommand(icstat_cmd, &stdOut, &stdErr, &ret,
+                                       nullptr, cmSystemTools::OUTPUT_NONE)) {
+    std::cerr << "Error running '" << icstat_cmd[0] << "': " << stdOut << '\n';
+    return 1;
+  }
+  if (ret == 0) {
+    std::cerr << "Warning: C-STAT static analysis reported diagnostics:\n";
+  } else {
+    std::cerr << "Error: C-STAT static analysis reported failure:\n";
+  }
+  std::cerr << stdOut;
+  std::cerr << stdErr;
+
+  return ret;
+}
+
 using CoCompileHandler = int (*)(std::string const&, std::string const&,
                                  std::vector<std::string> const&);
 
@@ -523,10 +575,11 @@ struct CoCompiler
   bool NoOriginalCommand;
 };
 
-std::array<CoCompiler, 5> const CoCompilers = {
+std::array<CoCompiler, 6> const CoCompilers = {
   { // Table of options and handlers.
     { "--cppcheck=", HandleCppCheck, false },
     { "--cpplint=", HandleCppLint, false },
+    { "--icstat=", HandleIcstat, false },
     { "--iwyu=", HandleIWYU, false },
     { "--lwyu=", HandleLWYU, true },
     { "--tidy=", HandleTidy, false } }
@@ -638,7 +691,7 @@ int cmcmd::HandleCoCompileCommands(std::vector<std::string> const& args)
 }
 
 int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
-                               std::unique_ptr<cmConsoleBuf> consoleBuf)
+                               cm::optional<cm::StdIo::Console> console)
 {
   // IF YOU ADD A NEW COMMAND, DOCUMENT IT ABOVE and in cmakemain.cxx
   if (args.size() > 1) {
@@ -1140,7 +1193,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         if (arg == "-") {
           doing_options = false;
           // Destroy console buffers to drop cout/cerr encoding transform.
-          consoleBuf.reset();
+          console.reset();
           cmCatFile(arg);
         } else if (doing_options && cmHasLiteralPrefix(arg, "-")) {
           if (arg == "--") {
@@ -1164,7 +1217,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
           // Ignore empty files, this is not an error
         } else {
           // Destroy console buffers to drop cout/cerr encoding transform.
-          consoleBuf.reset();
+          console.reset();
           cmCatFile(arg);
         }
       }
@@ -1413,11 +1466,11 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
     }
 
     if (args[1] == "vs_link_exe") {
-      return cmcmd::VisualStudioLink(args, 1);
+      return cmcmd::VisualStudioLink(args, 1, std::move(console));
     }
 
     if (args[1] == "vs_link_dll") {
-      return cmcmd::VisualStudioLink(args, 2);
+      return cmcmd::VisualStudioLink(args, 2, std::move(console));
     }
 
     if (args[1] == "cmake_llvm_rc") {
@@ -1808,8 +1861,8 @@ static void cmcmdProgressReport(std::string const& dir, std::string const& num)
   int fileNum =
     static_cast<int>(cmsys::Directory::GetNumberOfFilesInDirectory(dirName));
   if (count > 0) {
-    // print the progress
-    fprintf(stdout, "[%3i%%] ", ((fileNum - 3) * 100) / count);
+    int const percent = ((fileNum - 3) * 100) / count;
+    std::cout << '[' << std::setw(3) << percent << "%] ";
   }
 }
 
@@ -1820,7 +1873,8 @@ int cmcmd::ExecuteEchoColor(std::vector<std::string> const& args)
   //   args[1] == cmake_echo_color
 
   bool enabled = true;
-  int color = cmsysTerminal_Color_Normal;
+  static cm::StdIo::TermAttrSet const noAttrs;
+  cm::StdIo::TermAttrSet attrs = cm::StdIo::TermAttr::Normal;
   bool newline = true;
   std::string progressDir;
   for (auto const& arg : cmMakeRange(args).advance(2)) {
@@ -1838,32 +1892,34 @@ int cmcmd::ExecuteEchoColor(std::vector<std::string> const& args)
         cmcmdProgressReport(progressDir, progressNum);
       }
     } else if (arg == "--normal") {
-      color = cmsysTerminal_Color_Normal;
+      attrs = cm::StdIo::TermAttr::Normal;
     } else if (arg == "--black") {
-      color = cmsysTerminal_Color_ForegroundBlack;
+      attrs = cm::StdIo::TermAttr::ForegroundBlack;
     } else if (arg == "--red") {
-      color = cmsysTerminal_Color_ForegroundRed;
+      attrs = cm::StdIo::TermAttr::ForegroundRed;
     } else if (arg == "--green") {
-      color = cmsysTerminal_Color_ForegroundGreen;
+      attrs = cm::StdIo::TermAttr::ForegroundGreen;
     } else if (arg == "--yellow") {
-      color = cmsysTerminal_Color_ForegroundYellow;
+      attrs = cm::StdIo::TermAttr::ForegroundYellow;
     } else if (arg == "--blue") {
-      color = cmsysTerminal_Color_ForegroundBlue;
+      attrs = cm::StdIo::TermAttr::ForegroundBlue;
     } else if (arg == "--magenta") {
-      color = cmsysTerminal_Color_ForegroundMagenta;
+      attrs = cm::StdIo::TermAttr::ForegroundMagenta;
     } else if (arg == "--cyan") {
-      color = cmsysTerminal_Color_ForegroundCyan;
+      attrs = cm::StdIo::TermAttr::ForegroundCyan;
     } else if (arg == "--white") {
-      color = cmsysTerminal_Color_ForegroundWhite;
+      attrs = cm::StdIo::TermAttr::ForegroundWhite;
     } else if (arg == "--bold") {
-      color |= cmsysTerminal_Color_ForegroundBold;
+      attrs |= cm::StdIo::TermAttr::ForegroundBold;
     } else if (arg == "--no-newline") {
       newline = false;
     } else if (arg == "--newline") {
       newline = true;
     } else {
-      // Color is enabled.  Print with the current color.
-      cmSystemTools::MakefileColorEcho(color, arg.c_str(), newline, enabled);
+      Print(cm::StdIo::Out(), enabled ? attrs : noAttrs, arg);
+      if (newline) {
+        std::cout << std::endl;
+      }
     }
   }
 
@@ -2169,13 +2225,16 @@ private:
 // For visual studio 2005 and newer manifest files need to be embedded into
 // exe and dll's.  This code does that in such a way that incremental linking
 // still works.
-int cmcmd::VisualStudioLink(std::vector<std::string> const& args, int type)
+int cmcmd::VisualStudioLink(std::vector<std::string> const& args, int type,
+                            cm::optional<cm::StdIo::Console> console)
 {
-  // Replace streambuf so we output in the system codepage. CMake is set up
-  // to output in Unicode (see SetUTF8Pipes) but the Visual Studio linker
-  // outputs using the system codepage so we need to change behavior when
-  // we run the link command.
-  cmConsoleBuf consoleBuf;
+  // MSVC tools print output in the language specified by the VSLANG
+  // environment variable, and encoded in the console output code page.
+  // Since vs_link_{exe,dll} just wraps these, pass through that encoding.
+  // RunCommand tells RunSingleCommand to *not* convert encoding, so
+  // we buffer the output in its original encoding instead of UTF-8.
+  // Drop our output encoding conversion so we print with original encoding.
+  console.reset();
 
   if (args.size() < 2) {
     return -1;
@@ -2235,6 +2294,9 @@ static bool RunCommand(char const* comment,
                        NumberFormat exitFormat, int* retCodeOut = nullptr,
                        bool (*retCodeOkay)(int) = nullptr)
 {
+  // See comment in VisualStudioLink for why we suppress encoding conversion.
+  cmProcessOutput::Encoding const encoding = cmProcessOutput::None;
+
   if (verbose) {
     std::cout << comment << ":\n";
     std::cout << cmJoin(command, " ") << '\n';
@@ -2242,7 +2304,8 @@ static bool RunCommand(char const* comment,
   std::string output;
   int retCode = 0;
   bool commandResult = cmSystemTools::RunSingleCommand(
-    command, &output, &output, &retCode, nullptr, cmSystemTools::OUTPUT_NONE);
+    command, &output, &output, &retCode, nullptr, cmSystemTools::OUTPUT_NONE,
+    cmDuration::zero(), encoding);
   bool const retCodeSuccess =
     retCode == 0 || (retCodeOkay && retCodeOkay(retCode));
   bool const success = commandResult && retCodeSuccess;

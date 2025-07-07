@@ -31,11 +31,11 @@ CMake策略机制旨在确保在CMake新版本引入行为变更时，现有项�
 如果运行的CMake版本早于3.12，额外的\ ``...``\ 会被视为版本号的分隔符，导致\ ``...<max>``\
 部分被忽略，从而保留3.12之前基于\ ``<min>``\ 设置策略的行为。
 
-.. include:: POLICY_VERSION.txt
+.. include:: include/POLICY_VERSION.rst
 
 请注意，\ :command:`cmake_minimum_required(VERSION)`\ 命令也会隐式调用\ ``cmake_policy(VERSION)``。
 
-.. include:: DEPRECATED_POLICY_VERSIONS.txt
+.. include:: include/DEPRECATED_POLICY_VERSIONS.rst
 
 显式设置策略
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -47,7 +47,7 @@ CMake策略机制旨在确保在CMake新版本引入行为变更时，现有项�
 依赖于特定策略旧行为的项目可以通过将策略状态设置为\ ``OLD``\ 来消除策略警告。\
 或者，用户可以修改项目以适应新行为，并将策略状态设置为\ ``NEW``。
 
-.. include:: ../policy/DEPRECATED.txt
+.. include:: ../policy/include/DEPRECATED.rst
 
 检查策略设置
 ^^^^^^^^^^^^^^^^^^^^^^^^

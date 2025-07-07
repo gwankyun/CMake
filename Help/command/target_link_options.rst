@@ -36,13 +36,13 @@ target_link_options
   :ref:`IMPORTED目标 <Imported Targets>`\ 只支持\ ``INTERFACE``\ 项。
 
 .. |command_name| replace:: ``target_link_options``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
-.. include:: DEVICE_LINK_OPTIONS.txt
+.. include:: include/DEVICE_LINK_OPTIONS.rst
 
-.. include:: OPTIONS_SHELL.txt
+.. include:: include/OPTIONS_SHELL.rst
 
-.. include:: LINK_OPTIONS_LINKER.txt
+.. include:: include/LINK_OPTIONS_LINKER.rst
 
 另请参阅
 ^^^^^^^^
@@ -58,3 +58,6 @@ target_link_options
 
 * :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
   添加传递给编译器所有调用的语言范围内的标志。这包括驱动编译的调用和驱动链接的调用。
+
+* The :module:`CheckLinkerFlag` module to check whether a linker flag is
+  supported by the compiler.

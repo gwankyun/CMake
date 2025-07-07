@@ -1,0 +1,6 @@
+CMake >= |disallowed_version|\ 时希望这个命令永远不要被调用。这个策略的\ ``OLD``\ 行为\
+是允许命令被调用。这个策略的\ ``NEW``\ 行为是在调用该命令时发出\ ``FATAL_ERROR``。
+
+.. |INTRODUCED_IN_CMAKE_VERSION| replace:: |disallowed_version|
+.. |WARNS_OR_DOES_NOT_WARN| replace:: warns
+.. include:: include/STANDARD_ADVICE.rst

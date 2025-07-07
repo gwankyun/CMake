@@ -1,2 +1,0 @@
-﻿.. |tutorial_source| replace::
-  此教程的文档与源码例子可以在CMake的源码树的\ ``Help/guide/tutorial``\ 目录找到。

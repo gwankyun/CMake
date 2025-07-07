@@ -8,4 +8,4 @@ CTEST_CUSTOM_TEST_OUTPUT_TRUNCATION
 设置测试输出截断模式。默认情况下，输出的\ ``tail``\ 将被截断。其他可能的值是\ ``middle``\
 和\ ``head``。
 
-.. include:: CTEST_CUSTOM_XXX.txt
+.. include:: include/CTEST_CUSTOM_XXX.rst

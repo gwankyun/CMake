@@ -12,7 +12,7 @@ cmake-variables(7)
 有关变量的一般信息，请参阅cmake语言手册中的\ :ref:`变量 <CMake Language Variables>`\
 部分。
 
-.. include:: ID_RESERVE.txt
+.. include:: include/ID_RESERVE.rst
 
 信息提供变量
 ==================================
@@ -29,7 +29,6 @@ cmake-variables(7)
    /variable/CMAKE_CACHE_MINOR_VERSION
    /variable/CMAKE_CACHE_PATCH_VERSION
    /variable/CMAKE_CACHEFILE_DIR
-   /variable/CMAKE_CFG_INTDIR
    /variable/CMAKE_COMMAND
    /variable/CMAKE_CPACK_COMMAND
    /variable/CMAKE_CROSSCOMPILING
@@ -55,10 +54,12 @@ cmake-variables(7)
    /variable/CMAKE_EXECUTABLE_SUFFIX_LANG
    /variable/CMAKE_EXTRA_SHARED_LIBRARY_SUFFIXES
    /variable/CMAKE_FIND_DEBUG_MODE
+   /variable/CMAKE_FIND_DEBUG_MODE_NO_IMPLICIT_CONFIGURE_LOG
    /variable/CMAKE_FIND_PACKAGE_NAME
    /variable/CMAKE_FIND_PACKAGE_REDIRECTS_DIR
    /variable/CMAKE_FIND_PACKAGE_SORT_DIRECTION
    /variable/CMAKE_FIND_PACKAGE_SORT_ORDER
+   /variable/CMAKE_FIND_REQUIRED
    /variable/CMAKE_GENERATOR
    /variable/CMAKE_GENERATOR_INSTANCE
    /variable/CMAKE_GENERATOR_PLATFORM
@@ -70,6 +71,7 @@ cmake-variables(7)
    /variable/CMAKE_JOB_POOL_PRECOMPILE_HEADER
    /variable/CMAKE_JOB_POOLS
    /variable/CMAKE_LANG_COMPILER_AR
+   /variable/CMAKE_LANG_COMPILER_ARCHITECTURE_ID
    /variable/CMAKE_LANG_COMPILER_FRONTEND_VARIANT
    /variable/CMAKE_LANG_COMPILER_LINKER
    /variable/CMAKE_LANG_COMPILER_LINKER_FRONTEND_VARIANT
@@ -102,6 +104,7 @@ cmake-variables(7)
    /variable/CMAKE_PROJECT_VERSION_MINOR
    /variable/CMAKE_PROJECT_VERSION_PATCH
    /variable/CMAKE_PROJECT_VERSION_TWEAK
+   /variable/CMAKE_PROJECT_COMPAT_VERSION
    /variable/CMAKE_RANLIB
    /variable/CMAKE_ROOT
    /variable/CMAKE_RULE_MESSAGES
@@ -158,6 +161,7 @@ cmake-variables(7)
    /variable/PROJECT-NAME_VERSION_MINOR
    /variable/PROJECT-NAME_VERSION_PATCH
    /variable/PROJECT-NAME_VERSION_TWEAK
+   /variable/PROJECT-NAME_COMPAT_VERSION
    /variable/PROJECT_BINARY_DIR
    /variable/PROJECT_DESCRIPTION
    /variable/PROJECT_HOMEPAGE_URL
@@ -169,6 +173,7 @@ cmake-variables(7)
    /variable/PROJECT_VERSION_MINOR
    /variable/PROJECT_VERSION_PATCH
    /variable/PROJECT_VERSION_TWEAK
+   /variable/PROJECT_COMPAT_VERSION
 
 改变行为变量
 ==============================
@@ -421,6 +426,7 @@ cmake-variables(7)
    /variable/CMAKE_AUTOMOC
    /variable/CMAKE_AUTOMOC_COMPILER_PREDEFINES
    /variable/CMAKE_AUTOMOC_DEPEND_FILTERS
+   /variable/CMAKE_AUTOMOC_INCLUDE_DIRECTORIES
    /variable/CMAKE_AUTOMOC_MACRO_NAMES
    /variable/CMAKE_AUTOMOC_MOC_OPTIONS
    /variable/CMAKE_AUTOMOC_PATH_PREFIX
@@ -486,6 +492,8 @@ cmake-variables(7)
    /variable/CMAKE_LANG_COMPILER_LAUNCHER
    /variable/CMAKE_LANG_CPPCHECK
    /variable/CMAKE_LANG_CPPLINT
+   /variable/CMAKE_LANG_LINK_DEF_FILE_FLAG
+   /variable/CMAKE_LANG_ICSTAT
    /variable/CMAKE_LANG_INCLUDE_WHAT_YOU_USE
    /variable/CMAKE_LANG_LINK_GROUP_USING_FEATURE
    /variable/CMAKE_LANG_LINK_GROUP_USING_FEATURE_SUPPORTED
@@ -811,7 +819,6 @@ CMake有许多内部变量。它们中的大部分都未公开。然而，其中
    /variable/CMAKE_HOME_DIRECTORY
    /variable/CMAKE_INTERNAL_PLATFORM_ABI
    /variable/CMAKE_LANG_COMPILER_ABI
-   /variable/CMAKE_LANG_COMPILER_ARCHITECTURE_ID
    /variable/CMAKE_LANG_COMPILER_VERSION_INTERNAL
    /variable/CMAKE_LANG_LINKER_PREFERENCE
    /variable/CMAKE_LANG_LINKER_PREFERENCE_PROPAGATES
@@ -825,6 +832,7 @@ CMake有许多内部变量。它们中的大部分都未公开。然而，其中
 .. toctree::
    :maxdepth: 1
 
+   /variable/CMAKE_CFG_INTDIR
    /variable/CMAKE_EXTRA_GENERATOR
 
 废弃的改变行为变量

@@ -3,7 +3,7 @@ CUDACXX
 
 .. versionadded:: 3.8
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``CUDA``\ 语言文件的首选可执行文件。将仅由CMake在第一次配置中使用，以确定\ ``CUDA``\
 编译器，之后\ ``CUDA``\ 的值存储在缓存中作为\

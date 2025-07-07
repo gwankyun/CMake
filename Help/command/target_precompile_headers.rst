@@ -59,12 +59,14 @@ target_precompile_headers
   )
 
 .. |command_name| replace:: ``target_precompile_headers``
-.. |more_see_also| replace:: :genex:`$<COMPILE_LANGUAGE:...>`\ 生成器表达式特别适用\
-   于指定特定于语言的头文件，只对一种语言进行预编译（例如\ ``CXX`` ，而不是\ ``C``）。\
+.. |more_see_also| replace:: The :genex:`$<COMPILE_LANGUAGE:...>
+   <COMPILE_LANGUAGE:languages>` generator
+   expression is particularly useful for specifying a language-specific header
+   to precompile for only one language (e.g. ``CXX`` and not ``C``).\
    在这种情况下，没有显式用双引号或尖括号括起来的头文件名称必须用绝对路径指定。此外，当在\
    生成器表达式中指定尖括号时，请确保将结束的\ ``>``\ 编码为\ :genex:`$<ANGLE-R>`。例如：
-.. include:: GENEX_NOTE.txt
-   :start-line: 1
+.. include:: include/GENEX_NOTE.rst
+   :start-line: 2
 
 .. code-block:: cmake
 

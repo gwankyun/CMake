@@ -554,8 +554,6 @@ public:
                          cmTarExtractTimestamps extractTimestamps,
                          bool verbose);
 
-  static void EnsureStdPipes();
-
   /** Random number generation.  */
   static unsigned int RandomSeed();
   static unsigned int RandomNumber();
@@ -590,10 +588,6 @@ public:
   /** The logical working directory may contain symlinks but must not
       contain any '../' path components.  */
   static cmsys::Status SetLogicalWorkingDirectory(std::string const& lwd);
-
-  /** Echo a message in color using KWSys's Terminal cprintf.  */
-  static void MakefileColorEcho(int color, char const* message, bool newLine,
-                                bool enabled);
 
   /** Try to guess the soname of a shared library.  */
   static bool GuessLibrarySOName(std::string const& fullPath,

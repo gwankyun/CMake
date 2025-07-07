@@ -10,30 +10,33 @@ FindEXPAT
 Imported Targets
 ^^^^^^^^^^^^^^^^
 
-.. versionadded:: 3.10
-
-This module defines the following :prop_tgt:`IMPORTED` targets:
+This module provides the following :ref:`Imported Targets`:
 
 ``EXPAT::EXPAT``
-  The Expat ``expat`` library, if found.
+  .. versionadded:: 3.10
+
+  Target encapsulating the Expat library (``expat``) usage requirements.  This
+  target is available only if Expat is found.
 
 Result Variables
 ^^^^^^^^^^^^^^^^
 
-This module will set the following variables in your project:
+This module sets the following variables:
 
 ``EXPAT_INCLUDE_DIRS``
-  where to find expat.h, etc.
+  Include directories containing ``expat.h`` and related headers needed to use
+  Expat.
 ``EXPAT_LIBRARIES``
-  the libraries to link against to use Expat.
+  Libraries needed to link against to use Expat.
 ``EXPAT_FOUND``
-  true if the Expat headers and libraries were found.
+  Boolean indicating whether the Expat is found.
 
 Hints
 ^^^^^
 
-``EXPAT_USE_STATIC_LIBS``
+This module accepts the following variables:
 
+``EXPAT_USE_STATIC_LIBS``
   .. versionadded:: 3.28
 
   Set to ``TRUE`` to use static libraries.
@@ -42,6 +45,15 @@ Hints
 
     Implemented on non-Windows platforms.
 
+Examples
+^^^^^^^^
+
+Finding Expat library and linking it to a project target:
+
+.. code-block:: cmake
+
+  find_package(EXPAT)
+  target_link_libraries(project_target PRIVATE EXPAT::EXPAT)
 #]=======================================================================]
 
 cmake_policy(PUSH)

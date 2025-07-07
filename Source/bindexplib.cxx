@@ -254,7 +254,8 @@ public:
            */
           if (pSymbolTable->N.Name.Short != 0) {
             symbol.clear();
-            symbol.insert(0, (char const*)pSymbolTable->N.ShortName, 8);
+            symbol.insert(0, (char const*)pSymbolTable->N.ShortName,
+                          strnlen((char const*)pSymbolTable->N.ShortName, 8));
           } else {
             symbol = stringTable + pSymbolTable->N.Name.Long;
           }
@@ -289,9 +290,11 @@ public:
               symbol.compare(0, 4, vectorPrefix)) {
             SectChar = this->SectionHeaders[pSymbolTable->SectionNumber - 1]
                          .Characteristics;
-            // skip symbols containing a dot or are from managed code
+            // Skip symbols containing a dot, are from managed code,
+            // or are C++ operators incorrectly declared extern "C".
             if (symbol.find('.') == std::string::npos &&
-                !SymbolIsFromManagedCode(symbol)) {
+                !SymbolIsFromManagedCode(symbol) &&
+                !SymbolIsOperatorExternC(symbol)) {
               // skip arm64ec thunk symbols
               if (this->SymbolArch != Arch::ARM64EC ||
                   (symbol.find("$ientry_thunk") == std::string::npos &&
@@ -334,6 +337,12 @@ private:
     return symbol == "__t2m" || symbol == "__m2mep" || symbol == "__mep" ||
       symbol.find("$$F") != std::string::npos ||
       symbol.find("$$J") != std::string::npos;
+  }
+
+  bool SymbolIsOperatorExternC(std::string const& symbol)
+  {
+    return symbol.find_first_not_of("=<>+-*/%,?|~!^&[]()") ==
+      std::string::npos;
   }
 
   std::set<std::string>& Symbols;
@@ -469,7 +478,7 @@ static bool DumpFile(std::string const& nmPath, char const* filename,
       // check for /bigobj and llvm LTO format
       cmANON_OBJECT_HEADER_BIGOBJ* h =
         (cmANON_OBJECT_HEADER_BIGOBJ*)lpFileBase;
-      if (h->Sig1 == 0x0 && h->Sig2 == 0xffff) {
+      if (h->Sig1 == 0x0 && h->Sig2 == 0xffff && h->Version >= 2) {
         // bigobj
         DumpSymbols<cmANON_OBJECT_HEADER_BIGOBJ, cmIMAGE_SYMBOL_EX>
           symbolDumper(

@@ -3,7 +3,7 @@
   "name": "Repeat",
   "cps_path": "@prefix@/cps",
   "components": {
-    "Repeat": {
+    "Base": {
       "type": "interface"
     }
   }

@@ -246,7 +246,7 @@
 .windows_inteloneapi_ninja:
     extends:
         - .windows_ninja
-        - .windows_vcvarsall_vs2022_x64_msvc14.43
+        - .windows_vcvarsall_vs2022_x64
 
     variables:
         CMAKE_CONFIGURATION: windows_inteloneapi_ninja
@@ -315,6 +315,14 @@
         CMAKE_GENERATOR: "MSYS Makefiles"
 
 ## Tags
+
+.windows_x86_64_tags_nonconcurrent_sign:
+    tags:
+        - cmake # Since this is a bare runner, pin to a project.
+        - windows-x86_64
+        - shell
+        - sign-windows-v1
+        - nonconcurrent
 
 .windows_x86_64_tags_nonconcurrent_vs2022:
     tags:
@@ -426,6 +434,18 @@
         - sccache --show-stats
         - sccache --stop-server
 
+    interruptible: true
+
+.cmake_package_windows:
+    stage: package
+    environment:
+        name: sign-windows
+    script:
+        - . .gitlab/ci/env.ps1
+        - . .gitlab/ci/signtool-env.ps1
+        - . .gitlab/ci/cmake-env.ps1
+        - . .gitlab/ci/wix4-env.ps1
+        - . .gitlab/ci/package_windows.ps1
     interruptible: true
 
 .cmake_test_windows:

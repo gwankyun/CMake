@@ -25,7 +25,6 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
-#include <cm3p/curl/curl.h>
 #include <cm3p/json/value.h>
 #include <cm3p/uv.h>
 #include <cm3p/zlib.h>
@@ -35,11 +34,11 @@
 #include "cmsys/FStream.hxx"
 #include "cmsys/RegularExpression.hxx"
 #include "cmsys/SystemInformation.hxx"
-#if defined(_WIN32)
-#  include <windows.h> // IWYU pragma: keep
-#else
+#ifndef _WIN32
 #  include <unistd.h> // IWYU pragma: keep
 #endif
+
+#include "cm_get_date.h"
 
 #include "cmCMakePresetsGraph.h"
 #include "cmCTestBuildAndTest.h"
@@ -47,7 +46,6 @@
 #include "cmCTestTestHandler.h"
 #include "cmCTestTypes.h"
 #include "cmCommandLineArgument.h"
-#include "cmDynamicLoader.h"
 #include "cmExecutionStatus.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGlobalGenerator.h"
@@ -61,6 +59,7 @@
 #include "cmState.h"
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
+#include "cmStdIoStream.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmUVHandlePtr.h"
@@ -204,23 +203,21 @@ struct tm* cmCTest::GetNightlyTime(std::string const& str, bool tomorrowtag)
   struct tm* lctime;
   time_t tctime = time(nullptr);
   lctime = gmtime(&tctime);
-  char buf[1024];
-  // add todays year day and month to the time in str because
-  // curl_getdate no longer assumes the day is today
-  std::snprintf(buf, sizeof(buf), "%d%02d%02d %s", lctime->tm_year + 1900,
-                lctime->tm_mon + 1, lctime->tm_mday, str.c_str());
   cmCTestLog(this, OUTPUT,
              "Determine Nightly Start Time" << std::endl
                                             << "   Specified time: " << str
                                             << std::endl);
-  // Convert the nightly start time to seconds. Since we are
-  // providing only a time and a timezone, the current date of
+  // Convert the nightly start time to seconds. The current date of
   // the local machine is assumed. Consequently, nightlySeconds
   // is the time at which the nightly dashboard was opened or
   // will be opened on the date of the current client machine.
   // As such, this time may be in the past or in the future.
-  time_t ntime = curl_getdate(buf, &tctime);
-  cmCTestLog(this, DEBUG, "   Get curl time: " << ntime << std::endl);
+  char buf[1024];
+  std::snprintf(buf, sizeof(buf), "%d%02d%02d %s", lctime->tm_year + 1900,
+                lctime->tm_mon + 1, lctime->tm_mday, str.c_str());
+  time_t ntime = cm_get_date(tctime, buf);
+  cmCTestLog(this, DEBUG,
+             "   Get the nightly start time: " << ntime << std::endl);
   tctime = time(nullptr);
   cmCTestLog(this, DEBUG, "   Get the current time: " << tctime << std::endl);
 
@@ -1489,28 +1486,9 @@ bool cmCTest::CheckArgument(std::string const& arg, cm::string_view varg1,
   return (arg == varg1) || (varg2 && arg == varg2);
 }
 
-#if !defined(_WIN32)
-bool cmCTest::ConsoleIsNotDumb()
-{
-  std::string term_env_variable;
-  if (cmSystemTools::GetEnv("TERM", term_env_variable)) {
-    return isatty(1) && term_env_variable != "dumb";
-  }
-  return false;
-}
-#endif
-
 bool cmCTest::ProgressOutputSupportedByConsole()
 {
-#if defined(_WIN32)
-  // On Windows we need a console buffer.
-  void* console = GetStdHandle(STD_OUTPUT_HANDLE);
-  CONSOLE_SCREEN_BUFFER_INFO csbi;
-  return GetConsoleScreenBufferInfo(console, &csbi);
-#else
-  // On UNIX we need a non-dumb tty.
-  return ConsoleIsNotDumb();
-#endif
+  return cm::StdIo::Out().Kind() == cm::StdIo::TermKind::VT100;
 }
 
 bool cmCTest::ColoredOutputSupportedByConsole()
@@ -1524,13 +1502,7 @@ bool cmCTest::ColoredOutputSupportedByConsole()
   if (cmSystemTools::GetEnv("CLICOLOR", clicolor) && clicolor == "0") {
     return false;
   }
-#if defined(_WIN32)
-  // Not supported on Windows
-  return false;
-#else
-  // On UNIX we need a non-dumb tty.
-  return ConsoleIsNotDumb();
-#endif
+  return cm::StdIo::Out().Kind() == cm::StdIo::TermKind::VT100;
 }
 
 bool cmCTest::AddVariableDefinition(std::string const& arg)
@@ -1556,7 +1528,7 @@ bool cmCTest::SetArgsFromPreset(std::string const& presetName,
   auto result = settingsFile.ReadProjectPresets(workingDirectory);
   if (result != true) {
     cmSystemTools::Error(cmStrCat("Could not read presets from ",
-                                  workingDirectory, ":",
+                                  workingDirectory, ":\n",
                                   settingsFile.parseState.GetErrorMessage()));
     return false;
   }
@@ -2527,6 +2499,20 @@ int cmCTest::Run(std::vector<std::string> const& args)
                        this->Impl->TestOptions.ScheduleRandom = true;
                        return true;
                      } },
+    CommandArgument{
+      "--schedule-random-seed", CommandArgument::Values::One,
+      [this](std::string const& sz) -> bool {
+        unsigned long seed_value;
+        if (cmStrToULong(sz, &seed_value)) {
+          this->Impl->TestOptions.ScheduleRandomSeed =
+            static_cast<unsigned int>(seed_value);
+        } else {
+          cmCTestLog(this, WARNING,
+                     "Invalid value for '--schedule-random-seed': " << sz
+                                                                    << "\n");
+        }
+        return true;
+      } },
     CommandArgument{ "--rerun-failed", CommandArgument::Values::Zero,
                      [this](std::string const&) -> bool {
                        this->Impl->TestOptions.RerunFailed = true;
@@ -2730,11 +2716,7 @@ int cmCTest::ExecuteTests(std::vector<std::string> const& args)
 
 int cmCTest::RunCMakeAndTest()
 {
-  int retv = this->Impl->BuildAndTest.Run();
-#ifndef CMAKE_BOOTSTRAP
-  cmDynamicLoader::FlushCache();
-#endif
-  return retv;
+  return this->Impl->BuildAndTest.Run();
 }
 
 void cmCTest::SetNotesFiles(std::string const& notes)
@@ -2783,7 +2765,7 @@ void cmCTest::SetStopTime(std::string const& time_str)
            lctime->tm_mon + 1, lctime->tm_mday, time_str.c_str(),
            tzone_offset);
 
-  time_t stop_time = curl_getdate(buf, &current_time);
+  time_t stop_time = cm_get_date(current_time, buf);
   if (stop_time == -1) {
     this->Impl->StopTime = std::chrono::system_clock::time_point();
     return;
@@ -2793,6 +2775,11 @@ void cmCTest::SetStopTime(std::string const& time_str)
   if (stop_time < current_time) {
     this->Impl->StopTime += std::chrono::hours(24);
   }
+}
+
+cm::optional<unsigned int> cmCTest::GetRandomSeed() const
+{
+  return this->Impl->TestOptions.ScheduleRandomSeed;
 }
 
 std::string cmCTest::GetScheduleType() const
@@ -3773,6 +3760,22 @@ bool cmCTest::ConvertInstrumentationJSONFileToXML(std::string const& fpath,
     xml.Attribute("name", measurement_name);
     xml.Element("Value", dynamic_information[key].asString());
     xml.EndElement(); // NamedMeasurement
+  }
+
+  // Record information about outputs and their sizes if found.
+  if (root.isMember("outputs") && root.isMember("outputSizes")) {
+    Json::ArrayIndex num_outputs =
+      std::min(root["outputs"].size(), root["outputSizes"].size());
+    if (num_outputs > 0) {
+      xml.StartElement("Outputs");
+      for (Json::ArrayIndex i = 0; i < num_outputs; ++i) {
+        xml.StartElement("Output");
+        xml.Attribute("name", root["outputs"][i].asString());
+        xml.Attribute("size", root["outputSizes"][i].asString());
+        xml.EndElement(); // Output
+      }
+      xml.EndElement(); // Outputs
+    }
   }
 
   if (!generating_test_xml) {

@@ -16,7 +16,7 @@ unset
 如果指定了\ ``PARENT_SCOPE``，则会从当前作用域的上一级作用域中移除该变量。有关更多详细信息，\
 请参阅\ :command:`set`\ 命令中的相同选项。
 
-.. include:: UNSET_NOTE.txt
+.. include:: include/UNSET_NOTE.rst
 
 取消设置环境变量
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

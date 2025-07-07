@@ -3,7 +3,7 @@ OBJCXX
 
 .. versionadded:: 3.16.7
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``OBJCXX``\ 语言文件的首选可执行文件。将仅由CMake在第一次配置时使用，以确定\
 ``OBJCXX``\ 编译器，之后\ ``OBJCXX``\ 的值存储在缓存中为\

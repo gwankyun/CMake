@@ -5,29 +5,15 @@
 CMakeFindPackageMode
 --------------------
 
+This module is executed by ``cmake`` when invoked with the
+:ref:`--find-package <Find-Package Tool Mode>` option to locate the requested
+package.
 
+.. note::
 
-当使用\ :ref:`--find-package <Find-Package Tool Mode>`\ 调用时，该文件由cmake执行。\
-它期望使用\ ``-D``\ 设置以下变量：
-
-``NAME``
-  name of the package
-``COMPILER_ID``
-  the CMake compiler ID for which the result is,
-  i.e. GNU/Intel/Clang/MSVC, etc.
-``LANGUAGE``
-  language for which the result will be used,
-  i.e. C/CXX/Fortran/ASM
-``MODE``
-  ``EXIST``
-    only check for existence of the given package
-  ``COMPILE``
-    print the flags needed for compiling an object file which uses
-    the given package
-  ``LINK``
-    print the flags needed for linking when using the given package
-``QUIET``
-  if TRUE, don't print anything
+  This is internal module and is not meant to be included directly in the
+  project.  For usage details, refer to the :ref:`--find-package
+  <Find-Package Tool Mode>` documentation.
 #]=======================================================================]
 
 if(NOT NAME)

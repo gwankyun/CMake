@@ -1,7 +1,7 @@
 CMAKE_OSX_ARCHITECTURES
 -----------------------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 针对macOS的目标特定架构。
 

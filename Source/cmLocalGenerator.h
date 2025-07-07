@@ -103,10 +103,7 @@ public:
   bool IsRootMakefile() const;
 
   //! Get the makefile for this generator
-  cmMakefile* GetMakefile() { return this->Makefile; }
-
-  //! Get the makefile for this generator, const version
-  cmMakefile const* GetMakefile() const { return this->Makefile; }
+  cmMakefile* GetMakefile() const { return this->Makefile; }
 
   //! Get the GlobalGenerator this is associated with
   cmGlobalGenerator* GetGlobalGenerator() { return this->GlobalGenerator; }
@@ -118,10 +115,6 @@ public:
   virtual std::unique_ptr<cmRulePlaceholderExpander>
   CreateRulePlaceholderExpander(
     cmBuildStep buildStep = cmBuildStep::Compile) const;
-  virtual std::unique_ptr<cmRulePlaceholderExpander>
-  CreateRulePlaceholderExpander(cmBuildStep buildStep,
-                                cmGeneratorTarget const* target,
-                                std::string const& language);
 
   std::string GetExeExportFlags(std::string const& linkLanguage,
                                 cmGeneratorTarget& tgt) const;
@@ -173,6 +166,9 @@ public:
   void AddPchDependencies(cmGeneratorTarget* target);
   void AddUnityBuild(cmGeneratorTarget* target);
   virtual void AddXCConfigSources(cmGeneratorTarget* /* target */) {}
+  void AppendTargetCreationLinkFlags(std::string& flags,
+                                     cmGeneratorTarget const* target,
+                                     std::string const& linkLanguage);
   void AppendLinkerTypeFlags(std::string& flags, cmGeneratorTarget* target,
                              std::string const& config,
                              std::string const& linkLanguage);
@@ -195,7 +191,8 @@ public:
   void AppendModuleDefinitionFlag(std::string& flags,
                                   cmGeneratorTarget const* target,
                                   cmLinkLineComputer* linkLineComputer,
-                                  std::string const& config);
+                                  std::string const& config,
+                                  std::string const& lang);
   bool AppendLWYUFlags(std::string& flags, cmGeneratorTarget const* target,
                        std::string const& lang);
 
@@ -441,6 +438,9 @@ public:
   std::string const& GetCurrentBinaryDirectory() const;
   std::string const& GetCurrentSourceDirectory() const;
 
+  virtual std::string GetObjectOutputRoot() const;
+  virtual bool AlwaysUsesCMFPaths() const;
+
   /**
    * Generate a macOS application bundle Info.plist file.
    */
@@ -538,6 +538,8 @@ public:
   // Can we build Swift with a separate object build and link step
   // (If CMP0157 is NEW, we can do a split build)
   bool IsSplitSwiftBuild() const;
+
+  std::string CreateSafeObjectFileName(std::string const& sin) const;
 
 protected:
   // The default implementation converts to a Windows shortpath to

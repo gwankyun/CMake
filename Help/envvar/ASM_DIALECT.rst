@@ -1,7 +1,7 @@
 ASM<DIALECT>
 ------------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译汇编语言文件的特定方言的首选可执行文件。\ ``ASM<DIALECT>``\ 可以是：
 

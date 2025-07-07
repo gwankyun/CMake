@@ -3,7 +3,7 @@ CMAKE_INSTALL_MODE
 
 .. versionadded:: 3.22
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 ``CMAKE_INSTALL_MODE``\ 环境变量允许用户以\ :command:`file(INSTALL)`\ 和\
 :command:`install()`\ 的替代模式操作CMake。

@@ -215,7 +215,9 @@ FindFoo.cmake模块通常通过以下命令加载：
   建windows上的\ ``PATH``\ 或UNIX上的\ ``LD_LIBRARY_PATH``。这不应该是缓存项。
 
 ``Xxx_VERSION``
-  找到的包的完整版本字符串，如果有的话。注意，许多现有模块提供的是\ ``Xxx_VERSION_STRING``。
+  The full version string of the package found, if any.  Note that some existing
+  modules may also provide ``Xxx_VERSION_STRING``, as it was traditionally used
+  before the current naming convention.
 
 ``Xxx_VERSION_MAJOR``
   找到的包的主要版本，如果有的话。
@@ -253,8 +255,10 @@ FindFoo.cmake模块通常通过以下命令加载：
 后缀创建缓存变量，例如\ ``Foo_LIBRARY_RELEASE``\ 和\ ``Foo_LIBRARY_DEBUG``。\
 :module:`SelectLibraryConfigurations`\ 模块对这种情况很有帮助。
 
-虽然这些都是标准的变量名，但你应该为实际使用的任何旧名称提供向后兼容性。确保将它们注释为已弃\
-用，这样就不会有人开始使用它们。
+While these are the standard variable names, backward compatibility should be
+provided for any previously used names in the find module that is replacing an
+older version.  Old variable names should be documented as deprecated to
+discourage further use.
 
 查找模块示例
 --------------------
@@ -355,7 +359,7 @@ FindFoo.cmake模块通常通过以下命令加载：
     HINTS ${PC_Foo_LIBRARY_DIRS}
   )
 
-或者，如果库有多个配置可用，你可以使用\ :module:`SelectLibraryConfigurations`\ 来自动\
+或者，如果库有多个配置可用，可以使用\ :module:`SelectLibraryConfigurations`\ 模块来自动\
 设置\ ``Foo_LIBRARY``\ 变量：
 
 .. code-block:: cmake
@@ -372,15 +376,15 @@ FindFoo.cmake模块通常通过以下命令加载：
   include(SelectLibraryConfigurations)
   select_library_configurations(Foo)
 
-如果你有一个获得版本的好方法（例如，从头文件），你可以使用该信息来设置\ ``Foo_VERSION``\
-（尽管注意，查找模块传统上使用的是\ ``Foo_VERSION_STRING``，所以你可能想要设置两者）。\
-否则，尝试使用\ ``pkg-config``\ 中的信息
+If there is a good way of getting the version (from a header file, for
+example), that information can be used to set ``Foo_VERSION``.  Otherwise,
+attempt to use the information from the ``pkg-config``:
 
 .. code-block:: cmake
 
   set(Foo_VERSION ${PC_Foo_VERSION})
 
-现在我们可以使用\ :module:`FindPackageHandleStandardArgs`\ 为我们完成剩下的大部分工作
+现在我们可以使用\ :module:`FindPackageHandleStandardArgs`\ 模块为我们完成剩下的大部分工作：
 
 .. code-block:: cmake
 
@@ -466,7 +470,9 @@ FindFoo.cmake模块通常通过以下命令加载：
 ``RELEASE``\ 变量应该首先在属性中列出，以便当用户使用的配置与任何列出的\
 ``IMPORTED_CONFIGURATIONS``\ 不完全匹配时选择该变量。
 
-大多数缓存变量应该隐藏在\ :program:`ccmake`\ 接口中，除非用户显式要求编辑它们。
+Most of the cache variables should be marked as advanced to remain hidden in GUI
+interfaces such as :manual:`cmake-gui(1)` or :manual:`ccmake(1)`, unless the
+user explicitly chooses to display and modify them:
 
 .. code-block:: cmake
 
@@ -475,9 +481,12 @@ FindFoo.cmake模块通常通过以下命令加载：
     Foo_LIBRARY
   )
 
-如果此模块替换旧版本，则应该设置兼容性变量以尽可能减少中断。
+If this find module replaces an older module version that provided variables
+before the current standard variables naming conventions, also backward
+compatibility variables should be provided to cause the least disruption
+possible.  For example:
 
 .. code-block:: cmake
 
-  # compatibility variables
+  # Backward compatibility variables
   set(Foo_VERSION_STRING ${Foo_VERSION})

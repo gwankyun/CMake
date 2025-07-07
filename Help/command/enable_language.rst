@@ -9,7 +9,7 @@ enable_language
 在CMake中启用对指定语言的支持。这与\ :command:`project`\ 命令的功能相同，但不会创建由\
 :command:`project`\ 命令所创建的任何额外变量。
 
-.. include:: SUPPORTED_LANGUAGES.txt
+.. include:: include/SUPPORTED_LANGUAGES.rst
 
 以下是对\ ``enable_language()``\ 调用位置的限制：
 

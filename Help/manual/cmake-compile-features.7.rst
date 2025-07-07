@@ -88,7 +88,7 @@ CMake会添加\ ``-std=gnu++11``\ 标志。
 添加诸如\ ``-std=gnu++11``\ 的标志。这适用于\ ``mylib``\ 中的源文件以及任何依赖文件\
 （可能包括来自\ ``mylib``\ 的头文件）。
 
-.. include:: ../prop_gbl/CMAKE_LANG_STD_FLAGS.txt
+.. include:: ../prop_gbl/include/CMAKE_LANG_STD_FLAGS.rst
 
 编译器扩展是否可用
 -----------------------------------

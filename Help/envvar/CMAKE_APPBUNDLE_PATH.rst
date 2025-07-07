@@ -1,7 +1,7 @@
 CMAKE_APPBUNDLE_PATH
 --------------------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 ``CMAKE_APPBUNDLE_PATH``\ 环境变量可以设置为一个目录列表，通过\ :command:`find_program`\
 和\ :command:`find_package`\ 命令搜索macOS应用程序包。

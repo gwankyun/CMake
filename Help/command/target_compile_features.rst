@@ -27,8 +27,8 @@ target_compile_features
 
 .. |command_name| replace:: ``target_compile_features``
 .. |more_see_also| replace:: 请参阅\ :manual:`cmake-compile-features(7)`\ 手册，了解有关编译特性的信息和支持的编译器列表。
-.. include:: GENEX_NOTE.txt
-   :start-line: 1
+.. include:: include/GENEX_NOTE.rst
+   :start-line: 2
 
 另请参阅
 ^^^^^^^^

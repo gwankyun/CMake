@@ -891,21 +891,22 @@ endif ()
 
 if(CMAKE_CROSSCOMPILING)
   set(CUDA_TOOLKIT_ROOT $ENV{CUDA_TOOLKIT_ROOT})
+  # Keep in sync with equivalent table in FindCUDAToolkit!
   if(CMAKE_SYSTEM_PROCESSOR STREQUAL "armv7-a")
     # Support for NVPACK
-    set (CUDA_TOOLKIT_TARGET_NAMES "armv7-linux-androideabi")
+    set(CUDA_TOOLKIT_TARGET_NAMES "armv7-linux-androideabi")
   elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-    # Support for arm cross compilation
     set(CUDA_TOOLKIT_TARGET_NAMES "armv7-linux-gnueabihf")
   elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    # Support for aarch64 cross compilation
-    if (ANDROID_ARCH_NAME STREQUAL "arm64")
+    if(ANDROID_ARCH_NAME STREQUAL "arm64")
       set(CUDA_TOOLKIT_TARGET_NAMES "aarch64-linux-androideabi")
     elseif (CMAKE_SYSTEM_NAME STREQUAL "QNX")
       set(CUDA_TOOLKIT_TARGET_NAMES "aarch64-qnx")
     else()
       set(CUDA_TOOLKIT_TARGET_NAMES "aarch64-linux" "sbsa-linux")
     endif()
+  elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
+    set(CUDA_TOOLKIT_TARGET_NAMES "x86_64-linux")
   endif()
 
   foreach(CUDA_TOOLKIT_TARGET_NAME IN LISTS CUDA_TOOLKIT_TARGET_NAMES)
@@ -1624,7 +1625,7 @@ macro(CUDA_WRAP_SRCS cuda_target format generated_files)
       # nvcc chokes on -g3 in versions previous to 3.0, so replace it with -g
       set(_cuda_fix_g3 FALSE)
 
-      if(CMAKE_COMPILER_IS_GNUCC)
+      if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
         if (CUDA_VERSION VERSION_LESS  "3.0" OR
             CUDA_VERSION VERSION_EQUAL "4.1" OR
             CUDA_VERSION VERSION_EQUAL "4.2"

@@ -3,7 +3,7 @@ CTEST_PROGRESS_OUTPUT
 
 .. versionadded:: 3.13
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 布尔环境变量，影响\ :manual:`ctest <ctest(1)>`\ 命令输出报告总体进度的方式。当设置为\
 ``1``、\ ``TRUE``、\ ``ON``\ 或其他计算为布尔值true的值时，通过重复更新同一行来报告进度。\

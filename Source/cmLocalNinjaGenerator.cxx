@@ -57,16 +57,6 @@ cmLocalNinjaGenerator::CreateRulePlaceholderExpander(
   ret->SetTargetImpLib("$TARGET_IMPLIB");
   return std::unique_ptr<cmRulePlaceholderExpander>(std::move(ret));
 }
-std::unique_ptr<cmRulePlaceholderExpander>
-cmLocalNinjaGenerator::CreateRulePlaceholderExpander(
-  cmBuildStep buildStep, cmGeneratorTarget const* target,
-  std::string const& language)
-{
-  auto ret = this->cmLocalGenerator::CreateRulePlaceholderExpander(
-    buildStep, target, language);
-  ret->SetTargetImpLib("$TARGET_IMPLIB");
-  return std::unique_ptr<cmRulePlaceholderExpander>(std::move(ret));
-}
 
 cmLocalNinjaGenerator::~cmLocalNinjaGenerator() = default;
 
@@ -75,7 +65,7 @@ void cmLocalNinjaGenerator::Generate()
   // Compute the path to use when referencing the current output
   // directory from the top output directory.
   this->HomeRelativeOutputPath =
-    this->MaybeRelativeToTopBinDir(this->GetCurrentBinaryDirectory());
+    this->MaybeRelativeToTopBinDir(this->GetObjectOutputRoot());
   if (this->HomeRelativeOutputPath == ".") {
     this->HomeRelativeOutputPath.clear();
   }
@@ -171,19 +161,6 @@ void cmLocalNinjaGenerator::Generate()
     this->WriteCustomCommandBuildStatements(config);
     this->AdditionalCleanFiles(config);
   }
-}
-
-// TODO: Picked up from cmLocalUnixMakefileGenerator3.  Refactor it.
-std::string cmLocalNinjaGenerator::GetTargetDirectory(
-  cmGeneratorTarget const* target) const
-{
-  std::string dir = cmStrCat("CMakeFiles/", target->GetName());
-#if defined(__VMS)
-  dir += "_dir";
-#else
-  dir += ".dir";
-#endif
-  return dir;
 }
 
 // Non-virtual public methods.
@@ -920,7 +897,7 @@ std::string cmLocalNinjaGenerator::MakeCustomLauncher(
                           : outputs[i],
                         cmOutputConverter::SHELL));
     if (i != outputs.size() - 1) {
-      output = cmStrCat(output, ",");
+      output = cmStrCat(output, ',');
     }
   }
   vars.Output = output.c_str();

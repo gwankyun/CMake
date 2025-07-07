@@ -3,7 +3,7 @@ FRAMEWORK_MULTI_CONFIG_POSTFIX_<CONFIG>
 
 .. versionadded:: 3.18
 
-当使用多配置生成器（如Xcode和Ninja multi-config）时，添加到配置\ ``<CONFIG>``\ 框架文\
+当使用多配置生成器（如\ :generator:`Xcode`\ 和\ :generator:`Ninja Multi-Config`）时，添加到配置\ ``<CONFIG>``\ 框架文\
 件名的后缀。
 
 When building with configuration ``<CONFIG>`` the value of this property

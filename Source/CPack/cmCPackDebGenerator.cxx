@@ -176,7 +176,7 @@ void DebGenerator::generateControlFile() const
       totalSize += cmSystemTools::FileLength(file);
     }
   }
-  out << "Installed-Size: " << (totalSize + 1023) / 1024 << "\n\n";
+  out << "Installed-Size: " << (totalSize + 1023) / 1024 << "\n";
 }
 
 bool DebGenerator::generateDataTar() const
@@ -928,8 +928,8 @@ std::string cmCPackDebGenerator::GetComponentInstallSuffix(
   // the current COMPONENT belongs to.
   std::string groupVar =
     "CPACK_COMPONENT_" + cmSystemTools::UpperCase(componentName) + "_GROUP";
-  if (this->GetOption(groupVar)) {
-    return *this->GetOption(groupVar);
+  if (cmValue v = this->GetOption(groupVar)) {
+    return *v;
   }
   return componentName;
 }

@@ -1,7 +1,7 @@
 CMAKE_PREFIX_PATH
 -----------------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 ``CMAKE_PREFIX_PATH``\ 环境变量可以设置为指定安装\ *prefixes*\ 的目录列表，这些目录将由\
 :command:`find_package`、\ :command:`find_program`、\ :command:`find_library`、\

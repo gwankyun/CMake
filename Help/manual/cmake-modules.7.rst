@@ -7,7 +7,7 @@ cmake-modules(7)
 :variable:`CMAKE_MODULE_PATH`\ 变量指定。
 
 工具模块
-^^^^^^^^^^^^^^^
+===============
 
 这些模块使用\ :command:`include`\ 命令加载。
 
@@ -94,7 +94,7 @@ cmake-modules(7)
    /module/UsewxWidgets
 
 搜寻模块
-^^^^^^^^^^^^
+============
 
 这些模块搜索第三方软件。它们通常通过\ :command:`find_package`\ 命令调用。
 
@@ -110,7 +110,6 @@ cmake-modules(7)
    /module/FindBLAS
    /module/FindBullet
    /module/FindBZip2
-   /module/FindCABLE
    /module/FindCoin3D
    /module/FindCUDAToolkit
    /module/FindCups
@@ -129,7 +128,6 @@ cmake-modules(7)
    /module/FindFLTK2
    /module/FindFontconfig
    /module/FindFreetype
-   /module/FindGCCXML
    /module/FindGettext
    /module/FindGIF
    /module/FindGit
@@ -225,8 +223,8 @@ cmake-modules(7)
    /module/FindRTI
    /module/FindRuby
    /module/FindSDL
-   /module/FindSDL_image
    /module/FindSDL_gfx
+   /module/FindSDL_image
    /module/FindSDL_mixer
    /module/FindSDL_net
    /module/FindSDL_sound
@@ -253,10 +251,10 @@ cmake-modules(7)
    /module/FindZLIB
 
 弃用模块
-^^^^^^^^^^^^^^^^^^^
+==================
 
 弃用工具模块
-==========================
+--------------------------
 
 .. toctree::
    :maxdepth: 1
@@ -282,14 +280,16 @@ cmake-modules(7)
    /module/WriteCompilerDetectionHeader
 
 弃用搜寻模块
-=======================
+-----------------------
 
 .. toctree::
    :maxdepth: 1
 
    /module/FindBoost
+   /module/FindCABLE
    /module/FindCUDA
    /module/FindDart
+   /module/FindGCCXML
    /module/FindGDAL
    /module/FindITK
    /module/FindPythonInterp
@@ -300,7 +300,7 @@ cmake-modules(7)
    /module/FindwxWindows
 
 遗留的CPack模块
-====================
+--------------------
 
 这些模块曾经被错误地暴露给用户，并且现已移出用户视野。它们供CPack内部而非直接使用。
 

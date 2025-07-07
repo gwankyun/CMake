@@ -217,7 +217,7 @@ AUTORCC
 Visual Studio生成器
 ========================
 
-当使用\ :manual:`Visual Studio生成器 <cmake-generators(7)>`\ 时，CMake生成一个\
+当使用\ :ref:`Visual Studio Generators`\ 时，CMake生成一个\
 ``PRE_BUILD``\ :command:`自定义命令 <add_custom_command>`，而不是\
 :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`\ :command:`自定义目标 <add_custom_target>`\
 （用于\ :prop_tgt:`AUTOMOC`\ 和\ :prop_tgt:`AUTOUIC`）。但这并不总是可能的，并且在以\

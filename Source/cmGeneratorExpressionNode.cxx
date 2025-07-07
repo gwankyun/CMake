@@ -52,7 +52,7 @@
 #include "cmake.h"
 
 std::string cmGeneratorExpressionNode::EvaluateDependentExpression(
-  std::string const& prop, cmLocalGenerator* lg,
+  std::string const& prop, cmLocalGenerator const* lg,
   cmGeneratorExpressionContext* context, cmGeneratorTarget const* headTarget,
   cmGeneratorExpressionDAGChecker* dagChecker,
   cmGeneratorTarget const* currentTarget)
@@ -1711,6 +1711,11 @@ static const struct ListNode : public cmGeneratorExpressionNode
                     return std::string{};
                   }
 
+                  if (!selector) {
+                    selector = cmList::TransformSelector::New();
+                  }
+                  selector->Makefile = ctx->LG->GetMakefile();
+
                   return list
                     .transform(descriptor->Action, arguments,
                                std::move(selector))
@@ -2332,7 +2337,7 @@ static const struct CompileLanguageNode : public cmGeneratorExpressionNode
       return std::string();
     }
 
-    cmGlobalGenerator* gg = context->LG->GetGlobalGenerator();
+    cmGlobalGenerator const* gg = context->LG->GetGlobalGenerator();
     std::string genName = gg->GetName();
     if (genName.find("Makefiles") == std::string::npos &&
         genName.find("Ninja") == std::string::npos &&
@@ -2382,7 +2387,7 @@ static const struct CompileLanguageAndIdNode : public cmGeneratorExpressionNode
         "add_custom_target, or file(GENERATE) commands.");
       return std::string();
     }
-    cmGlobalGenerator* gg = context->LG->GetGlobalGenerator();
+    cmGlobalGenerator const* gg = context->LG->GetGlobalGenerator();
     std::string genName = gg->GetName();
     if (genName.find("Makefiles") == std::string::npos &&
         genName.find("Ninja") == std::string::npos &&
@@ -2436,7 +2441,7 @@ static const struct LinkLanguageNode : public cmGeneratorExpressionNode
       return std::string();
     }
 
-    cmGlobalGenerator* gg = context->LG->GetGlobalGenerator();
+    cmGlobalGenerator const* gg = context->LG->GetGlobalGenerator();
     std::string genName = gg->GetName();
     if (genName.find("Makefiles") == std::string::npos &&
         genName.find("Ninja") == std::string::npos &&
@@ -2527,7 +2532,7 @@ static const struct LinkLanguageAndIdNode : public cmGeneratorExpressionNode
       return std::string();
     }
 
-    cmGlobalGenerator* gg = context->LG->GetGlobalGenerator();
+    cmGlobalGenerator const* gg = context->LG->GetGlobalGenerator();
     std::string genName = gg->GetName();
     if (genName.find("Makefiles") == std::string::npos &&
         genName.find("Ninja") == std::string::npos &&
@@ -3144,7 +3149,7 @@ static const struct TargetObjectsNode : public cmGeneratorExpressionNode
       reportError(context, content->GetOriginalExpression(), e.str());
       return std::string();
     }
-    cmGlobalGenerator* gg = context->LG->GetGlobalGenerator();
+    cmGlobalGenerator const* gg = context->LG->GetGlobalGenerator();
     {
       std::string reason;
       if (!context->EvaluateForBuildsystem &&
@@ -3518,7 +3523,7 @@ struct TargetFilesystemArtifactDependencyCMP0112
                             cmGeneratorExpressionContext* context)
   {
     context->AllTargets.insert(target);
-    cmLocalGenerator* lg = context->LG;
+    cmLocalGenerator const* lg = context->LG;
     switch (target->GetPolicyStatusCMP0112()) {
       case cmPolicies::WARN:
         if (lg->GetMakefile()->PolicyOptionalWarningEnabled(
@@ -4177,8 +4182,7 @@ struct TargetOutputNameArtifactResultGetter<ArtifactPdbTag>
       return std::string();
     }
 
-    return target->GetPDBOutputName(context->Config) +
-      target->GetFilePostfix(context->Config);
+    return target->GetPDBOutputName(context->Config);
   }
 };
 

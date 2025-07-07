@@ -3,7 +3,7 @@ CMAKE_CONFIG_DIR
 
 .. versionadded:: 3.31
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 为\ :manual:`cmake-file-api(7)`\ 查询指定一个CMake用户范围的配置目录。
 

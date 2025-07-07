@@ -13,13 +13,13 @@ the name ``COMPILE_DEFINITIONS_<CONFIG>`` where ``<CONFIG>`` is an upper-case
 name (ex.  ``COMPILE_DEFINITIONS_DEBUG``).
 
 CMake will automatically drop some definitions that are not supported
-by the native build tool.  Xcode does not support per-configuration
+by the native build tool.  :generator:`Xcode` does not support per-configuration
 definitions on source files.
 
 .. versionadded:: 3.26
   Any leading ``-D`` on an item will be removed.
 
-.. include:: /include/COMPILE_DEFINITIONS_DISCLAIMER.txt
+.. include:: /include/COMPILE_DEFINITIONS_DISCLAIMER.rst
 
 Contents of ``COMPILE_DEFINITIONS`` may use :manual:`cmake-generator-expressions(7)`
 with the syntax ``$<...>``.  See the :manual:`cmake-generator-expressions(7)`

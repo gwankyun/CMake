@@ -185,12 +185,12 @@ function(cpack_rpm_prepare_relocation_paths)
       string(SUBSTRING "${REL_PATH_}" 0 2 PREFIX_)
 
       if(NOT "${PREFIX_}" STREQUAL "..")
-        set(TPM_PATH_FOUND_ TRUE)
+        set(TMP_PATH_FOUND_ TRUE)
         break()
       endif()
     endforeach()
 
-    if(NOT TPM_PATH_FOUND_)
+    if(NOT TMP_PATH_FOUND_)
       message(AUTHOR_WARNING "CPackRPM:Warning: Path ${TMP_PATH} is not on one of the relocatable paths! Package will be partially relocatable.")
     endif()
   endforeach()
@@ -1112,7 +1112,7 @@ function(cpack_rpm_generate_package)
   # There may be some COMPONENT specific variables as well
   # If component specific var is not provided we use the global one
   # for each component
-  foreach(_RPM_SPEC_HEADER URL REQUIRES SUGGESTS PROVIDES OBSOLETES PREFIX CONFLICTS AUTOPROV AUTOREQ AUTOREQPROV REQUIRES_PRE REQUIRES_POST REQUIRES_PREUN REQUIRES_POSTUN)
+  foreach(_RPM_SPEC_HEADER URL REQUIRES SUGGESTS RECOMMENDS SUPPLEMENTS ENHANCES PROVIDES OBSOLETES PREFIX CONFLICTS AUTOPROV AUTOREQ AUTOREQPROV REQUIRES_PRE REQUIRES_POST REQUIRES_PREUN REQUIRES_POSTUN)
 
     if(CPACK_RPM_PACKAGE_DEBUG)
       message("CPackRPM:Debug: processing ${_RPM_SPEC_HEADER}")
@@ -1730,7 +1730,10 @@ Vendor:         \@CPACK_RPM_PACKAGE_VENDOR\@
 \@TMP_RPM_PROVIDES\@
 \@TMP_RPM_OBSOLETES\@
 \@TMP_RPM_CONFLICTS\@
+\@TMP_RPM_RECOMMENDS\@
 \@TMP_RPM_SUGGESTS\@
+\@TMP_RPM_SUPPLEMENTS\@
+\@TMP_RPM_ENHANCES\@
 \@TMP_RPM_AUTOPROV\@
 \@TMP_RPM_AUTOREQ\@
 \@TMP_RPM_AUTOREQPROV\@
@@ -1799,7 +1802,10 @@ Vendor:         \@CPACK_RPM_PACKAGE_VENDOR\@
 \@TMP_RPM_PROVIDES\@
 \@TMP_RPM_OBSOLETES\@
 \@TMP_RPM_CONFLICTS\@
+\@TMP_RPM_RECOMMENDS\@
 \@TMP_RPM_SUGGESTS\@
+\@TMP_RPM_SUPPLEMENTS\@
+\@TMP_RPM_ENHANCES\@
 \@TMP_RPM_AUTOPROV\@
 \@TMP_RPM_AUTOREQ\@
 \@TMP_RPM_AUTOREQPROV\@

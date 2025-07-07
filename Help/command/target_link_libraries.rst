@@ -91,21 +91,26 @@ target_link_libraries
 * 一个\ ``debug``、\ ``optimized``\ 或\ ``general``\ 关键字，紧跟着另一个\ ``<item>``。\
   关键字后面的项将仅用于相应的构建配置。\ ``debug``\ 关键字对应\ ``Debug``\ 配置（如果\
   设置了全局属性\ :prop_gbl:`DEBUG_CONFIGURATIONS`，则对应全局配置）。\ ``optimized``\
-  关键字对应所有其他配置。\ ``general``\ 关键字对应所有配置，纯粹是可选的。通过创建和链接到\
-  :ref:`导入库目标 <Imported Targets>`，可以为每个配置规则实现更高的粒度。这些关键字由该\
+  关键字对应所有其他配置。\ ``general``\ 关键字对应所有配置，纯粹是可选的。这些关键字由该\
   命令立即解释，因此当由生成器表达式生成时，没有特殊含义。
+
+  Alternatively, generator expressions like :genex:`$<CONFIG>` provide finer
+  per-configuration linking of ``<item>``.  For a more structured approach,
+  higher granularity can be achieved by creating and linking to
+  :ref:`IMPORTED library targets <Imported Targets>` with the
+  :prop_tgt:`IMPORTED_CONFIGURATIONS` property set, particularly in find
+  modules.
 
 包含\ ``::``\ 的项，如\ ``Foo::Bar``，被认为是\ :ref:`导入 <Imported Targets>`\ 或\
 :ref:`别名 <Alias Targets>`\ 库目标名，如果不存在这样的目标，将导致错误。参见策略\
 :policy:`CMP0028`。
-
 有关\ CMake\ 如何在链接器命令行上对直接链接依赖项进行排序的详细信息，请参阅\
 :variable:`CMAKE_LINK_LIBRARIES_STRATEGY`\ 变量以及对应的\
 :prop_tgt:`LINK_LIBRARIES_STRATEGY`\ 目标属性。
 
 有关定义构建属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
-.. include:: ../command/LINK_LIBRARIES_LINKER.txt
+.. include:: ../command/include/LINK_LIBRARIES_LINKER.rst
 
 目标和/或其依赖的库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -331,7 +336,7 @@ then this mode also appends libraries to the
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. |INTERFACE_PROPERTY_LINK| replace:: :prop_tgt:`INTERFACE_LINK_LIBRARIES`
-.. include:: /include/INTERFACE_LINK_LIBRARIES_WARNING.txt
+.. include:: /include/INTERFACE_LINK_LIBRARIES_WARNING.rst
 
 另外参阅
 ^^^^^^^^

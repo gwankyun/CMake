@@ -3,7 +3,7 @@
 
 .. versionadded:: 3.12
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 对\ :command:`find_package(<PackageName>)`\ 的调用将在\ ``<PackageName>_ROOT``\
 环境变量指定的前缀中进行搜索，其中\ ``<PackageName>``\ 是给定给\ :command:`find_package`\

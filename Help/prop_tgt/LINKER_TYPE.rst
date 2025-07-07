@@ -6,7 +6,7 @@ LINKER_TYPE
 指定链接步骤将使用哪个链接器。属性值可以使用\
 :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
-.. include:: ../variable/LINKER_PREDEFINED_TYPES.txt
+.. include:: ../variable/include/LINKER_PREDEFINED_TYPES.rst
 
 This property is not supported on :generator:`Green Hills MULTI` generator.
 

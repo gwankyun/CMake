@@ -33,11 +33,22 @@ API v1位于\ ``<build>/.cmake/api/v1/``\ 目录下。它有以下子目录：
   或\ `v1客户端有状态查询文件`_。
 
 ``reply/``
-  保存CMake在生成构建系统时所写的应答文件。它们由\ `v1应答索引文件`_\ 文件索引，该文件可能\
-  引用其他\ `v1应答文件`_。CMake拥有所有应答文件。客户端永远不能删除它们。
+  Holds reply files written by CMake when it runs to generate a build system.
+  Clients may read reply files only when referenced by a reply index:
 
-  客户端可以随时查找和读取应答索引文件。客户端可以选择在任何时候创建\ ``reply/``\ 目录，并\
-  监视它是否出现新的应答索引文件。
+  ``index-*.json``
+    A `v1应答索引文件`_ written when CMake generates a build system.
+
+  ``error-*.json``
+    .. versionadded:: 4.1
+
+    A `v1 Reply Error Index`_ written when CMake fails to generate a build
+    system due to an error.
+
+  Clients may look for and read a reply index at any time.
+  Clients may optionally create the ``reply/`` directory at any time
+  and monitor it for the appearance of a new reply index.
+  CMake owns all reply files.  Clients must never remove them.
 
 .. versionadded:: 3.31
   用户可以在\ :envvar:`CMAKE_CONFIG_DIR`\ 的\ ``api/v1/query``\ 中添加查询文件，\
@@ -139,8 +150,8 @@ v1客户端有状态查询文件
 v1应答索引文件
 -------------------
 
-当运行生成构建系统时，CMake写一个\ ``index-*.json``\ 文件放到\ ``v1/reply/``\ 目录中。\
-客户端必须先读取应答索引文件，其他\ `v1应答文件`_\ 只能通过引用读取。应答索引文件名的格式为：\ ::
+当它成功生成一个构建系统时，CMake写一个\ ``index-*.json``\ 文件放到\ ``v1/reply/``\ 目录中。\
+客户端必须先读取应答索引文件，其他\ `v1 Reply Files`_\ 只能通过引用读取。应答索引文件名的格式为：\ ::
 
   <build>/.cmake/api/v1/reply/index-<unspecified>.json
 
@@ -245,8 +256,12 @@ v1应答索引文件
 
   ``<kind>-v<major>``
     这个表单的成员出现在每个\ `v1共享无状态查询文件`_\ 中，CMake将其识别为具有主要版本\
-    ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是一个\ `v1应答文件引用`_，对该对\
-    象类型和版本对应的应答文件的引用。
+    ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是
+
+    * a `v1应答文件引用`_ to the corresponding reply file for
+      that object kind and version, or
+    * in a `v1 Reply Error Index`_, a JSON object with a single ``error``
+      member containing a string with an error message.
 
   ``<unknown>``
     这个表单的成员出现在每个CMake不能识别的\ `v1共享无状态查询文件`_\ 中。该值是一个JSON对\
@@ -258,8 +273,12 @@ v1应答索引文件
 
     ``<kind>-v<major>``
       这个表单的成员出现在每个\ `v1客户端无状态查询文件`_\ 中，这些文件被CMake识别为具有\
-      主要版本\ ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是一个\ `v1应答文件引用`_，\
-      对该对象类型和版本对应的应答文件的引用。
+      主要版本\ ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是
+
+      * a `v1应答文件引用`_ to the corresponding reply file for
+        that object kind and version, or
+      * in a `v1 Reply Error Index`_, a JSON object with a single ``error``
+        member containing a string with an error message.
 
     ``<unknown>``
       这个表单的成员出现在每个CMake不能识别的\ `v1客户端无状态查询文件`_\ 中。该值是一个\
@@ -283,10 +302,12 @@ v1应答索引文件
         其单个\ ``error``\ 成员包含一个带有错误消息的字符串。否则，该成员将包含一个JSON数\
         组，其中以相同的顺序对请求数组的每个条目进行响应。每个响应是
 
-        * 带有单个\ ``error``\ 成员的JSON对象，该成员包含带有错误消息的字符串，或者
-        * 一个\ `v1应答文件引用`_\ 对所请求对象类型和所选版本对应的应答文件的引用。
+        * a `v1应答文件引用`_ to the corresponding reply file for
+          the requested object kind and selected version, or
+        * a JSON object with a single ``error`` member containing a string
+          with an error message.
 
-客户端读取应答索引文件后，可以读取它引用的其他\ `v1应答文件`_。
+客户端读取应答索引文件后，可以读取它引用的其他\ `v1 Reply Files`_。
 
 v1应答文件引用
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -300,7 +321,36 @@ v1应答文件引用
 ``jsonFile``
   一个JSON字符串，指定相对于应答索引文件到包含该对象的另一个JSON文件的路径。
 
-v1应答文件
+.. _`file-api reply error index`:
+
+v1 Reply Error Index
+^^^^^^^^^^^^^^^^^^^^
+
+.. versionadded:: 4.1
+
+CMake writes an ``error-*.json`` file to the ``v1/reply/`` directory
+when it fails to generate a build system.  This reply error index
+follows the same naming pattern, syntax, and semantics of a
+`v1应答索引文件`_, with the following exceptions:
+
+* The ``index-`` prefix is replaced by an ``error-`` prefix.
+
+* When a new error index is generated, old index files are *not*
+  deleted.  If a `v1应答索引文件`_ exists, it indexes replies
+  from the most recent successful run.  If multiple ``index-*.json``
+  and/or ``error-*.json`` files are present, the one with the largest
+  name in lexicographic order, excluding the ``index-`` or ``error-``
+  prefix, is the current index.
+
+* Only a subset of `对象类型`_ are provided:
+
+  `configureLog <file-api configureLog_>`_
+    .. versionadded:: 4.1
+
+  Index entries for other object kinds contain an ``error`` message
+  instead of a `v1应答文件引用`_.
+
+v1 Reply Files
 --------------
 
 包含特定\ `对象类型`_\ 的应答文件由CMake编写。这些文件的名称是未指定的，并且不能被客户端解释。\
@@ -837,6 +887,13 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       * ``libraryPath``： 库搜索路径标志。
       * ``frameworkPath``： macOS框架搜索路径标志。
 
+    ``backtrace``
+      Optional member that is present when a CMake language backtrace to
+      the :command:`target_link_libraries`, :command:`target_link_options`,
+      or other command invocation that added this link fragment is available.
+      The value is an unsigned integer 0-based index into the ``backtraceGraph``
+      member's ``nodes`` array.
+
   ``lto``
     可选成员，当启用链接时间优化（也称为过程间优化或链接时间代码生成）时，以布尔值\ ``true``\
     出现。
@@ -873,8 +930,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
   此字段在代码模型2.8版本中添加。
 
   ``workingDirectory``
-    可选成员，当设置了目标属性DEBUGGER_WORKING_DIRECTORY时会出现。 在使用Visual Studio\
-    生成器的场景中，当设置了VS_DEBUGGER_WORKING_DIRECTORY时，该成员也会出现。
+    可选成员，当设置了目标属性\ :prop_tgt:`DEBUGGER_WORKING_DIRECTORY`\ 时会出现。 在使用\ :ref:`Visual Studio Generators`\
+    的场景中，当设置了\ :prop_tgt:`VS_DEBUGGER_WORKING_DIRECTORY`\ 时，该成员也会出现。
 
     此字段在代码模型2.8版本中添加。
 

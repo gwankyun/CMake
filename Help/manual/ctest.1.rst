@@ -376,6 +376,15 @@ ctest(1)
 
  此选项将以随机顺序运行测试。它通常用于检测测试套件中的隐式依赖关系。
 
+.. option:: --schedule-random-seed
+
+ .. versionadded:: 4.1
+
+ Override the random order seed
+
+ This option is used to allow recreating failures owing to
+ random order of execution by ``--schedule-random``.
+
 .. option:: --submit-index
 
  旧的Dart2仪表板服务器功能的遗留选项。请勿使用。
@@ -416,7 +425,7 @@ ctest(1)
 
 要打印版本详细信息或从CMake文档中选择的页面，使用以下选项之一：
 
-.. include:: OPTIONS_HELP.txt
+.. include:: include/OPTIONS_HELP.rst
 
 .. _`Label Matching`:
 
@@ -1394,12 +1403,14 @@ CTest提交步骤
   字符串“ctestInfo”。
 
 ``version``
-  指定版本组件的JSON对象。其成员是
+  指定版本组件的JSON对象。其成员是：
 
   ``major``
-    一个非负整数，指定主版本组件。
+    A positive integer specifying the major version component
+    of the JSON object model.
   ``minor``
-    指定次要版本组件的非负整数。
+    A non-negative integer specifying the minor version component
+    of the JSON object model.
 
 ``backtraceGraph``
     JSON对象，使用以下成员表示回溯信息：
@@ -1412,27 +1423,53 @@ CTest提交步骤
       包含成员的节点JSON对象列表：
 
       ``command``
-        索引到\ ``backtraceGraph``\ 的\ ``commands``\ 成员。
+        An optional member present when the node represents a command
+        invocation within the file.  The value is an unsigned integer 0-based
+        index into the ``commands`` member of the ``backtraceGraph``.
       ``file``
-        索引到\ ``backtraceGraph``\ 的\ ``files``\ 成员。
+        An unsigned integer 0-based index into the ``files`` member of the
+        ``backtraceGraph``.
       ``line``
-        添加回溯的文件中的行号。
+        An optional member present when the node represents a line within
+        the file.  The value is an unsigned integer 1-based line number
+        in the file where the backtrace was added.
       ``parent``
-        索引到表示图中父节点的\ ``backtraceGraph``\ 的\ ``nodes``\ 成员。
+        An optional member present when the node is not the bottom of the
+        call stack.  The value is an unsigned integer 0-based index into the
+        ``nodes`` member of the ``backtraceGraph`` representing the parent
+        in the graph.
 
 ``tests``
   一个JSON数组，列出关于每个测试的信息。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
-    测试名称。
+    Test name. This cannot be empty.
   ``config``
-    测试可以运行的配置。空字符串表示任何配置。
+    Optional field specifying the configuration for which the test will run.
+    This will always match the :option:`-C <ctest -C>` option specified on the
+    ``ctest`` command line.  If no such option was given, this field will not
+    be present.
   ``command``
-    列表，其中第一个元素是测试命令，其余元素是命令参数。
+    Optional array where the first element is the test command and the
+    remaining elements are the command arguments.  Normally, this field should
+    be present and non-empty, but in certain corner cases involving generator
+    expressions, it is possible for a test to have no command and therefore
+    this field can be missing.
   ``backtrace``
     索引到\ ``backtraceGraph``\ 的\ ``nodes``\ 成员。
   ``properties``
-    测试属性。可以包含每个支持的测试属性的键。
+    Optional array of test properties.
+    Each array item will be a JSON object with the following members:
+
+    ``name``
+      The name of the test property. This cannot be empty.
+    ``value``
+      The property value, which can be a string, a number, a boolean, or an
+      array of strings.
+
+.. versionadded:: 4.1
+  The JSON output format is described in machine-readable form by
+  :download:`this JSON schema </manual/ctest/show-only-schema.json>`.
 
 .. _`ctest-resource-allocation`:
 
@@ -1682,4 +1719,4 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 另请参阅
 ========
 
-.. include:: LINKS.txt
+.. include:: include/LINKS.rst

@@ -7,8 +7,16 @@ CheckPIESupported
 
 .. versionadded:: 3.14
 
-检查链接器是否支持可执行文件的位置独立代码（PIE）或无位置独立代码（NO_PIE）。使用它可以确保\
-可执行文件的\ :prop_tgt:`POSITION_INDEPENDENT_CODE`\ 目标属性在链接时得到保证。
+This module provides the ``check_pie_supported()`` function to check whether the
+linker supports Position Independent Code (PIE) or No Position Independent Code
+(NO_PIE) for executables.
+
+When setting the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property,
+PIC-related compile and link options are added when building library objects,
+and PIE-related compile options are added when building objects of executable
+targets, regardless of this module.  Use this module to ensure that the
+``POSITION_INDEPENDENT_CODE`` target property for executables is also honored at
+link time.
 
 .. command:: check_pie_supported
 
@@ -34,14 +42,16 @@ CheckPIESupported
 
       ``OBJC``, ``OBJCXX``, ``CUDA``, and ``HIP`` are supported.
 
-It makes no sense to use this module when :policy:`CMP0083` is set to ``OLD``,
-so the command will return an error in this case.  See policy :policy:`CMP0083`
-for details.
+  .. note::
+
+    To use ``check_pie_supported()``, policy :policy:`CMP0083` must be set to
+    ``NEW``; otherwise, a fatal error will occur.
 
 Variables
 ^^^^^^^^^
 
-For each language checked, two boolean cache variables are defined.
+For each language checked, the ``check_pie_supported()`` function defines two
+boolean cache variables:
 
  ``CMAKE_<lang>_LINK_PIE_SUPPORTED``
    Set to true if ``PIE`` is supported by the linker and false otherwise.
@@ -51,20 +61,43 @@ For each language checked, two boolean cache variables are defined.
 Examples
 ^^^^^^^^
 
+To enable PIE on an executable target at link time as well, include this module
+and call ``check_pie_supported()`` before setting the
+``POSITION_INDEPENDENT_CODE`` target property.  This will determine whether the
+linker for each checked language supports PIE-related link options.  For
+example:
+
 .. code-block:: cmake
 
+  add_executable(foo ...)
+
+  include(CheckPIESupported)
   check_pie_supported()
   set_property(TARGET foo PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 
+Since not all linkers require or support PIE-related link options (for example,
+``MSVC``), retrieving any error messages might be useful for logging purposes:
+
 .. code-block:: cmake
 
-  # Retrieve any error message.
+  add_executable(foo ...)
+
+  include(CheckPIESupported)
   check_pie_supported(OUTPUT_VARIABLE output LANGUAGES C)
   set_property(TARGET foo PROPERTY POSITION_INDEPENDENT_CODE TRUE)
   if(NOT CMAKE_C_LINK_PIE_SUPPORTED)
-    message(WARNING "PIE is not supported at link time: ${output}.\n"
+    message(WARNING "PIE is not supported at link time:\n${output}"
                     "PIE link options will not be passed to linker.")
   endif()
+
+Setting the ``POSITION_INDEPENDENT_CODE`` target property on an executable
+without this module will set PIE-related compile options but not PIE-related
+link options, which might not be sufficient in certain cases:
+
+.. code-block:: cmake
+
+  add_executable(foo ...)
+  set_property(TARGET foo PROPERTY POSITION_INDEPENDENT_CODE TRUE)
 
 #]=======================================================================]
 
@@ -114,6 +147,9 @@ function (check_pie_supported)
 
   set(CMAKE_REQUIRED_QUIET TRUE)
   set (outputs)
+
+  # Isolate the checks below from the project's PIC selection.
+  unset(CMAKE_POSITION_INDEPENDENT_CODE)
 
   foreach(lang IN LISTS CHECK_PIE_LANGUAGES)
     if(_CMAKE_${lang}_PIE_MAY_BE_SUPPORTED_BY_LINKER)

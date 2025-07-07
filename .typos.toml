@@ -9,6 +9,9 @@ extend-ignore-re = [
     "(?s)(#|/(/|\\*)|\\.\\.)\\s*(NOQA|noqa):? spellcheck(: *|=| +)off.*?\\n\\s*(#|/(/|\\*)|\\.\\.)\\s*(NOQA|noqa):? spellcheck(: *|=| +)on"
     # NOTE Allow to mark a line to exclude from spellchecking
   , "(?Rm)^.*(#|/(/|\\*)|\\.\\.)\\s*(NOQA|noqa):? spellcheck(: *|=| +)disable-line$"
+    # NOTE Stop checking from this line to the end of file
+    # This line is a marker added by Git to the `COMMIT_EDITMSG`.
+  , "(?sm)^# ------------------------ >8 ------------------------$.*"
   ]
 locale = "en-us"
 # ATTENTION If, for any reason, you want to add the
@@ -35,6 +38,7 @@ Spectre = "Spectre"
 [type.cmake.extend-identifiers]
 COMMANDs = "COMMANDs"
 xCOMMANDx = "xCOMMANDx"
+TYPEs = "TYPEs"
 
 [type.cmake.extend-words]
 # Some compiler's options trigger false-positives
@@ -52,6 +56,9 @@ Fo = "Fo"
 fo = "fo"
 Ot = "Ot"
 SEH = "SEH"
+
+[type.py.extend-identifiers]
+typ = "typ"
 
 [files]
 ignore-hidden = false

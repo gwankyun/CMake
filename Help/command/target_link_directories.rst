@@ -28,7 +28,7 @@ target_link_directories
 如果指定了\ ``BEFORE``，内容将被添加到相关属性的前面，而不是被添加到后面。
 
 .. |command_name| replace:: ``target_link_directories``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
 .. note::
 
@@ -36,7 +36,7 @@ target_link_directories
   因为这可以确保始终链接正确的库。\ :command:`find_library`\ 命令提供了完整的路径，通常\
   可以在调用\ :command:`target_link_libraries`\ 时直接使用。可能需要库的搜索路径的情况包括：
 
-  - 像Xcode这样的项目生成器，用户可以在构建时切换目标架构，但不能使用库的完整路径，因为它只\
+  - 像\ :generator:`Xcode`\ 这样的项目生成器，用户可以在构建时切换目标架构，但不能使用库的完整路径，因为它只\
     提供了一种架构（即它不是通用的二进制文件）。
   - 库本身可能有其他期望通过\ ``RPATH``\ 机制找到的私有库依赖项，但一些链接器无法完全解码\
     这些路径（例如，由于\ ``$ORIGIN``\ 之类的东西的存在）。

@@ -5,7 +5,7 @@ VS_SOURCE_SETTINGS_<tool>
 
 在使用<tool>的所有非构建文件上设置任何项元数据。
 
-Takes a list of ``Key=Value`` pairs. Tells the Visual Studio generator
+Takes a list of ``Key=Value`` pairs. Tells the :ref:`Visual Studio Generators`
 to set ``Key`` to ``Value`` as item metadata on all non-built files
 that use ``<tool>``.
 

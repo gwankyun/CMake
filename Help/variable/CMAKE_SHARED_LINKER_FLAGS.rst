@@ -5,4 +5,4 @@ CMAKE_SHARED_LINKER_FLAGS
 
 These flags will be used by the linker when creating a shared library.
 
-.. include:: ../variable/LINKER_FLAGS.txt
+.. include:: ../variable/include/LINKER_FLAGS.rst

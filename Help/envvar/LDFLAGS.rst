@@ -1,7 +1,7 @@
 LDFLAGS
 -------
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 将只被CMake在第一次配置时使用，以确定默认的链接器标志，之后\ ``LDFLAGS``\ 的值存储在缓存\
 中为\ :variable:`CMAKE_EXE_LINKER_FLAGS_INIT`、\

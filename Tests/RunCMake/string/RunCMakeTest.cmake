@@ -21,6 +21,14 @@ run_cmake(JoinNoArgs)
 run_cmake(JoinNoVar)
 
 run_cmake(Timestamp)
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "AIX" # FIXME: Needs 64-bit build
+    AND NOT CMAKE_SYSTEM_NAME STREQUAL "SunOS" # FIXME: Needs 64-bit build
+    AND NOT (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND
+    CMAKE_SYSTEM_PROCESSOR MATCHES "^(hppa|parisc|parisc64|sparc|sparc64)$" # FIXME: 32-bit time_t?
+             )
+    )
+  run_cmake(Timestamp2038)
+endif()
 run_cmake(TimestampEmpty)
 run_cmake(TimestampInvalid)
 run_cmake(TimestampInvalid2)
@@ -35,6 +43,8 @@ run_cmake(UuidBadType)
 
 run_cmake(RegexClear)
 run_cmake(RegexMultiMatchClear)
+run_cmake(RegexEmptyMatch)
+run_cmake(CMP0186)
 
 run_cmake(UTF-16BE)
 run_cmake(UTF-16LE)

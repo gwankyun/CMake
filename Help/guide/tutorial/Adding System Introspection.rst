@@ -31,7 +31,7 @@
 在\ ``Step7``\ 目录中提供了起始源代码。在这个练习中，完成\ ``TODO 1``\ 到\ ``TODO 5``。
 
 首先编辑\ ``MathFunctions/CMakeLists.txt``。包含\ :module:`CheckCXXSourceCompiles`\
-模块。然后，使用\ ``check_cxx_source_compiles``\ 来确定\ ``log``\ 和\ ``exp``\ 是否\
+模块。然后，使用\ ``check_cxx_source_compiles()``\ 来确定\ ``log``\ 和\ ``exp``\ 是否\
 可以从\ ``cmath``\ 获得。如果可用，则使用\ :command:`target_compile_definitions`\
 指定\ ``HAVE_LOG``\ 和\ ``HAVE_EXP``\ 作为编译定义。
 

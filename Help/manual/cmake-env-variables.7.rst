@@ -30,6 +30,7 @@ cmake-env-variables(7)
    /envvar/CMAKE_PROGRAM_PATH
    /envvar/CMAKE_TLS_VERIFY
    /envvar/CMAKE_TLS_VERSION
+   /envvar/NO_COLOR
    /envvar/SSL_CERT_DIR
    /envvar/SSL_CERT_FILE
 
@@ -59,6 +60,7 @@ cmake-env-variables(7)
    /envvar/CMAKE_INSTALL_PREFIX
    /envvar/CMAKE_LANG_COMPILER_LAUNCHER
    /envvar/CMAKE_LANG_IMPLICIT_LINK_DIRECTORIES_EXCLUDE
+   /envvar/CMAKE_LANG_IMPLICIT_LINK_LIBRARIES_EXCLUDE
    /envvar/CMAKE_LANG_LINKER_LAUNCHER
    /envvar/CMAKE_MSVCIDE_RUN_PATH
    /envvar/CMAKE_NO_VERBOSE

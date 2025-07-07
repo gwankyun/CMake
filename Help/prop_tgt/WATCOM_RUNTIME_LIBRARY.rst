@@ -7,7 +7,7 @@ WATCOM_RUNTIME_LIBRARY
 
 The allowed values are:
 
-.. include:: WATCOM_RUNTIME_LIBRARY-VALUES.txt
+.. include:: include/WATCOM_RUNTIME_LIBRARY-VALUES.rst
 
 Use :manual:`generator expressions <cmake-generator-expressions(7)>` to
 support per-configuration specification.

@@ -555,6 +555,40 @@ class cmMakefile;
          WARN)                                                                \
   SELECT(POLICY, CMP0185,                                                     \
          "FindRuby no longer provides upper-case RUBY_* variables.", 4, 0, 0, \
+         WARN)                                                                \
+  SELECT(POLICY, CMP0186,                                                     \
+         "Regular expressions match ^ at most once in repeated searches.", 4, \
+         1, 0, WARN)                                                          \
+  SELECT(POLICY, CMP0187,                                                     \
+         "Include source file without an extension after the same name with " \
+         "an extension.",                                                     \
+         4, 1, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0188, "The FindGCCXML module is removed.", 4, 1, 0, WARN) \
+  SELECT(POLICY, CMP0189,                                                     \
+         "TARGET_PROPERTY evaluates LINK_LIBRARIES properties transitively.", \
+         4, 1, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0190,                                                     \
+         "FindPython enforce consistency in cross-compiling mode.", 4, 1, 0,  \
+         WARN)                                                                \
+  SELECT(POLICY, CMP0191, "The FindCABLE module is removed.", 4, 1, 0, WARN)  \
+  SELECT(POLICY, CMP0192,                                                     \
+         "GNUInstallDirs uses absolute SYSCONFDIR, LOCALSTATEDIR, and "       \
+         "RUNSTATEDIR in special prefixes.",                                  \
+         4, 1, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0193,                                                     \
+         "GNUInstallDirs caches CMAKE_INSTALL_* with leading 'usr/' for "     \
+         "install prefix '/'.",                                               \
+         4, 1, 0, WARN)                                                       \
+  SELECT(POLICY, CMP194, "MSVC is not an assembler for language ASM.", 4, 1,  \
+         0, WARN)                                                             \
+  SELECT(                                                                     \
+    POLICY, CMP0195,                                                          \
+    "Swift modules in build trees use the Swift module directory structure.", \
+    4, 1, 0, WARN)                                                            \
+  SELECT(POLICY, CMP0196,                                                     \
+         "The CMakeDetermineVSServicePack module is removed.", 4, 1, 0, WARN) \
+  SELECT(POLICY, CMP0197,                                                     \
+         "MSVC link -machine: flag is not in CMAKE_*_LINKER_FLAGS.", 4, 1, 0, \
          WARN)
 
 #define CM_SELECT_ID(F, A1, A2, A3, A4, A5, A6) F(A1)
@@ -602,7 +636,8 @@ class cmMakefile;
   F(CMP0162)                                                                  \
   F(CMP0179)                                                                  \
   F(CMP0181)                                                                  \
-  F(CMP0182)
+  F(CMP0182)                                                                  \
+  F(CMP0195)
 
 #define CM_FOR_EACH_CUSTOM_COMMAND_POLICY(F)                                  \
   F(CMP0116)                                                                  \

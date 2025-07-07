@@ -359,7 +359,7 @@ public:
       throw transform_error(
         cmStrCat("sub-command TRANSFORM, selector FOR "
                  "expects <start> to be no greater than <stop> (",
-                 this->Start, " > ", this->Stop, ")"));
+                 this->Start, " > ", this->Stop, ')'));
     }
 
     // compute indexes
@@ -523,8 +523,8 @@ public:
                   std::string const& replace) override
   {
     TransformAction::Initialize(selector);
-    this->ReplaceHelper =
-      cm::make_unique<cmStringReplaceHelper>(regex, replace);
+    this->ReplaceHelper = cm::make_unique<cmStringReplaceHelper>(
+      regex, replace, selector->Makefile);
 
     if (!this->ReplaceHelper->IsRegularExpressionValid()) {
       throw transform_error(
@@ -534,7 +534,7 @@ public:
     }
     if (!this->ReplaceHelper->IsReplaceExpressionValid()) {
       throw transform_error(cmStrCat("sub-command TRANSFORM, action REPLACE: ",
-                                     this->ReplaceHelper->GetError(), "."));
+                                     this->ReplaceHelper->GetError(), '.'));
     }
   }
   void Initialize(TransformSelector* selector,
@@ -552,7 +552,7 @@ public:
       if (!this->ReplaceHelper->Replace(s, output)) {
         throw transform_error(
           cmStrCat("sub-command TRANSFORM, action REPLACE: ",
-                   this->ReplaceHelper->GetError(), "."));
+                   this->ReplaceHelper->GetError(), '.'));
       }
 
       return output;
@@ -641,6 +641,11 @@ ActionDescriptorSet::iterator TransformConfigure(
 
   return descriptor;
 }
+}
+
+std::unique_ptr<cmList::TransformSelector> cmList::TransformSelector::New()
+{
+  return cm::make_unique<TransformNoSelector>();
 }
 
 std::unique_ptr<cmList::TransformSelector> cmList::TransformSelector::NewAT(
@@ -850,7 +855,7 @@ cmList::size_type cmList::ComputeIndex(index_type pos, bool boundCheck) const
       if (index < 0 || length <= static_cast<size_type>(index)) {
         throw std::out_of_range(cmStrCat("index: ", pos, " out of range (-",
                                          this->Values.size(), ", ",
-                                         this->Values.size() - 1, ")"));
+                                         this->Values.size() - 1, ')'));
       }
     }
     return index;
@@ -876,7 +881,7 @@ cmList::size_type cmList::ComputeInsertIndex(index_type pos,
       if (index < 0 || length < static_cast<size_type>(index)) {
         throw std::out_of_range(cmStrCat("index: ", pos, " out of range (-",
                                          this->Values.size(), ", ",
-                                         this->Values.size(), ")"));
+                                         this->Values.size(), ')'));
       }
     }
     return index;

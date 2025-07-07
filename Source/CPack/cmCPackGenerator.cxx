@@ -100,18 +100,18 @@ int cmCPackGenerator::PrepareNames()
   std::string pkgFileName =
     cmStrCat(pkgBaseFileName, this->GetOutputExtension());
   // Determine path to the package.
-  std::string pkgFilePath = cmStrCat(pkgDirectory, "/", pkgFileName);
+  std::string pkgFilePath = cmStrCat(pkgDirectory, '/', pkgFileName);
   // Determine top-level directory for packaging.
   std::string topDirectory = cmStrCat(pkgDirectory, "/_CPack_Packages/");
   {
     cmValue toplevelTag = this->GetOption("CPACK_TOPLEVEL_TAG");
     if (toplevelTag) {
-      topDirectory += cmStrCat(toplevelTag, "/");
+      topDirectory += cmStrCat(toplevelTag, '/');
     }
   }
   topDirectory += *this->GetOption("CPACK_GENERATOR");
   // Determine temporary packaging-directory.
-  std::string tmpDirectory = cmStrCat(topDirectory, "/", pkgBaseFileName);
+  std::string tmpDirectory = cmStrCat(topDirectory, '/', pkgBaseFileName);
   // Determine path to temporary package file.
   std::string tmpPkgFilePath = topDirectory + "/" + pkgFileName;
 
@@ -196,8 +196,8 @@ int cmCPackGenerator::InstallProject()
   std::string bareTempInstallDirectory =
     this->GetOption("CPACK_TEMPORARY_DIRECTORY");
   std::string tempInstallDirectory = bareTempInstallDirectory;
-  bool setDestDir = this->GetOption("CPACK_SET_DESTDIR").IsOn() ||
-    cmIsInternallyOn(this->GetOption("CPACK_SET_DESTDIR"));
+  cmValue v = this->GetOption("CPACK_SET_DESTDIR");
+  bool setDestDir = v.IsOn() || cmIsInternallyOn(v);
   if (!setDestDir) {
     tempInstallDirectory += this->GetPackagingInstallPrefix();
   }
@@ -962,9 +962,8 @@ int cmCPackGenerator::InstallCMakeProject(
       std::string absoluteDestFileComponent =
         std::string("CPACK_ABSOLUTE_DESTINATION_FILES") + "_" +
         this->GetComponentInstallSuffix(component);
-      if (this->GetOption(absoluteDestFileComponent)) {
-        std::string absoluteDestFilesListComponent =
-          cmStrCat(this->GetOption(absoluteDestFileComponent), ';', *d);
+      if (cmValue v = this->GetOption(absoluteDestFileComponent)) {
+        std::string absoluteDestFilesListComponent = cmStrCat(*v, ';', *d);
         this->SetOption(absoluteDestFileComponent,
                         absoluteDestFilesListComponent);
       } else {
@@ -983,7 +982,7 @@ bool cmCPackGenerator::GenerateChecksumFile(cmCryptoHash& crypto,
                                             cm::string_view filename) const
 {
   std::string packageFileName =
-    cmStrCat(this->GetOption("CPACK_OUTPUT_FILE_PREFIX"), "/", filename);
+    cmStrCat(this->GetOption("CPACK_OUTPUT_FILE_PREFIX"), '/', filename);
   std::string hashFile = cmStrCat(
     packageFileName, "." + cmSystemTools::LowerCase(crypto.GetHashAlgoName()));
   cmsys::ofstream outF(hashFile.c_str());
@@ -1002,7 +1001,7 @@ bool cmCPackGenerator::CopyPackageFile(std::string const& srcFilePath,
                                        cm::string_view filename) const
 {
   std::string destFilePath =
-    cmStrCat(this->GetOption("CPACK_OUTPUT_FILE_PREFIX"), "/", filename);
+    cmStrCat(this->GetOption("CPACK_OUTPUT_FILE_PREFIX"), '/', filename);
   cmCPackLogger(cmCPackLog::LOG_DEBUG,
                 "Copy final package(s): "
                   << (!srcFilePath.empty() ? srcFilePath : "(NULL)") << " to "
@@ -1239,7 +1238,11 @@ int cmCPackGenerator::Initialize(std::string const& name, cmMakefile* mf)
   // Load the project specific config file
   cmValue config = this->GetOption("CPACK_PROJECT_CONFIG_FILE");
   if (config) {
-    mf->ReadListFile(*config);
+    if (!mf->ReadListFile(*config)) {
+      cmCPackLogger(cmCPackLog::LOG_WARNING,
+                    "CPACK_PROJECT_CONFIG_FILE not found: " << *config
+                                                            << std::endl);
+    }
   }
   int result = this->InitializeInternal();
   if (cmSystemTools::GetErrorOccurredFlag()) {

@@ -43,7 +43,9 @@ find_package
 
 这个命令有几种搜索包的模式：
 
-**模块模式**
+.. _`Module mode`:
+
+**Module mode**
   在这种模式下，CMake搜索名为\ ``Find<PackageName>.cmake``\ 的文件。首先在\
   :variable:`CMAKE_MODULE_PATH`\ 中列出的位置中查找，然后在CMake安装提供的\
   :ref:`Find Modules`\ 中查找。如果找到该文件，则由CMake读取和处理。它负责查找包，检查版本，\
@@ -56,7 +58,9 @@ find_package
 
   模块模式仅支持\ :ref:`基本命令签名 <Basic Signature>`。
 
-**配置模式**
+.. _`Config mode`:
+
+**Config mode**
   在这种模式下，CMake搜索名为\ ``<lowercasePackageName>-config.cmake``\ 或者\
   ``<PackageName>Config.cmake``\ 的文件。它还将查找\
   ``<lowercasePackageName>-config-version.cmake``\ 或者\
@@ -103,7 +107,7 @@ find_package
 .. code-block:: cmake
 
   find_package(<PackageName> [version] [EXACT] [QUIET] [MODULE]
-               [REQUIRED] [[COMPONENTS] [components...]]
+               [REQUIRED|OPTIONAL] [[COMPONENTS] [components...]]
                [OPTIONAL_COMPONENTS components...]
                [REGISTRY_VIEW  (64|32|64_32|32_64|HOST|TARGET|BOTH)]
                [GLOBAL]
@@ -122,6 +126,13 @@ find_package
 被满足，则认为整个包没有被找到。如果\ ``REQUIRED``\ 选项也存在，则将其视为致命错误，否则执\
 行仍然继续。作为一种简写形式，如果\ ``REQUIRED``\ 选项存在，\ ``COMPONENTS``\ 关键字可\
 以省略，并且必要组件可以直接列在\ ``REQUIRED``\ 之后。
+
+The :variable:`CMAKE_FIND_REQUIRED` variable can be enabled to make this call
+``REQUIRED`` by default. This behavior can be overridden by providing the
+``OPTIONAL`` keyword. As with the ``REQUIRED`` option, a list of components
+can be listed directly after ``OPTIONAL``, which is equivalent to listing
+them after the ``COMPONENTS`` keyword. When the ``OPTIONAL`` keyword is given,
+the warning output when a package is not found is suppressed.
 
 其他可选组件可以列在\ ``OPTIONAL_COMPONENTS``\ 之后。如果这些不能满足，仍然可以考虑找到\
 整体的包，只要所有需要的组件都满足。
@@ -181,7 +192,7 @@ find_package
 .. code-block:: cmake
 
   find_package(<PackageName> [version] [EXACT] [QUIET]
-               [REQUIRED] [[COMPONENTS] [components...]]
+               [REQUIRED|OPTIONAL] [[COMPONENTS] [components...]]
                [OPTIONAL_COMPONENTS components...]
                [CONFIG|NO_MODULE]
                [GLOBAL]
@@ -343,7 +354,7 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
   可以指定\ ``REGISTRY_VIEW``\ 来管理作为\ ``PATHS``\ 和\ ``HINTS``\ 的一部分指定的\
   ``Windows``\ 注册表查询。
 
-  .. include:: FIND_XXX_REGISTRY_VIEW.txt
+  .. include:: include/FIND_XXX_REGISTRY_VIEW.rst
 
 如果指定了\ ``PATH_SUFFIXES``，则后缀将逐个添加到每个（\ ``W``\ ）或（\ ``U``\ )目录项。
 
@@ -489,8 +500,8 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
    ``<prefix>/<name>.framework/Versions/*/Resources/CMake``\ 中搜索与通配符表达式\
    匹配的目录的顺序。在以前的 CMake 版本中，这个顺序是未指定的。
 
-.. include:: FIND_XXX_ROOT.txt
-.. include:: FIND_XXX_ORDER.txt
+.. include:: include/FIND_XXX_ROOT.rst
+.. include:: include/FIND_XXX_ORDER.rst
 
 默认情况下，保存在结果变量中的值是找到文件的路径。在调用\ ``find_package``\ 之前，可以将\
 :variable:`CMAKE_FIND_PACKAGE_RESOLVE_SYMLINKS`\ 变量设置为\ ``TRUE``，以便解析符号\
@@ -506,6 +517,9 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 将这两个变量同时设置为\ ``TRUE``\ 将导致错误。
 
+The :variable:`CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>` variable takes priority
+over the ``OPTIONAL`` keyword in determining whether a package is required.
+
 .. _`version selection`:
 
 配置模式版本选择
@@ -518,6 +532,8 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 当提供了\ ``[version]``\ 参数时，配置模式将仅查找声明与所请求版本兼容的包版本（请参阅\
 :ref:`格式规范 <FIND_PACKAGE_VERSION_FORMAT>`）。如果指定了\ ``EXACT``\ 选项，则仅会\
 查找声明与所请求版本完全匹配的包版本。CMake并未为版本号的含义建立任何约定。
+
+.. _`cmake script version selection`:
 
 CMake脚本
 """"""""""""
@@ -628,6 +644,8 @@ CMake脚本
 
   因此，无法使用版本范围来扩大可接受的兼容包版本范围。
 
+.. _`cps version selection`:
+
 |CPS|
 """""
 
@@ -647,6 +665,9 @@ CMake脚本
 它是该包能够提供兼容支持的最旧版本。也就是说，该包保证期望使用\ ``compat_version``\ 的使用者\
 即使在包的实际版本更新的情况下也应该能够使用这个包。如果未指定\ ``compat_version``，则默认\
 其值等于包的版本号，即不提供向后兼容性。
+
+.. TODO Rework the preceding paragraph when COMPAT_VERSION has broader support
+        in CMake.
 
 当一个包使用了已知的版本模式时，CMake将根据以下规则来确定该包是否可接受：
 

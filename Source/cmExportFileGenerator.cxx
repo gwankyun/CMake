@@ -78,19 +78,21 @@ bool cmExportFileGenerator::GenerateImportFile()
   return this->GenerateImportFile(*foutPtr);
 }
 
+std::string cmExportFileGenerator::PropertyConfigSuffix(
+  std::string const& config)
+{
+  // Construct the property configuration suffix.
+  if (config.empty()) {
+    return "_NOCONFIG";
+  }
+  return cmStrCat('_', cmSystemTools::UpperCase(config));
+}
+
 void cmExportFileGenerator::GenerateImportConfig(std::ostream& os,
                                                  std::string const& config)
 {
-  // Construct the property configuration suffix.
-  std::string suffix = "_";
-  if (!config.empty()) {
-    suffix += cmSystemTools::UpperCase(config);
-  } else {
-    suffix += "NOCONFIG";
-  }
-
   // Generate the per-config target information.
-  this->GenerateImportTargetsConfig(os, config, suffix);
+  this->GenerateImportTargetsConfig(os, config, PropertyConfigSuffix(config));
 }
 
 bool cmExportFileGenerator::PopulateInterfaceProperties(
@@ -114,6 +116,9 @@ bool cmExportFileGenerator::PopulateInterfaceProperties(
                                   preprocessRule, properties);
   this->PopulateInterfaceProperty("INTERFACE_POSITION_INDEPENDENT_CODE",
                                   target, properties);
+
+  this->PopulateInterfaceProperty("SPDX_LICENSE", target, preprocessRule,
+                                  properties);
 
   std::string errorMessage;
   if (!this->PopulateCxxModuleExportProperties(

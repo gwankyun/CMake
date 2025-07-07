@@ -19,13 +19,13 @@ add_link_options
   请参阅\ :prop_tgt:`STATIC_LIBRARY_OPTIONS`\ 目标属性。
 
 .. |command_name| replace:: ``add_link_options``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
-.. include:: DEVICE_LINK_OPTIONS.txt
+.. include:: include/DEVICE_LINK_OPTIONS.rst
 
-.. include:: OPTIONS_SHELL.txt
+.. include:: include/OPTIONS_SHELL.rst
 
-.. include:: LINK_OPTIONS_LINKER.txt
+.. include:: include/LINK_OPTIONS_LINKER.rst
 
 另外参阅
 ^^^^^^^^

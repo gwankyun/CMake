@@ -1,7 +1,7 @@
 CC
 --
 
-.. include:: ENV_VAR.txt
+.. include:: include/ENV_VAR.rst
 
 编译\ ``C``\ 语言文件的首选可执行文件。只有CMake在第一次配置时使用它来确定\ ``C``\ 编译器，\
 之后\ ``CC``\ 的值存储在缓存中为\ :variable:`CMAKE_C_COMPILER <CMAKE_<LANG>_COMPILER>`。\

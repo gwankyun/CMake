@@ -33,7 +33,7 @@ target_include_directories
 :prop_tgt:`INTERFACE_SYSTEM_INCLUDE_DIRECTORIES`\ 目标属性将填充指定的目录。
 
 .. |command_name| replace:: ``target_include_directories``
-.. include:: GENEX_NOTE.txt
+.. include:: include/GENEX_NOTE.rst
 
 指定的包含目录可以是绝对路径或相对路径。相对路径将被解释为相对于当前源目录（即\
 :variable:`CMAKE_CURRENT_SOURCE_DIR`\ ），并在存储到相关的目标属性之前转换为绝对路径。\
@@ -55,7 +55,7 @@ target_include_directories
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. |INTERFACE_PROPERTY_LINK| replace:: :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
-.. include:: /include/INTERFACE_INCLUDE_DIRECTORIES_WARNING.txt
+.. include:: /include/INTERFACE_INCLUDE_DIRECTORIES_WARNING.rst
 
 另外参阅
 ^^^^^^^^

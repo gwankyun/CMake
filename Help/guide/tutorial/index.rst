@@ -9,9 +9,8 @@ CMake教程提供了一个循序渐进的指南，涵盖了CMake帮助解决的�
 步骤
 =====
 
-.. include:: source.txt
-
-|tutorial_source|\
+The tutorial documentation and source code examples can be found in
+the ``Help/guide/tutorial`` directory of the CMake source code tree.
 每个步骤都有自己的子目录，其中包含可以用作起点的代码。教程的例子是循序渐进的，所以每一步都是如此为上一步提供完整的解决方案。
 
 .. toctree::
