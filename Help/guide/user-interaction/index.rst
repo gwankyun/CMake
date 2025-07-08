@@ -189,14 +189,12 @@ Visual Studio工具集可以通过\ :option:`cmake -T`\ 选项指定：
 ========================================== ============================================================
  :variable:`CMAKE_PREFIX_PATH`              搜索\ :guide:`依赖包 <使用依赖项指南>`\ 的路径
  :variable:`CMAKE_MODULE_PATH`              搜索其他CMake模块的路径
- :variable:`CMAKE_BUILD_TYPE`               Build configuration, such as
-                                            ``Debug`` or ``Release``, determining
-                                            debug/optimization flags.  This is only
-                                            relevant for single-configuration buildsystems such
-                                            as :ref:`Makefile Generators` and
-                                            :ref:`Ninja Generators`.
-                                            Multi-configuration buildsystems such as those for
-                                            :ref:`Visual Studio Generators` and :generator:`Xcode`
+ :variable:`CMAKE_BUILD_TYPE`               构建配置，例如\ ``Debug``\ 或 ``Release``，\
+                                            用于确定调试/优化标志。\
+                                            这仅适用于单配置构建系统，例如\ :ref:`Makefile Generators`\
+                                            和\ :ref:`Ninja Generators`。\
+                                            多配置构建系统，例如适用于\ :ref:`Visual Studio Generators`\ 和\
+                                            :ref:`Visual Studio Generators`\ 的构建系统
  :variable:`CMAKE_INSTALL_PREFIX`           使用\ ``install``\ 构建目标安装软件的位置
  :variable:`CMAKE_TOOLCHAIN_FILE`           包含交叉编译数据的文件，如\ :manual:`工具链和sysroot <cmake-toolchains(7)>`。
  :variable:`BUILD_SHARED_LIBS`              是否为没有类型的\ :command:`add_library`\ 命令构建共享库而不是静态库
@@ -388,18 +386,13 @@ CMake文件中描述的每个可执行文件和库都是一个构建目标，构
 CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 
 ``all``
-  The default target used by :ref:`Makefile Generators`
-  and :ref:`Ninja Generators`.  Builds all targets in
-  the buildsystem, except those which are excluded by
-  their :prop_tgt:`EXCLUDE_FROM_ALL` target property or
-  :prop_dir:`EXCLUDE_FROM_ALL` directory property.  The
-  name ``ALL_BUILD`` is used for this purpose for the
-  :generator:`Xcode` and :ref:`Visual Studio Generators`.
+  :ref:`Makefile Generators`\ 和\ :ref:`Ninja Generators`\ 使用的默认目标。\
+  构建构建系统中的所有目标，但排除那些通过其\ :prop_tgt:`EXCLUDE_FROM_ALL`\ 目标\
+  属性或\ :prop_dir:`EXCLUDE_FROM_ALL`\ 目录属性被排除的目标。对于\ :generator:`Xcode`\
+  和\ :ref:`Visual Studio Generators`，会使用名称\ ``ALL_BUILD``\ 来实现此目的。
 ``help``
-  Lists the targets available for build.  This target is
-  available when using the :ref:`Makefile Generators` or
-  :ref:`Ninja Generators`, and the exact output is
-  tool-specific.
+  列出可供构建的目标。当使用\ :ref:`Makefile Generators`\ 或\ :ref:`Ninja Generators`\
+  时，此目标可用，且具体输出因工具而异。
 ``clean``
   删除已构建的目标文件和其他输出文件。基于\ :ref:`Makefile Generators`\ 为每个目录创建一个\
   ``clean``\ 目标，以便可以清理单个目录。``Ninja``\ 工具提供了自己的颗粒\ ``-t clean``\
@@ -414,13 +407,10 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 ``package_source``
   创建源包。这个目标只有在CMake文件提供基于CPack的包时才自动可用。
 
-For :ref:`Makefile Generators`, ``/fast`` variants of binary
-build targets are provided. The ``/fast`` variants are used
-to build the specified target without regard for its
-dependencies.  The dependencies are not checked and
-are not rebuilt if out of date.  The :ref:`Ninja Generators`
-are sufficiently fast at dependency checking that
-such targets are not provided for that generator.
+对于\ :ref:`Makefile Generators`，提供了二进制构建目标的\ ``/fast``\ 变体。\
+``/fast``\ 变体用于构建指定目标，且不考虑其依赖项。\
+依赖项不会被检查，若过期也不会重新构建。\
+:ref:`Ninja Generators`\ 在依赖项检查方面速度足够快，因此该生成器不提供此类目标。
 
 :ref:`Makefile Generators`\ 的系统还提供构建目标来预处理、组装和编译特定目录中的单个文件。
 

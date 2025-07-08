@@ -215,9 +215,8 @@ FindFoo.cmake模块通常通过以下命令加载：
   建windows上的\ ``PATH``\ 或UNIX上的\ ``LD_LIBRARY_PATH``。这不应该是缓存项。
 
 ``Xxx_VERSION``
-  The full version string of the package found, if any.  Note that some existing
-  modules may also provide ``Xxx_VERSION_STRING``, as it was traditionally used
-  before the current naming convention.
+  如果找到包，此为该包的完整版本字符串。请注意，一些现有模块可能还会提供\
+  ``Xxx_VERSION_STRING``，因为在当前命名约定出现之前，该变量名被普遍使用。
 
 ``Xxx_VERSION_MAJOR``
   找到的包的主要版本，如果有的话。
@@ -255,10 +254,8 @@ FindFoo.cmake模块通常通过以下命令加载：
 后缀创建缓存变量，例如\ ``Foo_LIBRARY_RELEASE``\ 和\ ``Foo_LIBRARY_DEBUG``。\
 :module:`SelectLibraryConfigurations`\ 模块对这种情况很有帮助。
 
-While these are the standard variable names, backward compatibility should be
-provided for any previously used names in the find module that is replacing an
-older version.  Old variable names should be documented as deprecated to
-discourage further use.
+尽管这些是标准变量名，但对于正在替换旧版本的查找模块中任何以前使用过的名称，都\
+应该提供向后兼容性。旧的变量名应该被记录为已弃用，以阻止后续继续使用。
 
 查找模块示例
 --------------------
@@ -376,9 +373,8 @@ discourage further use.
   include(SelectLibraryConfigurations)
   select_library_configurations(Foo)
 
-If there is a good way of getting the version (from a header file, for
-example), that information can be used to set ``Foo_VERSION``.  Otherwise,
-attempt to use the information from the ``pkg-config``:
+如果有很好的方法获取版本信息（例如从头文件中获取），可以使用该信息来设置\
+``Foo_VERSION``。否则，尝试使用\ ``pkg-config``\ 提供的信息：
 
 .. code-block:: cmake
 
@@ -470,9 +466,8 @@ attempt to use the information from the ``pkg-config``:
 ``RELEASE``\ 变量应该首先在属性中列出，以便当用户使用的配置与任何列出的\
 ``IMPORTED_CONFIGURATIONS``\ 不完全匹配时选择该变量。
 
-Most of the cache variables should be marked as advanced to remain hidden in GUI
-interfaces such as :manual:`cmake-gui(1)` or :manual:`ccmake(1)`, unless the
-user explicitly chooses to display and modify them:
+大多数缓存变量应标记为高级变量，以便在诸如\ :manual:`cmake-gui(1)`\ 或\
+:manual:`ccmake(1)`\ 之类的图形用户界面中保持隐藏状态，除非用户明确选择显示并修改它们：
 
 .. code-block:: cmake
 
@@ -481,10 +476,8 @@ user explicitly chooses to display and modify them:
     Foo_LIBRARY
   )
 
-If this find module replaces an older module version that provided variables
-before the current standard variables naming conventions, also backward
-compatibility variables should be provided to cause the least disruption
-possible.  For example:
+如果这个查找模块替换了旧版本模块，而旧版本在当前标准变量命名约定出台前就已提供变量，\
+那么应该提供向后兼容变量，以尽量减少干扰。例如：
 
 .. code-block:: cmake
 

@@ -61,5 +61,4 @@ target_compile_options
 * :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
   添加传递给编译器所有调用的语言范围内的标志。这包括驱动编译的调用和驱动链接的调用。
 
-* The :module:`CheckCompilerFlag` module to check whether the compiler
-  supports a given flag.
+* :module:`CheckCompilerFlag`\ 模块用于检查编译器是否支持给定的标志。
