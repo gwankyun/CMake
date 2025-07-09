@@ -94,12 +94,10 @@ target_link_libraries
   关键字对应所有其他配置。\ ``general``\ 关键字对应所有配置，纯粹是可选的。这些关键字由该\
   命令立即解释，因此当由生成器表达式生成时，没有特殊含义。
 
-  Alternatively, generator expressions like :genex:`$<CONFIG>` provide finer
-  per-configuration linking of ``<item>``.  For a more structured approach,
-  higher granularity can be achieved by creating and linking to
-  :ref:`IMPORTED library targets <Imported Targets>` with the
-  :prop_tgt:`IMPORTED_CONFIGURATIONS` property set, particularly in find
-  modules.
+  另外，像\ :genex:`$<CONFIG>`\ 这样的生成器表达式可为\ ``<item>``\ 提供更精细的按构建配置链接。\
+  为采用更有条理的方法，可以通过创建并链接到设置了\ :prop_tgt:`IMPORTED_CONFIGURATIONS`\
+  属性的\ :ref:`导入库目标 <Imported Targets>`\ 来实现更高的粒度，\
+  特别是在查找模块中。
 
 包含\ ``::``\ 的项，如\ ``Foo::Bar``，被认为是\ :ref:`导入 <Imported Targets>`\ 或\
 :ref:`别名 <Alias Targets>`\ 库目标名，如果不存在这样的目标，将导致错误。参见策略\

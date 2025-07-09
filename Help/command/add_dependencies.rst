@@ -26,8 +26,8 @@ add_dependencies
   保证依赖项的自定义命令在\ ``<target>``\ 中的源开始编译之前完成；这确保了生成的源是可用的。
 
 .. versionchanged:: 4.1
-  The command may be called with no dependencies.
-  Previously, at least one dependency was required.
+  此命令可以在不指定依赖项的情况下调用。\
+  此前，至少需要指定一个依赖项。
 
 另请参阅
 ^^^^^^^^
