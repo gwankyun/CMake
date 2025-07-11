@@ -484,9 +484,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
         $<LIST:TRANSFORM,list,REPLACE,regular_expression,replace_expression[,SELECTOR]>
 
       .. versionchanged:: 4.1
-        The ``^`` anchor now matches only at the beginning of the input
-        element instead of the beginning of each repeated search.
-        See policy :policy:`CMP0186`.
+        现在，\ ``^``\ 锚点仅匹配输入元素的起始位置，而非每次重复搜索的起始位置。\
+        请参阅策略\ :policy:`CMP0186`。
 
   ``SELECTOR``\ 决定列表中的哪些项将被转换。一次只能指定一种类型的选择器。当给定时，\
   ``SELECTOR``\ 必须是下列之一：
@@ -1164,10 +1163,9 @@ Shell路径
 
   .. versionadded:: 3.3
 
-  The compile language of source files when evaluating compile options.
-  See the related boolean expression
-  :genex:`$<COMPILE_LANGUAGE:languages> <COMPILE_LANGUAGE:languages>`
-  for notes about the portability of this generator expression.
+  评估编译选项时源文件的编译语言。\
+  有关此生成器表达式可移植性的注意事项，请参阅相关布尔表达式\
+  :genex:`$<COMPILE_LANGUAGE:languages> <COMPILE_LANGUAGE:languages>`。
 
 .. genex:: $<COMPILE_LANGUAGE:languages>
   :target: COMPILE_LANGUAGE:languages
@@ -1703,17 +1701,13 @@ Shell路径
 
   .. versionchanged:: 4.1
 
-    Evaluation of :prop_tgt:`LINK_LIBRARIES` itself is now transitive.
-    See policy :policy:`CMP0189`.
+    :prop_tgt:`LINK_LIBRARIES`\ 属性本身的计算现在具有传递性。\
+    请参阅策略\ :policy:`CMP0189`。
 
 :ref:`目标使用要求属性 <Target Usage Requirements>`
-  这些值是一个\ :ref:`分号分隔列表 <CMake Language Lists>`，表示目标本身上的值与目标的\
-  相应目标使用要求的值的并集，这些值由目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
-  命名：
-  These evaluate as a :ref:`semicolon-separated list <CMake Language Lists>`
-  representing the union of the value on the target itself with the values
-  of the same properties on targets named by the target's
-  :prop_tgt:`INTERFACE_LINK_LIBRARIES`:
+  这些属性计算结果为一个\ :ref:`以分号分隔的列表 <CMake Language Lists>`，\
+  表示目标自身该属性的值，与由目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
+  所指定的目标上相同属性值的并集。
 
   * 对于\ :ref:`目标编译属性 <Transitive Compile Properties>`，对相应使用需求的评估\
     传递到链接目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 的闭包，\ *不包括*\ 由\
@@ -1725,8 +1719,8 @@ Shell路径
 
   .. versionchanged:: 4.1
 
-    Evaluation of :prop_tgt:`INTERFACE_LINK_LIBRARIES` itself is now
-    transitive.  See policy :policy:`CMP0189`.
+    :prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 属性本身的计算现在具有传递性。\
+    请参阅策略\ :policy:`CMP0189`。
 
 :ref:`自定义传递属性 <Custom Transitive Properties>`
   .. versionadded:: 3.30
@@ -1809,14 +1803,12 @@ Shell路径
   ``tgt``\ 的基本名称，即不带前缀和后缀的\ ``$<TARGET_FILE_NAME:tgt>``。例如，如果\
   ``tgt``\ 文件名是\ ``libbase.so``，基名是\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  :prop_tgt:`LIBRARY_OUTPUT_NAME` and :prop_tgt:`RUNTIME_OUTPUT_NAME`
-  target properties, their configuration-specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>`, :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`, and
-  the :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`、\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 和\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ 目标属性，\
+  以及它们特定于配置的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`、\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`、\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`\
+  和\ :prop_tgt:`RUNTIME_OUTPUT_NAME_<CONFIG>`，还有\ :prop_tgt:`<CONFIG>_POSTFIX`\
+  和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
@@ -1869,12 +1861,10 @@ Shell路径
   目标文件链接器导入文件的基名\ ``tgt``，不带前缀或者后缀。例如，目标文件名为\
   ``libbase.tbd``，则基文件名为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`
-  target properties, their configuration-specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`, and
-  the :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性、\
+  它们特定于配置的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`，以及\ :prop_tgt:`<CONFIG>_POSTFIX`\
+  和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
   请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
@@ -1933,13 +1923,11 @@ Shell路径
   用于链接目标\ ``tgt``\ 的基本文件名，例如\ :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` ，\
   不带前缀和后缀。例如，目标文件名为\ ``libbase.a``，基本名称为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  and :prop_tgt:`LIBRARY_OUTPUT_NAME` target properties, their
-  configuration-specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`, and
-  the :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性，以及它们特定于配置的变体\
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
+  和\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`，还有\ :prop_tgt:`<CONFIG>_POSTFIX`\
+  和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
@@ -1992,13 +1980,11 @@ Shell路径
   :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>`，不带前缀和后缀。例如，目标文件名为\
   ``libbase.a``，则基文件名为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  and :prop_tgt:`LIBRARY_OUTPUT_NAME` target properties, their
-  configuration-specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`,
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`, and
-  the :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
+  :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性，以及它们特定于配置的变体\
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`\
+  和\ :prop_tgt:`LIBRARY_OUTPUT_NAME_<CONFIG>`，还有\ :prop_tgt:`<CONFIG>_POSTFIX`\
+  和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
   请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 
@@ -2055,12 +2041,10 @@ Shell路径
   :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>`\ ，不带前缀和后缀。例如，如果目标文\
   件名为\ ``libbase.tbd``，则基文件名为\ ``base``。
 
-  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`ARCHIVE_OUTPUT_NAME`,
-  target properties, their configuration-specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>` and
-  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`, and
-  the :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target
-  properties.
+  另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性、\
+  它们的特定配置变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
+  :prop_tgt:`ARCHIVE_OUTPUT_NAME_<CONFIG>`，以及\ :prop_tgt:`<CONFIG>_POSTFIX`\
+  和\ :prop_tgt:`DEBUG_POSTFIX`\ 目标属性。
 
   请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的。
 

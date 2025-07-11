@@ -127,12 +127,10 @@ find_package
 行仍然继续。作为一种简写形式，如果\ ``REQUIRED``\ 选项存在，\ ``COMPONENTS``\ 关键字可\
 以省略，并且必要组件可以直接列在\ ``REQUIRED``\ 之后。
 
-The :variable:`CMAKE_FIND_REQUIRED` variable can be enabled to make this call
-``REQUIRED`` by default. This behavior can be overridden by providing the
-``OPTIONAL`` keyword. As with the ``REQUIRED`` option, a list of components
-can be listed directly after ``OPTIONAL``, which is equivalent to listing
-them after the ``COMPONENTS`` keyword. When the ``OPTIONAL`` keyword is given,
-the warning output when a package is not found is suppressed.
+可以启用\ :variable:`CMAKE_FIND_REQUIRED`\ 变量，使此调用默认具有\ ``REQUIRED``\ 属性。\
+这种行为可以通过提供\ ``OPTIONAL``\ 关键字来覆盖。和\ ``REQUIRED``\ 选项一样，\
+组件列表可以直接列在\ ``OPTIONAL``\ 之后，这与将它们列在\ ``COMPONENTS``\ 关键字\
+之后等效。当指定\ ``OPTIONAL``\ 关键字时，在未找到包时的警告输出将被抑制。
 
 其他可选组件可以列在\ ``OPTIONAL_COMPONENTS``\ 之后。如果这些不能满足，仍然可以考虑找到\
 整体的包，只要所有需要的组件都满足。
@@ -517,8 +515,8 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 将这两个变量同时设置为\ ``TRUE``\ 将导致错误。
 
-The :variable:`CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>` variable takes priority
-over the ``OPTIONAL`` keyword in determining whether a package is required.
+在确定某个包是否为必需项时，:variable:`CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>`\
+变量的优先级高于\ ``OPTIONAL``\ 关键字。
 
 .. _`version selection`:
 
