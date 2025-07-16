@@ -380,10 +380,9 @@ ctest(1)
 
  .. versionadded:: 4.1
 
- Override the random order seed
+ 覆盖随机顺序种子
 
- This option is used to allow recreating failures owing to
- random order of execution by ``--schedule-random``.
+ 此选项用于重现因使用\ ``--schedule-random``\ 选项以随机顺序执行而导致的测试失败。
 
 .. option:: --submit-index
 
@@ -1406,11 +1405,9 @@ CTest提交步骤
   指定版本组件的JSON对象。其成员是：
 
   ``major``
-    A positive integer specifying the major version component
-    of the JSON object model.
+    一个正整数，用于指定JSON对象模型的主版本号。
   ``minor``
-    A non-negative integer specifying the minor version component
-    of the JSON object model.
+    一个非负整数，用于指定JSON对象模型的次要版本号。
 
 ``backtraceGraph``
     JSON对象，使用以下成员表示回溯信息：
@@ -1423,53 +1420,44 @@ CTest提交步骤
       包含成员的节点JSON对象列表：
 
       ``command``
-        An optional member present when the node represents a command
-        invocation within the file.  The value is an unsigned integer 0-based
-        index into the ``commands`` member of the ``backtraceGraph``.
+        当节点表示文件内的命令调用时，该可选成员将会出现。该值是一个基于0的无符号\
+        整数，用于索引\ ``backtraceGraph``\ 中\ ``commands``\ 成员。
       ``file``
-        An unsigned integer 0-based index into the ``files`` member of the
-        ``backtraceGraph``.
+        该值是一个基于0的无符号整数，用于索引\ ``backtraceGraph``\ 中\ ``files``\ 成员。
       ``line``
-        An optional member present when the node represents a line within
-        the file.  The value is an unsigned integer 1-based line number
-        in the file where the backtrace was added.
+        当节点表示文件中的某一行时，该可选成员将会出现。该值是一个基于1的无符号整数，\
+        表示回溯信息添加位置在文件中的行号。
       ``parent``
-        An optional member present when the node is not the bottom of the
-        call stack.  The value is an unsigned integer 0-based index into the
-        ``nodes`` member of the ``backtraceGraph`` representing the parent
-        in the graph.
+        当节点并非调用栈底部时，该可选成员将会出现。该值是一个基于0的无符号整数索引，\
+        指向\ ``backtraceGraph``\ 的\ ``nodes``\ 成员，代表图中的父节点。
 
 ``tests``
   一个JSON数组，列出关于每个测试的信息。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
-    Test name. This cannot be empty.
+    测试名称。此名称不能为空。
   ``config``
-    Optional field specifying the configuration for which the test will run.
-    This will always match the :option:`-C <ctest -C>` option specified on the
-    ``ctest`` command line.  If no such option was given, this field will not
-    be present.
+    可选字段，用于指定测试将要运行的配置。\
+    该字段的值始终与\ ``ctest``\ 命令行中指定的\ :option:`-C <ctest -C>`\ 选项相匹配。\
+    如果未指定该选项，则此选项将不会出现。
   ``command``
-    Optional array where the first element is the test command and the
-    remaining elements are the command arguments.  Normally, this field should
-    be present and non-empty, but in certain corner cases involving generator
-    expressions, it is possible for a test to have no command and therefore
-    this field can be missing.
+    可选数组，其中第一个元素为测试命令，其余元素为命令参数。\
+    通常，该字段应当存在且不为空。但在涉及生成器表达式的某些特殊情况下，测试可能\
+    没有命令，因此该字段可能会缺失。
   ``backtrace``
     索引到\ ``backtraceGraph``\ 的\ ``nodes``\ 成员。
   ``properties``
-    Optional array of test properties.
-    Each array item will be a JSON object with the following members:
+    可选的测试属性数组。\
+    数组中的每个元素都是一个JSON对象，包含以下成员：
 
     ``name``
-      The name of the test property. This cannot be empty.
+      测试属性的名称。此名称不能为空。
     ``value``
-      The property value, which can be a string, a number, a boolean, or an
-      array of strings.
+      属性值，其类型可以是字符串、数字、布尔值或字符串数组。
 
 .. versionadded:: 4.1
-  The JSON output format is described in machine-readable form by
-  :download:`this JSON schema </manual/ctest/show-only-schema.json>`.
+  JSON输出格式以机器可读的形式由\
+  :download:`this JSON schema </manual/ctest/show-only-schema.json>`\ 描述。
 
 .. _`ctest-resource-allocation`:
 
