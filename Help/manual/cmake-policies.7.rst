@@ -84,20 +84,20 @@ CMake 4.1引入的策略
 .. toctree::
    :maxdepth: 1
 
-   CMP0197: MSVC link -machine: flag is not in CMAKE_*_LINKER_FLAGS. </policy/CMP0197>
-   CMP0196: The CMakeDetermineVSServicePack module is removed. </policy/CMP0196>
-   CMP0195: Swift modules in build trees use the Swift module directory structure. </policy/CMP0195>
-   CMP0194: MSVC is not an assembler for language ASM. </policy/CMP0194>
-   CMP0193: GNUInstallDirs caches CMAKE_INSTALL_* with leading 'usr/' for install prefix '/'. </policy/CMP0193>
-   CMP0192: GNUInstallDirs uses absolute SYSCONFDIR, LOCALSTATEDIR, and RUNSTATEDIR in special prefixes. </policy/CMP0192>
-   CMP0191: The FindCABLE module is removed. </policy/CMP0191>
-   CMP0190: FindPython enforce consistency in cross-compiling mode. </policy/CMP0190>
-   CMP0189: TARGET_PROPERTY evaluates LINK_LIBRARIES properties transitively. </policy/CMP0189>
-   CMP0188: The FindGCCXML module is removed. </policy/CMP0188>
-   CMP0187: Include source file without an extension after the same name with an extension. </policy/CMP0187>
-   CMP0186: Regular expressions match ^ at most once in repeated searches. </policy/CMP0186>
+   CMP0197: MSVC链接器的-machine:标志未包含在CMAKE_*_LINKER_FLAGS中。 </policy/CMP0197>
+   CMP0196: CMakeDetermineVSServicePack模块已被移除。 </policy/CMP0196>
+   CMP0195: 构建树中的Swift模块将使用Swift模块目录结构。 </policy/CMP0195>
+   CMP0194: MSVC不用作汇编语言的汇编器。 </policy/CMP0194>
+   CMP0193: 当安装前缀为'/'时，GNUInstallDirs会缓存以'usr/'开头的CMAKE_INSTALL_*变量。 </policy/CMP0193>
+   CMP0192: 在特定前缀的情况下，GNUInstallDirs会使用绝对路径的SYSCONFDIR、LOCALSTATEDIR和RUNSTATEDIR。 </policy/CMP0192>
+   CMP0191: FindCABLE模块已被移除。 </policy/CMP0191>
+   CMP0190: FindPython在交叉编译模式下强制保持一致性。 </policy/CMP0190>
+   CMP0189: TARGET_PROPERTY会以传递方式计算LINK_LIBRARIES属性。 </policy/CMP0189>
+   CMP0188: FindGCCXML模块已被移除。 </policy/CMP0188>
+   CMP0187: 先包含带有扩展名的同名源文件，再包含无扩展名的源文件。 </policy/CMP0187>
+   CMP0186: 在重复搜索中，正则表达式中的^最多匹配一次。 </policy/CMP0186>
 
-Policies Introduced by CMake 4.0
+CMake 4.0引入的策略
 --------------------------------
 
 .. toctree::

@@ -11,12 +11,12 @@ cmake-file-api(7)
 ============
 
 CMake提供了一个基于文件的API，客户端可以使用它来获取关于CMake生成的构建系统的语义信息。\
-客户端可以通过将查询文件写入构建树的特定位置来请求零个或多个\ `对象类型`_\ 来使用API。\
+客户端可以通过将查询文件写入构建树的特定位置来请求零个或多个\ :ref:`file-api object kinds`\ 来使用API。\
 当CMake在构建树中生成构建系统时，它将读取查询文件并写入应答文件供客户端读取。
 
 基于文件的API使用构建树顶级的\ ``<build>/.cmake/api/``\ 目录。API已版本化，以支持更改\
-API目录中的文件布局。API文件布局的版本控制与响应中使用的\ `对象类型`_\ 的版本控制是正交的。\
-此版本的CMake只支持一个API版本：\ `API v1`_。
+API目录中的文件布局。API文件布局的版本控制与响应中使用的\ :ref:`file-api object kinds`\ 的版本控制是正交的。\
+此版本的CMake只支持一个API版本：\ :ref:`file-api v1`。
 
 .. versionadded:: 3.27
   项目也可以使用\ :command:`cmake_file_api`\ 命令提交当前运行的查询。
@@ -29,50 +29,52 @@ API v1
 API v1位于\ ``<build>/.cmake/api/v1/``\ 目录下。它有以下子目录：
 
 ``query/``
-  保存客户端写入的查询文件。这些文件可能是\ `v1共享无状态查询文件`_、\ `v1客户端无状态查询文件`_\
-  或\ `v1客户端有状态查询文件`_。
+  保存客户端写入的查询文件。这些文件可能是\ :ref:`v1 Shared Stateless Query Files`、\
+  \ :ref:`v1 Client Stateless Query Files`\ 或\ :ref:`v1 Client Stateful Query Files`。
 
 ``reply/``
-  Holds reply files written by CMake when it runs to generate a build system.
-  Clients may read reply files only when referenced by a reply index:
+  存放CMake在运行以生成构建系统时写入的应答文件。\
+  客户端仅在应答索引引用时方可读取应答文件：
 
   ``index-*.json``
-    A `v1应答索引文件`_ written when CMake generates a build system.
+    当CMake生成构建系统时，会写入一个\ :ref:`v1 Reply Index File`。
 
   ``error-*.json``
     .. versionadded:: 4.1
 
-    A `v1 Reply Error Index`_ written when CMake fails to generate a build
-    system due to an error.
+    当CMake因错误而无法生成构建系统时，会生成一个\ :ref:`file-api reply error index`。
 
-  Clients may look for and read a reply index at any time.
-  Clients may optionally create the ``reply/`` directory at any time
-  and monitor it for the appearance of a new reply index.
-  CMake owns all reply files.  Clients must never remove them.
+  客户端可以在任何时候查找并读取应答索引文件。客户端可以选择在任何时候创建\
+  ``reply/``\ 目录，并监视该目录以查看是否有新的应答索引出现。所有应答文件归CMake\
+  所有。客户端绝不能删除这些文件。
 
 .. versionadded:: 3.31
   用户可以在\ :envvar:`CMAKE_CONFIG_DIR`\ 的\ ``api/v1/query``\ 中添加查询文件，\
   为所有CMake项目创建用户范围的查询。
 
+.. _`v1 Shared Stateless Query Files`:
+
 v1共享无状态查询文件
 -------------------------------
 
-共享的无状态查询文件允许客户端共享\ `对象类型`_\ 的主要版本的请求，并获得运行的CMake所识别\
+共享的无状态查询文件允许客户端共享\ :ref:`file-api object kinds`\ 的主要版本的请求，并获得运行的CMake所识别\
 的所有请求版本。
 
 客户端可以通过在\ ``v1/query/``\ 目录下创建空文件来创建共享请求。格式如下：\ ::
 
   <build>/.cmake/api/v1/query/<kind>-v<major>
 
-其中\ ``<kind>``\ 是\ `对象类型`_\ 之一，\ ``-v``\ 是文字，\ ``<major>``\ 是主版本号。
+其中\ ``<kind>``\ 是\ :ref:`file-api object kinds`\ 之一，\ ``-v``\ 是文字，\ ``<major>``\ 是主版本号。
 
 这种形式的文件是无状态共享查询，不属于任何特定的客户端。一旦创建，在没有外部客户协调或人工干\
 预的情况下，不应该删除它们。
 
+.. _`v1 Client Stateless Query Files`:
+
 v1客户端无状态查询文件
 -------------------------------
 
-客户端无状态查询文件允许客户端为\ `对象类型`_\ 的主要版本创建自己的请求，并获得运行的CMake\
+客户端无状态查询文件允许客户端为\ :ref:`file-api object kinds`\ 的主要版本创建自己的请求，并获得运行的CMake\
 所识别的所有请求版本。
 
 客户端可以通过在特定于客户端的查询子目录中创建空文件来创建自己的请求。格式如下：\ ::
@@ -80,15 +82,17 @@ v1客户端无状态查询文件
   <build>/.cmake/api/v1/query/client-<client>/<kind>-v<major>
 
 其中\ ``client-``\ 是字面量，\ ``<client>``\ 是唯一标识客户端的字符串，\ ``<kind>``\
-是\ `对象类型`_\ 之一，\ ``-v``\ 是字面意思，\ ``<major>``\ 是主版本号。每个客户端必须选\
+是\ :ref:`file-api object kinds`\ 之一，\ ``-v``\ 是字面意思，\ ``<major>``\ 是主版本号。每个客户端必须选\
 择唯一的\ ``<client>``\ 标识符通过它自己的方式。
 
 这种形式的文件是客户端\ ``<client>``\ 拥有的无状态查询。拥有它们的客户端可以随时删除它们。
 
+.. _`v1 Client Stateful Query Files`:
+
 v1客户端有状态查询文件
 ------------------------------
 
-有状态查询文件允许客户端请求每个\ `对象类型`_\ 的版本列表，并且只获得运行的CMake所识别的最\
+有状态查询文件允许客户端请求每个\ :ref:`file-api object kinds`\ 的版本列表，并且只获得运行的CMake所识别的最\
 新版本。
 
 客户端可以通过创建\ ``query.json``\ 文件来创建特定于客户端的子目录自有状态查询。格式如下：\ ::
@@ -124,7 +128,7 @@ v1客户端有状态查询文件
   包含零个或多个请求的JSON数组。每个请求都是一个JSON对象，包含以下成员：
 
   ``kind``
-    指定要包含在应答中的\ `对象类型`_\ 之一。
+    指定要包含在应答中的\ :ref:`file-api object kinds`\ 之一。
 
   ``version``
     显示客户端可以理解的对象类型的版本。版本有遵循语义版本约定的主要和次要组件。该值必须为
@@ -134,7 +138,7 @@ v1客户端有状态查询文件
     * 一个JSON数组，其元素均为上述元素之一。
 
   ``client``
-    可选成员，保留给客户端使用。在\ `v1应答索引文件`_\ 中为客户端写的应答中保留该值，否则将\
+    可选成员，保留给客户端使用。在\ :ref:`v1 Reply Index File`\ 中为客户端写的应答中保留该值，否则将\
     被忽略。客户端可以使用它将自定义信息与请求一起传递到它的应答。
 
   对于每个请求的对象类型，CMake将在请求中列出的对象类型中选择它识别的\ *第一个*\ 版本。响应\
@@ -142,16 +146,18 @@ v1客户端有状态查询文件
   端应该按照首选顺序列出所有支持的主要版本，以及每个主要版本所需的最小次要版本。
 
 ``client``
-  可选成员，保留给客户端使用。在\ `v1应答索引文件`_\ 中为客户端写的应答中保留该值，否则将被\
+  可选成员，保留给客户端使用。在\ :ref:`v1 Reply Index File`\ 中为客户端写的应答中保留该值，否则将被\
   忽略。客户端可以使用它将带有查询的自定义信息传递给它的应答。
 
 其他\ ``query.json``\ 顶层成员被保留以备将来使用。如果存在，则忽略它们以实现前向兼容性。
+
+.. _`v1 Reply Index File`:
 
 v1应答索引文件
 -------------------
 
 当它成功生成一个构建系统时，CMake写一个\ ``index-*.json``\ 文件放到\ ``v1/reply/``\ 目录中。\
-客户端必须先读取应答索引文件，其他\ `v1 Reply Files`_\ 只能通过引用读取。应答索引文件名的格式为：\ ::
+客户端必须先读取应答索引文件，其他\ :ref:`v1 Reply Files`\ 只能通过引用读取。应答索引文件名的格式为：\ ::
 
   <build>/.cmake/api/v1/reply/index-<unspecified>.json
 
@@ -248,45 +254,43 @@ v1应答索引文件
       称的字符串。
 
 ``objects``
-  一个JSON数组，列出了作为应答的一部分生成的所有\ `对象类型`_\ 的所有版本。每个数组项是一个\
-  `v1应答文件引用`_。
+  一个JSON数组，列出了作为应答的一部分生成的所有\ :ref:`file-api object kinds`\ 的所有版本。每个数组项是一个\
+  :ref:`v1 Reply File Reference`。
 
 ``reply``
   一个JSON对象，镜像CMake加载以生成回复的\ ``query/``\ 目录的内容。成员是这个格式的
 
   ``<kind>-v<major>``
-    这个表单的成员出现在每个\ `v1共享无状态查询文件`_\ 中，CMake将其识别为具有主要版本\
+    这个表单的成员出现在每个\ :ref:`v1 Shared Stateless Query Files`\ 中，CMake将其识别为具有主要版本\
     ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是
 
-    * a `v1应答文件引用`_ to the corresponding reply file for
-      that object kind and version, or
-    * in a `v1 Reply Error Index`_, a JSON object with a single ``error``
-      member containing a string with an error message.
+    * 一个指向该对象类型和版本对应回复文件的\ :ref:`v1 Reply File Reference`，或者
+    * 在\ :ref:`file-api reply error index`\ 里，是一个 JSON 对象，仅含一个\
+      ``error``\ 成员，其值为包含错误消息的字符串。
 
   ``<unknown>``
-    这个表单的成员出现在每个CMake不能识别的\ `v1共享无状态查询文件`_\ 中。该值是一个JSON对\
+    这个表单的成员出现在每个CMake不能识别的\ :ref:`v1 Shared Stateless Query Files`\ 中。该值是一个JSON对\
     象，其单个\ ``error``\ 成员包含一个字符串，该字符串带有错误消息，指示查询文件未知。
 
   ``client-<client>``
-    这个表单的成员出现在每个持有\ `v1客户端无状态查询文件`_\ 的客户端所有的目录中。这是一个\
+    这个表单的成员出现在每个持有\ :ref:`v1 Client Stateless Query Files`\ 的客户端所有的目录中。这是一个\
     JSON对象，镜像查询\ ``query/client-<client>/``\ 目录的内容。成员的格式为：
 
     ``<kind>-v<major>``
-      这个表单的成员出现在每个\ `v1客户端无状态查询文件`_\ 中，这些文件被CMake识别为具有\
+      这个表单的成员出现在每个\ :ref:`v1 Client Stateless Query Files`\ 中，这些文件被CMake识别为具有\
       主要版本\ ``<major>``\ 的对象kind ``<kind>``\ 的请求。该值是
 
-      * a `v1应答文件引用`_ to the corresponding reply file for
-        that object kind and version, or
-      * in a `v1 Reply Error Index`_, a JSON object with a single ``error``
-        member containing a string with an error message.
+      * 一个指向该对象类型和版本对应回复文件的\ :ref:`v1 Reply File Reference`，或者
+      * 在\ :ref:`file-api reply error index`\ 中，是一个JSON对象，包含一个单独的\
+        ``error``\ 成员，其值为包含错误消息的字符串。
 
     ``<unknown>``
-      这个表单的成员出现在每个CMake不能识别的\ `v1客户端无状态查询文件`_\ 中。该值是一个\
+      这个表单的成员出现在每个CMake不能识别的\ :ref:`v1 Client Stateless Query Files`\ 中。该值是一个\
       JSON对象，其单个\ ``error``\ 成员包含一个字符串，该字符串带有错误消息，指示查询文件\
       未知。
 
     ``query.json``
-      这个成员出现在使用\ `v1客户端有状态查询文件`_\ 的客户端。如果\ ``query.json``\
+      这个成员出现在使用\ :ref:`v1 Client Stateful Query Files`\ 的客户端。如果\ ``query.json``\
       文件未能读取或解析为JSON对象，此成员是一个JSON对象，其单个\ ``error``\ 成员包含一个\
       带有错误消息的字符串。否则，该成员是一个JSON对象，镜像\ ``query.json``\ 文件的内容。\
       成员包括：
@@ -302,12 +306,12 @@ v1应答索引文件
         其单个\ ``error``\ 成员包含一个带有错误消息的字符串。否则，该成员将包含一个JSON数\
         组，其中以相同的顺序对请求数组的每个条目进行响应。每个响应是
 
-        * a `v1应答文件引用`_ to the corresponding reply file for
-          the requested object kind and selected version, or
-        * a JSON object with a single ``error`` member containing a string
-          with an error message.
+        * 一个指向对应请求对象类型和所选版本的应答文件的\ :ref:`v1 Reply File Reference`，或者
+        * 一个JSON对象，包含一个单独的\ ``error``\ 成员，该成员的值为包含错误消息的字符串。
 
-客户端读取应答索引文件后，可以读取它引用的其他\ `v1 Reply Files`_。
+客户端读取应答索引文件后，可以读取它引用的其他\ :ref:`v1 Reply Files`。
+
+.. _`v1 Reply File Reference`:
 
 v1应答文件引用
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -315,7 +319,7 @@ v1应答文件引用
 应答索引文件使用JSON对象表示对另一个回复文件的引用，该JSON对象包含成员：
 
 ``kind``
-  指定\ `对象类型`_\ 之一的字符串。
+  指定\ :ref:`file-api object kinds`\ 之一的字符串。
 ``version``
   一个JSON对象，其成员\ ``major``\ 和\ ``minor``\ 指定对象类型的整数版本组件。
 ``jsonFile``
@@ -323,38 +327,36 @@ v1应答文件引用
 
 .. _`file-api reply error index`:
 
-v1 Reply Error Index
+v1应答错误索引
 ^^^^^^^^^^^^^^^^^^^^
 
 .. versionadded:: 4.1
 
-CMake writes an ``error-*.json`` file to the ``v1/reply/`` directory
-when it fails to generate a build system.  This reply error index
-follows the same naming pattern, syntax, and semantics of a
-`v1应答索引文件`_, with the following exceptions:
+当CMake未能成功生成构建系统时，会在\ ``v1/reply/``\ 目录下写入一个\ ``error-*.json``\
+文件。此应答错误索引遵循与\ :ref:`v1 Reply Index File`\ 相同的命名模式、语法和语义，\
+但有以下例外：
 
-* The ``index-`` prefix is replaced by an ``error-`` prefix.
+* ``index-``\ 前缀被替换为\ ``error-``\ 前缀。
 
-* When a new error index is generated, old index files are *not*
-  deleted.  If a `v1应答索引文件`_ exists, it indexes replies
-  from the most recent successful run.  If multiple ``index-*.json``
-  and/or ``error-*.json`` files are present, the one with the largest
-  name in lexicographic order, excluding the ``index-`` or ``error-``
-  prefix, is the current index.
+* 当生成新的错误索引时，旧的索引文件\ *不*\ 会被删除。\
+  如果存在\ :ref:`v1 Reply Index File`，它将索引最近一次成功运行所产生的回复。\
+  如果存在多个\ ``index-*.json``\ 和/或\ ``error-*.json``\ 文件，那么排除\ ``index-``\
+  或\ ``error-``\ 前缀后，按字典序排序名称最大的那个文件即为当前索引文件。
 
-* Only a subset of `对象类型`_ are provided:
+* 仅提供部分\ :ref:`file-api object kinds`：
 
   `configureLog <file-api configureLog_>`_
     .. versionadded:: 4.1
 
-  Index entries for other object kinds contain an ``error`` message
-  instead of a `v1应答文件引用`_.
+  其他对象类型的索引条目包含一条\ ``error``\ 消息，而非\ :ref:`v1 Reply File Reference`。
 
-v1 Reply Files
+.. _`v1 Reply Files`:
+
+v1应答文件​
 --------------
 
-包含特定\ `对象类型`_\ 的应答文件由CMake编写。这些文件的名称是未指定的，并且不能被客户端解释。\
-客户端必须首先读取\ `v1应答索引文件`_，并遵循对所需响应对象名称的引用。
+包含特定\ :ref:`file-api object kinds`\ 的应答文件由CMake编写。这些文件的名称是未指定的，并且不能被客户端解释。\
+客户端必须首先读取\ :ref:`v1 Reply Index File`，并遵循对所需响应对象名称的引用。
 
 应答文件（包括索引文件）永远不会被同名但内容不同的文件所取代。这允许客户端在运行CMake的同时\
 读取文件，这可能会产生一个新的应答。然而，在生成一个新的应答后，CMake将尝试从之前的运行中删\
@@ -888,11 +890,10 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       * ``frameworkPath``： macOS框架搜索路径标志。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the :command:`target_link_libraries`, :command:`target_link_options`,
-      or other command invocation that added this link fragment is available.
-      The value is an unsigned integer 0-based index into the ``backtraceGraph``
-      member's ``nodes`` array.
+      可选成员，当存在CMake语言回溯信息，可追溯到添加此链接片段的\
+      :command:`target_link_libraries`、\ :command:`target_link_options`\
+      或其他命令调用时出现。该值是一个基于0索引的无符号整数，指向\ ``backtraceGraph``\
+      成员的\ ``nodes``\ 数组。
 
   ``lto``
     可选成员，当启用链接时间优化（也称为过程间优化或链接时间代码生成）时，以布尔值\ ``true``\
