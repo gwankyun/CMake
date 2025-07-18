@@ -670,6 +670,13 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
       此类型在代码模型2.4版中添加。
 
+    ``cxxModuleBmi``
+      An :command:`install(TARGETS)` call with ``CXX_MODULES_BMI``.
+      The ``destination`` member is populated and the ``isOptional`` member
+      may exist.  This type has an additional ``cxxModuleBmiTarget`` member.
+
+      This type was added in codemodel version 2.5.
+
   ``isExcludeFromAll``
     可选成员，当使用\ ``EXCLUDE_FROM_ALL``\ 选项调用\ :command:`install`\ 时，以布尔值\
     ``true``\ 出现。
@@ -758,6 +765,21 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       一个基于0的无符号整数，索引到目标的主“codemodel”对象的\ ``targets``\ 数组。
 
     此字段在代码模型2.4版中添加。
+
+  ``cxxModuleBmiTarget``
+    Optional member that is present when ``type`` is ``cxxModuleBmi``.
+    The value is a JSON object with members:
+
+    ``id``
+      A string uniquely identifying the target.  This matches
+      the ``id`` member of the target in the main "codemodel"
+      object's ``targets`` array.
+
+    ``index``
+      An unsigned integer 0-based index into the main "codemodel"
+      object's ``targets`` array for the target.
+
+    This field was added in codemodel version 2.5.
 
   ``scriptFile``
     当\ ``type``\ 为\ ``script``\ 时出现的可选成员。该值是一个字符串，指定磁盘上脚本文件\
@@ -949,7 +971,9 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``fileSets``
-  与目标文件集相对应的条目的JSON数组。每个条目都是一个JSON对象，包含以下成员：
+  An optional member that is present when a target defines one or more
+  file sets.  The value is a JSON array of entries corresponding to the
+  target's file sets.  每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
     指定文件集名称的字符串。
@@ -1039,6 +1063,12 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
     ``fragment``
       指定编译命令行调用片段的字符串。该值以构建系统的本机shell格式编码。
+
+    ``backtrace``
+      Optional member that is present when a CMake language backtrace to
+      the command invocation that added this fragment is available.
+      The value is an unsigned integer 0-based index into the
+      ``backtraceGraph`` member's ``nodes`` array.
 
   ``includes``
     存在包含目录时出现的可选成员。该值是一个JSON数组，每个目录都有一个条目。每个条目都是一个\
