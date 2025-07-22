@@ -3,7 +3,7 @@ VS_SETTINGS
 
 .. versionadded:: 3.18
 
-Add arbitrary MSBuild item metadata to a file.
+向文件中添加任意的MSBuild项元数据。
 
 This property accepts a list of ``Key=Value`` pairs. The Visual Studio
 generator will add these key-value pairs as item metadata to the file.

@@ -3,8 +3,7 @@ CMAKE_<LANG>_COMPILER_ARCHITECTURE_ID
 
 .. versionadded:: 3.10
 
-:ref:`List <CMake Language Lists>` of identifiers indicating the
-target architecture(s) of the compiler for language ``<LANG>``.
+:ref:`标识符列表 <CMake Language Lists>`，用于指示语言为\ ``<LANG>``\ 的编译器的目标架构。
 
 Typically the list has one entry unless :variable:`CMAKE_OSX_ARCHITECTURES`
 lists multiple architectures.

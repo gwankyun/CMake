@@ -3,7 +3,7 @@ VS_TOOL_OVERRIDE
 
 .. versionadded:: 3.7
 
-Override the MSBuild item type of a source file in a Visual Studio project.
+覆盖Visual Studio项目中源文件的MSBuild项类型。
 
 Together with :prop_sf:`VS_SETTINGS`, this property can be used to configure
 items for custom MSBuild tasks.

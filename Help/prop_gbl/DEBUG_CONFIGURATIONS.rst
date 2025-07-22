@@ -1,7 +1,7 @@
 DEBUG_CONFIGURATIONS
 --------------------
 
-This property specifies which :ref:`Build Configurations` are for debugging.
+此属性指定哪些\ :ref:`Build Configurations`\ 用于调试。
 
 The value must be a :ref:`semicolon-separated list <CMake Language Lists>` of
 build configuration names.

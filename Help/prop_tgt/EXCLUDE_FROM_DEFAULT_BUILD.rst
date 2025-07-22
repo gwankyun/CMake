@@ -1,7 +1,7 @@
 EXCLUDE_FROM_DEFAULT_BUILD
 --------------------------
 
-Exclude a target from the solution build configuration.
+从解决方案构建配置中排除某个目标。
 
 This property is only used by :ref:`Visual Studio Generators`. When set to
 ``TRUE``, the target will be excluded from the build when the "Build Solution"

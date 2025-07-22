@@ -3,9 +3,8 @@ TEST_INCLUDE_FILES
 
 .. versionadded:: 3.10
 
-This directory property specifies a list of CMake scripts to be included and
-processed when ``ctest`` runs on the directory.  Use absolute paths, to avoid
-ambiguity.  Script files are included in the specified order.
+此目录属性指定了一个CMake脚本列表，当在该目录下运行\ ``ctest``\ 时，这些脚本将被\
+包含并执行。使用绝对路径以避免歧义。脚本文件将按指定顺序包含。
 
 ``TEST_INCLUDE_FILES`` scripts are processed when running ``ctest``, not during
 the ``cmake`` configuration phase.  These scripts should be written as if they

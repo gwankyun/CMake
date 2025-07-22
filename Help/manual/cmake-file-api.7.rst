@@ -671,11 +671,11 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       此类型在代码模型2.4版中添加。
 
     ``cxxModuleBmi``
-      An :command:`install(TARGETS)` call with ``CXX_MODULES_BMI``.
-      The ``destination`` member is populated and the ``isOptional`` member
-      may exist.  This type has an additional ``cxxModuleBmiTarget`` member.
+      一个带有\ ``CXX_MODULES_BMI``\ 的\ :command:`install(TARGETS)`\ 调用。\
+      将填充\ ``destination``\ 成员，并且\ ``isOptional``\ 成员可能存在。\
+      此类型有一个额外的\ ``cxxModuleBmiTarget``\ 成员。
 
-      This type was added in codemodel version 2.5.
+      此类型在代码模型版本2.5中添加。
 
   ``isExcludeFromAll``
     可选成员，当使用\ ``EXCLUDE_FROM_ALL``\ 选项调用\ :command:`install`\ 时，以布尔值\
@@ -767,19 +767,17 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     此字段在代码模型2.4版中添加。
 
   ``cxxModuleBmiTarget``
-    Optional member that is present when ``type`` is ``cxxModuleBmi``.
-    The value is a JSON object with members:
+    当\ ``type``\ 为\ ``cxxModuleBmi``\ 时出现的可选成员。\
+    该值是一个JSON对象，包含以下成员：
 
     ``id``
-      A string uniquely identifying the target.  This matches
-      the ``id`` member of the target in the main "codemodel"
-      object's ``targets`` array.
+      一个唯一标识目标的字符串。这与主“codemodel”对象的\ ``targets``\ 数组中目标的\
+      ``id``\ 成员相匹配。
 
     ``index``
-      An unsigned integer 0-based index into the main "codemodel"
-      object's ``targets`` array for the target.
+      一个基于0的无符号整数，用于索引主“codemodel”对象的\ ``targets``\ 数组中对应的目标。
 
-    This field was added in codemodel version 2.5.
+    此字段在代码模型版本2.5中添加。
 
   ``scriptFile``
     当\ ``type``\ 为\ ``script``\ 时出现的可选成员。该值是一个字符串，指定磁盘上脚本文件\
@@ -971,9 +969,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``fileSets``
-  An optional member that is present when a target defines one or more
-  file sets.  The value is a JSON array of entries corresponding to the
-  target's file sets.  每个条目都是一个JSON对象，包含以下成员：
+  一个可选成员，当目标定义了一个或多个文件集时出现。该值是一个JSON数组，其条目\
+  对应目标的文件集。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
     指定文件集名称的字符串。
@@ -1065,10 +1062,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       指定编译命令行调用片段的字符串。该值以构建系统的本机shell格式编码。
 
     ``backtrace``
-      Optional member that is present when a CMake language backtrace to
-      the command invocation that added this fragment is available.
-      The value is an unsigned integer 0-based index into the
-      ``backtraceGraph`` member's ``nodes`` array.
+      可选成员，当存在CMake语言回溯信息，可追溯到添加此片段的命令调用时出现。\
+      该值是一个基于0索引的无符号整数，指向\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组。
 
   ``includes``
     存在包含目录时出现的可选成员。该值是一个JSON数组，每个目录都有一个条目。每个条目都是一个\

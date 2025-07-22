@@ -3,8 +3,8 @@ XCTEST
 
 .. versionadded:: 3.3
 
-Boolean target property that indicates whether a target is an XCTest CFBundle
-(Core Foundation Bundle) on Apple systems.
+布尔类型的目标属性，用于指示某个目标在苹果系统上是否为XCTest CFBundle\
+（核心基础捆绑包）。
 
 This property is usually set automatically by the :command:`xctest_add_bundle`
 command provided by the :module:`FindXCTest` module.

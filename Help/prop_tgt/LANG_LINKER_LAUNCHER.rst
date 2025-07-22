@@ -3,7 +3,7 @@
 
 .. versionadded:: 3.21
 
-This property is implemented only when ``<LANG>`` is one of:
+仅当\ ``<LANG>``\ 为以下其中一种语言时，此属性才会生效：
 
 * ``C``
 

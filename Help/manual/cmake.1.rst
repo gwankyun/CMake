@@ -628,18 +628,17 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
 运行\ :option:`cmake --build`，没有快速帮助选项。
 
-Generator-Specific Build Tool Behavior
+特定生成器的构建工具行为
 --------------------------------------
 
-``cmake --build`` has special behavior with some generators:
+``cmake --build``\ 针对某些生成器有特殊行为：
 
 :generator:`Xcode`
 
   .. versionadded:: 4.1
 
-    If a third-party tool has written a ``.xcworkspace`` next to
-    the CMake-generated ``.xcodeproj``, ``cmake --build`` drives
-    the build through the workspace instead.
+    如果第三方工具在CMake生成的\ ``.xcodeproj``\ 文件旁创建了一个\ ``.xcworkspace``\
+    文件，那么\ ``cmake --build``\ 会通过该工作区来驱动构建过程。
 
 安装一个项目
 =================
@@ -1238,41 +1237,38 @@ CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
 
 .. option:: --find-package
 
-  It searches a package using the :command:`find_package` command and prints the
-  resulting flags to stdout.  This can be used instead of pkg-config to find
-  installed libraries in plain Makefile-based projects or in Autoconf-based
-  projects, using auxiliary macros installed in ``share/aclocal/cmake.m4`` on
-  the system.
+  它使用\ :command:`find_package`\ 命令搜索包，并将结果标志打印到标准输出。\
+  在基于纯Makefile的项目或基于Autoconf的项目中，可使用此功能替代pkg-config来查找\
+  已安装的库。这会借助系统中安装在\ ``share/aclocal/cmake.m4``\ 里的辅助宏来实现。
 
-  When using this option, the following variables are expected:
+  使用此选项时，需要以下变量：
 
   ``NAME``
-    Name of the package as called in ``find_package(<PackageName>)``.
+    在\ ``find_package(<PackageName>)``\ 中调用的包名。
 
   ``COMPILER_ID``
-    :variable:`Compiler ID <CMAKE_<LANG>_COMPILER_ID>` used for searching the
-    package, i.e. GNU/Intel/Clang/MSVC, etc.
+    用于搜索包的\ :variable:`Compiler ID <CMAKE_<LANG>_COMPILER_ID>`，\
+    即GNU、Intel、Clang、MSVC等。
 
   ``LANGUAGE``
-    Language used for searching the package, i.e. C/CXX/Fortran/ASM, etc.
+    用于搜索包的编程语言，例如C、CXX、Fortran、ASM等。
 
   ``MODE``
-    The package search mode.  Value can be one of:
+    包搜索模式。值可以是以下之一：
 
     ``EXIST``
-      Only checks for existence of the given package.
+      仅检查给定包是否存在。
 
     ``COMPILE``
-      Prints the flags needed for compiling an object file which uses the given
-      package.
+      打印使用指定包编译目标文件时所需的标志。
 
     ``LINK``
-      Prints the flags needed for linking when using the given package.
+      打印使用指定包进行链接时所需的标志。
 
   ``SILENT``
-    (Optional) If TRUE, find result message is not printed.
+    （可选）如果为TRUE，则不会打印查找结果消息。
 
-  For example:
+  例如：
 
   .. code-block:: shell
 

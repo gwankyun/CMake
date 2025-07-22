@@ -3,9 +3,8 @@ CMAKE_<LANG>_LINKER_LAUNCHER
 
 .. versionadded:: 3.21
 
-Default value for :prop_tgt:`<LANG>_LINKER_LAUNCHER` target property. This
-variable is used to initialize the property on each target as it is created.
-This is done only when ``<LANG>`` is one of:
+:prop_tgt:`<LANG>_LINKER_LAUNCHER`\ 目标属性的默认值。此变量用于在每个目标创建时\
+初始化该属性。仅当\ ``<LANG>``\ 为以下之一时才会执行此操作：
 
 * ``C``
 
