@@ -3,7 +3,7 @@
 
 .. versionadded:: 4.1
 
-This property is supported only when ``<LANG>`` is ``C`` or ``CXX``.
+仅当\ ``<LANG>``\ 为\ ``C``\ 或\ ``CXX``\ 时，此属性才受支持。
 
 Specify a :ref:`semicolon-separated list <CMake Language Lists>`
 containing a command line for the ``icstat`` static analysis tool.
