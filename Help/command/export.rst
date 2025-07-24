@@ -146,7 +146,7 @@ Exporting Targets to the |CPS|
 .. versionadded:: 4.1
 .. note::
 
-  Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``.
+  实验性功能。由\ ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``\ 开关控制。
 
 Creates a file in the |CPS|_ that may be included by outside projects to import
 targets named by ``<target>...`` from the current project's build tree.  See

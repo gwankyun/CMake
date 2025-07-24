@@ -91,7 +91,7 @@ The options are:
   .. versionadded:: 4.1
   .. note::
 
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``.
+    实验性功能。由\ ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``\ 开关控制。
 
   Optional; requires ``VERSION`` also be set.
 

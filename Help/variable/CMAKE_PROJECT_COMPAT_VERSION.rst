@@ -5,9 +5,9 @@ CMAKE_PROJECT_COMPAT_VERSION
 
 .. note::
 
-  Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``.
+  实验性功能。由\ ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``\ 开关控制。
 
-The compatibility version of the top level project.
+顶层项目的兼容版本。
 
 This variable holds the compatibility version of the project as specified in the
 top level CMakeLists.txt file by a :command:`project` command.  In the event
