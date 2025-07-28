@@ -3,9 +3,8 @@ CMAKE_FIND_DEBUG_MODE_NO_IMPLICIT_CONFIGURE_LOG
 
 .. versionadded:: 4.1
 
-The following commands will report configure log events when they experience a
-transition between found and not-found states or when the result is first
-defined:
+当以下命令遇到查找结果在找到和未找到状态间转换，或者首次确定查找结果时，\
+将会记录配置日志事件：
 
 * :command:`find_program`
 * :command:`find_library`

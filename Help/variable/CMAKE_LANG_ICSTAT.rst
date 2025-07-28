@@ -3,6 +3,5 @@ CMAKE_<LANG>_ICSTAT
 
 .. versionadded:: 4.1
 
-Default value for :prop_tgt:`<LANG>_ICSTAT` target property. This variable
-is used to initialize the property on each target as it is created.  This
-is done only when ``<LANG>`` is ``C`` or ``CXX``.
+:prop_tgt:`<LANG>_ICSTAT`\ 目标属性的默认值。此变量用于在每个目标创建时初始化该属性。\
+仅当\ ``<LANG>``\ 为\ ``C``\ 或\ ``CXX``\ 时才会执行此操作。

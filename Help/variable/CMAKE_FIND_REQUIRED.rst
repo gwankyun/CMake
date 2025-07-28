@@ -3,8 +3,8 @@ CMAKE_FIND_REQUIRED
 
 .. versionadded:: 4.1
 
-If enabled, the following commands are treated as having the ``REQUIRED``
-keyword unless provided with the ``OPTIONAL`` keyword:
+如果启用该变量，以下命令将被视作带有\ ``REQUIRED``\ 关键字，除非显式提供\
+``OPTIONAL``\ 关键字：
 
 * :command:`find_package`
 * :command:`find_program`
