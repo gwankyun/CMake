@@ -292,22 +292,22 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
 
 .. _`find configure-log event`:
 
-Event Kind ``find``
+事件类型\ ``find``
 -------------------
 
-The :command:`find_file`, :command:`find_path`, :command:`find_library`, and
-:command:`find_program` commands log ``find`` events.
+:command:`find_file`、\ :command:`find_path`、\ :command:`find_library`\ 和\
+:command:`find_program`\ 命令会记录\ ``find``\ 事件。
 
-There is only one ``find`` event major version, version 1.
+``find``\ 事件仅有一个主版本，即版本1。
 
 .. _`find-v1 event`:
 
-``find-v1`` Event
+``find-v1``\ 事件
 ^^^^^^^^^^^^^^^^^
 
 .. versionadded:: 4.1
 
-A ``find-v1`` event is a YAML mapping:
+一个\ ``find-v1``\ 事件是一个YAML映射：
 
 .. code-block:: yaml
 
@@ -338,17 +338,17 @@ A ``find-v1`` event is a YAML mapping:
     - "/other/path/to/search"
   found: "/path/to/found/program"
 
-The keys specific to ``find-v1`` mappings are:
+特定于\ ``find-v1``\ 映射的键如下：
 
 ``mode``
-  A string describing the command using the search performed. One of ``file``,
-  ``path``, ``program``, or ``library``.
+  一个字符串，用于描述执行搜索操作所使用的命令。\
+  取值为\ ``file``、\ ``path``、\ ``program``\ 或\ ``library``\ 之一。
 
 ``variable``
-  The variable to which the search stored its result.
+  搜索结果所存储到的变量。
 
 ``description``
-  The documentation string of the variable.
+  该变量的文档字符串。
 
 ``settings``
   Search settings active for the search.
