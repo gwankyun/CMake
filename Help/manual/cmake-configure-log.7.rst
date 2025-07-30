@@ -351,51 +351,47 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
   该变量的文档字符串。
 
 ``settings``
-  Search settings active for the search.
+  搜索时启用的搜索设置。
 
   ``SearchFramework``
-    A string describing how framework search is performed. One of ``FIRST``,
-    ``LAST``, ``ONLY``, or ``NEVER``. See :variable:`CMAKE_FIND_FRAMEWORK`.
+    一个描述如何执行框架搜索的字符串。取值为\ ``FIRST``、\ ``LAST``、\ ``ONLY``\
+    或\ ``NEVER``\ 之一。请参阅\ :variable:`CMAKE_FIND_FRAMEWORK`\ 变量。
 
   ``SearchAppBundle``
-    A string describing how application bundle search is performed. One of
-    ``FIRST``, ``LAST``, ``ONLY``, or ``NEVER``. See
-    :variable:`CMAKE_FIND_APPBUNDLE`.
+    一个描述如何执行应用程序捆绑包搜索的字符串。取值为\ ``FIRST``、\ ``LAST``、\
+    ``ONLY``\ 或\ ``NEVER``\ 之一。请参阅\ :variable:`CMAKE_FIND_APPBUNDLE`\ 变量。
 
   ``CMAKE_FIND_USE_CMAKE_PATH``
-    A boolean indicating whether or not CMake-specific cache variables are
-    used when searching. See :variable:`CMAKE_FIND_USE_CMAKE_PATH`.
+    一个布尔值，指示在搜索时是否使用CMake特定的缓存变量。\
+    请参阅\ :variable:`CMAKE_FIND_USE_CMAKE_PATH`\ 变量。
 
   ``CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH``
-    A boolean indicating whether or not CMake-specific environment variables
-    are used when searching. See
-    :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`.
+    一个布尔值，指示在搜索时是否使用CMake特定的环境变量。\
+    请参阅\ :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`\ 变量。
 
   ``CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH``
-    A boolean indicating whether or not platform-specific environment
-    variables are used when searching. See
-    :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH`.
+    一个布尔值，指示在搜索时是否使用特定于平台的环境变量。\
+    请参阅\ :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH`\ 变量。
 
   ``CMAKE_FIND_USE_CMAKE_SYSTEM_PATH``
-    A boolean indicating whether or not platform-specific CMake variables are
-    used when searching. See :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH`.
+    一个布尔值，指示在搜索时是否使用特定于平台的CMake变量。\
+    请参阅\ :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH`\ 变量
 
   ``CMAKE_FIND_USE_INSTALL_PREFIX``
-    A boolean indicating whether or not the install prefix is used when
-    searching. See :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`.
+    一个布尔值，指示在搜索时是否使用安装前缀。\
+    请参阅\ :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`\ 变量。
 
 ``names``
-  The names to look for the queries.
+  用于查询的名称。
 
 ``candidate_directories``
-  Candidate directories, in order, to look in during the search.
+  搜索过程中按顺序要查找的候选目录。
 
 ``searched_directories``
-  Directories, in order, looked at during the search process.
+  搜索过程中按顺序查看的目录。
 
 ``found``
-  Either a string representing the found value or ``false`` if it was not
-  found.
+  可以是一个表示找到的值的字符串，若未找到则为\ ``false``。
 
 ``search_context``
   A mapping of variable names to search paths specified by them (either a
