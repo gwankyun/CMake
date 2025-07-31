@@ -394,36 +394,33 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
   可以是一个表示找到的值的字符串，若未找到则为\ ``false``。
 
 ``search_context``
-  A mapping of variable names to search paths specified by them (either a
-  string or an array of strings depending on the variable). Environment
-  variables are wrapped with ``ENV{`` and ``}``, otherwise CMake variables are
-  used. Only variables with any paths specified are used.
+  将变量名映射到由这些变量指定的搜索路径（根据变量的不同，搜索路径可以是一个字符串，\
+  也可以是一个字符串数组）。环境变量会用\ ``ENV{``\ 和\ ``}``\ 包裹起来，否则将\
+  使用CMake变量。仅使用指定了任意路径的变量。
 
   ``package_stack``
-    An array of objects with paths which come from the stack of paths made
-    available by :command:`find_package` calls.
+    一个对象数组，这些对象包含的路径来自于由\ :command:`find_package`\ 调用所提供的路径栈。
 
     ``package_paths``
-      The paths made available by :command:`find_package` commands in the call
-      stack.
+      调用栈中由\ :command:`find_package`\ 命令提供的路径。
 
 .. _`find_package configure-log event`:
 
-Event Kind ``find_package``
+事件类型\ ``find_package``
 ---------------------------
 
 .. versionadded:: 4.1
 
-The :command:`find_package` command logs ``find_package`` events.
+:command:`find_package`\ 命令会记录\ ``find_package``\ 事件。
 
-There is only one ``find_package`` event major version, version 1.
+``find_package``\ 事件仅有一个主版本，即版本1。
 
 .. _`find_package-v1 event`:
 
-``find_package-v1`` Event
+``find_package-v1``\ 事件
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A ``find_package-v1`` event is a YAML mapping:
+一个\ ``find_package-v1``\ 事件是一个YAML映射：
 
 .. code-block:: yaml
 
@@ -490,10 +487,10 @@ A ``find_package-v1`` event is a YAML mapping:
       mode: "config"
       version: "2.5"
 
-The keys specific to ``find_package-v1`` mappings are:
+特定于\ ``find_package-v1``\ 映射的键如下：
 
 ``name``
-  The name of the requested package.
+  请求包名称。
 
 ``components``
   If present, an array of objects containing the fields:
