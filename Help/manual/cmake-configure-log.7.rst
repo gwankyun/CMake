@@ -493,46 +493,43 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
   请求包名称。
 
 ``components``
-  If present, an array of objects containing the fields:
+  若存在，这是一个对象数组，包含以下字段：
 
   ``name``
-    The name of the component.
+    组件的名称。
 
   ``required``
-    A boolean indicating whether the component is required or optional.
+    一个布尔值，指示该组件是必需的还是可选的。
 
   ``found``
-    A boolean indicating whether the component was found or not.
+    一个布尔值，指示该组件是否被找到。
 
 ``configs``
-  If present, an array of objects indicating the configuration files to search
-  for.
+  若存在，这是一个对象数组，指示要搜索的配置文件。
 
   ``filename``
-    The filename of the configuration file.
+    配置文件的文件名。
 
   ``kind``
-    The kind of file. Either ``cmake`` or ``cps``.
+    文件类型。可以是\ ``cmake``\ 或\ ``cps``。
 
 ``version_request``
-  An object indicating the version constraints on the search.
+  一个对象，指示搜索的版本约束。
 
   ``version``
-    The minimum version required.
+    所需的最低版本。
 
   ``version_complete``
-    The user-provided version range.
+    用户提供的版本范围。
 
   ``min``
-    Whether to ``INCLUDE`` or ``EXCLUDE`` the lower bound on the version
-    range.
+    是否在版本范围中\ ``包含``\ 或\ ``排除``\ 下限。
 
   ``max``
-    Whether to ``INCLUDE`` or ``EXCLUDE`` the upper bound on the version
-    range.
+    是否在版本范围中\ ``包含``\ 或\ ``排除``\ 上限。
 
   ``exact``
-    A boolean indicating whether an ``EXACT`` version match was requested.
+    一个布尔值，指示是否请求了\ ``精确的``\ 版本匹配。
 
 ``settings``
   Search settings active for the search.
