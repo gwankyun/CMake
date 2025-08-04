@@ -1,7 +1,7 @@
 string
 ------
 
-String operations.
+字符串操作。
 
 Synopsis
 ^^^^^^^^

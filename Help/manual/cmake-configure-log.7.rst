@@ -532,42 +532,39 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
     一个布尔值，指示是否请求了\ ``精确的``\ 版本匹配。
 
 ``settings``
-  Search settings active for the search.
+  搜索设置对当前搜索有效。
 
   ``required``
-    The requirement request of the search. One of ``optional``,
-    ``optional_explicit``, ``required_explicit``,
-    ``required_from_package_variable``, or ``required_from_find_variable``.
+    搜索的需求请求。可选值之一：\ ``optional``、\ ``optional_explicit``、\
+    ``required_explicit``、\ ``required_from_package_variable``\ 或\
+    ``required_from_find_variable``。
 
   ``quiet``
-    A boolean indicating whether the search is ``QUIET`` or not.
+    一个布尔值，指示搜索是否为\ ``QUIET``。
 
   ``global``
-    A boolean indicating whether the ``GLOBAL`` keyword has been provided or
-    not.
+    一个布尔值，指示是否提供了\ ``GLOBAL``\ 关键字。
 
   ``policy_scope``
-    A boolean indicating whether the ``NO_POLICY_SCOPE`` keyword has been
-    provided or not.
+    一个布尔值，指示是否提供了\ ``NO_POLICY_SCOPE``\ 关键字。
 
   ``bypass_provider``
-    A boolean indicating whether the ``BYPASS_PROVIDER`` keyword has been
-    provided or not.
+    一个布尔值，指示是否提供了\ ``BYPASS_PROVIDER``\ 关键字。
 
   ``hints``
-    An array of paths provided as ``HINTS``.
+    作为\ ``HINTS``\ 提供的路径数组。
 
   ``names``
-    An array of package names to use when searching, provided by ``NAMES``.
+    搜索时使用的、由\ ``NAMES``\ 提供的包名数组。
 
   ``search_paths``
-    An array of paths to search, provided by ``PATHS``.
+    由\ ``PATHS``\ 提供的待搜索路径数组。
 
   ``path_suffixes``
-    An array of suffixes to use when searching, provided by ``PATH_SUFFIXES``.
+    由\ ``PATH_SUFFIXES``\ 提供的搜索时使用的后缀数组。
 
   ``registry_view``
-    The ``REGISTRY_VIEW`` requested for the search.
+    搜索请求的\ ``REGISTRY_VIEW``。
 
   ``paths``
     Path settings active for the search.
