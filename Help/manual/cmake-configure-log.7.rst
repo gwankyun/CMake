@@ -567,43 +567,39 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
     搜索请求的\ ``REGISTRY_VIEW``。
 
   ``paths``
-    Path settings active for the search.
+    搜索时启用的路径设置。
 
     ``CMAKE_FIND_USE_CMAKE_PATH``
-      A boolean indicating whether or not CMake-specific cache variables are
-      used when searching. See :variable:`CMAKE_FIND_USE_CMAKE_PATH`.
+      一个布尔值，指示在搜索时是否使用CMake特定的缓存变量。\
+      请参阅\ :variable:`CMAKE_FIND_USE_CMAKE_PATH`\ 变量。
 
     ``CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH``
-      A boolean indicating whether or not CMake-specific environment variables
-      are used when searching. See
-      :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`.
+      一个布尔值，指示在搜索时是否使用CMake特定的环境变量。\
+      请参阅\ :variable:`CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH`\ 变量。
 
     ``CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH``
-      A boolean indicating whether or not platform-specific environment
-      variables are used when searching. See
-      :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH`.
+      一个布尔值，指示在搜索时是否使用特定于平台的环境变量。\
+      请参阅\ :variable:`CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH`\ 变量。
 
     ``CMAKE_FIND_USE_CMAKE_SYSTEM_PATH``
-      A boolean indicating whether or not platform-specific CMake variables are
-      used when searching. See :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH`.
+      一个布尔值，指示在搜索时是否使用特定于平台的CMake变量。\
+      请参阅\ :variable:`CMAKE_FIND_USE_CMAKE_SYSTEM_PATH`\ 变量。
 
     ``CMAKE_FIND_USE_INSTALL_PREFIX``
-      A boolean indicating whether or not the install prefix is used when
-      searching. See :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`.
+      一个布尔值，指示在搜索时是否使用安装前缀。\
+      请参阅\ :variable:`CMAKE_FIND_USE_INSTALL_PREFIX`\ 变量。
 
     ``CMAKE_FIND_USE_CMAKE_PACKAGE_REGISTRY``
-      A boolean indicating whether or not to search the CMake package registry
-      for the package. See :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY`.
+      一个布尔值，指示是否在CMake包注册表中搜索该软件包。\
+      请参阅\ :variable:`CMAKE_FIND_USE_PACKAGE_REGISTRY`\ 变量。
 
     ``CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY``
-      A boolean indicating whether or not to search the system CMake package
-      registry for the package. See
-      :variable:`CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY`.
+      一个布尔值，指示是否在系统CMake包注册表中搜索该软件包。\
+      请参阅\ :variable:`CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY`\ 变量。
 
     ``CMAKE_FIND_ROOT_PATH_MODE``
-      A string indicating the root path mode in effect as selected by the
-      ``CMAKE_FIND_ROOT_PATH_BOTH``, ``ONLY_CMAKE_FIND_ROOT_PATH``, and
-      ``NO_CMAKE_FIND_ROOT_PATH`` arguments.
+      一个字符串，用于指示由\ ``CMAKE_FIND_ROOT_PATH_BOTH``、\ ``ONLY_CMAKE_FIND_ROOT_PATH``\
+      和\ ``NO_CMAKE_FIND_ROOT_PATH``\ 参数所选定的生效根路径模式。
 
 ``candidates``
   An array of rejected candidate paths. Each element contains the following
