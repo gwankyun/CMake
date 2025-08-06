@@ -602,24 +602,20 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
       和\ ``NO_CMAKE_FIND_ROOT_PATH``\ 参数所选定的生效根路径模式。
 
 ``candidates``
-  An array of rejected candidate paths. Each element contains the following
-  keys:
+  一个被拒绝的候选路径数组。每个元素包含以下键：
 
   ``path``
-    The path to the considered file. In the case of a dependency provider, the
-    value is in the form of ``dependency_provider::<COMMAND_NAME>``.
+    待考量文件的路径。若涉及依赖提供方，该值的格式为\ ``dependency_provider::<COMMAND_NAME>``。
 
   ``mode``
-    The mode which found the file. One of ``module``, ``cps``, ``cmake``, or
-    ``provider``.
+    找到该文件的模式。取值为\ ``module``、\ ``cps``、\ ``cmake``\ 或\ ``provider``\ 之一。
 
   ``reason``
-    The reason the path was rejected. One of ``insufficient_version``,
-    ``no_exist``, ``ignored``, ``no_config_file``, or ``not_found``.
+    该路径被拒绝的原因。取值为\ ``insufficient_version``、\ ``no_exist``、\
+    ``ignored``、\ ``no_config_file``\ 或\ ``not_found``\ 之一。
 
   ``message``
-    If present, a string describing why the package is considered as not
-    found.
+    如果存在，该字符串描述了为何认为该软件包未被找到。
 
 ``found``
   If the package has been found, information on the found file. If it is not
