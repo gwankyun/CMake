@@ -5,8 +5,7 @@
 CheckCSourceRuns
 ----------------
 
-This module provides a command to check whether a C source can be built and
-run.
+此模块提供了一个命令，用于检查一段C源代码是否能够被编译构建并成功运行。
 
 Load this module in a CMake project with:
 

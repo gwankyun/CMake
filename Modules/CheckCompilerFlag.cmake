@@ -7,8 +7,7 @@ CheckCompilerFlag
 
 .. versionadded:: 3.19
 
-This module provides a command to check whether the compiler supports a given
-flag.
+此模块提供了一个命令，用于检查编译器是否支持给定的标志。
 
 Load this module in a CMake project with:
 

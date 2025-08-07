@@ -618,31 +618,26 @@ IDE应该在运行CMake之前写一个\ :manual:`cmake-file-api(7)`\ 查询请�
     如果存在，该字符串描述了为何认为该软件包未被找到。
 
 ``found``
-  If the package has been found, information on the found file. If it is not
-  found, this is ``null``. Keys available:
+  如果找到了软件包，则包含已找到文件的信息。如果未找到，则为\ ``null``。可用的键：
 
   ``path``
-    The path to the module or configuration that found the package. In the
-    case of a dependency provider, the value is in the form of
-    ``dependency_provider::<COMMAND_NAME>``.
+    找到该软件包模块或配置文件的路径。在依赖提供器的情况下，该值的格式为\
+    ``dependency_provider::<COMMAND_NAME>``。
 
   ``mode``
-    The mode that considered the path. One of ``module``, ``cps``, ``cmake``,
-    or ``provider``.
+    考量该路径时所采用的模式。取值为\ ``module``、\ ``cps``、\ ``cmake``\ 或\
+    ``provider``\ 之一。
 
   ``version``
-    The reported version of the package.
+    所报告的软件包版本。
 
 ``search_context``
-  A mapping of variable names to search paths specified by them (either a
-  string or an array of strings depending on the variable). Environment
-  variables are wrapped with ``ENV{`` and ``}``, otherwise CMake variables are
-  used. Only variables with any paths specified are used.
+  将变量名映射到由这些变量指定的搜索路径（根据变量的不同，搜索路径可以是一个字符串，\
+  也可以是一个字符串数组）。环境变量会用\ ``ENV{``\ 和\ ``}``\ 包裹起来，\
+  否则将使用CMake变量。仅使用指定了任意路径的变量。
 
   ``package_stack``
-    An array of objects with paths which come from the stack of paths made
-    available by :command:`find_package` calls.
+    一个对象数组，这些对象包含的路径来自于由\ :command:`find_package`\ 调用所提供的路径栈。
 
     ``package_paths``
-      The paths made available by :command:`find_package` commands in the call
-      stack.
+      调用栈中由\ :command:`find_package`\ 命令提供的路径。
