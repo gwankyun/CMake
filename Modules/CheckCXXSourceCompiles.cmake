@@ -5,7 +5,7 @@
 CheckCXXSourceCompiles
 ----------------------
 
-This module provides a command to check whether a C++ source can be built.
+此模块提供了一个命令，用于检查C++源代码是否可以构建。
 
 Load this module in a CMake project with:
 

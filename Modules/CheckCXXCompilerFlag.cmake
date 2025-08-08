@@ -5,8 +5,7 @@
 CheckCXXCompilerFlag
 ------------------------
 
-This module provides a command to check whether the C++ compiler supports a
-given flag.
+此模块提供了一个命令，用于检查C++编译器是否支持给定的标志。
 
 Load this module in a CMake project with:
 
