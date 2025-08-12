@@ -7,8 +7,7 @@ CheckFortranSourceRuns
 
 .. versionadded:: 3.14
 
-This module provides a command to check whether a Fortran source can be built
-and run.
+本模块提供了一个命令，用于检查Fortran源代码能否构建并运行。
 
 Load this module in a CMake project with:
 

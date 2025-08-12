@@ -5,7 +5,7 @@
 CheckIncludeFileCXX
 -------------------
 
-This module provides a command to check a C++ header file.
+本模块提供了一个命令，用于检查C++头文件。
 
 Load this module in a CMake project with:
 

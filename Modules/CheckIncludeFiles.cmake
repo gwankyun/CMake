@@ -5,7 +5,7 @@
 CheckIncludeFiles
 -----------------
 
-This module provides a command to check one or more C/C++ header files.
+本模块提供了一个命令，用于检查一个或多个C/C++头文件。
 
 Load this module in a CMake project with:
 
