@@ -5,7 +5,7 @@
 CheckLibraryExists
 ------------------
 
-This module provides a command to check whether a C library exists.
+本模块提供了一个用于检查C库是否存在的命令。
 
 Load this module in a CMake project with:
 

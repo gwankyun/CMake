@@ -7,8 +7,7 @@ CheckOBJCXXSourceCompiles
 
 .. versionadded:: 3.16
 
-This module provides a command to check whether an Objective-C++ source can
-be built.
+本模块提供了一个命令，用于检查Objective-C++源文件是否能够被构建。
 
 Load this module in a CMake project with:
 

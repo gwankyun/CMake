@@ -7,8 +7,7 @@ CheckOBJCSourceRuns
 
 .. versionadded:: 3.16
 
-This module provides a command to check whether an Objective-C source can
-be built and run.
+本模块提供了一个命令，用于检查Objective-C源文件是否能够构建并运行。
 
 Load this module in a CMake project with:
 

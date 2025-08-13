@@ -7,8 +7,7 @@ CheckLinkerFlag
 
 .. versionadded:: 3.18
 
-This module provides a command to check whether a given link flag is
-supported by the compiler.
+本模块提供了一个命令，用于检查编译器是否支持给定的链接标志。
 
 Load this module in a CMake project with:
 
