@@ -5,7 +5,7 @@
 CheckVariableExists
 -------------------
 
-This module provides a command to check whether a C variable exists.
+本模块提供了一个命令，用于检查某个C变量是否存在。
 
 Load this module in a CMake project with:
 

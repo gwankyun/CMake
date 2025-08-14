@@ -5,8 +5,7 @@
 CheckStructHasMember
 --------------------
 
-This module provides a command to check whether a struct or class has a
-specified member variable.
+本模块提供了一个命令，用于检查某个结构体或类是否具有指定的成员变量。
 
 Load this module in a CMake project with:
 

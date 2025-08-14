@@ -5,7 +5,7 @@
 CMakePrintSystemInformation
 ---------------------------
 
-This module can be used for diagnostics to print system information.
+本模块可用于诊断目的，打印系统信息。
 
 Examples
 ^^^^^^^^

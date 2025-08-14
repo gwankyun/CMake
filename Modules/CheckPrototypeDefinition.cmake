@@ -5,8 +5,7 @@
 CheckPrototypeDefinition
 ------------------------
 
-This module provides a command to check if a C function has the expected
-prototype.
+本模块提供了一个命令，用于检查C函数是否具有预期的原型。
 
 Load this module in a CMake project with:
 

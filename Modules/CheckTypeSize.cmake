@@ -5,7 +5,7 @@
 CheckTypeSize
 -------------
 
-This module provides a command to check the size of a C/C++ type or expression.
+本模块提供了一个命令，用于检查C/C++类型或表达式的大小。
 
 Load this module in a CMake project with:
 

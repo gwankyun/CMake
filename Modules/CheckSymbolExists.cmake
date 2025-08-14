@@ -5,7 +5,7 @@
 CheckSymbolExists
 -----------------
 
-This module provides a command to check whether a C symbol exists.
+本模块提供了一个命令，用于检查某个C符号是否存在。
 
 Load this module in a CMake project with:
 

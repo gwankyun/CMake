@@ -8,8 +8,7 @@ CheckSourceRuns
 
 .. versionadded:: 3.19
 
-This module provides a command to check whether a source code can be built
-and run.
+该模块提供了一个命令，用于检查源代码是否能够编译并运行。
 
 Load this module in a CMake project with:
 

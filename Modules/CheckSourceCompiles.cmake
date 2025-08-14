@@ -8,8 +8,7 @@ CheckSourceCompiles
 
 .. versionadded:: 3.19
 
-This module provides a command that checks whether a source code can be
-built for a given language.
+该模块提供了一个命令，用于检查给定语言的源代码是否能够成功编译。
 
 Load this module in a CMake project with:
 
