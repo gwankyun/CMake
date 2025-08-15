@@ -5,7 +5,7 @@
 ProcessorCount
 --------------
 
-This module provides a command to determine the number of processors/cores.
+该模块提供了一个命令来确定处理器/核心的数量。
 
 Load this module in CMake with:
 

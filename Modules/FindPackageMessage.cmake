@@ -5,8 +5,7 @@
 FindPackageMessage
 ------------------
 
-This module provides a command for printing find result messages and is
-intended for use in :ref:`Find Modules`.
+此模块提供了一个用于打印查找结果消息的命令，旨在供\ :ref:`Find Modules`\ 使用。
 
 Load it in a CMake find module with:
 

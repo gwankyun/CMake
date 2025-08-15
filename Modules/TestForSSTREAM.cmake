@@ -5,8 +5,7 @@
 TestForSSTREAM
 --------------
 
-This module checks whether the C++ standard header ``<sstream>`` exists and
-functions correctly.
+此模块检查C++标准头文件\ ``<sstream>``\ 是否存在且功能正常。
 
 Load this module in a CMake project with:
 

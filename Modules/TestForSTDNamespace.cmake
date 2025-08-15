@@ -5,8 +5,7 @@
 TestForSTDNamespace
 -------------------
 
-This module checks whether the ``CXX`` compiler supports the ``std`` namespace
-for the C++ Standard Library.
+此模块检查\ ``CXX``\ 编译器是否支持C++标准库的\ ``std``\ 命名空间。
 
 Load this module in a CMake project with:
 
