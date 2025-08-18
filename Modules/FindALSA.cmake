@@ -5,7 +5,7 @@
 FindALSA
 --------
 
-Finds the Advanced Linux Sound Architecture (ALSA) library (``asound``).
+查找高级Linux声音架构（ALSA）库（\ ``asound``\ ）。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

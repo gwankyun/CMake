@@ -5,7 +5,7 @@
 FindASPELL
 ----------
 
-Finds the GNU Aspell spell checker library.
+查找GNU Aspell拼写检查器库。
 
 Components
 ^^^^^^^^^^
