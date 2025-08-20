@@ -5,7 +5,7 @@
 FindCurses
 ----------
 
-Finds the curses or ncurses library.
+查找curses或ncurses库。
 
 Curses is a terminal control library for Unix-like systems, used to build text
 user interface (TUI) applications.  Originally developed in 1978, it has since

@@ -5,8 +5,7 @@
 FindCURL
 --------
 
-Finds the native curl installation (include directories and libraries) for
-transferring data with URLS.
+查找用于通过URL传输数据的原生curl安装（包含目录和库）。
 
 .. versionadded:: 3.17
   If curl is built using its CMake-based build system, it will provide its own

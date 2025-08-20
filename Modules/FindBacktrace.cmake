@@ -6,8 +6,7 @@ FindBacktrace
 -------------
 
 查找\ `backtrace(3) <https://man7.org/linux/man-pages/man3/backtrace.3.html>`__\
-的提供程序，
-a library that provides functions for application self-debugging.
+的提供程序，即一个提供应用程序自调试功能的库。
 
 This module checks whether ``backtrace(3)`` is supported, either through the
 standard C library (``libc``), or a separate library.

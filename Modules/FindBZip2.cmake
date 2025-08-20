@@ -5,7 +5,7 @@
 FindBZip2
 ---------
 
-Finds the BZip2 data compression library (libbz2):
+查找BZip2数据压缩库（libbz2）：
 
 .. code-block:: cmake
 
