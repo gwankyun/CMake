@@ -13,8 +13,7 @@ FindFLTK2
   shifted back to the FLTK 1.x branch.  For finding FLTK, including stable and
   modern versions, use the :module:`FindFLTK` module instead.
 
-Finds the Fast Light Toolkit (FLTK) version 2.x, a cross-platform toolkit for
-GUI development.
+查找FLTK 2.x版本，这是一个用于GUI开发的跨平台工具包。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

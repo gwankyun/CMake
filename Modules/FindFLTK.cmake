@@ -5,8 +5,7 @@
 FindFLTK
 --------
 
-查找快速光工具包（FLTK）库, a cross-platform toolkit for GUI
-development.
+查找FLTK库, 这是一个跨平台的GUI开发工具包。
 
 FLTK uses CMake-based build system and provides a package configuration file for
 projects to find it.  As of its 1.4.0 version it also provides

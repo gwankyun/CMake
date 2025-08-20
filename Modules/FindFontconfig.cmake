@@ -7,7 +7,7 @@ FindFontconfig
 
 .. versionadded:: 3.14
 
-Finds Fontconfig, a library for font configuration and customization.
+查找Fontconfig，这是一个用于字体配置和自定义的库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

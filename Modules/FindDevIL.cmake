@@ -5,7 +5,8 @@
 FindDevIL
 ---------
 
-Finds the Developer's Image Library, `DevIL <https://openil.sourceforge.net/>`_.
+查找开发者图像库（Developer's Image Library），即\
+`DevIL <https://openil.sourceforge.net/>`_。
 
 The DevIL package internally consists of the following libraries, all
 distributed as part of the same release:

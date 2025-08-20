@@ -7,8 +7,7 @@ FindEnvModules
 
 .. versionadded:: 3.15
 
-Finds an Environment Modules implementation and provides commands for use in
-CMake scripts:
+查找环境模块（Environment Modules）的实现，并提供在CMake脚本中使用的命令：
 
 .. code-block:: cmake
 
