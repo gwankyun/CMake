@@ -5,8 +5,7 @@
 FindGettext
 -----------
 
-Finds the GNU gettext tools and provides commands for producing multi-lingual
-messages:
+查找GNU gettext工具，并提供用于生成多语言消息的命令：
 
 .. code-block:: cmake
 

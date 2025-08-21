@@ -5,7 +5,7 @@
 FindGit
 -------
 
-Finds the Git distributed version control system.
+查找Git分布式版本控制系统。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

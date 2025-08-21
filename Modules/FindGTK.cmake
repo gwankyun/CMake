@@ -5,7 +5,7 @@
 FindGTK
 -------
 
-Finds GTK, glib and GTKGLArea.
+查找GTK、glib和GTKGLArea。
 
 GTK is a multi-platform toolkit for creating graphical user interfaces.
 

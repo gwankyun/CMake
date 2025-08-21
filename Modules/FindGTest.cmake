@@ -5,7 +5,7 @@
 FindGTest
 ---------
 
-Finds GoogleTest, the Google C++ testing and mocking framework:
+查找GoogleTest，即Google推出的C++测试与模拟框架：
 
 .. code-block:: cmake
 
