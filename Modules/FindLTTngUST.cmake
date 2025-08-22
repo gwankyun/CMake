@@ -7,8 +7,7 @@ FindLTTngUST
 
 .. versionadded:: 3.6
 
-Finds the `LTTng <https://lttng.org/>`_ (Linux Trace Toolkit: next generation)
-user space tracing library (LTTng-UST).
+查找\ `LTTng <https://lttng.org/>`_\ （即下一代Linux跟踪工具包）的用户空间跟踪库（LTTng-UST）。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

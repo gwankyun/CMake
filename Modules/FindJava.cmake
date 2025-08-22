@@ -5,8 +5,7 @@
 FindJava
 --------
 
-Finds the Java installation and determines its runtime tools and development
-components.
+此模块用于查找Java安装并确定其运行时工具和开发组件。
 
 .. versionadded:: 3.10
   Support for Java 9+ version parsing.

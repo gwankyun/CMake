@@ -11,7 +11,7 @@ FindLua50
   not maintained anymore.  In new code use the latest supported Lua version and
   the version-agnostic module :module:`FindLua` instead.
 
-Finds the Lua library.  Lua is a embeddable scripting language.
+查找Lua库。Lua是一个可嵌入的脚本语言。
 
 When working with Lua, its library headers are intended to be included in
 project source code as:

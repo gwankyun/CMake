@@ -5,8 +5,7 @@
 FindHTMLHelp
 ------------
 
-This module finds the Microsoft HTML Help Compiler and its API.  It is part of
-the HTML Help Workshop.
+此模块用于查找Microsoft HTML帮助编译器及其API。它是HTML Help Workshop的一部分。
 
 .. note::
 

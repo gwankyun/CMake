@@ -5,7 +5,7 @@
 FindLua
 -------
 
-Finds the Lua library.  Lua is a embeddable scripting language.
+查找Lua库。Lua是一个可嵌入的脚本语言。
 
 .. versionadded:: 3.18
   Support for Lua 5.4.

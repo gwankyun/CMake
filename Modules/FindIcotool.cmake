@@ -5,8 +5,7 @@
 FindIcotool
 -----------
 
-Finds ``icotool``, command-line program for converting and creating Win32 icon
-and cursor files.
+此模块用于查找\ ``icotool``\ ——一个用于转换和创建Win32图标及光标文件的命令行程序。
 
 Result Variables
 ^^^^^^^^^^^^^^^^
