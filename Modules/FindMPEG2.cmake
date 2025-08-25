@@ -5,7 +5,7 @@
 FindMPEG2
 ---------
 
-Finds the native MPEG2 library (libmpeg2).
+查找原生MPEG2库（libmpeg2）。
 
 .. note::
 

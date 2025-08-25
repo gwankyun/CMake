@@ -5,7 +5,7 @@
 FindMotif
 ---------
 
-Finds Motif (or LessTif) graphical user interface toolkit.
+查找Motif（或LessTif）图形用户界面工具包。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

@@ -5,7 +5,7 @@
 FindOpenThreads
 ---------------
 
-Finds the OpenThreads C++ based threading library.
+查找基于C++的OpenThreads线程库。
 
 OpenThreads header files are intended to be included as:
 

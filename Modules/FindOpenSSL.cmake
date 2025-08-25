@@ -5,7 +5,7 @@
 FindOpenSSL
 -----------
 
-Finds the installed OpenSSL encryption library and determines its version.
+查找已安装的OpenSSL加密库并确定其版本。
 
 .. versionadded:: 3.20
   Support for specifying version range when calling the :command:`find_package`
