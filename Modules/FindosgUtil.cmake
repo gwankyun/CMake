@@ -5,7 +5,7 @@
 FindosgUtil
 -----------
 
-Finds the osgUtil library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgUtil库。
 
 .. note::
 

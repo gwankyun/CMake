@@ -5,7 +5,7 @@
 FindosgDB
 ---------
 
-Finds the osgDB library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgDB库。
 
 .. note::
 

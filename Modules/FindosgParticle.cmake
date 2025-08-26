@@ -5,7 +5,7 @@
 FindosgParticle
 ---------------
 
-Finds the osgParticle NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgParticle节点工具包（NodeKit）。
 
 .. note::
 

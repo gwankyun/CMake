@@ -5,7 +5,7 @@
 FindosgFX
 ---------
 
-Finds the osgFX NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgFX节点工具包（NodeKit）。
 
 .. note::
 

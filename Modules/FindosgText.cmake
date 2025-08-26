@@ -5,7 +5,7 @@
 FindosgText
 -----------
 
-Finds the osgText NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgText节点工具包（NodeKit）。
 
 .. note::
 

@@ -5,7 +5,7 @@
 FindosgIntrospection
 --------------------
 
-Finds the osgIntrospection library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgIntrospection库。
 
 .. note::
 

@@ -5,7 +5,7 @@
 FindosgAnimation
 ----------------
 
-Finds the osgAnimation library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgAnimation库。
 
 .. note::
 

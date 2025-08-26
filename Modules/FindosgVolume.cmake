@@ -5,7 +5,7 @@
 FindosgVolume
 -------------
 
-Finds the osgVolume NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgVolume节点工具包（NodeKit）。
 
 .. note::
 

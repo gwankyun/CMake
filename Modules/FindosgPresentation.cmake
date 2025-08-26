@@ -5,8 +5,8 @@
 FindosgPresentation
 -------------------
 
-Finds the osgPresentation NodeKit from the OpenSceneGraph toolkit, available
-since OpenSceneGraph version 3.0.0.
+从OpenSceneGraph工具包中查找osgPresentation节点工具包（NodeKit），\
+该工具包自OpenSceneGraph 3.0.0版本起可用。
 
 .. note::
 

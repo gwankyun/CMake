@@ -5,7 +5,7 @@
 FindosgTerrain
 --------------
 
-Finds the osgTerrain NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgTerrain节点工具包（NodeKit）。
 
 .. note::
 

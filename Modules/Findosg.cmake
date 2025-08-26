@@ -5,7 +5,7 @@
 Findosg
 -------
 
-Finds the core OpenSceneGraph osg library (``libosg``).
+查找OpenSceneGraph核心库osg（\ ``libosg``\ ）。
 
 .. note::
 

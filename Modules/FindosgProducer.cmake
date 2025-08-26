@@ -5,7 +5,7 @@
 FindosgProducer
 ---------------
 
-Finds the osgProducer utility library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgProducer实用库。
 
 .. note::
 

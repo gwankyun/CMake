@@ -5,7 +5,7 @@
 FindosgSim
 ----------
 
-Finds the osgSim NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgSim节点工具包（NodeKit）。
 
 .. note::
 

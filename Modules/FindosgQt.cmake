@@ -5,7 +5,7 @@
 FindosgQt
 ---------
 
-Finds the osgQt utility library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgQt实用库。
 
 .. note::
 

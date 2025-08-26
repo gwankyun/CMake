@@ -5,7 +5,7 @@
 FindosgGA
 ---------
 
-Finds the osgGA library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgGA库。
 
 .. note::
 

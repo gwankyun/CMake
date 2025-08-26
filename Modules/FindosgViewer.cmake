@@ -5,7 +5,7 @@
 FindosgViewer
 -------------
 
-Finds the osgViewer library from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgViewer库。
 
 .. note::
 

@@ -5,7 +5,7 @@
 FindosgShadow
 -------------
 
-Finds the osgShadow NodeKit from the OpenSceneGraph toolkit.
+从OpenSceneGraph工具包中查找osgShadow节点工具包（NodeKit）。
 
 .. note::
 
