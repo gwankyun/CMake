@@ -7,8 +7,7 @@ FindPatch
 
 .. versionadded:: 3.10
 
-Finds the ``patch`` command-line executable for applying diff patches to
-original files.
+查找用于将差异补丁应用于原始文件的\ ``patch``\ 命令行可执行文件。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

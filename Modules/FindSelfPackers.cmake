@@ -5,7 +5,8 @@
 FindSelfPackers
 ---------------
 
-Finds `UPX <https://upx.github.io/>`_, the Ultimate Packer for eXecutables.
+查找\ `UPX <https://upx.github.io/>`_，即终极可执行文件打包器\
+（Ultimate Packer for eXecutables）。
 
 This module searches for executable packers-tools that compress executables or
 shared libraries into on-the-fly, self-extracting versions.  It currently

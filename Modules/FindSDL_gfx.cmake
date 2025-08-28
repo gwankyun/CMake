@@ -7,8 +7,7 @@ FindSDL_gfx
 
 .. versionadded:: 3.25
 
-Finds the SDL_gfx library that provides graphics support in SDL (Simple
-DirectMedia Layer) applications.
+查找在SDL（Simple DirectMedia Layer，简单直接媒体层）应用程序中提供图形支持的SDL_gfx库。
 
 .. note::
 

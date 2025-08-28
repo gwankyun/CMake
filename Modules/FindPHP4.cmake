@@ -5,7 +5,7 @@
 FindPHP4
 --------
 
-Finds PHP version 4, a general-purpose scripting language.
+查找PHP 4版本，这是一种通用脚本语言。
 
 .. note::
 

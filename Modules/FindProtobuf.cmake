@@ -25,7 +25,7 @@ FindProtobuf
 
   This module works only in *module mode*.
 
-This module finds the Protocol Buffers library (Protobuf) in *module mode*:
+该模块以\ *模块模式*\ 查找Protocol Buffers库（Protobuf）：
 
 .. code-block:: cmake
 

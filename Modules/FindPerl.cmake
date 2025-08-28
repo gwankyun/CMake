@@ -5,8 +5,7 @@
 FindPerl
 --------
 
-查找Perl解释器  Perl is a general-purpose, interpreted, dynamic
-programming language.
+查找Perl解释器。Perl是一种通用、解释型、动态编程语言。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

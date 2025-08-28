@@ -5,8 +5,7 @@
 FindPostgreSQL
 --------------
 
-查找PostgreSQL安装 - the client library (``libpq``) and
-optionally the server.
+查找PostgreSQL安装——客户端库（\ ``libpq``\ ）以及可选的服务器。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

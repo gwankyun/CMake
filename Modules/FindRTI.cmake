@@ -5,7 +5,7 @@
 FindRTI
 -------
 
-Finds HLA RTI standard libraries and their include directories.
+查找HLA RTI标准库及其包含目录。
 
 `RTI <https://en.wikipedia.org/wiki/Run-time_infrastructure_(simulation)>`_
 (Run-Time Infrastructure) is a simulation infrastructure standardized by IEEE

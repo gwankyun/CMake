@@ -5,7 +5,7 @@
 FindPhysFS
 ----------
 
-Finds the PhysicsFS library (PhysFS) for file I/O abstraction.
+查找用于文件I/O抽象的PhysicsFS库（PhysFS）。
 
 Result Variables
 ^^^^^^^^^^^^^^^^
