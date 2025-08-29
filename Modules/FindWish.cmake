@@ -5,7 +5,7 @@
 FindWish
 --------
 
-Finds ``wish``, a simple windowing shell command-line executable.
+查找\ ``wish``，一个简单的窗口化shell命令行可执行文件。
 
 This module is commonly used in conjunction with finding a TCL installation (see
 the :module:`FindTCL` module).  It helps determine where the TCL include paths

@@ -103,15 +103,14 @@
 
   .. versionadded:: 4.1
 
-    Every |FIND_XXX| command will be treated as ``REQUIRED`` when the
-    :variable:`CMAKE_FIND_REQUIRED` variable is enabled.
+    当\ :variable:`CMAKE_FIND_REQUIRED`\ 变量启用时，每个\ |FIND_XXX|\
+    命令都将被视为\ ``REQUIRED``。
 
 ``OPTIONAL``
   .. versionadded:: 4.1
 
-  Ignore the value of :variable:`CMAKE_FIND_REQUIRED` and
-  continue without an error message if nothing is found.
-  Incompatible with ``REQUIRED``.
+  忽略\ :variable:`CMAKE_FIND_REQUIRED`\ 的值，如果未找到任何内容，将继续执行且\
+  不显示错误消息。与\ ``REQUIRED``\ 不兼容。
 
 如果指定了\ ``NO_DEFAULT_PATH``，则不会向搜索添加其他路径。如果没有指定\ ``NO_DEFAULT_PATH``，\
 搜索过程如下：

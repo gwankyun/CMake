@@ -5,7 +5,7 @@
 FindZLIB
 --------
 
-Finds the native zlib data compression library.
+查找原生zlib数据压缩库。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

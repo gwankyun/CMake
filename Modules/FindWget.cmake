@@ -5,8 +5,7 @@
 FindWget
 --------
 
-This module finds the ``wget`` command-line tool for retrieving content from web
-servers.
+此模块用于查找从web服务器检索内容的\ ``wget``\ 命令行工具。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

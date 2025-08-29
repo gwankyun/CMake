@@ -7,7 +7,7 @@ FindXCTest
 
 .. versionadded:: 3.3
 
-Finds the XCTest framework for writing unit tests in Xcode projects.
+查找用于在Xcode项目中编写单元测试的XCTest框架。
 
 .. note::
 

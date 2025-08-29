@@ -5,8 +5,7 @@
 FindTclStub
 -----------
 
-Finds the Tcl Stub Library, which is used for building version-independent Tcl
-extensions.
+找Tcl存根库，该库用于构建与版本无关的Tcl扩展。
 
 Tcl (Tool Command Language) is a dynamic programming language, and the Tcl Stub
 Library provides a mechanism to allow Tcl extensions to be compiled in a way

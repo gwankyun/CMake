@@ -5,7 +5,7 @@
 FindTCL
 -------
 
-Finds the Tcl (Tool Command Language), dynamic programming language.
+查找Tcl（Tool Command Language），一种动态编程语言。
 
 This module locates a Tcl installation, including its include directories and
 libraries, and determines the appropriate Tcl library name for linking.  As part
