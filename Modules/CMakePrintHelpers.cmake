@@ -5,8 +5,7 @@
 CMakePrintHelpers
 -----------------
 
-This module provides convenience commands, primarily intended for debugging,
-to print the values of properties and variables.
+此模块提供便捷命令，主要用于调试，以打印属性和变量的值。
 
 Load this module in CMake with:
 

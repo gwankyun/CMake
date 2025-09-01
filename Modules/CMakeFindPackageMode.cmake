@@ -5,9 +5,8 @@
 CMakeFindPackageMode
 --------------------
 
-This module is executed by ``cmake`` when invoked with the
-:ref:`--find-package <Find-Package Tool Mode>` option to locate the requested
-package.
+此模块由\ ``cmake``\ 在使用\ :ref:`--find-package <Find-Package Tool Mode>`\
+选项调用以定位请求的包时执行。
 
 .. note::
 

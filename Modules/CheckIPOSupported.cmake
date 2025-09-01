@@ -7,8 +7,7 @@ CheckIPOSupported
 
 .. versionadded:: 3.9
 
-This module provides a command to check whether the compiler supports
-interprocedural optimization (IPO/LTO).
+此模块提供了一个命令，用于检查编译器是否支持过程间优化（IPO/LTO）。
 
 Load this module in a CMake project with:
 

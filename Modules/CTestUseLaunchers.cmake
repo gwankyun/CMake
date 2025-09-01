@@ -5,9 +5,8 @@
 CTestUseLaunchers
 -----------------
 
-This module sets the ``RULE_LAUNCH_*`` global properties when the
-:variable:`CTEST_USE_LAUNCHERS` variable is set to a true-like value (e.g.,
-``ON``):
+此模块在\ :variable:`CTEST_USE_LAUNCHERS`\ 变量被设置为类似true的值（例如\ ``ON``\ ）\
+时，会设置\ ``RULE_LAUNCH_*``\ 全局属性：
 
 * :prop_gbl:`RULE_LAUNCH_COMPILE`
 * :prop_gbl:`RULE_LAUNCH_CUSTOM`

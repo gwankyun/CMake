@@ -10,8 +10,7 @@ DeployQt4
   This module is for Qt version 4.  New code should follow the
   :manual:`cmake-qt(7)` instead of using this module.
 
-This module provides a collection of CMake utility commands useful for
-assembling and deploying standalone Qt4 executables.
+此模块提供了一系列CMake实用命令，用于组装和部署独立的Qt4可执行文件。
 
 Load this module in a CMake project with:
 

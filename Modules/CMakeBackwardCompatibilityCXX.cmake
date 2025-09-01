@@ -5,8 +5,8 @@
 CMakeBackwardCompatibilityCXX
 -----------------------------
 
-This module defines several backward compatibility cache variables for the
-``CXX`` language to support early C++ (pre-C++98, ANSI C++).
+此模块为\ ``CXX``\ 语言定义了多个向后兼容性缓存变量，以支持早期C++\
+（C++98之前的版本、ANSI C++）。
 
 Load this module in a CMake project with:
 

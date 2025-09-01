@@ -7,8 +7,7 @@ CTestCoverageCollectGCOV
 
 .. versionadded:: 3.2
 
-This module is intended for use in CTest dashboard scripts and provides a
-command to generate a tarball containing code coverage reports.
+此模块旨在用于CTest仪表盘脚本中，并提供一个命令来生成包含代码覆盖率报告的tarball文件。
 
 Load this module in a CTest script with:
 

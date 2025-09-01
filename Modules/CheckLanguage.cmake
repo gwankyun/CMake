@@ -5,8 +5,8 @@
 CheckLanguage
 -------------
 
-This module provides a command to check whether a language can be enabled
-using the :command:`enable_language` or :command:`project` commands.
+此模块提供了一个命令，用于检查是否可以使用\ :command:`enable_language`\ 或\
+:command:`project`\ 命令启用某种语言。
 
 Load this module in a CMake project with:
 
