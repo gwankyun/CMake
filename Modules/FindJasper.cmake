@@ -5,8 +5,7 @@
 FindJasper
 ----------
 
-Finds the JasPer Image Coding Toolkit for handling image data in a variety of
-formats, such as the JPEG-2000.
+查找JasPer图像编码工具包，用于处理多种格式的图像数据，例如JPEG-2000。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

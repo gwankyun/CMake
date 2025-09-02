@@ -5,8 +5,7 @@
 FindLibLZMA
 -----------
 
-Finds the data compression library that implements the LZMA (Lempel–Ziv–Markov
-chain algorithm) - liblzma.
+查找实现LZMA（Lempel–Ziv–Markov链算法）的数据压缩库——liblzma。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

@@ -5,8 +5,8 @@
 FindHg
 ------
 
-Finds the Mercurial command-line client executable (``hg``) and provides a
-command for extracting information from a Mercurial working copy:
+查找Mercurial命令行客户端可执行文件（\ ``hg``\ ），并提供一个命令用于从Mercurial\
+工作副本中提取信息：
 
 .. code-block:: cmake
 

@@ -5,8 +5,7 @@
 FindBISON
 ---------
 
-Finds the Bison command-line parser generator and provides a CMake command to
-generate custom build rules for using Bison:
+查找Bison命令行解析器生成器，并提供一个CMake命令来生成使用Bison的自定义构建规则：
 
 .. code-block:: cmake
 

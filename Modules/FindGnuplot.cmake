@@ -5,8 +5,7 @@
 FindGnuplot
 -----------
 
-Finds the Gnuplot command-line graphing utility for generating two- and
-three-dimensional plots (``gnuplot``).
+查找Gnuplot命令行绘图工具，用于生成二维和三维图形（\ ``gnuplot``\ ）。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

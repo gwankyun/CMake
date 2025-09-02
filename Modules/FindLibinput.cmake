@@ -7,8 +7,7 @@ FindLibinput
 
 .. versionadded:: 3.14
 
-Finds the libinput library which handles input devices in Wayland compositors
-and provides a generic X.Org input driver.
+查找libinput库，该库用于在Wayland合成器中处理输入设备并提供通用的X.Org输入驱动程序。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

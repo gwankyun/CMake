@@ -7,8 +7,8 @@ FindOpenSP
 
 .. versionadded:: 3.25
 
-Finds the OpenSP library.  OpenSP is an open-source implementation of the SGML
-(Standard Generalized Markup Language) parser.
+查找OpenSP库。OpenSP是SGML（标准通用标记语言，Standard Generalized Markup Language）\
+解析器的开源实现。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

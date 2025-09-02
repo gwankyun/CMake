@@ -5,8 +5,8 @@
 FindCxxTest
 -----------
 
-Finds `CxxTest`_, a C++ unit testing framework suite, and provides a helper
-command to create test runners and integrate them with CTest.
+查找\ `CxxTest`_，一个C++单元测试框架套件，并提供一个辅助命令来创建测试运行器并\
+将其与CTest集成。
 
 .. _`CxxTest`: https://github.com/CxxTest/cxxtest
 

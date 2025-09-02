@@ -5,8 +5,7 @@
 FindMFC
 -------
 
-Finds the native Microsoft Foundation Class Library (MFC) for developing MFC
-applications on Windows.
+查找用于在Windows上开发MFC应用程序的原生微软基础类库（MFC）。
 
 .. note::
 
