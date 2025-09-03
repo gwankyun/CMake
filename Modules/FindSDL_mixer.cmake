@@ -5,8 +5,8 @@
 FindSDL_mixer
 -------------
 
-Finds the SDL_mixer library that provides an audio mixer with support for
-various file formats in SDL (Simple DirectMedia Layer) applications.
+查找SDL_mixer库，该库为SDL（Simple DirectMedia Layer，简单直接媒体层）应用程序\
+提供支持多种文件格式的音频混音器。
 
 .. note::
 

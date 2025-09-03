@@ -5,8 +5,8 @@
 FindSDL_sound
 -------------
 
-Finds the SDL_sound library, an abstract soundfile decoder for use in SDL
-(Simple DirectMedia Layer) applications.
+查找SDL_sound库，这是一个用于SDL（Simple DirectMedia Layer，简单直接媒体层）\
+应用程序的抽象声音文件解码器。
 
 .. note::
 

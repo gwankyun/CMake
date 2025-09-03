@@ -5,8 +5,7 @@
 FindQt3
 -------
 
-This module finds Qt3, a cross-platform application development framework for
-creating graphical user interfaces and applications.
+此模块用于查找Qt3，这是一个跨平台的应用程序开发框架，用于创建图形用户界面和应用程序。
 
 .. note::
 

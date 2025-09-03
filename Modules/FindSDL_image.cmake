@@ -5,8 +5,8 @@
 FindSDL_image
 -------------
 
-Finds the SDL_image library that loads images of various formats as SDL (Simple
-DirectMedia Layer) surfaces.
+查找SDL_image库，该库可将多种格式的图像加载为SDL（Simple DirectMedia Layer，\
+简单直接媒体层）表面。
 
 .. note::
 

@@ -5,8 +5,7 @@
 FindQuickTime
 -------------
 
-Finds the QuickTime multimedia framework, which provides support for video,
-audio, and interactive media.
+查找QuickTime多媒体框架，该框架提供对视频、音频和交互式媒体的支持。
 
 .. note::
 

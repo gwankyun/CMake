@@ -5,8 +5,8 @@
 FindSDL_net
 -----------
 
-Finds the SDL_net library, a cross-platform network library for use with the
-SDL (Simple DirectMedia Layer) applications.
+查找SDL_net库，这是一个用于SDL（Simple DirectMedia Layer，简单直接媒体层）应用\
+程序的跨平台网络库。
 
 .. note::
 

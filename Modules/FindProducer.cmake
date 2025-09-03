@@ -14,8 +14,7 @@ FindProducer
   library became obsolete and is no longer maintained.  For details about
   OpenSceneGraph usage, refer to the :module:`FindOpenSceneGraph` module.
 
-This module finds the Producer library, a windowing and event handling library
-designed primarily for real-time graphics applications.
+此模块用于查找Producer库，这是一个主要为实时图形应用程序设计的窗口和事件处理库。
 
 Producer library headers are intended to be included in C++ project source code
 as:

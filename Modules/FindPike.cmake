@@ -5,8 +5,7 @@
 FindPike
 --------
 
-Finds the Pike compiler and interpreter.  Pike is interpreted, general purpose,
-high-level, dynamic programming language.
+查找Pike编译器和解释器。Pike是一种解释型、通用、高级、动态的编程语言。
 
 Cache Variables
 ^^^^^^^^^^^^^^^

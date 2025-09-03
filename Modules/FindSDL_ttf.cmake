@@ -5,8 +5,8 @@
 FindSDL_ttf
 -----------
 
-Finds the SDL_ttf library that provides support for rendering text with TrueType
-fonts in SDL (Simple DirectMedia Layer) applications.
+查找SDL_ttf库，该库为SDL（Simple DirectMedia Layer，简单直接媒体层）应用程序提供\
+使用TrueType字体渲染文本的支持。
 
 .. note::
 
