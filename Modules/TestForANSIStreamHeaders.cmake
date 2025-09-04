@@ -5,8 +5,8 @@
 TestForANSIStreamHeaders
 ------------------------
 
-This module checks whether the ``CXX`` compiler supports standard library
-headers without the ``.h`` extension (e.g. ``<iostream>``).
+此模块检查\ ``CXX``\ 编译器是否支持不带\ ``.h``\ 扩展名的标准库头文件\
+（例如\ ``<iostream>``\ ）。
 
 Load this module in a CMake project with:
 

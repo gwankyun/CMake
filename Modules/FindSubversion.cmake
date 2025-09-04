@@ -5,8 +5,8 @@
 FindSubversion
 --------------
 
-Finds a Subversion command-line client executable (``svn``) and provides
-commands for extracting information from a Subversion working copy:
+查找Subversion命令行客户端可执行文件（\ ``svn``\ )并提供从Subversion工作副本中\
+提取信息的命令：
 
 .. code-block:: cmake
 

@@ -5,8 +5,7 @@
 TestForANSIForScope
 -------------------
 
-This module checks whether the ``CXX`` compiler restricts the scope of variables
-declared in a for-init-statement to the loop body.
+此模块检查\ ``CXX``\ 编译器是否将在for初始化语句中声明的变量的作用域限制到循环体。
 
 Load this module in a CMake project with:
 

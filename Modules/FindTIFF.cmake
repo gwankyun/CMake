@@ -5,9 +5,8 @@
 FindTIFF
 --------
 
-Finds the `TIFF library <https://libtiff.gitlab.io/libtiff/>`_ (``libtiff``).
-This module also takes into account the upstream TIFF library's exported CMake
-package configuration, if available.
+查找\ `TIFF庫 <https://libtiff.gitlab.io/libtiff/>`_\ （\ ``libtiff``\ ）。\
+此模块还会考虑上游TIFF库导出的CMake包配置（如果可用的话）。
 
 Components
 ^^^^^^^^^^

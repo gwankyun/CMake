@@ -5,8 +5,8 @@
 FindTclsh
 ---------
 
-Finds the Tcl shell command-line executable (``tclsh``), which includes the Tcl
-(Tool Command Language) interpreter.
+查找Tcl外壳命令行可执行文件（\ ``tclsh``\ ），其中包含Tcl（工具命令语言，\
+Tool Command Language）解释器。
 
 Result Variables
 ^^^^^^^^^^^^^^^^
