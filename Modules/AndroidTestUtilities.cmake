@@ -7,8 +7,8 @@ AndroidTestUtilities
 
 .. versionadded:: 3.7
 
-This module provides a command to create a test that pushes data needed for
-testing an Android device behavior onto a connected Android device.
+此模块提供了一个命令，用于创建一个测试，该测试会将测试Android设备行为所需的数据\
+推送到已连接的Android设备上。
 
 Load this module in a CMake project with:
 

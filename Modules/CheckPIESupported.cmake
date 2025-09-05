@@ -7,9 +7,8 @@ CheckPIESupported
 
 .. versionadded:: 3.14
 
-This module provides the ``check_pie_supported()`` function to check whether the
-linker supports Position Independent Code (PIE) or No Position Independent Code
-(NO_PIE) for executables.
+此模块提供了\ ``check_pie_supported()``\ 函数，用于检查链接器是否支持可执行文件的\
+位置无关代码（PIE）或非位置无关代码（NO_PIE）。
 
 When setting the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property,
 PIC-related compile and link options are added when building library objects,
