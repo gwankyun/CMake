@@ -7,9 +7,8 @@ CSharpUtilities
 
 .. versionadded:: 3.8
 
-This utility module is intended to simplify the configuration of CSharp/.NET
-targets and provides a collection of commands for managing CSharp targets
-with :ref:`Visual Studio Generators`, version 2010 and newer.
+此实用工具模块旨在简化CSharp/.NET目标的配置，并提供了一系列用于管理CSharp目标的命令，\
+适用于\ :ref:`Visual Studio Generators`\ （2010 版及更高版本）。
 
 Load this module in a CMake project with:
 

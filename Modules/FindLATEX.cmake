@@ -5,8 +5,7 @@
 FindLATEX
 ---------
 
-Finds LaTeX compiler and Latex-related software like BibTeX.  LaTeX is a
-typesetting system for the production of technical and scientific documentation.
+查找LaTeX编译器以及BibTeX等LaTeX相关软件。LaTeX是一种用于生成技术和科学文档的排版系统。
 
 Components
 ^^^^^^^^^^

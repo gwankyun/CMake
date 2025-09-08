@@ -5,8 +5,8 @@
 FindGLUT
 --------
 
-Finds the OpenGL Utility Toolkit (GLUT) library, which provides a simple API for
-creating windows, handling input, and managing events in OpenGL applications.
+查找OpenGL实用工具包（GLUT）库，该库提供了一个简单的API，用于在OpenGL应用程序中\
+创建窗口、处理输入和管理事件。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

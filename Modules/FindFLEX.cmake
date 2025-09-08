@@ -5,8 +5,8 @@
 FindFLEX
 --------
 
-Finds the Fast Lexical Analyzer (Flex) command-line generator and its library,
-and provides CMake commands to create custom build rules for using Flex:
+查找快速词法分析器（Flex）命令行生成器及其库，并提供CMake命令以创建使用Flex的\
+自定义构建规则：
 
 .. code-block:: cmake
 

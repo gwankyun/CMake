@@ -5,9 +5,8 @@
 FindDoxygen
 -----------
 
-Finds `Doxygen <https://www.doxygen.nl>`_, a source code documentation
-generator, along with some optional supporting tools, and provides a command
-for integrating Doxygen-based documentation into CMake projects:
+查找\ `Doxygen <https://www.doxygen.nl>`_\ （一种源代码文档生成器）以及一些可选的\
+支持工具，并提供一个用于将基于Doxygen的文档集成到CMake项目中的命令：
 
 .. code-block:: cmake
 
