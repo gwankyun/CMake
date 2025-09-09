@@ -5,8 +5,8 @@
 FindSDL
 -------
 
-Finds the SDL (Simple DirectMedia Layer) library.  SDL is a cross-platform
-library for developing multimedia software, such as games and emulators.
+查找SDL（Simple DirectMedia Layer）库。SDL是一个跨平台的多媒体软件开发库，\
+常用于游戏和模拟器开发。
 
 .. note::
 

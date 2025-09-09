@@ -7,9 +7,8 @@ FindSQLite3
 
 .. versionadded:: 3.14
 
-Finds the SQLite 3 library.  SQLite is a small, fast, self-contained,
-high-reliability, and full-featured SQL database engine written in C, intended
-for embedding in applications.
+查找SQLite 3库。SQLite是一个小型、快速、自包含、高可靠性且功能齐全的SQL数据库引擎，\
+使用C语言编写，旨在嵌入到应用程序中。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

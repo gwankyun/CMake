@@ -5,9 +5,8 @@
 SelectLibraryConfigurations
 ---------------------------
 
-This module is intended for use in :ref:`Find Modules` and provides a
-command to automatically set library variables when package is available
-with multiple :ref:`Build Configurations`.
+该模块旨在用于\ :ref:`Find Modules`，并提供一个命令，当软件包具有多个\
+:ref:`Build Configurations`\ 时自动设置库变量。
 
 Load it in a CMake find module with:
 

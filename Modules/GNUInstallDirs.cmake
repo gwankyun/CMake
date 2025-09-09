@@ -5,9 +5,8 @@
 GNUInstallDirs
 --------------
 
-This module defines the installation directory variables according to the
-`GNU Coding Standards`_ and provides a command to compute
-installation-related absolute paths.
+该模块根据\ `GNU编码标准`_\ 定义安装目录变量，并提供一个命令用于计算与\
+安装相关的绝对路径。
 
 Load this module in a CMake project with:
 
@@ -15,6 +14,7 @@ Load this module in a CMake project with:
 
   include(GNUInstallDirs)
 
+.. _`GNU编码标准`: https://www.gnu.org/prep/standards/html_node/Directory-Variables.html
 .. _`GNU Coding Standards`: https://www.gnu.org/prep/standards/html_node/Directory-Variables.html
 
 Result Variables
