@@ -5,9 +5,8 @@
 FindXMLRPC
 ----------
 
-Finds the native XML-RPC library for C and C++.  XML-RPC is a standard network
-protocol that enables remote procedure calls (RPC) between systems.  It encodes
-requests and responses in XML and uses HTTP as the transport mechanism.
+查找C和C++的原生XML-RPC库。XML-RPC是一种标准网络协议，用于实现系统间的远程过程\
+调用（RPC）。它使用XML对请求和响应进行编码，并使用HTTP作为传输机制。
 
 Components
 ^^^^^^^^^^

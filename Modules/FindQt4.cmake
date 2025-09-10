@@ -5,9 +5,8 @@
 FindQt4
 -------
 
-This module finds Qt4, a cross-platform application development framework for
-creating graphical user interfaces and applications.  It defines a number of
-imported targets, macros, and variables to use Qt4 in the project.
+此模块用于查找Qt4，一个用于创建图形用户界面和应用程序的跨平台应用开发框架。\
+它定义了许多导入的目标、宏和变量，以便在项目中使用Qt4。
 
 .. note::
 

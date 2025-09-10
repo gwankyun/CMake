@@ -7,9 +7,8 @@ FindIce
 
 .. versionadded:: 3.1
 
-查找Internet Communication Engine（Ice）程序、库和数据
-Ice is an open-source remote procedure call (RPC) framework developed by ZeroC
-and provides SDKs for various languages to develop network applications.
+查找Internet Communication Engine（Ice）程序、库和数据。Ice是由ZeroC开发的开源\
+远程过程调用（RPC）框架，为多种语言提供SDK以开发网络应用程序。
 
 .. versionadded:: 3.4
   Imported targets for components and many new ``*_EXECUTABLE`` variables.

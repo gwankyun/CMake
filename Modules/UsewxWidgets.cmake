@@ -5,10 +5,9 @@
 UsewxWidgets
 ------------
 
-This module calls :command:`include_directories` and
-:command:`link_directories`, sets compile definitions for the current directory
-and appends some compile flags to use wxWidgets library after calling the
-:module:`find_package(wxWidgets) <FindwxWidgets>`.
+此模块调用\ :command:`include_directories`\ 和\ :command:`link_directories`，\
+为当前目录设置编译定义，并在调用\ :module:`find_package(wxWidgets) <FindwxWidgets>`\
+后添加一些编译标志以使用wxWidgets库。
 
 Examples
 ^^^^^^^^

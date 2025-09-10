@@ -5,9 +5,8 @@
 FindPerlLibs
 ------------
 
-查找Perl库。  Perl is a general-purpose, interpreted, dynamic
-programming language.  This module detects whether Perl is installed and
-determines the locations of include paths, libraries, and the library name.
+查找Perl库。Perl是一种通用的、解释型的动态编程语言。此模块检测Perl是否已安装，\
+并确定包含路径、库的位置以及库名称。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

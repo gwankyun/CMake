@@ -7,10 +7,8 @@ FindIntl
 
 .. versionadded:: 3.2
 
-Finds internationalization support that includes message translation functions
-such as ``gettext()``.  These functions originate from the GNU ``libintl``
-library, which is part of the GNU gettext utilities, but may also be provided by
-the standard C library.
+查找包含消息翻译函数例如\ ``gettext()``\ 的国际化支持。这些函数源自GNU ``libintl``\
+库，该库是GNU gettext工具的一部分，但也可能由标准C库提供。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

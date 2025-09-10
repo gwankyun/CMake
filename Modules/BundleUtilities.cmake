@@ -5,9 +5,8 @@
 BundleUtilities
 ---------------
 
-This module provides utility commands for assembling standalone,
-bundle-style applications with CMake, such as macOS ``.app`` bundles or
-similar directory-based application bundles on other operating systems.
+此模块提供使用CMake组装独立的、捆绑式应用程序的实用命令，例如macOS的\ ``.app``\
+捆绑包或其他操作系统上类似的基于目录的应用程序捆绑包。
 
 Load this module in CMake installation with:
 

@@ -13,9 +13,8 @@ FindKDE3
   `KDE documentation
   <https://develop.kde.org/docs/getting-started/building/cmake-build/>`_.
 
-This module finds KDE 3 include directories, libraries, and KDE-specific
-preprocessor tools.  It provides usage requirements for building KDE 3 software
-and defines several helper commands to simplify working with KDE 3 in CMake.
+此模块用于查找KDE 3的包含目录、库和KDE特定的预处理器工具。它提供了构建KDE 3软件的\
+使用要求，并定义了几个辅助命令，以简化在CMake中使用KDE 3的工作。
 
 Result Variables
 ^^^^^^^^^^^^^^^^

@@ -5,9 +5,8 @@
 FindSquish
 ----------
 
-Finds Squish, a cross-platform automated GUI testing framework for applications
-built on various GUI technologies.  Squish supports testing of both native and
-cross-platform toolkits, such as Qt, Java, and Tk.
+查找Squish，这是一个用于基于各种GUI技术构建的应用程序的跨平台自动化GUI测试框架。\
+Squish支持测试原生和跨平台工具包，如Qt、Java和Tk。
 
 Result Variables
 ^^^^^^^^^^^^^^^^
