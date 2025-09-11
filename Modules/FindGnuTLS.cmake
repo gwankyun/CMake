@@ -5,12 +5,9 @@
 FindGnuTLS
 ----------
 
-查找GNU传输层安全库（GnuTLS）。  The GnuTLS
-package includes the main libraries (libgnutls and libdane), as well as the
-optional gnutls-openssl compatibility extra library.  They are all distributed
-as part of the same release.  This module checks for the presence of the main
-libgnutls library and provides usage requirements for integrating GnuTLS into
-CMake projects.
+查找GNU传输层安全库（GnuTLS）。GnuTLS软件包包含主库（libgnutls和libdane），\
+以及可选的gnutls-openssl兼容性扩展库。它们都作为同一版本的一部分进行分发。\
+此模块检查主libgnutls库的存在，并提供将GnuTLS集成到CMake项目中的使用要求。
 
 Imported Targets
 ^^^^^^^^^^^^^^^^

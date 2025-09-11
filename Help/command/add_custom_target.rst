@@ -111,21 +111,17 @@ add_custom_target
 ``COMMAND_EXPAND_LISTS``
   .. versionadded:: 3.8
 
-  Lists in ``COMMAND`` arguments will be expanded, including those
-  created with
-  :manual:`generator expressions <cmake-generator-expressions(7)>`,
-  allowing ``COMMAND`` arguments such as
-  ``${CC} "-I$<JOIN:$<TARGET_PROPERTY:foo,INCLUDE_DIRECTORIES>,;-I>" foo.cc``
-  to be properly expanded.
+  ``COMMAND``\ 参数中的列表将会被展开，包括那些使用\
+  :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 创建的列表，这使得诸如\
+  ``${CC} "-I$<JOIN:$<TARGET_PROPERTY:foo,INCLUDE_DIRECTORIES>,;-I>" foo.cc``\
+  之类的\ ``COMMAND``\ 参数能够被正确展开。
 
 ``JOB_POOL``
   .. versionadded:: 3.15
 
-  Specify a :prop_gbl:`pool <JOB_POOLS>` for the :generator:`Ninja`
-  generator. Incompatible with ``USES_TERMINAL``, which implies
-  the ``console`` pool.
-  Using a pool that is not defined by :prop_gbl:`JOB_POOLS` causes
-  an error by ninja at build time.
+  为\ :generator:`Ninja`\ 生成器指定一个\ :prop_gbl:`池 <JOB_POOLS>`。与\
+  ``USES_TERMINAL``\ 不兼容，后者意味着使用\ ``console``\ 池。\
+  使用未由\ :prop_gbl:`JOB_POOLS`\ 定义的池会导致ninja在构建时出错。
 
 ``JOB_SERVER_AWARE``
   .. versionadded:: 3.28

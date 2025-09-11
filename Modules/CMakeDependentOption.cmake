@@ -5,10 +5,8 @@
 CMakeDependentOption
 --------------------
 
-This module provides a command to define boolean options whose availability and
-default values depend on specified conditions or other options.  This helps
-maintain a clean configuration interface by only displaying options that are
-relevant to the current settings.
+此模块提供了一个命令来定义布尔选项，其可用性和默认值取决于指定条件或其他选项。\
+这通过仅显示与当前设置相关的选项，有助于保持简洁的配置界面。
 
 Load this module in a CMake project with:
 

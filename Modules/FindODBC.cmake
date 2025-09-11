@@ -7,11 +7,9 @@ FindODBC
 
 .. versionadded:: 3.12
 
-Finds the Open Database Connectivity (ODBC) library, which implements a standard
-API for accessing database systems.  ODBC enables applications to communicate
-with different database management systems (DBMS) using a common set of
-functions.  Communication with a specific database is handled through ODBC
-drivers, which the library loads at runtime.
+查找开放数据库连接（ODBC）库，该库实现了用于访问数据库系统的标准API。ODBC使应用\
+程序能够使用一组通用函数与不同的数据库管理系统（DBMS）通信。与特定数据库的通信\
+通过ODBC驱动程序处理，该库在运行时加载这些驱动程序。
 
 On Windows, when building with Visual Studio, this module assumes the ODBC
 library is provided by the available Windows SDK.

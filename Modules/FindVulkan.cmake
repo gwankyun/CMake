@@ -7,11 +7,9 @@ FindVulkan
 
 .. versionadded:: 3.7
 
-查找Vulkan，一个低开销、跨平台的3D图形和计算API,
-along with related development tools typically provided by the Vulkan SDK.  This
-includes commonly used utilities such as shader compilers and SPIR-V tools
-(e.g., DXC, ``glslc``, ``glslang``, etc.) that support Vulkan-based development
-workflows.
+查找Vulkan，一个低开销、跨平台的3D图形和计算API，以及Vulkan SDK通常提供的相关开发工具。\
+这包括常用的工具，如着色器编译器和SPIR-V工具（例如DXC、\ ``glslc``、\ ``glslang``\ 等），\
+这些工具支持基于Vulkan的开发工作流。
 
 Components
 ^^^^^^^^^^
