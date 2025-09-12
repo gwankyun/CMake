@@ -126,20 +126,20 @@ add_custom_target
 ``JOB_SERVER_AWARE``
   .. versionadded:: 3.28
 
-  Specify that the command is GNU Make job server aware.
+  指定该命令支持GNU Make作业服务器。
 
-  For the :generator:`Unix Makefiles`, :generator:`MSYS Makefiles`, and
-  :generator:`MinGW Makefiles` generators this will add the ``+`` prefix to the
-  recipe line. See the `GNU Make Documentation`_ for more information.
+  对于\ :generator:`Unix Makefiles`、\ :generator:`MSYS Makefiles`\ 和\
+  :generator:`MinGW Makefiles`\ 生成器，这将在配方行前添加\ ``+``\ 前缀。\
+  更多信息请参阅\ `GNU Make文档`_。
 
-  This option is silently ignored by other generators.
+  此选项被其他生成器静默忽略。
 
+.. _`GNU Make文档`: https://www.gnu.org/software/make/manual/html_node/MAKE-Variable.html
 .. _`GNU Make Documentation`: https://www.gnu.org/software/make/manual/html_node/MAKE-Variable.html
 
 ``SOURCES``
-  Specify additional source files to be included in the custom target.
-  Specified source files will be added to IDE project files for
-  convenience in editing even if they have no build rules.
+  指定要包含在自定义目标中的额外源文件。\
+  指定的源文件将被添加到IDE项目文件中，即使它们没有构建规则，也便于编辑。
 
 ``VERBATIM``
   All arguments to the commands will be escaped properly for the
