@@ -142,21 +142,16 @@ add_custom_target
   指定的源文件将被添加到IDE项目文件中，即使它们没有构建规则，也便于编辑。
 
 ``VERBATIM``
-  All arguments to the commands will be escaped properly for the
-  build tool so that the invoked command receives each argument
-  unchanged.  Note that one level of escapes is still used by the
-  CMake language processor before ``add_custom_target`` even sees
-  the arguments.  Use of ``VERBATIM`` is recommended as it enables
-  correct behavior.  When ``VERBATIM`` is not given the behavior
-  is platform specific because there is no protection of
-  tool-specific special characters.
+  命令的所有参数都将为构建工具正确转义，以便被调用的命令能够原封不动地接收每个参数。\
+  请注意，在\ ``add_custom_target``\ 命令看到这些参数之前，CMake语言处理器已经使用了一级转义。\
+  建议使用\ ``VERBATIM``，因为它能确保正确的行为。\
+  如果未指定\ ``VERBATIM``，则行为将因平台而异，因为此时不会对工具特定的特殊字符进行保护。
 
 ``USES_TERMINAL``
   .. versionadded:: 3.2
 
-  The command will be given direct access to the terminal if possible.
-  With the :generator:`Ninja` generator, this places the command in
-  the ``console`` :prop_gbl:`pool <JOB_POOLS>`.
+  如果可能，命令将被授予对终端的直接访问权限。对于\ :generator:`Ninja`\ 生成器，\
+  这会将命令放入\ ``console``\ :prop_gbl:`池 <JOB_POOLS>`\ 中。
 
 ``WORKING_DIRECTORY``
   Execute the command with the given current working directory.
