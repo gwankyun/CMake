@@ -154,24 +154,22 @@ add_custom_target
   这会将命令放入\ ``console``\ :prop_gbl:`池 <JOB_POOLS>`\ 中。
 
 ``WORKING_DIRECTORY``
-  Execute the command with the given current working directory.
-  If it is a relative path it will be interpreted relative to the
-  build tree directory corresponding to the current source directory.
+  使用给定的当前工作目录执行命令。如果是相对路径，它将被解释为相对于与当前源目录\
+  对应的构建树目录。
 
   .. versionadded:: 3.13
-    Arguments to ``WORKING_DIRECTORY`` may use
-    :manual:`generator expressions <cmake-generator-expressions(7)>`.
+    ``WORKING_DIRECTORY``\ 的参数可以使用\
+    :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
-Ninja Multi-Config
+Ninja多配置
 ^^^^^^^^^^^^^^^^^^
 
 .. versionadded:: 3.20
 
-  ``add_custom_target`` supports the :generator:`Ninja Multi-Config`
-  generator's cross-config capabilities. See the generator documentation
-  for more information.
+  ``add_custom_target``\ 支持\ :generator:`Ninja Multi-Config`\ 生成器的跨配置功能。\
+  有关更多信息，请参阅生成器文档。
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`add_custom_command`
