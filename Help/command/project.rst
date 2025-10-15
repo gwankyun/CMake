@@ -3,7 +3,7 @@ project
 
 设置项目名。
 
-Synopsis
+概要
 ^^^^^^^^
 
 .. code-block:: cmake
@@ -16,41 +16,37 @@ Synopsis
          [HOMEPAGE_URL <url-string>]
          [LANGUAGES <language-name>...])
 
-Sets the name of the project, and stores it in the variable
-:variable:`PROJECT_NAME`. When called from the top-level
-``CMakeLists.txt`` also stores the project name in the
-variable :variable:`CMAKE_PROJECT_NAME`.
+设置项目的名称，并将其存储在变量\ :variable:`PROJECT_NAME`\ 中。当从顶层\
+``CMakeLists.txt``\ 调用时，还会将项目名称存储在变量\ :variable:`CMAKE_PROJECT_NAME`\ 中。
 
-Also sets the variables:
+同时设置变量：
 
-:variable:`PROJECT_SOURCE_DIR`, :variable:`<PROJECT-NAME>_SOURCE_DIR`
-  Absolute path to the source directory for the project.
+:variable:`PROJECT_SOURCE_DIR`、\ :variable:`<PROJECT-NAME>_SOURCE_DIR`\
+  项目源目录的绝对路径。
 
-:variable:`PROJECT_BINARY_DIR`, :variable:`<PROJECT-NAME>_BINARY_DIR`
-  Absolute path to the binary directory for the project.
+:variable:`PROJECT_BINARY_DIR`、\ :variable:`<PROJECT-NAME>_BINARY_DIR`\
+  项目二进制目录的绝对路径。
 
-:variable:`PROJECT_IS_TOP_LEVEL`, :variable:`<PROJECT-NAME>_IS_TOP_LEVEL`
+:variable:`PROJECT_IS_TOP_LEVEL`、\ :variable:`<PROJECT-NAME>_IS_TOP_LEVEL`\
   .. versionadded:: 3.21
 
-  Boolean value indicating whether the project is top-level.
+  布尔值，指示项目是否为顶层项目。
 
-Further variables are set by the optional arguments described in `Options`_
-further below. Where an option is not given, its corresponding variable is
-set to the empty string.
+更多变量由下文\ `Options`_\ 部分中描述的可选参数设置。如果未提供某个选项，\
+其对应的变量将被设置为空字符串。
 
-Note that variables of the form ``<name>_SOURCE_DIR`` and ``<name>_BINARY_DIR``
-may also be set by other commands before ``project()`` is called (see the
-:command:`FetchContent_MakeAvailable` command for one example).
-Projects should not rely on ``<PROJECT-NAME>_SOURCE_DIR`` or
-``<PROJECT-NAME>_BINARY_DIR`` holding a particular value outside of the scope
-of the call to ``project()`` or one of its child scopes.
+请注意，形式为\ ``<name>_SOURCE_DIR``\ 和\ ``<name>_BINARY_DIR``\ 的变量也可能在调用\
+``project()``\ 之前由其他命令设置（例如，参见\ :command:`FetchContent_MakeAvailable`\
+命令）。\
+项目不应依赖于\ ``<PROJECT-NAME>_SOURCE_DIR``\ 或\ ``<PROJECT-NAME>_BINARY_DIR``\
+在调用\ ``project()``\ 的作用域或其任何子作用域之外持有特定值。
 
 .. versionchanged:: 3.30
-  ``<PROJECT-NAME>_SOURCE_DIR``, ``<PROJECT-NAME>_BINARY_DIR``, and
-  ``<PROJECT-NAME>_IS_TOP_LEVEL``, if already set as normal variables when
-  ``project(<PROJECT-NAME> ...)`` is called, are updated by the call.
-  Cache entries by the same names are always set as before.
-  See release notes for 3.30.3, 3.30.4, and 3.30.5 for details.
+  如果在调用\ ``project(<PROJECT-NAME> ...)``\ 时，\ ``<PROJECT-NAME>_SOURCE_DIR``、\
+  ``<PROJECT-NAME>_BINARY_DIR``\ 和\ ``<PROJECT-NAME>_IS_TOP_LEVEL``\ 已作为普通\
+  变量设置，则它们会被该调用更新。\
+  同名的缓存条目始终按以前的方式设置。有关详细信息，请参见3.30.3、3.30.4和3.30.5\
+  版本的发行说明。
 
 .. versionchanged:: 3.31
   ``<PROJECT-NAME>_SOURCE_DIR``, ``<PROJECT-NAME>_BINARY_DIR``, and
@@ -175,7 +171,7 @@ The following outlines the steps performed during a ``project()`` call:
     name, include the file(s) and module(s) named by
     :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE_BEFORE`, if set.
 
-* Set the various project-specific variables detailed in the `Synopsis`_
+* Set the various project-specific variables detailed in the `概要`_
   and `Options`_ sections above.
 
 * For the very first ``project()`` call only:
