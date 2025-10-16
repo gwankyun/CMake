@@ -32,7 +32,7 @@ project
 
   布尔值，指示项目是否为顶层项目。
 
-更多变量由下文\ `Options`_\ 部分中描述的可选参数设置。如果未提供某个选项，\
+更多变量由下文\ `选项`_\ 部分中描述的可选参数设置。如果未提供某个选项，\
 其对应的变量将被设置为空字符串。
 
 请注意，形式为\ ``<name>_SOURCE_DIR``\ 和\ ``<name>_BINARY_DIR``\ 的变量也可能在调用\
@@ -49,23 +49,21 @@ project
   版本的发行说明。
 
 .. versionchanged:: 3.31
-  ``<PROJECT-NAME>_SOURCE_DIR``, ``<PROJECT-NAME>_BINARY_DIR``, and
-  ``<PROJECT-NAME>_IS_TOP_LEVEL`` are always set as normal variables by
-  ``project(<PROJECT-NAME> ...)``.  See policy :policy:`CMP0180`.
-  Cache entries by the same names are always set as before.
+  ``<PROJECT-NAME>_SOURCE_DIR``、\ ``<PROJECT-NAME>_BINARY_DIR``\ 和\
+  ``<PROJECT-NAME>_IS_TOP_LEVEL``\ 始终会被\ ``project(<PROJECT-NAME> ...)``\
+  设置为普通变量。参见策略\ :policy:`CMP0180`。\
+  具有相同名称的缓存条目始终按之前的方式设置。
 
-Options
+选项
 ^^^^^^^
 
-The options are:
+选项包括：
 
 ``VERSION <version>``
-  Optional; may not be used unless policy :policy:`CMP0048` is
-  set to ``NEW``.
+  可选；仅当策略\ :policy:`CMP0048`\ 设置为\ ``NEW``\ 时方可使用。
 
-  Takes a ``<version>`` argument composed of non-negative integer components,
-  i.e. ``<major>[.<minor>[.<patch>[.<tweak>]]]``,
-  and sets the variables
+  接受由非负整数组件组成的 ``<version>`` 参数，即\ ``<major>[.<minor>[.<patch>[.<tweak>]]]``，\
+  并设置变量
 
   * :variable:`PROJECT_VERSION`,
     :variable:`<PROJECT-NAME>_VERSION`
@@ -79,9 +77,8 @@ The options are:
     :variable:`<PROJECT-NAME>_VERSION_TWEAK`.
 
   .. versionadded:: 3.12
-    When the ``project()`` command is called from the top-level
-    ``CMakeLists.txt``, then the version is also stored in the variable
-    :variable:`CMAKE_PROJECT_VERSION`.
+    当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时，版本号也会存储在变量\
+    :variable:`CMAKE_PROJECT_VERSION`\ 中。
 
 ``COMPAT_VERSION <version>``
   .. versionadded:: 4.1
@@ -172,7 +169,7 @@ The following outlines the steps performed during a ``project()`` call:
     :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE_BEFORE`, if set.
 
 * Set the various project-specific variables detailed in the `概要`_
-  and `Options`_ sections above.
+  and `选项`_ sections above.
 
 * For the very first ``project()`` call only:
 
