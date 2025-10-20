@@ -86,55 +86,53 @@ project
 
     实验性功能。由\ ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``\ 开关控制。
 
-  Optional; requires ``VERSION`` also be set.
+  可选；要求同时设置\ ``VERSION``。
 
-  Takes a ``<version>`` argument composed of non-negative integer components,
-  i.e. ``<major>[.<minor>[.<patch>[.<tweak>]]]``,
-  and sets the variables
+  接受一个由非负整数组件组成的\ ``<version>``\ 参数， 即\
+  ``<major>[.<minor>[.<patch>[.<tweak>]]]``\ ， 并设置以下变量
 
   * :variable:`PROJECT_COMPAT_VERSION`,
     :variable:`<PROJECT-NAME>_COMPAT_VERSION`
 
-    When the ``project()`` command is called from the top-level
-    ``CMakeLists.txt``, then the compatibility version is also stored in the
-    variable :variable:`CMAKE_PROJECT_COMPAT_VERSION`.
+    当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时，兼容性版本还会存储\
+    在变量\ :variable:`CMAKE_PROJECT_COMPAT_VERSION`\ 中。
 
 ``DESCRIPTION <project-description-string>``
   .. versionadded:: 3.9
 
-  Optional.
-  Sets the variables
+  可选。
+  设置变量
 
   * :variable:`PROJECT_DESCRIPTION`, :variable:`<PROJECT-NAME>_DESCRIPTION`
 
-  to ``<project-description-string>``.
-  It is recommended that this description is a relatively short string,
-  usually no more than a few words.
+  为\ ``<project-description-string>``。\
+  建议这个描述是一个相对较短的字符串，\
+  通常不超过几个词。
 
-  When the ``project()`` command is called from the top-level ``CMakeLists.txt``,
-  then the description is also stored in the variable :variable:`CMAKE_PROJECT_DESCRIPTION`.
+  当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时， 描述也会存储在变量\
+  :variable:`CMAKE_PROJECT_DESCRIPTION`\ 中。
 
   .. versionadded:: 3.12
-    Added the ``<PROJECT-NAME>_DESCRIPTION`` variable.
+    添加了\ ``<PROJECT-NAME>_DESCRIPTION``\ 变量。
 
 ``HOMEPAGE_URL <url-string>``
   .. versionadded:: 3.12
 
-  Optional.
-  Sets the variables
+  可选。 
+  设置变量
 
   * :variable:`PROJECT_HOMEPAGE_URL`, :variable:`<PROJECT-NAME>_HOMEPAGE_URL`
 
-  to ``<url-string>``, which should be the canonical home URL for the project.
+  为\ ``<url-string>``，该URL字符串应为项目的规范主页URL。
 
-  When the ``project()`` command is called from the top-level ``CMakeLists.txt``,
-  then the URL also is stored in the variable :variable:`CMAKE_PROJECT_HOMEPAGE_URL`.
+  当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时，此URL还会存储在变量\
+  :variable:`CMAKE_PROJECT_HOMEPAGE_URL`\ 中。
 
 ``LANGUAGES <language-name>...``
-  Optional.
-  Can also be specified without ``LANGUAGES`` keyword per the first, short signature.
+  可选。
+  也可以不使用\ ``LANGUAGES``\ 关键字，按照第一种简短语法指定。
 
-  Selects which programming languages are needed to build the project.
+  选择构建项目所需的编程语言。
 
 .. include:: include/SUPPORTED_LANGUAGES.rst
 
