@@ -136,14 +136,12 @@ project
 
 .. include:: include/SUPPORTED_LANGUAGES.rst
 
-By default ``C`` and ``CXX`` are enabled if no language options are given.
-Specify language ``NONE``, or use the ``LANGUAGES`` keyword and list no languages,
-to skip enabling any languages.
+默认情况下，如果未指定语言选项，则会启用\ ``C``\ 和\ ``CXX``。指定语言为\ ``NONE``，\
+或者使用\ ``LANGUAGES``\ 关键字且不列出任何语言，可以跳过启用任何语言。
 
-The variables set through the ``VERSION``, ``COMPAT_VERSION``, ``DESCRIPTION``
-and ``HOMEPAGE_URL`` options are intended for use as default values in package
-metadata and documentation. The :command:`export` and :command:`install`
-commands use these accordingly when generating |CPS| package descriptions.
+通过\ ``VERSION``、\ ``COMPAT_VERSION``、\ ``DESCRIPTION``\ 和\ ``HOMEPAGE_URL``\
+选项设置的变量旨在用作包元数据和文档中的默认值。:command:`export`\ 和\
+:command:`install`\ 命令在生成\ |CPS|\ 包描述时会相应地使用这些值。
 
 .. |CPS| replace:: Common Package Specification
 
