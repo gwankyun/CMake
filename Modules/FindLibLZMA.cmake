@@ -5,7 +5,11 @@
 FindLibLZMA
 -----------
 
-查找实现LZMA（Lempel–Ziv–Markov链算法）的数据压缩库——liblzma。
+查找liblzma，一个实现LZMA（Lempel–Ziv–Markov链算法）的数据压缩库。
+
+.. code-block:: cmake
+
+  find_package(LibLZMA [<version>] [...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -24,16 +28,20 @@ Result Variables
 This module defines the following variables:
 
 ``LibLZMA_FOUND``
-  Boolean indicating whether the liblzma is found.  For backward compatibility,
-  the ``LIBLZMA_FOUND`` variable is also set to the same value.
-``LIBLZMA_INCLUDE_DIRS``
-  Include directories containing headers needed to use liblzma.
-``LIBLZMA_LIBRARIES``
-  Libraries needed to link against to use liblzma.
-``LIBLZMA_VERSION``
-  .. versionadded:: 3.26
+  .. versionadded:: 3.3
+
+  Boolean indicating whether (the requested version of) liblzma was found.
+
+``LibLZMA_VERSION``
+  .. versionadded:: 4.2
 
   The version of liblzma found (available as a string, for example, ``5.0.3``).
+
+``LIBLZMA_INCLUDE_DIRS``
+  Include directories containing headers needed to use liblzma.
+
+``LIBLZMA_LIBRARIES``
+  Libraries needed to link against to use liblzma.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -43,29 +51,53 @@ The following cache variables may also be set:
 ``LIBLZMA_HAS_AUTO_DECODER``
   Boolean sanity check result indicating whether the ``lzma_auto_decoder()``
   function (automatic decoder functionality) is found in liblzma (required).
+
 ``LIBLZMA_HAS_EASY_ENCODER``
   Boolean sanity check result indicating whether the ``lzma_easy_encoder()``
   function (basic encoder API) is found in liblzma (required).
+
 ``LIBLZMA_HAS_LZMA_PRESET``
   Boolean sanity check result indicating whether the ``lzma_lzma_preset()``
   function (preset compression configuration) is found in liblzma (required).
 
-Legacy Variables
-^^^^^^^^^^^^^^^^
+Deprecated Variables
+^^^^^^^^^^^^^^^^^^^^
 
 The following variables are provided for backward compatibility:
 
-``LIBLZMA_VERSION_MAJOR``
-  The major version of liblzma found.
-``LIBLZMA_VERSION_MINOR``
-  The minor version of liblzma found.
-``LIBLZMA_VERSION_PATCH``
-  The patch version of liblzma found.
-``LIBLZMA_VERSION_STRING``
+``LIBLZMA_FOUND``
+  .. deprecated:: 4.2
+    Use ``LibLZMA_FOUND``, which has the same value.
+
+  Boolean indicating whether (the requested version of) liblzma was found.
+
+``LIBLZMA_VERSION``
+  .. versionadded:: 3.26
+  .. deprecated:: 4.2
+    Superseded by the ``LibLZMA_VERSION``.
+
   The version of liblzma found.
 
-  .. versionchanged:: 3.26
-    Superseded by ``LIBLZMA_VERSION``.
+``LIBLZMA_VERSION_STRING``
+  .. deprecated:: 3.26
+    Superseded by the ``LIBLZMA_VERSION`` (and ``LibLZMA_VERSION``).
+
+  The version of liblzma found.
+
+``LIBLZMA_VERSION_MAJOR``
+  .. deprecated:: 3.26
+
+  The major version of liblzma found.
+
+``LIBLZMA_VERSION_MINOR``
+  .. deprecated:: 3.26
+
+  The minor version of liblzma found.
+
+``LIBLZMA_VERSION_PATCH``
+  .. deprecated:: 3.26
+
+  The patch version of liblzma found.
 
 Examples
 ^^^^^^^^
@@ -98,8 +130,9 @@ if(LIBLZMA_INCLUDE_DIR AND EXISTS "${LIBLZMA_INCLUDE_DIR}/lzma/version.h")
     string(REGEX REPLACE ".*#define LZMA_VERSION_MINOR ([0-9]+).*" "\\1" LIBLZMA_VERSION_MINOR "${LIBLZMA_HEADER_CONTENTS}")
     string(REGEX REPLACE ".*#define LZMA_VERSION_PATCH ([0-9]+).*" "\\1" LIBLZMA_VERSION_PATCH "${LIBLZMA_HEADER_CONTENTS}")
 
-    set(LIBLZMA_VERSION_STRING "${LIBLZMA_VERSION_MAJOR}.${LIBLZMA_VERSION_MINOR}.${LIBLZMA_VERSION_PATCH}")
-    set(LIBLZMA_VERSION ${LIBLZMA_VERSION_STRING})
+    set(LibLZMA_VERSION "${LIBLZMA_VERSION_MAJOR}.${LIBLZMA_VERSION_MINOR}.${LIBLZMA_VERSION_PATCH}")
+    set(LIBLZMA_VERSION "${LibLZMA_VERSION}")
+    set(LIBLZMA_VERSION_STRING "${LibLZMA_VERSION}")
     unset(LIBLZMA_HEADER_CONTENTS)
 endif()
 
@@ -130,7 +163,7 @@ find_package_handle_standard_args(LibLZMA  REQUIRED_VARS  LIBLZMA_LIBRARY
                                                           LIBLZMA_HAS_AUTO_DECODER
                                                           LIBLZMA_HAS_EASY_ENCODER
                                                           LIBLZMA_HAS_LZMA_PRESET
-                                           VERSION_VAR    LIBLZMA_VERSION
+                                           VERSION_VAR    LibLZMA_VERSION
                                  )
 mark_as_advanced( LIBLZMA_INCLUDE_DIR LIBLZMA_LIBRARY )
 

@@ -3,8 +3,9 @@ SPDX_LICENSE
 
 .. versionadded:: 4.1
 
-使用\ |SPDX|_ (SPDX) `License Expression`_\ 来指定目标的许可协议。\
-请参阅SPDX `License List`_\ 以获取常用许可及其标识符的列表。
+Specify the license(s) of a target using a |SPDX|_ (SPDX)
+`License Expression`_. See the SPDX `License List`_ for a list of commonly used
+licenses and their identifiers.
 
 .. _SPDX: https://spdx.dev/
 .. |SPDX| replace:: System Package Data Exchange

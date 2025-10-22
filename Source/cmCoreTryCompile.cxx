@@ -236,7 +236,7 @@ ArgumentParser::Continue cmCoreTryCompile::Arguments::SetSourceType(
 }
 
 Arguments cmCoreTryCompile::ParseArgs(
-  cmRange<std::vector<std::string>::const_iterator> const& args,
+  cmRange<std::vector<std::string>::const_iterator> args,
   cmArgumentParser<Arguments> const& parser,
   std::vector<std::string>& unparsedArguments)
 {
@@ -1095,6 +1095,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     vars.emplace("CMAKE_MSVC_RUNTIME_CHECKS"_s);
     vars.emplace("CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS"_s);
     vars.emplace("CMAKE_VS_USE_DEBUG_LIBRARIES"_s);
+    vars.emplace("CMAKE_CXX_STDLIB_MODULES_JSON"_s);
 
     if (cmValue varListStr = this->Makefile->GetDefinition(
           kCMAKE_TRY_COMPILE_PLATFORM_VARIABLES)) {
@@ -1384,6 +1385,14 @@ void cmCoreTryCompile::FindOutputFile(std::string const& targetName)
     emsg << cmStrCat("  ", outputFileLocation, '\n');
     this->FindErrorMessage = emsg.str();
     return;
+  }
+
+  if (cmHasLiteralSuffix(outputFileLocation, ".js")) {
+    std::string wasmOutputLocation = cmStrCat(
+      outputFileLocation.substr(0, outputFileLocation.length() - 3), ".wasm");
+    if (cmSystemTools::FileExists(wasmOutputLocation)) {
+      outputFileLocation = wasmOutputLocation;
+    }
   }
 
   this->OutputFile = cmSystemTools::CollapseFullPath(outputFileLocation);

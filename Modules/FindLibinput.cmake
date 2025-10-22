@@ -7,7 +7,11 @@ FindLibinput
 
 .. versionadded:: 3.14
 
-查找libinput库，该库用于在Wayland合成器中处理输入设备并提供通用的X.Org输入驱动程序。
+查找libinput库，该库用于在Wayland合成器中处理输入设备并提供通用的X.Org输入驱动程序：
+
+.. code-block:: cmake
+
+  find_package(Libinput [<version>] [...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -24,7 +28,7 @@ Result Variables
 This module defines the following variables:
 
 ``Libinput_FOUND``
-  Boolean indicating whether the (requested version of) libinput library is
+  Boolean indicating whether the (requested version of) libinput library was
   found.
 ``Libinput_VERSION``
   The version of the libinput found.
@@ -52,7 +56,7 @@ Finding the libinput library and linking it to a project target:
 # Use pkg-config to get the directories and then use these values
 # in the FIND_PATH() and FIND_LIBRARY() calls
 find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
+if(PkgConfig_FOUND)
   pkg_check_modules(PKG_Libinput QUIET libinput)
 endif()
 

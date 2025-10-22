@@ -222,8 +222,10 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   中允许使用。
 
 ``graphviz``
-  表示graphviz输入文件路径的可选字符串，它将包含项目中所有的库和可执行依赖项。更多细节请参阅\
-  :module:`CMakeGraphVizOptions`\ 的文档。
+  An optional string representing the path to the graphviz input file,
+  that will contain all the library and executable dependencies
+  in the project.  See the documentation for :option:`cmake --graphviz` for
+  more details.
 
   该字段支持\ `宏扩展`_。如果指定了相对路径，它是相对于当前工作目录计算的。它允许在指定版本\
   ``10``\ 或以上的预设文件中使用。
@@ -843,8 +845,24 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 ``packageName``
   表示包名的可选字符串。
 
+  .. note::
+
+    Due to problems with the implementation, this field does not affect the
+    name of the final package file produced.  Other aspects of the package
+    may use the value though, leading to inconsistencies.
+    A future CMake release may address this problem, but until then, it is
+    recommended that this field not be used.
+
 ``packageVersion``
   表示包版本的可选字符串。
+
+  .. note::
+
+    Due to problems with the implementation, this field does not affect the
+    name of the final package file produced.  Other aspects of the package
+    may use the value though, leading to inconsistencies.
+    A future CMake release may address this problem, but until then, it is
+    recommended that this field not be used.
 
 ``packageDirectory``
   一个可选字符串，表示放置包的目录。

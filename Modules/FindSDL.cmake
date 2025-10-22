@@ -5,8 +5,14 @@
 FindSDL
 -------
 
-查找SDL（Simple DirectMedia Layer）库。SDL是一个跨平台的多媒体软件开发库，\
-常用于游戏和模拟器开发。
+查找SDL（Simple DirectMedia Layer）库。SDL是一个跨平台的多媒体软件开发库。
+
+.. code-block:: cmake
+
+  find_package(SDL [<version>] [...])
+
+SDL is a cross-platform library for developing multimedia software, such as
+games and emulators.
 
 .. note::
 
@@ -45,7 +51,7 @@ Result Variables
 This module defines the following variables:
 
 ``SDL_FOUND``
-  Boolean indicating whether the (requested version of) SDL is found.
+  Boolean indicating whether (the requested version of) SDL was found.
 
 ``SDL_VERSION``
   .. versionadded:: 3.19
@@ -127,7 +133,7 @@ value.  If they are not set, ``SDL_LIBRARY`` will remain undefined.
 Deprecated Variables
 ^^^^^^^^^^^^^^^^^^^^
 
-These variables are obsolete and provided for backwards compatibility:
+The following variables are provided for backward compatibility:
 
 ``SDL_VERSION_STRING``
   .. deprecated:: 3.19
@@ -288,7 +294,7 @@ include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(SDL
                                   REQUIRED_VARS SDL_LIBRARY SDL_INCLUDE_DIR
-                                  VERSION_VAR SDL_VERSION_STRING)
+                                  VERSION_VAR SDL_VERSION)
 
 if(SDL_FOUND)
   set(SDL_LIBRARIES ${SDL_LIBRARY})

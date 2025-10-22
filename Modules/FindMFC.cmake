@@ -5,7 +5,11 @@
 FindMFC
 -------
 
-查找用于在Windows上开发MFC应用程序的原生微软基础类库（MFC）。
+查找用于在Windows上开发MFC应用程序的原生微软基础类库（MFC）：
+
+.. code-block:: cmake
+
+  find_package(MFC [...])
 
 .. note::
 
@@ -21,7 +25,7 @@ Result Variables
 This module defines the following variables:
 
 ``MFC_FOUND``
-  Boolean indicating whether MFC support is found.
+  Boolean indicating whether MFC support was found.
 
 Examples
 ^^^^^^^^

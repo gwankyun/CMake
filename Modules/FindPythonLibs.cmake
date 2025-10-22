@@ -13,9 +13,13 @@ FindPythonLibs
   Use :module:`FindPython3`, :module:`FindPython2`, or :module:`FindPython`
   instead.
 
-This module finds the Python installation and determines the location of its
-include directories and libraries, as well as the name of the Python library to
-link against.
+Finds the Python installation and determines the location of its include
+directories and libraries, as well as the name of the Python library to
+link against:
+
+.. code-block:: cmake
+
+  find_package(PythonLibs [<version>] [...])
 
 .. note::
 
@@ -30,9 +34,10 @@ Result Variables
 This module defines the following variables:
 
 ``PythonLibs_FOUND``
-  Boolean indicating whether the (requested version of) Python libraries have
-  been found.  For backward compatibility, the ``PYTHONLIBS_FOUND`` variable is
-  also set to the same value.
+  .. versionadded:: 3.3
+
+  Boolean indicating whether the (requested version of) Python libraries
+  were found.
 
 ``PYTHONLIBS_VERSION_STRING``
   The version of the Python libraries found.
@@ -68,7 +73,14 @@ This module accepts the following variables before calling
 Deprecated Variables
 ^^^^^^^^^^^^^^^^^^^^
 
-These variables are provided for backward compatibility:
+The following variables are provided for backward compatibility:
+
+``PYTHONLIBS_FOUND``
+  .. deprecated:: 3.12
+    Use ``PythonLibs_FOUND``, which has the same value.
+
+  Boolean indicating whether the (requested version of) Python libraries
+  were found.
 
 ``PYTHON_DEBUG_LIBRARIES``
   .. deprecated:: 2.8.8

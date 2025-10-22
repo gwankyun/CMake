@@ -5,8 +5,14 @@
 FindSquish
 ----------
 
-查找Squish，这是一个用于基于各种GUI技术构建的应用程序的跨平台自动化GUI测试框架。\
-Squish支持测试原生和跨平台工具包，如Qt、Java和Tk。
+查找Squish，这是一个用于基于各种GUI技术构建的应用程序的跨平台自动化GUI测试框架：
+
+.. code-block:: cmake
+
+  find_package(Squish [<version>] [...])
+
+Squish supports testing of both native and cross-platform toolkits, such as
+Qt, Java, and Tk.
 
 Result Variables
 ^^^^^^^^^^^^^^^^
@@ -14,30 +20,23 @@ Result Variables
 This module defines the following variables:
 
 ``Squish_FOUND``
-  Boolean indicating whether the (requested version of) Squish is found.  For
-  backward compatibility, the ``SQUISH_FOUND`` variable is also set to the same
-  value.
+  .. versionadded:: 3.3
 
-``SQUISH_VERSION``
+  Boolean indicating whether (the requested version of) Squish was found.
+
+``Squish_VERSION``
+  .. versionadded:: 4.2
+
   The full version of the Squish found.
 
-``SQUISH_VERSION_MAJOR``
-  The major version of the Squish found.
-
-``SQUISH_VERSION_MINOR``
-  The minor version of the Squish found.
-
-``SQUISH_VERSION_PATCH``
-  The patch version of the Squish found.
-
 ``SQUISH_INSTALL_DIR_FOUND``
-  Boolean indicating whether the Squish installation directory is found.
+  Boolean indicating whether the Squish installation directory was found.
 
 ``SQUISH_SERVER_EXECUTABLE_FOUND``
-  Boolean indicating whether the Squish server executable is found.
+  Boolean indicating whether the Squish server executable was found.
 
 ``SQUISH_CLIENT_EXECUTABLE_FOUND``
-  Boolean indicating whether the Squish client executable is found.
+  Boolean indicating whether the Squish client executable was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -161,6 +160,41 @@ This module provides the following commands, if Squish is found:
     A string of one or more (semicolon-separated list) test wrappers needed by
     the test case.
 
+Deprecated Variables
+^^^^^^^^^^^^^^^^^^^^
+
+The following variables are provided for backward compatibility:
+
+``SQUISH_FOUND``
+  .. deprecated:: 4.2
+    Use ``Squish_FOUND``, which has the same value.
+
+  Boolean indicating whether (the requested version of) Squish was found.
+
+``SQUISH_VERSION``
+  .. deprecated:: 4.2
+    Superseded by the ``Squish_VERSION``.
+
+  The full version of the Squish found.
+
+``SQUISH_VERSION_MAJOR``
+  .. deprecated:: 4.2
+    Superseded by the ``Squish_VERSION``.
+
+  The major version of the Squish found.
+
+``SQUISH_VERSION_MINOR``
+  .. deprecated:: 4.2
+    Superseded by the ``Squish_VERSION``.
+
+  The minor version of the Squish found.
+
+``SQUISH_VERSION_PATCH``
+  .. deprecated:: 4.2
+    Superseded by the ``Squish_VERSION``.
+
+  The patch version of the Squish found.
+
 Examples
 ^^^^^^^^
 
@@ -253,10 +287,11 @@ else()
 endif()
 
 
-set(SQUISH_VERSION)
-set(SQUISH_VERSION_MAJOR)
-set(SQUISH_VERSION_MINOR)
-set(SQUISH_VERSION_PATCH)
+unset(Squish_VERSION)
+unset(SQUISH_VERSION)
+unset(SQUISH_VERSION_MAJOR)
+unset(SQUISH_VERSION_MINOR)
+unset(SQUISH_VERSION_PATCH)
 
 # record if executables are set
 if(SQUISH_CLIENT_EXECUTABLE)
@@ -268,7 +303,8 @@ if(SQUISH_CLIENT_EXECUTABLE)
     set(SQUISH_VERSION_MAJOR "${CMAKE_MATCH_1}")
     set(SQUISH_VERSION_MINOR "${CMAKE_MATCH_2}")
     set(SQUISH_VERSION_PATCH "${CMAKE_MATCH_3}")
-    set(SQUISH_VERSION "${SQUISH_VERSION_MAJOR}.${SQUISH_VERSION_MINOR}.${SQUISH_VERSION_PATCH}" )
+    set(Squish_VERSION "${SQUISH_VERSION_MAJOR}.${SQUISH_VERSION_MINOR}.${SQUISH_VERSION_PATCH}" )
+    set(SQUISH_VERSION "${Squish_VERSION}")
   endif()
 else()
   set(SQUISH_CLIENT_EXECUTABLE_FOUND 0)
@@ -283,7 +319,7 @@ endif()
 # record if Squish was found
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Squish  REQUIRED_VARS  SQUISH_INSTALL_DIR SQUISH_CLIENT_EXECUTABLE SQUISH_SERVER_EXECUTABLE
-                                          VERSION_VAR  SQUISH_VERSION )
+                                          VERSION_VAR Squish_VERSION)
 
 
 set(_SQUISH_MODULE_DIR "${CMAKE_CURRENT_LIST_DIR}")

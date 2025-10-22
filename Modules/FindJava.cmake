@@ -5,7 +5,11 @@
 FindJava
 --------
 
-此模块用于查找Java安装并确定其运行时工具和开发组件。
+此模块用于查找Java安装并确定其运行时工具和开发组件：
+
+.. code-block:: cmake
+
+  find_package(Java [<version>] [COMPONENTS <components>...] [...])
 
 .. versionadded:: 3.10
   Support for Java 9+ version parsing.
@@ -13,7 +17,14 @@ FindJava
 Components
 ^^^^^^^^^^
 
-This module supports the following components:
+This module supports optional components, which can be specified with the
+:command:`find_package` command:
+
+.. code-block:: cmake
+
+  find_package(Java [COMPONENTS <components>...])
+
+Supported components include:
 
 ``Runtime``
   Finds the Java Runtime Environment used to execute Java byte-compiled
@@ -34,13 +45,7 @@ This module supports the following components:
 
   Finds the signer and verifier tool for Java Archive (JAR) files.
 
-Components can optionally be specified using the standard syntax with:
-
-.. code-block:: cmake
-
-  find_package(Java [COMPONENTS <components>...])
-
-If no ``COMPONENTS`` are specified, the module searches for the ``Runtime``
+If no components are specified, the module searches for the ``Runtime``
 component by default.
 
 Result Variables
@@ -49,10 +54,13 @@ Result Variables
 This module defines the following variables:
 
 ``Java_FOUND``
-  Boolean indicating whether Java with all specified components is found.
+  .. versionadded:: 3.3
+
+  Boolean indicating whether (the requested version of) Java with all
+  specified components was found.
 
 ``Java_<component>_FOUND``
-  Boolean indicating whether the ``<component>`` is found.
+  Boolean indicating whether the ``<component>`` was found.
 
 ``Java_VERSION``
   Version of Java found.  This is set to:

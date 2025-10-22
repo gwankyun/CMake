@@ -13,7 +13,11 @@ FindFLTK2
   shifted back to the FLTK 1.x branch.  For finding FLTK, including stable and
   modern versions, use the :module:`FindFLTK` module instead.
 
-查找FLTK 2.x版本，这是一个用于GUI开发的跨平台工具包。
+查找FLTK 2.x版本，这是一个用于GUI开发的跨平台工具包：
+
+.. code-block:: cmake
+
+  find_package(FLTK2 [...])
 
 Result Variables
 ^^^^^^^^^^^^^^^^
@@ -21,7 +25,7 @@ Result Variables
 This module defines the following variables:
 
 ``FLTK2_FOUND``
-  Boolean indicating whether FLTK 2.x is found.
+  Boolean indicating whether FLTK 2.x was found.
 
 ``FLTK2_LIBRARIES``
   Libraries needed to link against to use FLTK 2.x.

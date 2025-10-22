@@ -5,7 +5,11 @@
 FindQuickTime
 -------------
 
-查找QuickTime多媒体框架，该框架提供对视频、音频和交互式媒体的支持。
+查找QuickTime多媒体框架，该框架提供对视频、音频和交互式媒体的支持：
+
+.. code-block:: cmake
+
+  find_package(QuickTime [...])
 
 .. note::
 
@@ -19,8 +23,9 @@ Result Variables
 This module defines the following variables:
 
 ``QuickTime_FOUND``
-  Boolean indicating whether the QuickTime is found.  For backward
-  compatibility, the ``QUICKTIME_FOUND`` variable is also set to the same value.
+  .. versionadded:: 3.3
+
+  Boolean indicating whether QuickTime was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -44,14 +49,38 @@ This module accepts the following variables:
   destination that was used when configuring, building, and installing QuickTime
   library: ``./configure --prefix=$QUICKTIME_DIR``.
 
+Deprecated Variables
+^^^^^^^^^^^^^^^^^^^^
+
+The following variables are provided for backward compatibility:
+
+``QUICKTIME_FOUND``
+  .. deprecated:: 4.2
+    Use ``QuickTime_FOUND``, which has the same value.
+
+  Boolean indicating whether QuickTime was found.
+
 Examples
 ^^^^^^^^
 
-Finding QuickTime library:
+Finding QuickTime library and creating an imported interface target for
+linking it to a project target:
 
 .. code-block:: cmake
 
   find_package(QuickTime)
+
+  if(QuickTime_FOUND AND NOT TARGET QuickTime::QuickTime)
+    add_library(QuickTime::QuickTime INTERFACE IMPORTED)
+    set_target_properties(
+      QuickTime::QuickTime
+      PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${QUICKTIME_INCLUDE_DIR}"
+        INTERFACE_LINK_LIBRARIES "${QUICKTIME_LIBRARY}"
+    )
+  endif()
+
+  target_link_libraries(example PRIVATE QuickTime::QuickTime)
 #]=======================================================================]
 
 find_path(QUICKTIME_INCLUDE_DIR QuickTime/QuickTime.h QuickTime.h

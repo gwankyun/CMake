@@ -5,7 +5,24 @@
 FindPike
 --------
 
-查找Pike编译器和解释器。Pike是一种解释型、通用、高级、动态的编程语言。
+查找Pike编译器和解释器：
+
+.. code-block:: cmake
+
+  find_package(Pike [...])
+
+Pike is interpreted, general purpose, high-level, dynamic programming
+language.
+
+Result Variables
+^^^^^^^^^^^^^^^^
+
+This module defines the following variables:
+
+``Pike_FOUND``
+  .. versionadded:: 4.2
+
+  Boolean indicating whether Pike was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -39,3 +56,9 @@ mark_as_advanced(
   PIKE_EXECUTABLE
   PIKE_INCLUDE_PATH
   )
+
+if(PIKE_EXECUTABLE AND PIKE_INCLUDE_PATH)
+  set(Pike_FOUND TRUE)
+else()
+  set(Pike_FOUND FALSE)
+endif()

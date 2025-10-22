@@ -5,7 +5,11 @@
 FindFLTK
 --------
 
-查找FLTK库, 这是一个跨平台的GUI开发工具包。
+查找FLTK库, 这是一个跨平台的GUI开发工具包：
+
+.. code-block:: cmake
+
+  find_package(FLTK [...])
 
 FLTK uses CMake-based build system and provides a package configuration file for
 projects to find it.  As of its 1.4.0 version it also provides
@@ -17,8 +21,8 @@ This module takes that into account and first attempts to find FLTK in
 documentation for more information, how to use FLTK with CMake.
 
 .. versionadded:: 3.11
-  Debug and Release library variants are found separately and use
-  per-configuration variables.
+  Debug and release (optimized) library variants are found separately and use
+  :ref:`per-configuration <Build Configurations>` variables.
 
 Result Variables
 ^^^^^^^^^^^^^^^^
@@ -26,7 +30,7 @@ Result Variables
 This module defines the following variables:
 
 ``FLTK_FOUND``
-  Boolean indicating whether FLTK is found.
+  Boolean indicating whether FLTK was found.
 
 ``FLTK_LIBRARIES``
   Libraries needed to link against to use FLTK.

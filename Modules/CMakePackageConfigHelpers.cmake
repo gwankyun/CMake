@@ -5,7 +5,15 @@
 CMakePackageConfigHelpers
 -------------------------
 
-用于创建配置文件的helpers函数，其他项目可以包含这些配置文件来查找和使用包。
+This module provides helper commands for creating :ref:`config files
+<Libraries providing Config-file packages>` that can be included by other
+projects to find and use a package.
+
+Load this module in a CMake project with:
+
+.. code-block:: cmake
+
+  include(CMakePackageConfigHelpers)
 
 Generating a Package Configuration File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

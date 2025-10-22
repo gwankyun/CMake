@@ -130,10 +130,13 @@ FindFoo.cmake模块通常通过以下命令加载：
 何抱怨。如果\ ``Foo_FIND_REQUIRED``\ 被设置为true，如果找不到包，模块应该发出\
 ``FATAL_ERROR``。如果两者都设置为true，则如果它找不到包，则应该打印一条非致命消息。
 
-找到多个半独立部件的包（如库包）应该搜索\ ``Foo_FIND_COMPONENTS``\ 中列出的组件，如果设\
-置为true，并且只有在每个搜索组件\ ``<c>``\ 未找到时才将\ ``Foo_FOUND``\ 设置为true, \
-``Foo_FIND_REQUIRED_<c>``\ 未设置为true。\ ``find_package_handle_standard_args()``\
-的\ ``HANDLE_COMPONENTS``\ 参数可用于实现此功能。
+Packages that find multiple semi-independent parts (like bundles of
+libraries) should search for the components listed in
+``Foo_FIND_COMPONENTS`` if it is set , and only set ``Foo_FOUND`` to
+true if for each searched-for component ``<c>`` that was not found,
+``Foo_FIND_REQUIRED_<c>`` is not set to true.  The ``HANDLE_COMPONENTS``
+argument of :command:`find_package_handle_standard_args` can be used to
+implement this.
 
 如果没有设置\ ``Foo_FIND_COMPONENTS``，那么搜索哪些模块和需要哪些模块取决于查找模块，但应\
 该标明下来。
@@ -287,10 +290,10 @@ FindFoo.cmake模块通常通过以下命令加载：
   Result Variables
   ^^^^^^^^^^^^^^^^
 
-  This will define the following variables:
+  This module defines the following variables:
 
   ``Foo_FOUND``
-    True if the system has the Foo library.
+    Boolean indicating whether (the requested version of) Foo was found.
   ``Foo_VERSION``
     The version of the Foo library which was found.
   ``Foo_INCLUDE_DIRS``
@@ -335,7 +338,7 @@ FindFoo.cmake模块通常通过以下命令加载：
 .. code-block:: cmake
 
   find_package(PkgConfig)
-  if(PKG_CONFIG_FOUND)
+  if(PkgConfig_FOUND)
     pkg_check_modules(PC_Foo QUIET Foo)
   endif()
 

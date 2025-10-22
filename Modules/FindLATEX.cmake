@@ -5,7 +5,14 @@
 FindLATEX
 ---------
 
-查找LaTeX编译器以及BibTeX等LaTeX相关软件。LaTeX是一种用于生成技术和科学文档的排版系统。
+查找LaTeX编译器以及BibTeX等LaTeX相关软件：
+
+.. code-block:: cmake
+
+  find_package(LATEX [...])
+
+LaTeX is a typesetting system for the production of technical and scientific
+documentation.
 
 Components
 ^^^^^^^^^^
@@ -39,7 +46,7 @@ Supported components are:
   Finds the MakeIndex compiler.
 
 ``XINDY``
-  Find the xindy compiler.
+  Finds the xindy compiler.
 
 ``DVIPS``
   Finds the DVI-to-PostScript (DVIPS) converter.
@@ -66,10 +73,10 @@ This module defines the following variables:
 
 ``LATEX_FOUND``
   Boolean indicating whether the LaTex compiler and all its required components
-  are found.
+  were found.
 
 ``LATEX_<component>_FOUND``
-  Boolean indicating whether the LaTeX ``<component>`` is found.
+  Boolean indicating whether the LaTeX ``<component>`` was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -83,12 +90,12 @@ The following cache variables may also be set:
   The path to the PdfLaTeX compiler.
 
 ``XELATEX_COMPILER``
-  .. versionadded: 3.2
+  .. versionadded:: 3.2
 
   The path to the XeLaTeX compiler.
 
 ``LUALATEX_COMPILER``
-  .. versionadded: 3.2
+  .. versionadded:: 3.2
 
   The path to the LuaLaTeX compiler.
 
@@ -96,7 +103,7 @@ The following cache variables may also be set:
   The path to the BibTeX compiler.
 
 ``BIBER_COMPILER``
-  .. versionadded: 3.2
+  .. versionadded:: 3.2
 
   The path to the Biber compiler.
 
@@ -104,7 +111,7 @@ The following cache variables may also be set:
   The path to the MakeIndex compiler.
 
 ``XINDY_COMPILER``
-  .. versionadded: 3.2
+  .. versionadded:: 3.2
 
   The path to the xindy compiler.
 
@@ -118,7 +125,7 @@ The following cache variables may also be set:
   The path to the PS2PDF converter.
 
 ``PDFTOPS_CONVERTER``
-  .. versionadded: 3.2
+  .. versionadded:: 3.2
 
   The path to the pdftops converter.
 
@@ -126,7 +133,7 @@ The following cache variables may also be set:
   The path to the LaTeX2Html converter.
 
 ``HTLATEX_COMPILER``
-  .. versionadded: 3.2
+  .. versionadded:: 3.2
 
   The path to the htlatex compiler.
 

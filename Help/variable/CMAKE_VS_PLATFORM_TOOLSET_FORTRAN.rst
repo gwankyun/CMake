@@ -9,4 +9,11 @@ Visual Studio项目使用的Fortran编译器。
 that have the required Visual Studio Integration feature installed.  The
 compiler may be specified by a field in :variable:`CMAKE_GENERATOR_TOOLSET` of
 the form ``fortran=...``. CMake provides the selected Fortran compiler in this
-variable. The value may be empty if the field was not specified.
+variable.
+
+If the field was not specified, the default depends on the generator:
+
+* On :generator:`Visual Studio 18 2026` and above, the default is ``ifx``.
+
+* On older :ref:`Visual Studio Generators`, the default is empty, which the
+  Intel Visual Studio Integration interprets as equivalent to ``ifort``.

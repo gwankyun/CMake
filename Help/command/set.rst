@@ -39,14 +39,16 @@ set
 ^^^^^^^^^^^^^^^
 
 .. signature::
-  set(<variable> <value>... CACHE <type> <docstring> [FORCE])
+  set(CACHE{<variable>} [TYPE <type>] [HELP <helpstring>...] [FORCE]
+                        VALUE [<value>...])
   :target: CACHE
 
-  设置给定的缓存\ ``<variable>``\ （缓存条目）。\
-  由于缓存条目旨在提供用户可设置的值，因此默认情况下不会覆盖现有的缓存条目。\
-  使用\ ``FORCE``\ 选项来覆盖现有的条目。
+  .. versionadded:: 4.2
 
-  ``<type>``\ 必须指定为以下类型之一：
+  Sets the given cache ``<variable>`` (cache entry). The options are:
+
+  ``TYPE <type>``
+    Specify the type of the cache entry. The ``<type>`` must be one of:
 
     ``BOOL``
       布尔类型的\ ``ON/OFF``\ 值。\
@@ -71,11 +73,29 @@ set
       它们可用于在多次运行之间持久存储变量。\
       使用此类型意味着隐含\ ``FORCE``\ 选项。
 
-  必须将\ ``<docstring>``\ 指定为一行文本，用于快速概述该选项，以供\
-  :manual:`cmake-gui(1)`\ 用户查看。
+    If ``TYPE`` is not specified, if the cache variable already exist and its
+    type is not ``UNINITIALIZED``, the type previously specified will be kept
+    otherwise, ``STRING`` will be used.
 
-  如果在调用此命令之前缓存条目不存在，或者指定了\ ``FORCE``\ 选项，那么缓存条目\
-  将被设置为给定的值。
+  ``HELP <helpstring>...``
+    The ``<helpstring>`` must be specified as a line of text providing a quick
+    summary of the option for presentation to :manual:`cmake-gui(1)` users. If
+    more than one string is given, they are concatenated into a single string
+    with no separator between them.
+
+    If ``HELP`` is not specified, an empty string will be used.
+
+  ``FORCE``
+    Since cache entries are meant to provide user-settable values this does not
+    overwrite existing cache entries by default.  Use the ``FORCE`` option to
+    overwrite existing entries.
+
+  ``VALUE <value>...``
+    List of values to be set to the cache ``<variable>``. This argument must be
+    always the last one.
+
+  If the cache entry does not exist prior to the call or the ``FORCE``
+  option is given then the cache entry will be set to the given value.
 
   .. note::
 
@@ -92,7 +112,14 @@ set
   ``<value>``\ 是相对路径，那么\ ``set``\ 命令会将该路径视为相对于当前工作目录的\
   路径，并将其转换为绝对路径。
 
-设置环境变量
+.. signature::
+  set(<variable> <value>... CACHE <type> <docstring> [FORCE])
+  :target: CACHE_legacy
+
+  This signature is supported for compatibility purpose. Use preferably the
+  other one.
+
+Set Environment Variable
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. signature::

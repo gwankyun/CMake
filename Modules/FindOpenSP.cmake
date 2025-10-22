@@ -7,8 +7,14 @@ FindOpenSP
 
 .. versionadded:: 3.25
 
-查找OpenSP库。OpenSP是SGML（标准通用标记语言，Standard Generalized Markup Language）\
-解析器的开源实现。
+Finds the OpenSP library:
+
+.. code-block:: cmake
+
+  find_package(OpenSP [<version>] [...])
+
+OpenSP is an open-source implementation of the SGML (Standard Generalized
+Markup Language) parser.
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -25,7 +31,7 @@ Result Variables
 This module defines the following variables:
 
 ``OpenSP_FOUND``
-  Boolean indicating whether the (requested version of) OpenSP is available.
+  Boolean indicating whether (the requested version of) OpenSP is available.
 
 ``OpenSP_VERSION``
   The version of found OpenSP.

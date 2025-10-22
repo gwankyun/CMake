@@ -9,6 +9,11 @@ CPackIFWConfigureFile
 
 该模块定义了\ :command:`configure_file` \类似的命令来配置QtIFW/SDK/Creator样式的文件模板。
 
+Load this module in a CMake project with:
+
+.. code-block:: cmake
+
+  include(CPackIFWConfigureFile)
 
 Commands
 ^^^^^^^^
@@ -29,10 +34,6 @@ The module defines the following commands:
   variable, or the empty string if the variable is not defined.
 
 #]=======================================================================]
-
-# NOTE: This file used to himself packaging via CPack IFW generator and
-# should be compatible with minimal CMake version defined in
-# ../CMakeLists.txt file.
 
 if(NOT DEFINED CPackIFWConfigureFile_CMake_INCLUDED)
 set(CPackIFWConfigureFile_CMake_INCLUDED 1)

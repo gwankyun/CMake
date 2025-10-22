@@ -5,8 +5,17 @@
 InstallRequiredSystemLibraries
 ------------------------------
 
-包含这个模块来搜索编译器提供的系统运行时库，并为它们添加安装规则。可以在包含模块之前设置一些\
-可选变量来调整行为：
+This module searches for compiler-provided system runtime libraries and adds
+installation rules for them.
+
+Load this module in a CMake project with:
+
+.. code-block:: cmake
+
+  include(InstallRequiredSystemLibraries)
+
+Some optional variables may be set prior to including this module to adjust
+behavior:
 
 ``CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS``
   Specify additional runtime libraries that may not be detected.
@@ -238,8 +247,12 @@ if(MSVC)
   set(_MSVC_IDE_VERSION "")
   if(MSVC_VERSION GREATER_EQUAL 2000)
     message(WARNING "MSVC ${MSVC_VERSION} not yet supported.")
-  elseif(MSVC_TOOLSET_VERSION GREATER_EQUAL 144)
+  elseif(MSVC_TOOLSET_VERSION GREATER_EQUAL 146)
     message(WARNING "MSVC toolset v${MSVC_TOOLSET_VERSION} not yet supported.")
+  elseif(MSVC_TOOLSET_VERSION EQUAL 145)
+    set(MSVC_REDIST_NAME VC145)
+    set(_MSVC_DLL_VERSION 140)
+    set(_MSVC_IDE_VERSION 18)
   elseif(MSVC_TOOLSET_VERSION EQUAL 143)
     set(MSVC_REDIST_NAME VC143)
     set(_MSVC_DLL_VERSION 140)
@@ -284,7 +297,7 @@ if(MSVC)
     if(NOT vs VERSION_LESS 15)
       set(_vs_redist_paths "")
       # The toolset and its redistributables may come with any VS version 15 or newer.
-      set(_MSVC_IDE_VERSIONS 17 16 15)
+      set(_MSVC_IDE_VERSIONS 18 17 16 15)
       foreach(_vs_ver ${_MSVC_IDE_VERSIONS})
         set(_vs_glob_redist_paths "")
         cmake_host_system_information(RESULT _vs_dir QUERY VS_${_vs_ver}_DIR) # undocumented query

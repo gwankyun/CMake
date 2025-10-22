@@ -10,7 +10,9 @@ CTEST_USE_VERBOSE_INSTRUMENTATION
    此功能仅在通过\ ``CMAKE_EXPERIMENTAL_INSTRUMENTATION``\ 开关启用了对插桩的实验性支持\
    时才可用。
 
-设置此环境变量后，CTest会将每个插桩命令的完整命令行（包括参数）报告给CDash。默认情况下，CTest\
-会在遇到第一个空格时截断命令行。
+Setting this environment variable to ``1``, ``True``, or ``ON`` causes CTest to
+report the full command line (including arguments) to CDash for each
+instrumented command. By default, CTest truncates the command line at the first
+space.
 
 See also :envvar:`CTEST_USE_INSTRUMENTATION`

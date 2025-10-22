@@ -439,9 +439,8 @@ void cmGlobalGhsMultiGenerator::OutputTopLevelProject(
 
   // Collect all targets under this root generator and the transitive
   // closure of their dependencies.
-  TargetDependSet projectTargets;
-  TargetDependSet originalTargets;
-  this->GetTargetSets(projectTargets, originalTargets, root, generators);
+  TargetDependSet const projectTargets =
+    this->GetTargetsForProject(root, generators);
   OrderedTargetDependSet sortedProjectTargets(projectTargets, "");
   this->ProjectTargets.clear();
   for (cmGeneratorTarget const* t : sortedProjectTargets) {
@@ -470,8 +469,7 @@ cmGlobalGhsMultiGenerator::GenerateBuildCommand(
   std::string const& makeProgram, std::string const& projectName,
   std::string const& projectDir, std::vector<std::string> const& targetNames,
   std::string const& /*config*/, int jobs, bool verbose,
-  cmBuildOptions const& /*buildOptions*/,
-  std::vector<std::string> const& makeOptions)
+  cmBuildOptions /*buildOptions*/, std::vector<std::string> const& makeOptions)
 {
   GeneratedMakeCommand makeCommand;
 

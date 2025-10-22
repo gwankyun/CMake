@@ -146,9 +146,23 @@ try_run
   可执行文件在目标平台上运行时的标准输出和标准错误输出。\
   仅当使用了\ ``RUN_OUTPUT_VARIABLE``\ 或\ ``OUTPUT_VARIABLE``\ 选项时，才会创建此项。
 
+``<runResultVar>__TRYRUN_OUTPUT_STDOUT``
+  .. versionadded:: 3.25
+
+  Output from stdout if the executable were to be run on the target
+  platform.  This is created only if the ``RUN_OUTPUT_STDOUT_VARIABLE``
+  or ``RUN_OUTPUT_STDERR_VARIABLE`` option was used.
+
+``<runResultVar>__TRYRUN_OUTPUT_STDERR``
+  .. versionadded:: 3.25
+
+  Output from stderr if the executable were to be run on the target
+  platform.  This is created only if the ``RUN_OUTPUT_STDOUT_VARIABLE``
+  or ``RUN_OUTPUT_STDERR_VARIABLE`` option was used.
+
 为了让项目的交叉编译过程更加简便，仅在确实必要时使用\ ``try_run``\ 命令。\
 如果你使用\ ``try_run``\ 命令，仅在确实必要时使用\ ``RUN_OUTPUT_STDOUT_VARIABLE``、\
 ``RUN_OUTPUT_STDERR_VARIABLE``、\ ``RUN_OUTPUT_VARIABLE``\ 或\ ``OUTPUT_VARIABLE``\ 选项。\
 使用这些选项意味着在进行交叉编译时，必须手动将缓存变量设置为可执行文件的输出。\
 你也可以使用\ :command:`if`\ 代码块来 “保护” 对\ ``try_run``\ 的调用，检查\
-:variable:`CMAKE_CROSSCOMPILING`\ 变量，并针对这种情况提供一个易于预设的替代方案。
+:variable:`CMAKE_CROSSCOMPILING`\ 变量，并针对这种情况提供一个易于预设的替代方案

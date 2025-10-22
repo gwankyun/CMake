@@ -7,7 +7,11 @@ FindICU
 
 .. versionadded:: 3.7
 
-查找Unicode国际组件（ICU）库和程序。
+查找Unicode国际组件（ICU）库和程序：
+
+.. code-block:: cmake
+
+  find_package(ICU [<version>] COMPONENTS <components>... [...])
 
 .. versionadded:: 3.11
   Support for static libraries on Windows.
@@ -15,7 +19,13 @@ FindICU
 Components
 ^^^^^^^^^^
 
-This module supports the following components:
+This module supports components, which can be specified with:
+
+.. code-block:: cmake
+
+  find_package(ICU COMPONENTS <components>...)
+
+The following components are supported:
 
 ``data``
   Finds the ICU Data library.  On Windows, this library component is named
@@ -49,12 +59,8 @@ This module supports the following components:
   all other ICU libraries and is recommended to include when working with ICU
   components.
 
-At least one component should be specified for this module to successfully find
-ICU:
-
-.. code-block:: cmake
-
-  find_package(ICU COMPONENTS <components>...)
+At least one component should be specified for this module to successfully
+find ICU.
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -74,13 +80,14 @@ Result Variables
 This module defines the following variables:
 
 ``ICU_FOUND``
-  Boolean indicating whether the main programs and libraries were found.
+  Boolean indicating whether the (requested version of) main ICU programs
+  and libraries were found.
+``ICU_VERSION``
+  The version of the ICU release found.
 ``ICU_INCLUDE_DIRS``
   The include directories containing the ICU headers.
 ``ICU_LIBRARIES``
   Component libraries to be linked.
-``ICU_VERSION``
-  The version of the ICU release found.
 
 ICU programs are defined in the following variables:
 

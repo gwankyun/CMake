@@ -5,7 +5,11 @@
 FindPostgreSQL
 --------------
 
-查找PostgreSQL安装——客户端库（\ ``libpq``\ ）以及可选的服务器。
+查找PostgreSQL安装——客户端库（\ ``libpq``\ ）以及可选的服务器：
+
+.. code-block:: cmake
+
+  find_package(PostgreSQL [<version>] [...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -26,15 +30,22 @@ This module defines the following variables:
 
 ``PostgreSQL_FOUND``
   Boolean indicating whether the minimum required version and components of
-  PostgreSQL have been found.
+  PostgreSQL were found.
+
+``PostgreSQL_VERSION``
+  .. versionadded:: 4.2
+
+  The version of PostgreSQL found.
+
 ``PostgreSQL_LIBRARIES``
   The PostgreSQL libraries needed for linking.
+
 ``PostgreSQL_INCLUDE_DIRS``
   The include directories containing PostgreSQL headers.
+
 ``PostgreSQL_LIBRARY_DIRS``
   The directories containing PostgreSQL libraries.
-``PostgreSQL_VERSION_STRING``
-  The version of PostgreSQL found.
+
 ``PostgreSQL_TYPE_INCLUDE_DIR``
   The include directory containing PostgreSQL server headers.
 
@@ -49,6 +60,17 @@ This module supports the following additional components:
   Ensures that server headers are also found.  Note that
   ``PostgreSQL_TYPE_INCLUDE_DIR`` variable is set regardless of whether this
   component is specified in the ``find_package()`` call.
+
+Deprecated Variables
+^^^^^^^^^^^^^^^^^^^^
+
+The following variables are provided for backward compatibility:
+
+``PostgreSQL_VERSION_STRING``
+  .. deprecated:: 4.2
+    Superseded by the ``PostgreSQL_VERSION``.
+
+  The version of PostgreSQL found.
 
 Examples
 ^^^^^^^^
@@ -287,14 +309,16 @@ if (PostgreSQL_INCLUDE_DIR)
       math(EXPR _PostgreSQL_major_version "${_PostgreSQL_VERSION_NUM} / 10000")
       math(EXPR _PostgreSQL_minor_version "${_PostgreSQL_VERSION_NUM} % 10000 / 100")
       math(EXPR _PostgreSQL_patch_version "${_PostgreSQL_VERSION_NUM} % 100")
-      set(PostgreSQL_VERSION_STRING "${_PostgreSQL_major_version}.${_PostgreSQL_minor_version}.${_PostgreSQL_patch_version}")
+      set(PostgreSQL_VERSION "${_PostgreSQL_major_version}.${_PostgreSQL_minor_version}.${_PostgreSQL_patch_version}")
+      set(PostgreSQL_VERSION_STRING "${PostgreSQL_VERSION}")
       unset(_PostgreSQL_major_version)
       unset(_PostgreSQL_minor_version)
       unset(_PostgreSQL_patch_version)
     else ()
       math(EXPR _PostgreSQL_major_version "${_PostgreSQL_VERSION_NUM} / 10000")
       math(EXPR _PostgreSQL_minor_version "${_PostgreSQL_VERSION_NUM} % 10000")
-      set(PostgreSQL_VERSION_STRING "${_PostgreSQL_major_version}.${_PostgreSQL_minor_version}")
+      set(PostgreSQL_VERSION "${_PostgreSQL_major_version}.${_PostgreSQL_minor_version}")
+      set(PostgreSQL_VERSION_STRING "${PostgreSQL_VERSION}")
       unset(_PostgreSQL_major_version)
       unset(_PostgreSQL_minor_version)
     endif ()
@@ -305,7 +329,8 @@ if (PostgreSQL_INCLUDE_DIR)
              REGEX "^#define[\t ]+PG_VERSION[\t ]+\".*\"")
         if(pgsql_version_str)
           string(REGEX REPLACE "^#define[\t ]+PG_VERSION[\t ]+\"([^\"]*)\".*"
-                 "\\1" PostgreSQL_VERSION_STRING "${pgsql_version_str}")
+                 "\\1" PostgreSQL_VERSION "${pgsql_version_str}")
+          set(PostgreSQL_VERSION_STRING "${PostgreSQL_VERSION}")
           break()
         endif()
       endif()
@@ -327,7 +352,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PostgreSQL
                                   REQUIRED_VARS PostgreSQL_LIBRARY PostgreSQL_INCLUDE_DIR
                                   HANDLE_COMPONENTS
-                                  VERSION_VAR PostgreSQL_VERSION_STRING)
+                                  VERSION_VAR PostgreSQL_VERSION)
 
 function(__postgresql_import_library _target _var _config)
   if(_config)

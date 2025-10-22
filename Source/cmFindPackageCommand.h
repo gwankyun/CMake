@@ -37,6 +37,7 @@ class cmExecutionStatus;
 class cmMakefile;
 class cmPackageState;
 class cmSearchPath;
+class cmPackageInformation;
 
 /** \class cmFindPackageCommand
  * \brief Load settings from an external project.
@@ -276,6 +277,7 @@ private:
   bool PolicyScope = true;
   bool GlobalScope = false;
   bool RegistryViewDefined = false;
+  bool ScopeUnwind = false;
   std::string LibraryArchitecture;
   std::vector<std::string> Names;
   std::set<std::string> IgnoredPaths;
@@ -285,6 +287,8 @@ private:
   std::set<std::string> OptionalComponents;
   std::set<std::string> RequiredTargets;
   std::string DebugBuffer;
+  cmPackageInformation* CurrentPackageInfo;
+
   enum class SearchResult
   {
     InsufficientVersion,
@@ -334,10 +338,10 @@ private:
 
   class FlushDebugBufferOnExit;
 
-  /*! the selected sortOrder (None by default)*/
-  SortOrderType SortOrder = None;
-  /*! the selected sortDirection (Asc by default)*/
-  SortDirectionType SortDirection = Asc;
+  /*! the selected sortOrder (Natural by default)*/
+  SortOrderType SortOrder = Natural;
+  /*! the selected sortDirection (Dec by default)*/
+  SortDirectionType SortDirection = Dec;
 
   struct ConfigFileInfo
   {

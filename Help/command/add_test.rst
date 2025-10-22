@@ -97,4 +97,6 @@ add_test
 ​使用给定的命令行添加一个名为\ ``<name>``\ 的测试。
 
 ​与上面的\ ``NAME``\ 签名不同，在命令行中不支持目标名称。此外，添加此签名的测试在命令行或\
-测试属性中不支持\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
+测试属性中不支持\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`，\
+and the :prop_tgt:`TEST_LAUNCHER`
+and :prop_tgt:`CROSSCOMPILING_EMULATOR` target properties are not supported.

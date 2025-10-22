@@ -31,11 +31,30 @@
               NO_CMAKE_FIND_ROOT_PATH]
             )
 
-该命令用于查找\ |SEARCH_XXX_DESC|。创建一个缓存条目（如果指定了\ ``NO_CACHE``，则为\
-``<VAR>``\ 命名的普通变量）来存储此命令的结果。如果找到了\ |SEARCH_XXX| ，则结果将存储在\
-变量中，除非清除该变量，否则将不会重复搜索。如果没有找到，结果将是\ ``<VAR>-NOTFOUND``。
+This command is used to find a |SEARCH_XXX_DESC|.
 
-选项包括：
+Prior to searching, |FIND_XXX| checks if variable ``<VAR>`` is defined. If
+the variable is not defined, the search will be performed. If the variable is
+defined and its value is ``NOTFOUND``, or ends in ``-NOTFOUND``, the search
+will be performed. If the variable contains any other value the search is not
+performed.
+
+  .. note::
+      ``VAR`` is considered defined if it is available in the current scope. See
+      the :ref:`cmake-language(7) variables <CMake Language Variables>`
+      documentation for details on scopes, and the interaction of normal
+      variables and cache entries.
+
+The results of the search will be stored in a cache entry named ``<VAR>``.
+Future calls to |FIND_XXX| will inspect this cache entry when specifying the
+same ``<VAR>``. This optimization ensures successful searches will not be
+repeated unless the cache entry is :command:`unset`.
+
+If the |SEARCH_XXX| is found the recorded value in cache entry ``<VAR>`` will
+be the result of the search. If nothing is found, the recorded value will be
+``<VAR>-NOTFOUND``.
+
+Options include:
 
 ``NAMES``
   为\ |SEARCH_XXX|\ 指定一个或多个可能的名称。
@@ -89,7 +108,9 @@
 
   .. note::
 
-    如果该变量在调用之前已经设置（作为普通变量或缓存变量），则不会进行搜索。
+    |FIND_XXX| will still check for ``<VAR>`` as usual, checking first for a
+    variable, and then a cache entry. If either indicate a previous successful
+    search, the search will not be performed.
 
   .. warning::
 

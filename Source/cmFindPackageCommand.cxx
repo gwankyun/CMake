@@ -28,6 +28,7 @@
 #include "cmDependencyProvider.h"
 #include "cmExecutionStatus.h"
 #include "cmExperimental.h"
+#include "cmFindPackageStack.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
@@ -42,7 +43,7 @@
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmValue.h"
-#include "cmVersion.h"
+#include "cmVersionMacros.h"
 #include "cmWindowsRegistry.h"
 
 #if defined(__HAIKU__)
@@ -630,6 +631,12 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
     return false;
   }
 
+  if (this->Makefile->GetStateSnapshot().GetUnwindState() ==
+      cmStateEnums::UNWINDING) {
+    this->SetError("called while already in an UNWIND state");
+    return false;
+  }
+
   // Lookup required version of CMake.
   if (cmValue const rv =
         this->Makefile->GetDefinition("CMAKE_MINIMUM_REQUIRED_VERSION")) {
@@ -839,6 +846,14 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
           cmStrCat("given invalid value for REGISTRY_VIEW: ", args[i]));
         return false;
       }
+    } else if (args[i] == "UNWIND_INCLUDE") {
+      if (this->Makefile->GetStateSnapshot().GetUnwindType() !=
+          cmStateEnums::CAN_UNWIND) {
+        this->SetError("called with UNWIND_INCLUDE in an invalid context");
+        return false;
+      }
+      this->ScopeUnwind = true;
+      doing = DoingNone;
     } else if (this->CheckCommonArgument(args[i])) {
       configArgs.push_back(i);
       doing = DoingNone;
@@ -1053,8 +1068,18 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
       this->VersionMaxPatch, this->VersionMaxTweak);
   }
 
-  return this->FindPackage(this->BypassProvider ? std::vector<std::string>{}
-                                                : args);
+  bool result = this->FindPackage(
+    this->BypassProvider ? std::vector<std::string>{} : args);
+
+  std::string const foundVar = cmStrCat(this->Name, "_FOUND");
+  bool const isFound = this->Makefile->IsOn(foundVar) ||
+    this->Makefile->IsOn(cmSystemTools::UpperCase(foundVar));
+
+  if (this->ScopeUnwind && (!result || !isFound)) {
+    this->Makefile->GetStateSnapshot().SetUnwindState(cmStateEnums::UNWINDING);
+  }
+
+  return result;
 }
 
 bool cmFindPackageCommand::FindPackage(
@@ -1146,7 +1171,7 @@ bool cmFindPackageCommand::FindPackage(
     }
     std::vector<cmListFileArgument> listFileArgs(argsForProvider.size() + 1);
     listFileArgs[0] =
-      cmListFileArgument("FIND_PACKAGE", cmListFileArgument::Unquoted, 0);
+      cmListFileArgument("FIND_PACKAGE"_s, cmListFileArgument::Unquoted, 0);
     std::transform(argsForProvider.begin(), argsForProvider.end(),
                    listFileArgs.begin() + 1, [](std::string const& arg) {
                      return cmListFileArgument(arg,
@@ -1197,8 +1222,9 @@ bool cmFindPackageCommand::FindPackage(
   FlushDebugBufferOnExit flushDebugBufferOnExit(*this);
   PushPopRootPathStack pushPopRootPathStack(*this);
   SetRestoreFindDefinitions setRestoreFindDefinitions(*this);
-  cmMakefile::FindPackageStackRAII findPackageStackRAII(this->Makefile,
-                                                        this->Name);
+  cmFindPackageStackRAII findPackageStackRAII(this->Makefile, this->Name);
+
+  findPackageStackRAII.BindTop(this->CurrentPackageInfo);
 
   // See if we have been told to delegate to FetchContent or some other
   // redirected config package first. We have to check all names that
@@ -1246,6 +1272,8 @@ bool cmFindPackageCommand::FindPackage(
       this->Names.clear();
       this->Names.emplace_back(overrideName); // Force finding this one
       this->Variable = cmStrCat(this->Name, "_DIR");
+      this->CurrentPackageInfo->Directory = redirectsDir;
+      this->CurrentPackageInfo->Version = this->VersionFound;
       this->SetConfigDirCacheVariable(redirectsDir);
       break;
     }
@@ -1318,7 +1346,6 @@ bool cmFindPackageCommand::FindPackage(
   }
 
   this->AppendSuccessInformation();
-
   return loadedPackage;
 }
 
@@ -1349,7 +1376,7 @@ bool cmFindPackageCommand::FindPackageUsingConfigMode()
         this->Configs.emplace_back(std::move(config), pdt::Cps);
 
         config = cmStrCat(cmSystemTools::LowerCase(n), ".cps");
-        if (config != this->Configs.front().Name) {
+        if (config != this->Configs.back().Name) {
           this->Configs.emplace_back(std::move(config), pdt::Cps);
         }
       }
@@ -1947,6 +1974,8 @@ bool cmFindPackageCommand::FindConfig()
   std::string init;
   if (found) {
     init = cmSystemTools::GetFilenamePath(this->FileFound);
+    this->CurrentPackageInfo->Directory = init;
+    this->CurrentPackageInfo->Version = this->VersionFound;
   } else {
     init = this->Variable + "-NOTFOUND";
   }
@@ -2047,12 +2076,24 @@ bool cmFindPackageCommand::ReadListFile(std::string const& f,
   ITScope scope = this->GlobalScope ? ITScope::Global : ITScope::Local;
   cmMakefile::SetGlobalTargetImportScope globScope(this->Makefile, scope);
 
-  if (this->Makefile->ReadDependentFile(f, noPolicyScope)) {
-    return true;
+  auto oldUnwind = this->Makefile->GetStateSnapshot().GetUnwindType();
+
+  // This allows child snapshots to inherit the CAN_UNWIND state from us, we'll
+  // reset it immediately after the dependent file is done
+  this->Makefile->GetStateSnapshot().SetUnwindType(cmStateEnums::CAN_UNWIND);
+  bool result = this->Makefile->ReadDependentFile(f, noPolicyScope);
+
+  this->Makefile->GetStateSnapshot().SetUnwindType(oldUnwind);
+  this->Makefile->GetStateSnapshot().SetUnwindState(
+    cmStateEnums::NOT_UNWINDING);
+
+  if (!result) {
+    std::string const e =
+      cmStrCat("Error reading CMake code from \"", f, "\".");
+    this->SetError(e);
   }
-  std::string const e = cmStrCat("Error reading CMake code from \"", f, "\".");
-  this->SetError(e);
-  return false;
+
+  return result;
 }
 
 bool cmFindPackageCommand::ReadPackage()
@@ -2066,7 +2107,10 @@ bool cmFindPackageCommand::ReadPackage()
   bool const hasComponentsRequested =
     !this->RequiredComponents.empty() || !this->OptionalComponents.empty();
 
-  cmMakefile::CallRAII scope{ this->Makefile, this->FileFound, this->Status };
+  cmMakefile::CallRAII cs{ this->Makefile, this->FileFound, this->Status };
+  cmMakefile::PolicyPushPop ps{ this->Makefile };
+
+  this->Makefile->SetPolicy(cmPolicies::CMP0200, cmPolicies::NEW);
 
   // Loop over appendices.
   auto iter = this->CpsAppendices.begin();
@@ -2873,14 +2917,13 @@ bool cmFindPackageCommand::FindConfigFile(std::string const& dir,
       this->DebugBuffer = cmStrCat(this->DebugBuffer, "  ", file, '\n');
     }
     if (cmSystemTools::FileExists(file, true)) {
+      // Allow resolving symlinks when the config file is found through a link
+      if (this->UseRealPath) {
+        file = cmSystemTools::GetRealPath(file);
+      } else {
+        file = cmSystemTools::ToNormalizedPathOnDisk(file);
+      }
       if (this->CheckVersion(file)) {
-        // Allow resolving symlinks when the config file is found through a
-        // link
-        if (this->UseRealPath) {
-          file = cmSystemTools::GetRealPath(file);
-        } else {
-          file = cmSystemTools::ToNormalizedPathOnDisk(file);
-        }
         foundMode = cmFindPackageCommand::FoundMode(config.Type);
         return true;
       }

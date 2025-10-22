@@ -5,8 +5,11 @@ EXPORT_FIND_PACKAGE_NAME
 
   Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_DEPENDENCIES``.
 
-在\ :command:`install(EXPORT)`\ 或\ :command:`export(EXPORT)`\ 中导出\
-:command:`find_dependency`\ 调用时，控制与依赖目标关联的包名。这可以用来为CMake构建和\
-导出的包分配包名，或者在创建目标的\ :command:`find_package`\ 调用中覆盖包。
+Control the package name associated with a dependency target when exporting a
+:command:`find_dependency` call in :command:`install(PACKAGE_INFO)`,
+:command:`export(PACKAGE_INFO)`, :command:`install(EXPORT)` or
+:command:`export(EXPORT)`. This can be used to assign a package name to a
+package that is built by CMake and exported, or a package that was provided by
+:module:`FetchContent`.
 
 This property is initialized by :variable:`CMAKE_EXPORT_FIND_PACKAGE_NAME`.

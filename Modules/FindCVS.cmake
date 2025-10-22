@@ -5,7 +5,11 @@
 FindCVS
 -------
 
-查找并发版本系统（CVS）。
+查找并发版本系统（CVS）：
+
+.. code-block:: cmake
+
+  find_package(CVS [...])
 
 Result Variables
 ^^^^^^^^^^^^^^^^
@@ -13,7 +17,7 @@ Result Variables
 This module defines the following variables:
 
 ``CVS_FOUND``
-  True if the command-line client was found.
+  Boolean indicating whether the ``cvs`` command-line client was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -77,9 +81,6 @@ find_program(CVS_EXECUTABLE cvs
   DOC "CVS command line client"
   )
 mark_as_advanced(CVS_EXECUTABLE)
-
-# Handle the QUIETLY and REQUIRED arguments and set CVS_FOUND to TRUE if
-# all listed variables are TRUE
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(CVS DEFAULT_MSG CVS_EXECUTABLE)

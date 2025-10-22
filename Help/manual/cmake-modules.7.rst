@@ -29,8 +29,8 @@ cmake-modules(7)
    /module/CheckFortranSourceCompiles
    /module/CheckFortranSourceRuns
    /module/CheckFunctionExists
-   /module/CheckIncludeFileCXX
    /module/CheckIncludeFile
+   /module/CheckIncludeFileCXX
    /module/CheckIncludeFiles
    /module/CheckIPOSupported
    /module/CheckLanguage
@@ -54,8 +54,6 @@ cmake-modules(7)
    /module/CMakeBackwardCompatibilityCXX
    /module/CMakeDependentOption
    /module/CMakeFindDependencyMacro
-   /module/CMakeFindPackageMode
-   /module/CMakeGraphVizOptions
    /module/CMakePackageConfigHelpers
    /module/CMakePrintHelpers
    /module/CMakePrintSystemInformation
@@ -68,7 +66,6 @@ cmake-modules(7)
    /module/CSharpUtilities
    /module/CTest
    /module/CTestCoverageCollectGCOV
-   /module/CTestScriptMode
    /module/CTestUseLaunchers
    /module/DeployQt4
    /module/ExternalData
@@ -184,7 +181,6 @@ cmake-modules(7)
    /module/FindOpenSSL
    /module/FindOpenThreads
    /module/Findosg
-   /module/Findosg_functions
    /module/FindosgAnimation
    /module/FindosgDB
    /module/FindosgFX
@@ -230,8 +226,8 @@ cmake-modules(7)
    /module/FindSDL_sound
    /module/FindSDL_ttf
    /module/FindSelfPackers
-   /module/FindSquish
    /module/FindSQLite3
+   /module/FindSquish
    /module/FindSubversion
    /module/FindSWIG
    /module/FindTCL
@@ -269,7 +265,6 @@ cmake-modules(7)
    /module/Documentation
    /module/GetPrerequisites
    /module/MacroAddFileDependencies
-   /module/SquishTestScript
    /module/TestBigEndian
    /module/TestCXXAcceptsFlag
    /module/Use_wxWindows
@@ -318,3 +313,17 @@ cmake-modules(7)
    /module/CPackProductBuild
    /module/CPackRPM
    /module/CPackWIX
+
+Miscellaneous Modules
+---------------------
+
+These internal modules are not intended to be included directly in projects:
+
+.. toctree::
+   :maxdepth: 1
+
+   /module/CMakeFindPackageMode
+   /module/CMakeGraphVizOptions
+   /module/CTestScriptMode
+   /module/Findosg_functions
+   /module/SquishTestScript

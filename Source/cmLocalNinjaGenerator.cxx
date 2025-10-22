@@ -163,6 +163,16 @@ void cmLocalNinjaGenerator::Generate()
   }
 }
 
+std::string cmLocalNinjaGenerator::GetObjectOutputRoot(
+  cmStateEnums::IntermediateDirKind kind) const
+{
+  if (this->UseShortObjectNames(kind)) {
+    return cmStrCat(this->GetBinaryDirectory(), '/',
+                    this->GetGlobalGenerator()->GetShortBinaryOutputDir());
+  }
+  return cmStrCat(this->GetCurrentBinaryDirectory(), "/CMakeFiles");
+}
+
 // Non-virtual public methods.
 
 cmGlobalNinjaGenerator const* cmLocalNinjaGenerator::GetGlobalNinjaGenerator()
@@ -902,6 +912,8 @@ std::string cmLocalNinjaGenerator::MakeCustomLauncher(
   }
   vars.Output = output.c_str();
   vars.Role = ccg.GetCC().GetRole().c_str();
+  vars.CMTargetName = ccg.GetCC().GetTarget().c_str();
+  vars.Config = ccg.GetOutputConfig().c_str();
 
   auto rulePlaceholderExpander = this->CreateRulePlaceholderExpander();
 

@@ -7,9 +7,17 @@ GoogleTest
 
 .. versionadded:: 3.9
 
-这个模块定义了帮助使用Google Test基础架构的函数。提供了两种添加测试的机制。\
-:command:`gtest_add_tests`\ 已经存在一段时间了，最初是通过\ ``find_package(GTest)``\
-实现的。\ :command:`gtest_discover_tests`\ 在CMake 3.10中被引入。
+This module provides commands to help use the Google Test infrastructure.
+
+Load this module in a CMake project with:
+
+.. code-block:: cmake
+
+  include(GoogleTest)
+
+Two mechanisms for adding tests are provided. :command:`gtest_add_tests` has
+been around for some time, originally via ``find_package(GTest)``.
+:command:`gtest_discover_tests` was introduced in CMake 3.10.
 
 The (older) :command:`gtest_add_tests` scans source files to identify tests.
 This is usually effective, with some caveats, including in cross-compiling
@@ -635,11 +643,21 @@ function(gtest_discover_tests target)
     PARENT_SCOPE # undocumented, do not use outside of CMake
   )
   if(NOT cmp0178 STREQUAL "NEW")
-    # Preserve old behavior where empty list items are silently discarded
+    # Preserve old behavior where empty list items are silently discarded.
+    # Before CMP0178 was added, we used the old cmake_parse_arguments() form
+    # rather than cmake_parse_arguments(PARSE_ARGV). The latter escapes
+    # embedded semicolons if a value is quoted and there are semicolons
+    # within the quoted value. We can't just unescape them to get the old
+    # value, we have to reparse the arguments with the old form.
+    cmake_parse_arguments(old_arg
+      "${options}" "${oneValueArgs}" "${multiValueArgs}"
+      ${ARGN}
+    )
+    set(new_arg_EXTRA_ARGS "${arg_EXTRA_ARGS}")
+    set(arg_EXTRA_ARGS "${old_arg_EXTRA_ARGS}")
+
     set(test_executor_orig "${test_executor}")
     set(test_executor ${test_executor})
-    set(arg_EXTRA_ARGS_orig "${arg_EXTRA_ARGS}")
-    set(arg_EXTRA_ARGS ${arg_EXTRA_ARGS})
     if(NOT cmp0178 STREQUAL "OLD")
       if(NOT "${test_executor}" STREQUAL "${test_executor_orig}")
         cmake_policy(GET_WARNING CMP0178 cmp0178_warning)
@@ -651,7 +669,9 @@ function(gtest_discover_tests target)
           "${cmp0178_warning}"
         )
       endif()
-      if(NOT "${arg_EXTRA_ARGS}" STREQUAL "${arg_EXTRA_ARGS_orig}")
+      # Unescape semicolons from the PARSE_ARGV form's value before comparing
+      string(REPLACE [[\;]] ";" new_arg_EXTRA_ARGS "${new_arg_EXTRA_ARGS}")
+      if(NOT "${old_arg_EXTRA_ARGS}" STREQUAL "${new_arg_EXTRA_ARGS}")
         cmake_policy(GET_WARNING CMP0178 cmp0178_warning)
         message(AUTHOR_WARNING
           "The EXTRA_ARGS value contains one or more empty values. "
@@ -736,23 +756,17 @@ function(gtest_discover_tests target)
     )
 
     if(GENERATOR_IS_MULTI_CONFIG)
-      foreach(_config ${CMAKE_CONFIGURATION_TYPES})
-        file(GENERATE
-          OUTPUT "${ctest_file_base}_include-${_config}.cmake"
-          CONTENT "${ctest_include_content}"
-          CONDITION $<CONFIG:${_config}>
-        )
-      endforeach()
+      file(GENERATE
+        OUTPUT "${ctest_file_base}_include-$<CONFIG>.cmake"
+        CONTENT "${ctest_include_content}"
+      )
       file(WRITE "${ctest_include_file}"
         "include(\"${ctest_file_base}_include-\${CTEST_CONFIGURATION_TYPE}.cmake\")"
       )
     else()
       file(GENERATE
-        OUTPUT "${ctest_file_base}_include.cmake"
+        OUTPUT "${ctest_include_file}"
         CONTENT "${ctest_include_content}"
-      )
-      file(WRITE "${ctest_include_file}"
-        "include(\"${ctest_file_base}_include.cmake\")"
       )
     endif()
 

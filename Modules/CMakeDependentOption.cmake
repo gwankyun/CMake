@@ -8,7 +8,7 @@ CMakeDependentOption
 此模块提供了一个命令来定义布尔选项，其可用性和默认值取决于指定条件或其他选项。\
 这通过仅显示与当前设置相关的选项，有助于保持简洁的配置界面。
 
-Load this module in a CMake project with:
+Load this module in CMake with:
 
 .. code-block:: cmake
 
@@ -79,6 +79,9 @@ This module provides the following command:
   ``<else-value>``
     The value assigned to a local variable named ``<variable>``, when
     ``<condition>`` evaluates to boolean false.
+
+  In CMake project mode, boolean cache variables are created as explained
+  above.  In CMake script mode, boolean variables are set instead.
 
 Examples
 ^^^^^^^^

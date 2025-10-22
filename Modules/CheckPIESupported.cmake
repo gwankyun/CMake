@@ -7,22 +7,35 @@ CheckPIESupported
 
 .. versionadded:: 3.14
 
-此模块提供了\ ``check_pie_supported()``\ 函数，用于检查链接器是否支持可执行文件的\
+此模块提供了一个命令，用于检查链接器是否支持可执行文件的\
 位置无关代码（PIE）或非位置无关代码（NO_PIE）。
+
+Load this module in a CMake project with:
+
+.. code-block:: cmake
+
+  include(CheckPIESupported)
 
 When setting the :prop_tgt:`POSITION_INDEPENDENT_CODE` target property,
 PIC-related compile and link options are added when building library objects,
 and PIE-related compile options are added when building objects of executable
 targets, regardless of this module.  Use this module to ensure that the
-``POSITION_INDEPENDENT_CODE`` target property for executables is also honored at
-link time.
+``POSITION_INDEPENDENT_CODE`` target property for executables is also honored
+at link time.
+
+Commands
+^^^^^^^^
+
+This module provides the following command:
 
 .. command:: check_pie_supported
 
+  Checks for PIE/NO_PIE support and prepares all executables to have link
+  time PIE options enabled:
+
   .. code-block:: cmake
 
-    check_pie_supported([OUTPUT_VARIABLE <output>]
-                        [LANGUAGES <lang>...])
+    check_pie_supported([OUTPUT_VARIABLE <output>] [LANGUAGES <langs>...])
 
   Options are:
 
@@ -31,7 +44,7 @@ link time.
     bypassed because it uses cached results from a previous call, the output
     will be empty even if errors were present in the previous call.
 
-  ``LANGUAGES <lang>...``
+  ``LANGUAGES <langs>...``
     Check the linkers used for each of the specified languages.
     If this option is not provided, the command checks all enabled languages.
 
@@ -49,13 +62,13 @@ link time.
 Variables
 ^^^^^^^^^
 
-For each language checked, the ``check_pie_supported()`` function defines two
+For each language checked, the ``check_pie_supported()`` command defines two
 boolean cache variables:
 
- ``CMAKE_<lang>_LINK_PIE_SUPPORTED``
-   Set to true if ``PIE`` is supported by the linker and false otherwise.
- ``CMAKE_<lang>_LINK_NO_PIE_SUPPORTED``
-   Set to true if ``NO_PIE`` is supported by the linker and false otherwise.
+``CMAKE_<lang>_LINK_PIE_SUPPORTED``
+  Set to true if ``PIE`` is supported by the linker and false otherwise.
+``CMAKE_<lang>_LINK_NO_PIE_SUPPORTED``
+  Set to true if ``NO_PIE`` is supported by the linker and false otherwise.
 
 Examples
 ^^^^^^^^
@@ -81,11 +94,17 @@ Since not all linkers require or support PIE-related link options (for example,
 
   add_executable(foo ...)
 
+  message(CHECK_START "Checking for C linker PIE support")
+
   include(CheckPIESupported)
   check_pie_supported(OUTPUT_VARIABLE output LANGUAGES C)
   set_property(TARGET foo PROPERTY POSITION_INDEPENDENT_CODE TRUE)
-  if(NOT CMAKE_C_LINK_PIE_SUPPORTED)
-    message(WARNING "PIE is not supported at link time:\n${output}"
+
+  if(CMAKE_C_LINK_PIE_SUPPORTED)
+    message(CHECK_PASS "yes")
+  else()
+    message(CHECK_FAIL "no")
+    message(VERBOSE "PIE is not supported at link time:\n${output}"
                     "PIE link options will not be passed to linker.")
   endif()
 
@@ -97,7 +116,6 @@ link options, which might not be sufficient in certain cases:
 
   add_executable(foo ...)
   set_property(TARGET foo PROPERTY POSITION_INDEPENDENT_CODE TRUE)
-
 #]=======================================================================]
 
 

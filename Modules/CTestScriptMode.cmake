@@ -5,9 +5,11 @@
 CTestScriptMode
 ---------------
 
+.. note::
 
-
-该文件由ctest以脚本模式（-S）读取
+  This module is not intended to be included or invoked directly by project
+  code.  It is internally used by CTest running in script mode (-S) to
+  determine current system.  For usage details refer to the :option:`ctest -S`.
 #]=======================================================================]
 
 # Determine the current system, so this information can be used

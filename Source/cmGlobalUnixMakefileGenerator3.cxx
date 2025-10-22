@@ -77,6 +77,11 @@ cmDocumentationEntry cmGlobalUnixMakefileGenerator3::GetDocumentation()
            "Generates standard UNIX makefiles." };
 }
 
+bool cmGlobalUnixMakefileGenerator3::SupportsShortObjectNames() const
+{
+  return true;
+}
+
 void cmGlobalUnixMakefileGenerator3::ComputeTargetObjectDirectory(
   cmGeneratorTarget* gt) const
 {
@@ -531,7 +536,7 @@ cmGlobalUnixMakefileGenerator3::GenerateBuildCommand(
   std::string const& makeProgram, std::string const& /*projectName*/,
   std::string const& /*projectDir*/,
   std::vector<std::string> const& targetNames, std::string const& /*config*/,
-  int jobs, bool verbose, cmBuildOptions const& buildOptions,
+  int jobs, bool verbose, cmBuildOptions buildOptions,
   std::vector<std::string> const& makeOptions)
 {
   GeneratedMakeCommand makeCommand;

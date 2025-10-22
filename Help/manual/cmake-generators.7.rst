@@ -57,6 +57,14 @@ Ninja生成器
    /generator/Ninja
    /generator/Ninja Multi-Config
 
+FASTBuild Generator
+^^^^^^^^^^^^^^^^^^^
+
+.. toctree::
+   :maxdepth: 1
+
+   /generator/FASTBuild
+
 .. _`IDE Build Tool Generators`:
 
 IDE构建工具生成器
@@ -84,6 +92,7 @@ Visual Studio生成器
    /generator/Visual Studio 15 2017
    /generator/Visual Studio 16 2019
    /generator/Visual Studio 17 2022
+   /generator/Visual Studio 18 2026
 
 其他生成器
 ^^^^^^^^^^^^^^^^

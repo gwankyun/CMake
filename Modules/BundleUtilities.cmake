@@ -8,7 +8,7 @@ BundleUtilities
 此模块提供使用CMake组装独立的、捆绑式应用程序的实用命令，例如macOS的\ ``.app``\
 捆绑包或其他操作系统上类似的基于目录的应用程序捆绑包。
 
-Load this module in CMake installation with:
+Load this module in a CMake installation with:
 
 .. code-block:: cmake
 
@@ -732,7 +732,9 @@ function(get_item_rpaths item rpaths_var)
     string(REGEX REPLACE "rpath " "" load_cmds_ov "${load_cmds_ov}")
     if(load_cmds_ov)
       foreach(rpath ${load_cmds_ov})
-        gp_append_unique(${rpaths_var} "${rpath}")
+        if(NOT rpath IN_LIST ${rpaths_var})
+          list(APPEND ${rpaths_var} "${rpath}")
+        endif()
       endforeach()
     endif()
   endif()
@@ -743,7 +745,9 @@ function(get_item_rpaths item rpaths_var)
     foreach(rpath ${rpath_var} ${runpath_var})
       # Substitute $ORIGIN with the exepath and add to the found rpaths
       string(REPLACE "$ORIGIN" "${item_dir}" rpath "${rpath}")
-      gp_append_unique(${rpaths_var} "${rpath}")
+      if(NOT rpath IN_LIST ${rpaths_var})
+        list(APPEND ${rpaths_var} "${rpath}")
+      endif()
     endforeach()
   endif()
 
@@ -786,7 +790,9 @@ function(set_bundle_key_values keys_var context item exepath dirs copyflag)
   get_item_key("${item}" key)
 
   list(LENGTH ${keys_var} length_before)
-  gp_append_unique(${keys_var} "${key}")
+  if(NOT key IN_LIST ${keys_var})
+    list(APPEND ${keys_var} "${key}")
+  endif()
   list(LENGTH ${keys_var} length_after)
 
   if(NOT length_before EQUAL length_after)

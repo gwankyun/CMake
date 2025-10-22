@@ -6,7 +6,11 @@ FindGLUT
 --------
 
 查找OpenGL实用工具包（GLUT）库，该库提供了一个简单的API，用于在OpenGL应用程序中\
-创建窗口、处理输入和管理事件。
+创建窗口、处理输入和管理事件：
+
+.. code-block:: cmake
+
+  find_package(GLUT [...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -24,7 +28,7 @@ Result Variables
 This module defines the following variables:
 
 ``GLUT_FOUND``
-  Boolean indicating whether GLUT is found.
+  Boolean indicating whether GLUT was found.
 
 ``GLUT_INCLUDE_DIRS``
   .. versionadded:: 3.23
@@ -72,7 +76,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/SelectLibraryConfigurations.cmake)
 include(FindPackageHandleStandardArgs)
 
 find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
+if(PkgConfig_FOUND)
   pkg_check_modules(PC_GLUT QUIET glut)
   if(NOT PC_GLUT_FOUND)
     pkg_check_modules(PC_GLUT QUIET freeglut)

@@ -606,7 +606,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   比较两个路径的词法表示。在任何路径上都不执行归一化。如果路径相等则返回\ ``1``，否则返回\ ``0``。
 
-  有关更多细节，请参阅\ :ref:`cmake_path(COMPARE) <Path COMPARE>`。
+  See :ref:`cmake_path(COMPARE) <Path Comparison>` for more details.
 
 .. _GenEx Path Queries:
 
@@ -646,13 +646,15 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.24
 
-  如果路径是\ :ref:`absolute <IS_ABSOLUTE>`\ 路径则返回\ ``1``，否则返回\ ``0``。
+  Returns ``1`` if the path is absolute according to
+  :command:`cmake_path(IS_ABSOLUTE)`, ``0`` otherwise.
 
 .. genex:: $<PATH:IS_RELATIVE,path>
 
   .. versionadded:: 3.24
 
-  这将返回与\ ``IS_ABSOLUTE``\ 相反的结果。
+  Returns ``1`` if the path is relative according to
+  :command:`cmake_path(IS_RELATIVE)`, ``0`` otherwise.
 
 .. genex:: $<PATH:IS_PREFIX[,NORMALIZE],path,input>
 
@@ -733,7 +735,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回以\ ``/``\ 作为\ ``directory-separator``\ 附加到\ ``path``\ 的所有\ ``input``\
   参数。根据\ ``input``\ 的不同，\ ``path``\ 的值可能会被丢弃。
 
-  请参阅\ :ref:`cmake_path(APPEND) <APPEND>`\ 了解更多详细信息。
+  See :command:`cmake_path(APPEND)` for more details.
 
 .. genex:: $<PATH:REMOVE_FILENAME,path...>
 
@@ -742,7 +744,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回删除了文件名组件（由\ ``$<PATH:GET_FILENAME>``\ 返回）的\ ``path``。删除之后，\
   任何尾随的\ ``directory-separator``\ （如果存在的话）都将保持不变。
 
-  参见\ :ref:`cmake_path(REMOVE_FILENAME) <REMOVE_FILENAME>`\ 了解更多细节。
+  See :command:`cmake_path(REMOVE_FILENAME)` for more details.
 
 .. genex:: $<PATH:REPLACE_FILENAME,path...,input>
 
@@ -751,7 +753,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回\ ``path``，其中文件组件被\ ``input``\ 替换。如果\ ``path``\ 没有文件名组件\
   （例如\ ``$<PATH:HAS_FILENAME>``\ 返回\ ``0``），\ ``path``\ 不变。
 
-  参见\ :ref:`cmake_path(REPLACE_FILENAME) <REPLACE_FILENAME>`\ 了解更多细节。
+  See :command:`cmake_path(REPLACE_FILENAME)` for more details.
 
 .. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path...>
 
@@ -759,7 +761,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   返回已删除\ :ref:`extension <EXTENSION_DEF>`\ 的\ ``path``，如果有的话。
 
-  有关详细信息，请参阅\ :ref:`cmake_path(REMOVE_EXTENSION) <REMOVE_EXTENSION>`。
+  See :command:`cmake_path(REMOVE_EXTENSION)` for more details.
 
 .. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path...,input>
 
@@ -768,7 +770,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回\ ``path``，其中\ :ref:`extension <EXTENSION_DEF>`\ 替换为\ ``input``，\
   如果有的话。
 
-  详细信息请参见\ :ref:`cmake_path(REPLACE_EXTENSION) <REPLACE_EXTENSION>`。
+  See :command:`cmake_path(REPLACE_EXTENSION)` for more details.
 
 .. genex:: $<PATH:NORMAL_PATH,path...>
 
@@ -782,7 +784,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   返回\ ``path``，修改后使其相对于\ ``base_directory``\ 参数。
 
-  有关更多细节，请参阅\ :ref:`cmake_path(RELATIVE_PATH) <cmake_path-RELATIVE_PATH>`。
+  See :command:`cmake_path(RELATIVE_PATH)` for more details.
 
 .. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path...,base_directory>
 
@@ -793,7 +795,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   当指定\ ``NORMALIZE``\ 选项时，在路径计算之后对路径进行\ :ref:`normalized <Normalization>`。
 
-  有关详细信息，请参阅\ :ref:`cmake_path(ABSOLUTE_PATH) <ABSOLUTE_PATH>`。
+  See :command:`cmake_path(ABSOLUTE_PATH)` for more details.
 
 Shell路径
 ^^^^^^^^^^^
@@ -1619,6 +1621,209 @@ Shell路径
   如果是普通的链接步骤，则返回列表，否则返回空列表。当还涉及到设备链接步骤时，此表达式相当有用\
   （请参阅\ :genex:`$<DEVICE_LINK:list>`\ 生成器表达式）。此表达式只能用于指定链接选项。
 
+Linker ID and Frontend-Variant
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+See also the :variable:`CMAKE_<LANG>_COMPILER_LINKER_ID` and
+:variable:`CMAKE_<LANG>_COMPILER_LINKER_FRONTEND_VARIANT` variables, which are
+closely related to most of the expressions in this sub-section.
+
+.. genex:: $<C_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the C linker used.
+
+.. genex:: $<C_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the C linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<CXX_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the C++ linker used.
+
+.. genex:: $<CXX_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the C++ linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<CUDA_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the CUDA linker used.
+
+.. genex:: $<CUDA_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the CUDA linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<OBJC_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the Objective-C linker used.
+
+.. genex:: $<OBJC_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the Objective-C linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<OBJCXX_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the Objective-C++ linker used.
+
+.. genex:: $<OBJCXX_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the Objective-C++ linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<Fortran_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the Fortran linker used.
+
+.. genex:: $<Fortran_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the Fortran linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<HIP_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.2
+
+  CMake's linker id of the HIP linker used.
+
+.. genex:: $<HIP_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.2
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the HIP linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
+.. genex:: $<C_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the C linker used.
+
+.. genex:: $<C_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the C linker matches any one
+  of the entries in ``variant_ids``, otherwise ``0``.
+
+.. genex:: $<CXX_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the C++ linker used.
+
+.. genex:: $<CXX_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the C++ linker matches any one
+  of the entries in ``variant_ids``, otherwise ``0``.
+
+.. genex:: $<CUDA_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the CUDA linker used.
+
+.. genex:: $<CUDA_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the CUDA linker matches any one
+  of the entries in ``variant_ids``, otherwise ``0``.
+
+.. genex:: $<OBJC_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the Objective-C linker used.
+
+.. genex:: $<OBJC_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the Objective-C linker matches
+  any one of the entries in ``variant_ids``, otherwise ``0``.
+
+.. genex:: $<OBJCXX_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the Objective-C++ linker used.
+
+.. genex:: $<OBJCXX_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the Objective-C++ linker matches
+  any one of the entries in ``variant_ids``, otherwise ``0``.
+
+.. genex:: $<Fortran_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the Fortran linker used.
+
+.. genex:: $<Fortran_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the Fortran linker matches
+  any one of the entries in ``variant_ids``, otherwise ``0``.
+
+.. genex:: $<HIP_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.2
+
+  CMake's linker frontend variant of the HIP linker used.
+
+.. genex:: $<HIP_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.2
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the HIP linker matches
+  any one of the entries in ``variant_ids``, otherwise ``0``.
+
 
 .. _`Target-Dependent Expressions`:
 
@@ -1796,12 +2001,23 @@ Shell路径
   请注意，\ ``tgt``\ 并不是作为计算该表达式的目标的依赖项添加的，除非该表达式在\
   :command:`add_custom_command`\ 或\ :command:`add_custom_target`\ 中使用。
 
-.. genex:: $<TARGET_FILE_BASE_NAME:tgt>
+.. genex:: $<TARGET_FILE_BASE_NAME:tgt[,POSTFIX:(INCLUDE|EXCLUDE)]>
 
   .. versionadded:: 3.15
 
-  ``tgt``\ 的基本名称，即不带前缀和后缀的\ ``$<TARGET_FILE_NAME:tgt>``。例如，如果\
-  ``tgt``\ 文件名是\ ``libbase.so``，基名是\ ``base``。
+  .. versionadded:: 4.2
+    The option ``POSTFIX``, which can be used to control the inclusion or not
+    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
+    base name. The default is ``POSTFIX:INCLUDE``.
+
+  Base name of ``tgt``, i.e. ``$<TARGET_FILE_NAME:tgt>`` without prefix and
+  suffix and, optionally, postfix.
+  For example, if the ``tgt`` filename is ``libbase_postfix.so``, the base name
+  is:
+
+    * ``base_postfix`` for ``$<TARGET_FILE_BASE_NAME:tgt>`` or
+      ``$<TARGET_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
+    * ``base`` for ``$<TARGET_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`、\
   :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 和\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ 目标属性，\
@@ -1854,12 +2070,23 @@ Shell路径
 
   如果没有与目标关联的导入文件，则返回空字符串。
 
-.. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt>
+.. genex:: $<TARGET_IMPORT_FILE_BASE_NAME:tgt[,POSTFIX:(INCLUDE|EXCLUDE)]>
 
   .. versionadded:: 3.27
 
-  目标文件链接器导入文件的基名\ ``tgt``，不带前缀或者后缀。例如，目标文件名为\
-  ``libbase.tbd``，则基文件名为\ ``base``。
+  .. versionadded:: 4.2
+    The option ``POSTFIX``, which can be used to control the inclusion or not
+    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
+    base name. The default is ``POSTFIX:INCLUDE``.
+
+  Base name of the linker import file of the target ``tgt`` without prefix or
+  suffix and, optionally, postfix.
+  For example, if the target file name is ``libbase_postfix.tbd``, the base
+  name is:
+
+    * ``base_postfix`` for ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt>`` or
+      ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
+    * ``base`` for ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性、\
   它们特定于配置的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
@@ -1916,12 +2143,23 @@ Shell路径
   该生成器表达式等价于\ :genex:`$<TARGET_LINKER_LIBRARY_FILE>`\ 或\
   :genex:`$<TARGET_LINKER_IMPORT_FILE>`\ 生成器表达式，具体取决于目标和平台的特征。
 
-.. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt>
+.. genex:: $<TARGET_LINKER_FILE_BASE_NAME:tgt[,POSTFIX:(INCLUDE|EXCLUDE)]>
 
   .. versionadded:: 3.15
 
-  用于链接目标\ ``tgt``\ 的基本文件名，例如\ :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` ，\
-  不带前缀和后缀。例如，目标文件名为\ ``libbase.a``，基本名称为\ ``base``。
+  .. versionadded:: 4.2
+    The option ``POSTFIX``, which can be used to control the inclusion or not
+    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
+    base name. The default is ``POSTFIX:INCLUDE``.
+
+  Base name of file used to link the target ``tgt``, i.e.
+  :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` without prefix and suffix, and,
+  optionally, postfix.
+  For example, if target file name is ``libbase_postfix.a``, the base name is:
+
+    * ``base_postfix`` for ``$<TARGET_LINKER_FILE_BASE_NAME:tgt>`` or
+      ``$<TARGET_LINKER_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
+    * ``base`` for ``$<TARGET_LINKER_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
   :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性，以及它们特定于配置的变体\
@@ -1972,13 +2210,24 @@ Shell路径
   链接到\ ``tgt``\ 目标时使用的文件是直接使用库完成的，而不是导入文件。这通常是\ ``tgt``\
   表示的库（\ ``.a``、\ ``.so``、\ ``.dylib``）。因此，在DLL平台上，它将是一个空字符串。
 
-.. genex:: $<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>
+.. genex:: $<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt[,POSTFIX:(INCLUDE|EXCLUDE)]>
 
   .. versionadded:: 3.27
 
-  用于链接目标\ ``tgt``\ 的库文件的基本名称，即\
-  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>`，不带前缀和后缀。例如，目标文件名为\
-  ``libbase.a``，则基文件名为\ ``base``。
+  .. versionadded:: 4.2
+    The option ``POSTFIX``, which can be used to control the inclusion or not
+    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
+    base name. The default is ``POSTFIX:INCLUDE``.
+
+  Base name of library file used to link the target ``tgt``, i.e.
+  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>` without prefix and
+  suffix,and, optionally, postfix.
+  For example, if target file name is ``libbase_postfix.a``, the base name is:
+
+    * ``base_postfix`` for ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>`` or
+      ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
+    * ``base`` for
+      ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
   :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性，以及它们特定于配置的变体\
@@ -2033,13 +2282,24 @@ Shell路径
   使用导入文件链接到\ ``tgt``\ 目标时使用的文件。这通常是\ ``tgt``\ 表示的导入文件（\
   ``.lib``、\ ``.tbd``）。因此，当链接步骤中没有涉及导入文件时，将返回一个空字符串。
 
-.. genex:: $<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>
+.. genex:: $<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt[,POSTFIX:(INCLUDE|EXCLUDE)]>
 
   .. versionadded:: 3.27
 
-  用于链接目标\ ``tgt``\ 的导入文件的基本名称，即\
-  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>`\ ，不带前缀和后缀。例如，如果目标文\
-  件名为\ ``libbase.tbd``，则基文件名为\ ``base``。
+  .. versionadded:: 4.2
+    The option ``POSTFIX``, which can be used to control the inclusion or not
+    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
+    base name. The default is ``POSTFIX:INCLUDE``.
+
+  Base name of the import file used to link the target ``tgt``, i.e.
+  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>` without prefix and suffix,
+  and, optionally, postfix.
+  For example, if target file name is ``libbase_postfix.tbd``, the base name is
+
+    * ``base_postfix`` for ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>`` or
+      ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
+    * ``base`` for
+      ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性、\
   它们的特定配置变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
@@ -2130,20 +2390,45 @@ Shell路径
 
   链接器生成的程序数据库文件（.pdb）的完整路径，其中\ ``tgt``\ 是目标的名称。
 
+  .. versionchanged:: 4.2
+    The postfix, as specified by :prop_tgt:`DEBUG_POSTFIX` or
+    :prop_tgt:`<CONFIG>_POSTFIX` target properties, is always included in the
+    ``PDB`` file name. See the policy :policy:`CMP0202`.
+
   另请参阅\ :prop_tgt:`PDB_NAME`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ 目标属性及\
   其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`\ 和\
   :prop_tgt:`PDB_OUTPUT_DIRECTORY_<CONFIG>`。
 
-.. genex:: $<TARGET_PDB_FILE_BASE_NAME:tgt>
+.. genex:: $<TARGET_PDB_FILE_BASE_NAME:tgt[,POSTFIX:(INCLUDE|EXCLUDE)]>
 
   .. versionadded:: 3.15
 
   链接器生成的程序数据库文件（.pdb）的基本名称，其中\ ``tgt``\ 是目标的名称。
 
-  基本名称对应于不带前缀和后缀的目标PDB文件名（参见\ ``$<TARGET_PDB_FILE_NAME:tgt>``）。\
-  例如，如果目标文件名是\ ``base.pdb``，基本名称为\ ``base``。
+  .. versionadded:: 4.2
+    The option ``POSTFIX``, which can be used to control the inclusion or not
+    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
+    base name. The default is ``POSTFIX:INCLUDE``.
 
-  另请参阅\ :prop_tgt:`PDB_NAME`\ 目标属性及其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`。
+  .. versionchanged:: 4.2
+    The postfix, as specified by :prop_tgt:`DEBUG_POSTFIX` or
+    :prop_tgt:`<CONFIG>_POSTFIX` target properties, is always included in the
+    ``PDB`` base name, except if option ``POSTFIX`` has value ``EXCLUDE``.
+    See the policy :policy:`CMP0202`.
+
+  The base name corresponds to the target PDB file name (see
+  ``$<TARGET_PDB_FILE_NAME:tgt>``) without prefix and suffix, and, optionally,
+  postfix. For example, if target file name is ``base_postfix.pdb``, the base
+  name is
+
+    * ``base_postfix`` for ``$<TARGET_PDB_FILE_BASE_NAME:tgt>`` or
+      ``$<TARGET_PDB_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
+    * ``base`` for ``$<TARGET_PDB_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+
+  See also the :prop_tgt:`OUTPUT_NAME`, :prop_tgt:`PDB_NAME` target properties,
+  and their configuration-specific variants :prop_tgt:`OUTPUT_NAME_<CONFIG>`
+  and :prop_tgt:`PDB_NAME_<CONFIG>`, and the :prop_tgt:`<CONFIG>_POSTFIX` and
+  :prop_tgt:`DEBUG_POSTFIX` target properties.
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
@@ -2243,6 +2528,13 @@ Shell路径
 
   这个生成器表达式可以用来创建一个批处理文件，使用\ :command:`file(GENERATE)`\ 来设置相\
   应的PATH环境变量。
+
+.. genex:: $<TARGET_INTERMEDIATE_DIR:tgt>
+
+  .. versionadded:: 4.2
+
+  The full path to the directory where intermediate target files, such as
+  object and dependency files, are stored.
 
 导出和安装表达式
 ------------------------------

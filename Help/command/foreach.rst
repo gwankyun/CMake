@@ -41,11 +41,14 @@ foreach
 
   foreach(<loop_var> IN [LISTS [<lists>]] [ITEMS [<items>]])
 
-在这种变体中，\ ``<lists>``\ 是一个由空格或分号分隔的列表变量列表。\ ``foreach``\ 命令会\
-对每个给定列表中的每个元素进行迭代。\
-跟在\ ``ITEMS``\ 关键字后面的\ ``<items>``\ 会按照\ ``foreach``\ 命令第一种变体的方式\
-进行处理。\
-``LISTS A``\ 和\ ``ITEMS ${A}``\ 这两种形式是等效的。
+In this variant, ``<lists>`` is a whitespace or semicolon
+separated list of list-valued variables. The ``foreach``
+command iterates over each item in each given list.
+The ``<items>`` following the ``ITEMS`` keyword are processed
+as in the first variant of the ``foreach`` command.
+The forms ``LISTS A`` and ``ITEMS ${A}`` are
+equivalent. If no ``<lists>`` or ``<items>`` are given, the body
+of the loop will never be executed (i.e., it is processed as empty).
 
 以下示例展示了如何处理\ ``LISTS``\ 选项：
 
@@ -81,10 +84,18 @@ yields::
 在这种变体中，\ ``<lists>``\ 是一个由空格或分号分隔的列表变量列表。\ ``foreach``\ 命令会\
 同时遍历每个列表，并按如下方式设置迭代变量：
 
-- 如果只提供了一个\ ``loop_var``，那么它会将一系列\ ``loop_var_N``\ 变量设置为对应列表中\
-  的当前项；
-- 如果传入多个变量名，它们的数量应该与列表变量的数量相匹配；
-- 如果任何一个列表较短，在当前迭代中，对应的迭代变量将不会被定义。
+- if a single ``loop_var`` is given, then it sets a series of
+  ``loop_var_N`` variables to the current item from the
+  corresponding list;
+- if multiple variable names are passed, it sets each variable to the
+  current item from the corresponding list. The number of iteration
+  variables must match the number of list variables.
+
+If no ``<lists>`` are given, the body of the loop will never be executed
+(i.e., it is processed as empty).
+
+The following example shows how the ``ZIP_LISTS`` option is
+processed:
 
 .. noqa: spellcheck off
 

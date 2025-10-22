@@ -10,7 +10,7 @@ CMakePushCheckState
 此模块提供了用于管理变量状态的命令，这些变量会影响各种CMake检查命令（例如\
 :command:`check_symbol_exists`\ 等）的执行方式。
 
-Load this module in CMake project with:
+Load this module in a CMake project with:
 
 .. code-block:: cmake
 

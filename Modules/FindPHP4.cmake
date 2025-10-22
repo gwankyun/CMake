@@ -5,7 +5,11 @@
 FindPHP4
 --------
 
-查找PHP 4版本，这是一种通用脚本语言。
+查找PHP 4版本，这是一种通用脚本语言：
+
+.. code-block:: cmake
+
+  find_package(PHP4 [...])
 
 .. note::
 
@@ -14,6 +18,14 @@ FindPHP4
 
 This module checks if PHP 4 is installed and determines the locations of the
 include directories and the PHP command-line interpreter.
+
+Result Variables
+^^^^^^^^^^^^^^^^
+
+This module defines the following variables:
+
+``PHP4_FOUND``
+  Boolean indicating whether PHP 4 was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^

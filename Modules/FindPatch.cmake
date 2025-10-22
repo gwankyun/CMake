@@ -7,7 +7,11 @@ FindPatch
 
 .. versionadded:: 3.10
 
-查找用于将差异补丁应用于原始文件的\ ``patch``\ 命令行可执行文件。
+查找用于将差异补丁应用于原始文件的\ ``patch``\ 命令行可执行文件：
+
+.. code-block:: cmake
+
+  find_package(Patch [...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -28,7 +32,7 @@ Result Variables
 This module defines the following variables:
 
 ``Patch_FOUND``
-  Boolean indicating whether the ``patch`` command-line executable is found.
+  Boolean indicating whether the ``patch`` command-line executable was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^

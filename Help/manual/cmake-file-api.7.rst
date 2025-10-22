@@ -106,6 +106,10 @@ v1客户端有状态查询文件
 删除它们。当给定的客户端安装更新时，它可能会更新它写的有状态查询，以构建树以请求更新的对象版本。\
 这可以用来避免要求CMake不必要地生成多个对象版本。
 
+.. versionadded:: 4.1
+  The ``query.json`` file is described in machine-readable form by
+  :download:`this JSON schema </manual/file_api/schema_stateful_query.json>`.
+
 一个\ ``query.json``\ 文件必须包含一个JSON对象：
 
 .. code-block:: json
@@ -164,6 +168,10 @@ v1应答索引文件
 其中\ ``index-``\ 是字面量，\ ``<unspecified>``\ 是CMake选择的未指定名称。每当生成新的\
 索引文件时，都会给它一个新名称，并删除旧的名称。在这些步骤之间的短时间内，可能存在多个索引文件；\
 按字典顺序排最前的是当前索引文件。
+
+.. versionadded:: 4.1
+  The reply index file is described in machine-readable form by
+  :download:`this JSON schema </manual/file_api/schema_index.json>`.
 
 应答索引文件包含一个JSON对象：
 
@@ -390,7 +398,11 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 只有一个\ ``codemodel``\ 对象主版本，即版本2。版本1不存在是为了避免与\
 :manual:`cmake-server(7)`\ 模式的版本混淆。
 
-“codemodel”版本2
+.. versionadded:: 4.1
+  The ``codemodel`` object kind reply is described in machine-readable form
+  by :download:`this JSON schema </manual/file_api/schema_codemodel.json>`.
+
+"codemodel" version 2
 ^^^^^^^^^^^^^^^^^^^^^
 
 ``codemodel``\ 对象版本2是一个JSON对象：
@@ -414,6 +426,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
             "childIndexes": [ 1 ],
             "projectIndex": 0,
             "targetIndexes": [ 0 ],
+            "abstractTargetIndexes": [ 1 ],
             "hasInstallRule": true,
             "minimumCMakeVersion": {
               "string": "3.14"
@@ -426,6 +439,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
             "parentIndex": 0,
             "projectIndex": 0,
             "targetIndexes": [ 1 ],
+            "abstractTargetIndexes": [ 0 ],
             "minimumCMakeVersion": {
               "string": "3.14"
             },
@@ -436,7 +450,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
           {
             "name": "MyProject",
             "directoryIndexes": [ 0, 1 ],
-            "targetIndexes": [ 0, 1 ]
+            "targetIndexes": [ 0, 1 ],
+            "abstractTargetIndexes": [ 0, 1 ],
           }
         ],
         "targets": [
@@ -449,6 +464,20 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
           {
             "name": "MyLibrary",
             "directoryIndex": 1,
+            "projectIndex": 0,
+            "jsonFile": "<file>"
+          }
+        ]
+        "abstractTargets": [
+          {
+            "name": "MyImportedExecutable",
+            "directoryIndex": 1,
+            "projectIndex": 0,
+            "jsonFile": "<file>"
+          },
+          {
+            "name": "MyPureInterfaceLibrary",
+            "directoryIndex": 0,
             "projectIndex": 0,
             "jsonFile": "<file>"
           }
@@ -502,8 +531,17 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       主\ ``projects``\ 数组中基于0的无符号整数索引，指示此目录所属的生成系统项目。
 
     ``targetIndexes``
-      当目录本身具有目标时出现的可选成员，不包括属于子目录的目标。该值是一个JSON数组，包含\
-      与目标器对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
+      当目录本身具有构建系统目标时出现的可选成员，不包括属于子目录的目标。该值是一个JSON数组，包含\
+      与构建系统目标对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
+
+    ``abstractTargetIndexes``
+      Optional member that is present when the directory itself has abstract
+      targets, excluding those belonging to subdirectories.
+      The value is a JSON array of entries corresponding to the abstract
+      targets.  Each entry is an unsigned integer 0-based index into the main
+      ``abstractTargets`` array.
+
+      This field was added in codemodel version 2.9.
 
     ``minimumCMakeVersion``
       当目录已知CMake的最低要求版本时出现的可选成员。这是对目录本身或其祖先之一的\
@@ -523,7 +561,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
     ``jsonFile``
       一个JSON字符串，指定一个相对于代码模型文件到另一个包含\
-      `“codemodel”版本2“directory”对象`_\ 的JSON文件的路径。
+      `"codemodel" version 2 "directory" object`_\ 的JSON文件的路径。
 
       此字段是在代码模型版本2.3中添加的。
 
@@ -550,13 +588,24 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       每个条目都是一个基于0的无符号整数到主\ ``directories``\ 数组的索引。
 
     ``targetIndexes``
-      当项目本身具有目标时出现的可选成员，不包括属于子项目的目标。该值是一个JSON数组，包含\
-      与目标器对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
+      当项目本身具有构建系统目标时出现的可选成员，不包括属于子项目的目标。该值是一个JSON数组，包含\
+      与构建系统目标对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
+
+    ``abstractTargetIndexes``
+      Optional member that is present when the project itself has
+      abstract targets, excluding those belonging to sub-projects.
+      The value is a JSON array of entries corresponding to the abstract
+      targets.  Each entry is an unsigned integer 0-based index into the main
+      ``abstractTargets`` array.
+
+      This field was added in codemodel version 2.9.
 
   ``targets``
-    与构建系统目标相对应的条目的JSON数组。这样的目标是通过调用\ :command:`add_executable`、\
-    :command:`add_library`\ 和\ :command:`add_custom_target`\ 创建的，不包括导入的\
-    目标和接口库（它们不生成任何构建规则）。每个条目是一个JSON对象，包含以下成员：
+    A JSON array of entries corresponding to the build system targets.
+    Such targets are created by calls to :command:`add_executable`,
+    :command:`add_library`, and :command:`add_custom_target`, excluding
+    imported targets and interface libraries that do not generate any
+    build rules.  Each entry is a JSON object containing members:
 
     ``name``
       指定目标名称的字符串。
@@ -575,11 +624,62 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       一个JSON字符串，指定从代码模型文件到包含\ `“codemodel”版本2“target”对象`_\ 的另\
       一个JSON文件的相对路径。
 
-“codemodel”版本2“directory”对象
+  ``abstractTargets``
+    A JSON array of entries corresponding to targets that are not present
+    in the build system.  These are imported targets or interface libraries
+    created by calls to :command:`add_executable` or :command:`add_library`.
+    In the case of interface libraries, only those that are not part of the
+    build system are included in this array.  Interface libraries that do
+    participate in the build system will be included in the ``targets``
+    array instead.
+
+    Each entry is a JSON object containing members:
+
+    ``name``
+      A string specifying the target name.
+
+    ``id``
+      A string uniquely identifying the target.  This matches the ``id``
+      field in the file referenced by ``jsonFile``.
+
+    ``directoryIndex``
+      An unsigned integer 0-based index into the main ``directories`` array
+      indicating the build system directory in which the target is defined.
+
+    ``projectIndex``
+      An unsigned integer 0-based index into the main ``projects`` array
+      indicating the build system project in which the target is defined.
+
+    ``jsonFile``
+      A JSON string specifying a path relative to the codemodel file
+      to another JSON file containing a
+      `“codemodel”版本2“target”对象`_.
+
+    This field was added in codemodel version 2.9.
+
+"codemodel" version 2 "directory" object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-代码模型“目录”对象由\ `“codemodel”版本2`_\ 对象的\ ``directories``\ 数组引用。每个\
-“directory”对象都是一个JSON对象，包含以下成员：
+.. versionadded:: 4.1
+  The ``directory`` object reply is described in machine-readable form by
+  :download:`this JSON schema </manual/file_api/schema_directory.json>`.
+
+A codemodel "directory" object is referenced by a `"codemodel" version 2`_
+object's ``directories`` array.  Each "directory" object is a JSON object
+with members:
+
+``codemodelVersion``
+  This specifies the codemodel version this file is part of.  It will match
+  the ``version`` field of the codemodel object kind that references this file.
+  It is a JSON object with the following members:
+
+  ``major``
+    The codemodel major version.
+
+  ``minor``
+    The codemodel minor version.
+
+  This field was added in codemodel version 2.9.
 
 ``paths``
   包含以下成员的JSON对象：
@@ -794,8 +894,25 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 “codemodel”版本2“target”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-代码模型“目标”对象由\ `“codemodel”版本2`_\ 对象的\ ``targets``\ 数组引用。每个“目标”对\
+.. versionadded:: 4.1
+  The ``target`` object reply is described in machine-readable form by
+  :download:`this JSON schema </manual/file_api/schema_target.json>`.
+
+代码模型“目标”对象由\ `"codemodel" version 2`_\ 对象的\ ``targets``\ 数组引用。每个“目标”对\
 象都是一个JSON对象，包含以下成员：
+
+``codemodelVersion``
+  This specifies the codemodel version this file is part of.  It will match
+  the ``version`` field of the codemodel object kind that references this file.
+  It is a JSON object with the following members:
+
+  ``major``
+    The codemodel major version.
+
+  ``minor``
+    The codemodel minor version.
+
+  This field was added in codemodel version 2.9.
 
 ``name``
   指定目标逻辑名称的字符串。
@@ -807,6 +924,40 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
   指定目标类型的字符串。取值为\ ``EXECUTABLE``、\ ``STATIC_LIBRARY``、\
   ``SHARED_LIBRARY``、\ ``MODULE_LIBRARY``、\ ``OBJECT_LIBRARY``、\
   ``INTERFACE_LIBRARY``\ 或\ ``UTILITY``\ 中的一个。
+
+``imported``
+  Optional member that is present with boolean value ``true`` if the
+  target is an imported target.
+
+  This field was added in codemodel version 2.9.
+
+``local``
+  Optional member that is present with boolean value ``true`` if the
+  target is only defined with local scope rather than being a global target.
+  Currently, only imported targets will potentially have this field.
+
+  This field was added in codemodel version 2.9.
+
+``abstract``
+  Optional member that is present with boolean value ``true`` if the
+  target is an abstract target.  Abstract targets are not part of the build
+  system, they only exist to describe dependencies or to provide usage
+  requirements to targets that link to them.  Examples include imported targets
+  and interface libraries that have no generated sources.  Abstract targets
+  cannot be built, so they should not be presented to the user as a buildable
+  target.
+
+  This field was added in codemodel version 2.9.  Abstract targets were not
+  included in codemodel version 2.8 and earlier.
+
+``symbolic``
+  Optional member that is present with boolean value ``true`` if the target
+  is :prop_tgt:`SYMBOLIC`.  Symbolic targets are created by calls to
+  :command:`add_library(INTERFACE SYMBOLIC) <add_library(INTERFACE-SYMBOLIC)>`,
+  and are also abstract targets that are not part of the build system.
+
+  This field was added in codemodel version 2.9.  Symbolic targets were not
+  included in codemodel version 2.8 and earlier.
 
 ``backtrace``
   当CMake语言回溯到创建目标的源代码中的命令时出现的可选成员。该值是\ ``backtraceGraph``\
@@ -888,7 +1039,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
   此字段在代码模型版本2.7中添加。
 
 ``link``
-  可选成员，用于链接到运行时二进制文件的可执行文件和共享库目标。该值是一个JSON对象，其成员描\
+  可选成员，用于链接到运行时二进制文件的非导入可执行文件和共享库目标。该值是一个JSON对象，其成员描\
   述链接步骤：
 
   ``language``
@@ -927,7 +1078,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       指定到系统根的绝对路径的字符串，用正斜杠表示。
 
 ``archive``
-  为静态库目标提供的可选成员。该值是一个JSON对象，其成员描述存档步骤：
+  为非导入静态库目标提供的可选成员。该值是一个JSON对象，其成员描述存档步骤：
 
   ``commandFragments``
     存档程序命令行调用片段可用时出现的可选成员。该值是一个JSON数组，包含指定片段的条目。每个\
@@ -957,8 +1108,21 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     此字段在代码模型2.8版本中添加。
 
 ``dependencies``
-  当目标依赖于其他目标时出现的可选成员。该值是一个JSON数组，包含与依赖项对应的条目。每个条目\
-  都是一个JSON对象，包含以下成员：
+  Optional member that is present when the target depends on other targets.
+  It is only present if the target is part of the build system.
+  Imported targets are not part of the build system.  Interface libraries
+  are only part of the build system if they have sources or file sets.
+
+  The value is a JSON array of entries corresponding to the build dependencies.
+  The array includes not just direct dependencies, but also transitive
+  dependencies.  All listed targets will build before this one.
+
+  The list of dependencies reflects the *build graph* dependencies, not
+  necessarily the link dependencies.  If there are cycles in the link
+  dependencies of static libraries, not all link dependencies will be
+  reflected in this list of build graph dependencies.
+
+  Each entry is a JSON object with members:
 
   ``id``
     唯一标识此目标所依赖的目标的字符串。这与另一个目标的主\ ``id``\ 成员相匹配。
@@ -967,6 +1131,216 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
     当CMake语言回溯到\ :command:`add_dependencies`、\ :command:`target_link_libraries`\
     或其他创建此依赖的命令调用时，该可选成员可用。该值是\ ``backtraceGraph``\ 成员的\
     ``nodes``\ 数组中基于0的无符号整数索引。
+
+``linkLibraries``
+  Optional member that may be present when the target links directly to one or
+  more other targets or libraries.  It contains items that are used when
+  linking this target.  These come from the target's
+  :prop_tgt:`LINK_LIBRARIES` property (evaluated non-transitively), or the
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` property of another target it
+  links to directly or transitively.
+
+  Items that are only applied as usage requirements (such as being wrapped in a
+  :genex:`$<COMPILE_ONLY:...>` expression) will not be present in this member.
+
+  The value is a JSON array of entries.  Each entry is a JSON object with
+  members:
+
+  ``id``
+    Optional member that is present when the library to be linked is a target.
+    It uniquely identifies the target on which this one has a direct link
+    relationship.  This matches the main ``id`` member of that other target.
+
+    The target this ``id`` identifies is not necessarily part of the build
+    system.  It may be an imported target or an interface library with no
+    sources or file sets.
+
+    Exactly one of ``id`` or ``fragment`` will always be present.
+
+  ``fragment``
+    Optional member that is present when the library to be linked is not a
+    target.  It is a string containing the raw linker command line arguments
+    that capture the relationship.  These will typically be linking to
+    libraries or frameworks by name rather than as a target.
+
+    Exactly one of ``id`` or ``fragment`` will always be present.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to
+    the command invocation that created this relationship is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
+
+  ``fromDependency``
+    Optional member that is only present when the relationship is the result of
+    an :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` target property on one of
+    this target's directly or transitively linked libraries.  It is a JSON
+    object with one member:
+
+    ``id``
+      A string uniquely identifying the target whose
+      :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` property created the
+      relationship.  The value matches the main ``id`` member of that target.
+
+  This field was added in codemodel version 2.9.
+
+``interfaceLinkLibraries``
+  Optional member that may be present when the target has one or more interface
+  link libraries.  It contains items that are used when linking consumers of
+  this target.  These come from the target's
+  :prop_tgt:`INTERFACE_LINK_LIBRARIES` property.
+
+  Items that are only applied as usage requirements (such as being wrapped in a
+  :genex:`$<COMPILE_ONLY:...>` expression) will not be present in this member.
+
+  The value is a JSON array of entries.  Each entry is a JSON object with
+  members:
+
+  ``id``
+    Optional member that is present when the interface link library is for a
+    target.  It uniquely identifies that target, with the value matching the
+    main ``id`` member of that target.
+
+    The target this ``id`` identifies is not necessarily part of the build
+    system.  It may be an imported target or an interface library with no
+    sources or file sets.
+
+    Exactly one of ``id`` or ``fragment`` will always be present.
+
+  ``fragment``
+    Optional member that is present when the interface link library is not for
+    a target.  It is a string containing the raw linker command line arguments
+    to be applied to consumers of this target's interface link libraries.
+    These will typically be linker arguments for linking to libraries or
+    frameworks by name rather than as a target.
+
+    Exactly one of ``id`` or ``fragment`` will always be present.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to the
+    command invocation that created this interface relationship is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
+
+  This field was added in codemodel version 2.9.
+
+``compileDependencies``
+  Optional member that may be present when the target links directly to one or
+  more other targets that may provide usage requirements to this one.  They
+  affect how this target's sources are compiled.  These relationships are
+  defined by the target's :prop_tgt:`LINK_LIBRARIES` property (evaluated
+  non-transitively) and the :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT`
+  property of other targets it links to directly or transitively.
+
+  Relationships that only apply linking requirements (such as being wrapped
+  in a :genex:`$<LINK_ONLY:...>` expression) will not be present in this
+  member.
+
+  The value is a JSON array of entries.  Each entry is a JSON object with
+  members:
+
+  ``id``
+    A string uniquely identifying the target on which this target directly
+    depends.  This matches the main ``id`` member of the other target.
+
+    The target this ``id`` identifies is not necessarily part of the build
+    system.  It may be an imported target or an interface library with no
+    sources or file sets.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to
+    the command invocation that created this relationship is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
+
+  ``fromDependency``
+    Optional member that is only present when the relationship is the result of
+    an :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` target property on one of
+    this target's directly or transitively linked libraries.  It is a JSON
+    object with one member:
+
+    ``id``
+      A string uniquely identifying the target whose
+      :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` property created the
+      relationship.  The value matches the main ``id`` member of that target.
+
+  This field was added in codemodel version 2.9.
+
+``interfaceCompileDependencies``
+  Optional member that may be present when the target has one or more interface
+  linking relationships to other targets.  It contains items that affect how
+  consumers' sources are compiled.  These relationships are defined by the
+  target's :prop_tgt:`INTERFACE_LINK_LIBRARIES` property.
+
+  Relationships that only apply linking requirements (such as being wrapped
+  in a :genex:`$<LINK_ONLY:...>` expression) will not be present in this
+  member.
+
+  The value is a JSON array of entries.  Each entry is a JSON object with
+  members:
+
+  ``id``
+    A string uniquely identifying the target on which this target specifies
+    an interface relationship.  This matches the main ``id`` member of the
+    other target.
+
+    The target this ``id`` identifies is not necessarily part of the build
+    system.  It may be an imported target or an interface library with no
+    sources or file sets.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to
+    the command invocation that created this relationship is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
+
+  This field was added in codemodel version 2.9.
+
+``objectDependencies``
+  Optional member that is present when the target has one or more entries in
+  its :prop_tgt:`SOURCES` property where the entry is specified using
+  :genex:`$<TARGET_OBJECTS:...>`, and where no other generator expression is
+  used within the :genex:`$<TARGET_OBJECTS:...>` expression.
+
+  The value is a JSON array of entries.  Each entry is a JSON object with
+  members:
+
+  ``id``
+    A string uniquely identifying the target whose objects are referred to in
+    the :genex:`$<TARGET_OBJECTS:...>` expression.  This matches the main
+    ``id`` member of that other target.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to
+    the command invocation that created this dependency is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
+
+  This field was added in codemodel version 2.9.
+
+``orderDependencies``
+  Optional member that is present when the target has one or more direct order
+  dependencies on other targets.  Such dependencies may arise from calls to
+  :command:`add_dependencies` or from internal CMake processing.
+  Unlike the ``dependencies`` array, the ``ZERO_CHECK`` target will not be
+  included in ``orderDependencies`` (this is only relevant for
+  :generator:`Xcode` and :ref:`Visual Studio <Visual Studio Generators>`
+  generators).
+
+  The value is a JSON array of entries.  Each entry is a JSON object with
+  members:
+
+  ``id``
+    A string uniquely identifying the target on which this target depends.
+    This matches the main ``id`` member of the other target.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to
+    the command invocation that created this dependency is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
+
+  This field was added in codemodel version 2.9.
 
 ``fileSets``
   一个可选成员，当目标定义了一个或多个文件集时出现。该值是一个JSON数组，其条目\
@@ -1139,7 +1513,7 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 “codemodel”版本2“backtrace graph”对象
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`“codemodel”版本2“directory”对象`_\ 或\ `“codemodel”版本2“target”对象`_\ 的\
+`"codemodel" version 2 "directory" object`_\ 或\ `“codemodel”版本2“target”对象`_\ 的\
 ``backtraceGraph``\ 成员是一个描述回溯图的JSON对象。它的节点是从包含对象的其他地方的\
 ``backtrace``\ 成员引用的。回溯图对象的成员有：
 
@@ -1178,7 +1552,11 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
 只有一个\ ``configureLog``\ 对象的主要版本，即版本1。
 
-“configureLog”版本1
+.. versionadded:: 4.1
+  The ``configureLog`` object kind reply is described in machine-readable form
+  by :download:`this JSON schema </manual/file_api/schema_configureLog.json>`.
+
+"configureLog" version 1
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``configureLog``\ 对象版本1是一个JSON对象：
@@ -1212,7 +1590,11 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 只有一个\ ``cache``\ 对象主版本，即版本2。版本1不存在是为了避免与\ :manual:`cmake-server(7)`\
 模式的版本混淆。
 
-“cache”版本2
+.. versionadded:: 4.1
+  The ``cache`` object kind reply is described in machine-readable form by
+  :download:`this JSON schema </manual/file_api/schema_cache.json>`.
+
+"cache" version 2
 ^^^^^^^^^^^^^^^^^
 
 ``cache``\ 对象版本2是一个JSON对象：
@@ -1280,7 +1662,11 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
 只有一个\ ``cmakeFiles``\ 对象的主要版本，即版本1。
 
-“cmakeFiles”版本1
+.. versionadded:: 4.1
+  The ``cmakeFiles`` object kind reply is described in machine-readable form
+  by :download:`this JSON schema </manual/file_api/schema_cmakeFiles.json>`.
+
+"cmakeFiles" version 1
 ^^^^^^^^^^^^^^^^^^^^^^
 
 ``cmakeFiles``\ 对象版本1是一个JSON对象：
@@ -1395,7 +1781,11 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 
 只有一个\ ``toolchains``\ 对象主版本，即版本1。
 
-“toolchains”版本1
+.. versionadded:: 4.1
+  The ``toolchains`` object kind reply is described in machine-readable form
+  by :download:`this JSON schema </manual/file_api/schema_toolchains.json>`.
+
+"toolchains" version 1
 ^^^^^^^^^^^^^^^^^^^^^^
 
 ``toolchains``\ 对象版本1是一个JSON对象：

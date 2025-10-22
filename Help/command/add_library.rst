@@ -156,6 +156,30 @@ Windows上总是有一个关联的导入库。
     ``INTERFACE``\ 关键字只表示库的类型。在\ ``add_library``\ 调用中，在它后面列出的源\
     是接口库\ ``PRIVATE``\ 的，不会出现在它的\ :prop_tgt:`INTERFACE_SOURCES`\ 目标属性中。
 
+.. signature::
+  add_library(<name> INTERFACE SYMBOLIC)
+  :target: INTERFACE-SYMBOLIC
+
+  .. versionadded:: 4.2
+
+  Add a symbolic :ref:`Interface Library <Interface Libraries>` target.
+  Symbolic interface libraries are useful for representing optional components
+  or features in a package.  They have no usage requirements, do not compile
+  sources, and do not produce a library artifact on disk, but they may be
+  exported and installed.  They can also be tested for existence with the
+  regular :command:`if(TARGET)` subcommand.
+
+  A symbolic interface library may be used as a linkable target to enforce the
+  presence of optional components in a dependency.  For example, if a library
+  ``libgui`` may or may not provide a feature ``widget``, a consumer package
+  can link against ``widget`` to express that it requires this component to be
+  available.  This allows :command:`find_package` calls that declare required
+  components to be validated by linking against the corresponding symbolic
+  targets.
+
+  A symbolic interface library has the :prop_tgt:`SYMBOLIC` target property
+  set to true.
+
 .. _`add_library imported libraries`:
 
 导入库

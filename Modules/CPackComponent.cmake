@@ -5,7 +5,14 @@
 CPackComponent
 --------------
 
-为二进制安装程序和源包配置组件。
+This module provides commands to configure components for binary installers
+and source packages.
+
+Load this module in a CMake project with:
+
+.. code-block:: cmake
+
+  include(CPackComponent)
 
 .. only:: html
 
@@ -14,7 +21,7 @@ CPackComponent
 Introduction
 ^^^^^^^^^^^^
 
-This module is automatically included by :module:`CPack`.
+This module is also automatically included by :module:`CPack`.
 
 Certain binary installers (especially the graphical installers) generated
 by CPack allow users to select individual application *components* to install.

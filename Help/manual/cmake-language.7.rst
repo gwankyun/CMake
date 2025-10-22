@@ -12,6 +12,8 @@ cmake-language(7)
 
 CMake输入文件以“CMake语言”写在名为\ ``CMakeLists.txt``\ 的源文件中，或者以\ ``.cmake``\
 文件扩展名结尾。
+The term *listfile* is a general name for any such source file containing
+CMake commands that the tool processes.
 
 项目中的CMake语言源文件被归类为：
 

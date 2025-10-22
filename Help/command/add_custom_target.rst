@@ -156,6 +156,7 @@ add_custom_target
 ``WORKING_DIRECTORY``
   使用给定的当前工作目录执行命令。如果是相对路径，它将被解释为相对于与当前源目录\
   对应的构建树目录。
+  If not specified, set to :variable:`CMAKE_CURRENT_BINARY_DIR`.
 
   .. versionadded:: 3.13
     ``WORKING_DIRECTORY``\ 的参数可以使用\

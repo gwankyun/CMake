@@ -10,5 +10,6 @@ CTEST_USE_INSTRUMENTATION
    此功能仅在通过\ ``CMAKE_EXPERIMENTAL_INSTRUMENTATION``\ 开关启用了对插桩的实验性支持\
    时才可用。
 
-设置此环境变量可为处于\ :ref:`Dashboard Client`\ 模式的CTest启用\
-:manual:`插桩 <cmake-instrumentation(7)>`\ 功能。
+Setting this environment variable to ``1``, ``True``, or ``ON`` enables
+:manual:`instrumentation <cmake-instrumentation(7)>` for CTest in
+:ref:`Dashboard Client` mode.

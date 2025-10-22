@@ -12,7 +12,8 @@ project
  project(<PROJECT-NAME>
          [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
          [COMPAT_VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
-         [DESCRIPTION <project-description-string>]
+         [SPDX_LICENSE <license-string>]
+         [DESCRIPTION <description-string>]
          [HOMEPAGE_URL <url-string>]
          [LANGUAGES <language-name>...])
 
@@ -97,7 +98,30 @@ project
     当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时，兼容性版本还会存储\
     在变量\ :variable:`CMAKE_PROJECT_COMPAT_VERSION`\ 中。
 
-``DESCRIPTION <project-description-string>``
+``SPDX_LICENSE <license-string>``
+  .. versionadded:: 4.2
+
+  Optional.
+  Sets the variables
+
+  * :variable:`PROJECT_SPDX_LICENSE`,
+    :variable:`<PROJECT-NAME>_SPDX_LICENSE`
+
+  to ``<license-string>``, which shall be a |SPDX|_ (SPDX)
+  `License Expression`_ that describes the license(s) of the project as a
+  whole, including documentation, resources, or other materials distributed
+  with the project, in addition to software artifacts. See the SPDX
+  `License List`_ for a list of commonly used licenses and their identifiers.
+  See the :prop_tgt:`SPDX_LICENSE` property for specifying the license(s) on
+  individual software artifacts.
+
+.. _SPDX: https://spdx.dev/
+.. |SPDX| replace:: System Package Data Exchange
+
+.. _License Expression: https://spdx.github.io/spdx-spec/v3.0.1/annexes/spdx-license-expressions/
+.. _License List: https://spdx.org/licenses/
+
+``DESCRIPTION <description-string>``
   .. versionadded:: 3.9
 
   可选。
@@ -105,7 +129,7 @@ project
 
   * :variable:`PROJECT_DESCRIPTION`, :variable:`<PROJECT-NAME>_DESCRIPTION`
 
-  为\ ``<project-description-string>``。\
+  为\ ``<description-string>``。\
   建议这个描述是一个相对较短的字符串，\
   通常不超过几个词。
 
@@ -139,7 +163,7 @@ project
 默认情况下，如果未指定语言选项，则会启用\ ``C``\ 和\ ``CXX``。指定语言为\ ``NONE``，\
 或者使用\ ``LANGUAGES``\ 关键字且不列出任何语言，可以跳过启用任何语言。
 
-通过\ ``VERSION``、\ ``COMPAT_VERSION``、\ ``DESCRIPTION``\ 和\ ``HOMEPAGE_URL``\
+通过\ ``VERSION``、\ ``COMPAT_VERSION``、\ ``SPDX_LICENSE``、\ ``DESCRIPTION``\ 和\ ``HOMEPAGE_URL``\
 选项设置的变量旨在用作包元数据和文档中的默认值。:command:`export`\ 和\
 :command:`install`\ 命令在生成\ |CPS|\ 包描述时会相应地使用这些值。
 

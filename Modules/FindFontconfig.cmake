@@ -7,7 +7,11 @@ FindFontconfig
 
 .. versionadded:: 3.14
 
-查找Fontconfig，这是一个用于字体配置和自定义的库。
+查找Fontconfig，这是一个用于字体配置和自定义的库：
+
+.. code-block:: cmake
+
+  find_package(Fontconfig [<version>] [...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -24,7 +28,7 @@ Result Variables
 This module defines the following variables:
 
 ``Fontconfig_FOUND``
-  Boolean indicating whether the (requested version of) Fontconfig is found.
+  Boolean indicating whether (the requested version of) Fontconfig was found.
 ``Fontconfig_VERSION``
   The version of Fontconfig found.
 ``Fontconfig_LIBRARIES``
@@ -53,7 +57,7 @@ cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 # use pkg-config to get the directories and then use these values
 # in the find_path() and find_library() calls
 find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
+if(PkgConfig_FOUND)
   pkg_check_modules(PKG_FONTCONFIG QUIET fontconfig)
 endif()
 set(Fontconfig_COMPILE_OPTIONS ${PKG_FONTCONFIG_CFLAGS_OTHER})

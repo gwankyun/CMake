@@ -1,71 +1,22 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.23)
 
-# 设置工程名及版本号
-project(Tutorial VERSION 1.0)
+project(Tutorial)
 
-# specify the C++ standard
-add_library(tutorial_compiler_flags INTERFACE)
-target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_11)
+option(TUTORIAL_BUILD_UTILITIES "Build the Tutorial executable" ON)
+option(TUTORIAL_USE_STD_SQRT "Use std::sqrt" OFF)
 
-# add compiler warning flags just when building this project via
-# the BUILD_INTERFACE genex
-set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
-set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
-target_compile_options(tutorial_compiler_flags INTERFACE
-  "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wshadow;-Wformat=2;-Wunused>>"
-  "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
-)
+# TODO6: Add a default-ON option named TUTORIAL_ENABLE_IPO with a doc string:
+#          "Check for and use IPO support"
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file(TutorialConfig.h.in TutorialConfig.h)
+# TODO7: Include and use the CheckIPOSupported module to enable IPO if
+#        TUTORIAL_ENABLE_IPO is True. To enable IPO, use:
+#          set(CMAKE_INTERPROCEDURAL_OPTIMIZATION True)
+#        Otherwise, follow the examples in the CheckIPOSupported documentation.
+#        Specifically, follow the documentation example to emit an error message
+#        if IPO is unavailable.
 
-# 添加MathFunctions库
+if(TUTORIAL_BUILD_UTILITIES)
+  add_subdirectory(Tutorial)
+endif()
+
 add_subdirectory(MathFunctions)
-
-# 添加可执行文件
-add_executable(Tutorial tutorial.cxx)
-
-target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
-
-# 添加二进制树到引用目录的搜索路径
-# 以便找到TutorialConfig.h
-target_include_directories(Tutorial PUBLIC
-                           "${PROJECT_BINARY_DIR}"
-                           )
-
-# 添加安装目标
-install(TARGETS Tutorial DESTINATION bin)
-install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
-  DESTINATION include
-  )
-
-# TODO 1: Replace enable_testing() with include(CTest)
-  # 启用测试
-enable_testing()
-
-# 程序是否运行
-add_test(NAME Runs COMMAND Tutorial 25)
-
-# 用例输出有效吗？
-add_test(NAME Usage COMMAND Tutorial)
-set_tests_properties(Usage
-  PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*number"
-  )
-
-# 定义一个函数来简化添加测试
-function(do_test target arg result)
-  add_test(NAME Comp${arg} COMMAND ${target} ${arg})
-  set_tests_properties(Comp${arg}
-    PROPERTIES PASS_REGULAR_EXPRESSION ${result}
-    )
-endfunction()
-
-# 跑一些基于结果的测试
-do_test(Tutorial 4 "4 is 2")
-do_test(Tutorial 9 "9 is 3")
-do_test(Tutorial 5 "5 is 2.236")
-do_test(Tutorial 7 "7 is 2.645")
-do_test(Tutorial 25 "25 is 5")
-do_test(Tutorial -25 "-25 is (-nan|nan|0)")
-do_test(Tutorial 0.0001 "0.0001 is 0.01")

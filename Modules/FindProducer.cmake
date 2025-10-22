@@ -14,7 +14,11 @@ FindProducer
   library became obsolete and is no longer maintained.  For details about
   OpenSceneGraph usage, refer to the :module:`FindOpenSceneGraph` module.
 
-此模块用于查找Producer库，这是一个主要为实时图形应用程序设计的窗口和事件处理库。
+用于查找Producer库，这是一个主要为实时图形应用程序设计的窗口和事件处理库：
+
+.. code-block:: cmake
+
+  find_package(Producer [...])
 
 Producer library headers are intended to be included in C++ project source code
 as:
@@ -30,8 +34,9 @@ Result Variables
 This module defines the following variables:
 
 ``Producer_FOUND``
-  Boolean indicating whether Producer is found.  For backward compatibility, the
-  ``PRODUCER_FOUND`` variable is also set to the same value.
+  .. versionadded:: 3.3
+
+  Boolean indicating whether Producer was found.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
@@ -66,6 +71,17 @@ multiple OpenSceneGraph-related libraries at once:
 
 ``OSG_DIR``
   Environment variable treated the same as ``PRODUCER_DIR``.
+
+Deprecated Variables
+^^^^^^^^^^^^^^^^^^^^
+
+The following variables are provided for backward compatibility:
+
+``PRODUCER_FOUND``
+  .. deprecated:: 4.2
+    Use ``Producer_FOUND``, which has the same value.
+
+  Boolean indicating whether Producer was found.
 
 Examples
 ^^^^^^^^

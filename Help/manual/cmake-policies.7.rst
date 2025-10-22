@@ -27,9 +27,9 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 .. code-block:: cmake
 
-  cmake_minimum_required(VERSION 3.10...4.0)
+  cmake_minimum_required(VERSION 3.10...4.1)
 
-这使用了\ ``<min>...<max>``\ 语法，以启用CMake 4.0及更早版本引入的策略的\ ``NEW``\ 行为，\
+这使用了\ ``<min>...<max>``\ 语法，以启用CMake 4.1及更早版本引入的策略的\ ``NEW``\ 行为，\
 同时仅要求最低版本为CMake 3.10。预计该项目在这两个版本之间引入的策略的\ ``OLD``\ 行为和\
 ``NEW``\ 行为下都能正常工作。
 
@@ -78,7 +78,21 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 以下策略是受支持的。
 
-CMake 4.1引入的策略
+Policies Introduced by CMake 4.2
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0204: A character set is always defined when targeting the MSVC ABI. </policy/CMP0204>
+   CMP0203: _WINDLL is defined for shared libraries targeting the MSVC ABI. </policy/CMP0203>
+   CMP0202: PDB file names always include their target's per-config POSTFIX. </policy/CMP0202>
+   CMP0201: Python::NumPy does not depend on Python::Development.Module. </policy/CMP0201>
+   CMP0200: Location and configuration selection for imported targets is more consistent. </policy/CMP0200>
+   CMP0199: $<CONFIG> only matches the configuration of the consumed target. </policy/CMP0199>
+   CMP0198: CMAKE_PARENT_LIST_FILE is not defined in CMakeLists.txt. </policy/CMP0198>
+
+Policies Introduced by CMake 4.1
 --------------------------------
 
 .. toctree::

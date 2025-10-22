@@ -1219,11 +1219,10 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 ``INTERFACE``\ 库目标不会编译源代码，也不会在磁盘上生成库工件，因此它没有\ :prop_tgt:`LOCATION`。
 
-它可以指定使用要求，如\ :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`、\
-:prop_tgt:`INTERFACE_COMPILE_DEFINITIONS`、:prop_tgt:`INTERFACE_COMPILE_OPTIONS`、\
-:prop_tgt:`INTERFACE_LINK_LIBRARIES`、:prop_tgt:`INTERFACE_SOURCES`\ 和\
-:prop_tgt:`INTERFACE_POSITION_INDEPENDENT_CODE`。只有\
-:command:`target_include_directories`、:command:`target_compile_definitions`、\
+It may specify `usage requirements <Target Usage Requirements_>`_,
+`compatible interface properties <Compatible Interface Properties_>`_, and
+`custom transitive properties <Custom Transitive Properties_>`_.
+只有\ :command:`target_include_directories`、:command:`target_compile_definitions`、\
 :command:`target_compile_options`、:command:`target_sources`\ 和\
 :command:`target_link_libraries`\ 命令的\ ``INTERFACE``\ 模式可以与\ ``INTERFACE``\
 库一起使用。
@@ -1289,5 +1288,30 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
     DESTINATION lib/cmake/Eigen
   )
 
-在这里，定义在头文件集中的头文件被安装在\ ``include/Eigen``。安装目标自动成为用户使用要求\
-的包含目录。
+Here, the headers defined in the header set are installed to ``include/Eigen``.
+The install destination automatically becomes an include directory that is a
+usage requirement for consumers.
+
+Properties Allowed on Interface Libraries
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Since CMake 3.19, interface libraries allow setting or reading target
+properties with any name, just like other target kinds always have.
+
+Prior to CMake 3.19, interface libraries only allowed setting or reading
+target properties with a limited set of names:
+
+* Properties named with an ``INTERFACE_`` prefix, either builtin
+  `usage requirements <Target Usage Requirements_>`_, or custom names.
+
+* Built-in properties named with a ``COMPATIBLE_INTERFACE_`` prefix
+  (`compatible interface properties <Compatible Interface Properties_>`_).
+
+* Built-in properties :prop_tgt:`NAME`, :prop_tgt:`EXPORT_NAME`,
+  :prop_tgt:`EXPORT_PROPERTIES`, :prop_tgt:`MANUALLY_ADDED_DEPENDENCIES`,
+  :prop_tgt:`IMPORTED`, :prop_tgt:`IMPORTED_LIBNAME_<CONFIG>`, and
+  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`.
+
+* .. versionadded:: 3.11
+    Properties named with a leading underscore (``_``)
+    or lowercase ASCII character.

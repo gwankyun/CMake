@@ -7,8 +7,14 @@ FindIconv
 
 .. versionadded:: 3.11
 
-该模块查找系统上的\ ``iconv()`` POSIX.1函数。这些函数可以在标准C库中提供，也可以在外部以\
-附加库的形式提供。
+查找系统上的\ ``iconv()`` POSIX.1函数：
+
+.. code-block:: cmake
+
+  find_package(Iconv [<version>] [...])
+
+Iconv functions might be provided in the standard C library or externally
+in the form of an additional library.
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -25,13 +31,8 @@ Result Variables
 This module defines the following variables:
 
 ``Iconv_FOUND``
-  Boolean indicating if the iconv support was found.
-
-``Iconv_INCLUDE_DIRS``
-  The include directories containing the iconv headers.
-
-``Iconv_LIBRARIES``
-  The iconv libraries to be linked.
+  Boolean indicating whether the (requested version of) iconv support was
+  found.
 
 ``Iconv_VERSION``
   .. versionadded:: 3.21
@@ -52,16 +53,22 @@ This module defines the following variables:
 
   The minor version of iconv.
 
-``Iconv_IS_BUILT_IN``
-  A boolean variable indicating whether iconv support is stemming from the C
-  standard library or not.  Even if the C library provides ``iconv()``, the
-  presence of an external ``libiconv`` implementation might lead to this being
-  false.
+``Iconv_INCLUDE_DIRS``
+  The include directories containing the iconv headers.
+
+``Iconv_LIBRARIES``
+  The iconv libraries to be linked.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
 
 The following cache variables may also be set:
+
+``Iconv_IS_BUILT_IN``
+  A boolean variable indicating whether iconv support is stemming from the C
+  standard library or not.  Even if the C library provides ``iconv()``, the
+  presence of an external ``libiconv`` implementation might lead to this being
+  false.
 
 ``Iconv_INCLUDE_DIR``
   The directory containing the iconv headers.

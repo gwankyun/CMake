@@ -7,7 +7,7 @@ UseEcos
 
 此模块定义变量并提供构建eCos应用程序所需的命令。
 
-Load this module in CMake project with:
+Load this module in a CMake project with:
 
 .. code-block:: cmake
 

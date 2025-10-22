@@ -599,5 +599,24 @@ watchOS   watchOS           watchos              watchsimulator   N/A
 - 使用显式的\ ``-framework``\ 链接器标志，例如\
   ``target_link_libraries(foo PUBLIC "-framework CoreFoundation")``
 
-- :command:`find_package`\ 仅用于安装了\ :variable:`CMAKE_IOS_INSTALL_COMBINED`\
-  特性的库
+- Use :command:`find_package` only for libraries installed with
+  :variable:`CMAKE_IOS_INSTALL_COMBINED` feature
+
+.. _`Cross Compiling for Emscripten`:
+
+Cross Compiling for Emscripten
+------------------------------
+
+.. versionadded:: 4.2
+
+A toolchain file may configure cross-compiling for `Emscripten`_ by
+setting the :variable:`CMAKE_SYSTEM_NAME` variable to ``Emscripten``.
+For example, a toolchain file might contain:
+
+.. code-block:: cmake
+
+  set(CMAKE_SYSTEM_NAME Emscripten)
+  set(CMAKE_C_COMPILER /path/to/emcc)
+  set(CMAKE_CXX_COMPILER /path/to/em++)
+
+.. _`Emscripten`: https://emscripten.org/

@@ -5,7 +5,11 @@
 FindHTMLHelp
 ------------
 
-此模块用于查找Microsoft HTML帮助编译器及其API。它是HTML Help Workshop的一部分。
+此模块用于查找Microsoft HTML帮助编译器及其API。它是HTML Help Workshop的一部分：
+
+.. code-block:: cmake
+
+  find_package(HTMLHelp [...])
 
 .. note::
 
@@ -13,10 +17,20 @@ FindHTMLHelp
   For modern documentation, consider alternatives such as Microsoft Help Viewer
   for producing ``.mshc`` files or web-based documentation tools.
 
+Result Variables
+^^^^^^^^^^^^^^^^
+
+This module defines the following variables:
+
+``HTMLHelp_FOUND``
+  .. versionadded:: 4.2
+
+  Boolean indicating whether HTML Help was found.
+
 Cache Variables
 ^^^^^^^^^^^^^^^
 
-This module may set the following cache variables:
+The following cache variables may also be set:
 
 ``HTML_HELP_COMPILER``
   Full path to the HTML Help Compiler (``hhc.exe``), used to compile ``.chm``
@@ -72,4 +86,10 @@ if(WIN32)
     HTML_HELP_LIBRARY
     )
 
+endif()
+
+if(HTML_HELP_COMPILER AND HTML_HELP_INCLUDE_PATH AND HTML_HELP_LIBRARY)
+  set(HTMLHelp_FOUND TRUE)
+else()
+  set(HTMLHelp_FOUND FALSE)
 endif()

@@ -7,9 +7,15 @@ FindODBC
 
 .. versionadded:: 3.12
 
-查找开放数据库连接（ODBC）库，该库实现了用于访问数据库系统的标准API。ODBC使应用\
-程序能够使用一组通用函数与不同的数据库管理系统（DBMS）通信。与特定数据库的通信\
-通过ODBC驱动程序处理，该库在运行时加载这些驱动程序。
+查找开放数据库连接（ODBC）库，该库实现了用于访问数据库系统的标准API：
+
+.. code-block:: cmake
+
+  find_package(ODBC [...])
+
+ODBC enables applications to communicate with different database management
+systems (DBMS) using a common set of functions.  Communication with a specific
+database is handled through ODBC drivers, which the library loads at runtime.
 
 On Windows, when building with Visual Studio, this module assumes the ODBC
 library is provided by the available Windows SDK.
@@ -34,7 +40,7 @@ Result Variables
 This module defines the following variables:
 
 ``ODBC_FOUND``
-  Boolean indicating whether ODBC is found.
+  Boolean indicating whether ODBC was found.
 
 ``ODBC_INCLUDE_DIRS``
   Include directories containing headers needed to use ODBC.
@@ -74,19 +80,19 @@ Limitations
 Examples
 ^^^^^^^^
 
-Finding and using ODBC
-""""""""""""""""""""""
+Example: Finding and Using ODBC
+"""""""""""""""""""""""""""""""
 
 Finding ODBC and linking it to a project target:
 
 .. code-block:: cmake
-  :caption: CMakeLists.txt
+  :caption: ``CMakeLists.txt``
 
   find_package(ODBC)
   target_link_libraries(project_target PRIVATE ODBC::ODBC)
 
-Finding a custom ODBC installation on Unix-like systems
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Example: Finding a Custom ODBC Installation
+"""""""""""""""""""""""""""""""""""""""""""
 
 The following examples are for Unix-like systems and demonstrate how to set hint
 and cache variables during the CMake configuration phase to help this module

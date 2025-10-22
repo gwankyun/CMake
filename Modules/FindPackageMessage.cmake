@@ -5,11 +5,14 @@
 FindPackageMessage
 ------------------
 
-此模块提供了一个用于打印查找结果消息的命令，旨在供\ :ref:`Find Modules`\ 使用。
+此模块提供了一个用于打印查找结果消息的命令，旨在供\ :ref:`Find Modules`\ 使用\
+implementing
+:command:`find_package(<PackageName>)` calls.
 
-Load it in a CMake find module with:
+Load this module in a CMake find module with:
 
 .. code-block:: cmake
+  :caption: ``FindFoo.cmake``
 
   include(FindPackageMessage)
 

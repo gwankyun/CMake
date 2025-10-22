@@ -7,7 +7,7 @@ CMakeAddFortranSubdirectory
 
 本模块提供了一个命令，用于添加位于子目录中的Fortran项目。
 
-Load it in a CMake project with:
+Load this module in a CMake project with:
 
 .. code-block:: cmake
 

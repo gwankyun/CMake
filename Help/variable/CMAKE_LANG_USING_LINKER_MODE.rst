@@ -1,10 +1,17 @@
 CMAKE_<LANG>_USING_LINKER_MODE
 ------------------------------
 
+.. deprecated:: 4.0
+
+  This variable is no longer used.  The type of information stored in the
+  :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>` variable is determined by
+  the :variable:`CMAKE_<LANG>_LINK_MODE` variable.
+
 .. versionadded:: 3.29
 
-这控制了如何解释\ :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>`\ 变量的值。支持的链接器\
-模式值为：
+This variable controls how the value of the
+:variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>` variable should be interpreted.
+The supported linker mode values are:
 
 ``FLAG``
   :variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>` holds a
@@ -22,11 +29,5 @@ CMAKE_<LANG>_USING_LINKER_MODE
 
   * value ``TOOL`` is expected and required when the linker is used directly
     for the link step.
-  * value ``FLAGS`` is expected or the variable not set when the compiler is
+  * value ``FLAG`` is expected or the variable not set when the compiler is
     used as driver for the link step.
-
-.. deprecated:: 4.0
-
-This variable is no longer used. The type of information stored in the
-:variable:`CMAKE_<LANG>_USING_LINKER_<TYPE>` variable is determined by the
-:variable:`CMAKE_<LANG>_LINK_MODE` variable.

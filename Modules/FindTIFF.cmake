@@ -5,25 +5,30 @@
 FindTIFF
 --------
 
-查找\ `TIFF庫 <https://libtiff.gitlab.io/libtiff/>`_\ （\ ``libtiff``\ ）。\
+Finds the `TIFF library <https://libtiff.gitlab.io/libtiff/>`_ (``libtiff``):
+
+.. code-block:: cmake
+
+  find_package(TIFF [<version>] [COMPONENTS <components>...] [...])
+
 此模块还会考虑上游TIFF库导出的CMake包配置（如果可用的话）。
 
 Components
 ^^^^^^^^^^
 
-This module supports the following components:
+This module supports optional components which can be specified with:
+
+.. code-block:: cmake
+
+  find_package(TIFF [COMPONENTS <components>...])
+
+Supported components include:
 
 ``CXX``
   .. versionadded:: 3.19
 
   Optional component that ensures that the C++ wrapper library (``libtiffxx``)
   is found.
-
-Components can be specified using the standard syntax:
-
-.. code-block:: cmake
-
-  find_package(TIFF [COMPONENTS <components>...])
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -50,10 +55,12 @@ Result Variables
 This module defines the following variables:
 
 ``TIFF_FOUND``
-  Boolean indicating whether the TIFF is found.
+  Boolean indicating whether (the requested version of) TIFF is found.
 
-``TIFF_VERSION_STRING``
-  The version of the TIFF library found.
+``TIFF_VERSION``
+  .. versionadded:: 4.2
+
+  The version of TIFF library found.
 
 ``TIFF_INCLUDE_DIRS``
   The directory containing the TIFF headers.
@@ -88,6 +95,17 @@ The following cache variables may also be set:
   .. versionadded:: 3.19
 
   The path to the TIFFXX library for debug configurations.
+
+Deprecated Variables
+^^^^^^^^^^^^^^^^^^^^
+
+The following variables are provided for backward compatibility:
+
+``TIFF_VERSION_STRING``
+  .. deprecated:: 4.2
+    Superseded by the ``TIFF_VERSION``.
+
+  The version of TIFF library found.
 
 Examples
 ^^^^^^^^
@@ -243,7 +261,8 @@ if (Tiff_FOUND)
       endif ()
     endif ()
   endif ()
-  set(TIFF_VERSION_STRING "${Tiff_VERSION}")
+  set(TIFF_VERSION "${Tiff_VERSION}")
+  set(TIFF_VERSION_STRING "${TIFF_VERSION}")
   foreach (_TIFF_component IN LISTS TIFF_FIND_COMPONENTS)
     set(TIFF_${_TIFF_component}_FOUND "${Tiff_${_TIFF_component}_FOUND}")
   endforeach ()
@@ -253,7 +272,7 @@ if (Tiff_FOUND)
   find_package_handle_standard_args(TIFF
                                     HANDLE_COMPONENTS
                                     REQUIRED_VARS Tiff_DIR
-                                    VERSION_VAR TIFF_VERSION_STRING)
+                                    VERSION_VAR TIFF_VERSION)
 
   cmake_policy(POP)
   return ()
@@ -279,7 +298,8 @@ if(TIFF_INCLUDE_DIR AND EXISTS "${TIFF_INCLUDE_DIR}/tiffvers.h")
          REGEX "^#define[\t ]+TIFFLIB_VERSION_STR[\t ]+\"LIBTIFF, Version .*")
 
     string(REGEX REPLACE "^#define[\t ]+TIFFLIB_VERSION_STR[\t ]+\"LIBTIFF, Version +([^ \\n]*).*"
-           "\\1" TIFF_VERSION_STRING "${tiff_version_str}")
+           "\\1" TIFF_VERSION "${tiff_version_str}")
+    set(TIFF_VERSION_STRING "${TIFF_VERSION}")
     unset(tiff_version_str)
 endif()
 
@@ -315,7 +335,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(TIFF
                                   HANDLE_COMPONENTS
                                   REQUIRED_VARS TIFF_LIBRARY TIFF_INCLUDE_DIR
-                                  VERSION_VAR TIFF_VERSION_STRING)
+                                  VERSION_VAR TIFF_VERSION)
 
 if(TIFF_FOUND)
   set(TIFF_LIBRARIES ${TIFF_LIBRARY})
