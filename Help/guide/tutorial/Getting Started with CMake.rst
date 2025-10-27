@@ -1,28 +1,20 @@
-Step 1: Getting Started with CMake
+步骤1： CMake入门
 ==================================
 
-This first step in the CMake tutorial is intended as a quick-start into writing
-useful builds for small projects with CMake. By the end, you will be able to
-describe executables, libraries, source and header files, and the linkage
-relationships between them using CMake.
+CMake教程的第一步旨在作为使用CMake为小型项目编写实用构建脚本的快速入门。到最后，\
+你将能够使用CMake描述可执行文件、库、源文件和头文件以及它们之间的链接关系。
 
-Each exercise in this step will start with a discussion of the concepts and
-commands needed for the exercise. Then, a goal and list of helpful resources are
-provided. Each file in the ``Files to Edit`` section is in the ``Step1``
-directory and contains one or more ``TODO`` comments. Each ``TODO`` represents
-a line or two of code to change or add. The ``TODOs`` are intended to be
-completed in numerical order, first complete  ``TODO 1`` then ``TODO 2``, etc.
+本步骤中的每个练习都将从讨论该练习所需的概念和命令开始。然后，会提供一个目标和\
+有用的资源列表。\ ``Files to Edit``\ 部分中的每个文件都位于\ ``Step1``\ 目录中，\
+并包含一个或多个\ ``TODO``\ 注释。每个\ ``TODO``\ 代表需要修改或添加的一两行代码。\
+这些\ ``TODOs``\ 应按数字顺序完成，先完成\ ``TODO 1``，然后是\ ``TODO 2``，依此类推。
 
 .. note::
-  Each step in the tutorial builds on the previous, but the steps are not
-  strictly contiguous. Code not relevant to learning CMake, such as C++
-  function implementations or CMake code outside the scope of the tutorial,
-  will sometimes be added between steps.
+  教程中的每个步骤都建立在之前的步骤之上，但步骤并非严格连续。与学习CMake无关的\
+  代码（例如C++函数实现或教程范围之外的CMake代码）有时会在步骤之间添加。
 
-The ``Getting Started`` section will give some helpful hints and guide you
-through the exercise. Then the ``Build and Run`` section will walk step-by-step
-through how to build and test the exercise. Finally, at the end of each exercise
-the intended solution is reviewed.
+``Getting Started``\ 部分将提供一些有用的提示并指导你完成练习。然后\ ``Build and Run``\
+部分将逐步介绍如何构建和测试练习。最后，在每个练习的末尾会回顾预期的解决方案。
 
 Background
 ^^^^^^^^^^
