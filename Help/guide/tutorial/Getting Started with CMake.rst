@@ -16,21 +16,17 @@ CMake教程的第一步旨在作为使用CMake为小型项目编写实用构建�
 ``Getting Started``\ 部分将提供一些有用的提示并指导你完成练习。然后\ ``Build and Run``\
 部分将逐步介绍如何构建和测试练习。最后，在每个练习的末尾会回顾预期的解决方案。
 
-Background
+背景
 ^^^^^^^^^^
 
-Typical usage of CMake revolves around one or more files named
-``CMakeLists.txt``. This file is sometimes referred to as a "lists file" or
-"CML". Within a given software project, a ``CMakeLists.txt`` will exist within
-any directory where we want to provide instructions to CMake on how to handle
-files and operations local to that directory or subdirectories. Each consists of
-a set of commands which describe some information or actions relevant to
-building the software project.
+CMake的典型用法围绕着一个或多个名为\ ``CMakeLists.txt``\ 的文件展开。此文件有时\
+也被称为“列表文件”或“CML”。在特定的软件项目中，任何我们希望向CMake提供关于如何处\
+理该目录或子目录中本地文件和操作的指令的目录中，都会存在一个\ ``CMakeLists.txt``\
+文件。每个文件都包含一组命令，这些命令描述了与构建软件项目相关的一些信息或操作。
 
-Not every directory in a software project needs a CML, but it's strongly
-recommended that the project root contains one. This will serve as the entry
-point for CMake for its initial setup during configuration. This *root* CML
-should always contain the same two commands at or near the top the file.
+并非软件项目中的每个目录都需要CML，但强烈建议项目根目录包含一个。它将作为CMake\
+在配置期间进行初始设置的入口点。这个\ *根*\ CML文件在文件顶部或附近应该始终包含\
+两个相同的命令。
 
 .. code-block:: cmake
 
@@ -38,45 +34,36 @@ should always contain the same two commands at or near the top the file.
 
   project(MyProjectName)
 
-The :command:`cmake_minimum_required` is a compatibility guarantee provided by
-CMake to the project developer. When called, it ensures that CMake will adopt
-the behavior of the listed version. If a later version of CMake is invoked on a
-CML containing the above code, it will act exactly as if it were CMake 3.23.
+命令\ :command:`cmake_minimum_required`\ 是CMake向项目开发者提供的兼容性保证。\
+调用它时，它确保CMake将采用列出版本的行为。如果在包含上述代码的CML上调用更高版本的\
+CMake，它的行为将完全如同是CMake 3.23版本。
 
-The :command:`project` command is a conceptually simple command which provides a
-complex function. It informs CMake that what follows is the description of a
-distinct software project of a given name (as opposed to a shell-like script).
-When CMake sees the :command:`project` command it performs various checks to
-ensure the environment is suitable for building software; such as checking for
-compilers and other build tooling, and discovering properties like the
-endianness of the host and target machines.
+:command:`project`\ 命令在概念上是一个简单的命令，但却提供了复杂的功能。它告诉\
+CMake，接下来是对一个具有给定名称的独立软件项目的描述（而不是类似shell的脚本）。\
+当CMake看到\ :command:`project`\ 命令时，它会执行各种检查以确保环境适合构建软件；\
+例如检查编译器和其他构建工具，以及发现主机和目标机器的字节序等属性。
 
 .. note::
-  While links to complete documentation are provided for every command, it is
-  not intended the reader understand the full semantics of each CMake command
-  they use. Effectively learning CMake, like any piece of software, is an
-  incremental process.
+  虽然每个命令都提供了完整文档的链接，但并不要求读者理解他们使用的每个CMake命令\
+  的全部语义。与学习任何软件一样，有效地学习CMake是一个渐进的过程。
 
-The rest of this tutorial step will be chiefly concerned with the usage of four
-more commands. The :command:`add_executable` and :command:`add_library` commands
-for describing output artifacts the software project wants to produce, the
-:command:`target_sources` command for associating input files with their
-respective output artifacts, and the :command:`target_link_libraries` command
-for associating output artifacts with one another.
+本教程步骤的其余部分将主要关注四个命令的使用。\ :command:`add_executable`\ 和\
+:command:`add_library`\ 命令用于描述软件项目想要生成的输出产物，\
+:command:`target_sources`\ 命令用于将输入文件与其各自的输出产物相关联，以及\
+:command:`target_link_libraries`\ 命令用于将输出产物彼此关联起来。
 
-These four commands are the backbone of most CMake usage. As we'll learn, they
-are sufficient for describing the majority of a typical project's requirements.
+这四个命令是大多数CMake使用场景的核心。正如我们将了解到的，它们足以描述典型项目\
+的大多数需求。
 
-Exercise 1 - Building an Executable
+练习1 - 构建可执行文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The most basic CMake project is an executable built from a single source code
-file. For simple projects like this, a ``CMakeLists.txt`` file with only
-four commands is needed.
+最基本的CMake项目是一个从单个源代码文件构建的可执行文件。对于这样的简单项目，\
+只需要一个包含四个命令的\ ``CMakeLists.txt``\ 文件。
 
 .. note::
-  Although upper, lower and mixed case commands are supported by CMake,
-  lower case commands are preferred and will be used throughout the tutorial.
+  尽管CMake支持大写、小写和混合大小写的命令，但更推荐使用小写命令，并且在本教程\
+  中将始终使用小写命令。
 
 The first two commands we have already introduced, :command:`cmake_minimum_required`
 and :command:`project`. There is no usage of CMake where the first command in a
