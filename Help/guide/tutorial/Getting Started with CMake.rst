@@ -65,28 +65,24 @@ CMake，接下来是对一个具有给定名称的独立软件项目的描述（
   尽管CMake支持大写、小写和混合大小写的命令，但更推荐使用小写命令，并且在本教程\
   中将始终使用小写命令。
 
-The first two commands we have already introduced, :command:`cmake_minimum_required`
-and :command:`project`. There is no usage of CMake where the first command in a
-root CML will be anything other than :command:`cmake_minimum_required`. There
-are some advanced usages where :command:`project` might not be the second
-command in a CML, but for our purposes it always will be.
+我们已经介绍了前两个命令：\ :command:`cmake_minimum_required`\ 和\ :command:`project`。\
+在CMake使用中，根CML文件中的第一个命令必定是\ :command:`cmake_minimum_required`。\
+虽然在一些高级用法中，\ :command:`project`\ 可能不是CML的第二个命令，但就我们的\
+目的而言，它始终是第二个命令。
 
-The next command we need is :command:`add_executable`.
-This command creates a *target*. In CMake lingo, a target is a name the
-developer gives to a collection of properties.
+接下来我们需要的命令是\ :command:`add_executable`。\
+这个命令会创建一个\ *目标*。在CMake术语中，目标是开发者为一组属性赋予的名称。
 
-Some examples of properties a target might want to keep track of are:
-  - The artifact kind (executable, library, header collection, etc)
-  - Source files
-  - Include directories
-  - Output name of an executable or library
-  - Dependencies
-  - Compiler and linker flags
+目标可能需要跟踪的一些属性示例包括:
+  - 构件类型（可执行文件、库、头文件集合等）
+  - 源文件
+  - 包含目录
+  - 可执行文件或库的输出名称
+  - 依赖项
+  - 编译器和链接器标志
 
-The mechanisms of CMake are often best understood as describing and manipulating
-targets and their properties. There are many more properties than those listed
-here. Documentation of CMake commands will often discuss their function in terms
-of the target properties they operate on.
+CMake的机制通常最好被理解为对目标及其属性的描述和操作。目标的属性远不止这里列出的\
+这些。CMake命令的文档通常会从它们所操作的目标属性的角度来讨论其功能。
 
 Targets themselves are simply names, a handle to this collection of properties.
 Using the :command:`add_executable` command is as easy as specifying the name
