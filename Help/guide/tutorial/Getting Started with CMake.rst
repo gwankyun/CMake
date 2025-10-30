@@ -84,18 +84,16 @@ CMake，接下来是对一个具有给定名称的独立软件项目的描述（
 CMake的机制通常最好被理解为对目标及其属性的描述和操作。目标的属性远不止这里列出的\
 这些。CMake命令的文档通常会从它们所操作的目标属性的角度来讨论其功能。
 
-Targets themselves are simply names, a handle to this collection of properties.
-Using the :command:`add_executable` command is as easy as specifying the name
-we want to use for the target.
+目标本身只不过是名称，是这个属性集合的句柄。使用\ :command:`add_executable`\
+命令就像指定我们想要用于目标的名称一样简单。
 
 .. code-block:: cmake
 
   add_executable(MyProgram)
 
-Now that we have a name for our target, we can start associating properties
-with it like source files we want to build and link. The primary command for
-this is :command:`target_sources`, which takes as arguments a target name
-followed by one or more collections of files.
+现在我们已经为目标命名，我们可以开始为其关联属性，如我们想要构建和链接的源文件。\
+为此，主要命令是\ :command:`target_sources`，它接受目标名称以及一个或多个文件集合\
+作为参数。
 
 .. code-block:: cmake
 
@@ -105,27 +103,21 @@ followed by one or more collections of files.
   )
 
 .. note::
-  Paths in CMake are generally either absolute, or relative to the
-  :variable:`CMAKE_CURRENT_SOURCE_DIR`. We haven't talked about variables like
-  that yet, so you can read this as "relative to the location of the current
-  CML".
+  CMake中的路径通常是绝对路径，或者相对于\ :variable:`CMAKE_CURRENT_SOURCE_DIR`\
+  的路径。我们还没有讨论过这样的变量，所以你可以理解为“相对于当前CML的位置”。
 
-Each collection of files is prefixed by a :ref:`scope keyword <Target Command Scope>`.
-We'll discuss the complete semantics of these keywords when we talk about
-linking targets together, but the quick explanation is these describe how a
-property should be inherited by dependents of our target.
+每个文件集合都以一个\ :ref:`作用域关键字 <Target Command Scope>`\ 作为前缀。我们将\
+在讨论链接目标时讨论这些关键字的完整语义，但简单解释是，这些关键字描述了属性应该\
+如何被目标的依赖项继承。
 
-Typically, nothing depends on an executable. Other programs and libraries don't
-need to link to an executable, or inherit headers, or anything of that nature.
-So the appropriate scope to use here is ``PRIVATE``, which informs CMake that
-this property only belongs to ``MyProgram`` and is not inheritable.
+通常，没有任何东西依赖于可执行文件。其他程序和库不需要链接到可执行文件，或者继承\
+头文件，或者任何类似的东西。因此，这里使用的适当作用域是\ ``PRIVATE``，它告诉\
+CMake该属性仅属于\ ``MyProgram``，不可被继承。
 
 .. note::
-  This rule is true almost everywhere. Outside advanced and esoteric usages,
-  the scope keyword for executables should *always* be ``PRIVATE``. The same
-  holds for implementation files generally, regardless of whether the target
-  is an executable or a library. The only target which needs to "see" the
-  ``.cxx`` files is the target building them.
+  这条规则几乎在所有地方都适用。除了高级和深奥的用法外，可执行文件的作用域关键字\
+  应该\ *始终*\ 是\ ``PRIVATE``。对于实现文件来说也是如此，无论目标是可执行文件\
+  还是库。唯一需要“看到”\ ``.cxx``\ 文件的目标是构建它们的目标。
 
 Goal
 ----
