@@ -1,76 +1,63 @@
-Step 9: Installation Commands and Concepts
+步骤9： 安装命令和概念
 ==========================================
 
-Projects need to do more than build and test their code, they need to make it
-available to consumers. The layout of files in the build tree is unsuitable
-for consumption by other projects, binaries are in unexpected places, header
-files are located far away in the source tree, and there's no clear way
-to discover what targets are provided or how to use them.
+项目不仅需要构建和测试代码，还需要将其提供给用户使用。构建树中的文件布局不适合\
+其他项目使用：二进制文件位于非预期位置，头文件在源代码树中位置过深，并且没有明确\
+的方法来了解提供了哪些目标或如何使用它们。
 
-This translation, moving artifacts from the source and build trees into a final
-layout suitable for consumption, is known as installation. CMake supports a
-complete installation workflow as part of the project description, controlling
-both the layout of artifacts in the install tree, and reconstructing targets
-for other CMake projects which want to consume the libraries provided by the
-install tree.
+这种将制品从源代码树和构建树移动到适合使用的最终布局的过程被称为安装。CMake支持\
+将完整的安装工作流程作为项目描述的一部分，它既控制安装树中制品的布局，也为其他想\
+要使用安装树提供的库的CMake项目重建目标。
 
-Background
+背景
 ^^^^^^^^^^
 
-All CMake installation goes through a single command, :command:`install`, which
-is split into many subcommands responsible for various aspects of the
-installation process. For target-based CMake workflows, it is mostly sufficient
-to rely on installing targets themselves with :command:`install(TARGETS)`
-instead of resorting to manually moving files with :command:`install(FILES)`
-or :command:`install(DIRECTORY)`.
+所有CMake安装都通过一个命令完成，即\ :command:`install`，该命令分为许多子命令，\
+负责安装过程的各个方面。对于基于目标的CMake工作流，通常只需使用\
+:command:`install(TARGETS)`\ 来安装目标本身即可，而无需使用\ :command:`install(FILES)`\
+或\ :command:`install(DIRECTORY)`\ 手动移动文件。
 
 .. note::
-  This is why we need to add ``FILES`` to header sets which are intended to be
-  installed. CMake needs to be able to locate the files when their associated
-  target is installed.
+  这就是为什么我们需要将\ ``FILES``\ 添加到旨在被安装的头文件集中。当关联的目标\
+  被安装时，CMake需要能够定位这些文件。
 
-CMake divides target-based installation into various artifact kinds. The
-available artifact kinds (in CMake 3.23) are:
+CMake将基于目标的安装划分为多种制品类型。可用的制品类型（在CMake 3.23中）包括：
 
   ``ARCHIVE``
-    Static libraries (``.a`` / ``.lib``), DLL import libraries (``.lib``), and
-    a handful of other "archive-like" objects.
+    静态库（\ ``.a`` / ``.lib``\ ）、DLL导入库（\ ``.lib``\ ）以及其他少量“类归档”对象。
 
   ``LIBRARY``
-    Shared libraries (``.so``), modules, and other dynamically loadable
-    objects. **Not** Window's DLL files (``.dll``) or MacOS frameworks.
+    共享库（\ ``.so``\ ）、模块和其他动态可加载对象。\ **不**\ 包括Windows的DLL\
+    文件（\ ``.dll``\ ）或MacOS框架。
 
   ``RUNTIME``
-    Executables of all kinds except MacOS bundles; and Window's DLLs (``.dll``).
+    各种可执行文件（MacOS捆绑包除外）；以及Windows的DLL文件（\ ``.dll``\ ）。
 
   ``OBJECT``
-    Objects from ``OBJECT`` libraries.
+    来自\ ``OBJECT``\ 库的对象文件。
 
   ``FRAMEWORK``
-    Both static and shared MacOS frameworks
+    静态和共享MacOS框架
 
   ``BUNDLE``
-    MacOS bundle executables
+    MacOS捆绑包可执行文件
 
   ``PUBLIC_HEADER`` / ``PRIVATE_HEADER`` / ``RESOURCE``
-    Files described by the :prop_tgt:`PUBLIC_HEADER`, :prop_tgt:`PRIVATE_HEADER`
-    and :prop_tgt:`RESOURCE` target properties, typically used with MacOS
-    frameworks
+    由\ :prop_tgt:`PUBLIC_HEADER`、\ :prop_tgt:`PRIVATE_HEADER`\ 和\
+    :prop_tgt:`RESOURCE`\ 目标属性描述的文件，通常用于MacOS框架。
 
   ``FILE_SET <set-name>``
-    A file set associated with the target. This is how headers are typically
-    installed.
+    与目标关联的文件集。这是头文件通常的安装方式。
 
-Most important artifact kinds have known destinations which CMake will default
-to unless instructed to do otherwise. For example, ``RUNTIME`` will be installed
-to the location named by :module:`CMAKE_INSTALL_BINDIR <GNUInstallDirs>`, if
-the variable is available, otherwise they default to ``bin``.
+大多数重要的制品类型都有已知的默认安装路径，CMake会默认安装到这些路径，除非明确\
+指定其他路径。例如，如果变量可用，\ ``RUNTIME``\ 类型将安装到由\
+:module:`CMAKE_INSTALL_BINDIR <GNUInstallDirs>`\ 指定的位置，否则默认安装到\
+``bin``\ 目录。
 
-The full list of artifact kind default destinations is described in the
-following table.
+制品类型默认目标路径的完整列表如下表所示。
 
 =============================== =============================== ======================
-    Target Type                              Variable           Built-In Default
+      目标类型                                 变量                内置默认值
 =============================== =============================== ======================
 ``RUNTIME``                     ``${CMAKE_INSTALL_BINDIR}``     ``bin``
 ``LIBRARY``                     ``${CMAKE_INSTALL_LIBDIR}``     ``lib``
@@ -80,20 +67,17 @@ following table.
 ``FILE_SET`` (type ``HEADERS``) ``${CMAKE_INSTALL_INCLUDEDIR}`` ``include``
 =============================== =============================== ======================
 
-For the most part, projects should leave the defaults alone unless they need to
-install to a specific subdirectory of a default location.
+在大多数情况下，项目应保持默认设置，除非需要将文件安装到默认位置的特定子目录中。
 
-CMake does not define the ``CMAKE_INSTALL_<dir>`` variables by default. If a
-project wishes to dictate installing to a subdirectory of one of these
-locations, it is necessary to include the :module:`GNUInstallDirs` module, which
-will provide values for all ``CMAKE_INSTALL_<dir>`` variables that have not
-already been defined.
+CMake默认不定义\ ``CMAKE_INSTALL_<dir>``\ 变量。如果项目希望指定安装到这些位置中\
+的某个子目录，则需要包含\ :module:`GNUInstallDirs`\ 模块，该模块将为所有尚未定义的\
+``CMAKE_INSTALL_<dir>``\ 变量提供值。
 
-Exercise 1 - Installing Artifacts
+练习1 - 安装制品
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For modern, target-based CMake projects installation of artifacts is trivial
-and consists of a single call to :command:`install(targets)`.
+对于现代的、基于目标的CMake项目，制品的安装非常简单，只需调用一次\
+:command:`install(targets)`\ 命令即可。
 
 .. code-block:: cmake
 
@@ -104,12 +88,11 @@ and consists of a single call to :command:`install(targets)`.
     FILE_SET anotherHeaderFileSet
   )
 
-Most artifact kinds are installed by default and do not need to be listed in
-the :command:`install` command. However, ``FILE_SET``\ s must be named to let
-CMake know you want to install. In the above example we install two file
-sets, one named ``HEADERS`` and another named ``anotherHeaderFileSet``.
+大多数制品类型默认会被安装，无需在\ :command:`install`\ 命令中列出。但是，\
+``FILE_SET``\ 必须命名，以让CMake知道你想要安装它们。在上面的示例中，我们安装了\
+两个文件集，一个名为\ ``HEADERS``，另一个名为\ ``anotherHeaderFileSet``。
 
-When named, an artifact kind can be given various options, such as a destination.
+当命名制品类型时，可以为其指定各种选项，例如目标路径。
 
 .. code-block:: cmake
 
@@ -124,61 +107,60 @@ When named, an artifact kind can be given various options, such as a destination
     FILE_SET HEADERS
   )
 
-This will install the ``MyApp`` target to ``bin/Subfolder`` (if the packager
-hasn't changed :module:`CMAKE_INSTALL_BINDIR <GNUInstallDirs>`).
+这会将\ ``MyApp``\ 目标安装到\ ``bin/Subfolder``\ 目录（如果打包者未修改\
+:module:`CMAKE_INSTALL_BINDIR <GNUInstallDirs>`\ ）。
 
-Importantly, if the ``OBJECT`` artifact kind is never given a destination, it
-will act like an ``INTERFACE`` library, only installing its headers.
+重要的是，如果\ ``OBJECT``\ 制品类型从未被指定目标路径，它将表现得像一个\
+``INTERFACE``\ 库，只安装其头文件。
 
-Goal
+目标
 ----
 
-Install the artifacts for the libraries and executables (except tests) described
-in the tutorial project.
+安装教程项目中描述的库和可执行文件（测试除外）的制品。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`install`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-The ``Help/guide/tutorial/Step9`` directory contains the complete, recommended
-solution to ``Step8``. Complete ``TODO 1`` and ``TODO 2``.
+``Help/guide/tutorial/Step9``\ 目录包含针对\ ``Step8``\ 的完整推荐解决方案。完成\
+``TODO 1``\ 和\ ``TODO 2``。
 
-Build and Run
+构建和运行
 -------------
 
-No special configuration is needed, configure and build as usual.
+无需特殊配置，按常规方式进行配置和构建即可。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-We can verify the installation is correct with :option:`cmake --install`.
+我们可以使用\ :option:`cmake --install`\ 选项验证安装是否正确。
 
 .. code-block:: console
 
   cmake --install build --prefix install
 
-The ``install`` folder should be populated correctly for our artifacts.
+``install``\ 文件夹应正确填充我们的制品。
 
-Solution
+解决方案
 --------
 
-First we add an :command:`install(TARGETS)` for the conditionally built,
-thus conditionally installed, ``Tutorial`` executable.
+首先，我们为条件构建的（因此也是条件安装的）\ ``Tutorial``\ 可执行文件添加一个\
+:command:`install(TARGETS)`\ 命令。
 
 .. raw:: html
 
-  <details><summary>TODO 1 Click to show/hide answer</summary>
+  <details><summary>TODO 1点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 1: CMakeLists.txt
@@ -195,11 +177,11 @@ thus conditionally installed, ``Tutorial`` executable.
 
   </details>
 
-Then we can install the rest of the targets.
+然后我们可以安装其余目标。
 
 .. raw:: html
 
-  <details><summary>TODO 2 Click to show/hide answer</summary>
+  <details><summary>TODO 2点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 2: CMakeLists.txt
@@ -215,26 +197,22 @@ Then we can install the rest of the targets.
   </details>
 
 .. note::
-  We could add :command:`install(TARGETS)` commands locally to each subfolder
-  where the targets are defined. This would be typical in very large projects
-  where keeping track of all the installable targets is difficult.
+  我们可以在定义目标的每个子文件夹中本地添加\ :command:`install(TARGETS)`\ 命令。\
+  这在大型项目中很常见，因为在这类项目中很难跟踪所有可安装的目标。
 
-It might seem unnecessary to install the ``SqrtTable`` and ``MathLogger``,
-and it is at this stage. Due to how CMake models target relationships, when we
-reconstruct the target model in the next exercise we will need these targets to
-be available.
+安装\ ``SqrtTable``\ 和\ ``MathLogger``\ 看起来可能没有必要，在当前阶段确实如此。\
+但由于CMake对目标关系的建模方式，当我们在下一个练习中重建目标模型时，我们将需要\
+这些目标可用。
 
-Exercise 2 - Exporting Targets
+练习2 - 导出目标
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This raw collection of installed files is a good start, but we lose the CMake
-target model. These are effectively no better than the pre-compiled vendored
-libraries we discussed in ``Step 4``. We need some way for other projects to
-reconstruct our targets from what we have provided in the install tree.
+这种已安装文件的原始集合是一个良好的开端，但我们失去了CMake目标模型。它们实际上\
+并不比我们在\ ``Step 4``\ 中讨论的预编译第三方库更好。我们需要某种方法，让其他\
+项目能够从我们在安装树中提供的内容重建我们的目标。
 
-The mechanism CMake provides to solve this is a CMakeLang file known as a
-"target export file". It is created by the :command:`install(EXPORT)`
-command.
+CMake提供的解决此问题的机制是一种名为“目标导出文件”的CMakeLang文件。它由\
+:command:`install(EXPORT)`\ 命令创建。
 
 .. code-block:: cmake
 
@@ -251,35 +229,29 @@ command.
     NAMESPACE MyProject::
   )
 
-There are several parts to the above example. Firstly the
-:command:`install(TARGETS)` command takes an export name, basically a list to
-add the installed targets to.
+上述示例包含几个部分。首先，\ :command:`install(TARGETS)`\ 命令接受一个导出名称，\
+本质上是一个用于添加已安装目标的列表。
 
-Later, the :command:`install(EXPORT)` command consumes this list of targets
-to generate the target export file. This will be a file named
-``<ExportName>.cmake`` located in the provided ``DESTINATION``. The
-``DESTINATION`` provided in this example is the conventional one, but any
-location searched by the :command:`find_package` command is valid.
+之后，\ :command:`install(EXPORT)`\ 命令使用此目标列表生成目标导出文件。这将是\
+一个名为\ ``<ExportName>.cmake``\ 的文件，位于指定的\ ``DESTINATION``\ 中。本示\
+例中提供的\ ``DESTINATION``\ 是常规位置，但任何可被\ :command:`find_package`\
+命令搜索到的位置都是有效的。
 
-Finally, the targets created by the target export file will be prefixed with the
-``NAMESPACE`` string, ie they will be of the form ``<NAMESPACE><TargetName>``.
-It is conventional for this to be the project name followed by two colons.
+最后，由目标导出文件创建的目标将以\ ``NAMESPACE``\ 字符串为前缀，即它们的形式为\
+``<NAMESPACE><TargetName>``。通常，这是项目名称后接两个冒号。
 
-For reasons that will become more obvious in future steps, we typically don't
-consume this file directly. Instead we have a file named
-``<ProjectName>Config.cmake`` consume it via :command:`include()`.
+由于在后续步骤中会更清楚的原因，我们通常不直接使用此文件。而是通过\
+:command:`include()`\ 命令让名为\ ``<ProjectName>Config.cmake``\ 的文件来使用它。
 
 .. code-block:: cmake
 
   include(${CMAKE_CURRENT_LIST_DIR}/MyProjectTargets.cmake)
 
 .. note::
-  The :variable:`CMAKE_CURRENT_LIST_DIR` variable names the directory that the
-  currently running CMake Language file is inside of, regardless of how that
-  file was included or launched.
+  :variable:`CMAKE_CURRENT_LIST_DIR`\ 变量表示当前运行的CMake语言文件所在的目录，\
+  无论该文件是如何被包含或启动的。
 
-Then this file is installed alongside the target export with
-:command:`install(FILES)`.
+然后，此文件通过\ :command:`install(FILES)`\ 命令与目标导出文件一起安装。
 
 .. code-block:: cmake
 
@@ -290,73 +262,68 @@ Then this file is installed alongside the target export with
   )
 
 .. note::
-  The name of this file and its location are dictated by the discovery
-  semantics of the :command:`find_package` command, which we will discuss more
-  in the next step.
+  此文件的名称及其位置由\ :command:`find_package`\ 命令的发现语义决定，我们将在\
+  下一步中详细讨论。
 
-Goal
+目标
 ----
 
-Export the Tutorial project targets so other projects may consume them.
+导出Tutorial项目的目标，以便其他项目可以使用它们。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`install`
 * :module:`GNUInstallDirs`
 * :variable:`CMAKE_CURRENT_LIST_DIR`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 * ``cmake/TutorialConfig.cmake``
 
-Getting Started
+开始操作
 ---------------
 
-Continue editing the files in the ``Help/guide/tutorial/Step9`` directory.
-Complete ``TODO 3`` through ``TODO 8``.
+继续编辑\ ``Help/guide/tutorial/Step9``\ 目录中的文件。完成\ ``TODO 3``\ 至\ ``TODO 8``。
 
-Build and Run
+构建和运行
 -------------
 
-The build command is sufficient to reconfigure the project.
+构建命令足以重新配置项目。
 
 .. code-block:: console
 
   cmake --build build
 
-We can verify the installation is correct with :option:`cmake --install`.
+我们可以使用\ :option:`cmake --install`\ 验证安装是否正确。
 
 .. note::
 
-  As with CTest, when using multi-config generator, eg Visual Studio, it will be
-  necessary to specify a configuration with
-  ``cmake --install --config <config> <remaining flags>``, where
-  ``<config>`` is a value like ``Debug`` or ``Release``. This is true whenever
-  using a multi-config generator, and won't be called out specifically in
-  future commands.
+  与CTest类似，当使用多配置生成器（例如 Visual Studio）时，需要使用\
+  ``cmake --install --config <config> <remaining flags>``\ 指定配置，其中\ ``<config>``\
+  是诸如\ ``Debug``\ 或\ ``Release``\ 的值。无论何时使用多配置生成器，情况都是如此，\
+  并且不会在后续命令中特别指出。
 
 .. code-block:: console
 
   cmake --install build --prefix install
 
 .. note::
-  CMake won't update files which have not changed, only installing new or
-  updated files from the build and source trees.
+  CMake不会更新未更改的文件，仅从构建树和源代码树安装新的或已更新的文件。
 
-The ``install`` folder should be populated correctly for our artifacts and
-export files. We'll demonstrate how to use these files in the next step.
+``install``\ 文件夹应正确填充我们的制品和导出文件。我们将在下一步中演示如何使用\
+这些文件。
 
-Solution
+解决方案
 --------
 
-First we add the ``Tutorial`` target to the ``TutorialTargets`` export.
+首先，我们将\ ``Tutorial``\ 目标添加到\ ``TutorialTargets``\ 导出中。
 
 .. raw:: html
 
-  <details><summary>TODO 3 Click to show/hide answer</summary>
+  <details><summary>TODO 3点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/CMakeLists.txt
   :caption: TODO 3: CMakeLists.txt
@@ -369,12 +336,12 @@ First we add the ``Tutorial`` target to the ``TutorialTargets`` export.
 
   </details>
 
-Soon we will need access to the ``CMAKE_INSTALL_<dir>`` variables, so next
-we include the :module:`GNUInstallDirs` module.
+很快我们将需要访问\ ``CMAKE_INSTALL_<dir>``\ 变量，因此接下来我们包含\
+:module:`GNUInstallDirs`\ 模块。
 
 .. raw:: html
 
-  <details><summary>TODO 4 Click to show/hide answer</summary>
+  <details><summary>TODO 4点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/CMakeLists.txt
   :caption: TODO 4: CMakeLists.txt
@@ -387,11 +354,11 @@ we include the :module:`GNUInstallDirs` module.
 
   </details>
 
-Now we add the rest of our targets to the ``TutorialTargets`` export.
+现在我们将其余目标添加到\ ``TutorialTargets``\ 导出中。
 
 .. raw:: html
 
-  <details><summary>TODO 5 Click to show/hide answer</summary>
+  <details><summary>TODO 5点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/CMakeLists.txt
   :caption: TODO 5: CMakeLists.txt
@@ -405,11 +372,11 @@ Now we add the rest of our targets to the ``TutorialTargets`` export.
 
   </details>
 
-Next we install the export itself, to generate our target export file.
+接下来我们安装导出本身，以生成我们的目标导出文件。
 
 .. raw:: html
 
-  <details><summary>TODO 6 Click to show/hide answer</summary>
+  <details><summary>TODO 6点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 6: CMakeLists.txt
@@ -425,12 +392,11 @@ Next we install the export itself, to generate our target export file.
 
   </details>
 
-And then we install our "config" file, which we will use to include our target
-export file.
+然后我们安装我们的“配置”文件，我们将用它来包含我们的目标导出文件。
 
 .. raw:: html
 
-  <details><summary>TODO 7 Click to show/hide answer</summary>
+  <details><summary>TODO 7点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 7: CMakeLists.txt
@@ -446,11 +412,11 @@ export file.
 
   </details>
 
-Finally we can add the necessary :command:`include` command to the config file.
+最后，我们可以将必要的\ :command:`include`\ 命令添加到配置文件中。
 
 .. raw:: html
 
-  <details><summary>TODO 8 Click to show/hide answer</summary>
+  <details><summary>TODO 8点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/cmake/TutorialConfig.cmake
   :caption: TODO 8: cmake/TutorialConfig.cmake
@@ -463,20 +429,17 @@ Finally we can add the necessary :command:`include` command to the config file.
 
   </details>
 
-Exercise 3 - Exporting a Version File
+练习3 - 导出版本文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When importing CMake targets from a target export file, there is no way to
-"bail out" or "undo" the operation. If it turns out a package is a wrong or
-incompatible version for the one we requested, we'll be stuck with any
-side-effects incurred while we learned that version information.
+从目标导出文件导入CMake目标时，无法“退出”或“撤销”该操作。如果发现某个包是我们请\
+求版本的错误或不兼容版本，我们将受困于在了解版本信息过程中产生的任何副作用。
 
-The answer CMake provides for this problem is a light-weight version file which
-only describes this version compatibility information, which can be checked
-before CMake commits to fully importing the file.
+CMake 为解决此问题提供的方案是一种轻量级版本文件，它仅描述此版本兼容性信息，\
+可以在CMake提交完全导入文件之前进行检查。
 
-CMake provides helper modules and scripts for generating these version files,
-namely the :module:`CMakePackageConfigHelpers` module.
+CMake提供了用于生成这些版本文件的辅助模块和脚本，即\
+:module:`CMakePackageConfigHelpers`\ 模块。
 
 .. code-block:: cmake
 
@@ -487,26 +450,25 @@ namely the :module:`CMakePackageConfigHelpers` module.
     COMPATIBILITY ExactVersion
   )
 
-The available versions are:
+可用的版本类型包括：
 
 * ``AnyNewerVersion``
 * ``SameMajorVersion``
 * ``SameMinorVersion``
 * ``ExactVersion``
 
-Additionally packages can mark themselves as ``ARCH_INDEPENDENT``, intended for
-packages which ship no binaries which would tie them to a specific machine
-architecture.
+此外，软件包可以将自身标记为\ ``ARCH_INDEPENDENT``\ （架构无关），适用于不包含会\
+将其绑定到特定机器架构的二进制文件的软件包。
 
-By default, the ``VERSION`` used by ``write_basic_package_version_file()`` is
-the ``VERSION`` number given to the :command:`project` command.
+默认情况下，\ ``write_basic_package_version_file()``\ 使用的\ ``VERSION``\
+是传递给\ :command:`project`\ 命令的\ ``VERSION``\ 号。
 
-Goal
+目标
 ----
 
-Export a version file for the Tutorial project.
+为Tutorial项目导出版本文件。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`project`
@@ -514,38 +476,37 @@ Helpful Resources
 * :module:`CMakePackageConfigHelpers`
 * :variable:`PROJECT_VERSION`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-Continue editing the files in the ``Help/guide/tutorial/Step9`` directory.
-Complete ``TODO 9`` through ``TODO 12``.
+继续编辑\ ``Help/guide/tutorial/Step9``\ 目录中的文件。\
+完成\ ``TODO 9``\ 至\ ``TODO 12``。
 
-Build and Run
+构建和运行
 -------------
 
-Rebuild and install as done previously.
+按照之前的步骤重新构建并安装。
 
 .. code-block:: console
 
   cmake --build build
   cmake --install build --prefix install
 
-The ``install`` folder should be populated correctly with our newly generated
-and installed version file.
+``install``\ 文件夹应正确填充我们新生成并安装的版本文件。
 
-Solution
+解决方案
 --------
 
-First we add a ``VERSION`` parameter to the :command:`project` command.
+首先，我们向\ :command:`project`\ 命令添加 ``VERSION`` 参数。
 
 .. raw:: html
 
-  <details><summary>TODO 9 Click to show/hide answer</summary>
+  <details><summary>TODO 9点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/CMakeLists.txt
   :caption: TODO 9: CMakeLists.txt
@@ -558,12 +519,11 @@ First we add a ``VERSION`` parameter to the :command:`project` command.
 
   </details>
 
-Next we include the :module:`CMakePackageConfigHelpers` modules and use it
-to generate the config version file.
+接下来，我们包含\ :module:`CMakePackageConfigHelpers`\ 模块并使用它生成配置版本文件。
 
 .. raw:: html
 
-  <details><summary>TODO 10-11 Click to show/hide answer</summary>
+  <details><summary>TODO 10-11点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/CMakeLists.txt
   :caption: TODO 10-11: CMakeLists.txt
@@ -577,11 +537,11 @@ to generate the config version file.
 
   </details>
 
-Finally we add the config version file to the list of files to be installed.
+最后，我们将配置版本文件添加到待安装文件列表中。
 
 .. raw:: html
 
-  <details><summary>TODO 12 Click to show/hide answer</summary>
+  <details><summary>TODO 12点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step10/TutorialProject/CMakeLists.txt
   :caption: TODO 12: CMakeLists.txt
