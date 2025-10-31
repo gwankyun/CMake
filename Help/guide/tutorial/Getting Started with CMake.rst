@@ -119,12 +119,12 @@ CMake该属性仅属于\ ``MyProgram``，不可被继承。
   应该\ *始终*\ 是\ ``PRIVATE``。对于实现文件来说也是如此，无论目标是可执行文件\
   还是库。唯一需要“看到”\ ``.cxx``\ 文件的目标是构建它们的目标。
 
-Goal
+目标
 ----
 
-Understand how to create a simple CMake project with a single executable.
+了解如何创建一个包含单个可执行文件的简单CMake项目。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`project`
@@ -132,56 +132,49 @@ Helpful Resources
 * :command:`add_executable`
 * :command:`target_sources`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ----------------
 
-The source code for ``Tutorial.cxx`` is provided in the
-``Help/guide/tutorial/Step1/Tutorial`` directory and can be used to compute the
-square root of a number. This file does not need to be edited in this exercise.
+``Tutorial.cxx``\ 的源代码位于\ ``Help/guide/tutorial/Step1/Tutorial``\ 目录中，\
+可用于计算一个数的平方根。本练习中无需编辑此文件。
 
-In the parent directory, ``Help/guide/tutorial/Step1``, is a ``CMakeLists.txt``
-file which you will complete. Start with ``TODO 1`` and work through ``TODO 4``.
+在父目录\ ``Help/guide/tutorial/Step1``\ 中，有一个\ ``CMakeLists.txt``\ 文件需要\
+你完成。从\ ``TODO 1``\ 开始，依次完成至\ ``TODO 4``。
 
-Build and Run
+构建和运行
 -------------
 
-Once ``TODO 1`` through ``TODO 4`` have been completed, we are ready to build
-and run our project! First, run the :manual:`cmake <cmake(1)>` executable or the
-:manual:`cmake-gui <cmake-gui(1)>` to configure the project and then build it
-with your chosen build tool.
+一旦完成了\ ``TODO 1``\ 到\ ``TODO 4``，我们就可以构建并运行项目了！首先，运行\
+:manual:`cmake <cmake(1)>`\ 可执行文件或\ :manual:`cmake-gui <cmake-gui(1)>`\
+来配置项目，然后使用你选择的构建工具进行构建。
 
-For example, from the command line we could navigate to the
-``Help/guide/tutorial/Step1`` directory and invoke CMake for configuration
-as follows:
+例如，从命令行我们可以导航到\ ``Help/guide/tutorial/Step1``\ 目录，并按如下方式\
+调用CMake进行配置：
 
 .. code-block:: console
 
   cmake -B build
 
-The :option:`-B <cmake -B>` flag tells CMake to use the given relative
-path as the location to generate files and store artifacts during the build
-process. If it is omitted, the current working directory is used. It is
-generally considered bad practice to do "in-source" builds, placing these
-generated files in the source tree itself.
+:option:`-B <cmake -B>`\ 标志告诉CMake使用给定的相对路径作为在构建过程中生成文件\
+和存储构件的位置。如果省略该标志，则使用当前工作目录。通常认为进行“in-source”\
+构建是一种不良实践，即把这些生成的文件放在源码树本身中。
 
-Next, tell CMake to build the project with
-:option:`cmake --build <cmake --build>`, passing it the same relative path
-we did with the :option:`-B <cmake -B>` flag.
+接下来，使用\ :option:`cmake --build <cmake --build>`\ 告诉CMake构建项目，并传递\
+与\ :option:`-B <cmake -B>`\ 标志相同的相对路径。
 
 .. code-block:: console
 
   cmake --build build
 
-The ``Tutorial`` executable will be built into the ``build`` directory. For
-multi-config generators (e.g. Visual Studio), it might be placed in a
-subdirectory such as ``build/Debug``.
+``Tutorial``\ 可执行文件将被构建到\ ``build``\ 目录中。对于多配置生成器\
+（例如Visual Studio），它可能被放置在\ ``build/Debug``\ 之类的子目录中。
 
-Finally, try to use the newly built ``Tutorial``:
+最后，尝试使用新构建的\ ``Tutorial``：
 
 .. code-block:: console
 
@@ -190,20 +183,19 @@ Finally, try to use the newly built ``Tutorial``:
   Tutorial
 
 .. note::
-  Depending on the shell, the correct syntax may be ``Tutorial``,
-  ``./Tutorial``, ``.\Tutorial``, or even ``.\Tutorial.exe``. For simplicity,
-  the exercises will use ``Tutorial`` throughout.
+  根据shell的不同，正确的语法可能是\ ``Tutorial``、\ ``./Tutorial``、\
+  ``.\Tutorial``，甚至是\ ``.\Tutorial.exe``。为简单起见，练习中将始终使用\
+  ``Tutorial``。
 
-Solution
+解决方案
 --------
 
-As mentioned above, a four command ``CMakeLists.txt`` is all that we need to get
-up and running. The first line should be :command:`cmake_minimum_required`, to
-set the CMake version as follows:
+如上所述，一个包含四个命令的\ ``CMakeLists.txt``\ 就足以让我们启动并运行项目。\
+第一行应该是\ :command:`cmake_minimum_required`，用于设置 CMake 版本，如下所示：
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: TODO 1: CMakeLists.txt
@@ -216,13 +208,12 @@ set the CMake version as follows:
 
   </details>
 
-The next step to make a basic project is to use the :command:`project`
-command as follows to set the project name and inform CMake we intend to build
-software with this ``CMakeLists.txt``.
+下一步是使用\ :command:`project`\ 命令来设置项目名称，并告知CMake我们打算用这个\
+``CMakeLists.txt``\ 来构建软件。
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/CMakeLists.txt
   :caption: TODO 2: CMakeLists.txt
@@ -235,11 +226,11 @@ software with this ``CMakeLists.txt``.
 
   </details>
 
-Now we can setup our executable target for the Tutorial with :command:`add_executable`.
+现在我们可以使用\ :command:`add_executable`\ 为Tutorial设置可执行目标。
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/Tutorial/CMakeLists.txt
   :caption: TODO 3: CMakeLists.txt
@@ -252,12 +243,11 @@ Now we can setup our executable target for the Tutorial with :command:`add_execu
 
   </details>
 
-Finally, we can associate our source file with the Tutorial executable target
-using :command:`target_sources`.
+最后，我们可以使用\ :command:`target_sources`\ 将源文件与\ Tutorial\ 可执行目标关联起来。
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 4: CMakeLists.txt
@@ -273,29 +263,23 @@ using :command:`target_sources`.
 
   </details>
 
-Exercise 2 - Building a Library
+练习2 - 构建库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We only need to introduce one more command to build a library,
-:command:`add_library`. This works exactly like :command:`add_executable`, but
-for libraries.
+我们只需要再介绍一个命令来构建库，即\ :command:`add_library`。它的工作方式与\
+:command:`add_executable`\ 完全相同，不过是用于库。
 
 .. code-block:: cmake
 
   add_library(MyLibrary)
 
-However, now is a good time to introduce header files. Header files are not
-directly built as translation units, which is to say they are not a *build*
-requirement. They are a *usage* requirement. We need to know about header files
-in order to build other parts of a given target.
+然而，现在是时候引入头文件了。头文件不会直接作为翻译单元进行构建，也就是说它们不是\
+*构建*\ 要求，而是\ *使用*\ 要求。为了构建给定目标的其他部分，我们需要了解头文件。
 
-As such, header files are described slightly differently than implementation
-files like ``tutorial.cxx``. They're also going to need different
-:ref:`scope keywords <Target Command Scope>` than the ``PRIVATE`` keyword we
-have used so far.
+因此，头文件的描述方式与\ ``tutorial.cxx``\ 这样的实现文件略有不同。它们还需要与\
+我们目前使用的\ ``PRIVATE``\ 关键字不同的\ :ref:`作用域关键字 <Target Command Scope>`。
 
-To describe a collection of header files, we're going to use what's known as a
-``FILE_SET``.
+为了描述一组头文件，我们将使用所谓的\ ``FILE_SET``。
 
 .. code-block:: cmake
 
@@ -312,36 +296,29 @@ To describe a collection of header files, we're going to use what's known as a
         include/library_header.h
   )
 
-This is a lot of complexity, but we'll go through it point by point. First,
-note that we have our implementation file as a ``PRIVATE`` source, same as
-with the executable previously. However, we now use ``PUBLIC`` for our
-header file. This allows consumers of our library to "see" the library's
-header files.
+这是相当复杂的，但我们会逐点进行讲解。首先，请注意我们的实现文件是\ ``PRIVATE``\
+源文件，与之前的可执行文件相同。但是，现在我们的头文件使用\ ``PUBLIC``。这允许\
+我们库的使用者“看到”库的头文件。
 
 .. note::
-  We're not quite ready to discuss the full semantics of scope keywords. We'll
-  cover them more completely in Exercise 3.
+  我们还没有完全准备好讨论作用域关键字的全部语义。我们将在练习3中更全面地介绍它们。
 
-Following the scope keyword is a ``FILE_SET``, a collection of files to be
-described as a single unit. A ``FILE_SET`` consists of the following parts:
+在作用域关键字之后是一个\ ``FILE_SET``，它是一个文件集合，被描述为一个单一的单元。\
+一个\ ``FILE_SET``\ 包含以下部分：
 
-* ``FILE_SET <name>`` is the name of the ``FILE_SET``. This is a handle which
-  we can use to describe the collection in other contexts.
+* ``FILE_SET <name>``\ 是\ ``FILE_SET``\ 的名称。这是一个句柄，我们可以在其他\
+  上下文中使用它来描述这个集合。
 
-* ``TYPE <type>`` is the kind of files we are describing. Most commonly this
-  will be headers, but newer versions of CMake support other types like C++20
-  modules.
+* ``TYPE <type>``\ 是我们正在描述的文件类型。最常见的是头文件，但较新版本的CMake\
+  支持其他类型，如C++20模块。
 
-* ``BASE_DIRS`` is the "base" locations for the files. This can be most easily
-  understood as the locations that will be described to compilers for header
-  discovery via ``-I`` flags.
+* ``BASE_DIRS``\ 是文件的“基础”位置。这最容易理解为通过\ ``-I``\ 标志向编译器\
+  描述的用于头文件发现的位置。
 
-* ``FILES`` is the list of files, same as with the implementation sources list
-  earlier.
+* ``FILES``\ 是文件列表，与前面提到的实现源文件列表相同。
 
-This is a lot of information to describe, so there are some useful shortcuts
-we can take. Notably, if the ``FILE_SET`` name is the same as the type, we
-don't need to provide the ``TYPE`` field.
+要描述这么多信息，有一些有用的快捷方式可以使用。值得注意的是，如果\ ``FILE_SET``\
+的名称与类型相同，我们就不需要提供\ ``TYPE``\ 字段。
 
 .. code-block:: cmake
 
@@ -357,52 +334,49 @@ don't need to provide the ``TYPE`` field.
         include/library_header.h
   )
 
-There are other shortcuts we can take, but we'll discuss those more in later
-steps.
+还有其他一些快捷方式可以使用，但我们将在后续步骤中更详细地讨论它们。
 
-Goal
+目标
 ----
 
-Build a library.
+构建一个库。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`add_library`
 * :command:`target_sources`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-Continue editing files in the ``Step1`` directory. Start with ``TODO 5`` and
-complete through ``TODO 6``.
+继续在\ ``Step1``\ 目录中编辑文件。从\ ``TODO 5``\ 开始，完成到\ ``TODO 6``。
 
-Build and Run
+构建和运行
 -------------
 
-Let's build our project again. Since we already created a build directory and
-ran CMake for Exercise 1, we can skip to the build step:
+让我们再次构建项目。由于我们已经为练习1创建了构建目录并运行了CMake，我们可以直接\
+跳到构建步骤：
 
 .. code-block:: console
 
   cmake --build build
 
-We should be able to see our library created alongside the Tutorial executable.
+我们应该能够看到库与Tutorial可执行文件一起被创建。
 
-Solution
+解决方案
 --------
 
-We start by adding the library target in the same manner as the the Tutorial
-executable.
+我们首先以与Tutorial可执行文件相同的方式添加库目标。
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/MathFunctions/CMakeLists.txt
   :caption: TODO 5: CMakeLists.txt
@@ -415,23 +389,20 @@ executable.
 
   </details>
 
-Next we need to describe the source files. For the implementation file,
-``MathFunctions.cxx``, this is straight-forward; for the header file
-``MathFunctions.h`` we will need to use a ``FILE_SET``.
+接下来我们需要描述源文件。对于实现文件\ ``MathFunctions.cxx``，这很简单；但对于\
+头文件\ ``MathFunctions.h``，我们需要使用一个\ ``FILE_SET``。
 
-We can either give this ``FILE_SET`` its own name, or use the shortcut of naming
-it ``HEADERS``. For this tutorial, we'll be using the shortcut, but either
-solution is valid.
+我们可以给这个\ ``FILE_SET``\ 起一个自己的名字，或者使用命名为\ ``HEADERS``\
+的快捷方式。在本教程中，我们将使用快捷方式，但两种解决方案都是有效的。
 
-For ``BASE_DIRS`` we need to determine the directory which will allow for the
-desired ``#include <MathFunctions.h>`` directive. To achieve this, the
-``MathFunctions`` folder itself will be a base directory. We would make a
-different choice if the desired include directive were
-``#include <MathFunctions/MathFunctions.h>`` or similar.
+对于\ ``BASE_DIRS``，我们需要确定能够实现所需\ ``#include <MathFunctions.h>``\
+指令的目录。为了实现这一点，\ ``MathFunctions``\ 文件夹本身将成为基础目录。如果\
+我们希望的包含指令是\ ``#include <MathFunctions/MathFunctions.h>``\ 或类似形式，\
+我们会做出不同的选择。
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 6: CMakeLists.txt
@@ -453,13 +424,12 @@ different choice if the desired include directive were
 
   </details>
 
-Exercise 3 - Linking Together Libraries and Executables
+练习3 - 链接库和可执行文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We're ready to combine our library with our executable, for this we must
-introduce a new command, :command:`target_link_libraries`. The name of this
-command can be somewhat misleading, as it does a great deal more than just
-invoke linkers. It describes relationships between targets generally.
+我们已经准备好将库与可执行文件结合起来，为此我们必须引入一个新命令\
+：:command:`target_link_libraries`。这个命令的名称可能会有些误导，因为它做的远\
+不止调用链接器那么简单。它通常用于描述目标之间的关系。
 
 .. code-block:: cmake
 
@@ -468,25 +438,20 @@ invoke linkers. It describes relationships between targets generally.
       MyLibrary
   )
 
-We're finally ready to discuss the :ref:`scope keywords <Target Command Scope>`.
-There are three of them, ``PRIVATE``, ``INTERFACE``, and ``PUBLIC``. These
-describe how properties are made available to targets.
+现在我们终于可以讨论\ :ref:`作用域关键字 <Target Command Scope>`\ 了。有三个关键字：\
+``PRIVATE``、\ ``INTERFACE``\ 和\ ``PUBLIC``。这些关键字描述了属性如何对目标可用。
 
-* A ``PRIVATE`` property (also called a "non-interface" property) is only
-  available to the target which owns it, for example ``PRIVATE`` headers will
-  only be visible to the target they're attached to.
+* ``PRIVATE``\ 属性（也称为“非接口”属性）仅对拥有它的目标可用，例如\ ``PRIVATE``\
+  头文件只会对该头文件所附加的目标可见。
 
-* An ``INTERFACE`` property is only available to targets *which link* the
-  owning target. The owning target does not have access to these properties. A
-  header-only library is an example of a collection of ``INTERFACE`` properties,
-  as header-only libraries do not build anything themselves and do not need to
-  access their own files.
+* ``INTERFACE``\ 属性仅对\ *链接*\ 拥有目标的目标可用。拥有目标本身无法访问这些\
+  属性。仅包含头文件的库就是一个 ``INTERFACE`` 属性集合的例子，因为仅包含头文件\
+  的库本身不会构建任何内容，也不需要访问自己的文件。
 
-* ``PUBLIC`` is not a distinct kind of property, but rather is the union of the
-  ``PRIVATE`` and ``INTERFACE`` properties. Thus requirements described with
-  ``PUBLIC`` are available to both the owning target and consuming targets.
+* ``PUBLIC``\ 并不是一种独立的属性，而是\ ``PRIVATE``\ 和\ ``INTERFACE``\ 属性的\
+  并集。因此，使用\ ``PUBLIC``\ 描述的需求对拥有目标和使用目标都可用。
 
-Consider the following concrete example:
+考虑以下具体示例：
 
 .. code-block:: cmake
 
