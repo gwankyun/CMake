@@ -1,12 +1,39 @@
 CMAKE_OSX_DEPLOYMENT_TARGET
 ---------------------------
 
-指定要部署目标二进制文件的目标平台（例如macOS或iOS）的最低版本。CMake将此变量值用于\
-``-mmacosx-version-min``\ 标志或它们各自的目标平台等效值。对于带有多个macOS SDK的旧\
-Xcode版本，这个变量也有助于在\ :variable:`CMAKE_OSX_SYSROOT`\ 未设置的情况下选择SDK。
+Specify the minimum version of the target platform, e.g., macOS or iOS,
+on which the target binaries are to be deployed.
 
-If not set explicitly the value is initialized by the
-``MACOSX_DEPLOYMENT_TARGET`` environment variable, if set,
-and otherwise computed based on the host platform.
+For builds targeting macOS (:variable:`CMAKE_SYSTEM_NAME` is ``Darwin``), if
+``CMAKE_OSX_DEPLOYMENT_TARGET`` is not explicitly set, a default is set:
+
+* If the ``MACOSX_DEPLOYMENT_TARGET`` environment variable is non-empty,
+  its value is the default.
+
+* Otherwise, if using the :generator:`Xcode` generator, and the host's
+  macOS version is older than the macOS SDK (:variable:`CMAKE_OSX_SYSROOT`,
+  if set, or Xcode's default SDK), the host's macOS version is the default.
+
+  .. versionchanged:: 4.0
+
+    Previously this was done for all generators, not just Xcode.
+
+* Otherwise, the default is empty.
+
+The effects of ``CMAKE_OSX_DEPLOYMENT_TARGET`` depend on the generator:
+
+:generator:`Xcode`
+
+  If ``CMAKE_OSX_DEPLOYMENT_TARGET`` is set to a non-empty value, it is added
+  to the generated Xcode project as the ``MACOSX_DEPLOYMENT_TARGET`` setting.
+  Otherwise, no such setting is added, so Xcode's default deployed target is
+  used, typically based on the SDK version.
+
+Other Generators
+
+  If ``CMAKE_OSX_DEPLOYMENT_TARGET`` is set to a non-empty value, it is passed
+  to the compiler via the ``-mmacosx-version-min`` flag or equivalent.
+  Otherwise, no such flag is added, so the compiler's default deployment
+  target is used.
 
 .. include:: include/CMAKE_OSX_VARIABLE.rst

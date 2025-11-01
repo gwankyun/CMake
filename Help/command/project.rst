@@ -100,6 +100,9 @@ project
 
 ``SPDX_LICENSE <license-string>``
   .. versionadded:: 4.2
+  .. note::
+
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``.
 
   Optional.
   Sets the variables
@@ -114,6 +117,17 @@ project
   `License List`_ for a list of commonly used licenses and their identifiers.
   See the :prop_tgt:`SPDX_LICENSE` property for specifying the license(s) on
   individual software artifacts.
+
+  .. note::
+    The project license is *not* used to initialize the
+    :prop_tgt:`SPDX_LICENSE` property of individual targets.  This allows the
+    package license and default component license, which are specified when
+    exporting package information, to be meaningful.  Only |CPS| exports make
+    use of this information.
+
+    The project license *is* inherited as the package license in some cases.
+    Refer to the ``PROJECT`` option and related documentation of the
+    :command:`export` and :command:`install` commands for more information.
 
 .. _SPDX: https://spdx.dev/
 .. |SPDX| replace:: System Package Data Exchange
@@ -166,8 +180,6 @@ project
 通过\ ``VERSION``、\ ``COMPAT_VERSION``、\ ``SPDX_LICENSE``、\ ``DESCRIPTION``\ 和\ ``HOMEPAGE_URL``\
 选项设置的变量旨在用作包元数据和文档中的默认值。:command:`export`\ 和\
 :command:`install`\ 命令在生成\ |CPS|\ 包描述时会相应地使用这些值。
-
-.. |CPS| replace:: Common Package Specification
 
 .. _`Code Injection`:
 
@@ -237,3 +249,5 @@ call exists, CMake will issue a warning and pretend there is a
   other commands whose behavior they may affect and for this reason the
   ``project()`` command will issue a warning if this order is not kept.
   See also policy :policy:`CMP0000`.
+
+.. |CPS| replace:: Common Package Specification

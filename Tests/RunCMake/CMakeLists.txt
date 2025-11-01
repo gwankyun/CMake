@@ -407,7 +407,7 @@ add_RunCMake_test(Configure -DMSVC_IDE=${MSVC_IDE})
 add_RunCMake_test(CpsExportImportBuild)
 add_RunCMake_test(CpsExportImportInstall)
 add_RunCMake_test(DisallowedCommands)
-if("${CMAKE_GENERATOR}" MATCHES "Unix Makefiles|Ninja")
+if("${CMAKE_GENERATOR}" MATCHES "Unix Makefiles|Ninja|FASTBuild")
   add_RunCMake_test(ExportCompileCommands)
 endif()
 add_RunCMake_test(ExcludeFromAll)
@@ -1014,7 +1014,8 @@ add_RunCMake_test(target_link_libraries-LINKER-prefix -DCMAKE_SYSTEM_NAME=${CMAK
                                                       -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
                                                       -DCMAKE_C_COMPILER_FRONTEND_VARIANT=${CMAKE_C_COMPILER_FRONTEND_VARIANT})
 add_RunCMake_test(add_link_options -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID})
-add_RunCMake_test(target_link_options -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
+add_RunCMake_test(target_link_options -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
+                                      -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
                                       -DCMake_TEST_CUDA=${CMake_TEST_CUDA})
 set_property(TEST RunCMake.target_link_options APPEND
   PROPERTY LABELS "CUDA")

@@ -307,7 +307,8 @@ v1 Snippet File
     The working directory in which the ``command`` was executed.
 
   ``result``
-    命令的退出值，一个整数。
+    命令的退出码，一个整数。 This will be ``null`` when
+    ``role`` is ``build``.
 
   ``role``
     执行的命令类型，将是以下值之一：
@@ -377,9 +378,13 @@ v1 Snippet File
       be determined.
 
   ``cmakeContent``
-    The path to a `v1 CMake Content` file located under ``data``, which
+    The path to a `v1 CMake Content File`_ located under ``data``, which
     contains information about the CMake configure and generate steps
     responsible for generating the ``command`` in this snippet.
+
+  ``showOnly``
+    A boolean representing whether the ``--show-only`` option was passed to
+    ``ctest``. Only included when ``role`` is ``ctest``.
 
 Example:
 
