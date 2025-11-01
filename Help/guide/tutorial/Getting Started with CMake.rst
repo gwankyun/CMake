@@ -476,75 +476,68 @@ CMake该属性仅属于\ ``MyProgram``，不可被继承。
   )
 
 .. note::
-  We excluded ``BASE_DIRS`` for each file set here, that's another shortcut.
-  When excluded, ``BASE_DIRS`` defaults to the current source directory.
+  我们在每个文件集中省略了\ ``BASE_DIRS``，这是另一个快捷方式。当省略时，\
+  ``BASE_DIRS``\ 默认为当前源目录。
 
-The ``MyLibrary`` target has several properties which will be modified by this
-call to :command:`target_sources`. Until now we've used the term "properties"
-generically, but properties are themselves named values we can reason about.
-Two specific properties which will be modified here are :prop_tgt:`HEADER_SETS`
-and :prop_tgt:`INTERFACE_HEADER_SETS`, which both contain lists of header file
-sets added via :command:`target_sources`.
+``MyLibrary``\ 目标有几个属性会被这次调用\ :command:`target_sources`\ 修改。\
+到目前为止，我们一直泛泛地使用“属性”这个词，但属性本身是我们可以推理的命名值。\
+这里将被修改的两个具体属性是\ :prop_tgt:`HEADER_SETS`\ 和\
+:prop_tgt:`INTERFACE_HEADER_SETS`，它们都包含了通过\ :command:`target_sources`\
+添加的头文件集合列表。
 
-The value ``internalOnlyHeaders`` will be added to :prop_tgt:`HEADER_SETS`,
-``consumerOnlyHeaders`` to :prop_tgt:`INTERFACE_HEADER_SETS`, and
-``publicHeaders`` will be added to both.
+值\ ``internalOnlyHeaders``\ 将被添加到\ :prop_tgt:`HEADER_SETS`\ 中，\
+``consumerOnlyHeaders``\ 被添加到\ :prop_tgt:`INTERFACE_HEADER_SETS`\ 中，而\
+``publicHeaders``\ 则同时被添加到两者中。
 
-When a given target is being built, it will use its own *non-interface*
-properties (eg, :prop_tgt:`HEADER_SETS`), combined with the *interface*
-properties of any targets it links to (eg, :prop_tgt:`INTERFACE_HEADER_SETS`).
+当构建某个目标时，它将使用自己本身的\ *非接口*\ 属性（例如\ :prop_tgt:`HEADER_SETS`\ ），\
+并结合其所链接的任何目标的\ *接口*\ 属性（例如\ :prop_tgt:`INTERFACE_HEADER_SETS`\ ）。
 
 .. note::
-  **It is not necessary to reason about CMake properties at this level of
-  detail.** The above is described for completeness. Most of the time you don't
-  need to be concerned with the specific properties a command is modifying.
+  **不需要在这个细节层面上推理CMake属性。**\ 上述内容是为了完整性而描述的。\
+  大多数时候你不需要关心命令正在修改哪些具体属性。
 
-  Scope keywords have a simple intuition associated with them, when considering
-  a command from the point of view of the target it is being applied to:
-  **PRIVATE** is for me, **INTERFACE** is for others, **PUBLIC** is for all of
-  us.
+  从目标应用命令的角度来看，作用域关键字有一个简单的直观理解：\
+  **PRIVATE**\ 是为我自己，\ **INTERFACE**\ 是为其他人，\ **PUBLIC**\ 是为我们所有人。
 
-Goal
+目标
 ----
 
-In the Tutorial executable, use the ``sqrt()`` function provided by the
-``MathFunctions`` library.
+在Tutorial可执行文件中，使用由\ ``MathFunctions``\ 库提供的\ ``sqrt()``\ 函数。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`target_link_libraries`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 * ``Tutorial/Tutorial.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-Continue to edit files from ``Step1``. Start on ``TODO 7`` and complete through
-``TODO 9``. In this exercise, we need to add the ``MathFunctions`` target to
-the ``Tutorial`` target's linked libraries using :command:`target_link_libraries`.
+继续编辑来自\ ``Step1``\ 的文件。从\ ``TODO 7``\ 开始，完成到\ ``TODO 9``。\
+在此练习中，我们需要使用\ :command:`target_link_libraries`\ 将\ ``MathFunctions``\
+目标添加到\ ``Tutorial``\ 目标的链接库中。
 
-After modifying the CML, update ``tutorial.cxx`` to use the
-``mathfunctions::sqrt()`` function instead of ``std::sqrt``.
+修改完CML后，更新\ ``tutorial.cxx``\ 以使用\ ``mathfunctions::sqrt()``\ 函数\
+代替\ ``std::sqrt``。
 
-Build and Run
+构建和运行
 -------------
 
-Let's build our project again. As before, we already created a build directory
-and ran CMake so we can skip to the build step:
+让我们再次构建项目。像之前一样，我们已经创建了构建目录并运行了CMake，所以我们可以\
+直接跳到构建步骤：
 
 .. code-block:: console
 
   cmake --build build
 
-Verify that the output matches what you would expect from the ``MathFunctions``
-library.
+验证输出是否符合你对\ ``MathFunctions``\ 库的预期。
 
-Solution
+解决方案
 --------
 
 In this exercise, we are describing the ``Tutorial`` executable as a consumer
