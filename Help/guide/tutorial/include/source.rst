@@ -1,3 +1,2 @@
 .. |tutorial_source| replace::
-  The tutorial documentation and source code examples can be found in
-  the ``Help/guide/tutorial`` directory of the CMake source code tree.
+  教程文档和源代码示例可以在CMake源代码树的\ ``Help/guide/tutorial``\ 目录中找到。

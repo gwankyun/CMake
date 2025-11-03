@@ -1,31 +1,24 @@
-Step 0: Before You Begin
+步骤0：开始之前
 ========================
 
-The CMake tutorial consists of hands-on exercises writing and building a
-C++ project; solving progressively more complex build requirements such
-as libraries, code generators, tests, and external dependencies. Before we
-are ready to even begin the first step of that journey, we need to ensure we
-have the correct tools at hand and understand how to use them.
+CMake教程由一系列动手实践练习组成，内容包括编写和构建一个C++项目；逐步解决日益\
+复杂的构建需求，例如库、代码生成器、测试和外部依赖项。在我们准备好开始这段旅程的\
+第一步之前，我们需要确保手头有正确的工具并了解如何使用它们。
 
 .. note::
-  The tutorial material assumes the user has a C++20 compiler and toolchain
-  available, and at least a beginner understanding of the C++ language. It
-  is impossible to cover here all the possible ways one might acquire these
-  prerequisites.
+  本教程材料假设用户拥有可用的C++20编译器和工具链，并且至少对C++语言有初步的了解。\
+  在这里不可能涵盖获取这些先决条件的所有可能方式。
 
-This prerequisite step provides recommendations for how to acquire and
-run CMake itself in order to carry out the rest of the tutorial. If you're
-already familiar with the basics of how to run CMake, you can feel free to move
-on to the rest of the tutorial.
+这个先决条件步骤提供了如何获取和运行CMake本身的建议，以便完成教程的其余部分。\
+如果你已经熟悉运行CMake的基本知识，可以自由地继续教程的其余部分。
 
-Getting the Tutorial Exercises
+获取教程练习
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: include/source.rst
 
 |tutorial_source|
-Each step of the tutorial has a corresponding subfolder, which serves as the
-starting point for that step's exercises.
+教程的每个步骤都有一个对应的子文件夹，该文件夹作为该步骤练习的起点。
 
 Getting CMake
 ^^^^^^^^^^^^^

@@ -540,17 +540,16 @@ CMake该属性仅属于\ ``MyProgram``，不可被继承。
 解决方案
 --------
 
-In this exercise, we are describing the ``Tutorial`` executable as a consumer
-of the ``MathFunctions`` target by adding ``MathFunctions`` to the linked
-libraries of the ``Tutorial``.
+在本练习中，我们通过将\ ``MathFunctions``\ 添加到\ ``Tutorial``\ 可执行文件的链\
+接库中，将\ ``Tutorial``\ 可执行文件描述为\ ``MathFunctions``\ 目标的使用者。
 
-To achieve this, we modify ``CMakeLists.txt`` file to use the
-:command:`target_link_libraries` command, using ``Tutorial`` as the target to
-be modified and ``MathFunctions`` as the library we want to add.
+为实现这一点，我们修改\ ``CMakeLists.txt``\ 文件以使用\
+:command:`target_link_libraries`\ 命令，使用\ ``Tutorial``\ 作为要修改的目标，\
+``MathFunctions``\ 作为我们要添加的库。
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/Tutorial/CMakeLists.txt
   :caption: TODO 7: CMakeLists.txt
@@ -564,23 +563,20 @@ be modified and ``MathFunctions`` as the library we want to add.
   </details>
 
 .. note::
-  The order here is only loosely relevant. That we call
-  :command:`target_link_libraries` prior to defining ``MathFunctions`` with
-  :command:`add_library` doesn't matter to CMake. We are recording that
-  ``Tutorial`` has a dependency on something named ``MathFunctions``, but what
-  ``MathFunctions`` means isn't resolved at this stage.
+  这里的顺序只是大致相关。在使用\ :command:`add_library`\ 定义\ ``MathFunctions``\
+  之前调用\ :command:`target_link_libraries`\ 对CMake来说并不重要。我们只是记录\
+  ``Tutorial``\ 依赖于名为\ ``MathFunctions``\ 的某些东西，但\ ``MathFunctions``\
+  的具体含义在此阶段并未解析。
 
-  The only target which needs to be defined when calling a CMake command like
-  :command:`target_sources` or :command:`target_link_libraries` is the target
-  being modified.
+  调用\ :command:`target_sources`\ 或\ :command:`target_link_libraries`\ 等CMake\
+  命令时，唯一需要定义的目标是正在修改的目标。
 
-Finally, all that's left to do is modify ``Tutorial.cxx`` to use the newly
-provided ``mathfunctions::sqrt`` function. That means adding the appropriate
-header file and modifying our ``sqrt()`` call.
+最后，剩下要做的就是修改\ ``Tutorial.cxx``\ 以使用新提供的\ ``mathfunctions::sqrt``\
+函数。这意味着添加适当的头文件并修改我们的\ ``sqrt()``\ 调用。
 
 .. raw:: html
 
-  <details><summary>TODO 8-9: Click to show/hide answer</summary>
+  <details><summary>TODO 8-9: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/Tutorial/Tutorial.cxx
   :caption: TODO 8: Tutorial/Tutorial.cxx
@@ -601,94 +597,85 @@ header file and modifying our ``sqrt()`` call.
 
   </details>
 
-Exercise 4 - Subdirectories
+练习4 - 子目录
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As we move through the tutorial, we will be adding more commands to manipulate
-the ``Tutorial`` executable and the ``MathFunctions`` library. We want to make
-sure we keep commands local to the files they are dealing with. While not a
-major concern for a small project like this, it can be very useful for large
-projects with many targets and thousands of files.
+在我们继续本教程的过程中，我们将添加更多命令来操作\ ``Tutorial``\ 可执行文件和
+``MathFunctions``\ 库。我们要确保将命令保持在与其处理的文件相同的局部范围内。\
+虽然对于像这样的小项目来说这并不是一个主要问题，但对于包含许多目标和数千个文件的\
+大型项目来说，这样做非常有用。
 
-The :command:`add_subdirectory` command allows us to incorporate CMLs located
-in subdirectories of the project.
+:command:`add_subdirectory`\ 命令允许我们引入位于项目子目录中的CML文件。
 
 .. code-block:: cmake
 
   add_subdirectory(SubdirectoryName)
 
-When a ``CMakeLists.txt`` in a subdirectory is being processed by CMake all
-relative paths described in the subdirectory CML are relative to that
-subdirectory, not the top-level CML.
+当CMake处理子目录中的\ ``CMakeLists.txt``\ 时，该子目录CML中描述的所有相对路径\
+都是相对于该子目录的，而不是相对于顶层CML的。
 
-Goal
+目标
 ----
 
-Use :command:`add_subdirectory` to organize the project.
+使用\ :command:`add_subdirectory`\ 组织项目。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`add_subdirectory`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 * ``Tutorial/CMakeLists.txt``
 * ``MathFunctions/CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-The ``TODOs`` for this step are spread across three ``CMakeLists.txt`` files.
-Be sure to pay attention to the path changes necessary when moving the
-:command:`target_sources` commands into subdirectories.
+此步骤的\ ``TODO``\ 分布在三个\ ``CMakeLists.txt``\ 文件中。\
+在将\ :command:`target_sources`\ 命令移入子目录时，请务必注意路径变化。
 
 .. note::
-  Previously we said that ``BASE_DIRS`` defaults to the current source
-  directory. As the desired include directory for ``MathFunctions`` will now be
-  the same directory as the CML calling :command:`target_sources`, we should
-  remove the ``BASE_DIRS`` keyword and argument entirely.
+  我们之前提到\ ``BASE_DIRS``\ 默认为当前源目录。由于\ ``MathFunctions``\ 所需的\
+  包含目录现在将与调用\ :command:`target_sources`\ 的 CML 文件处于同一目录，我们\
+  应该完全移除\ ``BASE_DIRS``\ 关键字和参数。
 
-Complete ``TODO 10`` through ``TODO 13``.
+完成\ ``TODO 10``\ 到\ ``TODO 13``。
 
-Build and Run
+构建和运行
 -------------
 
-Because of the reorganization, we'll need to clean the original build
-directory prior to rebuilding (otherwise our new ``Target`` build folder would
-conflict with our previously created ``Target`` executable). We can achieve
-this with the :option:`--clean-first <cmake--build --clean-first>` flag.
+由于重新组织，我们需要在重新构建之前清理原始构建目录（否则我们新的\ ``Target``\
+构建文件夹将与之前创建的\ ``Target``\ 可执行文件冲突）。我们可以使用\
+:option:`--clean-first <cmake--build --clean-first>`\ 标志来实现这一点。
 
-There's no need for a reconfiguration. CMake will automatically
-re-configure itself due to the changes in the CMLs.
+无需重新配置。CMake会由于CML文件的更改而自动重新配置。
 
 .. code-block:: console
 
   cmake --build build --clean-first
 
 .. note::
-  Our executable and library will be output to a new location in the build tree.
-  A subdirectory which mirrors where :command:`add_executable` and
-  :command:`add_library` were called in the source tree. You will need to
-  navigate to this subdirectory in the build tree to run the tutorial
-  executable in future steps.
+  我们的可执行文件和库将输出到构建树中的新位置。\
+  一个子目录，它反映了在源码树中调用\ :command:`add_executable`\ 和
+  :command:`add_library`\ 的位置。在未来的步骤中，你需要导航到构建树中的这个子\
+  目录来运行教程可执行文件。
 
-  You can verify this behavior by deleting the old ``Tutorial`` executable,
-  and observing that the new one is produced at ``Tutorial/Tutorial``.
+  你可以通过删除旧的\ ``Tutorial``\ 可执行文件来验证此行为，\
+  并观察新文件在\ ``Tutorial/Tutorial``\ 处生成。
 
-Solution
+解决方案
 --------
 
-We need to move all the commands concerning the ``Tutorial`` executable into
-``Tutorial/CMakeLists.txt``, and replace them with an
-:command:`add_subdirectory` command. We also need to update the path for
-``Tutorial.cxx``.
+我们需要将所有与\ ``Tutorial``\ 可执行文件相关的命令移入\ ``Tutorial/CMakeLists.txt``，\
+并用\ :command:`add_subdirectory`\ 命令替换它们。我们还需要更新\ ``Tutorial.cxx``\
+的路径。
 
 .. raw:: html
 
-  <details><summary>TODO 10-11: Click to show/hide answer</summary>
+  <details><summary>TODO 10-11: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/Tutorial/CMakeLists.txt
   :caption: TODO 10: Tutorial/CMakeLists.txt
@@ -705,13 +692,12 @@ We need to move all the commands concerning the ``Tutorial`` executable into
 
   </details>
 
-We need to do the same with the commands for ``MathFunctions``, changing the
-relative paths as appropriate and removing ``BASE_DIRS`` as it is no longer
-necessary, the default value will work.
+我们需要对\ ``MathFunctions``\ 的命令执行相同操作，适当更改相对路径并移除\
+``BASE_DIRS``，因为它不再必要，默认值即可工作。
 
 .. raw:: html
 
-  <details><summary>TODO 12-13: Click to show/hide answer</summary>
+  <details><summary>TODO 12-13: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step3/MathFunctions/CMakeLists.txt
   :caption: TODO 12: MathFunctions/CMakeLists.txt
