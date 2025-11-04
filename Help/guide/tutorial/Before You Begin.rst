@@ -20,26 +20,22 @@ CMake教程由一系列动手实践练习组成，内容包括编写和构建一
 |tutorial_source|
 教程的每个步骤都有一个对应的子文件夹，该文件夹作为该步骤练习的起点。
 
-Getting CMake
+获取CMake
 ^^^^^^^^^^^^^
 
-The most obvious way to get your hands on CMake is to download it from the
-CMake website. `The website's "Download" section <https://cmake.org/download/>`_
-contains the latest builds of CMake for all common (and some uncommon) desktop
-platforms.
+获取CMake最明显的方式是从CMake网站下载。\
+`网站的“下载”部分 <https://cmake.org/download/>`_\ 包含了适用于所有常见（以及一\
+些不常见）桌面平台的最新CMake构建版本。
 
-However, it is preferable to acquire CMake via the usual delivery mechanism for
-developer tools on your platform. CMake is available in most packaging
-repositories, as a Visual Studio component, and can even be installed from the
-Python package index. Additionally, CMake is often available as part of the base
-image of most CI/CD runners targeting C/C++. You should consult the documentation
-for your software build environment to see if CMake is already available.
+然而，最好通过你平台上开发者工具的常规分发机制来获取CMake。CMake可在大多数包管理\
+仓库中找到，也可以作为Visual Studio的组件安装，甚至可以从 Python 包索引中安装。\
+此外，在大多数针对C/C++的CI/CD运行器的基础镜像中通常也包含CMake。你应该查阅你的\
+软件构建环境文档，确认是否已提供CMake。
 
-CMake can also be compiled from source using the instructions described by
-``README.rst``, found in the root of the CMake source tree.
+CMake也可以根据CMake源码树根目录下的\ ``README.rst``\ 中描述的说明从源码编译。
 
-CMake, like any program, needs to be available in ``PATH`` in order to be run
-from a shell. You can verify CMake is available by running any CMake command.
+与任何程序一样，为了能够从shell中运行CMake，它必须位于\ ``PATH``\ 环境变量所包含\
+的路径中。你可以通过运行任意CMake命令来验证CMake是否可用。
 
 .. code-block:: shell
 
@@ -50,39 +46,32 @@ from a shell. You can verify CMake is available by running any CMake command.
 
 
 .. note::
-  If using a Visual Studio-provided development environment, it is best to run
-  CMake from inside a Developer Command Prompt or Developer Powershell. This
-  ensures CMake has access to all the required developer tooling and
-  environment variables.
+  如果使用的是由Visual Studio提供的开发环境，最好在Developer Command Prompt或\
+  Developer PowerShell内部运行CMake。这样可以确保CMake能访问到所有必需的开发工具\
+  和环境变量。
 
-CMake Generators
+CMake生成器
 ^^^^^^^^^^^^^^^^
 
-CMake is a configuration program, sometimes called a "meta" build system. As
-with other configuration systems, CMake is not ultimately responsible for
-running the commands which produce the software build. Instead, CMake generates
-a build system based on project, environment, and user-provided configuration
-information.
+CMake是一个配置程序，有时被称为“元”构建系统。与其他配置系统一样，CMake最终并不负\
+责运行生成软件构建的命令。相反，CMake会基于项目、环境和用户提供配置信息生成一个\
+构建系统。
 
-CMake supports multiple build systems as the output of this configuration
-process. These output backends are called "generators", because they generate
-the build system. CMake supports many generators, the documentation for
-which can be found at :manual:`cmake-generators(7)`. Information about
-supported generators for your particular CMake installation can be found
-via :option:`cmake --help` under the "Generators" heading.
+CMake支持多种构建系统作为此配置过程的输出。这些输出后端称为“生成器”，因为它们会生成\
+构建系统。CMake支持许多生成器，其文档可以在\ :manual:`cmake-generators(7)`\ 中找\
+到。有关特定CMake安装所支持生成器的信息可以通过\ :option:`cmake --help`\ 在\
+“Generators”标题下找到。
 
-Using CMake thus requires one of the build programs which consumes this
-generator output be available. The ``Unix Makefiles``, ``Ninja``, and
-``Visual Studio`` generators require a compatible ``make``, ``ninja``, and
-``Visual Studio`` installation respectively.
+因此，使用CMake需要提供一种消费此生成器输出的构建程序。\ ``Unix Makefiles``、\
+``Ninja``\ 和\ ``Visual Studio``\  生成器分别需要兼容的\ ``make``、\ ``ninja``\
+和\ ``Visual Studio``\ 安装。
 
 .. note::
-  The default generator on Windows is typically the newest available Visual
-  Studio version on the machine running CMake, everywhere else it is
-  ``Unix Makefiles``.
+  Windows上的默认生成器通常是运行CMake机器上可用的最新Visual Studio版本，其他地方则\
+  是\ ``Unix Makefiles``。
 
-Which generator is used can be controlled via the :envvar:`CMAKE_GENERATOR`
-environment variable, or the :option:`cmake -G` option.
+使用的生成器可通过\ :envvar:`CMAKE_GENERATOR`\ 环境变量或\ :option:`cmake -G`\
+选项控制。
 
 Single and Multi-Configuration Generators
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
