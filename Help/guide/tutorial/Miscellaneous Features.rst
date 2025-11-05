@@ -1,17 +1,13 @@
-Step 11: Miscellaneous Features
+步骤11：其他功能
 ===============================
 
-Some features don't fit well or aren't important enough to receive attention
-in the main tutorial, but deserve mention. These exercises collect some of those
-features. They should be considered "bonuses".
+有些功能在主教程中不太适合介绍或者重要性不够，但值得提及。这些练习收集了其中一些\
+功能。它们应该被视为“额外奖励”。
 
-There are many CMake features that are not covered by the tutorial, some of
-which are considered essential to the projects which use them. Others are
-in common use by packagers but see little discussion among software developers
-producing local builds.
+有许多CMake功能未在教程中涵盖，其中一些功能对于使用它们的项目来说被认为是必不可\
+少的。其他功能在打包者中常见使用，但在本地构建软件的开发者中很少讨论。
 
-This list is not an exhaustive discussion of what remains of CMake's
-capabilities. It may grow or shrink with time and relevance.
+此列表并非对CMake剩余功能的详尽讨论。它可能会随着时间的推移和相关性而增减。
 
 Exercise 1: Target Aliases
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

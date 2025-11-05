@@ -73,44 +73,33 @@ CMake支持多种构建系统作为此配置过程的输出。这些输出后端
 使用的生成器可通过\ :envvar:`CMAKE_GENERATOR`\ 环境变量或\ :option:`cmake -G`\
 选项控制。
 
-Single and Multi-Configuration Generators
+单配置和多配置生成器
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In many cases, it is possible to treat the underlying build system as an
-implementation detail and not differentiate between, for example, ``ninja``
-and ``make`` when using CMake. However, there is one significant property
-of a given generator which we need to be aware of for even trivial workflows:
-if the generator supports single configuration builds, or if it supports
-multi-configuration builds.
+在许多情况下，可以将底层构建系统视为实现细节，在使用CMake时不需要区分例如\
+``ninja``\ 和\ ``make``。然而，对于即使是简单的工作流程，我们也需要了解给定生成器\
+的一个重要属性：该生成器是支持单配置构建，还是支持多配置构建。
 
-Software builds often have several variants which we might be interested in.
-These variants have names like ``Debug``, ``Release``, ``RelWithDebInfo``, and
-``MinSizeRel``, with properties corresponding to the name of the given variant.
+软件构建通常有几种我们可能感兴趣的变体。这些变体的名称如\ ``Debug``、\ ``Release``、\
+``RelWithDebInfo``\ 和\ ``MinSizeRel``，其属性与给定变体的名称相对应。
 
-A single-configuration build system always builds the software the same way, if
-it is generated to produce ``Debug`` builds it will always produce
-a ``Debug`` build. A multi-configuration build system can produce different
-outputs depending on the configuration specified at build time.
+单配置构建系统总是以相同的方式构建软件，如果生成用于产生\ ``Debug``\ 构建的系统，\
+它将始终产生\ ``Debug``\ 构建。多配置构建系统可以根据构建时指定的配置产生不同的输出。
 
 .. note::
-  The terms **build configuration** and **build type** are synonymous. When
-  dealing with single-configuration generators, which only support a single
-  variant, the generated variant is usually called the "build type".
+  **构建配置**\ 和\ **构建类型**\ 这两个术语是同义的。在处理仅支持单个变体的单\
+  配置生成器时，生成的变体通常被称为“构建类型”。
 
-  When dealing with multi-configuration generators, the available variants are
-  usually called the "build configurations". Selecting a variant at build
-  time is usually called "selecting a configuration" and referred to by flags
-  and variables as the "config".
+  在处理多配置生成器时，可用的变体通常被称为“构建配置”。在构建时选择变体通常被称\
+  为“选择配置”，并用标志和变量称为“config”。
 
-  However, this convention is not universal. Both technical and colloquial
-  documentation often mix the two terms. *Configuration* and *config* are
-  considered the more correct in contexts which generically address both single
-  and multi-configuration generators.
+  然而，这一约定并不普遍。技术和通俗文档经常混用这两个术语。在通用地处理单配置和\
+  多配置生成器的上下文中，\ *配置*\ 和\ *config*\ 被认为是更正确的。
 
-The commonly used generators are as follows:
+常用的生成器如下：
 
 +-----------------------------+---------------------------------+
-| Single-Configuration        | Multi-Configuration             |
+| 单配置                      | 多配置                          |
 +=============================+=================================+
 | :generator:`Ninja`          | :generator:`Ninja Multi-Config` |
 +-----------------------------+---------------------------------+
@@ -119,84 +108,70 @@ The commonly used generators are as follows:
 | :generator:`FASTBuild`      | :generator:`Xcode`              |
 +-----------------------------+---------------------------------+
 
-When using a single-configuration generator, the build type is selected based on
-the :envvar:`CMAKE_BUILD_TYPE` environment variable, or can be specified
-directly when invoking CMake via ``cmake -DCMAKE_BUILD_TYPE=<config>``.
+使用单配置生成器时，构建类型基于\ :envvar:`CMAKE_BUILD_TYPE`\ 环境变量选择，\
+或者可以通过\ ``cmake -DCMAKE_BUILD_TYPE=<config>``\ 直接在调用CMake时指定。
 
 .. note::
-  For the purpose of the tutorial, it is generally unnecessary to specify a
-  build type when working with single-configuration generators. The
-  platform-specific default behavior will work for all exercises.
+  就本教程而言，使用单配置生成器时通常不需要指定构建类型。特定于平台的默认行为\
+  将适用于所有练习。
 
-When using a multi-configuration generator, the build configuration is specified
-at build time using either a build-system specific mechanism, or via the
-:option:`cmake --build --config <cmake--build --config>` option.
+使用多配置生成器时，构建配置在构建时通过构建系统特定的机制或通过\
+:option:`cmake --build --config <cmake--build --config>`\ 选项指定。
 
-Other Usage Basics
+其他使用基础
 ^^^^^^^^^^^^^^^^^^
 
-The rest of the tutorial will cover the remaining usage basics in greater depth,
-but for the purpose of ensuring we have a working development environment a few
-more CMake option flags will be enumerated here.
+本教程的其余部分将更深入地介绍剩余的使用基础知识，但为了确保我们拥有一个有效的\
+开发环境，这里将列举一些其他的CMake选项标志。
 
 
   :option:`cmake -S \<dir\> <cmake -S>`
-    Specifies the project root directory, where CMake will find the project
-    to be built. This contains the root ``CMakeLists.txt`` file which will
-    be discussed in Step 1 of the tutorial.
+    指定项目根目录，CMake将在其中查找要构建的项目。这包含根\ ``CMakeLists.txt``\
+    文件，将在教程的步骤1中讨论。
 
-    When unspecified, defaults to the current working directory.
+    未指定时，默认为当前工作目录。
 
   :option:`cmake -B \<dir\> <cmake -B>`
-    Specifies the build directory, where CMake will output the files for the
-    generated build system, as well as artifacts of the build itself when
-    the build system is run.
+    指定构建目录，CMake将在其中输出生成的构建系统的文件，以及运行构建系统时产生\
+    的构建产物。
 
-    When unspecified, defaults to the current working directory.
+    未指定时，默认为当前工作目录。
 
   :option:`cmake --build \<dir\> <cmake --build>`
-    Runs the build system in the specified build directory. This is a generic
-    command for all generators. For multi-configuration generators, the desired
-    configuration can be requested via:
+    在指定的构建目录中运行构建系统。这是适用于所有生成器的通用命令。对于多配置\
+    生成器，可以通过以下方式请求所需的配置：
 
     ``cmake --build <dir> --config <cfg>``
 
-Try It Out
+试试看
 ^^^^^^^^^^
 
-The ``Help/guide/tutorial/Step0`` directory contains a simple "Hello World"
-C++ project. The specifics of how CMake configures this project will be
-discussed in Step 1 of the tutorial, we need only concern ourselves with
-running the CMake program itself.
+``Help/guide/tutorial/Step0``\ 目录包含一个简单的“Hello World” C++项目。CMake如\
+何配置这个项目的具体细节将在教程的步骤1中讨论，我们现在只需要关注运行CMake程序本身。
 
-As described above, there are many possible ways we could run CMake depending
-on which generator we want to use for the build. If we navigate to the
-``Help/guide/tutorial/Step0`` directory and run:
+如上所述，根据我们想要用于构建的生成器，有许多可能的CMake运行方式。\
+如果我们导航到\ ``Help/guide/tutorial/Step0``\ 目录并运行：
 
 .. code-block:: shell
 
   cmake -B build
 
-CMake will generate a build system for the Step0 project into
-``Help/guide/tutorial/Step0/build`` using the default generator for the
-platform. Alternatively we can specify a specific generator, ``Ninja`` for
-example, with:
+CMake将使用平台的默认生成器为Step0项目生成构建系统到\
+``Help/guide/tutorial/Step0/build``\ 中。或者我们可以指定一个特定的生成器，\
+例如\ ``Ninja``：
 
 .. code-block:: shell
 
   cmake -G Ninja -B build
 
-The effect is similar, but will use the ``Ninja`` generator instead of the
-platform default.
+效果类似，但将使用\ ``Ninja``\ 生成器而不是平台默认生成器。
 
 .. note::
-  We can't reuse the build directory with different generators. It is necessary
-  to delete the build directory between CMake runs if you want to switch to a
-  different generator using the same build directory.
+  我们不能在不同的生成器之间重用构建目录。如果你想切换到使用相同构建目录的不同\
+  生成器，则有必要在CMake运行之间删除构建目录。
 
-How we build and run the project after generating the build system depends on
-the kind of generator we're using. If it is a single-configuration generator on
-a non-Windows platform, we can simply do:
+生成构建系统后，我们如何构建和运行项目取决于我们使用的生成器类型。如果是在非\
+Windows平台上的单配置生成器，我们可以简单地执行：
 
 .. code-block:: shell
 
@@ -204,25 +179,22 @@ a non-Windows platform, we can simply do:
   ./build/hello
 
 .. note::
-  On Windows we might need to specify the file extension depending on which
-  shell is in use, ie ``./build/hello.exe``
+  在Windows上，我们可能需要根据使用的shell指定文件扩展名，即\ ``./build/hello.exe``
 
-If we're using a multi-configuration generator, we will want to specify the
-build configuration. The default configurations are ``Debug``, ``Release``,
-``RelWithDebInfo``, and ``MinRelSize``. The result of the build will be stored
-in a configuration-specific subdirectory of the build folder. So for example we
-could run:
+如果我们在使用多配置生成器，我们将需要指定构建配置。\
+默认配置是\ ``Debug``、\ ``Release``、\ ``RelWithDebInfo``\ 和\ ``MinRelSize``。\
+构建结果将存储在构建文件夹的特定配置子目录中。例如，我们可以运行：
 
 .. code-block:: shell
 
   cmake --build build --config Debug
   ./build/Debug/hello
 
-Getting Help and Additional Resources
+获取帮助和额外资源
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For help from the CMake community, you can reach out on
-`the CMake Discourse Forums <https://discourse.cmake.org/>`_.
+如需获得CMake社区的帮助，你可以在\
+`CMake Discourse论坛 <https://discourse.cmake.org/>`_\ 上联系我们。
 
 .. only:: cmakeorg
 

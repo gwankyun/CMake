@@ -1,18 +1,15 @@
-Step 10: Finding Dependencies
+步骤10：查找依赖项
 =============================
 
-In C/C++ software development, managing build dependencies is consistently
-one of the highest ranked challenges facing modern developers. CMake provides
-an extensive toolset for discovering and validating dependencies of different
-kinds.
+在C/C++软件开发中，管理构建依赖项一直是现代开发者面临的最高排名挑战之一。CMake\
+提供了丰富的工具集来发现和验证不同类型的依赖项。
 
-However, for correctly packaged projects there is no need to use these advanced
-tools. Many popular library and utility projects today produce correct install
-trees, like the one we set up in ``Step 9``, which are easy is to integrate
-into CMake.
+然而，对于正确打包的项目，无需使用这些高级工具。如今许多流行的库和实用程序项目都\
+会生成正确的安装树，就像我们在\ ``Step 9``\ 中设置的那样，这些安装树很容易集成到\
+CMake中。
 
-In this best-case scenario, we only need the :command:`find_package` to
-import dependencies into our project.
+在这种最佳情况下，我们只需要使用\ :command:`find_package`\ 命令将依赖项导入到\
+我们的项目中。
 
 Background
 ^^^^^^^^^^
