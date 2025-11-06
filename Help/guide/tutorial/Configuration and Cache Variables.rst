@@ -1,15 +1,11 @@
-Step 3: Configuration and Cache Variables
+步骤3：配置和缓存变量
 =========================================
 
-CMake projects often have some project-specific configuration variables which
-users and packagers are interested in. CMake has many ways that an invoking
-user or process can communicate these configuration choices, but the most
-fundamental of them are :option:`-D <cmake -D>` flags.
+CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量。CMake有多种方式可以让调\
+用用户或进程传递这些配置选择，但其中最基本的方式是\ :option:`-D <cmake -D>`\ 标志。
 
-In this step we'll explore the ins and out of how to provide project
-configuration options from within a CML, and how to invoke CMake to take
-advantage of configuration options provided by both CMake and individual
-projects.
+在这一步中，我们将深入探讨如何在CML文件中提供项目配置选项，以及如何调用CMake来\
+利用CMake和各个项目提供的配置选项。
 
 Background
 ^^^^^^^^^^

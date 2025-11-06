@@ -1,12 +1,9 @@
-Step 4: In-Depth CMake Target Commands
+步骤4：深入CMake目标命令
 ======================================
 
-There are several target commands within CMake we can use to describe
-requirements. As a reminder, a target command is one which modifies the
-properties of the target it is applied to. These properties describe
-requirements needed to build the software, such as sources, compile flags,
-and output names; or properties necessary to consume the target, such as header
-includes, library directories, and linkage rules.
+CMake中有几个目标命令可以用来描述需求。提醒一下，目标命令是应用于目标并修改其属\
+性的命令。这些属性描述了构建软件所需的条件，例如源文件、编译标志和输出名称；\
+或者描述了使用目标所必需的属性，例如头文件包含、库目录和链接规则。
 
 .. note::
   As discussed in ``Step1``, properties required to build a target should be

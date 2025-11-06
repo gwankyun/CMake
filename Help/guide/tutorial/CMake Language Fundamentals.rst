@@ -1,17 +1,13 @@
-Step 2: CMake Language Fundamentals
+步骤2：CMake语言基础
 ===================================
 
-In the previous step we rushed through and handwaved several aspects of the
-CMake language which is used within ``CMakeLists.txt`` in order to get useful,
-building programs as soon as possible. However, in the wild we encounter
-a great deal more complexity than simply describing lists of source and
-header files.
+在上一步中，我们匆忙地略过了\ ``CMakeLists.txt``\ 中使用的CMake语言的几个方面，\
+以便尽快获得有用的构建程序。然而，在实际应用中，我们遇到的复杂性远不止简单地描述\
+源文件和头文件列表。
 
-To deal with this complexity CMake provides a Turing-complete domain-specific
-language for describing the process of building software. Understanding the
-fundamentals of this language will be necessary as we write more complex
-CMLs and other CMake files. The language is formally known as
-":manual:`CMake Language <cmake-language(7)>`", or more colloquially as CMakeLang.
+为了应对这种复杂性，CMake提供了一种图灵完备的领域特定语言来描述构建软件的过程。\
+在我们编写更复杂的CML文件和其他CMake文件时，理解这门语言的基础知识将是必要的。\
+这门语言正式称为“:manual:`CMake语言 <cmake-language(7)>`”，或者更通俗地称为CMakeLang。
 
 .. note::
   The CMake Language is not well suited to describing things which are not
