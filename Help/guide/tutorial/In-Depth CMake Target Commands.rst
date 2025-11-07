@@ -6,17 +6,15 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 或者描述了使用目标所必需的属性，例如头文件包含、库目录和链接规则。
 
 .. note::
-  As discussed in ``Step1``, properties required to build a target should be
-  described with the ``PRIVATE`` :ref:`scope keyword <Target Command Scope>`,
-  those required to consume the target with ``INTERFACE``, and properties needed
-  for both are described with ``PUBLIC``.
+  正如在\ ``Step1``\ 中讨论的那样，构建目标所需的属性应该用\ ``PRIVATE``\
+  :ref:`作用域关键字 <Target Command Scope>`\ 来描述，消费目标所需的属性用\
+  ``INTERFACE``\ 描述，而两者都需要的属性用\ ``PUBLIC``\ 描述。
 
-In this step we will go over all the available target commands in CMake. Not all
-target commands are created equal. We have already discussed the two most
-important target commands, :command:`target_sources` and
-:command:`target_link_libraries`. Of the remaining commands, some are almost
-as common as these two, others have more advanced applications, and a couple
-should only be used as a last resort when other options are not available.
+在这一步中，我们将介绍CMake中所有可用的目标命令。并非所有目标命令都是相同的。\
+我们已经讨论了两个最重要的目标命令：\
+:command:`target_sources`\ 和\ :command:`target_link_libraries`。在其余的命令中，\
+有些几乎与这两个一样常见，有些具有更高级的应用，还有几个应该只在其他选项不可用时\
+作为最后手段使用。
 
 Background
 ^^^^^^^^^^

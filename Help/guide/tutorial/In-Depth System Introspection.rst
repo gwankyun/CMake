@@ -1,12 +1,10 @@
-Step 6: In-Depth System Introspection
+步骤6：深入系统检测
 =====================================
 
-In order to discover information about the system environment and the toolchain,
-CMake will often compile small test programs to verify the availability of
-compiler flags, headers, and builtins or other language constructs.
+为了发现有关系统环境和工具链的信息，CMake通常会编译小型测试程序来验证编译器标志、\
+头文件、内置函数或其他语言结构的可用性。
 
-In this step, we will take advantage of the same test program mechanisms that
-CMake uses in our own project code.
+在这一步中，我们将在自己的项目代码中利用CMake使用的相同测试程序机制。
 
 Background
 ^^^^^^^^^^

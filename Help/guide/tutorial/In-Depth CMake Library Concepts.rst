@@ -1,16 +1,12 @@
-Step 5: In-Depth CMake Library Concepts
+步骤5：深入CMake库概念
 =======================================
 
-While executables are mostly one-size-fits-all, libraries come in many
-different forms. There are static archives, shared objects, modules,
-object libraries, header-only libraries, and libraries which describe advanced
-CMake properties to be inherited by other targets, just to name a few.
+虽然可执行文件大多是通用的，但库有多种不同的形式。有静态归档库、共享对象、模块、\
+对象库、仅头文件库，以及描述高级CMake属性以被其他目标继承的库，仅举几例。
 
-In this step you will learn about some of the most common kinds of libraries
-that CMake can describe. This will cover most of the in-project uses of
-:command:`add_library`. Libraries which are imported from dependencies (or
-exported by the project to be consumed as a dependency) will be covered in
-later steps.
+在这一步中，你将学习CMake可以描述的一些最常见的库类型。这将涵盖项目内使用的大部分\
+:command:`add_library`\ 命令。从依赖项导入的库（或由项目导出以作为依赖项被使用）\
+将在后续步骤中介绍。
 
 Background
 ^^^^^^^^^^

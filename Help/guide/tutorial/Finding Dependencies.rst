@@ -11,33 +11,29 @@ CMake中。
 在这种最佳情况下，我们只需要使用\ :command:`find_package`\ 命令将依赖项导入到\
 我们的项目中。
 
-Background
+背景
 ^^^^^^^^^^
 
-There are five principle commands used for discovering dependencies with
-CMake, the first four are:
+CMake中有五个用于发现依赖项的主要命令，前四个是：
 
   :command:`find_file`
-    Finds and reports the full path to a named file, this tends to be the
-    most flexible of the ``find`` commands.
+    查找并报告命名文件的完整路径，这往往是\ ``find``\ 命令中最灵活的一个。
 
   :command:`find_library`
-    Finds and reports the full path to a static archive or shared object
-    suitable for use with :command:`target_link_libraries`.
+    查找并报告静态归档文件或共享对象的完整路径，适用于与\
+    :command:`target_link_libraries`\ 一起使用。
 
   :command:`find_path`
-    Finds and reports the full path to a directory *containing* a file. This
-    is most commonly used for headers in combination with
-    :command:`target_include_directories`.
+    查找并报告\ *包含*\ 文件的目录的完整路径。这最常用于头文件与\
+    :command:`target_include_directories`\ 的组合。
 
   :command:`find_program`
-    Finds and reports and invocable name or path for a program. Often used in
-    combination with :command:`execute_process` or :command:`add_custom_command`.
+    查找并报告程序的可调用名称或路径。通常与\ :command:`execute_process`\ 或\
+    :command:`add_custom_command`\ 结合使用。
 
-These commands should be considered "backup", used when the primary find command
-is unsuitable. The primary find command is :command:`find_package`. It uses
-comprehensive built-in heuristics and upstream-provided packaging files to
-provide the best interface to the requested dependency.
+这些命令应被视为“备用”，在主find命令不适用时使用。主find命令是\
+:command:`find_package`。它使用全面的内置启发式方法和上游提供的打包文件，为请求\
+的依赖项提供最佳接口。
 
 Exercise 1 - Using ``find_package()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

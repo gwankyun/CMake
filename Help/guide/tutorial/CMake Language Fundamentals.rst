@@ -10,28 +10,20 @@
 这门语言正式称为“:manual:`CMake语言 <cmake-language(7)>`”，或者更通俗地称为CMakeLang。
 
 .. note::
-  The CMake Language is not well suited to describing things which are not
-  related to building software. While it has some features for general purpose
-  use, developers should use caution when solving problems not directly related
-  to their build in CMake Language.
+  CMake语言并不适合描述与构建软件无关的事情。虽然它具有一些通用目的的功能，但开\
+  发人员在CMake语言中解决与构建不直接相关的问题时应谨慎行事。
 
-  Oftentimes the correct answer is to write a tool in a general purpose
-  programming language which solves the problem, and teach CMake how to invoke
-  that tool as part of the build process. Code generation, cryptographic
-  signature utilities, and even ray-tracers have been written in CMake Language,
-  but this is not a recommended practice.
+  通常，正确的做法是使用通用编程语言编写工具来解决问题，并教会CMake如何在构建过\
+  程中调用该工具。代码生成、加密签名工具甚至光线追踪器都曾用CMake语言编写，但这\
+  不是推荐的做法。
 
-Because we want to fully explore the language features, this step is an
-exception to the tutorial sequencing. It neither builds on ``Step1``, nor is the
-starting point for ``Step3``. This will be a sandbox to explore language
-features without building any software. We'll pick back up with the Tutorial
-program in ``Step3``.
+由于我们希望全面探索语言特性，这一步是教程序列中的例外。它既不基于\ ``Step1``，\
+也不是\ ``Step3``\ 的起点。这将是一个探索语言特性的沙盒，而不构建任何软件。我们\
+将在\ ``Step3``\ 中重新开始教程程序。
 
 .. note::
-  This tutorial endeavors to demonstrate best practices and solutions to real
-  problems. However, for this one step we're going to be re-implementing some
-  built-in CMake functions. In "real life", do not write your own
-  :command:`list(APPEND)`.
+  本教程致力于展示最佳实践和实际问题的解决方案。但是，在这一步中，我们将重新实现\
+  一些CMake内置函数。在“现实生活”中，请不要编写自己的\ :command:`list(APPEND)`。
 
 Background
 ^^^^^^^^^^

@@ -1,17 +1,14 @@
-Step 7: Custom Commands and Generated Files
+步骤7：自定义命令和生成文件
 ===========================================
 
-Code generation is a ubiquitous mechanism for extending programming languages
-beyond the bounds of their language model. CMake has first-class support for
-Qt's Meta-Object Compiler, but very few other code generators are notable
-enough to warrant that kind of effort.
+代码生成是一种普遍的机制，用于扩展编程语言超越其语言模型的界限。CMake为Qt的元对\
+象编译器提供了一流的支持，但很少有其他代码生成器值得付出那样的努力。
 
-Instead, code generators tend to be bespoke and usage specific. CMake provides
-facilities for describing the usage of a code generator, so projects can
-add support for their individual needs.
+相反，代码生成器往往是定制的和特定于用途的。CMake提供了描述代码生成器使用方法的\
+工具，因此项目可以根据其个别需求添加支持。
 
-In this step, we will use :command:`add_custom_command` to add support for a
-code generator within the tutorial project.
+在这一步中，我们将使用\ :command:`add_custom_command`\ 在教程项目中添加对代码生\
+成器的支持。
 
 Background
 ^^^^^^^^^^

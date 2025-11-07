@@ -1,16 +1,13 @@
-Step 8: Testing and CTest
+步骤8：测试和CTest
 =========================
 
-Testing is, historically, not the role of the build system. At best it might
-have a specific target which maps to building and running the project's tests.
+从历史上看，测试并非构建系统的职责。它最多可能有一个特定目标，用于构建和运行项目的测试。
 
-In the CMake ecosystem, the opposite is true. CMake's testing ecosystem is
-known as CTest. This ecosystem is both deceivingly simple and incredibly
-powerful. In fact it is so powerful it deserves its own full tutorial to
-describe everything we could achieve with it.
+而在CMake生态系统中，情况恰恰相反。CMake的测试生态系统称为CTest。这个生态系统看\
+似简单，实则功能强大。事实上，它如此强大，以至于值得拥有自己的完整教程来描述我们\
+可以用它实现的所有功能。
 
-This is not that tutorial. In this step, we will scratch the surface of some
-of the facilities that CTest provides.
+但本教程并非如此。在这一步中，我们将简单介绍CTest提供的一些功能。
 
 Background
 ^^^^^^^^^^
