@@ -9,78 +9,75 @@
 
 此列表并非对CMake剩余功能的详尽讨论。它可能会随着时间的推移和相关性而增减。
 
-Exercise 1: Target Aliases
+练习1：目标别名
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This tutorial focuses on installing dependencies and consuming them from an
-install tree. It also recommends the use of package managers to facilitate
-this process. However, for a variety of reasons both historical and
-contemporary this is not always how CMake projects are consumed.
+本教程重点介绍安装依赖项并从安装树中使用它们。它还建议使用包管理器来促进此过程。\
+然而，由于各种历史和当代原因，CMake项目的使用方式并不总是如此。
 
-It is possible to vendor a dependency's source code entirely in a parent project
-and consume it with :command:`add_subdirectory`. When performed, the target
-names exposed are those used within the project, not those exported via
-:command:`install(EXPORT)`. The target names will not have the namespace string
-that command prefixes to targets.
+可以将依赖项的源代码完全包含在父项目中，并通过\ :command:`add_subdirectory`\
+使用它们。执行此操作时，公开的目标名称是项目内部使用的名称，而不是通过\
+:command:`install(EXPORT)`\ 导出的名称。这些目标名称不会具有该命令前缀到目标的\
+命名空间字符串。
 
-Some projects wish to support this workflow with an interface consistent with
-the one presented to :command:`find_package` consumers. CMake supports this via
-:command:`add_library(ALIAS)` and :command:`add_executable(ALIAS)`.
+一些项目希望通过与向\ :command:`find_package`\ 使用者提供的接口一致的接口来支持\
+此工作流程。CMake通过\ :command:`add_library(ALIAS)`\ 和\
+:command:`add_executable(ALIAS)`\ 支持这一点。
 
 .. code-block:: cmake
 
   add_library(MyLib INTERFACE)
   add_library(MyProject::MyLib ALIAS MyLib)
 
-Goal
+目标
 ----
 
-Add a library alias for the ``MathFunctions`` library.
+为\ ``MathFunctions``\ 库添加一个库别名。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`add_library`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``TutorialProject/MathFunctions/CMakeLists.txt``
 
-Getting Started
+待编辑文件
 ---------------
 
-For this step we will only be editing the ``TutorialProject`` project in the
-``Step11`` folder. Complete ``TODO 1``.
+在这一步中，我们将只编辑\ ``Step11``\ 文件夹中的\ ``TutorialProject``\ 项目。\
+完成\ ``TODO 1``。
 
-Build and Run
+构建和运行
 -------------
 
-To build the project we first need configure and install ``SimpleTest``.
-Navigate to ``Help/guide/Step11/SimpleTest`` and run the appropriate commands.
+要构建项目，我们首先需要配置和安装\ ``SimpleTest``。导航到\
+``Help/guide/Step11/SimpleTest``\ 并运行相应的命令。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --install build
 
-Then navigate to ``Help/guide/Step11/TutorialProject`` and perform the usual build.
+然后导航到\ ``Help/guide/Step11/TutorialProject``\ 并执行常规构建。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-There should be no observable change in behavior from adding the alias.
+添加别名应该不会导致行为上的可观察变化。
 
-Solution
+解决方案
 --------
 
-We add a single line to the ``MathFunctions`` CML.
+我们在\ ``MathFunctions``\ 的CML中添加了一行。
 
 .. raw:: html
 
-  <details><summary>TODO 1 Click to show/hide answer</summary>
+  <details><summary>TODO 1点击显示/隐藏答案</summary>
 
 .. literalinclude:: Complete/TutorialProject/MathFunctions/CMakeLists.txt
   :caption: TODO 1: TutorialProject/MathFunctions/CMakeLists.txt

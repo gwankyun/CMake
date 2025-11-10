@@ -35,50 +35,39 @@ CMake中有五个用于发现依赖项的主要命令，前四个是：
 :command:`find_package`。它使用全面的内置启发式方法和上游提供的打包文件，为请求\
 的依赖项提供最佳接口。
 
-Exercise 1 - Using ``find_package()``
+练习1 - 使用\ ``find_package()``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The search paths and behaviors used by :command:`find_package` are fully
-described in its documentation, but much too verbose to replicate here. Suffice
-to say it searches well known, lesser known, obscure, and user-provided
-locations attempting to find a package which meets the requirements given to it.
+:command:`find_package`\ 命令使用的搜索路径和行为在其文档中有完整描述，但过于冗长，\
+此处不做复述。简而言之，它会搜索众所周知的、不太知名的、晦涩的以及用户提供的位置，\
+尝试找到满足给定要求的包。
 
 .. code-block:: cmake
 
   find_package(ForeignLibrary)
 
-The best way to use :command:`find_package` is to ensure all dependencies have
-been installed to a single install tree prior to the build, and then make the
-location of that install tree known to :command:`find_package` via the
-:variable:`CMAKE_PREFIX_PATH` variable.
+使用\ :command:`find_package`\ 的最佳方法是确保所有依赖项在构建前已安装到单个安\
+装树中，然后通过\ :variable:`CMAKE_PREFIX_PATH`\ 变量让\ :command:`find_package`\
+知道该安装树的位置。
 
 .. note::
-  Building and installing dependencies can itself be an immense amount of labor.
-  While this tutorial will do so for illustration purposes, it is **extremely**
-  recommended that a package manager be used for project-local dependency
-  management.
+  构建和安装依赖项本身可能需要大量工作。虽然本教程为了说明目的目的目的会这样做，\
+  但\ **强烈**\ 建议使用包管理器进行项目本地依赖管理。
 
-:command:`find_package` accepts several parameters besides the package to be
-found. The most notable are:
+除了要查找的包之外，\ :command:`find_package`\ 还接受几个参数。最值得注意的有：
 
-* A positional ``<version>`` argument, for describing a version to be checked
-  against the package's config version file. This should be used sparingly,
-  it is better to control the version of the dependency being installed via
-  a package manager than possibly break the build on otherwise innocuous
-  version updates.
+* 位置参数\ ``<version>``，用于描述要对照包的配置版本文件进行检查的版本。这个参\
+  数应谨慎使用，通过包管理器控制正在安装的依赖项版本比可能在其他无害的版本更新中\
+  破坏构建更好。
 
-  If the package is known to rely on an older version of a dependency, it
-  may be appropriate to use a version requirement.
+  如果已知包依赖于旧版本的依赖项，那么使用版本要求可能是合适的。
 
-* ``REQUIRED`` for non-optional dependencies which should abort the build
-  if not found.
+* ``REQUIRED``\ 用于非可选依赖项，如果找不到这些依赖项，构建应该中止。
 
-* ``QUIET`` for optional dependencies which should not report anything to
-  users when not found.
+* ``QUIET``\ 用于可选依赖项，找不到这些依赖项时不应向用户报告任何内容。
 
-:command:`find_package` reports its results via ``<PackageName>_FOUND``
-variables, which will be set to a true or false value for found and not found
-packages respectively.
+:command:`find_package`\ 通过\ ``<PackageName>_FOUND``\ 变量报告其结果，对于找到\
+和未找到的包，这些变量将分别设置为true或false值。
 
 Goal
 ----
