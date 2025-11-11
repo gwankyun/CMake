@@ -90,84 +90,76 @@
 
   </details>
 
-Exercise 2: Generator Expressions
+练习2：生成器表达式
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:manual:`Generator expressions <cmake-generator-expressions(7)>` are a
-complicated domain-specific language supported in some contexts within CMake.
-They are most easily understood as deferred-evaluation conditionals, they
-express requirements where the inputs to determine the correct behavior are not
-known during the CMake configuration stage.
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 是CMake中某些上下文中\
+支持的一种复杂的领域特定语言。它们最容易被理解为延迟求值的条件语句，用于表达在\
+CMake配置阶段无法确定正确行为输入的需求。
 
 .. note::
-  This is where generator expressions get their name, they are evaluated when
-  the underlying build system is being generated.
+  这就是生成器表达式名称的由来，它们在底层构建系统生成时进行求值。
 
-Generator expressions were commonly used in combination with
-:command:`target_include_directories` to express include directory requirements
-across the build and install tree, but file sets have superseded this use case.
-Their most common applications now are in multi-config generators and
-intricate dependency injection systems.
+生成器表达式通常与\ :command:`target_include_directories`\ 结合使用，以表达构建\
+树和安装树之间的包含目录需求，但文件集已取代了这一用例。它们现在最常见的应用是\
+在多配置生成器和复杂的依赖注入系统中。
 
 .. code-block:: cmake
 
   target_compile_definitions(MyApp PRIVATE "MYAPP_BUILD_CONFIG=$<CONFIG>")
 
-Goal
+目标
 ----
 
-Add a generator expression to ``SimpleTest`` that checks the build configuration
-inside a compile definition.
+向\ ``SimpleTest``\ 添加一个生成器表达式，用于在编译定义中检查构建配置
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`target_compile_definitions`
 * :manual:`cmake-generator-expressions(7)`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``SimpleTest/CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-For this step we will only be editing the ``SimpleTest`` project in the
-``Step11`` folder. Complete ``TODO 2``.
+在这一步中，我们将只编辑\ ``Step11``\ 文件夹中的\ ``SimpleTest``\ 项目。完成\
+``TODO 2``。
 
-Build and Run
+构建和运行
 -------------
 
-To build the project we first need configure and install ``SimpleTest``.
-Navigate to ``Help/guide/Step11/SimpleTest`` and run the appropriate commands.
+要构建项目，我们首先需要配置并安装\ ``SimpleTest``。导航到\
+``Help/guide/Step11/SimpleTest``\ 并运行相应的命令。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --install build
 
-Then navigate to ``Help/guide/Step11/TutorialProject`` and perform the usual build.
+然后导航到\ ``Help/guide/Step11/TutorialProject``\ 并执行常规构建。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-When running the ``TestMathFunctions`` binary directly, we should a message
-naming the build configuration used to build the executable (not necessarily the
-same as configuration used to configure ``SimpleTest``). On single configuration
-generators, the build configuration can be changed by setting
-:variable:`CMAKE_BUILD_TYPE`.
+直接运行\ ``TestMathFunctions``\ 二进制文件时，我们应该会看到一条消息，显示用于\
+构建可执行文件的构建配置（不一定与用于配置\ ``SimpleTest``\ 的配置相同）。在单一\
+配置生成器上，可以通过设置\ :variable:`CMAKE_BUILD_TYPE`\ 来更改构建配置。
 
-Solution
+解决方案
 --------
 
-We add a single line to the ``SimpleTest`` CML.
+我们在\ ``SimpleTest``\ 的CML文件中添加一行。
 
 .. raw:: html
 
-  <details><summary>TODO 2 Click to show/hide answer</summary>
+  <details><summary>TODO 2点击显示/隐藏答案</summary>
 
 .. literalinclude:: Complete/SimpleTest/CMakeLists.txt
   :caption: TODO 2: SimpleTest/CMakeLists.txt
