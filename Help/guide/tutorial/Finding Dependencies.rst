@@ -69,56 +69,50 @@ CMake中有五个用于发现依赖项的主要命令，前四个是：
 :command:`find_package`\ 通过\ ``<PackageName>_FOUND``\ 变量报告其结果，对于找到\
 和未找到的包，这些变量将分别设置为true或false值。
 
-Goal
+目标
 ----
 
-Integrate an externally installed test framework into the Tutorial project.
+将外部安装的测试框架集成到Tutorial项目中。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`find_package`
 * :command:`target_link_libraries`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``TutorialProject/CMakePresets.json``
 * ``TutorialProject/Tests/CMakeLists.txt``
 * ``TutorialProject/Tests/TestMathFunctions.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-The ``Step10`` folder is organized differently than previous steps. The tutorial
-project we need to edit is under ``Step10/TutorialProject``. Another project
-is now present, ``SimpleTest``, as well as a partially populated install tree
-which we will use in later exercises. You do not need to edit anything in these
-other directories for this exercise, all ``TODOs`` and solution steps are for
-``TutorialProject``.
+``Step10``\ 文件夹的组织结构与前面步骤不同。我们需要编辑的教程项目位于\
+``Step10/TutorialProject``\ 下。现在还出现了另一个项目\ ``SimpleTest``，以及一个\
+部分填充的安装树，我们将在后续练习中使用它。在本次练习中，你无需编辑这些其他目录\
+中的任何内容，所有的\ ``TODO``\ 和解决方案步骤都是针对\ ``TutorialProject``\ 的。
 
-The ``SimpleTest`` package provides two useful constructs, the
-``SimpleTest::SimpleTest`` target to be linked into a test binary, and the
-``simpletest_discover_tests`` function for automatically adding tests to
-CTest.
+``SimpleTest``\ 包提供了两个有用的结构：可链接到测试二进制文件的\
+``SimpleTest::SimpleTest``\ 目标，以及用于自动向CTest添加测试的\
+``simpletest_discover_tests``\ 函数。
 
-Similar to other test frameworks, ``simpletest_discover_tests`` only needs
-to be passed the name of the executable target containing the tests.
+与其他测试框架类似，\ ``simpletest_discover_tests``\ 只需要传入包含测试的可执行\
+目标名称即可。
 
 .. code-block:: cmake
 
   simpletest_discover_tests(MyTestExe)
 
-The ``TestMathFunctions.cxx`` file has been updated to use the ``SimpleTest``
-framework in the vein of GoogleTest or Catch2. Perform ``TODO 1`` through
-``TODO 5`` in order to use the new test framework.
+``TestMathFunctions.cxx``\ 文件已更新为使用\ ``SimpleTest``\ 框架，其风格类似于\
+GoogleTest或Catch2。按顺序执行\ ``TODO 1``\ 到\ ``TODO 5``，以使用新的测试框架。
 
 .. note::
-  It may go without saying, but ``SimpleTest`` is a very poor test framework
-  which only facially resembles a functional testing library. While much of
-  the CMake code in this tutorial could be used unaltered in other projects,
-  you should not use ``SimpleTest`` outside this tutorial, or try to learn from
-  the CMake code it provides.
+  也许无需多言，但\ ``SimpleTest``\ 是一个非常简陋的测试框架，只是表面上类似于\
+  功能性测试库。虽然本教程中的大部分CMake代码可以原封不动地用于其他项目，但你不\
+  应在本教程之外使用\ ``SimpleTest``，也不应尝试从它提供的CMake代码中学习。
 
 Build and Run
 -------------
