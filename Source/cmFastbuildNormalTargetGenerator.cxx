@@ -823,9 +823,10 @@ void cmFastbuildNormalTargetGenerator::ComputePaths(
         (needTrailingSlash ? "\\ " : ""));
     }
   }
-  std::string impLibFile = ConvertToFastbuildPath(
-    GeneratorTarget->GetFullPath(Config, cmStateEnums::ImportLibraryArtifact));
-  cmSystemTools::MakeDirectory(cmSystemTools::GetFilenamePath(impLibFile));
+  std::string const impLibFullPath =
+    GeneratorTarget->GetFullPath(Config, cmStateEnums::ImportLibraryArtifact);
+  std::string impLibFile = ConvertToFastbuildPath(impLibFullPath);
+  cmSystemTools::MakeDirectory(cmSystemTools::GetFilenamePath(impLibFullPath));
   if (!impLibFile.empty()) {
     cmSystemTools::ConvertToOutputSlashes(impLibFile);
     target.Variables["TargetOutputImplib"] = std::move(impLibFile);
@@ -928,7 +929,7 @@ void cmFastbuildNormalTargetGenerator::Generate()
   GenerateModuleDefinitionInfo(fastbuildTarget);
   // Needs to be called after we've added all PRE-LINK steps (like creation of
   // .def files on Windows).
-  AddLinkerNodeDependnecies(fastbuildTarget);
+  AddLinkerNodeDependencies(fastbuildTarget);
 
   // Must be called after "GenerateObjects", since it also adds Prebuild deps
   // to it.
