@@ -114,11 +114,11 @@ GoogleTest或Catch2。按顺序执行\ ``TODO 1``\ 到\ ``TODO 5``，以使用�
   功能性测试库。虽然本教程中的大部分CMake代码可以原封不动地用于其他项目，但你不\
   应在本教程之外使用\ ``SimpleTest``，也不应尝试从它提供的CMake代码中学习。
 
-Build and Run
+构建和运行
 -------------
 
-First we must install the ``SimpleTest`` framework. Navigate to the
-``Help/guide/Step10/SimpleTest`` directory and run the following commands
+首先，我们必须安装\ ``SimpleTest``\ 框架。导航到\ ``Help/guide/Step10/SimpleTest``\
+目录并运行以下命令：
 
 .. code-block:: console
 
@@ -126,35 +126,31 @@ First we must install the ``SimpleTest`` framework. Navigate to the
   cmake --install build
 
 .. note::
-  The ``SimpleTest`` preset sets up everything needed to install ``SimpleTest``
-  for the tutorial. For reasons that are beyond the scope of this tutorial,
-  there is no need to build or provide any other configuration for
-  ``SimpleTest``.
+  ``SimpleTest``\ 预设配置了为教程安装\ ``SimpleTest``\ 所需的一切。由于超出本\
+  教程范围的原因，无需构建或为\ ``SimpleTest``\ 提供任何其他配置。
 
-We can observe that the ``Step10/install`` directory has now been populated by
-the ``SimpleTest`` header and package files.
+我们可以观察到，\ ``Step10/install``\ 目录现在已被填充了\ ``SimpleTest``\
+的头文件和包文件。
 
-Now we can configure and build the Tutorial project as per usual, navigating to
-the ``Help/guide/Step10/TutorialProject`` and running:
+现在我们可以像往常一样配置和构建Tutorial项目，导航到\
+``Help/guide/Step10/TutorialProject``\ 并运行：
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-Verify that the ``SimpleTest`` framework has been consumed correctly by running
-the tests with CTest.
+通过使用CTest运行测试来验证\ ``SimpleTest``\ 框架是否已正确加载。
 
-Solution
+解决方案
 --------
 
-First we call :command:`find_package` to discover the ``SimpleTest`` package.
-We do this with ``REQUIRED`` because the tests cannot build without
-``SimpleTest``.
+首先，我们调用\ :command:`find_package`\ 来发现\ ``SimpleTest``\ 包。我们添加\
+``REQUIRED``\ 参数是因为没有\ ``SimpleTest``，测试将无法构建。
 
 .. raw:: html
 
-  <details><summary>TODO 1 Click to show/hide answer</summary>
+  <details><summary>TODO 1点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tests/CMakeLists.txt
   :caption: TODO 1: TutorialProject/Tests/CMakeLists.txt
@@ -167,11 +163,11 @@ We do this with ``REQUIRED`` because the tests cannot build without
 
   </details>
 
-Next we add the ``SimpleTest::SimpleTest`` target to ``TestMathFunctions``
+接下来，我们将\ ``SimpleTest::SimpleTest``\ 目标添加到\ ``TestMathFunctions``\ 中
 
 .. raw:: html
 
-  <details><summary>TODO 2 Click to show/hide answer</summary>
+  <details><summary>TODO 2点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tests/CMakeLists.txt
   :caption: TODO 2: TutorialProject/Tests/CMakeLists.txt
@@ -184,12 +180,11 @@ Next we add the ``SimpleTest::SimpleTest`` target to ``TestMathFunctions``
 
   </details>
 
-Now we can replace our test description code with a call to
-``simpletest_discover_tests``.
+现在我们可以用对\ ``simpletest_discover_tests``\ 的调用来替换测试描述代码。
 
 .. raw:: html
 
-  <details><summary>TODO 3 Click to show/hide answer</summary>
+  <details><summary>TODO 3点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tests/CMakeLists.txt
   :caption: TODO 3: TutorialProject/Tests/CMakeLists.txt
@@ -202,12 +197,12 @@ Now we can replace our test description code with a call to
 
   </details>
 
-We ensure :command:`find_package` can discover ``SimpleTest`` by
-adding the install tree to :variable:`CMAKE_PREFIX_PATH`.
+我们通过将安装树添加到\ :variable:`CMAKE_PREFIX_PATH`\ 来确保\
+:command:`find_package`\ 能够发现\ ``SimpleTest``。
 
 .. raw:: html
 
-  <details><summary>TODO 4 Click to show/hide answer</summary>
+  <details><summary>TODO 4点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/CMakePresets.json
   :caption: TODO 4: TutorialProject/CMakePresets.json
@@ -222,12 +217,12 @@ adding the install tree to :variable:`CMAKE_PREFIX_PATH`.
 
   </details>
 
-Finally, we update the tests to use the macros provided by ``SimpleTest`` by
-removing the placeholders and including the appropriate header.
+最后，我们通过移除占位符并包含适当的头文件来更新测试，以使用\ ``SimpleTest``\
+提供的宏。
 
 .. raw:: html
 
-  <details><summary>TODO 5 Click to show/hide answer</summary>
+  <details><summary>TODO 5点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tests/TestMathFunctions.cxx
   :caption: TODO 5: TutorialProject/Tests/TestMathFunctions.cxx
