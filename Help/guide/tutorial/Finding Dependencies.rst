@@ -235,96 +235,90 @@ GoogleTest或Catch2。按顺序执行\ ``TODO 1``\ 到\ ``TODO 5``，以使用�
 
   </details>
 
-Exercise 2 - Transitive Dependencies
+练习2 - 传递依赖
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Libraries often build on one another. A multimedia application may depend on a
-library which provides support for various container formats, which may in turn
-rely on one or more other libraries for compression algorithms.
+库通常是相互构建的。一个多媒体应用程序可能依赖于一个提供各种容器格式支持的库，\
+而这个库又可能依赖于一个或多个其他库来提供压缩算法。
 
-We need to express these transitive requirements inside the package config
-files we place in the install tree. We do so with the
-:module:`CMakeFindDependencyMacro` module, which provides a safe mechanism for
-installed packages to recursively discover one another.
+我们需要在放置在安装树中的包配置文件中表达这些传递性需求。我们通过\
+:module:`CMakeFindDependencyMacro`\ 模块来实现，该模块提供了一种安全的机制，\
+使已安装的包能够递归地发现彼此。
 
 .. code-block:: cmake
 
   include(CMakeFindDependencyMacro)
   find_dependency(zlib)
 
-:module:`find_dependency() <CMakeFindDependencyMacro>` also forwards arguments
-from the top-level :command:`find_package` call. If :command:`find_package` is
-called with ``QUIET`` or ``REQUIRED``,
-:module:`find_dependency() <CMakeFindDependencyMacro>` will also use ``QUIET``
-and/or ``REQUIRED``.
+:module:`find_dependency() <CMakeFindDependencyMacro>`\ 还会转发来自顶层\
+:command:`find_package`\ 调用的参数。如果\ :command:`find_package`\ 调用时带有\
+``QUIET``\ 或\ ``REQUIRED``，那么\ :module:`find_dependency() <CMakeFindDependencyMacro>`\
+也会使用\ ``QUIET``\ 和/或\ ``REQUIRED``。
 
-Goal
+目标
 ----
 
-Add a dependency to ``SimpleTest`` and ensure that packages which rely on
-``SimpleTest`` also discover this transitive dependency.
+向\ ``SimpleTest``\ 添加一个依赖项，并确保依赖于\ ``SimpleTest``\ 的包也能发现\
+这个传递依赖。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :module:`CMakeFindDependencyMacro`
 * :command:`find_package`
 * :command:`target_link_libraries`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``SimpleTest/CMakeLists.txt``
 * ``SimpleTest/cmake/SimpleTestConfig.cmake``
 
-Getting Started
+开始操作
 ---------------
 
-For this step we will only be editing the ``SimpleTest`` project. The transitive
-dependency, ``TransitiveDep``, is a dummy dependency which provides no behavior.
-However CMake doesn't know this and the ``TutorialProject`` tests will fail to
-configure and build if CMake cannot find all required dependencies.
+在这一步中，我们将只编辑\ ``SimpleTest``\ 项目。传递性依赖\ ``TransitiveDep``\
+是一个空依赖，它不提供任何行为。但是CMake并不知道这一点，如果CMake找不到所有必需\
+的依赖项，\ ``TutorialProject``\ 测试将无法配置和构建。
 
-The ``TransitiveDep`` package has already been installed to the
-``Step10/install`` tree. We do not need to install it as we did with
-``SimpleTest``.
+``TransitiveDep``\ 包已经被安装到\ ``Step10/install``\ 树中。我们不需要像安装\
+``SimpleTest``\ 那样再次安装它。
 
-Complete ``TODO 6`` through ``TODO 8``.
+请完成\ ``TODO 6``\ 到\ ``TODO 8``。
 
-Build and Run
+构建和运行
 -------------
 
-We need to reinstall the SimpleTest framework. Navigate to the
-``Help/guide/Step10/SimpleTest`` directory and run the same commands as before.
+我们需要重新安装SimpleTest框架。导航到\ ``Help/guide/Step10/SimpleTest``\ 目录\
+并运行与之前相同的命令。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --install build
 
-Now we can reconfigure and rebuild the ``TutorialProject``, navigate to
-``Help/guide/Step10/TutorialProject`` and perform the usual steps to do so.
+现在我们可以重新配置并重建\ ``TutorialProject``，导航到\
+``Help/guide/Step10/TutorialProject``\ 并执行通常的步骤来完成这一操作。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-If the build passed we have likely successfully propagated the transitive
-dependency. Verify this by searching the ``CMakeCache.txt`` of
-``TutorialProject`` for an entry named ``TransitiveDep_DIR``. This demonstrates
-the ``TutorialProject`` searched for an found ``TransitiveDep`` even though it
-has no direct requirement for it.
+如果构建通过，我们很可能已经成功地传递了传递性依赖。通过在\ ``TutorialProject``\
+的\ ``CMakeCache.txt``\ 中搜索名为\ ``TransitiveDep_DIR``\ 的条目来验证这一点。\
+这表明即使\ ``TutorialProject``\ 没有对它的直接需求，它也搜索并找到了\
+``TransitiveDep``。
 
-Solution
+解决方案
 --------
 
-First we call :command:`find_package` to discover the ``TransitiveDep`` package.
-We use ``REQUIRED`` to verify we have found ``TransitiveDep``.
+首先，我们调用\ :command:`find_package`\ 来发现\ ``TransitiveDep``\ 包。我们使用\
+``REQUIRED``\ 来验证我们已经找到了\ ``TransitiveDep``。
 
 .. raw:: html
 
-  <details><summary>TODO 6 Click to show/hide answer</summary>
+  <details><summary>TODO 6点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/SimpleTest/CMakeLists.txt
   :caption: TODO 6: SimpleTest/CMakeLists.txt
@@ -337,11 +331,11 @@ We use ``REQUIRED`` to verify we have found ``TransitiveDep``.
 
   </details>
 
-Next we add the ``TransitiveDep::TransitiveDep`` target to ``SimpleTest``.
+接下来，我们将\ ``TransitiveDep::TransitiveDep``\ 目标添加到\ ``SimpleTest``\ 中。
 
 .. raw:: html
 
-  <details><summary>TODO 7 Click to show/hide answer</summary>
+  <details><summary>TODO 7点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/SimpleTest/CMakeLists.txt
   :caption: TODO 7: SimpleTest/CMakeLists.txt
@@ -355,17 +349,15 @@ Next we add the ``TransitiveDep::TransitiveDep`` target to ``SimpleTest``.
   </details>
 
 .. note::
-  If we built ``TutorialProject`` at this point, we would expect the
-  configuration to fail due to the ``TransitiveDep::TransitiveDep`` target
-  being unavailable inside that project.
+  如果我们此时构建\ ``TutorialProject``，我们预计配置会失败，因为\
+  ``TransitiveDep::TransitiveDep``\ 目标在该项目中不可用。
 
-Finally, we include the :module:`CMakeFindDependencyMacro` and call
-:module:`find_dependency() <CMakeFindDependencyMacro>` inside the ``SimpleTest``
-package config file to propagate the transitive dependency.
+最后，我们在\ ``SimpleTest``\ 包配置文件中包含\ :module:`CMakeFindDependencyMacro`\
+并调用\ :module:`find_dependency() <CMakeFindDependencyMacro>`，以传递依赖。
 
 .. raw:: html
 
-  <details><summary>TODO 8 Click to show/hide answer</summary>
+  <details><summary>TODO 8点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/SimpleTest/cmake/SimpleTestConfig.cmake
   :caption: TODO 8: SimpleTest/cmake/SimpleTestConfig.cmake
