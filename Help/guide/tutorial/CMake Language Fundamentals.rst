@@ -25,26 +25,22 @@
   本教程致力于展示最佳实践和实际问题的解决方案。但是，在这一步中，我们将重新实现\
   一些CMake内置函数。在“现实生活”中，请不要编写自己的\ :command:`list(APPEND)`。
 
-Background
+背景
 ^^^^^^^^^^
 
-The only fundamental types in CMakeLang are strings and lists. Every object in
-CMake is a string, and lists are themselves strings which contain semicolons
-as separators. Any command which appears to operate on something other than a
-string, whether they be booleans, numbers, JSON objects, or otherwise, is in
-fact consuming a string, doing some internal conversion logic (in a language
-other than CMakeLang), and then converting back to a string for any potential
-output.
+CMakeLang中唯一的基本类型是字符串和列表。CMake中的每个对象都是一个字符串，而列表\
+本身就是包含分号作为分隔符的字符串。任何看起来像是在操作字符串以外的东西的命令，\
+无论是布尔值、数字、JSON对象还是其他类型，实际上都是在处理字符串，执行一些内部\
+转换逻辑（使用CMakeLang以外的语言），然后将结果转换回字符串以供潜在输出。
 
-We can create a variable, which is to say a name for a string, using the
-:command:`set` command.
+我们可以使用\ :command:`set`\ 命令创建一个变量，即为字符串命名。
 
 .. code-block:: cmake
 
   set(var "World!")
 
-A variable's value can be accessed using brace expansion, for example if we want
-to use the :command:`message` command to print the string named by ``var``.
+可以通过大括号展开来访问变量的值，例如，如果我们想使用\ :command:`message`\
+命令打印由\ ``var``\ 命名的字符串。
 
 .. code-block:: cmake
 
@@ -57,25 +53,20 @@ to use the :command:`message` command to print the string named by ``var``.
   Hello World!
 
 .. note::
-  :option:`cmake -P` is called "script mode", it informs CMake this file is not
-  intended to have a :command:`project` command. We're not building any
-  software, instead using CMake only as a command interpreter.
+  :option:`cmake -P`\ 被称为“脚本模式”，它告知CMake此文件不打算包含\
+  :command:`project`\ 命令。我们不是在构建任何软件，而是仅将CMake用作命令解释器。
 
-Because CMakeLang has only strings, conditionals are entirely by convention of
-which strings are considered true and which are considered false. These are
-*supposed* to be intuitive, "True", "On", "Yes", and (strings representing)
-non-zero numbers are truthy, while "False" "Off", "No", "0", "Ignore",
-"NotFound", and the empty string are all considered false.
+由于CMakeLang只有字符串，条件判断完全基于约定，即哪些字符串被认为是真，哪些被认\
+为是假。这些约定\ *应该是*\ 直观的，“True”、“On”、“Yes”以及（表示）非零数字的\
+字符串被认为是真，而“False”、“Off”、“No”、“0”、“Ignore”、“NotFound”和空字符串都\
+被认为是假。
 
-However, some of the rules are more complex than that, so taking some time
-to consult the :command:`if` documentation on expressions is worthwhile. It's
-recommended to stick to a single pair for a given context, such as
-"True"/"False" or "On"/"Off".
+然而，有些规则比这更复杂，因此值得花些时间查阅\ :command:`if`\ 命令关于表达式的\
+文档。建议在给定上下文中坚持使用单一的一对值，如“True”/“False”或“On”/“Off”。
 
-As mentioned, lists are strings containing semicolons. The :command:`list`
-command is useful for manipulating these, and many structures within CMake
-expect to operate with this convention. As an example, we can use the
-:command:`foreach` command to iterate over a list.
+如前所述，列表是包含分号的字符串。\ :command:`list`\ 命令对于操作这些列表很有用，\
+CMake中的许多结构都期望按照这种约定操作。例如，我们可以使用\ :command:`foreach`\
+命令遍历一个列表。
 
 .. code-block:: cmake
 
@@ -342,7 +333,7 @@ typical logical operators, ``NOT``, ``AND``, and ``OR``.
 In addition to conditionals CMake provides two loop structures,
 :command:`while`, which follows the same rules as :command:`if` for checking a
 loop variable, and the more useful :command:`foreach`, which iterates over lists
-of strings and was demonstrated in the `Background`_ section.
+of strings and was demonstrated in the `背景`_ section.
 
 For this exercise, we're going to use loops and conditionals to solve some
 simple problems. We'll be using the aforementioned ``ARGN`` variable from

@@ -9,35 +9,30 @@
 
 但本教程并非如此。在这一步中，我们将简单介绍CTest提供的一些功能。
 
-Background
+背景
 ^^^^^^^^^^
 
-At its core, CTest is a task launcher which runs commands and reports if they
-have returned zero or non-zero values. This is the level we will be dealing
-with CTest at.
+从根本上讲，CTest是一个任务启动器，它运行命令并报告它们返回的是零值还是非零值。\
+这就是我们将要处理CTest的层面。
 
-CMake provides direct integration with CTest via the :command:`enable_testing`
-and :command:`add_test` commands. These allow CMake to setup the necessary
-infrastructure in the build folder for CTest to discover, run, and report
-on various tests we might be interested in.
+CMake通过\ :command:`enable_testing`\ 和\ :command:`add_test`\ 命令提供与CTest的\
+直接集成。这些命令允许CMake在构建文件夹中设置必要的基础设施，以便CTest发现、\
+运行和报告我们可能感兴趣的各类测试。
 
-After setting up and building tests, the easiest way to invoke CTest is to run
-it directly on the build directory with:
+在设置并构建测试之后，调用CTest最简单的方法是直接在构建目录上运行它：
 
 .. code-block:: console
 
   ctest --test-dir build
 
-Which will run all available tests. Specific tests can be run with regular
-expressions.
+这将运行所有可用的测试。可以通过正则表达式运行特定测试。
 
 .. code-block:: console
 
   ctest --test-dir build -R SpecificTest
 
-CTest also has advanced mechanisms for scripting, fixtures, sanitizers,
-job servers, metric reportings, and much more. See the :manual:`ctest(1)`
-manual for more information.
+CTest还具有用于脚本、夹具、清理器、作业服务器、度量报告等的高级机制。更多信息请\
+参见\ :manual:`ctest(1)`\ 手册。
 
 Exercise 1 - Adding Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^

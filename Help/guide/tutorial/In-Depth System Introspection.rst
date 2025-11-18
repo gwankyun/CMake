@@ -6,39 +6,34 @@
 
 在这一步中，我们将在自己的项目代码中利用CMake使用的相同测试程序机制。
 
-Background
+背景
 ^^^^^^^^^^
 
-An old trick going back to the oldest days of configuration and build systems
-is to verify the availability of some feature by compiling a small program
-which uses that feature.
+一个可以追溯到配置和构建系统早期的古老技巧是通过编译一个使用该功能的小程序来验证\
+某些功能的可用性。
 
-CMake makes this unnecessary for many contexts. As we will address in later
-steps, if CMake can find a library dependency, we can rely on it having all
-the facilities (headers, code generators, test utilities, etc) we expect it to
-have. Conversely, if CMake can't find a dependency, attempting to use the
-dependency anyway will almost certainly fail.
+对于许多情况，CMake使这变得不必要。正如我们将在后续步骤中提到的，如果CMake能够\
+找到一个库依赖项，我们可以依赖它拥有我们期望的所有设施（头文件、代码生成器、\
+测试工具等）。相反，如果CMake找不到依赖项，尝试使用该依赖项几乎肯定会失败。
 
-However, there are other kinds of information about the toolchain which CMake
-doesn't communicate readily. For these advanced cases, we can write our own
-test programs and compile commands to check for availability.
+然而，关于工具链还有一些其他信息是CMake不容易传达的。对于这些高级情况，我们可以\
+编写自己的测试程序和编译命令来检查可用性。
 
-CMake provides modules to simplify these checks. These are documented at
-:manual:`cmake-modules(7)`. Any module that begins with ``Check`` is a system
-introspection module we can use to interrogate the toolchain and system
-environment. Some notable ones include:
+CMake提供了模块来简化这些检查。这些在\ :manual:`cmake-modules(7)`\ 中有文档记录。\
+任何以\ ``Check``\ 开头的模块都是系统探测模块，我们可以用来查询工具链和系统环境。\
+一些值得注意的包括：
 
   ``CheckIncludeFiles``
-    Check one or more C/C++ header files.
+    检查一个或多个C/C++头文件。
 
   ``CheckCompilerFlag``
-    Check whether the compiler supports a given flag.
+    检查编译器是否支持给定标志。
 
   ``CheckSourceCompiles``
-    Checks whether source code can be built for a given language.
+    检查是否可以为给定语言构建源代码。
 
   ``CheckIPOSupported``
-    Check whether the compiler supports interprocedural optimization (IPO/LTO).
+    检查编译器是否支持过程间优化（IPO/LTO）。
 
 
 Exercise 1 - Check Include File

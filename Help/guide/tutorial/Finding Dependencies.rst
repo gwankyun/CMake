@@ -372,16 +372,14 @@ GoogleTest或Catch2。按顺序执行\ ``TODO 1``\ 到\ ``TODO 5``，以使用�
 
   </details>
 
-Exercise 3 - Finding Other Kinds of Files
+练习3 - 查找其他类型的文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In a perfect world every dependency we care about would be packaged correctly,
-or at least some other developer would have written a module that discovers it
-for us. We do not live in a perfect world, and sometimes we will have to get
-our hands dirty and discover build requirements manually.
+在理想世界中，我们所关心的每个依赖项都会被正确打包，或者至少会有其他开发者为我们\
+编写一个发现它的模块。但我们并不生活在理想的世界中，有时我们必须亲自动手手动发现\
+构建需求。
 
-For this we have the other find commands enumerated earlier in the step, such
-as :command:`find_path`.
+为此，我们拥有本步骤前面列举的其他查找命令，例如\ :command:`find_path`。
 
 .. code-block:: cmake
 
@@ -394,56 +392,53 @@ as :command:`find_path`.
       ${PackageIncludeFolder}
   )
 
-Goal
+目标
 ----
 
-Add an unpackaged header to the ``Tutorial`` executable of the
-``TutorialProject``.
+将一个未打包的头文件添加到\ ``TutorialProject``\ 的\ ``Tutorial``\ 可执行文件中。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`find_path`
 * :command:`target_include_directories`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``TutorialProject/Tutorial/CMakeLists.txt``
 * ``TutorialProject/Tutorial/Tutorial.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-For this step we will only be editing the ``TutorialProject`` project. The
-unpackaged header, ``Unpackaged/Unpackaged.h`` has already been installed to the
-``Step10/install`` tree.
+在此步骤中，我们只会编辑\ ``TutorialProject``\ 项目。未打包的头文件\
+``Unpackaged/Unpackaged.h``\ 已经被安装到了\ ``Step10/install``\ 目录树中。
 
-Complete ``TODO 9`` through ``TODO 11``.
+请完成\ ``TODO 9``\ 至\ ``TODO 11``。
 
-Build and Run
+构建和运行
 -------------
 
-There are no special build steps for this exercise, navigate to
-``Help/guide/Step10/TutorialProject`` and perform the usual build.
+本练习没有特殊的构建步骤，请导航至\ ``Help/guide/Step10/TutorialProject``\ 
+并执行常规构建。
 
 .. code-block:: console
 
   cmake --build build
 
-If the build passed we have successfully added the ``Unpackaged`` include
-directory to the project.
+如果构建成功，说明我们已成功将\ ``Unpackaged``\ 包含目录添加到了项目中。
 
-Solution
+解决方案
 --------
 
-First we call :command:`find_path` to discover the ``Unpackaged`` include
-directory. We use ``REQUIRED`` because building ``Tutorial`` will fail if
-we cannot locate the ``Unpackaged.h`` header.
+首先我们调用\ :command:`find_path`\ 来发现\ ``Unpackaged``\ 包含目录。我们使用\
+``REQUIRED``\ 是因为如果我们无法定位\ ``Unpackaged.h``\ 头文件，构建\ ``Tutorial``\
+将会失败。
 
 .. raw:: html
 
-  <details><summary>TODO 9 Click to show/hide answer</summary>
+  <details><summary>TODO 9点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tutorial/CMakeLists.txt
   :caption: TODO 9: TutorialProject/Tutorial/CMakeLists.txt
@@ -456,12 +451,12 @@ we cannot locate the ``Unpackaged.h`` header.
 
   </details>
 
-Next we add the discovered path to ``Tutorial`` using
-:command:`target_include_directories`.
+接下来我们使用\ :command:`target_include_directories`\ 将发现的路径添加到\
+``Tutorial``\ 中。
 
 .. raw:: html
 
-  <details><summary>TODO 10 Click to show/hide answer</summary>
+  <details><summary>TODO 10点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tutorial/CMakeLists.txt
   :caption: TODO 10: TutorialProject/Tutorial/CMakeLists.txt
@@ -474,11 +469,11 @@ Next we add the discovered path to ``Tutorial`` using
 
   </details>
 
-Finally, we edit ``Tutorial.cxx`` to include the discovered header.
+最后，我们编辑\ ``Tutorial.cxx``\ 以包含发现的头文件。
 
 .. raw:: html
 
-  <details><summary>TODO 11 Click to show/hide answer</summary>
+  <details><summary>TODO 11点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step11/TutorialProject/Tutorial/Tutorial.cxx
   :caption: TODO 11: TutorialProject/Tutorial/Tutorial.cxx

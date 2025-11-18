@@ -7,13 +7,12 @@ CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量
 在这一步中，我们将深入探讨如何在CML文件中提供项目配置选项，以及如何调用CMake来\
 利用CMake和各个项目提供的配置选项。
 
-Background
+背景
 ^^^^^^^^^^
 
-If we had a CMake project for compression software which supported multiple
-compression algorithms, we might want to let the packager of the project decide
-which algorithms to enable when they build our software. We can do so by
-consuming variables set via :option:`-D <cmake -D>` flags.
+如果我们有一个支持多种压缩算法的压缩软件CMake项目，我们可能希望让项目的打包者在\
+构建我们的软件时决定启用哪些算法。我们可以通过使用\ :option:`-D <cmake -D>`\
+标志设置的变量来实现这一点。
 
 .. code-block:: cmake
 
@@ -35,9 +34,8 @@ consuming variables set via :option:`-D <cmake -D>` flags.
   ...
   I will use Zlib!
 
-Of course, we will want to provide reasonable defaults for these configuration
-choices, and a way to communicate the purpose of a given option. This function
-is provided by the :command:`option` command.
+当然，我们会希望为这些配置选项提供合理的默认值，并提供一种方式来传达给定选项的\
+目的。这个功能由\ :command:`option`\ 命令提供。
 
 .. code-block:: cmake
 
@@ -55,21 +53,18 @@ is provided by the :command:`option` command.
   ...
   I will use Zstd!
 
-The names created by :option:`-D <cmake -D>` flags and :command:`option` are
-not normal variables, they are **cache** variables. Cache variables are globally
-visible variables which are *sticky*, their value is difficult to change after
-it is initially set. In fact they are so sticky that, in project mode, CMake
-will save and restore cache variables across multiple configurations. If a
-cache variable is set once, it will remain until another :option:`-D <cmake -D>`
-flag preempts the saved variable.
+由\ :option:`-D <cmake -D>`\ 标志和\ :command:`option`\ 创建的名称不是普通变量，\
+它们是\ **缓存**\ 变量。缓存变量是全局可见的变量，它们是\ *粘性的*，一旦初始设置\
+后就很难更改其值。实际上它们非常粘性，在项目模式下，CMake会在多次配置之间保存和\
+恢复缓存变量。如果一个缓存变量被设置一次，它将一直存在，直到另一个\
+:option:`-D <cmake -D>`\ 标志抢占已保存的变量。
 
 .. note::
-  CMake itself has dozens of normal and cache variables used for configuration.
-  These are documented at :manual:`cmake-variables(7)` and operate in the same
-  manner as project-provided variables for configuration.
+  CMake本身有几十个用于配置的普通变量和缓存变量。这些变量在\
+  :manual:`cmake-variables(7)`\ 中有文档记录，并且与项目提供的配置变量以相同的\
+  方式操作。
 
-:command:`set` can also be used to manipulate cache variables, but will not
-change a variable which has already been created.
+:command:`set`\ 也可以用来操作缓存变量，但它不会改变已经创建的变量。
 
 .. code-block:: cmake
 
@@ -83,8 +78,8 @@ change a variable which has already been created.
   $ cmake -P StickyCacheVariable.cmake
   StickyCacheVariable: I will not change
 
-Because :option:`-D <cmake -D>` flags are processed before any other commands,
-they take precedence for setting the value of a cache variable.
+由于\ :option:`-D <cmake -D>`\ 标志在任何其他命令之前处理，它们在设置缓存变量的\
+值时具有优先权。
 
 .. code-block:: console
 
@@ -93,10 +88,9 @@ they take precedence for setting the value of a cache variable.
     -P StickyCacheVariable.cmake
   StickyCacheVariable: Commandline always wins
 
-While cache variables cannot ordinarily be changed, they can be *shadowed* by
-normal variables. We can observe this by :command:`set`'ing a variable to have
-the same name as a cache variable, and then using :command:`unset` to remove
-the normal variable.
+虽然缓存变量通常不能被更改，但它们可以被普通变量\ *遮蔽*。我们可以通过\
+:command:`set`\ 一个与缓存变量同名的变量，然后使用\ :command:`unset`\ 删除普通\
+变量来观察这一点。
 
 .. code-block:: cmake
 

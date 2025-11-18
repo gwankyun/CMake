@@ -8,45 +8,38 @@
 :command:`add_library`\ 命令。从依赖项导入的库（或由项目导出以作为依赖项被使用）\
 将在后续步骤中介绍。
 
-Background
+背景
 ^^^^^^^^^^
 
-As we learned in ``Step1``, the :command:`add_library` command accepts the name
-of the library target to be created as its first argument. The second
-argument is an optional ``<type>`` for which the following values are valid:
+正如我们在\ ``Step1``\ 中所学到的，\ :command:`add_library`\ 命令接受要创建的库\
+目标名称作为其第一个参数。第二个参数是可选的\ ``<type>``，有效值如下：
 
   ``STATIC``
-    A :ref:`Static Library <Static Libraries>`:
-    an archive of object files for use when linking other targets.
+    :ref:`静态库 <Static Libraries>`：\
+    一个用于链接其他目标时使用的对象文件归档。
 
   ``SHARED``
-    A :ref:`Shared Library <Shared Libraries>`:
-    a dynamic library that may be linked by other targets and loaded
-    at runtime.
+    :ref:`共享库 <Shared Libraries>`：
+    一个可由其他目标链接并在运行时加载的动态库。
 
   ``MODULE``
-    A :ref:`Module Library <Module Libraries>`:
-    a plugin that may not be linked by other targets, but may be
-    dynamically loaded at runtime using dlopen-like functionality.
+    :ref:`模块库 <Module Libraries>`：
+    一个插件，不能被其他目标直接链接，但可以在运行时通过类似dlopen的功能动态加载。
 
   ``OBJECT``
-    An :ref:`Object Library <Object Libraries>`:
-    a collection of object files which have not been archived or linked
-    into a library.
+    :ref:`对象库 <Object Libraries>`：
+    一组尚未归档或链接成库的对象文件集合。
 
   ``INTERFACE``
-    An :ref:`Interface Library <Interface Libraries>`:
-    a library target which specifies usage requirements for dependents but
-    does not compile sources and does not produce a library artifact on disk.
+    :ref:`接口库 <Interface Libraries>`：
+    一种指定依赖项使用要求的库目标，但不编译源代码，也不在磁盘上生成库工件。
 
-In addition, there are ``IMPORTED`` libraries which describe library targets
-from foreign projects or modules, imported into the current project. We will
-cover these briefly in later steps.
+此外，还有\ ``IMPORTED``\ 库，它们描述了从外部项目或模块导入到当前项目的库目标。\
+我们将在后续步骤中简要介绍这些内容。
 
-``MODULE`` libraries are most commonly found in plugin systems, or as extensions
-to runtime-loading languages like Python or Javascript. They act very similar to
-normal shared libraries, except they cannot be directly linked by other targets.
-They are sufficiently similar that we won't cover them in further depth here.
+``MODULE``\ 库最常见于插件系统，或作为Python或Javascript等运行时加载语言的扩展。\
+它们的行为与普通共享库非常相似，只是不能被其他目标直接链接。由于它们足够相似，\
+因此我们不会在这里进一步深入讨论。
 
 Exercise 1 - Static and Shared
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

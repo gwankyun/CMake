@@ -16,16 +16,14 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 有些几乎与这两个一样常见，有些具有更高级的应用，还有几个应该只在其他选项不可用时\
 作为最后手段使用。
 
-Background
+背景
 ^^^^^^^^^^
 
-Before going any further, let's name all of the CMake target commands. We'll
-split these into three groups: the recommended and generally useful commands,
-the advanced and cautionary commands, and the "footgun" commands which should
-be avoided unless necessary.
+在继续深入之前，让我们先列出所有的CMake目标命令。我们将这些命令分为三组：推荐且\
+常用的命令、高级及需要注意的命令，以及除非必要否则应避免使用的“危险”命令。
 
 +-----------------------------------------+--------------------------------------+---------------------------------------+
-| Common/Recommended                      | Advanced/Caution                     | Esoteric/Footguns                     |
+| 常用/推荐                               | 高级/注意                            | 晦涩/危险                             |
 +=========================================+======================================+=======================================+
 | :command:`target_compile_definitions`   | :command:`get_target_property`       | :command:`target_include_directories` |
 | :command:`target_compile_features`      | :command:`set_target_properties`     | :command:`target_link_directories`    |
@@ -35,19 +33,15 @@ be avoided unless necessary.
 +-----------------------------------------+--------------------------------------+---------------------------------------+
 
 .. note::
-    There's no such thing as a "bad" CMake target command. They all have valid
-    use cases. This categorization is provided to give newcomers a simple
-    intuition about which commands they should consider first when tackling
-    a problem.
+    没有所谓的“坏”CMake目标命令。它们都有有效的使用场景。这种分类是为了给新手\
+    提供简单的直觉，让他们在解决问题时首先考虑哪些命令。
 
-We'll demonstrate most of these in the following exercises. The three we won't
-be using are :command:`get_target_property`, :command:`set_target_properties`
-and :command:`target_precompile_headers`, so we will briefly discuss their
-purpose here.
+我们将在接下来的练习中演示大部分命令。我们不会使用的是\ :command:`get_target_property`、\
+:command:`set_target_properties`\ 和\ :command:`target_precompile_headers`，\
+所以我们在这里简要讨论它们的用途。
 
-The :command:`get_target_property` and :command:`set_target_properties` commands
-give direct access to a target's properties by name. They can even be used
-to attach arbitrary property names to a target.
+:command:`get_target_property`\ 和\ :command:`set_target_properties`\ 命令通过\
+名称直接访问目标的属性。它们甚至可以用来为目标附加任意的属性名称。
 
 .. code-block:: cmake
 
@@ -71,22 +65,19 @@ to attach arbitrary property names to a target.
   Key: Value
   Hello: World
 
-The full list of target properties which are semantically meaningful to CMake
-are documented at :manual:`cmake-properties(7)`, however most of these should
-be modified with their dedicated commands. For example, it is unnecessary to
-directly manipulate ``LINK_LIBRARIES`` and ``INTERFACE_LINK_LIBRARIES``, as
-these are handled by :command:`target_link_libraries`.
+对CMake语义上有意义的目标属性完整列表记录在\ :manual:`cmake-properties(7)`\ 中，\
+但大多数这些属性应该通过它们的专用命令来修改。例如，没有必要直接操作\
+``LINK_LIBRARIES``\ 和\ ``INTERFACE_LINK_LIBRARIES``，因为这些由\
+:command:`target_link_libraries`\ 处理。
 
-Conversely, some lesser-used properties are only accessible via these commands.
-The :prop_tgt:`DEPRECATION` property, used to attach deprecation notices to
-targets, can only be set via :command:`set_target_properties`; as can the
-:prop_tgt:`ADDITIONAL_CLEAN_FILES`, for describing additional files to be
-removed by CMake's ``clean`` target; and other properties of this sort.
+相反，一些较少使用的属性只能通过这些命令访问。用于为目标附加弃用通知的\
+:prop_tgt:`DEPRECATION`\ 属性只能通过\ :command:`set_target_properties`\ 设置；\
+同样地，用于描述要由CMake的\ ``clean``\ 目标删除的额外文件的\
+:prop_tgt:`ADDITIONAL_CLEAN_FILES`\ 也只能通过这种方式设置；以及其他类似的属性。
 
-The :command:`target_precompile_headers` command takes a list of header files,
-similar to :command:`target_sources`, and creates a precompiled header from
-them. This precompiled header is then force included into all translation
-units in the target. This can be useful for build performance.
+:command:`target_precompile_headers`\ 命令接受一个头文件列表，类似于\
+:command:`target_sources`，并从中创建预编译头文件。这个预编译头文件随后会被强制\
+包含到目标中的所有翻译单元中。这对于构建性能来说是有用的。
 
 Exercise 1 - Features and Definitions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

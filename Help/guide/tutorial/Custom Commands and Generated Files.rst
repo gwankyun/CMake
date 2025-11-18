@@ -10,34 +10,26 @@
 在这一步中，我们将使用\ :command:`add_custom_command`\ 在教程项目中添加对代码生\
 成器的支持。
 
-Background
+背景
 ^^^^^^^^^^
 
-Any step in the build process can generally be described in terms of its inputs
-and outputs. CMake assumes that code generators and other custom processes
-operate on the same principle. In this way, the code generator acts identically
-to compilers, linkers, and other elements of the toolchain; when the inputs are
-newer than the outputs (or the outputs don't exist), a user-specified command
-will be run to update the outputs.
+构建过程中的任何步骤通常都可以用其输入和输出来描述。CMake假设代码生成器和其他自\
+定义进程遵循相同的原则。这样，代码生成器的作用就与编译器、链接器和其他工具链元素\
+相同；当输入比输出新（或者输出不存在）时，将运行用户指定的命令来更新输出。
 
 .. note::
-  This model assumes the outputs of a process are known before it is run. CMake
-  lacks the ability to describe code generators where the name and location of
-  the outputs depends on the *content* of the input. Various hacks exist to
-  shim this functionality into CMake, but they are outside the scope of this
-  tutorial.
+  此模型假定在运行之前已知进程的输出。CMake缺乏描述代码生成器的能力，其中输出的\
+  名称和位置取决于输入的\ *内容*。存在各种黑客技术将此功能引入CMake，但它们超出\
+  了本教程的范围。
 
-Describing a code generator (or any custom process) is usually performed in
-two parts. First, the inputs and outputs are described independently of the
-CMake target model, concerned only with the generation process itself. Second,
-the outputs are associated with a CMake target to insert them into the CMake
-target model.
+描述代码生成器（或任何自定义进程）通常分为两个部分。首先，独立于CMake目标模型描\
+述输入和输出，只关注生成过程本身。其次，将输出与CMake目标关联，以将其插入CMake\
+目标模型。
 
-For sources, this is as simple as adding the generated files to the source list
-of a ``STATIC``, ``SHARED``, or ``OBJECT`` library. For header-only generators,
-it's often necessary to use an intermediary target created via
-:command:`add_custom_target` to add the header file generation to the
-build stage (because ``INTERFACE`` libraries have no build step).
+对于源文件，这就像将生成的文件添加到\ ``STATIC``、\ ``SHARED``\ 或\ ``OBJECT``\
+库的源列表一样简单。对于仅头文件的生成器，通常需要使用通过\
+:command:`add_custom_target`\ 创建的中间目标将头文件生成添加到构建阶段（因为\
+``INTERFACE``\ 库没有构建步骤）。
 
 Exercise 1 - Using a Code Generator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
