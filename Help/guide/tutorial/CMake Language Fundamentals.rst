@@ -87,13 +87,12 @@ CMake中的许多结构都期望按照这种约定操作。例如，我们可以
   Hello, Larry
   Hello, Curly
 
-Exercise 1 - Macros, Functions, and Lists
+练习1 - 宏、函数和列表
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CMake allows us to craft our own functions and macros. This can be very helpful
-when constructing lots of similar targets, like tests, for which we will want
-to call similar sets of commands over and over again. We do so with
-:command:`function` and :command:`macro`.
+CMake允许我们创建自己的函数和宏。这在构建许多类似的目标（如测试）时非常有用，\
+因为我们需要一遍又一遍地调用类似的命令集。我们可以使用\ :command:`function`\ 和\
+:command:`macro`\ 命令来实现这一点。
 
 .. code-block:: cmake
 
@@ -114,40 +113,32 @@ to call similar sets of commands over and over again. We do so with
         From Function
                 From Macro
 
-Like with many languages, the difference between functions and macros is one
-of scope. In CMakeLang, both :command:`function` and :command:`macro` can "see"
-all the variables created in all the frames above them. However, a
-:command:`macro` acts semantically like a text replacement, similar to C/C++
-macros, so any side effects the macro creates are visible in their calling
-context. If we create or change a variable in a macro, the caller will see the
-change.
+与许多语言一样，函数和宏之间的区别在于作用域。在CMake语言中，\ :command:`function`\
+和\ :command:`macro`\ 都可以“看到”在它们上面的所有框架中创建的所有变量。然而，\
+:command:`macro`\ 在语义上就像文本替换，类似于C/C++宏，因此宏创建的任何副作用在\
+其调用上下文中都是可见的。如果我们在宏中创建或更改变量，调用者将看到这些更改。
 
-:command:`function` creates its own variable scope, so side effects are not
-visible to the caller. In order to propagate changes to the parent which called
-the function, we must use ``set(<var> <value> PARENT_SCOPE)``, which works the
-same as :command:`set` but for variables belonging to the caller's context.
+:command:`function`\ 创建自己的变量作用域，因此副作用对调用者不可见。为了将更改\
+传播到调用该函数的父级，我们必须使用\ ``set(<var> <value> PARENT_SCOPE)``，\
+它的工作方式与\ :command:`set`\ 相同，但适用于属于调用者上下文的变量。
 
 .. note::
-  In CMake 3.25, the :command:`return(PROPAGATE)` option was added, which
-  works the same as :command:`set(PARENT_SCOPE)` but provides slightly better
-  ergonomics.
+  在CMake 3.25中，添加了\ :command:`return(PROPAGATE)`\ 选项，它的工作方式与\
+  :command:`set(PARENT_SCOPE)`\ 相同，但提供了稍好的使用体验。
 
-While not necessary for this exercise, it bears mentioning that :command:`macro`
-and :command:`function` both support variadic arguments via the ``ARGV``
-variable, a list containing all arguments passed to the command, and the
-``ARGN`` variable, containing all arguments past the last expected argument.
+虽然在本练习中不是必需的，但值得一提的是，\ :command:`macro`\ 和\ :command:`function`\
+都通过\ ``ARGV``\ 变量（包含传递给命令的所有参数的列表）和\ ``ARGN``\ 变量（包\
+含超过最后一个预期参数的所有参数）支持可变参数。
 
-We're not going to build any targets in this exercise, so instead we'll
-construct our own version of :command:`list(APPEND)`, which adds a value to a
-list.
+在本练习中，我们不会构建任何目标，而是将构建我们自己的\ :command:`list(APPEND)`\
+版本，它可以向列表添加值。
 
-Goal
+目标
 ----
 
-Implement a macro and a function which append a value to a list, without using
-the :command:`list(APPEND)` command.
+实现一个宏和一个函数，用于向列表追加值，但不使用\ :command:`list(APPEND)`\ 命令。
 
-The desired usage of these commands is as follows:
+这些命令的期望用法如下：
 
 .. code-block:: cmake
 
@@ -161,10 +152,10 @@ The desired usage of these commands is as follows:
   Letters contains: Alpha;Beta;Gamma
 
 .. note::
-  The extension for these exercises is ``.cmake``, that's the standard extension
-  for CMakeLang files when not contained in a ``CMakeLists.txt``
+  这些练习的文件扩展名为\ ``.cmake``，这是CMake语言文件不在\ ``CMakeLists.txt``\
+  中的标准扩展名。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`macro`
@@ -172,36 +163,34 @@ Helpful Resources
 * :command:`set`
 * :command:`if`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Exercise1.cmake``
 
-Getting Started
+开始操作
 ----------------
 
-The source code for ``Exercise1.cmake`` is provided in the
-``Help/guide/tutorial/Step2`` directory. It contains tests to verify the
-append behavior described above.
+``Exercise1.cmake``\ 的源代码位于\ ``Help/guide/tutorial/Step2``\ 目录中。\
+它包含用于验证上述追加行为的测试。
 
 .. note::
-  You're not expected to handle the case of an empty or undefined list to
-  append to. However, as a bonus, the case is tested if you want to try out
-  your understanding of CMakeLang conditionals.
+  你无须处理向空列表或未定义列表追加值的情况。但是，作为额外挑战，如果你想测试\
+  对CMake语言条件语句的理解，该情况也包含在测试中。
 
-Complete ``TODO 1`` and ``TODO 2``.
+完成\ ``TODO 1``\ 和\ ``TODO 2``。
 
-Build and Run
+构建和运行
 -------------
 
-We're going to use script mode to run these exercises. First navigate to the
-``Help/guide/tutorial/Step2`` folder then you can run the code with:
+我们将使用脚本模式来运行这些练习。首先导航到\ ``Help/guide/tutorial/Step2``\
+文件夹，然后可以使用以下命令运行代码：
 
 .. code-block:: console
 
   cmake -P Exercise1.cmake
 
-The script will report if the commands were implemented correctly.
+脚本将报告命令是否正确实现。
 
 Solution
 --------
