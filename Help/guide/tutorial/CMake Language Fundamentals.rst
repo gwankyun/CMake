@@ -192,29 +192,25 @@ CMake允许我们创建自己的函数和宏。这在构建许多类似的目标
 
 脚本将报告命令是否正确实现。
 
-Solution
+解决方案
 --------
 
-This problem relies on an understanding of the mechanisms of CMake variables.
-CMake variables are names for strings; or put another way, a CMake variable
-is itself a string which can brace expand into a different string.
+这个问题依赖于对CMake变量机制的理解。CMake变量是字符串的名称；或者换句话说，\
+CMake变量本身是一个可以通过花括号展开成不同字符串的字符串。
 
-This leads to a common pattern in CMake code where functions and macros aren't
-passed values, but rather, they are passed the names of variables which contain
-those values. Thus ``ListVar`` does not contain the *value* of the list we need
-to append to, it contains the *name* of a list, which contains the value we
-need to append to.
+这导致了CMake代码中的一个常见模式：函数和宏不会传递值，而是传递包含这些值的变量\
+的名称。因此，\ ``ListVar``\ 不包含我们需要追加的列表的\ *值*，而是包含一个列表的\
+*名称*，该列表包含我们需要追加的值。
 
-When expanding the variable with ``${ListVar}``, we will get the name of the
-list. If we expand that name with ``${${ListVar}}``, we will get the values
-the list contains.
+当使用\ ``${ListVar}``\ 展开变量时，我们会得到列表的名称。如果我们使用\
+``${${ListVar}}``\ 展开该名称，我们将得到列表包含的值。
 
-To implement ``MacroAppend``, we need only combine this understanding of
-``ListVar`` with our knowledge of the :command:`set` command.
+要实现\ ``MacroAppend``，我们只需要将对\ ``ListVar``\ 的这种理解与我们对\
+:command:`set`\ 命令的知识结合起来。
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 1: Exercise1.cmake
@@ -228,16 +224,14 @@ To implement ``MacroAppend``, we need only combine this understanding of
 
   </details>
 
-We don't need to worry about scope here, because a macro operates in the same
-scope as its parent.
+在这里我们不需要担心作用域，因为宏在其父作用域中运行。
 
-``FuncAppend`` is almost identical, in fact it could be implemented in the
-same one liner but with an added ``PARENT_SCOPE``, but the instructions ask
-us to implement it in terms of ``MacroAppend``.
+``FuncAppend``\ 几乎完全相同，实际上它可以用相同的一行代码实现，但需要添加\
+``PARENT_SCOPE``，但根据指令，我们需要用\ ``MacroAppend``\ 来实现它。
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 2: Exercise1.cmake
@@ -252,22 +246,18 @@ us to implement it in terms of ``MacroAppend``.
 
   </details>
 
-``MacroAppend`` transforms ``ListVar`` for us, but it won't propagate the result
-to the parent scope. Because this is a function, we need to do so ourselves
-with :command:`set(PARENT_SCOPE)`.
+``MacroAppend``\ 为我们转换了\ ``ListVar``，但它不会将结果传播到父作用域。因为\
+这是一个函数，我们需要使用\ :command:`set(PARENT_SCOPE)`\ 自己完成这一操作。
 
-Exercise 2 - Conditionals and Loops
+练习2 - 条件和循环
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The two most common flow control elements in any structured programming
-language are conditionals and their close sibling loops. CMakeLang is no
-different. As previously mentioned, the truthiness of a given CMake string is a
-convention established by the :command:`if` command.
+任何结构化编程语言中最常见的两种流程控制元素是条件语句及其密切相关的循环。CMake\
+语言也不例外。如前所述，给定CMake字符串的真值是由\ :command:`if`\ 命令建立的约定。
 
-When given a string, :command:`if` will first check if it is one of the known
-constant values previously discussed. If the string isn't one of those values
-the command assumes it is a variable, and checks the brace-expanded contents of
-that variable to determine the result of the conditional.
+当给定一个字符串时，\ :command:`if`\ 会首先检查它是否是前面讨论过的已知常量值之一。\
+如果该字符串不是这些值之一，命令会假设它是一个变量，并检查该变量的花括号展开内容\
+来确定条件的结果。
 
 .. code-block:: cmake
 
@@ -299,45 +289,37 @@ that variable to determine the result of the conditional.
   Defined Variable: True
 
 .. note::
-    This is a good a time as any to discuss quoting in CMake. All objects in
-    CMake are strings, thus the double quote, ``"``, is often unnecessary.
-    CMake knows the object is a string, everything is a string.
+    现在是讨论CMake中引号使用的好时机。CMake中的所有对象都是字符串，因此双引号\
+    ``"``\ 通常是不必要的。CMake知道对象是字符串，一切都是字符串。
 
-    However, it is needed in some contexts. Strings containing whitespace require
-    double quotes, else they are treated like lists; CMake will concatenate the
-    elements together with semicolons. The reverse is also true, when
-    brace-expanding lists it is necessary to do so inside quotes if we want to
-    *preserve* the semicolons. Otherwise CMake will expand the list items into
-    space-separate strings.
+    但是，在某些上下文中它是必需的。包含空格的字符串需要双引号，否则它们将被视为\
+    列表；CMake会使用分号将元素连接在一起。反之亦然，当花括号展开列表时，如果我\
+    们想\ *保留*\ 分号，则必须在引号内进行。否则，CMake会将列表项展开为以空格分\
+    隔的字符串。
 
-    A handful of commands, such as :command:`if`, recognize the difference
-    between quoted and unquoted strings. :command:`if` will only check that the
-    given string represents a variable when the string is unquoted.
+    少数命令，如\ :command:`if`\ ，可以识别带引号和不带引号的字符串之间的区别。\
+    :command:`if`\ 只有在字符串不带引号时才会检查给定的字符串是否表示一个变量。
 
-Finally, :command:`if` provides several useful comparison modes such as
-``STREQUAL`` for string matching, ``DEFINED`` for checking the existence of
-a variable, and ``MATCHES`` for regular expression checks. It also supports the
-typical logical operators, ``NOT``, ``AND``, and ``OR``.
+最后，\ :command:`if`\ 提供了几种有用的比较模式，如用于字符串匹配的\ ``STREQUAL``，\
+用于检查变量存在性的\ ``DEFINED``，以及用于正则表达式检查的\ ``MATCHES``。它还\
+支持典型的逻辑运算符\ ``NOT``、\ ``AND``\ 和\ ``OR``。
 
-In addition to conditionals CMake provides two loop structures,
-:command:`while`, which follows the same rules as :command:`if` for checking a
-loop variable, and the more useful :command:`foreach`, which iterates over lists
-of strings and was demonstrated in the `背景`_ section.
+除了条件语句外，CMake还提供了两种循环结构：\ :command:`while`\ ，它遵循与\
+:command:`if`\ 相同的规则来检查循环变量；以及更有用的\ :command:`foreach`，\
+它迭代字符串列表，这在\ `背景`_\ 部分中已经演示过。
 
-For this exercise, we're going to use loops and conditionals to solve some
-simple problems. We'll be using the aforementioned ``ARGN`` variable from
-:command:`function` as the list to operate on.
+在这个练习中，我们将使用循环和条件语句来解决一些简单的问题。我们将使用前面提到的\
+来自\ :command:`function`\ 的\ ``ARGN``\ 变量作为要操作的列表。
 
-Goal
+目标
 ----
 
-Loop over a list, and return all the strings containing the string ``Foo``.
+遍历列表，并返回所有包含字符串\ ``Foo``\ 的字符串。
 
 .. note::
-  Those who read the command documentation will be aware that this is
-  :command:`list(FILTER)`, resist the temptation to use it.
+  阅读命令文档的人会知道这是\ :command:`list(FILTER)`，请克制使用它的冲动。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`function`
@@ -345,7 +327,7 @@ Helpful Resources
 * :command:`if`
 * :command:`list`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Exercise2.cmake``
