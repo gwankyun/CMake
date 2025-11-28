@@ -332,49 +332,45 @@ CMake变量本身是一个可以通过花括号展开成不同字符串的字符
 
 * ``Exercise2.cmake``
 
-Getting Started
+开始操作
 ----------------
 
-The source code for ``Exercise2.cmake`` is provided in the ``Help/guide/tutorial/Step2``
-directory. It contains tests to verify the append behavior described above.
+``Exercise2.cmake``\ 的源代码位于\ ``Help/guide/tutorial/Step2``\ 目录中。它包含\
+用于验证上述追加行为的测试。
 
 .. note::
-  You should use the :command:`list(APPEND)` command this time to collect your
-  final result into a list. The input can be consumed from the ``ARGN`` variable
-  of the provided function.
+  这次你应该使用\ :command:`list(APPEND)`\ 命令将最终结果收集到列表中。输入可以\
+  从提供的函数的\ ``ARGN``\ 变量中获取。
 
-Complete ``TODO 3``.
+完成\ ``TODO 3``。
 
-Build and Run
+构建和运行
 -------------
 
-Navigate to the ``Help/guide/tutorial/Step2`` folder then you can run the code with:
+导航到\ ``Help/guide/tutorial/Step2``\ 文件夹，然后可以使用以下命令运行代码：
 
 .. code-block:: console
 
   cmake -P Exercise2.cmake
 
-The script will report if the ``FilterFoo`` function was implemented correctly.
+该脚本将报告\ ``FilterFoo``\ 函数是否正确实现。
 
-Solution
+解决方案
 --------
 
-We need to do three things, loop over the ``ARGN`` list, check if a given
-item in that list matches ``"Foo"``, and if so append it to the ``OutVar``
-list.
+我们需要做三件事：遍历\ ``ARGN``\ 列表，检查该列表中的给定项是否匹配\ ``"Foo"``，\
+如果匹配，则将其追加到\ ``OutVar``\ 列表中。
 
-While there are a couple ways we could invoke :command:`foreach`, the
-recommended way is to allow the command to do the variable expansion for us
-via ``IN LISTS`` to access the ``ARGN`` list items.
+虽然我们可以通过几种方式调用\ :command:`foreach`，但推荐的方式是通过\ ``IN LISTS``\
+让命令为我们进行变量展开，以访问\ ``ARGN``\ 列表项。
 
-The :command:`if` comparison we need is ``MATCHES`` which will check if
-``"FOO"`` exists in the item. All that remains is to append the item to the
-``OutVar`` list.  The trickiest part is remembering that ``OutVar`` *names* a
-list, it is not the list itself, so we need to access it via ``${OutVar}``.
+我们需要的\ :command:`if`\ 比较是\ ``MATCHES``，它将检查项中是否存在\ ``"FOO"``。\
+剩下的就是将该项追加到\ ``OutVar``\ 列表中。最棘手的部分是记住\ ``OutVar``\ *命名*\
+了一个列表，而不是列表本身，因此我们需要通过\ ``${OutVar}``\ 访问它。
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 3: Exercise2.cmake
@@ -395,78 +391,70 @@ list, it is not the list itself, so we need to access it via ``${OutVar}``.
 
   </details>
 
-Exercise 3 - Organizing with Include
+练习3 - 使用Include组织代码
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have already discussed how to incorporate subdirectories containing their
-own CMLs with :command:`add_subdirectory`. In later steps we will explore
-the various way CMake code can be packaged and shared across projects.
+我们已经讨论了如何通过\ :command:`add_subdirectory`\ 整合包含自己的CMakeLists.txt\
+的子目录。在后续步骤中，我们将探索CMake代码可以跨项目打包和共享的各种方式。
 
-However for small CMake functions and utilities, it is often beneficial for them
-to live in their own ``.cmake`` files outside the project CMLs and separate
-from the rest of the build system. This allows for separation of concerns,
-removing the project-specific elements from the utilities we are using to
-describe them.
+然而，对于小型CMake函数和实用程序，将它们放在项目的CMakeLists.txt外部并与构建系统\
+其余部分分开的独立\ ``.cmake``\ 文件中通常是有益的。这允许关注点分离，将项目特定\
+元素从我们用来描述它们的实用程序中移除。
 
-To incorporate these separate ``.cmake`` files into our project, we use the
-:command:`include` command. This command immediately begins interpreting the
-contents of the :command:`include`'d file in the scope of the parent CML. It
-is as if the entire file were being called as a macro.
+要将这些单独的\ ``.cmake``\ 文件整合到我们的项目中，我们使用\ :command:`include`\
+命令。该命令立即开始在父CMakeLists.txt的作用域内解释被包含文件的内容。就好像整个\
+文件被作为宏调用一样。
 
-Traditionally, these kinds of ``.cmake`` files live in a folder named "cmake"
-inside the project root. For this exercise, we'll use the ``Step2`` folder instead.
+传统上，这类\ ``.cmake``\ 文件位于项目根目录中的名为“cmake”的文件夹内。对于本练习，\
+我们将改用\ ``Step2``\ 文件夹。
 
-Goal
+目标
 ----
 
-Use the functions from Exercises 1 and 2 to build and filter our own list of items.
+使用练习1和练习2中的函数来构建和过滤我们自己的项目列表。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`include`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Exercise3.cmake``
 
-Getting Started
+开始操作
 ----------------
 
-The source code for ``Exercise3.cmake`` is provided in the ``Help/guide/tutorial/Step2``
-directory. It contains tests to verify the correct usage of our functions
-from the previous two exercises.
+``Exercise3.cmake``\ 的源代码位于\ ``Help/guide/tutorial/Step2``\ 目录中。它包含\
+用于验证前两个练习中函数正确使用的测试。
 
 .. note::
-  Actually it reuses tests from Exercise2.cmake, reusable code is good for
-  everyone.
+  实际上，它重用了Exercise2.cmake中的测试，可重用代码对所有人都有好处。
 
-Complete ``TODO 4`` through ``TODO 7``.
+完成\ ``TODO 4``\ 到\ ``TODO 7``。
 
-Build and Run
+构建和运行
 -------------
 
-Navigate to the ``Help/guide/tutorial/Step2`` folder then you can run the code with:
+导航到\ ``Help/guide/tutorial/Step2``\ 文件夹，然后可以使用以下命令运行代码：
 
 .. code-block:: console
 
   cmake -P Exercise3.cmake
 
-The script will report if the functions were invoked and composed correctly.
+该脚本将报告函数是否被正确调用和组合。
 
-Solution
+解决方案
 --------
 
-The :command:`include` command will interpret the included file completely,
-including the tests from the first two exercises. We don't want to run these
-tests again. Thanks to some forethought, these files check a variable called
-``SKIP_TESTS`` prior to running their tests, setting this to ``True`` will
-get us the behavior we want.
+:command:`include`\ 命令将完全解释被包含的文件，包括前两个练习中的测试。我们不想\
+再次运行这些测试。由于一些前瞻性设计，这些文件在运行测试前会检查一个名为\
+``SKIP_TESTS``\ 的变量，将其设置为\ ``True``\ 可以获得我们想要的行为。
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 4: Exercise3.cmake
@@ -478,12 +466,11 @@ get us the behavior we want.
 
   </details>
 
-Now we're ready to :command:`include` the previous exercises to grab their
-functions.
+现在我们准备好使用\ :command:`include`\ 包含之前的练习来获取它们的函数。
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 5: Exercise3.cmake
@@ -496,12 +483,11 @@ functions.
 
   </details>
 
-Now that ``FuncAppend`` is available to us, we can use it to append new elements
-to the ``InList``.
+现在\ ``FuncAppend``\ 可用了，我们可以使用它将新元素追加到\ ``InList``\ 中。
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 6: Exercise3.cmake
@@ -514,13 +500,13 @@ to the ``InList``.
 
   </details>
 
-Finally, we can use ``FilterFoo`` to filter the full list. The tricky part to
-remember here is that our ``FilterFoo`` wants to operate on list values via
-``ARGN``, so we need to expand the ``InList`` when we call ``FilterFoo``.
+最后，我们可以使用\ ``FilterFoo``\ 来过滤完整列表。这里需要记住的棘手部分是，\
+我们的\ ``FilterFoo``\ 希望通过\ ``ARGN``\ 对列表值进行操作，因此在调用\
+``FilterFoo``\ 时需要展开\ ``InList``。
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 7: Exercise3.cmake
