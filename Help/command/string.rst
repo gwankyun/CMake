@@ -22,7 +22,7 @@ Synopsis
     string(`JOIN`_ <glue> <out-var> [<input>...])
     string(`TOLOWER`_ <string> <out-var>)
     string(`TOUPPER`_ <string> <out-var>)
-    string(`LENGTH <LENGTH_>`_ <string> <out-var>)
+    string(`LENGTH`_ <string> <out-var>)
     string(`SUBSTRING`_ <string> <begin> <length> <out-var>)
     string(`STRIP`_ <string> <out-var>)
     string(`GENEX_STRIP`_ <string> <out-var>)
@@ -247,6 +247,7 @@ Manipulation
 
 .. signature::
   string(LENGTH <string> <output_variable>)
+  :target: LENGTH
 
   Store in an ``<output_variable>`` a given string's length in bytes.
   Note that this means if ``<string>`` contains multi-byte characters,
