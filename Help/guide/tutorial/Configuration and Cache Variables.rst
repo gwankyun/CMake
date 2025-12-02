@@ -107,113 +107,102 @@ CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量
   ShadowVariable: Hiding the cache variable
   ShadowVariable: In the shadows
 
-Exercise 1 - Using Options
+练习1 - 使用选项
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We can imagine a scenario where consumers really want our ``MathFunctions``
-library, and the ``Tutorial`` utility is a "take it or leave it" add-on. In
-that case, we might want to add an option to allow consumers to disable
-building our ``Tutorial`` binary, building only the ``MathFunctions`` library.
+我们可以想象一个场景：消费者真正想要的是我们的\ ``MathFunctions``\ 库，而\
+``Tutorial``\ 工具只是一个可选的附加组件。在这种情况下，我们可能想要添加一个选项，\
+允许消费者禁用构建\ ``Tutorial``\ 二进制文件，只构建\ ``MathFunctions``\ 库。
 
-With our knowledge of options, conditionals, and cache variables we have all
-the pieces we need to make this configuration available.
+凭借我们对选项、条件语句和缓存变量的了解，我们已经拥有了实现这种配置所需的所有要素。
 
-Goal
+目标
 ----
 
-Add an option named ``TUTORIAL_BUILD_UTILITIES`` to control if the ``Tutorial``
-binary is configured and built.
+添加一个名为\ ``TUTORIAL_BUILD_UTILITIES``\ 的选项，用于控制是否配置和构建\
+``Tutorial``\ 二进制文件。
 
 .. note::
-  CMake allows us to determine which targets are built after configuration. Our
-  users could ask for the ``MathFunctions`` library alone without ``Tutorial``.
-  CMake also has mechanisms to exclude targets from ``ALL``, the default target
-  which builds all the other available targets.
+  CMake允许我们在配置后确定要构建哪些目标。我们的用户可以单独请求\ ``MathFunctions``\
+  库而不包含\ ``Tutorial``。CMake也有机制可以将目标排除在\ ``ALL``\ （构建所有\
+  其他可用目标的默认目标）之外。
 
-  However, options which completely exclude targets from the configuration are
-  convenient and popular, especially if configuring those targets involves
-  heavy-weight steps which might take some time.
+  然而，完全从配置中排除目标的选项是方便且受欢迎的，特别是如果配置这些目标涉及\
+  可能需要一些时间的重量级步骤。
 
-  It also simplifies :command:`install()` logic, which we'll discuss in later
-  steps, if targets the packager is uninterested in are completely excluded.
+  它还简化了\ :command:`install()`\ 逻辑（我们将在后面的步骤中讨论），如果打包者\
+  不感兴趣的目标被完全排除。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`option`
 * :command:`if`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-The ``Help/guide/tutorial/Step3`` folder contains the complete, recommended
-solution to ``Step1`` and the relevant ``TODOs`` for this step. Take a minute
-to review and refamiliarize yourself with the ``Tutorial`` project.
+``Help/guide/tutorial/Step3``\ 文件夹包含了\ ``Step1``\ 的完整推荐解决方案以及\
+本步骤的相关\ ``TODO``\ 任务。请花一点时间回顾并重新熟悉\ ``Tutorial``\ 项目。
 
-When you feel you have an understanding of the current code, start with
-``TODO 1`` and complete through ``TODO 2``.
+当你认为已经理解当前代码后，请从\ ``TODO 1``\ 开始，完成到\ ``TODO 2``。
 
-Build and Run
+构建和运行
 -------------
 
-We can now reconfigure our project. However, this time we want to control the
-configuration via :option:`-D <cmake -D>` flags. We again start by navigating
-to ``Help/guide/tutorial/Step3`` and invoking CMake, but this time with our
-configuration options.
+现在我们可以重新配置项目了。不过，这次我们希望通过\ :option:`-D <cmake -D>`\
+标志来控制配置。我们再次导航到\ ``Help/guide/tutorial/Step3``\ 并调用 CMake，\
+但这次添加我们的配置选项。
 
 .. code-block:: console
 
   cmake -B build -DTUTORIAL_BUILD_UTILITIES=OFF
 
-We can now build as usual.
+现在我们可以像平常一样构建。
 
 .. code-block:: console
 
   cmake --build build
 
-After the build we should observe no Tutorial executable is produced. Because
-cache variables are sticky even a reconfigure shouldn't change this, despite
-the default-``ON`` option.
+构建后，我们应该观察到没有生成 Tutorial 可执行文件。由于缓存变量是粘性的，即使\
+重新配置也不会改变这一点，尽管该选项默认为\ ``ON``。
 
 .. code-block:: console
 
   cmake -B build
   cmake --build build
 
-Will not produce the Tutorial executable, the cache variables are "locked in".
-To change this we have two options. First, we can edit the file which stores
-the cache variables between CMake configuration runs, the "CMake Cache". This
-file is ``build/CMakeCache.txt``, in it we can find the option cache variable.
+不会生成Tutorial可执行文件，因为缓存变量已“锁定”。要更改这一点，我们有两个选择。\
+首先，我们可以编辑在CMake配置运行之间存储缓存变量的文件，即“CMake Cache”。这个\
+文件是\ ``build/CMakeCache.txt``，在其中我们可以找到选项缓存变量。
 
 .. code-block:: text
 
   //Build the Tutorial executable
   TUTORIAL_BUILD_UTILITIES:BOOL=OFF
 
-We can change this from ``OFF`` to ``ON``, rerun the build, and we will get
-our ``Tutorial`` executable.
+我们可以将其从\ ``OFF``\ 更改为\ ``ON``，重新运行构建，这样我们就会得到\
+``Tutorial``\ 可执行文件。
 
 .. note::
-  ``CMakeCache.txt`` entries are of the form ``<Name>:<Type>=<Value>``, however
-  the "type" is only a hint. All objects in CMake are strings, regardless of
-  what the cache says.
+  ``CMakeCache.txt``\ 条目格式为\ ``<Name>:<Type>=<Value>``，但是“类型”只是一个\
+  提示。CMake中的所有对象都是字符串，无论缓存中显示什么。
 
-Alternatively, we can change the value of the cache variable on the command
-line, because the command line runs before ``CMakeCache.txt`` is loaded its
-value take precedence over those in the cache file.
+或者，我们可以在命令行上更改缓存变量的值，因为命令行在\ ``CMakeCache.txt``\
+加载之前运行，所以其值优先级高于缓存文件中的值。
 
 .. code-block:: console
 
   cmake -B build -DTUTORIAL_BUILD_UTILITIES=ON
   cmake --build build
 
-Doing so we observe the value in ``CMakeCache.txt`` has flipped from ``OFF``
-to ``ON``, and that the ``Tutorial`` executable is built.
+这样做后，我们可以观察到\ ``CMakeCache.txt``\ 中的值已从\ ``OFF``\ 切换为\ ``ON``，\
+并且\ ``Tutorial``\ 可执行文件已构建完成。
 
 Solution
 --------
