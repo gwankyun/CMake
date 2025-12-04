@@ -204,15 +204,14 @@ CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量
 这样做后，我们可以观察到\ ``CMakeCache.txt``\ 中的值已从\ ``OFF``\ 切换为\ ``ON``，\
 并且\ ``Tutorial``\ 可执行文件已构建完成。
 
-Solution
+解决方案
 --------
 
-First we create our :command:`option` to provide our cache variable with a
-reasonable default value.
+首先，我们创建一个\ :command:`option`\ 来为我们的缓存变量提供合理的默认值。
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: TODO 1: CMakeLists.txt
@@ -225,12 +224,12 @@ reasonable default value.
 
   </details>
 
-Then we can check the cache variable to conditionally enable the ``Tutorial``
-executable (by way of adding its subdirectory).
+然后，我们可以检查这个缓存变量，以有条件地启用\ ``Tutorial``\ 可执行文件（通过\
+添加它的子目录）。
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/CMakeLists.txt
   :caption: TODO 2: CMakeLists.txt
@@ -243,49 +242,38 @@ executable (by way of adding its subdirectory).
 
   </details>
 
-Exercise 2 - ``CMAKE`` Variables
+练习2 - ``CMAKE``\ 变量
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CMake has several important normal and cache variables provided to allow
-packagers to control the build. Decisions such as compilers, default flags,
-search locations for packages, and much more are all controlled by CMake's
-own configuration variables.
+CMake提供了几个重要的普通变量和缓存变量，允许打包者控制构建过程。诸如编译器、\
+默认标志、包搜索位置等决策都由CMake自己的配置变量控制。
 
-Among the most important are language standards. As the language standard can
-have significant impact on the ABI presented by a given package. For example,
-it's quite common for libraries to use standard C++ templates on later
-standards, and provide polyfills on earlier standards. If a library is consumed
-under different standards then ABI incompatibilities between the standard
-templates and the polyfills can result in incomprehensible errors and runtime
-crashes.
+其中最重要的是语言标准。因为语言标准会对给定包呈现的ABI产生重大影响。例如，库在\
+较新版本标准中使用标准C++模板，而在较早版本标准中提供polyfill实现是很常见的。\
+如果库在不同标准下被使用，那么标准模板和polyfill之间的ABI不兼容性可能会导致难以\
+理解的错误和运行时崩溃。
 
-Ensuring all of our targets are built under the same language standard is
-achieved with the :variable:`CMAKE_<LANG>_STANDARD` cache variables. For C++,
-this is ``CMAKE_CXX_STANDARD``.
+确保所有目标都在相同的语言标准下构建是通过\ :variable:`CMAKE_<LANG>_STANDARD`\
+缓存变量实现的。对于C++，这是\ ``CMAKE_CXX_STANDARD``。
 
 .. note::
-  Because these variables are so important, it is equally important that
-  developers not override or shadow them in their CMLs. Shadowing
-  :variable:`CMAKE_<LANG>_STANDARD` in a CML because the library wants C++20,
-  when the packager has decided to build the rest of their libraries and
-  applications with C++23, can lead to the aforementioned terrible,
-  incomprehensible errors.
+  由于这些变量非常重要，开发人员同样重要的是不要在其CML中覆盖或隐藏它们。当打包\
+  者决定使用C++23构建其余库和应用程序时，如果库因为需要C++20而在CML中隐藏\
+  :variable:`CMAKE_<LANG>_STANDARD`，可能会导致前面提到的可怕且难以理解的错误。
 
-  Do not :command:`set` ``CMAKE_`` globals without very strong reasons for
-  doing so. We'll discuss better methods for targets to communicate
-  requirements like definitions and minimum standards in later steps.
+  除非有非常充分的理由，否则不要使用\ :command:`set`\ 命令设置\ ``CMAKE_``\ 全局\
+  变量。我们将在后续步骤中讨论更好的方法，让目标能够传达诸如定义和最低标准等要求。
 
-In this exercise, we'll introduce some C++20 code into our library and
-executable and build them with C++20 by setting the appropriate cache variable.
+在本练习中，我们将向库和可执行文件中引入一些C++20代码，并通过设置适当的缓存变量，\
+使它们使用C++20进行构建。
 
-Goal
+目标
 ----
 
-Use ``std::format`` to format printed strings instead of stream operators. To
-ensure availability of ``std::format``, configure CMake to use the C++20
-standard for C++ targets.
+使用\ ``std::format``\ 格式化打印的字符串，而不是流操作符。为确保\ ``std::format``\
+的可用性，请配置CMake为C++目标使用C++20标准。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :option:`cmake -D`
@@ -294,7 +282,7 @@ Helpful Resources
 * :prop_tgt:`CXX_STANDARD`
 * `cppreference \<format\> <https://en.cppreference.com/w/cpp/utility/format/format.html>`_
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Tutorial/Tutorial.cxx``
