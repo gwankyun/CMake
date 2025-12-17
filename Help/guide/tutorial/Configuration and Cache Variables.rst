@@ -288,48 +288,45 @@ CMake提供了几个重要的普通变量和缓存变量，允许打包者控制
 * ``Tutorial/Tutorial.cxx``
 * ``MathFunctions/MathFunctions.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-Continue to edit files from ``Step3``. Complete ``TODO 3`` through ``TODO 7``.
-We'll be modifying our prints to use ``std::format`` instead of stream
-operators.
+继续编辑\ ``Step3``\ 中的文件。完成\ ``TODO 3``\ 到\ ``TODO 7``。我们将修改打印\
+语句，使用\ ``std::format``\ 替代流操作符。
 
-Ensure your cache variables are set such that the Tutorial executable will be
-built, using any of the methods discussed in the previous exercise.
+确保你的缓存变量已设置，以便构建Tutorial可执行文件，可以使用上一个练习中讨论的\
+任何方法。
 
-Build and Run
+构建和运行
 -------------
 
-We need to reconfigure our project with the new standard, we can do this
-using the same method as our ``TUTORIAL_BUILD_UTILITIES`` cache variable.
+我们需要使用新标准重新配置项目，可以使用与设置\ ``TUTORIAL_BUILD_UTILITIES``\
+缓存变量相同的方法。
 
 .. code-block:: console
 
   cmake -B build -DCMAKE_CXX_STANDARD=20
 
 .. note::
-  Configuration variables are, by convention, prefixed with the provider of the
-  variable. CMake configuration variables are prefixed with ``CMAKE_``, while
-  projects should prefix their variables with ``<PROJECT>_``.
+  按照惯例，配置变量以变量提供者的名称为前缀。CMake配置变量以\ ``CMAKE_``\
+  为前缀，而项目应使用\ ``<PROJECT>_``\ 作为其变量的前缀。
 
-  The tutorial configuration variables follow this convention, and are prefixed
-  with ``TUTORIAL_``.
+  本教程的配置变量遵循此惯例，以\ ``TUTORIAL_``\ 为前缀。
 
-Now that we've configured with C++20, we can build as usual.
+现在我们已经配置为使用C++20，可以像往常一样构建项目。
 
 .. code-block:: console
 
   cmake --build build
 
-Solution
+解决方案
 --------
 
-We need to include ``<format>`` and then use it.
+我们需要包含\ ``<format>``\ 头文件，然后使用它。
 
 .. raw:: html
 
-  <details><summary>TODO 3-5: Click to show/hide answer</summary>
+  <details><summary>TODO 3-5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/Tutorial/Tutorial.cxx
   :caption: TODO 3: Tutorial/Tutorial.cxx
@@ -359,11 +356,11 @@ We need to include ``<format>`` and then use it.
 
   </details>
 
-And again for the ``MathFunctions`` library.
+然后对\ ``MathFunctions``\ 库进行同样的修改。
 
 .. raw:: html
 
-  <details><summary>TODO 6-7: Click to show/hide answer</summary>
+  <details><summary>TODO 6-7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step4/MathFunctions/MathFunctions.cxx
   :caption: TODO 6: MathFunctions.cxx
