@@ -1,0 +1,51 @@
+﻿{
+    "version": 10,
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "cacheVariables": {
+                "SPHINX_HTML": true
+            }
+        },
+        {
+            "name": "msvc",
+            "description": "Visual Studio 18 2026",
+            "inherits": "base",
+            "binaryDir": "${sourceDir}/build",
+            "generator": "Visual Studio 18 2026",
+            "architecture": "x64"
+        },
+        {
+            "name": "clang-mingw",
+            "inherits": "base",
+            "description": "Clang-MinGW",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build-clang-mingw",
+            "cacheVariables": {
+                "$comment": "指定編譯器路徑",
+                "CMAKE_C_COMPILER": "$env{LLVM_MINGW_ROOT}/bin/clang.exe",
+                "CMAKE_CXX_COMPILER": "$env{LLVM_MINGW_ROOT}/bin/clang++.exe",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": true
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "targets": "documentation",
+            "configuration": "Release"
+        },
+        {
+            "name": "msvc",
+            "inherits": "base",
+            "configurePreset": "msvc"
+        },
+        {
+            "name": "clang-mingw",
+            "inherits": "base",
+            "configurePreset": "clang-mingw"
+        }
+    ]
+}
