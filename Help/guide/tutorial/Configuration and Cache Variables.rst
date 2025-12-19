@@ -381,13 +381,11 @@ CMake提供了几个重要的普通变量和缓存变量，允许打包者控制
 
   </details>
 
-Exercise 3 - CMakePresets.json
+练习3 - CMakePresets.json
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Managing these configuration values can quickly become overwhelming. In CI
-systems it is appropriate to record these as part of a given CI step. For
-example in a Github Actions CI step we might see something akin to the
-following:
+管理这些配置值很快就会变得让人难以应付。在CI系统中，将这些配置记录为给定CI步骤的\
+一部分是合适的。例如，在Github Actions CI步骤中，我们可能会看到类似以下内容： 
 
 .. code-block:: yaml
 
@@ -404,36 +402,26 @@ following:
 
       cmake --build build
 
-When developing code locally, typing all these options even once might be error
-prone. If a fresh configuration is needed for any reason, doing so multiple
-times could be exhausting.
+在本地开发代码时，即使只输入一次所有这些选项也可能容易出错。如果由于任何原因需要\
+重新配置，多次这样做可能会让人疲惫不堪。
 
-There are many and varied solutions to this problem, and your choice is
-ultimately up to your preferences as a developer. CLI-oriented developers
-commonly use task runners to invoke CMake with their desired options for a
-project. Most IDEs also have a custom mechanism for controlling CMake
-configuration.
+解决这个问题的方案有很多种，最终选择取决于你作为开发者的偏好。面向CLI的开发者通常\
+使用任务运行器来调用带有项目所需选项的CMake。大多数IDE也有控制CMake配置的自定义机制。
 
-It would be impossible to fully enumerate every possible configuration workflow
-here. Instead we will explore CMake's built-in solution, known as
-:manual:`CMake Presets <cmake-presets(7)>`. Presets give us a format to name
-and express collections of CMake configuration options.
+在这里不可能完全列举所有可能的配置工作流程。相反，我们将探索CMake的内置解决方案，\
+称为\ :manual:`CMake Presets <cmake-presets(7)>`。预设为我们提供了一种命名和表达\
+CMake配置选项集合的格式。 
 
 .. note::
-    Presets are capable of expressing entire CMake workflows, from
-    configuration, through building, all the way to installing the software
-    package.
+    预设能够表达完整的CMake工作流程，从配置、构建，一直到安装软件包。 
 
-    They are far more flexible than can we have room for here. We'll limit
-    ourselves to using them for configuration.
+    它们的灵活性远超我们在这里所能涵盖的范围。我们将仅限于使用它们进行配置。 
 
-CMake Presets come in two standard files, ``CMakePresets.json``, which is
-intended to be a part of the project and tracked in source control; and
-``CMakeUserPresets.json``, which is intended for local user configuration
-and should not be tracked in source control.
+CMake预设包含两个标准文件：\ ``CMakePresets.json``\ 旨在作为项目的一部分并在版本\
+控制中跟踪；而\ ``CMakeUserPresets.json``\ 旨在用于本地用户配置，不应在版本控制\
+中跟踪。 
 
-The simplest preset which would be of use to a developer does nothing more
-than configure variables.
+对开发者有用的最简单的预设只是配置变量。
 
 .. code-block:: json
 
@@ -450,31 +438,27 @@ than configure variables.
     ]
   }
 
-When invoking CMake, where previously we would have done:
+在调用CMake时，以前我们会这样做： 
 
 .. code-block:: console
 
   cmake -B build -DEXAMPLE_FOO=Bar -DEXAMPLE_QUX=Baz
 
-We can now use the preset:
+现在我们可以使用预设：
 
 .. code-block:: console
 
   cmake -B build --preset example-preset
 
-CMake will search for files named ``CMakePresets.json`` and
-``CMakeUserPresets.json``, and load the named configuration from them if
-available.
+CMake将搜索名为\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的文件，\
+如果可用，则从中加载命名的配置。 
 
 .. note::
-  Command line flags can be mixed with presets. Command line flags have
-  precedence over values found in a preset.
+  命令行标志可以与预设混合使用。命令行标志的优先级高于预设中的值。
 
-Presets also support limited macros, variables that can be brace-expanded
-inside the preset. The only one of interest to us is the ``${sourceDir}`` macro,
-which expands to the root directory of the project. We can use this to set our
-build directory, skipping the :option:`-B <cmake -B>` flag when configuring
-the project.
+预设还支持有限的宏，即可以在预设内部进行大括号扩展的变量。我们感兴趣的只有\
+``${sourceDir}``\ 宏， 它会扩展为项目的根目录。我们可以使用它来设置构建目录，\
+从而在配置项目时跳过\ :option:`-B <cmake -B>`\ 标志。 
 
 .. code-block:: json
 
