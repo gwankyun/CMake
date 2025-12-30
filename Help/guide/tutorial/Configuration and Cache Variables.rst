@@ -467,68 +467,63 @@ CMake将搜索名为\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的
     "binaryDir": "${sourceDir}/build"
   }
 
-Goal
+目标
 ----
 
-Configure and build the tutorial using a CMake Preset instead of command line
-flags.
+使用CMake Preset配置并构建教程，而不是使用命令行标志。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :manual:`cmake-presets(7)`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakePresets.json``
 
-Getting Started
+开始操作
 ---------------
 
-Continue to edit files from ``Step3``. Complete ``TODO 8`` and ``TODO 9``.
+继续编辑\ ``Step3``\ 中的文件。完成\ ``TODO 8``\ 和\ ``TODO 9``。
 
 .. note::
-  ``TODOs`` inside ``CMakePresets.json`` need to be *replaced*. There should
-  be no ``TODO`` keys left inside the file when you have completed the exercise.
+  ``CMakePresets.json``\ 中的\ ``TODOs``\ 需要被\ **替换**。完成练习后，文件中\
+  不应有剩余的\ ``TODO``\ 键。
 
-You can verify the preset is working correctly by deleting the existing build
-folder before you configure, this will ensure you're not reusing the existing
-CMake Cache for configuration.
+你可以通过在配置前删除现有的构建文件夹来验证预设是否正常工作，这将确保你不会重复\
+使用现有的CMake缓存进行配置。
 
 .. note::
-  On CMake 3.24 and newer, the same effect can be achieved by configuring with
-  :option:`cmake --fresh`.
+   CMake 3.24及更新版本上，可以通过使用\ :option:`cmake --fresh`\ 进行配置来实现\
+   相同的效果。
 
-All future configuration changes will be via the ``CMakePresets.json`` file.
+所有未来的配置更改都将通过\ ``CMakePresets.json``\ 文件进行。
 
-Build and Run
+构建和运行
 -------------
 
-We can now use the preset file to manage our configuration.
+我们现在可以使用预设文件来管理我们的配置。
 
 .. code-block:: console
 
   cmake --preset tutorial
 
-Presets are capable of running the build step for us, but for this tutorial
-we'll continue to run the build ourselves.
+预设能够为我们运行构建步骤，但在本教程中，我们将继续自己运行构建。
 
 .. code-block:: console
 
   cmake --build build
 
-Solution
+解决方案
 --------
 
-There are two changes we need to make, first we want to set the build
-directory (also called the "binary directory") to the ``build`` subdirectory
-of our project folder, and second we need to set the ``CMAKE_CXX_STANDARD`` to
-``20``.
+我们需要进行两项更改，首先是将构建目录（也称为“二进制目录”）设置为项目文件夹的\
+``build``\ 子目录，其次是将\ ``CMAKE_CXX_STANDARD``\ 设置为\ ``20``。
 
 .. raw:: html
 
-  <details><summary>TODO 8-9: Click to show/hide answer</summary>
+  <details><summary>TODO 8-9: 点击显示/隐藏答案</summary>
 
 .. code-block:: json
   :caption: TODO 8-9: CMakePresets.json
