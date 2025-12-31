@@ -79,43 +79,35 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 :command:`target_sources`，并从中创建预编译头文件。这个预编译头文件随后会被强制\
 包含到目标中的所有翻译单元中。这对于构建性能来说是有用的。
 
-Exercise 1 - Features and Definitions
+练习1 - 特性和定义
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In earlier steps we cautioned against globally setting
-:variable:`CMAKE_<LANG>_STANDARD` and overriding packagers' decision concerning
-which language standard to use. On the other hand, many libraries have a
-minimum required feature set they need in order to build, and for these it
-is appropriate to use the :command:`target_compile_features` command to
-communicate those requirements.
+在前面的步骤中，我们警告过不要全局设置\ :variable:`CMAKE_<LANG>_STANDARD`\ 并覆盖\
+打包者关于使用哪种语言标准的决定。另一方面，许多库在构建时需要一组最低要求的特性，\
+对于这些库，使用\ :command:`target_compile_features`\ 命令来传达这些要求是合适的。
 
 .. code-block:: cmake
 
   target_compile_features(MyApp PRIVATE cxx_std_20)
 
-The :command:`target_compile_features` command describes a minimum language
-standard as a target property. If the :variable:`CMAKE_<LANG>_STANDARD` is above
-this version, or the compiler default already provides this language standard,
-no action is taken. If additional flags are necessary to enable the standard,
-these will be added by CMake.
+:command:`target_compile_features`\ 命令将最低语言标准描述为目标属性。如果\
+:variable:`CMAKE_<LANG>_STANDARD`\ 高于此版本，或者编译器默认已提供此语言标准，\
+则不采取任何操作。如果需要额外的标志来启用该标准，CMake会添加这些标志。
 
 .. note::
-  :command:`target_compile_features` manipulates the same style of interface and
-  non-interface properties as the other target commands. This means it is
-  possible to *inherit* a language standard requirement specified with
-  ``INTERFACE`` or ``PUBLIC`` scope keywords.
+  :command:`target_compile_features`\ 操作的接口和非接口属性与其他目标命令相同。\
+  这意味着可以\ *继承*\ 使用\ ``INTERFACE``\ 或\ ``PUBLIC``\ 作用域关键字指定的\
+  语言标准要求。
 
-  If language features are used only in implementation files, then the
-  respective compile features should be ``PRIVATE``. If the target's headers
-  use the features, then ``PUBLIC`` or ``INTERFACE`` should be used.
+  如果语言特性仅在实现文件中使用，则相应的编译特性应设为\ ``PRIVATE``。如果目标\
+  的头文件使用了这些特性，则应使用\ ``PUBLIC``\ 或\ ``INTERFACE``。
 
-For C++, the compile features are of the form ``cxx_std_YY`` where ``YY`` is
-the standardization year, e.g. ``14``, ``17``, ``20``, etc.
+对于C++，编译特性的形式为\ ``cxx_std_YY``，其中\ ``YY``\ 是标准化年份，例如\
+``14``、\ ``17``、\ ``20``\ 等。
 
-The :command:`target_compile_definitions` command describes compile definitions
-as target properties. It is the most common mechanism for communicating build
-configuration information to the source code itself. As with all properties,
-the scope keywords apply as we have discussed.
+:command:`target_compile_definitions`\ 命令将编译定义描述为目标属性。它是将构建\
+配置信息传达给源代码本身的最常见机制。与所有属性一样，我们讨论过的作用域关键字都\
+适用。
 
 .. code-block:: cmake
 
@@ -127,17 +119,16 @@ the scope keywords apply as we have discussed.
       MYLIBRARY_EXCLUDE_DEPRECATED_FUNCTIONS
   )
 
-It is neither required nor desired that we attach ``-D`` prefixes to compile
-definitions described with :command:`target_compile_definitions`. CMake will
-determine the correct flag for the current compiler.
+我们不需要也不希望在使用\ :command:`target_compile_definitions`\ 描述的编译定义\
+前附加\ ``-D``\ 前缀。CMake会为当前编译器确定正确的标志。
 
-Goal
+目标
 ----
 
-Use :command:`target_compile_features` and :command:`target_compile_definitions`
-to communicate language standard and compile definition requirements.
+使用\ :command:`target_compile_features`\ 和\ :command:`target_compile_definitions`\
+来传达语言标准和编译定义要求。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`target_compile_features`
@@ -145,7 +136,7 @@ Helpful Resources
 * :command:`option`
 * :command:`if`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Tutorial/CMakeLists.txt``
@@ -153,24 +144,23 @@ Files to Edit
 * ``MathFunctions/MathFunctions.cxx``
 * ``CMakePresets.json``
 
-Getting Started
+开始操作
 ---------------
 
-The ``Help/guide/tutorial/Step4`` directory contains the complete, recommended
-solution to ``Step3`` and relevant ``TODOs`` for this step. Complete ``TODO 1``
-through ``TODO 8``.
+``Help/guide/tutorial/Step4``\ 目录包含了\ ``Step3``\ 的完整推荐解决方案以及此\
+步骤相关的\ ``TODOs``。完成\ ``TODO 1``\ 到\ ``TODO 8``。
 
-Build and Run
+构建和运行
 -------------
 
-We can run CMake using our ``tutorial`` preset, and then build as usual.
+我们可以使用\ ``tutorial``\ 预设运行CMake，然后像往常一样构建。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-Verify that the output of ``Tutorial`` is what we would expect for ``std::sqrt``.
+验证\ ``Tutorial``\ 的输出是否符合我们对\ ``std::sqrt``\ 的预期。
 
 Solution
 --------
