@@ -162,14 +162,14 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 
 验证\ ``Tutorial``\ 的输出是否符合我们对\ ``std::sqrt``\ 的预期。
 
-Solution
+解决方案
 --------
 
-First we add a new option to the top-level CML.
+首先，我们在顶层CML中添加一个新选项。
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/CMakeLists.txt
   :caption: TODO 1: CMakeLists.txt
@@ -182,11 +182,11 @@ First we add a new option to the top-level CML.
 
   </details>
 
-Then we add the compile feature and definitions to ``MathFunctions``.
+然后，我们将编译特性和定义添加到\ ``MathFunctions``。
 
 .. raw:: html
 
-  <details><summary>TODO 2-3: Click to show/hide answer</summary>
+  <details><summary>TODO 2-3: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/MathFunctions/CMakeLists.txt
   :caption: TODO 2-3: MathFunctions/CMakeLists.txt
@@ -199,11 +199,11 @@ Then we add the compile feature and definitions to ``MathFunctions``.
 
   </details>
 
-And the compile feature for ``Tutorial``.
+以及\ ``Tutorial``\ 的编译特性。
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/Tutorial/CMakeLists.txt
   :caption: TODO 4: Tutorial/CMakeLists.txt
@@ -216,11 +216,11 @@ And the compile feature for ``Tutorial``.
 
   </details>
 
-Now we can modify ``MathFunctions`` to take advantage of the new definition.
+现在我们可以修改\ ``MathFunctions``\ 以利用新定义。
 
 .. raw:: html
 
-  <details><summary>TODO 5-6: Click to show/hide answer</summary>
+  <details><summary>TODO 5-6: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/MathFunctions/MathFunctions.cxx
   :caption: TODO 5: MathFunctions/MathFunctions.cxx
@@ -241,13 +241,12 @@ Now we can modify ``MathFunctions`` to take advantage of the new definition.
 
   </details>
 
-Finally we can update our ``CMakePresets.json``. We don't need to set
-``CMAKE_CXX_STANDARD`` anymore, but we do want to try out our new
-compile definition.
+最后，我们可以更新\ ``CMakePresets.json``。我们不再需要设置\ ``CMAKE_CXX_STANDARD``，\
+但我们想要尝试新的编译定义。
 
 .. raw:: html
 
-  <details><summary>TODO 7-8: Click to show/hide answer</summary>
+  <details><summary>TODO 7-8: 点击显示/隐藏答案</summary>
 
 .. code-block:: json
   :caption: TODO 7-8: CMakePresets.json
