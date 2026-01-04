@@ -260,93 +260,83 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 
   </details>
 
-Exercise 2 - Compile and Link Options
+练习2 - 编译和链接选项
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sometimes, we need to exercise specific control over the exact options being
-passed on the compile and link line. These situations are addressed by
-:command:`target_compile_options` and :command:`target_link_options`.
+有时，我们需要对编译和链接命令行中传递的确切选项进行特定控制。这些情况可以通过\
+:command:`target_compile_options`\ 和\ :command:`target_link_options`\ 来解决。
 
 .. code:: cmake
 
   target_compile_options(MyApp PRIVATE -Wall -Werror)
   target_link_options(MyApp PRIVATE -T LinksScript.ld)
 
-There are several problems with unconditionally calling
-:command:`target_compile_options` or :command:`target_link_options`. The primary
-problem is compiler flags are specific to the compiler frontend being used. In
-order to ensure that our project supports multiple compiler frontends, we must
-only pass compatible flags to the compiler.
+无条件调用\ :command:`target_compile_options`\ 或\ :command:`target_link_options`\
+存在几个问题。主要问题是编译器标志特定于所使用的编译器前端。为了确保我们的项目支\
+持多个编译器前端，我们必须只向编译器传递兼容的标志。
 
-We can achieve this by checking the :variable:`CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT`
-variable which tells us the style of flags supported by the compiler frontend.
+我们可以通过检查\ :variable:`CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT`\ 变量来实现\
+这一点，该变量告诉我们编译器前端支持的标志风格。
 
 .. note::
-  Prior to CMake 3.26, :variable:`CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT` was
-  only set for compilers with multiple frontend variants. In versions after
-  CMake 3.26 checking this variable alone is sufficient.
+  在CMake 3.26之前，\ :variable:`CMAKE_<LANG>_COMPILER_FRONTEND_VARIANT`\ 仅针对\
+  具有多个前端变体的编译器设置。在CMake 3.26之后的版本中，仅检查此变量就足够了。
 
-  However this tutorial targets CMake 3.23. As such, the logic is more
-  complicated than we have time for here. This tutorial step already includes
-  correct logic for checking the compiler variant for MSVC, GCC, Clang, and
-  AppleClang on CMake 3.23.
+  然而，本教程针对的是CMake 3.23。因此，逻辑比我们在这里有时间讨论的要复杂。\
+  本教程步骤已经包含了在CMake 3.23上检查MSVC、GCC、Clang和AppleClang编译器变体的\
+  正确逻辑。
 
-Even if a compiler accepts the flags we pass, the semantics of compiler flags
-change over time. This is especially true with regards to warnings. Projects
-should not turn warnings-as-error flags by default, as this can break their
-build on otherwise innocuous compiler warnings included in later releases.
+即使编译器接受我们传递的标志，编译器标志的语义也会随时间变化。对于警告而言尤其\
+如此。项目默认不应启用“警告视为错误”标志，因为这可能会在后续版本中包含的其他无害\
+编译器警告上导致构建失败。
 
 .. note::
-  For errors and warnings, consider placing flags in :variable:`CMAKE_<LANG>_FLAGS`
-  for local development builds and during CI runs (via preset or
-  :option:`-D <cmake -D>` flags). We know exactly which compiler and
-  toolchain are being used in these contexts, so we can customize the behavior
-  precisely without risking build breakages on other platforms.
+  对于错误和警告，请考虑在本地开发构建和CI运行期间（通过预设或\
+  :option:`-D <cmake -D>`\ 标志）将标志放在\ :variable:`CMAKE_<LANG>_FLAGS`\ 中。\
+  我们确切知道在这些上下文中使用的是哪种编译器和工具链，因此我们可以精确地自定义\
+  行为，而不会有在其他平台上导致构建失败的风险。
 
-Goal
+目标
 ----
 
-Add appropriate warning flags to the ``Tutorial`` executable for MSVC-style and
-GNU-style compiler frontends.
+为MSVC风格和GNU风格的编译器前端向\ ``Tutorial``\ 可执行文件添加适当的警告标志。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`target_compile_options`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Tutorial/CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-Continue editing files in the ``Step4`` directory. The conditional for checking
-the frontend variant has already been written. Complete ``TODO 9`` and
-``TODO 10`` to add warning flags to ``Tutorial``.
+继续编辑\ ``Step4``\ 目录中的文件。检查前端变体的条件语句已经编写完成。完成\
+``TODO 9``\ 和\ ``TODO 10``，为\ ``Tutorial``\ 添加警告标志。
 
-Build and Run
+构建和运行
 -------------
 
-Since we have already configured for this step, we can build with the usual
-command.
+由于我们已经为此步骤进行了配置，因此可以使用常用命令进行构建。
 
 .. code-block:: cmake
 
   cmake --build build
 
-This should reveal a simple warning in the build. You can go ahead and fix it.
+这应该会在构建过程中显示一个简单的警告。你可以继续修复它。
 
-Solution
+解决方案
 --------
 
-We need to add two compile options to ``Tutorial``, one MSVC-style flag and
-one GNU-style flag.
+我们需要为\ ``Tutorial``\添 加两个编译选项，一个是MSVC风格的标志，另一个是GNU\
+风格的标志。
 
 .. raw:: html
 
-  <details><summary>TODO 9-10: Click to show/hide answer</summary>
+  <details><summary>TODO 9-10: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step5/Tutorial/CMakeLists.txt
   :caption: TODO 9-10: Tutorial/CMakeLists.txt
