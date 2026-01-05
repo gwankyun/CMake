@@ -349,28 +349,22 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 
   </details>
 
-Exercise 3 - Include and Link Directories
+练习3 - 包含和链接目录
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
-  This exercise requires building an archive using a compiler directly on the
-  command line. It is not used in later steps. It is included only to
-  demonstrate a use case for :command:`target_include_directories` and
-  :command:`target_link_directories`.
+  本练习需要使用编译器直接在命令行上构建存档。它不会在后续步骤中使用，仅用于演示\
+  :command:`target_include_directories`\ 和\ :command:`target_link_directories`\
+  的用例。
 
-  If you cannot complete this exercise for whatever reason feel free to treat
-  it as informational-only, or skip it entirely.
+  如果由于某种原因无法完成本练习，可以将其视为仅提供信息的内容，或者完全跳过
 
-It is generally unnecessary to directly describe include and link directories,
-as these requirements are inherited when linking together targets generated
-within CMake, or from external dependencies imported into CMake with commands
-we will cover in later steps.
+通常不需要直接描述包含目录和链接目录，因为这些要求会在链接CMake内部生成的目标或\
+从外部依赖项（我们将在后续步骤中介绍的命令导入到CMake中）时被继承。
 
-If we happen to have some libraries or header files which are not described
-by a CMake target which we need to bring into the build, perhaps pre-compiled
-binaries provided by a vendor, we can incorporate with the
-:command:`target_link_directories` and :command:`target_include_directories`
-commands.
+如果我们恰好有一些未被CMake目标描述但需要引入构建的库或头文件，比如供应商提供的\
+预编译二进制文件，我们可以使用\ :command:`target_link_directories`\ 和\
+:command:`target_include_directories`\ 命令来整合它们。
 
 .. code-block:: cmake
 
@@ -378,30 +372,29 @@ commands.
   target_include_directories(MyApp PRIVATE Vendor/include)
 
 
-These commands use properties which map to the ``-L`` and ``-I`` compiler flags
-(or whatever flags the compiler uses for link and include directories).
+这些命令使用的属性映射到\ ``-L``\ 和\ ``-I``\ 编译器标志（或编译器用于链接目录和\
+包含目录的任何标志）。
 
-Of course, passing a link directory doesn't tell the compiler to link anything
-into the build. For that we need :command:`target_link_libraries`. When
-:command:`target_link_libraries` is given an argument which does not map to
-a target name, it will add the string directly to the link line as a library
-to be linked into the build (prepending any appropriate flags, such a ``-l``).
+当然，传递链接目录并不会告诉编译器将任何内容链接到构建中。为此，我们需要\
+:command:`target_link_libraries`。当\ :command:`target_link_libraries`\ 获得一个\
+不映射到目标名称的参数时，它会将该字符串直接添加到链接行中，作为要链接到构建中\
+的库（添加任何适当的标志，如\ ``-l``）。
 
-Goal
+目标
 ----
 
-Describe a pre-compiled, vendored, static library and its headers inside a
-project using :command:`target_link_directories` and
-:command:`target_include_directories`.
+描述如何在项目中使用预编译的、供应商提供的静态库及其头文件，使用\
+:command:`target_link_directories`\ 和\ :command:`target_include_directories`\
+命令。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`target_link_directories`
 * :command:`target_include_directories`
 * :command:`target_link_libraries`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Vendor/CMakeLists.txt``
