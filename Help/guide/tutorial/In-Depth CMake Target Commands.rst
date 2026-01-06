@@ -400,51 +400,47 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 * ``Vendor/CMakeLists.txt``
 * ``Tutorial/CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-You will need to build the vendor library into a static archive to complete this
-exercise. Navigate to the ``Help/guide/tutorial/Step4/Vendor/lib`` directory
-and build the code as appropriate for your platform. On Unix-like operating
-systems the appropriate commands are usually:
+要完成本练习，你需要将供应商库构建为静态存档。导航到\
+``Help/guide/tutorial/Step4/Vendor/lib``\ 目录，并根据你的平台构建代码。在类Unix\
+操作系统上，适当的命令通常是：
 
 .. code-block:: console
 
   g++ -c Vendors.cxx
   ar rvs libVendor.a Vendor.o
 
-Then complete ``TODO 11`` through ``TODO 14``.
+然后完成\ ``TODO 11``\ 到\ ``TODO 14``。
 
 .. note::
-  ``VendorLib`` is an ``INTERFACE`` library, meaning it has no build requirements
-  (because it has already been built). All of its properties should also be
-  interface properties.
+  ``VendorLib``\ 是一个\ ``INTERFACE``\ 库，这意味着它没有构建要求（因为它已经被\
+  构建）。它的所有属性也应该是接口属性。
 
-  We'll discuss ``INTERFACE`` libraries in greater depth during the next step.
+  我们将在下一步更深入地讨论\ ``INTERFACE``\ 库。
 
 
-Build and Run
+构建和运行
 -------------
 
-If you have successfully built ``libVendor``, you can rebuild ``Tutorial``
-using the normal command.
+如果你已成功构建\ ``libVendor``，可以使用常规命令重新构建\ ``Tutorial``。
 
 .. code-block:: console
 
   cmake --build build
 
-Running ``Tutorial`` should now output a message about the acceptability of the
-result to the vendor.
+现在运行\ ``Tutorial``\ 应该会输出一条关于结果对供应商是否可接受的消息。
 
-Solution
+解决方案
 --------
 
-We need to use the target link and include commands to describe the archive
-and its headers as ``INTERFACE`` requirements of ``VendorLib``.
+我们需要使用目标链接和包含命令，将存档及其头文件描述为\ ``VendorLib``\ 的\
+``INTERFACE``\ 要求。
 
 .. raw:: html
 
-  <details><summary>TODO 11-13: Click to show/hide answer</summary>
+  <details><summary>TODO 11-13: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 11-13: Vendor/CMakeLists.txt
@@ -469,11 +465,11 @@ and its headers as ``INTERFACE`` requirements of ``VendorLib``.
 
   </details>
 
-Then we can add ``VendorLib`` to ``Tutorial``'s linked libraries.
+然后我们可以将\ ``VendorLib``\ 添加到\ ``Tutorial``\ 的链接库中。
 
 .. raw:: html
 
-  <details><summary>TODO 14: Click to show/hide answer</summary>
+  <details><summary>TODO 14: 点击显示/隐藏答案</summary>
 
 .. code-block:: cmake
   :caption: TODO 14: Tutorial/CMakeLists.txt
