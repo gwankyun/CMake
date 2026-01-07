@@ -41,17 +41,15 @@
 它们的行为与普通共享库非常相似，只是不能被其他目标直接链接。由于它们足够相似，\
 因此我们不会在这里进一步深入讨论。
 
-Exercise 1 - Static and Shared
+练习1 - 静态库和共享库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-While the :command:`add_library` command supports explicitly setting ``STATIC``
-or ``SHARED``, and this is sometimes necessary, it is best to leave the second
-argument empty for most "normal" libraries which can operate as either.
+虽然\ :command:`add_library`\ 命令支持显式设置\ ``STATIC``\ 或\ ``SHARED``，并且\
+有时这是必要的，但对于大多数可以作为任一种类型运行的“正常”库，最好将第二个参数留空。
 
-When not given a type, :command:`add_library` will create either a ``STATIC``
-or ``SHARED`` library depending on the value of :variable:`BUILD_SHARED_LIBS`.
-If :variable:`BUILD_SHARED_LIBS` is true, a ``SHARED`` library will be created,
-otherwise it will be ``STATIC``.
+当未指定类型时，:command:`add_library`\ 将根据\ :variable:`BUILD_SHARED_LIBS`\
+的值创建\ ``STATIC``\ 或\ ``SHARED``\ 库。如果\ :variable:`BUILD_SHARED_LIBS`\
+为true，则创建\ ``SHARED``\ 库，否则创建\ ``STATIC``\ 库。
 
 .. code-block:: cmake
 
@@ -61,71 +59,65 @@ otherwise it will be ``STATIC``.
   # Depends on BUILD_SHARED_LIBS
   add_library(MyLib)
 
-This is desirable behavior, as it allows packagers to determine what kind of
-library will be produced, and ensure dependents link to that version of the
-library without needing to modify their source code. In some contexts, fully
-static builds are appropriate, and in others shared libraries are desirable.
+这是理想的行为，因为它允许打包者确定将生成哪种类型的库，并确保依赖项链接到该版本\
+的库，而无需修改其源代码。在某些情况下，完全静态构建是合适的，而在其他情况下，\
+共享库更受欢迎。
 
 .. note::
-  CMake does not define the :variable:`BUILD_SHARED_LIBS` variable by default,
-  meaning without project or user intervention :command:`add_library` will
-  produce ``STATIC`` libraries.
+  CMake默认不定义\ :variable:`BUILD_SHARED_LIBS`\ 变量，这意味着在没有项目或用户\
+  干预的情况下，:command:`add_library`\ 将生成\ ``STATIC``\ 库。
 
-By leaving the second argument to :command:`add_library()` blank, projects
-provide additional flexibility to their packagers and downstream dependents.
+通过将\ :command:`add_library()`\ 的第二个参数留空，项目为其打包者和下游依赖项\
+提供了额外的灵活。
 
-Goal
+目标
 ----
 
-Build ``MathFunctions`` as a shared library.
+将\ ``MathFunctions``\ 构建为共享库。
 
 .. note::
-  On Windows, you might see warnings about an empty DLL, as ``MathFunctions``
-  doesn't export any symbols.
+  在Windows上，你可能会看到关于空DLL的警告，因为\ ``MathFunctions``\ 没有导出\
+  任何符号。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :variable:`BUILD_SHARED_LIBS`
 
-Files to Edit
+待编辑文件
 -------------
 
-There are no files to edit.
+无需编辑任何文件。
 
-Getting Started
+开始操作
 ---------------
 
-The ``Help/guide/tutorial/Step5`` directory contains the complete, recommended
-solution to ``Step4``. This step is about building the ``MathFunctions``
-library, there are no ``TODOs`` necessary. You can proceed directly to the
-build step.
+``Help/guide/tutorial/Step5``\ 目录包含\ ``Step4``\ 的完整推荐解决方案。本步骤是\
+关于构建\ ``MathFunctions``\ 库的，不需要任何\ ``TODOs``。你可以直接进入构建步骤。
 
-Build and Run
+构建和运行
 -------------
 
-We can configure using our preset, turning on :variable:`BUILD_SHARED_LIBS` with
-a :option:`-D <cmake -D>` flag.
+我们可以使用预设进行配置，通过\ :option:`-D <cmake -D>`\ 标志启用\
+:variable:`BUILD_SHARED_LIBS`。
 
 .. code-block:: console
 
   cmake --preset tutorial -DBUILD_SHARED_LIBS=ON
 
-Then we can build only the ``MathFunctions`` library with
-:option:`-t <cmake--build -t>`.
+然后我们可以使用\ :option:`-t <cmake--build -t>`\ 只构建\ ``MathFunctions``\ 库。
 
 .. code-block:: console
 
   cmake --build build -t MathFunctions
 
-Verify a shared library is produced for ``MathFunctions`` then reset
-:variable:`BUILD_SHARED_LIBS`, either by reconfiguring with
-``-DBUILD_SHARED_LIBS=OFF`` or deleting the ``CMakeCache.txt``.
+验证为\ ``MathFunctions``\ 生成了共享库，然后重置\ :variable:`BUILD_SHARED_LIBS`，\
+可以通过使用\ ``-DBUILD_SHARED_LIBS=OFF``\ 重新配置或删除\ ``CMakeCache.txt``。
 
-Solution
+解决方案
 --------
 
-There are no changes to the project for this exercise.
+本练习不需要对项目进行任何更改。
 
 Exercise 2 - Interface Libraries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
