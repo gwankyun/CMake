@@ -119,36 +119,33 @@
 
 本练习不需要对项目进行任何更改。
 
-Exercise 2 - Interface Libraries
+练习2 - 接口库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Interface libraries are those which only communicate usage requirements for
-other targets, they do not build or produce any artifacts of their own. As such
-all the properties of an interface library must themselves be interface
-properties, specified with the ``INTERFACE`` :ref:`scope keywords <Target Command Scope>`.
+接口库仅用于向其他目标传达使用要求，它们自身不进行构建或生成任何产物。因此，接口\
+库的所有属性本身必须是接口属性，使用\ ``INTERFACE``\
+:ref:`作用域关键字 <Target Command Scope>`\ 指定。
 
 .. code-block:: cmake
 
   add_library(MyInterface INTERFACE)
   target_compile_definitions(MyInterface INTERFACE MYINTERFACE_COMPILE_DEF)
 
-The most common kind of interface library in C++ development is a header-only
-library. Such libraries do not build anything, only providing the flags
-necessary to discover their headers.
+C++开发中最常见的接口库类型是仅头文件库。这类库不构建任何内容，仅提供发现其头\
+文件所需的标志。
 
-Goal
+目标
 ----
 
-Add a header-only library to the tutorial project, and use it inside the
-``Tutorial`` executable.
+向教程项目添加仅头文件库，并在\ ``Tutorial``\ 可执行文件中使用它。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`add_library`
 * :command:`target_sources`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``MathFunctions/MathLogger/CMakeLists.txt``
