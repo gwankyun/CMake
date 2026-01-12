@@ -152,52 +152,46 @@ C++开发中最常见的接口库类型是仅头文件库。这类库不构建�
 * ``MathFunctions/CMakeLists.txt``
 * ``MathFunctions/MathFunctions.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-In our previous discussions of :command:`target_sources(FILE_SET)`, we noted
-we can omit the ``TYPE`` parameter if the file set's name is the same as the
-file set's type. We also said we can omit the ``BASE_DIRS`` parameter if
-we want to use the current source directory as the only base directory.
+在我们之前讨论\ :command:`target_sources(FILE_SET)`\ 时，我们提到如果文件集的名称\
+与文件集的类型相同，可以省略\ ``TYPE``\ 参数。我们还说过，如果希望将当前源目录用\
+作唯一的基础目录，可以省略\ ``BASE_DIRS``\ 参数。
 
-We're ready to introduce a third shortcut, we only need to include the ``FILES``
-parameter if the headers are intended to be installed, such as public headers
-of a library.
+现在我们准备介绍第三个快捷方式：只有当头文件打算被安装时（例如库的公共头文件），\
+我们才需要包含\ ``FILES``\ 参数。
 
-The ``MathLogger`` headers in this exercise are only used internally by the
-``MathFunctions`` implementation. They will not be installed. This should
-make for a very abbreviated call to :command:`target_sources(FILE_SET)`.
+本练习中的\ ``MathLogger``\ 头文件仅由\ ``MathFunctions``\ 实现内部使用，不会被\
+安装。这应该会使对\ :command:`target_sources(FILE_SET)`\ 的调用非常简洁。
 
 .. note::
-  The headers will be discovered by the compiler's dependency scanner to ensure
-  correct incremental builds. It can be useful to list header files in these
-  contexts anyway, as the list can be used to generate metadata some IDEs
-  rely on.
+  编译器的依赖扫描器会发现这些头文件，以确保正确的增量构建。无论如何，在这些上下\
+  文中列出头文件可能很有用，因为该列表可用于生成某些IDE依赖的元数据。
 
-You can begin editing the ``Step5`` directory. Complete ``TODO 1`` through
-``TODO 7``.
+你可以开始编辑\ ``Step5``\ 目录，完成\ ``TODO 1``\ 到\ ``TODO 7``。
 
-Build and Run
+构建和运行
 -------------
 
-The preset has already been updated to use ``mathfunctions::sqrt`` instead of
-``std::sqrt``. We can build and configure as usual.
+预设已经更新为使用\ ``mathfunctions::sqrt``\ 而不是\ ``std::sqrt``。我们可以像\
+往常一样进行构建和配置。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-Verify that the ``Tutorial`` output now uses the logging framework.
+验证\ ``Tutorial``\ 输出现在是否使用了日志框架。
 
-Solution
+解决方案
 --------
 
-First we add a new ``INTERFACE`` library named ``MathLogger``.
+首先，我们添加一个名为\ ``MathLogger``\ 的新\ ``INTERFACE``\ 库。
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/MathLogger/CMakeLists.txt
   :caption: TODO 1: MathFunctions/MathLogger/CMakeLists.txt
@@ -210,15 +204,14 @@ First we add a new ``INTERFACE`` library named ``MathLogger``.
 
   </details>
 
-Then we add the appropriate :command:`target_sources` call to capture the
-header information. We give this file set the name ``HEADERS`` so we can
-omit the ``TYPE``, we don't need ``BASE_DIRS`` as we will use the default
-of the current source directory, and we can exclude the ``FILES`` list because
-we don't intend to install the library.
+然后，我们添加适当的\ :command:`target_sources`\ 调用来捕获头文件信息。我们将这个\
+文件集命名为\ ``HEADERS``，这样我们可以省略\ ``TYPE``；我们不需要\ ``BASE_DIRS``，\
+因为我们将使用当前源目录的默认值；并且我们可以排除\ ``FILES``\ 列表，因为我们不\
+打算安装该库。
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/MathLogger/CMakeLists.txt
   :caption: TODO 2: MathFunctions/MathLogger/CMakeLists.txt
@@ -231,12 +224,12 @@ we don't intend to install the library.
 
   </details>
 
-Now we can add the ``MathLogger`` library to the ``MathFunctions`` linked
-libraries, and at the ``MathLogger`` folder to the project.
+现在，我们可以将\ ``MathLogger``\ 库添加到\ ``MathFunctions``\ 的链接库中，并将\
+``MathLogger``\ 文件夹添加到项目中。
 
 .. raw:: html
 
-  <details><summary>TODO 3-4: Click to show/hide answer</summary>
+  <details><summary>TODO 3-4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: TODO 3: MathFunctions/CMakeLists.txt
@@ -257,11 +250,11 @@ libraries, and at the ``MathLogger`` folder to the project.
 
   </details>
 
-Finally we can update ``MathFunctions.cxx`` to take advantage of the new logger.
+最后，我们可以更新\ ``MathFunctions.cxx``\ 以利用新的日志记录器。
 
 .. raw:: html
 
-  <details><summary>TODO 5-7: Click to show/hide answer</summary>
+  <details><summary>TODO 5-7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/MathFunctions.cxx
   :caption: TODO 5: MathFunctions/MathFunctions.cxx
