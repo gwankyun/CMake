@@ -282,43 +282,36 @@ C++开发中最常见的接口库类型是仅头文件库。这类库不构建�
 
   </details>
 
-Exercise 3 - Object Libraries
+练习3 - 对象库
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Object libraries have several advanced uses, but also tricky nuances which
-are difficult to fully enumerate in the scope of this tutorial.
+对象库有几种高级用法，但也有一些棘手的细微差别，在本教程的范围内难以完全列举。
 
 .. code-block:: cmake
 
   add_library(MyObjects OBJECT)
 
-The most obvious drawback to object libraries is the objects themselves cannot
-be transitively linked. If an object library appears in the
-:prop_tgt:`INTERFACE_LINK_LIBRARIES` of a target, the dependents which link that
-target will not "see" the objects. The object library will act like an
-``INTERFACE`` library in such contexts. In the general case, object libraries
-are only suitable for ``PRIVATE`` or ``PUBLIC`` consumption via
-:command:`target_link_libraries`.
+对象库最明显的缺点是对象本身不能被传递链接。如果一个对象库出现在某个目标的\
+:prop_tgt:`INTERFACE_LINK_LIBRARIES`\ 中，链接该目标的依赖项将无法“看到”这些对象。\
+在这种情况下，对象库的行为将类似于\ ``INTERFACE``\ 库。一般来说，对象库仅适用于\
+通过\ :command:`target_link_libraries`\ 进行\ ``PRIVATE``\ 或\ ``PUBLIC``\ 消费。
 
-A common use case for object libraries is coalescing several library targets
-into a single archive or shared library object. Even within a single project
-libraries may be maintained as different targets for a variety of reasons, such
-as belonging to different teams within an organization. However, it may be
-desirable to distribute these as a single consumer-facing binary. Object
-libraries make this possible.
+对象库的一个常见用例是将多个库目标合并为单个存档或共享库对象。即使在单个项目中，\
+库也可能因各种原因被维护为不同的目标，例如属于组织内的不同团队。然而，将它们作为\
+单个面向消费者的二进制文件分发可能是可取的。对象库使这成为可能。
 
-Goal
+目标
 ----
 
-Add several object libraries to the ``MathFunctions`` library.
+向\ ``MathFunctions``\ 库添加几个对象库。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`target_link_libraries`
 * :command:`add_subdirectory`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``MathFunctions/CMakeLists.txt``
