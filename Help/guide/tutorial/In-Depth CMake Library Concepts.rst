@@ -318,41 +318,38 @@ C++开发中最常见的接口库类型是仅头文件库。这类库不构建�
 * ``MathFunctions/MathFunctions.h``
 * ``Tutorial/Tutorial.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-Several extensions for our ``MathFunctions`` library have been made available
-(we can imagine these coming from other teams in our organization). Take
-a minute to look at the targets made available in ``MathFunctions/MathExtensions``.
-Then complete ``TODO 8`` through ``TODO 11``.
+我们的\ ``MathFunctions``\ 库提供了几个扩展（我们可以想象这些扩展来自组织中的其他\
+团队）。花点时间查看\ ``MathFunctions/MathExtensions``\ 中可用的目标。然后完成\
+``TODO 8``\ 到\ ``TODO 11``。
 
-Build and Run
+构建和运行
 -------------
 
-There's no reconfiguration needed, we can build as usual.
+不需要重新配置，我们可以像往常一样构建。
 
 .. code-block:: console
 
   cmake --build build
 
-Verify the output of ``Tutorial`` now includes the verification message. Also
-take a minute to inspect the build directory under
-``build/MathFunctions/MathExtensions``. You should find that, unlike
-``MathFunctions``, no archives are produced for any of the object libraries.
+验证\ ``Tutorial``\ 的输出现在是否包含验证消息。另外，花点时间检查\
+``build/MathFunctions/MathExtensions``\ 下的构建目录。你会发现，与\ ``MathFunctions``\
+不同，任何对象库都不会生成存档文件。
 
-Solution
+解决方案
 --------
 
-First we will add links for all the object libraries to ``MathFunctions``.
-These are ``PUBLIC``, because we want the objects to be added to the
-``MathFunctions`` library as part of its own build step, and we want the
-headers to be available to consumers of the library.
+首先，我们将所有对象库的链接添加到\ ``MathFunctions``\ 中。\
+这些链接是\ ``PUBLIC``\ 的，因为我们希望将对象作为\ ``MathFunctions``\ 库自身构建\
+步骤的一部分添加到该库中，并且希望头文件对库的使用者可用。
 
-Then we add the ``MathExtensions`` subdirectoy to the project.
+然后，我们将\ ``MathExtensions``\ 子目录添加到项目中。
 
 .. raw:: html
 
-  <details><summary>TODO 8-9: Click to show/hide answer</summary>
+  <details><summary>TODO 8-9: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/CMakeLists.txt
   :caption: TODO 8: MathFunctions/CMakeLists.txt
@@ -373,12 +370,11 @@ Then we add the ``MathExtensions`` subdirectoy to the project.
   </details>
 
 
-To make the extensions available to consumers, we include their headers in the
-``MathFunctions.h`` header.
+为了让扩展对使用者可用，我们将它们的头文件包含在\ ``MathFunctions.h``\ 头文件中。
 
 .. raw:: html
 
-  <details><summary>TODO 10: Click to show/hide answer</summary>
+  <details><summary>TODO 10: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/MathFunctions/MathFunctions.h
   :caption: TODO 10: MathFunctions/MathFunctions.h
@@ -391,11 +387,11 @@ To make the extensions available to consumers, we include their headers in the
 
   </details>
 
-Finally we can take advantage of the extensions in the ``Tutorial`` program.
+最后，我们可以在\ ``Tutorial``\ 程序中使用这些扩展。
 
 .. raw:: html
 
-  <details><summary>TODO 11: Click to show/hide answer</summary>
+  <details><summary>TODO 11: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step6/Tutorial/Tutorial.cxx
   :caption: TODO 11: Tutorial/Tutorial.cxx
