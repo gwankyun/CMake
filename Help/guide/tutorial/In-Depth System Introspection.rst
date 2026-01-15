@@ -36,13 +36,12 @@ CMake提供了模块来简化这些检查。这些在\ :manual:`cmake-modules(7)
     检查编译器是否支持过程间优化（IPO/LTO）。
 
 
-Exercise 1 - Check Include File
+练习1 - 检查头文件
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A fast and easy check to perform is if a given header file is available on
-a certain platform, for which CMake provides :module:`CheckIncludeFiles`. This
-is most appropriate for system and intrinsic headers, which may not be provided
-by a specific package by are expected to be available in many build environments.
+一个快速简单的检查是确定给定的头文件是否在特定平台上可用，CMake为此提供了\
+:module:`CheckIncludeFiles`\ 模块。这对于系统头文件和内在函数头文件最为适用，\
+这些头文件可能不是由特定包提供的，但预期在许多构建环境中可用。
 
 .. code-block:: cmake
 
@@ -50,77 +49,71 @@ by a specific package by are expected to be available in many build environments
   check_include_files(sys/socket.h HAVE_SYS_SOCKET_H LANGUAGE CXX)
 
 .. note::
-  These functions are not immediately available in CMake, they must be added via
-  :command:`include`'ing their associated module (aka, a CMakeLang file). Many
-  modules live inside CMake's own ``Modules`` folder. This built-in ``Modules``
-  folder is one of the places CMake searches when evaluating an :command:`include`
-  command. You can think of these modules like standard library headers, they're
-  expected to be available.
+  这些函数在CMake中不是立即可用的，必须通过\ :command:`include`\ 它们相关联的模块\
+  （即CMakeLang文件）来添加。许多模块位于CMake自己的\ ``Modules``\ 文件夹中。\
+  这个内置的\ ``Modules``\ 文件夹是CMake在评估\ :command:`include`\ 命令时搜索的\
+  位置之一。你可以将这些模块视为标准库头文件，它们应该是可用的。
 
-Once a header file is known to exist, we can communicate that to our code using
-the same mechanisms of conditionals and target commands already covered.
+一旦知道头文件存在，我们可以使用已经介绍过的条件语句和目标命令等机制将这一信息\
+传达给我们的代码。
 
-Goal
+目标
 ----
 
-Check if the x86 SSE2 intrinsic header is available, and if so use it to
-improve ``mathfunctions::sqrt``.
+检查x86 SSE2内在函数头文件是否可用，如果可用，则使用它来改进\
+``mathfunctions::sqrt``。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :module:`CheckIncludeFiles`
 * :command:`target_compile_definitions`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``MathFunctions/CMakeLists.txt``
 * ``MathFunctions/MathFunctions.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-The ``Help/guide/tutorial/Step6`` directory contains the complete, recommended
-solution to ``Step5`` and relevant ``TODOs`` for this step. It also contains
-specialized implementations of the ``sqrt`` function for various conditions,
-which you will find in ``MathFunctions/MathFunctions.cxx``.
+``Help/guide/tutorial/Step6``\ 目录包含\ ``Step5``\ 的完整推荐解决方案以及此步骤\
+的相关\ ``TODO``\ 任务。该目录还包含针对各种条件的\ ``sqrt``\ 函数专用实现，\
+你可以在\ ``MathFunctions/MathFunctions.cxx``\ 中找到这些实现。
 
-Complete ``TODO 1`` through ``TODO 3``. Note that some ``#ifdef`` directives
-have already been added to the library, which will change its operation as we
-work through the step.
+完成\ ``TODO 1``\ 到\ ``TODO 3``。请注意，库中已添加了一些\ ``#ifdef``\ 指令，\
+这些指令将在我们完成此步骤时改变库的操作方式。
 
-Build and Run
+构建和运行
 -------------
 
-We can use our usual commands to configure.
+我们可以使用常规命令进行配置。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-In the output of the configuration step we should observe CMake checking for
-the ``emmintrin.h`` header.
+在配置步骤的输出中，我们应该能看到CMake检查\ ``emmintrin.h``\ 头文件。
 
 .. code-block:: console
 
   -- Looking for include file emmintrin.h
   -- Looking for include file emmintrin.h - found
 
-If the header is available on your system, verify the ``Tutorial`` output
-contains the message about using SSE2. Conversely, if the header is not
-available you should see the usual behavior from ``Tutorial``.
+如果该头文件在你的系统上可用，请验证\ ``Tutorial``\ 输出包含关于使用SSE2的消息。\
+反之，如果该头文件不可用，你应该看到\ ``Tutorial``\ 的常规行为。
 
-Solution
+解决方案
 --------
 
-First we include and use the ``CheckIncludeFiles`` module, verifying the
-``emmintrin.h`` header is available.
+首先，我们包含并使用\ ``CheckIncludeFiles``\ 模块，验证\ ``emmintrin.h``\ 头文件\
+是否可用。
 
 .. raw:: html
 
-  <details><summary>TODO 1: Click to show/hide answer</summary>
+  <details><summary>TODO 1: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: TODO 1: MathFunctions/CMakeLists.txt
@@ -133,12 +126,11 @@ First we include and use the ``CheckIncludeFiles`` module, verifying the
 
   </details>
 
-Then we use the result of the check to conditionally set a compile definition
-on ``MathFunctions``.
+然后，我们使用检查结果有条件地在\ ``MathFunctions``\ 上设置编译定义。
 
 .. raw:: html
 
-  <details><summary>TODO 2: Click to show/hide answer</summary>
+  <details><summary>TODO 2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: TODO 2: MathFunctions/CMakeLists.txt
@@ -151,11 +143,11 @@ on ``MathFunctions``.
 
   </details>
 
-Finally we can conditionally include the header in the ``MathFunctions`` library.
+最后，我们可以在\ ``MathFunctions``\ 库中有条件地包含该头文件。
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/MathFunctions/MathFunctions.cxx
   :caption: TODO 3: MathFunctions/MathFunctions.cxx
