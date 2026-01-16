@@ -161,12 +161,12 @@ CMake提供了模块来简化这些检查。这些在\ :manual:`cmake-modules(7)
   </details>
 
 
-Exercise 2 - Check Source Compiles
+练习2 - 检查源代码编译
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sometimes it is insufficient to merely check for a header. This is especially
-true when no header is available to check, such is the case with
-compiler-builtins. For these scenarios we have :module:`CheckSourceCompiles`.
+有时候，仅仅检查头文件是不够的。当没有可用的头文件可以检查时（例如编译器内置函数\
+的情况），这一点尤为正确。对于这些场景，我们有\ :module:`CheckSourceCompiles`\
+模块。
 
 .. code-block:: cmake
 
@@ -182,67 +182,61 @@ compiler-builtins. For these scenarios we have :module:`CheckSourceCompiles`.
   )
 
 .. note::
-  By default :module:`CheckSourceCompiles` builds and links an executable. The
-  code to be check must provide a valid ``int main()`` in order to succeed.
+  默认情况下，\ :module:`CheckSourceCompiles`\ 会构建并链接一个可执行文件。\
+  要检查的代码必须提供有效的\ ``int main()``\ 函数才能成功。
 
-After performing the check, this system introspection can be applied identically
-to how we discussed with header files.
+执行检查后，这种系统检查的应用方式与我们讨论的头文件检查方式完全相同。
 
-Goal
+目标
 ----
 
-Check if the GNU SSE2 builtins are available, and if so use them to improve
-``mathfunctions::sqrt``.
+检查GNU SSE2内置函数是否可用，如果可用，则使用它们来改进\ ``mathfunctions::sqrt``。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :module:`CheckSourceCompiles`
 * :command:`target_compile_definitions`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``MathFunctions/CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-Complete ``TODO 4`` and ``TODO 5``. No code changes to the ``MathFunctions``
-implementation are necessary, as these have already been provided.
+完成\ ``TODO 4``\ 和\ ``TODO 5``。不需要对\ ``MathFunctions``\ 实现进行任何代码\
+更改，因为这些已经提供好了。
 
-Build and Run
+构建和运行
 -------------
 
-We need only rebuild the tutorial.
+我们只需要重新构建教程即可。
 
 .. code-block:: console
 
   cmake --build build
 
 .. note::
-  If a check fails and you think it should succeed, you will need to clear the
-  CMake Cache by deleting the ``CMakeCache.txt`` file. CMake will not rerun
-  compile checks on subsequent runs if it has a cached result.
+  如果检查失败但你认为应该成功，你需要通过删除\ ``CMakeCache.txt``\ 文件来清除\
+  CMake缓存。如果CMake已有缓存结果，后续运行时将不会重新执行编译检查。
 
-In the output of the configuration step we should observe CMake checking if the
-provided source code compiles, which will be reported under the variable name
-we provided to ``check_source_compiles()``.
+在配置步骤的输出中，我们应该能看到CMake检查提供的源代码是否可以编译，检查结果将\
+我们传递给\ ``check_source_compiles()``\ 的变量名报告。
 
 .. code-block:: console
 
   -- Performing Test HAS_GNU_BUILTIN
   -- Performing Test HAS_GNU_BUILTIN - Success
 
-If the builtins are available on your compiler, verify the ``Tutorial`` output
-contains the message about using GNU-builting. Conversely, if the builtins are
-not available you should see the previous behavior from ``Tutorial``.
+如果你的编译器支持内置函数，请验证\ ``Tutorial``\ 输出包含关于使用GNU内置函数的\
+消息。反之，如果不支持内置函数，你应该看到\ ``Tutorial``\ 之前的行为。
 
-Solution
+解决方案
 --------
 
-First we include and use the ``CheckSourceCompiles`` module, verifying the
-provided source code can be built.
+首先，我们包含并使用\ ``CheckSourceCompiles``\ 模块，验证提供的源代码可以被构建。
 
 ..
   pygments doesn't like the [=[ <string> ]=] literals in the following
@@ -250,7 +244,7 @@ provided source code can be built.
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: TODO 4: MathFunctions/CMakeLists.txt
@@ -264,12 +258,11 @@ provided source code can be built.
 
   </details>
 
-Then we use the result of the check to conditionally set a compile definition
-on ``MathFunctions``.
+然后，我们使用检查结果有条件地在\ ``MathFunctions``\ 上设置编译定义。
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/MathFunctions/CMakeLists.txt
   :caption: TODO 5: MathFunctions/CMakeLists.txt
