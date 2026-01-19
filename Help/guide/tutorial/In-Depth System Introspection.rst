@@ -275,12 +275,12 @@ CMake提供了模块来简化这些检查。这些在\ :manual:`cmake-modules(7)
 
   </details>
 
-Exercise 3 - Check Interprocedural Optimization
+练习3 - 检查过程间优化
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Interprocedural and link time optimizations can provide significant performance
-improvements to some software. CMake has the capacity to check for the
-availability of IPO flags via :module:`CheckIPOSupported`.
+过程间优化（Interprocedural Optimization）和链接时间优化（Link Time Optimization）\
+可以为某些软件带来显著的性能提升。CMake能够通过\ :module:`CheckIPOSupported`\
+模块检查IPO标志的可用性。
 
 .. code-block:: cmake
 
@@ -292,70 +292,65 @@ availability of IPO flags via :module:`CheckIPOSupported`.
   )
 
 .. note::
-  There a couple important caveats with regard to in-project IPO configuration:
+  关于项目内IPO配置，有几个重要的注意事项：
 
-  * CMake does not know about every IPO/LTO flag on every compiler, better
-    results can often be achieved with individual tuning for a known toolchain.
-  * Setting the :prop_tgt:`INTERPROCEDURAL_OPTIMIZATION` property on a target
-    does not alter any of the targets it links to, or dependencies from other
-    projects. IPO can only "see" into other targets which are also compiled
-    appropriately.
+  * CMake并非了解所有编译器上的每一个IPO/LTO标志，针对已知工具链进行单独调优通常\
+    可以获得更好的结果。
+  * 在目标上设置\ :prop_tgt:`INTERPROCEDURAL_OPTIMIZATION`\ 属性不会改变它链接的\
+    任何目标，也不会改变来自其他项目的依赖关系。IPO只能“看到”同样经过适当编译的\
+    其他目标。
 
-  For these reasons, serious consideration should be given to manually setting
-  up IPO/LTO flags across all projects in the dependency tree via external
-  mechanisms (presets, :option:`-D <cmake -D>` flags,
-  :manual:`toolchain files <cmake-toolchains(7)>`, etc) instead of in-project
-  control.
+  由于这些原因，应该认真考虑通过外部机制（预设、\ :option:`-D <cmake -D>`\ 标志、\
+  :manual:`工具链文件 <cmake-toolchains(7)>`\ 等）为依赖树中的所有项目手动设置\
+  IPO/LTO标志，而不是在项目内部进行控制。
 
-However, especially for extremely large projects, it can be useful to have
-an in-project mechanism to use IPO whenever it is available.
+然而，特别是对于极其大型的项目，拥有一个在项目内使用IPO的机制（只要IPO可用）可能\
+会很有用。
 
-Goal
+目标
 ----
 
-Enable IPO for the entire tutorial project when it is available from the
-toolchain.
+当工具链支持IPO时，为整个教程项目启用IPO。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :module:`CheckIPOSupported`
 * :variable:`CMAKE_INTERPROCEDURAL_OPTIMIZATION`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-Continue editing the files in ``Step6``. Complete ``TODO 6`` and ``TODO 7``.
+继续编辑\ ``Step6``\ 目录中的文件。完成\ ``TODO 6``\ 和\ ``TODO 7``。
 
-Build and Run
+构建和运行
 -------------
 
-We need only rebuild the tutorial.
+我们只需要重新构建教程。
 
 .. code-block:: console
 
   cmake --build build
 
-If IPO is unavailable, we will see an error message during configuration.
-Otherwise nothing will change.
+如果IPO不可用，我们将在配置过程中看到错误消息。否则不会有任何变化。
 
 .. note::
-  Regardless of the result of the IPO check, we shouldn't expect any change
-  in behavior from ``Tutorial`` or ``MathFunctions``.
+  无论IPO检查的结果如何，我们都不应期望\ ``Tutorial``\ 或\ ``MathFunctions``\
+  的行为发生任何变化。
 
-Solution
+解决方案
 --------
 
-The first ``TODO`` is easy, we add another option to our project.
+第一个\ ``TODO``\ 很简单，我们需要为项目添加另一个选项。
 
 .. raw:: html
 
-  <details><summary>TODO 6: Click to show/hide answer</summary>
+  <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/CMakeLists.txt
   :caption: TODO 6: MathFunctions/CMakeLists.txt
@@ -368,13 +363,13 @@ The first ``TODO`` is easy, we add another option to our project.
 
   </details>
 
-The next step is involved, however the documentation for :module:`CheckIPOSupported`
-has an almost complete example of what we need to do. The only difference is
-we are going to enable IPO project-wide instead of for a single target.
+下一步涉及到一些操作，但\ :module:`CheckIPOSupported`\ 的文档已经提供了一个几乎\
+完整的示例，展示了我们需要做什么。唯一的区别是我们将在整个项目范围内启用IPO，\
+而不是仅针对单个目标。
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/CMakeLists.txt
   :caption: TODO 7: CMakeLists.txt
@@ -389,8 +384,7 @@ we are going to enable IPO project-wide instead of for a single target.
   </details>
 
 .. note::
-  Normally we have discouraged setting ``CMAKE_`` variables inside the project.
-  Here, we are controlling that behavior with an :command:`option()`. This
-  allows packagers to opt-out of our override. This is an imperfect, but
-  acceptable solution to situations where we want to provide options to control
-  project-wide behavior controlled by ``CMAKE_`` variables.
+  通常我们不建议在项目内部设置\ ``CMAKE_``\ 变量。在这里，我们通过\
+  :command:`option()`\ 来控制这种行为，这样打包者可以选择不使用我们的覆盖设置。\
+  这是一个不完美但可接受的解决方案，用于处理我们想要提供选项来控制由\ ``CMAKE_``\
+  变量控制的项目范围行为的情况。
