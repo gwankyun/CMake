@@ -34,29 +34,26 @@ CMake通过\ :command:`enable_testing`\ 和\ :command:`add_test`\ 命令提供�
 CTest还具有用于脚本、夹具、清理器、作业服务器、度量报告等的高级机制。更多信息请\
 参见\ :manual:`ctest(1)`\ 手册。
 
-Exercise 1 - Adding Tests
+练习1 - 添加测试
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-CTest convention dictates the building and running of tests be based on a
-default-``ON`` variable named :variable:`BUILD_TESTING`. When using the full
-suite of CTest capabilities via the :module:`CTest` module, this
-:command:`option` is setup for us. When using a more stripped-down approach to
-testing, it's expected the project will setup the option (or at least one of a
-similar name) on its own.
+CTest约定规定，测试的构建和运行应基于一个默认值为\ ``ON``\ 的变量，名为\
+:variable:`BUILD_TESTING`。当通过\ :module:`CTest`\ 模块使用完整的CTest功能套件时，\
+会自动为我们设置此\ :command:`option`。当使用更简化的测试方法时，预期项目会自行\
+设置该选项（或至少一个类似名称的选项）。
 
-When :variable:`BUILD_TESTING` is true, the :command:`enable_testing` command
-should be called in the root CML.
+当\ :variable:`BUILD_TESTING`\ 为true时，应在根CMakeLists.txt中调用\
+:command:`enable_testing`\ 命令。
 
 .. code-block:: cmake
 
   enable_testing()
 
-This will generate all the necessary metadata into the build tree for CTest to
-find and run tests.
+这将在构建树中生成CTest查找和运行测试所需的所有必要元数据。
 
-Once that has been done, the :command:`add_test` command can be used to create
-a test anywhere in the project. The semantics of this command are similar to
-:command:`add_custom_command`; we can name an executable target as the "command".
+完成上述操作后，可以在项目的任何位置使用\ :command:`add_test`\ 命令创建测试。\
+此命令的语义与\ :command:`add_custom_command`\ 类似；我们可以将可执行目标命名为\
+“command”。
 
 .. code-block:: cmake
 
@@ -65,12 +62,12 @@ a test anywhere in the project. The semantics of this command are similar to
     COMMAND MyApp --test
   )
 
-Goal
+目标
 ----
 
-Add tests for the MathFunctions library to the project and run them with CTest.
+为MathFunctions库添加测试，并使用CTest运行这些测试。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :variable:`BUILD_TESTING`
@@ -78,61 +75,58 @@ Helpful Resources
 * :command:`function`
 * :command:`add_test`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``Tests/CMakeLists.txt``
 * ``CMakeLists.txt``
 
-Getting Started
+开始操作
 ---------------
 
-A testing program has been written in the file ``Tests/TestMathFunctions.cxx``.
-This program takes a single command line argument, the math function to be
-tested, with valid values of ``add``, ``mul``, ``sqrt``, and ``sub``. The return
-code is zero if the operation is recognized and the calculated value is valid,
-otherwise it is non-zero.
+测试程序已编写在\ ``Tests/TestMathFunctions.cxx``\ 文件中。该程序接受一个命令行\
+参数，即要测试的数学函数，有效值为\ ``add``、\ ``mul``、\ ``sqrt``\ 和\ ``sub``。\
+如果操作被识别且计算值有效，则返回码为零，否则为非零。
 
-Complete ``TODO 1`` through ``TODO 7``.
+完成\ ``TODO 1``\ 至\ ``TODO 7``。
 
-Build and Run
+构建和运行
 -------------
 
-No special configuration is needed, configure and build as usual.
+不需要特殊配置，像往常一样配置和构建即可。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-Verify all the tests pass with CTest.
+使用CTest验证所有测试通过。
 
 .. note::
 
-  If using a multi-config generator, eg Visual Studio, it will be necessary to
-  specify a configuration with ``ctest -C <config> <remaining flags>``, where
-  ``<config>`` is a value like ``Debug`` or ``Release``. This is true whenever
-  using a multi-config generator, and won't be called out specifically in
-  future commands.
+  如果使用多配置生成器（例如Visual Studio），则需要使用\
+  ``ctest -C <config> <remaining flags>``\ 指定配置，其中\ ``<config>``\ 是类似\
+  ``Debug``\ 或\ ``Release``\ 的值。无论何时使用多配置生成器，都需要这样做，\
+  后续命令中不会特别指出这一点。
 
 .. code-block:: console
 
   ctest --test-dir build
 
-You can run individual tests with the :option:`-R <ctest -R>` flag.
+你可以使用\ :option:`-R <ctest -R>`\ 标志运行单个测试。
 
 .. code-block:: console
 
   ctest --test-dir build -R sqrt
 
-Solution
+解决方案
 --------
 
-First we add a new executable for the tests.
+首先，我们为测试添加一个新的可执行文件。
 
 .. raw:: html
 
-  <details><summary>TODO 1-2: Click to show/hide answer</summary>
+  <details><summary>TODO 1-2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step9/Tests/CMakeLists.txt
   :caption: TODO 1-2: Tests/CMakeLists.txt
@@ -146,11 +140,11 @@ First we add a new executable for the tests.
 
   </details>
 
-Then we link in the library we are testing.
+然后，我们链接要测试的库。
 
 .. raw:: html
 
-  <details><summary>TODO 3: Click to show/hide answer</summary>
+  <details><summary>TODO 3: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step9/Tests/CMakeLists.txt
   :caption: TODO 3: Tests/CMakeLists.txt
@@ -163,12 +157,12 @@ Then we link in the library we are testing.
 
   </details>
 
-We need to call :command:`add_test` for each of the valid operations, but this
-would get repetitive, so we write a :command:`function` to do it for us.
+我们需要为每个有效的操作调用\ :command:`add_test`\ 命令，但这会变得重复，因此\
+我们编写一个\ :command:`function`\ 函数来为我们完成这项工作。
 
 .. raw:: html
 
-  <details><summary>TODO 4: Click to show/hide answer</summary>
+  <details><summary>TODO 4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step9/Tests/CMakeLists.txt
   :caption: TODO 4: Tests/CMakeLists.txt
@@ -181,11 +175,11 @@ would get repetitive, so we write a :command:`function` to do it for us.
 
   </details>
 
-Now we can use our :command:`function` to add all the tests.
+现在我们可以使用我们的\ :command:`function`\ 函数来添加所有测试。
 
 .. raw:: html
 
-  <details><summary>TODO 5: Click to show/hide answer</summary>
+  <details><summary>TODO 5: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step9/Tests/CMakeLists.txt
   :caption: TODO 5: Tests/CMakeLists.txt
@@ -198,12 +192,12 @@ Now we can use our :command:`function` to add all the tests.
 
   </details>
 
-Finally, we can add the :variable:`BUILD_TESTING` option and conditionally
-enable building and running tests in the top-level CML.
+最后，我们可以在顶层CMakeLists.txt中添加\ :variable:`BUILD_TESTING`\ 选项，并有\
+条件地启用测试的构建和运行。
 
 .. raw:: html
 
-  <details><summary>TODO 6-7: Click to show/hide answer</summary>
+  <details><summary>TODO 6-7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step9/CMakeLists.txt
   :caption: TODO 6: CMakeLists.txt
