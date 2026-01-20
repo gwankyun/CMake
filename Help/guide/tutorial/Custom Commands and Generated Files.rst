@@ -31,13 +31,12 @@
 :command:`add_custom_target`\ 创建的中间目标将头文件生成添加到构建阶段（因为\
 ``INTERFACE``\ 库没有构建步骤）。
 
-Exercise 1 - Using a Code Generator
+练习1 - 使用代码生成器
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The primary mechanism for describing a code generator is the
-:command:`add_custom_command` command. A "command", for the purpose of
-:command:`add_custom_command` is either an executable available in the build
-environment or a CMake executable target name.
+描述代码生成器的主要机制是\ :command:`add_custom_command`\ 命令。就\
+:command:`add_custom_command`\ 而言，“命令”可以是构建环境中可用的可执行文件，\
+也可以是CMake可执行目标名称。
 
 .. code-block:: cmake
 
@@ -56,21 +55,17 @@ environment or a CMake executable target name.
       Generated.cxx
   )
 
-Most of the keywords are self-explanatory, with the exception of ``VERBATIM``.
-This argument is effectively mandatory for legacy reasons that are uninteresting
-to explain in a modern context. The curious should consult the
-:command:`add_custom_command` documentation for additional details.
+除了\ ``VERBATIM``\ 之外，大多数关键字都是自解释的。由于一些在现代背景下不太有趣\
+的遗留原因，这个参数实际上是必需的。有兴趣的读者可以查阅\
+:command:`add_custom_command`\ 的文档以获取更多详细信息。
 
-The ``Tool`` executable target appears both in the ``COMMAND`` and ``DEPENDS``
-parameters. While ``COMMAND`` is sufficient for the code to build correctly,
-adding the ``Tool`` itself as a dependency of the custom command ensure that
-if ``Tool`` is updated, the custom command will be rerun.
+``Tool``\ 可执行目标同时出现在\ ``COMMAND``\ 和\ ``DEPENDS``\ 参数中。虽然\
+``COMMAND``\ 已足够使代码正确构建，但将\ ``Tool``\ 本身作为自定义命令的依赖项，\
+可以确保如果\ ``Tool``\ 被更新，自定义命令将重新运行。
 
-For header-only file generation, additional commands are necessary because the
-library itself has no build step. We can use :command:`add_custom_target` to
-create an "artificial" build step for the library. We then force the custom
-target to be run before any targets which link the library with the command
-:command:`add_dependencies`.
+对于仅头文件的生成，还需要额外的命令，因为库本身没有构建步骤。我们可以使用\
+:command:`add_custom_target`\ 为库创建一个“人工”构建步骤。然后，我们使用\
+:command:`add_dependencies`\ 命令强制在任何链接该库的目标之前运行这个自定义目标。
 
 .. code-block:: cmake
 
@@ -89,19 +84,16 @@ target to be run before any targets which link the library with the command
   add_dependencies(GeneratedLib RunGenerator)
 
 .. note::
-  We add the :variable:`CMAKE_CURRENT_BINARY_DIR`, a variable which names the
-  current location in the build tree where our artifacts are being placed, to
-  the base directories because that's the working directory our code generator
-  will be run inside of. Listing the ``FILES`` is unnecessary for the build and
-  done so here only for clarity.
+  我们将\ :variable:`CMAKE_CURRENT_BINARY_DIR`\ （一个命名当前构建树中放置工件的\
+  位置的变量）添加到基础目录中，因为这是我们的代码生成器将在其中运行的工作目录。\
+  列出\ ``FILES``\ 对于构建来说是不必要的，这里只是为了清晰起见。
 
-Goal
+目标
 ----
 
-Add a generated table of pre-computed square roots to the ``MathFunctions``
-library.
+向\ ``MathFunctions``\ 库添加一个预计算平方根的生成表。
 
-Helpful Resources
+参考资源
 -----------------
 
 * :command:`add_executable`
@@ -111,49 +103,45 @@ Helpful Resources
 * :command:`add_custom_target`
 * :command:`add_dependencies`
 
-Files to Edit
+待编辑文件
 -------------
 
 * ``MathFunctions/CMakeLists.txt``
 * ``MathFunctions/MakeTable/CMakeLists.txt``
 * ``MathFunctions/MathFunctions.cxx``
 
-Getting Started
+开始操作
 ---------------
 
-The ``MathFunctions`` library has been edited to use a pre-computed table when
-given a number less than 10. However, the hardcoded table is not particularly
-accurate, containing only the nearest truncated integer value.
+``MathFunctions``\ 库已被修改为在处理小于10的数字时使用预计算表。然而，硬编码的\
+表不是特别准确，仅包含最接近的截断整数值。
 
-The ``MakeTable.cxx`` source file describes a program which will generate a
-better table. It takes a single argument as input, the file name of the table
-to be generated.
+``MakeTable.cxx``\ 源文件描述了一个将生成更好表格的程序。它接受一个参数作为输入，\
+即要生成的表格的文件名。
 
-Complete ``TODO 1`` through ``TODO 10``.
+完成\ ``TODO 1``\ 到\ ``TODO 10``。
 
-Build and Run
+构建和运行
 -------------
 
-No special configuration is needed, configure and build as usual. Note that
-the ``MakeTable`` executable is sequenced before ``MathFunctions``.
+不需要特殊配置，像往常一样进行配置和构建。注意\ ``MakeTable``\ 可执行文件会在\
+``MathFunctions``\ 之前生成。
 
 .. code-block:: console
 
   cmake --preset tutorial
   cmake --build build
 
-Verify the output of ``Tutorial`` now uses the pre-computed table for values
-less than 10.
+验证\ ``Tutorial``\ 的输出现在对小于10的值使用预计算表。
 
-Solution
+解决方案
 --------
 
-First we add a new executable to generate the tables, adding the
-``MakeTable.cxx`` file as a source.
+首先，我们添加一个新的可执行文件来生成表格，将\ ``MakeTable.cxx``\ 文件作为源文件。
 
 .. raw:: html
 
-  <details><summary>TODO 1-2: Click to show/hide answer</summary>
+  <details><summary>TODO 1-2: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step8/MathFunctions/MakeTable/CMakeLists.txt
   :caption: TODO 1-2: MathFunctions/MakeTable/CMakeLists.txt
@@ -167,12 +155,11 @@ First we add a new executable to generate the tables, adding the
 
   </details>
 
-Then we add a custom command which produces the table, and custom target which
-depends on the table.
+然后，我们添加一个生成表格的自定义命令，以及一个依赖于该表格的自定义目标。
 
 .. raw:: html
 
-  <details><summary>TODO 3-4: Click to show/hide answer</summary>
+  <details><summary>TODO 3-4: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step8/MathFunctions/MakeTable/CMakeLists.txt
   :caption: TODO 3-4: MathFunctions/MakeTable/CMakeLists.txt
@@ -185,13 +172,12 @@ depends on the table.
 
   </details>
 
-We need to add an interface library which describes the output which will
-appear in :variable:`CMAKE_CURRENT_BINARY_DIR`. The ``FILES`` parameter is
-optional.
+我们需要添加一个接口库，用于描述将出现在\ :variable:`CMAKE_CURRENT_BINARY_DIR`\
+中的输出。\ ``FILES``\ 参数是可选的。
 
 .. raw:: html
 
-  <details><summary>TODO 5-6: Click to show/hide answer</summary>
+  <details><summary>TODO 5-6: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step8/MathFunctions/MakeTable/CMakeLists.txt
   :caption: TODO 5-6: MathFunctions/MakeTable/CMakeLists.txt
@@ -205,13 +191,12 @@ optional.
 
   </details>
 
-Now that all the targets are described, we can force the custom target to run
-before any dependents of the interface library by associating them with
-:command:`add_dependencies`.
+现在所有目标都已描述完毕，我们可以通过使用\ :command:`add_dependencies`\
+将自定义目标与接口库关联起来，强制自定义目标在接口库的任何依赖项之前运行。
 
 .. raw:: html
 
-  <details><summary>TODO 7: Click to show/hide answer</summary>
+  <details><summary>TODO 7: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step8/MathFunctions/MakeTable/CMakeLists.txt
   :caption: TODO 7: MathFunctions/MakeTable/CMakeLists.txt
@@ -224,12 +209,12 @@ before any dependents of the interface library by associating them with
 
   </details>
 
-We are ready to add the interface library to the linked libraries of
-``MathFunctions``, and add the entire ``MakeTable`` folder to the project.
+现在我们可以将接口库添加到\ ``MathFunctions``\ 的链接库中，并将整个\ ``MakeTable``\
+文件夹添加到项目中。
 
 .. raw:: html
 
-  <details><summary>TODO 8-9: Click to show/hide answer</summary>
+  <details><summary>TODO 8-9: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step8/MathFunctions/CMakeLists.txt
   :caption: TODO 8: MathFunctions/CMakeLists.txt
@@ -249,12 +234,11 @@ We are ready to add the interface library to the linked libraries of
 
   </details>
 
-Finally, we update the ``MathFunctions`` library itself to take advantage of
-the generated table.
+最后，我们更新\ ``MathFunctions``\ 库本身，以利用生成的表格。
 
 .. raw:: html
 
-  <details><summary>TODO 10: Click to show/hide answer</summary>
+  <details><summary>TODO 10: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step8/MathFunctions/MathFunctions.cxx
   :caption: TODO 10: MathFunctions/MathFunctions.cxx
