@@ -11,8 +11,9 @@ cmake-qt(7)
 ============
 
 CMake可以找到并使用Qt 4、Qt 5和Qt 6库。Qt 4库可以通过CMake自带的\ :module:`FindQt4`\
-搜寻模块找到，而Qt 5和Qt 6库可以通过Qt 5和Qt 6自带的“配置文件包”找到。有关CMake包的更多信息，\
-请参见\ :manual:`cmake-packages(7)`，并查看你所用Qt版本的\ `Qt cmake手册`_。
+搜寻模块找到，而Qt 5和Qt 6库可以通过Qt 5和Qt 6自带的“配置文件包”找到。有关CMake\
+包的更多信息，请参见\ :manual:`cmake-packages(7)`，并查看你所用Qt版本的\
+`Qt cmake手册`_。
 
 .. _`Qt cmake手册`: https://doc.qt.io/qt-6/cmake-manual.html
 
@@ -39,15 +40,15 @@ Qt 4、Qt 5和Qt 6可以在同一个\ :manual:`CMake buildsystem <cmake-buildsys
   add_executable(subscriber2 subscriber2.cpp)
   target_link_libraries(subscriber2 Qt4::QtGui Qt4::QtDBus)
 
-一个CMake目标不应该同时链接到多个Qt版本。如果尝试执行此操作或从可传递目标依赖项评估得到此\
-结果，则会发出诊断。
+一个CMake目标不应该同时链接到多个Qt版本。如果尝试执行此操作或从可传递目标依赖项\
+评估得到此结果，则会发出诊断。
 
 Qt构建工具
 ==============
 
-Qt依赖于一些捆绑的代码生成工具，比如用于元对象代码生成的\ ``moc``，用于小部件布局和填充的\
-``uic``，以及用于虚拟文件系统内容生成的\ ``rcc``。如果满足适当的条件，:manual:`cmake(1)`\
-可以自动调用这些工具。自动工具调用可以同时用于Qt 4到6。
+Qt依赖于一些捆绑的代码生成工具，比如用于元对象代码生成的\ ``moc``，用于小部件布局\
+和填充的\ ``uic``，以及用于虚拟文件系统内容生成的\ ``rcc``。如果满足适当的条件，\
+:manual:`cmake(1)`\ 可以自动调用这些工具。自动工具调用可以同时用于Qt 4到6。
 
 .. _`Qt AUTOMOC`:
 
@@ -57,10 +58,11 @@ AUTOMOC
 :prop_tgt:`AUTOMOC`\ 目标属性控制\ :manual:`cmake(1)`\ 是否检查目标中的C++文件，\
 以确定它们是否需要运行\ ``moc``，并在适当的时间创建规则来执行\ ``moc``。
 
-如果在头文件中发现了来自\ :prop_tgt:`AUTOMOC_MACRO_NAMES`\ 的宏，则将在该文件上运行\
-``moc``。结果将被放入一个根据\ ``moc_<basename>.cpp``\ 命名的文件中。遵循Qt约定，如果\
-在C++实现文件中找到宏，则moc输出将被放入根据\ ``<basename>.moc``\ 命名的文件中。\
-``<basename>.moc``\ 必须由用户使用预处理器\ ``#include``\ 包含在C++实现文件中。
+如果在头文件中发现了来自\ :prop_tgt:`AUTOMOC_MACRO_NAMES`\ 的宏，则将在该文件上\
+运行\ ``moc``。结果将被放入一个根据\ ``moc_<basename>.cpp``\ 命名的文件中。\
+遵循Qt约定，如果在C++实现文件中找到宏，则moc输出将被放入根据\ ``<basename>.moc``\
+命名的文件中。\ ``<basename>.moc``\ 必须由用户使用预处理器\ ``#include``\ 包含\
+在C++实现文件中。
 
 包括\ ``moc_*.cpp``\ 和\ ``*.moc``\ 文件将生成在\ ``<AUTOGEN_BUILD_DIR>/include``\
 目录下，该目录会自动添加到目标的\ :prop_tgt:`INCLUDE_DIRECTORIES`\ 目录中。
@@ -81,14 +83,15 @@ AUTOMOC
 ``moc``\ 命令行将使用它所调用的目标的\ :prop_tgt:`COMPILE_DEFINITIONS`\ 和\
 :prop_tgt:`INCLUDE_DIRECTORIES`\ 目标属性，以及适当的构建配置。
 
-:prop_tgt:`AUTOMOC`\ 目标属性可以通过设置\ :variable:`CMAKE_AUTOMOC`\ 变量预先为以下\
-所有目标设置。可以填充\ :prop_tgt:`AUTOMOC_MOC_OPTIONS`\ 目标属性来设置要传递给\
-``moc``\ 的选项。可以填充\ :variable:`CMAKE_AUTOMOC_MOC_OPTIONS`\ 变量，以预先设置以\
-下所有目标的选项。
+:prop_tgt:`AUTOMOC`\ 目标属性可以通过设置\ :variable:`CMAKE_AUTOMOC`\ 变量预先为\
+以下所有目标设置。可以填充\ :prop_tgt:`AUTOMOC_MOC_OPTIONS`\ 目标属性来设置要传递\
+给\ ``moc``\ 的选项。可以填充\ :variable:`CMAKE_AUTOMOC_MOC_OPTIONS`\ 变量，\
+以预先设置以下所有目标的选项。
 
 可以将其他要搜索的宏名称添加到\ :prop_tgt:`AUTOMOC_MACRO_NAMES`\ 中。
 
-可以使用\ :prop_tgt:`AUTOMOC_DEPEND_FILTERS`\ 从源代码中提取其他\ ``moc``\ 依赖文件名称。
+可以使用\ :prop_tgt:`AUTOMOC_DEPEND_FILTERS`\ 从源代码中提取其他\ ``moc``\ 依赖\
+文件名称。
 
 通过启用\ :prop_sf:`SKIP_AUTOMOC`\ 或更广泛的\ :prop_sf:`SKIP_AUTOGEN`，\
 可以将源C++文件排除在\ :prop_tgt:`AUTOMOC`\ 处理之外。
@@ -123,17 +126,18 @@ AUTOUIC
 
 * 参考\ :prop_tgt:`AUTOGEN_BUILD_DIR`。
 
-:prop_tgt:`AUTOUIC`\ 目标属性可以通过设置\ :variable:`CMAKE_AUTOUIC`\ 变量预先为以下\
-所有目标设置。:prop_tgt:`AUTOUIC_OPTIONS`\ 目标属性可以被填充以设置传递给\ ``uic``\
-的选项。可以填充\ :variable:`CMAKE_AUTOUIC_OPTIONS`\ 变量，以预先设置以下所有目标的选项。\
-:prop_sf:`AUTOUIC_OPTIONS`\ 源文件属性可以在\ ``<basename>.ui``\ 文件上来设置文件的特\
-定选项。这将覆盖\ :prop_tgt:`AUTOUIC_OPTIONS`\ 目标属性中的选项。
+:prop_tgt:`AUTOUIC`\ 目标属性可以通过设置\ :variable:`CMAKE_AUTOUIC`\ 变量预先为\
+以下所有目标设置。:prop_tgt:`AUTOUIC_OPTIONS`\ 目标属性可以被填充以设置传递给\
+``uic``\ 的选项。可以填充\ :variable:`CMAKE_AUTOUIC_OPTIONS`\ 变量，以预先设置\
+以下所有目标的选项。\ :prop_sf:`AUTOUIC_OPTIONS`\ 源文件属性可以在\
+``<basename>.ui``\ 文件上来设置文件的特定选项。这将覆盖\ :prop_tgt:`AUTOUIC_OPTIONS`\
+目标属性中的选项。
 
 一个目标可以用调用\ ``uic``\ 时应该使用的选项填充\ :prop_tgt:`INTERFACE_AUTOUIC_OPTIONS`\
 目标属性。这必须与依赖器目标的\ :prop_tgt:`AUTOUIC_OPTIONS`\ 目标属性内容一致。\
 :variable:`CMAKE_DEBUG_TARGET_PROPERTIES`\ 变量可以用来跟踪这样的\
-:prop_tgt:`INTERFACE_AUTOUIC_OPTIONS`\ 的起始目标。这意味着为Qt提供替代翻译系统的库可\
-以指定运行\ ``uic``\ 时应该使用的选项：
+:prop_tgt:`INTERFACE_AUTOUIC_OPTIONS`\ 的起始目标。这意味着为Qt提供替代翻译系统\
+的库可以指定运行\ ``uic``\ 时应该使用的选项：
 
 .. code-block:: cmake
 
@@ -151,8 +155,8 @@ AUTOUIC
     INTERFACE_AUTOUIC_OPTIONS ${autouic_options}
   )
 
-当\ ``uic``\ 被\ :prop_tgt:`AUTOUIC`\ 运行时，一个连接到上游导出目标的消费项目会自动使\
-用适当的选项，这是连接到\ :prop_tgt:`IMPORTED`\ 目标的结果：
+当\ ``uic``\ 被\ :prop_tgt:`AUTOUIC`\ 运行时，一个连接到上游导出目标的消费项目会\
+自动使用适当的选项，这是连接到\ :prop_tgt:`IMPORTED`\ 目标的结果：
 
 .. code-block:: cmake
 
@@ -172,33 +176,34 @@ AUTOUIC
 AUTORCC
 ^^^^^^^
 
-:prop_tgt:`AUTORCC`\ 目标属性控制\ :manual:`cmake(1)`\ 是否创建规则在适当的时间对后缀为\
-``.qrc``\ 的源文件执行\ ``rcc``。
+:prop_tgt:`AUTORCC`\ 目标属性控制\ :manual:`cmake(1)`\ 是否创建规则在适当的时间\
+对后缀为\ ``.qrc``\ 的源文件执行\ ``rcc``。
 
 .. code-block:: cmake
 
   add_executable(myexe main.cpp resource_file.qrc)
 
 通过设置\ :variable:`CMAKE_AUTORCC`\ 变量，可以为以下所有目标预先设置\
-:prop_tgt:`AUTORCC`\ 目标属性。可以填充\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性来设置\
-传递给\ ``rcc``\ 的选项。可以填充\ :variable:`CMAKE_AUTORCC_OPTIONS`\ 变量，以预先设\
-置以下所有目标的选项。\ :prop_sf:`AUTORCC_OPTIONS`\ 源文件属性可以在\ ``<name>.qrc``\
-文件上设置文件的特定选项。这将覆盖\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性中的选项。
+:prop_tgt:`AUTORCC`\ 目标属性。可以填充\ :prop_tgt:`AUTORCC_OPTIONS`\ 目标属性来\
+设置传递给\ ``rcc``\ 的选项。可以填充\ :variable:`CMAKE_AUTORCC_OPTIONS`\ 变量，\
+以预先设置以下所有目标的选项。\ :prop_sf:`AUTORCC_OPTIONS`\ 源文件属性可以在\
+``<name>.qrc``\ 文件上设置文件的特定选项。这将覆盖\ :prop_tgt:`AUTORCC_OPTIONS`\
+目标属性中的选项。
 
-通过启用\ :prop_sf:`SKIP_AUTORCC`\ 或更广泛的\ :prop_sf:`SKIP_AUTOGEN`，源文件可以从\
-:prop_tgt:`AUTORCC`\ 处理中排除。
+通过启用\ :prop_sf:`SKIP_AUTORCC`\ 或更广泛的\ :prop_sf:`SKIP_AUTOGEN`，源文件\
+可以从\ :prop_tgt:`AUTORCC`\ 处理中排除。
 
 .. _`<ORIGIN>_autogen`:
 
 ``<ORIGIN>_autogen``\ 目标
 ===============================
 
-The ``moc`` and ``uic`` tools are executed as part of a synthesized
-``<ORIGIN>_autogen`` :command:`custom target <add_custom_target>` generated by
-CMake.  By default, that ``<ORIGIN>_autogen`` target inherits the dependencies
-of the ``<ORIGIN>`` target (see :prop_tgt:`AUTOGEN_ORIGIN_DEPENDS`).
-Target dependencies may be added to the ``<ORIGIN>_autogen`` target by adding
-them to the :prop_tgt:`AUTOGEN_TARGET_DEPENDS` target property.
+``moc``\ 和\ ``uic``\ 工具作为CMake生成的综合\
+``<ORIGIN>_autogen`` :command:`custom target <add_custom_target>`\ 的一部分执行。\
+默认情况下，该\ ``<ORIGIN>_autogen``\ 目标会继承\ ``<ORIGIN>``\ 目标的依赖项（请\
+参见\ :prop_tgt:`AUTOGEN_ORIGIN_DEPENDS`）。\
+可以通过将目标依赖项添加到\ :prop_tgt:`AUTOGEN_TARGET_DEPENDS`\ 目标属性来将其\
+添加到\ ``<ORIGIN>_autogen``\ 目标中。
 
 .. note::
   如果使用Qt 5.15或更高版本，并且生成器是\ :generator:`Ninja`\ 或\
@@ -209,10 +214,12 @@ them to the :prop_tgt:`AUTOGEN_TARGET_DEPENDS` target property.
 ``<ORIGIN>_autogen_timestamp_deps``\ 目标
 ==============================================
 
-如果使用Qt 5.15或更高版本，并且生成器是\ :generator:`Ninja`\ 或\ :ref:`Makefile Generators`，\
-则除了\ :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`\ 之外，还创建了\ ``<ORIGIN>_autogen_timestamp_deps``\
-目标。这个目标没有任何要执行的源或命令，但是它有以前由Qt 5.15之前的\ :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`\
-继承的依赖项。这些依赖项将作为自定义命令的顺序依赖项列表，而不会强制重新执行自定义命令。
+如果使用Qt 5.15或更高版本，并且生成器是\ :generator:`Ninja`\ 或\
+:ref:`Makefile Generators`，则除了\ :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`\
+之外，还创建了\ ``<ORIGIN>_autogen_timestamp_deps``\ 目标。这个目标没有任何要\
+执行的源或命令，但是它有以前由Qt 5.15之前的\ :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`\
+继承的依赖项。这些依赖项将作为自定义命令的顺序依赖项列表，而不会强制重新执行自定\
+义命令。
 
 Visual Studio生成器
 ========================
@@ -233,11 +240,11 @@ Visual Studio生成器
 Windows上的qtmain.lib
 =====================
 
-QtGui库的Qt 4和5\ :prop_tgt:`IMPORTED`\ 目标指定Qt附带的qtmain.lib静态库将被所有已启用\
-:prop_tgt:`WIN32_EXECUTABLE`\ 的依赖可执行文件链接。
+QtGui库的Qt 4和5\ :prop_tgt:`IMPORTED`\ 目标指定Qt附带的qtmain.lib静态库将被所有\
+已启用\ :prop_tgt:`WIN32_EXECUTABLE`\ 的依赖可执行文件链接。
 
-若要禁用此行为，请为基于Qt5的目标启用\ ``Qt5_NO_LINK_QTMAIN``\ 目标属性，或为基于Qt 4的\
-目标启用\ ``QT4_NO_LINK_QTMAIN``\ 目标属性。
+若要禁用此行为，请为基于Qt5的目标启用\ ``Qt5_NO_LINK_QTMAIN``\ 目标属性，或为基于\
+Qt 4的目标启用\ ``QT4_NO_LINK_QTMAIN``\ 目标属性。
 
 .. code-block:: cmake
 

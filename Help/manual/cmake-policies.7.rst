@@ -78,21 +78,21 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 以下策略是受支持的。
 
-Policies Introduced by CMake 4.2
+CMake 4.2引入的策略
 --------------------------------
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0204: A character set is always defined when targeting the MSVC ABI. </policy/CMP0204>
-   CMP0203: _WINDLL is defined for shared libraries targeting the MSVC ABI. </policy/CMP0203>
-   CMP0202: PDB file names always include their target's per-config POSTFIX. </policy/CMP0202>
-   CMP0201: Python::NumPy does not depend on Python::Development.Module. </policy/CMP0201>
-   CMP0200: Location and configuration selection for imported targets is more consistent. </policy/CMP0200>
-   CMP0199: $<CONFIG> only matches the configuration of the consumed target. </policy/CMP0199>
-   CMP0198: CMAKE_PARENT_LIST_FILE is not defined in CMakeLists.txt. </policy/CMP0198>
+   CMP0204: 面向MSVC ABI时始终定义字符集。 </policy/CMP0204>
+   CMP0203: 面向MSVC ABI的共享库定义_WINDLL。 </policy/CMP0203>
+   CMP0202: PDB文件名始终包含其目标的按配置POSTFIX。 </policy/CMP0202>
+   CMP0201: Python::NumPy不依赖于Python::Development.Module。 </policy/CMP0201>
+   CMP0200: 导入目标的位置和配置选择更加一致。 </policy/CMP0200>
+   CMP0199: $<CONFIG>仅匹配被消费目标的配置。 </policy/CMP0199>
+   CMP0198: CMAKE_PARENT_LIST_FILE不在CMakeLists.txt中定义。 </policy/CMP0198>
 
-Policies Introduced by CMake 4.1
+CMake 4.1引入的策略
 --------------------------------
 
 .. toctree::
