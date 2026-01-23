@@ -353,7 +353,7 @@ CMake提供了模块来简化这些检查。这些在\ :manual:`cmake-modules(7)
   <details><summary>TODO 6: 点击显示/隐藏答案</summary>
 
 .. literalinclude:: Step7/CMakeLists.txt
-  :caption: TODO 6: MathFunctions/CMakeLists.txt
+  :caption: TODO 6: CMakeLists.txt
   :name: CMakeLists.txt-enable-ipo
   :language: cmake
   :start-at: option(TUTORIAL_ENABLE_IPO

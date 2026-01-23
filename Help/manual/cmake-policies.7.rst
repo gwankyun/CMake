@@ -89,7 +89,7 @@ CMake 4.2引入的策略
    CMP0202: PDB文件名始终包含其目标的按配置POSTFIX。 </policy/CMP0202>
    CMP0201: Python::NumPy不依赖于Python::Development.Module。 </policy/CMP0201>
    CMP0200: 导入目标的位置和配置选择更加一致。 </policy/CMP0200>
-   CMP0199: $<CONFIG>仅匹配被消费目标的配置。 </policy/CMP0199>
+   CMP0199: does not match mapped configurations that are not selected. </policy/CMP0199>
    CMP0198: CMAKE_PARENT_LIST_FILE不在CMakeLists.txt中定义。 </policy/CMP0198>
 
 CMake 4.1引入的策略

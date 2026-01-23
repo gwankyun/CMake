@@ -798,6 +798,9 @@ cm::string_view cmGlobalVisualStudioGenerator::ExternalProjectTypeId(
   if (extension == ".dbproj"_s) {
     return Solution::Project::TypeIdDatabase;
   }
+  if (extension == ".njsproj"_s) {
+    return Solution::Project::TypeIdNodeJS;
+  }
   if (extension == ".wapproj"_s) {
     return Solution::Project::TypeIdWinAppPkg;
   }
@@ -972,7 +975,8 @@ cm::VS::Solution cmGlobalVisualStudioGenerator::CreateSolution(
       if (!projectType.IsEmpty()) {
         project->TypeId = *projectType;
       } else {
-        project->TypeId = this->ExternalProjectTypeId(project->Path);
+        project->TypeId =
+          std::string{ this->ExternalProjectTypeId(project->Path) };
       }
       for (std::string const& config : solution.Configs) {
         cmList mapConfig{ gt->GetProperty(cmStrCat(
@@ -1005,13 +1009,13 @@ cm::VS::Solution cmGlobalVisualStudioGenerator::CreateSolution(
       cm::string_view vcprojExt;
       if (this->TargetIsFortranOnly(gt)) {
         vcprojExt = ".vfproj"_s;
-        project->TypeId = Solution::Project::TypeIdFortran;
+        project->TypeId = std::string{ Solution::Project::TypeIdFortran };
       } else if (gt->IsCSharpOnly()) {
         vcprojExt = ".csproj"_s;
-        project->TypeId = Solution::Project::TypeIdCSharp;
+        project->TypeId = std::string{ Solution::Project::TypeIdCSharp };
       } else {
         vcprojExt = ".vcproj"_s;
-        project->TypeId = Solution::Project::TypeIdDefault;
+        project->TypeId = std::string{ Solution::Project::TypeIdDefault };
       }
       if (cmValue genExt = gt->GetProperty("GENERATOR_FILE_NAME_EXT")) {
         vcprojExt = *genExt;
@@ -1064,7 +1068,7 @@ cm::VS::Solution cmGlobalVisualStudioGenerator::CreateSolution(
     cmSourceGroup* sg = mf->FindSourceGroup(item, sourceGroups);
     std::string folderName = sg->GetFullName();
     if (folderName.empty()) {
-      folderName = "Solution Items"_s;
+      folderName = "Solution Items";
     }
     Solution::Folder* folder =
       this->CreateSolutionFolder(solution, folderName);
