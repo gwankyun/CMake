@@ -406,23 +406,22 @@ CMake中有几个目标命令可以用来描述需求。提醒一下，目标命
 要完成本练习，你需要将供应商库构建为静态存档。导航到\
 ``Help/guide/tutorial/Step4/Vendor/lib``\ 目录，并根据你的平台构建代码。
 
-Typical commands for a GCC toolchain on Unix-like systems are:
+在类Unix系统上，GCC工具链的典型命令如下：
 
 .. code-block:: console
 
   g++ -c Vendor.cxx
   ar rvs libVendor.a Vendor.o
 
-Likewise, sample commands for an MSVC toolchain on Windows are:
+同样，在Windows上，MSVC工具链的示例命令如下：
 
 .. code-block:: console
 
   cl -c Vendor.cxx
   lib -out:Vendor.lib Vendor.obj
 
-Here, since you're directly invoking ``cl`` and ``lib``, make sure to use a
-Developer Command Prompt for your version of Visual Studio with the same
-target architecture used by this CMake project.
+在这里，由于你直接调用\ ``cl``\ 和\ ``lib``，请确保使用与本CMake项目相同目标架构\
+的Visual Studio开发人员命令提示符。
 
 然后完成\ ``TODO 11``\ 到\ ``TODO 14``
 
