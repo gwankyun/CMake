@@ -10,10 +10,9 @@ cmake-language(7)
 结构
 ============
 
-CMake输入文件以“CMake语言”写在名为\ ``CMakeLists.txt``\ 的源文件中，或者以\ ``.cmake``\
-文件扩展名结尾。
-The term *listfile* is a general name for any such source file containing
-CMake commands that the tool processes.
+CMake输入文件以“CMake语言”写在名为\ ``CMakeLists.txt``\ 的源文件中，或者以\
+``.cmake``\ 文件扩展名结尾。\
+术语\ *listfile*\ 是指包含CMake命令的任何此类源文件的通用名称。
 
 项目中的CMake语言源文件被归类为：
 
@@ -148,7 +147,7 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 方括号参数
 ^^^^^^^^^^^^^^^^
 
-受\ `Lua`_\ 长括号语法启发的 *括号参数*，将内容括在相同长度的开始和结束“括号”之间：
+受\ `Lua`_\ 长括号语法启发的\ *括号参数*，将内容括在相同长度的开始和结束“括号”之间：
 
 .. raw:: latex
 
