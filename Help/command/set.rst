@@ -45,10 +45,10 @@ set
 
   .. versionadded:: 4.2
 
-  Sets the given cache ``<variable>`` (cache entry). The options are:
+  设置给定的缓存\ ``<variable>``\ （缓存条目）。选项包括：
 
   ``TYPE <type>``
-    Specify the type of the cache entry. The ``<type>`` must be one of:
+    指定缓存条目的类型。\ ``<type>``\ 必须是以下类型之一：
 
     ``BOOL``
       布尔类型的\ ``ON/OFF``\ 值。\
@@ -73,29 +73,24 @@ set
       它们可用于在多次运行之间持久存储变量。\
       使用此类型意味着隐含\ ``FORCE``\ 选项。
 
-    If ``TYPE`` is not specified, if the cache variable already exist and its
-    type is not ``UNINITIALIZED``, the type previously specified will be kept
-    otherwise, ``STRING`` will be used.
+    如果未指定\ ``TYPE``，且缓存变量已存在且其类型不是\ ``UNINITIALIZED``，则将\
+    保留之前指定的类型；否则，将使用\ ``STRING``\ 类型。
 
   ``HELP <helpstring>...``
-    The ``<helpstring>`` must be specified as a line of text providing a quick
-    summary of the option for presentation to :manual:`cmake-gui(1)` users. If
-    more than one string is given, they are concatenated into a single string
-    with no separator between them.
+    ``<helpstring>``\ 必须指定为一行文本，用于为\ :manual:`cmake-gui(1)`\ 用户\
+    提供该选项的快速摘要。如果提供了多个字符串，它们将被连接成一个没有分隔符的\
+    字符串。
 
-    If ``HELP`` is not specified, an empty string will be used.
+    如果未指定\ ``HELP``，将使用空字符串。
 
   ``FORCE``
-    Since cache entries are meant to provide user-settable values this does not
-    overwrite existing cache entries by default.  Use the ``FORCE`` option to
-    overwrite existing entries.
+    由于缓存条目旨在提供用户可设置的值，因此默认情况下不会覆盖现有缓存条目。使用\
+    ``FORCE``\ 选项可以覆盖现有条目。
 
   ``VALUE <value>...``
-    List of values to be set to the cache ``<variable>``. This argument must be
-    always the last one.
+    要设置给缓存\ ``<variable>``\ 的值列表。此参数必须始终是最后一个。
 
-  If the cache entry does not exist prior to the call or the ``FORCE``
-  option is given then the cache entry will be set to the given value.
+  如果调用前缓存条目不存在，或者提供了\ ``FORCE``\ 选项，则缓存条目将被设置为给定值。
 
   .. note::
 
@@ -116,10 +111,9 @@ set
   set(<variable> <value>... CACHE <type> <docstring> [FORCE])
   :target: CACHE_legacy
 
-  This signature is supported for compatibility purpose. Use preferably the
-  other one.
+  支持此签名是为了兼容性目的。优先使用另一个。
 
-Set Environment Variable
+设置环境变量
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. signature::
