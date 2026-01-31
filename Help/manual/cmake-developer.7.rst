@@ -130,13 +130,11 @@ FindFoo.cmake模块通常通过以下命令加载：
 何抱怨。如果\ ``Foo_FIND_REQUIRED``\ 被设置为true，如果找不到包，模块应该发出\
 ``FATAL_ERROR``。如果两者都设置为true，则如果它找不到包，则应该打印一条非致命消息。
 
-Packages that find multiple semi-independent parts (like bundles of
-libraries) should search for the components listed in
-``Foo_FIND_COMPONENTS`` if it is set , and only set ``Foo_FOUND`` to
-true if for each searched-for component ``<c>`` that was not found,
-``Foo_FIND_REQUIRED_<c>`` is not set to true.  The ``HANDLE_COMPONENTS``
-argument of :command:`find_package_handle_standard_args` can be used to
-implement this.
+查找多个半独立部分（如库束）的包应搜索设置在\ ``Foo_FIND_COMPONENTS``\ 中的组件\
+（如果已设置），并且只有当对于每个未找到的已搜索组件\ ``<c>``，\
+``Foo_FIND_REQUIRED_<c>``\ 未被设置为true时，才将\ ``Foo_FOUND``\ 设置为true。\
+可以使用\ :command:`find_package_handle_standard_args`\ 的\ ``HANDLE_COMPONENTS``\
+参数来实现这一点。
 
 如果没有设置\ ``Foo_FIND_COMPONENTS``，那么搜索哪些模块和需要哪些模块取决于查找模块，但应\
 该标明下来。
