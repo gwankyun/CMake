@@ -57,7 +57,7 @@ Ninja生成器
    /generator/Ninja
    /generator/Ninja Multi-Config
 
-FASTBuild Generator
+FASTBuild生成器
 ^^^^^^^^^^^^^^^^^^^
 
 .. toctree::

@@ -1219,9 +1219,9 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 ``INTERFACE``\ 库目标不会编译源代码，也不会在磁盘上生成库工件，因此它没有\ :prop_tgt:`LOCATION`。
 
-It may specify `usage requirements <Target Usage Requirements_>`_,
-`compatible interface properties <Compatible Interface Properties_>`_, and
-`custom transitive properties <Custom Transitive Properties_>`_.
+它可以指定\ `使用要求 <Target Usage Requirements_>`_、\
+`兼容接口属性 <Compatible Interface Properties_>`_ 和\
+`自定义传递属性 <Custom Transitive Properties_>`_。\
 只有\ :command:`target_include_directories`、:command:`target_compile_definitions`、\
 :command:`target_compile_options`、:command:`target_sources`\ 和\
 :command:`target_link_libraries`\ 命令的\ ``INTERFACE``\ 模式可以与\ ``INTERFACE``\
@@ -1288,30 +1288,27 @@ It may specify `usage requirements <Target Usage Requirements_>`_,
     DESTINATION lib/cmake/Eigen
   )
 
-Here, the headers defined in the header set are installed to ``include/Eigen``.
-The install destination automatically becomes an include directory that is a
-usage requirement for consumers.
+此处，头文件集中定义的头文件被安装到\ ``include/Eigen``。\
+安装目标目录会自动成为一个包含目录，该目录是使用者的使用要求。
 
-Properties Allowed on Interface Libraries
+接口库上允许的属性
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Since CMake 3.19, interface libraries allow setting or reading target
-properties with any name, just like other target kinds always have.
+从CMake 3.19开始，接口库允许设置或读取任何名称的目标属性，就像其他目标类型一直\
+以来那样。
 
-Prior to CMake 3.19, interface libraries only allowed setting or reading
-target properties with a limited set of names:
+在CMake 3.19之前，接口库只允许设置或读取有限名称集合的目标属性：
 
-* Properties named with an ``INTERFACE_`` prefix, either builtin
-  `usage requirements <Target Usage Requirements_>`_, or custom names.
+* 以\ ``INTERFACE_``\ 前缀命名的属性，无论是内置的\
+  `使用要求 <Target Usage Requirements_>`_，还是自定义名称。
 
-* Built-in properties named with a ``COMPATIBLE_INTERFACE_`` prefix
-  (`compatible interface properties <Compatible Interface Properties_>`_).
+* 以\ ``COMPATIBLE_INTERFACE_``\ 前缀命名的内置属性（\
+  `兼容接口属性 <Compatible Interface Properties_>`_）。
 
-* Built-in properties :prop_tgt:`NAME`, :prop_tgt:`EXPORT_NAME`,
-  :prop_tgt:`EXPORT_PROPERTIES`, :prop_tgt:`MANUALLY_ADDED_DEPENDENCIES`,
-  :prop_tgt:`IMPORTED`, :prop_tgt:`IMPORTED_LIBNAME_<CONFIG>`, and
-  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`.
+* 内置属性\ :prop_tgt:`NAME`、\ :prop_tgt:`EXPORT_NAME`、\
+  :prop_tgt:`EXPORT_PROPERTIES`、\ :prop_tgt:`MANUALLY_ADDED_DEPENDENCIES`、\
+  :prop_tgt:`IMPORTED`、\ :prop_tgt:`IMPORTED_LIBNAME_<CONFIG>`\ 以及\
+  :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`。
 
 * .. versionadded:: 3.11
-    Properties named with a leading underscore (``_``)
-    or lowercase ASCII character.
+    以前导下划线（\ ``_``\ ）或小写ASCII字符命名的属性。

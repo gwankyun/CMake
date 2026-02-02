@@ -314,10 +314,10 @@ cmake-modules(7)
    /module/CPackRPM
    /module/CPackWIX
 
-Miscellaneous Modules
+杂项模块
 ---------------------
 
-These internal modules are not intended to be included directly in projects:
+这些内部模块不建议在项目中直接包含：
 
 .. toctree::
    :maxdepth: 1
