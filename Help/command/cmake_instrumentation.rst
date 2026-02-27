@@ -1,12 +1,7 @@
 cmake_instrumentation
 ---------------------
 
-.. versionadded:: 4.0
-
-.. note::
-
-   仅当通过\ ``CMAKE_EXPERIMENTAL_INSTRUMENTATION``\ 开关启用了对检测功能的实验性支持时，\
-   此命令才可用。
+.. versionadded:: 4.3
 
 开启与\ :manual:`CMake Instrumentation API <cmake-instrumentation(7)>`\ 交互。
 

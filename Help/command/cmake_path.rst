@@ -166,6 +166,7 @@ Some commands refer to a ``root-path``.  This is the concatenation of
 be empty.  A ``relative-part`` refers to the full path with any ``root-path``
 removed.
 
+.. _Creating a Path Variable:
 
 Creating A Path Variable
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -189,6 +190,16 @@ example compares the three methods for constructing the same path:
 in-place, or in a separate variable named after an ``OUTPUT_VARIABLE``
 keyword.  All other sub-commands store the result in a mandatory ``<out-var>``
 variable.
+
+.. note::
+
+  The ``cmake_path`` command can be used directly with variables provided by
+  CMake representing paths (e.g., :variable:`CMAKE_SOURCE_DIR`). However, since
+  the command can modify these variables, and many of them have undefined
+  behavior when modified, they should never be specified as an ``<out-var>``,
+  and only as the ``<path-var>`` when a separate ``<out-var>`` is specified.
+  See :manual:`cmake-variables(7)` for the list of CMake variables and
+  identifiers reserved by CMake.
 
 .. _Normalization:
 
@@ -392,7 +403,7 @@ Path traversal examples
 Query
 ^^^^^
 
-Each of the `cmake_path(GET) <GET_>`_ subcommands has a corresponding
+Each of the :cref:`GET` subcommands has a corresponding
 ``HAS_...`` subcommand which can be used to discover whether a particular path
 component is present.  See `Path Structure And Terminology`_ for the
 meaning of each path component.
@@ -497,7 +508,7 @@ Modification
   cmake_path(SET <path-var> [NORMALIZE] <input>)
 
   Assigns the ``<input>`` path to ``<path-var>``.  If ``<input>`` is a native
-  path, it is converted into a cmake-style path with forward-slashes
+  path, it is converted into a CMake-style path with forward-slashes
   (``/``). On Windows, the long filename marker is taken into account.
 
   When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
@@ -547,11 +558,15 @@ Modification
 
     append <input> omitting any root-name to <path>
 
+  See :ref:`Creating a Path Variable` for details on the output variable.
+
 .. signature::
   cmake_path(APPEND_STRING <path-var> [<input>...] [OUTPUT_VARIABLE <out-var>])
 
   Appends all the ``<input>`` arguments to the ``<path-var>`` without adding any
   ``directory-separator``.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
 .. signature::
   cmake_path(REMOVE_FILENAME <path-var> [OUTPUT_VARIABLE <out-var>])
@@ -560,8 +575,8 @@ Modification
   :cref:`GET ... FILENAME`) from ``<path-var>``.  After removal, any trailing
   ``directory-separator`` is left alone, if present.
 
-  If ``OUTPUT_VARIABLE`` is not given, then after this function returns,
-  :cref:`HAS_FILENAME` returns false for ``<path-var>``.
+  :cref:`HAS_FILENAME` will return false for the result, whether stored in
+  ``<out-var>`` or ``<path-var>``.
 
   For example:
 
@@ -580,6 +595,8 @@ Modification
     First path is "/a/"
     Second path is "/a/"
 
+  See :ref:`Creating a Path Variable` for details on the output variable.
+
 .. signature::
   cmake_path(REPLACE_FILENAME <path-var> <input> [OUTPUT_VARIABLE <out-var>])
 
@@ -596,11 +613,15 @@ Modification
       cmake_path(APPEND path "${input}")
     endif()
 
+  See :ref:`Creating a Path Variable` for details on the output variable.
+
 .. signature::
   cmake_path(REMOVE_EXTENSION <path-var> [LAST_ONLY]
                                          [OUTPUT_VARIABLE <out-var>])
 
   Removes the :ref:`extension <EXTENSION_DEF>`, if any, from ``<path-var>``.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
 .. signature::
   cmake_path(REPLACE_EXTENSION <path-var> [LAST_ONLY] <input>
@@ -617,6 +638,8 @@ Modification
     endif()
     cmake_path(APPEND_STRING path "${input}")
 
+  See :ref:`Creating a Path Variable` for details on the output variable.
+
 
 .. _Path Generation:
 
@@ -628,6 +651,8 @@ Generation
 
   Normalizes ``<path-var>`` according the steps described in
   :ref:`Normalization`.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
 .. signature::
   cmake_path(RELATIVE_PATH <path-var> [BASE_DIRECTORY <input>]
@@ -641,6 +666,8 @@ Generation
   as that used by C++
   `std::filesystem::path::lexically_relative
   <https://en.cppreference.com/w/cpp/filesystem/path/lexically_normal>`_.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
 .. signature::
   cmake_path(ABSOLUTE_PATH <path-var> [BASE_DIRECTORY <input>] [NORMALIZE]
@@ -659,6 +686,8 @@ Generation
   with symbolic links resolved and leading tildes expanded, use the
   :command:`file(REAL_PATH)` command instead.
 
+  See :ref:`Creating a Path Variable` for details on the output variable.
+
 Native Conversion
 ^^^^^^^^^^^^^^^^^
 
@@ -668,11 +697,13 @@ target platform when cross-compiling.
 .. signature::
   cmake_path(NATIVE_PATH <path-var> [NORMALIZE] <out-var>)
 
-  Converts a cmake-style ``<path-var>`` into a native path with
+  Converts a CMake-style ``<path-var>`` into a native path with
   platform-specific slashes (``\`` on Windows hosts and ``/`` elsewhere).
 
   When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
   <Normalization>` before the conversion.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
 .. _CONVERT:
 
@@ -681,16 +712,19 @@ target platform when cross-compiling.
   :target:
     CONVERT ... TO_CMAKE_PATH_LIST
 
-  Converts a native ``<input>`` path into a cmake-style path with forward
-  slashes (``/``).  On Windows hosts, the long filename marker is taken into
+  Converts a native ``<input>`` path into a CMake-style path with forward
+  slashes (``/``).
+
+  On Windows hosts, the long filename marker is taken into
   account.  The input can be a single path or a system search path like
-  ``$ENV{PATH}``.  A search path will be converted to a cmake-style list
-  separated by ``;`` characters (on non-Windows platforms, this essentially
-  means ``:`` separators are replaced with ``;``).  The result of the
-  conversion is stored in the ``<out-var>`` variable.
+  ``$ENV{PATH}``.  A search path will be converted to a
+  :ref:`semicolon-separated list <CMake Language Lists>` (on non-Windows
+  platforms, this essentially means ``:`` separators are replaced with ``;``).
 
   When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
   <Normalization>` before the conversion.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
   .. note::
     Unlike most other ``cmake_path()`` subcommands, the ``CONVERT`` subcommand
@@ -701,15 +735,17 @@ target platform when cross-compiling.
   :target:
     CONVERT ... TO_NATIVE_PATH_LIST
 
-  Converts a cmake-style ``<input>`` path into a native path with
+  Converts a CMake-style ``<input>`` path into a native path with
   platform-specific slashes (``\`` on Windows hosts and ``/`` elsewhere).
-  The input can be a single path or a cmake-style list.  A list will be
-  converted into a native search path (``;``-separated on Windows,
-  ``:``-separated on other platforms).  The result of the conversion is
-  stored in the ``<out-var>`` variable.
+
+  The input can be a single path or a :ref:`semicolon-separated list
+  <CMake Language Lists>`.  A list will be converted into a native search path
+  (``;``-separated on Windows, ``:``-separated on other platforms).
 
   When the ``NORMALIZE`` option is specified, the path is :ref:`normalized
   <Normalization>` before the conversion.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.
 
   .. note::
     Unlike most other ``cmake_path()`` subcommands, the ``CONVERT`` subcommand
@@ -741,3 +777,5 @@ Hashing
   ``p2`` that compare equal (:cref:`COMPARE ... EQUAL`), the hash value of
   ``p1`` is equal to the hash value of ``p2``.  The path is always
   :ref:`normalized <Normalization>` before the hash is computed.
+
+  See :ref:`Creating a Path Variable` for details on the output variable.

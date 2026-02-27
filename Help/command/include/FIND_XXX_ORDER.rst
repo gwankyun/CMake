@@ -3,7 +3,7 @@
 
 .. parsed-literal::
 
-   |FIND_XXX| (|FIND_ARGS_XXX| PATHS paths... NO_DEFAULT_PATH)
+   |FIND_XXX| (|FIND_ARGS_XXX| PATHS <paths>... NO_DEFAULT_PATH)
    |FIND_XXX| (|FIND_ARGS_XXX|)
 
 一旦其中一个调用成功，结果变量将被设置并存储在缓存中，这样调用就不会再次搜索。

@@ -5,7 +5,7 @@ SKIP_LINTING
 
 此属性允许你从检查进程中排除特定的源文件。检查过程包括在源文件上运行诸如\
 :prop_tgt:`<LANG>_CPPLINT`、\ :prop_tgt:`<LANG>_CLANG_TIDY`、\
-:prop_tgt:`<LANG>_CPPCHECK`\ 、\ :prop_tgt:`<LANG>_ICSTAT`\ 和\ :prop_tgt:`<LANG>_INCLUDE_WHAT_YOU_USE`\ 等工具，\
+:prop_tgt:`<LANG>_CPPCHECK`\ 、\ :prop_tgt:`<LANG>_ICSTAT`\ 、\ :prop_tgt:`<LANG>_PVS_STUDIO`\ 和\ :prop_tgt:`<LANG>_INCLUDE_WHAT_YOU_USE`\ 等工具，\
 以及编译头文件作为\ :prop_tgt:`VERIFY_INTERFACE_HEADER_SETS`\ 的一部分。通过在源文件\
 上设置\ ``SKIP_LINTING``，将不会为该特定文件执行上述检测工具。
 

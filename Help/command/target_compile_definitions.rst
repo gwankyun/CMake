@@ -6,8 +6,8 @@
 .. code-block:: cmake
 
   target_compile_definitions(<target>
-    <INTERFACE|PUBLIC|PRIVATE> [items1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+    <INTERFACE|PUBLIC|PRIVATE> <definition>...
+    [<INTERFACE|PUBLIC|PRIVATE> <definition>... ...])
 
 指定编译给定\ ``<target>``\ 时要使用的编译定义。命名的\ ``<target>``\ 必须是由\
 :command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\

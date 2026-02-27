@@ -8,8 +8,8 @@ target_link_options
 .. code-block:: cmake
 
   target_link_options(<target> [BEFORE]
-    <INTERFACE|PUBLIC|PRIVATE> [items1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+    {INTERFACE|PUBLIC|PRIVATE} <item>...
+    [{INTERFACE|PUBLIC|PRIVATE} <item>...]...)
 
 命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
 等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。

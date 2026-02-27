@@ -39,44 +39,17 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 根对象识别以下字段：
 
+.. _`CMakePresets schema`:
+
 ``$schema``
   一个可选字符串，它向描述该JSON文档结构的JSON模式提供一个URI。该字段用于在支持JSON模式的\
   编辑器中进行验证和自动完成。它不会影响文档本身的行为。如果没有指定这个字段，JSON文档仍然有\
-  效，但是使用JSON模式进行验证和自动完成的工具可能无法正常工作。这在指定版本\ ``8``\ 或以\
-  上的预设文件中是允许的。
+  效，但是使用JSON模式进行验证和自动完成的工具可能无法正常工作。
 
 ``version``
-  必需的整数，表示JSON模式的版本。支持的版本有：
-
-  ``1``
-    .. versionadded:: 3.19
-
-  ``2``
-    .. versionadded:: 3.20
-
-  ``3``
-    .. versionadded:: 3.21
-
-  ``4``
-    .. versionadded:: 3.23
-
-  ``5``
-    .. versionadded:: 3.24
-
-  ``6``
-    .. versionadded:: 3.25
-
-  ``7``
-    .. versionadded:: 3.27
-
-  ``8``
-    .. versionadded:: 3.28
-
-  ``9``
-    .. versionadded:: 3.30
-
-  ``10``
-    .. versionadded:: 3.31
+  A required integer representing the version of the JSON schema. See
+  `Versions`_ for discussion of the supported versions and the corresponding
+  version of CMake in which they were added.
 
 ``cmakeMinimumRequired``
   一个可选对象，表示构建此项目所需的CMake的最小版本。该节点由以下字段组成：
@@ -145,12 +118,12 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 ``configurePresets``\ 数组的每个条目都是一个JSON对象，可能包含以下字段：
 
 ``name``
-  必需的字符串，表示预设的机器友好的名称。这个标识符在\ :ref:`cmake --preset <CMake Options>`\
+  必需的字符串，表示预设的机器友好的名称。这个标识符在\ :option:`cmake --preset`\
   选项中使用。\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录下，\
   不能有两个同名的配置预置。但是，配置预设可能与构建、测试、包或工作流预设具有相同的名称。
 
 ``hidden``
-  一个可选的布尔值，指定是否应该隐藏预设。如果预设是隐藏的，它不能在\ ``--preset=``\ 参数\
+  一个可选的布尔值，指定是否应该隐藏预设。如果预设是隐藏的，它不能在\ :option:`--preset <cmake --preset>`\ 参数\
   中使用，不会显示在\ :manual:`CMake GUI <cmake-gui(1)>`\ 中，并且不必有一个有效的\
   ``generator``\ 或\ ``binaryDir``，即使是从继承。\ ``hidden``\ 预设被用作其他预设通过\
   ``inherits``\ 字段继承的基础。
@@ -180,12 +153,14 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 ``description``
   一个可选的字符串，具有对预设的人性化描述。
 
+.. _`CMakePresets generator`:
+
 ``generator``
-  一个可选字符串，表示要用于预设的生成器。如果未指定\ ``generator``，则必须从所\
+  一个可选字符串，表示要用于预设的生成器。如果未指定\ :manual:`generator <cmake-generators(7)>`，则必须从所\
   ``inherits``\ 的预设继承（除非该预设是\ ``hidden``）。在版本\ ``3``\ 或更高版本中，可\
   以省略此字段以返回到常规生成器发现过程。
 
-  请注意，对于Visual Studio生成器，与命令行\ :option:`-G <cmake -G>`\ 参数不同，你不能\
+  请注意，对于:\ ref:`Visual Studio generators`，与命令行\ :option:`-G <cmake -G>`\ 参数不同，你不能\
   在生成器名称中包含平台名称。请使用\ ``architecture``\ 字段。
 
 ``architecture``, ``toolset``
@@ -215,11 +190,15 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     如果没有给出\ ``strategy``\ 字段，或者该字段使用字符串形式而不是对象形式，则行为与\
     ``"set"``\ 相同。
 
+.. _`CMakePresets toolchainFile`:
+
 ``toolchainFile``
   表示工具链文件路径的可选字符串。该字段支持\ `宏扩展`_。如果指定了相对路径，则计算相对于构\
   建目录的路径，如果没有找到，则计算相对于源目录的路径。该字段优先于\
   :variable:`CMAKE_TOOLCHAIN_FILE`\ 的任何值。在指定版本\ ``3``\ 或更高版本的预设文件\
   中允许使用。
+
+.. _`CMakePresets graphviz`:
 
 ``graphviz``
   An optional string representing the path to the graphviz input file,
@@ -230,13 +209,17 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   该字段支持\ `宏扩展`_。如果指定了相对路径，它是相对于当前工作目录计算的。它允许在指定版本\
   ``10``\ 或以上的预设文件中使用。
 
+.. _`CMakePresets binaryDir`:
+
 ``binaryDir``
   一个可选字符串，表示输出二进制目录的路径。该字段支持\ `宏扩展`_.。如果指定了相对路径，则计\
   算相对于源目录的路径。如果未指定\ ``binaryDir``，则必须从\ ``inherits``\ 预设继承（除\
   非该预设是\ ``hidden``）。在版本\ ``3``\ 或更高版本中，此字段可能被省略。
 
+.. _`CMakePresets installDir`:
+
 ``installDir``
-  表示安装目录路径的可选字符串。该字段支持\ `宏扩展`_。如果指定了相对路径，则计算相对于源目\
+  表示安装目录路径的可选字符串，which will be used as the :variable:`CMAKE_INSTALL_PREFIX` variable。该字段支持\ `宏扩展`_。如果指定了相对路径，则计算相对于源目\
   录的路径。这在指定版本\ ``3``\ 或以上的预设文件中是允许的。
 
 ``cmakeExecutable``
@@ -327,6 +310,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     可选的布尔值。将其设置为\ ``true``\ 相当于在命令行上传递\
     :option:`--debug-find <cmake --debug-find>`。
 
+.. _`CMakePresets trace`:
+
 ``trace``
   指定跟踪选项的可选对象。这在指定版本\ ``7``\ 的预设文件中是允许的。该对象可以包含以下字段：
 
@@ -370,13 +355,13 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``name``
   必需的字符串，表示预设的机器友好的名称。这个标识符在\
-  :ref:`cmake --build --preset <Build Tool Mode>`\ 选项中使用。在\
+  :option:`cmake --build --preset <cmake--build --preset>`\ 选项中使用。在\
   ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录中，不能有两个构建\
   预置，且名称相同。但是，构建预设可能与配置、测试、打包或工作流预设具有相同的名称。
 
 ``hidden``
   一个可选的布尔值，指定是否应该隐藏预设。如果一个预设是隐藏的，那么它就不能在\
-  :option:`--preset <cmake --preset>`\ 参数中使用，也不必有一个有效的\
+  :option:`--preset <cmake--build --preset>`\ 参数中使用，也不必有一个有效的\
   ``configurePreset``，即使是从继承中也是如此。\ ``hidden``\ 预设被用作其他预设通过\
   ``inherits``\ 字段继承的基础。
 
@@ -406,6 +391,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 ``description``
   一个可选的字符串，具有对预设的人性化描述。
 
+.. _`CMakePresets build environment`:
+
 ``environment``
   环境变量的可选映射。关键字是变量名（可能不是空字符串），值要么为\ ``null``，要么为表示变\
   量值的字符串。无论进程的环境是否给每个变量赋值，都会设置它。
@@ -422,10 +409,10 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
   .. note::
 
-    对于使用ExternalProject的CMake项目，使用具有ExternalProject中需要的环境变量的配置\
+    对于使用\ :module:`ExternalProject`\ 的CMake项目，使用具有ExternalProject中需要的环境变量的配置\
     预置，使用继承该配置预置的构建预置，否则ExternalProject将不会在配置预置中设置环境变量。\
     示例：假设主机默认使用一个编译器（比如Clang），而用户希望使用另一个编译器（比如GCC）。\
-    设置配置预设环境变量\ ``CC``\ 和\ ``CXX``，并使用继承该配置预设的构建预设。否则，\
+    设置配置预设环境变量\ :envvar:`CC`\ 和\ :envvar:`CXX`，并使用继承该配置预设的构建预设。否则，\
     ExternalProject可能会使用与顶级CMake项目不同的（系统默认）编译器。
 
 ``configurePreset``
@@ -437,9 +424,18 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   默认为true的可选布尔值。如果为true，则在所有继承的构建预设环境之后，但在此构建预设中显式\
   指定的环境变量之前，继承相关配置预设的环境变量。
 
+.. _`CMakePresets build jobs`:
+
 ``jobs``
   可选整数。相当于在命令行上传递\ :option:`--parallel <cmake--build --parallel>`\ 或\
   ``-j``。
+  If the value is ``0``, it is equivalent to passing ``--parallel`` with
+  ``<jobs>`` omitted; alternatively, one can define the environment variable
+  :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` as an empty string using the
+  ``environment`` field.
+
+  In preset files specifying version ``11`` or above, this field does not
+  accept negative values.
 
 ``targets``
   一个可选的字符串或字符串数组。相当于在命令行上传递\
@@ -453,10 +449,12 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   可选bool。如果为true，相当于在命令行上传递\
   :option:`--clean-first <cmake--build --clean-first>`。
 
+.. _`CMakePresets resolvePackageReferences`:
+
 ``resolvePackageReferences``
   指定包解析模式的可选字符串。这在指定版本\ ``4``\ 或以上的预设文件中是允许的。
 
-  包引用用于定义对来自外部包管理器的包的依赖。目前只支持NuGet与Visual Studio生成器的组合。\
+  包引用用于定义对来自外部包管理器的包的依赖。目前只支持NuGet与\ :ref:`Visual Studio generators`\ 的组合。\
   如果没有定义包引用的目标，则此选项不执行任何操作。有效值为：
 
   ``on``
@@ -475,8 +473,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     将优先于此设置。如果未提供命令行参数并且未指定此设置，则将评估特定于环境的缓存变量以决定\
     是否应该执行包恢复。
 
-    当使用Visual Studio生成器时，包引用是使用\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属\
-    性定义的。使用NuGet恢复包引用。可以通过将\ ``CMAKE_VS_NUGET_PACKAGE_RESTORE``\ 变\
+    当使用\ :ref:`Visual Studio generators`\ 时，包引用是使用\ :prop_tgt:`VS_PACKAGE_REFERENCES`\ 属\
+    性定义的。使用NuGet恢复包引用。可以通过将\ :variable:`CMAKE_VS_NUGET_PACKAGE_RESTORE`\ 变\
     量设置为\ ``OFF``\ 来禁用它。这也可以在配置预设中完成。
 
 ``verbose``
@@ -557,6 +555,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   一个可选的配置选项数组，用于覆盖CTest配置文件中指定的选项。相当于为数组中的每个值传递\
   :option:`--overwrite <ctest --overwrite>`。数组值支持宏扩展。
 
+.. _`CMakePresets output`:
+
 ``output``
   指定输出选项的可选对象。该对象可以包含以下字段。
 
@@ -589,6 +589,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
     指定日志文件路径的可选字符串。相当于在命令行上传递\
     :option:`--output-log <ctest --output-log>`。该字段支持宏扩展。
 
+.. _`CMakePresets outputJUnitFile`:
+
   ``outputJUnitFile``
     指定JUnit文件路径的可选字符串。相当于在命令行上传递\
     :option:`--output-junit <ctest --output-junit>`。该字段支持宏扩展。这在指定版本\
@@ -609,6 +611,8 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   ``maxFailedTestOutputSize``
     可选整数，以字节为单位指定失败测试的最大输出。相当于在命令行上传递\
     :option:`--test-output-size-failed <ctest --test-output-size-failed>`。
+
+.. _`CMakePresets testOutputTruncation`:
 
   ``testOutputTruncation``
     指定测试输出截断模式的可选字符串。相当于在命令行上传递\
@@ -693,9 +697,17 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   ``enableFailover``
     可选bool。如果为true，相当于在命令行上传递\ :option:`-F <ctest -F>`。
 
+.. _`CMakePresets test jobs`:
+
   ``jobs``
-    可选整数。相当于在命令行上传递\
-    :option:`--parallel <ctest --parallel>` on the command line。
+    An optional integer. Equivalent to passing
+    :option:`--parallel <ctest --parallel>` on the command line. If the value
+    is ``0``, it is equivalent to unbounded parallelism.
+
+    In preset files specifying version ``11`` or above, this field can also be
+    a string, in which case it must be empty, and is equivalent to passing
+    ``--parallel`` with ``<jobs>`` omitted; additionally, it does not accept
+    negative values.
 
   ``resourceSpecFile``
     可选字符串。相当于在命令行上传递\
@@ -880,7 +892,7 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 ``name``
   必需的字符串，表示预设的机器友好的名称。这个标识符在\
-  :ref:`cmake --workflow --preset <Workflow Mode>`\ 选项中使用。在\
+  :option:`cmake --workflow --preset <cmake--workflow --preset>`\ 选项中使用。在\
   ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的联合目录中，不能有两个同\
   名的工作流预置。然而，工作流预设可能与配置、构建、测试或包预设具有相同的名称。
 
@@ -1005,15 +1017,21 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
   这是一个预设特定的宏。
 
+.. _`CMakePresets hostSystemName`:
+
 ``${hostSystemName}``
   主机操作系统的名称。与\ :variable:`CMAKE_HOST_SYSTEM_NAME`\ 相同。这在指定版本\
   ``3``\ 或以上的预设文件中是允许的。
+
+.. _`CMakePresets fileDir`:
 
 ``${fileDir}``
   包含包含宏的预设文件的目录的路径。这在指定版本\ ``4``\ 或以上的预设文件中是允许的。
 
 ``${dollar}``
   字面上的美元符号（\ ``$``\ ）。
+
+.. _`CMakePresets pathListSep`:
 
 ``${pathListSep}``
   分隔路径列表的本地字符，如\ ``:``\ 或\ ``;``。
@@ -1045,7 +1063,130 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   应该在\ ``<macro-name>``\ 前面加上一个非常短的（最好是<=4个字符）供应商标识符前缀，后\
   跟一个\ ``.``，再后跟宏名称。例如，示例IDE可以有\ ``$vendor{xide.ideInstallDir}``。
 
-模式
+Versions
+========
+
+The JSON schema of ``CMakePresets.json`` and ``CMakeUserPresets.json``
+follows a version scheme where new versions are added and allowed in newer
+versions of CMake.
+
+A list of the supported versions along with the version of CMake in which
+they were added and a summary of the new features and changes is given below.
+
+  ``1``
+    .. versionadded:: 3.19
+
+    The initial version supports `配置预设`_
+    and `宏扩展`_.
+
+  ``2``
+    .. versionadded:: 3.20
+
+    * `构建预设`_ were added.
+    * `测试预设`_ were added.
+
+  ``3``
+    .. versionadded:: 3.21
+
+    * The `条件`_ object was added for `配置 <配置预设_>`_ ,
+      `构建 <构建预设_>`_, and `测试预设`_.
+    * Changes to `配置预设`_
+
+      * The `installDir <CMakePresets installDir_>`_ field was added.
+      * The `toolchainFile <CMakePresets toolchainFile_>`_ field was added.
+      * The `binaryDir <CMakePresets binaryDir_>`_ field is now optional.
+      * The `generator <CMakePresets generator_>`_ field is now optional.
+
+    * Changes to `宏扩展`_
+
+      * The `${hostSystemName} <CMakePresets hostSystemName_>`_ macro was
+        added.
+
+  ``4``
+    .. versionadded:: 3.23
+
+    * `包含`_ were added to support including other JSON files in
+      ``CMakePresets.json`` and ``CMakeUserPresets.json``.
+    * Changes to `构建预设`_
+
+      * The
+        `resolvePackageReferences <CMakePresets resolvePackageReferences_>`_
+        field was added.
+
+    * Changes to `宏扩展`_
+
+      * The `${fileDir} <CMakePresets fileDir_>`_ macro was added.
+
+  ``5``
+    .. versionadded:: 3.24
+
+    * Changes to `测试预设`_
+
+      * The `testOutputTruncation <CMakePresets testOutputTruncation_>`_
+        field was added to the `output <CMakePresets output_>`_ object.
+
+    * Changes to `宏扩展`_
+
+      * The `${pathListSep} <CMakePresets pathListSep_>`_ macro was added.
+
+  ``6``
+    .. versionadded:: 3.25
+
+    * `包预设`_ were added.
+    * `Workflow Presets <Workflow Preset_>`_ were added.
+    * Changes to `测试预设`_
+
+      * The `outputJUnitFile <CMakePresets outputJUnitFile_>`_ field was added
+        to the `output <CMakePresets output_>`_ object.
+
+  ``7``
+    .. versionadded:: 3.27
+
+    * Changes to `配置预设`_
+
+      * The `trace <CMakePresets trace_>`_ field was added.
+
+    * Changes to `包含`_
+
+      * The ``include`` field now supports ``$penv{}`` `宏扩展`_.
+
+  ``8``
+    .. versionadded:: 3.28
+
+    * The `$schema <CMakePresets schema_>`_ field was added to the root object.
+
+  ``9``
+    .. versionadded:: 3.30
+
+    * Changes to `包含`_
+
+      * The ``include`` field now supports other types of `宏扩展`_.
+
+  ``10``
+    .. versionadded:: 3.31
+
+    * The optional ``$comment`` field was added to support documentation
+      throughout ``CMakePresets.json`` and ``CMakeUserPresets.json``.
+    * Changes to `配置预设`_:
+
+      * The `graphviz <CMakePresets graphviz_>`_ field was added.
+
+  ``11``
+    .. versionadded:: 4.3
+
+    * Changes to `构建预设`_
+
+      * The `jobs <CMakePresets build jobs_>`_ field no longer accepts negative
+        values.
+
+    * Changes to `测试预设`_
+
+      * The `jobs <CMakePresets test jobs_>`_ field now accepts an empty string
+        representing :option:`--parallel <ctest --parallel>` with ``<jobs>``
+        omitted. In addition, when an integer is specified, it must not be
+        negative.
+
+Schema
 ======
 
 :download:`This file </manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\

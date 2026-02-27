@@ -8,8 +8,8 @@ define_property
   define_property(<GLOBAL | DIRECTORY | TARGET | SOURCE |
                    TEST | VARIABLE | CACHED_VARIABLE>
                    PROPERTY <name> [INHERITED]
-                   [BRIEF_DOCS <brief-doc> [docs...]]
-                   [FULL_DOCS <full-doc> [docs...]]
+                   [BRIEF_DOCS <brief-doc> [<docs>...]]
+                   [FULL_DOCS <full-doc> [<docs>...]]
                    [INITIALIZE_FROM_VARIABLE <variable>])
 
 在某个作用域中定义一个属性，供\ :command:`set_property`\ 和\ :command:`get_property`\

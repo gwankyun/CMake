@@ -7,6 +7,8 @@ cmake-policies(7)
 
    .. contents::
 
+.. _cmake-policies-intro:
+
 引言
 ============
 
@@ -27,9 +29,9 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 .. code-block:: cmake
 
-  cmake_minimum_required(VERSION 3.10...4.1)
+  cmake_minimum_required(VERSION 3.10...4.2)
 
-这使用了\ ``<min>...<max>``\ 语法，以启用CMake 4.1及更早版本引入的策略的\ ``NEW``\ 行为，\
+这使用了\ ``<min>...<policy_max>``\ 语法，以启用CMake 4.2及更早版本引入的策略的\ ``NEW``\ 行为，\
 同时仅要求最低版本为CMake 3.10。预计该项目在这两个版本之间引入的策略的\ ``OLD``\ 行为和\
 ``NEW``\ 行为下都能正常工作。
 
@@ -78,7 +80,20 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 以下策略是受支持的。
 
-CMake 4.2引入的策略
+Policies Introduced by CMake 4.3
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0210: CMAKE_<LANG>_LINK_FLAGS adds link flags to all target types. </policy/CMP0210>
+   CMP0209: Verify interface header sets checks executables without exports. </policy/CMP0209>
+   CMP0208: export(EXPORT) does not allow empty arguments. </policy/CMP0208>
+   CMP0207: file(GET_RUNTIME_DEPENDENCIES) normalizes paths before matching. </policy/CMP0207>
+   CMP0206: The CPack Archive Generator defaults to UID 0 and GID 0. </policy/CMP0206>
+   CMP0205: file(CREATE_LINK) with COPY_ON_ERROR copies directory content. </policy/CMP0205>
+
+Policies Introduced by CMake 4.2
 --------------------------------
 
 .. toctree::

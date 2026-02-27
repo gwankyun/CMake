@@ -82,10 +82,7 @@ project
     :variable:`CMAKE_PROJECT_VERSION`\ 中。
 
 ``COMPAT_VERSION <version>``
-  .. versionadded:: 4.1
-  .. note::
-
-    实验性功能。由\ ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``\ 开关控制。
+  .. versionadded:: 4.3
 
   可选；要求同时设置\ ``VERSION``。
 
@@ -93,16 +90,13 @@ project
   ``<major>[.<minor>[.<patch>[.<tweak>]]]``\ ， 并设置以下变量
 
   * :variable:`PROJECT_COMPAT_VERSION`,
-    :variable:`<PROJECT-NAME>_COMPAT_VERSION`
+    :variable:`<PROJECT-NAME>_COMPAT_VERSION`.
 
-    当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时，兼容性版本还会存储\
-    在变量\ :variable:`CMAKE_PROJECT_COMPAT_VERSION`\ 中。
+  当从顶层\ ``CMakeLists.txt``\ 调用\ ``project()``\ 命令时，兼容性版本还会存储\
+  在变量\ :variable:`CMAKE_PROJECT_COMPAT_VERSION`\ 中。
 
 ``SPDX_LICENSE <license-string>``
-  .. versionadded:: 4.2
-  .. note::
-
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_EXPORT_PACKAGE_INFO``.
+  .. versionadded:: 4.3
 
   Optional.
   Sets the variables

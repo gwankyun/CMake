@@ -6,8 +6,8 @@ target_compile_options
 .. code-block:: cmake
 
   target_compile_options(<target> [BEFORE]
-    <INTERFACE|PUBLIC|PRIVATE> [items1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+    {INTERFACE|PUBLIC|PRIVATE} <item>...
+    [{INTERFACE|PUBLIC|PRIVATE} <item>...]...)
 
 向\ :prop_tgt:`COMPILE_OPTIONS`\ 或\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标\
 属性添加选项。这些选项在编译给定的\ ``<target>``\ 时使用，该\ ``<target>``\ 必须是由\

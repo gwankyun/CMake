@@ -28,6 +28,10 @@ source_group
 ``FILES``
  任何显式指定的源文件都将被放入名为\ ``<name>``\ 的组中。相对路径是相对于当前源目录来解释的。
 
+ .. versionadded:: 4.3
+   Arguments to ``FILES`` may use
+   :manual:`generator expressions <cmake-generator-expressions(7)>`.
+
 ``REGULAR_EXPRESSION``
  任何文件名与正则表达式匹配的源文件都将被放入名为\ ``<name>``\ 的组中。
 

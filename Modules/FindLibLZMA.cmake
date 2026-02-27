@@ -5,7 +5,7 @@
 FindLibLZMA
 -----------
 
-查找liblzma，一个实现LZMA（Lempel–Ziv–Markov链算法）的数据压缩库。
+查找liblzma，一个实现LZMA（Lempel-Ziv-Markov链算法）的数据压缩库。
 
 .. code-block:: cmake
 

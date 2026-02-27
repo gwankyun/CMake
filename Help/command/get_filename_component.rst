@@ -10,7 +10,7 @@ get_filename_component
 
 .. versionchanged:: 3.24
   原有的一项未文档化用于查询\ ``Windows``\ 注册表的功能，现已被\
-  :ref:`cmake_host_system_information(QUERY WINDOWS_REGISTRY)<Query Windows registry>`\
+  :command:`cmake_host_system_information(QUERY WINDOWS_REGISTRY)`\
   命令所取代。
 
 .. code-block:: cmake

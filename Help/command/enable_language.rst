@@ -13,7 +13,8 @@ enable_language
 
 以下是对\ ``enable_language()``\ 调用位置的限制：
 
-* 它必须在文件作用域中调用，而不能在函数调用中使用。
+* It must be called in file scope, not in a :command:`function` call
+  nor inside a :command:`block()`.。
 * 在首次调用\ :command:`project`\ 命令之前，不得调用此命令。\
   请参阅策略\ :policy:`CMP0165`。
 * 它必须在所有直接使用指定语言编译源文件或通过链接依赖间接使用该语言的目标的公共最高级目录中\

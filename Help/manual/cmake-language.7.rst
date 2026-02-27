@@ -61,6 +61,11 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
 .. _字节序标记: https://en.wikipedia.org/wiki/Byte_order_mark
 
+.. versionadded:: 4.3
+
+  The :command:`cmake_host_system_information` command's ``LOCALE_CHARSET``
+  query returns the expected character set encoding.
+
 源文件
 ------------
 

@@ -180,35 +180,90 @@ cmCommonTargetGenerator::GetLinkedTargetDirectories(
 
   if (cmComputeLinkInformation* cli =
         this->GeneratorTarget->GetLinkInformation(config)) {
-    auto addLinkedTarget =
-      [this, &lang, &config, &dirs, &direct_emitted, &forward_emitted,
-       gg](cmGeneratorTarget const* linkee, Forwarding forward) {
-        if (linkee &&
-            !linkee->IsImported()
-            // Skip targets that build after this one in a static lib cycle.
-            && gg->TargetOrderIndexLess(linkee, this->GeneratorTarget)
-            // We can ignore the INTERFACE_LIBRARY items because
-            // Target->GetLinkInformation already processed their
-            // link interface and they don't have any output themselves.
-            && (linkee->GetType() != cmStateEnums::INTERFACE_LIBRARY
-                // Synthesized targets may have relevant rules.
-                || linkee->IsSynthetic()) &&
-            ((lang == "CXX"_s && linkee->HaveCxx20ModuleSources()) ||
-             (lang == "Fortran"_s && linkee->HaveFortranSources(config)))) {
-          cmLocalGenerator* lg = linkee->GetLocalGenerator();
-          std::string di = linkee->GetSupportDirectory();
-          if (lg->GetGlobalGenerator()->IsMultiConfig()) {
-            di = cmStrCat(di, '/', config);
-          }
-          if (forward == Forwarding::Yes &&
-              forward_emitted.insert(linkee).second) {
-            dirs.Forward.push_back(di);
-          }
-          if (direct_emitted.insert(linkee).second) {
-            dirs.Direct.emplace_back(di);
+
+    auto findSyntheticTarget =
+      [this,
+       &config](cmGeneratorTarget const* linkee) -> cmGeneratorTarget const* {
+      if (!linkee) {
+        return nullptr;
+      }
+
+      // Check the map of direct synthetic dependencies for a substitute
+      auto const& synthDeps = this->GeneratorTarget->GetSyntheticDeps(config);
+      auto it = synthDeps.find(linkee);
+      if (it != synthDeps.end() && !it->second.empty()) {
+        return it->second.front();
+      }
+
+      // Check linked targets to finding synthetic targets for transitive deps
+      std::vector<cmGeneratorTarget const*> pending;
+      std::set<cmGeneratorTarget const*> visited;
+      for (auto const& dep : synthDeps) {
+        for (auto const* synth : dep.second) {
+          if (synth && visited.insert(synth).second) {
+            pending.push_back(synth);
           }
         }
-      };
+      }
+
+      while (!pending.empty()) {
+        auto const* current = pending.back();
+        pending.pop_back();
+        auto const& transitiveSynthDeps = current->GetSyntheticDeps(config);
+        auto itLinkeeSynth = transitiveSynthDeps.find(linkee);
+        if (itLinkeeSynth != transitiveSynthDeps.end() &&
+            !itLinkeeSynth->second.empty()) {
+          return itLinkeeSynth->second.front();
+        }
+        for (auto const& entry : transitiveSynthDeps) {
+          for (auto const* synth : entry.second) {
+            if (synth && visited.insert(synth).second) {
+              pending.push_back(synth);
+            }
+          }
+        }
+      }
+
+      return nullptr;
+    };
+
+    auto addLinkedTarget = [this, &lang, &config, &dirs, &direct_emitted,
+                            &forward_emitted, &findSyntheticTarget,
+                            gg](cmGeneratorTarget const* linkee,
+                                Forwarding forward) {
+      // Check if the linkee has a synthetic target to use for importing
+      cmGeneratorTarget const* mappedLinkee = linkee;
+      if (auto const* synth = findSyntheticTarget(linkee)) {
+        mappedLinkee = synth;
+      }
+
+      if (mappedLinkee &&
+          !mappedLinkee->IsImported()
+          // Skip targets that build after this one in a static lib cycle.
+          && gg->TargetOrderIndexLess(mappedLinkee, this->GeneratorTarget)
+          // We can ignore the INTERFACE_LIBRARY items because
+          // Target->GetLinkInformation already processed their
+          // link interface and they don't have any output themselves.
+          && (mappedLinkee->GetType() != cmStateEnums::INTERFACE_LIBRARY
+              // Synthesized targets may have relevant rules.
+              || mappedLinkee->IsSynthetic()) &&
+          ((lang == "CXX"_s && mappedLinkee->HaveCxx20ModuleSources()) ||
+           (lang == "Fortran"_s &&
+            mappedLinkee->HaveFortranSources(config)))) {
+        cmLocalGenerator* lg = mappedLinkee->GetLocalGenerator();
+        std::string di = mappedLinkee->GetSupportDirectory();
+        if (lg->GetGlobalGenerator()->IsMultiConfig()) {
+          di = cmStrCat(di, '/', config);
+        }
+        if (forward == Forwarding::Yes &&
+            forward_emitted.insert(mappedLinkee).second) {
+          dirs.Forward.push_back(di);
+        }
+        if (direct_emitted.insert(mappedLinkee).second) {
+          dirs.Direct.emplace_back(di);
+        }
+      }
+    };
     for (auto const& item : cli->GetItems()) {
       if (item.Target) {
         addLinkedTarget(item.Target, Forwarding::No);
@@ -275,8 +330,8 @@ std::string cmCommonTargetGenerator::GetManifests(std::string const& config)
   manifests.reserve(manifest_srcs.size());
 
   std::string lang = this->GeneratorTarget->GetLinkerLanguage(config);
-  std::string manifestFlag =
-    this->Makefile->GetDefinition("CMAKE_" + lang + "_LINKER_MANIFEST_FLAG");
+  std::string manifestFlag = this->Makefile->GetDefinition(
+    cmStrCat("CMAKE_", lang, "_LINKER_MANIFEST_FLAG"));
   for (cmSourceFile const* manifest_src : manifest_srcs) {
     manifests.push_back(manifestFlag +
                         this->LocalCommonGenerator->ConvertToOutputFormat(
@@ -360,6 +415,7 @@ std::string cmCommonTargetGenerator::GenerateCodeCheckRules(
   std::string cpplint;
   std::string cppcheck;
   std::string icstat;
+  std::string pvs;
 
   auto evaluateProp = [&](std::string const& prop) -> std::string {
     auto const value = this->GeneratorTarget->GetProperty(prop);
@@ -386,16 +442,21 @@ std::string cmCommonTargetGenerator::GenerateCodeCheckRules(
 
     std::string const icstat_prop = cmStrCat(lang, "_ICSTAT");
     icstat = evaluateProp(icstat_prop);
+
+    std::string const pvs_prop = cmStrCat(lang, "_PVS_STUDIO");
+    pvs = evaluateProp(pvs_prop);
   }
+
   if (cmNonempty(iwyu) || cmNonempty(tidy) || cmNonempty(cpplint) ||
-      cmNonempty(cppcheck) || cmNonempty(icstat)) {
+      cmNonempty(cppcheck) || cmNonempty(icstat) || cmNonempty(pvs)) {
     std::string code_check = cmakeCmd + " -E __run_co_compile";
     if (!compilerLauncher.empty()) {
       // In __run_co_compile case the launcher command is supplied
       // via --launcher=<maybe-list> and consumed
-      code_check += " --launcher=";
-      code_check += this->GeneratorTarget->GetLocalGenerator()->EscapeForShell(
-        compilerLauncher);
+      code_check =
+        cmStrCat(std::move(code_check), " --launcher=",
+                 this->GeneratorTarget->GetLocalGenerator()->EscapeForShell(
+                   compilerLauncher));
       compilerLauncher.clear();
     }
     if (cmNonempty(iwyu)) {
@@ -425,7 +486,7 @@ std::string cmCommonTargetGenerator::GenerateCodeCheckRules(
     if (cmNonempty(tidy)) {
       code_check += " --tidy=";
       cmValue const p = this->Makefile->GetDefinition(
-        "CMAKE_" + lang + "_CLANG_TIDY_DRIVER_MODE");
+        cmStrCat("CMAKE_", lang, "_CLANG_TIDY_DRIVER_MODE"));
       std::string driverMode;
       if (cmNonempty(p)) {
         driverMode = *p;
@@ -475,6 +536,29 @@ std::string cmCommonTargetGenerator::GenerateCodeCheckRules(
                      exportFixes));
       }
     }
+    if (cmNonempty(pvs)) {
+      cmMakefile* mf =
+        this->GeneratorTarget->GetLocalGenerator()->GetMakefile();
+      std::string extraPvsArgs;
+      if (lang == "CXX") {
+        extraPvsArgs +=
+          cmStrCat(";--cxx;", mf->GetDefinition("CMAKE_CXX_COMPILER"));
+      } else if (lang == "C") {
+        extraPvsArgs +=
+          cmStrCat(";--cc;", mf->GetDefinition("CMAKE_C_COMPILER"));
+      }
+      // cocompile args
+      code_check += " --pvs-studio=";
+      code_check += this->GeneratorTarget->GetLocalGenerator()->EscapeForShell(
+        cmStrCat(pvs, extraPvsArgs));
+      code_check += " --object=";
+      code_check +=
+        this->GeneratorTarget->GetLocalGenerator()->ConvertToOutputFormat(
+          cmSystemTools::CollapseFullPath(
+            cmStrCat(this->GeneratorTarget->GetObjectDirectory(config), '/',
+                     this->GeneratorTarget->GetObjectName(&source))),
+          cmOutputConverter::SHELL);
+    }
     if (cmNonempty(cpplint)) {
       code_check += " --cpplint=";
       code_check +=
@@ -503,7 +587,8 @@ std::string cmCommonTargetGenerator::GenerateCodeCheckRules(
       code_check += this->GeneratorTarget->GetLocalGenerator()->EscapeForShell(
         cmStrCat(icstat, checksParam, dbParam));
     }
-    if (cmNonempty(tidy) || (cmNonempty(cpplint)) || (cmNonempty(cppcheck))) {
+    if (cmNonempty(tidy) || (cmNonempty(cpplint)) || (cmNonempty(cppcheck)) ||
+        cmNonempty(pvs)) {
       code_check += " --source=";
       code_check +=
         this->GeneratorTarget->GetLocalGenerator()->ConvertToOutputFormat(

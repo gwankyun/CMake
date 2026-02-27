@@ -19,7 +19,7 @@ cmake版本的最低要求。
 如果当前运行的CMake版本低于所需的\ ``<min>``\ 版本，它将停止处理该项目并报告错误。\
 可选的\ ``<policy_max>``\ 版本（若指定）必须至少与\ ``<min>``\ 版本相同，并且会设置\
 `Policy Version`_。\
-如果运行的CMake版本早于3.12，额外的\ ``...``\ 会被视为版本号组件的分隔符，导致\ ``...<max>``\
+如果运行的CMake版本早于3.12，额外的\ ``...``\ 会被视为版本号组件的分隔符，导致\ ``...<policy_max>``\
 部分被忽略，从而保留3.12之前基于\ ``<min>``\ 设置策略的行为。
 
 此命令会将\ :variable:`CMAKE_MINIMUM_REQUIRED_VERSION`\ 变量的值设置为\ ``<min>``。
@@ -43,11 +43,11 @@ cmake版本的最低要求。
 策略版本
 ^^^^^^^^^^^^^^
 
-``cmake_minimum_required(VERSION <min>[...<max>])``\ 会隐式调用
+``cmake_minimum_required(VERSION <min>[...<policy_max>])``\ 会隐式调用
 
 .. code-block:: cmake
 
-  cmake_policy(VERSION <min>[...<max>])
+  cmake_policy(VERSION <min>[...<policy_max>])
 
 .. include:: include/POLICY_VERSION.rst
 

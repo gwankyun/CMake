@@ -5,18 +5,19 @@ set_property
 
 .. code-block:: cmake
 
-  set_property(<GLOBAL                      |
-                DIRECTORY [<dir>]           |
-                TARGET    [<target1> ...]   |
-                SOURCE    [<src1> ...]
+  set_property({GLOBAL                                    |
+                DIRECTORY [<dir>]                         |
+                TARGET    <target>...                     |
+                FILE_SET  <file_set>... TARGET <target>   |
+                SOURCE    <source>...
                           [DIRECTORY <dirs> ...]
-                          [TARGET_DIRECTORY <targets> ...] |
-                INSTALL   [<file1> ...]     |
-                TEST      [<test1> ...]
-                          [DIRECTORY <dir>] |
-                CACHE     [<entry1> ...]    >
+                          [TARGET_DIRECTORY <targets>...] |
+                INSTALL   <file>...                       |
+                TEST      <test>...
+                          [DIRECTORY <dir>]               |
+                CACHE     <entry>...}
                [APPEND] [APPEND_STRING]
-               PROPERTY <name> [<value1> ...])
+               PROPERTY <name> [<value>...])
 
 在某个作用域的零个或多个对象上设置一个属性。
 
@@ -40,6 +41,16 @@ set_property
   另请参阅\ :command:`set_target_properties`\ 命令。
 
   :ref:`Alias Targets`\ 不支持设置目标属性。
+
+``FILE_SET``
+  .. versionadded:: 4.3
+
+  Scope may name zero or more existing file sets.
+
+  The following option is required:
+
+  ``TARGET <target>``
+    The target to which the file set is attached.
 
 ``SOURCE``
   作用域可以指定零个或多个源文件。\

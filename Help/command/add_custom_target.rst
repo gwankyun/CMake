@@ -5,17 +5,17 @@ add_custom_target
 
 .. code-block:: cmake
 
-  add_custom_target(Name [ALL] [command1 [args1...]]
-                    [COMMAND command2 [args2...] ...]
-                    [DEPENDS depend depend depend ...]
-                    [BYPRODUCTS [files...]]
-                    [WORKING_DIRECTORY dir]
-                    [COMMENT comment]
-                    [JOB_POOL job_pool]
+  add_custom_target(Name [ALL] [command1 [<args1>...]]
+                    [COMMAND command2 [<args2>...]] ...
+                    [DEPENDS <depend>...]
+                    [BYPRODUCTS <file>...]
+                    [WORKING_DIRECTORY <dir>]
+                    [COMMENT <comment>]
+                    [JOB_POOL <job_pool>]
                     [JOB_SERVER_AWARE <bool>]
                     [VERBATIM] [USES_TERMINAL]
                     [COMMAND_EXPAND_LISTS]
-                    [SOURCES src1 [src2...]])
+                    [SOURCES <source>...])
 
 添加一个具有指定名称的目标，该目标会执行给定的命令。\
 该目标没有输出文件，并且\ *始终被视为过期状态*，即使命令试图创建一个与目标同名的\

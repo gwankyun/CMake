@@ -116,8 +116,8 @@ target_link_libraries
 .. code-block:: cmake
 
   target_link_libraries(<target>
-                        <PRIVATE|PUBLIC|INTERFACE> <item>...
-                       [<PRIVATE|PUBLIC|INTERFACE> <item>...]...)
+    {INTERFACE|PUBLIC|PRIVATE} <item>...
+    [{INTERFACE|PUBLIC|PRIVATE} <item>...]...)
 
 ``PUBLIC``、\ ``PRIVATE``\ 和\ ``INTERFACE``\ :ref:`作用域 <Target Command Scope>`\
 关键字可以在一个命令中同时指定链接依赖关系和链接接口。

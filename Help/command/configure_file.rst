@@ -180,7 +180,7 @@ configure_file
 
 .. code-block:: cmake
 
-  target_include_directories(<target> [SYSTEM] <INTERFACE|PUBLIC|PRIVATE> "${CMAKE_CURRENT_BINARY_DIR}")
+  target_include_directories(<target> [SYSTEM] {INTERFACE|PUBLIC|PRIVATE} "${CMAKE_CURRENT_BINARY_DIR}")
 
 这样源文件就可以使用\ ``#include <foo.h>``\ 来包含该头文件。
 

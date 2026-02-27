@@ -6,16 +6,17 @@ get_property
 .. code-block:: cmake
 
   get_property(<variable>
-               <GLOBAL             |
-                DIRECTORY [<dir>]  |
-                TARGET    <target> |
+               <GLOBAL                                                  |
+                DIRECTORY [<dir>]                                       |
+                TARGET    <target>                                      |
+                FILE_SET  <file_set> TARGET <target>                    |
                 SOURCE    <source>
                           [DIRECTORY <dir> | TARGET_DIRECTORY <target>] |
-                INSTALL   <file>   |
+                INSTALL   <file>                                        |
                 TEST      <test>
-                          [DIRECTORY <dir>] |
-                CACHE     <entry>  |
-                VARIABLE           >
+                          [DIRECTORY <dir>]                             |
+                CACHE     <entry>                                       |
+                VARIABLE>
                PROPERTY <name>
                [SET | DEFINED | BRIEF_DOCS | FULL_DOCS])
 
@@ -38,6 +39,16 @@ get_property
 ``TARGET``
   作用域必须指定一个已存在的目标。\
   另请参阅\ :command:`get_target_property`\ 命令。
+
+``FILE_SET``
+  .. versionadded:: 4.3
+
+  Scope must name one existing file set.
+
+  The following option is required:
+
+  ``TARGET <target>``
+    The target to which the file set is attached.
 
 ``SOURCE``
   作用域必须指定一个源文件。默认情况下，源文件的属性将从当前源目录的作用域中读取。

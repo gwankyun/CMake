@@ -1391,6 +1391,35 @@ with members:
     的命令调用时，该成员可用。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于\
     0的无符号整数索引。
 
+``interfaceSources``
+  An optional member that is present when a target defines one or more
+  interface sources.  The value is a JSON array of entries corresponding
+  to the target's interface source files.  Each entry is a JSON object
+  with members:
+
+  ``path``
+    A string specifying the path to the source file on disk, represented
+    with forward slashes.  If the file is inside the top-level source
+    directory then the path is specified relative to that directory.
+    Otherwise the path is absolute.
+
+  ``sourceGroupIndex``
+    Optional member that is present when the source is part of a source
+    group either via the :command:`source_group` command or by default.
+    The value is an unsigned integer 0-based index into the
+    ``sourceGroups`` array.
+
+  ``isGenerated``
+    Optional member that is present with boolean value ``true`` if
+    the source is :prop_sf:`GENERATED`.
+
+  ``fileSetIndex``
+    Optional member that is present when the source is part of a file set.
+    The value is an unsigned integer 0-based index into the ``fileSets``
+    array.
+
+  This field was added in codemodel version 2.10.
+
 ``sourceGroups``
   可选成员，当通过\ :command:`source_group`\ 命令或默认情况下将源分组在一起时出现。该值\
   是一个JSON数组，包含与组对应的条目。每个条目都是一个JSON对象，包含以下成员：
@@ -1401,6 +1430,15 @@ with members:
   ``sourceIndexes``
     一个JSON数组，列出属于该组的源。每个条目都是目标主\ ``sources``\ 数组中基于0的无符号\
     整数索引。
+
+  ``interfaceSourceIndexes``
+    Optional member that is present when at least one interface source file
+    is part of the source group.  The value is a JSON array listing the
+    interface sources belonging to the group.  Each entry is an unsigned
+    integer 0-based index into the main ``interfaceSources`` array for the
+    target.
+
+    This field was added in codemodel version 2.10.
 
 ``compileGroups``
   当目标具有可编译的源时出现的可选成员。该值是一个JSON数组，条目对应于所有使用相同设置编译的\
@@ -1794,12 +1832,13 @@ with members:
 
   {
     "kind": "toolchains",
-    "version": { "major": 1, "minor": 0 },
+    "version": { "major": 1, "minor": 1 },
     "toolchains": [
       {
         "language": "C",
         "compiler": {
           "path": "/usr/bin/cc",
+          "commandFragment": "--config x86_64-linux-gnu.cfg",
           "id": "GNU",
           "version": "9.3.0",
           "implicit": {
@@ -1873,6 +1912,16 @@ with members:
     ``path``
       为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER`\ 变量时出现的可选成员。它的值\
       是一个JSON字符串，包含编译器的路径。
+
+    ``commandFragment``
+      Optional member that is present when the
+      :variable:`CMAKE_<LANG>_COMPILER` variable is a list containing multiple
+      elements or the :envvar:`CC` or similar environment variable contains
+      command line arguments after the compiler executable.
+      Its value is a JSON string holding the second and further elements
+      (mandatory arguments to the compiler) as a command line fragment.
+
+      This field was added in toolchains version 1.1.
 
     ``id``
       为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量时出现的可选成员。它\

@@ -7,7 +7,9 @@ target_compile_features
 
 .. code-block:: cmake
 
-  target_compile_features(<target> <PRIVATE|PUBLIC|INTERFACE> <feature> [...])
+  target_compile_features(<target>
+    {INTERFACE|PUBLIC|PRIVATE} <feature>...
+    [{INTERFACE|PUBLIC|PRIVATE} <feature>...]...)
 
 指定编译给定目标时所需的编译器特性。如果\ :variable:`CMAKE_C_COMPILE_FEATURES`、\
 :variable:`CMAKE_CUDA_COMPILE_FEATURES`\ 或\ :variable:`CMAKE_CXX_COMPILE_FEATURES`\

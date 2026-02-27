@@ -14,10 +14,10 @@ try_run
 
   try_run(<runResultVar> <compileResultVar>
           [SOURCES_TYPE <type>]
-          <SOURCES <srcfile...>                 |
+          {SOURCES <srcfile>...                 |
            SOURCE_FROM_CONTENT <name> <content> |
            SOURCE_FROM_VAR <name> <var>         |
-           SOURCE_FROM_FILE <name> <path>       >...
+           SOURCE_FROM_FILE <name> <path>       }...
           [LOG_DESCRIPTION <text>]
           [NO_CACHE]
           [NO_LOG]
@@ -61,7 +61,7 @@ try_run
 .. code-block:: cmake
 
   try_run(<runResultVar> <compileResultVar>
-          <bindir> <srcfile|SOURCES srcfile...>
+          <bindir> {<srcfile>|SOURCES <srcfile>...}
           [CMAKE_FLAGS <flags>...]
           [COMPILE_DEFINITIONS <defs>...]
           [LINK_OPTIONS <options>...]

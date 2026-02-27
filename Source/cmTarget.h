@@ -237,6 +237,8 @@ public:
   bool IsRuntimeBinary() const;
   bool IsSymbolic() const;
   bool CanCompileSources() const;
+  void SetIsForTryCompile();
+  bool IsForTryCompile() const;
 
   bool GetMappedConfig(std::string const& desiredConfig, cmValue& loc,
                        cmValue& imp, std::string& suffix) const;
@@ -319,8 +321,8 @@ public:
   cmBTStringRange GetLinkInterfaceDirectExcludeEntries() const;
 
   void CopyPolicyStatuses(cmTarget const* tgt);
-  void CopyImportedCxxModulesEntries(cmTarget const* tgt);
-  void CopyImportedCxxModulesProperties(cmTarget const* tgt);
+  void CopyCxxModulesEntries(cmTarget const* tgt);
+  void CopyCxxModulesProperties(cmTarget const* tgt);
 
   cmBTStringRange GetHeaderSetsEntries() const;
   cmBTStringRange GetCxxModuleSetsEntries() const;

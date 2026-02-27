@@ -110,13 +110,13 @@ result is stored in the internal cache variable ``HAVE_CXX11_LAMBDAS``:
 
   include(CheckSourceCompiles)
 
-  check_source_compiles(CXX "
+  check_source_compiles(CXX [[
     int main()
     {
       auto lambda = []() { return 42; };
       return lambda();
     }
-  " HAVE_CXX11_LAMBDAS)
+  ]] HAVE_CXX11_LAMBDAS)
 
 Example: Checking Code With Bracket Argument
 """"""""""""""""""""""""""""""""""""""""""""
@@ -178,7 +178,7 @@ checking whether the PostgreSQL ``PGVerbosity`` enum contains
     cmake_push_check_state(RESET)
       set(CMAKE_REQUIRED_LIBRARIES PostgreSQL::PostgreSQL)
 
-      check_source_compiles(C "
+      check_source_compiles(C [[
         #include <libpq-fe.h>
         int main(void)
         {
@@ -186,7 +186,7 @@ checking whether the PostgreSQL ``PGVerbosity`` enum contains
           (void)e;
           return 0;
         }
-      " HAVE_PQERRORS_SQLSTATE)
+      ]] HAVE_PQERRORS_SQLSTATE)
     cmake_pop_check_state()
   endif()
 

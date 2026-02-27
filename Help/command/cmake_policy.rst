@@ -18,17 +18,17 @@ CMake策略机制旨在确保在CMake新版本引入行为变更时，现有项�
 ``cmake_policy``\ 命令用于将策略设置为\ ``OLD``\ 或\ ``NEW``\ 行为。\
 虽然支持单独设置策略，但我们鼓励项目根据CMake版本来设置策略：
 
-.. signature:: cmake_policy(VERSION <min>[...<max>])
+.. signature:: cmake_policy(VERSION <min>[...<policy_max>])
   :target: VERSION
 
 .. versionadded:: 3.12
-  The optional ``<max>`` version.
+  The optional ``<policy_max>`` version.
 
-``<min>``\ 和可选的\ ``<max>``\ 均为\ ``major.minor[.patch[.tweak]]``\ 格式的CMake\
+``<min>``\ 和可选的\ ``<policy_max>``\ 均为\ ``major.minor[.patch[.tweak]]``\ 格式的CMake\
 版本，并且\ ``...``\ 是字面值。\
 ``<min>``\ 版本号必须至少为\ ``2.4``，且最多为当前运行的CMake版本。\
-如果指定了\ ``<max>``\ 版本号，它必须至少等于\ ``<min>``\ 版本号，但可以超过当前运行的CMake版本。\
-如果运行的CMake版本早于3.12，额外的\ ``...``\ 会被视为版本号的分隔符，导致\ ``...<max>``\
+如果指定了\ ``<policy_max>``\ 版本号，它必须至少等于\ ``<min>``\ 版本号，但可以超过当前运行的CMake版本。\
+如果运行的CMake版本早于3.12，额外的\ ``...``\ 会被视为版本号的分隔符，导致\ ``...<policy_max>``\
 部分被忽略，从而保留3.12之前基于\ ``<min>``\ 设置策略的行为。
 
 .. include:: include/POLICY_VERSION.rst

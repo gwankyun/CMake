@@ -102,7 +102,6 @@ set(properties
   "C_LINKER_LAUNCHER"                       "ccache"            "<SAME>"
   ### C++
   "CXX_LINKER_LAUNCHER"                     "ccache"            "<SAME>"
-  "CXX_MODULE_STD"                          "ON"                "<SAME>"
   ### CUDA
   "CUDA_RESOLVE_DEVICE_SYMBOLS"             "ON"                "<SAME>"
   "CUDA_RUNTIME_LIBRARY"                    "Static"            "<SAME>"
@@ -121,12 +120,14 @@ set(properties
   "C_CPPLINT"                               "cpplint"           "<SAME>"
   "C_CPPCHECK"                              "cppcheck"          "<SAME>"
   "C_INCLUDE_WHAT_YOU_USE"                  "iwyu"              "<SAME>"
+  "C_PVS_STUDIO"                            "pvs-studio-analyzer" "<SAME>"
   ## C++
   "CXX_CLANG_TIDY"                          "clang-tidy"        "<SAME>"
   "CXX_CLANG_TIDY_EXPORT_FIXES_DIR"         "${dir}"            "<SAME>"
   "CXX_CPPLINT"                             "cpplint"           "<SAME>"
   "CXX_CPPCHECK"                            "cppcheck"          "<SAME>"
   "CXX_INCLUDE_WHAT_YOU_USE"                "iwyu"              "<SAME>"
+  "CXX_PVS_STUDIO"                          "pvs-studio-analyzer" "<SAME>"
   ## Objective C
   "OBJC_CLANG_TIDY"                         "clang-tidy"        "<SAME>"
   "OBJC_CLANG_TIDY_EXPORT_FIXES_DIR"        "${dir}"            "<SAME>"
@@ -155,6 +156,7 @@ set(properties
   "AUTOMOC_DEPEND_FILTERS"                  "FIRST<SEMI>SECOND" "<SAME>"
   ## C++
   "CXX_SCAN_FOR_MODULES"                    "ON"                "<SAME>"
+  "CXX_MODULE_STD"                          "ON"                "<SAME>"
   ## Ninja
   "JOB_POOL_COMPILE"                        "compile_pool"      "<SAME>"
   "JOB_POOL_LINK"                           "link_pool"         "<SAME>"

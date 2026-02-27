@@ -6,8 +6,8 @@ target_include_directories
 .. code-block:: cmake
 
   target_include_directories(<target> [SYSTEM] [AFTER|BEFORE]
-    <INTERFACE|PUBLIC|PRIVATE> [items1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+    {INTERFACE|PUBLIC|PRIVATE} <dir...
+    [{INTERFACE|PUBLIC|PRIVATE} <dir>...]...)
 
 指定编译给定目标时要使用的包含目录。命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\
 或\ :command:`add_library`\ 等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。

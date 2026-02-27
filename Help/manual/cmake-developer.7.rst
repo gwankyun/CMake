@@ -27,7 +27,7 @@ CMake提供了一些工具来访问\ ``Windows``\ 平台上的注册表。
 .. versionadded:: 3.24
 
 :command:`cmake_host_system_information`\ 命令提供了在本地计算机上查询注册表的可能性。\
-查看\ :ref:`cmake_host_system(QUERY_WINDOWS_REGISTRY) <Query Windows registry>`\
+查看\ :command:`cmake_host_system_information(QUERY WINDOWS_REGISTRY)`\ 子命令\
 获取更多信息。
 
 .. _`Find Using Windows Registry`:

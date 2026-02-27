@@ -11,11 +11,8 @@ set("5.15.1-0-202009071110qtwinextras-Windows-Windows_10-MSVC2015-Windows-Window
 set("5.15.1-0-202009071110qtbase-MacOS-MacOS_10_13-Clang-MacOS-MacOS_10_13-X86_64.7z_hash" df2813ce7c6cb4287abd7956cd1cb9d08312e4ac1208b6cb57af4df11b8ebba1)
 
 set("qt-5.9.9-macosx10.10-x86_64-arm64.tar.xz_hash" d4449771afa0bc6a809c14f1e6d939e7732494cf059503ae451e2bfe8fc60cc1)
-set("qt-5.15.2-macosx10.13-x86_64-arm64.tar.xz_hash" 7b9463a01c8beeee5bf8d01c70deff2d08561cd20aaf6f7a2f41cf8b68ce8a6b)
+set("6.9.3-0-202509261207qtbase-MacOS-MacOS_15-Clang-MacOS-MacOS_15-X86_64-ARM64.7z_hash" 805144e619b7c7b0e9c985d929e1f290241d88b884218db3ad7d56bd579d6b4a)
 
-set("qt-5.15.10-win-i386-msvc_v142-1.zip_hash" c158cebc054d3f4f09733772a8a04789e2884912d45782e8c0c5e6a0b2773e92)
-set("qt-5.15.10-win-x86_64-msvc_v142-1.zip_hash" d55c017aef359f6aa8c592b18ba13cc120c749417b55671548970690126cd139)
-
-set("qt-6.3.0-win-arm64-msvc_v143-1.zip_hash" f794c035fd4ff9f04468e1787a60d93d7496119c0060c3173a76d24a6b551b14)
-set("qt-6.3.0-win-i386-msvc_v143-1.zip_hash" 972bc707f78d11b44f360643ca4d0c898e761f7add43b96117d958c70d84a443)
-set("qt-6.3.0-win-x86_64-msvc_v143-1.zip_hash" 4fb0aaebe184f40392f1bb246469dca591bfdfb8f915e19f921476222473ac90)
+set("qt-6.10.1-win-arm64-msvc_v145-1.zip_hash" 59e150883f31c0e31a2890f06b6e434ad44505dba876fda4a7c0994c9b0bdfe1)
+set("qt-6.10.1-win-i386-msvc_v145-1.zip_hash" 09100628aecb7cdde07040d7437c09830ed8c17720960b10339b114cb4bbf18b)
+set("qt-6.10.1-win-x86_64-msvc_v145-1.zip_hash" 931f2354c715b30bc0ac35028f9d778aa552aa8a66580fc73c6a32384c5fa042)

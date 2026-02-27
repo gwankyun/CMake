@@ -8,8 +8,8 @@ target_sources
 .. code-block:: cmake
 
   target_sources(<target>
-    <INTERFACE|PUBLIC|PRIVATE> [items1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+    {INTERFACE|PUBLIC|PRIVATE} <source>...
+    [{INTERFACE|PUBLIC|PRIVATE} <source>...]...)
 
 指定在构建目标和/或其依赖项时要使用的源。命名的\ ``<target>``\ 必须是由\
 :command:`add_executable`\ 或\ :command:`add_library`\ 或\
@@ -63,7 +63,7 @@ target_sources
 .. code-block:: cmake
 
   target_sources(<target>
-    [<INTERFACE|PUBLIC|PRIVATE>
+    [{INTERFACE|PUBLIC|PRIVATE}
      [FILE_SET <set> [TYPE <type>] [BASE_DIRS <dirs>...] [FILES <files>...]]...
     ]...)
 

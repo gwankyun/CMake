@@ -14,8 +14,8 @@ target_precompile_headers
 .. code-block:: cmake
 
   target_precompile_headers(<target>
-    <INTERFACE|PUBLIC|PRIVATE> [header1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [header2...] ...])
+    {INTERFACE|PUBLIC|PRIVATE} <header>...
+    [{INTERFACE|PUBLIC|PRIVATE} <header>...]...)
 
 该命令将头文件添加到\ ``<target>``\ 的\ :prop_tgt:`PRECOMPILE_HEADERS`\ 和/或\
 :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`\ 目标属性中。命名\ ``<target>``\ 必须是由\

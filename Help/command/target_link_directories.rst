@@ -8,8 +8,8 @@ target_link_directories
 .. code-block:: cmake
 
   target_link_directories(<target> [BEFORE]
-    <INTERFACE|PUBLIC|PRIVATE> [items1...]
-    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+    {INTERFACE|PUBLIC|PRIVATE} <dir>...
+    [{INTERFACE|PUBLIC|PRIVATE} <dir>...]...)
 
 指定链接器在链接给定目标时搜索库的路径。每个项可以是绝对路径或相对路径，后者被解释为相对于当\
 前源目录。这些项将被添加到link命令中。

@@ -191,11 +191,11 @@ QNX交叉编译
 
   set(CMAKE_SYSTEM_NAME QNX)
 
-  set(arch gcc_ntoarmv7le)
+  set(arch gcc_ntoaarch64)
 
   set(CMAKE_C_COMPILER qcc)
   set(CMAKE_C_COMPILER_TARGET ${arch})
-  set(CMAKE_CXX_COMPILER QCC)
+  set(CMAKE_CXX_COMPILER q++)
   set(CMAKE_CXX_COMPILER_TARGET ${arch})
 
   set(CMAKE_SYSROOT $ENV{QNX_TARGET})
