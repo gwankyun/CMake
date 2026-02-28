@@ -5,37 +5,26 @@ cmake-cxxmodules(7)
 
 .. versionadded:: 3.28
 
-C++ 20 introduced the concept of ":term:`modules <C++ module>`" to the
-language.  The design requires :term:`build systems <build system>` to order
-compilations to satisfy ``import`` statements reliably.  CMake's
-implementation asks the compiler to scan source files for module dependencies
-during the build, collates scanning results to infer ordering constraints, and
-tells the :term:`build tool` how to dynamically update the
-build graph.
+C++ 20为语言引入了“\ :term:`模块 <C++ module>`\ ”的概念。该设计要求\
+:term:`构建系统 <build system>`\ 对编译进行排序，以可靠地满足\ ``import``\ 语句。\
+CMake的实现会在构建过程中要求编译器扫描源文件以查找模块依赖，整理扫描结果以推断\
+排序约束，并告诉\ :term:`构建工具 <build tool>`\ 如何动态更新构建图。
 
 编译策略
 ====================
 
-With C++ modules, compiling a set of C++ sources is no longer
-:term:`embarrassingly parallel`.  That is, any given source may require the
-compilation of another source file first in order to provide a
-":abbr:`BMI (built module interface)`" (or
-":abbr:`CMI (compiled module interface)`") that C++ compilers use to satisfy
-``import`` statements in other sources.  With included headers, sources could
-share their declarations so that any consumers could compile independently.
-With modules, the compiler now generates :term:`BMI` files during compilation
-based on the contents of the source file and its ``export`` statements.  This
-means that, to ensure a correct build without having to regenerate the build
-graph (by running configure and generate steps) for every source change, the
-correct ordering must be determined from the source files during the build
-phase.
+使用C++模块后，编译一组C++源文件不再是\ :term:`易并行 <embarrassingly parallel>`。\
+也就是说，任何给定的源文件可能需要先编译另一个源文件，以提供C++编译器用于满足其他\
+源文件中\ ``import``\ 语句的“\ :abbr:`BMI (built module interface)`\ ”\
+（或“\ :abbr:`CMI (compiled module interface)`\ ”）。对于包含的头文件，源文件可以\
+共享其声明，以便任何消费者都能独立编译。而对于模块，编译器现在会在编译过程中根据\
+源文件的内容及其\ ``export``\ 语句生成\ :term:`BMI`\ 文件。这意味着，为确保正确\
+构建而无需在每次源文件更改时（通过运行配置和生成步骤）重新生成构建图，必须在构建\
+阶段从源文件中确定正确的编译顺序。
 
-:term:`Build systems <build system>` must be able to order these compilations
-within the build graph.  There are multiple strategies that are suitable for
-this, but each has advantages and disadvantages.  CMake uses a "scanning" step
-strategy, which is the most visible modules-related change for CMake users in
-the context of the build.  CMake provides multiple ways to control the
-scanning behavior of source files.
+:term:`构建系统 <build system>`\ 必须能够在构建图中对这些编译进行排序。有多种适用\
+于此的策略，但每种策略都有其优缺点。CMake使用“扫描”步骤策略，这是CMake用户在构建\
+上下文中最明显的与模块相关的变更。CMake提供了多种方式来控制源文件的扫描行为。
 
 .. _cxxmodules-scanning-control:
 
@@ -58,12 +47,11 @@ scanning behavior of source files.
 编译器支持
 ================
 
-The list of compilers for which CMake supports scanning sources for C++
-modules includes:
+CMake支持扫描C++模块源文件的编译器列表包括：
 
-* MSVC toolset 14.34 and newer (provided with Visual Studio 17.4 and newer)
-* LLVM/Clang 16.0 and newer
-* GCC 14 and newer
+* MSVC toolset 14.34及更高版本（随Visual Studio 17.4及更高版本提供）
+* LLVM/Clang 16.0及更高版本
+* GCC 14及更高版本
 
 ``import std``\ 支持
 ======================
@@ -72,36 +60,34 @@ modules includes:
 
 对\ ``import std``\ 的支持仅限于以下工具链和标准库组合：
 
-* Clang 18.1.2 and newer with standard library ``libc++`` or ``libstdc++``
-* MSVC toolset 14.36 and newer (provided with Visual Studio 17.6 and newer)
-* GCC 15 and newer
+* Clang 18.1.2及更高版本，搭配标准库\ ``libc++``\ 或\ ``libstdc++`` 
+* MSVC toolset 14.36及更高版本（随Visual Studio 17.6及更高版本提供）
+* GCC 15及更高版本
 
   .. note::
 
-    Ubuntu prior to 26.04 ships broken ``libstdc++.modules.json`` files.
-    See `Ubuntu issue 2141579`_.
+    Ubuntu 26.04之前的版本附带损坏的\ ``libstdc++.modules.json``\ 文件。
+    参见\ `Ubuntu issue 2141579`_。
 
 .. _`Ubuntu issue 2141579`: https://bugs.launchpad.net/ubuntu/+source/gcc-15/+bug/2141579
 
-The :variable:`CMAKE_CXX_COMPILER_IMPORT_STD` variable lists standard levels
-which have support for ``import std`` in the active C++ toolchain.
+:variable:`CMAKE_CXX_COMPILER_IMPORT_STD`\ 变量列出了活动C++工具链中支持\
+``import std``\ 的标准级别。  
 
-Additionally, only the :ref:`Ninja Generators` currently support
-``import std`` at this time because :ref:`Visual Studio Generators` do not
-support building :term:`BMIs <BMI>` for ``IMPORTED`` targets.
+此外，目前只有\ :ref:`Ninja Generators`\ 支持\ ``import std``，因为\
+:ref:`Visual Studio Generators`\ 不支持为\ ``IMPORTED``\ 目标构建\ :term:`BMIs <BMI>`。
 
-Generator Support
+生成器支持
 =================
 
-The list of generators which support scanning sources for C++ modules
-includes:
+支持扫描C++模块源代码的生成器包括：
 
 - :generator:`Ninja`
 - :generator:`Ninja Multi-Config`
 - :generator:`Visual Studio 17 2022`
 - :generator:`Visual Studio 18 2026`
 
-Note that the :ref:`Ninja Generators` require ``ninja`` 1.11 or newer.
+注意\ :ref:`Ninja Generators`\ 要求\ ``ninja`` 1.11或更新版本。
 
 Limitations
 -----------
