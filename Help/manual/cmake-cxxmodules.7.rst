@@ -89,32 +89,28 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
 注意\ :ref:`Ninja Generators`\ 要求\ ``ninja`` 1.11或更新版本。
 
-Limitations
+限制
 -----------
 
-There are a number of known limitations of the current C++ module support in
-CMake.  Known limitations or bugs in compilers are not listed here, as these
-can change over time.
+CMake中当前C++模块支持存在一些已知限制。编译器中的已知限制或bug未在此处列出，\
+因为这些可能会随时间变化。
 
 对于所有生成器：
 
-- :term:`Header units <header unit>` are not supported.
+- :term:`头单元 <header unit>`\ 不被支持。
 
-For the :ref:`Visual Studio Generators`:
+对于\ :ref:`Visual Studio Generators`：
 
-- Only Visual Studio 2022 and MSVC toolsets 14.34 (Visual Studio
-  17.4) and newer are supported.
-- Exporting or installing :term:`BMI` or module information is not supported.
-- Compiling :term:`BMIs <BMI>` from ``IMPORTED`` targets with C++ modules
-  (including ``import std``) is not supported.
-- Use of modules provided by ``PRIVATE`` sources from ``PUBLIC`` module
-  sources is not diagnosed.
+- 仅支持Visual Studio 2022和MSVC工具集14.34（Visual Studio 17.4）及更高版本。
+- 不支持导出或安装\ :term:`BMI`\ 或模块信息。
+- 不支持从带有C++模块（包括\ ``import std``\ ）的\ ``IMPORTED``\ 目标编译\
+  :term:`BMIs <BMI>`。
+- 未诊断从\ ``PUBLIC``\ 模块源使用由\ ``PRIVATE``\ 源提供的模块的情况。
 
-Separately, as a design choice, CMake does not express configuration-agnostic
-module maps for imported targets. The :prop_tgt:`IMPORTED_CXX_MODULES_<CONFIG>`
-target property is always tied to a specific configuration. This can lead to
-some friction when importing/exporting targets from/to configuration-unaware
-build systems. Future work will alleviate this restriction.
+另外，作为设计选择，CMake不为导入的目标表达与配置无关的模块映射。\
+:prop_tgt:`IMPORTED_CXX_MODULES_<CONFIG>`\ 目标属性始终与特定配置相关联。这在\
+从/向无配置感知的构建系统导入/导出目标时可能会产生一些摩擦。未来的工作将缓解这\
+一限制。
 
 Usage
 =====
