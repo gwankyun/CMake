@@ -112,25 +112,21 @@ CMake中当前C++模块支持存在一些已知限制。编译器中的已知限
 从/向无配置感知的构建系统导入/导出目标时可能会产生一些摩擦。未来的工作将缓解这\
 一限制。
 
-Usage
+使用
 =====
 
-Troubleshooting CMake
+CMake故障排除
 ---------------------
 
-This section aims to answer common questions about CMake's implementation and
-to help diagnose or explain errors in CMake's C++ modules support.
+本节旨在回答有关CMake实现的常见问题，并帮助诊断或解释CMake C++模块支持中的错误。
 
-File Extension Support
+文件扩展名支持
 ^^^^^^^^^^^^^^^^^^^^^^
 
-CMake imposes no requirements upon file extensions for modules of any unit
-type.  While there are preferences that differ between toolchains (e.g.,
-``.ixx`` on MSVC and ``.cppm`` on Clang), there is no universally agreed-upon
-extension.  As such, CMake only requires that the file be recognized as a
-``CXX``-language source file.  By default, any recognized extension will
-suffice, but the :prop_sf:`LANGUAGE` property may be used with any other
-extension as well.
+CMake对任何单元类型的模块的文件扩展名没有要求。虽然不同工具链有不同的偏好（例如，\
+MSVC上的\ ``.ixx``\ 和Clang上的\ ``.cppm``），但没有普遍认可的扩展名。因此，CMake\
+只要求文件被识别为\ ``CXX``\ 语言源文件。默认情况下，任何被识别的扩展名都足够，\
+但也可以将\ :prop_sf:`LANGUAGE`\ 属性与任何其他扩展名一起使用。
 
 File Name Requirements
 ^^^^^^^^^^^^^^^^^^^^^^
