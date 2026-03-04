@@ -157,6 +157,10 @@ run_cxx_module_test(scan-with-pch)
 # Tests which use named modules.
 if ("named" IN_LIST CMake_TEST_MODULE_COMPILATION)
   run_cxx_module_test(simple)
+  # FIXME(GCC): `g++ -c "with space.cpp" -M -fdeps-format=p1689r5` fails.
+  if (NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    run_cxx_module_test(subdir)
+  endif ()
   run_cxx_module_test(file-sets-with-dot)
   run_cxx_module_test(vs-without-flags)
   run_cxx_module_test(library library-static -DBUILD_SHARED_LIBS=OFF)
@@ -181,7 +185,8 @@ if ("named" IN_LIST CMake_TEST_MODULE_COMPILATION)
   # BMI generation
   if ("cxx_std_23" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND
       RunCMake_GENERATOR MATCHES "Ninja")
-    run_cxx_module_test(mixed-bmi-compatibility)
+    # FIXME(#27597): Restore per-importer BMI and enable this test.
+    # run_cxx_module_test(mixed-bmi-compatibility)
   endif()
 
   if ("cxx_std_23" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND

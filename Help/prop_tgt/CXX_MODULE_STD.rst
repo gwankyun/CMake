@@ -1,9 +1,14 @@
 CXX_MODULE_STD
 --------------
 
-.. versionadded:: 4.3
+.. versionadded:: 3.30
 
 ``CXX_MODULE_STD``\ 是一个布尔值，指定了目标是否可以使用\ ``import std;``，是否为C++源代码。
+
+.. note::
+
+   This setting is meaningful only when experimental support for ``import
+   std;`` has been enabled by the ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD`` gate.
 
 When this property is explicitly set to ``ON``, CMake will add a dependency to
 a target which provides the C++ standard library's modules for the C++

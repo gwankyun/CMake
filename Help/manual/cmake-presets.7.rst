@@ -434,8 +434,10 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` as an empty string using the
   ``environment`` field.
 
-  In preset files specifying version ``11`` or above, this field does not
-  accept negative values.
+  .. versionchanged:: 4.3
+
+    This field does not accept negative integer values, regardless of the
+    version in the preset file.
 
 ``targets``
   一个可选的字符串或字符串数组。相当于在命令行上传递\
@@ -706,8 +708,12 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
     In preset files specifying version ``11`` or above, this field can also be
     a string, in which case it must be empty, and is equivalent to passing
-    ``--parallel`` with ``<jobs>`` omitted; additionally, it does not accept
-    negative values.
+    ``--parallel`` with ``<jobs>`` omitted.
+
+    .. versionchanged:: 4.3
+
+      This field does not accept negative integer values, regardless of the
+      version in the preset file.
 
   ``resourceSpecFile``
     可选字符串。相当于在命令行上传递\
@@ -1174,17 +1180,11 @@ they were added and a summary of the new features and changes is given below.
   ``11``
     .. versionadded:: 4.3
 
-    * Changes to `构建预设`_
-
-      * The `jobs <CMakePresets build jobs_>`_ field no longer accepts negative
-        values.
-
     * Changes to `测试预设`_
 
       * The `jobs <CMakePresets test jobs_>`_ field now accepts an empty string
         representing :option:`--parallel <ctest --parallel>` with ``<jobs>``
-        omitted. In addition, when an integer is specified, it must not be
-        negative.
+        omitted.
 
 Schema
 ======

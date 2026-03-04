@@ -10,6 +10,27 @@ Changes made since CMake 4.2 include the following.
 New Features
 ============
 
+Common Package Specification
+----------------------------
+
+* Support for importing and exporting packages described using the |CPS|_
+  (CPS) was added.  This improves build system interoperability by allowing
+  expressive, feature-rich package descriptions to be exchanged in a format
+  other than CMake Language.
+
+  * The :command:`find_package` now searches for and can import CPS packages.
+
+  * The :command:`install` and :command:`export` commands gained a new
+    ``PACKAGE_INFO`` sub-command to generate CPS package descriptions.
+
+  * The :command:`project` command gained new ``COMPAT_VERSION`` and
+    ``SPDX_LICENSE`` options.  These values may be inherited when creating a
+    CPS package description.  See the :command:`install(PACKAGE_INFO)`
+    documentation for details.
+
+.. _CPS: https://cps-org.github.io/cps/
+.. |CPS| replace:: Common Package Specification
+
 Instrumentation
 ---------------
 
@@ -26,6 +47,15 @@ Instrumentation
   * Optionally,
     :ref:`Google Trace Event Format <cmake-instrumentation Google Trace File>`
     files may be generated to visualize instrumentation data.
+
+Presets
+-------
+
+* :manual:`cmake-presets(7)` files now support schema version ``11``.
+  The ``jobs`` field under test presets now supports an empty string, to
+  match the behavior of :option:`ctest --parallel` with the value omitted.
+* The ``jobs`` field under both build and test presets no longer accept
+  negative integer values, regardless of the schema version.
 
 File-Based API
 --------------
@@ -95,10 +125,6 @@ Commands
 * The :command:`get_property` and :command:`set_property` commands
   now support a ``FILE_SET`` scope for file set properties of a target.
 
-* The :command:`install(PACKAGE_INFO)` and :command:`export(PACKAGE_INFO)`
-  commands now support specifying ``CXX_MODULES_DIRECTORY`` for exporting
-  C++20 modules.
-
 * The :command:`string(JSON)` command gained new ``GET_RAW`` and
   ``STRING_ENCODE`` modes.
 
@@ -116,18 +142,6 @@ Variables
   :variable:`CMAKE_<LANG>_LINK_FLAGS_<CONFIG>` variables were added
   to support per-language link flags for all target types.
   See policy :policy:`CMP0210`.
-
-* The :variable:`CMAKE_CXX_MODULE_STD` variable and corresponding
-  :prop_tgt:`CXX_MODULE_STD` target property were added to control the
-  availability of ``import std`` for C++ targets.
-
-* The read-only :variable:`CMAKE_CXX_COMPILER_IMPORT_STD` variable was added
-  to list the C++ standard levels for which ``import std`` is available on
-  the current toolchain.
-
-* The :variable:`CMAKE_CXX_STDLIB_MODULES_JSON` variable was added to specify
-  an ``import std`` module metadata file instead of relying on automatic
-  detection from the C++ compiler.
 
 * The :variable:`CMAKE_VERIFY_PRIVATE_HEADER_SETS` variable and corresponding
   :prop_tgt:`VERIFY_PRIVATE_HEADER_SETS` target property were added to

@@ -56,8 +56,6 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 ``import std``\ 支持
 ======================
 
-.. versionadded:: 4.3
-
 对\ ``import std``\ 的支持仅限于以下工具链和标准库组合：
 
 * Clang 18.1.2及更高版本，搭配标准库\ ``libc++``\ 或\ ``libstdc++`` 
@@ -76,6 +74,12 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
 此外，目前只有\ :ref:`Ninja Generators`\ 支持\ ``import std``，因为\
 :ref:`Visual Studio Generators`\ 不支持为\ ``IMPORTED``\ 目标构建\ :term:`BMIs <BMI>`。
+
+.. note::
+
+   This support is provided only when experimental support for
+   ``import std`` has been enabled by the
+   ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD`` gate.
 
 生成器支持
 =================
