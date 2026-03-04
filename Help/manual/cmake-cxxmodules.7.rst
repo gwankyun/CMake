@@ -128,50 +128,41 @@ MSVC上的\ ``.ixx``\ 和Clang上的\ ``.cppm``），但没有普遍认可的扩
 只要求文件被识别为\ ``CXX``\ 语言源文件。默认情况下，任何被识别的扩展名都足够，\
 但也可以将\ :prop_sf:`LANGUAGE`\ 属性与任何其他扩展名一起使用。
 
-File Name Requirements
+文件名要求
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The name of a module has no relation to the name or path of the file in which
-its declaration resides.  The C++ standard has no requirements here and
-neither does CMake.  However, it may be useful to have some pattern in use
-within a project for easier navigation within environments that lack IDE-like
-"find symbol" functionality (e.g., on code review platforms).
+模块名称与其声明所在文件的名称或路径没有关系。C++标准对此没有要求，CMake也没有。\
+然而，在项目中使用某种模式可能会很有用，以便在缺乏类似IDE的“查找符号”功能的环境中\
+（例如，在代码审查平台上）更轻松地导航。 
 
-Scanning Without Modules
+无模块扫描
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-A common problem for projects that have not yet adopted modules is unnecessary
-scanning of sources.  This typically happens when a C++20 project becomes
-aware of CMake 3.28, or a 3.28-aware project starts using C++20.  Either case
-ends up setting :policy:`CMP0155` to ``NEW``, which enables scanning of C++
-sources with C++20 or newer by default.  The easiest way for projects to turn
-this off is to add:
+尚未采用模块的项目面临的一个常见问题是源文件的不必要扫描。这种情况通常发生在C++20\
+项目开始使用CMake 3.28时，或者3.28感知项目开始使用C++20时。这两种情况都会将\
+:policy:`CMP0155`\ 设置为\ ``NEW``，默认情况下启用对C++20或更新版本的C++源文件的\
+扫描。项目关闭此功能的最简单方法是添加：
 
 .. code-block:: cmake
 
    set(CMAKE_CXX_SCAN_FOR_MODULES 0)
 
-near the top of their top-level ``CMakeLists.txt`` file.  Note that it should
-**not** be in the cache, as it may otherwise affect projects using it via
-``FetchContent``.  Attention should also be paid to vendored projects which
-may want to enable scanning for their own sources, as this would change the
-default for them as well.
+到其顶层\ ``CMakeLists.txt``\ 文件的顶部。注意，它\ **不应**\ 放在缓存中，否则\
+可能会影响通过\ ``FetchContent``\ 使用它的项目。还应注意可能想要为自己的源文件\
+启用扫描的供应商项目，因为这也会改变它们的默认设置。
 
-Debugging Module Builds
+调试模块构建
 -----------------------
 
-This section aims to help diagnose or explain common errors that may arise on
-the build side of CMake's C++ modules support.
+本节旨在帮助诊断或解释CMake的C++模块支持在构建方面可能出现的常见错误。
 
-Import Cycles
+导入循环
 ^^^^^^^^^^^^^
 
-The C++ standard does not allow for cycles in the ``import`` graph of a
-:term:`translation unit`; therefore, CMake does not either.  Currently, CMake
-will leave it to the :term:`build tool` to detect this based on the
-:term:`dynamic dependencies` used to order module compilations.
-`CMake Issue 26119`_ tracks the desire to improve the user experience in this
-case.
+C++标准不允许\ :term:`translation unit`\ 的\ ``import``\ 图中存在循环；因此，\
+CMake也不允许。目前，CMake会将此检测留给\ :term:`build tool`，基于用于排序模块\
+编译的\ :term:`dynamic dependencies`。\ `CMake Issue 26119`_\ 跟踪了在这种情况下\
+改善用户体验的需求。
 
 .. _`CMake Issue 26119`: https://gitlab.kitware.com/cmake/cmake/-/issues/26119
 
