@@ -227,43 +227,35 @@ CMake在目标之间和目标内部强制实施\ :term:`module visibility`。这
 相反，仅从\ :term:`implementation unit`\ 内部导入\ ``PRIVATE`` C++ 模块，因为这些\
 模块不会暴露给任何模块的使用者。
 
-Design
+设计
 ======
 
-The design of CMake's C++ module support makes a number of trade-offs compared
-to other designs.  First, CMake's chosen design will be covered.  Later
-sections cover alternative designs that were not chosen for CMake's
-implementation.
+CMake的C++模块支持设计与其他设计相比做出了多项权衡。首先，将介绍CMake选择的设计。\
+后续章节将介绍未被CMake实现选用的替代设计。
 
-Overall, the designs fall somewhere along two axes:
+总体而言，这些设计位于两个维度的某个位置：
 
 .. list-table::
 
-   * - Explicit Dynamic
-     - Explicit Static
-     - Explicit Fixed
-   * - Implicit Dynamic
-     - Implicit Static
-     - Implicit Fixed
+   * - 显式动态
+     - 显式静态
+     - 显式固定
+   * - 隐式动态
+     - 隐式静态
+     - 隐式固定
 
-* **Explicit** builds control which modules are visible to each translation
-  unit directly.  For example, when compiling a source requiring a module
-  ``M``, the compiler will be given information which states the exact BMI
-  file to use when importing the ``M`` module.
-* **Implicit** builds can control module visibility as well, but do so by
-  instead grouping :term:`BMIs <BMI>` into directories which are then searched
-  for files to satisfy ``import`` statements in the source file.
-* **Static** builds use a static set of build commands in order to complete
-  the build.  There must be support to add edges between nodes at build time.
-* **Dynamic** builds may create new build commands during the build and
-  schedule any discovered work during the build.
-* **Fixed** builds are generated with all module dependencies already known.
+* **显式**\ 构建直接控制每个翻译单元可见的模块。例如，当编译需要模块\ ``M``\
+  的源文件时，编译器将获得指定导入\ ``M``\ 模块时要使用的确切BMI文件的信息。
+* **隐式**\ 构建也可以控制模块可见性，但它通过将\ :term:`BMIs <BMI>` 分组到目录\
+  中来实现，然后在这些目录中搜索文件以满足源文件中的\ ``import``\ 语句。
+* **静态**\ 构建使用一组静态的构建命令来完成构建。必须支持在构建时在节点之间添加边。
+* **动态**\ 构建可能在构建过程中创建新的构建命令，并在构建过程中安排任何发现的工作。
+* **固定**\ 构建是在所有模块依赖关系已知的情况下生成的。
 
-Design Goals
+设计目标
 ------------
 
-CMake's implementation of building C++ modules focuses on the following design
-goals:
+CMake的C++模块构建实现侧重于以下设计目标：
 
 1. `Correct Builds <design-goal-correct-builds_>`__
 2. `Deterministic Builds <design-goal-deterministic-builds_>`__
