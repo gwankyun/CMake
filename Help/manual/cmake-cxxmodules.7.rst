@@ -77,9 +77,8 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
 .. note::
 
-   This support is provided only when experimental support for
-   ``import std`` has been enabled by the
-   ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD`` gate.
+   仅当通过\ ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD``\ 开关启用了对\ ``import std``\
+   的实验性支持时，才提供此支持。
 
 生成器支持
 =================
@@ -170,27 +169,21 @@ CMake也不允许。目前，CMake会将此检测留给\ :term:`build tool`，�
 
 .. _`CMake Issue 26119`: https://gitlab.kitware.com/cmake/cmake/-/issues/26119
 
-Internal Module Partition Extension
+内部模块分区扩展
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When the implementation of building C++ modules was first investigated, it
-appeared as though there existed a type of :term:`translation unit` that
-represented the intersection of a :term:`partition unit` and an
-:term:`implementation unit`.  Initial CMake designs included specific support
-for these translation units; however, after a closer reading of the standard,
-these did not actually exist.  These units would have had ``module M:part;``
-as their module declaration statement.  The problem is that this is also the
-exact syntax also used for declaring module partitions that do not contribute
-to the external interface of the primary module.  Only MSVC supports this
-distinction.  Other compilers do not and will treat such files as an
-:term:`internal partition unit` and CMake will raise an error that a
-module-providing C++ source must be in a ``FILE_SET`` of type ``CXX_MODULES``.
+在最初研究C++模块构建的实现时，似乎存在一种代表\ :term:`partition unit`\ 和\
+:term:`implementation unit`\ 交集的\ :term:`translation unit`\ 类型。早期的CMake\
+设计包含了对这些翻译单元的特定支持；然而，在仔细阅读标准后，发现这些单元实际上并\
+不存在。这些单元本应该使用\ ``module M:part;``\ 作为其模块声明语句。问题在于，\
+这也是用于声明不贡献到主模块外部接口的模块分区的确切语法。只有MSVC支持这种区分。\
+其他编译器不支持，并且会将此类文件视为\ :term:`internal partition unit`，而CMake\
+会引发错误，指出提供模块的C++源文件必须位于类型为\ ``CXX_MODULES``\ 的\
+``FILE_SET``\ 中。
 
-The fix is to not use the extension, as it provides no further expressivity
-over not using the extension.  All :term:`implementation unit` source files
-should instead only use ``module M;`` as their module declaration statement
-regardless of what partition the defined entities are declared within.  As an
-example:
+修复方法是不使用此扩展，因为它与不使用扩展相比没有提供更多的表达能力。所有\
+:term:`implementation unit`\ 源文件都应该只使用\ ``module M;``\ 作为其模块声明\
+语句，无论所定义的实体在哪个分区中声明。例如：
 
 .. code-block:: cpp
 
@@ -202,7 +195,7 @@ example:
    module M:part; // module M:part; looks like an internal partition
    int foo() { return 42; }
 
-Instead use explicit interface/implementation separation:
+相反，应使用显式的接口/实现分离：
 
 .. code-block:: cpp
 
@@ -214,29 +207,25 @@ Instead use explicit interface/implementation separation:
    module M;
    int foo() { return 42; }
 
-Module Visibility
+模块可见性
 ^^^^^^^^^^^^^^^^^
 
-CMake enforces :term:`module visibility` between and within targets.  This
-essentially means that a module (say, ``I``) provided from a ``PRIVATE``
-``FILE_SET`` on a target ``T`` may not be imported by:
+CMake在目标之间和目标内部强制实施\ :term:`module visibility`。这本质上意味着，\
+从目标\ ``T``\ 的\ ``PRIVATE`` ``FILE_SET``\ 提供的模块（例如\ ``I``\ ）不能被\
+以下对象导入：
 
-- other targets depending on ``T``; or
-- modules provided from a ``PUBLIC`` ``FILE_SET`` on target ``T`` itself.
+- 依赖于\ ``T``\ 的其他目标；或
+- 从目标\ ``T``\ 自身的\ ``PUBLIC`` ``FILE_SET``\ 提供的模块。
 
-This is because, in general, all imported entities from a module must also be
-importable by all potential importers of that module.  Even if module ``I`` is
-only used within parts of a module without the ``export`` keyword, it may
-affect things within it in such a way that consumers of the module need to be
-able to transitively ``import`` it to work correctly.  As CMake uses the
-module visibility to determine whether to install :term:`module interface
-units <module interface unit>`, a ``PRIVATE`` module interface unit will not
-be installed, meaning that usage of any installed module which imports ``I``
-would not work.
+这是因为，一般来说，从模块导入的所有实体也必须能够被该模块的所有潜在导入者导入。\
+即使模块\ ``I``\ 仅在模块的部分内容中使用（没有\ ``export``\ 关键字），它也可能\
+以某种方式影响模块内部，使得模块的使用者需要能够传递地\ ``import``\ 它才能正常\
+工作。由于CMake使用模块可见性来确定是否安装\
+:term:`模块接口单元 <module interface unit>`，\ ``PRIVATE``\ 模块接口单元不会被\
+安装，这意味着任何导入\ ``I``\ 的已安装模块的使用都将无法正常工作。
 
-Instead, import ``PRIVATE`` C++ modules only from within an
-:term:`implementation unit`, as these are not exposed to consumers of any
-module.
+相反，仅从\ :term:`implementation unit`\ 内部导入\ ``PRIVATE`` C++ 模块，因为这些\
+模块不会暴露给任何模块的使用者。
 
 Design
 ======
