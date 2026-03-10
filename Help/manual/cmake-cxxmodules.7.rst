@@ -265,55 +265,45 @@ CMake的C++模块构建实现侧重于以下设计目标：
 
 .. _design-goal-correct-builds:
 
-Correct Builds
+正确构建
 ^^^^^^^^^^^^^^
 
-Above all else, an incorrect build is a frustrating experience for all
-involved.  A build which does not detect errors and instead lets a build with
-detectable problems run to completion is a good way to start wild goose chase
-debugging sessions.  CMake errs on the side of avoiding such situations.
+最重要的是，不正确的构建对所有相关人员来说都是令人沮丧的体验。一个不检测错误而让\
+有可检测问题的构建运行完成的系统，很容易导致毫无结果的调试会话。CMake会优先避免\
+这种情况。
 
 .. _design-goal-deterministic-builds:
 
-Deterministic Builds
+确定性构建
 ^^^^^^^^^^^^^^^^^^^^
 
-Given an on-disk state of a build, it should be possible to determine what
-steps will happen next.  This does not mean that the exact order of rules
-within the build that can be run concurrently is deterministic, but instead
-that the set of work to be done and its results are deterministic.  For
-example, if there is no dependency between tasks ``A`` and ``B``, ``A`` should
-have no effects on the execution of ``B`` and vice versa.
+给定构建的磁盘状态，应该能够确定接下来会发生什么步骤。这并不意味着构建中可以并发\
+运行的规则的精确顺序是确定的，而是指要完成的工作集及其结果是确定的。例如，如果任务\
+``A``\ 和\ ``B``\ 之间没有依赖关系，那么\ ``A``\ 不应对\ ``B``\ 的执行产生影响，\
+反之亦然。
 
 .. _design-goal-generated-sources:
 
-Support Generated Sources
+支持生成的源代码
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Code generation is prevalent in the C++ ecosystem, so only supporting modules
-in files whose content is known at configure time is not suitable.  Without
-supporting generated sources which use or provide modules, code generation
-tools are effectively cut off from the use of modules, and any dependencies of
-generated sources must also provide non-modular ways of using their interfaces
-(i.e., provide headers).  Given that all C++ implementations use :term:`strong
-module ownership` for symbol mangling, this is problematic when such
-interfaces end up referring to compiled symbols in other libraries.
+代码生成在C++生态系统中非常普遍，因此仅支持在配置时已知内容的文件中使用模块是不\
+合适的。如果不支持使用或提供模块的生成源代码，代码生成工具将无法使用模块，并且\
+生成源代码的任何依赖项也必须提供非模块化的方式来使用其接口（即提供头文件）。考虑\
+到所有C++实现都在符号修饰中使用\ :term:`strong module ownership`，当这些接口最终\
+引用其他库中已编译的符号时，这会带来问题。
 
 .. _design-goal-static-communication:
 
-Static Communication
+静态通信
 ^^^^^^^^^^^^^^^^^^^^
 
-All communication between different steps of the build should be handled
-statically.  Given the :term:`build tools <build tool>` that CMake supports,
-it is challenging to establish a controlled lifetime for a companion tool that
-needs to interact during compilation.  Neither ``make`` nor ``ninja`` offer a
-way to start a tool at the beginning of a build and ensure it is stopped at
-the end.  Instead, communication with compilers is managed through input and
-output files, using dependencies in the :term:`build tool` to keep everything
-up-to-date.  This approach enables standard debugging strategies for builds
-and allows developers to run build commands directly when investigating
-issues, without needing to account for other tools running in the background.
+构建的不同步骤之间的所有通信都应该静态处理。鉴于CMake支持的\
+:term:`build tools <build tool>`，为需要在编译期间交互的配套工具建立受控生命周期\
+是具有挑战性的。\ ``make``\ 和\ ``ninja``\ 都不提供在构建开始时启动工具并确保在\
+构建结束时停止它的方法。相反，与编译器的通信通过输入和输出文件进行管理，使用\
+:term:`build tool`\ 中的依赖项来保持一切更新。这种方法启用了标准的构建调试策略，\
+并允许开发人员在调查问题时直接运行构建命令，而无需考虑在后台运行的其他工具。
 
 .. _design-goal-minimize-regeneration:
 
