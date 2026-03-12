@@ -3,7 +3,7 @@ ADDITIONAL_CLEAN_FILES
 
 .. versionadded:: 3.15
 
-作为全局\ ``clean``\ 目标的一部分将被删除的文件或目录\ :ref:`;-list <CMake Language Lists>`。\
+作为全局\ ``clean``\ 目标的一部分将被删除的文件或目录\ :ref:`semicolon-separated list <CMake Language Lists>`。\
 它可以用来指定作为构建目标的一部分生成的文件和目录，或者以某种方式直接与目标相关联的文件和目\
 录（例如，作为运行目标的结果创建的文件和目录）。
 

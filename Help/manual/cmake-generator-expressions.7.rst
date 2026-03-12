@@ -904,8 +904,8 @@ String Generations
 .. genex:: $<JOIN:list,glue>
 
   用插入在每个项目之间的\ ``glue``\ 字符串内容连接\ ``list``。这在概念上与\
-  :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ 操作相同，但是两者对于空项的行\
-  为不同。\ :ref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ 保留所有空项，而\
+  :cref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ 操作相同，但是两者对于空项的行\
+  为不同。\ :cref:`$\<LIST:JOIN,list,glue\> <GenEx LIST-JOIN>`\ 保留所有空项，而\
   ``$<JOIN:list,glue>``\ 从列表中删除所有空项。
 
 .. genex:: $<REMOVE_DUPLICATES:list>
@@ -913,7 +913,7 @@ String Generations
   .. versionadded:: 3.15
 
   删除给定\ ``list``\ 中的重复项。保留项的相对顺序，并且如果遇到重复项，则只保留第一个实例。\
-  结果与\ :ref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`\
+  结果与\ :cref:`$\<LIST:REMOVE_DUPLICATES,list\> <GenEx LIST-REMOVE_DUPLICATES>`\
   相同。
 
 .. genex:: $<FILTER:list,INCLUDE|EXCLUDE,regex>
@@ -921,7 +921,7 @@ String Generations
   .. versionadded:: 3.15
 
   从\ ``list``\ 中包含或删除与正则表达式\ ``regex``\ 匹配的项。结果与\
-  :ref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`\ 相同。
+  :cref:`$\<LIST:FILTER,list,INCLUDE|EXCLUDE,regex\> <GenEx LIST-FILTER>`\ 相同。
 
 .. _GenEx List Ordering:
 
@@ -982,7 +982,7 @@ String Generations
 本节中的大多数表达式都与\ :command:`cmake_path`\ 命令密切相关，提供相同的功能，\
 但是是以生成器表达式的形式。
 
-对于本节中的所有生成器表达式，路径都应该是cmake样式的格式。:ref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>`\
+对于本节中的所有生成器表达式，路径都应该是cmake样式的格式。:cref:`$\<PATH:CMAKE_PATH\> <GenEx PATH-CMAKE_PATH>`\
 生成器表达式可用于将本机路径转换为cmake样式的路径。
 
 .. _GenEx Path Comparisons:

@@ -304,7 +304,16 @@ v1 Snippet File
 
 这些文件会一直保留在构建树中，直到\ `索引`_\ 操作完成且任何用户指定的\ `回调函数`_\ 执行完毕。
 
-片段文件的文件名语法为\ ``<role>-<hash>-<timestamp>.json``，并包含以下数据：
+.. note::
+
+  Configure and generate snippet files are not written by CMake until the
+  generate step is complete. When using :manual:`cmake-gui(1)` or
+  :manual:`ccmake(1)`, triggering only configure step(s) without generating the
+  project files will not generate any configure snippets. Once the generate
+  step is run, there will be one configure snippet for each time the configure
+  step was run.
+
+片段文件的文件名语法为\ ``<role>-<hash>-<timestamp>.json``，并包含以下数据
 
   ``version``
     片段文件的数据版本，一个整数。目前版本始终为\ ``1``。
@@ -391,7 +400,9 @@ v1 Snippet File
   ``cmakeContent``
     The path to a `v1 CMake Content File`_ located under ``data``, which
     contains information about the CMake configure and generate steps
-    responsible for generating the ``command`` in this snippet.
+    responsible for generating the ``command`` in this snippet. When using
+    :manual:`cmake-gui(1)` or :manual:`ccmake(1)`, this field may be ``null``
+    for all configure steps up to the most recent one before the generate step.
 
   ``showOnly``
     A boolean representing whether the
