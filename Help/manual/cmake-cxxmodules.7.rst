@@ -307,73 +307,57 @@ CMake的C++模块构建实现侧重于以下设计目标：
 
 .. _design-goal-minimize-regeneration:
 
-Minimize Regeneration
+最小化重新生成
 ^^^^^^^^^^^^^^^^^^^^^
 
-Active development of a build with modules should not require the build graph
-to be regenerated on every change.  This means that the module dependencies
-must be constructed after the build graph is available.  Without this, a
-`correct build <design-goal-correct-builds_>`__ would need to regenerate the
-build graph any time a module-aware source file is edited, as any changes may
-alter module dependencies.
+在使用模块的构建进行积极开发时，不应要求每次更改都重新生成构建图。这意味着模块\
+依赖必须在构建图可用后构建。否则，一个\ `正确的构建 <design-goal-correct-builds_>`__\
+将需要在每次编辑模块感知源文件时重新生成构建图，因为任何更改都可能改变模块依赖关系。
 
-It also means that all module-aware sources must be known at configure time
-(even if they do not yet exist) so that the build graph can include the
-commands to :term:`scan` for their dependencies.
+这也意味着所有模块感知源必须在配置时已知（即使它们尚未存在），以便构建图可以包含\
+用于\ :term:`scan`\ 其依赖关系的命令。
 
 .. note::
 
-  There is a known issue with ``ninja`` which can result in an erroneous
-  detection of a dependency cycle when the dependency order between two
-  sources reverses (i.e., ``a`` importing ``b`` becomes ``b`` importing
-  ``a``) between two builds.  See `ninja issue 2666`_ for details.
+  ``ninja``\ 存在一个已知问题，当两次构建之间两个源之间的依赖顺序反转（即\ ``a``\
+  导入\ ``b``\ 变为\ ``b``\ 导入\ ``a``）时，可能会错误地检测到依赖循环。详情请\
+  参见\ `ninja issue 2666`_。
 
 .. _`ninja issue 2666`: https://github.com/ninja-build/ninja/issues/2666
 
-Use Case Considerations
+用例考量
 -----------------------
 
-The design goals described above constrain the implementation.  Additionally,
-mixed configurations are supported by CMake via multi-config generators such
-as :generator:`Ninja Multi-Config` and :ref:`Visual Studio Generators`.  This
-section describes how CMake addresses these constraints.
+上述设计目标对实现进行了约束。此外，CMake通过多配置生成器（如\
+:generator:`Ninja Multi-Config`\ 和\ :ref:`Visual Studio Generators`\ ）支持混合\
+配置。本节描述CMake如何处理这些约束。
 
-Selected Design
+选择的设计
 ---------------
 
-The general strategy CMake uses is to ":term:`scan`" sources to extract the
-ordering dependency information and update the build graph with new edges
-between existing edges.  This is done by taking the per-source scan results
-(represented by `P1689R5`_ files) and then ":term:`collating <collate>`" them
-for each target with information from its dependencies.  The primary task of
-the collator is to generate ":term:`module map`" files to pass to each compile
-rule with the paths to the :term:`BMIs <BMI>` needed to satisfy ``import``
-statements, and to inform the :term:`build tool` of dependencies needed to
-satisfy those ``import`` statements during the compilation.  The collator also
-uses the build-time information to generate ``install`` rules for the module
-interface units, their :term:`BMIs <BMI>`, and properties for any exported
-targets with C++ modules.  It also enforces that ``PRIVATE`` modules may not
-be used by other targets or by any ``PUBLIC`` :term:`module interface unit`
-within the target.
+CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依赖信息，并使用现有边之\
+间的新边更新构建图。这是通过获取每个源文件的扫描结果（由\ `P1689R5`_\ 文件表示），\
+然后使用其依赖项的信息为每个目标“\ :term:`collating <collate>`\ ”它们来完成的。\
+整理器的主要任务是生成“\ :term:`module map`\ ”文件，将其传递给每个编译规则，并\
+提供满足\ ``import``\ 语句所需的\ :term:`BMIs <BMI>`\ 路径，以及在编译期间通知\
+:term:`build tool`\ 满足这些\ ``import``\ 语句所需的依赖项。整理器还使用构建时\
+信息为模块接口单元、它们的\ :term:`BMIs <BMI>`\ 生成\ ``install``\ 规则，以及为\
+任何带有C++模块的导出目标生成属性。它还强制实施\ ``PRIVATE``\ 模块不得被其他目标\
+或目标内的任何\ ``PUBLIC`` :term:`module interface unit`\ 使用的规则。
 
 .. _`P1689R5`: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1689r5.html
 
-Implementation Details
+实现细节
 ----------------------
 
-This section describes how CMake actually structures the build graph, the data
-passed between various parts, and the files which contain that data.  It is
-intended to be used both as functional documentation and as a guide to help
-those debugging a module build to understand where to locate various bits of
-data.
+本节描述CMake实际如何构建图、各部分之间传递的数据以及包含该数据的文件。它既可用\
+作功能文档，也可用作指南，帮助调试模块构建的人员了解在哪里找到各种数据。
 
 .. note::
 
-   This section documents internal implementation details that may be useful
-   for :manual:`toolchain file <cmake-toolchains(7)>` authors or during
-   debugging of a module-related issue.  Projects should not need to inspect
-   or modify any of the variables, properties, files, or targets mentioned
-   here.
+   本节记录了内部实现细节，可能对\ :manual:`工具链文件 <cmake-toolchains(7)>`\
+   作者或调试模块相关问题时有用。项目不需要检查或修改此处提到的任何变量、属性、\
+   文件或目标。
 
 Toolchain (scanning)
 ^^^^^^^^^^^^^^^^^^^^
