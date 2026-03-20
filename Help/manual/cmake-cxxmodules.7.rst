@@ -411,19 +411,17 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 那么任何使用C API的东西如果想将相同的模块用于自己的目的，都需要与其内部模块使用\
 进行协作。如果两者最终都为导入的模块提供符号，可能会产生冲突。
 
-Configure
+配置
 ^^^^^^^^^
 
-During the configure step, CMake needs to track which sources care about
-modules at all.  See :ref:`Scanning Control <cxxmodules-scanning-control>` for
-how each source determines whether it cares about modules or not.  CMake
-tracks these in its internal target representation structure (``cmTarget``).
-The set of sources which need to be scanned may be modified using the
-:command:`target_sources`, :command:`target_compile_features`, and
-:command:`set_property` commands.
+在配置步骤中，CMake需要跟踪哪些源文件关心模块。有关每个源文件如何确定其是否关心\
+模块的信息，请参见\ :ref:`Scanning Control <cxxmodules-scanning-control>`。CMake\
+在其内部目标表示结构（\ ``cmTarget``\ ）中跟踪这些信息。可以使用\
+:command:`target_sources`、\ :command:`target_compile_features`\ 和\
+:command:`set_property`\ 命令修改需要扫描的源文件集合。
 
-Additionally, targets may use the :prop_tgt:`CXX_MODULE_STD` target property
-to indicate that ``import std`` is desired within the target's sources.
+此外，目标可以使用\ :prop_tgt:`CXX_MODULE_STD`\ 目标属性来表示希望在目标的源文件\
+中使用\ ``import std``。
 
 Generate
 ^^^^^^^^
