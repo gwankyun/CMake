@@ -423,75 +423,56 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 此外，目标可以使用\ :prop_tgt:`CXX_MODULE_STD`\ 目标属性来表示希望在目标的源文件\
 中使用\ ``import std``。
 
-Generate
+生成
 ^^^^^^^^
 
-During generation, CMake needs to add additional rules to ensure that the
-sources providing modules can be built before sources that import those
-modules.  Since CMake uses a :term:`static build`, the build graph must
-contain all possible commands for scanning and module generation.  The
-dependency edges between commands to ensure that modules are provided will
-then ensure that the build graph executes correctly.  This means that, while
-all sources may get scanned, only modules that are actually used will be
-generated.
+在生成步骤中，CMake需要添加额外的规则，以确保提供模块的源文件能够在导入这些模块\
+的源文件之前构建。由于CMake使用\ :term:`static build`，构建图必须包含所有可能的\
+扫描和模块生成命令。确保提供模块的命令之间的依赖边将确保构建图正确执行。这意味着，\
+虽然所有源文件可能会被扫描，但只有实际使用的模块才会被生成。
 
-The first step CMake performs is to generate a :term:`synthetic target` for
-each unique usage of a module-providing target.  These targets are based on
-other targets, but provide only :term:`BMI` files for other targets rather
-than object files.  This is because the compatibility of :term:`BMI` files is
-extremely narrow and cannot be shared between arbitrary ``import`` instances.
-Due to the internal workings of toolchains, there can generally only be a
-single set of settings for a variety of flags for any one compilation,
-including :term:`BMI` files for imported modules.  As an example, the C++
-standard in use needs to be consistent across all modules, but there are many
-settings which may cause incompatibilities.
+CMake执行的第一步是为提供模块的目标的每一种唯一使用方式生成一个\
+:term:`synthetic target`。这些目标基于其他目标，但只为其他目标提供\ :term:`BMI`\
+文件，而不是目标文件。这是因为\ :term:`BMI`\ 文件的兼容性极其狭窄，不能在任意\
+``import``\ 实例之间共享。由于工具链的内部工作原理，对于任何一次编译，通常只能\
+有一组针对各种标志的设置，包括导入模块的\ :term:`BMI`\ 文件。例如，使用的C++标准\
+需要在所有模块中保持一致，但有许多设置可能会导致不兼容。
 
 .. note::
 
-   CMake currently assumes that all usages are compatible and will only create
-   one set of :term:`BMIs <BMI>` for each target.  This may cause build
-   failures where multiple :term:`BMI` files are required, but CMake only
-   provides one set.  See `CMake Issue 25916`_ for progress on removing this
-   assumption.
+   CMake当前假设所有用法都是兼容的，并且每个目标只会创建一组\ :term:`BMIs <BMI>`。\
+   当需要多个\ :term:`BMI`\ 文件但CMake只提供一组时，这可能会导致构建失败。有关\
+   移除这一假设的进展，请参见\ `CMake Issue 25916`_。
 
 .. _`CMake Issue 25916`: https://gitlab.kitware.com/cmake/cmake/-/issues/25916
 
-Once all of the :term:`synthetic targets <synthetic target>` are created,
-CMake looks at each target that has any source that might use C++ modules and
-creates a command to :term:`scan` each of them.  This command will output a
-`P1689R5`_-formatted file describing the C++ modules it uses and provides (if
-any).  It will also create a command to :term:`collate` module dependencies
-for the eligible compilations.  This command depends on the :term:`scan`
-results of all eligible sources, information about the target itself, as well
-as the :term:`collate` results of any dependent targets which provide C++
-modules.  The :term:`collate` step uses a target-specific
-``CXXDependInfo.json`` file which contains the following information:
+一旦所有\ :term:`合成目标 <synthetic target>`\ 创建完成，CMake会检查每个包含可能\
+使用C++模块的源文件的目标，并为其中每个源文件创建一个\ :term:`scan`\ 命令。该命令\
+会输出一个\ `P1689R5`_\ 格式的文件，描述其使用和提供的C++模块（如果有）。CMake\
+还会为合格的编译创建一个\ :term:`collate`\ 模块依赖的命令。该命令依赖于所有合格\
+源文件的\ :term:`scan`\ 结果、目标本身的信息，以及任何提供C++模块的依赖目标的\
+:term:`collate`\ 结果。:term:`collate`\ 步骤使用特定于目标的\
+``CXXDependInfo.json``\ 文件，其中包含以下信息：
 
-- ``compiler-*``: basic compiler information (``id``, ``frontend-variant``,
-  and ``simulate-id``) which is used to generate correctly formatted paths
-  when generating paths for the compiler
-- ``cxx-modules``: a map of object files to the ``FILE_SET`` information,
-  which is used to enforce :term:`module visibility` and generate install
-  rules for :term:`module interface unit` sources
-- ``module-dir``: where to place :term:`BMI` files for this target
-- ``dir-{cur,top}-{src,bld}``: the source (``src``) and build (``bld``)
-  directories for the current directory (``cur``) and the top (``top``) of the
-  project, used to compute accurate relative paths for the :term:`build tool`
-  dynamic dependencies
-- ``exports``: The list of exports which both contain the target and are
-  providing C++ module information, used to provide accurate module properties
-  on ``IMPORTED`` targets from the exported targets.
-- ``bmi-installation``: installation information, used to generate install
-  scripts for :term:`BMI` files
-- ``database-info``: information required to generate :term:`build database`
-  information if requested by :prop_tgt:`EXPORT_BUILD_DATABASE`
-- ``sources``: list of other source files in the target, used to add to the
-  :term:`build database` if requested
-- ``config``: the configuration for the target, used to set the appropriate
-  properties in generated export files
-- ``language``: the language (e.g., C++ or Fortran) the
-  :term:`collation <collate>` metadata file is describing
-- ``include-dirs`` and ``forward-modules-from-target-dirs``: unused for C++
+- ``compiler-*``: 基本编译器信息（\ ``id``、\ ``frontend-variant``\ 和\
+  ``simulate-id``），用于在为编译器生成路径时生成正确格式化的路径
+- ``cxx-modules``: 对象文件到\ ``FILE_SET``\ 信息的映射，用于强制执行\
+  :term:`module visibility`\ 并为\ :term:`module interface unit`\ 源文件生成安装\
+  规则
+- ``module-dir``: 为此目标放置\ :term:`BMI`\ 文件的位置
+- ``dir-{cur,top}-{src,bld}``: 当前目录（\ ``cur``\ ）和项目顶部（\ ``top``\ ）\
+  的源（\ ``src``\ ）和构建（\ ``bld``\ ）目录，用于为\ :term:`build tool`\
+  动态依赖计算准确的相对路径
+- ``exports``: 既包含目标又提供C++模块信息的导出列表，用于从导出的目标中为\
+  ``IMPORTED``\ 目标提供准确的模。
+- ``bmi-installation``: 安装信息，用于为\ :term:`BMI`\ 文件生成安装脚本
+- ``database-info``: 如果\ :prop_tgt:`EXPORT_BUILD_DATABASE`\ 请求，则生成\
+  :term:`build database`\ 信息所需的信息
+- ``sources``: 目标中其他源文件的列表，用于在请求时添加到\ :term:`build database`
+- ``config``: 目标的配置，用于在生成的导出文件中设置适当的属性
+- ``language``: :term:`collation <collate>`\ 元数据文件所描述的语言（例如，C++\
+  或Fortra
+- ``include-dirs``\ 和\ ``forward-modules-from-target-dirs``: 对于C++未使用
 
 Each entry in the ``cxx-modules`` map records the following:
 
