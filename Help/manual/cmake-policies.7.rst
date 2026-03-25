@@ -80,20 +80,20 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 以下策略是受支持的。
 
-Policies Introduced by CMake 4.3
+CMake 4.3引入的策略
 --------------------------------
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0210: CMAKE_<LANG>_LINK_FLAGS adds link flags to all target types. </policy/CMP0210>
-   CMP0209: Verify interface header sets checks executables without exports. </policy/CMP0209>
-   CMP0208: export(EXPORT) does not allow empty arguments. </policy/CMP0208>
-   CMP0207: file(GET_RUNTIME_DEPENDENCIES) normalizes paths before matching. </policy/CMP0207>
-   CMP0206: The CPack Archive Generator defaults to UID 0 and GID 0. </policy/CMP0206>
-   CMP0205: file(CREATE_LINK) with COPY_ON_ERROR copies directory content. </policy/CMP0205>
+   CMP0210: CMAKE_<LANG>_LINK_FLAGS 向所有目标类型添加链接标志。 </policy/CMP0210>
+   CMP0209: 验证接口头文件集检查无导出的可执行文件。 </policy/CMP0209>
+   CMP0208: export(EXPORT) 不允许空参数。 </policy/CMP0208>
+   CMP0207: file(GET_RUNTIME_DEPENDENCIES) 在匹配前规范化路径。 </policy/CMP0207>
+   CMP0206: CPack归档生成器默认为UID 0和GID 0。 </policy/CMP0206>
+   CMP0205: 带有COPY_ON_ERROR的file(CREATE_LINK)复制目录内容。 </policy/CMP0205>
 
-Policies Introduced by CMake 4.2
+CMake 4.2引入的策略
 --------------------------------
 
 .. toctree::
