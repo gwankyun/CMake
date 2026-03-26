@@ -474,83 +474,69 @@ CMake执行的第一步是为提供模块的目标的每一种唯一使用方式
   或Fortra
 - ``include-dirs``\ 和\ ``forward-modules-from-target-dirs``: 对于C++未使用
 
-Each entry in the ``cxx-modules`` map records the following:
+``cxx-modules``\ 映射中的每个条目记录以下内容：
 
-- ``bmi-only`` (bool): True if only the BMI, not the source of the BMI, is
-  available
-- ``compile-features`` (list[string]): :manual:`cmake-compile-features(7)` used
-  to build the object
-- ``compile-options`` (list[string]): compilation options/flags used to build
-  the object, except for those derived from ``compile-features``
-- ``definitions`` (list[string]): preprocessor defines used to build the object
-- ``destination`` (string): intended install destination of the source file
-- ``include-directories`` (list[string]): include directories used to build the
-  object
-- ``name`` (string): name of the file set which owns the source file
-- ``relative-directory`` (string): base path relative to which the source file
-  will be relocated into the install destination
-- ``source`` (string): path to the source file
-- ``type`` (string): type of the file set which owns the source file
-- ``visibility`` (string): visibility of the file set which owns the source file
+- ``bmi-only`` (bool)：如果仅存在BMI而不存在BMI的源代码，则为True
+- ``compile-features`` (list[string])：用于构建对象的\ :manual:`cmake-compile-features(7)`
+- ``compile-options`` (list[string])：用于构建对象的编译选项/标志，不包括从\
+  ``compile-features``\ 派生的选项
+- ``definitions`` (list[string])：用于构建对象的预处理器定义
+- ``destination`` (string)：源文件的预期安装目标
+- ``include-directories`` (list[string])：用于构建对象的包含目录
+- ``name`` (string)：拥有源文件的文件集名称
+- ``relative-directory`` (string)：源文件将被重定位到安装目标的相对基础路径
+- ``source`` (string)：源文件的路径
+- ``type`` (string)：拥有源文件的文件集类型
+- ``visibility`` (string)：拥有源文件的文件集可见性
 
-For each compilation, CMake will also provide a :term:`module map` which will
-be created during the build by the :term:`collate` command.  How this is
-provided to the compiler is specified by the ``CMAKE_CXX_MODULE_MAP_FORMAT``
-and ``CMAKE_CXX_MODULE_MAP_FLAG`` toolchain variables.
+每次编译时，CMake还会提供一个\ :term:`module map`，该映射由\ :term:`collate`\
+命令在构建过程中创建。如何将其提供给编译器由\ ``CMAKE_CXX_MODULE_MAP_FORMAT``\
+和\ ``CMAKE_CXX_MODULE_MAP_FLAG``\ 工具链变量指定。
 
-Scan
+扫描
 ^^^^
 
-The compiler is expected to implement the :term:`scan` command.  This is
-because only the compiler itself can reliably answer preprocessor predicates
-like ``__has_builtin`` in order to provide accurate module usage information
-in the face of arbitrary flags that may be used when compiling sources.
+编译器需要实现\ :term:`scan`\ 命令。这是因为只有编译器本身能够可靠地回答像\
+``__has_builtin``\ 这样的预处理器谓词，以便在面对编译源文件时可能使用的任意标志\
+时提供准确的模块使用信息。
 
-CMake names these files with the ``.ddi`` extension, which stands for "dynamic
-dependency information".  These files are in `P1689R5`_ format and are used by
-the :term:`collate` command to perform its tasks.
+CMake使用\ ``.ddi``\ 扩展名命名这些文件，它代表“动态依赖信息”\
+（dynamic dependency information）。这些文件采用\ `P1689R5`_\ 格式，并被\
+:term:`collate`\ 命令用于执行其任务。
 
-Collate
+整合
 ^^^^^^^
 
-The :term:`collate` command performs the bulk of the work to make C++ modules
-work within the build graph.  It consumes the following files as input:
+:term:`collate`\ 命令执行大部分工作，使C++模块在构建图中正常工作。它使用以下文件\
+作为输入：
 
-- ``CXXDependInfo.json`` from the generate step
-- ``.ddi`` files from the :term:`scanning <scan>` results of the target's
-  sources
-- ``CXXModules.json`` files output from eligible dependent targets'
-  :term:`collate` commands
+- 来自生成步骤的\ ``CXXDependInfo.json``
+- 来自目标源文件的\ :term:`scanning <scan>`\ 结果的\ ``.ddi``\ 文件
+- 来自符合条件的依赖目标的\ :term:`collate`\ 命令输出的\ ``CXXModules.json``\ 文件
 
-It uses the information from these files to generate:
+它使用这些文件中的信息生成：
 
-- ``CXX.dd`` files to inform the :term:`build tool` of dependencies that exist
-  between the compilation of a source and the :term:`BMI` files of the modules
-  that it imports
-- ``CXXModules.json`` files for use in :term:`collate` commands of depending
-  targets
-- ``*.modmap`` files for each compilation to find :term:`BMI` files for
-  imported modules
-- ``install-cxx-module-bmi-$<CONFIG>.cmake`` scripts for the installation of
-  any :term:`BMI` files (included by the ``install`` scripts)
-- ``target-*-$<CONFIG>.cmake`` export files for any exports of the target to
-  provide the :prop_tgt:`IMPORTED_CXX_MODULES_<CONFIG>` properties
-- ``CXX_build_database.json`` :term:`build database` files for the target when
-  the its :prop_tgt:`EXPORT_BUILD_DATABASE` property is set
+- ``CXX.dd``\ 文件，用于通知\ :term:`build tool`\ 源文件编译与它导入的模块的\
+  :term:`BMI`\ 文件之间存在的依赖关系
+- 供依赖目标的\ :term:`collate`\ 命令使用的\ ``CXXModules.json``\ 文件
+- 每个编译用于查找导入模块的\ :term:`BMI`\ 文件的\ ``*.modmap``\ 文件
+- 用于安装任何\ :term:`BMI`\ 文件的\ ``install-cxx-module-bmi-$<CONFIG>.cmake``\
+  脚本（由\ ``install``\ 脚本包含）
+- 用于目标的任何导出的\ ``target-*-$<CONFIG>.cmake``\ 导出文件，以提供\
+  :prop_tgt:`IMPORTED_CXX_MODULES_<CONFIG>`\ 属性
+- 当目标的\ :prop_tgt:`EXPORT_BUILD_DATABASE`\ 属性设置时，为目标生成\
+  ``CXX_build_database.json`` :term:`build database`\ 文件
 
-During its processing, it enforces the following guarantees:
+在其处理过程中，它强制执行以下保证：
 
-- :term:`BMI` usage is consistent
-- :term:`module visibility` is respected
+- :term:`BMI`\ 使用一致
+- 遵守\ :term:`module visibility`
 
-C++ modules have the rule that only a single module of a given name may
-exist within a program.  This is not exactly enforceable with the existence of
-private modules, but it is enforceable for public modules.  The enforcement is
-done by the :term:`collate` command.  Part of the ``CXXModules.json`` files is
-the set of modules that are transitively imported by each module it provides.
-When a module is then imported, the :term:`collate` command ensures that all
-modules with a given name agree upon a given :term:`BMI` file to provide that
-module.
+C++模块有一个规则，即一个程序中只能存在一个给定名称的模块。对于私有模块，这并不\
+完全可执行，但对于公共模块是可执行的。这种强制执行由\ :term:`collate`\ 命令完成。\
+``CXXModules.json``\ 文件的一部分是它提供的每个模块可传递导入的模块集。当导入一个\
+模块时，\ :term:`collate`\ 命令确保所有具有给定名称的模块都同意使用给定的\
+:term:`BMI`\ 文件来提供该模块。
 
 Compile
 ^^^^^^^
