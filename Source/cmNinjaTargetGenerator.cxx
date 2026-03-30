@@ -265,15 +265,19 @@ std::string cmNinjaTargetGenerator::ComputeFlagsForObject(
     }
 
     if (!this->GeneratorTarget->Target->IsNormal()) {
-      auto flag = this->GetMakefile()->GetSafeDefinition(
-        "CMAKE_CXX_MODULE_BMI_ONLY_FLAG");
-      cmRulePlaceholderExpander::RuleVariables compileObjectVars;
-      compileObjectVars.Object = objectFileName.c_str();
-      auto rulePlaceholderExpander =
-        this->GetLocalGenerator()->CreateRulePlaceholderExpander();
-      rulePlaceholderExpander->ExpandRuleVariables(this->GetLocalGenerator(),
-                                                   flag, compileObjectVars);
-      this->LocalGenerator->AppendCompileOptions(flags, flag);
+      if (this->GetMakefile()
+            ->GetDefinition("CMAKE_CXX_COMPILE_BMI")
+            .IsEmpty()) {
+        auto flag = this->GetMakefile()->GetSafeDefinition(
+          "CMAKE_CXX_MODULE_BMI_ONLY_FLAG");
+        cmRulePlaceholderExpander::RuleVariables compileObjectVars;
+        compileObjectVars.Object = objectFileName.c_str();
+        auto rulePlaceholderExpander =
+          this->GetLocalGenerator()->CreateRulePlaceholderExpander();
+        rulePlaceholderExpander->ExpandRuleVariables(this->GetLocalGenerator(),
+                                                     flag, compileObjectVars);
+        this->LocalGenerator->AppendCompileOptions(flags, flag);
+      }
     }
   }
 
@@ -652,6 +656,19 @@ void cmNinjaTargetGenerator::WriteCompileRule(std::string const& lang,
   this->WriteCompileRule(lang, config, WithScanning::No);
 }
 
+std::string cmNinjaTargetGenerator::GetCompileTemplateVar(
+  std::string const& lang) const
+{
+  std::string cmdVar = cmStrCat("CMAKE_", lang, "_COMPILE_OBJECT");
+  if (!this->GetGeneratorTarget()->IsNormal()) {
+    std::string bmiCmdVar = cmStrCat("CMAKE_", lang, "_COMPILE_BMI");
+    if (!this->GetMakefile()->GetDefinition(bmiCmdVar).IsEmpty()) {
+      cmdVar = std::move(bmiCmdVar);
+    }
+  }
+  return cmdVar;
+}
+
 void cmNinjaTargetGenerator::WriteCompileRule(std::string const& lang,
                                               std::string const& config,
                                               WithScanning withScanning)
@@ -928,7 +945,7 @@ void cmNinjaTargetGenerator::WriteCompileRule(std::string const& lang,
   }
 
   // Rule for compiling object file.
-  std::string const cmdVar = cmStrCat("CMAKE_", lang, "_COMPILE_OBJECT");
+  std::string const cmdVar = this->GetCompileTemplateVar(lang);
   std::string const& compileCmd = mf->GetRequiredDefinition(cmdVar);
   cmList compileCmds(compileCmd);
 
@@ -1231,23 +1248,6 @@ void cmNinjaTargetGenerator::WriteObjectBuildStatements(
     }
 
     this->WriteTargetDependInfo(language, config);
-
-    // Non-imported synthetic targets read module info from their native target
-    // Add as implicit dependency.
-    if (this->GeneratorTarget->IsSynthetic()) {
-      if (cmGeneratorTarget const* native_gt =
-            this->LocalGenerator->FindGeneratorTargetToUse(
-              this->GeneratorTarget->Target->GetTemplateName())) {
-        if (!native_gt->IsImported()) {
-          std::string native_dir = native_gt->GetSupportDirectory();
-          if (this->GetGlobalGenerator()->IsMultiConfig()) {
-            native_dir = cmStrCat(native_dir, '/', config);
-          }
-          build.ImplicitDeps.emplace_back(this->ConvertToNinjaPath(
-            cmStrCat(native_dir, '/', language, "Modules.json")));
-        }
-      }
-    }
 
     auto const linked_directories =
       this->GetLinkedTargetDirectories(language, config);
@@ -2172,22 +2172,6 @@ void cmNinjaTargetGenerator::WriteTargetDependInfo(std::string const& lang,
     tdi_forward_modules_from_target_dirs.append(l);
   }
 
-  // Record the native target support directory for non-imported synthetic
-  // targets
-  if (this->GeneratorTarget->IsSynthetic()) {
-    if (cmGeneratorTarget* nativeGT =
-          this->LocalGenerator->FindGeneratorTargetToUse(
-            this->GeneratorTarget->Target->GetTemplateName())) {
-      if (!nativeGT->IsImported()) {
-        std::string nativeDir = nativeGT->GetSupportDirectory();
-        if (this->GetGlobalGenerator()->IsMultiConfig()) {
-          nativeDir = cmStrCat(nativeDir, '/', config);
-        }
-        tdi["native-target-dir"] = nativeDir;
-      }
-    }
-  }
-
   cmDyndepGeneratorCallbacks cb;
   cb.ObjectFilePath = [this](cmSourceFile const* sf, std::string const& cnf) {
     return this->GetObjectFilePath(sf, cnf);
@@ -2346,7 +2330,7 @@ void cmNinjaTargetGenerator::ExportObjectCompileCommand(
     compileObjectVars.CudaCompileMode = cudaCompileMode.c_str();
   }
 
-  std::string const cmdVar = cmStrCat("CMAKE_", language, "_COMPILE_OBJECT");
+  std::string const cmdVar = this->GetCompileTemplateVar(language);
   std::string const& compileCmd =
     this->Makefile->GetRequiredDefinition(cmdVar);
   cmList compileCmds(compileCmd);

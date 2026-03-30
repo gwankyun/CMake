@@ -2335,6 +2335,7 @@ cmGeneratorTarget::GetClassifiedFlagsForSource(cmSourceFile const* sf,
   }
 
   // C++ module flags.
+  bool useBmiTemplate = false;
   if (lang == "CXX"_s) {
     FlagClassification cls = FlagClassification::LocationFlag;
     FlagKind kind = FlagKind::BuildSystem;
@@ -2353,13 +2354,18 @@ cmGeneratorTarget::GetClassifiedFlagsForSource(cmSourceFile const* sf,
       }
 
       if (!this->Target->IsNormal()) {
-        auto flag = mf->GetSafeDefinition("CMAKE_CXX_MODULE_BMI_ONLY_FLAG");
-        cmRulePlaceholderExpander::RuleVariables compileObjectVars;
-        compileObjectVars.Object = sfVars.ObjectFileDir.c_str();
-        auto rulePlaceholderExpander = lg->CreateRulePlaceholderExpander();
-        rulePlaceholderExpander->ExpandRuleVariables(lg, flag,
-                                                     compileObjectVars);
-        lg->AppendCompileOptions(bmiFlags, flag);
+        if (!mf->GetDefinition("CMAKE_CXX_COMPILE_BMI").IsEmpty()) {
+          useBmiTemplate = true;
+        } else {
+          std::string flag =
+            mf->GetSafeDefinition("CMAKE_CXX_MODULE_BMI_ONLY_FLAG");
+          cmRulePlaceholderExpander::RuleVariables compileObjectVars;
+          compileObjectVars.Object = sfVars.ObjectFileDir.c_str();
+          auto rulePlaceholderExpander = lg->CreateRulePlaceholderExpander();
+          rulePlaceholderExpander->ExpandRuleVariables(lg, flag,
+                                                       compileObjectVars);
+          lg->AppendCompileOptions(bmiFlags, flag);
+        }
       }
     }
 
@@ -2382,7 +2388,8 @@ cmGeneratorTarget::GetClassifiedFlagsForSource(cmSourceFile const* sf,
     FlagClassification cls = FlagClassification::ExecutionFlag;
     FlagKind kind = FlagKind::NotAFlag;
 
-    std::string const cmdVar = cmStrCat("CMAKE_", lang, "_COMPILE_OBJECT");
+    std::string const cmdVar =
+      cmStrCat("CMAKE_", lang, "_COMPILE_", useBmiTemplate ? "BMI" : "OBJECT");
     std::string const& compileCmd = mf->GetRequiredDefinition(cmdVar);
     cmList compileCmds(compileCmd); // FIXME: which command to use?
     std::string& cmd = compileCmds[0];
@@ -5327,133 +5334,116 @@ bool cmGeneratorTarget::ApplyCXXStdTargets()
   return true;
 }
 
-bool cmGeneratorTarget::DiscoverSyntheticTargets(
-  cmSyntheticTargetCache& cache, std::string const& config,
-  cmGeneratorTarget const* bmiConsumer)
+bool cmGeneratorTarget::DiscoverSyntheticTargets(cmSyntheticTargetCache& cache,
+                                                 std::string const& config)
 {
   std::vector<std::string> allConfigs =
     this->Makefile->GetGeneratorConfigs(cmMakefile::IncludeEmptyConfig);
   cmOptionalLinkImplementation impl;
   this->ComputeLinkImplementationLibraries(config, impl, UseTo::Link);
 
-  if (!bmiConsumer) {
-    bmiConsumer = this;
-  }
-
-  cmCxxModuleUsageEffects usage(bmiConsumer);
+  cmCxxModuleUsageEffects usage(this);
 
   auto& SyntheticDeps = this->Configs[config].SyntheticDeps;
 
   for (auto const& entry : impl.Libraries) {
     auto const* gt = entry.Target;
-    if (!gt || !gt->HaveCxx20ModuleSources()) {
+    if (!gt || !gt->IsImported()) {
       continue;
     }
 
-    // Visual Studio generators do not currently support BMI-only compilation,
-    // so they can't generate synthetic targets. For consuming native modules,
-    // skip so that the native target is used directly. For imported modules,
-    // create the synth target anyway and diagnose later, in the VS generator.
-    if (!gt->IsImported() && this->GlobalGenerator->IsVisualStudio()) {
-      continue;
-    }
+    if (gt->HaveCxx20ModuleSources()) {
+      cmCryptoHash hasher(cmCryptoHash::AlgoSHA3_512);
+      constexpr size_t HASH_TRUNCATION = 12;
+      auto dirhash = hasher.HashString(
+        gt->GetLocalGenerator()->GetCurrentBinaryDirectory());
+      std::string safeName = gt->GetName();
+      cmSystemTools::ReplaceString(safeName, ":", "_");
+      auto targetIdent =
+        hasher.HashString(cmStrCat("@d_", dirhash, "@u_", usage.GetHash()));
+      std::string targetName =
+        cmStrCat(safeName, "@synth_", targetIdent.substr(0, HASH_TRUNCATION));
 
-    cmCryptoHash hasher(cmCryptoHash::AlgoSHA3_512);
-    constexpr size_t HASH_TRUNCATION = 12;
-    auto dirhash =
-      hasher.HashString(gt->GetLocalGenerator()->GetCurrentBinaryDirectory());
-    std::string safeName = gt->GetName();
-    cmSystemTools::ReplaceString(safeName, ":", "_");
-    auto targetIdent =
-      hasher.HashString(cmStrCat("@d_", dirhash, "@u_", usage.GetHash()));
-    std::string targetName =
-      cmStrCat(safeName, "@synth_", targetIdent.substr(0, HASH_TRUNCATION));
+      // Check the cache to see if this instance of the imported target has
+      // already been created.
+      auto cached = cache.CxxModuleTargets.find(targetName);
+      cmGeneratorTarget const* synthDep = nullptr;
+      if (cached == cache.CxxModuleTargets.end()) {
+        auto const* model = gt->Target;
+        auto* mf = gt->Makefile;
+        auto* lg = gt->GetLocalGenerator();
+        auto* tgt = mf->AddSynthesizedTarget(cmStateEnums::INTERFACE_LIBRARY,
+                                             targetName);
 
-    // Check the cache to see if this instance of the target has
-    // already been created.
-    auto cached = cache.CxxModuleTargets.find(targetName);
-    cmGeneratorTarget const* synthDep = nullptr;
-    if (cached == cache.CxxModuleTargets.end()) {
-      auto const* model = gt->Target;
-      auto* mf = gt->Makefile;
-      auto* lg = gt->GetLocalGenerator();
-      auto* tgt =
-        mf->AddSynthesizedTarget(cmStateEnums::INTERFACE_LIBRARY, targetName);
+        // Copy relevant information from the existing IMPORTED target.
 
-      // Copy relevant information from the existing target.
+        // Copy policies to the target.
+        tgt->CopyPolicyStatuses(model);
 
-      // Copy policies to the target.
-      tgt->CopyPolicyStatuses(model);
-
-      // Copy file sets.
-      {
-        auto fsNames = model->GetAllFileSetNames();
-        for (auto const& fsName : fsNames) {
-          auto const* fs = model->GetFileSet(fsName);
-          if (!fs) {
-            mf->IssueMessage(MessageType::INTERNAL_ERROR,
-                             cmStrCat("Failed to find file set named '",
-                                      fsName, "' on target '", tgt->GetName(),
-                                      '\''));
-            continue;
+        // Copy file sets.
+        {
+          auto fsNames = model->GetAllFileSetNames();
+          for (auto const& fsName : fsNames) {
+            auto const* fs = model->GetFileSet(fsName);
+            if (!fs) {
+              mf->IssueMessage(MessageType::INTERNAL_ERROR,
+                               cmStrCat("Failed to find file set named '",
+                                        fsName, "' on target '",
+                                        tgt->GetName(), '\''));
+              continue;
+            }
+            auto* newFs = tgt
+                            ->GetOrCreateFileSet(fs->GetName(), fs->GetType(),
+                                                 fs->GetVisibility())
+                            .first;
+            newFs->CopyEntries(fs);
           }
-          auto* newFs = tgt
-                          ->GetOrCreateFileSet(fs->GetName(), fs->GetType(),
-                                               fs->GetVisibility())
-                          .first;
-          newFs->CopyEntries(fs);
         }
+
+        // Copy imported C++ module properties.
+        tgt->CopyImportedCxxModulesEntries(model);
+
+        // Copy other properties which may affect the C++ module BMI
+        // generation.
+        tgt->CopyImportedCxxModulesProperties(model);
+
+        tgt->AddLinkLibrary(*mf,
+                            cmStrCat("$<COMPILE_ONLY:", model->GetName(), '>'),
+                            GENERAL_LibraryType);
+
+        // Apply usage requirements to the target.
+        usage.ApplyToTarget(tgt);
+
+        // Create the generator target and attach it to the local generator.
+        auto gtp = cm::make_unique<cmGeneratorTarget>(tgt, lg);
+
+        synthDep = gtp.get();
+        cache.CxxModuleTargets[targetName] = synthDep;
+
+        // See `localGen->ComputeTargetCompileFeatures()` call in
+        // `cmGlobalGenerator::Compute` for where non-synthetic targets resolve
+        // this.
+        for (auto const& innerConfig : allConfigs) {
+          gtp->ComputeCompileFeatures(innerConfig);
+        }
+        // See `cmGlobalGenerator::ApplyCXXStdTargets` in
+        // `cmGlobalGenerator::Compute` for non-synthetic target resolutions.
+        if (!gtp->ApplyCXXStdTargets()) {
+          return false;
+        }
+
+        gtp->DiscoverSyntheticTargets(cache, config);
+
+        lg->AddGeneratorTarget(std::move(gtp));
+      } else {
+        synthDep = cached->second;
       }
 
-      // Copy C++ module properties.
-      tgt->CopyCxxModulesEntries(model);
-
-      // Copy other properties which may affect the C++ module BMI
-      // generation.
-      tgt->CopyCxxModulesProperties(model);
-
-      tgt->AddLinkLibrary(*mf,
-                          cmStrCat("$<COMPILE_ONLY:", model->GetName(), '>'),
-                          GENERAL_LibraryType);
-
-      // Apply usage requirements to the target.
-      usage.ApplyToTarget(tgt);
-
-      // Create the generator target and attach it to the local generator.
-      auto gtp = cm::make_unique<cmGeneratorTarget>(tgt, lg);
-
-      synthDep = gtp.get();
-      cache.CxxModuleTargets[targetName] = synthDep;
-
-      // See `localGen->ComputeTargetCompileFeatures()` call in
-      // `cmGlobalGenerator::Compute` for where non-synthetic targets resolve
-      // this.
-      for (auto const& innerConfig : allConfigs) {
-        gtp->ComputeCompileFeatures(innerConfig);
-      }
-      // See `cmGlobalGenerator::ApplyCXXStdTargets` in
-      // `cmGlobalGenerator::Compute` for non-synthetic target resolutions.
-      if (!gtp->ApplyCXXStdTargets()) {
-        return false;
-      }
-
-      gtp->DiscoverSyntheticTargets(cache, config, bmiConsumer);
-
-      lg->AddGeneratorTarget(std::move(gtp));
-    } else {
-      synthDep = cached->second;
+      SyntheticDeps[gt].push_back(synthDep);
     }
-
-    SyntheticDeps[gt].push_back(synthDep);
   }
 
   return true;
-}
-
-cmGeneratorTarget::SyntheticDepsMap const& cmGeneratorTarget::GetSyntheticDeps(
-  std::string const& config) const
-{
-  return this->Configs[config].SyntheticDeps;
 }
 
 bool cmGeneratorTarget::HasPackageReferences() const

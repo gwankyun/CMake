@@ -5,7 +5,7 @@ CMAKE_CONFIG_DIR
 
 .. include:: include/ENV_VAR.rst
 
-为\ :manual:`cmake-file-api(7)`\ 查询指定一个CMake用户范围的配置目录。
+为\ :manual:`cmake-instrumentation(7)`\ 查询指定一个CMake用户范围的配置目录。
 
 If this environment variable is not set, the default user-wide
 configuration directory is platform-specific:

@@ -350,6 +350,13 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 实现细节
 ----------------------
 
+.. warning::
+
+  The implementation details are not a stable interface.  Each version
+  of CMake may revise them without any attempt at providing compatibility.
+  External toolchain maintainers are responsible for updating their
+  implementations for each version of CMake they support.
+
 本节描述CMake实际如何构建图、各部分之间传递的数据以及包含该数据的文件。它既可用\
 作功能文档，也可用作指南，帮助调试模块构建的人员了解在哪里找到各种数据。
 
@@ -375,41 +382,17 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
   ``msvc``\ 之一。
 * ``CMAKE_CXX_MODULE_MAP_FLAG``：用于告知编译器\ :term:`module map`\ 文件的参数。\
   它应使用\ ``<MODULE_MAP_FILE>``\ 占位符。
+* ``CMAKE_CXX_COMPILE_BMI``: The command template to compile a :term:`BMI`
+  file from a :term:`module interface unit`.  Used when
+  ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG`` is not completely additive to an
+  object compilation template.
 * ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``：用于仅从\ :term:`module interface unit`\
   编译\ :term:`BMI`\ 文件的参数。这在从外部项目使用模块时用于编译当前构建中使用的\
   :term:`BMI`\ 文件。
 
-如果工具链不提供\ ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``，它将无法使用由\ ``IMPORTED``\
-目标提供的模块。
-
-工具链（\ ``import std``\ ）
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-如果工具链支持\ ``import std``，它还必须提供一个名为\
-``${CMAKE_CXX_COMPILER_ID}-CXX-CXXImportStd``\ 的工具链标识模块。
-
-.. note::
-
-   当前只有CMake可以提供这些文件，因为它们的包含方式。一旦\ ``import std``\
-   不再是实验性的，外部工具链也可以独立提供支持。
-
-该模块必须提供\ ``_cmake_cxx_import_std``\ 命令。它将接收两个参数：C++ 标准的\
-版本（例如\ ``23``\ ）和一个变量名，用于存放其\ ``import std``\ 支持的结果。该\
-变量应填充CMake源代码，用于声明\ ``__CMAKE::CXX${std}``\ 目标，其中\ ``${std}``\
-是传入的版本。如果无法创建该目标，源代码应将\
-``CMAKE_CXX${std}_COMPILER_IMPORT_STD_NOT_FOUND_MESSAGE``\ 变量设置为当前配置不\
-支持\ ``import std``\ 的原因。请注意，CMake将使用条件检查来保护返回的代码，以\
-确保目标只定义一次。
-
-理想情况下，\ ``__CMAKE::CXX${std}``\ 目标将是一个带有附加\ ``std``\ 模块源的\
-``IMPORTED`` ``INTERFACE``\ 目标。但是，对于某些实现可能需要编译对象。当有期望由\
-模块的使用者通过编译它来提供的符号时，需要对象文件。这里存在一个问题，如果在程序\
-中多次发生这种情况，将导致这些符号的重复，这可能违反它们的\ :term:`ODR`。
-
-例如，如果模块的使用者被期望为该模块提供符号，那么模块的使用就是程序的全局属性，\
-不能被抽象掉。想象一个库公开C API但内部使用C++模块。如果它应该提供模块符号，\
-那么任何使用C API的东西如果想将相同的模块用于自己的目的，都需要与其内部模块使用\
-进行协作。如果两者最终都为导入的模块提供符号，可能会产生冲突。
+If a toolchain does not provide the ``CMAKE_CXX_COMPILE_BMI`` or
+``CMAKE_CXX_MODULE_BMI_ONLY_FLAG`` variables, it will not be able to consume
+modules provided by ``IMPORTED`` targets.
 
 配置
 ^^^^^^^^^
