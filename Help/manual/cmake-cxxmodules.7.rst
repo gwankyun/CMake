@@ -352,10 +352,8 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 
 .. warning::
 
-  The implementation details are not a stable interface.  Each version
-  of CMake may revise them without any attempt at providing compatibility.
-  External toolchain maintainers are responsible for updating their
-  implementations for each version of CMake they support.
+  实现细节不是稳定接口。每个CMake版本都可能修改它们，而不尝试提供兼容性。外部\
+  工具链维护者负责为他们支持的每个CMake版本更新其实现。
 
 本节描述CMake实际如何构建图、各部分之间传递的数据以及包含该数据的文件。它既可用\
 作功能文档，也可用作指南，帮助调试模块构建的人员了解在哪里找到各种数据。
@@ -382,17 +380,15 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
   ``msvc``\ 之一。
 * ``CMAKE_CXX_MODULE_MAP_FLAG``：用于告知编译器\ :term:`module map`\ 文件的参数。\
   它应使用\ ``<MODULE_MAP_FILE>``\ 占位符。
-* ``CMAKE_CXX_COMPILE_BMI``: The command template to compile a :term:`BMI`
-  file from a :term:`module interface unit`.  Used when
-  ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG`` is not completely additive to an
-  object compilation template.
+* ``CMAKE_CXX_COMPILE_BMI``：用于从\ :term:`module interface unit`\ 编译\
+  :term:`BMI`\ 文件的命令模板。当\ ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``\ 不能完全\
+  添加到对象编译模板时使用。
 * ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``：用于仅从\ :term:`module interface unit`\
   编译\ :term:`BMI`\ 文件的参数。这在从外部项目使用模块时用于编译当前构建中使用的\
   :term:`BMI`\ 文件。
 
-If a toolchain does not provide the ``CMAKE_CXX_COMPILE_BMI`` or
-``CMAKE_CXX_MODULE_BMI_ONLY_FLAG`` variables, it will not be able to consume
-modules provided by ``IMPORTED`` targets.
+如果工具链不提供\ ``CMAKE_CXX_COMPILE_BMI``\ 或\ ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``\
+变量，它将无法使用由\ ``IMPORTED``\ 目标提供的模块。
 
 配置
 ^^^^^^^^^
@@ -589,70 +585,51 @@ CMake的实现。
 这些源文件无法编译。这意味着随着源文件变得可用，构建图可能会进行一些无界（但有限）\
 次数的重新生成。
 
-Module Mapping Service
+模块映射服务
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Another strategy is to run a service alongside the build that can act as an
-oracle for where to place and discover modules.  The compiler is instructed to
-query the service with questions such as "this source is exporting module X"
-and "this source is importing module Y" and receive the path to either create
-or find the :term:`BMI`, respectively.  In this case, the service dynamically
-implements the collation logic.
+另一种策略是在构建过程中运行一个服务，作为确定模块放置和发现位置的权威来源。\
+编译器被指示向该服务查询诸如“此源正在导出模块X”和“此源正在导入模块Y”之类的问题，\
+并分别接收创建或查找\ :term:`BMI`\ 的路径。在这种情况下，服务动态实现整理逻辑。
 
-Of particular note, this conflicts with the
-`Deterministic Builds <design-goal-deterministic-builds_>`__ and
-`Static Communication <design-goal-static-communication_>`__ goals because the
-on-disk state may not match the actual state, and coordinating the lifetime of
-the :term:`build tool` itself with the service is difficult.  The primary
-missing feature is some signal when a build session starts and ends so that
-such a service can know in what context it is answering requests.  There also
-needs to be a way to resume a session and detect when a session is
-invalidated.  No :term:`build tool` that CMake supports today has such
-features.
+特别值得注意的是，这与\ `确定性构建 <design-goal-deterministic-builds_>`__\ 和\
+`静态通信 <design-goal-static-communication_>`__\ 目标相冲突，因为磁盘上的状态\
+可能与实际状态不匹配，并且很难协调\ :term:`build tool`\ 本身的生命周期与服务。\
+主要缺少的功能是构建会话开始和结束时的某种信号，以便此类服务能够知道它在什么上下\
+文中回答请求。还需要一种方法来恢复会话并检测会话何时失效。CMake今天支持的所有\
+:term:`build tool`\ 都没有这些功能。
 
-There are also hazards which conflict with the
-`Correct Builds <design-goal-correct-builds_>`__ goal.  When a module is
-imported, the compiler waits for a response before continuing.  However, there
-is no guarantee that a (visible) module of that name even exists, so it may
-wait indefinitely.  While waiting for a compilation to report that it creates
-that module, it may run into a dependency cycle which leaves the compilations
-hanging until some resource limit is reached (probably time, or that all
-possible providers of the module have not reported a module of that name).
-While these compilations are waiting on answers, there is the question of how
-they affect the parallelism limits of the :term:`build tool` in use.  Do
-compilations waiting on an answer count towards the limit and block other
-compilations from launching to potentially discover the module?  If they do
-not, what about other resources that may be held in use by those compilations
-(e.g., memory or available file descriptors)?
+还有一些与\ `正确构建 <design-goal-correct-builds_>`__\ 目标相冲突的风险。当导入\
+模块时，编译器会等待响应后再继续。然而，不能保证该名称的（可见）模块确实存在，\
+因此它可能会无限期等待。在等待编译报告它创建该模块时，可能会遇到依赖循环，导致\
+编译挂起，直到达到某个资源限制（可能是时间，或者所有可能的模块提供者都没有报告该\
+名称的模块）。当这些编译正在等待答案时，存在一个问题：它们如何影响所使用的\
+:term:`build tool`\ 的并行度限制？等待答案的编译是否会计入限制并阻止其他编译启动\
+以潜在地发现模块？如果不计入，那么这些编译可能占用的其他资源（例如，内存或可用\
+文件描述符）怎么办？
 
-Possible Future Enhancements
+可能的未来增强
 ============================
 
-This section documents possible future enhancements to CMake's support of C++
-modules.  Nothing here is a guarantee of future implementation, and the
-ordering is arbitrary.
+本节记录了CMake对C++模块支持的可能未来增强。这里的内容不保证将来会实现，且排序\
+是任意的。
 
-Batch Scanning
+批量扫描
 --------------
 
-It is possible to scan all sources within a target at once, which should be
-faster when sources share transitive includes.  This does have side effects
-for incremental builds, as the update of any source in the target means that
-all sources in the target are scanned again.  Given how much faster scanning
-can be, it should be negligible to do such "extra" scanning assuming that
-unchanged results do not trigger recompilations.
+可以一次扫描目标中的所有源文件，当源文件共享传递包含时，这应该会更快。这对增量\
+构建有副作用，因为目标中任何源文件的更新意味着目标中的所有源文件都会被再次扫描。\
+考虑到扫描可以快多少，假设未更改的结果不会触发重新编译，进行这种“额外”扫描应该\
+是可以忽略不计的。
 
-BMI Modification Optimization
+BMI修改优化
 -----------------------------
 
-Currently, as with object files, compilers always update a :term:`BMI` file
-even if the contents have not changed.  Because modules increase the potential
-scope of "non-changes" to cause (conceptually) unnecessary recompilation, it
-might be useful to avoid recompilation of module consumers if the :term:`BMI`
-file has not changed.  This might be achieved by wrapping the compilation to
-juggle the :term:`BMI` through a ``cmake -E copy_if_different`` pass with
-``ninja``'s ``restat = 1`` feature to avoid recompiling importers if the
-:term:`BMI` file doesn't actually change.
+目前，与对象文件一样，即使内容没有更改，编译器也总是会更新\ :term:`BMI`\ 文件。\
+由于模块增加了“无更改”导致（概念上）不必要重新编译的潜在范围，如果\ :term:`BMI`\
+文件没有更改，避免重新编译模块消费者可能会很有用。这可以通过包装编译来实现，\
+通过带有\ ``ninja``\ 的\ ``restat = 1``\ 功能的\ ``cmake -E copy_if_different``\
+传递来处理\ :term:`BMI`，以避免在\ :term:`BMI`\ 文件实际未更改时重新编译导入器。
 
 .. _`easier-source-specification`:
 
