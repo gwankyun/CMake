@@ -633,158 +633,128 @@ BMI修改优化
 
 .. _`easier-source-specification`:
 
-Easier Source Specification
+更简便的源文件指定
 ---------------------------
 
-The initial implementation of CMake's module support had used the "just list
-sources; CMake will figure it out" pattern.  However, this ran into issues
-related to other metadata requirements.  These were discovered while
-implementing CMake support beyond just building the modules-using code.
+CMake模块支持的初始实现采用了“只需列出源文件；CMake 会自行处理”的模式。然而，\
+这在与其他元数据要求相关的方面遇到了问题。这些问题是在实现超越“仅构建使用模块的\
+代码”的CMake支持时发现的。
 
-Conflicts with `Separate BMI Generation <separate-bmi-generation_>`__ on a
-single target, as that requires knowledge of all :term:`BMI`-generating rules
-at generate time.
+与同一目标上的\ `单独BMI生成 <separate-bmi-generation_>`__\ 存在冲突，因为后者\
+需要在生成时知道所有生成\ :term:`BMI`\ 的规则。
 
 .. _`separate-bmi-generation`:
 
-Separate BMI Generation
+单独BMI生成
 -----------------------
 
-CMake currently uses a single rule to generate both the :term:`BMI` and the
-object file for a compilation.  At least Clang supports compiling an object
-directly from the :term:`BMI`.  This would be beneficial because :term:`BMI`
-generation is typically faster than compilation and generating the :term:`BMI`
-as a separate step allows importers to start compiling without waiting for the
-object to also be generated.
+CMake当前使用单个规则来同时生成编译所需的\ :term:`BMI`\ 和目标文件。至少Clang\
+支持直接从\ :term:`BMI`\ 编译生成目标文件。这会带来好处，因为\ :term:`BMI`\ 生成\
+通常比编译更快，并且将\ :term:`BMI`\ 生成为单独步骤可以让导入方无需等待目标文件\
+生成即可开始编译。
 
-This is not supported in the current implementation as only Clang supports
-generating an object directly from the :term:`BMI`.  Other compilers either do
-not support such a two-phase generation (GCC) or need to start object
-compilation from the source again.
+当前实现不支持此功能，因为只有Clang支持直接从\ :term:`BMI`\ 生成目标文件。其他\
+编译器要么不支持这种两阶段生成（如GCC），要么需要从源代码重新开始目标文件编译。
 
-Conflicts with `Easier Source Specification <easier-source-specification_>`__
-on a single target because CMake must know all :term:`BMI`-generating sources
-at generate time rather than build time to create the two-phase rules.
+与同一目标上的\ `更简便的源文件指定 <easier-source-specification_>`__\ 存在冲突，\
+因为CMake必须在生成时（而非构建时）知道所有生成\ :term:`BMI`\ 的源文件，才能创建\
+两阶段规则。
 
-Module Compilation Glossary
+模块编译词汇表
 ===========================
 
 .. glossary::
 
    BMI
-     Built Module Interface.  A compiler-generated binary representation of a
-     C++ module's interface that is required by consumers of the module.  File
-     extensions vary by compiler.
+     构建模块接口（Built Module Interface）。编译器生成的C++模块接口的二进制表示，\
+     是模块使用者所必需的。文件扩展名因编译器而异。
 
    CMI
-     Compiled Module Interface.  Alternative name for :term:`BMI` used by some
-     compilers.
+     编译模块接口（Compiled Module Interface）。某些编译器使用的\ :term:`BMI`\
+     的替代名称。
 
    build database
-     A JSON file containing compilation commands, module dependencies, and
-     grouping information.  Used for IDE integration and build analysis.
+     包含编译命令、模块依赖关系和分组信息的JSON文件。用于IDE集成和构建分析。
 
    build system
-     A tool that facilitates the building of software which includes a model
-     of how components of the build relate to each other.  For example, CMake,
-     Meson, build2, and more.
+     一种促进软件构建的工具，包含构建组件之间相互关系的模型。例如CMake、Meson、\
+     build2等。
 
    build tool
-     A build graph execution tool.  For example, `ninja` and `make`.  Some
-     build tools are also their own :term:`build system`.
+     构建图执行工具。例如\ `ninja`\ 和\ `make`。有些构建工具同时也是它们自己的\
+     :term:`build system`。
 
    C++ module
-     A C++20 language feature for describing the API of a piece of software.
-     Intended as a replacement for headers for this purpose.
+     C++20语言特性，用于描述软件组件的API。旨在替代为此目的使用的头文件。
 
    collate
-     The process of aggregating module information from scanned sources to
-     ensure correct compilation order and to provide metadata for other parts
-     of the build (e.g., installation or a :term:`build database`).
+     从扫描的源代码中聚合模块信息的过程，以确保正确的编译顺序，并为构建的其他\
+     部分（例如安装或\ :term:`build database`\ ）提供元数据。
 
    discovered dependencies
-     Dependencies found during the processing of a command that do not need to
-     be explicitly declared.
+     在处理命令期间发现的不需要显式声明的依赖项。
 
    dynamic dependencies
-     Dependencies which require a separate command to detect so that a further
-     command may have its dependencies satisfied.
+     需要单独命令检测的依赖项，以便后续命令的依赖项得到满足。
 
    embarrassingly parallel
-     A set of tasks which, due to having minimal dependencies between them,
-     can be easily divided into many independent tasks that can be executed
-     concurrently.
+     一组任务，由于它们之间的依赖关系最小，可以轻松划分为许多可以并发执行的独立任务。
 
    explicit build
-     A build strategy where module dependencies are explicitly specified
-     rather than discovered.
+     一种构建策略，其中模块依赖项是显式指定的，而不是发现的。
 
    fixed build
-     A build strategy where all module dependencies are computed and inserted
-     directly into the build graph.
+     一种构建策略，其中所有模块依赖项都被计算并直接插入到构建图中。
 
    header unit
-     A header file which is used via an ``import`` statement rather than an
-     ``#include`` preprocessor directive.  Implementations may provide support
-     for treating ``#include`` as ``import`` as well.
+     通过\ ``import``\ 语句而不是\ ``#include``\ 预处理指令使用的头文件。实现\
+     可能还提供将\ ``#include``\ 视为\ ``import``\ 的支持。
 
    implementation unit
-     A C++ :term:`translation unit` that implements module entities declared
-     in a module interface unit.
+     实现模块接口单元中声明的模块实体的C++ :term:`translation unit`。
 
    implicit build
-     A build strategy where module dependencies are discovered by searching
-     for :term:`BMI` files during compilation.
+     一种构建策略，其中模块依赖项是在编译期间通过搜索\ :term:`BMI`\ 文件发现的。
 
    internal partition unit
-     A :term:`translation unit` which contains a partition name and is not
-     exported from the :term:`primary module interface unit`.
+     包含分区名称且未从\ :term:`primary module interface unit`\ 导出的\
+     :term:`translation unit`。
 
    module interface unit
-     A :term:`translation unit` that declares a module's public interface
-     using ``export module``.  Such a unit may or may not be also be a
-     :term:`partition unit`.
+     使用\ ``export module``\ 声明模块公共接口的\ :term:`translation unit`。\
+     这样的单元可能是也可能不是\ :term:`partition unit`。
 
    module map
-     A compiler-specific file mapping module names to BMI locations.
+     将模块名称映射到BMI位置的编译器特定文件。
 
    module visibility
-     CMake's enforcement of access rules for modules based on their
-     declaration scope (PUBLIC/PRIVATE).
+     CMake基于模块声明范围（PUBLIC/PRIVATE）对模块访问规则的强制执行。
 
    ODR
-     One Definition Rule.  The C++ requirement that any entity be defined
-     exactly once per program.
+     单一定义规则（One Definition Rule）。C++要求每个实体在每个程序中恰好定义一次。
 
    partition unit
-     A :term:`translation unit` which describes a module with a partition name
-     (i.e., `module MODNAME:PARTITION;`).  The partition may or may not use
-     the ``export`` keyword.  If it does, it is also a
-     :term:`module interface unit`; otherwise, it is a
-     :term:`internal partition unit`.
+     描述带有分区名称的模块的\ :term:`translation unit`\ （即\
+     `module MODNAME:PARTITION;`\ ）。分区可能使用也可能不使用\ ``export``\
+     关键字。如果使用，则它也是\ :term:`module interface unit`\ ；否则，它是\
+     :term:`internal partition unit`。
 
    primary module interface unit
-     A :term:`module interface unit` which exports a named module that is not
-     a :term:`partition unit`.
+     导出非\ :term:`partition unit`\ 的命名模块的\ :term:`module interface unit`。
 
    scan
-     The process of analyzing a :term:`translation unit` to discover module
-     imports and exports.
+     分析\ :term:`translation unit`\ 以发现模块导入和导出的过程。
 
    static build
-     A build configuration where all compilation rules are determined at
-     generate time.
+     在生成时确定所有编译规则的构建配置。
 
    strong module ownership
-     C++ implementations have settled on a model where the module "owns" the
-     symbols declared within it.  In practice, this means that the module name
-     is included into the symbol mangling of entities declared within it.
+     C++实现已确定了一种模型，其中模块“拥有”其中声明的符号。实际上，这意味着模块\
+     名称被包含在其中声明的实体符号修饰中。
 
    synthetic target
-     A CMake-generated build target used to supply :term:`BMIs <BMI>` to a
-     specific user of a module-providing target.
+     CMake生成的构建目标，用于向模块提供目标的特定用户提供\ :term:`BMIs <BMI>`。
 
    translation unit
-     The smallest component of a compilation for a C++ program.  Generally,
-     there is one translation unit per source file.  C++ source files which do
-     not use C++ modules may be combined into a single translation unit.
+     C++程序编译的最小组件。通常，每个源文件对应一个翻译单元。不使用C++模块的C++\
+     源文件可以合并为单个翻译单元。
