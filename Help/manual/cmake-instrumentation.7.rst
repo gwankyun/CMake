@@ -1,4 +1,15 @@
 .. cmake-manual-description: CMake Instrumentation
+.. |Data Collection| replace:: :ref:`cmake-instrumentation Data Collection`
+.. |Indexing| replace:: :ref:`cmake-instrumentation Indexing`
+.. |v1 Snippet File| replace:: :ref:`cmake-instrumentation v1 Snippet File`
+.. |v1 Snippet Files| replace:: :ref:`v1 Snippet Files <cmake-instrumentation v1 Snippet File>`
+.. |v1 Query Files| replace:: :ref:`cmake-instrumentation v1 Query Files`
+.. |Callbacks| replace:: :ref:`cmake-instrumentation Callbacks`
+.. |Google Trace File| replace:: :ref:`cmake-instrumentation Google Trace File`
+.. |v1 CMake Content File| replace:: :ref:`cmake-instrumentation v1 CMake Content File`
+.. |v1 CMake Content Files| replace:: :ref:`v1 CMake Content Files <cmake-instrumentation v1 CMake Content File>`
+.. |v1 Indexing File| replace:: :ref:`cmake-instrumentation v1 Indexing File`
+.. |v1 Indexing Files| replace:: :ref:`v1 Indexing Files <cmake-instrumentation v1 Indexing File>`
 
 cmake-instrumentation(7)
 ************************
@@ -23,36 +34,38 @@ CMake插桩API允许在CMake项目的配置、生成、构建、测试和安装�
   This feature is only available for projects using the
   :ref:`Makefile Generators`, :ref:`Ninja Generators` or :generator:`FASTBuild`.
 
-Overview
+概述
 --------
 
-CMake Instrumentation works in 2 major stages: `Data Collection`_, and
-`索引`_.
+CMake Instrumentation works in 2 major stages: |Data Collection|, and
+|Indexing|.
 
-`Data Collection`_ is the process by which CMake writes out instrumentation
+|Data Collection| is the process by which CMake writes out instrumentation
 data into a project build tree. The commands instrumented in this way range
 from overall builds, to individual compile commands. The full list of commands
-instrumented is documented under the `v1 Snippet File`_.
+instrumented is documented under the |v1 Snippet File|.
 
-Collected data will accumulate until `索引`_ occurs: the process of
+Collected data will accumulate until |Indexing| occurs: the process of
 collating the generated data. Indexing occurs on events called "hooks",
-which can be configured as part of the `v1查询文件`_. A `v1索引文件`_ is
-created and passed to any user-defined `回调函数`_ provided to process
-the data. Once all `回调函数`_ have run, CMake deletes the files.
+which can be configured as part of the |v1 Query Files|. A |v1 Indexing File| is
+created and passed to any user-defined |Callbacks| provided to process
+the data. Once all |Callbacks| have run, CMake deletes the files.
 
-Without the need for any custom `回调函数`_, CMake can submit instrumentation
-data to `CDash`_, or generate a `Google Trace File`_ for visualization.
+Without the need for any custom |Callbacks|, CMake can submit instrumentation
+data to `CDash`_, or generate a |Google Trace File| for visualization.
 
-Data Collection
+.. _`cmake-instrumentation Data Collection`:
+
+数据收集
 ---------------
 
-每当在启用插桩的情况下执行命令时，会在项目构建树中创建一个\ `v1 Snippet File`_ ，其中包含\
-该命令的特定数据。这些文件会一直保留到\ `索引`_\ 操作完成之后。
+每当在启用插桩的情况下执行命令时，会在项目构建树中创建一个\ |v1 Snippet File|，其中包含\
+该命令的特定数据。这些文件会一直保留到\ |Indexing|\ 操作完成之后。
 
 CMake sets the :prop_gbl:`RULE_LAUNCH_COMPILE`, :prop_gbl:`RULE_LAUNCH_LINK`
 and :prop_gbl:`RULE_LAUNCH_CUSTOM` global properties to wrap each compile, link
 and custom command invocation in a launcher that performs instrumentation and
-writes out a `v1 Snippet File`_. If the project has been configured with
+writes out a |v1 Snippet File|. If the project has been configured with
 :module:`CTestUseLaunchers`, the launcher will collect instrumentation data in
 addition to performing the communication typically handled by that module.
 
@@ -63,10 +76,10 @@ addition to performing the communication typically handled by that module.
 
 Indexing is the process of collating generated instrumentation data. The
 available hooks to trigger indexing include options such as after every build,
-or every :manual:`ctest <ctest(1)>` invocation, and are configured as part of the `v1查询文件`_.
+or every :manual:`ctest <ctest(1)>` invocation, and are configured as part of the |v1 Query Files|.
 Whenever a hook is triggered, an index file is generated containing a list of
 snippet files newer than the previous indexing. This index file is passed to
-user-defined `回调函数`_ commands to process the data.
+user-defined |Callbacks| commands to process the data.
 
 也可以通过手动调用\ :option:`ctest --collect-instrumentation`\ 来生成索引。
 
@@ -75,16 +88,16 @@ user-defined `回调函数`_ commands to process the data.
 回调函数
 ^^^^^^^^^
 
-作为\ `v1查询文件`_\ 的一部分，用户可以提供一个回调函数列表，用于处理此功能收集的数据。
+作为\ |v1 Query Files|\ 的一部分，用户可以提供一个回调函数列表，用于处理此功能收集的数据。
 
-Whenever `索引`_ occurs, each provided callback is executed, passing the
-path to the generated `v1索引文件`_ as an additional argument.
+Whenever |Indexing| occurs, each provided callback is executed, passing the
+path to the generated |v1 Indexing File| as an additional argument.
 
 这些回调函数可以在用户级别或项目级别定义，应该读取插桩数据并执行任何所需的处理。一旦所有回调\
 函数执行完毕，CMake会自动删除索引文件及其列出的片段文件。请注意，回调函数绝不应手动移动或\
 删除这些数据文件，因为其他回调函数可能还需要它们。
 
-If indexing is triggered again before `回调函数`_ have finished running,
+If indexing is triggered again before |Callbacks| have finished running,
 the generated index file will contain only instrumentation data generated since
 the previous indexing.
 
@@ -93,7 +106,7 @@ the previous indexing.
 
 Instrumentation can be enabled either for an individual CMake project, or
 for all CMake projects configured and built by a user. In all cases, a "query"
-represents a request for instrumentation behavior. See the `v1查询文件`_
+represents a request for instrumentation behavior. See the |v1 Query Files|
 for details on configuring this feature.
 
 在项目级别启用插桩功能
@@ -142,7 +155,7 @@ environment variable. Doing so automatically enables the
 默认情况下，报告给CDash的命令行在第一个空格处截断。你可以通过将\
 :envvar:`CTEST_USE_VERBOSE_INSTRUMENTATION`\ 设置为1来选择报告完整的命令行（包括参数）。
 
-Alternatively, you can use the `v1查询文件`_ to enable instrumentation for
+Alternatively, you can use the |v1 Query Files| to enable instrumentation for
 CDash using the ``cdashSubmit`` and ``cdashVerbose`` options.
 
 In order for the submitted ``Build.xml`` file to group the snippet files
@@ -175,21 +188,21 @@ command arguments.
 
 ``data/``
   存放项目上收集的插桩数据。CMake 拥有所有数据文件，其他进程绝不应删除它们。这里收集的数据会\
-  一直保留，直到\ `索引`_\ 操作完成且所有\ `回调函数`_\ 执行完毕。
+  一直保留，直到\ |Indexing|\ 操作完成且所有\ |Callbacks|\ 执行完毕。
 
 ``data/index/``
   A subset of the collected data, containing any
-  `v1 Index Files <v1索引文件_>`_.
+  |v1 Indexing Files|.
 
 ``data/content/``
   A subset of the collected data, containing any
-  `v1 CMake Content Files <v1 CMake Content File_>`_.
+  |v1 CMake Content Files|.
 
 ``data/trace/``
-  A subset of the collected data, containing the `Google Trace File`_ created
-  from the most recent `索引`_. Unlike other data files, the most recent
-  trace file remains even after `索引`_ occurs and all `回调函数`_ are
-  executed, until the next time `索引`_ occurs.
+  A subset of the collected data, containing the |Google Trace File| created
+  from the most recent |Indexing|. Unlike other data files, the most recent
+  trace file remains even after |Indexing| occurs and all |Callbacks| are
+  executed, until the next time |Indexing| occurs.
 
 ``cdash/``
   存放内部用于生成要提交给CDash的XML内容的临时文件。
@@ -208,12 +221,12 @@ v1查询文件
   要生成的片段文件的数据版本，一个整数。目前仅支持版本\ ``1``。
 
 ``callbacks``
-  用于处理收集的插桩数据的\ `回调函数`_\ 的命令行字符串列表。每当执行这些回调时，\
-  `v1索引文件`_\ 的完整路径将附加到字符串中包含的参数后面。
+  用于处理收集的插桩数据的\ |Callbacks|\ 的命令行字符串列表。每当执行这些回调时，\
+  |v1 Indexing File|\ 的完整路径将附加到字符串中包含的参数后面。
 
 ``hooks``
-  一个字符串列表，指定\ `索引`_\ 应自动发生的时间。这些是应该整理插桩数据并调用用户\
-  `回调函数`_\ 来处理数据的时间间隔。此列表中的元素应该是以下之一：
+  一个字符串列表，指定\ |Indexing|\ 应自动发生的时间。这些是应该整理插桩数据并调用用户\
+  |Callbacks|\ 来处理数据的时间间隔。此列表中的元素应该是以下之一：
 
   * ``postGenerate``
   * ``preBuild`` (在调用\ ``ninja``\ 或\ ``make``\ 时调用)
@@ -235,11 +248,11 @@ v1查询文件
   the following:
 
     ``staticSystemInformation``
-      启用收集运行CMake的主机的静态信息。此数据在\ `索引`_\ 期间收集，并包含在生成的\
-      `v1索引文件`_\ 中。
+      启用收集运行CMake的主机的静态信息。此数据在\ |Indexing|\ 期间收集，并包含在生成的\
+      |v1 Indexing File|\ 中。
 
     ``dynamicSystemInformation``
-      启用收集运行CMake的主机的动态信息。为CMake生成的每个\ `v1 Snippet File`_\ 收集数据，\
+      启用收集运行CMake的主机的动态信息。为CMake生成的每个\ |v1 Snippet File|\ 收集数据，\
       包括命令执行前后的信息。
 
     ``cdashSubmit``
@@ -254,8 +267,8 @@ v1查询文件
       :envvar:`CTEST_USE_INSTRUMENTATION` environment variables enabled.
 
     ``trace``
-      Enables generation of a `Google Trace File`_ during `索引`_ to
-      visualize data from the `v1 Snippet Files <v1 Snippet File_>`_ collected.
+      Enables generation of a |Google Trace File| during |Indexing| to
+      visualize data from the |v1 Snippet Files| collected.
 
 The ``callbacks`` listed will be invoked during the specified hooks
 *at a minimum*. When there are multiple query files, the ``callbacks``,
@@ -301,7 +314,7 @@ The commands ``/usr/bin/python callback.py index-<timestamp>.json`` and
 executed in that order. The index file will contain the
 ``staticSystemInformation`` data and each snippet file listed in the index will
 contain the ``dynamicSystemInformation`` data. Additionally, the index file
-will contain the path to the generated `Google Trace File`_. Once both
+will contain the path to the generated |Google Trace File|. Once both
 callbacks have completed, the index file and data files listed by it (including
 snippet files, but not the trace file) will be deleted from the project build
 tree. The instrumentation data will be present in the XML files submitted to
@@ -314,17 +327,17 @@ Data v1
 =======
 
 Data version specifies the contents of the output files generated by the CMake
-instrumentation API as part of the `Data Collection`_ and `索引`_. A new
+instrumentation API as part of the |Data Collection| and |Indexing|. A new
 version number will be created whenever previously included data is removed or
 reformatted such that scripts written to parse this data may become
 incompatible with the new format. There are four types of data files generated:
-the `v1 Snippet File`_, `v1索引文件`_, `v1 CMake Content File`_, and the
-`Google Trace File`_. When using the `API v1`_, these files live in
+the |v1 Snippet File|, |v1 Indexing File|, |v1 CMake Content File|, and the
+|Google Trace File|. When using the `API v1`_, these files live in
 ``<build>/.cmake/instrumentation/v1/data/`` under the project build tree.
 
 .. _`cmake-instrumentation v1 Snippet File`:
 
-v1 Snippet File
+v1片段文件
 ---------------
 
 片段文件会为CMake构建或安装步骤中调用的每个编译、链接和自定义命令生成，并包含有关执行命令的\
@@ -338,7 +351,7 @@ v1 Snippet File
   :ref:`run tests <Run Tests>` (even if no tests are found)
 * :manual:`ctest <ctest(1)>`\ 执行的每个单独测试。
 
-这些文件会一直保留在构建树中，直到\ `索引`_\ 操作完成且任何用户指定的\ `回调函数`_\ 执行完毕。
+这些文件会一直保留在构建树中，直到\ |Indexing|\ 操作完成且任何用户指定的\ |Callbacks|\ 执行完毕。
 
 .. note::
 
@@ -417,7 +430,7 @@ v1 Snippet File
 
   ``dynamicSystemInformation``
     指定收集的有关运行CMake的主机的动态信息。为CMake生成的每个片段文件收集数据，包括命令执行\
-    前后的数据。仅当由\ `v1查询文件`_\ 启用时包含。
+    前后的数据。仅当由\ |v1 Query Files|\ 启用时包含。
 
     ``beforeHostMemoryUsed``
       在\ ``timeStart``\ 时使用的主机内存，以KiB为单位。
@@ -434,7 +447,7 @@ v1 Snippet File
       be determined.
 
   ``cmakeContent``
-    The path to a `v1 CMake Content File`_ located under ``data``, which
+    The path to a |v1 CMake Content File| located under ``data``, which
     contains information about the CMake configure and generate steps
     responsible for generating the ``command`` in this snippet. When using
     :manual:`cmake-gui(1)` or :manual:`ccmake(1)`, this field may be ``null``
@@ -472,11 +485,13 @@ Example:
     "cmakeContent" : "content/cmake-2025-07-11T12-46-32-0572.json"
   }
 
+.. _`cmake-instrumentation v1 Indexing File`:
+
 v1索引文件
 -------------
 
-索引文件包含一个\ `v1 Snippet Files <v1 Snippet File_>`_\ 列表。它作为导航插桩数据的入口点。每当\ `索引`_\ 操作发生\
-时生成，并在任何用户指定的\ `回调函数`_\ 执行完毕后删除。
+索引文件包含一个\ |v1 Snippet File|\ 列表。它作为导航插桩数据的入口点。每当\ |Indexing|\ 操作发生\
+时生成，并在任何用户指定的\ |Callbacks|\ 执行完毕后删除。
 
 ``version``
   索引文件的数据版本，一个整数。目前版本始终为\ ``1``。
@@ -488,7 +503,7 @@ v1索引文件
   ``<build>/.cmake/instrumentation/v1/data/``\ 目录的完整路径。
 
 ``hook``
-  负责生成索引文件的钩子名称。除了可以由\ `v1查询文件`_\ 指定的钩子之外，如果通过调用\
+  负责生成索引文件的钩子名称。除了可以由\ |v1 Query Files|\ 指定的钩子之外，如果通过调用\
   :option:`ctest --collect-instrumentation`\ 执行索引，此值可能设置为\ ``manual``。
 
   Note that the hook is not directly tied to what data may be available.
@@ -496,7 +511,7 @@ v1索引文件
   snippets, if these steps were run since the previous indexing.
 
 ``snippets``
-  包含一个\ `v1 Snippet Files <v1 Snippet File_>`_\ 列表。这包括自上一个索引文件创建以来生成的所有片段文件。文件路径\
+  包含一个\ |v1 Snippet File|\ 列表。这包括自上一个索引文件创建以来生成的所有片段文件。文件路径\
   相对于\ ``dataDir``。
 
   This list may be empty if indexing was run twice in succession, such as when
@@ -504,9 +519,9 @@ v1索引文件
   enabled.
 
 ``trace``
-  Contains the path to the `Google Trace File`_. This includes data from all
+  Contains the path to the |Google Trace File|. This includes data from all
   corresponding ``snippets`` in the index file. The file path is relative to
-  ``dataDir``. Only included when enabled by the `v1查询文件`_.
+  ``dataDir``. Only included when enabled by the |v1 Query Files|.
 
 ``staticSystemInformation``
   Specifies the static information collected about the host machine
@@ -514,7 +529,7 @@ v1索引文件
   given field, it will be ``null``. See :command:`cmake_host_system_information`
   for a description of each of the following fields.
 
-  Only included when enabled by the `v1查询文件`_.
+  Only included when enabled by the |v1 Query Files|.
 
   * ``OSName``
   * ``OSPlatform``
@@ -561,11 +576,11 @@ v1索引文件
 
 .. _`cmake-instrumentation v1 CMake Content File`:
 
-v1 CMake Content File
+v1 CMake内容文件
 ---------------------
 
 CMake content files contain information about the CMake configure and generate
-steps. Each `v1 Snippet File`_ provides the path to one of these files
+steps. Each |v1 Snippet File| provides the path to one of these files
 corresponding to the CMake invocation responsible for generating its command.
 
 Each CMake content file contains the following:
@@ -592,40 +607,40 @@ Each CMake content file contains the following:
 
 .. _`cmake-instrumentation Google Trace File`:
 
-Google Trace File
+Google跟踪文件
 -----------------
 
 CMake can generate a file in the `Google Trace Event Format`_ to help visualize
 collected instrumentation data. Enabling the ``trace`` option in the
-`v1查询文件`_ causes such a file to be generated under
-``<build>/.cmake/v1/instrumentation/data/trace`` whenever `索引`_ occurs.
+|v1 Query Files| causes such a file to be generated under
+``<build>/.cmake/v1/instrumentation/data/trace`` whenever |Indexing| occurs.
 
 Generated trace files include data from all
-`v1 Snippet Files <v1 Snippet File_>`_ listed in the current index file.
+|v1 Snippet Files| listed in the current index file.
 
-When instrumentation data is deleted by CMake after `索引`_, the most
+When instrumentation data is deleted by CMake after |Indexing|, the most
 recent trace file remains so that it can be manually inspected without the need
-for any custom `回调函数`_.
+for any custom |Callbacks|.
 
 Trace files are stored in the ``JSON Array Format``, where each
-`v1 Snippet File`_ corresponds to a single trace event object. Each trace
+|v1 Snippet File| corresponds to a single trace event object. Each trace
 event contains the following data:
 
 ``name``
   A descriptive name generated by CMake based on the given snippet data.
 
 ``cat``
-  The ``role`` from the `v1 Snippet File`_.
+  The ``role`` from the |v1 Snippet File|.
 
 ``ph``
   Currently, always ``"X"`` to represent "Complete Events".
 
 ``ts``
-  The ``timeStart`` from the `v1 Snippet File`_, converted from milliseconds to
+  The ``timeStart`` from the |v1 Snippet File|, converted from milliseconds to
   microseconds.
 
 ``dur``
-  The ``duration`` from the `v1 Snippet File`_, converted from milliseconds to
+  The ``duration`` from the |v1 Snippet File|, converted from milliseconds to
   microseconds.
 
 ``pid``
@@ -638,7 +653,7 @@ event contains the following data:
   order to produce a more useful visualization of the process concurrency.
 
 ``args``
-  Contains all data from the `v1 Snippet File`_ corresponding to this trace
+  Contains all data from the |v1 Snippet File| corresponding to this trace
   event.
 
 .. _`Google Trace Event Format`: https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
