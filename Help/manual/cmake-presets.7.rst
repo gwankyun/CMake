@@ -714,18 +714,16 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 .. _`CMakePresets test jobs`:
 
   ``jobs``
-    An optional integer. Equivalent to passing
-    :option:`--parallel <ctest --parallel>` on the command line. If the value
-    is ``0``, it is equivalent to unbounded parallelism.
+    一个可选的整数。等同于在命令行上传递\
+    :option:`--parallel <ctest --parallel>`\ 选项。如果值为\ ``0``，则等同于无限\
+    制的并行度。
 
-    In preset files specifying version ``11`` or above, this field can also be
-    a string, in which case it must be empty, and is equivalent to passing
-    ``--parallel`` with ``<jobs>`` omitted.
+    在指定版本\ ``11``\ 或更高的预设文件中，此字段也可以是字符串，在这种情况下它\
+    必须为空，等同于传递\ ``--parallel``\ 时省略\ ``<jobs>``。
 
     .. versionchanged:: 4.3
 
-      This field does not accept negative integer values, regardless of the
-      version in the preset file.
+      此字段不接受负整数值，无论预设文件中的版本如何。
 
   ``resourceSpecFile``
     可选字符串。相当于在命令行上传递\
@@ -879,22 +877,18 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
   .. note::
 
-    Due to problems with the implementation, this field does not affect the
-    name of the final package file produced.  Other aspects of the package
-    may use the value though, leading to inconsistencies.
-    A future CMake release may address this problem, but until then, it is
-    recommended that this field not be used.
+    由于实现上的问题，此字段不会影响最终生成的包文件的名称。不过，包的其他方面\
+    可能会使用该值，从而导致不一致。
+    未来的CMake版本可能会解决此问题，但在此之前，建议不要使用此字段。
 
 ``packageVersion``
   表示包版本的可选字符串。
 
   .. note::
 
-    Due to problems with the implementation, this field does not affect the
-    name of the final package file produced.  Other aspects of the package
-    may use the value though, leading to inconsistencies.
-    A future CMake release may address this problem, but until then, it is
-    recommended that this field not be used.
+    由于实现上的问题，此字段不会影响最终生成的包文件的名称。不过，包的其他方面\
+    可能会使用该值，从而导致不一致。
+    未来的CMake版本可能会解决此问题，但在此之前，建议不要使用此字段。
 
 ``packageDirectory``
   一个可选字符串，表示放置包的目录。
@@ -1092,41 +1086,39 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 版本
 ========
 
-The JSON schema of ``CMakePresets.json`` and ``CMakeUserPresets.json``
-follows a version scheme where new versions are added and allowed in newer
-versions of CMake.
+``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的JSON架构遵循一个版本方案，\
+其中新版本会在较新的CMake版本中添加和允许使用。
 
-A list of the supported versions along with the version of CMake in which
-they were added and a summary of the new features and changes is given below.
+以下列出了支持的版本以及它们在哪个CMake版本中添加，同时提供了新特性和变更的摘要。
 
   ``1``
     .. versionadded:: 3.19
 
-    The initial version supports |configure-preset|
-    and |macro-expansion|.
+    初始版本支持\ |configure-preset|\ 和\ |macro-expansion|。
 
   ``2``
     .. versionadded:: 3.20
 
-    * |build-preset| were added.
-    * |test-preset| were added.
+    * 添加了\ |build-preset|。
+    * 添加了\ |test-preset|。
 
   ``3``
     .. versionadded:: 3.21
 
-    * The |condition| object was added for :ref:`配置 <CMakePresets configure-preset>`,
-      :ref:`构建 <CMakePresets build-preset>`, and |test-preset|.
-    * Changes to |configure-preset|
+    * 为\ :ref:`配置 <CMakePresets configure-preset>`、\
+      :ref:`构建 <CMakePresets build-preset>`\ 和\ |test-preset|\ 添加了\
+      |condition|\ 对象。
+    * 对\ |configure-preset|\ 的更改
 
-      * The `installDir <CMakePresets installDir_>`_ field was added.
-      * The `toolchainFile <CMakePresets toolchainFile_>`_ field was added.
-      * The `binaryDir <CMakePresets binaryDir_>`_ field is now optional.
-      * The `generator <CMakePresets generator_>`_ field is now optional.
+      * 添加了\ `installDir <CMakePresets installDir_>`_\ 字段。
+      * 添加了\ `toolchainFile <CMakePresets toolchainFile_>`_\ 字段。
+      * `binaryDir <CMakePresets binaryDir_>`_\ 字段现在是可选的。
+      * `generator <CMakePresets generator_>`_\ 字段现在是可选的。
 
-    * Changes to |macro-expansion|
 
-      * The `${hostSystemName} <CMakePresets hostSystemName_>`_ macro was
-        added.
+    * 对\ |macro-expansion|\ 的更改
+
+      * 添加了\ `${hostSystemName} <CMakePresets hostSystemName_>`_\ 宏。
 
   ``4``
     .. versionadded:: 3.23
