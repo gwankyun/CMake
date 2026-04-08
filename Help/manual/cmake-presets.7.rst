@@ -1123,85 +1123,84 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
   ``4``
     .. versionadded:: 3.23
 
-    * |includes| were added to support including other JSON files in
-      ``CMakePresets.json`` and ``CMakeUserPresets.json``.
-    * Changes to |build-preset|
+    * 添加了\ |includes|\ 以支持在\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\
+      中包含其他JSON文件。
+    * 对\ |build-preset|\ 的更改
 
-      * The
-        `resolvePackageReferences <CMakePresets resolvePackageReferences_>`_
-        field was added.
+      * 添加了\
+        `resolvePackageReferences <CMakePresets resolvePackageReferences_>`_\
+        字段。
 
-    * Changes to |macro-expansion|
+    * 对\ |macro-expansion|\ 的更改
 
-      * The `${fileDir} <CMakePresets fileDir_>`_ macro was added.
+      * 添加了\ `${fileDir} <CMakePresets fileDir_>`_\ 宏。
 
   ``5``
     .. versionadded:: 3.24
 
-    * Changes to |test-preset|
+    * 对\ |test-preset|\ 的更改
 
-      * The `testOutputTruncation <CMakePresets testOutputTruncation_>`_
-        field was added to the `output <CMakePresets output_>`_ object.
+      * 向\ `output <CMakePresets output_>`_\ 对象添加了\
+        `testOutputTruncation <CMakePresets testOutputTruncation_>`_\ 字段。
 
-    * Changes to |macro-expansion|
+    * 对\ |macro-expansion|\ 的更改
 
-      * The `${pathListSep} <CMakePresets pathListSep_>`_ macro was added.
+      * 添加了\ `${pathListSep} <CMakePresets pathListSep_>`_\ 宏。
 
   ``6``
     .. versionadded:: 3.25
 
-    * |package-preset| were added.
-    * `Workflow Presets <Workflow Preset_>`_ were added.
-    * Changes to |test-preset|
+    * 添加了\ |package-preset|。
+    * 添加了\ `工作流预设 <Workflow Preset_>`_。
+    * 对\ |test-preset|\ 的更改
 
-      * The `outputJUnitFile <CMakePresets outputJUnitFile_>`_ field was added
-        to the `output <CMakePresets output_>`_ object.
+      * 向\ `output <CMakePresets output_>`_\ 对象添加了\
+        `outputJUnitFile <CMakePresets outputJUnitFile_>`_\ 字段。
 
   ``7``
     .. versionadded:: 3.27
 
-    * Changes to |configure-preset|
+    * 对\ |configure-preset|\ 的更改
 
-      * The `trace <CMakePresets trace_>`_ field was added.
+      * 添加了\ `trace <CMakePresets trace_>`_\ 字段。
 
-    * Changes to |includes|
+    * 对\ |includes|\ 的更改
 
-      * The ``include`` field now supports ``$penv{}`` |macro-expansion|.
+      * ``include``\ 字段现在支持\ ``$penv{}``\ |macro-expansion|。
 
   ``8``
     .. versionadded:: 3.28
 
-    * The `$schema <CMakePresets schema_>`_ field was added to the root object.
+    * 向根对象添加了\ `$schema <CMakePresets schema_>`_\ 字段。
 
   ``9``
     .. versionadded:: 3.30
 
-    * Changes to |includes|
+    * 对\ |includes|\ 的更改
 
-      * The ``include`` field now supports other types of |macro-expansion|.
+      * ``include``\ 字段现在支持其他类型的\ |macro-expansion|。
 
   ``10``
     .. versionadded:: 3.31
 
-    * The optional ``$comment`` field was added to support documentation
-      throughout ``CMakePresets.json`` and ``CMakeUserPresets.json``.
-    * Changes to |configure-preset|:
+    * 添加了可选的\ ``$comment``\ 字段，以支持在整个\ ``CMakePresets.json``\ 和\
+      ``CMakeUserPresets.json``\ 中添加文档。
+    * 对\ |configure-preset|\ 的更改：
 
-      * The `graphviz <CMakePresets graphviz_>`_ field was added.
+      * 添加了\ `graphviz <CMakePresets graphviz_>`_\ 字段。
 
   ``11``
-    .. versionadded:: 4.3
+    .. versionadded
 
-    * Changes to |test-preset|
+    * 对\ |test-preset|\ 的更改
 
-      * The `jobs <CMakePresets test jobs_>`_ field now accepts an empty string
-        representing :option:`--parallel <ctest --parallel>` with ``<jobs>``
-        omitted.
+      * `jobs <CMakePresets test jobs_>`_\ 字段现在接受一个空字符串，\
+        表示省略\ ``<jobs>``\ 的\ :option:`--parallel <ctest --parallel>`。
 
 .. _`CMakePresets-Schema`:
 
 模式
 ======
 
-:download:`This file </manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\
+:download:`此文件 </manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\
 格式提供了一个机器可读的JSON模式。
