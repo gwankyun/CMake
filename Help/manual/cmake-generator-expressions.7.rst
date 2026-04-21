@@ -48,8 +48,8 @@ cmake-generator-expressions(7)
 
 .. code-block:: cmake
 
-  # WRONG: Embedded space will be treated as an argument separator.
-  # This ends up not being seen as a generator expression at all.
+  # 错误：嵌入的空格会被视为参数分隔符。
+  # 这最终根本不会被视为生成器表达式。
   add_custom_target(run_some_tool
     COMMAND some_tool -I$<JOIN:$<TARGET_PROPERTY:tgt,INCLUDE_DIRECTORIES>, -I>
     VERBATIM
@@ -57,9 +57,8 @@ cmake-generator-expressions(7)
 
 .. code-block:: cmake
 
-  # Better, but still not robust. Quotes prevent the space from splitting the
-  # expression. However, the tool will receive the expanded value as a single
-  # argument.
+  # 更好，但仍然不够健壮。引号防止空格分割表达式。然而，工具会将展开后的值作为
+  # 单个参数接收。
   add_custom_target(run_some_tool
     COMMAND some_tool "-I$<JOIN:$<TARGET_PROPERTY:tgt,INCLUDE_DIRECTORIES>, -I>"
     VERBATIM
@@ -67,11 +66,9 @@ cmake-generator-expressions(7)
 
 .. code-block:: cmake
 
-  # Nearly correct. Using a semicolon to separate arguments and adding the
-  # COMMAND_EXPAND_LISTS option means that paths with spaces will be handled
-  # correctly. Quoting the whole expression ensures it is seen as a generator
-  # expression. But if the target property is empty, we will get a bare -I
-  # with nothing after it.
+  # 近乎正确。使用分号分隔参数并添加 COMMAND_EXPAND_LISTS 选项意味着包含空格的
+  # 路径会被正确处理。对整个表达式加引号确保它被视为生成器表达式。但如果目标属性
+  # 为空，我们会得到一个后面没有内容的裸 -I。
   add_custom_target(run_some_tool
     COMMAND some_tool "-I$<JOIN:$<TARGET_PROPERTY:tgt,INCLUDE_DIRECTORIES>,;-I>"
     COMMAND_EXPAND_LISTS
@@ -82,8 +79,8 @@ cmake-generator-expressions(7)
 
 .. code-block:: cmake
 
-  # The $<BOOL:...> check prevents adding anything if the property is empty,
-  # assuming the property value cannot be one of CMake's false constants.
+  # $<BOOL:...> 检查可防止在属性为空时添加任何内容，  
+  # 假设属性值不能是 CMake 的假常量之一。
   set(prop "$<TARGET_PROPERTY:tgt,INCLUDE_DIRECTORIES>")
   add_custom_target(run_some_tool
     COMMAND some_tool "$<$<BOOL:${prop}>:-I$<JOIN:${prop},;-I>>"
@@ -101,8 +98,7 @@ cmake-generator-expressions(7)
     VERBATIM
   )
 
-For tools that expect ``-I``'s value to be a separate argument, use the
-semicolon trick learned earlier:
+对于期望\ ``-I``\ 的值作为单独参数的工具，请使用前面学到的分号技巧：
 
 .. code-block:: cmake
 
@@ -116,8 +112,7 @@ semicolon trick learned earlier:
 
 .. code-block:: cmake
 
-  # WRONG: New lines and spaces all treated as argument separators, so the
-  # generator expression is split and not recognized correctly.
+  # 错误：换行符和空格都被视为参数分隔符，因此生成器表达式会被分割且无法被正确识别。
   target_compile_definitions(tgt PRIVATE
     $<$<AND:
         $<CXX_COMPILER_ID:GNU>,
@@ -239,8 +234,8 @@ semicolon trick learned earlier:
 
 .. genex:: $<NOT:condition>
 
-  ``condition`` must be ``0`` or ``1``.  The result of the expression is
-  ``0`` if ``condition`` is ``1``, else ``1``.
+  ``condition``\ 必须是\ ``0``\ 或\ ``1``。该表达式的结果为：若\ ``condition``\
+  是\ ``1``，则结果为\ ``0``；否则为\ ``1``。
 
 .. versionadded:: 3.28
 
@@ -254,7 +249,7 @@ semicolon trick learned earlier:
 CMake支持各种生成器表达式进行比较。本节将介绍主要的和最广泛使用的比较类型。\
 其他更具体的比较类型将在后面单独的部分中进行说明。
 
-Numeric Comparisons
+数值比较
 ^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<EQUAL:value1,value2>
