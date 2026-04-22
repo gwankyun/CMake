@@ -620,6 +620,11 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  了一个名为\ ``MYVAR``\ 的变量为\ ``1``，但用户通过\ ``-D``\ 参数将其设置为\ ``2``，\
  那么值\ ``2``\ 是首选值。
 
+ .. versionadded:: 3.21
+   The ``-B`` option may optionally be specified with a different binary
+   directory than the one specified by the ``binaryDir`` key of the
+   configure preset.
+
 .. option:: --list-presets[=<type>]
 
  列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值是\ ``configure``、\
@@ -699,8 +704,8 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
   after ``--build``。当前\
   工作目录必须包含CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>`。
 
-.. versionchanged:: 4.3
-  ``cmake --build`` now supports specifying a build directory and
+  .. versionadded:: 4.3
+    ``cmake --build`` now supports specifying a build directory and
     preset together.
 
 .. option:: --list-presets

@@ -59,7 +59,16 @@ CMake使用工具链来编译、链接库和创建存档，以及其他任务来
 :variable:`CMAKE_<LANG>_COMPILER_VERSION`
   编译器的版本。
 :variable:`CMAKE_<LANG>_FLAGS`
-  变量和特定于配置的等效物，包含在编译特定语言的文件时将被添加到编译命令中的标志。
+  These variables and the configuration-specific equivalents contain flags that
+  will be added to all invocations of the compiler for a particular language,
+  including those driving compiling and linking.
+
+:variable:`CMAKE_<LANG>_LINK_FLAGS`
+  .. versionadded:: 4.3
+
+  These variables and the configuration-specific equivalents contain flags that
+  will be added to all invocations of the compiler for a particular language
+  when driving linking only.
 
 CMake需要一种方法来确定使用哪个编译器来调用链接器。这是由\
 :manual:`目标 <cmake-buildsystem(7)>`\ 源文件的\ :prop_sf:`LANGUAGE`\ 属性决定的，\

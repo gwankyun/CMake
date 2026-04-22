@@ -35,4 +35,9 @@ add_link_options
 * :command:`target_link_options`
 
 * :variable:`CMAKE_<LANG>_FLAGS`\ 和\ :variable:`CMAKE_<LANG>_FLAGS_<CONFIG>`\
-  添加传递给编译器所有调用的语言范围的标志。这包括驱动编译的调用和驱动链接的调用。
+  添加传递给编译器所有调用的语言范围的标志。这包括驱动编译的调用和驱动链接的调用
+
+* .. versionadded:: 4.3
+    :variable:`CMAKE_<LANG>_LINK_FLAGS` and
+    :variable:`CMAKE_<LANG>_LINK_FLAGS_<CONFIG>` add language-wide flags passed
+    to all invocations of the compiler which drive linking.

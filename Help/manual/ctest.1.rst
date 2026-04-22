@@ -48,6 +48,11 @@ ctest(1)
  使用测试预设来指定测试选项。项目二进制目录是从\ ``configurePreset``\ 键推断出来的。当前工\
  作目录必须包含CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>`。
 
+ .. versionadded:: 3.30
+   The ``--test-dir`` option may optionally be specified with a different
+   binary directory than the one specified by the ``configurePreset`` key
+   of the test preset.
+
 .. option:: --list-presets
 
  列出可用的测试预设。当前工作目录必须包含CMake预置文件。
