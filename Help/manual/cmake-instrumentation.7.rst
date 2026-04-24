@@ -77,9 +77,9 @@ addition to performing the communication typically handled by that module.
 Indexing is the process of collating generated instrumentation data. The
 available hooks to trigger indexing include options such as after every build,
 or every :manual:`ctest <ctest(1)>` invocation, and are configured as part of
-the `v1 Query Files`_. Whenever a hook is triggered, an index file is generated
+the |v1 Query Files|. Whenever a hook is triggered, an index file is generated
 containing a list of snippet files newer than the previous indexing. This index
-file is passed to user-defined `Callbacks`_ commands to process the data.
+file is passed to user-defined |Callbacks| commands to process the data.
 
 也可以通过手动调用\ :option:`ctest --collect-instrumentation`\ 来生成索引。
 
@@ -618,8 +618,8 @@ Google跟踪文件
 
 CMake can generate a file in the `Google Trace Event Format`_ to help visualize
 collected instrumentation data. Enabling the ``trace`` option in the
-`v1 Query Files`_ causes such a file to be generated under
-``<build>/.cmake/instrumentation/v1/data/trace`` whenever `Indexing`_ occurs.
+|v1 Query Files| causes such a file to be generated under
+``<build>/.cmake/instrumentation/v1/data/trace`` whenever |Indexing| occurs.
 
 Generated trace files include data from all
 |v1 Snippet Files| listed in the current index file.

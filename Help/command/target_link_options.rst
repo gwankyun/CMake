@@ -64,4 +64,4 @@ target_link_options
     :variable:`CMAKE_<LANG>_LINK_FLAGS_<CONFIG>` add language-wide flags passed
     to all invocations of the compiler which drive linking.
 
-* :module:`CheckLinkerFlag`\ 模块用于检查编译器是否支持某个链接器标志
+* :module:`CheckLinkerFlag`\ 模块用于检查编译器是否支持某个链接器标志。
