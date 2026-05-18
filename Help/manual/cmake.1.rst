@@ -212,145 +212,136 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --graphviz=<file>
 
-  Generate `Graphviz <https://www.graphviz.org/>`_ of dependencies
+  生成依赖关系的\ `Graphviz <https://www.graphviz.org/>`_\ 图表
 
-  This option generates a graphviz input file that will contain all the
-  library and executable dependencies in the project showing the
-  dependencies between the targets in a project, as well as external libraries
-  which are linked against.
+  该选项会生成一个graphviz输入文件，其中包含项目中所有库和可执行文件的依赖关系，\
+  用于展示项目内各目标之间的依赖，以及所链接的外部库。
 
-  When running CMake with the ``--graphviz=foo.dot`` option, it produces:
+  使用\ ``--graphviz=foo.dot``\ 选项运行CMake时，将生成：
 
-  * a ``foo.dot`` file, showing all dependencies in the project
-  * a ``foo.dot.<target>`` file for each target, showing on which other targets
-    it depends
-  * a ``foo.dot.<target>.dependers`` file for each target, showing which other
-    targets depend on it
+  * ``foo.dot``\ 文件：显示项目中的所有依赖关系
+  * 针对每个目标的\ ``foo.dot.<target>``\ 文件：显示该目标依赖于其他哪些目标
+  * 针对每个目标的\ ``foo.dot.<target>.dependers``\ 文件：显示其他哪些目标依赖于该目标
 
-  Those .dot files can be converted to images using the *dot* command from the
-  Graphviz package:
+  可以使用Graphviz包中的\ *dot*\ 命令将这些.dot文件转换为图像：
 
   .. code-block:: shell
 
     dot -Tpng -o foo.png foo.dot
 
   .. versionadded:: 3.10
-    The different dependency types ``PUBLIC``, ``INTERFACE`` and ``PRIVATE``
-    are represented as solid, dashed and dotted edges.
+    不同的依赖类型\ ``PUBLIC``、\ ``INTERFACE``\ 和\ ``PRIVATE``\ 将分别以实线、虚线和点线表示。
 
-  .. rubric:: Variables specific to the Graphviz support
+  .. rubric:: Graphviz支持专用变量
 
-  The resulting graphs can be huge.  The look and content of the generated graphs
-  can be controlled using the file ``CMakeGraphVizOptions.cmake``.  This file is
-  first searched in :variable:`CMAKE_BINARY_DIR`, and then in
-  :variable:`CMAKE_SOURCE_DIR`.  If found, the variables set in it are used to
-  adjust options for the generated Graphviz files.
+  生成的图表可能非常庞大。可以通过\ ``CMakeGraphVizOptions.cmake``\ 文件来控制生成图表的外观和内容。\
+  CMake会首先在\ :variable:`CMAKE_BINARY_DIR`\ 中查找该文件，然后在\ :variable:`CMAKE_SOURCE_DIR`\
+  中查找。如果找到，其中设置的变量将用于调整生成的Graphviz文件选项。
 
   .. variable:: GRAPHVIZ_GRAPH_NAME
 
-    The graph name.
+    图表名称。
 
-    * Mandatory: NO
-    * Default: value of :variable:`CMAKE_PROJECT_NAME`
+    * 是否必须：否
+    * 默认值：:variable:`CMAKE_PROJECT_NAME`\ 的值
 
   .. variable:: GRAPHVIZ_GRAPH_HEADER
 
-    The header written at the top of the Graphviz files.
+    写入Graphviz文件顶部的头部信息。
 
-    * Mandatory: NO
-    * Default: "node [ fontsize = "12" ];"
+    * 是否必须：否
+    * 默认值："node [ fontsize = "12" ];"
 
   .. variable:: GRAPHVIZ_NODE_PREFIX
 
-    The prefix for each node in the Graphviz files.
+    Graphviz 文件中每个节点的前缀。
 
-    * Mandatory: NO
-    * Default: "node"
+    * 是否必须：否
+    * 默认值："node"
 
   .. variable:: GRAPHVIZ_EXECUTABLES
 
-    Set to FALSE to exclude executables from the generated graphs.
+    设置为FALSE可从生成的图表中排除可执行文件。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_STATIC_LIBS
 
-    Set to FALSE to exclude static libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除静态库。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_SHARED_LIBS
 
-    Set to FALSE to exclude shared libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除共享库（动态库）。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_MODULE_LIBS
 
-    Set to FALSE to exclude module libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除模块库。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_INTERFACE_LIBS
 
-    Set to FALSE to exclude interface libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除接口库。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_OBJECT_LIBS
 
-    Set to FALSE to exclude object libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除对象库。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_UNKNOWN_LIBS
 
-    Set to FALSE to exclude unknown libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除未知库。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_EXTERNAL_LIBS
 
-    Set to FALSE to exclude external libraries from the generated graphs.
+    设置为FALSE可从生成的图表中排除外部库。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_CUSTOM_TARGETS
 
-    Set to TRUE to include custom targets in the generated graphs.
+    设置为TRUE可在生成的图表中包含自定义目标。
 
-    * Mandatory: NO
-    * Default: FALSE
+    * 是否必须：否
+    * 默认值：FALSE
 
   .. variable:: GRAPHVIZ_IGNORE_TARGETS
 
-    A list of regular expressions for names of targets to exclude from the
-    generated graphs.
+    用于从生成的图表中排除目标名称的正则表达式列表。
 
-    * Mandatory: NO
-    * Default: empty
+    * 是否必须：否
+    * 默认值：空
 
   .. variable:: GRAPHVIZ_GENERATE_PER_TARGET
 
-    Set to FALSE to not generate per-target graphs ``foo.dot.<target>``.
+    设置为FALSE可不生成每个目标的独立图表\ ``foo.dot.<target>``。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
   .. variable:: GRAPHVIZ_GENERATE_DEPENDERS
 
-    Set to FALSE to not generate depender graphs ``foo.dot.<target>.dependers``.
+    设置为FALSE可不生成依赖者图表\ ``foo.dot.<target>.dependers``。
 
-    * Mandatory: NO
-    * Default: TRUE
+    * 是否必须：否
+    * 默认值：TRUE
 
 .. option:: --system-information [file]
 
@@ -621,9 +612,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  那么值\ ``2``\ 是首选值。
 
  .. versionadded:: 3.21
-   The ``-B`` option may optionally be specified with a different binary
-   directory than the one specified by the ``binaryDir`` key of the
-   configure preset.
+   可选地，可在\ ``-B``\ 选项中指定与配置预设的\ ``binaryDir``\ 键值不同的构建目录。
 
 .. option:: --list-presets[=<type>]
 
@@ -705,8 +694,7 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
   工作目录必须包含CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>`。
 
   .. versionadded:: 4.3
-    ``cmake --build`` now supports specifying a build directory and
-    preset together.
+    ``cmake --build``\ 现在支持同时指定构建目录和预设。
 
 .. option:: --list-presets
 
