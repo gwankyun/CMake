@@ -3,93 +3,82 @@ if
 
 有条件地执行一组命令。
 
-Synopsis
+概要
 ^^^^^^^^
 
 .. code-block:: cmake
 
   if(<condition>)
     <commands>
-  elseif(<condition>) # optional block, can be repeated
+  elseif(<condition>) # 可选块，可重复
     <commands>
-  else()              # optional block
+  else()              # 可选块
     <commands>
   endif()
 
-Evaluates the ``condition`` argument of the ``if`` clause according to the
-`Condition syntax`_ described below. If the result is true, then the
-``commands`` in the ``if`` block are executed.
-Otherwise, optional ``elseif`` blocks are processed in the same way.
-Finally, if no ``condition`` is true, ``commands`` in the optional ``else``
-block are executed.
+根据下方所述的\ :ref:`Condition syntax`\ 对\ ``if``\ 子句的\ ``condition``\ 参数进行求值。\
+若结果为真，则执行\ ``if``\ 块中的\ ``commands``；
+否则，将按相同方式处理可选的\ ``elseif``\ 块。
+最终，若所有\ ``condition``\ 均为假，则执行可选\ ``else``\ 块中的\ ``commands``。
 
-Per legacy, the :command:`else` and :command:`endif` commands admit
-an optional ``<condition>`` argument.
-If used, it must be a verbatim
-repeat of the argument of the opening
-``if`` command.
+根据传统约定，:command:`else`\ 和\ :command:`endif`\ 命令允许接受一个可选的\ ``<condition>``\ 参数。
+若使用，则必须为起始\ ``if``\ 命令参数的逐字重复。
 
 .. _`Condition Syntax`:
 
-Condition Syntax
+条件语法
 ^^^^^^^^^^^^^^^^
 
-The following syntax applies to the ``condition`` argument of
-the ``if``, ``elseif`` and :command:`while` clauses.
+适用于\ ``if``、\ ``elseif``\ 和\ :command:`while`\ 子句\ ``condition``\ 参数的语法规则如下。
 
-Compound conditions are evaluated in the following order of precedence:
+复合条件的求值顺序按以下优先级进行：
 
-1. `Parentheses`_.
+1. `Parentheses`_。
 
-2. Unary tests such as `COMMAND`_, `POLICY`_, `TARGET`_, `TEST`_,
-   `EXISTS`_, `IS_READABLE`_, `IS_WRITABLE`_, `IS_EXECUTABLE`_,
-   `IS_DIRECTORY`_, `IS_SYMLINK`_, `IS_ABSOLUTE`_, and `DEFINED`_.
+2. 一元测试，包括\ `COMMAND`_、\ `POLICY`_、\ `TARGET`_、\ `TEST`_、
+   `EXISTS`_、\ `IS_READABLE`_、\ `IS_WRITABLE`_、\ `IS_EXECUTABLE`_、
+   `IS_DIRECTORY`_、\ `IS_SYMLINK`_、\ `IS_ABSOLUTE`_\ 以及\ `DEFINED`_。
 
-3. Binary tests such as `EQUAL`_, `LESS`_, `LESS_EQUAL`_, `GREATER`_,
-   `GREATER_EQUAL`_, `STREQUAL`_, `STRLESS`_, `STRLESS_EQUAL`_,
-   `STRGREATER`_, `STRGREATER_EQUAL`_, `VERSION_EQUAL`_, `VERSION_LESS`_,
-   `VERSION_LESS_EQUAL`_, `VERSION_GREATER`_, `VERSION_GREATER_EQUAL`_,
-   `PATH_EQUAL`_, `IN_LIST`_, `IS_NEWER_THAN`_, and `MATCHES`_.
+3. 二元测试，包括\ `EQUAL`_、\ `LESS`_、\ `LESS_EQUAL`_、\ `GREATER`_、
+   `GREATER_EQUAL`_、\ `STREQUAL`_、\ `STRLESS`_、\ `STRLESS_EQUAL`_、
+   `STRGREATER`_、\ `STRGREATER_EQUAL`_、\ `VERSION_EQUAL`_、\ `VERSION_LESS`_、
+   `VERSION_LESS_EQUAL`_、\ `VERSION_GREATER`_、\ `VERSION_GREATER_EQUAL`_、
+   `PATH_EQUAL`_、\ `IN_LIST`_、\ `IS_NEWER_THAN`_\ 以及\ `MATCHES`_。
 
-4. Unary logical operator `NOT`_.
+4. 一元逻辑运算符\ `NOT`_。
 
-5. Binary logical operators `AND`_ and `OR`_, from left to right,
-   without any short-circuit.
+5. 二元逻辑运算符\ `AND`_\ 与\ `OR`_，从左到右依次求值，
+   且无短路求值（short-circuit）行为。
 
-Basic Expressions
+基础表达式
 """""""""""""""""
 
 .. signature:: if(<constant>)
   :target: constant
 
-  True if the constant is ``1``, ``ON``, ``YES``, ``TRUE``, ``Y``,
-  or a non-zero number (including floating point numbers).
-  False if the constant is ``0``, ``OFF``,
-  ``NO``, ``FALSE``, ``N``, ``IGNORE``, ``NOTFOUND``, the empty string,
-  or ends in the suffix ``-NOTFOUND``.  Named boolean constants are
-  case-insensitive.  If the argument is not one of these specific
-  constants, it is treated as a variable or string (see `Variable Expansion`_
-  further below) and one of the following two forms applies.
+  当常量为\ ``1``、\ ``ON``、\ ``YES``、\ ``TRUE``、\ ``Y``\ 或非零数值（含浮点数）时，结果为真。
+  常量为\ ``0``、\ ``OFF``、\ ``NO``、\ ``FALSE``、\ ``N``、\ ``IGNORE``、\ ``NOTFOUND``、空字符串，
+  或以\ ``-NOTFOUND``\ 后缀结尾时，结果为假。
+  具名布尔常量不区分大小写。若参数不属于上述特定常量，
+  则将其视为变量或字符串（参见下文的\ `Variable Expansion`_），并适用以下两种形式之一。
 
 .. signature:: if(<variable>)
   :target: variable
 
-  True if given a variable that is defined to a value that is not a false
-  constant.  False otherwise, including if the variable is undefined.
-  Note that macro arguments are not variables.
-  :ref:`Environment Variables <CMake Language Environment Variables>` also
-  cannot be tested this way, e.g. ``if(ENV{some_var})`` will always evaluate
-  to false.
+  当给定一个已定义为非假常量的变量时，结果为真。
+  否则（包括变量未定义的情况）结果为假。
+  注意：宏参数不属于变量范畴。
+  :ref:`环境变量 <CMake Language Environment Variables>`\ 也无法通过此方式测试，
+  例如\ ``if(ENV{some_var})``\ 将始终求值为假。
 
 .. signature:: if(<string>)
   :target: string
 
-  A quoted string always evaluates to false unless:
+  引号字符串通常求值为假，除非：
 
-  * The string's value is one of the true constants, or
-  * in CMake versions prior to 4.0, policy :policy:`CMP0054` is not set
-    to ``NEW`` and the string's value happens to be a variable name that
-    is affected by :policy:`CMP0054`'s behavior.
+  * 字符串的值为真常量之一，或
+  * 在CMake 4.0之前的版本中，策略\ :policy:`CMP0054`\ 未设置为\ ``NEW``，
+    且字符串的值恰好是一个受\ :policy:`CMP0054`\ 行为影响的变量名。
 
 Logic Operators
 """""""""""""""
