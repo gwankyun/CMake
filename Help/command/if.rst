@@ -80,81 +80,73 @@ if
   * 在CMake 4.0之前的版本中，策略\ :policy:`CMP0054`\ 未设置为\ ``NEW``，
     且字符串的值恰好是一个受\ :policy:`CMP0054`\ 行为影响的变量名。
 
-Logic Operators
+逻辑运算符
 """""""""""""""
 
 .. signature:: if(NOT <condition>)
 
-  True if the condition is not true.
+
+  当条件不为真时，结果为真。
 
 .. signature:: if(<cond1> AND <cond2>)
   :target: AND
 
-  True if both conditions would be considered true individually.
+  当两个条件各自求值均为真时，结果为真。
 
 .. signature:: if(<cond1> OR <cond2>)
   :target: OR
 
-  True if either condition would be considered true individually.
+  当任一条件求值为真时，结果为真。
 
 .. signature:: if((condition) AND (condition OR (condition)))
   :target: parentheses
 
-  The conditions inside the parenthesis are evaluated first and then
-  the remaining condition is evaluated as in the other examples.
-  Where there are nested parenthesis the innermost are evaluated as part
-  of evaluating the condition that contains them.
+  括号内的条件优先求值，随后按其他示例中的方式处理剩余条件。
+  嵌套括号时，最内层括号作为包含它们的条件的一部分优先求值。
 
-Existence Checks
+存在性检查
 """"""""""""""""
 
 .. signature:: if(COMMAND <command-name>)
 
-  True if the given name is a command, macro or function that can be
-  invoked.
+  当给定名称是可被调用的命令、宏或函数时，结果为真。
 
 .. signature:: if(POLICY <policy-id>)
 
-  True if the given name is an existing policy (of the form ``CMP<NNNN>``).
+  当给定名称是存在的策略（格式为\ ``CMP<NNNN>``\ ）时，结果为真。
 
 .. signature:: if(TARGET <target-name>)
 
-  True if the given name is an existing logical target name created
-  by a call to the :command:`add_executable`, :command:`add_library`,
-  or :command:`add_custom_target` command that has already been invoked
-  (in any directory).
+  当给定名称是由\ :command:`add_executable`、\ :command:`add_library`\ 或\ 
+  :command:`add_custom_target`\ 命令（已在任意目录中调用）创建的逻辑目标名时，结果为真。
 
 .. signature:: if(TEST <test-name>)
 
   .. versionadded:: 3.3
 
-  True if the given name is an existing test name created by the
-  :command:`add_test` command.
+  当给定名称是由\ :command:`add_test`\ 命令创建的测试名时，结果为真。
 
 .. signature:: if(DEFINED <name>|CACHE{<name>}|ENV{<name>})
 
-  True if a variable, cache variable or environment variable
-  with given ``<name>`` is defined. The value of the variable
-  does not matter. Note the following caveats:
+  当给定\ ``<name>``\ 的变量、缓存变量或环境变量已定义时，结果为真。\
+  变量值不影响判断结果。需注意以下限制：
 
-  * Macro arguments are not variables.
-  * It is not possible to test directly whether a ``<name>`` is a non-cache
-    variable.  The expression ``if(DEFINED someName)`` will evaluate to true
-    if either a cache or non-cache variable ``someName`` exists.  In
-    comparison, the expression ``if(DEFINED CACHE{someName})`` will only
-    evaluate to true if a cache variable ``someName`` exists.  Both expressions
-    need to be tested if you need to know whether a non-cache variable exists:
-    ``if(DEFINED someName AND NOT DEFINED CACHE{someName})``.
+  * 宏参数不属于变量范畴。
+  * 无法直接测试\ ``<name>``\ 是否为非缓存变量。表达式\ ``if(DEFINED someName)``\ 在\
+    缓存或非缓存变量\ ``someName``\ 存在时均返回真。\
+    相比之下，表达式\ ``if(DEFINED CACHE{someName})``\ 仅在缓存变量\ ``someName``\ 存在时返回真。\
+    若需确认非缓存变量是否存在，需同时测试两个表达式：\
+    ``if(DEFINED someName AND NOT DEFINED CACHE{someName})``。
 
  .. versionadded:: 3.14
-  Added support for ``CACHE{<name>}`` variables.
+  新增对\ ``CACHE{<名称>}``\ 变量的支持。
 
 .. signature:: if(<variable|string> IN_LIST <variable>)
   :target: IN_LIST
 
   .. versionadded:: 3.3
 
-  True if the given element is contained in the named list variable.
+  当给定元素包含于指定的列表变量中时，结果为真。
 
 File Operations
 """""""""""""""
