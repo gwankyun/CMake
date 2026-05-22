@@ -148,93 +148,77 @@ if
 
   当给定元素包含于指定的列表变量中时，结果为真。
 
-File Operations
+文件操作
 """""""""""""""
 
 .. signature:: if(EXISTS <path-to-file-or-directory>)
 
-  True if the named file or directory exists and is readable.  Behavior
-  is well-defined only for explicit full paths (a leading ``~/`` is not
-  expanded as a home directory and is considered a relative path).
-  Resolves symbolic links, i.e. if the named file or directory is a
-  symbolic link, returns true if the target of the symbolic link exists.
+  当指定文件或目录存在且可读时，结果为真。仅对显式完整路径行为有明确定义（开头的\
+  ``~/``\ 不会扩展为家目录，将被视为相对路径）。解析符号链接，即当指定文件/目录为\
+  符号链接时，若其目标存在则返回真。
 
-  False if the given path is an empty string.
+  当给定路径为空字符串时，结果为假。
 
   .. note::
-    Prefer ``if(IS_READABLE)`` to check file readability.  ``if(EXISTS)``
-    may be changed in the future to only check file existence.
+    检查文件可读性时推荐使用\ ``if(IS_READABLE)``。未来版本中\ ``if(EXISTS)``\
+    可能仅检查文件存在性。
 
 .. signature:: if(IS_READABLE <path-to-file-or-directory>)
 
   .. versionadded:: 3.29
 
-  True if the named file or directory is readable.  Behavior
-  is well-defined only for explicit full paths (a leading ``~/`` is not
-  expanded as a home directory and is considered a relative path).
-  Resolves symbolic links, i.e. if the named file or directory is a
-  symbolic link, returns true if the target of the symbolic link is readable.
+  当指定文件或目录可读时，结果为真。仅对显式完整路径行为有明确定义（开头的\
+  ``~/``\ 不会扩展为家目录，将被视为相对路径）。解析符号链接，即当指定\
+  文件/目录为符号链接时，若其目标可读则返回真。
 
-  False if the given path is an empty string.
+  当给定路径为空字符串时，结果为假。
 
 .. signature:: if(IS_WRITABLE <path-to-file-or-directory>)
 
   .. versionadded:: 3.29
 
-  True if the named file or directory is writable.  Behavior
-  is well-defined only for explicit full paths (a leading ``~/`` is not
-  expanded as a home directory and is considered a relative path).
-  Resolves symbolic links, i.e. if the named file or directory is a
-  symbolic link, returns true if the target of the symbolic link is writable.
+  当指定文件或目录可写时，结果为真。仅对显式完整路径行为有明确定义（开头的\ ``~/``\
+  不会扩展为家目录，将被视为相对路径）。解析符号链接，即当指定文件/目录为符号链接时，\
+  若其目标可写则返回真。
 
-  False if the given path is an empty string.
+  当给定路径为空字符串时，结果为假。
 
 .. signature:: if(IS_EXECUTABLE <path-to-file-or-directory>)
 
   .. versionadded:: 3.29
 
-  True if the named file or directory is executable.  Behavior
-  is well-defined only for explicit full paths (a leading ``~/`` is not
-  expanded as a home directory and is considered a relative path).
-  Resolves symbolic links, i.e. if the named file or directory is a
-  symbolic link, returns true if the target of the symbolic link is executable.
+  当指定文件或目录可执行时，结果为真。仅对显式完整路径行为有明确定义（开头的\ ``~/``\
+  不会扩展为家目录，将被视为相对路径）。解析符号链接，即当指定文件/目录为符号链接时，\
+  若其目标可执行则返回真。
 
-  False if the given path is an empty string.
+  当给定路径为空字符串时，结果为假。
 
 .. signature:: if(<file1> IS_NEWER_THAN <file2>)
   :target: IS_NEWER_THAN
 
-  True if ``file1`` is newer than ``file2`` or if one of the two files doesn't
-  exist.  Behavior is well-defined only for full paths.  If the file
-  time stamps are exactly the same, an ``IS_NEWER_THAN`` comparison returns
-  true, so that any dependent build operations will occur in the event
-  of a tie.  This includes the case of passing the same file name for
-  both file1 and file2.
+  当\ ``file1``\ 比\ ``file2``\ 更新，或其中一个文件不存在时，结果为真。\
+  仅对完整路径行为有明确定义。若文件时间戳完全相同，\ ``IS_NEWER_THAN``\ 比较仍返回真，\
+  以确保在时间戳相等时依赖的构建操作仍能执行。这包括为两个参数传入相同文件名的情况。
 
 .. signature:: if(IS_DIRECTORY <path>)
 
-  True if ``path`` is a directory.  Behavior is well-defined only
-  for full paths.
+  当\ ``path``\ 是目录时，结果为真。仅对完整路径行为有明确定义。
 
-  False if the given path is an empty string.
+  当给定路径为空字符串时，结果为假。
 
 .. signature:: if(IS_SYMLINK <path>)
 
-  True if the given path is a symbolic link.  Behavior is well-defined
-  only for full paths.
+  当给定路径是符号链接时，结果为真。仅对完整路径行为有明确定义。
 
 .. signature:: if(IS_ABSOLUTE <path>)
 
-  True if the given path is an absolute path.  Note the following special
-  cases:
+  当给定路径是绝对路径时，结果为真。注意以下特殊情况：
 
-  * An empty ``path`` evaluates to false.
-  * On Windows hosts, any ``path`` that begins with a drive letter and colon
-    (e.g. ``C:``), a forward slash or a backslash will evaluate to true.
-    This means a path like ``C:no\base\dir`` will evaluate to true, even
-    though the non-drive part of the path is relative.
-  * On non-Windows hosts, any ``path`` that begins with a tilde (``~``)
-    evaluates to true.
+  * 空\ ``path``\ 求值为假。
+  * 在Windows主机上，任何以盘符和冒号（如\ ``C:``）、正斜杠或反斜杠开头的\ ``path``\
+    均求值为真。这意味着类似\ ``C:no\base\dir``\ 的路径也会求值为真，尽管其非盘符部分\
+    为相对路径。
+  * 非Windows主机上，任何以波浪号（\ ``~``\ ）开头的\ ``path``\ 求值为真。
 
 Comparisons
 """""""""""
