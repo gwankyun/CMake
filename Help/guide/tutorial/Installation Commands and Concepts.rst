@@ -54,7 +54,29 @@ CMake将基于目标的安装划分为多种制品类型。可用的制品类型
 :module:`CMAKE_INSTALL_BINDIR <GNUInstallDirs>`\ 指定的位置，否则默认安装到\
 ``bin``\ 目录。
 
-制品类型默认目标路径的完整列表如下表所示。
+Just like we use :option:`cmake -B` to control what build directory will be
+used by CMake, we have a variety of options for telling CMake where to install
+things. This location is generally referred to as the install prefix. To
+set this at configure time, so that every :option:`cmake --install` performed
+using that build tree defaults to a given prefix, we can use any of:
+
+* the :option:`cmake --install-prefix` option;
+* the :ref:`installDir <CMakePresets installDir>` field in CMake presets; or
+* the :variable:`CMAKE_INSTALL_PREFIX` variable.
+
+.. note::
+  We have discouraged setting ``CMAKE_`` variables inside the project. Setting
+  :variable:`CMAKE_INSTALL_PREFIX` is *particularly* bad practice without very
+  good reasoning for doing so, since it prevents users from ever overriding it.
+  When providing a default, projects should check
+  :variable:`CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT`.
+
+Alternatively, we can use the
+:option:`cmake --install --prefix <cmake--install --prefix>` option to set the
+install prefix for a single install invocation.
+
+The full list of artifact kind default destinations is described in the
+following table.
 
 =============================== =============================== ======================
       目标类型                                 变量                内置默认值
@@ -122,6 +144,8 @@ CMake默认不定义\ ``CMAKE_INSTALL_<dir>``\ 变量。如果项目希望指定
 -----------------
 
 * :command:`install`
+* :option:`cmake --install-prefix`
+* :option:`cmake --install --prefix <cmake--install --prefix>`
 
 待编辑文件
 -------------
@@ -145,6 +169,14 @@ CMake默认不定义\ ``CMAKE_INSTALL_<dir>``\ 变量。如果项目希望指定
   cmake --build build
 
 我们可以使用\ :option:`cmake --install`\ 选项验证安装是否正确。
+
+.. note::
+
+  As with CTest, when using a multi-config generator such as Visual Studio, it
+  will be necessary to specify a configuration like ``Debug`` or ``Release``
+  using :option:`cmake --install --config <cmake--install --config>`.
+  This is true whenever using a multi-config generator, and won't be called out
+  specifically in future commands.
 
 .. code-block:: console
 
@@ -298,13 +330,6 @@ CMake提供的解决此问题的机制是一种名为“目标导出文件”的
   cmake --build build
 
 我们可以使用\ :option:`cmake --install`\ 验证安装是否正确。
-
-.. note::
-
-  与CTest类似，当使用多配置生成器（例如 Visual Studio）时，需要使用\
-  ``cmake --install --config <config> <remaining flags>``\ 指定配置，其中\ ``<config>``\
-  是诸如\ ``Debug``\ 或\ ``Release``\ 的值。无论何时使用多配置生成器，情况都是如此，\
-  并且不会在后续命令中特别指出。
 
 .. code-block:: console
 

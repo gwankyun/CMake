@@ -161,7 +161,7 @@ private:
                             cm::string_view attributeValue);
 
   cmXCodeObject* CreateOrGetPBXGroup(cmGeneratorTarget* gtgt,
-                                     cmSourceGroup* sg);
+                                     cmSourceGroup const* sg);
   cmXCodeObject* CreatePBXGroup(cmXCodeObject* parent,
                                 std::string const& name);
   bool CreateGroups(std::vector<cmLocalGenerator*>& generators);

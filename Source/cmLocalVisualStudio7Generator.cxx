@@ -1386,6 +1386,8 @@ void cmLocalVisualStudio7Generator::WriteVCProjFile(std::ostream& fout,
   AllConfigSources sources;
   sources.Sources = target->GetAllConfigSources();
 
+  cmSourceGroupFiles sourceGroupFiles;
+
   // Add CMakeLists.txt file with rule to re-run CMake for user convenience.
   if (target->GetType() != cmStateEnums::GLOBAL_TARGET &&
       target->GetName() != CMAKE_CHECK_BUILD_SYSTEM_TARGET) {
@@ -1423,9 +1425,7 @@ void cmLocalVisualStudio7Generator::WriteVCProjFile(std::ostream& fout,
       }
     }
     // Add the file to the list of sources.
-    std::string const source = sf->GetFullPath();
-    cmSourceGroup* sourceGroup = this->FindSourceGroup(source);
-    sourceGroup->AssignSource(sf);
+    sourceGroupFiles.Add(this->FindSourceGroup(sf->GetFullPath()), sf);
   }
 
   // open the project
@@ -1438,7 +1438,8 @@ void cmLocalVisualStudio7Generator::WriteVCProjFile(std::ostream& fout,
   // Loop through every source group.
   SourceGroupVector const& sourceGroups = this->Makefile->GetSourceGroups();
   for (auto const& sg : sourceGroups) {
-    this->WriteGroup(sg.get(), target, fout, libName, configs, sources);
+    this->WriteGroup(sg.get(), target, fout, libName, configs, sources,
+                     sourceGroupFiles);
   }
 
   fout << "\t</Files>\n";
@@ -1648,11 +1649,12 @@ std::string cmLocalVisualStudio7Generator::ComputeLongestObjectDirectory(
 bool cmLocalVisualStudio7Generator::WriteGroup(
   cmSourceGroup const* sg, cmGeneratorTarget* target, std::ostream& fout,
   std::string const& libName, std::vector<std::string> const& configs,
-  AllConfigSources const& sources)
+  AllConfigSources const& sources, cmSourceGroupFiles const& sourceGroupFiles)
 {
   cmGlobalVisualStudio7Generator* gg =
     static_cast<cmGlobalVisualStudio7Generator*>(this->GlobalGenerator);
-  std::vector<cmSourceFile const*> const& sourceFiles = sg->GetSourceFiles();
+  std::vector<cmSourceFile const*> const& sourceFiles =
+    sourceGroupFiles.GetSourceFiles(sg);
   SourceGroupVector const& children = sg->GetGroupChildren();
 
   // Write the children to temporary output.
@@ -1660,7 +1662,7 @@ bool cmLocalVisualStudio7Generator::WriteGroup(
   std::ostringstream tmpOut;
   for (auto const& child : children) {
     if (this->WriteGroup(child.get(), target, tmpOut, libName, configs,
-                         sources)) {
+                         sources, sourceGroupFiles)) {
       hasChildrenWithSources = true;
     }
   }

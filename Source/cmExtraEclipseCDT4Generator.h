@@ -88,6 +88,7 @@ private:
                         cmLocalGenerator& lg);
 
   void WriteGroups(SourceGroupVector const& sourceGroups,
+                   cmSourceGroupFiles const& sourceGroupFiles,
                    std::string& linkName, cmXMLWriter& xml);
   void CreateLinksToSubprojects(cmXMLWriter& xml, std::string const& baseDir);
   void CreateLinksForTargets(cmXMLWriter& xml);

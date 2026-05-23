@@ -23,6 +23,7 @@ class cmLocalVisualStudio7GeneratorInternals;
 class cmMakefile;
 class cmSourceFile;
 class cmSourceGroup;
+class cmSourceGroupFiles;
 
 class cmVS7GeneratorOptions : public cmVisualStudioGeneratorOptions
 {
@@ -147,7 +148,8 @@ private:
   bool WriteGroup(cmSourceGroup const* sg, cmGeneratorTarget* target,
                   std::ostream& fout, std::string const& libName,
                   std::vector<std::string> const& configs,
-                  AllConfigSources const& sources);
+                  AllConfigSources const& sources,
+                  cmSourceGroupFiles const& sourceGroupFiles);
 
   friend class cmLocalVisualStudio7GeneratorFCInfo;
   friend class cmLocalVisualStudio7GeneratorInternals;

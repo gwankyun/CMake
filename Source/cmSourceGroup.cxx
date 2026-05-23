@@ -7,7 +7,6 @@
 #include <cm/memory>
 
 #include "cmGeneratorExpression.h"
-#include "cmSourceFile.h"
 #include "cmStringAlgorithms.h"
 
 class cmSourceGroupInternals
@@ -85,19 +84,9 @@ bool cmSourceGroup::MatchesFiles(std::string const& name) const
   return this->GroupFiles.find(name) != this->GroupFiles.cend();
 }
 
-void cmSourceGroup::AssignSource(cmSourceFile const* sf)
-{
-  this->SourceFiles.push_back(sf);
-}
-
 std::set<std::string> const& cmSourceGroup::GetGroupFiles() const
 {
   return this->GroupFiles;
-}
-
-std::vector<cmSourceFile const*> const& cmSourceGroup::GetSourceFiles() const
-{
-  return this->SourceFiles;
 }
 
 void cmSourceGroup::AddChild(std::unique_ptr<cmSourceGroup> child)
@@ -195,4 +184,20 @@ cmSourceGroup* cmSourceGroup::FindSourceGroup(std::string const& source,
 
   // Shouldn't get here, but just in case, return the default group.
   return groups.data()->get();
+}
+
+void cmSourceGroupFiles::Add(cmSourceGroup const* sg, cmSourceFile const* sf)
+{
+  this->SourceFiles[sg].push_back(sf);
+}
+
+std::vector<cmSourceFile const*> const& cmSourceGroupFiles::GetSourceFiles(
+  cmSourceGroup const* sg) const
+{
+  auto i = this->SourceFiles.find(sg);
+  if (i != this->SourceFiles.end()) {
+    return i->second;
+  }
+  static std::vector<cmSourceFile const*> const empty;
+  return empty;
 }

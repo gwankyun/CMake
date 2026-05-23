@@ -104,10 +104,10 @@ CTest约定规定，测试的构建和运行应基于一个默认值为\ ``ON``\
 
 .. note::
 
-  如果使用多配置生成器（例如Visual Studio），则需要使用\
-  ``ctest -C <config> <remaining flags>``\ 指定配置，其中\ ``<config>``\ 是类似\
-  ``Debug``\ 或\ ``Release``\ 的值。无论何时使用多配置生成器，都需要这样做，\
-  后续命令中不会特别指出这一点。
+  When using a multi-config generator such as Visual Studio, it
+  will be necessary to specify a configuration like ``Debug`` or ``Release``
+  using :option:`ctest -C`. This is true whenever using a multi-config
+  generator, and won't be called out specifically in future commands.
 
 .. code-block:: console
 

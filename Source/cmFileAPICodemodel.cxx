@@ -487,7 +487,7 @@ class Target
   void ProcessLanguages();
   void ProcessLanguage(std::string const& lang);
 
-  Json::ArrayIndex AddSourceGroup(cmSourceGroup* sg);
+  Json::ArrayIndex AddSourceGroup(cmSourceGroup const* sg);
   CompileData BuildCompileData(cmSourceFile* sf);
   CompileData MergeCompileData(CompileData const& fd);
   Json::ArrayIndex AddSourceCompileGroup(cmSourceFile* sf,
@@ -1477,7 +1477,7 @@ void Target::ProcessLanguage(std::string const& lang)
   }
 }
 
-Json::ArrayIndex Target::AddSourceGroup(cmSourceGroup* sg)
+Json::ArrayIndex Target::AddSourceGroup(cmSourceGroup const* sg)
 {
   auto i = this->SourceGroupsMap.find(sg);
   if (i == this->SourceGroupsMap.end()) {
@@ -1829,7 +1829,8 @@ Json::Value Target::DumpSource(cmGeneratorTarget::SourceAndKind const& sk,
     source["fileSetIndex"] = fsit->second;
   }
 
-  if (cmSourceGroup* sg = this->GT->LocalGenerator->FindSourceGroup(path)) {
+  if (cmSourceGroup const* sg =
+        this->GT->LocalGenerator->FindSourceGroup(path)) {
     Json::ArrayIndex const groupIndex = this->AddSourceGroup(sg);
     source["sourceGroupIndex"] = groupIndex;
     this->SourceGroups[groupIndex].SourceIndexes.append(si);
@@ -1913,7 +1914,8 @@ Json::Value Target::DumpInterfaceSource(std::string path, Json::ArrayIndex si,
     source["fileSetIndex"] = fsit->second;
   }
 
-  if (cmSourceGroup* sg = this->GT->LocalGenerator->FindSourceGroup(path)) {
+  if (cmSourceGroup const* sg =
+        this->GT->LocalGenerator->FindSourceGroup(path)) {
     Json::ArrayIndex const groupIndex = this->AddSourceGroup(sg);
     source["sourceGroupIndex"] = groupIndex;
     this->SourceGroups[groupIndex].InterfaceSourceIndexes.append(si);

@@ -463,7 +463,8 @@ void cmExtraEclipseCDT4Generator::CreateProjectFile()
 }
 
 void cmExtraEclipseCDT4Generator::WriteGroups(
-  SourceGroupVector const& sourceGroups, std::string& linkName,
+  SourceGroupVector const& sourceGroups,
+  cmSourceGroupFiles const& sourceGroupFiles, std::string& linkName,
   cmXMLWriter& xml)
 {
   for (auto const& sg : sourceGroups) {
@@ -475,10 +476,11 @@ void cmExtraEclipseCDT4Generator::WriteGroups(
       xml, linkName3, "virtual:/virtual", VirtualFolder);
     SourceGroupVector const& children = sg->GetGroupChildren();
     if (!children.empty()) {
-      this->WriteGroups(children, linkName, xml);
+      this->WriteGroups(children, sourceGroupFiles, linkName, xml);
     }
-    std::vector<cmSourceFile const*> sFiles = sg->GetSourceFiles();
-    for (cmSourceFile const* file : sFiles) {
+    std::vector<cmSourceFile const*> const& sourceFiles =
+      sourceGroupFiles.GetSourceFiles(sg.get());
+    for (cmSourceFile const* file : sourceFiles) {
       std::string const& fullPath = file->GetFullPath();
 
       if (!cmSystemTools::FileIsDirectory(fullPath)) {
@@ -521,17 +523,18 @@ void cmExtraEclipseCDT4Generator::CreateLinksForTargets(cmXMLWriter& xml)
             break; // skip generating the linked resources to the source files
           }
           // get the files from the source lists then add them to the groups
+          cmSourceGroupFiles sourceGroupFiles;
           std::vector<cmSourceFile*> files;
           target->GetSourceFiles(
             files, makefile->GetSafeDefinition("CMAKE_BUILD_TYPE"));
           for (cmSourceFile* sf : files) {
             // Add the file to the list of sources.
-            std::string const& source = sf->ResolveFullPath();
-            cmSourceGroup* sourceGroup = lg->FindSourceGroup(source);
-            sourceGroup->AssignSource(sf);
+            sourceGroupFiles.Add(lg->FindSourceGroup(sf->ResolveFullPath()),
+                                 sf);
           }
 
-          this->WriteGroups(makefile->GetSourceGroups(), linkName2, xml);
+          this->WriteGroups(makefile->GetSourceGroups(), sourceGroupFiles,
+                            linkName2, xml);
         } break;
         // ignore all others:
         default:

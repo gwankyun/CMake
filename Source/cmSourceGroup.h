@@ -4,6 +4,7 @@
 
 #include "cmConfigure.h" // IWYU pragma: keep
 
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -100,21 +101,9 @@ public:
   cmSourceGroup* MatchChildrenRegex(std::string const& name) const;
 
   /**
-   * Assign the given source file to this group.  Used only by
-   * generators.
-   */
-  void AssignSource(cmSourceFile const* sf);
-
-  /**
    * Get the set of file names explicitly added to this source group.
    */
   std::set<std::string> const& GetGroupFiles() const;
-
-  /**
-   * Get the list of the source files that have been assigned to this
-   * source group.
-   */
-  std::vector<cmSourceFile const*> const& GetSourceFiles() const;
 
   SourceGroupVector const& GetGroupChildren() const;
 
@@ -142,11 +131,18 @@ private:
    */
   std::set<std::string> GroupFiles;
 
-  /**
-   * Vector of all source files that have been assigned to
-   * this group.
-   */
-  std::vector<cmSourceFile const*> SourceFiles;
-
   std::unique_ptr<cmSourceGroupInternals> Internal;
+};
+
+/** \class cmSourceGroup
+ * \brief Used by generators to organize a target's sources into groups.
+ */
+class cmSourceGroupFiles
+{
+  std::map<cmSourceGroup const*, std::vector<cmSourceFile const*>> SourceFiles;
+
+public:
+  void Add(cmSourceGroup const* sg, cmSourceFile const* sf);
+  std::vector<cmSourceFile const*> const& GetSourceFiles(
+    cmSourceGroup const* sg) const;
 };

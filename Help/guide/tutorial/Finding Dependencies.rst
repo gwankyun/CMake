@@ -163,7 +163,7 @@ GoogleTest或Catch2。按顺序执行\ ``TODO 1``\ 到\ ``TODO 5``，以使用�
 
   </details>
 
-接下来，我们将\ ``SimpleTest::SimpleTest``\ 目标添加到\ ``TestMathFunctions``\ 中
+接下来，我们将\ ``SimpleTest::SimpleTest``\ 目标添加到\ ``TestMathFunctions``\ 中。
 
 .. raw:: html
 

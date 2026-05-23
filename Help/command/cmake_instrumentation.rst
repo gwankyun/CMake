@@ -19,8 +19,9 @@ cmake_instrumentation
   )
 
 必须始终指定\ ``API_VERSION``\ 和\ ``DATA_VERSION``。目前，这两个字段仅支持的值为1。\
-有关\ ``API_VERSION``\ 的详细信息，请参阅\ :ref:`cmake-instrumentation API v1`；有关\
-``DATA_VERSION``\ 的详细信息，请参阅\ :ref:`cmake-instrumentation Data v1`。
+See
+:ref:`cmake-instrumentation API v1` for details of the ``API_VERSION`` and
+:ref:`cmake-instrumentation Data Version` for details of the ``DATA_VERSION``.
 
 可选关键字 ``HOOKS``、\ ``OPTIONS``\ 和\ ``CALLBACK``\ 分别对应于\
 :ref:`cmake-instrumentation v1 Query Files`\ 中的一个参数。\

@@ -1062,7 +1062,7 @@ cm::VS::Solution cmGlobalVisualStudioGenerator::CreateSolution(
       item =
         cmSystemTools::CollapseFullPath(item, mf->GetCurrentSourceDirectory());
     }
-    cmSourceGroup* sg =
+    cmSourceGroup const* sg =
       cmSourceGroup::FindSourceGroup(item, mf->GetSourceGroups());
     std::string folderName = sg->GetFullName();
     if (folderName.empty()) {

@@ -160,3 +160,11 @@ on macOS:
  Path to the ``Rez(1)`` command used to compile resources on macOS. This
  variable can be used to override the automatically detected command (or
  specify its location if the auto-detection fails to find it).
+
+.. variable:: CPACK_COMMAND_SYNC
+
+ .. versionadded:: 4.2
+
+ Path to the ``sync(8)`` command used to force completion of pending disk writes
+ on macOS. This variable can be used to override the automatically detected
+ command (or specify its location if the auto-detection fails to find it).
