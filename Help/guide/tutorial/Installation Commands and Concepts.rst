@@ -54,29 +54,24 @@ CMake将基于目标的安装划分为多种制品类型。可用的制品类型
 :module:`CMAKE_INSTALL_BINDIR <GNUInstallDirs>`\ 指定的位置，否则默认安装到\
 ``bin``\ 目录。
 
-Just like we use :option:`cmake -B` to control what build directory will be
-used by CMake, we have a variety of options for telling CMake where to install
-things. This location is generally referred to as the install prefix. To
-set this at configure time, so that every :option:`cmake --install` performed
-using that build tree defaults to a given prefix, we can use any of:
+与使用\ :option:`cmake -B`\ 控制CMake使用的构建目录类似，我们也有多种选项来告知CMake\
+将内容安装到何处。这个位置通常被称为安装前缀（install prefix）。若要在配置时设置它，\
+使得使用该构建树执行的每次\ :option:`cmake --install`\ 都默认使用指定的前缀，我们可以\
+使用以下任一方式：
 
-* the :option:`cmake --install-prefix` option;
-* the :ref:`installDir <CMakePresets installDir>` field in CMake presets; or
-* the :variable:`CMAKE_INSTALL_PREFIX` variable.
+* :option:`cmake --install-prefix`\ 选项；
+* CMake预置文件中的\ :ref:`installDir <CMakePresets installDir>`\ 字段；或
+* :variable:`CMAKE_INSTALL_PREFIX`\ 变量。
 
 .. note::
-  We have discouraged setting ``CMAKE_`` variables inside the project. Setting
-  :variable:`CMAKE_INSTALL_PREFIX` is *particularly* bad practice without very
-  good reasoning for doing so, since it prevents users from ever overriding it.
-  When providing a default, projects should check
-  :variable:`CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT`.
+  我们不建议在项目内部设置\ ``CMAKE_``\ 变量。设置\ :variable:`CMAKE_INSTALL_PREFIX`\
+  是\ *尤其*\ 不好的做法，除非有非常充分的理由，因为它会阻止用户覆盖该值。在提供默认值时，\
+  项目应检查\ :variable:`CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT`。
 
-Alternatively, we can use the
-:option:`cmake --install --prefix <cmake--install --prefix>` option to set the
-install prefix for a single install invocation.
+另外，我们还可以使用\ :option:`cmake --install --prefix <cmake--install --prefix>`\
+选项为单次安装调用设置安装前缀。
 
-The full list of artifact kind default destinations is described in the
-following table.
+各类构建产物默认安装目标的完整列表如下表所述。
 
 =============================== =============================== ======================
       目标类型                                 变量                内置默认值
@@ -172,11 +167,9 @@ CMake默认不定义\ ``CMAKE_INSTALL_<dir>``\ 变量。如果项目希望指定
 
 .. note::
 
-  As with CTest, when using a multi-config generator such as Visual Studio, it
-  will be necessary to specify a configuration like ``Debug`` or ``Release``
-  using :option:`cmake --install --config <cmake--install --config>`.
-  This is true whenever using a multi-config generator, and won't be called out
-  specifically in future commands.
+  与CTest类似，当使用Visual Studio等多配置生成器时，需要通过\
+  :option:`cmake --install --config <cmake--install --config>`\ 来指定配置，例如\
+  ``Debug``\ 或\ ``Release``。只要使用多配置生成器就需如此操作，后续命令中不再单独说明。
 
 .. code-block:: console
 
