@@ -220,85 +220,80 @@ if
     为相对路径。
   * 非Windows主机上，任何以波浪号（\ ``~``\ ）开头的\ ``path``\ 求值为真。
 
-Comparisons
+比较
 """""""""""
 
 .. signature:: if(<variable|string> MATCHES <regex>)
   :target: MATCHES
 
-  True if the given string or variable's value matches the given regular
-  expression.  See :ref:`Regex Specification` for regex format.
+  如果给定的字符串或变量的值与给定的正则表达式匹配，则为真。正则表达式的格式参见\
+  :ref:`Regex Specification`。
 
   .. versionadded:: 2.6
-   ``()`` groups are captured in :variable:`CMAKE_MATCH_<n>` variables.
+   ``()``\ 分组捕获的结果保存在\ :variable:`CMAKE_MATCH_<n>`\ 变量中。
 
 .. signature:: if(<variable|string> LESS <variable|string>)
   :target: LESS
 
-  True if the given string or variable's value parses as a real number
-  (like a C ``double``) and less than that on the right.
+  如果给定的字符串或变量的值能够解析为实数（类似于C语言的\ ``double``\ 类型），\
+  并且小于右侧的值，则为真。
 
 .. signature:: if(<variable|string> GREATER <variable|string>)
   :target: GREATER
 
-  True if the given string or variable's value parses as a real number
-  (like a C ``double``) and greater than that on the right.
+  如果给定的字符串或变量的值能够解析为实数（类似于C语言的\ ``double``\ 类型），\
+  并且大于右侧的值，则为真。
 
 .. signature:: if(<variable|string> EQUAL <variable|string>)
   :target: EQUAL
 
-  True if the given string or variable's value parses as a real number
-  (like a C ``double``) and equal to that on the right.
+  如果给定的字符串或变量的值能够解析为实数（类似于C语言的\ ``double``\ 类型），\
+  并且等于右侧的值，则为真。
 
 .. signature:: if(<variable|string> LESS_EQUAL <variable|string>)
   :target: LESS_EQUAL
 
   .. versionadded:: 3.7
 
-  True if the given string or variable's value parses as a real number
-  (like a C ``double``) and less than or equal to that on the right.
+  如果给定的字符串或变量的值能够解析为实数（类似于C语言的\ ``double``\ 类型），\
+  并且小于或等于右侧的值，则为真。
 
 .. signature:: if(<variable|string> GREATER_EQUAL <variable|string>)
   :target: GREATER_EQUAL
 
   .. versionadded:: 3.7
 
-  True if the given string or variable's value parses as a real number
-  (like a C ``double``) and greater than or equal to that on the right.
+  如果给定的字符串或变量的值能够解析为实数（类似于C语言的\ ``double``\ 类型），
+  并且大于或等于右侧的值，则为真。
 
 .. signature:: if(<variable|string> STRLESS <variable|string>)
   :target: STRLESS
 
-  True if the given string or variable's value is lexicographically less
-  than the string or variable on the right.
+  如果给定的字符串或变量的值按字典序小于右侧的字符串或变量的值，则为真。
 
 .. signature:: if(<variable|string> STRGREATER <variable|string>)
   :target: STRGREATER
 
-  True if the given string or variable's value is lexicographically greater
-  than the string or variable on the right.
+  如果给定的字符串或变量的值按字典序大于右侧的字符串或变量的值，则为真。
 
 .. signature:: if(<variable|string> STREQUAL <variable|string>)
   :target: STREQUAL
 
-  True if the given string or variable's value is lexicographically equal
-  to the string or variable on the right.
+  如果给定的字符串或变量的值按字典序等于右侧的字符串或变量的值，则为真。
 
 .. signature:: if(<variable|string> STRLESS_EQUAL <variable|string>)
   :target: STRLESS_EQUAL
 
   .. versionadded:: 3.7
 
-  True if the given string or variable's value is lexicographically less
-  than or equal to the string or variable on the right.
+  如果给定的字符串或变量的值按字典序小于或等于右侧的字符串或变量的值，则为真。
 
 .. signature:: if(<variable|string> STRGREATER_EQUAL <variable|string>)
   :target: STRGREATER_EQUAL
 
   .. versionadded:: 3.7
 
-  True if the given string or variable's value is lexicographically greater
-  than or equal to the string or variable on the right.
+  如果给定的字符串或变量的值按字典序大于或等于右侧的字符串或变量的值，则为真。
 
 Version Comparisons
 """""""""""""""""""
