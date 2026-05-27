@@ -295,54 +295,44 @@ if
 
   如果给定的字符串或变量的值按字典序大于或等于右侧的字符串或变量的值，则为真。
 
-Version Comparisons
+版本比较
 """""""""""""""""""
 
 .. signature:: if(<variable|string> VERSION_LESS <variable|string>)
   :target: VERSION_LESS
 
-  Component-wise integer version number comparison (version format is
-  ``major[.minor[.patch[.tweak]]]``, omitted components are treated as zero).
-  Any non-integer version component or non-integer trailing part of a version
-  component effectively truncates the string at that point.
+  逐组件的整数版本号比较（版本格式为\ ``major[.minor[.patch[.tweak]]]``，省略的组件\
+  被视为零）。任何非整数版本组件或版本组件的非整数尾部都会在该位置截断字符串。
 
 .. signature:: if(<variable|string> VERSION_GREATER <variable|string>)
   :target: VERSION_GREATER
 
-  Component-wise integer version number comparison (version format is
-  ``major[.minor[.patch[.tweak]]]``, omitted components are treated as zero).
-  Any non-integer version component or non-integer trailing part of a version
-  component effectively truncates the string at that point.
+  逐组件的整数版本号比较（版本格式为\ ``major[.minor[.patch[.tweak]]]``，省略的组件被\
+  视为零）。任何非整数版本组件或版本组件的非整数尾部都会在该位置截断字符串。
 
 .. signature:: if(<variable|string> VERSION_EQUAL <variable|string>)
   :target: VERSION_EQUAL
 
-  Component-wise integer version number comparison (version format is
-  ``major[.minor[.patch[.tweak]]]``, omitted components are treated as zero).
-  Any non-integer version component or non-integer trailing part of a version
-  component effectively truncates the string at that point.
+  逐组件的整数版本号比较（版本格式为\ ``major[.minor[.patch[.tweak]]]``，省略的组件被视为\
+  零）。任何非整数版本组件或版本组件的非整数尾部都会在该位置截断字符串。
 
 .. signature:: if(<variable|string> VERSION_LESS_EQUAL <variable|string>)
   :target: VERSION_LESS_EQUAL
 
   .. versionadded:: 3.7
 
-  Component-wise integer version number comparison (version format is
-  ``major[.minor[.patch[.tweak]]]``, omitted components are treated as zero).
-  Any non-integer version component or non-integer trailing part of a version
-  component effectively truncates the string at that point.
+  逐组件的整数版本号比较（版本格式为\ ``major[.minor[.patch[.tweak]]]``，省略的组件被视为\
+  零）。任何非整数版本组件或版本组件的非整数尾部都会在该位置截断字符串。
 
 .. signature:: if(<variable|string> VERSION_GREATER_EQUAL <variable|string>)
   :target: VERSION_GREATER_EQUAL
 
   .. versionadded:: 3.7
 
-  Component-wise integer version number comparison (version format is
-  ``major[.minor[.patch[.tweak]]]``, omitted components are treated as zero).
-  Any non-integer version component or non-integer trailing part of a version
-  component effectively truncates the string at that point.
+  逐组件的整数版本号比较（版本格式为\ ``major[.minor[.patch[.tweak]]]``，省略的组件被视为\
+  零）。任何非整数版本组件或版本组件的非整数尾部都会在该位置截断字符串
 
-Path Comparisons
+路径比较
 """"""""""""""""
 
 .. signature:: if(<variable|string> PATH_EQUAL <variable|string>)
@@ -350,32 +340,27 @@ Path Comparisons
 
   .. versionadded:: 3.24
 
-  Lexicographically compares two CMake paths component-by-component without
-  accessing the filesystem. Only if every component of both paths match will
-  the two paths compare equal.  Multiple path separators are effectively
-  collapsed into a single separator, but note that backslashes are not
-  converted to forward slashes.
-  No other :ref:`path normalization <Normalization>` is performed.
-  Trailing slashes are preserved, thus ``/a/b`` and ``/a/b/`` are not equal.
+  按字典序逐组件比较两个CMake路径，不访问文件系统。只有当两个路径的每个组件都匹配时，\
+  两个路径才比较相等。多个路径分隔符会被有效地合并为单个分隔符，但请注意反斜杠不会转换为\
+  正斜杠。不执行其他\ :ref:`路径规范化 <Normalization>`。尾部斜杠会被保留，因此\ ``/a/b``\
+  和\ ``/a/b/``\ 不相等。
 
-  Component-wise comparison is superior to string-based comparison due to the
-  handling of multiple path separators.  In the following example, the
-  expression evaluates to true using ``PATH_EQUAL``, but false with
-  ``STREQUAL``:
+  由于对多个路径分隔符的处理，逐组件比较优于基于字符串的比较。在以下示例中，使用\
+  ``PATH_EQUAL``\ 时表达式求值为真，但使用\ ``STREQUAL``\ 时为假：
 
   .. code-block:: cmake
 
-    # comparison is TRUE
+    # 比较为真
     if ("/a//b/c" PATH_EQUAL "/a/b/c")
        ...
     endif()
 
-    # comparison is FALSE
+    # 比较为假
     if ("/a//b/c" STREQUAL "/a/b/c")
        ...
     endif()
 
-  See :ref:`cmake_path(COMPARE) <Path Comparison>` for more details.
+  详见\ :ref:`cmake_path(COMPARE) <Path Comparison>`。
 
 Variable Expansion
 ^^^^^^^^^^^^^^^^^^
