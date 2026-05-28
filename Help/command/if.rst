@@ -60,7 +60,7 @@ if
   常量为\ ``0``、\ ``OFF``、\ ``NO``、\ ``FALSE``、\ ``N``、\ ``IGNORE``、\ ``NOTFOUND``、空字符串，
   或以\ ``-NOTFOUND``\ 后缀结尾时，结果为假。
   具名布尔常量不区分大小写。若参数不属于上述特定常量，
-  则将其视为变量或字符串（参见下文的\ `Variable Expansion`_），并适用以下两种形式之一。
+  则将其视为变量或字符串（参见下文的\ `变量展开`_），并适用以下两种形式之一。
 
 .. signature:: if(<variable>)
   :target: variable
@@ -362,14 +362,12 @@ if
 
   详见\ :ref:`cmake_path(COMPARE) <Path Comparison>`。
 
-Variable Expansion
+变量展开
 ^^^^^^^^^^^^^^^^^^
 
-The if command was written very early in CMake's history, predating
-the ``${}`` variable evaluation syntax, and for convenience evaluates
-variables named by its arguments as shown in the above signatures.
-Note that normal variable evaluation with ``${}`` applies before the if
-command even receives the arguments.  Therefore code like
+if命令编写于CMake历史的早期，早于\ ``${}``\ 变量求值语法。为了方便起见，它会对\
+其参数所命名的变量进行求值，如上述签名所示。请注意，使用\ ``${}``\ 的常规变量求\
+值发生在if命令接收参数之前。因此，类似以下的代码：
 
 .. code-block:: cmake
 
@@ -377,74 +375,55 @@ command even receives the arguments.  Therefore code like
  set(var2 "var1")
  if(${var2})
 
-appears to the if command as
+在if命令看来是：
 
 .. code-block:: cmake
 
   if(var1)
 
-and is evaluated according to the ``if(<variable>)`` case documented
-above.  The result is ``OFF`` which is false.  However, if we remove the
-``${}`` from the example then the command sees
+并根据上文文档中的\ ``if(<variable>)``\ 情况进行求值。结果是\ ``OFF``，即为假。\
+但是，如果我们从示例中删除\ ``${}``，那么该命令看到的是：
 
 .. code-block:: cmake
 
   if(var2)
 
-which is true because ``var2`` is defined to ``var1`` which is not a false
-constant.
+这是真，因为\ ``var2``\ 被定义为\ ``var1``，而不是一个假常量。
 
-Automatic evaluation applies in the other cases whenever the
-above-documented condition syntax accepts ``<variable|string>``:
+当上述文档的条件语法接受\ ``<variable|string>``\ 时，自动求值也适用于其他情况：
 
-* The left hand argument to `MATCHES`_ is first checked to see if it is
-  a defined variable.  If so, the variable's value is used, otherwise the
-  original value is used.
+* 首先检查\ `MATCHES`_\ 的左操作数是否为已定义的变量。如果是，则使用该变量的值，\
+  否则使用原始值。
 
-* If the left hand argument to `MATCHES`_ is missing it returns false
-  without error
+* 如果\ `MATCHES`_\ 缺少左操作数，则返回假而不报错。
 
-* Both left and right hand arguments to `LESS`_, `GREATER`_, `EQUAL`_,
-  `LESS_EQUAL`_, and `GREATER_EQUAL`_, are independently tested to see if
-  they are defined variables.  If so, their defined values are used otherwise
-  the original value is used.
+* `LESS`_、\ `GREATER`_、\ `EQUAL`_、\ `LESS_EQUAL`_\ 和\ `GREATER_EQUAL`_\ 的左右\
+  操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，否则使用原始值。
 
-* Both left and right hand arguments to `STRLESS`_, `STRGREATER`_,
-  `STREQUAL`_, `STRLESS_EQUAL`_, and `STRGREATER_EQUAL`_ are independently
-  tested to see if they are defined variables.  If so, their defined values are
-  used otherwise the original value is used.
+* `STRLESS`_、\ `STRGREATER`_、\ `STREQUAL`_、\ `STRLESS_EQUAL`_\ 和\ `STRGREATER_EQUAL`_\
+  的左右操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，否则使用原始值。
 
-* Both left and right hand arguments to `VERSION_LESS`_,
-  `VERSION_GREATER`_, `VERSION_EQUAL`_, `VERSION_LESS_EQUAL`_, and
-  `VERSION_GREATER_EQUAL`_ are independently tested to see if they are defined
-  variables.  If so, their defined values are used otherwise the original value
-  is used.
+* `VERSION_LESS`_、\ `VERSION_GREATER`_、\ `VERSION_EQUAL`_、\ `VERSION_LESS_EQUAL`_\
+  和\ `VERSION_GREATER_EQUAL`_\ 的左右操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，\
+  否则使用原始值。
 
-* The left hand argument to `IN_LIST`_ is tested to see if it is a defined
-  variable.  If so, the variable's value is used, otherwise the original
-  value is used.
+* 首先测试\ `IN_LIST`_\ 的左操作数是否为已定义的变量。如果是，则使用该变量的值，否则使用原始值。
 
-* The right hand argument to `NOT`_ is tested to see if it is a boolean
-  constant.  If so, the value is used, otherwise it is assumed to be a
-  variable and it is dereferenced.
+* 测试\ `NOT`_\ 的右操作数是否为布尔常量。如果是，则使用该值，否则假定其为变量并进行解引用。
 
-* The left and right hand arguments to `AND`_ and `OR`_ are independently
-  tested to see if they are boolean constants.  If so, they are used as
-  such, otherwise they are assumed to be variables and are dereferenced.
+* `AND`_\ 和\ `OR`_\ 的左右操作数会分别测试是否为布尔常量。如果是，则直接使用，否则假定其为\
+  变量并进行解引用。
 
 .. versionchanged:: 3.1
-  To prevent ambiguity, potential variable or keyword names can be
-  specified in a :ref:`Quoted Argument` or a :ref:`Bracket Argument`.
-  A quoted or bracketed variable or keyword will be interpreted as a
-  string and not dereferenced or interpreted.
-  See policy :policy:`CMP0054`.
+  为了防止歧义，可以在\ :ref:`Quoted Argument`\ 或\ :ref:`Bracket Argument`\
+  中指定潜在的变量名或关键字名。带引号或括号的变量或关键字将被解释为字符串，而不会\
+  被解引用或解释。参见策略\ :policy:`CMP0054`。
 
-There is no automatic evaluation for environment or cache
-:ref:`Variable References`.  Their values must be referenced as
-``$ENV{<name>}`` or ``$CACHE{<name>}`` wherever the above-documented
-condition syntax accepts ``<variable|string>``.
+对于环境或缓存\ :ref:`Variable References`，不存在自动求值。在上述文档的条件语法接受\
+``<variable|string>``\ 的任何地方，它们的值必须引用为\ ``$ENV{<name>}``\ 或\
+``$CACHE{<name>}``。
 
-See also
+参见
 ^^^^^^^^
 
 * :command:`else`
