@@ -162,23 +162,18 @@ Windows上总是有一个关联的导入库。
 
   .. versionadded:: 4.2
 
-  Add a symbolic :ref:`Interface Library <Interface Libraries>` target.
-  Symbolic interface libraries are useful for representing optional components
-  or features in a package.  They have no usage requirements, do not compile
-  sources, and do not produce a library artifact on disk, but they may be
-  exported and installed.  They can also be tested for existence with the
-  regular :command:`if(TARGET)` subcommand.
+  添加一个符号性的\ :ref:`接口库 <Interface Libraries>` 目标。\
+  符号接口库用于表示包中的可选组件或特性。它们没有使用要求，\
+  不编译源文件，也不在磁盘上生成库产物，但可以被导出和安装。\
+  还可以使用常规的\ :command:`if(TARGET)`\ 子命令来检测其是否存在。
 
-  A symbolic interface library may be used as a linkable target to enforce the
-  presence of optional components in a dependency.  For example, if a library
-  ``libgui`` may or may not provide a feature ``widget``, a consumer package
-  can link against ``widget`` to express that it requires this component to be
-  available.  This allows :command:`find_package` calls that declare required
-  components to be validated by linking against the corresponding symbolic
-  targets.
+  符号接口库可作为可链接目标，用于强制依赖中可选组件的存在。\
+  例如，如果库\ ``libgui``\ 可能提供也可能不提供特性\ ``widget``，\
+  消费者包可以链接到\ ``widget``\ 来表示它要求该组件可用。\
+  这使得声明了所需组件的\ :command:`find_package`\ 调用可以通过\
+  链接到相应的符号目标来进行验证。
 
-  A symbolic interface library has the :prop_tgt:`SYMBOLIC` target property
-  set to true.
+  符号接口库的\ :prop_tgt:`SYMBOLIC`\ 目标属性设置为true。
 
 .. _`add_library imported libraries`:
 
