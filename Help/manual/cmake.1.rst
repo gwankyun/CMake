@@ -806,23 +806,17 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
 .. option:: --prefix <prefix>
 
-  Specifies an alternative installation prefix, temporarily replacing the
-  value of the :variable:`CMAKE_INSTALL_PREFIX` variable at the installation
-  phase.
+  指定一个替代的安装前缀，在安装阶段临时替换\ :variable:`CMAKE_INSTALL_PREFIX`\ 变量的值。
 
-  The main purpose of this option is to allow installation to occur in an
-  arbitrary location.  This is commonly used in certain installation and
-  packaging workflows.  It is analogous to selecting the installation
-  directory during the installation phase.  For example, on Windows, where
-  a user may choose the destination folder for the project.
+  此选项的主要目的是允许将项目安装到任意位置。这在某些安装和打包工作流程中经常使用。\
+  它类似于在安装阶段选择安装目录。例如，在Windows上，用户可以选择项目的目标文件夹。
 
   .. note::
 
-    When the project is using the :module:`GNUInstallDirs` module, there are
-    some :ref:`special cases <GNUInstallDirs special cases>` that are
-    evaluated based on the value of the :variable:`CMAKE_INSTALL_PREFIX`
-    variable during the configuration phase.  The results persist even if an
-    alternative prefix is used during installation.
+    当项目使用\ :module:`GNUInstallDirs`\ 模块时，存在一些\
+    :ref:`特殊情况 <GNUInstallDirs special cases>`，这些情况是在配置阶段根据\
+    :variable:`CMAKE_INSTALL_PREFIX`\ 变量的值进行计算的。即使在安装时使用了替代前缀，\
+    这些结果仍然会保留。
 
 .. option:: --strip
 
