@@ -902,14 +902,11 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 4.3
 
-  Convert a binary file to a C array. If input file is unspecified or ``-``,
-  read from standard input instead of a file. If output file is unspecified or
-  ``-``, write to standard output instead of a file.
+  将二进制文件转换为C数组。如果未指定输入文件或为\ ``-``，则从标准输入读取而非文件。\
+  如果未指定输出文件或为\ ``-``，则写入标准输出而非文件。
 
-  By default, this prints only the bytes. Enclosing text can be added with the
-  ``--template-file`` argument. You can also ``#include`` the bytes from
-  another file, acting as a drop-in replacement for the ``#embed`` directive
-  from C23 and C++26:
+  默认情况下，仅输出字节。可通过\ ``--template-file``\ 参数添加包裹文本。\
+  也可以从另一个文件\ ``#include``\ 这些字节，作为C23和C++26中\ ``#embed``\ 指令的替代方案：
 
   .. code-block:: c
 
@@ -922,27 +919,23 @@ CMake通过签名提供内置命令行工具
 
   .. option:: --signed
 
-    Print the bytes as signed integers rather than unsigned.
+    将字节输出为有符号整数而非无符号整数。
 
   .. option:: --decimal
 
-    Print the bytes as decimal rather than hexadecimal.
+    将字节输出为十进制而非十六进制。
 
   .. option:: --trailing-comma
 
-    Append a trailing comma after the last byte (not included by default.)
+    在最后一个字节后追加尾随逗号（默认不包含）。
 
   .. option:: --template-file <template-file>
 
-    Format from a template file. The template file contains placeholders for
-    the array and optionally the length (which will be a non-negative decimal
-    integer). Such placeholders are enclosed in ``@`` at the beginning and end
-    of the placeholder. This functionality is similar to
-    :command:`configure_file` called with the ``@ONLY`` argument, but only the
-    array and length placeholders will be replaced, and any other placeholders
-    will be left as-is.
+    从模板文件格式化输出。模板文件包含数组及可选长度（为非负十进制整数）的占位符。\
+    占位符在开头和结尾以\ ``@``\ 包裹。此功能类似于以\ ``@ONLY``\ 参数调用\
+    :command:`configure_file`，但仅替换数组和长度占位符，其他占位符保持不变。
 
-    An example of a potential template file:
+    模板文件示例：
 
     .. code-block:: text
 
@@ -950,23 +943,19 @@ CMake通过签名提供内置命令行工具
 
       size_t length = @length@;
 
-    The array placeholder may occur at most once in the template file. The
-    length placeholder may occur zero or more times after the array
-    placeholder, but not before it.
+    数组占位符在模板文件中最多出现一次。长度占位符可在数组占位符之后出现零次或多次，\
+    但不能出现在数组占位符之前。
 
-    Note that the length is the number of elements printed, and may not match
-    the ``sizeof`` the resulting array if a type other than ``unsigned char``
-    is used.
+    注意长度为输出的元素数量，若使用\ ``unsigned char``\ 以外的类型，\
+    可能与结果数组的\ ``sizeof``\ 不匹配。
 
   .. option:: --template-array-placeholder <placeholder-name>
 
-    Specify a name for the array placeholder in the template file. Set to
-    ``array`` by default.
+    指定模板文件中数组占位符的名称。默认为\ ``array``。
 
   .. option:: --template-length-placeholder <placeholder-name>
 
-    Specify a name for the length placeholder in the template file. Set to
-    ``length`` by default.
+    指定模板文件中长度占位符的名称。默认为\ ``length``。
 
 .. program:: cmake-E
 
