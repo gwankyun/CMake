@@ -1103,14 +1103,14 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 4.2
 
-  Copy content of ``<dir>...`` directories to ``<destination>`` directory
-  if source files are newer than destination files (based on file timestamps).
-  If ``<destination>`` directory does not exist it will be created.
+  将\ ``<dir>...``\ 目录的内容复制到\ ``<destination>``\ 目录，\
+  仅当源文件比目标文件更新时（基于文件时间戳）执行复制。\
+  如果\ ``<destination>``\ 目录不存在，则会自动创建。
 
-  ``copy_directory_if_newer`` does follow symlinks.
-  The command fails when the source directory does not exist.
-  This is faster than ``copy_directory_if_different`` as it only compares
-  file timestamps instead of file contents.
+  ``copy_directory_if_newer``\ 会跟随符号链接。\
+  当源目录不存在时，该命令将失败。\
+  此命令比\ ``copy_directory_if_different``\ 更快，\
+  因为它仅比较文件时间戳而非文件内容。
 
 .. option:: copy_if_different <file>... <destination>
 
@@ -1124,13 +1124,12 @@ CMake通过签名提供内置命令行工具
 
   .. versionadded:: 4.2
 
-  Copy files to ``<destination>`` (either file or directory) if
-  source files are newer than destination files (based on file timestamps).
-  If multiple files are specified, the ``<destination>`` must be
-  directory and it must exist.
-  ``copy_if_newer`` does follow symlinks.
-  This is faster than ``copy_if_different`` as it only compares
-  file timestamps instead of file contents.
+  将文件复制到\ ``<destination>``\ （可以是文件或目录），\
+  仅当源文件比目标文件更新时（基于文件时间戳）执行复制。\
+  如果指定了多个文件，则 ``<destination>`` 必须是一个已存在的目录。\
+  ``copy_if_newer``\ 会跟随符号链接。\
+  此命令比\ ``copy_if_different``\ 更快，\
+  因为它仅比较文件时间戳而非文件内容。
 
 .. option:: create_symlink <old> <new>
 
@@ -1219,7 +1218,7 @@ CMake通过签名提供内置命令行工具
      052f86c15bbde68af55c7f7b340ab639  file2.txt
 
   .. versionchanged:: 4.3
-    Passing ``-`` reads from standard input.
+    传入\ ``-``\ 时从标准输入读取。
 
 .. option:: sha1sum <file>...
 
@@ -1231,7 +1230,7 @@ CMake通过签名提供内置命令行工具
      1df4c8f318665f9a5f2ed38f55adadb7ef9f559c  file2.txt
 
   .. versionchanged:: 4.3
-    Passing ``-`` reads from standard input.
+    传入\ ``-``\ 时从标准输入读取。
 
 .. option:: sha224sum <file>...
 
@@ -1243,7 +1242,7 @@ CMake通过签名提供内置命令行工具
      6dfbe55f4d2edc5fe5c9197bca51ceaaf824e48eba0cc453088aee24  file2.txt
 
   .. versionchanged:: 4.3
-    Passing ``-`` reads from standard input.
+    传入\ ``-``\ 时从标准输入读取。
 
 .. option:: sha256sum <file>...
 
@@ -1255,7 +1254,7 @@ CMake通过签名提供内置命令行工具
      15b682ead6c12dedb1baf91231e1e89cfc7974b3787c1e2e01b986bffadae0ea  file2.txt
 
   .. versionchanged:: 4.3
-    Passing ``-`` reads from standard input.
+    传入\ ``-``\ 时从标准输入读取。
 
 .. option:: sha384sum <file>...
 
@@ -1267,7 +1266,7 @@ CMake通过签名提供内置命令行工具
      668ddeb108710d271ee21c0f3acbd6a7517e2b78f9181c6a2ff3b8943af92b0195dcb7cce48aa3e17893173c0a39e23d  file2.txt
 
   .. versionchanged:: 4.3
-    Passing ``-`` reads from standard input.
+    传入\ ``-``\ 时从标准输入读取。
 
 .. option:: sha512sum <file>...
 
@@ -1279,7 +1278,7 @@ CMake通过签名提供内置命令行工具
      7a0b54896fe5e70cca6dd643ad6f672614b189bf26f8153061c4d219474b05dad08c4e729af9f4b009f1a1a280cb625454bf587c690f4617c27e3aebdf3b7a2d  file2.txt
 
   .. versionchanged:: 4.3
-    Passing ``-`` reads from standard input.
+    传入\ ``-``\ 时从标准输入读取。
 
 .. option:: remove [-f] <file>...
 
@@ -1347,8 +1346,7 @@ CMake通过签名提供内置命令行工具
       提供它们的确切名称，包括路径，如列表打印（\ ``-t``\ ）所示。
 
     .. versionchanged:: 4.3
-      Archive entries containing path traversal sequences (``..``), or
-      absolute paths, are rejected for security.
+      出于安全考虑，包含路径遍历序列（\ ``..``\ ）或绝对路径的归档条目将被拒绝。
 
   .. option:: t
 
@@ -1385,7 +1383,7 @@ CMake通过签名提供内置命令行工具
 
     .. versionadded:: 4.3
 
-    Compress the resulting archive with LZMA algorithm.
+    使用LZMA算法压缩生成的归档文件。
 
   .. option:: --files-from=<file>
 
@@ -1403,28 +1401,26 @@ CMake通过签名提供内置命令行工具
     * ``7zip``
     * ``gnutar``
     * ``pax``
-    * ``paxr`` (restricted pax, default)
+    * ``paxr`` (受限pax，默认值)
     * ``raw``
 
       .. versionadded:: 4.3
 
-      If this format is used, only one file will be compressed
-      with the compression type specified by the
-      :option:`--cmake-tar-compression-method <cmake-E_tar --cmake-tar-compression-method>`.
+      如果使用此格式，将仅使用\
+      :option:`--cmake-tar-compression-method <cmake-E_tar --cmake-tar-compression-method>`\
+      指定的压缩类型对单个文件进行压缩。
 
     * ``zip``
 
-    If the compression method is not specified, the compression method
-    depends on the format:
+    如果未指定压缩方法，则使用的压缩方法取决于格式：
 
     * ``7zip`` uses ``LZMA`` compression
     * ``zip`` uses ``Deflate`` compression
-    * others uses no compression by default
+    * 其他格式默认不进行压缩
 
     .. versionadded:: 4.3
 
-      The ``7zip`` and ``zip`` formats support changing the default compression
-      method and compression level.
+      ``7zip``\ 和\ ``zip``\ 格式支持更改默认压缩方法和压缩级别。
 
   .. option:: --mtime=<date>
 
