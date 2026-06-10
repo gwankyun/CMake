@@ -1414,8 +1414,8 @@ CMake通过签名提供内置命令行工具
 
     如果未指定压缩方法，则使用的压缩方法取决于格式：
 
-    * ``7zip`` uses ``LZMA`` compression
-    * ``zip`` uses ``Deflate`` compression
+    * ``7zip``\ 使用\ ``LZMA``\ 压缩
+    * ``zip``\ 使用\ ``Deflate``\ 压缩
     * 其他格式默认不进行压缩
 
     .. versionadded:: 4.3
@@ -1432,52 +1432,45 @@ CMake通过签名提供内置命令行工具
 
     .. versionadded:: 4.3
 
-    The ``<compression-method>`` must be one of the following:
+    ``<compression-method>``\ 必须是以下之一：
 
-    * ``none`` or ``store`` - no compression is used
-    * ``deflate`` or ``gzip`` - Deflate-based
-    * ``bzip2`` - BZip2-based
-    * ``lzma`` - LZMA-based
-    * ``lzma2`` or ``xz`` - LZMA2-based
-    * ``ppmd`` - PPMd-based
+    * ``none``\ 或\ ``store`` - 不使用压缩
+    * ``deflate``\ 或\ ``gzip`` - 基于Deflate
+    * ``bzip2`` - 基于BZip2
+    * ``lzma`` - 基于LZMA
+    * ``lzma2``\ 或\ ``xz`` - 基于LZMA2
+    * ``ppmd`` - 基于PPMd
 
-      This compression method is only supported by the ``7zip`` archive format.
+      此压缩方法仅\ ``7zip``\ 存档格式支持。
 
-    * ``zstd`` - Zstandard-based
+    * ``zstd`` - 基于Zstandard
 
-    This is the second variant for the compression method selection.
-    It provide more compression methods, that the classic ``tar``-like interface.
-    You can use any of them.
+    这是压缩方法选择的第二种变体。它比经典\ ``tar``\ 风格接口提供更多的压缩方法。\
+    你可以使用其中任意一种。
 
-    The default value depends on the :option:`--format <cmake-E_tar --format>`
-    option value and described in the corresponding section.
+    默认值取决于\ :option:`--format <cmake-E_tar --format>`\ 选项的值，并在相应章节中描述。
 
   .. option:: --cmake-tar-compression-level=<compression-level>
 
     .. versionadded:: 4.3
 
-    The ``<compression-level>`` should be between ``0`` and ``9``, with the
-    default being ``0``.  The compression algorithm must be selected when
-    the ``--cmake-tar-compression-level`` option is given.
+    ``<compression-level>``\ 应在\ ``0``\ 到\ ``9``\ 之间，默认值为\ ``0``。\
+    在指定\ ``--cmake-tar-compression-level``\ 选项时必须选择压缩算法。
 
-    The ``<compression-level>`` of the ``Zstd`` algorithm can be set
-    between ``0`` and ``19``, except for the ``zip`` format.
+    ``Zstd``\ 算法的\ ``<compression-level>``\ 可设置为\ ``0``\ 到\ ``19``\
+    之间，\ ``zip``\ 格式除外。
 
-    The value ``0`` is used to specify the default compression level.
-    It is selected automatically by the archive library backend and
-    not directly set by CMake itself. The default compression level
-    may vary between archive formats, platforms, etc.
+    值\ ``0``\ 用于指定默认压缩级别。它由存档库后端自动选择，而非由CMake\
+    直接设置。默认压缩级别可能因存档格式、平台等因素而异。
 
   .. option:: --cmake-tar-threads=<number>
 
     .. versionadded:: 4.3
 
-    Use the ``<number>`` threads to operate on the archive. Currently only
-    multi-threaded compression is supported.
+    使用\ ``<number>``\ 个线程来操作存档。目前仅支持多线程压缩。
 
-    If set to ``0``, the number of available cores on the machine will be
-    used instead. Note that not all compression modes support threading
-    in all environments.
+    如果设置为\ ``0``，则将使用机器上可用的核心数。请注意，并非所有压缩模式在所有环境中\
+    都支持多线程。
 
   .. option:: --touch
 

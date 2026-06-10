@@ -2,14 +2,12 @@
 
 .. option:: -version[=json-v1] [<file>], --version[=json-v1] [<file>], /V[=json-v1] [<file>], /version[=json-v1] [<file>]
 
- Show program name/version banner and exit. If ``json-v1`` is
- specified, print extended version information in JSON format.
- The JSON output contains the versions for the CMake and its
- dependencies.
+ 显示程序名称/版本横幅并退出。如果指定了\ ``json-v1``，则以JSON格式\
+ 打印扩展版本信息。JSON输出包含CMake及其依赖项的版本。
  |file|
 
- The JSON output format is described in machine-readable form by
- :download:`this JSON schema </manual/cmake/version-schema.json>`.
+ :download:`此JSON schema </manual/cmake/version-schema.json>`\
+ 以机器可读形式描述了JSON输出格式。
 
 .. option:: -h, -H, --help, -help, -usage, /?
 
