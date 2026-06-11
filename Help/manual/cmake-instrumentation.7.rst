@@ -26,34 +26,30 @@ cmake-instrumentation(7)
 CMake插桩API允许在CMake项目的配置、生成、构建、测试和安装步骤期间收集计时数据、目标信息以及\
 系统诊断信息。
 
-All interactions with the CMake instrumentation API must specify both an API
-version and a Data version. At this time, there is only one version for each of
-these: see the `API v1`_ and `Data Version`_.
+与CMake插桩API的所有交互都必须同时指定API版本和数据版本。目前，这两者各只有\
+一个版本：参见\ `API v1`_\ 和\ `Data Version`_。
 
 .. note::
 
-  This feature is only available for projects using the
-  :ref:`Makefile Generators`, :ref:`Ninja Generators` or :generator:`FASTBuild`.
+  此功能仅适用于使用\ :ref:`Makefile Generators`、\ :ref:`Ninja Generators`\ 或\
+  :generator:`FASTBuild`\ 的项目。
 
 概述
 --------
 
-CMake Instrumentation works in 2 major stages: |Data Collection|, and
-|Indexing|.
+CMake插桩的工作分为两个主要阶段：|Data Collection|\ 和\ |Indexing|。
 
-|Data Collection| is the process by which CMake writes out instrumentation
-data into a project build tree. The commands instrumented in this way range
-from overall builds, to individual compile commands. The full list of commands
-instrumented is documented under the |v1 Snippet File|.
+|Data Collection|\ 是CMake将插桩数据写入项目构建树的过程。以此方式进行\
+插桩的命令涵盖了从整体构建到单个编译命令。完整的插桩命令列表记录在\
+|v1 Snippet File|\ 下。
 
-Collected data will accumulate until |Indexing| occurs: the process of
-collating the generated data. Indexing occurs on events called "hooks",
-which can be configured as part of the |v1 Query Files|. A |v1 Indexing File| is
-created and passed to any user-defined |Callbacks| provided to process
-the data. Once all |Callbacks| have run, CMake deletes the files.
+收集的数据将持续累积，直到\ |Indexing|\ 发生：即整理生成数据的过程。索引在称为“钩子”的事件\
+上发生，这些钩子可以作为\ |v1 Query Files|\ 的一部分进行配置。|v1 Indexing File|\ 将被创建\
+并传递给任何用户定义的\ |Callbacks|，用于处理数据。一旦所有\ |Callbacks|\ 运行完毕，CMake\
+将删除这些文件。
 
-Without the need for any custom |Callbacks|, CMake can submit instrumentation
-data to `CDash`_, or generate a |Google Trace File| for visualization.
+无需任何自定义\ |Callbacks|，CMake即可将插桩数据提交到\ `CDash`_，或生成\
+|Google Trace File|\ 用于可视化。
 
 .. _`cmake-instrumentation Data Collection`:
 
@@ -63,32 +59,26 @@ data to `CDash`_, or generate a |Google Trace File| for visualization.
 每当在启用插桩的情况下执行命令时，会在项目构建树中创建一个\ |v1 Snippet File|，其中包含\
 该命令的特定数据。这些文件会一直保留到\ |Indexing|\ 操作完成之后。
 
-CMake sets the :prop_gbl:`RULE_LAUNCH_COMPILE`, :prop_gbl:`RULE_LAUNCH_LINK`
-and :prop_gbl:`RULE_LAUNCH_CUSTOM` global properties to wrap each compile, link
-and custom command invocation in a launcher that performs instrumentation and
-writes out a |v1 Snippet File|. If the project has been configured with
-:module:`CTestUseLaunchers`, the launcher will collect instrumentation data in
-addition to performing the communication typically handled by that module.
+CMake设置\ :prop_gbl:`RULE_LAUNCH_COMPILE`、\ :prop_gbl:`RULE_LAUNCH_LINK`\ 和\
+:prop_gbl:`RULE_LAUNCH_CUSTOM`\ 全局属性，将每个编译、链接和自定义命令的调用包装在一个启动器中，\
+该启动器执行插桩并写入\ |v1 Snippet File|。如果项目已通过\
+:module:`CTestUseLaunchers`\ 进行配置，该启动器将在执行该模块通常处理的通信功能之外，\
+额外收集插桩数据。
 
 .. _`cmake-instrumentation Indexing`:
 
 索引
 --------
 
-Indexing is the process of collating generated instrumentation data. The
-available hooks to trigger indexing include options such as after every build,
-or every :manual:`ctest <ctest(1)>` invocation, and are configured as part of
-the |v1 Query Files|. Whenever a hook is triggered, an index file is generated
-containing a list of snippet files newer than the previous indexing. This index
-file is passed to user-defined |Callbacks| commands to process the data.
+索引是整理已生成插桩数据的过程。触发索引的可用钩子包括诸如每次构建后或每次\
+:manual:`ctest <ctest(1)>`\ 调用后等选项，这些钩子作为\ |v1 Query Files|\ 的一部分进行配置。\
+每当钩子被触发时，将生成一个包含比上次索引更新的snippet文件列表的索引文件。此索引文件将传递给用户\
+定义的\ |Callbacks|\ 命令以处理数据。
 
 也可以通过手动调用\ :option:`ctest --collect-instrumentation`\ 来生成索引。
 
-Indexing, and the subsequent callbacks, will not occur concurrently in a
-single build tree. When multiple hooks trigger indexing at the same time,
-a file-based lock is used to ensure one indexing completes, executes all of its
-callbacks, and deletes the instrumentation data before the next indexing can
-begin.
+索引及随后的回调不会在单个构建树中并发执行。当多个钩子同时触发索引时，将使用基于文件的锁来确保\
+一次索引完成、执行其所有回调、并删除插桩数据后，下一次索引才能开始。
 
 .. _`cmake-instrumentation Callbacks`:
 
