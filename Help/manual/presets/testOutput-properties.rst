@@ -47,7 +47,7 @@
 ``outputLogFile``
   An optional string specifying a path to a log file. Equivalent
   to passing :ctest-option:`--output-log` on the command line.
-  This field supports `macro expansion`_.
+  This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.output.outputJUnitFile`:
 
@@ -56,7 +56,7 @@
 
   An optional string specifying a path to a JUnit file.
   Equivalent to passing :ctest-option:`--output-junit` on the
-  command line. This field supports `macro expansion`_.
+  command line. This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.output.labelSummary`:
 

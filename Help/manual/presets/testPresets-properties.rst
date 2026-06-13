@@ -45,7 +45,7 @@
 ``condition``
   .. presets-versionadded:: 3
 
-  An optional `Condition`_ object.
+  An optional |condition| object.
 
 .. _`CMakePresets.testPresets.vendor`:
 
@@ -76,7 +76,7 @@
   regardless of whether or not a value was given to it by the process's
   environment.
 
-  This field supports `macro expansion`_, and environment variables in this
+  This field supports |macro-expansion|, and environment variables in this
   map may reference each other, and may be listed in any order, as long as
   such references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``). ``$penv{NAME}``
@@ -120,7 +120,7 @@
   An optional array of configuration options to overwrite options
   specified in the CTest configuration file. Equivalent to passing
   :ctest-option:`--overwrite` for each value in the array. The array
-  values support `macro expansion`_.
+  values support |macro-expansion|.
 
 .. _`CMakePresets.testPresets.output`:
 

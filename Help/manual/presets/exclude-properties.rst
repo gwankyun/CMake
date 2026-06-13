@@ -6,14 +6,14 @@
 ``name``
   An optional string specifying a regex for test names.
   Equivalent to passing :ctest-option:`--exclude-regex` on
-  the command line. This field supports `macro expansion`_.
+  the command line. This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.filter.exclude.label`:
 
 ``label``
   An optional string specifying a regex for test labels.
   Equivalent to passing :ctest-option:`--label-exclude` on
-  the command line. This field supports `macro expansion`_.
+  the command line. This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.filter.exclude.fixtures`:
 

@@ -6,7 +6,7 @@
 ``name``
   An optional string specifying a regex for test names.
   Equivalent to passing :ctest-option:`--tests-regex` on the
-  command line. This field supports `macro expansion`_.
+  command line. This field supports |macro-expansion|.
 
   CMake regex syntax is described under
   :ref:`string(REGEX) <Regex Specification>`.
@@ -16,7 +16,7 @@
 ``label``
   An optional string specifying a regex for test labels.
   Equivalent to passing :ctest-option:`--label-regex` on the
-  command line. This field supports `macro expansion`_.
+  command line. This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.filter.include.useUnion`:
 
@@ -32,6 +32,6 @@
   also be an optional string specifying a file with the
   command line syntax for
   :ctest-option:`--tests-information`. If specified as a
-  string, this field supports `macro expansion`_.
+  string, this field supports |macro-expansion|.
 
   .. include:: presets/index-properties.rst

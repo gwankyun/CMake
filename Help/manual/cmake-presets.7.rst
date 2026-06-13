@@ -27,7 +27,7 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 .. presets-versionadded:: 4
 
   CMake also supports files included with the :preset:`include` field.  See
-  `Includes`_ for more details.
+  |includes| for more details.
 
 ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 存在于项目的根目录中。它们都具\
 有完全相同的格式，并且都是可选的（尽管如果指定了\ :cmake-option:`--preset`，\
@@ -84,16 +84,17 @@ no :preset:`include` field, in all versions of the format.
 
 .. presets-versionchanged:: 7
 
-  The :preset:`include` field supports `macro expansion`_, but only ``$penv{}``
+  The :preset:`include` field supports |macro-expansion|, but only ``$penv{}``
   macro expansion.
 
 .. presets-versionchanged:: 9
 
-  The :preset:`include` field supports `macro expansion`_, except for
+  The :preset:`include` field supports |macro-expansion|, except for
   ``$env{}`` and preset-specific macros (i.e., those derived from the fields
   inside a preset's definition like ``presetName``).
 
 .. _`Configure Preset`:
+.. _`CMakePresets configure-preset`:
 
 配置预设
 ^^^^^^^^^^^^^^^^
@@ -451,7 +452,7 @@ versions are added and allowed in newer versions of CMake.
 
     * 对\ |test-preset|\ 的更改
 
-      * :preset:`testPresets.execution.jobs`_\ 字段现在接受一个空字符串，\
+      * :preset:`testPresets.execution.jobs`\ 字段现在接受一个空字符串，\
         表示省略\ ``<jobs>``\ 的\ :ctest-option:`--parallel`。
 
   ``12``
@@ -469,8 +470,8 @@ versions are added and allowed in newer versions of CMake.
       * The ``installAbsoluteDestination`` field was added to
         :preset:`configurePresets.warnings` and :preset:`configurePresets.errors`.
 
-    * Changes to `Macro Expansion`_
-
+    * Changes to |macro-expansion|:
+      
       * The `${fileDir} <CMakePresets fileDir_>`_ macro now always expands to
         the directory of presets file containing the ``${fileDir}`` macro,
         regardless of whether it is inherited by another preset in a different

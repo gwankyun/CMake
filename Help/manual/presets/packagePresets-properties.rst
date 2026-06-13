@@ -43,7 +43,7 @@
 .. _`CMakePresets.packagePresets.condition`:
 
 ``condition``
-  An optional `Condition`_ object.
+  An optional |condition| object.
 
 .. _`CMakePresets.packagePresets.vendor`:
 
@@ -74,7 +74,7 @@
   regardless of whether or not a value was given to it by the process's
   environment.
 
-  This field supports `macro expansion`_, and environment variables in this
+  This field supports |macro-expansion|, and environment variables in this
   map may reference each other, and may be listed in any order, as long as
   such references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``). ``$penv{NAME}``

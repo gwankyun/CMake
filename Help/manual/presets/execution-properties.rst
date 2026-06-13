@@ -36,7 +36,7 @@
 ``resourceSpecFile``
   An optional string. Equivalent to passing
   :ctest-option:`--resource-spec-file` on the command line. This
-  field supports `macro expansion`_.
+  field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.execution.testLoad`:
 

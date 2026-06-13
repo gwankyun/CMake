@@ -7,7 +7,7 @@
   An optional string specifying a regex for text fixtures
   to exclude from adding any tests. Equivalent to passing
   :ctest-option:`--fixture-exclude-any` on the command
-  line. This field supports `macro expansion`_.
+  line. This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.filter.exclude.fixtures.setup`:
 
@@ -15,7 +15,7 @@
   An optional string specifying a regex for text fixtures
   to exclude from adding setup tests. Equivalent to
   passing :ctest-option:`--fixture-exclude-setup` on the
-  command line. This field supports `macro expansion`_.
+  command line. This field supports |macro-expansion|.
 
 .. _`CMakePresets.testPresets.filter.exclude.fixtures.cleanup`:
 
@@ -24,4 +24,4 @@
   to exclude from adding cleanup tests. Equivalent to
   passing :ctest-option:`--fixture-exclude-cleanup` on
   the command line.
-  This field supports `macro expansion`_.
+  This field supports |macro-expansion|.

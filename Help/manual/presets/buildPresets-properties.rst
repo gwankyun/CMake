@@ -46,7 +46,7 @@
 ``condition``
   .. presets-versionadded:: 3
 
-  An optional `Condition`_ object.
+  An optional |condition| object.
 
 .. _`CMakePresets.buildPresets.vendor`:
 
@@ -77,7 +77,7 @@
   regardless of whether or not a value was given to it by the process's
   environment.
 
-  This field supports `macro expansion`_, and environment variables in this
+  This field supports |macro-expansion|, and environment variables in this
   map may reference each other, and may be listed in any order, as long as
   such references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``). ``$penv{NAME}``
@@ -145,7 +145,7 @@
   An optional string or array of strings. Equivalent to passing
   :cmake-build-option:`--target` or ``-t`` on the command line.
   Vendors may ignore the targets property or hide build presets that
-  explicitly specify targets. This field supports `macro expansion`_.
+  explicitly specify targets. This field supports |macro-expansion|.
 
 .. _`CMakePresets.buildPresets.configuration`:
 
@@ -211,4 +211,4 @@
 ``nativeToolOptions``
   An optional array of strings. Equivalent to passing options after
   :cmake-build-option:`--` on the command line. The array values
-  support `macro expansion`_.
+  support |macro-expansion|.

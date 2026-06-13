@@ -37,14 +37,14 @@ if
 
 2. Unary tests such as:
 
-  * The `Existence Checks`_ :cref:`COMMAND`, :cref:`POLICY`, :cref:`TARGET`,
+  * The `存在性检查`_ :cref:`COMMAND`, :cref:`POLICY`, :cref:`TARGET`,
     :cref:`TEST`, :cref:`EXISTS`, and :cref:`DEFINED`.
-  * The `File Operations`_ :cref:`IS_READABLE`, :cref:`IS_WRITABLE`,
+  * The `文件操作`_ :cref:`IS_READABLE`, :cref:`IS_WRITABLE`,
     :cref:`IS_EXECUTABLE`, :cref:`IS_DIRECTORY`, :cref:`IS_SYMLINK`, and
     :cref:`IS_ABSOLUTE`.
 
-3. Binary tests such as those described in `Comparisons`_,
-   `Version Comparisons`_, and `Path Comparisons`_, as well as :cref:`IN_LIST`
+3. Binary tests such as those described in `比较`_,
+   `版本比较`_, and `路径比较`_, as well as :cref:`IN_LIST`
    and :cref:`IS_NEWER_THAN`.
 
 4. Unary logical operator :cref:`NOT`.

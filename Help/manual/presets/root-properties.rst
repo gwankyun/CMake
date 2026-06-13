@@ -12,7 +12,7 @@
 
 ``version``
   A required integer representing the version of the JSON schema. See
-  `Versions`_ for discussion of the supported versions and the
+  |Versions| for discussion of the supported versions and the
   corresponding version of CMake in which they were added.
 
 .. _`CMakePresets.cmakeMinimumRequired`:
@@ -31,7 +31,7 @@
 
   An optional array of strings representing files to include. If the
   filenames are not absolute, they are considered relative to the current
-  file. See `Includes`_ for discussion of the constraints on included
+  file. See |includes| for discussion of the constraints on included
   files.
 
 .. _`CMakePresets.vendor`:

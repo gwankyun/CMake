@@ -45,7 +45,7 @@
 ``condition``
   .. presets-versionadded:: 3
 
-  An optional `Condition`_ object.
+  An optional |condition| object.
 
 .. _`CMakePresets.configurePresets.vendor`:
 
@@ -117,7 +117,7 @@
   .. presets-versionadded:: 3
 
   An optional string representing the path to the toolchain file.
-  This field supports `macro expansion`_. If a relative path is
+  This field supports |macro-expansion|. If a relative path is
   specified, it is calculated relative to the build directory, and if
   not found, relative to the source directory. This field takes
   precedence over any :variable:`CMAKE_TOOLCHAIN_FILE` value.
@@ -132,7 +132,7 @@
   in the project. See the documentation for
   :option:`cmake --graphviz` for more details.
 
-  This field supports `macro expansion`_. If a relative path is
+  This field supports |macro-expansion|. If a relative path is
   specified, it is calculated relative to the current working
   directory.
 
@@ -140,7 +140,7 @@
 
 ``binaryDir``
   An optional string representing the path to the output binary
-  directory. This field supports `macro expansion`_. If a relative
+  directory. This field supports |macro-expansion|. If a relative
   path is specified, it is calculated relative to the source
   directory.
 
@@ -159,7 +159,7 @@
   An optional string representing the path to the installation
   directory, which will be used as the
   :variable:`CMAKE_INSTALL_PREFIX` variable. This field supports
-  `macro expansion`_. If a relative path is specified, it is
+  |macro-expansion|. If a relative path is specified, it is
   calculated relative to the source directory.
 
 .. _`CMakePresets.configurePresets.cmakeExecutable`:
@@ -174,7 +174,7 @@
   (which may not be an empty string), and the value is either
   ``null``, a boolean (which is equivalent to a value of ``"TRUE"``
   or ``"FALSE"`` and a type of ``BOOL``), a string representing the
-  value of the variable (which supports `macro expansion`_), or an
+  value of the variable (which supports |macro-expansion|), or an
   object with the following fields:
 
   ``type``
@@ -183,7 +183,7 @@
   ``value``
     A required string or boolean representing the value of the
     variable. A boolean is equivalent to ``"TRUE"`` or ``"FALSE"``.
-    This field supports `macro expansion`_.
+    This field supports |macro-expansion|.
 
   Cache variables are inherited through the ``inherits`` field, and
   the preset's variables will be the union of its own
@@ -202,7 +202,7 @@
   regardless of whether or not a value was given to it by the process's
   environment.
 
-  This field supports `macro expansion`_, and environment variables in this
+  This field supports |macro-expansion|, and environment variables in this
   map may reference each other, and may be listed in any order, as long as
   such references do not cause a cycle (for example, if ``ENV_1`` is
   ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``). ``$penv{NAME}``

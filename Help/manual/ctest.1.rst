@@ -322,7 +322,7 @@ The options for running tests are:
 
  此选项告诉CTest只执行在上次运行期间失败的测试。指定此选项后，CTest将忽略用于修改要运行的测\
  试列表的所有其他选项（:ctest-option:`-L`、:ctest-option:`-R`、\
- :ctest-option:`-E`、:ctest-option:`-LE``、:ctest-option:`-I`\ 等）。\
+ :ctest-option:`-E`、:ctest-option:`-LE`、:ctest-option:`-I`\ 等）。\
  如果CTest运行并且没有测试失败，则使用\ ``--rerun-failed``\ 选项对CTest的后续调用将运行\
  最近失败的测试集（如果有的话）。
 
@@ -760,14 +760,14 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
 
  Pass in variable values on the command line.  Use in conjunction with
  :ctest-option:`-S` to pass variable values to a dashboard script, or with
- :ctest-option:`-T` to override `Dashboard Client Configuration`_ settings.
+ :ctest-option:`-T` to override `仪表板客户端配置`_ settings.
  Parsing ``-D`` arguments as variable values is only attempted if the value
  following ``-D`` does not match any of the known dashboard types.
 
  The ``<var>:<type>=<value>`` form accepts any variable name.  The simpler
  ``<var>=<value>`` form (without a type) is accepted only for variables whose
  names begin with ``CTEST_``.  In both cases the value overrides the
- corresponding setting from the `Dashboard Client Configuration`_ file
+ corresponding setting from the `仪表板客户端配置`_ file
  (e.g., ``DartConfiguration.tcl``) when using :ctest-option:`-T`.
 
  .. note::
