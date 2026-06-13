@@ -215,7 +215,7 @@ definitions:
       regardless of whether or not a value was given to it by the process's
       environment.
 
-      This field supports `macro expansion`_, and environment variables in this
+      This field supports |macro-expansion|, and environment variables in this
       map may reference each other, and may be listed in any order, as long as
       such references do not cause a cycle (for example, if ``ENV_1`` is
       ``$env{ENV_2}``, ``ENV_2`` may not be ``$env{ENV_1}``). ``$penv{NAME}``
@@ -286,7 +286,7 @@ definitions:
           Null indicates that the condition always evaluates to true and is not
           inherited.
     sphinxDescription: |
-      An optional `Condition`_ object.
+      An optional |condition| object.
 description:
   The presets specify the generator and the build directory, and optionally an
   array of variables and other arguments to pass to CMake.
@@ -309,7 +309,7 @@ properties:
       A required integer representing the version of the JSON schema.
     sphinxDescription: |
       A required integer representing the version of the JSON schema. See
-      `Versions`_ for discussion of the supported versions and the
+      |Versions| for discussion of the supported versions and the
       corresponding version of CMake in which they were added.
   cmakeMinimumRequired:
     type: object
@@ -345,7 +345,7 @@ properties:
     sphinxDescription: |
       An optional array of strings representing files to include. If the
       filenames are not absolute, they are considered relative to the current
-      file. See `Includes`_ for discussion of the constraints on included
+      file. See |includes| for discussion of the constraints on included
       files.
   vendor:
     type: object
@@ -500,7 +500,7 @@ properties:
             not found, relative to the source directory.
           sphinxDescription: |
             An optional string representing the path to the toolchain file.
-            This field supports `macro expansion`_. If a relative path is
+            This field supports |macro-expansion|. If a relative path is
             specified, it is calculated relative to the build directory, and if
             not found, relative to the source directory. This field takes
             precedence over any :variable:`CMAKE_TOOLCHAIN_FILE` value.
@@ -515,7 +515,7 @@ properties:
             in the project. See the documentation for
             :option:`cmake --graphviz` for more details.
 
-            This field supports `macro expansion`_. If a relative path is
+            This field supports |macro-expansion|. If a relative path is
             specified, it is calculated relative to the current working
             directory.
         binaryDir:
@@ -538,7 +538,7 @@ properties:
                 calculated using regular methods.
           sphinxDescription: |
             An optional string representing the path to the output binary
-            directory. This field supports `macro expansion`_. If a relative
+            directory. This field supports |macro-expansion|. If a relative
             path is specified, it is calculated relative to the source
             directory.
 
@@ -560,7 +560,7 @@ properties:
             An optional string representing the path to the installation
             directory, which will be used as the
             :variable:`CMAKE_INSTALL_PREFIX` variable. This field supports
-            `macro expansion`_. If a relative path is specified, it is
+            |macro-expansion|. If a relative path is specified, it is
             calculated relative to the source directory.
         cmakeExecutable:
           type: string
@@ -583,7 +583,7 @@ properties:
             (which may not be an empty string), and the value is either
             ``null``, a boolean (which is equivalent to a value of ``"TRUE"``
             or ``"FALSE"`` and a type of ``BOOL``), a string representing the
-            value of the variable (which supports `macro expansion`_), or an
+            value of the variable (which supports |macro-expansion|), or an
             object with the following fields:
 
             ``type``
@@ -592,7 +592,7 @@ properties:
             ``value``
               A required string or boolean representing the value of the
               variable. A boolean is equivalent to ``"TRUE"`` or ``"FALSE"``.
-              This field supports `macro expansion`_.
+              This field supports |macro-expansion|.
 
             Cache variables are inherited through the ``inherits`` field, and
             the preset's variables will be the union of its own
@@ -1056,7 +1056,7 @@ properties:
             An optional string or array of strings. Equivalent to passing
             :cmake-build-option:`--target` or ``-t`` on the command line.
             Vendors may ignore the targets property or hide build presets that
-            explicitly specify targets. This field supports `macro expansion`_.
+            explicitly specify targets. This field supports |macro-expansion|.
         configuration:
           type: string
           description:
@@ -1139,7 +1139,7 @@ properties:
           sphinxDescription: |
             An optional array of strings. Equivalent to passing options after
             :cmake-build-option:`--` on the command line. The array values
-            support `macro expansion`_.
+            support |macro-expansion|.
       unevaluatedProperties: false
   testPresets:
     since: 2
@@ -1240,7 +1240,7 @@ properties:
             An optional array of configuration options to overwrite options
             specified in the CTest configuration file. Equivalent to passing
             :ctest-option:`--overwrite` for each value in the array. The array
-            values support `macro expansion`_.
+            values support |macro-expansion|.
           items:
             type: string
             description:
@@ -1323,7 +1323,7 @@ properties:
               sphinxDescription: |
                 An optional string specifying a path to a log file. Equivalent
                 to passing :ctest-option:`--output-log` on the command line.
-                This field supports `macro expansion`_.
+                This field supports |macro-expansion|.
             outputJUnitFile:
               since: 6
               type: string
@@ -1333,7 +1333,7 @@ properties:
               sphinxDescription: |
                 An optional string specifying a path to a JUnit file.
                 Equivalent to passing :ctest-option:`--output-junit` on the
-                command line. This field supports `macro expansion`_.
+                command line. This field supports |macro-expansion|.
             labelSummary:
               type: boolean
               description:
@@ -1432,7 +1432,7 @@ properties:
                   sphinxDescription: |
                     An optional string specifying a regex for test names.
                     Equivalent to passing :ctest-option:`--tests-regex` on the
-                    command line. This field supports `macro expansion`_.
+                    command line. This field supports |macro-expansion|.
 
                     CMake regex syntax is described under
                     :ref:`string(REGEX) <Regex Specification>`.
@@ -1444,7 +1444,7 @@ properties:
                   sphinxDescription: |
                     An optional string specifying a regex for test labels.
                     Equivalent to passing :ctest-option:`--label-regex` on the
-                    command line. This field supports `macro expansion`_.
+                    command line. This field supports |macro-expansion|.
                 useUnion:
                   type: boolean
                   description:
@@ -1495,7 +1495,7 @@ properties:
                     also be an optional string specifying a file with the
                     command line syntax for
                     :ctest-option:`--tests-information`. If specified as a
-                    string, this field supports `macro expansion`_.
+                    string, this field supports |macro-expansion|.
 
                     .. include:: presets/index-properties.rst
             exclude:
@@ -1516,7 +1516,7 @@ properties:
                   sphinxDescription: |
                     An optional string specifying a regex for test names.
                     Equivalent to passing :ctest-option:`--exclude-regex` on
-                    the command line. This field supports `macro expansion`_.
+                    the command line. This field supports |macro-expansion|.
                 label:
                   type: string
                   description:
@@ -1525,7 +1525,7 @@ properties:
                   sphinxDescription: |
                     An optional string specifying a regex for test labels.
                     Equivalent to passing :ctest-option:`--label-exclude` on
-                    the command line. This field supports `macro expansion`_.
+                    the command line. This field supports |macro-expansion|.
                 fixtures:
                   type: object
                   description:
@@ -1548,7 +1548,7 @@ properties:
                         An optional string specifying a regex for text fixtures
                         to exclude from adding any tests. Equivalent to passing
                         :ctest-option:`--fixture-exclude-any` on the command
-                        line. This field supports `macro expansion`_.
+                        line. This field supports |macro-expansion|.
                     setup:
                       type: string
                       description:
@@ -1559,7 +1559,7 @@ properties:
                         An optional string specifying a regex for text fixtures
                         to exclude from adding setup tests. Equivalent to
                         passing :ctest-option:`--fixture-exclude-setup` on the
-                        command line. This field supports `macro expansion`_.
+                        command line. This field supports |macro-expansion|.
                     cleanup:
                       type: string
                       description:
@@ -1571,7 +1571,7 @@ properties:
                         to exclude from adding cleanup tests. Equivalent to
                         passing :ctest-option:`--fixture-exclude-cleanup` on
                         the command line.
-                        This field supports `macro expansion`_.
+                        This field supports |macro-expansion|.
         execution:
           type: object
           description:
@@ -1643,7 +1643,7 @@ properties:
               sphinxDescription: |
                 An optional string. Equivalent to passing
                 :ctest-option:`--resource-spec-file` on the command line. This
-                field supports `macro expansion`_.
+                field supports |macro-expansion|.
             testLoad:
               type: integer
               description:
