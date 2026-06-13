@@ -2,7 +2,6 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmFileSet.h"
 
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -12,85 +11,21 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
-#include "cmsys/RegularExpression.hxx"
-
-#include "cmGenExContext.h"
-#include "cmGeneratorExpression.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
-#include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
+#include "cmPolicies.h"
+#include "cmRange.h"
 #include "cmStringAlgorithms.h"
-#include "cmSystemTools.h"
-#include "cmake.h"
+#include "cmTarget.h"
 
-cm::static_string_view cmFileSetVisibilityToName(cmFileSetVisibility vis)
-{
-  switch (vis) {
-    case cmFileSetVisibility::Interface:
-      return "INTERFACE"_s;
-    case cmFileSetVisibility::Public:
-      return "PUBLIC"_s;
-    case cmFileSetVisibility::Private:
-      return "PRIVATE"_s;
-  }
-  return ""_s;
-}
+namespace Metadata = cm::FileSetMetadata;
 
-cmFileSetVisibility cmFileSetVisibilityFromName(cm::string_view name,
-                                                cmMakefile* mf)
-{
-  if (name == "INTERFACE"_s) {
-    return cmFileSetVisibility::Interface;
-  }
-  if (name == "PUBLIC"_s) {
-    return cmFileSetVisibility::Public;
-  }
-  if (name == "PRIVATE"_s) {
-    return cmFileSetVisibility::Private;
-  }
-  auto msg = cmStrCat("File set visibility \"", name, "\" is not valid.");
-  if (mf) {
-    mf->IssueMessage(MessageType::FATAL_ERROR, msg);
-  } else {
-    cmSystemTools::Error(msg);
-  }
-  return cmFileSetVisibility::Private;
-}
-
-bool cmFileSetVisibilityIsForSelf(cmFileSetVisibility vis)
-{
-  switch (vis) {
-    case cmFileSetVisibility::Interface:
-      return false;
-    case cmFileSetVisibility::Public:
-    case cmFileSetVisibility::Private:
-      return true;
-  }
-  return false;
-}
-
-bool cmFileSetVisibilityIsForInterface(cmFileSetVisibility vis)
-{
-  switch (vis) {
-    case cmFileSetVisibility::Interface:
-    case cmFileSetVisibility::Public:
-      return true;
-    case cmFileSetVisibility::Private:
-      return false;
-  }
-  return false;
-}
-
-bool cmFileSetTypeCanBeIncluded(std::string const& type)
-{
-  return type == "HEADERS"_s;
-}
-
-cmFileSet::cmFileSet(cmMakefile* makefile, std::string name, std::string type,
-                     cmFileSetVisibility visibility)
+cmFileSet::cmFileSet(cmMakefile* makefile, cmTarget* target, std::string name,
+                     std::string type, Metadata::Visibility visibility)
   : Makefile(makefile)
+  , Target(target)
   , Name(std::move(name))
   , Type(std::move(type))
   , Visibility(visibility)
@@ -123,170 +58,212 @@ void cmFileSet::AddFileEntry(BT<std::string> files)
   this->FileEntries.push_back(std::move(files));
 }
 
-std::vector<std::unique_ptr<cmCompiledGeneratorExpression>>
-cmFileSet::CompileFileEntries() const
+cmBTStringRange cmFileSet::GetIncludeDirectories() const
 {
-  std::vector<std::unique_ptr<cmCompiledGeneratorExpression>> result;
-
-  for (auto const& entry : this->FileEntries) {
-    for (auto const& ex : cmList{ entry.Value }) {
-      cmGeneratorExpression ge(*this->GetMakefile()->GetCMakeInstance(),
-                               entry.Backtrace);
-      auto cge = ge.Parse(ex);
-      result.push_back(std::move(cge));
-    }
-  }
-
-  return result;
+  return cmMakeRange(this->IncludeDirectories);
+}
+cmBTStringRange cmFileSet::GetInterfaceIncludeDirectories() const
+{
+  return cmMakeRange(this->InterfaceIncludeDirectories);
 }
 
-std::vector<std::unique_ptr<cmCompiledGeneratorExpression>>
-cmFileSet::CompileDirectoryEntries() const
+cmBTStringRange cmFileSet::GetCompileOptions() const
 {
-  std::vector<std::unique_ptr<cmCompiledGeneratorExpression>> result;
-
-  for (auto const& entry : this->DirectoryEntries) {
-    for (auto const& ex : cmList{ entry.Value }) {
-      cmGeneratorExpression ge(*this->GetMakefile()->GetCMakeInstance(),
-                               entry.Backtrace);
-      auto cge = ge.Parse(ex);
-      result.push_back(std::move(cge));
-    }
-  }
-
-  return result;
+  return cmMakeRange(this->CompileOptions);
+}
+cmBTStringRange cmFileSet::GetInterfaceCompileOptions() const
+{
+  return cmMakeRange(this->InterfaceCompileOptions);
 }
 
-std::vector<std::string> cmFileSet::EvaluateDirectoryEntries(
-  std::vector<std::unique_ptr<cmCompiledGeneratorExpression>> const& cges,
-  cm::GenEx::Context const& context, cmGeneratorTarget const* target,
-  cmGeneratorExpressionDAGChecker* dagChecker) const
+cmBTStringRange cmFileSet::GetCompileDefinitions() const
 {
-  struct DirCacheEntry
+  return cmMakeRange(this->CompileDefinitions);
+}
+cmBTStringRange cmFileSet::GetInterfaceCompileDefinitions() const
+{
+  return cmMakeRange(this->InterfaceCompileDefinitions);
+}
+
+namespace {
+enum class ReadOnlyCondition
+{
+  All,
+  Imported,
+  NonImported,
+};
+
+struct ReadOnlyProperty
+{
+  ReadOnlyProperty(ReadOnlyCondition cond)
+    : Condition{ cond }
   {
-    std::string collapsedDir;
-    cm::optional<cmSystemTools::FileId> fileId;
+  }
+  // ReadOnlyProperty(ReadOnlyCondition cond, cmPolicies::PolicyID id)
+  //   : Condition{ cond }
+  //   , Policy{ id }
+  // {
+  // }
+
+  ReadOnlyCondition Condition;
+  cm::optional<cmPolicies::PolicyID> Policy;
+
+  std::string message(std::string const& prop, cmTarget* target,
+                      cmFileSet* fileSet) const
+  {
+    std::string msg;
+    if (this->Condition == ReadOnlyCondition::All) {
+      msg = cmStrCat(" property is read-only for the file set \"",
+                     fileSet->GetName(), " of the target \"");
+    } else if (this->Condition == ReadOnlyCondition::Imported) {
+      msg = " property can't be set on a file set attached to the imported "
+            "target \"";
+    } else if (this->Condition == ReadOnlyCondition::NonImported) {
+      msg =
+        " property can't be set on a file set attached to the non-imported "
+        "target \"";
+    }
+    return cmStrCat(prop, msg, target->GetName(), "\"\n");
+  }
+
+  bool isReadOnly(std::string const& prop, cmMakefile* context,
+                  cmTarget* target, cmFileSet* fileSet) const
+  {
+    auto importedTarget = target->IsImported();
+    bool matchingCondition = true;
+    if ((!importedTarget && this->Condition == ReadOnlyCondition::Imported) ||
+        (importedTarget &&
+         this->Condition == ReadOnlyCondition::NonImported)) {
+      matchingCondition = false;
+    }
+    if (!matchingCondition) {
+      // Not read-only in this scenario
+      return false;
+    }
+
+    bool readOnly = true;
+    if (!this->Policy) {
+      // No policy associated, so is always read-only
+      context->IssueMessage(MessageType::FATAL_ERROR,
+                            this->message(prop, target, fileSet));
+    }
+    return readOnly;
+  }
+};
+
+bool IsSettableProperty(cmMakefile* context, cmTarget* target,
+                        cmFileSet* fileSet, std::string const& prop)
+{
+  using ROC = ReadOnlyCondition;
+  static std::unordered_map<std::string, ReadOnlyProperty> const readOnlyProps{
+    { "TYPE", { ROC::All } }, { "SCOPE", { ROC::All } }
   };
 
-  std::unordered_map<std::string, DirCacheEntry> dirCache;
-  std::vector<std::string> result;
-  for (auto const& cge : cges) {
-    auto entry = cge->Evaluate(context, dagChecker, target);
-    cmList dirs{ entry };
-    for (std::string dir : dirs) {
-      if (!cmSystemTools::FileIsFullPath(dir)) {
-        dir = cmStrCat(context.LG->GetCurrentSourceDirectory(), '/', dir);
-      }
+  auto it = readOnlyProps.find(prop);
 
-      auto dirCacheResult = dirCache.emplace(dir, DirCacheEntry());
-      auto& dirCacheEntry = dirCacheResult.first->second;
-      auto const isNewCacheEntry = dirCacheResult.second;
-
-      if (isNewCacheEntry) {
-        cmSystemTools::FileId fileId;
-        auto isFileIdValid = cmSystemTools::GetFileId(dir, fileId);
-        dirCacheEntry.collapsedDir = cmSystemTools::CollapseFullPath(dir);
-        dirCacheEntry.fileId =
-          isFileIdValid ? cm::optional<decltype(fileId)>(fileId) : cm::nullopt;
-      }
-
-      for (auto const& priorDir : result) {
-        auto priorDirCacheEntry = dirCache.at(priorDir);
-        bool sameFile = dirCacheEntry.fileId.has_value() &&
-          priorDirCacheEntry.fileId.has_value() &&
-          (*dirCacheEntry.fileId == *priorDirCacheEntry.fileId);
-        if (!sameFile &&
-            (cmSystemTools::IsSubDirectory(dirCacheEntry.collapsedDir,
-                                           priorDirCacheEntry.collapsedDir) ||
-             cmSystemTools::IsSubDirectory(priorDirCacheEntry.collapsedDir,
-                                           dirCacheEntry.collapsedDir))) {
-          context.LG->GetCMakeInstance()->IssueMessage(
-            MessageType::FATAL_ERROR,
-            cmStrCat(
-              "Base directories in file set cannot be subdirectories of each "
-              "other:\n  ",
-              priorDir, "\n  ", dir),
-            cge->GetBacktrace());
-          return {};
-        }
-      }
-      result.push_back(dir);
-    }
+  if (it != readOnlyProps.end()) {
+    return !(it->second.isReadOnly(prop, context, target, fileSet));
   }
-  return result;
+  return true;
 }
 
-void cmFileSet::EvaluateFileEntry(
-  std::vector<std::string> const& dirs,
-  std::map<std::string, std::vector<std::string>>& filesPerDir,
-  std::unique_ptr<cmCompiledGeneratorExpression> const& cge,
-  cm::GenEx::Context const& context, cmGeneratorTarget const* target,
-  cmGeneratorExpressionDAGChecker* dagChecker) const
-{
-  auto files = cge->Evaluate(context, dagChecker, target);
-  for (std::string file : cmList{ files }) {
-    if (!cmSystemTools::FileIsFullPath(file)) {
-      file = cmStrCat(context.LG->GetCurrentSourceDirectory(), '/', file);
-    }
-    auto collapsedFile = cmSystemTools::CollapseFullPath(file);
-    bool found = false;
-    std::string relDir;
-    for (auto const& dir : dirs) {
-      auto collapsedDir = cmSystemTools::CollapseFullPath(dir);
-      if (cmSystemTools::IsSubDirectory(collapsedFile, collapsedDir)) {
-        found = true;
-        relDir = cmSystemTools::GetParentDirectory(
-          cmSystemTools::RelativePath(collapsedDir, collapsedFile));
-        break;
-      }
-    }
-    if (!found) {
-      std::ostringstream e;
-      e << "File:\n  " << file
-        << "\nmust be in one of the file set's base directories:";
-      for (auto const& dir : dirs) {
-        e << "\n  " << dir;
-      }
-      context.LG->GetCMakeInstance()->IssueMessage(
-        MessageType::FATAL_ERROR, e.str(), cge->GetBacktrace());
-      return;
-    }
-
-    filesPerDir[relDir].push_back(file);
-  }
+cm::string_view const BASE_DIRS = "BASE_DIRS"_s;
+cm::string_view const SOURCES = "SOURCES"_s;
+cm::string_view const INTERFACE_SOURCES = "INTERFACE_SOURCES"_s;
+cm::string_view const INCLUDE_DIRECTORIES = "INCLUDE_DIRECTORIES"_s;
+cm::string_view const INTERFACE_INCLUDE_DIRECTORIES =
+  "INTERFACE_INCLUDE_DIRECTORIES"_s;
+cm::string_view const COMPILE_DEFINITIONS = "COMPILE_DEFINITIONS"_s;
+cm::string_view const INTERFACE_COMPILE_DEFINITIONS =
+  "INTERFACE_COMPILE_DEFINITIONS"_s;
+cm::string_view const COMPILE_OPTIONS = "COMPILE_OPTIONS"_s;
+cm::string_view const INTERFACE_COMPILE_OPTIONS =
+  "INTERFACE_COMPILE_OPTIONS"_s;
 }
-
-bool cmFileSet::IsValidName(std::string const& name)
-{
-  static cmsys::RegularExpression const regex("^[a-z0-9][a-zA-Z0-9_]*$");
-
-  cmsys::RegularExpressionMatch match;
-  return regex.find(name.c_str(), match);
-}
-
-std::string const cmFileSet::propCOMPILE_DEFINITIONS = "COMPILE_DEFINITIONS";
-std::string const cmFileSet::propCOMPILE_OPTIONS = "COMPILE_OPTIONS";
-std::string const cmFileSet::propINCLUDE_DIRECTORIES = "INCLUDE_DIRECTORIES";
 
 void cmFileSet::SetProperty(std::string const& prop, cmValue value)
 {
-  if (prop == propINCLUDE_DIRECTORIES) {
+  if (!IsSettableProperty(this->Makefile, this->Target, this, prop)) {
+    return;
+  }
+
+  if (prop == BASE_DIRS) {
+    this->ClearDirectoryEntries();
+    if (value) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->AddDirectoryEntry(BT<std::string>{ value, lfbt });
+    }
+  } else if (prop == SOURCES) {
+    if (!this->IsForSelf()) {
+      return;
+    }
+    this->ClearFileEntries();
+    if (value) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->AddFileEntry(BT<std::string>{ value, lfbt });
+    }
+  } else if (prop == INTERFACE_SOURCES) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    this->ClearFileEntries();
+    if (value) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->AddFileEntry(BT<std::string>{ value, lfbt });
+    }
+  } else if (prop == INCLUDE_DIRECTORIES) {
+    if (!this->IsForSelf()) {
+      return;
+    }
     this->IncludeDirectories.clear();
     if (value) {
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->IncludeDirectories.emplace_back(value, lfbt);
     }
-  } else if (prop == propCOMPILE_OPTIONS) {
+  } else if (prop == INTERFACE_INCLUDE_DIRECTORIES) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    this->InterfaceIncludeDirectories.clear();
+    if (value) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->InterfaceIncludeDirectories.emplace_back(value, lfbt);
+    }
+  } else if (prop == COMPILE_OPTIONS) {
+    if (!this->IsForSelf()) {
+      return;
+    }
     this->CompileOptions.clear();
     if (value) {
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->CompileOptions.emplace_back(value, lfbt);
     }
-  } else if (prop == propCOMPILE_DEFINITIONS) {
+  } else if (prop == INTERFACE_COMPILE_OPTIONS) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    this->InterfaceCompileOptions.clear();
+    if (value) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->InterfaceCompileOptions.emplace_back(value, lfbt);
+    }
+  } else if (prop == COMPILE_DEFINITIONS) {
+    if (!this->IsForSelf()) {
+      return;
+    }
     this->CompileDefinitions.clear();
     if (value) {
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->CompileDefinitions.emplace_back(value, lfbt);
+    }
+  } else if (prop == INTERFACE_COMPILE_DEFINITIONS) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    this->InterfaceCompileDefinitions.clear();
+    if (value) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->InterfaceCompileDefinitions.emplace_back(value, lfbt);
     }
   } else {
     this->Properties.SetProperty(prop, value);
@@ -296,20 +273,78 @@ void cmFileSet::SetProperty(std::string const& prop, cmValue value)
 void cmFileSet::AppendProperty(std::string const& prop,
                                std::string const& value, bool asString)
 {
-  if (prop == propINCLUDE_DIRECTORIES) {
+  if (!IsSettableProperty(this->Makefile, this->Target, this, prop)) {
+    return;
+  }
+
+  if (prop == BASE_DIRS) {
+    if (!value.empty()) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->AddDirectoryEntry(BT<std::string>{ value, lfbt });
+    }
+  } else if (prop == SOURCES) {
+    if (!this->IsForSelf()) {
+      return;
+    }
+    if (!value.empty()) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->AddFileEntry(BT<std::string>{ value, lfbt });
+    }
+  } else if (prop == INTERFACE_SOURCES) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    if (!value.empty()) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->AddFileEntry(BT<std::string>{ value, lfbt });
+    }
+  } else if (prop == INCLUDE_DIRECTORIES) {
+    if (!this->IsForSelf()) {
+      return;
+    }
     if (!value.empty()) {
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->IncludeDirectories.emplace_back(value, lfbt);
     }
-  } else if (prop == propCOMPILE_OPTIONS) {
+  } else if (prop == INTERFACE_INCLUDE_DIRECTORIES) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    if (!value.empty()) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->InterfaceIncludeDirectories.emplace_back(value, lfbt);
+    }
+  } else if (prop == COMPILE_OPTIONS) {
+    if (!this->IsForSelf()) {
+      return;
+    }
     if (!value.empty()) {
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->CompileOptions.emplace_back(value, lfbt);
     }
-  } else if (prop == propCOMPILE_DEFINITIONS) {
+  } else if (prop == INTERFACE_COMPILE_OPTIONS) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    if (!value.empty()) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->InterfaceCompileOptions.emplace_back(value, lfbt);
+    }
+  } else if (prop == COMPILE_DEFINITIONS) {
+    if (!this->IsForSelf()) {
+      return;
+    }
     if (!value.empty()) {
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->CompileDefinitions.emplace_back(value, lfbt);
+    }
+  } else if (prop == INTERFACE_COMPILE_DEFINITIONS) {
+    if (!this->IsForInterface()) {
+      return;
+    }
+    if (!value.empty()) {
+      cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
+      this->InterfaceCompileDefinitions.emplace_back(value, lfbt);
     }
   } else {
     this->Properties.AppendProperty(prop, value, asString);
@@ -319,7 +354,32 @@ void cmFileSet::AppendProperty(std::string const& prop,
 cmValue cmFileSet::GetProperty(std::string const& prop) const
 {
   // Check for the properties with backtraces.
-  if (prop == propINCLUDE_DIRECTORIES) {
+  if (prop == BASE_DIRS) {
+
+    static std::string output;
+    output = cmList::to_string(this->GetDirectoryEntries());
+    return cmValue(output);
+  }
+  if (prop == SOURCES) {
+    if (!this->IsForSelf() || this->GetFileEntries().empty()) {
+      return nullptr;
+    }
+
+    static std::string output;
+    output = cmList::to_string(this->GetFileEntries());
+    return cmValue(output);
+  }
+  if (prop == INTERFACE_SOURCES) {
+    if (!this->IsForInterface() || this->GetFileEntries().empty()) {
+      return nullptr;
+    }
+
+    static std::string output;
+    output = cmList::to_string(this->GetFileEntries());
+    return cmValue(output);
+  }
+
+  if (prop == INCLUDE_DIRECTORIES) {
     if (this->IncludeDirectories.empty()) {
       return nullptr;
     }
@@ -329,7 +389,17 @@ cmValue cmFileSet::GetProperty(std::string const& prop) const
     return cmValue(output);
   }
 
-  if (prop == propCOMPILE_OPTIONS) {
+  if (prop == INTERFACE_INCLUDE_DIRECTORIES) {
+    if (this->InterfaceIncludeDirectories.empty()) {
+      return nullptr;
+    }
+
+    static std::string output;
+    output = cmList::to_string(this->InterfaceIncludeDirectories);
+    return cmValue(output);
+  }
+
+  if (prop == COMPILE_OPTIONS) {
     if (this->CompileOptions.empty()) {
       return nullptr;
     }
@@ -339,7 +409,17 @@ cmValue cmFileSet::GetProperty(std::string const& prop) const
     return cmValue(output);
   }
 
-  if (prop == propCOMPILE_DEFINITIONS) {
+  if (prop == INTERFACE_COMPILE_OPTIONS) {
+    if (this->InterfaceCompileOptions.empty()) {
+      return nullptr;
+    }
+
+    static std::string output;
+    output = cmList::to_string(this->InterfaceCompileOptions);
+    return cmValue(output);
+  }
+
+  if (prop == COMPILE_DEFINITIONS) {
     if (this->CompileDefinitions.empty()) {
       return nullptr;
     }
@@ -347,6 +427,25 @@ cmValue cmFileSet::GetProperty(std::string const& prop) const
     static std::string output;
     output = cmList::to_string(this->CompileDefinitions);
     return cmValue(output);
+  }
+
+  if (prop == INTERFACE_COMPILE_DEFINITIONS) {
+    if (this->InterfaceCompileDefinitions.empty()) {
+      return nullptr;
+    }
+
+    static std::string output;
+    output = cmList::to_string(this->InterfaceCompileDefinitions);
+    return cmValue(output);
+  }
+
+  if (prop == "TYPE"_s) {
+    return cmValue{ this->GetType() };
+  }
+  if (prop == "SCOPE"_s) {
+    static std::string scope =
+      std::string{ Metadata::VisibilityToName(this->GetVisibility()) };
+    return cmValue{ scope };
   }
 
   return this->Properties.GetPropertyValue(prop);

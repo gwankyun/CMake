@@ -69,11 +69,29 @@ target_sources
 
 将文件集添加到目标，或将文件添加到现有文件集。目标有零个或多个命名文件集。每个\
 文件集都有名称、类型、\ ``INTERFACE``\ 、\ ``PUBLIC``\ 或\ ``PRIVATE``\ 范围、\
-一个或多个基本目录以及这些目录中的文件。可接受的类型包括：
+一个或多个基本目录以及这些目录中的文件。
+
+.. versionchanged:: 4.4
+  A file may belong to at most one non-``HEADERS`` file set in a target.
+  See policy :policy:`CMP0211`.
+
+ The acceptable types include:
 
 ``HEADERS``
 
   打算通过语言的\ ``#include``\ 机制使用的源文件。
+
+``SOURCES``
+  .. versionadded:: 4.4
+
+  Specifies sources to use when building a target and/or its dependents.
+  With the scope ``PRIVATE`` and ``PUBLIC``, items will populate the
+  :prop_fs:`SOURCES` property of ``<set>``, which are used when building the
+  target itself. With the scope ``PUBLIC`` and ``INTERFACE``, items will
+  populate the :prop_fs:`INTERFACE_SOURCES` property of ``<set>``, which are
+  used when building dependents. The sources specified by the
+  :prop_fs:`INTERFACE_SOURCES` property are propagated, transitively, to all
+  the dependents.
 
 ``CXX_MODULES``
   .. versionadded:: 3.28
@@ -81,7 +99,9 @@ target_sources
   包含C++接口模块或分区单元的源代码（即使用\ ``export``\ 关键字的源代码）。除了\
   ``IMPORTED``\ 目标之外，此文件集类型不能有\ ``INTERFACE``\ 范围。
 
-可选的默认文件集以其类型命名。目标可能不是自定义目标或\ :prop_tgt:`FRAMEWORK`\ 目标。
+The optional default file sets are named after their type. The target may not
+be a custom target or, for ``HEADERS`` and ``CXX_MODULES`` types, a
+:prop_tgt:`FRAMEWORK` target.
 
 为了集成IDE，\ ``PRIVATE``\ 或\ ``PUBLIC``\ 文件集中的文件被标记为源文件。此外，\
 在\ ``HEADERS``\ 文件集中的文件的\ :prop_sf:`HEADER_FILE_ONLY`\ 属性被设置为\
@@ -133,6 +153,15 @@ target_sources
 * :prop_tgt:`HEADER_SET_<NAME>`
 * :prop_tgt:`HEADER_DIRS`
 * :prop_tgt:`HEADER_DIRS_<NAME>`
+
+For file sets of type ``SOURCES``:
+
+* :prop_tgt:`SOURCE_SETS`
+* :prop_tgt:`INTERFACE_SOURCE_SETS`
+* :prop_tgt:`SOURCE_SET`
+* :prop_tgt:`SOURCE_SET_<NAME>`
+* :prop_tgt:`SOURCE_DIRS`
+* :prop_tgt:`SOURCE_DIRS_<NAME>`
 
 对于\ ``CXX_MODULES``\ 类型文件集：
 

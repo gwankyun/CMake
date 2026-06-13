@@ -8,7 +8,8 @@ add_test
   add_test(NAME <name> COMMAND <command> [<arg>...]
            [CONFIGURATIONS <config>...]
            [WORKING_DIRECTORY <dir>]
-           [COMMAND_EXPAND_LISTS])
+           [COMMAND_EXPAND_LISTS]
+           [BUILD_DEPENDS <dependencies>...])
 
 ​添加一个名为\ ``<name>``\ 的测试。测试名可以包含任意字符，必要时用\ :ref:`Quoted Argument`\
 或\ :ref:`Bracket Argument`\ 表示。参见策略\ :policy:`CMP0110`。
@@ -50,7 +51,26 @@ add_test
 
         <launcher> <emulator> <command>
 
-  ​该命令可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 指定。
+  * .. versionadded:: 4.4
+
+      When the :variable:`CMAKE_TEST_BUILD_DEPENDS` variable is enabled,
+      the :ref:`Ninja Generators` generate a convenience build target named
+      ``test_prep/<name>`` that depends on the test executable target. Building
+      this target ensures the executable is up-to-date before the test runs.
+
+      Additionally, targets referenced by the test command via generator
+      expressions are added as dependencies of the ``test_prep/<name>`` target.
+
+      If multiple tests in different directories share the same name, their
+      dependencies are merged into a single ``test_prep/<name>`` target.
+
+      Tests with names that are not valid target names are excluded from this
+      behavior.
+
+      The ``BUILD_DEPENDS`` keyword can be used to add explicit build
+      dependencies.
+
+  该命令可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 指定。
 
 ``CONFIGURATIONS``
   ​限制只对命名配置执行测试。
@@ -59,6 +79,15 @@ add_test
   ​设置测试属性\ :prop_test:`WORKING_DIRECTORY`，在其中执行测试。如果没有指定，将在\
   :variable:`CMAKE_CURRENT_BINARY_DIR`\ 中运行测试。工作目录可以使用\
   :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 指定。
+
+``BUILD_DEPENDS``
+  .. versionadded:: 4.4
+
+  Specify a list of targets or files that must be built before the test can
+  run. Each dependency is added to the ``test_prep/<name>`` build target
+  described above when :variable:`CMAKE_TEST_BUILD_DEPENDS` is enabled
+  with the :ref:`Ninja Generators`. The test name must be a valid target name
+  in order to list build dependencies with this keyword.
 
 ``COMMAND_EXPAND_LISTS``
   .. versionadded:: 3.16

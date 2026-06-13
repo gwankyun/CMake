@@ -41,6 +41,7 @@ if(CMake_TEST_CUDA AND NOT CMake_TEST_CUDA STREQUAL "Clang")
 endif()
 
 add_cuda_test_macro(CudaOnly.DeviceLTO CudaOnlyDeviceLTO)
+add_cuda_test_macro(CudaOnly.Sanitizer ${CMAKE_CTEST_COMMAND} --output-on-failure)
 
 if(MSVC)
   # Tests for features that only work with MSVC

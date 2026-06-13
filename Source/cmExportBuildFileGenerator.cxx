@@ -3,7 +3,6 @@
 #include "cmExportBuildFileGenerator.h"
 
 #include <algorithm>
-#include <map>
 #include <memory>
 #include <set>
 #include <sstream>
@@ -11,6 +10,8 @@
 
 #include "cmExportSet.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
+#include "cmGeneratorFileSets.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
 #include "cmList.h"
@@ -21,7 +22,6 @@
 #include "cmTarget.h"
 #include "cmTargetExport.h"
 #include "cmValue.h"
-#include "cmake.h"
 
 class cmSourceFile;
 
@@ -176,33 +176,29 @@ void cmExportBuildFileGenerator::GetTargets(
 cmExportFileGenerator::ExportInfo cmExportBuildFileGenerator::FindExportInfo(
   cmGeneratorTarget const* target) const
 {
-  std::vector<std::string> exportFiles;
-  std::set<std::string> exportSets;
-  std::set<std::string> namespaces;
+  return target->GetLocalGenerator()
+    ->GetGlobalGenerator()
+    ->FindBuildExportInfo(target);
+}
 
+cm::optional<cmExportBuildFileGenerator::ExportRecord>
+cmExportBuildFileGenerator::FindRecordForTarget(
+  cmGeneratorTarget const* target) const
+{
   auto const& name = target->GetName();
-  auto& allExportSets =
-    target->GetLocalGenerator()->GetGlobalGenerator()->GetBuildExportSets();
-
-  for (auto const& exp : allExportSets) {
-    cmExportBuildFileGenerator const* const bfg = exp.second;
-    cmExportSet const* const exportSet = bfg->GetExportSet();
-    std::vector<TargetExport> targets;
-    bfg->GetTargets(targets);
-    if (std::any_of(
-          targets.begin(), targets.end(),
-          [&name](TargetExport const& te) { return te.Name == name; })) {
-      if (exportSet) {
-        exportSets.insert(exportSet->GetName());
-      } else {
-        exportSets.insert(exp.first);
-      }
-      exportFiles.push_back(exp.first);
-      namespaces.insert(bfg->GetNamespace());
-    }
+  std::vector<TargetExport> targets;
+  this->GetTargets(targets);
+  bool const contains =
+    std::any_of(targets.begin(), targets.end(),
+                [&name](TargetExport const& te) { return te.Name == name; });
+  cm::optional<ExportRecord> result;
+  if (contains) {
+    ExportRecord rec;
+    rec.Name = this->ExportSet ? this->ExportSet->GetName() : std::string{};
+    rec.Namespace = this->GetNamespace();
+    result = rec;
   }
-
-  return { exportFiles, exportSets, namespaces };
+  return result;
 }
 
 void cmExportBuildFileGenerator::ComplainAboutMissingTarget(
@@ -244,8 +240,13 @@ void cmExportBuildFileGenerator::ComplainAboutDuplicateTarget(
 void cmExportBuildFileGenerator::IssueMessage(MessageType type,
                                               std::string const& message) const
 {
-  this->LG->GetGlobalGenerator()->GetCMakeInstance()->IssueMessage(
-    type, message, this->LG->GetMakefile()->GetBacktrace());
+  this->LG->GetMakefile()->IssueMessage(type, message);
+}
+
+void cmExportBuildFileGenerator::IssueDiagnostic(
+  cmDiagnosticCategory category, std::string const& message) const
+{
+  this->LG->GetMakefile()->IssueDiagnostic(category, message);
 }
 
 std::string cmExportBuildFileGenerator::InstallNameDir(
@@ -279,4 +280,25 @@ bool cmExportBuildFileGenerator::PopulateInterfaceProperties(
 
   return this->PopulateInterfaceProperties(
     target, {}, cmGeneratorExpression::BuildInterface, properties);
+}
+
+bool cmExportBuildFileGenerator::PopulateFileSetInterfaceProperties(
+  cmGeneratorTarget const* target, ImportFileSetPropertyMap& properties)
+{
+  cmGeneratorFileSets const* const gfs = target->GetGeneratorFileSets();
+  bool result = true;
+
+  for (auto const& type : gfs->GetInterfaceFileSetTypes()) {
+    for (auto const* fileSet : gfs->GetInterfaceFileSets(type)) {
+      ImportPropertyMap& fsProperties = properties[fileSet->GetName()];
+      this->PopulateFileSetInterfaceProperty(
+        "INTERFACE_INCLUDE_DIRECTORIES", target, fileSet,
+        cmGeneratorExpression::BuildInterface, fsProperties);
+      result = result &&
+        this->PopulateFileSetInterfaceProperties(
+          target, fileSet, cmGeneratorExpression::InstallInterface,
+          fsProperties);
+    }
+  }
+  return result;
 }

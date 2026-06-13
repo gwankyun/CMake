@@ -19,6 +19,7 @@
 #  include "String.h"
 #endif
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <vector>
@@ -131,13 +132,10 @@ std::wstring Encoding::ToWide(std::string const& str)
     MultiByteToWideChar(KWSYS_ENCODING_DEFAULT_CODEPAGE, 0, str.data(),
                         int(str.size()), nullptr, 0);
   if (wlength > 0) {
-    wchar_t* wdata = new wchar_t[wlength];
+    wstr.resize(wlength);
     int r = MultiByteToWideChar(KWSYS_ENCODING_DEFAULT_CODEPAGE, 0, str.data(),
-                                int(str.size()), wdata, wlength);
-    if (r > 0) {
-      wstr = std::wstring(wdata, wlength);
-    }
-    delete[] wdata;
+                                int(str.size()), &wstr[0], wlength);
+    wstr.resize(static_cast<size_t>((std::max)(0, r)));
   }
 #else
   size_t pos = 0;
@@ -164,14 +162,11 @@ std::string Encoding::ToNarrow(std::wstring const& str)
     WideCharToMultiByte(KWSYS_ENCODING_DEFAULT_CODEPAGE, 0, str.c_str(),
                         int(str.size()), nullptr, 0, nullptr, nullptr);
   if (length > 0) {
-    char* data = new char[length];
+    nstr.resize(length);
     int r =
       WideCharToMultiByte(KWSYS_ENCODING_DEFAULT_CODEPAGE, 0, str.c_str(),
-                          int(str.size()), data, length, nullptr, nullptr);
-    if (r > 0) {
-      nstr = std::string(data, length);
-    }
-    delete[] data;
+                          int(str.size()), &nstr[0], length, nullptr, nullptr);
+    nstr.resize(static_cast<size_t>((std::max)(0, r)));
   }
 #else
   size_t pos = 0;
@@ -198,10 +193,9 @@ std::wstring Encoding::ToWide(char const* cstr)
     return wstr;
   }
   ++length;
-  std::vector<wchar_t> wchars(length);
-  if (kwsysEncoding_mbstowcs(wchars.data(), cstr, length) > 0) {
-    wstr = wchars.data();
-  }
+  wstr.resize(length);
+  length = kwsysEncoding_mbstowcs(&wstr[0], cstr, length);
+  wstr.resize(length);
   return wstr;
 }
 
@@ -213,45 +207,78 @@ std::string Encoding::ToNarrow(wchar_t const* wcstr)
     return str;
   }
   ++length;
-  std::vector<char> chars(length);
-  if (kwsysEncoding_wcstombs(chars.data(), wcstr, length) > 0) {
-    str = chars.data();
-  }
+  str.resize(length);
+  length = kwsysEncoding_wcstombs(&str[0], wcstr, length);
+  str.resize(length);
   return str;
 }
 
 #if defined(_WIN32)
-// Convert local paths to UNC style paths
+// Convert local paths to UNC style paths:
+// * https://web.archive.org/web/20250329050419/
+//   https://cpp.arsenmk.com/2015/12/handling-long-paths-on-windows.html
+
+namespace {
+// UNC prefix for local paths.
+std::wstring const unc_local_prefix = L"\\\\?\\";
+
+// UNC prefix for remote paths.
+std::wstring const unc_remote_prefix = L"\\\\?\\UNC\\";
+
+// The longest UNC prefix replaces two leading backslashes.
+size_t const unc_max_space = unc_remote_prefix.length() - 2;
+}
+
 std::wstring Encoding::ToWindowsExtendedPath(std::string const& source)
 {
   return ToWindowsExtendedPath(ToWide(source));
 }
 
-// Convert local paths to UNC style paths
 std::wstring Encoding::ToWindowsExtendedPath(char const* source)
 {
   return ToWindowsExtendedPath(ToWide(source));
 }
 
-// Convert local paths to UNC style paths
 std::wstring Encoding::ToWindowsExtendedPath(std::wstring const& wsource)
 {
   // Resolve any relative paths
+  std::wstring wfull;
   DWORD wfull_len;
 
-  /* The +3 is a workaround for a bug in some versions of GetFullPathNameW that
-   * won't return a large enough buffer size if the input is too small */
-  wfull_len = GetFullPathNameW(wsource.c_str(), 0, nullptr, nullptr) + 3;
-  std::vector<wchar_t> wfull(wfull_len);
-  GetFullPathNameW(wsource.c_str(), wfull_len, &wfull[0], nullptr);
+  // Try with a stack-allocated buffer first.
+  wchar_t local_buf[512];
+  size_t const local_buf_len = sizeof(local_buf) / sizeof(local_buf[0]);
+  wfull_len =
+    GetFullPathNameW(wsource.c_str(), local_buf_len, local_buf, nullptr);
+  if (wfull_len <= local_buf_len) {
+    // The stack-allocated buffer was large enough.  It holds the result.
 
-  /* This should get the correct size without any extra padding from the
-   * previous size workaround. */
-  wfull_len = static_cast<DWORD>(wcslen(&wfull[0]));
+    // Reserve room for the prefix added below.
+    wfull.reserve(wfull_len + unc_max_space);
+
+    // Store the absolute path to be returned.
+    wfull.assign(local_buf, wfull_len);
+  } else {
+    // The stack-allocated buffer was too small, but now we know how
+    // much to allocate on the heap.
+
+    // Some versions of GetFullPathNameW return a slightly too-small size.
+    wfull_len += 3;
+
+    // Reserve room for the prefix added below.
+    wfull.reserve(wfull_len + unc_max_space);
+
+    // Try again with a heap-allocated buffer.
+    wfull.resize(wfull_len, L'\0');
+    wfull_len =
+      GetFullPathNameW(wsource.c_str(), wfull_len, &wfull[0], nullptr);
+    wfull.resize(wfull_len);
+  }
 
   if (wfull_len >= 2 && kwsysString_isalpha(wfull[0]) &&
       wfull[1] == L':') { /* C:\Foo\bar\FooBar.txt */
-    return L"\\\\?\\" + std::wstring(&wfull[0]);
+    wfull.insert(0, unc_local_prefix);
+    return wfull;
   } else if (wfull_len >= 2 && wfull[0] == L'\\' &&
              wfull[1] == L'\\') { /* Starts with \\ */
     if (wfull_len >= 4 && wfull[2] == L'?' &&
@@ -259,24 +286,27 @@ std::wstring Encoding::ToWindowsExtendedPath(std::wstring const& wsource)
       if (wfull_len >= 8 && wfull[4] == L'U' && wfull[5] == L'N' &&
           wfull[6] == L'C' &&
           wfull[7] == L'\\') { /* \\?\UNC\Foo\bar\FooBar.txt */
-        return std::wstring(&wfull[0]);
+        return wfull;
       } else if (wfull_len >= 6 && kwsysString_isalpha(wfull[4]) &&
                  wfull[5] == L':') { /* \\?\C:\Foo\bar\FooBar.txt */
-        return std::wstring(&wfull[0]);
+        return wfull;
       } else if (wfull_len >= 5) { /* \\?\Foo\bar\FooBar.txt */
-        return L"\\\\?\\UNC\\" + std::wstring(&wfull[4]);
+        wfull.replace(0, 4, unc_remote_prefix);
+        return wfull;
       }
     } else if (wfull_len >= 4 && wfull[2] == L'.' &&
                wfull[3] == L'\\') { /* Starts with \\.\ a device name */
       if (wfull_len >= 6 && kwsysString_isalpha(wfull[4]) &&
           wfull[5] == L':') { /* \\.\C:\Foo\bar\FooBar.txt */
-        return L"\\\\?\\" + std::wstring(&wfull[4]);
+        wfull.replace(0, 4, unc_local_prefix);
+        return wfull;
       } else if (wfull_len >=
                  5) { /* \\.\Foo\bar\ Device name is left unchanged */
-        return std::wstring(&wfull[0]);
+        return wfull;
       }
     } else if (wfull_len >= 3) { /* \\Foo\bar\FooBar.txt */
-      return L"\\\\?\\UNC\\" + std::wstring(&wfull[2]);
+      wfull.replace(0, 2, unc_remote_prefix);
+      return wfull;
     }
   }
 

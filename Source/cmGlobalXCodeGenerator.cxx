@@ -26,8 +26,11 @@
 #include "cmCustomCommandGenerator.h"
 #include "cmCustomCommandLines.h"
 #include "cmCustomCommandTypes.h"
+#include "cmDiagnostics.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
+#include "cmGeneratorFileSets.h"
 #include "cmGeneratorOptions.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGeneratorFactory.h"
@@ -927,7 +930,6 @@ void cmGlobalXCodeGenerator::ClearXCodeObjects()
   this->FileRefs.clear();
   this->ExternalLibRefs.clear();
   this->FileRefToBuildFileMap.clear();
-  this->FileRefToEmbedBuildFileMap.clear();
   this->CommandsVisited.clear();
 }
 
@@ -1091,6 +1093,12 @@ cmXCodeObject* cmGlobalXCodeGenerator::CreateXCodeSourceFile(
       break;
   }
 
+  // lookup for the associated file set, if any.
+  //// sources are independent of the config but needed here
+  auto const& config = this->CurrentConfigurationTypes[0];
+  auto const* fileSet =
+    gtgt->GetGeneratorFileSets()->GetFileSetForSource(config, sf);
+
   // Explicitly add the explicit language flag before any other flag
   // so user flags can override it.
   gtgt->AddExplicitLanguageFlags(flags, *sf);
@@ -1104,6 +1112,15 @@ cmXCodeObject* cmGlobalXCodeGenerator::CreateXCodeSourceFile(
     lg->AppendCompileOptions(
       flags, genexInterpreter.Evaluate(*coptions, COMPILE_OPTIONS));
   }
+  // Add flags from file set properties.
+  if (fileSet) {
+    auto options = fileSet->BelongsTo(gtgt)
+      ? fileSet->GetCompileOptions(config, lang)
+      : fileSet->GetInterfaceCompileOptions(config, lang);
+    if (!options.empty()) {
+      lg->AppendCompileOptions(flags, cm::remove_BT(options));
+    }
+  }
 
   // Add per-source definitions.
   BuildObjectListOrString flagsBuild(this, false);
@@ -1114,8 +1131,18 @@ cmXCodeObject* cmGlobalXCodeGenerator::CreateXCodeSourceFile(
       genexInterpreter.Evaluate(*compile_defs, COMPILE_DEFINITIONS).c_str(),
       true);
   }
+  // Add file set preprocessor definitions
+  if (fileSet) {
+    auto fsDefines = fileSet->BelongsTo(gtgt)
+      ? fileSet->GetCompileDefinitions(config, lang)
+      : fileSet->GetInterfaceCompileDefinitions(config, lang);
+    if (!fsDefines.empty()) {
+      this->AppendDefines(flagsBuild, cm::remove_BT(fsDefines), true);
+    }
+  }
 
-  if (sf->GetPropertyAsBool("SKIP_PRECOMPILE_HEADERS")) {
+  if ((fileSet && fileSet->GetProperty("SKIP_PRECOMPILE_HEADERS")) ||
+      sf->GetPropertyAsBool("SKIP_PRECOMPILE_HEADERS")) {
     this->AppendDefines(flagsBuild, "CMAKE_SKIP_PRECOMPILE_HEADERS", true);
   }
 
@@ -1126,8 +1153,17 @@ cmXCodeObject* cmGlobalXCodeGenerator::CreateXCodeSourceFile(
     flags += flagsBuild.GetString();
   }
 
-  // Add per-source include directories.
   std::vector<std::string> includes;
+  // Add include directories from file set properties.
+  if (fileSet) {
+    auto fsIncludes = fileSet->BelongsTo(gtgt)
+      ? fileSet->GetIncludeDirectories(config, lang)
+      : fileSet->GetInterfaceIncludeDirectories(config, lang);
+    if (!fsIncludes.empty()) {
+      lg->AppendIncludeDirectories(includes, cm::remove_BT(fsIncludes), *sf);
+    }
+  }
+  // Add per-source include directories.
   std::string const INCLUDE_DIRECTORIES("INCLUDE_DIRECTORIES");
   if (cmValue cincludes = sf->GetProperty(INCLUDE_DIRECTORIES)) {
     lg->AppendIncludeDirectories(
@@ -2095,7 +2131,8 @@ cmXCodeObject* cmGlobalXCodeGenerator::CreateRunScriptBuildPhase(
     realDepends.reserve(ccg.GetDepends().size());
     for (auto const& d : ccg.GetDepends()) {
       std::string dep;
-      if (this->CurrentLocalGenerator->GetRealDependency(d, configName, dep)) {
+      if (this->CurrentLocalGenerator->GetRealDependency(
+            d, configName, dep, cc.GetCMP0212Status())) {
         realDepends.emplace_back(std::move(dep));
       }
     }
@@ -2464,7 +2501,8 @@ void cmGlobalXCodeGenerator::CreateCustomRulesMakefile(
     realDepends.reserve(ccg.GetDepends().size());
     for (auto const& d : ccg.GetDepends()) {
       std::string dep;
-      if (this->CurrentLocalGenerator->GetRealDependency(d, configName, dep)) {
+      if (this->CurrentLocalGenerator->GetRealDependency(
+            d, configName, dep, command.GetCMP0212Status())) {
         realDepends.emplace_back(std::move(dep));
       }
     }
@@ -2678,11 +2716,20 @@ void cmGlobalXCodeGenerator::CreateBuildSettings(cmGeneratorTarget* gtgt,
         case cmSwiftCompileMode::Singlefile:
           break;
         case cmSwiftCompileMode::Unknown:
-          this->CurrentLocalGenerator->IssueMessage(
-            MessageType::AUTHOR_WARNING,
+          this->CurrentLocalGenerator->IssueDiagnostic(
+            cmDiagnostics::CMD_AUTHOR,
             cmStrCat("Unknown Swift_COMPILATION_MODE on target '",
                      gtgt->GetName(), '\''));
           break;
+      }
+    }
+
+    // Add SWIFT_PACKAGE_NAME
+    if (this->XcodeVersion >= 150) {
+      std::string const packageName = gtgt->GetSwiftPackageName();
+      if (!packageName.empty()) {
+        buildSettings->AddAttribute("SWIFT_PACKAGE_NAME",
+                                    this->CreateString(packageName));
       }
     }
   }
@@ -3860,6 +3907,10 @@ void cmGlobalXCodeGenerator::AddDependAndLinkInformation(cmXCodeObject* target)
             if (!IsLinkPhaseLibraryExtension(libExt)) {
               canUseLinkPhase = false;
             }
+            // We can't add non-absolute PBXFileReferences to the link phase
+            if (!cmSystemTools::FileIsFullPath(libItem.Value.Value)) {
+              canUseLinkPhase = false;
+            }
           }
         }
         if (canUseLinkPhase) {
@@ -4275,7 +4326,8 @@ void cmGlobalXCodeGenerator::AddDependAndLinkInformation(cmXCodeObject* target)
           }
           if ((!libName.Target || libName.Target->IsImported()) &&
               (isFramework || isXcFramework ||
-               IsLinkPhaseLibraryExtension(cleanPath))) {
+               IsLinkPhaseLibraryExtension(cleanPath)) &&
+              cmSystemTools::FileIsFullPath(cleanPath)) {
             // Create file reference for embedding
             auto it = this->ExternalLibRefs.find(cleanPath);
             if (it == this->ExternalLibRefs.end()) {
@@ -4376,14 +4428,9 @@ void cmGlobalXCodeGenerator::AddEmbeddedObjects(
                                       " is missing product reference"));
         continue;
       }
-      auto it = this->FileRefToEmbedBuildFileMap.find(fileRefObject);
-      if (it == this->FileRefToEmbedBuildFileMap.end()) {
-        buildFile = this->CreateObject(cmXCodeObject::PBXBuildFile);
-        buildFile->AddAttribute("fileRef", fileRefObject);
-        this->FileRefToEmbedBuildFileMap[fileRefObject] = buildFile;
-      } else {
-        buildFile = it->second;
-      }
+      buildFile = this->CreateObject(cmXCodeObject::PBXBuildFile);
+      buildFile->SetComment(xcTarget->GetComment());
+      buildFile->AddAttribute("fileRef", fileRefObject);
     } else if (cmSystemTools::IsPathToFramework(relFile) ||
                cmSystemTools::IsPathToMacOSSharedLibrary(relFile) ||
                cmSystemTools::FileIsDirectory(filePath)) {

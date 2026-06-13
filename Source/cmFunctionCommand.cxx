@@ -10,6 +10,7 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmFunctionBlocker.h"
 #include "cmList.h"
@@ -18,11 +19,13 @@
 #include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmState.h"
+#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 
 namespace {
 std::string const ARGC = "ARGC";
+std::string const kFUNCTION_ARGNC = "_FUNCTION_ARGNC";
 std::string const ARGN = "ARGN";
 std::string const ARGV = "ARGV";
 std::string const CMAKE_CURRENT_FUNCTION = "CMAKE_CURRENT_FUNCTION";
@@ -47,6 +50,7 @@ public:
   std::vector<std::string> Args;
   std::vector<cmListFileFunction> Functions;
   cmPolicies::PolicyMap Policies;
+  cmDiagnostics::DiagnosticMap Diagnostics;
   std::string FilePath;
   long Line;
 };
@@ -72,7 +76,7 @@ bool cmFunctionHelperCommand::operator()(
   }
 
   cmMakefile::FunctionPushPop functionScope(&makefile, this->FilePath,
-                                            this->Policies);
+                                            this->Policies, this->Diagnostics);
 
   // set the value of argc
   makefile.AddDefinition(ARGC, std::to_string(expandedArgs.size()));
@@ -90,15 +94,19 @@ bool cmFunctionHelperCommand::operator()(
     makefile.AddDefinition(this->Args[j], expandedArgs[j - 1]);
   }
 
-  // define ARGV and ARGN
+  // define ARGV, ARGN, and _FUNCTION_ARGNC
   auto const argvDef = cmList::to_string(expandedArgs);
   auto const expIt = expandedArgs.begin() + (this->Args.size() - 1);
   auto const argnDef =
     cmList::to_string(cmMakeRange(expIt, expandedArgs.end()));
+  auto const functionArgncDef =
+    std::to_string(expandedArgs.size() - (this->Args.size() - 1));
   makefile.AddDefinition(ARGV, argvDef);
   makefile.MarkVariableAsUsed(ARGV);
   makefile.AddDefinition(ARGN, argnDef);
   makefile.MarkVariableAsUsed(ARGN);
+  makefile.AddDefinition(kFUNCTION_ARGNC, functionArgncDef);
+  makefile.MarkVariableAsUsed(kFUNCTION_ARGNC);
 
   makefile.AddDefinition(CMAKE_CURRENT_FUNCTION, this->Args.front());
   makefile.MarkVariableAsUsed(CMAKE_CURRENT_FUNCTION);
@@ -171,8 +179,9 @@ bool cmFunctionFunctionBlocker::Replay(
   f.FilePath = this->GetStartingContext().FilePath;
   f.Line = this->GetStartingContext().Line;
   mf.RecordPolicies(f.Policies);
+  mf.RecordDiagnostics(f.Diagnostics);
   return mf.GetState()->AddScriptedCommand(
-    this->Args.front(),
+    this->Args.front(), cmStateEnums::CommandType::Function,
     BT<cmState::Command>(std::move(f),
                          mf.GetBacktrace().Push(this->GetStartingContext())),
     mf);

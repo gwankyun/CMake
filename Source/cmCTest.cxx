@@ -12,6 +12,7 @@
 #include <functional>
 #include <initializer_list>
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <ratio>
 #include <sstream>
@@ -41,6 +42,7 @@
 
 #include "cm_parse_date.h"
 
+#include "cmCMakePresetsArgs.h"
 #include "cmCMakePresetsGraph.h"
 #include "cmCTestBuildAndTest.h"
 #include "cmCTestScriptHandler.h"
@@ -76,6 +78,10 @@
 #if defined(__BEOS__) || defined(__HAIKU__)
 #  include <be/kernel/OS.h> /* disable_debugger() API. */
 #endif
+
+namespace {
+cm::string_view const kVT100_EraseLine = "\x1B[K"_s;
+}
 
 struct tm;
 
@@ -119,7 +125,7 @@ struct cmCTest::Private
   bool Failover = false;
   cmJSONState parseState;
 
-  bool FlushTestProgressLine = false;
+  bool TestProgressNewlinePending = false;
 
   // these are helper classes
   cmCTestBuildAndTest BuildAndTest;
@@ -161,9 +167,13 @@ struct cmCTest::Private
 
   int CompatibilityMode;
 
-  // information for the --build-and-test options
+  // Build and source directories used by various operating modes.
+  // BinaryDir is the active build tree.
+  // TestDir and SourceDir hold the raw values from --test-dir/--build-dir and
+  // --source-dir respectively, before path normalization is applied.
   std::string BinaryDir;
   std::string TestDir;
+  std::string SourceDir;
 
   std::string NotesFiles;
 
@@ -533,6 +543,7 @@ bool cmCTest::UpdateCTestConfiguration()
     // No need to exit if we are not producing XML
     if (this->Impl->ProduceXML) {
       cmCTestLog(this, WARNING, "Cannot find file: " << fileName << std::endl);
+      this->ApplyDefinitionsToCTestConfig();
       return false;
     }
   } else {
@@ -596,6 +607,8 @@ bool cmCTest::UpdateCTestConfiguration()
     this->Impl->CompressXMLFiles =
       cmIsOn(this->GetCTestConfiguration("CompressSubmission"));
   }
+  // Command-line definitions override values loaded from the config file.
+  this->ApplyDefinitionsToCTestConfig();
   return true;
 }
 
@@ -725,8 +738,21 @@ int cmCTest::ProcessSteps()
   script.CreateCMake();
   cmMakefile& mf = *script.GetMakefile();
   this->ReadCustomConfigurationFileTree(this->Impl->BinaryDir, &mf);
-  this->SetTimeLimit(mf.GetDefinition("CTEST_TIME_LIMIT"));
   this->SetCMakeVariables(mf);
+
+  // Inject variables passed via -D so that ctest_* commands can read them
+  // using mf.GetDefinition(). This matches what cmCTestScriptHandler does
+  // before running a -S script. SetCMakeVariables() (above) only defines
+  // variables that correspond to a CTest Configuration key. Other variables
+  // such as CTEST_PRESET are read directly from the makefile and would
+  // otherwise be invisible here.
+  for (auto const& def : this->GetDefinitions()) {
+    mf.AddDefinition(def.first, def.second);
+  }
+
+  // CTEST_TIME_LIMIT may come from CTestCustom.cmake (already in the makefile)
+  // or from the config map (just populated by SetCMakeVariables above).
+  this->SetTimeLimit(mf.GetDefinition("CTEST_TIME_LIMIT"));
   std::vector<cmListFileArgument> args{
     cmListFileArgument("RETURN_VALUE"_s, cmListFileArgument::Unquoted, 0),
     cmListFileArgument("return_value"_s, cmListFileArgument::Unquoted, 0),
@@ -821,7 +847,7 @@ int cmCTest::ProcessSteps()
     d.Load(notes_dir);
     unsigned long kk;
     for (kk = 0; kk < d.GetNumberOfFiles(); kk++) {
-      char const* file = d.GetFile(kk);
+      std::string const& file = d.GetFileName(kk);
       std::string fullname = cmStrCat(notes_dir, '/', file);
       if (cmSystemTools::FileExists(fullname, true)) {
         if (!this->Impl->NotesFiles.empty()) {
@@ -844,16 +870,26 @@ int cmCTest::ProcessSteps()
 
     std::string count = this->GetCTestConfiguration("CTestSubmitRetryCount");
     std::string delay = this->GetCTestConfiguration("CTestSubmitRetryDelay");
-    auto const func = cmListFileFunction(
-      "ctest_submit", 0, 0,
-      {
-        cmListFileArgument("RETRY_COUNT"_s, cmListFileArgument::Unquoted, 0),
-        cmListFileArgument(count, cmListFileArgument::Quoted, 0),
-        cmListFileArgument("RETRY_DELAY"_s, cmListFileArgument::Unquoted, 0),
-        cmListFileArgument(delay, cmListFileArgument::Quoted, 0),
-        cmListFileArgument("RETURN_VALUE"_s, cmListFileArgument::Unquoted, 0),
-        cmListFileArgument("return_value"_s, cmListFileArgument::Unquoted, 0),
-      });
+    std::vector<cmListFileArgument> submitArgs = {
+      cmListFileArgument("RETRY_COUNT"_s, cmListFileArgument::Unquoted, 0),
+      cmListFileArgument(count, cmListFileArgument::Quoted, 0),
+      cmListFileArgument("RETRY_DELAY"_s, cmListFileArgument::Unquoted, 0),
+      cmListFileArgument(delay, cmListFileArgument::Quoted, 0),
+      cmListFileArgument("RETURN_VALUE"_s, cmListFileArgument::Unquoted, 0),
+      cmListFileArgument("return_value"_s, cmListFileArgument::Unquoted, 0),
+    };
+    cmValue submitParts = mf.GetDefinition("CTEST_SUBMIT_PARTS");
+    if (submitParts && !submitParts->empty()) {
+      cmList submitPartsList{ *submitParts };
+      if (!submitPartsList.empty()) {
+        submitArgs.emplace_back("PARTS"_s, cmListFileArgument::Unquoted, 0);
+        for (auto const& part : submitPartsList) {
+          submitArgs.emplace_back(part, cmListFileArgument::Quoted, 0);
+        }
+      }
+    }
+    auto const func =
+      cmListFileFunction("ctest_submit", 0, 0, std::move(submitArgs));
     auto status = cmExecutionStatus(mf);
     if (!mf.ExecuteCommand(func, status) ||
         std::stoi(mf.GetDefinition("return_value")) < 0) {
@@ -1251,8 +1287,8 @@ std::string cmCTest::Base64GzipEncodeFile(std::string const& file)
   std::vector<std::string> files;
   files.push_back(file);
 
-  if (!cmSystemTools::CreateTar(tarFile, files, {},
-                                cmSystemTools::TarCompressGZip, false)) {
+  if (!cmSystemTools::CreateTar(
+        tarFile, files, {}, cmSystemTools::TarCompressGZip, "UTF-8", false)) {
     cmCTestLog(this, ERROR_MESSAGE,
                "Error creating tar while "
                "encoding file: "
@@ -1458,7 +1494,9 @@ void cmCTest::ErrorMessageUnknownDashDValue(std::string const& val)
              "  ctest -D Nightly\n"
              "  ctest -D Nightly(Start|Update|Configure|Build)\n"
              "  ctest -D Nightly(Test|Coverage|MemCheck|Submit)\n"
-             "  ctest -D NightlyMemoryCheck\n");
+             "  ctest -D NightlyMemoryCheck\n"
+             "  ctest -D CTEST_<VAR>=<value>\n"
+             "  ctest -D <var>:<type>=<value>\n");
 }
 
 bool cmCTest::CheckArgument(std::string const& arg, cm::string_view varg1,
@@ -1497,16 +1535,26 @@ bool cmCTest::AddVariableDefinition(std::string const& arg)
     return true;
   }
 
+  // Also accept CTEST_VAR=VALUE (without :TYPE=).
+  auto const eq = arg.find('=');
+  if (eq != std::string::npos && eq > 0) {
+    name = arg.substr(0, eq);
+    if (cmHasLiteralPrefix(name, "CTEST_")) {
+      this->Impl->Definitions[name] = arg.substr(eq + 1);
+      return true;
+    }
+  }
+
   return false;
 }
 
-bool cmCTest::SetArgsFromPreset(std::string const& presetName,
-                                bool listPresets)
+bool cmCTest::SetArgsFromPreset(cmCMakePresetsArgs const& args)
 {
   auto const workingDirectory = cmSystemTools::GetLogicalWorkingDirectory();
 
   cmCMakePresetsGraph settingsFile;
-  auto result = settingsFile.ReadProjectPresets(workingDirectory);
+  auto result =
+    settingsFile.ReadProjectPresets(workingDirectory, args.PresetsFile);
   if (result != true) {
     cmSystemTools::Error(cmStrCat("Could not read presets from ",
                                   workingDirectory, ":\n",
@@ -1514,40 +1562,23 @@ bool cmCTest::SetArgsFromPreset(std::string const& presetName,
     return false;
   }
 
-  if (listPresets) {
+  if (args.ListPresets) {
     settingsFile.PrintTestPresetList();
     return true;
   }
 
-  auto presetPair = settingsFile.TestPresets.find(presetName);
-  if (presetPair == settingsFile.TestPresets.end()) {
-    cmSystemTools::Error(cmStrCat("No such test preset in ", workingDirectory,
-                                  ": \"", presetName, '"'));
+  auto resolveResult =
+    settingsFile.ResolvePreset(args.PresetName, settingsFile.TestPresets);
+  auto resolveError =
+    cmCMakePresetsGraph::FormatPresetError<cmCMakePresetsGraph::TestPreset>(
+      resolveResult.StatusCode, resolveResult.ErrorPresetName,
+      workingDirectory);
+  if (resolveError) {
+    cmSystemTools::Error(*resolveError);
     settingsFile.PrintTestPresetList();
     return false;
   }
-
-  if (presetPair->second.Unexpanded.Hidden) {
-    cmSystemTools::Error(cmStrCat("Cannot use hidden test preset in ",
-                                  workingDirectory, ": \"", presetName, '"'));
-    settingsFile.PrintTestPresetList();
-    return false;
-  }
-
-  auto const& expandedPreset = presetPair->second.Expanded;
-  if (!expandedPreset) {
-    cmSystemTools::Error(cmStrCat("Could not evaluate test preset \"",
-                                  presetName, "\": Invalid macro expansion"));
-    settingsFile.PrintTestPresetList();
-    return false;
-  }
-
-  if (!expandedPreset->ConditionResult) {
-    cmSystemTools::Error(cmStrCat("Cannot use disabled test preset in ",
-                                  workingDirectory, ": \"", presetName, '"'));
-    settingsFile.PrintTestPresetList();
-    return false;
-  }
+  auto const* expandedPreset = resolveResult.Preset;
 
   auto configurePresetPair =
     settingsFile.ConfigurePresets.find(expandedPreset->ConfigurePreset);
@@ -1633,76 +1664,12 @@ bool cmCTest::SetArgsFromPreset(std::string const& presetName,
     this->Impl->SubprojectSummary =
       expandedPreset->Output->SubprojectSummary.value_or(true);
 
-    if (expandedPreset->Output->MaxPassedTestOutputSize) {
-      this->Impl->TestOptions.OutputSizePassed =
-        *expandedPreset->Output->MaxPassedTestOutputSize;
-    }
-
-    if (expandedPreset->Output->MaxFailedTestOutputSize) {
-      this->Impl->TestOptions.OutputSizeFailed =
-        *expandedPreset->Output->MaxFailedTestOutputSize;
-    }
-
-    if (expandedPreset->Output->TestOutputTruncation) {
-      this->Impl->TestOptions.OutputTruncation =
-        *expandedPreset->Output->TestOutputTruncation;
-    }
-
     if (expandedPreset->Output->MaxTestNameWidth) {
       this->Impl->MaxTestNameWidth = *expandedPreset->Output->MaxTestNameWidth;
     }
   }
 
-  if (expandedPreset->Filter) {
-    if (expandedPreset->Filter->Include) {
-      this->Impl->TestOptions.IncludeRegularExpression =
-        expandedPreset->Filter->Include->Name;
-      if (!expandedPreset->Filter->Include->Label.empty()) {
-        this->Impl->TestOptions.LabelRegularExpression.push_back(
-          expandedPreset->Filter->Include->Label);
-      }
-
-      if (expandedPreset->Filter->Include->Index) {
-        if (expandedPreset->Filter->Include->Index->IndexFile.empty()) {
-          auto const& start = expandedPreset->Filter->Include->Index->Start;
-          auto const& end = expandedPreset->Filter->Include->Index->End;
-          auto const& stride = expandedPreset->Filter->Include->Index->Stride;
-          std::string indexOptions = cmStrCat(
-            (start ? std::to_string(*start) : std::string{}), ',',
-            (end ? std::to_string(*end) : std::string{}), ',',
-            (stride ? std::to_string(*stride) : std::string{}), ',',
-            cmJoin(expandedPreset->Filter->Include->Index->SpecificTests,
-                   ","));
-
-          this->Impl->TestOptions.TestsToRunInformation = indexOptions;
-        } else {
-          this->Impl->TestOptions.TestsToRunInformation =
-            expandedPreset->Filter->Include->Index->IndexFile;
-        }
-      }
-
-      this->Impl->TestOptions.UseUnion =
-        expandedPreset->Filter->Include->UseUnion.value_or(false);
-    }
-
-    if (expandedPreset->Filter->Exclude) {
-      this->Impl->TestOptions.ExcludeRegularExpression =
-        expandedPreset->Filter->Exclude->Name;
-      if (!expandedPreset->Filter->Exclude->Label.empty()) {
-        this->Impl->TestOptions.ExcludeLabelRegularExpression.push_back(
-          expandedPreset->Filter->Exclude->Label);
-      }
-
-      if (expandedPreset->Filter->Exclude->Fixtures) {
-        this->Impl->TestOptions.ExcludeFixtureRegularExpression =
-          expandedPreset->Filter->Exclude->Fixtures->Any;
-        this->Impl->TestOptions.ExcludeFixtureSetupRegularExpression =
-          expandedPreset->Filter->Exclude->Fixtures->Setup;
-        this->Impl->TestOptions.ExcludeFixtureCleanupRegularExpression =
-          expandedPreset->Filter->Exclude->Fixtures->Cleanup;
-      }
-    }
-  }
+  cmCTestApplyTestPresetToOptions(this->Impl->TestOptions, *expandedPreset);
 
   if (expandedPreset->Execution) {
     this->Impl->StopOnFailure =
@@ -1719,9 +1686,6 @@ bool cmCTest::SetArgsFromPreset(std::string const& presetName,
       }
       this->Impl->ParallelLevelSetInCli = true;
     }
-
-    this->Impl->TestOptions.ResourceSpecFile =
-      expandedPreset->Execution->ResourceSpecFile;
 
     if (expandedPreset->Execution->TestLoad) {
       auto testLoad = *expandedPreset->Execution->TestLoad;
@@ -1812,46 +1776,10 @@ int cmCTest::Run(std::vector<std::string> const& args)
   bool processSteps = false;
   bool SRArgumentSpecified = false;
   std::vector<std::pair<std::string, bool>> runScripts;
+  cmCMakePresetsArgs presetsArgs;
 
   // copy the command line
   cm::append(this->Impl->InitialCommandLineArguments, args);
-
-  // check if a test preset was specified
-
-  bool listPresets =
-    find(args.begin(), args.end(), "--list-presets") != args.end();
-  auto it =
-    std::find_if(args.begin(), args.end(), [](std::string const& arg) -> bool {
-      return arg == "--preset" || cmHasLiteralPrefix(arg, "--preset=");
-    });
-  if (listPresets || it != args.end()) {
-    std::string errormsg;
-    bool success;
-
-    if (listPresets) {
-      // If listing presets we don't need a presetName
-      success = this->SetArgsFromPreset("", listPresets);
-    } else {
-      if (cmHasLiteralPrefix(*it, "--preset=")) {
-        auto const& presetName = it->substr(9);
-        success = this->SetArgsFromPreset(presetName, listPresets);
-      } else if (++it != args.end()) {
-        auto const& presetName = *it;
-        success = this->SetArgsFromPreset(presetName, listPresets);
-      } else {
-        cmSystemTools::Error("'--preset' requires an argument");
-        success = false;
-      }
-    }
-
-    if (listPresets) {
-      return success ? 0 : 1;
-    }
-
-    if (!success) {
-      return 1;
-    }
-  }
 
   auto const dashD = [this, &processSteps](std::string const& targ) -> bool {
     // AddTestsForDashboard parses the dashboard type and converts it
@@ -2033,6 +1961,30 @@ int cmCTest::Run(std::vector<std::string> const& args)
 
   using CommandArgument =
     cmCommandLineArgument<bool(std::string const& value)>;
+
+  auto const presetArguments = std::vector<CommandArgument>{
+    CommandArgument{ "--list-presets", CommandArgument::Values::Zero,
+                     [&presetsArgs](std::string const&) -> bool {
+                       presetsArgs.ListPresets = true;
+                       return true;
+                     } },
+    CommandArgument{ "--preset", "'--preset' requires an argument",
+                     CommandArgument::Values::One,
+                     [&presetsArgs](std::string const& presetArg) -> bool {
+                       presetsArgs.PresetName = presetArg;
+                       return true;
+                     } },
+    CommandArgument{ "--presets-file", "'--presets-file' requires an argument",
+                     CommandArgument::Values::One,
+                     [&presetsArgs](std::string const& presetFileArg) -> bool {
+                       presetsArgs.PresetsFile =
+                         cmSystemTools::ToNormalizedPathOnDisk(presetFileArg);
+                       return true;
+                     } }
+  };
+  auto const isPresetArgument = [&](std::string const& arg) -> bool {
+    return cmHasLiteralPrefix(arg, "--preset") || arg == "--list-presets";
+  };
 
   auto const arguments = std::vector<CommandArgument>{
     CommandArgument{ "--dashboard", CommandArgument::Values::One, dashD },
@@ -2416,6 +2368,18 @@ int cmCTest::Run(std::vector<std::string> const& args)
                      } },
     CommandArgument{ "-A", CommandArgument::Values::One, dashA },
     CommandArgument{ "--add-notes", CommandArgument::Values::One, dashA },
+    CommandArgument{ "--source-dir", "'--source-dir' requires an argument",
+                     CommandArgument::Values::One,
+                     [this](std::string const& dir) -> bool {
+                       this->Impl->SourceDir = dir;
+                       return true;
+                     } },
+    CommandArgument{ "--build-dir", "'--build-dir' requires an argument",
+                     CommandArgument::Values::One,
+                     [this](std::string const& dir) -> bool {
+                       this->Impl->TestDir = dir;
+                       return true;
+                     } },
     CommandArgument{ "--test-dir", "'--test-dir' requires an argument",
                      CommandArgument::Values::One,
                      [this](std::string const& dir) -> bool {
@@ -2505,9 +2469,45 @@ int cmCTest::Run(std::vector<std::string> const& args)
                      } },
   };
 
-  // process the command line arguments
+  // Process command line arguments for presets first, since other arguments
+  // can override those settings.
   for (size_t i = 1; i < args.size(); ++i) {
     std::string const& arg = args[i];
+    for (auto const& m : presetArguments) {
+      if (m.matches(arg)) {
+        if (!m.parse(arg, i, args)) {
+          return 1;
+        }
+        break;
+      }
+    }
+  }
+
+  if (presetsArgs.HasPresetsArg()) {
+    bool success = this->SetArgsFromPreset(presetsArgs);
+    if (presetsArgs.ListPresets) {
+      return static_cast<int>(!success);
+    }
+    if (!success) {
+      return 1;
+    }
+  }
+
+  // Process the remaining command line arguments.
+  bool hadPassthroughDelimiter = false;
+  for (size_t i = 1; i < args.size(); ++i) {
+    std::string const& arg = args[i];
+
+    // The "--" argument terminates processing and passes
+    // all remaining arguments through to the tests.
+    if (arg == "--"_s) {
+      hadPassthroughDelimiter = true;
+      std::copy(
+        args.begin() + i + 1, args.end(),
+        std::back_inserter(this->Impl->TestOptions.TestPassthroughArguments));
+      break;
+    }
+
     bool matched = false;
     for (auto const& m : arguments) {
       if (m.matches(arg)) {
@@ -2535,8 +2535,7 @@ int cmCTest::Run(std::vector<std::string> const& args)
         this->Impl->BuildAndTest.TestCommandArgs.emplace_back(args[i]);
       }
     }
-    if (!matched && cmHasPrefix(arg, '-') &&
-        !cmHasLiteralPrefix(arg, "--preset")) {
+    if (!matched && cmHasPrefix(arg, '-') && !isPresetArgument(arg)) {
       cmSystemTools::Error(cmStrCat("Unknown argument: ", arg));
       cmSystemTools::Error("Run 'ctest --help' for all supported options.");
       return 1;
@@ -2580,8 +2579,29 @@ int cmCTest::Run(std::vector<std::string> const& args)
     }
   }
 
-  // TestProgressOutput only supported if console supports it and not logging
-  // to a file
+  // Passthrough arguments (after --) are only supported in direct test
+  // execution mode, not --build-and-test, -S, or -D/-T/-M modes.
+  if (hadPassthroughDelimiter) {
+    if (cmakeAndTest) {
+      cmSystemTools::Error(
+        "The -- option cannot be used with --build-and-test. "
+        "Use --build-options or --test-command to forward arguments.");
+      return 1;
+    }
+    if (!runScripts.empty()) {
+      cmSystemTools::Error(
+        "The -- option cannot be used with -S or -SP script mode.");
+      return 1;
+    }
+    if (processSteps) {
+      cmSystemTools::Error(
+        "The -- option cannot be used with -D, -T, or -M dashboard mode.");
+      return 1;
+    }
+  }
+
+  // TestProgressOutput only supported if console supports it and not
+  // logging to a file
   this->Impl->TestProgressOutput = this->Impl->TestProgressOutput &&
     !this->Impl->OutputLogFile && this->ProgressOutputSupportedByConsole();
 #ifdef _WIN32
@@ -2609,6 +2629,19 @@ int cmCTest::Run(std::vector<std::string> const& args)
   if (!this->Impl->TestDir.empty()) {
     workDir = cmSystemTools::ToNormalizedPathOnDisk(this->Impl->TestDir);
   }
+
+  // When --source-dir is given, record it as the source directory override
+  // and ensure the binary directory exists so an empty dir is accepted.
+  if (!this->Impl->SourceDir.empty()) {
+    this->Impl->CTestConfigurationOverwrites["SourceDirectory"] =
+      cmSystemTools::ToNormalizedPathOnDisk(this->Impl->SourceDir);
+    if (!cmSystemTools::MakeDirectory(workDir)) {
+      cmCTestLog(this, ERROR_MESSAGE,
+                 "Failed to create directory: " << workDir << std::endl);
+      return 1;
+    }
+  }
+
   cmWorkingDirectory changeDir(workDir);
   if (changeDir.Failed()) {
     cmCTestLog(this, ERROR_MESSAGE, changeDir.GetError() << std::endl);
@@ -2680,8 +2713,12 @@ int cmCTest::ExecuteTests(std::vector<std::string> const& args)
   };
   std::map<std::string, std::string> data;
   data["showOnly"] = this->GetShowOnly() ? "1" : "0";
-  int ret =
-    instrumentation.InstrumentCommand("ctest", args, processHandler, data);
+  int ret = instrumentation.InstrumentCommand(
+    "ctest", args,
+    [processHandler]() -> cmInstrumentation::CommandResult {
+      return { processHandler(), cm::nullopt, cm::nullopt };
+    },
+    data);
   instrumentation.CollectTimingData(cmInstrumentationQuery::Hook::PostCTest);
   if (ret == cmCTest::TEST_ERRORS) {
     cmCTestLog(this, ERROR_MESSAGE, "Errors while running CTest\n");
@@ -3180,82 +3217,140 @@ bool cmCTest::SetCTestConfigurationFromCMakeVariable(
   return true;
 }
 
+namespace {
+// Mapping of CTEST_* variable names to CTest configuration keys.
+struct CTestVarConfigEntry
+{
+  char const* Var;    // CTEST_* variable name
+  char const* Config; // CTest configuration key
+};
+
+// clang-format off
+CTestVarConfigEntry const kCTestVarConfigMap[] = {
+  // General
+  { "CTEST_SITE",                          "Site"                        },
+  { "CTEST_BUILD_NAME",                    "BuildName"                   },
+  { "CTEST_NIGHTLY_START_TIME",            "NightlyStartTime"            },
+  { "CTEST_SOURCE_DIRECTORY",              "SourceDirectory"             },
+  { "CTEST_BINARY_DIRECTORY",              "BuildDirectory"              },
+  // Start step
+  { "CTEST_CHECKOUT_COMMAND",              "CheckoutCommand"             },
+  // Update step
+  { "CTEST_UPDATE_COMMAND",                "UpdateCommand"               },
+  { "CTEST_UPDATE_OPTIONS",                "UpdateOptions"               },
+  { "CTEST_UPDATE_TYPE",                   "UpdateType"                  },
+  { "CTEST_CVS_COMMAND",                   "CVSCommand"                  },
+  { "CTEST_CVS_UPDATE_OPTIONS",            "CVSUpdateOptions"            },
+  { "CTEST_SVN_COMMAND",                   "SVNCommand"                  },
+  { "CTEST_SVN_UPDATE_OPTIONS",            "SVNUpdateOptions"            },
+  { "CTEST_SVN_OPTIONS",                   "SVNOptions"                  },
+  { "CTEST_BZR_COMMAND",                   "BZRCommand"                  },
+  { "CTEST_BZR_UPDATE_OPTIONS",            "BZRUpdateOptions"            },
+  { "CTEST_GIT_COMMAND",                   "GITCommand"                  },
+  { "CTEST_GIT_UPDATE_OPTIONS",            "GITUpdateOptions"            },
+  { "CTEST_GIT_INIT_SUBMODULES",           "GITInitSubmodules"           },
+  { "CTEST_GIT_UPDATE_CUSTOM",             "GITUpdateCustom"             },
+  { "CTEST_UPDATE_VERSION_ONLY",           "UpdateVersionOnly"           },
+  { "CTEST_UPDATE_VERSION_OVERRIDE",       "UpdateVersionOverride"       },
+  { "CTEST_HG_COMMAND",                    "HGCommand"                   },
+  { "CTEST_HG_UPDATE_OPTIONS",             "HGUpdateOptions"             },
+  { "CTEST_P4_COMMAND",                    "P4Command"                   },
+  { "CTEST_P4_UPDATE_CUSTOM",              "P4UpdateCustom"              },
+  { "CTEST_P4_UPDATE_OPTIONS",             "P4UpdateOptions"             },
+  { "CTEST_P4_CLIENT",                     "P4Client"                    },
+  { "CTEST_P4_OPTIONS",                    "P4Options"                   },
+  // Configure step
+  { "CTEST_CONFIGURE_COMMAND",             "ConfigureCommand"            },
+  { "CTEST_LABELS_FOR_SUBPROJECTS",        "LabelsForSubprojects"        },
+  { "CTEST_CMAKE_GENERATOR",               "CMakeGenerator"              },
+  { "CTEST_CMAKE_GENERATOR_PLATFORM",      "CMakeGeneratorPlatform"      },
+  { "CTEST_CMAKE_GENERATOR_TOOLSET",       "CMakeGeneratorToolset"       },
+  // Build step
+  { "CTEST_BUILD_COMMAND",                 "MakeCommand"                 },
+  { "CTEST_USE_LAUNCHERS",                 "UseLaunchers"                },
+  { "CTEST_BUILD_FLAGS",                   "BuildFlags"                  },
+  { "CTEST_BUILD_TARGET",                  "BuildTarget"                 },
+  // Test step
+  { "CTEST_TEST_TIMEOUT",                  "TimeOut"                     },
+  { "CTEST_TEST_COVERAGE_TOOL",            "CTestTestCoverageTool"       },
+  { "CTEST_RESOURCE_SPEC_FILE",            "ResourceSpecFile"            },
+  { "CTEST_TEST_LOAD",                     "TestLoad"                    },
+  // Coverage step
+  { "CTEST_COVERAGE_COMMAND",              "CoverageCommand"             },
+  { "CTEST_COVERAGE_EXTRA_FLAGS",          "CoverageExtraFlags"          },
+  { "CTEST_EXTRA_COVERAGE_GLOB",           "ExtraCoverageGlob"           },
+  // MemCheck step
+  { "CTEST_MEMORYCHECK_TYPE",              "MemoryCheckType"             },
+  { "CTEST_MEMORYCHECK_SANITIZER_OPTIONS", "MemoryCheckSanitizerOptions" },
+  { "CTEST_MEMORYCHECK_COMMAND",           "MemoryCheckCommand"          },
+  { "CTEST_MEMORYCHECK_COMMAND_OPTIONS",   "MemoryCheckCommandOptions"   },
+  { "CTEST_MEMORYCHECK_SUPPRESSIONS_FILE", "MemoryCheckSuppressionFile"  },
+  // Submit step
+  { "CTEST_NOTES_FILES",                   "NotesFiles"                  },
+  { "CTEST_EXTRA_SUBMIT_FILES",            "ExtraSubmitFiles"            },
+  { "CTEST_SUBMIT_PARTS",                  "SubmitParts"                 },
+  { "CTEST_SUBMIT_URL",                    "SubmitURL"                   },
+  { "CTEST_DROP_METHOD",                   "DropMethod"                  },
+  { "CTEST_DROP_SITE_USER",                "DropSiteUser"                },
+  { "CTEST_DROP_SITE_PASSWORD",            "DropSitePassword"            },
+  { "CTEST_DROP_SITE",                     "DropSite"                    },
+  { "CTEST_DROP_LOCATION",                 "DropLocation"                },
+  { "CTEST_TLS_VERIFY",                    "TLSVerify"                   },
+  { "CTEST_TLS_VERSION",                   "TLSVersion"                  },
+  { "CTEST_CURL_OPTIONS",                  "CurlOptions"                 },
+  { "CTEST_SUBMIT_INACTIVITY_TIMEOUT",     "SubmitInactivityTimeout"     },
+  { "CTEST_TIME_LIMIT",                    "TimeLimit"                   },
+};
+// clang-format on
+
+// Entries accepted by ApplyDefinitionsToCTestConfig() (i.e. settable via
+// "ctest -D") but not emitted by SetCMakeVariables(), because their forward
+// direction is handled outside of that function.
+//
+//   CTEST_CVS_CHECKOUT - Deprecated alias for CTEST_CHECKOUT_COMMAND.
+//                        The canonical name is already in kCTestVarConfigMap.
+//   CTEST_CHANGE_ID    - Handler commands push this *into* the config map
+//                        themselves rather than reading it out;
+//                        SetCMakeVariables intentionally has no entry for it.
+CTestVarConfigEntry const kCTestVarConfigMapReverseOnly[] = {
+  { "CTEST_CVS_CHECKOUT", "CheckoutCommand" },
+  { "CTEST_CHANGE_ID", "ChangeId" },
+};
+} // namespace
+
 void cmCTest::SetCMakeVariables(cmMakefile& mf)
 {
-  auto set = [&](char const* cmake_var, char const* ctest_opt) {
-    std::string val = this->GetCTestConfiguration(ctest_opt);
+  for (auto const& entry : kCTestVarConfigMap) {
+    std::string val = this->GetCTestConfiguration(entry.Config);
     if (!val.empty()) {
       cmCTestOptionalLog(
         this, HANDLER_VERBOSE_OUTPUT,
-        "SetCMakeVariable:" << cmake_var << ":" << val << std::endl, false);
-      mf.AddDefinition(cmake_var, val);
+        "SetCMakeVariable:" << entry.Var << ":" << val << std::endl, false);
+      mf.AddDefinition(entry.Var, val);
     }
-  };
+  }
+}
 
-  set("CTEST_SITE", "Site");
-  set("CTEST_BUILD_NAME", "BuildName");
-  set("CTEST_NIGHTLY_START_TIME", "NightlyStartTime");
-  set("CTEST_SOURCE_DIRECTORY", "SourceDirectory");
-  set("CTEST_BINARY_DIRECTORY", "BuildDirectory");
+void cmCTest::ApplyDefinitionsToCTestConfig()
+{
+  // Build a reverse-lookup map from both tables the first time this is called.
+  static std::map<std::string, std::string> const reverseMap = []() {
+    std::map<std::string, std::string> m;
+    for (auto const& e : kCTestVarConfigMap) {
+      m.emplace(e.Var, e.Config);
+    }
+    for (auto const& e : kCTestVarConfigMapReverseOnly) {
+      m.emplace(e.Var, e.Config);
+    }
+    return m;
+  }();
 
-  // CTest Update Step
-  set("CTEST_UPDATE_COMMAND", "UpdateCommand");
-  set("CTEST_UPDATE_OPTIONS", "UpdateOptions");
-  set("CTEST_UPDATE_TYPE", "UpdateType");
-  set("CTEST_CVS_COMMAND", "CVSCommand");
-  set("CTEST_CVS_UPDATE_OPTIONS", "CVSUpdateOptions");
-  set("CTEST_SVN_COMMAND", "SVNCommand");
-  set("CTEST_SVN_UPDATE_OPTIONS", "SVNUpdateOptions");
-  set("CTEST_SVN_OPTIONS", "SVNOptions");
-  set("CTEST_BZR_COMMAND", "BZRCommand");
-  set("CTEST_BZR_UPDATE_OPTIONS", "BZRUpdateOptions");
-  set("CTEST_GIT_COMMAND", "GITCommand");
-  set("CTEST_GIT_UPDATE_OPTIONS", "GITUpdateOptions");
-  set("CTEST_GIT_INIT_SUBMODULES", "GITInitSubmodules");
-  set("CTEST_GIT_UPDATE_CUSTOM", "GITUpdateCustom");
-  set("CTEST_UPDATE_VERSION_ONLY", "UpdateVersionOnly");
-  set("CTEST_UPDATE_VERSION_OVERRIDE", "UpdateVersionOverride");
-  set("CTEST_HG_COMMAND", "HGCommand");
-  set("CTEST_HG_UPDATE_OPTIONS", "HGUpdateOptions");
-  set("CTEST_P4_COMMAND", "P4Command");
-  set("CTEST_P4_UPDATE_CUSTOM", "P4UpdateCustom");
-  set("CTEST_P4_UPDATE_OPTIONS", "P4UpdateOptions");
-  set("CTEST_P4_CLIENT", "P4Client");
-  set("CTEST_P4_OPTIONS", "P4Options");
-
-  // CTest Configure Step
-  set("CTEST_CONFIGURE_COMMAND", "ConfigureCommand");
-  set("CTEST_LABELS_FOR_SUBPROJECTS", "LabelsForSubprojects");
-
-  // CTest Build Step
-  set("CTEST_BUILD_COMMAND", "MakeCommand");
-  set("CTEST_USE_LAUNCHERS", "UseLaunchers");
-
-  // CTest Test Step
-  set("CTEST_TEST_TIMEOUT", "TimeOut");
-
-  // CTest Coverage Step
-  set("CTEST_COVERAGE_COMMAND", "CoverageCommand");
-  set("CTEST_COVERAGE_EXTRA_FLAGS", "CoverageExtraFlags");
-
-  // CTest MemCheck Step
-  set("CTEST_MEMORYCHECK_TYPE", "MemoryCheckType");
-  set("CTEST_MEMORYCHECK_SANITIZER_OPTIONS", "MemoryCheckSanitizerOptions");
-  set("CTEST_MEMORYCHECK_COMMAND", "MemoryCheckCommand");
-  set("CTEST_MEMORYCHECK_COMMAND_OPTIONS", "MemoryCheckCommandOptions");
-  set("CTEST_MEMORYCHECK_SUPPRESSIONS_FILE", "MemoryCheckSuppressionFile");
-
-  // CTest Submit Step
-  set("CTEST_SUBMIT_URL", "SubmitURL");
-  set("CTEST_DROP_METHOD", "DropMethod");
-  set("CTEST_DROP_SITE_USER", "DropSiteUser");
-  set("CTEST_DROP_SITE_PASSWORD", "DropSitePassword");
-  set("CTEST_DROP_SITE", "DropSite");
-  set("CTEST_DROP_LOCATION", "DropLocation");
-  set("CTEST_TLS_VERIFY", "TLSVerify");
-  set("CTEST_TLS_VERSION", "TLSVersion");
-  set("CTEST_CURL_OPTIONS", "CurlOptions");
-  set("CTEST_SUBMIT_INACTIVITY_TIMEOUT", "SubmitInactivityTimeout");
+  for (auto const& def : this->Impl->Definitions) {
+    auto const it = reverseMap.find(def.first);
+    if (it != reverseMap.end()) {
+      this->SetCTestConfiguration(it->second.c_str(), def.second);
+    }
+  }
 }
 
 bool cmCTest::RunCommand(std::vector<std::string> const& args,
@@ -3436,22 +3531,19 @@ void cmCTest::Log(LogType logType, std::string msg, bool suppress)
   if (!this->Impl->Quiet) {
     if (logType == HANDLER_TEST_PROGRESS_OUTPUT) {
       if (this->Impl->TestProgressOutput) {
-        if (this->Impl->FlushTestProgressLine) {
-          printf("\r");
-          this->Impl->FlushTestProgressLine = false;
-          std::cout.flush();
+        if (this->Impl->TestProgressNewlinePending) {
+          this->Impl->TestProgressNewlinePending = false;
+          std::cout << '\r';
         }
 
         if (msg.find('\n') != std::string::npos) {
-          this->Impl->FlushTestProgressLine = true;
+          this->Impl->TestProgressNewlinePending = true;
           msg.erase(std::remove(msg.begin(), msg.end(), '\n'), msg.end());
         }
 
-        std::cout << msg;
-#ifndef _WIN32
-        printf("\x1B[K"); // move caret to end
-#endif
-        std::cout.flush();
+        // ProgressOutputSupportedByConsole() already verified VT100 support.
+        // Erase the rest of the line before printing the message.
+        std::cout << kVT100_EraseLine << msg << std::flush;
         return;
       }
       logType = HANDLER_OUTPUT;
@@ -3654,7 +3746,7 @@ void cmCTest::ConvertInstrumentationSnippetsToXML(cmXMLWriter& xml,
 
   for (unsigned int i = 0; i < d.GetNumberOfFiles(); i++) {
     std::string fpath = d.GetFilePath(i);
-    std::string fname = d.GetFile(i);
+    std::string const& fname = d.GetFileName(i);
     if (fname.rfind('.', 0) == 0) {
       continue;
     }

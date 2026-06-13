@@ -1,26 +1,59 @@
+The supported languages are:
 
-支持的语言包括 ``C``、\ ``CXX``\ （即C++）、\ ``CSharp``\ （即C#）、\ ``CUDA``、\
-``OBJC``\ （即Objective-C）、\ ``OBJCXX``\ （即Objective-C++）、\ ``Fortran``、\
-``HIP``、\ ``ISPC``、\ ``Swift``、\ ``ASM``、\ ``ASM_NASM``、\ ``ASM_MARMASM``、\
-``ASM_MASM``\ 和\ ``ASM-ATT``。
+``C``
 
+``CXX``
+  C++
+
+``CSharp``
   .. versionadded:: 3.8
-    增加了对\ ``CSharp``\ 和\ ``CUDA``\ 的支持。
 
-  .. versionadded:: 3.15
-    增加了对\ ``Swift``\ 的支持。
+  C#
 
+``CUDA``
+  .. versionadded:: 3.8
+
+``OBJC``
   .. versionadded:: 3.16
-    增加了对\ ``OBJC``\ 和\ ``OBJCXX``\ 的支持。
 
-  .. versionadded:: 3.18
-    增加了对\ ``ISPC``\ 的支持。
+  Objective-C
 
+``OBJCXX``
+  .. versionadded:: 3.16
+
+  Objective-C++
+
+``Fortran``
+
+``HIP``
   .. versionadded:: 3.21
-    增加了对\ ``HIP``\ 的支持。
 
+``ISPC``
+  .. versionadded:: 3.18
+
+``Swift``
+  .. versionadded:: 3.15
+
+``ASM``
+  Assembly language supported by the C compiler.
+
+  If enabling ``ASM``, list it last so that CMake can check
+  whether the ``C`` or ``CXX`` compiler supports assembly.
+
+``ASM_NASM``
+  Netwide Assembler
+
+``ASM_MARMASM``
   .. versionadded:: 3.26
-    增加了对\ ``ASM_MARMASM``\ 的支持。
 
-如果要启用\ ``ASM``，请将其列在最后，以便CMake能够检查其他语言（如\ ``C``\ ）的编译器是否\
-也适用于汇编语言。
+  Microsoft Assembler (ARM, ARM64)
+
+``ASM_MASM``
+  Microsoft Assembler (x86, x64)
+
+``ASM_POASM``
+  .. versionadded:: 4.4
+
+  Pelles C toolchain assembler.
+
+``ASM-ATT``

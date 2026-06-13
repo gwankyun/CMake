@@ -8,7 +8,6 @@
 #include "cmDebuggerAdapter.h"
 #include "cmDebuggerProtocol.h"
 #include "cmListFileCache.h"
-#include "cmMessenger.h"
 #include <cmcppdap/include/dap/io.h>
 #include <cmcppdap/include/dap/session.h>
 #include <cmcppdap/include/dap/types.h>
@@ -72,13 +71,12 @@ public:
     Client->bind(server2client, client2server);
     Debugger->bind(client2server, server2client);
   }
-  std::vector<cmListFileFunction> CreateListFileFunctions(char const* str,
-                                                          char const* filename)
+  std::vector<cmListFileFunction> CreateListFileFunctions(
+    char const* str, std::string const& filename)
   {
-    cmMessenger messenger;
     cmListFileBacktrace backtrace;
     cmListFile listfile;
-    listfile.ParseString(str, filename, &messenger, backtrace);
+    listfile.ParseString(str, filename, nullptr, backtrace);
     return listfile.Functions;
   }
 };

@@ -19,3 +19,9 @@ For instance:
   set_property(SOURCE main.cc PROPERTY JOB_POOL_COMPILE two_jobs)
 
 This property is undefined by default.
+
+See Also
+^^^^^^^^
+
+* :prop_fs:`JOB_POOL_COMPILE` file set property
+* :prop_tgt:`JOB_POOL_COMPILE` target property

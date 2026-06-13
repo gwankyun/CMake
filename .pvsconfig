@@ -1,0 +1,100 @@
+# Identical sub-expressions to the left and to the right of 'foo' operator.
+//-V::501
+# Pointer to local variable 'X' is stored outside the scope of this variable. Such a pointer will become invalid.
+//-V::506
+# The 'new type(n)' pattern was detected. Probably meant: 'new type[n]'.
+//-V::508
+# The 'x' variable is assigned values twice successively. Perhaps this is a mistake.
+//-V::519
+# Possible null pointer dereference.
+//-V::522
+# Constant value is represented by an octal form.
+//-V::536
+# Iterators are passed as arguments to 'Foo' function. Consider inspecting the expression.
+//-V::539
+# Expression is always true/false.
+//-V::547
+# Expression of the 'A - B > 0' kind will work as 'A != B'.
+//-V::555
+# Possible array overrun.
+//-V::557
+# Part of conditional expression is always true/false.
+//-V::560
+# It is suspicious that the argument of sizeof() operator is the expression.
+//-V::568
+# Variable is assigned to itself.
+//-V::570
+# Recurring check. This condition was already verified in previous line.
+//-V::571
+# Function receives suspicious argument.
+//-V::575
+# Conditional expressions of 'if' statements located next to each other are identical.
+//-V::581
+# The 'Foo' function is called twice to deallocate the same resource.
+//-V::586
+# Expression is enclosed by parentheses twice: ((expression)). One pair of parentheses is unnecessary or typo is present.
+//-V::592
+# Pointer was used before its check for nullptr. Check lines: N1, N2.
+//-V::595
+# Possible division or mod by zero.
+//-V::609
+# Condition of a loop is always true/false.
+//-V::654
+# Possible meaningless check for null, as memory was allocated using 'new' operator. Memory allocation will lead to an exception.
+//-V::668
+# An object is used as an argument to its own method.
+//-V::678
+# Pattern A || (A && ...) was detected. The expression is excessive or contains a logical error.
+//-V::686
+# The class implements a copy constructor/operator=, but lacks the operator=/copy constructor.
+//-V::690
+# Excessive check can be simplified. The '||' operator is surrounded by opposite expressions 'x' and '!x'.
+//-V::728
+# Not all members of a class are initialized inside the constructor.
+//-V::730
+# Suspicious access to element of '...' array by a constant index inside a loop.
+//-V::767
+# The pointer in the expression equals nullptr. The resulting value is meaningless and should not be used.
+//-V::769
+# Two similar code fragments were found.
+//-V::778
+# Value of a variable is checked after it is used. Possible error in program's logic. Check lines: N1, N2.
+//-V::781
+# Variable is assigned but not used by the end of the function.
+//-V::1001
+# Pointer was used unsafely after its check for nullptr.
+//-V::1004
+# Value from the uninitialized optional is used. It may be an error.
+//-V::1007
+# The value is out of range of enum values. This causes unspecified or undefined behavior.
+//-V::1016
+# A pointer without owner is added to the container by the 'emplace_back' method. A memory leak will occur in case of an exception.
+//-V::1023
+# Possible overflow. Consider casting operands, not the result.
+//-V::1028
+# Variable is used after it is moved.
+//-V::1030
+# Two or more case-branches perform the same actions.
+//-V::1037
+# This file is marked with copyleft license, which requires you to open the derived source code.
+//-V::1042
+# Loop break conditions do not depend on the number of iterations.
+//-V::1044
+# Variable 'foo' was assigned the same value.
+//-V::1048
+# It is possible that an assigned variable should be checked in the next condition. Consider checking for typos.
+//-V::1051
+# Calling the 'foo' virtual function in the constructor/destructor may lead to unexpected result at runtime.
+//-V::1053
+# Return value is not always used. Consider inspecting the 'foo' function.
+//-V::1071
+# Conditional initialization inside the constructor may leave some members uninitialized.
+//-V::1077
+# Call of the 'Foo' function will lead to buffer underflow.
+//-V::1086
+# Waiting on condition variable without predicate. A thread can wait indefinitely or experience a spurious wake-up.
+//-V::1089
+# The 'emplace' / 'insert' function call contains potentially dangerous move operation. Moved object can be destroyed even if there is no insertion.
+//-V::1098
+# Preprocessing directive is present within a macro argument. This leads to undefined behavior.
+//-V::1119

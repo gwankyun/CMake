@@ -10,6 +10,10 @@ any effect.
 
 :manual:`Generator expressions <cmake-generator-expressions(7)>` are supported.
 
+.. versionadded:: 4.4
+
+  Targets created by :command:`add_custom_target` now honor this property.
+
 Examples
 ^^^^^^^^
 

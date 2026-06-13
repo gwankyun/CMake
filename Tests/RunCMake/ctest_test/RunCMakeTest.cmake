@@ -13,6 +13,95 @@ endfunction()
 
 run_ctest_test(TestQuiet QUIET)
 
+block()
+  set(CASE_CMAKELISTS_SUFFIX_CODE [[
+foreach(i RANGE 1 3)
+  add_test(NAME test${i} COMMAND ${CMAKE_COMMAND} -E true)
+endforeach()
+]])
+  foreach(case IN ITEMS
+    TestPresetBadName
+    TestPresetExclude
+    TestPresetInclude
+    TestPresetOverride
+    TestPresetVar
+    TestPresetGenericVar
+  )
+    configure_file(
+      "${RunCMake_SOURCE_DIR}/CMakePresets.json.in"
+      "${RunCMake_BINARY_DIR}/${case}/CMakePresets.json"
+      @ONLY)
+  endforeach()
+  run_ctest_test(TestPresetBadName PRESET nonexistent-preset)
+  run_ctest_test(TestPresetExclude PRESET my-exclude-preset)
+  run_ctest_test(TestPresetInclude PRESET my-include-preset)
+  run_ctest_test(TestPresetOverride PRESET my-include-preset INCLUDE test2)
+
+  set(CASE_TEST_PREFIX_CODE [[set(CTEST_TEST_PRESET "my-include-preset")]])
+  run_ctest(TestPresetVar)
+  unset(CASE_TEST_PREFIX_CODE)
+
+  set(CASE_TEST_PREFIX_CODE [[set(CTEST_PRESET "my-include-preset")]])
+  run_ctest(TestPresetGenericVar)
+  unset(CASE_TEST_PREFIX_CODE)
+
+  # Verify that CTEST_TEST_PRESET passed via -D on the command line reaches
+  # ctest_test() when ctest is run with -M/-T.
+  set(case_source_dir "${RunCMake_BINARY_DIR}/TestPresetCLIVar")
+  set(case_binary_dir "${RunCMake_BINARY_DIR}/TestPresetCLIVar-build")
+  configure_file(
+    "${RunCMake_SOURCE_DIR}/CMakePresets.json.in"
+    "${case_source_dir}/CMakePresets.json"
+    @ONLY)
+  file(REMOVE_RECURSE "${case_binary_dir}")
+  file(MAKE_DIRECTORY "${case_binary_dir}")
+  file(WRITE "${case_binary_dir}/DartConfiguration.tcl"
+    "BuildDirectory: ${case_binary_dir}\nSourceDirectory: ${case_source_dir}\n")
+  file(WRITE "${case_binary_dir}/CTestTestfile.cmake"
+    "add_test(test1 \"${CMAKE_COMMAND}\" -E true)\n"
+    "add_test(test2 \"${CMAKE_COMMAND}\" -E true)\n"
+    "add_test(test3 \"${CMAKE_COMMAND}\" -E true)\n")
+  set(RunCMake_TEST_BINARY_DIR "${case_binary_dir}")
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command(TestPresetCLIVar
+    ${CMAKE_CTEST_COMMAND}
+    -C Debug
+    -M Experimental
+    -D "CTEST_TEST_PRESET=my-include-preset"
+    -T Test
+    -V)
+
+  set(custom_presets_file
+    "${RunCMake_BINARY_DIR}/TestPresetFileInclude/custom-presets.json")
+  configure_file(
+    "${RunCMake_SOURCE_DIR}/CMakePresets.json.in"
+    "${custom_presets_file}"
+    @ONLY)
+  set(CASE_CTEST_TEST_RAW_ARGS
+    "PRESET my-include-preset PRESETS_FILE \"${custom_presets_file}\"")
+  run_ctest(TestPresetFileInclude)
+  unset(CASE_CTEST_TEST_RAW_ARGS)
+  unset(custom_presets_file)
+
+  set(custom_presets_file
+    "${RunCMake_BINARY_DIR}/TestPresetFromFileVar/custom-presets.json")
+  configure_file(
+    "${RunCMake_SOURCE_DIR}/CMakePresets.json.in"
+    "${custom_presets_file}"
+    @ONLY)
+  set(CASE_TEST_PREFIX_CODE
+"set(CTEST_TEST_PRESET \"my-include-preset\")
+set(CTEST_PRESETS_FILE \"${custom_presets_file}\")")
+  run_ctest(TestPresetFromFileVar)
+  unset(CASE_TEST_PREFIX_CODE)
+  unset(custom_presets_file)
+
+  set(CASE_CTEST_TEST_RAW_ARGS
+    "PRESET my-include-preset PRESETS_FILE /nonexistent/path/presets.json")
+  run_ctest(TestPresetBadFile)
+  unset(CASE_CTEST_TEST_RAW_ARGS)
+endblock()
+
 set(CASE_CMAKELISTS_SUFFIX_CODE [[
 foreach(i RANGE 1 4)
   add_test(NAME test${i} COMMAND ${CMAKE_COMMAND} -E true)
@@ -259,6 +348,15 @@ set_property(TEST RunCMakeVersion PROPERTY ENVIRONMENT "ENV1=env1;ENV2=env2")
   run_ctest(TestEnvironment)
 endfunction()
 run_environment()
+
+# Test setting of CTEST_TEST_COVERAGE_TOOL
+function(run_CTestTestCoverageTool)
+  set(CASE_CTEST_TEST_ARGS "COVERAGE_TOOL" "LLVM-COV")
+  set(CASE_TEST_PREFIX_CODE [[ unset(ENV{LLVM_PROFILE_FILE})]])
+
+  run_ctest(TestCTestTestCoverageTool -VV)
+endfunction()
+run_CTestTestCoverageTool()
 
 # test for OUTPUT_JUNIT
 run_ctest_test(OutputJUnit OUTPUT_JUNIT junit.xml REPEAT UNTIL_FAIL:2)

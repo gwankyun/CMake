@@ -10,6 +10,7 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmFunctionBlocker.h"
 #include "cmList.h"
@@ -18,6 +19,7 @@
 #include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmState.h"
+#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 
@@ -37,6 +39,7 @@ public:
   std::vector<std::string> Args;
   std::vector<cmListFileFunction> Functions;
   cmPolicies::PolicyMap Policies;
+  cmDiagnostics::DiagnosticMap Diagnostics;
   std::string FilePath;
 };
 
@@ -60,9 +63,6 @@ bool cmMacroHelperCommand::operator()(
     return false;
   }
 
-  cmMakefile::MacroPushPop macroScope(&makefile, this->FilePath,
-                                      this->Policies);
-
   // set the value of argc
   std::string argcDef = std::to_string(expandedArgs.size());
 
@@ -70,6 +70,21 @@ bool cmMacroHelperCommand::operator()(
   std::string expandedArgn =
     cmList::to_string(cmMakeRange(expIt, expandedArgs.end()));
   std::string expandedArgv = cmList::to_string(expandedArgs);
+  {
+    cmPolicies::PolicyStatus cmp0219 =
+      makefile.CheckCMP0219(this->Args[0], expandedArgs);
+    if (cmp0219 == cmPolicies::NEW) {
+      // Escape macro argument backslashes so that callees receive the same
+      // values the caller had.
+      for (std::string& expandedArg : expandedArgs) {
+        cmSystemTools::ReplaceString(expandedArg, "\\", "\\\\");
+      }
+      cmSystemTools::ReplaceString(expandedArgn, "\\", "\\\\");
+      cmSystemTools::ReplaceString(expandedArgv, "\\", "\\\\");
+    } else if (cmp0219 == cmPolicies::WARN) {
+      makefile.IssueCMP0219Warning(this->Args[0], expandedArgs);
+    }
+  }
   std::vector<std::string> variables;
   variables.reserve(this->Args.size() - 1);
   for (unsigned int j = 1; j < this->Args.size(); ++j) {
@@ -80,6 +95,10 @@ bool cmMacroHelperCommand::operator()(
   for (unsigned int j = 0; j < expandedArgs.size(); ++j) {
     argVs.emplace_back(cmStrCat("${ARGV", j, '}'));
   }
+
+  cmMakefile::MacroPushPop macroScope(&makefile, this->FilePath,
+                                      this->Policies, this->Diagnostics);
+
   // Invoke all the functions that were collected in the block.
   // for each function
   for (cmListFileFunction const& func : this->Functions) {
@@ -133,6 +152,10 @@ bool cmMacroHelperCommand::operator()(
       inStatus.SetBreakInvoked();
       return true;
     }
+    if (status.GetContinueInvoked()) {
+      inStatus.SetContinueInvoked();
+      return true;
+    }
     if (status.HasExitCode()) {
       inStatus.SetExitCode(status.GetExitCode());
       return true;
@@ -168,15 +191,20 @@ bool cmMacroFunctionBlocker::Replay(std::vector<cmListFileFunction> functions,
                                     cmExecutionStatus& status)
 {
   cmMakefile& mf = status.GetMakefile();
-  mf.AppendProperty("MACROS", this->Args[0]);
+  if (status.GetMakefile().GetPolicyStatus(cmPolicies::CMP0217) !=
+      cmPolicies::NEW) {
+
+    mf.AppendProperty("MACROS", this->Args[0]);
+  }
   // create a new command and add it to cmake
   cmMacroHelperCommand f;
   f.Args = this->Args;
   f.Functions = std::move(functions);
   f.FilePath = this->GetStartingContext().FilePath;
   mf.RecordPolicies(f.Policies);
+  mf.RecordDiagnostics(f.Diagnostics);
   return mf.GetState()->AddScriptedCommand(
-    this->Args[0],
+    this->Args[0], cmStateEnums::CommandType::Macro,
     BT<cmState::Command>(std::move(f),
                          mf.GetBacktrace().Push(this->GetStartingContext())),
     mf);

@@ -9,12 +9,13 @@
 #include <string>
 #include <vector>
 
+#include "cmDiagnosticContext.h"
 #include "cmInstallType.h"
-#include "cmListFileCache.h"
 #include "cmScriptGenerator.h"
 
 class cmLocalGenerator;
 class cmMakefile;
+class cmListFileBacktrace;
 
 /** \class cmInstallGenerator
  * \brief Support class for generating install scripts.
@@ -34,8 +35,8 @@ public:
   cmInstallGenerator(std::string destination,
                      std::vector<std::string> const& configurations,
                      std::string component, MessageLevel message,
-                     bool exclude_from_all, bool all_components,
-                     cmListFileBacktrace backtrace);
+                     bool excludeFromAll, bool allComponents,
+                     cmDiagnosticContext context);
   ~cmInstallGenerator() override;
 
   cmInstallGenerator(cmInstallGenerator const&) = delete;
@@ -48,20 +49,29 @@ public:
   void AddInstallRule(
     std::ostream& os, std::string const& dest, cmInstallType type,
     std::vector<std::string> const& files, bool optional = false,
-    char const* permissions_file = nullptr,
-    char const* permissions_dir = nullptr, char const* rename = nullptr,
-    char const* literal_args = nullptr, Indent indent = Indent(),
-    char const* files_var = nullptr);
+    char const* permissionsFile = nullptr,
+    char const* permissionsDir = nullptr, char const* rename = nullptr,
+    char const* literalArgs = nullptr, Indent indent = Indent(),
+    char const* filesVar = nullptr);
 
   /** Get the install destination as it should appear in the
       installation script.  */
   static std::string ConvertToAbsoluteDestination(std::string const& dest);
+  void CheckAbsoluteDestination(std::string const& dest,
+                                cmLocalGenerator* lg) const;
 
   /** Test if this generator installs something for a given configuration.  */
   bool InstallsForConfig(std::string const& config);
 
   /** Select message level from CMAKE_INSTALL_MESSAGE or 'never'.  */
   static MessageLevel SelectMessageLevel(cmMakefile* mf, bool never = false);
+
+  /** Capture context for generator.  */
+  static cmDiagnosticContext CaptureContext(cmMakefile const& mf);
+  static cmDiagnosticContext CaptureContext(cmMakefile const* mf)
+  {
+    return cmInstallGenerator::CaptureContext(*mf);
+  }
 
   virtual bool Compute(cmLocalGenerator*) { return true; }
 
@@ -70,7 +80,10 @@ public:
   bool GetExcludeFromAll() const { return this->ExcludeFromAll; }
   bool GetAllComponentsFlag() const { return this->AllComponents; }
 
-  cmListFileBacktrace const& GetBacktrace() const { return this->Backtrace; }
+  cmListFileBacktrace const& GetBacktrace() const
+  {
+    return this->Context.GetBacktrace();
+  }
 
   static std::string GetDestDirPath(std::string const& file);
 
@@ -78,8 +91,8 @@ protected:
   void GenerateScript(std::ostream& os) override;
 
   std::string CreateComponentTest(std::string const& component,
-                                  bool exclude_from_all,
-                                  bool all_components = false);
+                                  bool excludeFromAll,
+                                  bool allComponents = false);
 
   using TweakMethod =
     std::function<void(std::ostream& os, Indent indent,
@@ -98,5 +111,5 @@ protected:
   MessageLevel const Message;
   bool const ExcludeFromAll;
   bool const AllComponents;
-  cmListFileBacktrace const Backtrace;
+  cmDiagnosticContext const Context;
 };

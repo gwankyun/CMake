@@ -55,8 +55,9 @@ public:
 
   /** Construct with output stream to which to write archive.  */
   cmArchiveWrite(std::ostream& os, Compress c = CompressNone,
-                 std::string const& format = "paxr", int compressionLevel = 0,
-                 int numThreads = 1);
+                 std::string const& format = "paxr",
+                 std::string const& encoding = "UTF-8",
+                 int compressionLevel = 0, int numThreads = 1);
 
   ~cmArchiveWrite();
 
@@ -144,10 +145,10 @@ public:
 
 private:
   bool Okay() const { return this->Error.empty(); }
-  bool AddPath(char const* path, size_t skip, char const* prefix,
+  bool AddPath(std::string const& path, size_t skip, char const* prefix,
                bool recursive = true);
-  bool AddFile(char const* file, size_t skip, char const* prefix);
-  bool AddData(char const* file, size_t size);
+  bool AddFile(std::string const& file, size_t skip, char const* prefix);
+  bool AddData(std::string const& file, size_t size);
 
   struct Callback;
   friend struct Callback;

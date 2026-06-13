@@ -19,6 +19,7 @@
 
 #include "cmsys/RegularExpression.hxx"
 
+#include "cmCMakePresetsGraph.h"
 #include "cmCTest.h"
 #include "cmCTestGenericHandler.h"
 #include "cmCTestTypes.h" // IWYU pragma: keep
@@ -55,7 +56,23 @@ struct cmCTestTestOptions
   std::string ExcludeTestListFile;
   std::string ResourceSpecFile;
   std::string JUnitXMLFileName;
+
+  std::string CoverageTool;
+
+  std::vector<std::string> TestPassthroughArguments;
 };
+
+/** Apply a resolved TestPreset's fields to \a opts.
+ *
+ * Both the \c ctest \c --preset CLI path and the \c ctest_test(PRESET)
+ * script-command path call this to keep the mapping in one place and avoid
+ * drift when new preset fields are added.
+ *
+ * Fields that do not live in cmCTestTestOptions (e.g. ParallelLevel, Repeat,
+ * Timeout, NoTestsAction) are handled separately at each call site.
+ */
+void cmCTestApplyTestPresetToOptions(
+  cmCTestTestOptions& opts, cmCMakePresetsGraph::TestPreset const& preset);
 
 /** \class cmCTestTestHandler
  * \brief A class that handles ctest -S invocations
@@ -129,7 +146,10 @@ public:
     void AppendError(cm::string_view err);
     cm::optional<std::string> Error;
     std::string Name;
+    // working directory for test, overridden by WORKING_DIRECTORY property
     std::string Directory;
+    // Original directory of test creation
+    std::string CTestDirectory;
     std::vector<std::string> Args;
     std::vector<std::string> RequiredFiles;
     std::vector<std::string> Depends;

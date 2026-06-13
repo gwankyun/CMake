@@ -19,6 +19,8 @@ elseif (TRANSITIVE_MODULES)
   set(package_name "export_transitive_modules")
 elseif (WITH_HEADERS)
   set(package_name "export_with_headers")
+elseif (CONFIG_MODULES)
+  set(package_name "export_interface_config")
 elseif (BUILD_DATABASE)
   include("${CMAKE_SOURCE_DIR}/../export-build-database-setup.cmake")
   set(package_name "export_build_database")
@@ -56,3 +58,23 @@ if (BUILD_DATABASE AND
 endif ()
 
 add_test(NAME use_import_interfaces COMMAND use_import_interfaces)
+
+if (BUILD_DATABASE)
+  add_executable(use_import_interfaces_matching)
+  target_sources(use_import_interfaces_matching
+    PRIVATE
+      use.cxx)
+  target_compile_features(use_import_interfaces_matching PRIVATE cxx_std_20)
+  target_compile_options(use_import_interfaces_matching PRIVATE
+    -Dfrom_compile_options
+    -Dtarget_private_option
+    -Dtarget_public_option)
+  target_link_libraries(use_import_interfaces_matching PRIVATE "${target_name}")
+
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND
+      CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC")
+    target_link_libraries(use_import_interfaces_matching PRIVATE libcmt)
+  endif ()
+
+  add_test(NAME use_import_interfaces_matching COMMAND use_import_interfaces_matching)
+endif ()

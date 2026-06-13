@@ -36,7 +36,11 @@ CMake的实现会在构建过程中要求编译器扫描源文件以查找模块
 - 如果源文件属于\ ``CXX_MODULES``\ 类型的文件集，则会对其进行扫描。
 - 如果目标不使用至少C++ 20，则不会对其进行扫描。
 - 如果源文件不是\ ``CXX``\ 语言，它将不会被扫描。
-- 如果设置了\ :prop_sf:`CXX_SCAN_FOR_MODULES`\ 源文件属性，则将使用其值。
+- If the source file belongs to a file set that is not of type ``CXX_MODULES``,
+  and the :prop_fs:`CXX_SCAN_FOR_MODULES` file set property is set, its
+  value will be used.
+- If the :prop_sf:`CXX_SCAN_FOR_MODULES` source file property is set in the
+  target's directory, its value will be used.。
 - 如果设置了\ :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ 目标属性，则将使用其值。设置\
   :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ 变量，以便在创建所有目标时初始化该属性。
 - 否则，将在编译器和生成器支持的前提下，扫描源文件。参见策略\ :policy:`CMP0155`。
@@ -50,7 +54,13 @@ CMake的实现会在构建过程中要求编译器扫描源文件以查找模块
 CMake支持扫描C++模块源文件的编译器列表包括：
 
 * MSVC toolset 14.34及更高版本（随Visual Studio 17.4及更高版本提供）
+
 * LLVM/Clang 16.0及更高版本
+
+  .. versionadded:: 4.4
+
+    ``clang-cl`` version 19.1 and newer
+
 * GCC 14及更高版本
 
 ``import std``\ 支持
@@ -410,20 +420,34 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 扫描和模块生成命令。确保提供模块的命令之间的依赖边将确保构建图正确执行。这意味着，\
 虽然所有源文件可能会被扫描，但只有实际使用的模块才会被生成。
 
-CMake执行的第一步是为提供模块的目标的每一种唯一使用方式生成一个\
-:term:`synthetic target`。这些目标基于其他目标，但只为其他目标提供\ :term:`BMI`\
-文件，而不是目标文件。这是因为\ :term:`BMI`\ 文件的兼容性极其狭窄，不能在任意\
-``import``\ 实例之间共享。由于工具链的内部工作原理，对于任何一次编译，通常只能\
-有一组针对各种标志的设置，包括导入模块的\ :term:`BMI`\ 文件。例如，使用的C++标准\
-需要在所有模块中保持一致，但有许多设置可能会导致不兼容。
+The first step CMake performs is to generate any
+:term:`synthetic targets <synthetic target>` needed for a module-providing
+target.  These targets are based on the module provider, but produce only
+:term:`BMI` files for consumers rather than object files. This is necessary
+because the compatibility of :term:`BMI` files is extremely narrow and cannot be
+shared between arbitrary ``import`` instances.
 
-.. note::
+Due to the internal workings of toolchains, there can generally only be a single
+set of settings for a variety of flags for any one compilation, including
+:term:`BMI` files for imported modules.  As an example, the C++ standard in
+use needs to be consistent across all modules imported to a given translation
+unit, mixing standards will cause incompatibilities.
 
-   CMake当前假设所有用法都是兼容的，并且每个目标只会创建一组\ :term:`BMIs <BMI>`。\
-   当需要多个\ :term:`BMI`\ 文件但CMake只提供一组时，这可能会导致构建失败。有关\
-   移除这一假设的进展，请参见\ `CMake Issue 25916`_。
+  .. versionadded:: 4.4
 
-.. _`CMake Issue 25916`: https://gitlab.kitware.com/cmake/cmake/-/issues/25916
+    Prior to CMake 4.4, CMake assumed all usages were compatible and would only
+    create one set of :term:`BMIs <BMI>` for each module-providing target. This
+    could cause build failures due to incompatible :term:`BMI` usage.
+
+    In CMake 4.4 and later, CMake attempts to determine :term:`BMI`
+    compatibility on a target-by-target basis and will generate
+    :term:`synthetic targets <synthetic target>` to provide compatible
+    :term:`BMIs <BMI>` for consumers.
+
+The generated :term:`synthetic target` has a mix of properties from both
+the provider of the module and the consumer. :prop_tgt:`COMPILE_FEATURES` and
+:prop_tgt:`COMPILE_OPTIONS` are adopted from the consumer, while all other
+relevant properties are inherited from the provider.
 
 一旦所有\ :term:`合成目标 <synthetic target>`\ 创建完成，CMake会检查每个包含可能\
 使用C++模块的源文件的目标，并为其中每个源文件创建一个\ :term:`scan`\ 命令。该命令\
@@ -523,9 +547,6 @@ C++模块有一个规则，即一个程序中只能存在一个给定名称的�
 编译过程使用由\ :term:`collate`\ 命令生成的\ :term:`module map`\ 文件来在编译期\
 间查找导入的模块。由于CMake只提供由\ :term:`scan`\ 命令发现的模块位置，任何被它\
 遗漏的模块都不会被提供给编译过程。
-
-工具链可能会拒绝CMake提供给编译的\ :term:`BMI`\ 文件，认为它们不兼容。这是因为\
-CMake目前假设所有用法都是兼容的。有关消除此假设的进展，请参见\ `CMake Issue 25916`_。
 
 安装
 ^^^^^^^

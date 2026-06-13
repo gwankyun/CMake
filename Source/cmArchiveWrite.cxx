@@ -3,7 +3,6 @@
 #include "cmArchiveWrite.h"
 
 #include <cstdlib>
-#include <cstring>
 #include <ctime>
 #include <iostream>
 #include <limits>
@@ -12,6 +11,7 @@
 #include <thread>
 
 #include <cm/algorithm>
+#include <cm/string_view>
 
 #include <cm3p/archive.h>
 #include <cm3p/archive_entry.h>
@@ -43,6 +43,10 @@ static void cm_archive_entry_copy_pathname(struct archive_entry* e,
 {
 #ifdef _WIN32
   // libarchive converts our UTF-8 encoding to the archive's encoding.
+  // `archive_entry_update_pathname_utf8` always populates the WCS form too.
+  // It also populates the MBS form if possible, but we ignore conversion
+  // failure because the archive formats support converting directly from
+  // the WCS form to the archive's encoding without using the MBS form.
   archive_entry_update_pathname_utf8(e, dest);
 #else
   // libarchive converts our locale's encoding to the archive's encoding.
@@ -92,8 +96,9 @@ struct cmArchiveWrite::Callback
 };
 
 cmArchiveWrite::cmArchiveWrite(std::ostream& os, Compress c,
-                               std::string const& format, int compressionLevel,
-                               int numThreads)
+                               std::string const& format,
+                               std::string const& encoding,
+                               int compressionLevel, int numThreads)
   : Stream(os)
   , Archive(archive_write_new())
   , Disk(archive_read_disk_new())
@@ -219,6 +224,20 @@ cmArchiveWrite::cmArchiveWrite(std::ostream& os, Compress c,
       case CompressPPMd:
         this->Error = cmStrCat("PPMd is not supported for ", format);
         return;
+    }
+  }
+
+  // 7zip always uses UTF16-LE for the headers and doesn't support
+  // header encoding specification.
+  // arbsd can use the default encoding of the system only.
+  if (!is7zip && format != "arbsd" && encoding != "OEM") {
+    char const* formatForOptions = format == "paxr" ? "pax" : format.c_str();
+    if (archive_write_set_format_option(this->Archive, formatForOptions,
+                                        "hdrcharset",
+                                        encoding.c_str()) != ARCHIVE_OK) {
+      this->Error = cmStrCat("archive_write_set_format_option(hdrcharset): ",
+                             cm_archive_error_string(this->Archive));
+      return;
     }
   }
 
@@ -399,15 +418,14 @@ bool cmArchiveWrite::Add(std::string path, size_t skip, char const* prefix,
   if (!path.empty() && path.back() == '/') {
     path.erase(path.size() - 1);
   }
-  this->AddPath(path.c_str(), skip, prefix, recursive);
+  this->AddPath(path, skip, prefix, recursive);
   return this->Okay();
 }
 
-bool cmArchiveWrite::AddPath(char const* path, size_t skip, char const* prefix,
-                             bool recursive)
+bool cmArchiveWrite::AddPath(std::string const& path, size_t skip,
+                             char const* prefix, bool recursive)
 {
-  if (strcmp(path, ".") != 0 ||
-      (this->Format != "zip" && this->Format != "7zip")) {
+  if (path != "." || (this->Format != "zip" && this->Format != "7zip")) {
     if (!this->AddFile(path, skip, prefix)) {
       return false;
     }
@@ -425,11 +443,11 @@ bool cmArchiveWrite::AddPath(char const* path, size_t skip, char const* prefix,
     std::string::size_type end = next.size();
     unsigned long n = d.GetNumberOfFiles();
     for (unsigned long i = 0; i < n; ++i) {
-      char const* file = d.GetFile(i);
-      if (strcmp(file, ".") != 0 && strcmp(file, "..") != 0) {
+      std::string const& file = d.GetFileName(i);
+      if (file != "." && file != "..") {
         next.erase(end);
         next += file;
-        if (!this->AddPath(next.c_str(), skip, prefix)) {
+        if (!this->AddPath(next, skip, prefix)) {
           return false;
         }
       }
@@ -438,15 +456,16 @@ bool cmArchiveWrite::AddPath(char const* path, size_t skip, char const* prefix,
   return true;
 }
 
-bool cmArchiveWrite::AddFile(char const* file, size_t skip, char const* prefix)
+bool cmArchiveWrite::AddFile(std::string const& file, size_t skip,
+                             char const* prefix)
 {
   this->Error = "";
   // Skip the file if we have no name for it.  This may happen on a
   // top-level directory, which does not need to be included anyway.
-  if (skip >= strlen(file)) {
+  if (skip >= file.length()) {
     return true;
   }
-  char const* out = file + skip;
+  cm::string_view out = cm::string_view(file).substr(skip);
 
   // Meta-data.
   std::string dest = cmStrCat(prefix ? prefix : "", out);
@@ -538,9 +557,9 @@ bool cmArchiveWrite::AddFile(char const* file, size_t skip, char const* prefix)
   return true;
 }
 
-bool cmArchiveWrite::AddData(char const* file, size_t size)
+bool cmArchiveWrite::AddData(std::string const& file, size_t size)
 {
-  cmsys::ifstream fin(file, std::ios::in | std::ios::binary);
+  cmsys::ifstream fin(file.c_str(), std::ios::in | std::ios::binary);
   if (!fin) {
     this->Error = cmStrCat("Error opening \"", file,
                            "\": ", cmSystemTools::GetLastSystemError());

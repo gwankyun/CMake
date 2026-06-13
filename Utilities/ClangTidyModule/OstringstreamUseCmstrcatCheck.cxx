@@ -18,13 +18,10 @@ OstringstreamUseCmstrcatCheck::OstringstreamUseCmstrcatCheck(
 
 void OstringstreamUseCmstrcatCheck::registerMatchers(MatchFinder* Finder)
 {
-  Finder->addMatcher(
-    typeLoc(unless(elaboratedTypeLoc()),
-            optionally(hasParent(elaboratedTypeLoc().bind("parentType"))),
-            loc(qualType(
-              hasDeclaration(namedDecl(hasName("::std::ostringstream"))))))
-      .bind("ostringstream"),
-    this);
+  Finder->addMatcher(typeLoc(loc(qualType(hasDeclaration(
+                               namedDecl(hasName("::std::ostringstream"))))))
+                       .bind("ostringstream"),
+                     this);
 }
 
 void OstringstreamUseCmstrcatCheck::check(

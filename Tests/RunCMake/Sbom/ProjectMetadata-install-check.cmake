@@ -31,7 +31,7 @@ set(APPLICATION_EXPECTED [=[
 {
   "spdxId" : "urn:test#Package",
   "name" : "test",
-  "software_primaryPurpose" : "application",
+  "software_primaryPurpose" : "library",
   "type" : "software_Package"
 }
 ]=])
@@ -43,4 +43,4 @@ expect_object("${CREATION_INFO}" CREATION_INFO_EXPECTED)
 
 string(JSON SPDX_DOCUMENT GET "${content}" "@graph" "1")
 expect_object("${SPDX_DOCUMENT}" SPDX_DOCUMENT_EXPECTED)
-expect_object("${SPDX_DOCUMENT}" APPLICATION_EXPECTED "rootElement" "0")
+expect_object("${SPDX_DOCUMENT}" APPLICATION_EXPECTED "rootElement")

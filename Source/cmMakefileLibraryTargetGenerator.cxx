@@ -755,9 +755,13 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
     // Construct object file lists that may be needed to expand the
     // rule.
     std::string buildObjs;
+    cmMakefileTargetGenerator::ResponseFlagFor responseMode =
+      this->GeneratorTarget->GetType() == cmStateEnums::STATIC_LIBRARY
+      ? cmMakefileTargetGenerator::ResponseFlagFor::Archive
+      : cmMakefileTargetGenerator::ResponseFlagFor::Link;
     this->CreateObjectLists(useLinkScript, useArchiveRules,
                             useResponseFileForObjects, buildObjs, depends,
-                            useWatcomQuote, linkLanguage);
+                            useWatcomQuote, linkLanguage, responseMode);
     if (!this->DeviceLinkObject.empty()) {
       buildObjs += " " +
         this->LocalGenerator->ConvertToOutputFormat(
@@ -832,6 +836,16 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
     vars.LinkFlags = linkFlags.c_str();
     vars.Manifests = manifests.c_str();
     vars.Config = this->GetConfigName().c_str();
+
+    std::string rustMainCrateRootPath;
+    std::string rustLinkCrates;
+    std::string rustNativeObjects;
+    if (CreateRustLinkArguments(linkLanguage, rustMainCrateRootPath,
+                                rustLinkCrates, rustNativeObjects)) {
+      vars.RustMainCrateRoot = rustMainCrateRootPath.c_str();
+      vars.RustLinkCrates = rustLinkCrates.c_str();
+      vars.RustNativeObjects = rustNativeObjects.c_str();
+    }
 
     // Compute the directory portion of the install_name setting.
     std::string install_name_dir;

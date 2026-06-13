@@ -10,3 +10,7 @@
   使用这个特性会带来很大的性能成本。最好只在两个或多个静态库之间存在不可避免的循环引用时使用它。
 
   该特性在使用针对Linux、BSD和SunOS的工具链时可用。如果使用GNU工具链，它也可以用于Windows平台。
+
+  .. versionadded:: 4.4
+    ``RESCAN`` is additionally available when using toolchains targeting
+    Haiku.

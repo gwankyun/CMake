@@ -2,29 +2,23 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmExportBuildCMakeConfigGenerator.h"
 
-#include <algorithm>
 #include <cstddef>
 #include <functional>
 #include <map>
-#include <memory>
+#include <ostream>
 #include <set>
-#include <sstream>
 #include <utility>
 #include <vector>
 
-#include <cm/string_view>
-#include <cmext/string_view>
-
 #include "cmCryptoHash.h"
 #include "cmExportSet.h"
-#include "cmFileSet.h"
 #include "cmGenExContext.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
 #include "cmGeneratorTarget.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmOutputConverter.h"
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
@@ -73,12 +67,17 @@ bool cmExportBuildCMakeConfigGenerator::GenerateMainFile(std::ostream& os)
       return false;
     }
 
+    ImportFileSetPropertyMap fsProperties;
+    if (!this->PopulateFileSetInterfaceProperties(gte, fsProperties)) {
+      return false;
+    }
+
     this->PopulateInterfaceLinkLibrariesProperty(
       gte, cmGeneratorExpression::BuildInterface, properties);
 
     this->GenerateInterfaceProperties(gte, os, properties);
 
-    this->GenerateTargetFileSets(gte, os);
+    this->GenerateTargetFileSets(gte, os, fsProperties);
   }
 
   std::string cxx_modules_name;
@@ -160,47 +159,21 @@ void cmExportBuildCMakeConfigGenerator::GenerateImportTargetsConfig(
   }
 }
 
-namespace {
-bool EntryIsContextSensitive(
-  std::unique_ptr<cmCompiledGeneratorExpression> const& cge)
-{
-  return cge->GetHadContextSensitiveCondition();
-}
-}
-
 std::string cmExportBuildCMakeConfigGenerator::GetFileSetDirectories(
-  cmGeneratorTarget* gte, cmFileSet* fileSet, cmTargetExport const* /*te*/)
+  cmGeneratorTarget* gte, cmGeneratorFileSet const* fileSet,
+  cmTargetExport const* /*te*/)
 {
   std::vector<std::string> resultVector;
 
   auto configs =
     gte->Makefile->GetGeneratorConfigs(cmMakefile::IncludeEmptyConfig);
-  auto directoryEntries = fileSet->CompileDirectoryEntries();
 
   for (auto const& config : configs) {
     cm::GenEx::Context context(gte->LocalGenerator, config);
-    auto directories =
-      fileSet->EvaluateDirectoryEntries(directoryEntries, context, gte);
+    auto directories = fileSet->GetDirectories(context, gte);
+    bool const contextSensitive = directories.second;
 
-    bool const contextSensitive =
-      std::any_of(directoryEntries.begin(), directoryEntries.end(),
-                  EntryIsContextSensitive);
-
-    auto const& type = fileSet->GetType();
-    // C++ modules do not support interface file sets which are dependent upon
-    // the configuration.
-    if (contextSensitive && type == "CXX_MODULES"_s) {
-      auto* mf = this->LG->GetMakefile();
-      std::ostringstream e;
-      e << "The \"" << gte->GetName() << "\" target's interface file set \""
-        << fileSet->GetName() << "\" of type \"" << type
-        << "\" contains context-sensitive base directory entries which is not "
-           "supported.";
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
-      return std::string{};
-    }
-
-    for (auto const& directory : directories) {
+    for (auto const& directory : directories.first) {
       auto dest = cmOutputConverter::EscapeForCMake(
         directory, cmOutputConverter::WrapQuotes::NoWrap);
 
@@ -217,47 +190,21 @@ std::string cmExportBuildCMakeConfigGenerator::GetFileSetDirectories(
 }
 
 std::string cmExportBuildCMakeConfigGenerator::GetFileSetFiles(
-  cmGeneratorTarget* gte, cmFileSet* fileSet, cmTargetExport const* /*te*/)
+  cmGeneratorTarget* gte, cmGeneratorFileSet const* fileSet,
+  cmTargetExport const* /*te*/)
 {
   std::vector<std::string> resultVector;
 
   auto configs =
     gte->Makefile->GetGeneratorConfigs(cmMakefile::IncludeEmptyConfig);
 
-  auto fileEntries = fileSet->CompileFileEntries();
-  auto directoryEntries = fileSet->CompileDirectoryEntries();
-
   for (auto const& config : configs) {
     cm::GenEx::Context context(gte->LocalGenerator, config);
-    auto directories =
-      fileSet->EvaluateDirectoryEntries(directoryEntries, context, gte);
 
-    std::map<std::string, std::vector<std::string>> files;
-    for (auto const& entry : fileEntries) {
-      fileSet->EvaluateFileEntry(directories, files, entry, context, gte);
-    }
+    auto files = fileSet->GetFiles(context, gte);
+    bool const contextSensitive = files.second;
 
-    bool const contextSensitive =
-      std::any_of(directoryEntries.begin(), directoryEntries.end(),
-                  EntryIsContextSensitive) ||
-      std::any_of(fileEntries.begin(), fileEntries.end(),
-                  EntryIsContextSensitive);
-
-    auto const& type = fileSet->GetType();
-    // C++ modules do not support interface file sets which are dependent upon
-    // the configuration.
-    if (contextSensitive && type == "CXX_MODULES"_s) {
-      auto* mf = this->LG->GetMakefile();
-      std::ostringstream e;
-      e << "The \"" << gte->GetName() << "\" target's interface file set \""
-        << fileSet->GetName() << "\" of type \"" << type
-        << "\" contains context-sensitive file entries which is not "
-           "supported.";
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
-      return std::string{};
-    }
-
-    for (auto const& it : files) {
+    for (auto const& it : files.first) {
       for (auto const& filename : it.second) {
         auto escapedFile = cmOutputConverter::EscapeForCMake(
           filename, cmOutputConverter::WrapQuotes::NoWrap);
@@ -317,9 +264,8 @@ bool cmExportBuildCMakeConfigGenerator::
   cmGeneratedFileStream os(fileName, true);
   if (!os) {
     std::string se = cmSystemTools::GetLastSystemError();
-    std::ostringstream e;
-    e << "cannot write to file \"" << fileName << "\": " << se;
-    cmSystemTools::Error(e.str());
+    cmSystemTools::Error(
+      cmStrCat("cannot write to file \"", fileName, "\": ", se));
     return false;
   }
   os.SetCopyIfDifferent(true);

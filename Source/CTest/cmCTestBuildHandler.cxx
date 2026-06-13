@@ -465,6 +465,9 @@ void cmCTestBuildHandler::GenerateXMLHeader(cmXMLWriter& xml)
   xml.StartElement("Build");
   xml.Element("StartDateTime", this->StartBuild);
   xml.Element("StartBuildTime", this->StartBuildTime);
+  xml.Element("SourceDirectory",
+              this->CTest->GetCTestConfiguration("SourceDirectory"));
+  xml.Element("BinaryDirectory", this->CTest->GetBinaryDir());
   xml.Element("BuildCommand", this->GetMakeCommand());
 }
 
@@ -511,7 +514,7 @@ void cmCTestBuildHandler::GenerateXMLLaunched(cmXMLWriter& xml)
   launchDir.Load(this->CTestLaunchDir);
   unsigned long n = launchDir.GetNumberOfFiles();
   for (unsigned long i = 0; i < n; ++i) {
-    char const* fname = launchDir.GetFile(i);
+    std::string const& fname = launchDir.GetFileName(i);
     if (this->IsLaunchedErrorFile(fname) && numErrorsAllowed) {
       numErrorsAllowed--;
       fragments.insert(cmStrCat(this->CTestLaunchDir, '/', fname));
@@ -616,7 +619,7 @@ void cmCTestBuildHandler::GenerateInstrumentationXML(cmXMLWriter& xml)
       if (!targets_dir.FileIsDirectory(i)) {
         continue;
       }
-      std::string target_name = targets_dir.GetFile(i);
+      std::string const& target_name = targets_dir.GetFileName(i);
       if (target_name == "." || target_name == "..") {
         continue;
       }
@@ -696,14 +699,14 @@ void cmCTestBuildHandler::GenerateXMLFooter(cmXMLWriter& xml,
   this->CTest->EndXML(xml);
 }
 
-bool cmCTestBuildHandler::IsLaunchedErrorFile(char const* fname)
+bool cmCTestBuildHandler::IsLaunchedErrorFile(cm::string_view fname)
 {
   // error-{hash}.xml
   return (cmHasLiteralPrefix(fname, "error-") &&
           cmHasLiteralSuffix(fname, ".xml"));
 }
 
-bool cmCTestBuildHandler::IsLaunchedWarningFile(char const* fname)
+bool cmCTestBuildHandler::IsLaunchedWarningFile(cm::string_view fname)
 {
   // warning-{hash}.xml
   return (cmHasLiteralPrefix(fname, "warning-") &&
@@ -949,7 +952,7 @@ bool cmCTestBuildHandler::RunMakeCommand(std::string const& command,
               launchDir.Load(this->CTestLaunchDir);
               unsigned long n = launchDir.GetNumberOfFiles();
               for (unsigned long i = 0; i < n; ++i) {
-                char const* fname = launchDir.GetFile(i);
+                std::string const& fname = launchDir.GetFileName(i);
                 if (cmHasLiteralSuffix(fname, ".xml")) {
                   launcherXMLFound = true;
                   break;

@@ -2,7 +2,6 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmExportInstallCMakeConfigGenerator.h"
 
-#include <algorithm>
 #include <functional>
 #include <map>
 #include <memory>
@@ -11,21 +10,17 @@
 #include <utility>
 #include <vector>
 
-#include <cm/string_view>
-#include <cmext/string_view>
-
 #include "cmExportFileGenerator.h"
 #include "cmExportSet.h"
-#include "cmFileSet.h"
 #include "cmGenExContext.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
 #include "cmGeneratorTarget.h"
 #include "cmInstallExportGenerator.h"
 #include "cmInstallFileSetGenerator.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmOutputConverter.h"
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
@@ -84,6 +79,11 @@ bool cmExportInstallCMakeConfigGenerator::GenerateMainFile(std::ostream& os)
       return false;
     }
 
+    ImportFileSetPropertyMap fsProperties;
+    if (!this->PopulateFileSetInterfaceProperties(te, fsProperties)) {
+      return false;
+    }
+
     if (this->PopulateInterfaceLinkLibrariesProperty(
           gt, cmGeneratorExpression::InstallInterface, properties) &&
         !this->ExportOld) {
@@ -100,7 +100,7 @@ bool cmExportInstallCMakeConfigGenerator::GenerateMainFile(std::ostream& os)
 
     this->GenerateInterfaceProperties(gt, os, properties);
 
-    this->GenerateTargetFileSets(gt, os, te);
+    this->GenerateTargetFileSets(gt, os, fsProperties, te);
   }
 
   this->LoadConfigFiles(os);
@@ -271,49 +271,27 @@ void cmExportInstallCMakeConfigGenerator::GenerateImportTargetsConfig(
   }
 }
 
-namespace {
-bool EntryIsContextSensitive(
-  std::unique_ptr<cmCompiledGeneratorExpression> const& cge)
-{
-  return cge->GetHadContextSensitiveCondition();
-}
-}
-
 std::string cmExportInstallCMakeConfigGenerator::GetFileSetDirectories(
-  cmGeneratorTarget* gte, cmFileSet* fileSet, cmTargetExport const* te)
+  cmGeneratorTarget* gte, cmGeneratorFileSet const* fileSet,
+  cmTargetExport const* te)
 {
   std::vector<std::string> resultVector;
 
   auto configs =
     gte->Makefile->GetGeneratorConfigs(cmMakefile::IncludeEmptyConfig);
 
-  cmGeneratorExpression ge(*gte->Makefile->GetCMakeInstance());
-  auto cge =
-    ge.Parse(te->FileSetGenerators.at(fileSet->GetName())->GetDestination());
-
   for (auto const& config : configs) {
-    auto unescapedDest = cge->Evaluate(gte->LocalGenerator, config, gte);
-    auto dest = cmOutputConverter::EscapeForCMake(
-      unescapedDest, cmOutputConverter::WrapQuotes::NoWrap);
-    if (!cmSystemTools::FileIsFullPath(unescapedDest)) {
+    cmInstallFileSetGenerator::DestinationContext result =
+      te->FileSetGenerators.at(fileSet->GetName())
+        ->GetDestination(gte, config);
+
+    std::string dest = cmOutputConverter::EscapeForCMake(
+      result.UnescapedDestination, cmOutputConverter::WrapQuotes::NoWrap);
+    if (!cmSystemTools::FileIsFullPath(result.UnescapedDestination)) {
       dest = cmStrCat("${_IMPORT_PREFIX}/", dest);
     }
 
-    auto const& type = fileSet->GetType();
-    // C++ modules do not support interface file sets which are dependent upon
-    // the configuration.
-    if (cge->GetHadContextSensitiveCondition() && type == "CXX_MODULES"_s) {
-      auto* mf = this->IEGen->GetLocalGenerator()->GetMakefile();
-      std::ostringstream e;
-      e << "The \"" << gte->GetName() << "\" target's interface file set \""
-        << fileSet->GetName() << "\" of type \"" << type
-        << "\" contains context-sensitive base file entries which is not "
-           "supported.";
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
-      return std::string{};
-    }
-
-    if (cge->GetHadContextSensitiveCondition() && configs.size() != 1) {
+    if (result.HadContextSensitiveCondition && configs.size() != 1) {
       resultVector.push_back(
         cmStrCat("\"$<$<CONFIG:", config, ">:", dest, ">\""));
     } else {
@@ -326,15 +304,13 @@ std::string cmExportInstallCMakeConfigGenerator::GetFileSetDirectories(
 }
 
 std::string cmExportInstallCMakeConfigGenerator::GetFileSetFiles(
-  cmGeneratorTarget* gte, cmFileSet* fileSet, cmTargetExport const* te)
+  cmGeneratorTarget* gte, cmGeneratorFileSet const* fileSet,
+  cmTargetExport const* te)
 {
   std::vector<std::string> resultVector;
 
   auto configs =
     gte->Makefile->GetGeneratorConfigs(cmMakefile::IncludeEmptyConfig);
-
-  auto fileEntries = fileSet->CompileFileEntries();
-  auto directoryEntries = fileSet->CompileDirectoryEntries();
 
   cmGeneratorExpression destGe(*gte->Makefile->GetCMakeInstance());
   auto destCge = destGe.Parse(
@@ -342,13 +318,8 @@ std::string cmExportInstallCMakeConfigGenerator::GetFileSetFiles(
 
   for (auto const& config : configs) {
     cm::GenEx::Context context(gte->LocalGenerator, config);
-    auto directories =
-      fileSet->EvaluateDirectoryEntries(directoryEntries, context, gte);
+    auto files = fileSet->GetFiles(context, gte);
 
-    std::map<std::string, std::vector<std::string>> files;
-    for (auto const& entry : fileEntries) {
-      fileSet->EvaluateFileEntry(directories, files, entry, context, gte);
-    }
     auto unescapedDest = destCge->Evaluate(gte->LocalGenerator, config, gte);
     auto dest =
       cmStrCat(cmOutputConverter::EscapeForCMake(
@@ -358,27 +329,9 @@ std::string cmExportInstallCMakeConfigGenerator::GetFileSetFiles(
       dest = cmStrCat("${_IMPORT_PREFIX}/", dest);
     }
 
-    bool const contextSensitive = destCge->GetHadContextSensitiveCondition() ||
-      std::any_of(directoryEntries.begin(), directoryEntries.end(),
-                  EntryIsContextSensitive) ||
-      std::any_of(fileEntries.begin(), fileEntries.end(),
-                  EntryIsContextSensitive);
-
-    auto const& type = fileSet->GetType();
-    // C++ modules do not support interface file sets which are dependent upon
-    // the configuration.
-    if (contextSensitive && type == "CXX_MODULES"_s) {
-      auto* mf = this->IEGen->GetLocalGenerator()->GetMakefile();
-      std::ostringstream e;
-      e << "The \"" << gte->GetName() << "\" target's interface file set \""
-        << fileSet->GetName() << "\" of type \"" << type
-        << "\" contains context-sensitive base file entries which is not "
-           "supported.";
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
-      return std::string{};
-    }
-
-    for (auto const& it : files) {
+    bool const contextSensitive =
+      destCge->GetHadContextSensitiveCondition() || files.second;
+    for (auto const& it : files.first) {
       auto prefix = it.first.empty() ? "" : cmStrCat(it.first, '/');
       for (auto const& filename : it.second) {
         auto relFile =

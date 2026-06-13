@@ -41,12 +41,14 @@ CMake developer documentation is provided by the following documents:
 * The `CMake Testing Guide`_.
 * The `CMake Experimental Features Guide`_.
 * The `CMake Debugging Guide`_.
+* The `CMake Diagnostics Guide`_.
 
 .. _`CMake Source Code Guide`: source.rst
 .. _`CMake Documentation Guide`: documentation.rst
 .. _`CMake Testing Guide`: testing.rst
 .. _`CMake Experimental Features Guide`: experimental.rst
 .. _`CMake Debugging Guide`: debug.rst
+.. _`CMake Diagnostics Guide`: diagnostics.rst
 
 Maintainer Documentation
 ========================

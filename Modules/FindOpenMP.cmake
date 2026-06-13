@@ -237,6 +237,7 @@ function(_OPENMP_FLAG_CANDIDATES LANG)
     set(OMP_FLAG_CrayClang "-fopenmp")
     set(OMP_FLAG_Fujitsu "-Kopenmp" "-KOMP")
     set(OMP_FLAG_FujitsuClang "-fopenmp" "-Kopenmp")
+    set(OMP_FLAG_OrangeC "")
 
     if(CMAKE_${LANG}_COMPILER_ID STREQUAL "NVIDIA" AND CMAKE_${LANG}_HOST_COMPILER_ID)
       set(compiler_id "${CMAKE_${LANG}_HOST_COMPILER_ID}")
@@ -365,7 +366,8 @@ function(_OPENMP_GET_FLAGS LANG FLAG_MODE OPENMP_FLAG_VAR OPENMP_LIB_NAMES_VAR)
             COMMAND ${CMAKE_${LANG}_COMPILER} -print-search-dirs
             OUTPUT_VARIABLE output_lines
             COMMAND_ERROR_IS_FATAL ANY
-            ERROR_QUIET)
+            ERROR_QUIET
+            RESULT_VARIABLE _result_lcc_output)
           if("${output_lines}" MATCHES ".*\nlibraries:[ \t]+(.*:)\n.*")
             string(REPLACE ":" ";" implicit_dirs_addon "${CMAKE_MATCH_1}")
             list(PREPEND OpenMP_${LANG}_IMPLICIT_LINK_DIRS ${implicit_dirs_addon})

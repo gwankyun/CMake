@@ -1201,9 +1201,9 @@ void cmGlobalFastbuildGenerator::WriteUnity(FastbuildUnityNode const& Unity)
     WriteVariable("UnityOutputPath", Quote(Unity.UnityOutputPath), 2);
     WriteVariable("UnityOutputPattern", Quote(Unity.UnityOutputPattern), 2);
     WriteArray("UnityInputFiles", Wrap(Unity.UnityInputFiles), 2);
-    if (!Unity.UnityInputIsolatedFiles.empty()) {
-      WriteArray("UnityInputIsolatedFiles",
-                 Wrap(Unity.UnityInputIsolatedFiles), 2);
+    if (!Unity.UnityInputExcludedFiles.empty()) {
+      WriteArray("UnityInputExcludedFiles",
+                 Wrap(Unity.UnityInputExcludedFiles), 2);
     }
     if (UsingRelativePaths) {
       WriteVariable("UseRelativePaths_Experimental", "true", 2);

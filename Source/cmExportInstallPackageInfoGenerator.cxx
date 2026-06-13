@@ -6,7 +6,6 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -19,8 +18,9 @@
 
 #include "cmAlgorithms.h"
 #include "cmExportSet.h"
-#include "cmFileSet.h"
+#include "cmFileSetMetadata.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
 #include "cmGeneratorTarget.h"
 #include "cmInstallExportGenerator.h"
 #include "cmInstallFileSetGenerator.h"
@@ -220,43 +220,25 @@ std::string cmExportInstallPackageInfoGenerator::GetCxxModulesDirectory() const
 
 cm::optional<std::string>
 cmExportInstallPackageInfoGenerator::GetFileSetDirectory(
-  cmGeneratorTarget* gte, cmTargetExport const* te, cmFileSet* fileSet,
-  cm::optional<std::string> const& config)
+  cmGeneratorTarget* gte, cmTargetExport const* te,
+  cmGeneratorFileSet const* fileSet, cm::optional<std::string> const& config)
 {
-  cmGeneratorExpression ge(*gte->Makefile->GetCMakeInstance());
-  auto cge =
-    ge.Parse(te->FileSetGenerators.at(fileSet->GetName())->GetDestination());
+  cmInstallFileSetGenerator::DestinationContext result =
+    te->FileSetGenerators.at(fileSet->GetName())
+      ->GetDestination(gte, config.value_or(""));
 
-  std::string const unescapedDest =
-    cge->Evaluate(gte->LocalGenerator, config.value_or(""), gte);
-  bool const isConfigDependent = cge->GetHadContextSensitiveCondition();
-
-  if (config && !isConfigDependent) {
+  if (config && !result.HadContextSensitiveCondition) {
     return {};
   }
-  if (!config && isConfigDependent) {
+  if (!config && result.HadContextSensitiveCondition) {
     this->RequiresConfigFiles = true;
     return {};
   }
 
-  std::string const& type = fileSet->GetType();
-  if (config && (type == "CXX_MODULES"_s)) {
-    // C++ modules do not support interface file sets which are dependent
-    // upon the configuration.
-    cmMakefile* mf = gte->LocalGenerator->GetMakefile();
-    std::ostringstream e;
-    e << "The \"" << gte->GetName() << "\" target's interface file set \""
-      << fileSet->GetName() << "\" of type \"" << type
-      << "\" contains context-sensitive base file entries which is not "
-         "supported.";
-    mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
-    return {};
-  }
-
   cm::optional<std::string> dest = cmOutputConverter::EscapeForCMake(
-    unescapedDest, cmOutputConverter::WrapQuotes::NoWrap);
+    result.UnescapedDestination, cmOutputConverter::WrapQuotes::NoWrap);
 
-  if (!cmSystemTools::FileIsFullPath(unescapedDest)) {
+  if (!cmSystemTools::FileIsFullPath(result.UnescapedDestination)) {
     dest = cmStrCat("@prefix@/"_s, *dest);
   }
 
@@ -270,7 +252,7 @@ bool cmExportInstallPackageInfoGenerator::GenerateFileSetProperties(
   bool hasModules = false;
   std::set<std::string> seenIncludeDirectories;
   for (auto const& name : gte->Target->GetAllInterfaceFileSets()) {
-    cmFileSet* fileSet = gte->Target->GetFileSet(name);
+    cmGeneratorFileSet const* fileSet = gte->GetFileSet(name);
 
     if (!fileSet) {
       gte->Makefile->IssueMessage(
@@ -284,13 +266,13 @@ bool cmExportInstallPackageInfoGenerator::GenerateFileSetProperties(
     cm::optional<std::string> const& fileSetDirectory =
       this->GetFileSetDirectory(gte, te, fileSet, config);
 
-    if (fileSet->GetType() == "HEADERS"_s) {
+    if (fileSet->GetType() == cm::FileSetMetadata::HEADERS) {
       if (fileSetDirectory &&
           !cm::contains(seenIncludeDirectories, *fileSetDirectory)) {
         component["includes"].append(*fileSetDirectory);
         seenIncludeDirectories.insert(*fileSetDirectory);
       }
-    } else if (fileSet->GetType() == "CXX_MODULES"_s) {
+    } else if (fileSet->GetType() == cm::FileSetMetadata::CXX_MODULES) {
       hasModules = true;
       this->RequiresConfigFiles = true;
     }

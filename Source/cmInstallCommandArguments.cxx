@@ -12,7 +12,6 @@
 #include "cmCMakePath.h"
 #include "cmGeneratorExpression.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmStringAlgorithms.h"
@@ -48,9 +47,7 @@ cmInstallCommandArguments::cmInstallCommandArguments(
         // generator expressions
         if (cmGeneratorExpression::Find(arg) == cm::string_view::npos &&
             arg != cmCMakePath(arg).Normal().String()) {
-          makefile.IssueMessage(
-            MessageType::AUTHOR_WARNING,
-            cmPolicies::GetPolicyWarning(cmPolicies::CMP0177));
+          makefile.IssuePolicyWarning(cmPolicies::CMP0177);
         }
         return ArgumentParser::Continue::No;
       };
@@ -100,11 +97,7 @@ std::string const& cmInstallCommandArguments::GetComponent() const
   if (this->GenericArguments) {
     return this->GenericArguments->GetComponent();
   }
-  if (!this->DefaultComponentName.empty()) {
-    return this->DefaultComponentName;
-  }
-  static std::string unspecifiedComponent = "Unspecified";
-  return unspecifiedComponent;
+  return this->DefaultComponentName;
 }
 
 std::string const& cmInstallCommandArguments::GetNamelinkComponent() const

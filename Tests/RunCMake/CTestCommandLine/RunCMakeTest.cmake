@@ -424,6 +424,8 @@ add_test(test2 \"${CMAKE_COMMAND}\" -E echo \"not running\")
 endfunction()
 run_stop_on_failure()
 
+run_cmake_command(usage ${CMAKE_CTEST_COMMAND})
+
 function(run_TestAffinity)
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/TestAffinity)
   set(RunCMake_TEST_NO_CLEAN 1)
@@ -489,6 +491,22 @@ function(show_only_json_check_python v)
   endif()
   return(PROPAGATE RunCMake_TEST_FAILED)
 endfunction()
+
+block()
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/CustomPrePost)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestCustom.cmake" "
+set(CTEST_CUSTOM_PRE_TEST \"\\\"${CMAKE_COMMAND}\\\" -E echo \\\"Custom Pre-Test\\\"\")
+set(CTEST_CUSTOM_POST_TEST \"\\\"${CMAKE_COMMAND}\\\" -E echo \\\"Custom Post-Test\\\"\")
+")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
+  add_test(Echo \"${CMAKE_COMMAND}\" -E echo)
+")
+  run_cmake_command(CustomPrePost ${CMAKE_CTEST_COMMAND})
+  run_cmake_command(CustomPrePost-show-only ${CMAKE_CTEST_COMMAND} --show-only=human)
+endblock()
 
 function(run_ShowOnly)
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/ShowOnly)
@@ -638,6 +656,64 @@ endfunction()
 run_testDir(testDir 0)
 run_testDir(testDir-preset 1)
 
+# Test --source-dir and --build-dir
+run_cmake_command(source-dir-invalid-arg ${CMAKE_CTEST_COMMAND} --source-dir)
+run_cmake_command(build-dir-invalid-arg ${CMAKE_CTEST_COMMAND} --build-dir)
+
+# Build the -D arguments needed to pass the generator to ctest -T Configure.
+macro(ctest_source_dir_generator_args var)
+  set(${var} -D "CTEST_CMAKE_GENERATOR=${RunCMake_GENERATOR}")
+  if(RunCMake_GENERATOR_PLATFORM)
+    list(APPEND ${var}
+      -D "CTEST_CMAKE_GENERATOR_PLATFORM=${RunCMake_GENERATOR_PLATFORM}")
+  endif()
+endmacro()
+
+# Verify that ctest -T Configure works with an empty binary directory
+# when --source-dir is provided.
+function(run_configure_empty_bindir)
+  set(src "${RunCMake_BINARY_DIR}/configure-empty-bindir-src")
+  set(bin "${RunCMake_BINARY_DIR}/configure-empty-bindir-bin")
+  file(REMOVE_RECURSE "${src}" "${bin}")
+  file(MAKE_DIRECTORY "${src}")
+  file(WRITE "${src}/CMakeLists.txt"
+    "cmake_minimum_required(VERSION 3.10)\nproject(Minimal LANGUAGES NONE)\n")
+  # Note that run_cmake_command always pre-creates RunCMake_TEST_BINARY_DIR
+  # before invoking the command, so this test exercises configure from an already-
+  # created but otherwise empty binary directory.  The MakeDirectory call in CTest
+  # itself is what would handle the truly-absent case in production use.
+  set(RunCMake_TEST_BINARY_DIR "${bin}")
+  set(RunCMake_TEST_NO_CLEAN 1)
+  ctest_source_dir_generator_args(generator_args)
+  run_cmake_command(configure-empty-bindir
+    ${CMAKE_CTEST_COMMAND}
+    --source-dir "${src}"
+    --build-dir  "${bin}"
+    ${generator_args}
+    -T Configure)
+endfunction()
+run_configure_empty_bindir()
+
+# Verify expected error condition when --source-dir does not contain
+# a CMakeLists.txt file.
+function(run_configure_no_cmakelists)
+  set(src "${RunCMake_BINARY_DIR}/configure-no-cmakelists-src")
+  set(bin "${RunCMake_BINARY_DIR}/configure-no-cmakelists-bin")
+  file(REMOVE_RECURSE "${src}" "${bin}")
+  # Source dir exists but contains no CMakeLists.txt
+  file(MAKE_DIRECTORY "${src}")
+  set(RunCMake_TEST_BINARY_DIR "${bin}")
+  set(RunCMake_TEST_NO_CLEAN 1)
+  ctest_source_dir_generator_args(generator_args)
+  run_cmake_command(configure-no-cmakelists
+    ${CMAKE_CTEST_COMMAND}
+    --source-dir "${src}"
+    --build-dir  "${bin}"
+    ${generator_args}
+    -T Configure)
+endfunction()
+run_configure_no_cmakelists()
+
 # Test --output-junit
 function(run_output_junit)
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/output-junit)
@@ -715,4 +791,124 @@ endforeach()
 ")
   run_cmake_command(ScheduleRandomSeed1 ${CMAKE_CTEST_COMMAND} --schedule-random --schedule-random-seed 42)
   run_cmake_command(ScheduleRandomSeed2 ${CMAKE_CTEST_COMMAND} --schedule-random --schedule-random-seed 42)
+endblock()
+
+function(run_PassthroughTest case)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/Passthrough-${case})
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
+add_test(echo_test \"${CMAKE_COMMAND}\" -E echo \"base_output\")
+add_test(echo_test2 \"${CMAKE_COMMAND}\" -E echo \"second_test\")
+")
+  run_cmake_command(Passthrough-${case} ${CMAKE_CTEST_COMMAND} ${ARGN})
+endfunction()
+
+# Basic passthrough
+run_PassthroughTest(basic -V -- --extra-flag)
+# Multiple passthrough args
+run_PassthroughTest(multiple -V -- --flag1 --flag2 value)
+# Passthrough with -R filter (only echo_test2 should run)
+run_PassthroughTest(with-filter -V -R echo_test2 -- --extra)
+# Empty passthrough (bare --)
+run_PassthroughTest(empty -V --)
+# Passthrough args that look like ctest flags
+run_PassthroughTest(ctest-flags -V -- -R --verbose)
+# -- rejected with --build-and-test
+run_cmake_command(Passthrough-build-and-test-error ${CMAKE_CTEST_COMMAND}
+  --build-and-test
+    ${RunCMake_BINARY_DIR}/Passthrough-build-and-test-error/does-not-exist
+    ${RunCMake_BINARY_DIR}/Passthrough-build-and-test-error/does-not-exist
+  --build-generator "None" -- --extra-flag)
+# bare -- rejected with --build-and-test
+run_cmake_command(Passthrough-build-and-test-empty-error ${CMAKE_CTEST_COMMAND}
+  --build-and-test
+    ${RunCMake_BINARY_DIR}/Passthrough-build-and-test-empty-error/does-not-exist
+    ${RunCMake_BINARY_DIR}/Passthrough-build-and-test-empty-error/does-not-exist
+  --build-generator "None" --)
+
+block()
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/CoverageTool)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl" "
+BuildDirectory: ${RunCMake_TEST_BINARY_DIR}
+CTestTestCoverageTool: LLVM-COV
+")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
+add_test(test1 \"${CMAKE_COMMAND}\" -E true)
+")
+  run_cmake_command(CoverageTool ${CMAKE_CTEST_COMMAND} -V)
+  run_cmake_command(CoverageTool-T-Test ${CMAKE_CTEST_COMMAND} -V -T Test)
+endblock()
+
+# Verify that CTEST_* variables defined via the command-line are visible
+# from the CTest script.
+run_cmake_command(DashD-ScriptVars
+  ${CMAKE_CTEST_COMMAND}
+  "-S" "${RunCMake_SOURCE_DIR}/DashD-ScriptVars.cmake"
+  "-D" "CTEST_BUILD_NAME=cli-build-name"
+  "-D" "CTEST_SITE=cli-site"
+  "-D" "CTEST_BUILD_FLAGS=-O2 -Wall"
+  "-D" "CTEST_BUILD_TARGET=my-target"
+  "-D" "CTEST_CMAKE_GENERATOR=Ninja"
+  "-D" "CTEST_EXTRA_COVERAGE_GLOB=**/*.gcov"
+  "-D" "CTEST_TIME_LIMIT=3600"
+  )
+
+# Verify that CTEST_* variables defined via the command-line override
+# settings from the dashboard configuration file.
+block()
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/DashD-DashboardVar-build)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl"
+    "BuildName: original-build-name\nSite: original-site\nSourceDirectory: ${RunCMake_TEST_BINARY_DIR}\n")
+  run_cmake_command(DashD-DashboardVar
+    ${CMAKE_CTEST_COMMAND} -M Experimental -T Start
+    -D CTEST_BUILD_NAME=cli-build-name
+    )
+endblock()
+
+# Test CTEST_SUBMIT_PARTS: a valid part name reaches the network submission step.
+block()
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/SubmitParts-valid-build)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl"
+    "SourceDirectory: ${RunCMake_TEST_BINARY_DIR}\n"
+    "BuildDirectory: ${RunCMake_TEST_BINARY_DIR}\n"
+    "DropMethod: https\n"
+    "DropSite: badhostname.invalid\n"
+    "DropLocation: /submit.php?project=Test\n"
+    "CTestSubmitRetryCount: 0\n"
+  )
+  run_cmake_command(SubmitParts-valid-ctest
+    ${CMAKE_CTEST_COMMAND} -M Experimental -T Start -T Submit -VV
+    -D CTEST_SUBMIT_PARTS=Done
+  )
+endblock()
+
+# Test CTEST_SUBMIT_PARTS: an invalid part name produces a validation error.
+block()
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/SubmitParts-badpart-build)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl"
+    "SourceDirectory: ${RunCMake_TEST_BINARY_DIR}\n"
+    "BuildDirectory: ${RunCMake_TEST_BINARY_DIR}\n"
+    "DropMethod: https\n"
+    "DropSite: badhostname.invalid\n"
+    "DropLocation: /submit.php?project=Test\n"
+    "CTestSubmitRetryCount: 0\n"
+  )
+  run_cmake_command(SubmitParts-badpart-ctest
+    ${CMAKE_CTEST_COMMAND} -M Experimental -T Start -T Submit
+    -D CTEST_SUBMIT_PARTS=BadPart
+  )
 endblock()

@@ -256,7 +256,7 @@ Commands
   :command:`FetchContent_Declare` for each dependency, and the first such call
   will control how that dependency will be made available, as described below.
 
-  If ``<lowercaseName>_SOURCE_DIR`` is not set:
+  If ``FETCHCONTENT_SOURCE_DIR_<uppercaseName>`` is not set:
 
   * .. versionadded:: 3.24
 
@@ -1864,6 +1864,8 @@ ExternalProject_Add_Step(${contentName}-populate copyfile
   set(__FETCHCONTENT_CACHED_INFO "")
   set(__passthrough_vars
     CMAKE_EP_GIT_REMOTE_UPDATE_STRATEGY
+    CMAKE_EP_GIT_CLONE_RETRY_COUNT
+    CMAKE_EP_GIT_CLONE_RETRY_DELAY
     CMAKE_TLS_VERSION
     CMAKE_TLS_VERIFY
     CMAKE_TLS_CAINFO

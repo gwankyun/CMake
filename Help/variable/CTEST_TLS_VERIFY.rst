@@ -4,7 +4,9 @@ CTEST_TLS_VERIFY
 .. versionadded:: 3.30
 
 在包含\ :module:`CTest`\ 模块之前，在\ :manual:`ctest(1)` :ref:`Dashboard Client`\
-脚本或\ ``CMakeLists.txt``\ 项目代码中指定CTest ``TLSVerify``\ 设置。这是个布尔值，\
+脚本或\ ``CMakeLists.txt``\ 项目代码中指定CTest ``TLSVerify``\ 设置，\
+or on the :program:`ctest`
+command line via the :ctest-dashboard-option:`-D` option。这是个布尔值，\
 表示通过\ ``https://`` URL提交给仪表板时是否验证服务器证书。
 
 If ``CTEST_TLS_VERIFY`` is not set, the :variable:`CMAKE_TLS_VERIFY` variable

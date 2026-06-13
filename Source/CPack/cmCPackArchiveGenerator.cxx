@@ -361,7 +361,8 @@ int cmCPackArchiveGenerator::addOneComponentToArchive(
     } else if (status == DeduplicateStatus::Error) {
       cmCPackLogger(cmCPackLog::LOG_ERROR,
                     "ERROR The data in files with the "
-                    "same filename is different.");
+                    "same filename is different: "
+                      << rp << std::endl);
       return 0;
     } else {
       cmCPackLogger(cmCPackLog::LOG_DEBUG,
@@ -393,7 +394,7 @@ int cmCPackArchiveGenerator::addOneComponentToArchive(
     return 0;                                                                 \
   }                                                                           \
   cmArchiveWrite archive(gf, this->Compress, this->ArchiveFormat,             \
-                         this->GetCompressionLevel(),                         \
+                         this->GetEncoding(), this->GetCompressionLevel(),    \
                          this->GetThreadCount());                             \
   if (this->UID >= 0 && this->GID >= 0) {                                     \
     archive.SetUIDAndGID(this->UID, this->GID);                               \
@@ -609,4 +610,15 @@ int cmCPackArchiveGenerator::GetCompressionLevel() const
   }
 
   return level;
+}
+
+std::string cmCPackArchiveGenerator::GetEncoding() const
+{
+  std::string encoding = "UTF-8";
+
+  if (cmValue v = this->GetOptionIfSet("CPACK_ARCHIVE_ENCODING")) {
+    encoding = *v;
+  }
+
+  return encoding;
 }

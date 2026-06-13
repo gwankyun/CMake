@@ -10,6 +10,7 @@
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
+#include "cmPolicies.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmValue.h"
@@ -25,20 +26,19 @@ struct cmVariableWatchCallbackData
   std::string Command;
 };
 
-void cmVariableWatchCommandVariableAccessed(std::string const& variable,
-                                            int access_type, void* client_data,
-                                            char const* newValue,
-                                            cmMakefile const* mf)
+void cmVariableWatchCommandVariableAccessed(
+  std::string const& variable, cmVariableWatch::AccessType accessType,
+  void* clientData, char const* newValue, cmMakefile const* mf)
 {
   cmVariableWatchCallbackData* data =
-    static_cast<cmVariableWatchCallbackData*>(client_data);
+    static_cast<cmVariableWatchCallbackData*>(clientData);
 
   if (data->InCallback) {
     return;
   }
   data->InCallback = true;
 
-  auto accessString = cmVariableWatch::GetAccessAsString(access_type);
+  auto accessString = cmVariableWatch::GetAccessAsString(accessType);
 
   /// Ultra bad!!
   cmMakefile* makefile = const_cast<cmMakefile*>(mf);
@@ -57,6 +57,17 @@ void cmVariableWatchCommandVariableAccessed(std::string const& variable,
       { *currentListFile, cmListFileArgument::Quoted, fakeLineNo },
       { stack, cmListFileArgument::Quoted, fakeLineNo }
     };
+    {
+      cmPolicies::PolicyStatus cmp0219 =
+        makefile->CheckCMP0219(data->Command, newLFFArgs);
+      if (cmp0219 == cmPolicies::NEW) {
+        for (cmListFileArgument& arg : newLFFArgs) {
+          cmSystemTools::ReplaceString(arg.Value, "\\", "\\\\");
+        }
+      } else if (cmp0219 == cmPolicies::WARN) {
+        makefile->IssueCMP0219Warning(data->Command, newLFFArgs);
+      }
+    }
 
     cmListFileFunction newLFF{ data->Command, fakeLineNo, fakeLineNo,
                                std::move(newLFFArgs) };

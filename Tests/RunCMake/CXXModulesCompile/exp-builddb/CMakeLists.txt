@@ -41,12 +41,18 @@ target_link_libraries(export_build_database
   PRIVATE
     provide_flags)
 
+set_property(FILE_SET modules TARGET export_build_database PROPERTY COMPILE_OPTIONS "-Dfileset_private_option")
+set_property(FILE_SET modules TARGET export_build_database PROPERTY COMPILE_DEFINITIONS "fileset_private_define")
+set_property(FILE_SET modules TARGET export_build_database PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/fileset_private_include")
+
 set_property(SOURCE importable.cxx APPEND
   PROPERTY COMPILE_FLAGS "-Dfrom_source_flag")
 set_property(SOURCE importable.cxx APPEND
   PROPERTY COMPILE_OPTIONS "-Dfrom_source_option")
 set_property(SOURCE importable.cxx APPEND
   PROPERTY COMPILE_DEFINITIONS "from_source_define")
+set_property(SOURCE importable.cxx APPEND
+  PROPERTY INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/from_source_include")
 
 set_property(TARGET export_build_database APPEND
   PROPERTY COMPILE_FLAGS "-Dfrom_compile_flags")

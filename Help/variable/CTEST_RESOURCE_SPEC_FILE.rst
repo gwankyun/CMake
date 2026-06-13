@@ -3,8 +3,8 @@ CTEST_RESOURCE_SPEC_FILE
 
 .. versionadded:: 3.18
 
-在\ :manual:`ctest(1)`\ :ref:`Dashboard Client`\ 脚本中指定CTest ``ResourceSpecFile``\ 设置。
-
+在\ :manual:`ctest(1)`\ :ref:`Dashboard Client`\ 脚本中指定CTest ``ResourceSpecFile``\ 设置，
+or on the :program:`ctest` command line via the :ctest-dashboard-option:`-D` option.
 This can also be used to specify the resource spec file from a CMake build. If
 no ``RESOURCE_SPEC_FILE`` is passed to :command:`ctest_test`, and
 ``CTEST_RESOURCE_SPEC_FILE`` is not specified in the dashboard script, the

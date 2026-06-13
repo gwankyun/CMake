@@ -138,6 +138,7 @@ of the following libraries that are part of the CUDAToolkit:
 - `nvtx3`_
 - `OpenCL`_
 - `cuLIBOS`_
+- `cufilt`_
 
 CUDA Runtime Library
 """"""""""""""""""""
@@ -536,6 +537,36 @@ A utility that converts binary files to C files containing byte arrays.
 Target Created:
 
 - ``CUDA::bin2c``
+
+.. _`FindCUDAToolkit_sanitizer`:
+
+compute-sanitizer
+"""""""""""""""""
+
+.. versionadded:: 4.4
+
+The `NVIDIA Compute Sanitizer`_ library, which allows the tracing of CUDA
+runtime and driver calls.
+
+Target Created:
+
+- ``CUDA::sanitizer``
+
+.. _`NVIDIA Compute Sanitizer`: https://docs.nvidia.com/compute-sanitizer
+
+cufilt
+""""""
+
+.. versionadded:: 4.4
+
+The `cu++filt`_ binary utility also provides a static library for demangling
+CUDA C++ symbols.
+
+Targets Created:
+
+- ``CUDA::cufilt`` starting in CUDA 11.4
+
+.. _`cu++filt`: https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html#cu-filt
 
 Result Variables
 ^^^^^^^^^^^^^^^^
@@ -1006,7 +1037,9 @@ else()
     endif()
   elseif(CUDAToolkit_NVCC_EXECUTABLE)
     # Compute the version by invoking nvcc
-    execute_process(COMMAND ${CUDAToolkit_NVCC_EXECUTABLE} "--version" OUTPUT_VARIABLE NVCC_OUT)
+    execute_process(COMMAND ${CUDAToolkit_NVCC_EXECUTABLE} "--version"
+      OUTPUT_VARIABLE NVCC_OUT
+      RESULT_VARIABLE _nvcc_version_result)
     if(NVCC_OUT MATCHES [=[ V([0-9]+)\.([0-9]+)\.([0-9]+)]=])
       set(CUDAToolkit_VERSION_MAJOR "${CMAKE_MATCH_1}")
       set(CUDAToolkit_VERSION_MINOR "${CMAKE_MATCH_2}")
@@ -1212,12 +1245,22 @@ endif()
 unset(CUDAToolkit_IMPLICIT_LIBRARY_DIRECTORIES)
 unset(CUDAToolkit_INCLUDE_DIRECTORIES)
 
+# CUDAToolkit_LIBRARY_ROOT is accidentally set to the target directory in some environments
+# when the CUDA language is enabled, so patch it out
+if(CUDAToolkit_LIBRARY_ROOT MATCHES "^(.*)/targets/([^/]*)$")
+  set(CUDAToolkit_LIBRARY_ROOT "${CMAKE_MATCH_1}")
+endif()
+
 #-----------------------------------------------------------------------------
 # Construct import targets
 if(CUDAToolkit_FOUND)
 
   function(_CUDAToolkit_find_and_add_import_lib lib_name)
-    cmake_parse_arguments(arg "" "" "ALT;DEPS;EXTRA_PATH_SUFFIXES;EXTRA_INCLUDE_DIRS;ONLY_SEARCH_FOR" ${ARGN})
+    cmake_parse_arguments(arg "" "" "ALT;DEPS;EXTRA_PATH_SUFFIXES;EXTRA_INCLUDE_DIRS;ONLY_SEARCH_FOR;LIBRARY_SEARCH_DIRS" ${ARGN})
+
+    if(NOT arg_LIBRARY_SEARCH_DIRS)
+      set(arg_LIBRARY_SEARCH_DIRS "${CUDAToolkit_LIBRARY_SEARCH_DIRS}")
+    endif()
 
     if(arg_ONLY_SEARCH_FOR)
       set(search_names ${arg_ONLY_SEARCH_FOR})
@@ -1227,7 +1270,7 @@ if(CUDAToolkit_FOUND)
 
     find_library(CUDA_${lib_name}_LIBRARY
       NAMES ${search_names}
-      HINTS ${CUDAToolkit_LIBRARY_SEARCH_DIRS}
+      HINTS ${arg_LIBRARY_SEARCH_DIRS}
             ENV CUDA_PATH
       PATH_SUFFIXES nvidia/current lib64 ${_CUDAToolkit_win_search_dirs} lib
                     # Support NVHPC splayed math library layout
@@ -1242,7 +1285,7 @@ if(CUDAToolkit_FOUND)
     if(NOT CUDA_${lib_name}_LIBRARY)
       find_library(CUDA_${lib_name}_LIBRARY
         NAMES ${search_names}
-        HINTS ${CUDAToolkit_LIBRARY_SEARCH_DIRS}
+        HINTS ${arg_LIBRARY_SEARCH_DIRS}
               ENV CUDA_PATH
         PATH_SUFFIXES lib64/stubs ${_CUDAToolkit_win_stub_search_dirs} lib/stubs stubs
       )
@@ -1514,6 +1557,30 @@ if(CUDAToolkit_FOUND)
     add_executable(CUDA::bin2c IMPORTED)
     set_property(TARGET CUDA::bin2c PROPERTY IMPORTED_LOCATION "${CUDA_bin2c_EXECUTABLE}")
   endif()
+
+  if(NOT TARGET CUDA::sanitizer)
+    _CUDAToolkit_find_and_add_import_lib(
+      sanitizer
+      ONLY_SEARCH_FOR sanitizer-public
+      EXTRA_PATH_SUFFIXES
+        "../compute-sanitizer"
+        "../../../compute-sanitizer"
+        "../Sanitizer"
+        "../../../Sanitizer"
+        "../extras/Sanitizer"
+        "../../../extras/Sanitizer"
+      EXTRA_INCLUDE_DIRS "${CUDAToolkit_CUPTI_INCLUDE_DIR}"
+    )
+    if(TARGET CUDA::sanitizer)
+      get_property(loc TARGET CUDA::sanitizer PROPERTY IMPORTED_LOCATION)
+      get_filename_component(sanitizer_dir "${loc}" DIRECTORY)
+      target_include_directories(CUDA::sanitizer INTERFACE "${sanitizer_dir}/include")
+    endif()
+  endif()
+endif()
+
+if(CUDAToolkit_VERSION VERSION_GREATER_EQUAL 11.4)
+  _CUDAToolkit_find_and_add_import_lib(cufilt)
 endif()
 
 if(_CUDAToolkit_Pop_ROOT_PATH)

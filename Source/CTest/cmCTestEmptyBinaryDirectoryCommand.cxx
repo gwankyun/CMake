@@ -4,6 +4,7 @@
 
 #include "cmsys/Directory.hxx"
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
@@ -21,7 +22,7 @@ cmsys::Status TryToRemoveBinaryDirectoryOnce(std::string const& directoryPath)
 
   // Make sure that CMakeCache.txt is deleted last.
   for (unsigned long i = 0; i < directory.GetNumberOfFiles(); ++i) {
-    std::string path = directory.GetFile(i);
+    std::string const& path = directory.GetFileName(i);
 
     if (path == "." || path == ".." || path == "CMakeCache.txt") {
       continue;
@@ -97,7 +98,7 @@ bool cmCTestEmptyBinaryDirectoryCommand(std::vector<std::string> const& args,
   if (!EmptyBinaryDirectory(args[0], err)) {
     cmMakefile& mf = status.GetMakefile();
     mf.GetMessenger()->DisplayMessage(
-      MessageType::FATAL_ERROR,
+      MessageType::FATAL_ERROR, cmDiagnostics::CMD_NONE,
       cmStrCat("Did not remove the binary directory:\n ", args[0],
                "\nbecause:\n ", err),
       mf.GetBacktrace());

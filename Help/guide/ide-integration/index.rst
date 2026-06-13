@@ -29,7 +29,7 @@ CMake安装而不是捆绑的CMake安装的选项，以防捆绑的副本过时�
 
 CMake支持一种名为\ ``CMakePresets.json``\ 的文件格式，以及与之对应的特定于用户的\
 ``CMakeUserPresets.json``。这个文件包含用户可能需要的各种配置预设的信息。每个预设可能有\
-一个不同的编译器，构建标志，等等。该格式的细节在\ :manual:`cmake(1)`\ 手册中解释。
+一个不同的编译器，构建标志，等等。该格式的细节在\ :manual:`cmake-presets(7)`\ 手册中解释。
 
 鼓励IDE供应商以与CMake相同的方式读取和计算该文件，并向用户提供文件中列出的预设值。用户应该\
 能够看到（可能还可以编辑）为给定的预设定义的CMake缓存变量、环境变量和命令行选项。IDE应该根\
@@ -54,9 +54,9 @@ IDE应该计算\ ``ninja``\ 预设的设置，然后运行：
 过平台的命令行长度限制，IDE应该构造一个临时缓存脚本，并将其传递为\ :option:`-C <cmake -C>`\
 标志。
 
-虽然读取、解析和计算\ ``CMakePresets.json``\ 的内容很容易，但它并不简单。除了文档之外，\
+虽然读取、解析和计算CMake presets files的内容很容易，但它并不简单。除了文档之外，\
 IDE厂商可能还希望参考CMake源代码和测试用例，以更好地理解如何实现这种格式。\
-:download:`该文件 <../../manual/presets/schema.json>`\ 为\ ``CMakePresets.json``\
+:download:`该文件 <../../manual/presets/schema.json>`\ 为CMake presets file\
 格式提供了一个机器可读的JSON模式，IDE供应商可能会发现该模式对于验证和提供编辑帮助很有用。
 
 配置

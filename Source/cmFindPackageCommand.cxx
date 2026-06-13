@@ -26,6 +26,7 @@
 #include "cmAlgorithms.h"
 #include "cmConfigureLog.h"
 #include "cmDependencyProvider.h"
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmFindPackageStack.h"
 #include "cmList.h"
@@ -113,12 +114,10 @@ public:
 };
 #endif
 
-bool isDirentryToIgnore(char const* const fname)
+bool isDirentryToIgnore(std::string const& fname)
 {
-  assert(fname);
-  assert(fname[0] != 0);
-  return fname[0] == '.' &&
-    (fname[1] == 0 || (fname[1] == '.' && fname[2] == 0));
+  assert(!fname.empty());
+  return fname == "." || fname == "..";
 }
 
 class cmAppendPathSegmentGenerator
@@ -188,12 +187,12 @@ public:
     }
 
     while (this->CurrentIdx < this->DirectoryLister.GetNumberOfFiles()) {
-      char const* const fname =
-        this->DirectoryLister.GetFile(this->CurrentIdx++);
+      std::string const& fname =
+        this->DirectoryLister.GetFileName(this->CurrentIdx++);
       if (isDirentryToIgnore(fname)) {
         continue;
       }
-      if (cmsysString_strcasecmp(fname, this->DirName.data()) == 0) {
+      if (cmsysString_strcasecmp(fname.c_str(), this->DirName.data()) == 0) {
         auto candidate = cmStrCat(parent, fname, '/');
         if (cmSystemTools::FileIsDirectory(candidate)) {
           return candidate;
@@ -243,7 +242,7 @@ public:
       // TODO If so, just start with index 2 and drop the
       // `isDirentryToIgnore(i)` condition to check.
       for (auto i = 0ul; i < directoryLister.GetNumberOfFiles(); ++i) {
-        char const* const fname = directoryLister.GetFile(i);
+        std::string const& fname = directoryLister.GetFileName(i);
         // Skip entries to ignore or that aren't directories.
         if (isDirentryToIgnore(fname)) {
           continue;
@@ -261,8 +260,8 @@ public:
             // Skip entries that don't match.
             auto const equal =
               ((this->ExactMatch
-                  ? cmsysString_strcasecmp(fname, name.c_str())
-                  : cmsysString_strncasecmp(fname, name.c_str(),
+                  ? cmsysString_strcasecmp(fname.c_str(), name.c_str())
+                  : cmsysString_strncasecmp(fname.c_str(), name.c_str(),
                                             name.length())) == 0);
             if (equal) {
               if (directoryLister.FileIsDirectory(i)) {
@@ -983,8 +982,8 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
   // Ignore EXACT with no version.
   if (this->VersionComplete.empty() && this->VersionExact) {
     this->VersionExact = false;
-    this->Makefile->IssueMessage(
-      MessageType::AUTHOR_WARNING,
+    this->Makefile->IssueDiagnostic(
+      cmDiagnostics::CMD_AUTHOR,
       "Ignoring EXACT since no version is requested.");
   }
 
@@ -1335,7 +1334,7 @@ bool cmFindPackageCommand::FindPackage(
         aw << "\n"
               "(Variable CMAKE_FIND_PACKAGE_WARN_NO_MODULE enabled this "
               "warning.)";
-        this->Makefile->IssueMessage(MessageType::AUTHOR_WARNING, aw.str());
+        this->Makefile->IssueDiagnostic(cmDiagnostics::CMD_AUTHOR, aw.str());
       }
 
       if (this->FindPackageUsingConfigMode()) {
@@ -1567,9 +1566,7 @@ bool cmFindPackageCommand::FindModule(bool& found)
           this->Makefile->GetPolicyStatus(it->second);
         switch (status) {
           case cmPolicies::WARN: {
-            this->Makefile->IssueMessage(
-              MessageType::AUTHOR_WARNING,
-              cmStrCat(cmPolicies::GetPolicyWarning(it->second), '\n'));
+            this->Makefile->IssuePolicyWarning(it->second);
             CM_FALLTHROUGH;
           }
           case cmPolicies::OLD:
@@ -1585,7 +1582,7 @@ bool cmFindPackageCommand::FindModule(bool& found)
     found = true;
     std::string const var = cmStrCat(this->Name, "_FIND_MODULE");
     this->Makefile->AddDefinition(var, "1");
-    bool result = this->ReadListFile(mfile, DoPolicyScope);
+    bool result = this->ReadListFile(mfile, cm::PolicyScope::Local);
     this->Makefile->RemoveDefinition(var);
 
     std::string const foundVar = cmStrCat(this->Name, "_FOUND");
@@ -1703,7 +1700,7 @@ bool cmFindPackageCommand::HandlePackageMode(
       // The package has been found.
       found = true;
       result = this->ReadPackage();
-    } else if (this->ReadListFile(this->FileFound, DoPolicyScope)) {
+    } else if (this->ReadListFile(this->FileFound, cm::PolicyScope::Local)) {
       // The package has been found.
       found = true;
 
@@ -1876,7 +1873,7 @@ bool cmFindPackageCommand::HandlePackageMode(
       }
 
       if (!aw.str().empty()) {
-        this->Makefile->IssueMessage(MessageType::AUTHOR_WARNING, aw.str());
+        this->Makefile->IssueDiagnostic(cmDiagnostics::CMD_AUTHOR, aw.str());
       }
     }
     // output result if in config mode but not in quiet mode
@@ -2075,9 +2072,11 @@ cmFindPackageCommand::AppendixMap cmFindPackageCommand::FindAppendices(
 }
 
 bool cmFindPackageCommand::ReadListFile(std::string const& f,
-                                        PolicyScopeRule const psr)
+                                        cm::PolicyScope ps)
 {
-  bool const noPolicyScope = !this->PolicyScope || psr == NoPolicyScope;
+  if (!this->PolicyScope) {
+    ps = cm::PolicyScope::None;
+  }
 
   using ITScope = cmMakefile::ImportedTargetScope;
   ITScope scope = this->GlobalScope ? ITScope::Global : ITScope::Local;
@@ -2088,7 +2087,8 @@ bool cmFindPackageCommand::ReadListFile(std::string const& f,
   // This allows child snapshots to inherit the CAN_UNWIND state from us, we'll
   // reset it immediately after the dependent file is done
   this->Makefile->GetStateSnapshot().SetUnwindType(cmStateEnums::CAN_UNWIND);
-  bool result = this->Makefile->ReadDependentFile(f, noPolicyScope);
+  bool const result =
+    this->Makefile->ReadDependentFile(f, ps, cm::DiagnosticScope::Local);
 
   this->Makefile->GetStateSnapshot().SetUnwindType(oldUnwind);
   this->Makefile->GetStateSnapshot().SetUnwindState(
@@ -2726,7 +2726,7 @@ void cmFindPackageCommand::LoadPackageRegistryDir(std::string const& dir,
 
   std::string fname;
   for (unsigned long i = 0; i < files.GetNumberOfFiles(); ++i) {
-    fname = cmStrCat(dir, '/', files.GetFile(i));
+    fname = cmStrCat(dir, '/', files.GetFileName(i));
 
     if (!cmSystemTools::FileIsDirectory(fname)) {
       // Hold this file hostage until it behaves.
@@ -3209,7 +3209,7 @@ bool cmFindPackageCommand::CheckVersionFile(std::string const& version_file,
   // Load the version check file.
   // Pass NoPolicyScope because we do our own policy push/pop.
   bool suitable = false;
-  if (this->ReadListFile(version_file, NoPolicyScope)) {
+  if (this->ReadListFile(version_file, cm::PolicyScope::None)) {
     // Check the output variables.
     bool okay = this->Makefile->IsOn("PACKAGE_VERSION_EXACT");
     bool const unsuitable = this->Makefile->IsOn("PACKAGE_VERSION_UNSUITABLE");

@@ -82,7 +82,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 生成器
   这将选择要生成的构建系统的类型。请参阅\ :manual:`cmake-generators(7)`\ 手册获取所有生\
   成器的文档。运行\ :option:`cmake --help`\ 查看本地可用的生成器列表。可以选择使用下面的\
-  :option:`-G <cmake -G>`\ 选项来指定一个生成器，或者简单地接受CMake为当前平台选择的默认\
+  :cmake-option:`-G`\ 选项来指定一个生成器，或者简单地接受CMake为当前平台选择的默认\
   生成器。
 
   当使用\ :ref:`Command-Line Build Tool Generators`\ 时，CMake期望编译器工具链所需要\
@@ -130,8 +130,8 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 在所有情况下，\ ``<options>``\ 可以是下面的零个或多个\ `选项`_。
 
-上述用于指定源树和构建树的样式可以混合使用。用\ :option:`-S <cmake -S>`\ 或\
-:option:`-B <cmake -B>`\ 指定的路径总是分别归类为源树或构建树。使用普通参数指定的路径根据\
+上述用于指定源树和构建树的样式可以混合使用。用\ :cmake-option:`-S`\ 或\
+:cmake-option:`-B`\ 指定的路径总是分别归类为源树或构建树。使用普通参数指定的路径根据\
 其内容和前面给出的路径类型进行分类。如果只给出一种类型的路径，则使用当前工作目录（cwd）作为另\
 一种类型的路径。例如：
 
@@ -191,7 +191,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  列表\ ``CACHE``\ 变量将运行CMake并列出CMake ``CACHE``\ 中未标记为\ ``INTERNAL``\ 或\
  :prop_cache:`ADVANCED`\ 的所有变量。这将有效地显示当前的CMake设置，然后可以使用\
- :option:`-D <cmake -D>`\ 选项进行更改。更改一些变量可能会导致创建更多变量。如果指定了\
+ :cmake-option:`-D`\ 选项进行更改。更改一些变量可能会导致创建更多变量。如果指定了\
  ``A``，那么它也将显示高级变量。如果指定了\ ``H``，它还将显示每个变量的帮助。
 
 .. option:: -LR[A][H] <regex>
@@ -374,8 +374,8 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  出于向后兼容的原因，\ ``--loglevel``\ 也被接受为该选项的同义词。
 
  .. versionadded:: 3.25
-   有关\ :ref:`查询当前消息记录级别 <query_message_log_level>`\ 的方法，请参阅\
-   :command:`cmake_language`\ 命令。
+   See the :command:`cmake_language(GET_MESSAGE_LOG_LEVEL)` command for a way
+   to query the current message logging level.
 
 .. option:: --log-context
 
@@ -432,7 +432,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  在调用\ :command:`find_package(\<pkg\>) <find_package>`\ 时，将cmake find命令置于\
  调试模式，其中\ ``<pkg>``\ 是给定逗号分隔的区分大小写的包名列表中的一个条目。
 
- 类似于\ :option:`--debug-find <cmake --debug-find>`，但将作用域限制为指定的包。
+ 类似于\ :cmake-option:`--debug-find`，但将作用域限制为指定的包。
 
 .. option:: --debug-find-var=<var>[,...]
 
@@ -441,7 +441,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  使用\ ``<var>``\ 将cmake find命令置于调试模式。作为结果变量，其中\ ``<var>``\ 是给定\
  逗号分隔列表中的条目。
 
- 类似于\ :option:`--debug-find <cmake --debug-find>`，但将作用域限制为指定的变量名。
+ 类似于\ :cmake-option:`--debug-find`，但将作用域限制为指定的变量名。
 
 .. option:: --trace
 
@@ -453,7 +453,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  将cmake置于跟踪模式。
 
- 类似于\ :option:`--trace <cmake --trace>`，但是变量展开了。
+ 类似于\ :cmake-option:`--trace`，但是变量展开了。
 
 .. option:: --trace-format=<format>
 
@@ -543,20 +543,22 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --warn-uninitialized
 
- 警告未初始化的值。
+ .. deprecated:: 4.4
 
- 当使用未初始化的变量时打印警告。
+ Compatibility synonym for ``-Wuninitialized``.
 
 .. option:: --warn-unused-vars
+
+ .. deprecated:: 3.19
 
  什么也不做。在CMake 3.2及以下版本中，此功能启用了关于未使用变量的警告。在CMake 3.3到\
  3.18版本中，这个选项被破坏了。在CMake 3.19及以上版本中，该选项已被删除。
 
 .. option:: --no-warn-unused-cli
 
- 不要对命令行选项发出警告。
+ .. deprecated:: 4.4
 
- 不要查找在命令行中声明但没有使用的变量。
+ Compatibility synonym for ``-Wno-unused-cli``.
 
 .. option:: --check-system-vars
 
@@ -583,7 +585,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
  .. versionadded:: 3.18
 
- 与\ :option:`--profiling-format <cmake --profiling-format>`\ 一起使用，输出到给定\
+ 与\ :cmake-option:`--profiling-format`\ 一起使用，输出到给定\
  的路径。
 
 .. option:: --profiling-format=<file>
@@ -597,33 +599,69 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --preset <preset>, --preset=<preset>
 
- 从\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 文件中读取\
- :manual:`preset <cmake-presets(7)>`，这些文件必须与顶层的\ ``CMakeLists.txt``\
- 文件位于同一个目录中。preset可以指定生成器、构建目录、变量列表和传递给CMake的其他参数。\
- 至少存在一个\ ``CMakePresets.json``\ 或\ ``CMakeUserPresets.json``。\
- :manual:`CMake GUI <cmake-gui(1)>`\ 识别并支持\ ``CMakePresets.json``\ 和\
- ``CMakeUserPresets.json``\ 文件。有关这些文件的详细信息，请参阅\ :manual:`cmake-presets(7)`。
+ Reads a :manual:`preset <cmake-presets(7)>` from CMake presets files.
+ ``CMakePresets.json`` and ``CMakeUserPresets.json`` are the default files,
+ which must be located in the same directory as the top level
+ ``CMakeLists.txt`` file.  A file can also be specified with
+ :cmake-option:`--presets-file`.
 
- 虽然\ :option:`-S <cmake -S>`\ 选项可以用来指定包含\ ``CMakePresets.json``\ 和\
- ``CMakeUserPresets.json``\ 文件的源目录，但预设值会在所有其他命令行选项之前读取。如果\
- 没有给出 :option:`-S <cmake -S>`，则假定当前目录是顶层源目录，并且必须包含预设的文件。\
- 由所选预设（变量、生成器等）指定的选项都可以通过在命令行中手动指定来覆盖。例如，如果预设设置\
- 了一个名为\ ``MYVAR``\ 的变量为\ ``1``，但用户通过\ ``-D``\ 参数将其设置为\ ``2``，\
- 那么值\ ``2``\ 是首选值。
+ The preset may specify the generator, the build directory, a list of
+ variables, and other arguments to pass to CMake.
+
+ The :manual:`CMake GUI <cmake-gui(1)>` also recognizes and supports
+ ``CMakePresets.json`` and ``CMakeUserPresets.json`` files. For full details
+ on these files, see :manual:`cmake-presets(7)`.
+
+ The presets are read before all other command line options, although the
+ :cmake-option:`-S` option can be used to specify the source directory
+ containing the ``CMakePresets.json`` and ``CMakeUserPresets.json`` files.
+ If neither :cmake-option:`-S` nor :cmake-option:`--presets-file` are given,
+ the current working directory is assumed to be the top level source directory
+ and must contain ``CMakePresets.json`` and/or ``CMakeUserPresets.json``.
+
+ The options specified by the chosen preset (variables, generator, etc.)
+ can all be overridden by manually specifying them on the command line.
+ For example, if the preset sets a variable called ``MYVAR`` to ``1``,
+ but the user sets it to ``2`` with a :cmake-option:`-D` argument,
+ the value ``2`` is preferred.
 
  .. versionadded:: 3.21
-   可选地，可在\ ``-B``\ 选项中指定与配置预设的\ ``binaryDir``\ 键值不同的构建目录。
+   The :cmake-option:`-B` option may optionally be specified with a different
+   binary directory than the one specified by the
+   :preset:`configurePresets.binaryDir` field.
+
+ .. versionchanged:: 4.4
+   If :cmake-option:`--presets-file` is specified, neither of
+   ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
+   present.  In prior versions, the presence of these files in the top-level
+   source directory (whether via :cmake-option:`-S` or the current working
+   directory) was strictly required.
+
+.. option:: --presets-file <file>, --presets-file=<file>
+
+ .. versionadded:: 4.4
+
+ Reads :manual:`presets <cmake-presets(7)>` from the given ``<file>``. The
+ specified path may be absolute or relative to the current working directory.
+ If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
+ ``CMakeUserPresets.json`` will be ignored.
 
 .. option:: --list-presets[=<type>]
 
  列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值是\ ``configure``、\
  ``build``、\ ``test``、\ ``package``\ 或\ ``all``。如果省略\ ``<type>``，则假定为\
- ``configure``。除非使用\ :option:`-S <cmake -S>`\ 选项指定另一个顶层源目录，否则当前\
- 工作目录必须包含CMake预设文件。
+ ``configure``。
+
+ .. versionchanged:: 4.4
+   If :cmake-option:`--presets-file` is specified, the presets defined in the
+   given ``<file>`` will be listed.  Otherwise, the top-level source directory
+   (whether via :cmake-option:`-S` or the current working directory) must
+   contain ``CMakePresets.json`` and/or ``CMakeUserPresets.json``.
+   In prior versions, the latter was strictly required.
 
 .. option:: --debugger
 
-  启用CMake语言的交互式调试。CMake在名为\ :option:`--debugger-pipe <cmake --debugger-pipe>`\
+  启用CMake语言的交互式调试。CMake在名为\ :cmake-option:`--debugger-pipe`\
   的管道上公开了一个调试接口，该接口符合\ `Debug Adapter Protocol`_\ 规范，并进行了以下修改。
 
   ``initialize``\ 响应包括一个名为\ ``cmakeVersion``\ 的附加字段，该字段指定正在调试的\
@@ -676,8 +714,8 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
 .. code-block:: shell
 
-  cmake --build <dir>             [<options>] [-- <build-tool-options>]
-  cmake --build --preset <preset> [<options>] [-- <build-tool-options>]
+  cmake --build <dir>                     [<options>] [-- <build-tool-options>]
+  cmake --build [<dir>] --preset <preset> [<options>] [-- <build-tool-options>]
 
 这将使用以下选项抽象出一个本机构建工具的命令行界面：
 
@@ -689,16 +727,40 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  使用构建预设来指定构建选项。项目二进制目录是从\ ``configurePreset``\ 键推断出来的unless a directory is specified
-  after ``--build``。当前\
-  工作目录必须包含CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>`。
+  Use a build :manual:`preset <cmake-presets(7)>` to specify build options.
+  The project binary directory is inferred from the
+  :preset:`buildPresets.configurePreset` key unless a directory is specified
+  after ``--build``.
 
   .. versionadded:: 4.3
     ``cmake --build``\ 现在支持同时指定构建目录和预设。
 
+  .. versionchanged:: 4.4
+    ``cmake --build <dir> --preset`` no longer needs to be called from the
+    directory containing ``CMakePresets.json`` or ``CMakeUserPresets.json``.
+    If :cmake-build-option:`--presets-file` is specified, CMake will use that
+    file; otherwise, the presets file(s) can be inferred from the current
+    build directory's ``CMakeCache.txt``.
+
+.. option:: --presets-file <file>, --presets-file=<file>
+
+  .. versionadded:: 4.4
+
+  Reads :manual:`presets <cmake-presets(7)>` from the given ``<file>``. The
+  specified path may be absolute or relative to the current working directory.
+  If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
+  ``CMakeUserPresets.json`` will be ignored.
+
 .. option:: --list-presets
 
-  列出可用的构建预设。当前工作目录必须包含CMake预置文件。
+  列出可用的构建预设。
+
+  .. versionchanged:: 4.4
+    ``cmake --build <dir> --list-presets`` no longer needs to be called from
+    the directory containing ``CMakePresets.json`` or ``CMakeUserPresets.json``.
+    If :cmake-build-option:`--presets-file` is specified, only presets defined
+    in the given ``<file>`` will be listed; otherwise, the presets file(s) are
+    inferred from the current build directory's ``CMakeCache.txt``.
 
 .. option:: -j [<jobs>], --parallel [<jobs>]
 
@@ -799,6 +861,13 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 .. option:: --component <comp>
 
   基于组件的安装。只安装\ ``<comp>``\ 组件。
+
+  .. versionadded:: 4.4
+
+    Supports installing more than one component:
+
+      * ``--component <compA> <compB>``
+      * ``--component <compA> --component <compB>``
 
 .. option:: --default-directory-permissions <permissions>
 
@@ -969,7 +1038,7 @@ CMake通过签名提供内置命令行工具
     带有版本信息的JSON对象。键是：
 
     ``string``
-      完整版本字符串，如\ :option:`--version <cmake --version>`\ 所示。
+      完整版本字符串，如\ :cmake-option:`--version`\ 所示。
     ``major``
       以整数形式表示的主版本号。
     ``minor``
@@ -1022,7 +1091,7 @@ CMake通过签名提供内置命令行工具
   ``debugger``
     .. versionadded:: 3.27
 
-    如果支持\ :option:`--debugger <cmake --debugger>`\ 模式，则为\ ``true``，否则为\
+    如果支持\ :cmake-option:`--debugger`\ 模式，则为\ ``true``，否则为\
     ``false``。
 
 .. option:: cat [--] <files>...
@@ -1045,6 +1114,10 @@ CMake通过签名提供内置命令行工具
 
     ``cat``\ 现在可以通过传递\ ``-``\ 参数打印标准输入。
 
+  .. versionadded:: 4.4
+
+    ``cat`` will print the standard input when no arguments are passed.
+
 .. program:: cmake-E
 
 .. option:: chdir <dir> <cmd> [<arg>...]
@@ -1066,7 +1139,8 @@ CMake通过签名提供内置命令行工具
 
 .. program:: cmake-E
 
-.. option:: copy <file>... <destination>, copy -t <destination> <file>...
+.. option:: copy <file>... <destination>,
+            copy -t <destination> <file>...
 
   将文件复制到\ ``<destination>``\ （文件或目录）。如果指定了多个文件，或者指定了\ ``-t`` ，\
   ``<destination>`` \ 必须是目录，并且必须存在。如果未指定\ ``-t`` ，则假定最后一个参数为\
@@ -1079,10 +1153,14 @@ CMake通过签名提供内置命令行工具
   .. versionadded:: 3.26
     支持\ ``-t``\ 参数。
 
-.. option:: copy_directory <dir>... <destination>
+.. option:: copy_directory <dir>... <destination>,
+            copy_directory -t <destination> <dir>...
 
-  复制\ ``<dir>...``\ 目录到\ ``<destination>``\ 目录。如果\ ``<destination>``\
-  目录不存在，它将被创建。\ ``copy_directory``\ 遵循符号链接。
+  Copy content of ``<dir>...`` directories to a ``<destination>`` directory.
+  If the ``<destination>`` directory does not exist it will be created.
+  If ``-t`` is not specified, the last argument is assumed to be the
+  ``<destination>``.
+  ``copy_directory`` does follow symlinks.
 
   .. versionadded:: 3.5
     支持多个输入目录。
@@ -1090,46 +1168,73 @@ CMake通过签名提供内置命令行工具
   .. versionadded:: 3.15
     当源目录不存在时，该命令将失败。之前，它通过创建一个空的目标目录而成功。
 
-.. option:: copy_directory_if_different <dir>... <destination>
+  .. versionadded:: 4.4
+    Support for the ``-t`` argument.
+
+.. option:: copy_directory_if_different <dir>... <destination>,
+            copy_directory_if_different -t <destination> <dir>...
 
   .. versionadded:: 3.26
 
-  复制\ ``<dir>...``\ 目录的更改内容到\ ``<destination>``\ 目录。如果\ ``<destination>``\
-  目录不存在，它将被创建。
+  Copy changed content of ``<dir>...`` directories to a ``<destination>`` directory.
+  If the ``<destination>`` directory does not exist it will be created.
+  If ``-t`` is not specified, the last argument is assumed to be the
+  ``<destination>``.
 
   ``copy_directory_if_different``\ 遵循符号链接。当源目录不存在时，命令执行失败。
 
-.. option:: copy_directory_if_newer <dir>... <destination>
+  .. versionadded:: 4.4
+    Support for the ``-t`` argument.
+
+.. option:: copy_directory_if_newer <dir>... <destination>,
+            copy_directory_if_newer -t <destination> <dir>...
 
   .. versionadded:: 4.2
 
-  将\ ``<dir>...``\ 目录的内容复制到\ ``<destination>``\ 目录，\
+  将\ ``<dir>...``\ 目录的内容复制到一个\ ``<destination>``\ 目录，\
   仅当源文件比目标文件更新时（基于文件时间戳）执行复制。\
-  如果\ ``<destination>``\ 目录不存在，则会自动创建。
+  如果此\ ``<destination>``\ 目录不存在，则会自动创建。
+  If ``-t`` is not specified, the last argument is assumed to be the
+  ``<destination>``.
 
   ``copy_directory_if_newer``\ 会跟随符号链接。\
   当源目录不存在时，该命令将失败。\
   此命令比\ ``copy_directory_if_different``\ 更快，\
   因为它仅比较文件时间戳而非文件内容。
 
-.. option:: copy_if_different <file>... <destination>
+  .. versionadded:: 4.4
+    Support for the ``-t`` argument.
 
-  如果文件已更改，则将其复制到\ ``<destination>``\（文件或目录）。如果指定了多个文件，\
-  ``<destination>``\ 必须是目录且必须存在。\ ``copy_if_different``\ 遵循符号链接。
+.. option:: copy_if_different <file>... <destination>,
+            copy_if_different -t <destination> <file>...
+
+  Copy files to ``<destination>`` (either file or directory) if
+  they have changed.
+  If multiple files are specified, or if ``-t`` is specified,
+  the ``<destination>`` must be a directory and it must exist.
+  ``copy_if_different`` does follow symlinks.
 
   .. versionadded:: 3.5
     支持多个输入文件。
 
-.. option:: copy_if_newer <file>... <destination>
+  .. versionadded:: 4.4
+    Support for the ``-t`` argument.
+
+.. option:: copy_if_newer <file>... <destination>,
+            copy_if_newer -t <destination> <file>...
 
   .. versionadded:: 4.2
 
   将文件复制到\ ``<destination>``\ （可以是文件或目录），\
   仅当源文件比目标文件更新时（基于文件时间戳）执行复制。\
-  如果指定了多个文件，则 ``<destination>`` 必须是一个已存在的目录。\
+  If multiple files are specified, or if ``-t`` is specified,
+  the ``<destination>`` must be a directory and it must exist.\
   ``copy_if_newer``\ 会跟随符号链接。\
   此命令比\ ``copy_if_different``\ 更快，\
   因为它仅比较文件时间戳而非文件内容。
+
+  .. versionadded:: 4.4
+    Support for the ``-t`` argument.
 
 .. option:: create_symlink <old> <new>
 
@@ -1463,6 +1568,38 @@ CMake通过签名提供内置命令行工具
     值\ ``0``\ 用于指定默认压缩级别。它由存档库后端自动选择，而非由CMake\
     直接设置。默认压缩级别可能因存档格式、平台等因素而异。
 
+  .. option:: --cmake-tar-encoding=<encoding>
+
+    .. versionadded:: 4.4
+
+    Specify the pathname character encoding used in the archive.
+
+    The ``<encoding>`` may be one of:
+
+    ``UTF-8``
+      Archive pathnames are encoded as UTF-8.
+
+      This is the default since CMake 4.4.
+
+    ``OEM``
+      On Windows platforms, pathnames are encoded as using the original
+      equipment manufacturer (OEM) code page.  On non-Windows platforms,
+      pathnames are encoded according to the current locale.
+
+      In CMake 4.3 and below, the ``OEM`` encoding (current locale)
+      was always used.
+
+    ``UTF-16LE``, ``UTF-16BE``
+      Archive pathnames are encoded as UTF-16 little-endian or big-endian.
+
+    ``...``
+      Any encoding name supported by ``iconv`` on the current platform.
+      On Windows, code page names may be specified.
+
+    .. note::
+      ``7zip`` archives always encode paths as ``UTF-16LE``,
+      so this option is silently ignored for that format.
+
   .. option:: --cmake-tar-threads=<number>
 
     .. versionadded:: 4.3
@@ -1621,8 +1758,8 @@ CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  使用工作流预设来指定工作流。项目二进制目录是从初始配置预设推断出来的。当前工作目录必须包含\
-  CMake预置文件。有关更多详细信息，请参阅\ :manual:`preset <cmake-presets(7)>` 。
+  使用工作流\ :manual:`preset <cmake-presets(7)>`\ 来指定工作流。项目二进制目录是从初始配置预设推断出来的。当前工作目录必须包含\
+  CMake预置文件。
 
   .. versionchanged:: 3.31
     当紧跟在\ ``--workflow``\ 选项后面时，可以省略\ ``--preset``\ 参数，只提供\
@@ -1632,9 +1769,31 @@ CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
 
       $ cmake --workflow my-preset
 
+  .. versionchanged:: 4.4
+    If :cmake-workflow-option:`--presets-file` is specified, neither of
+    ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
+    present.  Otherwise, they are required to be present in the top level
+    source directory.  In prior versions, this was strictly required.
+
+.. option:: --presets-file <file>, --presets-file=<file>
+
+  .. versionadded:: 4.4
+
+  Reads :manual:`presets <cmake-presets(7)>` from the given ``<file>``. The
+  specified path may be absolute or relative to the current working directory.
+  If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
+  ``CMakeUserPresets.json`` will be ignored.
+
 .. option:: --list-presets
 
-  列出可用的工作流预设。当前工作目录必须包含CMake预设文件。
+  列出可用的工作流预设。
+
+  .. versionchanged:: 4.4
+    If :cmake-workflow-option:`--presets-file` is specified, neither of
+    ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
+    present, and only presets defined in the given ``<file>`` will be listed.
+    Otherwise, they are required to be present in the top level source
+    directory.  In prior versions, this was strictly required.
 
 .. option:: --fresh
 

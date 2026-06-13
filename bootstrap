@@ -154,9 +154,6 @@ if echo "${cmake_system}" | grep HP-UX >/dev/null 2>&1; then
   https://gitlab.kitware.com/cmake/cmake/-/issues/17137
 
 Use CMake 3.9 or lower instead.'
-  cmake_system_hpux=true
-else
-  cmake_system_hpux=false
 fi
 
 # Determine whether this is AIX
@@ -164,27 +161,6 @@ if echo "${cmake_system}" | grep AIX >/dev/null 2>&1; then
   cmake_system_aix=true
 else
   cmake_system_aix=false
-fi
-
-# Determine whether this is Linux
-if echo "${cmake_system}" | grep Linux >/dev/null 2>&1; then
-  cmake_system_linux=true
-else
-  cmake_system_linux=false
-fi
-
-# Determine whether this is a PA-RISC machine
-# This only works for Linux or HP-UX, not other PA-RISC OSs (BSD maybe?). Also
-# may falsely detect parisc on HP-UX m68k
-cmake_machine_parisc=false
-if ${cmake_system_linux}; then
-  if uname -m | grep parisc >/dev/null 2>&1; then
-    cmake_machine_parisc=true
-  fi
-elif ${cmake_system_hpux}; then
-  if uname -m | grep ia64 >/dev/null 2>&1; then : ; else
-    cmake_machine_parisc=true
-  fi
 fi
 
 # Choose the generator to use for bootstrapping.
@@ -311,12 +287,15 @@ CMAKE_CXX_SOURCES="\
   cmCMakeLanguageCommand \
   cmCMakeMinimumRequired \
   cmList \
+  cmCMakeDiagnosticCommand \
   cmCMakePath \
   cmCMakePathCommand \
   cmCMakePolicyCommand \
   cmCMakeString \
   cmCPackPropertiesGenerator \
+  cmCacheDocumentationTable \
   cmCacheManager \
+  cmCachePatternTable \
   cmCommands \
   cmCommonTargetGenerator \
   cmComputeComponentGraph \
@@ -336,10 +315,14 @@ CMAKE_CXX_SOURCES="\
   cmCxxModuleUsageEffects \
   cmDefinePropertyCommand \
   cmDefinitions \
+  cmDiagnostics \
+  cmDiagnosticContext \
+  cmDiscoverTestsCommand \
   cmDocumentationFormatter \
   cmELF \
   cmEnableLanguageCommand \
   cmEnableTestingCommand \
+  cmEnvironment \
   cmEvaluatedTargetProperty \
   cmExecProgramCommand \
   cmExecuteProcessCommand \
@@ -360,6 +343,7 @@ CMAKE_CXX_SOURCES="\
   cmFileCopier \
   cmFileInstaller \
   cmFileSet \
+  cmFileSetMetadata \
   cmFileTime \
   cmFileTimeCache \
   cmFileTimes \
@@ -385,14 +369,16 @@ CMAKE_CXX_SOURCES="\
   cmGeneratorExpressionLexer \
   cmGeneratorExpressionNode \
   cmGeneratorExpressionParser \
+  cmGeneratorFileSet \
+  cmGeneratorFileSets \
   cmGeneratorTarget \
   cmGeneratorTarget_CompatibleInterface \
+  cmGeneratorTarget_HeaderSetVerification \
   cmGeneratorTarget_IncludeDirectories \
   cmGeneratorTarget_Link \
   cmGeneratorTarget_LinkDirectories \
   cmGeneratorTarget_Options \
   cmGeneratorTarget_Sources \
-  cmGeneratorTarget_TargetPropertyEntry \
   cmGeneratorTarget_TransitiveProperty \
   cmGetCMakePropertyCommand \
   cmGetDirectoryPropertyCommand \
@@ -424,6 +410,7 @@ CMAKE_CXX_SOURCES="\
   cmInstallGenerator \
   cmInstallGetRuntimeDependenciesGenerator \
   cmInstallImportedRuntimeArtifactsGenerator \
+  cmInstallDirs \
   cmInstallRuntimeDependencySet \
   cmInstallRuntimeDependencySetGenerator \
   cmInstallScriptGenerator \
@@ -512,6 +499,7 @@ CMAKE_CXX_SOURCES="\
   cmTargetPrecompileHeadersCommand \
   cmTargetPropCommandBase \
   cmTargetPropertyComputer \
+  cmTargetPropertyEntry \
   cmTargetSourcesCommand \
   cmTargetTraceDependencies \
   cmTest \
@@ -1765,7 +1753,7 @@ libs=""
 uv_c_flags=""
 if ${cmake_system_mingw}; then
   uv_c_flags="${uv_c_flags} -DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0600"
-  libs="${libs} -lws2_32 -lpsapi -liphlpapi -lshell32 -luserenv -lole32 -loleaut32 -luuid"
+  libs="${libs} -ladvapi32 -ldbghelp -liphlpapi -lole32 -loleaut32 -lpsapi -lshell32 -luser32 -luserenv -luuid -lws2_32"
 else
   case "${cmake_system}" in
     *AIX*)

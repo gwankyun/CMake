@@ -12,12 +12,14 @@
 
 #include <cm/string_view>
 
+#include "cmDiagnostics.h"
 #include "cmExportFileGenerator.h"
 #include "cmGeneratorExpression.h"
 #include "cmInstallExportGenerator.h"
 #include "cmStateTypes.h"
 
 class cmGeneratorTarget;
+class cmGeneratorFileSet;
 class cmInstallTargetGenerator;
 class cmTargetExport;
 
@@ -96,6 +98,8 @@ protected:
 
   void IssueMessage(MessageType type,
                     std::string const& message) const override;
+  void IssueDiagnostic(cmDiagnosticCategory category,
+                       std::string const& message) const override;
 
   /** Generate a per-configuration file for the targets.  */
   virtual bool GenerateImportFileConfig(std::string const& config);
@@ -134,6 +138,10 @@ protected:
                                 cmTargetExport const* targetExport,
                                 ImportPropertyMap& properties,
                                 std::set<std::string>& importedLocations);
+
+  using cmExportFileGenerator::PopulateFileSetInterfaceProperties;
+  bool PopulateFileSetInterfaceProperties(
+    cmTargetExport const* targetExport, ImportFileSetPropertyMap& properties);
 
   virtual bool CheckInterfaceDirs(std::string const& prepro,
                                   cmGeneratorTarget const* target,
@@ -174,6 +182,11 @@ private:
     ImportPropertyMap& properties);
   void PopulateLinkDependsInterface(
     cmGeneratorTarget const* target,
+    cmGeneratorExpression::PreprocessContext preprocessRule,
+    ImportPropertyMap& properties);
+
+  void PopulateFileSetIncludeDirectoriesInterface(
+    cmGeneratorTarget const* target, cmGeneratorFileSet const* fileSet,
     cmGeneratorExpression::PreprocessContext preprocessRule,
     ImportPropertyMap& properties);
 };

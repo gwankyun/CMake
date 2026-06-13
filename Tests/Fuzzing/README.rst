@@ -15,7 +15,7 @@ Building Locally
 See `reproducing OSS-Fuzz bugs locally`_ for official instructions from
 OSS-Fuzz on reproducing using Docker.
 
-Unofficially, to build the fuzzers locally with Clang and libFuzzer:
+Unofficially, to build the fuzzers locally with Clang and libFuzzer::
 
   mkdir build && cd build
   cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
@@ -31,7 +31,7 @@ Adjust the ``CMAKE_(C|CXX)_FLAGS`` accordingly using
 ``-fsanitizer=fuzzer-no-link,memory`` or
 ``-fsanitizer=fuzzer-no-link,undefined``, respectively.
 
-.. _`reproducing OSS-Fuzz bugs locally`: https://google.github.io/oss-fuzz/getting-started/reproducing-bugs-locally/
+.. _`reproducing OSS-Fuzz bugs locally`: https://google.github.io/oss-fuzz/advanced-topics/reproducing/
 
 Seed Corpora
 ------------

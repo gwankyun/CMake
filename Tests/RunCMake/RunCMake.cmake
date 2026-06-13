@@ -105,6 +105,9 @@ function(run_cmake test)
   else()
     set(maybe_input_file "")
   endif()
+  if (RunCMake_QUIET_ERROR)
+    set(maybe_quiet_error "ERROR_QUIET")
+  endif()
   if(NOT RunCMake_TEST_COMMAND)
     if(NOT DEFINED RunCMake_TEST_OPTIONS)
       set(RunCMake_TEST_OPTIONS "")
@@ -134,7 +137,7 @@ function(run_cmake test)
     endif()
     list(APPEND RunCMake_TEST_COMMAND
       -DRunCMake_TEST=${test}
-      --no-warn-unused-cli
+      -Wno-unused-cli
       )
   else()
     set(RunCMake_TEST_OPTIONS "")
@@ -157,6 +160,7 @@ function(run_cmake test)
       ENCODING UTF8
       ${maybe_timeout}
       ${maybe_input_file}
+      ${maybe_quiet_error}
       )]])
   else()
     set(expect_result "")
@@ -234,7 +238,7 @@ function(run_cmake test)
     )
   if(RunCMake_IGNORE_POLICY_VERSION_DEPRECATION)
     string(REGEX REPLACE [[
-^CMake Deprecation Warning at [^
+^CMake Warning \(deprecated\) at [^
 ]*CMakeLists.txt:1 \(cmake_minimum_required\):
   Compatibility with CMake < 3\.10 will be removed from a future version of
   CMake.
@@ -242,6 +246,8 @@ function(run_cmake test)
   Update the VERSION argument <min> value\.  Or, use the <min>\.\.\.<max> syntax
   to tell CMake that the project requires at least <min> but has been updated
   to work with policies introduced by <max> or earlier\.
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
 +
 ]] "" actual_stderr "${actual_stderr}")
   endif()

@@ -34,7 +34,7 @@ function(__resolve_tool_path CMAKE_TOOL SEARCH_PATH DOCSTRING)
     if(NOT _CMAKE_USER_TOOL_PATH)
 
       # Find CMAKE_TOOL in the SEARCH_PATH directory by user-defined name.
-      find_program(_CMAKE_TOOL_WITH_PATH NAMES ${${CMAKE_TOOL}} HINTS ${SEARCH_PATH} NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
+      find_program(_CMAKE_TOOL_WITH_PATH NO_CACHE NAMES ${${CMAKE_TOOL}} HINTS ${SEARCH_PATH} NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
       if(_CMAKE_TOOL_WITH_PATH)
 
         # Overwrite CMAKE_TOOL with full path found in SEARCH_PATH.
@@ -47,7 +47,6 @@ function(__resolve_tool_path CMAKE_TOOL SEARCH_PATH DOCSTRING)
         endif()
 
       endif()
-      unset(_CMAKE_TOOL_WITH_PATH CACHE)
 
     endif()
 
@@ -106,6 +105,11 @@ if(("x${CMAKE_${_CMAKE_PROCESSING_LANGUAGE}_SIMULATE_ID}" STREQUAL "xMSVC" AND
 elseif("x${CMAKE_${_CMAKE_PROCESSING_LANGUAGE}_COMPILER_ID}" MATCHES "^x(Open)?Watcom$")
   set(_CMAKE_LINKER_NAMES "wlink")
   set(_CMAKE_AR_NAMES "wlib")
+  list(APPEND _CMAKE_TOOL_VARS LINKER AR)
+
+elseif("x${CMAKE_${_CMAKE_PROCESSING_LANGUAGE}_COMPILER_ID}" STREQUAL "xPellesC")
+  set(_CMAKE_LINKER_NAMES "polink")
+  set(_CMAKE_AR_NAMES "polib")
   list(APPEND _CMAKE_TOOL_VARS LINKER AR)
 
 elseif("x${CMAKE_${_CMAKE_PROCESSING_LANGUAGE}_COMPILER_ID}" MATCHES "^xIAR$")

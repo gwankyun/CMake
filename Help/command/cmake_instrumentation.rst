@@ -18,10 +18,14 @@ cmake_instrumentation
     [CUSTOM_CONTENT <name> <type> <content>]
   )
 
-必须始终指定\ ``API_VERSION``\ 和\ ``DATA_VERSION``。目前，这两个字段仅支持的值为1。\
-See
-:ref:`cmake-instrumentation API v1` for details of the ``API_VERSION`` and
-:ref:`cmake-instrumentation Data Version` for details of the ``DATA_VERSION``.
+The ``API_VERSION`` and ``DATA_VERSION`` must always be given.
+
+``API_VERSION`` is an integer. Currently, the only supported value is ``1``.
+See :ref:`cmake-instrumentation API v1` for details.
+
+``DATA_VERSION`` is a version value of the form ``major`` or ``major.minor``.
+Currently, the maximum supported version is ``1.1``. See
+:ref:`cmake-instrumentation Data Version` for details.
 
 可选关键字 ``HOOKS``、\ ``OPTIONS``\ 和\ ``CALLBACK``\ 分别对应于\
 :ref:`cmake-instrumentation v1 Query Files`\ 中的一个参数。\
@@ -67,9 +71,9 @@ Example
 
   cmake_instrumentation(
     API_VERSION 1
-    DATA_VERSION 1
+    DATA_VERSION 1.0
     HOOKS postGenerate preCMakeBuild postCMakeBuild
-    OPTIONS staticSystemInformation dynamicSystemInformation trace
+    OPTIONS staticSystemInformation dynamicSystemInformation compileTrace trace
     CALLBACK ${CMAKE_COMMAND} -P /path/to/handle_data.cmake
     CALLBACK ${CMAKE_COMMAND} -P /path/to/handle_data_2.cmake
     CUSTOM_CONTENT myString STRING string
@@ -85,10 +89,10 @@ Example
       "postGenerate", "preCMakeBuild", "postCMakeBuild"
     ],
     "options": [
-      "staticSystemInformation", "dynamicSystemInformation", "trace"
+      "staticSystemInformation", "dynamicSystemInformation", "compileTrace", "trace"
     ],
     "callbacks": [
-      "/path/to/cmake -P /path/to/handle_data.cmake"
+      "/path/to/cmake -P /path/to/handle_data.cmake",
       "/path/to/cmake -P /path/to/handle_data_2.cmake"
     ]
   }

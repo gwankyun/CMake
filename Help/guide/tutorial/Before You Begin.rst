@@ -182,7 +182,7 @@ Windows平台上的单配置生成器，我们可以简单地执行：
   在Windows上，我们可能需要根据使用的shell指定文件扩展名，即\ ``./build/hello.exe``
 
 如果我们在使用多配置生成器，我们将需要指定构建配置。\
-默认配置是\ ``Debug``、\ ``Release``、\ ``RelWithDebInfo``\ 和\ ``MinRelSize``。\
+默认配置是\ ``Debug``、\ ``Release``、\ ``RelWithDebInfo``\ 和\ ``MinSizeRel``。\
 构建结果将存储在构建文件夹的特定配置子目录中。例如，我们可以运行：
 
 .. code-block:: shell

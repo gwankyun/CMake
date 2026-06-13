@@ -11,6 +11,7 @@ include:
 =============================== ===============================================
 Value                           Name
 =============================== ===============================================
+``AIX``                         AIX system linker
 ``AppleClang``                  Apple Clang
 ``LLD``                         `LLVM LLD`_
 ``GNU``                         `GNU Binutils - ld linker`_ (also known as
@@ -19,8 +20,9 @@ Value                           Name
 ``MSVC``                        `Microsoft Visual Studio`_
 ``MOLD``                        `mold: A Modern Linker`_, or on Apple the
                                 `sold`_ linker
-``AIX``                         AIX system linker
 ``Solaris``                     SunOS system linker
+``WILD``                        `wild`_ linker
+``OpenWatcom``                  `OpenWatcom wlink`_ linker
 =============================== ===============================================
 
 This variable is not guaranteed to be defined for all linkers or languages.
@@ -31,3 +33,5 @@ This variable is not guaranteed to be defined for all linkers or languages.
 .. _Microsoft Visual Studio: https://visualstudio.microsoft.com
 .. _mold\: A Modern Linker: https://github.com/rui314/mold
 .. _sold: https://github.com/bluewhalesystems/sold
+.. _wild: https://github.com/wild-linker/wild
+.. _OpenWatcom wlink: https://www.openwatcom.com/

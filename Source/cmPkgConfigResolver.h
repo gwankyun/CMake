@@ -99,13 +99,13 @@ class cmPkgConfigResolver
 
 public:
   static cm::optional<cmPkgConfigResult> ResolveStrict(
-    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv env);
+    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env);
 
   static cm::optional<cmPkgConfigResult> ResolvePermissive(
-    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv env);
+    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env);
 
   static cmPkgConfigResult ResolveBestEffort(
-    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv env);
+    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env);
 
   static cmPkgConfigVersionReq ParseVersion(std::string const& version);
 

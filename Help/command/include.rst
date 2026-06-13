@@ -6,7 +6,7 @@ include
 .. code-block:: cmake
 
   include(<file|module> [OPTIONAL] [RESULT_VARIABLE <var>]
-                        [NO_POLICY_SCOPE])
+                        [NO_POLICY_SCOPE] [NO_DIAGNOSTIC_SCOPE])
 
 加载并运行给定文件中的CMake代码。变量读写访问调用者的作用域（动态作用域）。如果\ ``OPTIONAL``\
 存在，那么如果文件不存在，则不会引发错误。如果给定了\ ``RESULT_VARIABLE``，变量\ ``<var>``\
@@ -18,3 +18,6 @@ include
 :variable:`CMAKE_MODULE_PATH`。另见策略\ :policy:`CMP0017`。
 
 有关\ ``NO_POLICY_SCOPE``\ 选项的讨论，请参阅\ :command:`cmake_policy`\ 命令文档。
+
+See the :command:`cmake_diagnostic` command documentation for discussion of the
+``NO_DIAGNOSTIC_SCOPE`` option.

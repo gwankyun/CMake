@@ -1,5 +1,8 @@
 include(ProcessorCount)
 
+set(CMAKE_EXECUTE_PROCESS_COMMAND_ERROR_IS_FATAL ANY)
+# ProcessorCount() must tolerate execute_process() failures
+
 ProcessorCount(processor_count)
 
 message("### 1. This line should be the first line of text in the test output.")

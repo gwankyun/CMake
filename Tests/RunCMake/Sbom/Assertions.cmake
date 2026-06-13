@@ -30,109 +30,6 @@ macro(_json_fail_at type actual expected path_segments)
   set(RunCMake_TEST_FAILED "${msg}" PARENT_SCOPE)
 endmacro()
 
-function(_json_verify_subset out_success actual_node expected_node path_list)
-  string(JSON expected_type ERROR_VARIABLE expected_is_primitive TYPE "${expected_node}")
-
-  if(expected_is_primitive OR NOT (expected_type STREQUAL "OBJECT" OR expected_type STREQUAL "ARRAY"))
-    if("${actual_node}" STREQUAL "${expected_node}")
-      set(${out_success} TRUE PARENT_SCOPE)
-    else()
-      _json_fail_at("Value Mismatch" "${actual_node}" "${expected_node}" "${path_list}")
-      set(${out_success} FALSE PARENT_SCOPE)
-    endif()
-    return()
-  endif()
-
-  string(JSON actual_type ERROR_VARIABLE actual_err TYPE "${actual_node}")
-  if(actual_err)
-    _json_fail_at("Invalid JSON" "${actual_node}" "Valid JSON Structure" "${path_list}")
-    set(${out_success} FALSE PARENT_SCOPE)
-    return()
-  endif()
-
-  if(NOT actual_type STREQUAL expected_type)
-    _json_fail_at("Type Mismatch" "${actual_type}" "${expected_type}" "${path_list}")
-    set(${out_success} FALSE PARENT_SCOPE)
-    return()
-  endif()
-
-  if(expected_type STREQUAL "OBJECT")
-    string(JSON exp_len LENGTH "${expected_node}")
-    math(EXPR exp_last "${exp_len}-1")
-
-    foreach(idx RANGE ${exp_last})
-      string(JSON key MEMBER "${expected_node}" "${idx}")
-
-      string(JSON act_child ERROR_VARIABLE err GET "${actual_node}" "${key}")
-      if(err)
-        _json_fail_at("Missing Key" "<missing>" "${key}" "${path_list}")
-        set(${out_success} FALSE PARENT_SCOPE)
-        return()
-      endif()
-
-      string(JSON exp_child GET "${expected_node}" "${key}")
-      set(next_path ${path_list})
-      list(APPEND next_path "${key}")
-
-      _json_verify_subset(sub_ok "${act_child}" "${exp_child}" "${next_path}")
-      if(NOT sub_ok)
-        set(${out_success} FALSE PARENT_SCOPE)
-        return()
-      endif()
-    endforeach()
-
-    set(${out_success} TRUE PARENT_SCOPE)
-    return()
-
-  elseif(expected_type STREQUAL "ARRAY")
-    string(JSON exp_len LENGTH "${expected_node}")
-    string(JSON act_len LENGTH "${actual_node}")
-
-    if(act_len LESS exp_len)
-      _json_fail_at("Array Length" "${act_len}" ">= ${exp_len}" "${path_list}")
-      set(${out_success} FALSE PARENT_SCOPE)
-      return()
-    endif()
-
-    math(EXPR exp_last "${exp_len}-1")
-    math(EXPR act_last "${act_len}-1")
-    set(used_indices "")
-
-    foreach(exp_idx RANGE ${exp_last})
-      string(JSON exp_item GET "${expected_node}" "${exp_idx}")
-      set(found_match FALSE)
-
-      foreach(act_idx RANGE ${act_last})
-        if("${act_idx}" IN_LIST used_indices)
-          continue()
-        endif()
-
-        string(JSON act_item GET "${actual_node}" "${act_idx}")
-        unset(RunCMake_TEST_FAILED)
-        set(next_path ${path_list})
-        list(APPEND next_path "${act_idx}")
-
-        _json_verify_subset(is_match "${act_item}" "${exp_item}" "${next_path}")
-
-        if(is_match)
-          set(found_match TRUE)
-          list(APPEND used_indices "${act_idx}")
-          break()
-        endif()
-      endforeach()
-
-      if(NOT found_match)
-        _json_fail_at("Array Element Missing" "<no match found>" "Element [${exp_idx}]" "${path_list}")
-        set(${out_success} FALSE PARENT_SCOPE)
-        return()
-      endif()
-    endforeach()
-
-    set(${out_success} TRUE PARENT_SCOPE)
-    return()
-  endif()
-endfunction()
-
 
 function(expect_object actual_json expected_var)
   if(NOT DEFINED "${expected_var}")
@@ -150,11 +47,20 @@ function(expect_object actual_json expected_var)
     set(actual_node "${actual_json}")
   endif()
 
-  unset(RunCMake_TEST_FAILED)
-  _json_verify_subset(success "${actual_node}" "${expected_node}" "${path_segments}")
+  string(JSON actual_type TYPE "${actual_node}")
+  string(JSON expected_type TYPE "${expected_node}")
 
-  if(NOT success)
-    set(RunCMake_TEST_FAILED "${RunCMake_TEST_FAILED}" PARENT_SCOPE)
+  set(pattern "${expected_node}")
+  set(fail_type "Partial Equality Mismatch")
+  if(actual_type STREQUAL "ARRAY" AND expected_type STREQUAL "OBJECT")
+    set(pattern "[ ${expected_node} ]")
+    set(fail_type "Object Not Found in Array")
+  endif()
+
+  string(JSON is_equal PARTIAL_EQUAL "${pattern}" "${actual_node}")
+
+  if(NOT is_equal)
+    _json_fail_at("${fail_type}" "${actual_node}" "${expected_node}" "${path_segments}")
   endif()
 endfunction()
 

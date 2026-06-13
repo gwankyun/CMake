@@ -7,7 +7,6 @@
 
 #include "cmExecutionStatus.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmPolicies.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
@@ -19,14 +18,11 @@ bool cmReturnCommand(std::vector<std::string> const& args,
   if (!args.empty()) {
     switch (status.GetMakefile().GetPolicyStatus(cmPolicies::CMP0140)) {
       case cmPolicies::WARN:
-        status.GetMakefile().IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(
-            cmPolicies::GetPolicyWarning(cmPolicies::CMP0140),
-            "\n"
-            "return() checks its arguments when the policy is set to NEW. "
-            "Since the policy is not set the OLD behavior will be used so "
-            "the arguments will be ignored."));
+        status.GetMakefile().IssuePolicyWarning(
+          cmPolicies::CMP0140, {},
+          "return() checks its arguments when the policy is set to NEW. "
+          "Since the policy is not set the OLD behavior will be used so "
+          "the arguments will be ignored."_s);
         CM_FALLTHROUGH;
       case cmPolicies::OLD:
         return true;

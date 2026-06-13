@@ -1,3 +1,3 @@
 ^CMake Error: Could not read presets from [^
 ]*/Tests/RunCMake/CMakePresets/EmptyCacheKey:
-Invalid preset: "EmptyCacheKey"$
+Invalid configure preset: "EmptyCacheKey": Empty cache variable names are not allowed$

@@ -21,11 +21,11 @@ cpack(1)
 
 所有支持的生成器都在\ :manual:`cpack-generators <cpack-generators(7)>`\ 手册中指定。\
 命令\ ``cpack --help``\ 打印目标平台支持的生成器列表。可以通过\
-:variable:`CPACK_GENERATOR`\ 变量或命令行选项\ :option:`-G <cpack -G>`\ 来选择要使用\
+:variable:`CPACK_GENERATOR`\ 变量或命令行选项\ :cpack-option:`-G`\ 来选择要使用\
 哪一个。
 
 :program:`cpack`\ 程序是由一个用\ :manual:`CMake语言 <cmake-language(7)>`\ 编写的配\
-置文件控制的。除非通过命令行选项\ :option:`--config <cpack --config>`\ 选择不同的选项，\
+置文件控制的。除非通过命令行选项\ :cpack-option:`--config`\ 选择不同的选项，\
 否则使用当前目录下的\ ``CPackConfig.cmake``\ 文件。
 
 在标准的CMake工作流中，CMake可执行文件\ ``CPackConfig.cmake``\ 是由\
@@ -101,13 +101,37 @@ cpack(1)
 
   覆盖/定义\ :variable:`CPACK_PACKAGE_VENDOR`。
 
-.. option:: --preset <presetName>
+.. option:: --preset <preset>, --preset=<preset>
 
-  使用\ :manual:`cmake-presets(7)`\ 中的预设。
+  Use a package :manual:`preset <cmake-presets(7)>` to specify package
+  options. The project binary directory is inferred from the
+  :preset:`packagePresets.configurePreset` key.
+
+  .. versionchanged:: 4.4
+    If :cpack-option:`--presets-file` is specified, neither of
+    ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
+    present.  Otherwise, they are required to be present in the top level
+    source directory.  In prior versions, this was strictly required.
+
+.. option:: --presets-file <file>, --presets-file=<file>
+
+  .. versionadded:: 4.4
+
+  Reads :manual:`presets <cmake-presets(7)>` from the given ``<file>``. The
+  specified path may be absolute or relative to the current working directory.
+  If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
+  ``CMakeUserPresets.json`` will be ignored.
 
 .. option:: --list-presets
 
-  从\ :manual:`cmake-presets(7)`\ 中列出预设。
+  Lists the available package presets.
+
+  .. versionchanged:: 4.4
+    If :cpack-option:`--presets-file` is specified, neither of
+    ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
+    present, and only presets defined in the given ``<file>`` will be listed.
+    Otherwise, they are required to be present in the top level source
+    directory.  In prior versions, this was strictly required.
 
 .. include:: include/OPTIONS_HELP.rst
 

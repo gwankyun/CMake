@@ -21,7 +21,7 @@ function(cmake_determine_linker_id lang linker)
 
   # Compute the linker ID and version.
   foreach(flags IN ITEMS
-      "-v"        # AppleClang, GNU, GNUgold, MOLD
+      "-v"        # AppleClang, GNU, GNUgold, MOLD, WILD
       "-V"        # AIX, Solaris
       "--version" # LLD
       )
@@ -31,7 +31,10 @@ function(cmake_determine_linker_id lang linker)
                     OUTPUT_STRIP_TRAILING_WHITESPACE
                     ERROR_STRIP_TRAILING_WHITESPACE
                     COMMAND_ERROR_IS_FATAL NONE
+                    RESULT_VARIABLE _res
     )
+    # We capture "_res" but don't check it because it's expected that
+    # linkers will exit with non-zero on flags they do not have.
 
     string(JOIN "\" \"" flags_string ${flags})
     string(REGEX REPLACE "\n\n.*" "" linker_desc_head "${linker_desc}")
@@ -42,6 +45,11 @@ function(cmake_determine_linker_id lang linker)
 
     if(CMAKE_EFFECTIVE_SYSTEM_NAME STREQUAL "Apple" AND linker_desc MATCHES "@\\(#\\)PROGRAM:ld.+PROJECT:[a-z0-9]+-([0-9.]+).+")
       set(linker_id "AppleClang")
+      set(linker_frontend "GNU")
+      set(linker_version "${CMAKE_MATCH_1}")
+      break()
+    elseif(linker_desc MATCHES "Wild version ([0-9.]+)")
+      set(linker_id "WILD")
       set(linker_frontend "GNU")
       set(linker_version "${CMAKE_MATCH_1}")
       break()
@@ -76,6 +84,11 @@ function(cmake_determine_linker_id lang linker)
     elseif(linker_desc MATCHES "Microsoft \\(R\\) Incremental Linker Version ([0-9.]+)")
       set(linker_id "MSVC")
       set(linker_frontend "MSVC")
+      set(linker_version "${CMAKE_MATCH_1}")
+      break()
+    elseif(linker_desc MATCHES "Open Watcom Linker Version ([0-9.]+)")
+      set(linker_id "OpenWatcom")
+      set(linker_frontend "OpenWatcom")
       set(linker_version "${CMAKE_MATCH_1}")
       break()
     elseif (CMAKE_SYSTEM_NAME STREQUAL "SunOS" AND linker_desc MATCHES "Solaris Link Editors: ([0-9.-]+)")

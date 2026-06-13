@@ -1,4 +1,4 @@
 CMake Error: Could not read presets from [^
 ]*/Tests/RunCMake/CMakePresets/IncludeCycle3Files:
-Cyclic include among preset files: [^
+Cyclic include among presets files: [^
 ]*/CMakePresets\.json

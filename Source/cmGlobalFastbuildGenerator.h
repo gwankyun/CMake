@@ -233,7 +233,7 @@ struct FastbuildUnityNode : public FastbuildTargetBase
   std::string UnityOutputPath;
   std::vector<std::string> UnityInputFiles;
   std::string UnityOutputPattern;
-  std::vector<std::string> UnityInputIsolatedFiles;
+  std::vector<std::string> UnityInputExcludedFiles;
   FastbuildUnityNode()
     : FastbuildTargetBase(FastbuildTargetType::UNITY)
   {

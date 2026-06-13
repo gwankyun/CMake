@@ -37,7 +37,7 @@ When activated, this experimental feature provides the following:
 
 * The package name associated with specific targets may be specified
   using the ``CMAKE_EXPORT_FIND_PACKAGE_NAME`` variable and/or
-``EXPORT_FIND_PACKAGE_NAME`` target property.
+  ``EXPORT_FIND_PACKAGE_NAME`` target property.
 
 Export |CPS| Package Information for ``install(EXPORT)``
 ========================================================
@@ -87,7 +87,7 @@ Build database support
 In order to activate support for exporting build databases, set
 
 * variable ``CMAKE_EXPERIMENTAL_EXPORT_BUILD_DATABASE`` to
-* value ``73194a1d-c0b5-41b9-9190-a4512925e192``.
+* value ``70ef007e-b743-492d-9407-e35eeac03a40``.
 
 This UUID may change in future versions of CMake.  Be sure to use the value
 documented here by the source tree of the version of CMake with which you are
@@ -102,14 +102,14 @@ When activated, this experimental feature provides the following:
 * Targets with the property set to a true value will have their C++ build
   information exported to the build database.
 
-Software Bill Of Materials |SBOM|
+Software Bill Of Materials (SBOM)
 =================================
 
 In order to activate support for the :command:`install(SBOM)` command,
 set
 
 * variable ``CMAKE_EXPERIMENTAL_GENERATE_SBOM`` to
-* value ``ca494ed3-b261-4205-a01f-603c95e4cae0``.
+* value ``2d856d6d-53e8-488b-a17f-d486d2cac317``.
 
 This UUID may change in future versions of CMake.  Be sure to use the value
 documented here by the source tree of the version of CMake with which you are
@@ -127,7 +127,7 @@ Rust Support
 In order to activate support for Rust, set
 
 * variable ``CMAKE_EXPERIMENTAL_RUST`` to
-* value ``3cc9b32c-47d3-4056-8953-d74e69fc0d6c``.
+* value ``b6fdddce-bf66-41a5-bc5f-077f6fa4d2a1``.
 
 This UUID may change in future versions of CMake.  Be sure to use the value
 documented here by the source tree of the version of CMake with which you are

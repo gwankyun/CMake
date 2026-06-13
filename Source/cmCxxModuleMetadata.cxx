@@ -16,6 +16,7 @@
 #include "cmsys/FStream.hxx"
 
 #include "cmFileSet.h"
+#include "cmFileSetMetadata.h"
 #include "cmGeneratedFileStream.h"
 #include "cmJSONState.h"
 #include "cmListFileCache.h"
@@ -504,8 +505,10 @@ MetaDataProperties CollectMetaProperties(cmCxxModuleMetadata const& meta)
 
 void PopulateFileSet(cmTarget& target, MetaDataProperties const& props)
 {
-  auto fileSet = target.GetOrCreateFileSet("CXX_MODULES", "CXX_MODULES",
-                                           cmFileSetVisibility::Public);
+  auto fileSet =
+    target.GetOrCreateFileSet(std::string{ cm::FileSetMetadata::CXX_MODULES },
+                              std::string{ cm::FileSetMetadata::CXX_MODULES },
+                              cm::FileSetMetadata::Visibility::Public);
 
   for (auto const& source : props.Sources) {
     fileSet.first->AddFileEntry(source);

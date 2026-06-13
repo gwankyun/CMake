@@ -60,7 +60,7 @@ CMake将基于目标的安装划分为多种制品类型。可用的制品类型
 使用以下任一方式：
 
 * :option:`cmake --install-prefix`\ 选项；
-* CMake预置文件中的\ :ref:`installDir <CMakePresets installDir>`\ 字段；或
+* CMake预置文件中的\ :ref:`installDir <CMakePresets.configurePresets.installDir>`\ 字段；或
 * :variable:`CMAKE_INSTALL_PREFIX`\ 变量。
 
 .. note::

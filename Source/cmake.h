@@ -19,6 +19,8 @@
 #include <cmext/string_view>
 
 #include "cmBuildArgs.h"
+#include "cmDiagnosticContext.h"
+#include "cmDiagnostics.h"
 #include "cmDocumentationEntry.h" // IWYU pragma: keep
 #include "cmGeneratedFileStream.h"
 #include "cmInstalledFile.h"
@@ -47,6 +49,9 @@ class cmDebuggerAdapter;
 #endif
 
 class cmExternalMakefileProjectGeneratorFactory;
+class cmCMakePresetsArgs;
+class cmCMakePresetsConfigureArgs;
+class cmCMakePresetsWorkflowArgs;
 class cmFileAPI;
 class cmInstrumentation;
 class cmFileTimeCache;
@@ -85,13 +90,6 @@ struct cmGlobCacheEntry;
 class cmake
 {
 public:
-  enum DiagLevel
-  {
-    DIAG_IGNORE,
-    DIAG_WARN,
-    DIAG_ERROR
-  };
-
   /** \brief Describes the working modes of cmake */
   enum WorkingMode
   {
@@ -260,7 +258,9 @@ public:
   bool CreateAndSetGlobalGenerator(std::string const& name);
 
 #ifndef CMAKE_BOOTSTRAP
-  //! Print list of configure presets
+  bool SetArgsFromPreset(cmCMakePresetsConfigureArgs const& args,
+                         bool haveBinaryDirArg);
+
   void PrintPresetList(cmCMakePresetsGraph const& graph) const;
 #endif
 
@@ -382,9 +382,9 @@ public:
   bool GetIsInTryCompile() const;
 
 #ifndef CMAKE_BOOTSTRAP
-  void SetWarningFromPreset(std::string const& name,
-                            cm::optional<bool> warning,
-                            cm::optional<bool> error);
+  void SetDiagnosticsFromPreset(
+    std::map<cmDiagnosticCategory, bool> const& warnings,
+    std::map<cmDiagnosticCategory, bool> const& errors);
   void ProcessPresetVariables();
   void PrintPresetVariables();
   void ProcessPresetEnvironment();
@@ -557,10 +557,6 @@ public:
   //! Use trace from another ::cmake instance.
   void SetTraceRedirect(cmake* other);
 
-  bool GetWarnUninitialized() const { return this->WarnUninitialized; }
-  void SetWarnUninitialized(bool b) { this->WarnUninitialized = b; }
-  bool GetWarnUnusedCli() const { return this->WarnUnusedCli; }
-  void SetWarnUnusedCli(bool b) { this->WarnUnusedCli = b; }
   bool GetCheckSystemVars() const { return this->CheckSystemVars; }
   void SetCheckSystemVars(bool b) { this->CheckSystemVars = b; }
   bool GetIgnoreCompileWarningAsError() const
@@ -606,60 +602,31 @@ public:
   }
 #endif
 
-  /**
-   * Get the state of the suppression of developer (author) warnings.
-   * Returns false, by default, if developer warnings should be shown, true
-   * otherwise.
-   */
-  bool GetSuppressDevWarnings() const;
-  /**
-   * Set the state of the suppression of developer (author) warnings.
-   */
-  void SetSuppressDevWarnings(bool v);
-
-  /**
-   * Get the state of the suppression of deprecated warnings.
-   * Returns false, by default, if deprecated warnings should be shown, true
-   * otherwise.
-   */
-  bool GetSuppressDeprecatedWarnings() const;
-  /**
-   * Set the state of the suppression of deprecated warnings.
-   */
-  void SetSuppressDeprecatedWarnings(bool v);
-
-  /**
-   * Get the state of treating developer (author) warnings as errors.
-   * Returns false, by default, if warnings should not be treated as errors,
-   * true otherwise.
-   */
-  bool GetDevWarningsAsErrors() const;
-  /**
-   * Set the state of treating developer (author) warnings as errors.
-   */
-  void SetDevWarningsAsErrors(bool v);
-
-  /**
-   * Get the state of treating deprecated warnings as errors.
-   * Returns false, by default, if warnings should not be treated as errors,
-   * true otherwise.
-   */
-  bool GetDeprecatedWarningsAsErrors() const;
-  /**
-   * Set the state of treating developer (author) warnings as errors.
-   */
-  void SetDeprecatedWarningsAsErrors(bool v);
-
   /** Display a message to the user.  */
   void IssueMessage(
     MessageType t, std::string const& text,
     cmListFileBacktrace const& backtrace = cmListFileBacktrace()) const;
+  void IssueDiagnostic(cmDiagnosticCategory category, std::string const& text,
+                       cmStateSnapshot const& state,
+                       cmDiagnosticContext const& context = {}) const;
+  void IssueDiagnostic(cmDiagnosticCategory category, std::string const& text,
+                       cmDiagnosticContext const& context = {}) const
+  {
+    this->IssueDiagnostic(category, text, this->CurrentSnapshot, context);
+  }
+  void IssueDiagnostic(cmDiagnosticCategory category, std::string const& text,
+                       cmListFileBacktrace backtrace) const
+  {
+    this->IssueDiagnostic(category, text, this->CurrentSnapshot,
+                          cmDiagnosticContext{ std::move(backtrace) });
+  }
 
   //! run the --build option
   int Build(cmBuildArgs buildArgs, std::vector<std::string> targets,
             std::vector<std::string> nativeOptions,
-            cmBuildOptions& buildOptions, std::string const& presetName,
-            bool listPresets, std::vector<std::string> const& args);
+            cmBuildOptions& buildOptions,
+            cmCMakePresetsArgs const& presetsArgs,
+            std::vector<std::string> const& args);
 
   enum class DryRun
   {
@@ -671,18 +638,7 @@ public:
   bool Open(std::string const& dir, DryRun dryRun);
 
   //! run the --workflow option
-  enum class WorkflowListPresets
-  {
-    No,
-    Yes,
-  };
-  enum class WorkflowFresh
-  {
-    No,
-    Yes,
-  };
-  int Workflow(std::string const& presetName, WorkflowListPresets listPresets,
-               WorkflowFresh fresh);
+  int Workflow(cmCMakePresetsWorkflowArgs const& args);
 
   void UnwatchUnusedCli(std::string const& var);
   void WatchUnusedCli(std::string const& var);
@@ -767,7 +723,6 @@ protected:
   void AddDefaultGenerators();
   void AddDefaultExtraGenerators();
 
-  std::map<std::string, DiagLevel> DiagLevels;
   std::string GeneratorInstance;
   std::string GeneratorPlatform;
   std::string GeneratorToolset;
@@ -818,8 +773,6 @@ private:
 #ifndef CMAKE_BOOTSTRAP
   std::unique_ptr<cmConfigureLog> ConfigureLog;
 #endif
-  bool WarnUninitialized = false;
-  bool WarnUnusedCli = true;
   bool CheckSystemVars = false;
   bool IgnoreCompileWarningAsError = false;
   bool IgnoreLinkWarningAsError = false;
@@ -917,7 +870,7 @@ public:
   void SetScriptModeExitCode(int code) { ScriptModeExitCode = code; }
   int GetScriptModeExitCode() const { return ScriptModeExitCode.value_or(-1); }
 
-  static cmDocumentationEntry CMAKE_STANDARD_OPTIONS_TABLE[19];
+  static cmDocumentationEntry CMAKE_STANDARD_OPTIONS_TABLE[15];
 };
 
 #define FOR_EACH_C90_FEATURE(F) F(c_function_prototypes)

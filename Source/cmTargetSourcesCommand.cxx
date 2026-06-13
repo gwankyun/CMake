@@ -2,7 +2,6 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmTargetSourcesCommand.h"
 
-#include <sstream>
 #include <utility>
 
 #include <cm/optional>
@@ -12,6 +11,7 @@
 #include "cmArgumentParser.h"
 #include "cmArgumentParserTypes.h"
 #include "cmFileSet.h"
+#include "cmFileSetMetadata.h"
 #include "cmGeneratorExpression.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
@@ -155,40 +155,30 @@ std::vector<std::string> TargetSourcesImpl::ConvertToAbsoluteContent(
     return content;
   }
 
-  bool issueMessage = true;
-  bool useAbsoluteContent = false;
-  std::ostringstream e;
   if (checkCmp0076 == CheckCMP0076::Yes) {
     switch (this->Makefile->GetPolicyStatus(cmPolicies::CMP0076)) {
       case cmPolicies::WARN:
-        e << cmPolicies::GetPolicyWarning(cmPolicies::CMP0076) << "\n";
-        break;
+        if (isInterfaceContent == IsInterface::Yes) {
+          this->Makefile->IssuePolicyWarning(
+            cmPolicies::CMP0076, {},
+            cmStrCat("An interface source of target \""_s, tgt->GetName(),
+                     "\" has a relative path."_s));
+        } else {
+          this->Makefile->IssuePolicyWarning(
+            cmPolicies::CMP0076, {},
+            cmStrCat("A private source from a directory "
+                     "other than that of target \""_s,
+                     tgt->GetName(), "\" has a relative path."_s));
+        }
+        CM_FALLTHROUGH;
       case cmPolicies::OLD:
-        issueMessage = false;
+        return content;
+      case cmPolicies::NEW:
         break;
-      case cmPolicies::NEW: {
-        issueMessage = false;
-        useAbsoluteContent = true;
-        break;
-      }
     }
-  } else {
-    issueMessage = false;
-    useAbsoluteContent = true;
   }
 
-  if (issueMessage) {
-    if (isInterfaceContent == IsInterface::Yes) {
-      e << "An interface source of target \"" << tgt->GetName()
-        << "\" has a relative path.";
-    } else {
-      e << "A private source from a directory other than that of target \""
-        << tgt->GetName() << "\" has a relative path.";
-    }
-    this->Makefile->IssueMessage(MessageType::AUTHOR_WARNING, e.str());
-  }
-
-  return useAbsoluteContent ? absoluteContent : content;
+  return absoluteContent;
 }
 
 bool TargetSourcesImpl::HandleFileSetMode(
@@ -227,59 +217,91 @@ bool TargetSourcesImpl::HandleOneFileSet(
     this->SetError("FILE_SETs may not be added to custom targets");
     return false;
   }
-  if (this->Target->IsFrameworkOnApple()) {
-    this->SetError("FILE_SETs may not be added to FRAMEWORK targets");
+
+  if (!args.Type.empty() && !cm::FileSetMetadata::IsKnownType(args.Type)) {
+    this->SetError(
+      cmStrCat("File set TYPE may only be \"",
+               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""), '"'));
+    return false;
+  }
+  if (args.Type.empty() && args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z' &&
+      !cm::FileSetMetadata::IsKnownType(args.FileSet)) {
+    this->SetError(
+      cmStrCat("FILE_SET names starting with a capital letter are reserved "
+               "for built-in file sets and may only be \"",
+               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""), '"'));
+    return false;
+  }
+  if (!args.Type.empty() && args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z' &&
+      args.Type != args.FileSet) {
+    this->SetError(cmStrCat("FILE_SET name starting with a capital letter "
+                            "must match the TYPE name \"",
+                            args.Type, '"'));
     return false;
   }
 
   bool const isDefault = args.Type == args.FileSet ||
-    (args.Type.empty() && args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z');
-  std::string type = isDefault ? args.FileSet : args.Type;
+    (args.Type.empty() && cm::FileSetMetadata::IsKnownType(args.FileSet));
 
-  cmFileSetVisibility visibility =
-    cmFileSetVisibilityFromName(scope, this->Makefile);
+  if (!isDefault && !cm::FileSetMetadata::IsValidName(args.FileSet)) {
+    this->SetError("Non-default file set name must contain only letters, "
+                   "numbers, and underscores, and must not start with a "
+                   "capital letter or underscore");
+    return false;
+  }
+
+  std::string type = isDefault ? args.FileSet : args.Type;
+  cm::FileSetMetadata::Visibility visibility =
+    cm::FileSetMetadata::VisibilityFromName(scope, this->Makefile);
+
+  if (this->Target->IsFrameworkOnApple() &&
+      !cm::FileSetMetadata::IsFrameworkSupported(type)) {
+    this->SetError(cmStrCat(R"(FILE_SETs, of type ")", type,
+                            R"(", may not be added to FRAMEWORK targets)"));
+    return false;
+  }
 
   auto fileSet =
     this->Target->GetOrCreateFileSet(args.FileSet, type, visibility);
   if (fileSet.second) {
-    if (!isDefault) {
-      if (!cmFileSet::IsValidName(args.FileSet)) {
-        this->SetError("Non-default file set name must contain only letters, "
-                       "numbers, and underscores, and must not start with a "
-                       "capital letter or underscore");
-        return false;
-      }
-    }
     if (type.empty()) {
       this->SetError("Must specify a TYPE when creating file set");
       return false;
     }
-    if (type != "HEADERS"_s && type != "CXX_MODULES"_s) {
-      this->SetError(
-        R"(File set TYPE may only be "HEADERS" or "CXX_MODULES")");
-      return false;
-    }
 
-    if (cmFileSetVisibilityIsForSelf(visibility) &&
+    if (cm::FileSetMetadata::VisibilityIsForSelf(visibility) &&
         this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY &&
         !this->Target->IsImported()) {
-      if (type == "CXX_MODULES"_s) {
-        this->SetError(R"(File set TYPE "CXX_MODULES" may not have "PUBLIC" )"
-                       R"(or "PRIVATE" visibility on INTERFACE libraries.)");
+      if (type == cm::FileSetMetadata::CXX_MODULES) {
+        this->SetError(
+          cmStrCat(R"(File set TYPE ")", cm::FileSetMetadata::CXX_MODULES,
+                   R"(" may not have "PUBLIC" )"
+                   R"(or "PRIVATE" scope on INTERFACE libraries.)"));
         return false;
       }
     }
 
     // FIXME(https://wg21.link/P3470): This condition can go
     // away when interface-only module units are a thing.
-    if (cmFileSetVisibilityIsForInterface(visibility) &&
-        !cmFileSetVisibilityIsForSelf(visibility) &&
+    if (cm::FileSetMetadata::VisibilityIsForInterface(visibility) &&
+        !cm::FileSetMetadata::VisibilityIsForSelf(visibility) &&
         !this->Target->IsImported()) {
-      if (type == "CXX_MODULES"_s) {
-        this->SetError(
-          R"(File set TYPE "CXX_MODULES" may not have "INTERFACE" visibility)");
+      if (type == cm::FileSetMetadata::CXX_MODULES) {
+        this->SetError(cmStrCat(R"(File set TYPE ")",
+                                cm::FileSetMetadata::CXX_MODULES,
+                                R"(" may not have "INTERFACE" scope)"));
         return false;
       }
+    }
+
+    if (cm::FileSetMetadata::VisibilityIsForSelf(visibility) &&
+        this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY &&
+        type == cm::FileSetMetadata::SOURCES) {
+      this->SetError(
+        cmStrCat(R"(File set TYPE ")", cm::FileSetMetadata::SOURCES,
+                 R"(" may not have "PUBLIC" )"
+                 R"(or "PRIVATE" scope on INTERFACE libraries.)"));
+      return false;
     }
 
     if (args.BaseDirs.empty()) {
@@ -295,10 +317,11 @@ bool TargetSourcesImpl::HandleOneFileSet(
     }
 
     if (visibility != fileSet.first->GetVisibility()) {
-      this->SetError(
-        cmStrCat("Scope ", scope, " for file set \"", args.FileSet,
-                 "\" does not match original scope ",
-                 cmFileSetVisibilityToName(fileSet.first->GetVisibility())));
+      this->SetError(cmStrCat("Scope ", scope, " for file set \"",
+                              args.FileSet,
+                              "\" does not match original scope ",
+                              cm::FileSetMetadata::VisibilityToName(
+                                fileSet.first->GetVisibility())));
       return false;
     }
   }
@@ -315,16 +338,16 @@ bool TargetSourcesImpl::HandleOneFileSet(
   if (!baseDirectories.empty()) {
     fileSet.first->AddDirectoryEntry(
       BT<std::string>(baseDirectories, this->Makefile->GetBacktrace()));
-    if (type == "HEADERS"_s) {
+    if (type == cm::FileSetMetadata::HEADERS) {
       for (auto const& dir : cmList{ baseDirectories }) {
         auto interfaceDirectoriesGenex =
           cmStrCat("$<BUILD_INTERFACE:", dir, '>');
-        if (cmFileSetVisibilityIsForSelf(visibility)) {
+        if (cm::FileSetMetadata::VisibilityIsForSelf(visibility)) {
           this->Target->AppendProperty("INCLUDE_DIRECTORIES",
                                        interfaceDirectoriesGenex,
                                        this->Makefile->GetBacktrace());
         }
-        if (cmFileSetVisibilityIsForInterface(visibility)) {
+        if (cm::FileSetMetadata::VisibilityIsForInterface(visibility)) {
           this->Target->AppendProperty("INTERFACE_INCLUDE_DIRECTORIES",
                                        interfaceDirectoriesGenex,
                                        this->Makefile->GetBacktrace());

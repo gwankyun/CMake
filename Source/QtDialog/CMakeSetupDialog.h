@@ -4,13 +4,13 @@
 
 #include <memory>
 
-#include "QCMake.h"
-#include "QCMakePreset.h"
 #include <QEventLoop>
 #include <QMainWindow>
 #include <QThread>
 #include <QVector>
 
+#include "QCMake.h"
+#include "QCMakePreset.h"
 #include "ui_CMakeSetupDialog.h"
 
 class QCMakePresetItemModel;
@@ -119,7 +119,6 @@ protected:
   QAction* ExitAction;
   QAction* ConfigureAction;
   QAction* GenerateAction;
-  QAction* WarnUninitializedAction;
   QAction* InstallForCommandLineAction;
   State CurrentState;
   QString DeferredPreset;

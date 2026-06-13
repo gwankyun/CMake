@@ -22,7 +22,7 @@ public:
     this->GenericArguments = args;
   }
 
-  // Compute destination path.and check permissions
+  // Compute destination path and check permissions.
   bool Finalize();
 
   std::string const& GetDestination() const;

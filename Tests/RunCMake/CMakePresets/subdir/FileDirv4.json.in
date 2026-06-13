@@ -1,0 +1,14 @@
+{
+  "version": 4,
+  "configurePresets": [
+    {
+      "name": "FileDir",
+      "generator": "@RunCMake_GENERATOR@",
+      "binaryDir": "${fileDir}/build",
+      "cacheVariables": {
+        "TEST_FILE_DIR": "${fileDir}",
+        "PRESET": "FileDir"
+      }
+    }
+  ]
+}

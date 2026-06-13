@@ -7,7 +7,8 @@ block
 
 .. code-block:: cmake
 
-  block([SCOPE_FOR [POLICIES] [VARIABLES]] [PROPAGATE <var-name>...])
+  block([SCOPE_FOR [DIAGNOSTICS] [POLICIES] [VARIABLES]]
+        [PROPAGATE <var-name>...])
     <commands>
   endblock()
 
@@ -17,6 +18,13 @@ block
 
 ``SCOPE_FOR``
   指定必须创建哪些作用域。
+
+  ``DIAGNOSTICS``
+    .. versionadded:: 4.4
+
+    Create a new diagnostic scope. This is equivalent to
+    :command:`cmake_diagnostic(PUSH)` with an automatic
+    :command:`cmake_diagnostic(POP)` when leaving the block scope.
 
   ``POLICIES``
     创建一个新的策略作用域。这等同于\ :command:`cmake_policy(PUSH)`，并在离开块作用域时\
@@ -29,7 +37,7 @@ block
 
   .. code-block:: cmake
 
-    block(SCOPE_FOR VARIABLES POLICIES)
+    block(SCOPE_FOR VARIABLES POLICIES DIAGNOSTICS)
 
 ``PROPAGATE``
   当\ :command:`block`\ 命令创建了一个变量作用域时，此选项会在父作用域中设置或取消设置指定的\

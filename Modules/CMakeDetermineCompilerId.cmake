@@ -72,6 +72,17 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
     endforeach()
   endif()
 
+  # Check if there is any vendor specific LLVMFlang
+  if(lang STREQUAL "Fortran" AND CMAKE_${lang}_COMPILER_ID STREQUAL "LLVMFlang")
+    set(_orig_compiler_id "${CMAKE_${lang}_COMPILER_ID}")
+    foreach(userflags "${CMAKE_${lang}_COMPILER_ID_FLAGS_LIST}" "")
+      CMAKE_DETERMINE_COMPILER_ID_VENDOR(${lang} "${userflags}")
+      if(NOT CMAKE_${lang}_COMPILER_ID STREQUAL _orig_compiler_id)
+        break()
+      endif()
+    endforeach()
+  endif()
+
   # Check if compiler id detection gave us the compiler tool.
   if(CMAKE_${lang}_COMPILER_ID_TOOL)
     set(CMAKE_${lang}_COMPILER "${CMAKE_${lang}_COMPILER_ID_TOOL}")
@@ -237,6 +248,22 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
     endif()
   endif()
 
+  # The IBM LLVM Flang compiler version is extracted from --version output
+  if(CMAKE_${lang}_COMPILER_ID STREQUAL "IBMFlang")
+    execute_process(
+      COMMAND "${CMAKE_${lang}_COMPILER}" --version
+      OUTPUT_VARIABLE output
+      ERROR_VARIABLE output
+      RESULT_VARIABLE result
+      TIMEOUT 10
+    )
+    if(result EQUAL 0)
+      if(output MATCHES [[version ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)]])
+        set(CMAKE_${lang}_COMPILER_VERSION "${CMAKE_MATCH_1}")
+      endif()
+    endif()
+  endif()
+
   # if the format is unknown after all files have been checked, put "Unknown" in the cache
   if(NOT CMAKE_EXECUTABLE_FORMAT)
     set(CMAKE_EXECUTABLE_FORMAT "Unknown" CACHE INTERNAL "Executable file format")
@@ -321,6 +348,12 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
         endif()
       endif()
       set(_variant " with ${CMAKE_${lang}_COMPILER_FRONTEND_VARIANT}-like command-line")
+    else()
+      set(CMAKE_${lang}_COMPILER_FRONTEND_VARIANT "GNU")
+    endif()
+  elseif("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xIntel")
+    if(CMAKE_HOST_WIN32)
+      set(CMAKE_${lang}_COMPILER_FRONTEND_VARIANT "MSVC")
     else()
       set(CMAKE_${lang}_COMPILER_FRONTEND_VARIANT "GNU")
     endif()
@@ -465,7 +498,7 @@ include(CMakeCompilerIdDetection)
 #-----------------------------------------------------------------------------
 # Function to write the compiler id source file.
 function(CMAKE_DETERMINE_COMPILER_ID_WRITE lang src)
-  find_file(src_in ${src}.in PATHS ${CMAKE_ROOT}/Modules ${CMAKE_MODULE_PATH} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
+  find_file(src_in ${src}.in NO_CACHE PATHS ${CMAKE_ROOT}/Modules ${CMAKE_MODULE_PATH} NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
   file(READ ${src_in} ID_CONTENT_IN)
 
   compiler_id_detection(CMAKE_${lang}_COMPILER_ID_CONTENT ${lang}
@@ -490,7 +523,6 @@ function(CMAKE_DETERMINE_COMPILER_ID_WRITE lang src)
     )
   endif()
 
-  unset(src_in CACHE)
   string(CONFIGURE "${ID_CONTENT_IN}" ID_CONTENT_OUT @ONLY)
   file(WRITE ${CMAKE_${lang}_COMPILER_ID_DIR}/${src} "${ID_CONTENT_OUT}")
 endfunction()

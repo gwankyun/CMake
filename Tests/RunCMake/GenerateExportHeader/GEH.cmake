@@ -1,5 +1,6 @@
 # Test add_compiler_export_flags without deprecation warning.
-set(CMAKE_WARN_DEPRECATED OFF)
+cmake_policy(SET CMP0218 NEW)
+cmake_diagnostic(SET CMD_DEPRECATED IGNORE)
 
 project(GenerateExportHeader)
 

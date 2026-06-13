@@ -9,9 +9,11 @@
 #include <vector>
 
 #include <cm/memory>
+#include <cm/optional>
 #include <cmext/string_view>
 
 #include "cmArgumentParser.h"
+#include "cmCMakePresetsGraph.h"
 #include "cmCTest.h"
 #include "cmDuration.h"
 #include "cmExecutionStatus.h"
@@ -19,6 +21,7 @@
 #include "cmGlobalGenerator.h"
 #include "cmInstrumentation.h"
 #include "cmInstrumentationQuery.h"
+#include "cmJSONState.h"
 #include "cmList.h"
 #include "cmMakefile.h"
 #include "cmStringAlgorithms.h"
@@ -27,100 +30,204 @@
 #include "cmXMLWriter.h"
 #include "cmake.h"
 
-bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
-                                               cmExecutionStatus& status) const
-{
-  cmMakefile& mf = status.GetMakefile();
+using ConfigurePreset = cmCMakePresetsGraph::ConfigurePreset;
 
-  std::string const buildDirectory = !args.Build.empty()
-    ? args.Build
-    : mf.GetDefinition("CTEST_BINARY_DIRECTORY");
-  if (buildDirectory.empty()) {
+namespace {
+
+bool ConstructConfigureCommand(cmExecutionStatus& status, cmMakefile& mf,
+                               std::string const sourceDirectory,
+                               std::string const buildDirectory,
+                               std::string const options,
+                               std::string const presetName,
+                               std::string const presetsFile,
+                               std::string& configureCommand)
+{
+  configureCommand = cmStrCat('"', cmSystemTools::GetCMakeCommand(), '"');
+  configureCommand += " \"-S";
+  configureCommand += cmSystemTools::CollapseFullPath(sourceDirectory);
+  configureCommand += "\"";
+
+  if (!buildDirectory.empty()) {
+    configureCommand += " \"-B";
+    configureCommand += cmSystemTools::CollapseFullPath(buildDirectory);
+    configureCommand += "\"";
+  }
+
+  cmValue cmakeGenerator = mf.GetDefinition("CTEST_CMAKE_GENERATOR");
+  if (cmNonempty(cmakeGenerator)) {
+    configureCommand += " \"-G";
+    configureCommand += cmakeGenerator;
+    configureCommand += "\"";
+  }
+
+  bool presetProvidesBuildDir = false;
+  bool presetProvidesGenerator = false;
+
+  if (!presetName.empty()) {
+    cmCMakePresetsGraph presetsGraph;
+    if (!presetsGraph.ReadProjectPresets(sourceDirectory, presetsFile)) {
+      status.SetError(cmStrCat("\n Could not read presets from \"",
+                               sourceDirectory, "\":\n ",
+                               presetsGraph.parseState.GetErrorMessage()));
+      return false;
+    }
+
+    auto resolveResult =
+      presetsGraph.ResolvePreset(presetName, presetsGraph.ConfigurePresets);
+    auto resolveError =
+      cmCMakePresetsGraph::FormatPresetError<ConfigurePreset>(
+        resolveResult.StatusCode, resolveResult.ErrorPresetName,
+        sourceDirectory);
+    if (resolveError) {
+      status.SetError(*resolveError);
+      return false;
+    }
+
+    auto const* expandedPreset = resolveResult.Preset;
+
+    configureCommand += " \"--preset\"";
+    configureCommand += " \"";
+    configureCommand += presetName;
+    configureCommand += "\"";
+
+    if (!presetsFile.empty()) {
+      configureCommand += " \"--presets-file\"";
+      configureCommand += " \"";
+      configureCommand += presetsFile;
+      configureCommand += "\"";
+    }
+
+    if (!expandedPreset->BinaryDir.empty()) {
+      presetProvidesBuildDir = true;
+    }
+
+    if (!expandedPreset->Generator.empty()) {
+      presetProvidesGenerator = true;
+    }
+  }
+
+  if (buildDirectory.empty() && !presetProvidesBuildDir) {
     status.SetError("called with no build directory specified.  "
                     "Either use the BUILD argument or set the "
                     "CTEST_BINARY_DIRECTORY variable.");
     return false;
   }
 
-  std::string configureCommand = mf.GetDefinition("CTEST_CONFIGURE_COMMAND");
-  if (configureCommand.empty()) {
-    cmValue cmakeGenerator = mf.GetDefinition("CTEST_CMAKE_GENERATOR");
-    if (!cmNonempty(cmakeGenerator)) {
-      status.SetError(
-        "called with no configure command specified.  "
-        "If this is a  \"built with CMake\" project, set "
-        "CTEST_CMAKE_GENERATOR. If not, set CTEST_CONFIGURE_COMMAND.");
-      return false;
-    }
+  if (!cmNonempty(cmakeGenerator) && !presetProvidesGenerator) {
+    status.SetError(
+      "called with no configure command specified.  "
+      "If this is a  \"built with CMake\" project, set "
+      "CTEST_CMAKE_GENERATOR. If not, set CTEST_CONFIGURE_COMMAND.");
+    return false;
+  }
 
-    std::string const sourceDirectory = !args.Source.empty()
-      ? args.Source
-      : mf.GetDefinition("CTEST_SOURCE_DIRECTORY");
-    if (sourceDirectory.empty() ||
-        !cmSystemTools::FileExists(sourceDirectory + "/CMakeLists.txt")) {
-      status.SetError("called with invalid source directory.  "
-                      "CTEST_SOURCE_DIRECTORY must be set to a directory "
-                      "that contains CMakeLists.txt.");
-      return false;
-    }
+  if (mf.IsOn("CTEST_USE_LAUNCHERS")) {
+    configureCommand += " \"-DCTEST_USE_LAUNCHERS:BOOL=TRUE\"";
+  }
 
-    bool const multiConfig = [&]() -> bool {
-      cmake* cm = mf.GetCMakeInstance();
-      auto gg = cm->CreateGlobalGenerator(cmakeGenerator);
-      return gg && gg->IsMultiConfig();
-    }();
-
-    bool const buildTypeInOptions =
-      args.Options.find("CMAKE_BUILD_TYPE=") != std::string::npos ||
-      args.Options.find("CMAKE_BUILD_TYPE:STRING=") != std::string::npos;
-
-    configureCommand = cmStrCat('"', cmSystemTools::GetCMakeCommand(), '"');
-
-    auto const options = cmList(args.Options);
-    for (std::string const& option : options) {
-      configureCommand += " \"";
-      configureCommand += option;
-      configureCommand += "\"";
-    }
-
-    cmValue cmakeBuildType = mf.GetDefinition("CTEST_CONFIGURATION_TYPE");
-    if (!multiConfig && !buildTypeInOptions && cmNonempty(cmakeBuildType)) {
-      configureCommand += " \"-DCMAKE_BUILD_TYPE:STRING=";
-      configureCommand += cmakeBuildType;
-      configureCommand += "\"";
-    }
-
-    if (mf.IsOn("CTEST_USE_LAUNCHERS")) {
-      configureCommand += " \"-DCTEST_USE_LAUNCHERS:BOOL=TRUE\"";
-    }
-
-    configureCommand += " \"-G";
-    configureCommand += cmakeGenerator;
+  cmValue cmakeGeneratorPlatform =
+    mf.GetDefinition("CTEST_CMAKE_GENERATOR_PLATFORM");
+  if (cmNonempty(cmakeGeneratorPlatform)) {
+    configureCommand += " \"-A";
+    configureCommand += *cmakeGeneratorPlatform;
     configureCommand += "\"";
+  }
 
-    cmValue cmakeGeneratorPlatform =
-      mf.GetDefinition("CTEST_CMAKE_GENERATOR_PLATFORM");
-    if (cmNonempty(cmakeGeneratorPlatform)) {
-      configureCommand += " \"-A";
-      configureCommand += *cmakeGeneratorPlatform;
-      configureCommand += "\"";
-    }
-
-    cmValue cmakeGeneratorToolset =
-      mf.GetDefinition("CTEST_CMAKE_GENERATOR_TOOLSET");
-    if (cmNonempty(cmakeGeneratorToolset)) {
-      configureCommand += " \"-T";
-      configureCommand += *cmakeGeneratorToolset;
-      configureCommand += "\"";
-    }
-
-    configureCommand += " \"-S";
-    configureCommand += cmSystemTools::CollapseFullPath(sourceDirectory);
+  cmValue cmakeGeneratorToolset =
+    mf.GetDefinition("CTEST_CMAKE_GENERATOR_TOOLSET");
+  if (cmNonempty(cmakeGeneratorToolset)) {
+    configureCommand += " \"-T";
+    configureCommand += *cmakeGeneratorToolset;
     configureCommand += "\"";
+  }
 
-    configureCommand += " \"-B";
-    configureCommand += cmSystemTools::CollapseFullPath(buildDirectory);
+  // Append OPTIONS to the configure command.
+  bool const multiConfig = [&]() -> bool {
+    cmake* cm = mf.GetCMakeInstance();
+    auto gg = cm->CreateGlobalGenerator(cmakeGenerator);
+    return gg && gg->IsMultiConfig();
+  }();
+
+  bool const buildTypeInOptions =
+    options.find("CMAKE_BUILD_TYPE=") != std::string::npos ||
+    options.find("CMAKE_BUILD_TYPE:STRING=") != std::string::npos;
+
+  auto const optionsList = cmList(options);
+  for (std::string const& option : optionsList) {
+    configureCommand += " \"";
+    configureCommand += option;
     configureCommand += "\"";
+  }
+
+  cmValue cmakeBuildType = mf.GetDefinition("CTEST_CONFIGURATION_TYPE");
+  if (!multiConfig && !buildTypeInOptions && cmNonempty(cmakeBuildType)) {
+    configureCommand += " \"-DCMAKE_BUILD_TYPE:STRING=";
+    configureCommand += cmakeBuildType;
+    configureCommand += "\"";
+  }
+
+  return true;
+}
+
+} // namespace
+
+bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
+                                               cmExecutionStatus& status) const
+{
+  cmMakefile& mf = status.GetMakefile();
+
+  std::string buildDirectory = !args.Build.empty()
+    ? args.Build
+    : mf.GetDefinition("CTEST_BINARY_DIRECTORY");
+
+  std::string const sourceDirectory = !args.Source.empty()
+    ? args.Source
+    : mf.GetDefinition("CTEST_SOURCE_DIRECTORY");
+  if (sourceDirectory.empty() ||
+      !cmSystemTools::FileExists(sourceDirectory + "/CMakeLists.txt")) {
+    status.SetError("called with invalid source directory.  "
+                    "CTEST_SOURCE_DIRECTORY must be set to a directory "
+                    "that contains CMakeLists.txt.");
+    return false;
+  }
+
+  // Preset name is set according to the following priority order:
+  // 1) The PRESET option to ctest_configure()
+  // 2) CTEST_CONFIGURE_PRESET script variable
+  // 3) CTEST_PRESET script variable (error if no such configure preset exists)
+  std::string const presetName = !args.Preset.empty() ? args.Preset
+    : cmNonempty(mf.GetDefinition("CTEST_CONFIGURE_PRESET"))
+    ? *mf.GetDefinition("CTEST_CONFIGURE_PRESET")
+    : mf.GetSafeDefinition("CTEST_PRESET");
+
+  // Presets file is set according to the following priority order:
+  // 1) The PRESETS_FILE option to ctest_configure()
+  // 2) CTEST_PRESETS_FILE script variable
+  std::string const rawPresetsFile = !args.PresetsFile.empty()
+    ? args.PresetsFile
+    : mf.GetSafeDefinition("CTEST_PRESETS_FILE");
+
+  std::string const presetsFile = rawPresetsFile.empty()
+    ? ""
+    : cmSystemTools::CollapseFullPath(rawPresetsFile, sourceDirectory);
+
+  // Skip checking CTEST_CONFIGURE_COMMAND when a preset is specified.
+  // We do this to avoid using a stale ConfigureCommand from a previous cmake
+  // run that would cause us to silently ignore the requested preset.
+  std::string configureCommand;
+  if (presetName.empty()) {
+    configureCommand = mf.GetDefinition("CTEST_CONFIGURE_COMMAND");
+  } else if (cmNonempty(mf.GetDefinition("CTEST_CONFIGURE_COMMAND"))) {
+    cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
+                       "Ignoring CTEST_CONFIGURE_COMMAND because preset \""
+                         << presetName << "\" is in use.\n",
+                       args.Quiet);
+  }
+  if (configureCommand.empty() &&
+      !ConstructConfigureCommand(status, mf, sourceDirectory, buildDirectory,
+                                 args.Options, presetName, presetsFile,
+                                 configureCommand)) {
+    return false;
   }
 
   cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "Configure project\n",
@@ -222,7 +329,9 @@ bool cmCTestConfigureCommand::InitialPass(std::vector<std::string> const& args,
   using Args = ConfigureArguments;
   static auto const parser =
     cmArgumentParser<Args>{ MakeHandlerParser<Args>() } //
-      .Bind("OPTIONS"_s, &ConfigureArguments::Options);
+      .Bind("OPTIONS"_s, &ConfigureArguments::Options)
+      .Bind("PRESET"_s, &ConfigureArguments::Preset)
+      .Bind("PRESETS_FILE"_s, &ConfigureArguments::PresetsFile);
 
   return this->Invoke(parser, args, status, [&](ConfigureArguments& a) {
     return this->ExecuteConfigure(a, status);

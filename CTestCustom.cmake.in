@@ -51,6 +51,7 @@ list(APPEND CTEST_CUSTOM_WARNING_EXCEPTION
   "Warning: Function .* can throw only the exceptions thrown by the function .* it overrides\\."
   "WarningMessagesDialog\\.cxx"
   "warning.*directory name.*CMake-Xcode.*/bin/.*does not exist.*"
+  "stl_algo(base)?\\.h:[0-9:]* warning: loop not unrolled"
   "stl_deque.h:1051"
   "Tests/CMakeLib/testCTestResourceSpec.cxx:.*warning: missing initializer for member.*cmCTestResourceSpec::.*" # GCC 4.8 disagrees with later compilers on C++11 initializer list conversion
   "(Lexer|Parser).*warning.*conversion.*may (alter its value|change the sign)"

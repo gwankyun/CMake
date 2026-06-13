@@ -29,7 +29,7 @@ set(SPDX_DOCUMENT_EXPECTED [=[
 
 set(APPLICATION_EXPECTED [=[
 {
-  "spdxId" : "application#Package",
+  "spdxId" : "urn:application#Package",
   "name" : "application",
   "software_primaryPurpose" : "application",
   "type" : "software_Package"
@@ -38,7 +38,7 @@ set(APPLICATION_EXPECTED [=[
 
 set(DEPENDENCY_EXPECTED [=[
 {
-  "spdxId" : "bar:bar#Package",
+  "spdxId" : "urn:bar:bar#Package",
   "name" : "bar:bar",
   "originatedBy" :
   [
@@ -74,7 +74,7 @@ expect_object("${CREATION_INFO}" CREATION_INFO_EXPECTED)
 
 string(JSON SPDX_DOCUMENT GET "${content}" "@graph" "1")
 expect_object("${SPDX_DOCUMENT}" SPDX_DOCUMENT_EXPECTED)
-expect_object("${SPDX_DOCUMENT}" APPLICATION_EXPECTED "rootElement" "0")
-expect_object("${SPDX_DOCUMENT}" DEPENDENCY_EXPECTED "element" "0")
+expect_object("${SPDX_DOCUMENT}" APPLICATION_EXPECTED "rootElement")
+expect_object("${SPDX_DOCUMENT}" DEPENDENCY_EXPECTED "element")
 string(JSON LINKED_LIBRARIES GET "${content}" "@graph" "2")
 expect_object("${LINKED_LIBRARIES}" BUILD_LINKED_LIBRARIES_EXPECTED)

@@ -125,6 +125,7 @@ add_library(
   cmCLocaleEnvironmentScope.cxx
   cmCMakePath.h
   cmCMakePath.cxx
+  cmCMakePresetsArgs.h
   cmCMakePresetsErrors.cxx
   cmCMakePresetsErrors.h
   cmCMakePresetsGraph.cxx
@@ -136,6 +137,7 @@ add_library(
   cmCMakePresetsGraphReadJSONPackagePresets.cxx
   cmCMakePresetsGraphReadJSONTestPresets.cxx
   cmCMakePresetsGraphReadJSONWorkflowPresets.cxx
+  cmCMakePresetsGraphResolve.cxx
   cmCMakeString.hxx
   cmCMakeString.cxx
   cmCommandLineArgument.h
@@ -187,12 +189,18 @@ add_library(
   cmDependsJavaParserHelper.h
   cmDependsCompiler.cxx
   cmDependsCompiler.h
+  cmDiagnosticContext.h
+  cmDiagnosticContext.cxx
+  cmDiagnostics.h
+  cmDiagnostics.cxx
   cmDocumentation.cxx
   cmDocumentationFormatter.cxx
   cmDyndepCollation.cxx
   cmDyndepCollation.h
   cmELF.h
   cmELF.cxx
+  cmEnvironment.cxx
+  cmEnvironment.h
   cmEvaluatedTargetProperty.cxx
   cmEvaluatedTargetProperty.h
   cmExprParserHelper.cxx
@@ -206,8 +214,10 @@ add_library(
   cmExportBuildFileGenerator.cxx
   cmExportBuildPackageInfoGenerator.h
   cmExportBuildPackageInfoGenerator.cxx
-  cmExportBuildSbomGenerator.h
-  cmExportBuildSbomGenerator.cxx
+  cmBuildSbomGenerator.h
+  cmBuildSbomGenerator.cxx
+  cmBuildSbomBuilder.h
+  cmBuildSbomBuilder.cxx
   cmExportCMakeConfigGenerator.h
   cmExportCMakeConfigGenerator.cxx
   cmExportFileGenerator.h
@@ -220,14 +230,12 @@ add_library(
   cmExportInstallFileGenerator.cxx
   cmExportInstallPackageInfoGenerator.h
   cmExportInstallPackageInfoGenerator.cxx
-  cmExportInstallSbomGenerator.h
-  cmExportInstallSbomGenerator.cxx
   cmExportPackageInfoGenerator.h
   cmExportPackageInfoGenerator.cxx
   cmExportTryCompileFileGenerator.h
   cmExportTryCompileFileGenerator.cxx
-  cmExportSbomGenerator.h
-  cmExportSbomGenerator.cxx
+  cmSbomBuilder.h
+  cmSbomBuilder.cxx
   cmExportSet.h
   cmExportSet.cxx
   cmExternalMakefileProjectGenerator.cxx
@@ -270,6 +278,8 @@ add_library(
   cmFilePathChecksum.h
   cmFileSet.cxx
   cmFileSet.h
+  cmFileSetMetadata.cxx
+  cmFileSetMetadata.h
   cmFileTime.cxx
   cmFileTime.h
   cmFileTimeCache.cxx
@@ -302,15 +312,19 @@ add_library(
   cmGeneratorExpressionParser.h
   cmGeneratorExpression.cxx
   cmGeneratorExpression.h
+  cmGeneratorFileSet.cxx
+  cmGeneratorFileSet.h
+  cmGeneratorFileSets.cxx
+  cmGeneratorFileSets.h
   cmGeneratorTarget.cxx
   cmGeneratorTarget.h
   cmGeneratorTarget_CompatibleInterface.cxx
+  cmGeneratorTarget_HeaderSetVerification.cxx
   cmGeneratorTarget_IncludeDirectories.cxx
   cmGeneratorTarget_Link.cxx
   cmGeneratorTarget_LinkDirectories.cxx
   cmGeneratorTarget_Options.cxx
   cmGeneratorTarget_Sources.cxx
-  cmGeneratorTarget_TargetPropertyEntry.cxx
   cmGeneratorTarget_TransitiveProperty.cxx
   cmLinkItemGraphVisitor.cxx
   cmLinkItemGraphVisitor.h
@@ -334,6 +348,8 @@ add_library(
   cmInstallAndroidMKExportGenerator.h
   cmInstallCMakeConfigExportGenerator.cxx
   cmInstallCMakeConfigExportGenerator.h
+  cmInstallDirs.cxx
+  cmInstallDirs.h
   cmInstallGenerator.h
   cmInstallGenerator.cxx
   cmInstallGetRuntimeDependenciesGenerator.h
@@ -353,8 +369,10 @@ add_library(
   cmInstallRuntimeDependencySet.cxx
   cmInstallRuntimeDependencySetGenerator.h
   cmInstallRuntimeDependencySetGenerator.cxx
-  cmInstallSbomExportGenerator.h
-  cmInstallSbomExportGenerator.cxx
+  cmInstallSbomGenerator.h
+  cmInstallSbomGenerator.cxx
+  cmInstallSbomBuilder.h
+  cmInstallSbomBuilder.cxx
   cmInstallScriptGenerator.h
   cmInstallScriptGenerator.cxx
   cmInstallSubdirectoryGenerator.h
@@ -496,13 +514,14 @@ add_library(
   cmStdIoTerminal.cxx
   cmStringAlgorithms.cxx
   cmStringAlgorithms.h
-  cmSyntheticTargetCache.h
   cmSystemTools.cxx
   cmSystemTools.h
   cmTarget.cxx
   cmTarget.h
   cmTargetPropertyComputer.cxx
   cmTargetPropertyComputer.h
+  cmTargetPropertyEntry.cxx
+  cmTargetPropertyEntry.h
   cmTargetExport.h
   cmTargetTraceDependencies.cxx
   cmTargetTraceDependencies.h
@@ -571,6 +590,8 @@ add_library(
   cmBreakCommand.h
   cmBuildCommand.cxx
   cmBuildCommand.h
+  cmCMakeDiagnosticCommand.cxx
+  cmCMakeDiagnosticCommand.h
   cmCMakeHostSystemInformationCommand.cxx
   cmCMakeHostSystemInformationCommand.h
   cmCMakeLanguageCommand.cxx
@@ -595,6 +616,8 @@ add_library(
   cmCreateTestSourceList.h
   cmDefinePropertyCommand.cxx
   cmDefinePropertyCommand.h
+  cmDiscoverTestsCommand.cxx
+  cmDiscoverTestsCommand.h
   cmEnableLanguageCommand.cxx
   cmEnableLanguageCommand.h
   cmEnableTestingCommand.cxx
@@ -856,6 +879,22 @@ target_link_libraries(
     ZLIB::ZLIB
     llpkgc::llpkgc
   )
+
+# Built-in cache variable documentation table.  This is a committed,
+# hand-edited translation unit consumed by cmCacheManager to provide
+# fallback HELPSTRING values for cache entries that ship without one.
+# See the header comment in cmCacheDocumentationTable.cxx for the scope
+# and maintenance discipline.  The cmCachePatternTable sibling provides
+# the same service for placeholder-shaped variable names (CMAKE_<LANG>_*,
+# CMAKE_POLICY_DEFAULT_CMP<NNNN>, etc.) and is consulted as a fallback
+# inside cmCacheDocumentationTable::Get.  No code generation occurs at
+# build time.
+target_sources(CMakeLib PRIVATE
+  cmCacheDocumentationTable.h
+  cmCacheDocumentationTable.cxx
+  cmCachePatternTable.h
+  cmCachePatternTable.cxx
+)
 
 if(CMake_ENABLE_DEBUGGER)
   target_sources(
@@ -1127,6 +1166,7 @@ add_library(
   CTest/cmCTestCoverageCommand.cxx
   CTest/cmCTestCoverageHandler.cxx
   CTest/cmCTestCurl.cxx
+  CTest/cmCTestDiscoverTests.cxx
   CTest/cmParseMumpsCoverage.cxx
   CTest/cmParseCacheCoverage.cxx
   CTest/cmParseGTMCoverage.cxx

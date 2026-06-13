@@ -1,3 +1,3 @@
 CMake Error: Could not read presets from [^
 ]*/Tests/RunCMake/CMakePresetsTest/NoConfigurePreset:
-Invalid preset: "noConfigurePreset"$
+Invalid test preset: "noConfigurePreset": Test presets must either be hidden or have an associated configure preset$

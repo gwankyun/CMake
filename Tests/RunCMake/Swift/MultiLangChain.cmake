@@ -1,5 +1,6 @@
 cmake_policy(SET CMP0157 NEW)
 cmake_policy(SET CMP0195 NEW)
+cmake_policy(SET CMP0216 NEW)
 
 enable_language(Swift C)
 

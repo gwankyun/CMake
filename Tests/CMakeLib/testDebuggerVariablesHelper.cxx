@@ -18,6 +18,7 @@
 #include "cmDebuggerVariablesHelper.h"
 #include "cmDebuggerVariablesManager.h"
 #include "cmFileSet.h"
+#include "cmFileSetMetadata.h"
 #include "cmGlobalGenerator.h"
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
@@ -501,8 +502,9 @@ static bool testCreateFromFileSet()
     std::make_shared<cmDebugger::cmDebuggerVariablesManager>();
   auto dummies = CreateDummies("Foo");
 
-  cmFileSet fileSet(dummies.Makefile.get(), "Foo", "HEADERS",
-                    cmFileSetVisibility::Public);
+  cmFileSet fileSet(dummies.Makefile.get(),
+                    dummies.Makefile->GetOrderedTargets()[0], "Foo", "HEADERS",
+                    cm::FileSetMetadata::Visibility::Public);
   BT<std::string> directory;
   directory.Value = "c:/";
   fileSet.AddDirectoryEntry(directory);
@@ -546,8 +548,9 @@ static bool testCreateFromFileSets()
     std::make_shared<cmDebugger::cmDebuggerVariablesManager>();
   auto dummies = CreateDummies("Foo");
 
-  cmFileSet fileSet(dummies.Makefile.get(), "Foo", "HEADERS",
-                    cmFileSetVisibility::Public);
+  cmFileSet fileSet(dummies.Makefile.get(),
+                    dummies.Makefile->GetOrderedTargets()[0], "Foo", "HEADERS",
+                    cm::FileSetMetadata::Visibility::Public);
   BT<std::string> directory;
   directory.Value = "c:/";
   fileSet.AddDirectoryEntry(directory);

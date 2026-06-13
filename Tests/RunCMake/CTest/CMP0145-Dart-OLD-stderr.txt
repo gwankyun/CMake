@@ -1,4 +1,4 @@
-^CMake Deprecation Warning at CMP0145-Dart-OLD\.cmake:[0-9]+ \(cmake_policy\):
+^CMake Warning \(deprecated\) at CMP0145-Dart-OLD\.cmake:[0-9]+ \(cmake_policy\):
   The OLD behavior for policy CMP0145 will be removed from a future version
   of CMake\.
 
@@ -8,8 +8,10 @@
   behavior and not rely on setting a policy to OLD\.
 Call Stack \(most recent call first\):
   CMakeLists\.txt:5 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
 +
-CMake Deprecation Warning at [^
+CMake Warning \(deprecated\) at [^
 ]*/Modules/Dart\.cmake:[0-9]+ \(cmake_policy\):
   The OLD behavior for policy CMP0145 will be removed from a future version
   of CMake\.
@@ -20,4 +22,6 @@ CMake Deprecation Warning at [^
   behavior and not rely on setting a policy to OLD\.
 Call Stack \(most recent call first\):
   CMP0145-Dart-OLD\.cmake:3 \(include\)
-  CMakeLists\.txt:5 \(include\)$
+  CMakeLists\.txt:5 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.$

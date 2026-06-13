@@ -7,10 +7,10 @@
 #include <utility>
 
 #include "cmCryptoHash.h"
+#include "cmDiagnosticContext.h"
 #include "cmExportInstallFileGenerator.h"
 #include "cmExportSet.h"
 #include "cmInstallType.h"
-#include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
 #include "cmScriptGenerator.h"
 #include "cmStringAlgorithms.h"
@@ -21,10 +21,10 @@ cmInstallExportGenerator::cmInstallExportGenerator(
   std::vector<std::string> const& configurations, std::string component,
   MessageLevel message, bool excludeFromAll, std::string filename,
   std::string targetNamespace, std::string cxxModulesDirectory,
-  cmListFileBacktrace backtrace)
+  cmDiagnosticContext context)
   : cmInstallGenerator(std::move(destination), configurations,
                        std::move(component), message, excludeFromAll, false,
-                       std::move(backtrace))
+                       std::move(context))
   , ExportSet(exportSet)
   , FilePermissions(std::move(filePermissions))
   , FileName(std::move(filename))
@@ -122,8 +122,8 @@ void cmInstallExportGenerator::GenerateScriptConfigs(std::ostream& os,
   std::vector<std::string> files;
   for (auto const& i : this->EFGen->GetConfigImportFiles()) {
     files.push_back(i.second);
-    std::string config_test = this->CreateConfigTest(i.first);
-    os << indent << "if(" << config_test << ")\n";
+    std::string configTest = this->CreateConfigTest(i.first);
+    os << indent << "if(" << configTest << ")\n";
     this->AddInstallRule(os, this->Destination, cmInstallType_FILES, files,
                          false, this->FilePermissions.c_str(), nullptr,
                          nullptr, nullptr, indent.Next());
@@ -182,8 +182,8 @@ void cmInstallExportGenerator::GenerateScriptConfigs(std::ostream& os,
   }
   for (auto const& i : this->EFGen->GetConfigCxxModuleFiles()) {
     files.push_back(i.second);
-    std::string config_test = this->CreateConfigTest(i.first);
-    os << indent << "if(" << config_test << ")\n";
+    std::string configTest = this->CreateConfigTest(i.first);
+    os << indent << "if(" << configTest << ")\n";
     this->AddInstallRule(os, cxxModuleDestination, cmInstallType_FILES, files,
                          false, this->FilePermissions.c_str(), nullptr,
                          nullptr, nullptr, indent.Next());
@@ -191,8 +191,8 @@ void cmInstallExportGenerator::GenerateScriptConfigs(std::ostream& os,
     files.clear();
   }
   for (auto const& i : this->EFGen->GetConfigCxxModuleTargetFiles()) {
-    std::string config_test = this->CreateConfigTest(i.first);
-    os << indent << "if(" << config_test << ")\n";
+    std::string configTest = this->CreateConfigTest(i.first);
+    os << indent << "if(" << configTest << ")\n";
     this->AddInstallRule(os, cxxModuleDestination, cmInstallType_FILES,
                          i.second, false, this->FilePermissions.c_str(),
                          nullptr, nullptr, nullptr, indent.Next());

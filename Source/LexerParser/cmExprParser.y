@@ -15,7 +15,6 @@ Run bison like this:
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdexcept>
 
 /*-------------------------------------------------------------------------*/
 #define YYDEBUG 1
@@ -37,6 +36,9 @@ static void cmExpr_yyerror(yyscan_t yyscanner, const char* message);
 #if defined(__GNUC__) && __GNUC__ >= 8
 # pragma GCC diagnostic ignored "-Wconversion"
 # pragma GCC diagnostic ignored "-Wfree-nonheap-object"
+#endif
+#if defined(__GNUC__) && __GNUC__ >= 16
+# pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #endif
 #if defined(__clang__) && defined(__has_warning)
 # if __has_warning("-Wunused-but-set-variable")
@@ -117,10 +119,12 @@ bitwiseand:
     $<Number>$ = $<Number>1;
   }
 | bitwiseand exp_SHIFTLEFT shift {
-    $<Number>$ = $<Number>1 << $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->ShL($<Number>1, $<Number>3);
   }
 | bitwiseand exp_SHIFTRIGHT shift {
-    $<Number>$ = $<Number>1 >> $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->ShR($<Number>1, $<Number>3);
   }
 
 shift:
@@ -128,10 +132,12 @@ shift:
     $<Number>$ = $<Number>1;
   }
 | shift exp_PLUS term {
-    $<Number>$ = $<Number>1 + $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->Add($<Number>1, $<Number>3);
   }
 | shift exp_MINUS term {
-    $<Number>$ = $<Number>1 - $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->Sub($<Number>1, $<Number>3);
   }
 
 term:
@@ -139,19 +145,16 @@ term:
     $<Number>$ = $<Number>1;
   }
 | term exp_TIMES unary {
-    $<Number>$ = $<Number>1 * $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->Mul($<Number>1, $<Number>3);
   }
 | term exp_DIVIDE unary {
-    if (yyvsp[0].Number == 0) {
-      throw std::overflow_error("divide by zero");
-    }
-    $<Number>$ = $<Number>1 / $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->Div($<Number>1, $<Number>3);
   }
 | term exp_MOD unary {
-    if (yyvsp[0].Number == 0) {
-      throw std::overflow_error("modulo by zero");
-    }
-    $<Number>$ = $<Number>1 % $<Number>3;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->Mod($<Number>1, $<Number>3);
   }
 
 unary:
@@ -162,7 +165,8 @@ unary:
     $<Number>$ = + $<Number>2;
   }
 | exp_MINUS unary {
-    $<Number>$ = - $<Number>2;
+    $<Number>$ = cmExpr_yyget_extra(yyscanner)
+      ->Neg($<Number>2);
   }
 | exp_NOT unary {
     $<Number>$ = ~ $<Number>2;

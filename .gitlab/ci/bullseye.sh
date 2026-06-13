@@ -7,12 +7,12 @@ if ! test -f "$CMAKE_CI_BULLSEYE_LICENSE"; then
     exit 1
 fi
 
-readonly version="9.22.3"
+readonly version="9.25.1"
 
 case "$(uname -s)-$(uname -m)" in
     Linux-x86_64)
         tarball="BullseyeCoverage-$version-Linux-x64.tar.xz"
-        sha256sum="d5be7e65d9363161b67fa77a30407c7c200d995af79a422c4e2e278802ba0776"
+        sha256sum="cc77ef1ffd846e9911a5a22c41a8e24c5e1f1c4c59c0c688b6756fcb14fa4af5"
         shatool="sha256sum"
         ;;
     *)

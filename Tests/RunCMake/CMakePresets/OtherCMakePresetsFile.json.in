@@ -1,0 +1,54 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "OtherCMakePresetsFile",
+      "generator": "@RunCMake_GENERATOR@",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "PRESETS_FILE": "OtherCMakePresetsFile.json"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "OtherCMakePresetsFile",
+      "configurePreset": "OtherCMakePresetsFile"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "OtherCMakePresetsFile",
+      "configurePreset": "OtherCMakePresetsFile"
+    }
+  ],
+  "packagePresets": [
+    {
+      "name": "OtherCMakePresetsFile",
+      "configurePreset": "OtherCMakePresetsFile"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "OtherCMakePresetsFile",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "OtherCMakePresetsFile"
+        },
+        {
+          "type": "build",
+          "name": "OtherCMakePresetsFile"
+        },
+        {
+          "type": "test",
+          "name": "OtherCMakePresetsFile"
+        },
+        {
+          "type": "package",
+          "name": "OtherCMakePresetsFile"
+        }
+      ]
+    }
+  ]
+}

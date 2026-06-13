@@ -1,4 +1,4 @@
-﻿.. option:: -S <path-to-source>
+.. option:: -S <path-to-source>
 
  要构建的CMake项目的根目录路径。
 
@@ -34,6 +34,16 @@
  绝对路径。
 
  该选项也可以作为单个参数使用：\ ``-D<var>:<type>=<value>``\ 或\ ``-D<var>=<value>``。
+
+ The cache :prop_cache:`HELPSTRING` is populated as follows:
+
+ * If the cache entry is known to CMake, its help string is
+   set to a one-line description of the variable.
+
+   .. versionadded:: 4.4
+
+ * Otherwise, its help string is set to the generic default
+   ``No help, variable specified on the command line.``
 
  重要的是要注意\ ``-C``\ 和\ ``-D``\ 参数的顺序很重要。它们将按照列出的顺序执行，最后一个\
  参数优先于前面的参数。例如，如果指定\ ``-DCMAKE_BUILD_TYPE=Debug``，后跟\ ``-C``\ 参数，\
@@ -111,52 +121,34 @@
   此功能旨在供开发人员在渐进式过渡期间临时使用，而非用于最终产品的发布。当项目文件不是\
   ``CMakeLists.txt``\ 时，CMake总会发出警告。
 
-.. option:: -Wno-dev
+.. option:: -W<category>
 
- 抑制开发者警告。
+ Promote the specified diagnostic category (and any children) to at least
+ ``WARN`` severity.  Note that this has no effect on diagnostics already set to
+ a higher severity.
 
- 关闭针对\ ``CMakeLists.txt``\ 文件作者的警告。默认情况下，这也将关闭弃用警告。
+ See the :manual:`cmake-diagnostics(7)` manual for a list of accepted values
+ for ``<category>``.
 
-.. option:: -Wdev
+.. option:: -Wno-<category>
 
- 启用开发人员警告。
+ Disable (ignore) all diagnostics of the specified category, including any
+ child categories.
 
- 启用针对\ ``CMakeLists.txt``\ 文件作者的警告。默认情况下，这也将打开弃用警告。
+.. option:: -Werror=<category>
 
-.. option:: -Wdeprecated
+ Promote the specified diagnostic category (and any children) to at least
+ ``SEND_ERROR`` severity.  Note that this has no effect on diagnostics already
+ set to a higher severity.
 
- 启用弃用的功能警告。
+.. option:: -Wno-error=<category>
 
- 启用使用禁用功能时的警告，用于\ ``CMakeLists.txt``\ 文件的作者。
+ Demote the specified diagnostic category (and any children) to at most
+ ``WARN`` severity.  Note that this has no effect on diagnostics already
+ set to a lower severity.
 
-.. option:: -Wno-deprecated
+.. option:: -Wdev, -Wno-dev
 
- 禁用已弃用的功能警告。
+ .. deprecated:: 4.4
 
- 关闭使用弃用功能时的警告，用于\ ``CMakeLists.txt``\ 文件的作者。
-
-.. option:: -Werror=<what>
-
- 将警告视为错误。\ ``<what>``\ 必须是下列之一：
-
- ``dev``
-   使开发人员警告错误。
-
-   对\ ``CMakeLists.txt``\ 文件的作者发出错误警告。默认情况下，这也会将已弃用的警告作为错\
-   误打开。
-
- ``deprecated``
-  使已弃用的宏和函数警告出错。
-
-  对使用已弃用的宏和函数发出警告，这是针对\ ``CMakeLists.txt``\ 文件的作者的错误。
-
-.. option:: -Wno-error=<what>
-
- 不要将CMake警告视为错误。\ ``<what>``\ 必须是下列之一：
-
- ``dev``
-  对\ ``CMakeLists.txt``\ 文件的作者发出警告，而不是错误。默认情况下，这也将关闭已弃用的\
-  警告作为错误。
-
- ``deprecated``
-  对已弃用的宏和函数的使用发出警告，这是针对\ ``CMakeLists.txt``\ 文件的作者的，而不是错误。
+ Compatibility synonyms for ``-Wauthor`` / ``-Wno-author``.

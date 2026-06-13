@@ -29,6 +29,8 @@ cmDocumentationEntry const cmDocumentationUsage = { {}, "  ctest [options]" };
 cmDocumentationEntry const cmDocumentationOptions[] = {
   { "--preset <preset>, --preset=<preset>",
     "Read arguments from a test preset." },
+  { "--presets-file <file>, --presets-file=<file>",
+    "Load test presets from the given file." },
   { "--list-presets", "List available test presets." },
   { "-C <cfg>, --build-config <cfg>", "Choose configuration to test." },
   { "--progress", "Enable short progress output from tests." },
@@ -94,6 +96,13 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
   { "-T <action>, --test-action <action>",
     "Sets the dashboard action to "
     "perform" },
+  { "--source-dir <path-to-source>",
+    "Specify the project source directory.  When combined with "
+    "-T Configure, this allows CTest to perform an initial configure "
+    "step for an empty binary directory." },
+  { "--build-dir <path-to-build>",
+    "Alias for --test-dir.  Provided as a more intuitive name when "
+    "using -T Configure to bootstrap a build directory." },
   { "--group <group>",
     "Specify what build group on the dashboard you'd like to "
     "submit results to." },
@@ -124,33 +133,41 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
   { "--no-subproject-summary",
     "Disable timing summary information for "
     "subprojects." },
-  { "--test-dir <dir>", "Specify the directory in which to look for tests." },
-  { "--build-and-test", "Configure, build and run a test." },
-  { "--build-target", "Specify a specific target to build." },
+  { "--test-dir <path-to-build>",
+    "Specify the directory in which to look for tests." },
+  { "--build-and-test <path-to-source> <path-to-build>",
+    "Configure, build and run a test." },
+  { "--build-target <tgt>", "Specify a specific target to build." },
   { "--build-nocmake", "Run the build without running cmake first." },
-  { "--build-run-dir", "Specify directory to run programs from." },
+  { "--build-run-dir <dir>", "Specify directory to run programs from." },
   { "--build-two-config", "Run CMake twice" },
-  { "--build-exe-dir", "Specify the directory for the executable." },
-  { "--build-generator", "Specify the generator to use." },
-  { "--build-generator-platform", "Specify the generator-specific platform." },
-  { "--build-generator-toolset", "Specify the generator-specific toolset." },
-  { "--build-project", "Specify the name of the project to build." },
-  { "--build-makeprogram", "Specify the make program to use." },
+  { "--build-exe-dir <dir>", "Specify the directory for the executable." },
+  { "--build-generator <generator-name>", "Specify the generator to use." },
+  { "--build-generator-platform <platform-name>",
+    "Specify the generator-specific platform." },
+  { "--build-generator-toolset <toolset-name>",
+    "Specify the generator-specific toolset." },
+  { "--build-project <project-name>",
+    "Specify the name of the project to build." },
+  { "--build-makeprogram <program-name>", "Specify the make program to use." },
   { "--build-noclean", "Skip the make clean step." },
-  { "--build-config-sample",
-    "A sample executable to use to determine the configuration" },
-  { "--build-options", "Add extra options to the build step." },
-
-  { "--test-command", "The test to run with the --build-and-test option." },
-  { "--test-timeout", "The time limit in seconds, internal use only." },
-  { "--test-load", "CPU load threshold for starting new parallel tests." },
+  { "--build-config-sample <exe-name>",
+    "A sample executable to use to determine the configuration." },
+  { "--build-options [<options>...]", "Add extra options to the build step." },
+  { "--test-command <command>",
+    "The test to run with the --build-and-test option." },
+  { "--test-timeout <timeout>",
+    "The time limit in seconds, internal use only." },
+  { "--test-load <level>",
+    "CPU load threshold for starting new parallel tests." },
   { "--tomorrow-tag", "Nightly or experimental starts with next day tag." },
-  { "--overwrite", "Overwrite CTest configuration option." },
+  { "--overwrite <option-name>", "Overwrite CTest configuration option." },
   { "--extra-submit <file>[;<file>]", "Submit extra files to the dashboard." },
   { "--http-header <header>", "Append HTTP header when submitting" },
   { "--schedule-random", "Use a random order for scheduling tests" },
-  { "--schedule-random-seed", "Override seed for random order of tests" },
-  { "--submit-index",
+  { "--schedule-random-seed <seed>",
+    "Override seed for random order of tests" },
+  { "--submit-index <index>",
     "Submit individual dashboard tests with specific index" },
   { "--timeout <seconds>", "Set the default test timeout." },
   { "--stop-time <time>",
@@ -159,7 +176,11 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
   { "--no-compress-output", "Do not compress test output when submitting." },
   { "--print-labels", "Print all available test labels." },
   { "--no-tests=<[error|ignore]>",
-    "Regard no tests found either as 'error' or 'ignore' it." }
+    "Regard no tests found either as 'error' or 'ignore' it." },
+  { "--collect-instrumentation <build>",
+    "Manually collect instrumentation data from the specified build "
+    "directory." },
+  { "--", "Forward extra arguments to test executables." },
 };
 } // anonymous namespace
 
@@ -209,12 +230,13 @@ int main(int argc, char const* const* argv)
     return 1;
   }
 
+  bool const haveTestfile = cmSystemTools::FileExists("CTestTestfile.cmake") ||
+    cmSystemTools::FileExists("DartTestfile.txt");
+
   // If there is a testing input file, check for documentation options
   // only if there are actually arguments.  We want running without
   // arguments to run tests.
-  if (argc > 1 ||
-      !(cmSystemTools::FileExists("CTestTestfile.cmake") ||
-        cmSystemTools::FileExists("DartTestfile.txt"))) {
+  if (argc > 1 || !haveTestfile) {
     if (argc == 1) {
       std::cerr << "*********************************\n"
                    "No test configuration file found!\n"
@@ -228,7 +250,8 @@ int main(int argc, char const* const* argv)
       doc.SetSection("Name", cmDocumentationName);
       doc.SetSection("Usage", cmDocumentationUsage);
       doc.PrependSection("Options", cmDocumentationOptions);
-      return !doc.PrintRequestedDocumentation(std::cout);
+      return !doc.PrintRequestedDocumentation(std::cout) ||
+        (argc == 1 && !haveTestfile);
     }
   }
 

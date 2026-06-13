@@ -20,6 +20,7 @@
 #include "cmProcessOutput.h"
 
 class cmake;
+class cmCMakePresetsArgs;
 class cmGeneratedFileStream;
 class cmInstrumentation;
 class cmMakefile;
@@ -451,8 +452,11 @@ private:
   /** add a variable definition from a command line -D value */
   bool AddVariableDefinition(std::string const& arg);
 
+  /** apply CTEST_* variable definitions to the CTest configuration map */
+  void ApplyDefinitionsToCTestConfig();
+
   /** set command line arguments read from a test preset */
-  bool SetArgsFromPreset(std::string const& presetName, bool listPresets);
+  bool SetArgsFromPreset(cmCMakePresetsArgs const& args);
 
   /** returns true iff the console supports progress output */
   static bool ProgressOutputSupportedByConsole();

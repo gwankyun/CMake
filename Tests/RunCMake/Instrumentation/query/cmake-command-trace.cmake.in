@@ -1,0 +1,7 @@
+cmake_instrumentation(
+  API_VERSION 1
+  DATA_VERSION 1
+  OPTIONS trace
+  HOOKS postBuild postCMakeInstall postCTest
+  CALLBACK @GET_HOOK@
+)

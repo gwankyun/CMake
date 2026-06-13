@@ -13,7 +13,6 @@
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
 #include "cmInstallType.h"
-#include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
@@ -32,14 +31,14 @@ cmsys::RegularExpression const CFBundleRegularExpression(
 cmInstallImportedRuntimeArtifactsGenerator::
   cmInstallImportedRuntimeArtifactsGenerator(
     std::string targetName, std::string const& dest,
-    std::string file_permissions,
+    std::string filePermissions,
     std::vector<std::string> const& configurations,
-    std::string const& component, MessageLevel message, bool exclude_from_all,
-    bool optional, cmListFileBacktrace backtrace)
+    std::string const& component, MessageLevel message, bool excludeFromAll,
+    bool optional, cmDiagnosticContext context)
   : cmInstallGenerator(dest, configurations, component, message,
-                       exclude_from_all, false, std::move(backtrace))
+                       excludeFromAll, false, std::move(context))
   , TargetName(std::move(targetName))
-  , FilePermissions(std::move(file_permissions))
+  , FilePermissions(std::move(filePermissions))
   , Optional(optional)
 {
   this->ActionsPerConfig = true;
@@ -61,8 +60,10 @@ bool cmInstallImportedRuntimeArtifactsGenerator::Compute(cmLocalGenerator* lg)
 std::string cmInstallImportedRuntimeArtifactsGenerator::GetDestination(
   std::string const& config) const
 {
-  return cmGeneratorExpression::Evaluate(
+  std::string dest = cmGeneratorExpression::Evaluate(
     this->Destination, this->Target->GetLocalGenerator(), config);
+  this->CheckAbsoluteDestination(dest, this->Target->GetLocalGenerator());
+  return dest;
 }
 
 void cmInstallImportedRuntimeArtifactsGenerator::GenerateScriptForConfig(

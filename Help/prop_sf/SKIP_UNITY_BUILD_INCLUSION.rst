@@ -13,3 +13,8 @@ unintended side effects.
 Note that sources which are scanned for C++ modules (see
 :manual:`cmake-cxxmodules(7)`) are not eligible for unity build inclusion and
 will automatically be excluded.
+
+See Also
+^^^^^^^^
+
+* :prop_fs:`SKIP_UNITY_BUILD_INCLUSION` file set property

@@ -45,7 +45,7 @@ cmake命令行工具
 
 CMake工具可能会报告针对软件提供者的警告，而不是针对软件消费者的警告。此类警告以“此警告针对\
 项目开发人员”结尾。用户可以通过向\ :manual:`cmake(1)`\ 传递\
-:option:`-Wno-dev <cmake -Wno-dev>`\ 标志来禁用此类警告。
+:option:`-Wno-author <cmake -Wno->`\ 标志来禁用此类警告。
 
 cmake-gui工具
 --------------
@@ -275,7 +275,7 @@ CMake缓存
 
 CMake理解一个文件，\ ``CMakePresets.json``，以及它的用户特定对等体\
 ``CMakeUserPresets.json``，用于保存常用配置设置的预设。这些预设可以设置构建目录、生成器、\
-缓存变量、环境变量和其他命令行选项。所有这些选项都可以被用户覆盖。\ ``CMakePresets.json``\
+缓存变量、环境变量和其他命令行选项。所有这些选项都可以被用户覆盖。CMake presets\
 格式的详细信息在\ :manual:`cmake-presets(7)`\ 手册中列出。
 
 在命令行使用预设

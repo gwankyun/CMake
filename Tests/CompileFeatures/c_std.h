@@ -5,4 +5,6 @@
 
 #ifdef __STDC_VERSION__
 #  define C_STD __STDC_VERSION__
+#elif defined(__POCC_STDC_VERSION__)
+#  define C_STD __POCC_STDC_VERSION__
 #endif

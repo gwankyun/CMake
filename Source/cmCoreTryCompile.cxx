@@ -4,7 +4,6 @@
 
 #include <array>
 #include <cstdio>
-#include <cstring>
 #include <functional>
 #include <set>
 #include <sstream>
@@ -19,15 +18,16 @@
 
 #include "cmArgumentParser.h"
 #include "cmConfigureLog.h"
+#include "cmDiagnostics.h"
 #include "cmExperimental.h"
 #include "cmExportTryCompileFileGenerator.h"
 #include "cmGlobalGenerator.h"
 #include "cmList.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
-#include "cmOutputConverter.h"
 #include "cmPolicies.h"
 #include "cmRange.h"
+#include "cmScriptGenerator.h"
 #include "cmState.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
@@ -85,7 +85,6 @@ std::string const kCMAKE_TRY_COMPILE_OSX_ARCHITECTURES =
   "CMAKE_TRY_COMPILE_OSX_ARCHITECTURES";
 std::string const kCMAKE_TRY_COMPILE_PLATFORM_VARIABLES =
   "CMAKE_TRY_COMPILE_PLATFORM_VARIABLES";
-std::string const kCMAKE_WARN_DEPRECATED = "CMAKE_WARN_DEPRECATED";
 std::string const kCMAKE_WATCOM_RUNTIME_LIBRARY_DEFAULT =
   "CMAKE_WATCOM_RUNTIME_LIBRARY_DEFAULT";
 std::string const kCMAKE_MSVC_DEBUG_INFORMATION_FORMAT_DEFAULT =
@@ -249,7 +248,7 @@ Arguments cmCoreTryCompile::ParseArgs(
     for (auto const& i : unparsedArguments) {
       m = cmStrCat(m, "\n  \"", i, '"');
     }
-    this->Makefile->IssueMessage(MessageType::AUTHOR_WARNING, m);
+    this->Makefile->IssueDiagnostic(cmDiagnostics::CMD_AUTHOR, m);
   }
   return arguments;
 }
@@ -738,7 +737,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       std::string langFlags = cmStrCat("CMAKE_", li, "_FLAGS");
       cmValue flags = this->Makefile->GetDefinition(langFlags);
       fprintf(fout, "set(CMAKE_%s_FLAGS %s)\n", li.c_str(),
-              cmOutputConverter::EscapeForCMake(*flags).c_str());
+              cmScriptGenerator::Quote(*flags).str().c_str());
       fprintf(fout,
               "set(CMAKE_%s_FLAGS \"${CMAKE_%s_FLAGS}"
               " ${COMPILE_DEFINITIONS}\")\n",
@@ -751,15 +750,11 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       case cmPolicies::WARN:
         if (this->Makefile->PolicyOptionalWarningEnabled(
               "CMAKE_POLICY_WARNING_CMP0066")) {
-          std::ostringstream w;
-          /* clang-format off */
-          w << cmPolicies::GetPolicyWarning(cmPolicies::CMP0066) << "\n"
+          this->Makefile->IssuePolicyWarning(
+            cmPolicies::CMP0066, {},
             "For compatibility with older versions of CMake, try_compile "
             "is not honoring caller config-specific compiler flags "
-            "(e.g. CMAKE_C_FLAGS_DEBUG) in the test project."
-            ;
-          /* clang-format on */
-          this->Makefile->IssueMessage(MessageType::AUTHOR_WARNING, w.str());
+            "(e.g. CMAKE_C_FLAGS_DEBUG) in the test project."_s);
         }
         CM_FALLTHROUGH;
       case cmPolicies::OLD:
@@ -775,7 +770,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
             cmStrCat("CMAKE_", li, "_FLAGS_", cfg);
           cmValue flagsCfg = this->Makefile->GetDefinition(langFlagsCfg);
           fprintf(fout, "set(%s %s)\n", langFlagsCfg.c_str(),
-                  cmOutputConverter::EscapeForCMake(*flagsCfg).c_str());
+                  cmScriptGenerator::Quote(*flagsCfg).str().c_str());
           if (flagsCfg) {
             cmakeVariables.emplace(langFlagsCfg, *flagsCfg);
           }
@@ -786,7 +781,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       cmValue exeLinkFlags =
         this->Makefile->GetDefinition("CMAKE_EXE_LINKER_FLAGS");
       fprintf(fout, "set(CMAKE_EXE_LINKER_FLAGS %s)\n",
-              cmOutputConverter::EscapeForCMake(*exeLinkFlags).c_str());
+              cmScriptGenerator::Quote(*exeLinkFlags).str().c_str());
       if (exeLinkFlags) {
         cmakeVariables.emplace("CMAKE_EXE_LINKER_FLAGS", *exeLinkFlags);
       }
@@ -812,14 +807,14 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
           std::string langLinkFlags = cmStrCat("CMAKE_", li, "_LINK_FLAGS");
           cmValue flags = this->Makefile->GetDefinition(langLinkFlags);
           fprintf(fout, "set(CMAKE_%s_LINK_FLAGS %s)\n", li.c_str(),
-                  cmOutputConverter::EscapeForCMake(*flags).c_str());
+                  cmScriptGenerator::Quote(*flags).str().c_str());
           std::string langLinkFlagsConfig =
             cmStrCat("CMAKE_", li, "_LINK_FLAGS_", tcConfig);
           cmValue flagsConfig =
             this->Makefile->GetDefinition(langLinkFlagsConfig);
           fprintf(fout, "set(CMAKE_%s_LINK_FLAGS_%s %s)\n", li.c_str(),
                   tcConfig.c_str(),
-                  cmOutputConverter::EscapeForCMake(*flagsConfig).c_str());
+                  cmScriptGenerator::Quote(*flagsConfig).str().c_str());
 
           if (flags) {
             cmakeVariables.emplace(langLinkFlags, *flags);
@@ -917,6 +912,13 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
      */
     fprintf(fout, "cmake_policy(SET CMP0210 %s)\n",
             this->Makefile->GetPolicyStatus(cmPolicies::CMP0210) ==
+                cmPolicies::NEW
+              ? "NEW"
+              : "OLD");
+
+    // Honor CMAKE_EXE_LINKER_FLAGS in Swift if the outer project does.
+    fprintf(fout, "cmake_policy(SET CMP0214 %s)\n",
+            this->Makefile->GetPolicyStatus(cmPolicies::CMP0214) ==
                 cmPolicies::NEW
               ? "NEW"
               : "OLD");
@@ -1040,16 +1042,12 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
 
     if (!warnCMP0067Variables.empty()) {
       std::ostringstream w;
-      /* clang-format off */
-      w << cmPolicies::GetPolicyWarning(cmPolicies::CMP0067) << "\n"
-        "For compatibility with older versions of CMake, try_compile "
-        "is not honoring language standard variables in the test project:\n"
-        ;
-      /* clang-format on */
+      w << "For compatibility with older versions of CMake, try_compile is "
+           "not honoring language standard variables in the test project:\n"_s;
       for (std::string const& vi : warnCMP0067Variables) {
         w << "  " << vi << "\n";
       }
-      this->Makefile->IssueMessage(MessageType::AUTHOR_WARNING, w.str());
+      this->Makefile->IssuePolicyWarning(cmPolicies::CMP0067, {}, w.str());
     }
 
     for (auto const& p : arguments.LangProps) {
@@ -1058,15 +1056,15 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       }
       fprintf(fout, "set_property(TARGET %s PROPERTY %s %s)\n",
               targetName.c_str(),
-              cmOutputConverter::EscapeForCMake(p.first).c_str(),
-              cmOutputConverter::EscapeForCMake(p.second).c_str());
+              cmScriptGenerator::Quote(p.first).str().c_str(),
+              cmScriptGenerator::Quote(p.second).str().c_str());
     }
 
     if (!arguments.LinkOptions.empty()) {
       std::vector<std::string> options;
       options.reserve(arguments.LinkOptions.size());
       for (auto const& option : arguments.LinkOptions) {
-        options.emplace_back(cmOutputConverter::EscapeForCMake(option));
+        options.emplace_back(cmScriptGenerator::Quote(option));
       }
 
       if (targetType == cmStateEnums::STATIC_LIBRARY) {
@@ -1137,7 +1135,6 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     vars.insert(kCMAKE_SYSROOT);
     vars.insert(kCMAKE_SYSROOT_COMPILE);
     vars.insert(kCMAKE_SYSROOT_LINK);
-    vars.insert(kCMAKE_WARN_DEPRECATED);
     vars.emplace("CMAKE_MSVC_RUNTIME_LIBRARY"_s);
     vars.emplace("CMAKE_WATCOM_RUNTIME_LIBRARY"_s);
     vars.emplace("CMAKE_MSVC_DEBUG_INFORMATION_FORMAT"_s);
@@ -1368,8 +1365,8 @@ void cmCoreTryCompile::CleanupFiles(std::string const& binDir)
   dir.Load(binDir);
   std::set<std::string> deletedFiles;
   for (unsigned long i = 0; i < dir.GetNumberOfFiles(); ++i) {
-    char const* fileName = dir.GetFile(i);
-    if (strcmp(fileName, ".") != 0 && strcmp(fileName, "..") != 0 &&
+    std::string const& fileName = dir.GetFileName(i);
+    if (fileName != "." && fileName != ".." &&
         // Do not delete NFS temporary files.
         !cmHasPrefix(fileName, ".nfs")) {
       if (deletedFiles.insert(fileName).second) {

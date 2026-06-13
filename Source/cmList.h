@@ -821,8 +821,11 @@ public:
     EXCLUDE
   };
   // Includes or removes items from the list
-  // Throw std::invalid_argument if regular expression is invalid
+  // Throw std::invalid_argument if regular expression is invalid or predicate
+  // function is unknown / does not set its output variable
   cmList& filter(cm::string_view regex, FilterMode mode);
+  cmList& filter(std::string const& functionName, FilterMode mode,
+                 cmMakefile& makefile);
 
   cmList& reverse()
   {
@@ -845,6 +848,7 @@ public:
       STRING,
       FILE_BASENAME,
       NATURAL,
+      COMPARATOR,
     } Compare = CompareMethod::DEFAULT;
 
     enum class CaseSensitivity
@@ -853,6 +857,8 @@ public:
       SENSITIVE,
       INSENSITIVE,
     } Case = CaseSensitivity::DEFAULT;
+
+    std::string ComparatorFunction;
 
     // declare the default constructor to work-around clang bug
     SortConfiguration();
@@ -866,6 +872,7 @@ public:
     }
   };
   cmList& sort(SortConfiguration config = SortConfiguration{});
+  cmList& sort(SortConfiguration config, cmMakefile& makefile);
 
   // exception raised on error during transform operations
   class transform_error : public std::runtime_error
@@ -886,6 +893,7 @@ public:
     struct AT;
     struct FOR;
     struct REGEX;
+    struct PREDICATE;
 
     virtual ~TransformSelector() = default;
 
@@ -910,6 +918,12 @@ public:
     static std::unique_ptr<TransformSelector> New(std::string const&);
     template <typename Type>
     static std::unique_ptr<TransformSelector> New(std::string&&);
+
+    // NewPREDICATE is public (unlike NewAT/NewFOR/NewREGEX) because it takes
+    // a cmMakefile& parameter that cannot be dispatched through the existing
+    // New<Type>() templates.
+    static std::unique_ptr<TransformSelector> NewPREDICATE(
+      std::string const& functionName, cmMakefile& makefile);
 
     cmMakefile* Makefile = nullptr;
 
@@ -941,7 +955,8 @@ public:
     TOUPPER,
     STRIP,
     GENEX_STRIP,
-    REPLACE
+    REPLACE,
+    APPLY
   };
 
   // Transforms the list by applying an action
@@ -955,6 +970,9 @@ public:
                     std::unique_ptr<TransformSelector> = {});
   cmList& transform(TransformAction action,
                     std::vector<std::string> const& args,
+                    std::unique_ptr<TransformSelector> = {});
+  cmList& transform(TransformAction action, std::string const& arg,
+                    cmMakefile& makefile,
                     std::unique_ptr<TransformSelector> = {});
 
   std::string join(cm::string_view glue) const

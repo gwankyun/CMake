@@ -39,7 +39,11 @@ source files from the linting process. This allows you to focus the
 linting tools on the relevant parts of your project, enhancing the efficiency
 and effectiveness of the linting workflow.
 
+A convenient alternative, when multiple sources should be excluded from the
+linting process, is to use the file set's :prop_fs:`SKIP_LINTING` property.
+
 See Also
 ^^^^^^^^
 
+* :prop_fs:`SKIP_LINTING` file set property
 * :prop_tgt:`SKIP_LINTING` target property

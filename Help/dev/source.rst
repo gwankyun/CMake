@@ -209,6 +209,9 @@ Available features are:
   * ``<cm/map>`` :
     ``cm::erase_if``, ``cm::ssize``
 
+  * ``<cm/ranges>``:
+    ``cm::ranges::views::keys``, ``cm::ranges::views::values``
+
   * ``<cm/set>`` :
     ``cm::erase_if``, ``cm::ssize``
 
@@ -244,6 +247,14 @@ These are:
   * ``cm::contains``:
     Checks if element or key is contained in container.
 
+  * ``cm::keys``
+    Extract keys from associative container or sequence container with tuple as
+    element
+
+  * ``cm::values``
+    Extract values from associative container or sequence container with tuple as
+    element
+
 * ``<cmext/enum_set>``
 
   * ``cm::enum_set``:
@@ -274,6 +285,12 @@ These are:
     Apply a ``dynamic_cast`` to a smart pointer.
 
 * ``<cmext/type_traits>``:
+
+  * ``cm::is_pair``:
+    Checks if a type is a std::pair<> type.
+
+  * ``cm::is_tuple``:
+    Checks if a type is a std::tuple<> type.
 
   * ``cm::is_container``:
     Checks if a type is a container type.
@@ -311,6 +328,15 @@ smart pointer such as ``std::unique_ptr`` or ``std::shared_ptr``.
 It is allowed to pass raw pointers between objects to enable objects sharing.
 A raw pointer **must** not be deleted. Only the object(s) owning the smart
 pointer are allowed to delete dynamically allocated memory.
+
+CMake Module/Script Style
+=========================
+
+``execute_process`` should capture ``RESULT_VARIABLE`` to avoid
+unexpected termination of CMake in case the user or project has set
+``CMAKE_EXECUTE_PROCESS_COMMAND_ERROR_IS_FATAL`` to a value other than
+``NONE``.  Output should be captured for both stdout and stderr by using
+``OUTPUT_VARIABLE``/``OUTPUT_QUIET`` and ``ERROR_VARIABLE``/``ERROR_QUIET``.
 
 Third Parties
 =============

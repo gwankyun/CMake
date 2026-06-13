@@ -25,8 +25,11 @@
 #include "cmCommonTargetGenerator.h"
 #include "cmCryptoHash.h"
 #include "cmFastbuildTargetGenerator.h"
+#include "cmFileSetMetadata.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
+#include "cmGeneratorFileSets.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalCommonGenerator.h"
 #include "cmGlobalFastbuildGenerator.h"
@@ -74,6 +77,32 @@ char const kPATH_SLASH = '\\';
 char const kPATH_SLASH = '/';
 #endif
 
+bool IsExcludedFromUnity(cmGeneratorTarget const* target,
+                         cmGeneratorFileSet const* fileSet,
+                         cmSourceFile const& srcFile)
+{
+  if (fileSet &&
+      (!cm::FileSetMetadata::GetAttributes(fileSet->GetType())
+          .contains(cm::FileSetMetadata::FileSetAttributes::UnityBuild) ||
+       fileSet->GetProperty("SKIP_UNITY_BUILD_INCLUSION").IsOn() ||
+       fileSet->GetProperty(fileSet->BelongsTo(target)
+                              ? "COMPILE_OPTIONS"
+                              : "INTERFACE_COMPILE_OPTIONS") ||
+       fileSet->GetProperty(fileSet->BelongsTo(target)
+                              ? "COMPILE_DEFINITIONS"
+                              : "INTERFACE_COMPILE_DEFINITIONS") ||
+       fileSet->GetProperty(fileSet->BelongsTo(target)
+                              ? "INCLUDE_DIRECTORIES"
+                              : "INTERFACE_INCLUDE_DIRECTORIES"))) {
+    return true;
+  }
+  return srcFile.GetPropertyAsBool(SKIP_UNITY_BUILD_INCLUSION) ||
+    srcFile.GetProperty(COMPILE_OPTIONS) ||
+    srcFile.GetProperty(COMPILE_DEFINITIONS) ||
+    srcFile.GetProperty(COMPILE_FLAGS) ||
+    srcFile.GetProperty(INCLUDE_DIRECTORIES);
+}
+
 } // anonymous namespace
 
 cmFastbuildNormalTargetGenerator::cmFastbuildNormalTargetGenerator(
@@ -117,7 +146,20 @@ std::string cmFastbuildNormalTargetGenerator::DetectCompilerFlags(
   cmGeneratorExpressionInterpreter genexInterpreter(
     this->GetLocalGenerator(), Config, this->GeneratorTarget, language);
 
+  auto const* fileSet =
+    this->GeneratorTarget->GetGeneratorFileSets()->GetFileSetForSource(
+      this->Config, &srcFile);
+
   std::vector<std::string> sourceIncludesVec;
+  if (fileSet) {
+    auto fsIncludes = fileSet->BelongsTo(this->GeneratorTarget)
+      ? fileSet->GetIncludeDirectories(this->Config, language)
+      : fileSet->GetInterfaceIncludeDirectories(this->Config, language);
+    if (!fsIncludes.empty()) {
+      this->LocalGenerator->AppendIncludeDirectories(
+        sourceIncludesVec, cm::remove_BT(fsIncludes), srcFile);
+    }
+  }
   if (cmValue cincludes = srcFile.GetProperty(INCLUDE_DIRECTORIES)) {
     this->LocalGenerator->AppendIncludeDirectories(
       sourceIncludesVec,
@@ -140,6 +182,17 @@ std::string cmFastbuildNormalTargetGenerator::DetectCompilerFlags(
     this->LocalGenerator->AppendCompileOptions(
       compileFlags, genexInterpreter.Evaluate(*coptions, COMPILE_OPTIONS));
   }
+  // Add flags from file set properties.
+  if (fileSet) {
+    auto options = fileSet->BelongsTo(this->GeneratorTarget)
+      ? fileSet->GetCompileOptions(this->Config, language)
+      : fileSet->GetInterfaceCompileOptions(this->Config, language);
+    if (!options.empty()) {
+      this->LocalGenerator->AppendCompileOptions(compileFlags,
+                                                 cm::remove_BT(options));
+    }
+  }
+
   // Source includes take precedence over target includes.
   this->LocalGenerator->AppendFlags(compileFlags, sourceIncludesStr);
   this->LocalGenerator->AppendFlags(compileFlags,
@@ -411,6 +464,17 @@ std::string cmFastbuildNormalTargetGenerator::ComputeDefines(
       genexInterpreter.Evaluate(*config_compile_defs, COMPILE_DEFINITIONS));
   }
 
+  if (auto const* fileSet =
+        this->GeneratorTarget->GetGeneratorFileSets()->GetFileSetForSource(
+          this->Config, &srcFile)) {
+    auto fsDefines = fileSet->BelongsTo(this->GeneratorTarget)
+      ? fileSet->GetCompileDefinitions(this->Config, language)
+      : fileSet->GetInterfaceCompileDefinitions(this->Config, language);
+    if (!fsDefines.empty()) {
+      this->LocalGenerator->AppendDefines(defines, fsDefines);
+    }
+  }
+
   std::string definesString = this->GetDefines(language, Config);
   LogMessage(cmStrCat("TARGET DEFINES = ", definesString));
   this->GetLocalGenerator()->JoinDefines(defines, definesString, language);
@@ -426,6 +490,13 @@ void cmFastbuildNormalTargetGenerator::ComputePCH(
   if (srcFile.GetProperty("SKIP_PRECOMPILE_HEADERS")) {
     return;
   }
+
+  cmGeneratorFileSet const* const fileSet =
+    this->GeneratorTarget->GetFileSetForSource(Config, &srcFile);
+  if (fileSet && fileSet->GetProperty("SKIP_PRECOMPILE_HEADERS")) {
+    return;
+  }
+
   // We have already computed PCH for this node.
   if (!node.PCHOptions.empty() || !node.PCHInputFile.empty() ||
       !node.PCHOutputFile.empty()) {
@@ -1104,10 +1175,16 @@ void cmFastbuildNormalTargetGenerator::CollapseAllExecsIntoOneScriptfile(
 std::string cmFastbuildNormalTargetGenerator::ComputeCodeCheckOptions(
   cmSourceFile const& srcFile)
 {
+  cmGeneratorFileSet const* fileSet =
+    this->GeneratorTarget->GetFileSetForSource(Config, &srcFile);
+  cmValue const fsSkipCodeCheckVal =
+    fileSet ? fileSet->GetProperty("SKIP_LINTING") : nullptr;
   cmValue const srcSkipCodeCheckVal = srcFile.GetProperty("SKIP_LINTING");
-  bool const skipCodeCheck = srcSkipCodeCheckVal.IsSet()
-    ? srcSkipCodeCheckVal.IsOn()
-    : this->GetGeneratorTarget()->GetPropertyAsBool("SKIP_LINTING");
+  bool const skipCodeCheck = fsSkipCodeCheckVal.IsSet()
+    ? fsSkipCodeCheckVal.IsOn()
+    : (srcSkipCodeCheckVal.IsSet()
+         ? srcSkipCodeCheckVal.IsOn()
+         : this->GetGeneratorTarget()->GetPropertyAsBool("SKIP_LINTING"));
 
   if (skipCodeCheck) {
     return {};
@@ -1376,8 +1453,8 @@ void cmFastbuildNormalTargetGenerator::GenerateObjects(FastbuildTarget& target)
     useUnity = false;
   }
 
-  // List of sources isolated from the unity build if enabled.
-  std::set<std::string> isolatedFromUnity;
+  // List of sources excluded from the unity build if enabled.
+  std::set<std::string> excludedFromUnity;
 
   // Mapping from unity group (if any) to sources belonging to that group.
   std::map<std::string, std::vector<std::string>> sourcesWithGroups;
@@ -1386,12 +1463,14 @@ void cmFastbuildNormalTargetGenerator::GenerateObjects(FastbuildTarget& target)
 
     cmSourceFile const& srcFile = *source;
     std::string const pathToFile = srcFile.GetFullPath();
+    cmGeneratorFileSet const* const fileSet =
+      GeneratorTarget->GetFileSetForSource(Config, source);
     bool fileUsesUnity = useUnity;
     if (useUnity) {
-      // Check if the source should be added to "UnityInputIsolatedFiles".
-      if (srcFile.GetPropertyAsBool(SKIP_UNITY_BUILD_INCLUSION)) {
+      // Check if the source should be added to "UnityInputExcludedFiles".
+      if (IsExcludedFromUnity(GeneratorTarget, fileSet, srcFile)) {
         fileUsesUnity = false;
-        isolatedFromUnity.emplace(pathToFile);
+        excludedFromUnity.emplace(pathToFile);
       }
       std::string const perFileUnityGroup =
         srcFile.GetSafeProperty(UNITY_GROUP);
@@ -1446,7 +1525,8 @@ void cmFastbuildNormalTargetGenerator::GenerateObjects(FastbuildTarget& target)
       std::string const objectListHash = hash.HashString(cmStrCat(
         compileOptions, staticCheckOptions, objOutDirWithPossibleSubdir,
         // If file does not need PCH - it must be in another ObjectList.
-        srcFile.GetProperty("SKIP_PRECOMPILE_HEADERS"),
+        (fileSet && fileSet->GetProperty("SKIP_PRECOMPILE_HEADERS")) ||
+          srcFile.GetProperty("SKIP_PRECOMPILE_HEADERS"),
         srcFile.GetLanguage()));
 
       LogMessage("ObjectList Hash: " + objectListHash);
@@ -1530,27 +1610,27 @@ void cmFastbuildNormalTargetGenerator::GenerateObjects(FastbuildTarget& target)
   }
   if (useUnity) {
     target.UnityNodes =
-      GenerateUnity(objects, isolatedFromUnity, sourcesWithGroups);
+      GenerateUnity(objects, excludedFromUnity, sourcesWithGroups);
   }
 }
 
 FastbuildUnityNode cmFastbuildNormalTargetGenerator::GetOneUnity(
-  std::set<std::string> const& isolatedFiles, std::vector<std::string>& files,
+  std::set<std::string> const& excludedFiles, std::vector<std::string>& files,
   int unitySize) const
 {
   FastbuildUnityNode result;
   for (auto iter = files.begin(); iter != files.end();) {
     std::string pathToFile = std::move(*iter);
     iter = files.erase(iter);
-    // This source must be isolated
-    if (isolatedFiles.find(pathToFile) != isolatedFiles.end()) {
+    // This source must be excluded from the generated unity file.
+    if (excludedFiles.find(pathToFile) != excludedFiles.end()) {
       result.UnityInputFiles.emplace_back(pathToFile);
-      result.UnityInputIsolatedFiles.emplace_back(std::move(pathToFile));
+      result.UnityInputExcludedFiles.emplace_back(std::move(pathToFile));
     } else {
       result.UnityInputFiles.emplace_back(std::move(pathToFile));
     }
     if (int(result.UnityInputFiles.size() -
-            result.UnityInputIsolatedFiles.size()) == unitySize) {
+            result.UnityInputExcludedFiles.size()) == unitySize) {
       break;
     }
   }
@@ -1580,7 +1660,7 @@ int cmFastbuildNormalTargetGenerator::GetUnityBatchSize() const
 std::vector<FastbuildUnityNode>
 cmFastbuildNormalTargetGenerator::GenerateUnity(
   std::vector<FastbuildObjectListNode>& objects,
-  std::set<std::string> const& isolatedSources,
+  std::set<std::string> const& excludedSources,
   std::map<std::string, std::vector<std::string>> const& sourcesWithGroups)
 {
   int const unitySize = GetUnityBatchSize();
@@ -1613,14 +1693,14 @@ cmFastbuildNormalTargetGenerator::GenerateUnity(
     // General unity batching of the remaining (non-grouped) sources.
     while (!obj.CompilerInputFiles.empty()) {
       FastbuildUnityNode node =
-        GetOneUnity(isolatedSources, obj.CompilerInputFiles, unitySize);
+        GetOneUnity(excludedSources, obj.CompilerInputFiles, unitySize);
       node.Name = cmStrCat(this->GetName(), "_Unity_", ++unityNumber);
       node.UnityOutputPath = obj.CompilerOutputPath;
       node.UnityOutputPattern = cmStrCat(node.Name, ext);
 
-      // Unity group of size 1 doesn't make sense - just isolate the source.
+      // Unity group of size 1 doesn't make sense - just exclude the source.
       if (groupedNode.UnityInputFiles.size() == 1) {
-        node.UnityInputIsolatedFiles.emplace_back(
+        node.UnityInputExcludedFiles.emplace_back(
           groupedNode.UnityInputFiles[0]);
         node.UnityInputFiles.emplace_back(
           std::move(groupedNode.UnityInputFiles[0]));

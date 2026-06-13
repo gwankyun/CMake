@@ -1,0 +1,10 @@
+{
+  "version": 4,
+  "configurePresets": [
+    {
+      "name": "IncludeRelativeToSubdir",
+      "generator": "@RunCMake_GENERATOR@",
+      "binaryDir": "${sourceDir}/build"
+    }
+  ]
+}

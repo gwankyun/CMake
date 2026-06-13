@@ -46,7 +46,10 @@ protected:
     std::string TestLoad;
     std::string ResourceSpecFile;
     std::string OutputJUnit;
+    std::string CoverageTool;
     bool StopOnFailure = false;
+    std::string Preset;
+    std::string PresetsFile;
   };
 
   template <typename Args>
@@ -74,7 +77,10 @@ protected:
       .Bind("TEST_LOAD"_s, &TestArguments::TestLoad)
       .Bind("RESOURCE_SPEC_FILE"_s, &TestArguments::ResourceSpecFile)
       .Bind("STOP_ON_FAILURE"_s, &TestArguments::StopOnFailure)
-      .Bind("OUTPUT_JUNIT"_s, &TestArguments::OutputJUnit);
+      .Bind("COVERAGE_TOOL"_s, &TestArguments::CoverageTool)
+      .Bind("OUTPUT_JUNIT"_s, &TestArguments::OutputJUnit)
+      .Bind("PRESET"_s, &TestArguments::Preset)
+      .Bind("PRESETS_FILE"_s, &TestArguments::PresetsFile);
   }
 
 private:

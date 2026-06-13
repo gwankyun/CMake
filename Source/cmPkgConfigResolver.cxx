@@ -227,7 +227,7 @@ void cmPkgConfigResolver::ReplaceSep(std::string& list)
 }
 
 cm::optional<cmPkgConfigResult> cmPkgConfigResolver::ResolveStrict(
-  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv env)
+  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env)
 {
   cm::optional<cmPkgConfigResult> result;
   cmPkgConfigResult config;
@@ -289,11 +289,11 @@ cm::optional<cmPkgConfigResult> cmPkgConfigResolver::ResolveStrict(
 }
 
 cm::optional<cmPkgConfigResult> cmPkgConfigResolver::ResolvePermissive(
-  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv env)
+  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env)
 {
   cm::optional<cmPkgConfigResult> result;
 
-  cmPkgConfigResult config = ResolveBestEffort(entries, std::move(env));
+  cmPkgConfigResult config = ResolveBestEffort(entries, env);
   auto const& keys = config.Keywords;
 
   if (keys.find("Name") == keys.end() ||
@@ -307,7 +307,7 @@ cm::optional<cmPkgConfigResult> cmPkgConfigResolver::ResolvePermissive(
 }
 
 cmPkgConfigResult cmPkgConfigResolver::ResolveBestEffort(
-  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv env)
+  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env)
 {
   cmPkgConfigResult result;
 

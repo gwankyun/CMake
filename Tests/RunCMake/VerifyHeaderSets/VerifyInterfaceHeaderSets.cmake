@@ -83,3 +83,10 @@ add_library(skip_linting STATIC lib.c)
 target_sources(skip_linting INTERFACE FILE_SET HEADERS FILES lang_test.h skip_linting.h)
 set_property(SOURCE skip_linting.h PROPERTY LANGUAGE C)
 set_property(SOURCE skip_linting.h PROPERTY SKIP_LINTING TRUE)
+
+add_library(skip_linting2 STATIC lib.c)
+target_sources(skip_linting2 INTERFACE FILE_SET HEADERS FILES lang_test.h)
+target_sources(skip_linting2 INTERFACE FILE_SET skip_headers TYPE HEADERS FILES skip_linting2.h)
+set_property(FILE_SET skip_headers TARGET skip_linting2 PROPERTY SKIP_LINTING TRUE)
+
+set_property(SOURCE skip_linting2.h PROPERTY LANGUAGE C)

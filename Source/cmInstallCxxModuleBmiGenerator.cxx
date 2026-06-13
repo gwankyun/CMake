@@ -5,24 +5,23 @@
 #include <ostream>
 #include <utility>
 
+#include "cmDiagnosticContext.h"
 #include "cmGeneratorExpression.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
-#include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
-#include "cmOutputConverter.h"
 #include "cmScriptGenerator.h"
 #include "cmStringAlgorithms.h"
 
 cmInstallCxxModuleBmiGenerator::cmInstallCxxModuleBmiGenerator(
-  std::string target, std::string const& dest, std::string file_permissions,
+  std::string target, std::string const& dest, std::string filePermissions,
   std::vector<std::string> const& configurations, std::string const& component,
-  MessageLevel message, bool exclude_from_all, bool optional,
-  cmListFileBacktrace backtrace)
+  MessageLevel message, bool excludeFromAll, bool optional,
+  cmDiagnosticContext context)
   : cmInstallGenerator(dest, configurations, component, message,
-                       exclude_from_all, false, std::move(backtrace))
+                       excludeFromAll, false, std::move(context))
   , TargetName(std::move(target))
-  , FilePermissions(std::move(file_permissions))
+  , FilePermissions(std::move(filePermissions))
   , Optional(optional)
 {
   this->ActionsPerConfig = true;
@@ -47,19 +46,22 @@ bool cmInstallCxxModuleBmiGenerator::Compute(cmLocalGenerator* lg)
 std::string cmInstallCxxModuleBmiGenerator::GetScriptLocation(
   std::string const& config) const
 {
-  char const* config_name = config.c_str();
+  char const* configName = config.c_str();
   if (config.empty()) {
-    config_name = "noconfig";
+    configName = "noconfig";
   }
+
   return cmStrCat(this->Target->GetCMFSupportDirectory(),
-                  "/install-cxx-module-bmi-", config_name, ".cmake");
+                  "/install-cxx-module-bmi-", configName, ".cmake");
 }
 
 std::string cmInstallCxxModuleBmiGenerator::GetDestination(
   std::string const& config) const
 {
-  return cmGeneratorExpression::Evaluate(this->Destination,
-                                         this->LocalGenerator, config);
+  std::string dest = cmGeneratorExpression::Evaluate(
+    this->Destination, this->LocalGenerator, config);
+  this->CheckAbsoluteDestination(dest, this->LocalGenerator);
+  return dest;
 }
 
 void cmInstallCxxModuleBmiGenerator::GenerateScriptForConfig(
@@ -69,8 +71,6 @@ void cmInstallCxxModuleBmiGenerator::GenerateScriptForConfig(
   if (loc.empty()) {
     return;
   }
-  os << indent << "include(\""
-     << cmOutputConverter::EscapeForCMake(
-          loc, cmOutputConverter::WrapQuotes::NoWrap)
-     << "\" OPTIONAL)\n";
+  os << indent << "include(" << cmScriptGenerator::Quote(loc)
+     << " OPTIONAL)\n";
 }

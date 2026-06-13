@@ -9,8 +9,10 @@
 #include <utility>
 #include <vector>
 
+#include <cm/optional>
 #include <cmext/algorithm>
 
+#include "cmDiagnostics.h"
 #include "cmExportFileGenerator.h"
 #include "cmStateTypes.h"
 
@@ -55,6 +57,18 @@ public:
   }
   void SetExportSet(cmExportSet*);
 
+  struct ExportRecord
+  {
+    std::string Name;      // export set name; empty for anonymous exports
+    std::string Namespace; // export namespace
+  };
+
+  /** If this export contains `target`, return a record identifying it
+   *  (export set name + namespace).  Used by cmGlobalGenerator to assemble
+   *  a project-wide view of where targets are exported.  */
+  cm::optional<ExportRecord> FindRecordForTarget(
+    cmGeneratorTarget const* target) const;
+
   /** Set the name of the C++ module directory.  */
   void SetCxxModuleDirectory(std::string cxx_module_dir)
   {
@@ -88,6 +102,8 @@ protected:
 
   void IssueMessage(MessageType type,
                     std::string const& message) const override;
+  void IssueDiagnostic(cmDiagnosticCategory category,
+                       std::string const& message) const override;
 
   /** Fill in properties indicating built file locations.  */
   void SetImportLocationProperty(std::string const& config,
@@ -110,6 +126,10 @@ protected:
   using cmExportFileGenerator::PopulateInterfaceProperties;
   bool PopulateInterfaceProperties(cmGeneratorTarget const* target,
                                    ImportPropertyMap& properties);
+
+  using cmExportFileGenerator::PopulateFileSetInterfaceProperties;
+  bool PopulateFileSetInterfaceProperties(
+    cmGeneratorTarget const* target, ImportFileSetPropertyMap& properties);
 
   struct TargetExportPrivate
   {

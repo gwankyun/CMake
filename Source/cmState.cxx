@@ -14,6 +14,7 @@
 
 #include "cmCacheManager.h"
 #include "cmDefinitions.h"
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmGlobCacheEntry.h" // IWYU pragma: keep
 #include "cmGlobVerificationManager.h"
@@ -274,8 +275,12 @@ void cmState::RemoveCacheEntryProperty(std::string const& key,
   this->CacheManager->RemoveCacheEntryProperty(key, propertyName);
 }
 
-cmStateSnapshot cmState::Reset()
+cmStateSnapshot cmState::Reset(cmStateSnapshot const& diagnosticState)
 {
+  assert(diagnosticState.CanPopDiagnosticScope());
+  cmDiagnostics::DiagnosticMap diagnostics =
+    *diagnosticState.Position->Diagnostics;
+
   this->GlobalProperties.Clear();
   this->PropertyDefinitions = {};
   this->GlobVerificationManager->Reset();
@@ -300,6 +305,15 @@ cmStateSnapshot cmState::Reset()
   pos->PolicyScope = this->PolicyStack.Root();
   assert(pos->Policies.IsValid());
   assert(pos->PolicyRoot.IsValid());
+
+  this->DiagnosticStack.Clear();
+  pos->Diagnostics = this->DiagnosticStack.Push(this->DiagnosticStack.Root(),
+                                                { diagnostics, false });
+  pos->DiagnosticRoot = this->DiagnosticStack.Root();
+  pos->DiagnosticScope = this->DiagnosticStack.Root();
+  assert(pos->Diagnostics.IsValid());
+  assert(pos->DiagnosticRoot.IsValid());
+  assert(pos->Diagnostics != pos->DiagnosticRoot);
 
   {
     std::string srcDir =
@@ -376,11 +390,6 @@ std::vector<std::string> cmState::GetEnabledLanguages() const
   return this->EnabledLanguages;
 }
 
-void cmState::SetEnabledLanguages(std::vector<std::string> const& langs)
-{
-  this->EnabledLanguages = langs;
-}
-
 void cmState::ClearEnabledLanguages()
 {
   this->EnabledLanguages.clear();
@@ -400,7 +409,10 @@ void cmState::AddBuiltinCommand(std::string const& name, Command command)
 {
   assert(name == cmSystemTools::LowerCase(name));
   assert(this->BuiltinCommands.find(name) == this->BuiltinCommands.end());
-  this->BuiltinCommands.emplace(name, std::move(command));
+  this->BuiltinCommands.emplace(
+    name,
+    CommandDescriptor{ cmStateEnums::CommandType::Function,
+                       std::move(command) });
 }
 
 static bool InvokeBuiltinCommand(cmState::BuiltinCommand command,
@@ -454,13 +466,8 @@ void cmState::AddDisallowedCommand(std::string const& name,
                         cmExecutionStatus& status) -> bool {
       cmMakefile& mf = status.GetMakefile();
       switch (mf.GetPolicyStatus(policy)) {
-        case cmPolicies::WARN: {
-          std::string warning = cmPolicies::GetPolicyWarning(policy);
-          if (additionalWarning) {
-            warning = cmStrCat(warning, '\n', additionalWarning);
-          }
-          mf.IssueMessage(MessageType::AUTHOR_WARNING, warning);
-        }
+        case cmPolicies::WARN:
+          mf.IssuePolicyWarning(policy, {}, additionalWarning);
           CM_FALLTHROUGH;
         case cmPolicies::OLD:
           break;
@@ -508,8 +515,31 @@ void cmState::AddUnexpectedFlowControlCommand(std::string const& name,
   this->AddUnexpectedCommand(name, error);
 }
 
-bool cmState::AddScriptedCommand(std::string const& name, BT<Command> command,
-                                 cmMakefile& mf)
+cmState::CommandDescriptor::CommandDescriptor(CommandType type,
+                                              Command command)
+  : Type(type)
+  , Script(std::move(command))
+{
+}
+cmState::CommandDescriptor::CommandDescriptor(
+  CommandDescriptor&& descriptor) noexcept
+  : Type(descriptor.Type)
+  , Script(std::move(descriptor.Script))
+{
+}
+
+cmState::CommandDescriptor& cmState::CommandDescriptor::operator=(
+  CommandDescriptor&& descriptor) noexcept
+{
+  this->Type = descriptor.Type;
+  this->Script = std::move(descriptor.Script);
+
+  return *this;
+}
+
+bool cmState::AddScriptedCommand(std::string const& name,
+                                 cmStateEnums::CommandType type,
+                                 BT<Command> command, cmMakefile& mf)
 {
   std::string sName = cmSystemTools::LowerCase(name);
 
@@ -524,30 +554,60 @@ bool cmState::AddScriptedCommand(std::string const& name, BT<Command> command,
   }
 
   // if the command already exists, give a new name to the old command.
-  if (Command oldCmd = this->GetCommandByExactName(sName)) {
-    this->ScriptedCommands["_" + sName] = oldCmd;
+  if (CommandDescriptor const* oldCmd =
+        this->GetCommandDescriptorByExactName(sName)) {
+    this->ScriptedCommands["_" + sName] = *oldCmd;
   }
 
-  this->ScriptedCommands[sName] = std::move(command.Value);
+  this->ScriptedCommands[sName] =
+    CommandDescriptor{ type, std::move(command.Value) };
   return true;
+}
+
+cmState::CommandDescriptor const* cmState::GetCommandDescriptorByExactName(
+  std::string const& name) const
+{
+  auto pos = this->ScriptedCommands.find(name);
+  if (pos != this->ScriptedCommands.end()) {
+    return &pos->second;
+  }
+  pos = this->BuiltinCommands.find(name);
+  if (pos != this->BuiltinCommands.end()) {
+    return &pos->second;
+  }
+  return nullptr;
 }
 
 cmState::Command cmState::GetCommand(std::string const& name) const
 {
   return this->GetCommandByExactName(cmSystemTools::LowerCase(name));
 }
+cm::optional<cmStateEnums::CommandType> cmState::GetCommandType(
+  std::string const& name) const
+{
+  return this->GetCommandTypeByExactName(cmSystemTools::LowerCase(name));
+}
 
 cmState::Command cmState::GetCommandByExactName(std::string const& name) const
 {
-  auto pos = this->ScriptedCommands.find(name);
-  if (pos != this->ScriptedCommands.end()) {
-    return pos->second;
+  CommandDescriptor const* descriptor =
+    this->GetCommandDescriptorByExactName(name);
+  if (!descriptor) {
+    return nullptr;
   }
-  pos = this->BuiltinCommands.find(name);
-  if (pos != this->BuiltinCommands.end()) {
-    return pos->second;
+
+  return descriptor->Script;
+}
+cm::optional<cmStateEnums::CommandType> cmState::GetCommandTypeByExactName(
+  std::string const& name) const
+{
+  CommandDescriptor const* descriptor =
+    this->GetCommandDescriptorByExactName(name);
+  if (!descriptor) {
+    return cm::nullopt;
   }
-  return nullptr;
+
+  return descriptor->Type;
 }
 
 std::vector<std::string> cmState::GetCommandNames() const
@@ -613,6 +673,9 @@ cmValue cmState::GetGlobalProperty(std::string const& prop)
     this->SetGlobalProperty("ENABLED_LANGUAGES", langs);
   } else if (prop == "CMAKE_ROLE") {
     this->SetGlobalProperty("CMAKE_ROLE", this->GetRoleString());
+  } else if (prop == "_CMAKE_RUNNING_IN_BUILD_TREE") {
+    this->SetGlobalProperty("_CMAKE_RUNNING_IN_BUILD_TREE",
+                            cmSystemTools::GetCMakeInBuildTree() ? "1" : "0");
   }
 #define STRING_LIST_ELEMENT(F) ";" #F
   if (prop == "CMAKE_C_KNOWN_FEATURES") {
@@ -886,6 +949,13 @@ cmStateSnapshot cmState::CreateBaseSnapshot()
   pos->PolicyScope = this->PolicyStack.Root();
   assert(pos->Policies.IsValid());
   assert(pos->PolicyRoot.IsValid());
+  pos->Diagnostics =
+    this->DiagnosticStack.Push(this->DiagnosticStack.Root(), { {}, false });
+  pos->DiagnosticRoot = this->DiagnosticStack.Root();
+  pos->DiagnosticScope = this->DiagnosticStack.Root();
+  assert(pos->Diagnostics.IsValid());
+  assert(pos->DiagnosticRoot.IsValid());
+  assert(pos->Diagnostics != pos->DiagnosticRoot);
   pos->Vars = this->VarTree.Push(this->VarTree.Root());
   assert(pos->Vars.IsValid());
   pos->Parent = this->VarTree.Root();
@@ -913,6 +983,11 @@ cmStateSnapshot cmState::CreateBuildsystemDirectorySnapshot(
   pos->PolicyScope = originSnapshot.Position->Policies;
   assert(pos->Policies.IsValid());
   assert(pos->PolicyRoot.IsValid());
+  pos->Diagnostics = originSnapshot.Position->Diagnostics;
+  pos->DiagnosticRoot = originSnapshot.Position->Diagnostics;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
+  assert(pos->Diagnostics.IsValid());
+  assert(pos->DiagnosticRoot.IsValid());
 
   cmLinkedTree<cmDefinitions>::iterator origin = originSnapshot.Position->Vars;
   pos->Parent = origin;
@@ -939,6 +1014,7 @@ cmStateSnapshot cmState::CreateDeferCallSnapshot(
   assert(originSnapshot.Position->Vars.IsValid());
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   return { this, pos };
 }
 
@@ -954,6 +1030,7 @@ cmStateSnapshot cmState::CreateFunctionCallSnapshot(
     originSnapshot.Position->ExecutionListFile, fileName);
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   assert(originSnapshot.Position->Vars.IsValid());
   cmLinkedTree<cmDefinitions>::iterator origin = originSnapshot.Position->Vars;
   pos->Parent = origin;
@@ -973,6 +1050,7 @@ cmStateSnapshot cmState::CreateMacroCallSnapshot(
   assert(originSnapshot.Position->Vars.IsValid());
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   return { this, pos };
 }
 
@@ -988,6 +1066,7 @@ cmStateSnapshot cmState::CreateIncludeFileSnapshot(
   assert(originSnapshot.Position->Vars.IsValid());
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   return { this, pos };
 }
 
@@ -1001,6 +1080,7 @@ cmStateSnapshot cmState::CreateVariableScopeSnapshot(
   pos->Keep = false;
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   assert(originSnapshot.Position->Vars.IsValid());
 
   cmLinkedTree<cmDefinitions>::iterator origin = originSnapshot.Position->Vars;
@@ -1021,6 +1101,7 @@ cmStateSnapshot cmState::CreateInlineListFileSnapshot(
     originSnapshot.Position->ExecutionListFile, fileName);
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   return { this, pos };
 }
 
@@ -1033,6 +1114,7 @@ cmStateSnapshot cmState::CreatePolicyScopeSnapshot(
   pos->Keep = false;
   pos->BuildSystemDirectory->CurrentScope = pos;
   pos->PolicyScope = originSnapshot.Position->Policies;
+  pos->DiagnosticScope = originSnapshot.Position->Diagnostics;
   return { this, pos };
 }
 

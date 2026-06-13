@@ -5,7 +5,6 @@
 /* clang-format on */
 
 #include <map>
-#include <sstream>
 #include <string>
 #include <unordered_set>
 #include <utility>
@@ -30,49 +29,44 @@
 
 namespace {
 void processLinkDirectories(cmGeneratorTarget const* tgt,
-                            EvaluatedTargetPropertyEntries& entries,
+                            cm::EvaluatedTargetPropertyEntries& entries,
                             std::vector<BT<std::string>>& directories,
                             std::unordered_set<std::string>& uniqueDirectories,
                             bool debugDirectories)
 {
-  for (EvaluatedTargetPropertyEntry& entry : entries.Entries) {
+  for (cm::EvaluatedTargetPropertyEntry& entry : entries.Entries) {
     cmLinkItem const& item = entry.LinkItem;
     std::string const& targetName = item.AsStr();
 
     std::string usedDirectories;
     for (std::string& entryDirectory : entry.Values) {
       if (!cmSystemTools::FileIsFullPath(entryDirectory)) {
-        std::ostringstream e;
-        bool noMessage = false;
-        MessageType messageType = MessageType::FATAL_ERROR;
         if (!targetName.empty()) {
-          /* clang-format off */
-          e << "Target \"" << targetName << "\" contains relative "
-            "path in its INTERFACE_LINK_DIRECTORIES:\n"
-            "  \"" << entryDirectory << "\"";
-          /* clang-format on */
-        } else {
-          switch (tgt->GetPolicyStatusCMP0081()) {
-            case cmPolicies::WARN: {
-              e << cmPolicies::GetPolicyWarning(cmPolicies::CMP0081) << "\n";
-              messageType = MessageType::AUTHOR_WARNING;
-            } break;
-            case cmPolicies::OLD:
-              noMessage = true;
-              break;
-            case cmPolicies::NEW:
-              // Issue the fatal message.
-              break;
-          }
-          e << "Found relative path while evaluating link directories of "
-               "\""
-            << tgt->GetName() << "\":\n  \"" << entryDirectory << "\"\n";
+          tgt->GetLocalGenerator()->IssueMessage(
+            MessageType::FATAL_ERROR,
+            cmStrCat("Target \"", targetName,
+                     "\" contains relative path"
+                     " in its INTERFACE_LINK_DIRECTORIES:\n  \"",
+                     entryDirectory, "\""));
+          return;
         }
-        if (!noMessage) {
-          tgt->GetLocalGenerator()->IssueMessage(messageType, e.str());
-          if (messageType == MessageType::FATAL_ERROR) {
+        switch (tgt->GetPolicyStatusCMP0081()) {
+          case cmPolicies::WARN:
+            tgt->GetLocalGenerator()->IssuePolicyWarning(
+              cmPolicies::CMP0081, {},
+              cmStrCat("Found relative path while evaluating"
+                       " link directories of \"",
+                       tgt->GetName(), "\":\n  \"", entryDirectory, "\"\n"));
+            break;
+          case cmPolicies::OLD:
+            break;
+          case cmPolicies::NEW:
+            tgt->GetLocalGenerator()->IssueMessage(
+              MessageType::FATAL_ERROR,
+              cmStrCat("Found relative path while evaluating"
+                       " link directories of \"",
+                       tgt->GetName(), "\":\n  \"", entryDirectory, "\"\n"));
             return;
-          }
         }
       }
 
@@ -135,11 +129,12 @@ std::vector<BT<std::string>> cmGeneratorTarget::GetLinkDirectories(
 
   this->DebugLinkDirectoriesDone = true;
 
-  EvaluatedTargetPropertyEntries entries = EvaluateTargetPropertyEntries(
-    this, context, &dagChecker, this->LinkDirectoriesEntries);
+  cm::EvaluatedTargetPropertyEntries entries =
+    cm::EvaluateTargetPropertyEntries(this, context, &dagChecker,
+                                      this->LinkDirectoriesEntries);
 
   AddInterfaceEntries(this, "INTERFACE_LINK_DIRECTORIES", context, &dagChecker,
-                      entries, IncludeRuntimeInterface::Yes,
+                      entries, cm::IncludeRuntimeInterface::Yes,
                       this->GetPolicyStatusCMP0099() == cmPolicies::NEW
                         ? UseTo::Link
                         : UseTo::Compile);

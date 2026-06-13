@@ -10,6 +10,7 @@
 
 #include "cmsys/String.h"
 
+#include "cmDiagnostics.h"
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
@@ -259,10 +260,10 @@ bool cmPolicies::ApplyPolicyVersion(cmMakefile* mf,
          minPatch > maxPatch) ||
         (minMajor == maxMajor && minMinor == maxMinor &&
          minPatch == maxPatch && minTweak > maxTweak)) {
-      mf->IssueMessage(
-        MessageType::FATAL_ERROR,
-        cmStrCat("Policy VERSION range \"", version_min, "...", version_max,
-                 "\" specifies a larger minimum than maximum."));
+      mf->IssueMessage(MessageType::FATAL_ERROR,
+                       cmStrCat("Policy VERSION range \"", version_min, "...",
+                                version_max,
+                                "\" specifies a later minimum than maximum."));
       return false;
     }
 
@@ -339,8 +340,8 @@ bool cmPolicies::ApplyPolicyVersion(cmMakefile* mf, unsigned int majorVer,
     }
   } else if (majorVer == 3 && minorVer < 10 && warnCompat == WarnCompat::On) {
     // Warn about policy versions for which support will be removed.
-    mf->IssueMessage(
-      MessageType::DEPRECATION_WARNING,
+    mf->IssueDiagnostic(
+      cmDiagnostics::CMD_DEPRECATED,
       "Compatibility with CMake < 3.10 will be removed from "
       "a future version of CMake.\n" ADVICE_UPDATE_VERSION_ARGUMENT);
   }

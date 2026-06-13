@@ -24,8 +24,10 @@
 #include "cmBuildOptions.h"
 #include "cmCustomCommandLines.h"
 #include "cmDuration.h"
+#include "cmExportFileGenerator.h"
 #include "cmExportSet.h"
 #include "cmLocalGenerator.h"
+#include "cmSbomBuilder.h"
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
@@ -50,6 +52,8 @@ class cmBuildArgs;
 class cmDirectoryId;
 class cmExportBuildFileGenerator;
 class cmExternalMakefileProjectGenerator;
+class cmBuildSbomGenerator;
+class cmInstallSbomGenerator;
 class cmGeneratorTarget;
 class cmInstallRuntimeDependencySet;
 class cmLinkLineComputer;
@@ -240,11 +244,7 @@ public:
   void ResolveLanguageCompiler(std::string const& lang, cmMakefile* mf,
                                bool optional) const;
 
-  /**
-   * Try to determine system information, get it from another generator
-   */
-  void EnableLanguagesFromGenerator(cmGlobalGenerator* gen, cmMakefile* mf);
-
+  void SetupTryCompile(cmGlobalGenerator* gen, cmMakefile* mf);
   /**
    * Try running cmake and building a file. This is used for dynamically
    * loaded commands, not as part of the usual build process.
@@ -369,6 +369,8 @@ public:
   std::string GetLanguageOutputExtension(cmSourceFile const&) const;
   //! What is the object file extension for a given language?
   std::string GetLanguageOutputExtension(std::string const& lang) const;
+  //! What is the object file extension for a given --emit option in Rust?
+  std::string GetRustEmitOutputExtension(std::string const& emitValue) const;
 
   //! What is the configurations directory variable called?
   virtual char const* GetCMakeCFGIntDir() const { return "."; }
@@ -633,9 +635,54 @@ public:
   {
     return this->BuildExportSets;
   }
+  /** Scan all build-tree exports in the project and report which of them
+   *  reference `target`.  Used both by cmExportBuildFileGenerator (to resolve
+   *  out-of-export link references) and by cmSbomBuilder (to record which
+   *  export sets a target appears in for SBOM dependency tracking).  */
+  cmExportFileGenerator::ExportInfo FindBuildExportInfo(
+    cmGeneratorTarget const* target) const;
+
+  /** Same as FindBuildExportInfo, but searches install-tree export sets
+   *  (those registered via install(EXPORT ...)). */
+  cmExportFileGenerator::ExportInfo FindInstallExportInfo(
+    cmGeneratorTarget const* target) const;
+
+  /** Scan all build-tree SBOMs and report which of them cover `target`. */
+  cmSbomBuilder::SbomInfo FindBuildSbomInfo(
+    cmGeneratorTarget const* target) const;
+
+  /** Same as FindBuildSbomInfo, but searches install-tree SBOMs. */
+  cmSbomBuilder::SbomInfo FindInstallSbomInfo(
+    cmGeneratorTarget const* target) const;
   void AddBuildExportSet(cmExportBuildFileGenerator* gen);
   void AddBuildExportExportSet(cmExportBuildFileGenerator* gen);
+  void AddBuildSbomGenerator(cmBuildSbomGenerator* gen);
+  std::vector<cmBuildSbomGenerator*> const& GetBuildSbomGenerators() const
+  {
+    return this->BuildSbomGenerators;
+  }
+
+  // Project-wide registry of install(SBOM) generators.
+  void AddInstallSbomGenerator(cmInstallSbomGenerator const* gen);
+  std::vector<cmInstallSbomGenerator const*> const& GetInstallSbomGenerators()
+    const
+  {
+    return this->InstallSbomGenerators;
+  }
+
   bool IsExportedTargetsFile(std::string const& filename) const;
+
+  /** True if any registered cmBuildSbomGenerator already targets this
+   *  output file path.  Used to diagnose duplicate `export(SBOM ...)`
+   *  calls that would otherwise silently clobber each other's output. */
+  bool IsBuildSbomFile(std::string const& filepath) const;
+
+  /** True if any registered cmInstallSbomGenerator already targets this
+   *  install file path (DESTINATION + filename).  Used to diagnose
+   *  duplicate `install(SBOM ...)` calls that would otherwise silently
+   *  clobber each other at install time. */
+  bool IsInstallSbomFile(std::string const& filepath) const;
+
   cmExportBuildFileGenerator* GetExportedTargetsFile(
     std::string const& filename) const;
   void AddCMP0068WarnTarget(std::string const& target);
@@ -822,6 +869,8 @@ protected:
   cmExportSetMap ExportSets;
   std::map<std::string, cmExportBuildFileGenerator*> BuildExportSets;
   std::map<std::string, cmExportBuildFileGenerator*> BuildExportExportSets;
+  std::vector<cmBuildSbomGenerator*> BuildSbomGenerators;
+  std::vector<cmInstallSbomGenerator const*> InstallSbomGenerators;
 
   std::map<std::string, std::string> AliasTargets;
 
@@ -868,13 +917,12 @@ private:
   std::map<cmGeneratorTarget const*, size_t> TargetOrderIndex;
 
   cmMakefile* TryCompileOuterMakefile;
-  // If you add a new map here, make sure it is copied
-  // in EnableLanguagesFromGenerator
   std::map<std::string, bool> IgnoreExtensions;
-  std::set<std::string> LanguagesReady; // Ready for try_compile
+  std::set<std::string> LanguagesReadyForTryCompile;
   std::set<std::string> LanguagesInProgress;
   std::map<std::string, std::string> OutputExtensions;
   std::map<std::string, std::string> LanguageToOutputExtension;
+  std::map<std::string, std::string> RustEmitToOutputExtension;
 #if __cplusplus >= 201402L || defined(_MSVC_LANG) && _MSVC_LANG >= 201402L
   std::map<std::string, std::string, std::less<void>> ExtensionToLanguage;
 #else

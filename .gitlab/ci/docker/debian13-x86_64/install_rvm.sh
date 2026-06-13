@@ -8,7 +8,10 @@ gpg2 --keyserver hkps://keyserver.ubuntu.com \
      --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 \
                  7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 
-curl -sSL https://get.rvm.io | bash -s stable
+curl -sSL https://raw.githubusercontent.com/rvm/rvm/stable/binscripts/rvm-installer     -o rvm-installer &&
+curl -sSL https://raw.githubusercontent.com/rvm/rvm/stable/binscripts/rvm-installer.asc -o rvm-installer.asc &&
+gpg2 --verify rvm-installer.asc rvm-installer &&
+bash rvm-installer stable
 
 # keep version in sync with `env_debian*_ninja.sh`
 /usr/local/rvm/bin/rvm install ruby-3.2.2

@@ -84,7 +84,6 @@ cmake-properties(7)
    /prop_dir/LINK_DIRECTORIES
    /prop_dir/LINK_OPTIONS
    /prop_dir/LISTFILE_STACK
-   /prop_dir/MACROS
    /prop_dir/PARENT_DIRECTORY
    /prop_dir/RULE_LAUNCH_COMPILE
    /prop_dir/RULE_LAUNCH_CUSTOM
@@ -307,6 +306,7 @@ cmake-properties(7)
    /prop_tgt/INTERFACE_LINK_OPTIONS
    /prop_tgt/INTERFACE_POSITION_INDEPENDENT_CODE
    /prop_tgt/INTERFACE_PRECOMPILE_HEADERS
+   /prop_tgt/INTERFACE_SOURCE_SETS
    /prop_tgt/INTERFACE_SOURCES
    /prop_tgt/INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
    /prop_tgt/INTERPROCEDURAL_OPTIMIZATION
@@ -405,9 +405,15 @@ cmake-properties(7)
    /prop_tgt/RUNTIME_OUTPUT_DIRECTORY_CONFIG
    /prop_tgt/RUNTIME_OUTPUT_NAME
    /prop_tgt/RUNTIME_OUTPUT_NAME_CONFIG
+   /prop_tgt/Rust_EDITION
    /prop_tgt/SKIP_BUILD_RPATH
    /prop_tgt/SKIP_LINTING
    /prop_tgt/SOURCE_DIR
+   /prop_tgt/SOURCE_DIRS
+   /prop_tgt/SOURCE_DIRS_NAME
+   /prop_tgt/SOURCE_SET
+   /prop_tgt/SOURCE_SET_NAME
+   /prop_tgt/SOURCE_SETS
    /prop_tgt/SOURCES
    /prop_tgt/SOVERSION
    /prop_tgt/SPDX_LICENSE
@@ -420,6 +426,8 @@ cmake-properties(7)
    /prop_tgt/Swift_LANGUAGE_VERSION
    /prop_tgt/Swift_MODULE_DIRECTORY
    /prop_tgt/Swift_MODULE_NAME
+   /prop_tgt/Swift_PACKAGE_NAME
+   /prop_tgt/Swift_SEPARATE_MODULE_EMISSION
    /prop_tgt/SYMBOLIC
    /prop_tgt/SYSTEM
    /prop_tgt/TEST_LAUNCHER
@@ -525,6 +533,32 @@ cmake-properties(7)
    /prop_tgt/XCODE_XCCONFIG
    /prop_tgt/XCTEST
 
+.. _`File Set Properties`:
+
+Properties on File Sets
+=======================
+
+.. toctree::
+   :maxdepth: 1
+
+   /prop_fs/BASE_DIRS
+   /prop_fs/COMPILE_DEFINITIONS
+   /prop_fs/COMPILE_OPTIONS
+   /prop_fs/CXX_SCAN_FOR_MODULES
+   /prop_fs/JOB_POOL_COMPILE
+   /prop_fs/INCLUDE_DIRECTORIES
+   /prop_fs/INDEPENDENT_FILES
+   /prop_fs/INTERFACE_COMPILE_DEFINITIONS
+   /prop_fs/INTERFACE_COMPILE_OPTIONS
+   /prop_fs/INTERFACE_INCLUDE_DIRECTORIES
+   /prop_fs/INTERFACE_SOURCES
+   /prop_fs/SCOPE
+   /prop_fs/SKIP_LINTING
+   /prop_fs/SKIP_PRECOMPILE_HEADERS
+   /prop_fs/SKIP_UNITY_BUILD_INCLUSION
+   /prop_fs/SOURCES
+   /prop_fs/TYPE
+
 .. _`Test Properties`:
 
 测试属性
@@ -594,6 +628,7 @@ cmake-properties(7)
    /prop_sf/OBJECT_DEPENDS
    /prop_sf/OBJECT_NAME
    /prop_sf/OBJECT_OUTPUTS
+   /prop_sf/Rust_EMIT
    /prop_sf/SKIP_AUTOGEN
    /prop_sf/SKIP_AUTOMOC
    /prop_sf/SKIP_AUTORCC
@@ -670,6 +705,7 @@ cmake-properties(7)
    /prop_dir/COMPILE_DEFINITIONS_CONFIG
    /prop_dir/INTERPROCEDURAL_OPTIMIZATION
    /prop_dir/INTERPROCEDURAL_OPTIMIZATION_CONFIG
+   /prop_dir/MACROS
    /prop_dir/TEST_INCLUDE_FILE
 
 

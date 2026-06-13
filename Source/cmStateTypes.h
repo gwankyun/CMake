@@ -41,6 +41,12 @@ enum SnapshotUnwindState
   UNWINDING
 };
 
+enum class CommandType
+{
+  Macro,
+  Function
+};
+
 // There are multiple overlapping ranges represented here. Be aware that adding
 // a value to this enumeration may cause failures in numerous places which
 // assume details about the ordering.

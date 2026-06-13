@@ -10,8 +10,6 @@
 
 #include <cstddef>
 #include <functional>
-#include <map>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -293,7 +291,8 @@ public:
                                char const* dir = nullptr,
                                OutputOption outputflag = OUTPUT_MERGE,
                                cmDuration timeout = cmDuration::zero(),
-                               Encoding encoding = cmProcessOutput::Auto);
+                               Encoding encoding = cmProcessOutput::Auto,
+                               std::vector<std::string> env = {});
 
   static std::string PrintSingleCommand(std::vector<std::string> const&);
 
@@ -450,45 +449,6 @@ public:
   /** Get the list of all environment variables */
   static std::vector<std::string> GetEnvironmentVariables();
 
-  /** Append multiple variables to the current environment. */
-  static void AppendEnv(std::vector<std::string> const& env);
-
-  /**
-   * Helper class to represent an environment diff directly. This is to avoid
-   * repeated in-place environment modification (i.e. via setenv/putenv), which
-   * could be slow.
-   */
-  class EnvDiff
-  {
-  public:
-    /** Append multiple variables to the current environment diff */
-    void AppendEnv(std::vector<std::string> const& env);
-
-    /**
-     * Add a single variable (or remove if no = sign) to the current
-     * environment diff.
-     */
-    void PutEnv(std::string const& env);
-
-    /** Remove a single variable from the current environment diff. */
-    void UnPutEnv(std::string const& env);
-
-    /**
-     * Apply an ENVIRONMENT_MODIFICATION operation to this diff. Returns
-     * false and issues an error on parse failure.
-     */
-    bool ParseOperation(std::string const& envmod);
-
-    /**
-     * Apply this diff to the actual environment, optionally writing out the
-     * modifications to a CTest-compatible measurement stream.
-     */
-    void ApplyToCurrentEnv(std::ostringstream* measurement = nullptr);
-
-  private:
-    std::map<std::string, cm::optional<std::string>> diff;
-  };
-
   /** Helper class to save and restore the environment.
       Instantiate this class as an automatic variable on
       the stack. Its constructor saves a copy of the current
@@ -562,18 +522,20 @@ public:
   };
 
   static bool ListTar(std::string const& arFileName,
-                      std::vector<std::string> const& files, bool verbose);
+                      std::vector<std::string> const& files,
+                      std::string const& encoding, bool verbose);
   static bool CreateTar(std::string const& arFileName,
                         std::vector<std::string> const& files,
                         std::string const& workingDirectory,
-                        cmTarCompression compressType, bool verbose,
+                        cmTarCompression compressType,
+                        std::string const& encoding, bool verbose,
                         std::string const& mtime = std::string(),
                         std::string const& format = std::string(),
                         int compressionLevel = 0, int numThreads = 1);
   static bool ExtractTar(std::string const& arFileName,
                          std::vector<std::string> const& files,
                          cmTarExtractTimestamps extractTimestamps,
-                         bool verbose);
+                         std::string const& encoding, bool verbose);
 
   /** Random number generation.  */
   static unsigned int RandomSeed();
@@ -598,6 +560,7 @@ public:
   static std::string const& GetCMakeCursesCommand();
   static std::string const& GetCMClDepsCommand();
   static std::string const& GetCMakeRoot();
+  static bool GetCMakeInBuildTree();
   static std::string const& GetHTMLDoc();
 
   /** Get the CMake config directory **/
@@ -709,6 +672,12 @@ public:
 
   /** Return subview of the full filename (i.e. file name without path) */
   static cm::string_view GetFilenameNameView(cm::string_view filename);
+
+#if defined(_WIN32) || defined(__APPLE__)
+  /** Read the on-disk spelling of the full filename's last component. */
+  static cmsys::Status ReadNameOnDisk(std::string const& path,
+                                      std::string& name);
+#endif
 
   /**
    * Return subview of file extension of a full filename (dot included).

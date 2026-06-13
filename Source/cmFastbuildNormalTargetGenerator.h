@@ -76,14 +76,14 @@ private:
                                       std::string& args) const;
   void GenerateCudaDeviceLink(FastbuildTarget& target) const;
   void GenerateObjects(FastbuildTarget& target);
-  FastbuildUnityNode GetOneUnity(std::set<std::string> const& isolatedFiles,
+  FastbuildUnityNode GetOneUnity(std::set<std::string> const& excludedFiles,
                                  std::vector<std::string>& files,
                                  int unitySize) const;
 
   int GetUnityBatchSize() const;
   std::vector<FastbuildUnityNode> GenerateUnity(
     std::vector<FastbuildObjectListNode>& objects,
-    std::set<std::string> const& isolatedSources,
+    std::set<std::string> const& excludedSources,
     std::map<std::string, std::vector<std::string>> const& sourcesWithGroups);
   FastbuildUnityNode GenerateGroupedUnityNode(
     std::vector<std::string>& inputFiles,

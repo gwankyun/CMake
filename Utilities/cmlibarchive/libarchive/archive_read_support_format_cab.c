@@ -383,8 +383,10 @@ archive_read_support_format_cab(struct archive *_a)
 	    NULL,
 	    NULL);
 
-	if (r != ARCHIVE_OK)
+	if (r != ARCHIVE_OK) {
+		archive_wstring_free(&cab->ws);
 		free(cab);
+	}
 	return (ARCHIVE_OK);
 }
 
@@ -3199,6 +3201,10 @@ lzx_make_huffman_table(struct huffman *hf)
 	bitlen = hf->bitlen;
 	len_avail = hf->len_size;
 	hf->tree_used = 0;
+	/* Initialize table to invalid values */
+	for (i = 0; i < tbl_size; i++) {
+		tbl[i] = (uint16_t)hf->len_size;
+	}
 	for (i = 0; i < len_avail; i++) {
 		uint16_t *p;
 		int len, cnt;

@@ -15,6 +15,7 @@
 #include <ratio>
 #include <set>
 #include <sstream>
+#include <string>
 #include <utility>
 
 #ifndef _WIN32
@@ -33,7 +34,10 @@
 
 #include "cm_utf8.h"
 
+#include "cmArgumentParser.h"
+#include "cmCMakePresetsGraph.h"
 #include "cmCTest.h"
+#include "cmCTestDiscoverTests.h"
 #include "cmCTestMultiProcessHandler.h"
 #include "cmCTestResourceGroupsLexerHelper.h"
 #include "cmCTestTestMeasurementXMLParser.h"
@@ -49,11 +53,75 @@
 #include "cmStateSnapshot.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTestDiscovery.h"
 #include "cmTimestamp.h"
 #include "cmValue.h"
 #include "cmWorkingDirectory.h"
 #include "cmXMLWriter.h"
 #include "cmake.h"
+
+void cmCTestApplyTestPresetToOptions(
+  cmCTestTestOptions& opts, cmCMakePresetsGraph::TestPreset const& preset)
+{
+  if (preset.Filter) {
+    if (preset.Filter->Include) {
+      auto const& inc = *preset.Filter->Include;
+      opts.IncludeRegularExpression = inc.Name;
+      if (!inc.Label.empty()) {
+        opts.LabelRegularExpression.push_back(inc.Label);
+      }
+      opts.UseUnion = inc.UseUnion.value_or(false);
+      if (inc.Index) {
+        auto const& idx = *inc.Index;
+        if (!idx.IndexFile.empty()) {
+          opts.TestsToRunInformation = idx.IndexFile;
+        } else {
+          opts.TestsToRunInformation = cmStrCat(
+            (idx.Start ? std::to_string(*idx.Start) : std::string{}), ',',
+            (idx.End ? std::to_string(*idx.End) : std::string{}), ',',
+            (idx.Stride ? std::to_string(*idx.Stride) : std::string{}), ',',
+            cmJoin(idx.SpecificTests, ","));
+        }
+      }
+    }
+    if (preset.Filter->Exclude) {
+      auto const& exc = *preset.Filter->Exclude;
+      opts.ExcludeRegularExpression = exc.Name;
+      if (!exc.Label.empty()) {
+        opts.ExcludeLabelRegularExpression.push_back(exc.Label);
+      }
+      if (exc.Fixtures) {
+        opts.ExcludeFixtureRegularExpression = exc.Fixtures->Any;
+        opts.ExcludeFixtureSetupRegularExpression = exc.Fixtures->Setup;
+        opts.ExcludeFixtureCleanupRegularExpression = exc.Fixtures->Cleanup;
+      }
+    }
+  }
+
+  if (preset.Execution) {
+    auto const& exec = *preset.Execution;
+    opts.StopOnFailure = exec.StopOnFailure.value_or(false);
+    opts.ResourceSpecFile = exec.ResourceSpecFile;
+    opts.ScheduleRandom = exec.ScheduleRandom.value_or(false);
+    opts.TestPassthroughArguments = exec.TestPassthroughArguments;
+  }
+
+  if (preset.Output) {
+    auto const& output = *preset.Output;
+    if (!output.OutputJUnitFile.empty()) {
+      opts.JUnitXMLFileName = output.OutputJUnitFile;
+    }
+    if (output.MaxPassedTestOutputSize) {
+      opts.OutputSizePassed = *output.MaxPassedTestOutputSize;
+    }
+    if (output.MaxFailedTestOutputSize) {
+      opts.OutputSizeFailed = *output.MaxFailedTestOutputSize;
+    }
+    if (output.TestOutputTruncation) {
+      opts.OutputTruncation = *output.TestOutputTruncation;
+    }
+  }
+}
 
 namespace {
 
@@ -182,6 +250,52 @@ bool cmCTestAddTestCommand::InitialPass(std::vector<std::string> const& args,
     return false;
   }
   return this->TestHandler->AddTest(args);
+}
+
+class cmCTestDiscoverTestsCommand : public cmCTestCommand
+{
+public:
+  using cmCTestCommand::cmCTestCommand;
+  bool InitialPass(std::vector<std::string> const& args,
+                   cmExecutionStatus& status) override;
+};
+
+bool cmCTestDiscoverTestsCommand::InitialPass(
+  std::vector<std::string> const& args, cmExecutionStatus& status)
+{
+  struct Arguments : cmTestDiscoveryArgs
+  {
+    std::string TestList;
+  };
+  static auto const parser =
+    cmArgumentParser<Arguments>{ cmTestDiscoveryParser<Arguments>() } //
+      .Bind("TEST_LIST"_s, &Arguments::TestList);
+
+  auto unparsed = std::vector<std::string>{};
+  Arguments const arguments = parser.Parse(args, &unparsed);
+  if (arguments.MaybeReportError(status.GetMakefile())) {
+    return true;
+  }
+
+  if (!unparsed.empty()) {
+    status.SetError(" given unknown argument \"" + unparsed.front() + "\".");
+    return false;
+  }
+
+  std::vector<std::string> testList;
+  if (!cmCTestDiscoverTests(arguments, this->TestHandler, testList, status)) {
+    return false;
+  }
+
+  if (!arguments.TestList.empty()) {
+    for (std::string& testName : testList) {
+      cmSystemTools::ReplaceString(testName, ";", "\\;");
+    }
+    status.GetMakefile().AddDefinition(arguments.TestList,
+                                       cmList::to_string(testList));
+  }
+
+  return true;
 }
 
 class cmCTestSetTestsPropertiesCommand : public cmCTestCommand
@@ -359,7 +473,7 @@ int cmCTestTestHandler::ProcessHandler()
                        << cmSystemTools::GetLogicalWorkingDirectory()
                        << std::endl,
                      this->Quiet);
-  if (!this->PreProcessHandler()) {
+  if (!this->CTest->GetShowOnly() && !this->PreProcessHandler()) {
     return -1;
   }
 
@@ -428,7 +542,7 @@ int cmCTestTestHandler::ProcessHandler()
     return 1;
   }
 
-  if (!this->PostProcessHandler()) {
+  if (!this->CTest->GetShowOnly() && !this->PostProcessHandler()) {
     this->LogFile = nullptr;
     return -1;
   }
@@ -547,13 +661,21 @@ void cmCTestTestHandler::LogTestSummary(std::vector<std::string> const& passed,
   } else {
     failedColorCode = this->CTest->GetColorCode(cmCTest::Color::RED);
   }
-  cmCTestLog(this->CTest, HANDLER_OUTPUT,
-             std::endl
-               << passColorCode << std::lround(percent) << "% tests passed"
-               << this->CTest->GetColorCode(cmCTest::Color::CLEAR_COLOR)
-               << ", " << failedColorCode << failed.size() << " tests failed"
-               << this->CTest->GetColorCode(cmCTest::Color::CLEAR_COLOR)
-               << " out of " << total << std::endl);
+  if (failed.empty()) {
+    cmCTestLog(this->CTest, HANDLER_OUTPUT,
+               std::endl
+                 << passColorCode << std::lround(percent) << "% tests passed"
+                 << this->CTest->GetColorCode(cmCTest::Color::CLEAR_COLOR)
+                 << " out of " << total << std::endl);
+  } else {
+    cmCTestLog(this->CTest, HANDLER_OUTPUT,
+               std::endl
+                 << passColorCode << std::lround(percent) << "% tests passed"
+                 << this->CTest->GetColorCode(cmCTest::Color::CLEAR_COLOR)
+                 << ", " << failedColorCode << failed.size() << " tests failed"
+                 << this->CTest->GetColorCode(cmCTest::Color::CLEAR_COLOR)
+                 << " out of " << total << std::endl);
+  }
   if ((!this->CTest->GetLabelsForSubprojects().empty() &&
        this->CTest->GetSubprojectSummary())) {
     this->PrintLabelOrSubprojectSummary(true);
@@ -1772,6 +1894,10 @@ bool cmCTestTestHandler::GetListOfTests()
   // Add handler for ADD_TEST
   cm.GetState()->AddBuiltinCommand("add_test", cmCTestAddTestCommand(this));
 
+  // Add handler for DISCOVER_TESTS
+  cm.GetState()->AddBuiltinCommand("discover_tests",
+                                   cmCTestDiscoverTestsCommand(this));
+
   // Add handler for SUBDIRS
   cm.GetState()->AddBuiltinCommand("subdirs", cmCTestSubdirCommand);
 
@@ -1933,15 +2059,11 @@ void cmCTestTestHandler::ExpandTestsToRunInformationForRerunFailed()
 
   int numFiles =
     static_cast<int>(cmsys::Directory::GetNumberOfFilesInDirectory(dirName));
-  std::string pattern = "LastTestsFailed";
   std::string logName;
 
   for (int i = 0; i < numFiles; ++i) {
-    std::string fileName = directory.GetFile(i);
-    // bcc crashes if we attempt a normal substring comparison,
-    // hence the following workaround
-    std::string fileNameSubstring = fileName.substr(0, pattern.length());
-    if (fileNameSubstring != pattern) {
+    std::string const& fileName = directory.GetFileName(i);
+    if (!cmHasLiteralPrefix(fileName, "LastTestsFailed")) {
       continue;
     }
     if (logName.empty()) {
@@ -2441,42 +2563,20 @@ bool cmCTestTestHandler::AddTest(std::vector<std::string> const& args)
       this->ExcludeTestsRegularExpression.find(testname)) {
     return true;
   }
-  if (this->MemCheck) {
-    std::vector<std::string>::iterator it;
-    bool found = false;
-    for (it = this->CustomTestsIgnore.begin();
-         it != this->CustomTestsIgnore.end(); ++it) {
-      if (*it == testname) {
-        found = true;
-        break;
-      }
-    }
-    if (found) {
-      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                         "Ignore memcheck: " << *it << std::endl, this->Quiet);
-      return true;
-    }
-  } else {
-    std::vector<std::string>::iterator it;
-    bool found = false;
-    for (it = this->CustomTestsIgnore.begin();
-         it != this->CustomTestsIgnore.end(); ++it) {
-      if (*it == testname) {
-        found = true;
-        break;
-      }
-    }
-    if (found) {
-      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                         "Ignore test: " << *it << std::endl, this->Quiet);
-      return true;
-    }
+
+  if (cm::contains(this->CustomTestsIgnore, testname)) {
+    cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
+                       "Ignore " << (this->MemCheck ? "memcheck" : "test")
+                                 << ": " << testname << std::endl,
+                       this->Quiet);
+    return true;
   }
 
   cmCTestTestProperties test;
   test.Name = testname;
   test.Args = args;
-  test.Directory = cmSystemTools::GetLogicalWorkingDirectory();
+  test.CTestDirectory = cmSystemTools::GetLogicalWorkingDirectory();
+  test.Directory = test.CTestDirectory;
   cmCTestOptionalLog(this->CTest, DEBUG,
                      "Set test directory: " << test.Directory << std::endl,
                      this->Quiet);
@@ -2487,7 +2587,7 @@ bool cmCTestTestHandler::AddTest(std::vector<std::string> const& args)
         this->ExcludeTestsRegularExpression.find(testname)))) {
     test.IsInBasedOnREOptions = false;
   }
-  this->TestList.push_back(test);
+  this->TestList.push_back(std::move(test));
   return true;
 }
 

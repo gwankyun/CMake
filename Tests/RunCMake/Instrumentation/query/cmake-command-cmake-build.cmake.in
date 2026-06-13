@@ -1,0 +1,6 @@
+cmake_instrumentation(
+  API_VERSION 1
+  DATA_VERSION 1
+  HOOKS preBuild postBuild postCMakeBuild
+  CALLBACK @GET_HOOK@
+)

@@ -17,6 +17,7 @@
 #include "cmCommandLineArgument.h"
 #include "cmCryptoHash.h"
 #include "cmDuration.h"
+#include "cmEnvironment.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGlobalGenerator.h"
 #include "cmList.h"
@@ -105,13 +106,19 @@ char const* const HELP_AVAILABLE_COMMANDS = R"(Available commands:
   cat [--] <files>...       - concat the files and print them to the standard output
   chdir dir cmd [args...]   - run command in a given directory
   compare_files [--ignore-eol] file1 file2
-                              - check if file1 is same as file2
-  copy <file>... destination  - copy files to destination (either file or directory)
-  copy_directory <dir>... destination   - copy content of <dir>... directories to 'destination' directory
-  copy_directory_if_different <dir>... destination   - copy changed content of <dir>... directories to 'destination' directory
-  copy_directory_if_newer <dir>... destination   - copy newer content of <dir>... directories to 'destination' directory
-  copy_if_different <file>... destination  - copy files if it has changed
-  copy_if_newer <file>... destination  - copy files if source is newer than destination
+                            - check if file1 is same as file2
+  copy <file>... destination | -t <destination> <file>...
+                            - copy files to destination (either file or directory)
+  copy_directory <dir>... destination | -t <destination> <dir>...
+                            - copy content of <dir>... directories to 'destination' directory
+  copy_directory_if_different <dir>... destination | -t <destination> <dir>...
+                            - copy changed content of <dir>... directories to 'destination' directory
+  copy_directory_if_newer <dir>... destination | -t <destination> <dir>...
+                            - copy newer content of <dir>... directories to 'destination' directory
+  copy_if_different <file>... destination | -t <destination> <file>...
+                            - copy files if source has changed
+  copy_if_newer <file>... destination | -t <destination> <file>...
+                            - copy files if source is newer than destination
   echo [<string>...]        - displays arguments as text
   echo_append [<string>...] - displays arguments as text but no new line
   env [--unset=NAME ...] [NAME=VALUE ...] [--] <command> [<arg>...]
@@ -203,7 +210,7 @@ bool cmTarFilesFrom(std::string const& file, std::vector<std::string>& files)
   return true;
 }
 
-void cmCatFile(std::string const& fileToAppend)
+void cmCatFile(cm::optional<std::string> fileToAppend)
 {
 #ifdef _WIN32
   _setmode(fileno(stdin), _O_BINARY);
@@ -211,8 +218,8 @@ void cmCatFile(std::string const& fileToAppend)
 #endif
   std::streambuf* buf = std::cin.rdbuf();
   cmsys::ifstream source;
-  if (fileToAppend != "-") {
-    source.open(fileToAppend.c_str(), (std::ios::binary | std::ios::in));
+  if (fileToAppend.has_value()) {
+    source.open(fileToAppend->c_str(), (std::ios::binary | std::ios::in));
     buf = source.rdbuf();
   }
   std::cout << buf;
@@ -632,13 +639,16 @@ int HandleIcstat(std::string const& runCmd, std::string const& sourceFile,
 
   // Create the default manifest ruleset file when not found
   if (!cmSystemTools::FileExists("cstat_sel_checks.txt")) {
-    std::string ichecks_cmd = cmSystemTools::GetFilenamePath(orig_cmd[0]);
-    ichecks_cmd = cmStrCat(ichecks_cmd, "/ichecks --default stdchecks");
+    std::vector<std::string> ichecks_cmd;
+    ichecks_cmd.emplace_back(
+      cmStrCat(cmSystemTools::GetFilenamePath(orig_cmd[0]), "/ichecks"));
+    ichecks_cmd.emplace_back("--default");
+    ichecks_cmd.emplace_back("stdchecks");
     if (!cmSystemTools::RunSingleCommand(ichecks_cmd, &stdOut, &stdErr, &ret,
                                          nullptr,
                                          cmSystemTools::OUTPUT_NONE)) {
-      std::cerr << "Error generating default manifest file '" << ichecks_cmd
-                << "'. " << stdOut << '\n';
+      std::cerr << "Error generating default manifest file '" << ichecks_cmd[0]
+                << "': " << stdOut << '\n';
       return 1;
     }
   }
@@ -1002,8 +1012,26 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
 {
   // IF YOU ADD A NEW COMMAND, DOCUMENT IT ABOVE and in cmakemain.cxx
   if (args.size() > 1) {
-    // Copy file
-    if (args[1] == "copy" && args.size() > 3) {
+    // Copy file, copy file if different, copy file if newer.
+    if ((args[1] == "copy" || args[1] == "copy_if_different" ||
+         args[1] == "copy_if_newer") &&
+        args.size() > 3) {
+      using CopyFn = cmsys::SystemTools::CopyStatus (*)(std::string const&,
+                                                        std::string const&);
+      CopyFn copyFn;
+      std::string copyErrPrefix;
+      if (args[1] == "copy") {
+        copyFn = cmSystemTools::CopyFileAlways;
+        copyErrPrefix = "Error copying file";
+      } else if (args[1] == "copy_if_different") {
+        copyFn = cmSystemTools::CopyFileIfDifferent;
+        copyErrPrefix = "Error copying file (if different) from";
+      } else {
+        copyFn = cmSystemTools::CopyFileIfNewer;
+        copyErrPrefix = "Error copying file (if newer) from";
+      }
+      std::string const& cmdName = args[1];
+
       using CommandArgument =
         cmCommandLineArgument<bool(std::string const& value)>;
 
@@ -1038,14 +1066,14 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         files.pop_back();
       }
       if (targetArg && (!cmSystemTools::FileIsDirectory(*targetArg))) {
-        std::cerr << "Error: Target (for copy command) \"" << *targetArg
-                  << "\" is not a directory.\n";
+        std::cerr << "Error: Target (for " << cmdName << " command) \""
+                  << *targetArg << "\" is not a directory.\n";
         return 1;
       }
       if (!targetArg) {
         if (files.size() < 2) {
-          std::cerr
-            << "Error: No files or target specified (for copy command).\n";
+          std::cerr << "Error: No files or target specified (for " << cmdName
+                    << " command).\n";
           return 1;
         }
         targetArg = files.back();
@@ -1054,10 +1082,9 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
       // If error occurs we want to continue copying next files.
       bool return_value = false;
       for (auto const& file : files) {
-        cmsys::SystemTools::CopyStatus const status =
-          cmSystemTools::CopyFileAlways(file, *targetArg);
+        cmsys::SystemTools::CopyStatus const status = copyFn(file, *targetArg);
         if (!status) {
-          std::cerr << "Error copying file \"" << file << "\" to \""
+          std::cerr << copyErrPrefix << " \"" << file << "\" to \""
                     << *targetArg << "\": " << status.GetString() << '\n';
           return_value = true;
         }
@@ -1065,77 +1092,68 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
       return return_value;
     }
 
-    // Copy file if different.
-    if (args[1] == "copy_if_different" && args.size() > 3) {
-      // If multiple source files specified,
-      // then destination must be directory
-      if ((args.size() > 4) &&
-          (!cmSystemTools::FileIsDirectory(args.back()))) {
-        std::cerr << "Error: Target (for copy_if_different command) \""
-                  << args.back() << "\" is not a directory.\n";
-        return 1;
-      }
-      // If error occurs we want to continue copying next files.
-      bool return_value = false;
-      for (auto const& arg : cmMakeRange(args).advance(2).retreat(1)) {
-        cmsys::SystemTools::CopyStatus const status =
-          cmSystemTools::CopyFileIfDifferent(arg, args.back());
-        if (!status) {
-          std::cerr << "Error copying file (if different) from \"" << arg
-                    << "\" to \"" << args.back()
-                    << "\": " << status.GetString() << '\n';
-          return_value = true;
-        }
-      }
-      return return_value;
-    }
-
-    // Copy file if newer.
-    if (args[1] == "copy_if_newer" && args.size() > 3) {
-      // If multiple source files specified,
-      // then destination must be directory
-      if ((args.size() > 4) &&
-          (!cmSystemTools::FileIsDirectory(args.back()))) {
-        std::cerr << "Error: Target (for copy_if_newer command) \""
-                  << args.back() << "\" is not a directory.\n";
-        return 1;
-      }
-      // If error occurs we want to continue copying next files.
-      bool return_value = false;
-      for (auto const& arg : cmMakeRange(args).advance(2).retreat(1)) {
-        cmsys::SystemTools::CopyStatus const status =
-          cmSystemTools::CopyFileIfNewer(arg, args.back());
-        if (!status) {
-          std::cerr << "Error copying file (if newer) from \"" << arg
-                    << "\" to \"" << args.back()
-                    << "\": " << status.GetString() << '\n';
-          return_value = true;
-        }
-      }
-      return return_value;
-    }
-
     // Copy directory contents
-    if ((args[1] == "copy_directory" ||
-         args[1] == "copy_directory_if_different" ||
-         args[1] == "copy_directory_if_newer") &&
-        args.size() > 3) {
-      // If error occurs we want to continue copying next files.
-      bool return_value = false;
-
+    if (args[1] == "copy_directory" ||
+        args[1] == "copy_directory_if_different" ||
+        args[1] == "copy_directory_if_newer") {
       cmsys::SystemTools::CopyWhen when = cmsys::SystemTools::CopyWhen::Always;
       if (args[1] == "copy_directory_if_different") {
         when = cmsys::SystemTools::CopyWhen::OnlyIfDifferent;
       } else if (args[1] == "copy_directory_if_newer") {
         when = cmsys::SystemTools::CopyWhen::OnlyIfNewer;
       }
+      std::string const& cmdName = args[1];
 
-      for (auto const& arg : cmMakeRange(args).advance(2).retreat(1)) {
+      using CommandArgument =
+        cmCommandLineArgument<bool(std::string const& value)>;
+
+      cm::optional<std::string> targetArg;
+      std::vector<CommandArgument> argParsers{
+        { "-t", CommandArgument::Values::One,
+          CommandArgument::setToValue(targetArg) },
+      };
+
+      std::vector<std::string> dirs;
+      for (decltype(args.size()) i = 2; i < args.size(); i++) {
+        std::string const& arg = args[i];
+        bool matched = false;
+        for (auto const& m : argParsers) {
+          if (m.matches(arg)) {
+            matched = true;
+            if (m.parse(arg, i, args)) {
+              break;
+            }
+            return 1; // failed to parse
+          }
+        }
+        if (!matched) {
+          dirs.push_back(arg);
+        }
+      }
+
+      if (!targetArg) {
+        if (dirs.size() < 2) {
+          std::cerr << "Error: No directories or target specified (for "
+                    << cmdName << " command).\n";
+          return 1;
+        }
+        targetArg = dirs.back();
+        dirs.pop_back();
+      }
+      if (dirs.empty()) {
+        std::cerr << "Error: No source directories specified (for " << cmdName
+                  << " command).\n";
+        return 1;
+      }
+
+      // If error occurs we want to continue copying next files.
+      bool return_value = false;
+      for (auto const& dir : dirs) {
         cmsys::Status const status =
-          cmSystemTools::CopyADirectory(arg, args.back(), when);
+          cmSystemTools::CopyADirectory(dir, *targetArg, when);
         if (!status) {
-          std::cerr << "Error copying directory from \"" << arg << "\" to \""
-                    << args.back() << "\": " << status.GetString() << '\n';
+          std::cerr << "Error copying directory from \"" << dir << "\" to \""
+                    << *targetArg << "\": " << status.GetString() << '\n';
           return_value = true;
         }
       }
@@ -1250,7 +1268,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
 
     if (args[1] == "env") {
 #ifndef CMAKE_BOOTSTRAP
-      cmSystemTools::EnvDiff env;
+      auto envdiff = cmEnvironmentModification{};
 #endif
 
       auto ai = args.cbegin() + 2;
@@ -1268,7 +1286,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
 #ifdef CMAKE_BOOTSTRAP
           cmSystemTools::UnPutEnv(a.substr(8));
 #else
-          env.UnPutEnv(a.substr(8));
+          envdiff.Add(a.substr(8) + "=unset:");
 #endif
         } else if (a == "--modify") {
 #ifdef CMAKE_BOOTSTRAP
@@ -1281,7 +1299,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
             return 1;
           }
           std::string const& op = *ai;
-          if (!env.ParseOperation(op)) {
+          if (!envdiff.Add(op)) {
             std::cerr << "cmake -E env: invalid parameter to --modify: " << op
                       << '\n';
             return 1;
@@ -1297,7 +1315,10 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
 #ifdef CMAKE_BOOTSTRAP
           cmSystemTools::PutEnv(a);
 #else
-          env.PutEnv(a);
+          auto const pos = a.find('=');
+          std::string const& name = a.substr(0, pos);
+          std::string const& value = a.substr(pos + 1);
+          envdiff.Add(cmStrCat(name, "=set:", value));
 #endif
         } else {
           // This is the beginning of the command.
@@ -1310,16 +1331,19 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         return 1;
       }
 
+      auto env = cmEnvironment{};
 #ifndef CMAKE_BOOTSTRAP
-      env.ApplyToCurrentEnv();
+      env.Update(cmSystemTools::GetEnvironmentVariables());
+      envdiff.ApplyTo(env);
 #endif
 
       // Execute command from remaining arguments.
       std::vector<std::string> cmd(ai, ae);
       int retval;
-      if (cmSystemTools::RunSingleCommand(cmd, nullptr, nullptr, &retval,
-                                          nullptr,
-                                          cmSystemTools::OUTPUT_PASSTHROUGH)) {
+      if (cmSystemTools::RunSingleCommand(
+            cmd, nullptr, nullptr, &retval, nullptr,
+            cmSystemTools::OUTPUT_PASSTHROUGH, cmDuration::zero(),
+            cmProcessOutput::Auto, env.GetVariables())) {
         return retval;
       }
       return 1;
@@ -1535,7 +1559,13 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
     }
 
     // Command to concat files into one
-    if (args[1] == "cat" && args.size() >= 3) {
+    if (args[1] == "cat") {
+      if (args.size() == 2) {
+        // Destroy console buffers to drop cout/cerr encoding transform.
+        console.reset();
+        cmCatFile(cm::nullopt);
+        return 0;
+      }
       int return_value = 0;
       bool doing_options = true;
       for (auto const& arg : cmMakeRange(args).advance(2)) {
@@ -1543,7 +1573,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
           doing_options = false;
           // Destroy console buffers to drop cout/cerr encoding transform.
           console.reset();
-          cmCatFile(arg);
+          cmCatFile(cm::nullopt);
         } else if (doing_options && cmHasPrefix(arg, '-')) {
           if (arg == "--") {
             doing_options = false;
@@ -1897,6 +1927,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         cmSystemTools::TarCompressAuto;
       int nCompress = 0;
       bool doing_options = true;
+      std::string encoding = "UTF-8";
       for (auto const& arg : cmMakeRange(args).advance(4)) {
         if (doing_options && cmHasLiteralPrefix(arg, "--")) {
           if (arg == "--") {
@@ -1934,6 +1965,13 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
             }
 
             numThreads = static_cast<decltype(numThreads)>(numThreadsLong);
+          } else if (cmHasLiteralPrefix(arg, "--cmake-tar-encoding=")) {
+            encoding = arg.substr(21);
+            if (encoding.empty()) {
+              cmSystemTools::Error(
+                "Encoding value is empty - it must be filled if passed");
+              return 1;
+            }
           } else if (cmHasLiteralPrefix(arg,
                                         "--cmake-tar-compression-level=")) {
             std::string const& compressionLevelStr = arg.substr(30);
@@ -2083,7 +2121,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
       }
 
       if (action == cmSystemTools::TarActionList) {
-        if (!cmSystemTools::ListTar(outFile, files, verbose)) {
+        if (!cmSystemTools::ListTar(outFile, files, encoding, verbose)) {
           cmSystemTools::Error("Problem listing tar: " + outFile);
           return 1;
         }
@@ -2091,15 +2129,15 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         if (files.empty()) {
           std::cerr << "tar: No files or directories specified\n";
         }
-        if (!cmSystemTools::CreateTar(outFile, files, {}, compress, verbose,
-                                      mtime, format, compressionLevel,
+        if (!cmSystemTools::CreateTar(outFile, files, {}, compress, encoding,
+                                      verbose, mtime, format, compressionLevel,
                                       numThreads)) {
           cmSystemTools::Error(cmStrCat("Problem creating tar:\n  ", outFile));
           return 1;
         }
       } else if (action == cmSystemTools::TarActionExtract) {
         if (!cmSystemTools::ExtractTar(outFile, files, extractTimestamps,
-                                       verbose)) {
+                                       encoding, verbose)) {
           cmSystemTools::Error(
             cmStrCat("Problem extracting tar:\n  ", outFile));
           return 1;

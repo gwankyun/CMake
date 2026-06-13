@@ -3,21 +3,24 @@
 #include "cmMessageCommand.h"
 
 #include <cassert>
-#include <memory>
 #include <utility>
 
+#include <cm/memory>
 #include <cm/string_view>
 #include <cmext/string_view>
 
 #include "cmConfigureLog.h"
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmList.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmMessenger.h"
+#include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmValue.h"
 #include "cmake.h"
 
 #ifdef CMake_ENABLE_DEBUGGER
@@ -57,7 +60,7 @@ void ReportCheckResult(cm::string_view what, std::string result,
     mf.DisplayStatus(IndentText(std::move(text), mf), -1);
   } else {
     mf.GetMessenger()->DisplayMessage(
-      MessageType::AUTHOR_WARNING,
+      MessageType::WARNING, cmDiagnostics::CMD_AUTHOR,
       cmStrCat("Ignored "_s, what, " without CHECK_START"_s),
       mf.GetBacktrace());
   }
@@ -95,6 +98,8 @@ bool cmMessageCommand(std::vector<std::string> const& args,
 
   auto i = args.cbegin();
 
+  std::unique_ptr<cmMakefile::DiagnosticPushPop> ds;
+  auto category = cmDiagnostics::CMD_NONE;
   auto type = MessageType::MESSAGE;
   auto fatal = false;
   auto level = Message::LogLevel::LOG_UNDEFINED;
@@ -113,16 +118,21 @@ bool cmMessageCommand(std::vector<std::string> const& args,
     level = Message::LogLevel::LOG_WARNING;
     ++i;
   } else if (*i == "AUTHOR_WARNING") {
-    if (mf.IsSet("CMAKE_SUPPRESS_DEVELOPER_ERRORS") &&
-        !mf.IsOn("CMAKE_SUPPRESS_DEVELOPER_ERRORS")) {
-      fatal = true;
-      type = MessageType::AUTHOR_ERROR;
-      level = Message::LogLevel::LOG_ERROR;
-    } else if (!mf.IsOn("CMAKE_SUPPRESS_DEVELOPER_WARNINGS")) {
-      type = MessageType::AUTHOR_WARNING;
-      level = Message::LogLevel::LOG_WARNING;
-    } else {
-      return true;
+    category = cmDiagnostics::CMD_AUTHOR;
+    switch (mf.GetDiagnosticAction(category)) {
+      case cmDiagnostics::Ignore:
+        return true;
+      case cmDiagnostics::FatalError:
+        fatal = true;
+        CM_FALLTHROUGH;
+      case cmDiagnostics::SendError:
+        type = MessageType::FATAL_ERROR;
+        level = Message::LogLevel::LOG_ERROR;
+        break;
+      default:
+        type = MessageType::WARNING;
+        level = Message::LogLevel::LOG_WARNING;
+        break;
     }
     ++i;
   } else if (*i == "CHECK_START") {
@@ -158,16 +168,48 @@ bool cmMessageCommand(std::vector<std::string> const& args,
     level = Message::LogLevel::LOG_TRACE;
     ++i;
   } else if (*i == "DEPRECATION") {
-    if (mf.IsOn("CMAKE_ERROR_DEPRECATED")) {
-      fatal = true;
-      type = MessageType::DEPRECATION_ERROR;
-      level = Message::LogLevel::LOG_ERROR;
-    } else if (!mf.IsSet("CMAKE_WARN_DEPRECATED") ||
-               mf.IsOn("CMAKE_WARN_DEPRECATED")) {
-      type = MessageType::DEPRECATION_WARNING;
-      level = Message::LogLevel::LOG_WARNING;
-    } else {
-      return true;
+    category = cmDiagnostics::CMD_DEPRECATED;
+
+    cmPolicies::PolicyStatus const cmp0218 =
+      mf.GetPolicyStatus(cmPolicies::CMP0218);
+    if (cmp0218 != cmPolicies::NEW) {
+      std::unique_ptr<cmMakefile::PolicyPushPop> ps;
+
+      if (cmp0218 != cmPolicies::OLD) {
+        // Suppress warnings about using old variables.
+        ps = cm::make_unique<cmMakefile::PolicyPushPop>(&mf);
+        mf.SetPolicy(cmPolicies::CMP0218, cmPolicies::OLD);
+      }
+
+      ds = cm::make_unique<cmMakefile::DiagnosticPushPop>(&mf);
+
+      // Use old variables to determine diagnostic action.
+      if (mf.IsOn("CMAKE_ERROR_DEPRECATED")) {
+        mf.SetDiagnostic(category, cmDiagnostics::FatalError);
+      } else {
+        cmValue const warn = mf.GetDefinition("CMAKE_WARN_DEPRECATED");
+        if (warn.IsSet() && !warn.IsOn()) {
+          mf.SetDiagnostic(category, cmDiagnostics::Ignore);
+        } else {
+          mf.SetDiagnostic(category, cmDiagnostics::Warn);
+        }
+      }
+    }
+
+    switch (mf.GetDiagnosticAction(category)) {
+      case cmDiagnostics::Ignore:
+        return true;
+      case cmDiagnostics::FatalError:
+        fatal = true;
+        CM_FALLTHROUGH;
+      case cmDiagnostics::SendError:
+        type = MessageType::FATAL_ERROR;
+        level = Message::LogLevel::LOG_ERROR;
+        break;
+      default:
+        type = MessageType::WARNING;
+        level = Message::LogLevel::LOG_WARNING;
+        break;
     }
     ++i;
   } else if (*i == "NOTICE") {
@@ -194,7 +236,8 @@ bool cmMessageCommand(std::vector<std::string> const& args,
     case Message::LogLevel::LOG_ERROR:
     case Message::LogLevel::LOG_WARNING:
       // we've overridden the message type, above, so display it directly
-      mf.GetMessenger()->DisplayMessage(type, message, mf.GetBacktrace());
+      mf.GetMessenger()->DisplayMessage(type, category, message,
+                                        mf.GetBacktrace());
       break;
 
     case Message::LogLevel::LOG_NOTICE:

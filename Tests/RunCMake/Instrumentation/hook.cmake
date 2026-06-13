@@ -1,23 +1,51 @@
 cmake_minimum_required(VERSION 3.30)
 
 include(${CMAKE_CURRENT_LIST_DIR}/json.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/validate_schema.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/verify-snippet.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/verify-trace.cmake)
 
 # Test CALLBACK script. Prints output information and verifies index file
-# Called as: cmake -P hook.cmake [CheckForStaticQuery?] [CheckForTrace?] [index.json]
-set(index ${CMAKE_ARGV5})
-if (NOT ${CMAKE_ARGV3})
-  set(hasStaticInfo "UNEXPECTED")
+# Called as: cmake -P -DSTATIC_QUERY=<ON|OFF> -DTRACE_QUERY=<ON|OFF> \
+#            -DCMake_TEST_JSON_SCHEMA=<ON|OFF> -DPython_EXECUTABLE=<path> \
+#            hook.cmake index-*.json
+
+# Get the index file as the last argument.
+math(EXPR last_arg_idx "${CMAKE_ARGC} - 1")
+set(index "${CMAKE_ARGV${last_arg_idx}}")
+if(NOT index MATCHES "index-.*\.json")
+  message(FATAL_ERROR "Received unexpected index argument: ${index}")
 endif()
-if (NOT ${CMAKE_ARGV4})
-  set(hasTrace "UNEXPECTED")
-endif()
+
+# Verify that we received the expected arguments.
+function(check_args vars)
+  foreach(var IN LISTS vars)
+    if (NOT DEFINED ${var})
+      message(FATAL_ERROR "Expected argument ${var}, but none given.")
+    endif()
+  endforeach()
+endfunction()
+check_args("STATIC_QUERY;TRACE_QUERY;Python_EXECUTABLE;CMake_TEST_JSON_SCHEMA")
+
+function(init_query_var input_var output_var)
+  set(${output_var})
+  if (NOT ${input_var})
+    set(${output_var} "UNEXPECTED")
+  endif()
+  return(PROPAGATE ${output_var})
+endfunction()
+init_query_var(STATIC_QUERY hasStaticInfo)
+init_query_var(TRACE_QUERY hasTrace)
+
+cmake_path(GET index PARENT_PATH indexDir)
+cmake_path(GET indexDir PARENT_PATH dataDir)
+cmake_path(GET dataDir PARENT_PATH v1)
 read_json("${index}" contents)
 string(JSON hook GET "${contents}" hook)
 
 # Output is verified by *-stdout.txt files that the HOOK is run
 message(STATUS ${hook})
+
 # Not a check-*.cmake script, this is called as an instrumentation CALLBACK
 set(ERROR_MESSAGE "")
 function(add_error error)
@@ -25,14 +53,28 @@ function(add_error error)
   return(PROPAGATE ERROR_MESSAGE)
 endfunction()
 
+validate_schema(
+  "${index}"
+  "${CMAKE_CURRENT_LIST_DIR}/../../../Help/manual/instrumentation/index-v1-schema.json"
+  # We expect to always generate valid index files.
+  0
+)
+if (RunCMake_TEST_FAILED)
+  add_error("${RunCMake_TEST_FAILED}")
+  unset(RunCMake_TEST_FAILED)
+endif()
+
 json_has_key("${index}" "${contents}" version)
+
+string(JSON version_major GET "${contents}" version major)
+string(JSON version_minor GET "${contents}" version minor)
+if (NOT version_major EQUAL 1 OR NOT version_minor LESS_EQUAL 1)
+  add_error("Version must be <= 1.1, got: ${version_major}.${version_minor}")
+endif()
+
 json_has_key("${index}" "${contents}" buildDir)
 json_has_key("${index}" "${contents}" dataDir)
 json_has_key("${index}" "${contents}" snippets)
-
-if (NOT version EQUAL 1)
-  add_error("Version must be 1, got: ${version}")
-endif()
 
 string(JSON n_snippets LENGTH "${snippets}")
 
@@ -159,12 +201,11 @@ if (NOT hasStaticInfo STREQUAL UNEXPECTED)
   endforeach()
 endif()
 
-get_filename_component(v1 ${dataDir} DIRECTORY)
 if (EXISTS ${v1}/${hook}.hook)
   add_error("Received multiple triggers of the same hook: ${hook}")
 endif()
 file(WRITE ${v1}/${hook}.hook "${ERROR_MESSAGE}")
 
-if (NOT ERROR_MESSAGE MATCHES "^$")
+if (ERROR_MESSAGE)
   message(FATAL_ERROR ${ERROR_MESSAGE})
 endif()

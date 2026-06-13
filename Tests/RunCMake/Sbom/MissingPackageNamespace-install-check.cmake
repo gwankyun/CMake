@@ -38,16 +38,16 @@ set(APPLICATION_EXPECTED [=[
 
 set(DEPENDENCY_EXPECTED [=[
 {
-  "spdxId" : "urn:bar:bar#Package",
-  "name" : "bar:bar",
+  "spdxId" : "urn:baz:baz#Package",
+  "name" : "baz:baz",
   "originatedBy" :
   [
     {
-      "name" : "bar",
+      "name" : "baz",
       "type" : "Organization"
     }
   ],
-  "software_packageVersion" : "1.3.5",
+  "software_packageVersion" : "1.8.5",
   "type" : "software_Package"
 }
 ]=])
@@ -61,7 +61,7 @@ set(BUILD_LINKED_LIBRARIES_EXPECTED [=[
   "spdxId" : "urn:Static#Relationship",
   "to" :
   [
-    "urn:bar:bar#Package"
+    "urn:baz:baz#Package"
   ],
   "type" : "Relationship"
 }
@@ -74,7 +74,7 @@ expect_object("${CREATION_INFO}" CREATION_INFO_EXPECTED)
 
 string(JSON SPDX_DOCUMENT GET "${content}" "@graph" "1")
 expect_object("${SPDX_DOCUMENT}" SPDX_DOCUMENT_EXPECTED)
-expect_object("${SPDX_DOCUMENT}" APPLICATION_EXPECTED "rootElement" "0")
-expect_object("${SPDX_DOCUMENT}" DEPENDENCY_EXPECTED "element" "0")
+expect_object("${SPDX_DOCUMENT}" APPLICATION_EXPECTED "rootElement")
+expect_object("${SPDX_DOCUMENT}" DEPENDENCY_EXPECTED "element")
 string(JSON LINKED_LIBRARIES GET "${content}" "@graph" "2")
 expect_object("${LINKED_LIBRARIES}" BUILD_LINKED_LIBRARIES_EXPECTED)

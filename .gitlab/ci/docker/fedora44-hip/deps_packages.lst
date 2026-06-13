@@ -1,0 +1,15 @@
+# Install development tools.
+clang
+clang-tools-extra
+compiler-rt
+gcc-c++
+git-core
+make
+
+# Install HIP language toolchain.
+lld
+llvm
+rocm-comgr-devel
+rocm-hip-devel
+rocm-runtime-devel
+rocminfo

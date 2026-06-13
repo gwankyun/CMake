@@ -37,6 +37,12 @@ function(run_cmake_test_presets name CMakePresetsTest_CONFIGURE_PRESETS CMakePre
     configure_file("${CMakeUserPresets_FILE}" "${RunCMake_TEST_SOURCE_DIR}/CMakeUserPresets.json" @ONLY)
   endif()
 
+  set(_presets_file)
+  if(CMakePresets_FILE_ARG)
+    set(_presets_file "--presets-file=${RunCMake_TEST_SOURCE_DIR}/${CMakePresets_FILE_ARG}")
+    configure_file("${RunCMake_SOURCE_DIR}/${CMakePresets_FILE_ARG}.in" "${RunCMake_TEST_SOURCE_DIR}/${CMakePresets_FILE_ARG}" @ONLY)
+  endif()
+
   foreach(ASSET ${CMakePresetsTest_ASSETS})
     configure_file("${RunCMake_SOURCE_DIR}/${ASSET}" "${RunCMake_TEST_SOURCE_DIR}" COPYONLY)
   endforeach()
@@ -65,11 +71,11 @@ function(run_cmake_test_presets name CMakePresetsTest_CONFIGURE_PRESETS CMakePre
 
     if(eq)
       run_cmake_command(${name}-test-${TEST_PRESET}
-        ${CMAKE_CTEST_COMMAND} "--preset=${TEST_PRESET}" ${ARGN})
+        ${CMAKE_CTEST_COMMAND} "--preset=${TEST_PRESET}" ${_presets_file} ${ARGN})
       set(eq 0)
     else()
       run_cmake_command(${name}-test-${TEST_PRESET}
-        ${CMAKE_CTEST_COMMAND} "--preset" "${TEST_PRESET}" ${ARGN})
+        ${CMAKE_CTEST_COMMAND} "--preset" "${TEST_PRESET}" ${_presets_file} ${ARGN})
       set(eq 1)
     endif()
   endforeach()
@@ -95,6 +101,10 @@ set(CMakePresetsTest_NO_CONFIGURE 1)
 set(CMakePresetsTest_FILE "${RunCMake_SOURCE_DIR}/Good.json.in")
 run_cmake_test_presets(ListPresets "" "" "x" "--list-presets")
 
+run_cmake_command(PresetsNoArg-test ${CMAKE_CTEST_COMMAND} "--preset")
+run_cmake_command(PresetsNoArgEq-test ${CMAKE_CTEST_COMMAND} "--preset=")
+run_cmake_command(PresetsFileNoArg-test ${CMAKE_CTEST_COMMAND} "--presets-file")
+
 set(CMakePresetsTest_FILE "${RunCMake_SOURCE_DIR}/Condition.json.in")
 run_cmake_test_presets(ConditionListPresets "" "" "x" "--list-presets")
 unset(CMakePresetsTest_NO_CONFIGURE)
@@ -113,8 +123,14 @@ run_cmake_test_presets(TestOutputTruncationUnsupported "" "" "x")
 run_cmake_test_presets(OutputJUnitUnsupported "" "" "x")
 run_cmake_test_presets(InvalidJobs "" "" "x")
 run_cmake_test_presets(JobsProcUnsupported "" "" "x")
+run_cmake_test_presets(PassthroughUnsupported "" "" "x")
 set(CMakePresets_SCHEMA_EXPECTED_RESULT 0)
 run_cmake_test_presets(ConfigurePresetUnreachable "" "" "x")
 set(CMakePresetsTest_NO_CONFIGURE 0)
 
-set(CMakePresetsTest_NO_BUILD 0)
+run_cmake_test_presets(Passthrough "default" "" "basic;inherit;execOnly")
+run_cmake_test_presets(PassthroughCombined "default" "" "combined" "--" "--cli-arg")
+
+set(CMakePresets_FILE_ARG OtherCMakePresetsFile.json)
+run_cmake_test_presets(OtherCMakePresetsFile "default" "" "default-from-other-file")
+run_cmake_test_presets(OtherCMakePresetsFileListPresets "" "" "x" "--list-presets")

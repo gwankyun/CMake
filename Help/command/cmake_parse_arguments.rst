@@ -11,6 +11,9 @@ cmake_parse_arguments
   cmake_parse_arguments(PARSE_ARGV <N> <prefix> <options>
                         <one_value_keywords> <multi_value_keywords>)
 
+  cmake_parse_arguments(PARSE_ARGN <prefix> <options>
+                        <one_value_keywords> <multi_value_keywords>)
+
 .. versionadded:: 3.5
   此命令为原生实现。\
   此前，它是在\ :module:`CMakeParseArguments`\ 模块中定义的。
@@ -26,6 +29,12 @@ cmake_parse_arguments
   在这种情况下，被解析的参数来自调用函数的\ ``ARGV#``\ 变量。\
   解析从第\ ``<N>``\ 个参数开始，其中\ ``<N>``\ 是一个无符号整数。\
   这使得参数值中可以包含像\ ``;``\ 这样的特殊字符。
+
+.. versionadded:: 4.4
+  The ``PARSE_ARGN`` signature is only for use in a :command:`function`
+  body. This starts parsing after the last named argument of the calling
+  function and works exactly like ``PARSE_ARGV`` with ``<N>`` being the number
+  of parameters in the function definition.
 
 ``<options>``\ 参数包含了相应函数或宏的所有选项。\
 这些关键字后面不跟随值，例如\ :command:`install`\ 命令中的\ ``OPTIONAL``\ 关键字。

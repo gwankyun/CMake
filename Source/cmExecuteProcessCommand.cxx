@@ -27,6 +27,9 @@
 #include "cmsys/String.h"
 
 #include "cmArgumentParser.h"
+#include "cmArgumentParserTypes.h"
+#include "cmDiagnostics.h"
+#include "cmEnvironment.h"
 #include "cmExecutionStatus.h"
 #include "cmList.h"
 #include "cmMakefile.h"
@@ -94,6 +97,8 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
     bool EchoOutputVariable = false;
     bool EchoErrorVariable = false;
     cm::optional<std::string> Encoding;
+    ArgumentParser::MaybeEmpty<std::vector<std::string>> Environment;
+    ArgumentParser::MaybeEmpty<std::vector<std::string>> EnvModification;
     std::string CommandErrorIsFatal;
   };
 
@@ -117,6 +122,8 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
       .Bind("ERROR_STRIP_TRAILING_WHITESPACE"_s,
             &Arguments::ErrorStripTrailingWhitespace)
       .Bind("ENCODING"_s, &Arguments::Encoding)
+      .Bind("ENVIRONMENT"_s, &Arguments::Environment)
+      .Bind("ENVIRONMENT_MODIFICATION"_s, &Arguments::EnvModification)
       .Bind("ECHO_OUTPUT_VARIABLE"_s, &Arguments::EchoOutputVariable)
       .Bind("ECHO_ERROR_VARIABLE"_s, &Arguments::EchoErrorVariable)
       .Bind("COMMAND_ERROR_IS_FATAL"_s, &Arguments::CommandErrorIsFatal);
@@ -211,6 +218,23 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
   // Set the process working directory.
   if (!arguments.WorkingDirectory.empty()) {
     builder.SetWorkingDirectory(arguments.WorkingDirectory);
+  }
+
+  if (!arguments.Environment.empty() || !arguments.EnvModification.empty()) {
+#ifndef CMAKE_BOOTSTRAP
+    auto diff = cmEnvironmentModification{};
+    if (!diff.Add(arguments.EnvModification)) {
+      return false;
+    }
+    auto env = cmEnvironment{ cmSystemTools::GetEnvironmentVariables() };
+    env.Update(arguments.Environment);
+    diff.ApplyTo(env);
+    builder.SetEnvironment(env.GetVariables());
+#else
+    status.SetError(
+      "does not support environment modification in bootstrap builds");
+    return false;
+#endif
   }
 
   // Check the output variables.
@@ -347,8 +371,8 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
           cmProcessOutput::FindEncoding(*arguments.Encoding)) {
       encoding = *maybeEncoding;
     } else {
-      status.GetMakefile().IssueMessage(
-        MessageType::AUTHOR_WARNING,
+      status.GetMakefile().IssueDiagnostic(
+        cmDiagnostics::CMD_AUTHOR,
         cmStrCat("ENCODING option given unknown value \"", *arguments.Encoding,
                  "\".  Ignoring."));
     }

@@ -14,16 +14,22 @@
 #include <utility>
 
 #include <cm/memory>
+#include <cm/optional>
 
 #include "cmsys/RegularExpression.hxx"
 
 #include "cmAlgorithms.h"
+#include "cmExecutionStatus.h"
 #include "cmGeneratorExpression.h"
 #include "cmListFileCache.h"
+#include "cmMakefile.h"
 #include "cmRange.h"
+#include "cmState.h"
+#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmStringReplaceHelper.h"
 #include "cmSystemTools.h"
+#include "cmValue.h"
 
 cm::string_view cmList::element_separator{ ";" };
 
@@ -77,6 +83,157 @@ private:
   cmsys::RegularExpression& Regex;
   bool const IncludeMatches;
 };
+
+// Hash of call site (FilePath:Line) for unique variable names across recursive
+// calls.
+std::string OutputVarFor(cm::string_view prefix, cmMakefile& makefile)
+{
+  cmListFileContext context = makefile.GetBacktrace().Top();
+  std::size_t hash =
+    std::hash<std::string>{}(cmStrCat(context.FilePath, ":", context.Line));
+  return cmStrCat(prefix, hash, "_");
+}
+
+void RequireFunction(cmMakefile const& makefile,
+                     std::string const& functionName,
+                     std::string const& errorPrefix)
+{
+  cm::optional<cmStateEnums::CommandType> type =
+    makefile.GetState()->GetCommandType(functionName);
+  if (!type) {
+    throw cmList::transform_error(
+      cmStrCat(errorPrefix, ": unknown function \"", functionName, "\"."));
+  }
+  if (*type == cmStateEnums::CommandType::Macro) {
+    throw cmList::transform_error(
+      cmStrCat(errorPrefix, ": macro \"", functionName,
+               "\" may not be used here;"
+               " define it as a function() instead."));
+  }
+}
+
+class PredicateEvaluator
+{
+public:
+  PredicateEvaluator(std::string functionName, cmMakefile& makefile,
+                     std::string errorPrefix = "sub-command TRANSFORM, "
+                                               "selector PREDICATE")
+    : FunctionName(std::move(functionName))
+    , Makefile(&makefile)
+    , ErrorPrefix(std::move(errorPrefix))
+    , OutputVar(OutputVarFor("_cmake_predicate_out_", makefile))
+  {
+    RequireFunction(makefile, this->FunctionName, this->ErrorPrefix);
+  }
+
+  bool operator()(std::string const& value)
+  {
+    this->Makefile->RemoveDefinition(this->OutputVar);
+
+    cmListFileContext context = this->Makefile->GetBacktrace().Top();
+    std::vector<cmListFileArgument> funcArgs;
+    funcArgs.emplace_back(value, cmListFileArgument::Quoted, context.Line);
+    funcArgs.emplace_back(this->OutputVar, cmListFileArgument::Quoted,
+                          context.Line);
+    cmListFileFunction func{ this->FunctionName, context.Line, context.Line,
+                             std::move(funcArgs) };
+
+    cmExecutionStatus status(*this->Makefile);
+    if (!this->Makefile->ExecuteCommand(func, status) ||
+        status.GetNestedError()) {
+      throw cmList::transform_error(
+        cmStrCat(this->ErrorPrefix, ": function \"", this->FunctionName,
+                 "\" failed during execution."));
+    }
+
+    cmValue result = this->Makefile->GetDefinition(this->OutputVar);
+    if (!result) {
+      throw cmList::transform_error(
+        cmStrCat(this->ErrorPrefix, ": function \"", this->FunctionName,
+                 "\" did not set the output variable."));
+    }
+
+    bool boolResult = cmIsOn(*result);
+    this->Makefile->RemoveDefinition(this->OutputVar);
+    return boolResult;
+  }
+
+private:
+  std::string FunctionName;
+  cmMakefile* Makefile = nullptr;
+  std::string ErrorPrefix;
+  std::string OutputVar;
+};
+
+class MatchesPredicate
+{
+public:
+  MatchesPredicate(PredicateEvaluator& evaluator, cmList::FilterMode mode)
+    : Evaluator(evaluator)
+    , IncludeMatches(mode == cmList::FilterMode::INCLUDE)
+  {
+  }
+
+  bool operator()(std::string const& target)
+  {
+    return this->Evaluator(target) ^ this->IncludeMatches;
+  }
+
+private:
+  PredicateEvaluator& Evaluator;
+  bool IncludeMatches;
+};
+
+class ComparatorEvaluator
+{
+public:
+  ComparatorEvaluator(std::string functionName, cmMakefile& makefile)
+    : FunctionName(std::move(functionName))
+    , Makefile(&makefile)
+    , OutputVar(OutputVarFor("_cmake_comparator_out_", makefile))
+  {
+    RequireFunction(makefile, this->FunctionName,
+                    "sub-command SORT, COMPARATOR");
+  }
+
+  bool operator()(std::string const& a, std::string const& b)
+  {
+    this->Makefile->RemoveDefinition(this->OutputVar);
+
+    cmListFileContext context = this->Makefile->GetBacktrace().Top();
+    std::vector<cmListFileArgument> funcArgs;
+    funcArgs.emplace_back(a, cmListFileArgument::Quoted, context.Line);
+    funcArgs.emplace_back(b, cmListFileArgument::Quoted, context.Line);
+    funcArgs.emplace_back(this->OutputVar, cmListFileArgument::Quoted,
+                          context.Line);
+    cmListFileFunction func{ this->FunctionName, context.Line, context.Line,
+                             std::move(funcArgs) };
+
+    cmExecutionStatus status(*this->Makefile);
+    if (!this->Makefile->ExecuteCommand(func, status) ||
+        status.GetNestedError()) {
+      throw cmList::transform_error(
+        cmStrCat("sub-command SORT, COMPARATOR: function \"",
+                 this->FunctionName, "\" failed during execution."));
+    }
+
+    cmValue result = this->Makefile->GetDefinition(this->OutputVar);
+    if (!result) {
+      throw cmList::transform_error(
+        cmStrCat("sub-command SORT, COMPARATOR: function \"",
+                 this->FunctionName, "\" did not set the output variable."));
+    }
+
+    bool boolResult = cmIsOn(*result);
+    this->Makefile->RemoveDefinition(this->OutputVar);
+    return boolResult;
+  }
+
+private:
+  std::string FunctionName;
+  cmMakefile* Makefile = nullptr;
+  std::string OutputVar;
+};
 }
 
 cmList& cmList::filter(cm::string_view pattern, FilterMode mode)
@@ -91,6 +248,23 @@ cmList& cmList::filter(cm::string_view pattern, FilterMode mode)
   auto it = std::remove_if(this->Values.begin(), this->Values.end(),
                            MatchesRegex{ regex, mode });
   this->Values.erase(it, this->Values.end());
+
+  return *this;
+}
+
+cmList& cmList::filter(std::string const& functionName, FilterMode mode,
+                       cmMakefile& makefile)
+{
+  try {
+    PredicateEvaluator evaluator(functionName, makefile,
+                                 "sub-command FILTER, mode PREDICATE");
+
+    auto it = std::remove_if(this->Values.begin(), this->Values.end(),
+                             MatchesPredicate{ evaluator, mode });
+    this->Values.erase(it, this->Values.end());
+  } catch (transform_error& e) {
+    throw std::invalid_argument(e.what());
+  }
 
   return *this;
 }
@@ -138,6 +312,13 @@ public:
     : Filters{ this->GetCompareFilter(config.Compare),
                this->GetCaseFilter(config.Case) }
     , SortMethod(this->GetComparisonFunction(config.Compare))
+    , Descending(config.Order == OrderMode::DESCENDING)
+  {
+  }
+
+  StringSorter(cmList::SortConfiguration config, ComparisonFunction comparator)
+    : Filters{ nullptr, this->GetCaseFilter(config.Case) }
+    , SortMethod(std::move(comparator))
     , Descending(config.Order == OrderMode::DESCENDING)
   {
   }
@@ -196,6 +377,38 @@ cmList& cmList::sort(SortConfiguration cfg)
   } else {
     StringSorter sorter(config);
     std::sort(this->Values.begin(), this->Values.end(), sorter);
+  }
+
+  return *this;
+}
+
+cmList& cmList::sort(SortConfiguration cfg, cmMakefile& makefile)
+{
+  SortConfiguration config{ cfg };
+
+  if (config.Order == SortConfiguration::OrderMode::DEFAULT) {
+    config.Order = SortConfiguration::OrderMode::ASCENDING;
+  }
+  if (config.Case == SortConfiguration::CaseSensitivity::DEFAULT) {
+    config.Case = SortConfiguration::CaseSensitivity::SENSITIVE;
+  }
+
+  try {
+    ComparatorEvaluator evaluator(config.ComparatorFunction, makefile);
+    StringSorter sorter(
+      config, [&evaluator](std::string const& a, std::string const& b) {
+        bool result = evaluator(a, b);
+        if (result && evaluator(b, a)) {
+          throw cmList::transform_error(
+            "sub-command SORT, COMPARATOR: function does not induce a strict "
+            "weak ordering. The comparator returned TRUE for both (a, b) and "
+            "(b, a).");
+        }
+        return result;
+      });
+    std::sort(this->Values.begin(), this->Values.end(), sorter);
+  } catch (transform_error& e) {
+    throw std::invalid_argument(e.what());
   }
 
   return *this;
@@ -265,6 +478,26 @@ public:
   }
 
   cmsys::RegularExpression Regex;
+};
+class TransformSelectorPredicate : public TransformSelector
+{
+public:
+  TransformSelectorPredicate(std::string const& functionName,
+                             cmMakefile& makefile)
+    : TransformSelector("PREDICATE")
+    , Evaluator(functionName, makefile)
+  {
+  }
+
+  bool Validate(std::size_t) override { return true; }
+
+  bool InSelection(std::string const& value) override
+  {
+    return this->Evaluator(value);
+  }
+
+private:
+  PredicateEvaluator Evaluator;
 };
 class TransformSelectorIndexes : public TransformSelector
 {
@@ -565,6 +798,81 @@ private:
   std::unique_ptr<cmStringReplaceHelper> ReplaceHelper;
 };
 
+class TransformActionApply : public TransformAction
+{
+public:
+  using TransformAction::Initialize;
+
+  void Initialize(TransformSelector* selector, std::string const& functionName,
+                  cmMakefile& makefile)
+  {
+    TransformAction::Initialize(selector);
+    this->FunctionName = functionName;
+    this->Makefile = &makefile;
+    this->OutputVar = OutputVarFor("_cmake_transform_apply_out_", makefile);
+
+    RequireFunction(makefile, this->FunctionName,
+                    "sub-command TRANSFORM, action APPLY");
+  }
+
+  void Initialize(TransformSelector* /*selector*/,
+                  std::vector<std::string> const& /*args*/) override
+  {
+    // This overload must not be used for APPLY — it lacks cmMakefile context.
+    throw transform_error(
+      "sub-command TRANSFORM, action APPLY requires cmMakefile context.");
+  }
+
+  std::string operator()(std::string const& s) override
+  {
+    if (!this->Selector->InSelection(s)) {
+      return s;
+    }
+
+    // Unset the output variable before calling
+    this->Makefile->RemoveDefinition(this->OutputVar);
+
+    // Build the function call: functionName(s, outputVar)
+    cmListFileContext context = this->Makefile->GetBacktrace().Top();
+    std::vector<cmListFileArgument> funcArgs;
+    funcArgs.emplace_back(s, cmListFileArgument::Quoted, context.Line);
+    funcArgs.emplace_back(this->OutputVar, cmListFileArgument::Quoted,
+                          context.Line);
+    cmListFileFunction func{ this->FunctionName, context.Line, context.Line,
+                             std::move(funcArgs) };
+
+    cmExecutionStatus status(*this->Makefile);
+    if (!this->Makefile->ExecuteCommand(func, status) ||
+        status.GetNestedError()) {
+      throw transform_error(
+        cmStrCat("sub-command TRANSFORM, action APPLY: function \"",
+                 this->FunctionName, "\" failed during execution."));
+    }
+
+    // Read back the output variable
+    cmValue result = this->Makefile->GetDefinition(this->OutputVar);
+    if (!result) {
+      throw transform_error(
+        cmStrCat("sub-command TRANSFORM, action APPLY: function \"",
+                 this->FunctionName, "\" did not set the output variable."));
+    }
+
+    // Copy the result before cleaning up (RemoveDefinition invalidates the
+    // cmValue pointer).
+    std::string output = *result;
+
+    // Clean up
+    this->Makefile->RemoveDefinition(this->OutputVar);
+
+    return output;
+  }
+
+private:
+  std::string FunctionName;
+  cmMakefile* Makefile = nullptr;
+  std::string OutputVar;
+};
+
 // Descriptor of action
 // Arity: number of arguments required for the action
 // Transform: Object implementing the action
@@ -621,6 +929,8 @@ ActionDescriptorSet::iterator TransformConfigure(
                         cm::make_unique<TransformActionGenexStrip>());
     Descriptors.emplace(cmList::TransformAction::REPLACE, "REPLACE", 2,
                         cm::make_unique<TransformActionReplace>());
+    Descriptors.emplace(cmList::TransformAction::APPLY, "APPLY", 1,
+                        cm::make_unique<TransformActionApply>());
   }
 
   auto descriptor = Descriptors.find(action);
@@ -742,6 +1052,14 @@ std::unique_ptr<cmList::TransformSelector> cmList::TransformSelector::NewREGEX(
   return std::unique_ptr<cmList::TransformSelector>(selector.release());
 }
 
+std::unique_ptr<cmList::TransformSelector>
+cmList::TransformSelector::NewPREDICATE(std::string const& functionName,
+                                        cmMakefile& makefile)
+{
+  return std::unique_ptr<cmList::TransformSelector>(
+    new TransformSelectorPredicate(functionName, makefile));
+}
+
 cmList& cmList::transform(TransformAction action,
                           std::unique_ptr<TransformSelector> selector)
 {
@@ -803,6 +1121,28 @@ cmList& cmList::transform(TransformAction action,
   static_cast<::TransformSelector&>(*selector).Transform(
     this->Values, [&descriptor](std::string const& s) -> std::string {
       return (*descriptor->Transform)(s);
+    });
+
+  return *this;
+}
+
+cmList& cmList::transform(TransformAction action, std::string const& arg,
+                          cmMakefile& makefile,
+                          std::unique_ptr<TransformSelector> selector)
+{
+  // Validate action and arity via the static registry.
+  TransformConfigure(action, selector, 1);
+
+  // Create a local instance rather than reusing the singleton from
+  // Descriptors.  A user function invoked by APPLY may itself call
+  // list(TRANSFORM ... APPLY ...), which would clobber a shared instance.
+  TransformActionApply applyAction;
+  applyAction.Initialize(static_cast<::TransformSelector*>(selector.get()),
+                         arg, makefile);
+
+  static_cast<::TransformSelector&>(*selector).Transform(
+    this->Values, [&applyAction](std::string const& s) -> std::string {
+      return applyAction(s);
     });
 
   return *this;

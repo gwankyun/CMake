@@ -415,6 +415,8 @@ syn keyword cmakeProperty contained
             \ Swift_LANGUAGE_VERSION
             \ Swift_MODULE_DIRECTORY
             \ Swift_MODULE_NAME
+            \ Swift_PACKAGE_NAME
+            \ Swift_SEPARATE_MODULE_EMISSION
             \ TARGET_ARCHIVES_MAY_BE_SHARED_LIBS
             \ TARGET_MESSAGES
             \ TARGET_SUPPORTS_SHARED_LIBS
@@ -2037,6 +2039,7 @@ syn keyword cmakeVariable contained
             \ CMAKE_Swift_NUM_THREADS
             \ CMAKE_Swift_OUTPUT_EXTENSION
             \ CMAKE_Swift_PLATFORM_ID
+            \ CMAKE_Swift_SEPARATE_MODULE_EMISSION
             \ CMAKE_Swift_SIMULATE_ID
             \ CMAKE_Swift_SIMULATE_VERSION
             \ CMAKE_Swift_SIZEOF_DATA_PTR

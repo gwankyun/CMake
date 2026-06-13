@@ -3,7 +3,7 @@
 
 include(${CMAKE_ROOT}/Modules/CMakeDetermineCompiler.cmake)
 
-if(NOT "${CMAKE_GENERATOR}" MATCHES "^Ninja")
+if(NOT "${CMAKE_GENERATOR}" MATCHES "^(Ninja)|(Unix Makefiles)")
   message(FATAL_ERROR "Rust language not supported by \"${CMAKE_GENERATOR}\" generator")
 endif()
 
@@ -30,9 +30,10 @@ if(RUSTC_FILENAME STREQUAL "rustup")
     COMMAND ${RUSTUP_PATH} which rustc
     OUTPUT_VARIABLE REAL_RUSTC
     OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
+    RESULT_VARIABLE _rust_result
+    )
 
-  if("${REAL_RUSTC}" STREQUAL "")
+  if(NOT _rust_result EQUAL 0 OR "${REAL_RUSTC}" STREQUAL "")
     message(FATAL_ERROR "Failed to find path to real rustc")
   endif()
 

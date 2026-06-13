@@ -226,9 +226,9 @@ public:
   {
   }
   cmAlphaNum(char ch)
-    : View_(this->Digits_, 1)
   {
     this->Digits_[0] = ch;
+    this->View_ = cm::string_view(this->Digits_, 1);
   }
   cmAlphaNum(int val);
   cmAlphaNum(unsigned int val);

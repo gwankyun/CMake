@@ -13,6 +13,7 @@ function(_ep_get_git_remote_url output_variable working_directory)
     OUTPUT_VARIABLE git_symbolic_ref
     OUTPUT_STRIP_TRAILING_WHITESPACE
     ERROR_QUIET
+    RESULT_VARIABLE _result_git_symbolic_ref
   )
 
   if(NOT git_symbolic_ref STREQUAL "")
@@ -24,6 +25,7 @@ function(_ep_get_git_remote_url output_variable working_directory)
       OUTPUT_VARIABLE git_remote_name
       OUTPUT_STRIP_TRAILING_WHITESPACE
       ERROR_QUIET
+      RESULT_VARIABLE _result_git_branch_remote
     )
   endif()
 
@@ -36,6 +38,7 @@ function(_ep_get_git_remote_url output_variable working_directory)
       OUTPUT_VARIABLE git_remote_list
       OUTPUT_STRIP_TRAILING_WHITESPACE
       ERROR_QUIET
+      RESULT_VARIABLE _result_git_remote_list
     )
     string(REPLACE "\n" ";" git_remote_list "${git_remote_list}")
     list(LENGTH git_remote_list git_remote_list_length)
@@ -70,6 +73,7 @@ function(_ep_get_git_remote_url output_variable working_directory)
     OUTPUT_STRIP_TRAILING_WHITESPACE
     COMMAND_ERROR_IS_FATAL LAST
     ENCODING UTF-8   # Needed to handle non-ascii characters in local paths
+    RESULT_VARIABLE _result_git_remote_url
   )
 
   set("${output_variable}" "${git_remote_url}" PARENT_SCOPE)
@@ -171,9 +175,7 @@ function(_ep_resolve_git_remote
     set("${output_variable}" "${_resolved_git_remote_url}" PARENT_SCOPE)
     return()
   elseif(cmp0150 STREQUAL "")
-    cmake_policy(GET_WARNING CMP0150 _cmp0150_warning)
-    message(AUTHOR_WARNING
-      "${_cmp0150_warning}\n"
+    cmake_policy(ISSUE_WARNING CMP0150 POST
       "A relative GIT_REPOSITORY path was detected. "
       "This will be interpreted as a local path to where the project is being cloned. "
       "Set GIT_REPOSITORY to an absolute path or set policy CMP0150 to NEW to avoid "
@@ -397,6 +399,8 @@ function(_ep_write_gitclone_script
   gitclone_stampfile
   tls_version
   tls_verify
+  git_clone_retries
+  git_clone_retry_delay
 )
 
   if(NOT Git_VERSION VERSION_LESS 1.8.5)
@@ -979,6 +983,16 @@ CMP0097=${_EP_CMP0097}
     get_filename_component(src_name "${source_dir}" NAME)
     get_filename_component(work_dir "${source_dir}" PATH)
 
+    # Get retry configuration from variables with defaults
+    set(git_clone_retries "${CMAKE_EP_GIT_CLONE_RETRY_COUNT}")
+    if("${git_clone_retries}" STREQUAL "")
+      set(git_clone_retries 2)
+    endif()
+    set(git_clone_retry_delay "${CMAKE_EP_GIT_CLONE_RETRY_DELAY}")
+    if("${git_clone_retry_delay}" STREQUAL "")
+      set(git_clone_retry_delay 0)
+    endif()
+
     # Since git clone doesn't succeed if the non-empty source_dir exists,
     # create a cmake script to invoke as download command.
     # The script will delete the source directory and then call git clone.
@@ -1003,6 +1017,8 @@ CMP0097=${_EP_CMP0097}
       ${stamp_dir}/${name}-gitclone-lastrun.txt
       "${tls_version}"
       "${tls_verify}"
+      "${git_clone_retries}"
+      "${git_clone_retry_delay}"
     )
     set(comment "Performing download step (git clone) for '${name}'")
     set(cmd ${CMAKE_COMMAND}

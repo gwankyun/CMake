@@ -1,0 +1,5 @@
+^CMake Error at FILTER-PREDICATE-UnknownFunction\.cmake:2 \(list\):
+  list sub-command FILTER, mode PREDICATE: unknown function
+  "no_such_function"\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)$

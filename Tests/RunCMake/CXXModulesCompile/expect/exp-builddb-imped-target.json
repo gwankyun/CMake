@@ -51,12 +51,16 @@
           "object": "PATH:CMakeFiles/use_import_interfaces.dir<CONFIG_DIR>/use.cxx<OBJEXT>",
           "private": true,
           "provides": {},
-          "requires": ["importable"],
+          "requires": [
+            "importable"
+          ],
           "source": "PATH:<SOURCE_DIR>/imp-mods/use.cxx",
           "work-directory": "<BINARY_DIR>"
         }
       ],
-      "visible-sets": ["REGEX:CXXModules__export_build_database@synth_<HEX>@<CONFIG>"]
+      "visible-sets": [
+        "CXXModules__export_build_database@synth_0@<CONFIG>"
+      ]
     }
   ]
 }

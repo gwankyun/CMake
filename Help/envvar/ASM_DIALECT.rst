@@ -6,9 +6,15 @@ ASM<DIALECT>
 编译汇编语言文件的特定方言的首选可执行文件。\ ``ASM<DIALECT>``\ 可以是：
 
 * ``ASM``
+
 * ``ASM_NASM`` (Netwide Assembler)
+
 * ``ASM_MASM`` (Microsoft Assembler)
+
 * ``ASM_MARMASM`` (Microsoft ARM Assembler)
+
+* ``ASM_POASM`` (Pelles Macro Assembler)
+
 * ``ASM-ATT`` (Assembler AT&T)
 
 Will only be used by CMake on the first configuration to determine

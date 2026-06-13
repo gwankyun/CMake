@@ -33,6 +33,12 @@ function(run_cmake_package_presets name CMakePresetsPackage_CONFIGURE_PRESETS CM
     configure_file("${CMakeUserPresets_FILE}" "${RunCMake_TEST_SOURCE_DIR}/CMakeUserPresets.json" @ONLY)
   endif()
 
+  set(_presets_file)
+  if(CMakePresets_FILE_ARG)
+    set(_presets_file "--presets-file=${RunCMake_TEST_SOURCE_DIR}/${CMakePresets_FILE_ARG}")
+    configure_file("${RunCMake_SOURCE_DIR}/${CMakePresets_FILE_ARG}.in" "${RunCMake_TEST_SOURCE_DIR}/${CMakePresets_FILE_ARG}" @ONLY)
+  endif()
+
   foreach(ASSET ${CMakePresetsPackage_ASSETS})
     configure_file("${RunCMake_SOURCE_DIR}/${ASSET}" "${RunCMake_TEST_SOURCE_DIR}" COPYONLY)
   endforeach()
@@ -63,11 +69,11 @@ function(run_cmake_package_presets name CMakePresetsPackage_CONFIGURE_PRESETS CM
 
     if(eq)
       run_cmake_command(${name}-package-${PACKAGE_PRESET}
-        ${CMAKE_CPACK_COMMAND} "--preset=${PACKAGE_PRESET}" ${ARGN})
+        ${CMAKE_CPACK_COMMAND} "--preset=${PACKAGE_PRESET}" ${_presets_file} ${ARGN})
       set(eq 0)
     else()
       run_cmake_command(${name}-package-${PACKAGE_PRESET}
-        ${CMAKE_CPACK_COMMAND} "--preset" "${PACKAGE_PRESET}" ${ARGN})
+        ${CMAKE_CPACK_COMMAND} "--preset" "${PACKAGE_PRESET}" ${_presets_file} ${ARGN})
       set(eq 1)
     endif()
   endforeach()
@@ -100,3 +106,12 @@ endfunction()
 run_cmake_package_presets(UnsupportedVersion "x" "" "")
 run_cmake_package_presets(Good "default" "build-default-debug" "no-environment;with-environment;generators;configurations;variables;config-file;debug;verbose;package-name;package-version;package-directory;vendor-name")
 run_cmake_package_presets(ListPresets "default" "" "x" "--list-presets")
+
+set(CMakePresets_FILE_ARG "OtherCMakePresetsFile.json")
+run_cmake_package_presets(OtherCMakePresetsFile "default" "default" "default-from-other-file" "")
+run_cmake_package_presets(OtherCMakePresetsFileListPresets "" "" "x" "--list-presets")
+unset(CMakePresets_FILE_ARG)
+
+run_cmake_command(PresetsNoArg-package ${CMAKE_CPACK_COMMAND} "--preset")
+run_cmake_command(PresetsNoArgEq-package ${CMAKE_CPACK_COMMAND} "--preset=")
+run_cmake_command(PresetsFileNoArg-package ${CMAKE_CPACK_COMMAND} "--presets-file")

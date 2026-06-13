@@ -2,9 +2,10 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmOptionCommand.h"
 
+#include <cmext/string_view>
+
 #include "cmExecutionStatus.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmPolicies.h"
 #include "cmState.h"
 #include "cmStateSnapshot.h"
@@ -78,13 +79,11 @@ bool cmOptionCommand(std::vector<std::string> const& args,
     auto const& existsAfterSet =
       status.GetMakefile().GetStateSnapshot().GetDefinition(args[0]);
     if (!existsAfterSet) {
-      status.GetMakefile().IssueMessage(
-        MessageType::AUTHOR_WARNING,
-        cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0077),
-                 "\n"
-                 "For compatibility with older versions of CMake, option "
-                 "is clearing the normal variable '",
-                 args[0], "'."));
+      status.GetMakefile().IssuePolicyWarning(
+        cmPolicies::CMP0077, {},
+        cmStrCat("For compatibility with older versions of CMake, "
+                 "option is clearing the normal variable '"_s,
+                 args[0], "'."_s));
     }
   }
   return true;

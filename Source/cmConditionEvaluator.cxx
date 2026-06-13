@@ -409,6 +409,9 @@ bool cmConditionEvaluator::HandleLevel0(cmArgumentList& newArgs,
       // now recursively invoke IsTrue to handle the values inside the
       // parenthetical expression
       auto const value = this->IsTrue(subExpr, errorString, status);
+      if (!errorString.empty()) {
+        return false;
+      }
       *arg = cmExpandedCommandArgument(bool2string(value), true);
       argOpen = std::next(arg);
       // remove the now evaluated parenthetical expression
@@ -659,14 +662,11 @@ bool cmConditionEvaluator::HandleLevel2(cmArgumentList& newArgs,
       }
 
       else if (this->Policy139Status == cmPolicies::WARN) {
-        std::ostringstream e;
-        e << cmPolicies::GetPolicyWarning(cmPolicies::CMP0139)
-          << "\n"
-             "PATH_EQUAL will be interpreted as an operator "
-             "when the policy is set to NEW.  "
-             "Since the policy is not set the OLD behavior will be used.";
-
-        this->Makefile.IssueMessage(MessageType::AUTHOR_WARNING, e.str());
+        this->Makefile.IssuePolicyWarning(
+          cmPolicies::CMP0139, {},
+          "PATH_EQUAL will be interpreted as an operator "
+          "when the policy is set to NEW.  "
+          "Since the policy is not set the OLD behavior will be used."_s);
       }
     }
   }

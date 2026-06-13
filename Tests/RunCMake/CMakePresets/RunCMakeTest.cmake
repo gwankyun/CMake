@@ -30,6 +30,33 @@ function(run_cmake_presets name)
   endif()
   configure_file("${RunCMake_SOURCE_DIR}/CMakeLists.txt.in" "${RunCMake_TEST_SOURCE_DIR}/CMakeLists.txt" @ONLY)
 
+  set(_presets_file)
+  if(CMakePresets_FILE_ARG)
+    cmake_path(GET RunCMake_TEST_SOURCE_DIR PARENT_PATH CMakePresets_FILE_ARG_DIRECTORY)
+    cmake_path(APPEND CMakePresets_FILE_ARG_DIRECTORY "_OtherCMakePresetsFiles")
+    if(NOT RunCMake_TEST_SOURCE_DIR_NO_CLEAN)
+      file(REMOVE_RECURSE "${CMakePresets_FILE_ARG_DIRECTORY}")
+      file(MAKE_DIRECTORY "${CMakePresets_FILE_ARG_DIRECTORY}")
+    endif()
+    if(CMakePresets_FILE_ARG_RELATIVE)
+      cmake_path(RELATIVE_PATH
+        CMakePresets_FILE_ARG_DIRECTORY
+        BASE_DIRECTORY "${RunCMake_TEST_SOURCE_DIR}"
+        OUTPUT_VARIABLE CMakePresets_FILE_ARG_RELATIVE_PATH
+      )
+      set(_presets_file "--presets-file=${CMakePresets_FILE_ARG_RELATIVE_PATH}/${CMakePresets_FILE_ARG}")
+    else()
+      set(_presets_file "--presets-file=${CMakePresets_FILE_ARG_DIRECTORY}/${CMakePresets_FILE_ARG}")
+    endif()
+    foreach(_presets_file_arg IN ITEMS ${CMakePresets_FILE_ARG} ${CMakePresets_FILE_ARG_EXTRA_FILES})
+      configure_file(
+        "${RunCMake_SOURCE_DIR}/${_presets_file_arg}.in"
+        "${CMakePresets_FILE_ARG_DIRECTORY}/${_presets_file_arg}"
+        @ONLY
+      )
+    endforeach()
+  endif()
+
   if(NOT CMakePresets_FILE)
     set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/${name}.json.in")
   endif()
@@ -66,7 +93,7 @@ function(run_cmake_presets name)
   if(CMakePresets_NO_SOURCE_ARGS)
     set(_source_args)
   endif()
-  set(_unused_cli --no-warn-unused-cli)
+  set(_unused_cli -Wno-unused-cli)
   if(CMakePresets_WARN_UNUSED_CLI)
     set(_unused_cli)
   endif()
@@ -93,6 +120,7 @@ function(run_cmake_presets name)
     ${_make_program}
     ${_unused_cli}
     ${_preset}
+    ${_presets_file}
     ${_log_level}
     ${ARGN}
     )
@@ -153,6 +181,10 @@ run_cmake_presets(CyclicInheritance0)
 run_cmake_presets(CyclicInheritance1)
 run_cmake_presets(CyclicInheritance2)
 run_cmake_presets(InvalidInheritance)
+run_cmake_presets(BuildInvalidInheritance)
+run_cmake_presets(PackageInvalidInheritance)
+run_cmake_presets(TestInvalidInheritance)
+run_cmake_presets(PackageNoConfigurePreset)
 run_cmake_presets(ErrorNoWarningDev)
 run_cmake_presets(ErrorNoWarningDeprecated)
 set(CMakePresets_SCHEMA_EXPECTED_RESULT 1)
@@ -162,6 +194,9 @@ run_cmake_presets(InvalidToolsetStrategy)
 run_cmake_presets(UnknownToolsetStrategy)
 run_cmake_presets(EmptyCacheKey)
 run_cmake_presets(EmptyEnvKey)
+run_cmake_presets(BuildEmptyEnvKey)
+run_cmake_presets(PackageEmptyEnvKey)
+run_cmake_presets(TestEmptyEnvKey)
 set(CMakePresets_SCHEMA_EXPECTED_RESULT 0)
 run_cmake_presets(UnclosedMacro)
 run_cmake_presets(NoSuchMacro)
@@ -174,6 +209,13 @@ set(CMakePresets_SCHEMA_EXPECTED_RESULT 1)
 run_cmake_presets(ConditionFuture)
 run_cmake_presets(SubConditionNull)
 run_cmake_presets(TraceNotSupported)
+set(CMakePresets_SCHEMA_EXPECTED_RESULT 1)
+run_cmake_presets(WarningDevNotSupported)
+run_cmake_presets(WarningAuthorNotSupported)
+run_cmake_presets(ErrorDevNotSupported)
+run_cmake_presets(ErrorAuthorNotSupported)
+run_cmake_presets(ErrorUninitializedNotSupported)
+run_cmake_presets(ErrorUnusedCliNotSupported)
 
 set(CMakePresets_NO_PRESET 1)
 set(CMakePresets_SCHEMA_EXPECTED_RESULT 0)
@@ -208,6 +250,8 @@ file(REMOVE_RECURSE ${RunCMake_BINARY_DIR}/GoodBinaryUp-build)
 run_cmake_presets(GoodBinaryUp)
 set(CMakePresets_SOURCE_ARG "../GoodBinaryRelative")
 run_cmake_presets(GoodBinaryRelative)
+set(CMakePresets_SOURCE_ARG "${RunCMake_BINARY_DIR}/GoodSourceSlash/")
+run_cmake_presets(GoodSourceSlash)
 unset(CMakePresets_SOURCE_ARG)
 run_cmake_presets(GoodSpaces "--preset" "Good Spaces")
 run_cmake_presets(GoodSpacesEq "--preset=Good Spaces")
@@ -304,6 +348,8 @@ run_cmake_presets(NoSuchPreset)
 run_cmake_presets(NoPresetArgument --preset)
 run_cmake_presets(NoPresetArgumentEq --preset= -DA=B)
 run_cmake_presets(UseHiddenPreset)
+run_cmake_presets(NoPresetFileArgument --preset GoodNoArgs --presets-file)
+run_cmake_presets(PresetScriptMode -P PresetScriptMode.cmake --preset GoodNoArgs)
 
 # Test CMakeUserPresets.json
 unset(CMakePresets_FILE)
@@ -316,6 +362,30 @@ run_cmake_presets(V2InheritV3Optional)
 run_cmake_presets(UserDuplicateInUser)
 run_cmake_presets(UserDuplicateCross)
 run_cmake_presets(UserInheritance)
+
+# Test --presets-file=<file>
+# <file> should be preferred over CMakePresets.json and CMakeUserPresets.json
+set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/OtherCMakePresetsFileCMakePresets.json.in")
+set(CMakeUserPresets_FILE "${RunCMake_SOURCE_DIR}/OtherCMakePresetsFileCMakeUserPresets.json.in")
+# <file> must exist
+run_cmake_presets(PresetsFileArgNoExist --presets-file=FileDoesNotExist.json)
+set(CMakePresets_FILE_ARG OtherCMakePresetsFile.json)
+run_cmake_presets(OtherCMakePresetsFile)
+# --list-presets should only list the presets defined in <file>
+run_cmake_presets(OtherCMakePresetsFileList --list-presets=all)
+# <file> can be specified via relative path on the command line
+set(CMakePresets_FILE_ARG_RELATIVE 1)
+run_cmake_presets(OtherCMakePresetsFileRelPath --preset OtherCMakePresetsFile)
+set(CMakePresets_FILE_ARG "subdir/OtherCMakePresetsFileSubdir.json")
+set(CMakePresets_FILE_ARG_EXTRA_FILES "subdir/IncludeRelativeToSubdir.json")
+# Files included by <file> should have paths evaluated relative to <file>
+run_cmake_presets(OtherCMakePresetsFileSubdir)
+run_cmake_presets(OtherCMakePresetsFileSubdir --preset=IncludeRelativeToSubdir)
+unset(CMakePresets_FILE)
+unset(CMakeUserPresets_FILE)
+unset(CMakePresets_FILE_ARG)
+unset(CMakePresets_FILE_ARG_RELATIVE)
+unset(CMakePresets_FILE_ARG_EXTRA_FILES)
 
 # Test listing presets
 set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/ListPresets.json.in")
@@ -343,19 +413,32 @@ set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/ListAllPresetsNoTest.json.in")
 run_cmake_presets(ListAllPresetsNoTest --list-presets=all)
 
 # Test warning and error flags
-set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/Warnings.json.in")
 set(CMakePresets_WARN_UNUSED_CLI 1)
+set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/Warnings.json.in")
 run_cmake_presets(NoWarningFlags)
 run_cmake_presets(WarningFlags)
 run_cmake_presets(DisableWarningFlags)
 run_cmake_presets(ErrorDev)
 run_cmake_presets(ErrorDeprecated)
+
+set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/Warnings12.json.in")
+run_cmake_presets(NoWarningFlags)
+run_cmake_presets(WarningFlags)
+run_cmake_presets(WarningAbsInstallPath)
+run_cmake_presets(DisableWarningFlags)
+run_cmake_presets(ErrorAbsInstallPath)
+run_cmake_presets(ErrorDev)
+run_cmake_presets(ErrorUninitialized)
+run_cmake_presets(ErrorUnusedCli)
+run_cmake_presets(DiagnosticOrder)
 unset(CMakePresets_WARN_UNUSED_CLI)
 
 # Test debug
 set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/Debug.json.in")
 run_cmake_presets(NoDebug)
 run_cmake_presets(Debug)
+run_cmake_presets(DebugInherit)
+run_cmake_presets(DebugInheritOverride)
 
 # Test trace
 set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/Trace.json.in")
@@ -368,6 +451,11 @@ run_cmake_presets(TraceFormatHuman)
 run_cmake_presets(TraceSource)
 run_cmake_presets(TraceRedirect)
 run_cmake_presets(TraceAll)
+run_cmake_presets(TraceInherit)
+run_cmake_presets(TraceInheritOverride)
+run_cmake_presets(TraceFormatInherit)
+run_cmake_presets(TraceSourceInherit)
+run_cmake_presets(TraceRedirectInherit)
 
 # Test ${hostSystemName} macro
 set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/HostSystemName.json.in")
@@ -377,10 +465,20 @@ run_cmake_presets(HostSystemNameFuture)
 
 # Test ${fileDir} macro
 set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/FileDir.json.in")
+set(FileDir_include_subdir "subdir/FileDirv4.json")
 set(CMakePresets_EXTRA_FILES
-  "${RunCMake_SOURCE_DIR}/subdir/FileDir.json.in"
-  )
-run_cmake_presets(FileDir)
+  "${RunCMake_SOURCE_DIR}/${FileDir_include_subdir}.in"
+)
+run_cmake_presets(FileDirv4 --preset FileDir)
+run_cmake_presets(FileDirv4 --preset FileDirExt)
+set(FileDir_include_subdir "subdir/FileDirv12.json")
+set(CMakePresets_EXTRA_FILES
+  "${RunCMake_SOURCE_DIR}/${FileDir_include_subdir}.in"
+  "${RunCMake_SOURCE_DIR}/subdir/FileDirInclude.json.in"
+)
+run_cmake_presets(FileDirv12 --preset FileDir)
+run_cmake_presets(FileDirv12 --preset FileDirExt)
+run_cmake_presets(FileDirv12 --preset FileDirInclude)
 unset(CMakePresets_EXTRA_FILES)
 set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/FileDirFuture.json.in")
 run_cmake_presets(FileDirFuture)

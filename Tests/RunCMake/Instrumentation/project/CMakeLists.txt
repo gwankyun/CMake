@@ -1,19 +1,33 @@
 cmake_minimum_required(VERSION 4.3)
-project(instrumentation)
+project(instrumentation C)
 enable_testing()
 if (EXISTS ${INSTRUMENT_COMMAND_FILE})
   include(${INSTRUMENT_COMMAND_FILE})
 endif()
 
-add_executable(main main.cxx)
-add_library(lib lib.cxx)
+add_executable(main main.c)
+add_library(lib lib.c)
 target_link_libraries(main lib)
+
+if (INSTRUMENT_COMPILE_TRACE STREQUAL "DEFAULT")
+  target_compile_options(main PRIVATE "-ftime-trace")
+  target_compile_options(lib PRIVATE "-ftime-trace")
+elseif (INSTRUMENT_COMPILE_TRACE STREQUAL "EXPLICIT")
+  target_compile_options(main PRIVATE "-ftime-trace=main.json")
+  target_compile_options(lib PRIVATE "-ftime-trace=lib.json")
+endif()
+
 add_custom_command(TARGET main POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E true
 )
 add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E true
   OUTPUT output1 output2
+)
+add_custom_command(
+  COMMAND $<TARGET_FILE:main>
+  OUTPUT output3
+  DEPENDS main
 )
 
 file(COPY_FILE shell_redirect.txt ${CMAKE_CURRENT_BINARY_DIR}/shell_redirect.in)
@@ -35,10 +49,10 @@ else()
   )
 endif()
 
-set_property(SOURCE output1 output2 PROPERTY SYMBOLIC 1)
+set_property(SOURCE output1 output2 output3 PROPERTY SYMBOLIC 1)
 add_custom_target(customTarget ALL
   COMMAND ${CMAKE_COMMAND} -E true
-  DEPENDS output1 shell_redirect.out
+  DEPENDS output1 output3 shell_redirect.out
 )
 add_test(NAME test COMMAND $<TARGET_FILE:main>)
 if(DISABLE_TEST)
@@ -49,10 +63,10 @@ set_target_properties(main PROPERTIES LABELS "label1;label2")
 set_target_properties(lib PROPERTIES LABELS "label3")
 
 if (FAIL)
-  file(WRITE "${CMAKE_BINARY_DIR}/dummy.cxx"
+  file(WRITE "${CMAKE_BINARY_DIR}/dummy.c"
     "#error \"something which will not compile\"\n"
   )
-  add_executable(dummy "${CMAKE_BINARY_DIR}/dummy.cxx")
+  add_executable(dummy "${CMAKE_BINARY_DIR}/dummy.c")
   add_test(NAME dummy COMMAND ${CMAKE_COMMAND} -E false)
   install(CODE "message(FATAL_ERROR \"Failed install.\")")
 endif()

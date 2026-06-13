@@ -4,6 +4,7 @@
 
 #include "cmExecutionStatus.h"
 #include "cmMakefile.h"
+#include "cmPolicies.h"
 
 // cmSetDirectoryPropertiesCommand
 bool cmSetDirectoryPropertiesCommand(std::vector<std::string> const& args,
@@ -27,7 +28,9 @@ bool cmSetDirectoryPropertiesCommand(std::vector<std::string> const& args,
         "Variables and cache variables should be set using SET command");
       return false;
     }
-    if (prop == "MACROS") {
+    if (prop == "MACROS" &&
+        status.GetMakefile().GetPolicyStatus(cmPolicies::CMP0217) !=
+          cmPolicies::NEW) {
       status.SetError(
         "Commands and macros cannot be set using SET_CMAKE_PROPERTIES");
       return false;

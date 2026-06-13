@@ -629,7 +629,36 @@ class cmMakefile;
          4, 3, 0, WARN)                                                       \
   SELECT(POLICY, CMP0210,                                                     \
          "CMAKE_<LANG>_LINK_FLAGS adds link flags to all target types.", 4,   \
-         3, 0, WARN)
+         3, 0, WARN)                                                          \
+  SELECT(POLICY, CMP0211,                                                     \
+         "A file may belong to at most one non-HEADERS file set in a "        \
+         "target.",                                                           \
+         4, 4, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0212,                                                     \
+         "add_custom_command DEPENDS does not strip .exe suffixes.", 4, 4, 0, \
+         WARN)                                                                \
+  SELECT(POLICY, CMP0213,                                                     \
+         "file(ARCHIVE_{CREATE,EXTRACT}) encode archive paths as UTF-8 by "   \
+         "default.",                                                          \
+         4, 4, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0214,                                                     \
+         "Honor CMAKE_EXE_LINKER_FLAGS for Swift executable targets.", 4, 4,  \
+         0, WARN)                                                             \
+  SELECT(POLICY, CMP0215,                                                     \
+         "Ninja generators emit Swift modules separately from compilation.",  \
+         4, 4, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0216, "Swift targets have a default project name.", 4, 4, \
+         0, WARN)                                                             \
+  SELECT(POLICY, CMP0217,                                                     \
+         "The MACROS directory property does not exist anymore.", 4, 4, 0,    \
+         WARN)                                                                \
+  SELECT(POLICY, CMP0218,                                                     \
+         "The CMAKE_WARN_DEPRECATED and CMAKE_ERROR_DEPRECATED variables "    \
+         "are ignored.",                                                      \
+         4, 4, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0219,                                                     \
+         "Macro invocations preserve backslashes in arguments.", 4, 4, 0,     \
+         WARN)
 
 #define CM_SELECT_ID(F, A1, A2, A3, A4, A5, A6) F(A1)
 #define CM_FOR_EACH_POLICY_ID(POLICY)                                         \
@@ -684,11 +713,16 @@ class cmMakefile;
   F(CMP0203)                                                                  \
   F(CMP0204)                                                                  \
   F(CMP0209)                                                                  \
-  F(CMP0210)
+  F(CMP0210)                                                                  \
+  F(CMP0211)                                                                  \
+  F(CMP0214)                                                                  \
+  F(CMP0215)                                                                  \
+  F(CMP0216)
 
 #define CM_FOR_EACH_CUSTOM_COMMAND_POLICY(F)                                  \
   F(CMP0116)                                                                  \
-  F(CMP0147)
+  F(CMP0147)                                                                  \
+  F(CMP0212)
 
 /** \class cmPolicies
  * \brief Handles changes in CMake behavior and policies
@@ -715,14 +749,15 @@ public:
 
     /** \brief Always the last entry.
      *
-     * Useful mostly to avoid adding a comma the last policy when adding a new
-     * one.
+     * Useful mostly to avoid adding a comma the last policy when adding
+     * a new one.
      */
     CMPCOUNT
   };
 
   //! convert a string policy ID into a number
-  static bool GetPolicyID(char const* id, /* out */ cmPolicies::PolicyID& pid);
+  static bool GetPolicyID(char const* id,
+                          /* out */ cmPolicies::PolicyID& pid);
 
   //! Return whether a policy has been removed.
   static bool IsRemoved(cmPolicies::PolicyID id);

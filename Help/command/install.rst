@@ -60,6 +60,10 @@ signatures that specify them.  The common options are:
   ``<dir>`` should be a relative path.  An absolute path is allowed,
   but not recommended.
 
+  .. versionadded:: 4.4
+    The :diagnostic:`CMD_INSTALL_ABSOLUTE_DESTINATION` diagnostic can be
+    enabled to warn or error out when an absolute destination is provided.
+
   When a relative path is given, it is interpreted relative to the value
   of the :variable:`CMAKE_INSTALL_PREFIX` variable.
   The prefix can be relocated at install time using the ``DESTDIR``
@@ -201,6 +205,8 @@ Signatures
       - DLLs (these go to ``RUNTIME``, see below),
       - on macOS when marked as ``FRAMEWORK`` (see below).
 
+    * *Module libraries*
+
   ``RUNTIME``
     Target artifacts of this kind include:
 
@@ -243,7 +249,10 @@ Signatures
 
     File sets are defined by the :command:`target_sources(FILE_SET)` command.
     If the file set ``<set-name>`` exists and is ``PUBLIC`` or ``INTERFACE``,
-    any files in the set are installed under the destination (see below).
+    any files in the set of type ``HEADERS`` are installed under
+    the destination (see below). Other types do not have any default
+    destination, so ``DESTINATION`` option must be specified for each
+    ``FILE_SET``.
     The directory structure relative to the file set's base directories is
     preserved. For example, a file added to the file set as
     ``/blah/include/myproj/here.h`` with a base directory ``/blah/include``
@@ -263,12 +272,13 @@ Signatures
   ``DESTINATION`` is omitted, a default destination will be taken from the
   appropriate variable from :module:`GNUInstallDirs`, or set to a built-in
   default value if that variable is not defined.  The same is true for file
-  sets, and the public and private headers associated with the installed
-  targets through the :prop_tgt:`PUBLIC_HEADER` and :prop_tgt:`PRIVATE_HEADER`
-  target properties. A destination must always be provided for module libraries,
-  Apple bundles and frameworks.  A destination can be omitted for interface and
-  object libraries, but they are handled differently (see the discussion of this
-  topic toward the end of this section).
+  sets of type ``HEADERS``, and the public and private headers associated with
+  the installed targets through the :prop_tgt:`PUBLIC_HEADER` and
+  :prop_tgt:`PRIVATE_HEADER` target properties. A destination must always be
+  provided for module libraries, Apple bundles and frameworks.  A destination
+  can be omitted for interface and object libraries, but they are handled
+  differently (see the discussion of this topic toward the end of this
+  section).
 
   For shared libraries on DLL platforms, if neither ``RUNTIME`` nor ``ARCHIVE``
   destinations are specified, both the ``RUNTIME`` and ``ARCHIVE`` components are
@@ -1203,7 +1213,7 @@ Signatures
 
   .. code-block:: cmake
 
-    install(SBOM <sbom-name> EXPORT <export-name>
+    install(SBOM <sbom-name> EXPORTS <export-names>...
             [PROJECT <project-name>|NO_PROJECT_METADATA]
             [DESTINATION <dir>]
             [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
@@ -1222,9 +1232,11 @@ Signatures
   the interface is designed to allow additional SBOM formats or schema
   versions to be supported in future CMake releases.
 
-  Target installations are associated with the export ``<export-name>``
-  using the ``EXPORT`` option of the :command:`install(TARGETS)` signature
-  documented above. If ``DESTINATION`` is not specified, a platform-specific
+  Target installations are associated with each export ``<export-names>``
+  in the ``EXPORTS`` list using the ``EXPORTS`` option of the
+  :command:`install(TARGETS)` signature documented above.  A single SBOM may
+  cover multiple export sets; targets from all listed exports are aggregated
+  into one document.  If ``DESTINATION`` is not specified, a platform-specific
   default is used.
 
   Several options may be used to specify package metadata:

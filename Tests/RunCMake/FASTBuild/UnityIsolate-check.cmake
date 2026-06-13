@@ -10,7 +10,7 @@ set(REGEX_TO_MATCH "
       '.*some_source_file_3.cpp',
       '.*some_source_file_4.cpp'
     }
-    .UnityInputIsolatedFiles =
+    .UnityInputExcludedFiles =
     {
       '.*some_source_file_1.cpp',
       '.*some_source_file_4.cpp'

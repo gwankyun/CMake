@@ -14,22 +14,24 @@
         {
             "path": "^empty\\.c$",
             "isGenerated": null,
-            "fileSetName": null,
+            "fileSetNames": null,
             "sourceGroupName": "Source Files",
             "compileGroupLanguage": "C",
-            "backtrace": [
-                {
-                    "file": "^direct/CMakeLists\\.txt$",
-                    "line": 38,
-                    "command": "add_executable",
-                    "hasParent": true
-                },
-                {
-                    "file": "^direct/CMakeLists\\.txt$",
-                    "line": null,
-                    "command": null,
-                    "hasParent": false
-                }
+            "backtraces": [
+                [
+                    {
+                        "file": "^direct/CMakeLists\\.txt$",
+                        "line": 38,
+                        "command": "add_executable",
+                        "hasParent": true
+                    },
+                    {
+                        "file": "^direct/CMakeLists\\.txt$",
+                        "line": null,
+                        "command": null,
+                        "hasParent": false
+                    }
+                ]
             ]
         }
     ],
@@ -96,6 +98,23 @@
     },
     "archive": null,
     "dependencies": [
+        {
+            "id": "^usage_lib::@79b6367c9e05c77f6a80$",
+            "backtrace": [
+                {
+                    "file": "^direct/CMakeLists\\.txt$",
+                    "line": 40,
+                    "command": "target_link_libraries",
+                    "hasParent": true
+                },
+                {
+                    "file": "^direct/CMakeLists\\.txt$",
+                    "line": null,
+                    "command": null,
+                    "hasParent": false
+                }
+            ]
+        },
         {
             "id": "^ZERO_CHECK::@79b6367c9e05c77f6a80$",
             "backtrace": null

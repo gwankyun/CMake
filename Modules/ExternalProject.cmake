@@ -445,6 +445,31 @@ is used.
   unintended changes or failed builds resulting from conflicts during
   rebase operations.
 
+The following variables can be set to control the retry behavior for
+``git clone`` operations:
+
+.. variable:: CMAKE_EP_GIT_CLONE_RETRY_COUNT
+
+  .. versionadded:: 4.4
+
+  Specifies the number of times to retry a ``git clone`` operation if it
+  fails.  The default is ``2`` retries.  The first attempt is not counted
+  as a retry, so the total number of attempts is the retry count plus one.
+  This variable should not be set by a project, it is intended for the user
+  to set.  It is primarily useful when dealing with intermittent network
+  issues or rate limiting from git hosting services.
+
+.. variable:: CMAKE_EP_GIT_CLONE_RETRY_DELAY
+
+  .. versionadded:: 4.4
+
+  Specifies the delay in seconds between retry attempts for git clone
+  operations.  The default is ``0`` seconds (no delay between retries).
+  This variable should not be set by a project, it is intended for the
+  user to set.  Setting a delay can be helpful when dealing with rate
+  limiting from git hosting services, where immediate retries would
+  also be rejected.
+
 Subversion
 ~~~~~~~~~~
 
@@ -2127,8 +2152,7 @@ function(ExternalProject_Add_StepTargets name)
       )
     endif()
   elseif(cmp0114 STREQUAL "")
-    cmake_policy(GET_WARNING CMP0114 _cmp0114_warning)
-    string(APPEND _cmp0114_warning "\n"
+    string(JOIN "" _cmp0114_warning
       "ExternalProject target '${name}' would depend on the targets for "
       "step(s) '${steps}' under policy CMP0114, but this is being left out "
       "for compatibility since the policy is not set."
@@ -2138,7 +2162,7 @@ function(ExternalProject_Add_StepTargets name)
         "Also, the NO_DEPENDS option is deprecated in favor of policy CMP0114."
       )
     endif()
-    message(AUTHOR_WARNING "${_cmp0114_warning}")
+    cmake_policy(ISSUE_WARNING CMP0114 POST "${_cmp0114_warning}")
   endif()
   foreach(step IN LISTS steps)
     _ep_step_add_target("${name}" "${step}" "${no_deps}")
@@ -2481,14 +2505,11 @@ function(ExternalProject_Add_Step name step)
         set_property(TARGET ${name} PROPERTY
           _EP_CMP0114_WARNED_INDEPENDENT_STEP_TARGETS 1
         )
-        cmake_policy(GET_WARNING CMP0114 _cmp0114_warning)
-        string(APPEND _cmp0114_warning
-          "\n"
+        cmake_policy(ISSUE_WARNING CMP0114 POST
           "ExternalProject '${name}' option INDEPENDENT_STEP_TARGETS is set to"
           "\n  ${independent_step_targets}\n"
           "but the option is deprecated in favor of policy CMP0114."
         )
-        message(AUTHOR_WARNING "${_cmp0114_warning}")
       endif()
     endif()
     foreach(st IN LISTS independent_step_targets)

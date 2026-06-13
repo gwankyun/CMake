@@ -6,11 +6,16 @@ properties set to true, and its :prop_tgt:`AUTOMOC`, :prop_tgt:`AUTORCC`,
 
 If the header's :prop_sf:`LANGUAGE` property is set, the value of that property
 is used to determine the language with which to compile the header file.
-Otherwise, if the target has any C++ sources, the header is compiled as C++.
-Otherwise, if the target has any C sources, the header is compiled as C.
-Otherwise, if C++ is enabled globally, the header is compiled as C++.
-Otherwise, if C is enabled globally, the header is compiled as C. Otherwise,
-the header file is not compiled.
+The supported languages are ``C``, ``CXX``, ``OBJC``, and ``OBJCXX``.
+If the language is not one of those four, the header file is not compiled.
+
+Otherwise, the language is inferred from the target's sources using the
+following precedence: ``OBJCXX`` takes priority over all others; if both
+``CXX`` and ``OBJC`` sources are present, the header is compiled as
+``OBJCXX``; otherwise ``CXX`` takes precedence over ``OBJC``, and ``OBJC``
+takes precedence over ``C``.  If no matching sources are found, the same
+precedence is applied to the globally enabled languages.  If no supported
+language is found, the header file is not compiled.
 
 If the header's :prop_sf:`SKIP_LINTING` property is set to true, the file is
 not compiled.
@@ -21,11 +26,10 @@ conditions.  The compiler flags used for private and interface contexts can be
 different, leading to the compiler interpreting the contents of the header
 differently.
 
-If any |xxx| file set verification targets are created, a top-level target
-called |THIS_ALL_TARGET| is created which depends on all |xxx| verification
-targets.  Another target called ``all_verify_header_sets`` is also created
-which depends on |THIS_ALL_TARGET|, and on |COMPLEMENTARY_ALL_TARGET| if it
-exists (see |COMPLEMENTARY_PROPERTY|).
+A top-level target called |THIS_ALL_TARGET| is created which depends on all
+|xxx| verification targets.  Another target called ``all_verify_header_sets``
+is also created which depends on |THIS_ALL_TARGET|, and on
+|COMPLEMENTARY_ALL_TARGET| if it exists (see |COMPLEMENTARY_PROPERTY|).
 
 This property is initialized by the value of the |INIT_VARIABLE| variable if
 it is set when a target is created.

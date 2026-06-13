@@ -208,10 +208,7 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
           return false;
         }
         if (cmp0175 == cmPolicies::WARN) {
-          mf.IssueMessage(
-            MessageType::AUTHOR_WARNING,
-            cmStrCat(msg, '\n',
-                     cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+          mf.IssuePolicyWarning(cmPolicies::CMP0175, msg);
         }
       }
       keywordExpectingValue = nullptr;
@@ -381,10 +378,7 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
               return false;
             }
             if (cmp0175 == cmPolicies::WARN) {
-              mf.IssueMessage(
-                MessageType::AUTHOR_WARNING,
-                cmStrCat(msg, '\n',
-                         cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+              mf.IssuePolicyWarning(cmPolicies::CMP0175, msg);
             }
           }
           comment_buffer = copy;
@@ -465,10 +459,7 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
         return false;
       }
       if (cmp0175 == cmPolicies::WARN) {
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(msg, ".\n",
-                   cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+        mf.IssuePolicyWarning(cmPolicies::CMP0175, cmStrCat(msg, '.'));
       }
     }
     mf.AppendCustomCommandToOutput(output[0], depends, implicit_depends,
@@ -503,10 +494,7 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
         return false;
       }
       if (cmp0175 == cmPolicies::WARN) {
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(msg, '\n',
-                   cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+        mf.IssuePolicyWarning(cmPolicies::CMP0175, msg);
       }
     }
 
@@ -525,10 +513,7 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
         return false;
       }
       if (cmp0175 == cmPolicies::WARN) {
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(msg, ".\n",
-                   cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+        mf.IssuePolicyWarning(cmPolicies::CMP0175, cmStrCat(msg, '.'));
       }
     }
     auto const prePostCount = keywordsSeen.count(keyPRE_BUILD) +
@@ -552,10 +537,9 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
           case cmCustomCommandType::POST_BUILD:
             msg += "POST_BUILD";
         }
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(msg, " to preserve backward compatibility.\n",
-                   cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+        mf.IssuePolicyWarning(
+          cmPolicies::CMP0175,
+          cmStrCat(msg, " to preserve backward compatibility."_s));
       }
     }
     mf.AddCustomCommandToTarget(target, cctype, std::move(cc));
@@ -576,10 +560,7 @@ bool cmAddCustomCommandCommand(std::vector<std::string> const& args,
         return false;
       }
       if (cmp0175 == cmPolicies::WARN) {
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(msg, ".\n",
-                   cmPolicies::GetPolicyWarning(cmPolicies::CMP0175)));
+        mf.IssuePolicyWarning(cmPolicies::CMP0175, cmStrCat(msg, '.'));
       }
     }
     cc->SetOutputs(output);

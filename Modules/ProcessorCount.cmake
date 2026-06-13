@@ -94,12 +94,13 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_sysctl} -n hw.ncpu
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE count)
+        OUTPUT_VARIABLE count
+        RESULT_VARIABLE _count_ok)
       #message("ProcessorCount: trying sysctl '${ProcessorCount_cmd_sysctl}'")
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT (_count_ok EQUAL 0 AND count GREATER 0))
     # Linux (systems with nproc):
     # Prefer nproc to getconf if available as getconf may return the host CPU count in Linux containers
     find_program(ProcessorCount_cmd_nproc nproc)
@@ -108,12 +109,13 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_nproc}
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE count)
+        OUTPUT_VARIABLE count
+        RESULT_VARIABLE _count_ok)
       #message("ProcessorCount: trying nproc '${ProcessorCount_cmd_nproc}'")
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT (_count_ok EQUAL 0 AND count GREATER 0))
     # Linux (systems with getconf):
     find_program(ProcessorCount_cmd_getconf getconf)
     mark_as_advanced(ProcessorCount_cmd_getconf)
@@ -121,12 +123,13 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_getconf} _NPROCESSORS_ONLN
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE count)
+        OUTPUT_VARIABLE count
+        RESULT_VARIABLE _count_ok)
       #message("ProcessorCount: trying getconf '${ProcessorCount_cmd_getconf}'")
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT (_count_ok EQUAL 0 AND count GREATER 0))
     # HPUX (systems with machinfo):
     find_program(ProcessorCount_cmd_machinfo machinfo
       PATHS /usr/contrib/bin)
@@ -150,15 +153,18 @@ function(ProcessorCount var)
         execute_process(COMMAND ${ProcessorCount_cmd_mpsched} -s
           OUTPUT_QUIET
           ERROR_STRIP_TRAILING_WHITESPACE
-          ERROR_VARIABLE mpsched_output)
-        string(REGEX MATCHALL "Processor Count *: *([0-9]+)" procs "${mpsched_output}")
-        set(count "${CMAKE_MATCH_1}")
+          ERROR_VARIABLE mpsched_output
+          RESULT_VARIABLE _mpsched_ok)
+        if(_mpsched_ok EQUAL 0)
+          string(REGEX MATCHALL "Processor Count *: *([0-9]+)" procs "${mpsched_output}")
+          set(count "${CMAKE_MATCH_1}")
+        endif()
         #message("ProcessorCount: trying mpsched -s '${ProcessorCount_cmd_mpsched}'")
       endif()
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT count GREATER 0)
     # AIX (systems with lsconf):
     find_program(ProcessorCount_cmd_lsconf lsconf
       PATHS /usr/sbin)
@@ -167,14 +173,17 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_lsconf}
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE lsconf_output)
-      string(REGEX MATCHALL "Number Of Processors: ([0-9]+)" procs "${lsconf_output}")
-      set(count "${CMAKE_MATCH_1}")
+        OUTPUT_VARIABLE lsconf_output
+        RESULT_VARIABLE _lsconf_ok)
+      if(_lsconf_ok EQUAL 0)
+        string(REGEX MATCHALL "Number Of Processors: ([0-9]+)" procs "${lsconf_output}")
+        set(count "${CMAKE_MATCH_1}")
+      endif()
       #message("ProcessorCount: trying lsconf '${ProcessorCount_cmd_lsconf}'")
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT count GREATER 0)
     # QNX (systems with pidin):
     find_program(ProcessorCount_cmd_pidin pidin)
     mark_as_advanced(ProcessorCount_cmd_pidin)
@@ -182,14 +191,17 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_pidin} info
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE pidin_output)
-      string(REGEX MATCHALL "Processor[0-9]+: " procs "${pidin_output}")
-      list(LENGTH procs count)
+        OUTPUT_VARIABLE pidin_output
+        RESULT_VARIABLE _pidin_ok)
+      if(_pidin_ok EQUAL 0)
+        string(REGEX MATCHALL "Processor[0-9]+: " procs "${pidin_output}")
+        list(LENGTH procs count)
+      endif()
       #message("ProcessorCount: trying pidin '${ProcessorCount_cmd_pidin}'")
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT count GREATER 0)
     # Sun (systems where psrinfo tool is available)
     find_program(ProcessorCount_cmd_psrinfo psrinfo PATHS /usr/sbin /sbin)
     mark_as_advanced(ProcessorCount_cmd_psrinfo)
@@ -197,13 +209,16 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_psrinfo} -p -v
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE psrinfo_output)
-      string(REGEX MATCHALL "has [0-9]+ virtual processor" procs "${psrinfo_output}")
-      set(count "")
-      foreach(proc ${procs})
-        string(REGEX MATCH "has ([0-9]+) virtual" res ${proc})
-        math(EXPR count "${count} + ${CMAKE_MATCH_1}")
-      endforeach()
+        OUTPUT_VARIABLE psrinfo_output
+        RESULT_VARIABLE _psrinfo_ok)
+      if(_psrinfo_ok EQUAL 0)
+        string(REGEX MATCHALL "has [0-9]+ virtual processor" procs "${psrinfo_output}")
+        set(count "")
+        foreach(proc IN LISTS procs)
+          string(REGEX MATCH "has ([0-9]+) virtual" res ${proc})
+          math(EXPR count "${count} + ${CMAKE_MATCH_1}")
+        endforeach()
+      endif()
       #message("ProcessorCount: trying '${ProcessorCount_cmd_psrinfo}' -p -v")
     else()
       # Sun (systems where uname -X emits "NumCPU" in its output):
@@ -213,9 +228,12 @@ function(ProcessorCount var)
         execute_process(COMMAND ${ProcessorCount_cmd_uname} -X
           ERROR_QUIET
           OUTPUT_STRIP_TRAILING_WHITESPACE
-          OUTPUT_VARIABLE uname_X_output)
-        string(REGEX MATCHALL "NumCPU = ([0-9]+)" procs "${uname_X_output}")
-        set(count "${CMAKE_MATCH_1}")
+          OUTPUT_VARIABLE uname_X_output
+          RESULT_VARIABLE _uname_X_ok)
+        if(_uname_X_ok EQUAL 0)
+          string(REGEX MATCHALL "NumCPU = ([0-9]+)" procs "${uname_X_output}")
+          set(count "${CMAKE_MATCH_1}")
+        endif()
         #message("ProcessorCount: trying uname -X '${ProcessorCount_cmd_uname}'")
       endif()
     endif()
@@ -224,7 +242,7 @@ function(ProcessorCount var)
   # Execute this code when all previously attempted methods return empty
   # output:
   #
-  if(NOT count)
+  if(NOT count GREATER 0)
     # Systems with /proc/cpuinfo:
     set(cpuinfo_file /proc/cpuinfo)
     if(EXISTS "${cpuinfo_file}")
@@ -237,7 +255,7 @@ function(ProcessorCount var)
     endif()
   endif()
 
-  if(NOT count)
+  if(NOT count GREATER 0)
     # Haiku
     find_program(ProcessorCount_cmd_sysinfo sysinfo)
     mark_as_advanced(ProcessorCount_cmd_sysinfo)
@@ -245,9 +263,12 @@ function(ProcessorCount var)
       execute_process(COMMAND ${ProcessorCount_cmd_sysinfo}
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
-        OUTPUT_VARIABLE sysinfo_X_output)
-      string(REGEX MATCHALL "\nCPU #[0-9]+:" procs "\n${sysinfo_X_output}")
-      list(LENGTH procs count)
+        OUTPUT_VARIABLE sysinfo_X_output
+        RESULT_VARIABLE _sysinfo_ok)
+      if(_sysinfo_ok EQUAL 0)
+        string(REGEX MATCHALL "\nCPU #[0-9]+:" procs "\n${sysinfo_X_output}")
+        list(LENGTH procs count)
+      endif()
       #message("ProcessorCount: trying sysinfo '${ProcessorCount_cmd_sysinfo}'")
     endif()
   endif()
@@ -255,7 +276,7 @@ function(ProcessorCount var)
   # Since cygwin builds of CMake do not define WIN32 anymore, but they still
   # run on Windows, and will still have this env var defined:
   #
-  if(NOT count)
+  if(NOT count GREATER 0)
     set(count "$ENV{NUMBER_OF_PROCESSORS}")
     #message("ProcessorCount: last fallback, trying environment variable")
   endif()

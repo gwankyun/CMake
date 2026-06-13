@@ -535,13 +535,13 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       与构建系统目标对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
 
     ``abstractTargetIndexes``
+      .. codemodel-versionadded:: 2.9
+
       Optional member that is present when the directory itself has abstract
       targets, excluding those belonging to subdirectories.
       The value is a JSON array of entries corresponding to the abstract
       targets.  Each entry is an unsigned integer 0-based index into the main
       ``abstractTargets`` array.
-
-      This field was added in codemodel version 2.9.
 
     ``minimumCMakeVersion``
       当目录已知CMake的最低要求版本时出现的可选成员。这是对目录本身或其祖先之一的\
@@ -560,10 +560,10 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       ``make install``\ 或等效规则是否可用时，以布尔值\ ``true``\ 出现。
 
     ``jsonFile``
-      一个JSON字符串，指定一个相对于代码模型文件到另一个包含\
-      `"codemodel" version 2 "directory" object`_\ 的JSON文件的路径。
+      .. codemodel-versionadded:: 2.3
 
-      此字段是在代码模型版本2.3中添加的。
+      一个JSON字符串，指定一个相对于代码模型文件到另一个包含\
+      `"codemodel" version 2 "directory" object`_\ 的JSON文件的路径
 
   ``projects``
     与构建系统中定义的顶层项目和子项目相对应的条目的JSON数组。每个（子）项目对应于一个源目录，\
@@ -592,13 +592,13 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       与构建系统目标对应的条目。每个条目都是一个基于0的无符号整数到主\ ``targets``\ 数组的索引。
 
     ``abstractTargetIndexes``
+      .. codemodel-versionadded:: 2.9
+
       Optional member that is present when the project itself has
       abstract targets, excluding those belonging to sub-projects.
       The value is a JSON array of entries corresponding to the abstract
       targets.  Each entry is an unsigned integer 0-based index into the main
       ``abstractTargets`` array.
-
-      This field was added in codemodel version 2.9.
 
   ``targets``
     A JSON array of entries corresponding to the build system targets.
@@ -625,6 +625,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       一个JSON文件的相对路径。
 
   ``abstractTargets``
+    .. codemodel-versionadded:: 2.9
+
     A JSON array of entries corresponding to targets that are not present
     in the build system.  These are imported targets or interface libraries
     created by calls to :command:`add_executable` or :command:`add_library`.
@@ -655,8 +657,6 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
       to another JSON file containing a
       `“codemodel”版本2“target”对象`_.
 
-    This field was added in codemodel version 2.9.
-
 "codemodel" version 2 "directory" object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -669,6 +669,8 @@ object's ``directories`` array.  Each "directory" object is a JSON object
 with members:
 
 ``codemodelVersion``
+  .. codemodel-versionadded:: 2.9
+
   This specifies the codemodel version this file is part of.  It will match
   the ``version`` field of the codemodel object kind that references this file.
   It is a JSON object with the following members:
@@ -678,8 +680,6 @@ with members:
 
   ``minor``
     The codemodel minor version.
-
-  This field was added in codemodel version 2.9.
 
 ``paths``
   包含以下成员的JSON对象：
@@ -763,19 +763,19 @@ with members:
       ``runtimeDependencySetType``。
 
     ``fileSet``
+      .. codemodel-versionadded:: 2.4
+
       一个带有\ ``FILE_SET``\ 的\ :command:`install(TARGETS)`\ 调用。填充\
       ``destination``\ 和\ ``paths``\ 成员。\ ``isOptional``\ 成员可能存在。该类型有\
       额外的成员\ ``fileSetName``、\ ``fileSetType``、\ ``fileSetDirectories``\ 和\
-      ``fileSetTarget``。
-
-      此类型在代码模型2.4版中添加。
+      ``fileSetTarget``
 
     ``cxxModuleBmi``
+      .. codemodel-versionadded:: 2.5
+
       一个带有\ ``CXX_MODULES_BMI``\ 的\ :command:`install(TARGETS)`\ 调用。\
       将填充\ ``destination``\ 成员，并且\ ``isOptional``\ 成员可能存在。\
       此类型有一个额外的\ ``cxxModuleBmiTarget``\ 成员。
-
-      此类型在代码模型版本2.5中添加。
 
   ``isExcludeFromAll``
     可选成员，当使用\ ``EXCLUDE_FROM_ALL``\ 选项调用\ :command:`install`\ 时，以布尔值\
@@ -838,23 +838,29 @@ with members:
       指示此安装程序安装macOS框架的依赖项。
 
   ``fileSetName``
+    .. codemodel-versionadded:: 2.4
+
     当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是带有文件集名称的字符串。
 
-    此字段在代码模型2.4版中添加。
-
   ``fileSetType``
+    .. codemodel-versionadded:: 2.4
+
     当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是带有文件集类型的字符串。
 
-    此字段在代码模型2.4版中添加。
+    .. codemodel-versionchanged:: 2.11
+
+      This field additionally accounts for ``SOURCES`` file sets.
 
   ``fileSetDirectories``
+    .. codemodel-versionadded:: 2.4
+
     当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是包含文件集基本目录的字符串列\
     表（由\ :prop_tgt:`HEADER_DIRS`\ 或\ :prop_tgt:`HEADER_DIRS_<NAME>`\ 的生成器\
     表达式值决定)。
 
-    此字段在代码模型2.4版中添加。
-
   ``fileSetTarget``
+    .. codemodel-versionadded:: 2.4
+
     当\ ``type``\ 为\ ``fileSet``\ 时出现的可选成员。该值是一个JSON对象，包含以下成员：
 
     ``id``
@@ -864,9 +870,9 @@ with members:
     ``index``
       一个基于0的无符号整数，索引到目标的主“codemodel”对象的\ ``targets``\ 数组。
 
-    此字段在代码模型2.4版中添加。
-
   ``cxxModuleBmiTarget``
+    .. codemodel-versionadded:: 2.5
+
     当\ ``type``\ 为\ ``cxxModuleBmi``\ 时出现的可选成员。\
     该值是一个JSON对象，包含以下成员：
 
@@ -876,8 +882,6 @@ with members:
 
     ``index``
       一个基于0的无符号整数，用于索引主“codemodel”对象的\ ``targets``\ 数组中对应的目标。
-
-    此字段在代码模型版本2.5中添加。
 
   ``scriptFile``
     当\ ``type``\ 为\ ``script``\ 时出现的可选成员。该值是一个字符串，指定磁盘上脚本文件\
@@ -902,6 +906,8 @@ with members:
 象都是一个JSON对象，包含以下成员：
 
 ``codemodelVersion``
+  .. codemodel-versionadded:: 2.9
+
   This specifies the codemodel version this file is part of.  It will match
   the ``version`` field of the codemodel object kind that references this file.
   It is a JSON object with the following members:
@@ -911,8 +917,6 @@ with members:
 
   ``minor``
     The codemodel minor version.
-
-  This field was added in codemodel version 2.9.
 
 ``name``
   指定目标逻辑名称的字符串。
@@ -926,19 +930,21 @@ with members:
   ``INTERFACE_LIBRARY``\ 或\ ``UTILITY``\ 中的一个。
 
 ``imported``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that is present with boolean value ``true`` if the
   target is an imported target.
 
-  This field was added in codemodel version 2.9.
-
 ``local``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that is present with boolean value ``true`` if the
   target is only defined with local scope rather than being a global target.
   Currently, only imported targets will potentially have this field.
 
-  This field was added in codemodel version 2.9.
-
 ``abstract``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that is present with boolean value ``true`` if the
   target is an abstract target.  Abstract targets are not part of the build
   system, they only exist to describe dependencies or to provide usage
@@ -947,17 +953,17 @@ with members:
   cannot be built, so they should not be presented to the user as a buildable
   target.
 
-  This field was added in codemodel version 2.9.  Abstract targets were not
-  included in codemodel version 2.8 and earlier.
+  Abstract targets were not included in codemodel version 2.8 and earlier.
 
 ``symbolic``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that is present with boolean value ``true`` if the target
   is :prop_tgt:`SYMBOLIC`.  Symbolic targets are created by calls to
   :command:`add_library(INTERFACE SYMBOLIC) <add_library(INTERFACE-SYMBOLIC)>`,
   and are also abstract targets that are not part of the build system.
 
-  This field was added in codemodel version 2.9.  Symbolic targets were not
-  included in codemodel version 2.8 and earlier.
+  Symbolic targets were not included in codemodel version 2.8 and earlier.
 
 ``backtrace``
   当CMake语言回溯到创建目标的源代码中的命令时出现的可选成员。该值是\ ``backtraceGraph``\
@@ -1016,6 +1022,8 @@ with members:
       ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``launchers``
+  .. codemodel-versionadded:: 2.7
+
   可选成员，该成员存在于至少有一个由项目指定的启动程序的可执行目标上。该值是一个JSON数组，\
   包含与指定启动器对应的条目。每个条目都是一个JSON对象，包含以下成员：
 
@@ -1035,8 +1043,6 @@ with members:
 
     ``test``
       用于执行测试的启动程序。请参阅\ :prop_tgt:`TEST_LAUNCHER`\ 目标属性。
-
-  此字段在代码模型版本2.7中添加。
 
 ``link``
   可选成员，用于链接到运行时二进制文件的非导入可执行文件和共享库目标。该值是一个JSON对象，其成员描\
@@ -1097,15 +1103,13 @@ with members:
     出现。
 
 ``debugger``
-  可选成员，当目标设置了以下字段之一时会出现。 该值是一个JSON对象，其条目对应于所设置的调试器特定值。
+  .. codemodel-versionadded:: 2.8
 
-  此字段在代码模型2.8版本中添加。
+  可选成员，当目标设置了以下字段之一时会出现。 该值是一个JSON对象，其条目对应于所设置的调试器特定值
 
   ``workingDirectory``
     可选成员，当设置了目标属性\ :prop_tgt:`DEBUGGER_WORKING_DIRECTORY`\ 时会出现。 在使用\ :ref:`Visual Studio Generators`\
     的场景中，当设置了\ :prop_tgt:`VS_DEBUGGER_WORKING_DIRECTORY`\ 时，该成员也会出现。
-
-    此字段在代码模型2.8版本中添加。
 
 ``dependencies``
   Optional member that is present when the target depends on other targets.
@@ -1133,6 +1137,8 @@ with members:
     ``nodes``\ 数组中基于0的无符号整数索引。
 
 ``linkLibraries``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that may be present when the target links directly to one or
   more other targets or libraries.  It contains items that are used when
   linking this target.  These come from the target's
@@ -1182,9 +1188,9 @@ with members:
       :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` property created the
       relationship.  The value matches the main ``id`` member of that target.
 
-  This field was added in codemodel version 2.9.
-
 ``interfaceLinkLibraries``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that may be present when the target has one or more interface
   link libraries.  It contains items that are used when linking consumers of
   this target.  These come from the target's
@@ -1222,9 +1228,9 @@ with members:
     The value is an unsigned integer 0-based index into the
     ``backtraceGraph`` member's ``nodes`` array.
 
-  This field was added in codemodel version 2.9.
-
 ``compileDependencies``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that may be present when the target links directly to one or
   more other targets that may provide usage requirements to this one.  They
   affect how this target's sources are compiled.  These relationships are
@@ -1264,9 +1270,9 @@ with members:
       :prop_tgt:`INTERFACE_LINK_LIBRARIES_DIRECT` property created the
       relationship.  The value matches the main ``id`` member of that target.
 
-  This field was added in codemodel version 2.9.
-
 ``interfaceCompileDependencies``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that may be present when the target has one or more interface
   linking relationships to other targets.  It contains items that affect how
   consumers' sources are compiled.  These relationships are defined by the
@@ -1294,9 +1300,9 @@ with members:
     The value is an unsigned integer 0-based index into the
     ``backtraceGraph`` member's ``nodes`` array.
 
-  This field was added in codemodel version 2.9.
-
 ``objectDependencies``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that is present when the target has one or more entries in
   its :prop_tgt:`SOURCES` property where the entry is specified using
   :genex:`$<TARGET_OBJECTS:...>`, and where no other generator expression is
@@ -1316,9 +1322,9 @@ with members:
     The value is an unsigned integer 0-based index into the
     ``backtraceGraph`` member's ``nodes`` array.
 
-  This field was added in codemodel version 2.9.
-
 ``orderDependencies``
+  .. codemodel-versionadded:: 2.9
+
   Optional member that is present when the target has one or more direct order
   dependencies on other targets.  Such dependencies may arise from calls to
   :command:`add_dependencies` or from internal CMake processing.
@@ -1340,9 +1346,9 @@ with members:
     The value is an unsigned integer 0-based index into the
     ``backtraceGraph`` member's ``nodes`` array.
 
-  This field was added in codemodel version 2.9.
-
 ``fileSets``
+  .. codemodel-versionadded:: 2.5
+
   一个可选成员，当目标定义了一个或多个文件集时出现。该值是一个JSON数组，其条目\
   对应目标的文件集。每个条目都是一个JSON对象，包含以下成员：
 
@@ -1358,8 +1364,6 @@ with members:
   ``baseDirectories``
     字符串的JSON数组，每个字符串指定一个包含文件集中的源的基本目录。如果目录位于顶层源目录中，\
     则指定相对于该目录的路径。否则路径是绝对的。
-
-  此字段在代码模型版本2.5中添加。
 
 ``sources``
   与目标源文件对应的条目的JSON数组。每个条目都是一个JSON对象，包含以下成员：
@@ -1380,18 +1384,51 @@ with members:
     可选成员，如果源是\ :prop_sf:`GENERATED`，则以布尔值\ ``true``\ 出现。
 
   ``fileSetIndex``
-    当源是文件集的一部分时出现的可选成员。该值是一个无符号整数，从0开始索引到\ ``fileSets``\
-    数组。
+    .. codemodel-versionadded:: 2.5
 
-    此字段在代码模型版本2.5中添加。
+    .. deprecated:: 4.4
+      Use the ``fileSetIndexes`` field instead, which is an array, and
+      accounts for sources assigned to multiple file sets.
+
+    Optional member that is present when the source is part of a file set.
+    The value is an unsigned integer 0-based index into the ``fileSets``
+    array representing the file set to which the source was most recently added.
+
+  ``fileSetIndexes``
+    .. codemodel-versionadded:: 2.11
+
+    Optional member that is present when the source is part of at least one
+    file set; see also policy :policy:`CMP0211`. The value is
+    an array of unsigned integer 0-based indexes inte the ``fileSets`` array.
 
   ``backtrace``
+    .. deprecated:: 4.4
+      Use the ``backtraces`` field instead, which is an array, and
+      accounts for sources added to multiple file sets over multiple command
+      invocations.
+
     可选成员，当CMake语言回溯到\ :command:`target_sources`、\ :command:`add_executable`、\
     :command:`add_library`、\ :command:`add_custom_target`\ 或其他将此源添加到目标\
     的命令调用时，该成员可用。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于\
-    0的无符号整数索引。
+    0的无符号整数索引
+
+  ``backtraces``
+    .. codemodel-versionadded:: 2.11
+
+    Optional member that is present when CMake language backtraces to
+    the :command:`target_sources`, :command:`add_executable`,
+    :command:`add_library`, :command:`add_custom_target`, or other
+    command invocation that added this source to the target is
+    available.  It's possible for a single source file to be included in
+    multiple :command:`target_sources` invocations each naming it in a
+    different file set (see also policy :policy:`CMP0211`), so there could be
+    multiple backtraces.  The value is a JSON array with each entry being an
+    unsigned integer 0-based index into the ``backtraceGraph`` member's
+    ``nodes`` array.
 
 ``interfaceSources``
+  .. codemodel-versionadded:: 2.10
+
   An optional member that is present when a target defines one or more
   interface sources.  The value is a JSON array of entries corresponding
   to the target's interface source files.  Each entry is a JSON object
@@ -1414,11 +1451,20 @@ with members:
     the source is :prop_sf:`GENERATED`.
 
   ``fileSetIndex``
+    .. deprecated:: 4.4
+      Use the ``fileSetIndexes`` field instead, which is an array, and
+      accounts for sources assigned to multiple file sets.
+
     Optional member that is present when the source is part of a file set.
     The value is an unsigned integer 0-based index into the ``fileSets``
-    array.
+    array representing the file set to which the source was most recently added.
 
-  This field was added in codemodel version 2.10.
+  ``fileSetIndexes``
+    .. codemodel-versionadded:: 2.11
+
+    Optional member that is present when the source is part of at least one
+    file set; see also policy :policy:`CMP0211`. The value is
+    an array of unsigned integer 0-based indexes inte the ``fileSets`` array.
 
 ``sourceGroups``
   可选成员，当通过\ :command:`source_group`\ 命令或默认情况下将源分组在一起时出现。该值\
@@ -1432,13 +1478,13 @@ with members:
     整数索引。
 
   ``interfaceSourceIndexes``
+    .. codemodel-versionadded:: 2.10
+
     Optional member that is present when at least one interface source file
     is part of the source group.  The value is a JSON array listing the
     interface sources belonging to the group.  Each entry is an unsigned
     integer 0-based index into the main ``interfaceSources`` array for the
     target.
-
-    This field was added in codemodel version 2.10.
 
 ``compileGroups``
   当目标具有可编译的源时出现的可选成员。该值是一个JSON数组，条目对应于所有使用相同设置编译的\
@@ -1452,6 +1498,8 @@ with members:
     指定工具链的语言（例如\ ``C``、\ ``CXX``、\ ``Fortran``）的字符串用于编译源文件。
 
   ``languageStandard``
+    .. codemodel-versionadded:: 2.2
+
     可选成员，当显式设置语言标准（例如通过\ :prop_tgt:`CXX_STANDARD`）或通过编译特性隐式\
     设置语言标准时出现。每个条目是一个JSON对象，包含两个成员：
 
@@ -1463,8 +1511,6 @@ with members:
 
     ``standard``
       表示语言标准的字符串。
-
-    此字段在代码模型2.2版中添加。
 
   ``compileCommandFragments``
     可选成员，当编译器命令行调用的片段可用时出现。该值是一个JSON数组，包含指定有序片段的条目。\
@@ -1493,8 +1539,10 @@ with members:
       数组中基于0的无符号整数索引。
 
   ``frameworks``
+    .. codemodel-versionadded:: 2.6
+
     可选成员，当在Apple平台上有框架时存在。该值是一个JSON数组，每个目录都有一个条目。每个条\
-    目都是一个JSON对象，包含以下成员：
+    目都是一个JSON对象，包含以下成员
 
     ``path``
       指定框架目录路径的字符串，用正斜杠表示。
@@ -1507,9 +1555,9 @@ with members:
       的命令调用时存在。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组中基于0的无\
       符号整数索引。
 
-    此字段在代码模型2.6版中添加。
-
   ``precompileHeaders``
+    .. codemodel-versionadded:: 2.1
+
     当\ :command:`target_precompile_headers`\ 或其他命令调用在目标上设置\
     :prop_tgt:`PRECOMPILE_HEADERS`\ 时出现的可选成员。该值是一个JSON数组，每个标头都有\
     一个条目。每个条目都是一个JSON对象，包含以下成员：
@@ -1521,8 +1569,6 @@ with members:
       可选成员，当CMake语言回溯到\ :command:`target_precompile_headers`\ 或其他添加\
       此预编译头的命令调用时存在。该值是\ ``backtraceGraph``\ 成员的\ ``nodes``\ 数组\
       中基于0的无符号整数索引。
-
-    此字段在代码模型版本2.1中添加。
 
   ``defines``
     存在预处理器定义时出现的可选成员。该值是一个JSON数组，每个定义都有一个条目。每个条目都是\
@@ -1778,12 +1824,14 @@ with members:
     可选成员，如果路径指定了CMake安装中的文件，则以布尔值\ ``true``\ 出现。
 
 ``globsDependent``
-  当项目使用\ ``CONFIGURE_DEPENDS``\ 选项调用\ :command:`file(GLOB)`\ 或\
-  :command:`file(GLOB_RECURSE)`\ 时出现的可选成员。这个值是一个JSON对象的JSON数组，\
-  每个对象指定一个通配表达式和它匹配的路径列表。如果通配表达式不再匹配相同的路径列表，CMake\
-  将认为构建系统过时。
+  .. cmakefiles-versionadded:: 1.1
 
-  该字段是在\ ``cmakeFiles`` 1.1版本中添加的。
+  Optional member that is present when the project calls :command:`file(GLOB)`
+  or :command:`file(GLOB_RECURSE)` with the ``CONFIGURE_DEPENDS`` option.
+  The value is a JSON array of JSON objects, each specifying a globbing
+  expression and the list of paths it matched.  If the globbing expression
+  no longer matches the same list of paths, CMake considers the build system
+  to be out of date.
 
   每个条目的成员如下：
 
@@ -1914,14 +1962,14 @@ with members:
       是一个JSON字符串，包含编译器的路径。
 
     ``commandFragment``
+      .. toolchains-versionadded:: 1.1
+
       Optional member that is present when the
       :variable:`CMAKE_<LANG>_COMPILER` variable is a list containing multiple
       elements or the :envvar:`CC` or similar environment variable contains
       command line arguments after the compiler executable.
       Its value is a JSON string holding the second and further elements
       (mandatory arguments to the compiler) as a command line fragment.
-
-      This field was added in toolchains version 1.1.
 
     ``id``
       为当前语言定义\ :variable:`CMAKE_<LANG>_COMPILER_ID`\ 变量时出现的可选成员。它\

@@ -184,18 +184,16 @@ bool cmFindBase::ParseArguments(std::vector<std::string> const& argsIn)
       }
       // ensure a macro is not specified as validator
       auto const& validatorName = args[j];
-      cmList macros{ this->Makefile->GetProperty("MACROS") };
-      if (std::find_if(macros.begin(), macros.end(),
-                       [&validatorName](std::string const& item) {
-                         return cmSystemTools::Strucmp(validatorName.c_str(),
-                                                       item.c_str()) == 0;
-                       }) != macros.end()) {
+      if (this->Makefile->GetState()
+            ->GetCommandType(validatorName)
+            .value_or(cmStateEnums::CommandType::Macro) !=
+          cmStateEnums::CommandType::Function) {
         this->SetError(cmStrCat(
           "command specified for VALIDATOR is not a function: ", args[j],
           '.'));
         return false;
       }
-      this->ValidatorName = args[j];
+      this->ValidatorName = validatorName;
     } else if (this->CheckCommonArgument(args[j])) {
       doing = DoingNone;
     } else {

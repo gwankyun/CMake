@@ -200,14 +200,12 @@ bool cmSourceFile::FindFullPath(std::string* error,
           if (this->IsGenerated || cmSystemTools::FileExists(extPath)) {
             this->FullPath = extPath;
             if (cmp0115 == cmPolicies::WARN) {
-              std::string warning =
-                cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0115),
-                         "\nFile:\n  ", extPath);
+              std::string warning = cmStrCat("File:\n  "_s, extPath);
               if (cmp0115Warning) {
                 *cmp0115Warning = std::move(warning);
               } else {
-                makefile->GetCMakeInstance()->IssueMessage(
-                  MessageType::AUTHOR_WARNING, warning);
+                makefile->IssuePolicyWarning(cmPolicies::CMP0115, {}, warning,
+                                             cmListFileBacktrace{});
               }
             }
             return true;
@@ -502,4 +500,14 @@ cmCustomCommand* cmSourceFile::GetCustomCommand() const
 void cmSourceFile::SetCustomCommand(std::unique_ptr<cmCustomCommand> cc)
 {
   this->CustomCommand = std::move(cc);
+}
+
+cmValue cmSourceFile::GetRustEmitProperty() const
+{
+  static std::string const s_default = "link";
+  cmValue const value = this->GetProperty("Rust_EMIT");
+  if (!value || value->empty()) {
+    return cmValue(s_default);
+  }
+  return value;
 }

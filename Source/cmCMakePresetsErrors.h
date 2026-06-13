@@ -6,6 +6,8 @@
 
 #include <string>
 
+#include <cm/string_view>
+
 #include <cm3p/json/value.h>
 
 #include "cmJSONHelpers.h"
@@ -33,16 +35,19 @@ void INVALID_PRESETS(Json::Value const* value, cmJSONState* state);
 
 void INVALID_PRESET(Json::Value const* value, cmJSONState* state);
 
-void INVALID_PRESET_NAMED(std::string const& presetName, cmJSONState* state);
+void INVALID_PRESET_NAMED(std::string const& presetName,
+                          std::string const& kind, cmJSONState* state,
+                          std::string const& detail);
 
 void INVALID_VARIABLE(Json::Value const* value, cmJSONState* state);
 
 void DUPLICATE_PRESETS(std::string const& presetName, cmJSONState* state);
 
 void CYCLIC_PRESET_INHERITANCE(std::string const& presetName,
-                               cmJSONState* state);
+                               std::string const& kind, cmJSONState* state);
 
 void INHERITED_PRESET_UNREACHABLE_FROM_FILE(std::string const& presetName,
+                                            std::string const& kind,
                                             cmJSONState* state);
 
 void CONFIGURE_PRESET_UNREACHABLE_FROM_FILE(std::string const& presetName,
@@ -73,6 +78,8 @@ void TOOLCHAIN_FILE_UNSUPPORTED(cmJSONState* state);
 void GRAPHVIZ_FILE_UNSUPPORTED(cmJSONState* state);
 
 void JOBS_PROC_UNSUPPORTED(cmJSONState* state);
+
+void PASSTHROUGH_ARGS_UNSUPPORTED(cmJSONState* state);
 
 void CYCLIC_INCLUDE(std::string const& file, cmJSONState* state);
 
@@ -121,4 +128,10 @@ void PRESET_MISSING_FIELD(std::string const& presetName,
                           std::string const& missingField, cmJSONState* state);
 
 void SCHEMA_UNSUPPORTED(cmJSONState* state);
+
+void DIAGNOSTIC_UNSUPPORTED(cm::string_view name, cm::string_view context,
+                            int version, cmJSONState* state);
+
+void DIAGNOSTIC_REMOVED(cm::string_view name, cm::string_view context,
+                        int version, cmJSONState* state);
 }

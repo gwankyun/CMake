@@ -17,6 +17,7 @@
 #include "cmBlockCommand.h"
 #include "cmBreakCommand.h"
 #include "cmBuildCommand.h"
+#include "cmCMakeDiagnosticCommand.h"
 #include "cmCMakeLanguageCommand.h"
 #include "cmCMakeMinimumRequired.h"
 #include "cmCMakePathCommand.h"
@@ -25,6 +26,7 @@
 #include "cmContinueCommand.h"
 #include "cmCreateTestSourceList.h"
 #include "cmDefinePropertyCommand.h"
+#include "cmDiscoverTestsCommand.h"
 #include "cmEnableLanguageCommand.h"
 #include "cmEnableTestingCommand.h"
 #include "cmExecProgramCommand.h"
@@ -124,6 +126,7 @@ void GetScriptingCommands(cmState* state)
   state->AddFlowControlCommand("while", cmWhileCommand);
   state->AddFlowControlCommand("block", cmBlockCommand);
 
+  state->AddBuiltinCommand("cmake_diagnostic", cmCMakeDiagnosticCommand);
   state->AddBuiltinCommand("cmake_language", cmCMakeLanguageCommand);
   state->AddBuiltinCommand("cmake_minimum_required", cmCMakeMinimumRequired);
   state->AddBuiltinCommand("cmake_path", cmCMakePathCommand);
@@ -237,6 +240,7 @@ void GetProjectCommands(cmState* state)
   state->AddBuiltinCommand("build_command", cmBuildCommand);
   state->AddBuiltinCommand("create_test_sourcelist", cmCreateTestSourceList);
   state->AddBuiltinCommand("define_property", cmDefinePropertyCommand);
+  state->AddBuiltinCommand("discover_tests", cmDiscoverTestsCommand);
   state->AddBuiltinCommand("enable_language", cmEnableLanguageCommand);
   state->AddBuiltinCommand("enable_testing", cmEnableTestingCommand);
   state->AddBuiltinCommand("get_source_file_property",

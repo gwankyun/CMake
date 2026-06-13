@@ -39,6 +39,7 @@ Value                           Name
 ``NVIDIA``                      `NVIDIA CUDA Compiler`_
 ``OrangeC``                     `OrangeC Compiler`_
 ``OpenWatcom``                  `Open Watcom`_
+``PellesC``                     `Pelles C`_
 ``PGI``                         The Portland Group
 ``PathScale``                   PathScale
 ``QCC``                         QNX C/C++ compiler
@@ -53,6 +54,7 @@ Value                           Name
 ``XL``, ``VisualAge``, ``zOS``  IBM XL
 ``XLClang``                     IBM Clang-based XL
 ``IBMClang``                    IBM LLVM-based Compiler
+``IBMFlang``                    IBM LLVM/Flang-based Fortran Compiler
 =============================== ===============================================
 
 This variable is not guaranteed to be defined for all compilers or
@@ -71,6 +73,7 @@ languages.
 .. _NVIDIA CUDA Compiler: https://developer.nvidia.com/cuda-llvm-compiler
 .. _Open Watcom: https://open-watcom.github.io
 .. _OrangeC Compiler: https://github.com/LADSoft/OrangeC
+.. _Pelles C: https://pellesc.se
 .. _Renesas Compiler: https://www.renesas.com
 .. _Small Device C Compiler: https://sdcc.sourceforge.net
 .. _Tiny C Compiler: https://bellard.org/tcc

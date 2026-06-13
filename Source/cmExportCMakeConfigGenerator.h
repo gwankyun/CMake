@@ -15,7 +15,7 @@
 #include "cmGeneratorExpression.h"
 #include "cmStateTypes.h"
 
-class cmFileSet;
+class cmGeneratorFileSet;
 class cmGeneratorTarget;
 class cmTargetExport;
 
@@ -44,6 +44,7 @@ public:
 
 protected:
   using ImportPropertyMap = std::map<std::string, std::string>;
+  using ImportFileSetPropertyMap = std::map<std::string, ImportPropertyMap>;
 
   // Methods to implement export file code generation.
   bool GenerateImportFile(std::ostream& os) override;
@@ -84,6 +85,7 @@ protected:
     cmGeneratorTarget const* target, ImportPropertyMap& properties);
 
   void GenerateTargetFileSets(cmGeneratorTarget* gte, std::ostream& os,
+                              ImportFileSetPropertyMap const& properties,
                               cmTargetExport const* te = nullptr);
 
   std::string GetCxxModuleFile(std::string const& name) const override;
@@ -91,10 +93,10 @@ protected:
   void GenerateCxxModuleInformation(std::string const& name, std::ostream& os);
 
   virtual std::string GetFileSetDirectories(cmGeneratorTarget* gte,
-                                            cmFileSet* fileSet,
+                                            cmGeneratorFileSet const* fileSet,
                                             cmTargetExport const* te) = 0;
   virtual std::string GetFileSetFiles(cmGeneratorTarget* gte,
-                                      cmFileSet* fileSet,
+                                      cmGeneratorFileSet const* fileSet,
                                       cmTargetExport const* te) = 0;
 
   void SetRequiredCMakeVersion(unsigned int major, unsigned int minor,

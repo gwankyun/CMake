@@ -4,6 +4,7 @@ endif()
 if(POLICY CMP0195)
   cmake_policy(SET CMP0195 NEW)
 endif()
+cmake_policy(SET CMP0216 NEW)
 
 set(CMAKE_Swift_COMPILATION_MODE "singlefile")
 

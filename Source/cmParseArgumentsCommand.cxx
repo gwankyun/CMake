@@ -10,6 +10,7 @@
 
 #include "cmArgumentParser.h"
 #include "cmArgumentParserTypes.h"
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmList.h"
 #include "cmMakefile.h"
@@ -95,8 +96,8 @@ static void PassParsedArguments(
       // The OLD policy behavior doesn't define a variable for an empty or
       // missing value, and we can't differentiate between those two cases.
       if (parseFromArgV && (cmp0174 == cmPolicies::WARN)) {
-        makefile.IssueMessage(
-          MessageType::AUTHOR_WARNING,
+        makefile.IssueDiagnostic(
+          cmDiagnostics::CMD_AUTHOR,
           cmStrCat("The ", iter.first,
                    " keyword was followed by an empty string or no value at "
                    "all. Policy CMP0174 is not set, so "
@@ -140,6 +141,8 @@ bool cmParseArgumentsCommand(std::vector<std::string> const& args,
   //                         1       2      3      4
   // or
   // cmake_parse_arguments(PARSE_ARGV N prefix options single multi)
+  // or
+  // cmake_parse_arguments(PARSE_ARGN prefix options single multi)
   if (args.size() < 4) {
     status.SetError("must be called with at least 4 arguments.");
     return false;
@@ -147,8 +150,9 @@ bool cmParseArgumentsCommand(std::vector<std::string> const& args,
 
   auto argIter = args.begin();
   auto argEnd = args.end();
-  bool parseFromArgV = false;
-  unsigned long argvStart = 0;
+  bool parseFromArg = false;
+  unsigned long argStart = 0;
+  unsigned long argnc = 0;
   if (*argIter == "PARSE_ARGV") {
     if (args.size() != 6) {
       status.GetMakefile().IssueMessage(
@@ -157,9 +161,9 @@ bool cmParseArgumentsCommand(std::vector<std::string> const& args,
       cmSystemTools::SetFatalErrorOccurred();
       return true;
     }
-    parseFromArgV = true;
+    parseFromArg = true;
     argIter++; // move past PARSE_ARGV
-    if (!cmStrToULong(*argIter, &argvStart)) {
+    if (!cmStrToULong(*argIter, &argStart)) {
       status.GetMakefile().IssueMessage(
         MessageType::FATAL_ERROR,
         cmStrCat("PARSE_ARGV index '", *argIter,
@@ -168,6 +172,26 @@ bool cmParseArgumentsCommand(std::vector<std::string> const& args,
       return true;
     }
     argIter++; // move past N
+  } else if (*argIter == "PARSE_ARGN") {
+    if (args.size() != 5) {
+      status.GetMakefile().IssueMessage(
+        MessageType::FATAL_ERROR,
+        "PARSE_ARGN must be called with exactly 5 arguments.");
+      cmSystemTools::SetFatalErrorOccurred();
+      return true;
+    }
+    parseFromArg = true;
+    argIter++; // move past PARSE_ARGN
+    std::string argncStr =
+      status.GetMakefile().GetSafeDefinition("_FUNCTION_ARGNC");
+    if (!cmStrToULong(argncStr, &argnc)) {
+      status.GetMakefile().IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat("PARSE_ARGN called with _FUNCTION_ARGNC='", argncStr,
+                 "' that is not an unsigned integer"));
+      cmSystemTools::SetFatalErrorOccurred();
+      return true;
+    }
   }
   // the first argument is the prefix
   std::string const prefix = (*argIter++) + "_";
@@ -201,31 +225,38 @@ bool cmParseArgumentsCommand(std::vector<std::string> const& args,
   parser.Bind(list, multiValArgs, duplicateKey);
 
   list.clear();
-  if (!parseFromArgV) {
+  if (!parseFromArg) {
     // Flatten ;-lists in the arguments into a single list as was done
     // by the original function(CMAKE_PARSE_ARGUMENTS).
     for (; argIter != argEnd; ++argIter) {
       list.append(*argIter);
     }
   } else {
-    // in the PARSE_ARGV move read the arguments from ARGC and ARGV#
+    cm::string_view mode = *args.begin();
+    // in the PARSE_ARGV or PARSE_ARGN mode read the arguments from ARGC and
+    // ARGV#
     std::string argc = status.GetMakefile().GetSafeDefinition("ARGC");
     unsigned long count;
     if (!cmStrToULong(argc, &count)) {
       status.GetMakefile().IssueMessage(
         MessageType::FATAL_ERROR,
-        cmStrCat("PARSE_ARGV called with ARGC='", argc,
+        cmStrCat(mode, " called with ARGC='", argc,
                  "' that is not an unsigned integer"));
       cmSystemTools::SetFatalErrorOccurred();
       return true;
     }
-    for (unsigned long i = argvStart; i < count; ++i) {
+
+    if (mode == "PARSE_ARGN") {
+      argStart = count - argnc;
+    }
+
+    for (unsigned long i = argStart; i < count; ++i) {
       std::string const argName{ cmStrCat("ARGV", i) };
       cmValue arg = status.GetMakefile().GetDefinition(argName);
       if (!arg) {
         status.GetMakefile().IssueMessage(
           MessageType::FATAL_ERROR,
-          cmStrCat("PARSE_ARGV called with ", argName, " not set"));
+          cmStrCat(mode, " called with ", argName, " not set"));
         cmSystemTools::SetFatalErrorOccurred();
         return true;
       }
@@ -250,7 +281,7 @@ bool cmParseArgumentsCommand(std::vector<std::string> const& args,
     prefix, status.GetMakefile(), options, singleValArgs, multiValArgs,
     unparsed, options_set(keywordsSeen.begin(), keywordsSeen.end()),
     options_set(keywordsMissingValues.begin(), keywordsMissingValues.end()),
-    parseFromArgV);
+    parseFromArg);
 
   return true;
 }

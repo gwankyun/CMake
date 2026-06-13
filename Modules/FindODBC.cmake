@@ -162,9 +162,11 @@ endif()
 if (UNIX AND ODBC_CONFIG)
   # unixODBC and iODBC accept unified command line options
   execute_process(COMMAND ${ODBC_CONFIG} --cflags
-    OUTPUT_VARIABLE _cflags OUTPUT_STRIP_TRAILING_WHITESPACE)
+    OUTPUT_VARIABLE _cflags OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE _odbc_config_cflags_result)
   execute_process(COMMAND ${ODBC_CONFIG} --libs
-    OUTPUT_VARIABLE _libs OUTPUT_STRIP_TRAILING_WHITESPACE)
+    OUTPUT_VARIABLE _libs OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE _odbc_config_libs_result)
 
   # Collect paths of include directories from CFLAGS
   separate_arguments(_cflags NATIVE_COMMAND "${_cflags}")
@@ -218,13 +220,14 @@ if(NOT ODBC_LIBRARY)
 
   foreach(_lib IN LISTS _odbc_required_libs_names)
     find_library(_lib_path
+      NO_CACHE
       NAMES ${_lib}
       PATHS ${_odbc_lib_paths} # system paths or collected from ODBC_CONFIG
       PATH_SUFFIXES odbc)
     if(_lib_path)
       list(APPEND _odbc_required_libs_paths ${_lib_path})
     endif()
-    unset(_lib_path CACHE)
+    unset(_lib_path)
   endforeach()
 endif()
 

@@ -35,20 +35,22 @@ if
 
 1. `Parentheses`_。
 
-2. 一元测试，包括\ `COMMAND`_、\ `POLICY`_、\ `TARGET`_、\ `TEST`_、
-   `EXISTS`_、\ `IS_READABLE`_、\ `IS_WRITABLE`_、\ `IS_EXECUTABLE`_、
-   `IS_DIRECTORY`_、\ `IS_SYMLINK`_、\ `IS_ABSOLUTE`_\ 以及\ `DEFINED`_。
+2. Unary tests such as:
 
-3. 二元测试，包括\ `EQUAL`_、\ `LESS`_、\ `LESS_EQUAL`_、\ `GREATER`_、
-   `GREATER_EQUAL`_、\ `STREQUAL`_、\ `STRLESS`_、\ `STRLESS_EQUAL`_、
-   `STRGREATER`_、\ `STRGREATER_EQUAL`_、\ `VERSION_EQUAL`_、\ `VERSION_LESS`_、
-   `VERSION_LESS_EQUAL`_、\ `VERSION_GREATER`_、\ `VERSION_GREATER_EQUAL`_、
-   `PATH_EQUAL`_、\ `IN_LIST`_、\ `IS_NEWER_THAN`_\ 以及\ `MATCHES`_。
+  * The `Existence Checks`_ :cref:`COMMAND`, :cref:`POLICY`, :cref:`TARGET`,
+    :cref:`TEST`, :cref:`EXISTS`, and :cref:`DEFINED`.
+  * The `File Operations`_ :cref:`IS_READABLE`, :cref:`IS_WRITABLE`,
+    :cref:`IS_EXECUTABLE`, :cref:`IS_DIRECTORY`, :cref:`IS_SYMLINK`, and
+    :cref:`IS_ABSOLUTE`.
 
-4. 一元逻辑运算符\ `NOT`_。
+3. Binary tests such as those described in `Comparisons`_,
+   `Version Comparisons`_, and `Path Comparisons`_, as well as :cref:`IN_LIST`
+   and :cref:`IS_NEWER_THAN`.
 
-5. 二元逻辑运算符\ `AND`_\ 与\ `OR`_，从左到右依次求值，
-   且无短路求值（short-circuit）行为。
+4. Unary logical operator :cref:`NOT`.
+
+5. Binary logical operators :cref:`AND` and :cref:`OR`, from left to right,
+   without any short-circuit.
 
 基础表达式
 """""""""""""""""
@@ -79,6 +81,11 @@ if
   * 字符串的值为真常量之一，或
   * 在CMake 4.0之前的版本中，策略\ :policy:`CMP0054`\ 未设置为\ ``NEW``，
     且字符串的值恰好是一个受\ :policy:`CMP0054`\ 行为影响的变量名。
+
+.. signature:: if()
+  :target: empty
+
+  False if no argument is provided.
 
 逻辑运算符
 """""""""""""""
@@ -160,7 +167,7 @@ if
   当给定路径为空字符串时，结果为假。
 
   .. note::
-    检查文件可读性时推荐使用\ ``if(IS_READABLE)``。未来版本中\ ``if(EXISTS)``\
+    检查文件可读性时推荐使用\ :command:`if(IS_READABLE)`。未来版本中\ ``if(EXISTS)``\
     可能仅检查文件存在性。
 
 .. signature:: if(IS_READABLE <path-to-file-or-directory>)
@@ -227,10 +234,8 @@ if
   :target: MATCHES
 
   如果给定的字符串或变量的值与给定的正则表达式匹配，则为真。正则表达式的格式参见\
-  :ref:`Regex Specification`。
-
-  .. versionadded:: 2.6
-   ``()``\ 分组捕获的结果保存在\ :variable:`CMAKE_MATCH_<n>`\ 变量中。
+  :ref:`Regex Specification`。``()`` groups
+  are captured in :variable:`CMAKE_MATCH_<n>` variables.
 
 .. signature:: if(<variable|string> LESS <variable|string>)
   :target: LESS
@@ -360,7 +365,7 @@ if
        ...
     endif()
 
-  详见\ :ref:`cmake_path(COMPARE) <Path Comparison>`。
+  详见\ :command:`cmake_path(COMPARE)`。
 
 变量展开
 ^^^^^^^^^^^^^^^^^^
@@ -392,26 +397,26 @@ if命令编写于CMake历史的早期，早于\ ``${}``\ 变量求值语法。�
 
 当上述文档的条件语法接受\ ``<variable|string>``\ 时，自动求值也适用于其他情况：
 
-* 首先检查\ `MATCHES`_\ 的左操作数是否为已定义的变量。如果是，则使用该变量的值，\
+* 首先检查\  :cref:`MATCHES`\ 的左操作数是否为已定义的变量。如果是，则使用该变量的值，\
   否则使用原始值。
 
-* 如果\ `MATCHES`_\ 缺少左操作数，则返回假而不报错。
+* 如果\ :cref:`MATCHES`\ 缺少左操作数，则返回假而不报错。
 
-* `LESS`_、\ `GREATER`_、\ `EQUAL`_、\ `LESS_EQUAL`_\ 和\ `GREATER_EQUAL`_\ 的左右\
+* :cref:`LESS`、\ :cref:`GREATER`、\ :cref:`EQUAL`、\ :cref:`LESS_EQUAL`\ 和\ :cref:`GREATER_EQUAL`\ 的左右\
   操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，否则使用原始值。
 
-* `STRLESS`_、\ `STRGREATER`_、\ `STREQUAL`_、\ `STRLESS_EQUAL`_\ 和\ `STRGREATER_EQUAL`_\
+* :cref:`STRLESS`、\ :cref:`STRGREATER`、\ :cref:`STREQUAL`、\ :cref:`STRLESS_EQUAL`\ 和\ :cref:`STRGREATER_EQUAL`\
   的左右操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，否则使用原始值。
 
-* `VERSION_LESS`_、\ `VERSION_GREATER`_、\ `VERSION_EQUAL`_、\ `VERSION_LESS_EQUAL`_\
-  和\ `VERSION_GREATER_EQUAL`_\ 的左右操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，\
+* :cref:`VERSION_LESS`、\ :cref:`VERSION_GREATER`、\ :cref:`VERSION_EQUAL`、\ :cref:`VERSION_LESS_EQUAL`\
+  和\ :cref:`VERSION_GREATER_EQUAL`\ 的左右操作数会分别测试是否为已定义的变量。如果是，则使用其定义的值，\
   否则使用原始值。
 
-* 首先测试\ `IN_LIST`_\ 的左操作数是否为已定义的变量。如果是，则使用该变量的值，否则使用原始值。
+* 首先测试\ :cref:`IN_LIST`\ 的左操作数是否为已定义的变量。如果是，则使用该变量的值，否则使用原始值。
 
-* 测试\ `NOT`_\ 的右操作数是否为布尔常量。如果是，则使用该值，否则假定其为变量并进行解引用。
+* 测试\ :cref:`NOT`\ 的右操作数是否为布尔常量。如果是，则使用该值，否则假定其为变量并进行解引用。
 
-* `AND`_\ 和\ `OR`_\ 的左右操作数会分别测试是否为布尔常量。如果是，则直接使用，否则假定其为\
+* :cref:`AND`\ 和\ :cref:`OR`\ 的左右操作数会分别测试是否为布尔常量。如果是，则直接使用，否则假定其为\
   变量并进行解引用。
 
 .. versionchanged:: 3.1

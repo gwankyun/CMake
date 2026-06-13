@@ -7,14 +7,13 @@
 #include <utility>
 #include <vector>
 
+#include "cmDiagnosticContext.h"
 #include "cmGeneratorExpression.h"
 #include "cmInstallGenerator.h"
 #include "cmInstallType.h"
-#include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
-#include "cmOutputConverter.h"
 #include "cmScriptGenerator.h"
 #include "cmStringAlgorithms.h"
 #include "cmake.h"
@@ -25,11 +24,11 @@ cmInstallRuntimeDependencySetGenerator::cmInstallRuntimeDependencySetGenerator(
   std::string installNameDir, bool noInstallName, char const* depsVar,
   char const* rpathPrefix, char const* tmpVarPrefix, std::string destination,
   std::vector<std::string> const& configurations, std::string component,
-  std::string permissions, MessageLevel message, bool exclude_from_all,
-  cmListFileBacktrace backtrace)
+  std::string permissions, MessageLevel message, bool excludeFromAll,
+  cmDiagnosticContext context)
   : cmInstallGenerator(std::move(destination), configurations,
-                       std::move(component), message, exclude_from_all, false,
-                       std::move(backtrace))
+                       std::move(component), message, excludeFromAll, false,
+                       std::move(context))
   , Type(type)
   , DependencySet(dependencySet)
   , InstallRPaths(std::move(installRPaths))
@@ -69,7 +68,7 @@ void cmInstallRuntimeDependencySetGenerator::GenerateScriptForConfig(
           MessageType::FATAL_ERROR,
           "INSTALL_NAME_DIR argument must not evaluate to an "
           "empty string",
-          this->Backtrace);
+          this->Context.GetBacktrace());
         return;
       }
       if (installNameDir.back() != '/') {
@@ -142,7 +141,7 @@ void cmInstallRuntimeDependencySetGenerator::GenerateScriptForConfig(
            << GetDestDirPath(
                 ConvertToAbsoluteDestination(this->GetDestination(config)))
            << "/${" << this->TmpVarPrefix << "_dep_name}\" NEW_RPATH "
-           << cmOutputConverter::EscapeForCMake(evaluatedRPath) << ")\n";
+           << cmScriptGenerator::Quote(evaluatedRPath) << ")\n";
       }
     }
   }
@@ -229,8 +228,8 @@ void cmInstallRuntimeDependencySetGenerator::GenerateInstallNameFixup(
        << "\" ${" << this->TmpVarPrefix << "_rpath_args}\n";
     if (!this->NoInstallRPath) {
       for (auto const& rpath : evaluatedRPaths) {
-        os << indent2 << "  -add_rpath "
-           << cmOutputConverter::EscapeForCMake(rpath) << "\n";
+        os << indent2 << "  -add_rpath " << cmScriptGenerator::Quote(rpath)
+           << '\n';
       }
     }
     if (!this->NoInstallName) {
@@ -270,6 +269,8 @@ void cmInstallRuntimeDependencySetGenerator::GenerateStripFixup(
 std::string cmInstallRuntimeDependencySetGenerator::GetDestination(
   std::string const& config) const
 {
-  return cmGeneratorExpression::Evaluate(this->Destination,
-                                         this->LocalGenerator, config);
+  std::string dest = cmGeneratorExpression::Evaluate(
+    this->Destination, this->LocalGenerator, config);
+  this->CheckAbsoluteDestination(dest, this->LocalGenerator);
+  return dest;
 }

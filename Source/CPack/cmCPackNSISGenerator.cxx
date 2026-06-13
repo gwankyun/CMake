@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <cstring>
 #include <map>
 #include <sstream>
 #include <utility>
@@ -88,7 +87,7 @@ int cmCPackNSISGenerator::PackageFiles()
                 "Uninstall Files: " << str.str() << std::endl);
   this->SetOptionIfNotSet("CPACK_NSIS_DELETE_FILES", str.str());
   std::vector<std::string> dirs;
-  this->GetListOfSubdirectories(this->toplevel.c_str(), dirs);
+  this->GetListOfSubdirectories(this->toplevel, dirs);
   std::ostringstream dstr;
   for (std::string const& dir : dirs) {
     std::string componentName;
@@ -376,8 +375,10 @@ int cmCPackNSISGenerator::PackageFiles()
     }
 
     this->SetOptionIfNotSet("CPACK_NSIS_INSTALLATION_TYPES", installTypesCode);
-    this->SetOptionIfNotSet("CPACK_NSIS_PAGE_COMPONENTS",
-                            "!insertmacro MUI_PAGE_COMPONENTS");
+    if (!this->IsSet("CPACK_NSIS_IGNORE_COMPONENTS_PAGE")) {
+      this->SetOptionIfNotSet("CPACK_NSIS_PAGE_COMPONENTS",
+                              "!insertmacro MUI_PAGE_COMPONENTS");
+    }
     this->SetOptionIfNotSet("CPACK_NSIS_FULL_INSTALL", "");
     this->SetOptionIfNotSet("CPACK_NSIS_COMPONENT_SECTIONS", componentCode);
     this->SetOptionIfNotSet("CPACK_NSIS_COMPONENT_SECTION_LIST", sectionList);
@@ -677,18 +678,17 @@ void cmCPackNSISGenerator::CreateMenuLinks(std::ostream& str,
 }
 
 bool cmCPackNSISGenerator::GetListOfSubdirectories(
-  char const* topdir, std::vector<std::string>& dirs)
+  std::string const& topdir, std::vector<std::string>& dirs)
 {
   cmsys::Directory dir;
   dir.Load(topdir);
   for (unsigned long i = 0; i < dir.GetNumberOfFiles(); ++i) {
-    char const* fileName = dir.GetFile(i);
-    if (strcmp(fileName, ".") != 0 && strcmp(fileName, "..") != 0) {
-      std::string const fullPath =
-        std::string(topdir).append("/").append(fileName);
+    std::string const& fileName = dir.GetFileName(i);
+    if (fileName != "." && fileName != "..") {
+      std::string const fullPath = cmStrCat(topdir, '/', fileName);
       if (cmsys::SystemTools::FileIsDirectory(fullPath) &&
           !cmsys::SystemTools::FileIsSymlink(fullPath)) {
-        if (!this->GetListOfSubdirectories(fullPath.c_str(), dirs)) {
+        if (!this->GetListOfSubdirectories(fullPath, dirs)) {
           return false;
         }
       }

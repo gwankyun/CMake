@@ -2,5 +2,5 @@ cmake_instrumentation(
   API_VERSION 1
   DATA_VERSION 1
   HOOKS postCMakeWorkflow
-  CALLBACK "@CMAKE_COMMAND@" -P "@RunCMake_TEST_SOURCE_DIR@/../hook.cmake" 0 0
+  CALLBACK @GET_HOOK@
 )

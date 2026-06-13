@@ -8,9 +8,12 @@
 #include <string>
 #include <vector>
 
+#include "cmPolicies.h"
 #include "cmScriptGenerator.h"
 
+class cmListFileBacktrace;
 class cmGeneratorExpression;
+class cmGeneratorTarget;
 class cmLocalGenerator;
 class cmTest;
 
@@ -21,6 +24,12 @@ class cmTest;
 class cmTestGenerator : public cmScriptGenerator
 {
 public:
+  struct BuildDependencies
+  {
+    std::vector<cmGeneratorTarget*> Targets;
+    std::vector<std::string> Files;
+  };
+
   cmTestGenerator(cmTest* test,
                   std::vector<std::string> const& configurations =
                     std::vector<std::string>());
@@ -30,6 +39,7 @@ public:
   cmTestGenerator& operator=(cmTestGenerator const&) = delete;
 
   void Compute(cmLocalGenerator* lg);
+  bool GetBuildDependencies(cmLocalGenerator* lg, BuildDependencies& deps);
 
   /** Test if this generator installs the test for a given configuration.  */
   bool TestsForConfig(std::string const& config);
@@ -37,13 +47,18 @@ public:
   cmTest* GetTest() const;
 
 private:
-  void GenerateInternalProperties(std::ostream& os);
   std::vector<std::string> EvaluateCommandLineArguments(
     std::vector<std::string> const& argv, cmGeneratorExpression& ge,
     std::string const& config) const;
 
 protected:
-  void GenerateScriptConfigs(std::ostream& os, Indent indent) override;
+  void GenerateBacktrace(std::ostream& os, cmListFileBacktrace bt);
+  void GenerateCommand(std::ostream& os,
+                       std::vector<std::string> const& command,
+                       std::string const& config, bool expand,
+                       cmGeneratorExpression& ge,
+                       cmPolicies::PolicyStatus cmp0158 = cmPolicies::NEW,
+                       cmPolicies::PolicyStatus cmp0178 = cmPolicies::NEW);
   void GenerateScriptActions(std::ostream& os, Indent indent) override;
   void GenerateScriptForConfig(std::ostream& os, std::string const& config,
                                Indent indent) override;

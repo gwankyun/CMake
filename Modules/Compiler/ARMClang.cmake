@@ -25,9 +25,14 @@ endif()
 function(__armclang_set_processor_list lang out_var)
   execute_process(COMMAND "${CMAKE_${lang}_COMPILER}" --target=${CMAKE_${lang}_COMPILER_TARGET} -mcpu=list
     OUTPUT_VARIABLE processor_list
-    ERROR_VARIABLE processor_list)
-  string(REGEX MATCHALL "-mcpu=([^ \n]*)" processor_list "${processor_list}")
-  string(REGEX REPLACE "-mcpu=" "" processor_list "${processor_list}")
+    ERROR_VARIABLE processor_list
+    RESULT_VARIABLE _res
+    )
+  set(processor_list)
+  if(_res EQUAL 0)
+    string(REGEX MATCHALL "-mcpu=([^ \n]*)" processor_list "${processor_list}")
+    string(REGEX REPLACE "-mcpu=" "" processor_list "${processor_list}")
+  endif()
   set(${out_var} "${processor_list}" PARENT_SCOPE)
 endfunction()
 
@@ -45,9 +50,14 @@ endfunction()
 function(__armclang_set_arch_list lang out_var)
   execute_process(COMMAND "${CMAKE_${lang}_COMPILER}" --target=${CMAKE_${lang}_COMPILER_TARGET} -march=list
     OUTPUT_VARIABLE arch_list
-    ERROR_VARIABLE arch_list)
-  string(REGEX MATCHALL "-march=([^ \n]*)" arch_list "${arch_list}")
-  string(REGEX REPLACE "-march=" "" arch_list "${arch_list}")
+    ERROR_VARIABLE arch_list
+    RESULT_VARIABLE _res
+    )
+  set(arch_list)
+  if(_res EQUAL 0)
+    string(REGEX MATCHALL "-march=([^ \n]*)" arch_list "${arch_list}")
+    string(REGEX REPLACE "-march=" "" arch_list "${arch_list}")
+  endif()
   set(${out_var} "${arch_list}" PARENT_SCOPE)
 endfunction()
 
@@ -61,9 +71,14 @@ function(__armlink_set_cpu_list lang out_var)
 
   execute_process(COMMAND "${CMAKE_LINKER}" ${__linker_wrapper_flags} --cpu=list
     OUTPUT_VARIABLE cpu_list
-    ERROR_VARIABLE cpu_list)
-  string(REGEX MATCHALL "--cpu=([^ \n]*)" cpu_list "${cpu_list}")
-  string(REGEX REPLACE "--cpu=" "" cpu_list "${cpu_list}")
+    ERROR_VARIABLE cpu_list
+    RESULT_VARIABLE _res
+    )
+  set(cpu_list)
+  if(_res EQUAL 0)
+    string(REGEX MATCHALL "--cpu=([^ \n]*)" cpu_list "${cpu_list}")
+    string(REGEX REPLACE "--cpu=" "" cpu_list "${cpu_list}")
+  endif()
   set(${out_var} "${cpu_list}" PARENT_SCOPE)
 endfunction()
 
@@ -84,9 +99,7 @@ macro(__compiler_armclang lang)
   cmake_policy(GET CMP0123 policy_CMP0123)
   if(NOT "x${CMAKE_ARMClang_CMP0123}x" STREQUAL "xNEWx")
     if(NOT "x${CMAKE_ARMClang_CMP0123}x" STREQUAL "xOLDx")
-      cmake_policy(GET_WARNING CMP0123 _cmp0123_warning)
-      message(AUTHOR_WARNING
-        "${_cmp0123_warning}\n"
+      cmake_policy(ISSUE_WARNING CMP0123 POST
         "For compatibility, CMake will automatically add cpu/arch flags based "
         "on the CMAKE_SYSTEM_PROCESSOR and/or CMAKE_SYSTEM_ARCH variables."
         )

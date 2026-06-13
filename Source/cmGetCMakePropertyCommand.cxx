@@ -8,6 +8,7 @@
 #include "cmGlobalGenerator.h"
 #include "cmList.h"
 #include "cmMakefile.h"
+#include "cmPolicies.h"
 #include "cmState.h"
 #include "cmValue.h"
 
@@ -27,7 +28,9 @@ bool cmGetCMakePropertyCommand(std::vector<std::string> const& args,
     if (cmValue varsProp = status.GetMakefile().GetProperty("VARIABLES")) {
       output = *varsProp;
     }
-  } else if (args[1] == "MACROS") {
+  } else if (args[1] == "MACROS" &&
+             status.GetMakefile().GetPolicyStatus(cmPolicies::CMP0217) !=
+               cmPolicies::NEW) {
     output.clear();
     if (cmValue macrosProp = status.GetMakefile().GetProperty("MACROS")) {
       output = *macrosProp;

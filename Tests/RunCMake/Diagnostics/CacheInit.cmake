@@ -1,0 +1,5 @@
+include(Assertions.cmake)
+
+expect(CMD_AUTHOR IGNORE)
+expect(CMD_INSTALL_ABSOLUTE_DESTINATION IGNORE)
+expect(CMD_DEPRECATED SEND_ERROR)

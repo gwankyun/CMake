@@ -49,6 +49,29 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "^macos_x86_64_")
     )
 endif()
 
+if ("$ENV{CMAKE_CONFIGURATION}" STREQUAL "windows_orangec7.10")
+  list(APPEND test_exclusions
+    # FIXME(OrangeC#1155): OrangeC 7.10 does not reconcile pointer-to-array and pointer-to-pointer
+    "^testdriver[1-5]$"
+    )
+elseif ("$ENV{CMAKE_CONFIGURATION}" STREQUAL "windows_orangec7.0")
+  list(APPEND test_exclusions
+    # FIXME(OrangeC#1136): OrangeC 7.0 no longer fails when linking a missing library
+    "^RunCMake.CheckModules$"
+    )
+endif()
+
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "windows_clang_fastbuild")
+  list(APPEND test_exclusions
+    # FIXME(#27697): These fail with clang-cl and FASTBuild.
+    "^BuildDepends$"
+    "^ExportImport$"
+    "^Module.CheckIPOSupported-C$"
+    "^RunCMake.PrecompileHeaders$"
+    "^RunCMake.PrecompileHeaders-Reuse$"
+    )
+endif()
+
 string(REPLACE ";" "|" test_exclusions "${test_exclusions}")
 if (test_exclusions)
   set(test_exclusions "(${test_exclusions})")

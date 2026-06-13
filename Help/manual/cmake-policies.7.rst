@@ -29,9 +29,9 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 .. code-block:: cmake
 
-  cmake_minimum_required(VERSION 3.10...4.2)
+  cmake_minimum_required(VERSION 3.10...4.3)
 
-这使用了\ ``<min>...<policy_max>``\ 语法，以启用CMake 4.2及更早版本引入的策略的\ ``NEW``\ 行为，\
+这使用了\ ``<min>...<policy_max>``\ 语法，以启用CMake 4.3及更早版本引入的策略的\ ``NEW``\ 行为，\
 同时仅要求最低版本为CMake 3.10。预计该项目在这两个版本之间引入的策略的\ ``OLD``\ 行为和\
 ``NEW``\ 行为下都能正常工作。
 
@@ -79,6 +79,22 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 ==================
 
 以下策略是受支持的。
+
+Policies Introduced by CMake 4.4
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0219: Macro invocations preserve backslashes in arguments. </policy/CMP0219>
+   CMP0218: The CMAKE_WARN_DEPRECATED and CMAKE_ERROR_DEPRECATED variables are ignored. </policy/CMP0218>
+   CMP0217: The MACROS directory property does not exist anymore. </policy/CMP0217>
+   CMP0216: Swift targets have a default project name. </policy/CMP0216>
+   CMP0215: Ninja generators emit Swift modules separately from compilation. </policy/CMP0215>
+   CMP0214: Honor CMAKE_EXE_LINKER_FLAGS for Swift executable targets. </policy/CMP0214>
+   CMP0213: file(ARCHIVE_{CREATE,EXTRACT}) encode archive paths as UTF-8 by default. </policy/CMP0213>
+   CMP0212: add_custom_command DEPENDS does not strip .exe suffixes. </policy/CMP0212>
+   CMP0211: A file may belong to at most one non-HEADERS file set in a target. </policy/CMP0211>
 
 CMake 4.3引入的策略
 --------------------------------

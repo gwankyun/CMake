@@ -19,6 +19,8 @@
 /openmp
 /open-watcom*
 /orangec
+/pellesc
+/pvs-studio
 /python*
 /qt*
 /sccache*

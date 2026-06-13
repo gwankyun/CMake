@@ -2,26 +2,26 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmTestGenerator.h"
 
-#include <algorithm>
 #include <cstddef> // IWYU pragma: keep
-#include <iterator>
 #include <memory>
 #include <ostream>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "cmGeneratorExpression.h"
 #include "cmGeneratorTarget.h"
+#include "cmGlobalGenerator.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
-#include "cmOutputConverter.h"
 #include "cmPolicies.h"
 #include "cmPropertyMap.h"
 #include "cmRange.h"
+#include "cmScriptGenerator.h"
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
@@ -38,10 +38,9 @@ bool needToQuoteTestName(cmMakefile const& mf, std::string const& name)
     case cmPolicies::WARN:
       // Only warn if a forbidden character is used in the name.
       if (name.find_first_of("$[] #;\t\n\"\\") != std::string::npos) {
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
-          cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0110),
-                   "\nThe following name given to add_test() is invalid if "
+        mf.IssuePolicyWarning(
+          cmPolicies::CMP0110, {},
+          cmStrCat("The following name given to add_test() is invalid if "
                    "CMP0110 is not set or set to OLD:\n  `",
                    name, "´\n"));
       }
@@ -56,18 +55,13 @@ bool needToQuoteTestName(cmMakefile const& mf, std::string const& name)
   }
 }
 
-std::size_t countMaxConsecutiveEqualSigns(std::string const& name)
+std::string TestName(cmTest* test)
 {
-  std::size_t max = 0;
-  auto startIt = find(name.begin(), name.end(), '=');
-  auto endIt = startIt;
-  for (; startIt != name.end(); startIt = find(endIt, name.end(), '=')) {
-    endIt =
-      find_if_not(startIt + 1, name.end(), [](char c) { return c == '='; });
-    max =
-      std::max(max, static_cast<std::size_t>(std::distance(startIt, endIt)));
+  std::string name = test->GetName();
+  if (needToQuoteTestName(*test->GetMakefile(), name)) {
+    name = cmScriptGenerator::Quote(name);
   }
-  return max;
+  return name;
 }
 
 } // End: anonymous namespace
@@ -77,7 +71,7 @@ cmTestGenerator::cmTestGenerator(
   : cmScriptGenerator("CTEST_CONFIGURATION_TYPE", configurations)
   , Test(test)
 {
-  this->ActionsPerConfig = !test->GetOldStyle();
+  this->ActionsPerConfig = test == nullptr || !test->GetOldStyle();
   this->TestGenerated = false;
   this->LG = nullptr;
 }
@@ -91,7 +85,7 @@ void cmTestGenerator::Compute(cmLocalGenerator* lg)
 
 bool cmTestGenerator::TestsForConfig(std::string const& config)
 {
-  return this->GeneratesForConfig(config);
+  return this->Test != nullptr && this->GeneratesForConfig(config);
 }
 
 cmTest* cmTestGenerator::GetTest() const
@@ -99,10 +93,65 @@ cmTest* cmTestGenerator::GetTest() const
   return this->Test;
 }
 
-void cmTestGenerator::GenerateScriptConfigs(std::ostream& os, Indent indent)
+bool cmTestGenerator::GetBuildDependencies(cmLocalGenerator* lg,
+                                           BuildDependencies& info)
 {
-  // Create the tests.
-  this->cmScriptGenerator::GenerateScriptConfigs(os, indent);
+  if (this->Test == nullptr ||
+      !cmGeneratorExpression::IsValidTargetName(this->Test->GetName()) ||
+      cmGlobalGenerator::IsReservedTarget(this->Test->GetName())) {
+    return false;
+  }
+
+  std::set<cmGeneratorTarget*> dependencies;
+
+  // Get dependencies from generator expressions
+  cmGeneratorExpression ge(*this->Test->GetMakefile()->GetCMakeInstance(),
+                           this->Test->GetBacktrace());
+  std::string const config;
+  for (std::string const& arg : this->Test->GetCommand()) {
+    auto parsed = ge.Parse(arg);
+    parsed->Evaluate(lg, config);
+    for (cmGeneratorTarget* dep : parsed->GetTargets()) {
+      if (dep && !dep->IsImported()) {
+        dependencies.insert(dep);
+      }
+    }
+  }
+
+  // Add target executed by test
+  if (!this->Test->GetCommand().empty()) {
+    std::string exe = this->Test->GetCommand().front();
+    cmGeneratorTarget* target = lg->FindGeneratorTargetToUse(exe);
+    if (target && target->GetType() == cmStateEnums::EXECUTABLE &&
+        !target->IsImported()) {
+      dependencies.insert(target);
+    }
+  }
+
+  // Add dependencies from BUILD_DEPENDS keyword
+  for (auto const& depName : this->Test->GetDependencies()) {
+    if (depName.empty()) {
+      continue;
+    }
+    cmGeneratorTarget* depTarget = lg->FindGeneratorTargetToUse(depName);
+    if (!depTarget) {
+      info.Files.push_back(depName);
+      continue;
+    }
+    if (depTarget->IsImported()) {
+      lg->GetMakefile()->IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat("Test \"", this->Test->GetName(), "\" DEPENDS target \"",
+                 depName, "\" which is imported and cannot be built."),
+        this->Test->GetBacktrace());
+      return false;
+    }
+    dependencies.insert(depTarget);
+  }
+
+  info.Targets.insert(info.Targets.end(), dependencies.begin(),
+                      dependencies.end());
+  return true;
 }
 
 void cmTestGenerator::GenerateScriptActions(std::ostream& os, Indent indent)
@@ -119,39 +168,19 @@ void cmTestGenerator::GenerateScriptActions(std::ostream& os, Indent indent)
   }
 }
 
-void cmTestGenerator::GenerateScriptForConfig(std::ostream& os,
-                                              std::string const& config,
-                                              Indent indent)
+void cmTestGenerator::GenerateCommand(std::ostream& os,
+                                      std::vector<std::string> const& command,
+                                      std::string const& config, bool expand,
+                                      cmGeneratorExpression& ge,
+                                      cmPolicies::PolicyStatus cmp0158,
+                                      cmPolicies::PolicyStatus cmp0178)
 {
-  this->TestGenerated = true;
-
-  // Set up generator expression evaluation context.
-  cmGeneratorExpression ge(*this->Test->GetMakefile()->GetCMakeInstance(),
-                           this->Test->GetBacktrace());
-
-  // Determine if policy CMP0110 is set to NEW.
-  bool const quote_test_name =
-    needToQuoteTestName(*this->Test->GetMakefile(), this->Test->GetName());
-  // Determine the number of equal-signs needed for quoting test name with
-  // [==[...]==] syntax.
-  std::string const equalSigns(
-    1 + countMaxConsecutiveEqualSigns(this->Test->GetName()), '=');
-
-  // Start the test command.
-  if (quote_test_name) {
-    os << indent << "add_test([" << equalSigns << "[" << this->Test->GetName()
-       << "]" << equalSigns << "] ";
-  } else {
-    os << indent << "add_test(" << this->Test->GetName() << " ";
-  }
-
   // Evaluate command line arguments
   cmList argv{
-    this->EvaluateCommandLineArguments(this->Test->GetCommand(), ge, config),
+    this->EvaluateCommandLineArguments(command, ge, config),
     // Expand arguments if COMMAND_EXPAND_LISTS is set
-    this->Test->GetCommandExpandLists() ? cmList::ExpandElements::Yes
-                                        : cmList::ExpandElements::No,
-    cmList::EmptyElements::Yes
+    expand ? cmList::ExpandElements::Yes : cmList::ExpandElements::No,
+    cmList::EmptyElements::Yes,
   };
   // Expanding lists on an empty command may have left it empty
   if (argv.empty()) {
@@ -166,42 +195,36 @@ void cmTestGenerator::GenerateScriptForConfig(std::ostream& os,
     // Use the target file on disk.
     exe = target->GetFullPath(config);
 
-    auto addLauncher = [this, &config, &ge, &os,
-                        target](std::string const& propertyName) {
+    auto addLauncher = [&](std::string const& propertyName) {
       cmValue launcher = target->GetProperty(propertyName);
       if (!cmNonempty(launcher)) {
         return;
       }
       auto const propVal = ge.Parse(*launcher)->Evaluate(this->LG, config);
       cmList launcherWithArgs(propVal, cmList::ExpandElements::Yes,
-                              this->Test->GetCMP0178() == cmPolicies::NEW
+                              cmp0178 == cmPolicies::NEW
                                 ? cmList::EmptyElements::Yes
                                 : cmList::EmptyElements::No);
       if (!launcherWithArgs.empty() && !launcherWithArgs[0].empty()) {
-        if (this->Test->GetCMP0178() == cmPolicies::WARN) {
+        if (cmp0178 == cmPolicies::WARN) {
           cmList argsWithEmptyValuesPreserved(
             propVal, cmList::ExpandElements::Yes, cmList::EmptyElements::Yes);
           if (launcherWithArgs != argsWithEmptyValuesPreserved) {
-            this->Test->GetMakefile()->IssueMessage(
-              MessageType::AUTHOR_WARNING,
+            this->LG->GetMakefile()->IssuePolicyWarning(
+              cmPolicies::CMP0178,
               cmStrCat("The ", propertyName, " property of target '",
                        target->GetName(),
                        "' contains empty list items. Those empty items are "
                        "being silently discarded to preserve backward "
-                       "compatibility.\n",
-                       cmPolicies::GetPolicyWarning(cmPolicies::CMP0178)));
+                       "compatibility."));
           }
         }
         std::string launcherExe(launcherWithArgs[0]);
         cmSystemTools::ConvertToUnixSlashes(launcherExe);
-        os << cmOutputConverter::EscapeForCMake(launcherExe) << " ";
+        os << cmScriptGenerator::Quote(launcherExe) << " ";
         for (std::string const& arg :
              cmMakeRange(launcherWithArgs).advance(1)) {
-          if (arg.empty()) {
-            os << "\"\" ";
-          } else {
-            os << cmOutputConverter::EscapeForCMake(arg) << " ";
-          }
+          os << cmScriptGenerator::Quote(arg) << " ";
         }
       }
     };
@@ -210,7 +233,7 @@ void cmTestGenerator::GenerateScriptForConfig(std::ostream& os,
     addLauncher("TEST_LAUNCHER");
 
     // Prepend with the emulator when cross compiling if required.
-    if (!this->GetTest()->GetCMP0158IsNew() ||
+    if (cmp0158 != cmPolicies::NEW ||
         this->LG->GetMakefile()->IsOn("CMAKE_CROSSCOMPILING")) {
       addLauncher("CROSSCOMPILING_EMULATOR");
     }
@@ -220,49 +243,45 @@ void cmTestGenerator::GenerateScriptForConfig(std::ostream& os,
   }
 
   // Generate the command line with full escapes.
-  os << cmOutputConverter::EscapeForCMake(exe);
+  os << cmScriptGenerator::Quote(exe);
 
   for (auto const& arg : cmMakeRange(argv).advance(1)) {
-    os << " " << cmOutputConverter::EscapeForCMake(arg);
+    os << " " << cmScriptGenerator::Quote(arg);
   }
+}
 
-  // Finish the test command.
+void cmTestGenerator::GenerateScriptForConfig(std::ostream& os,
+                                              std::string const& config,
+                                              Indent indent)
+{
+  this->TestGenerated = true;
+
+  // Set up generator expression evaluation context.
+  cmGeneratorExpression ge(*this->Test->GetMakefile()->GetCMakeInstance(),
+                           this->Test->GetBacktrace());
+
+  auto const test_name = TestName(this->Test);
+  os << indent << "add_test(" << test_name << ' ';
+  this->GenerateCommand(
+    os, this->Test->GetCommand(), config, this->Test->GetCommandExpandLists(),
+    ge, this->GetTest()->GetCMP0158(), this->Test->GetCMP0178());
   os << ")\n";
 
   // Output properties for the test.
-  if (quote_test_name) {
-    os << indent << "set_tests_properties([" << equalSigns << "["
-       << this->Test->GetName() << "]" << equalSigns << "] PROPERTIES ";
-  } else {
-    os << indent << "set_tests_properties(" << this->Test->GetName()
-       << " PROPERTIES ";
-  }
+  os << indent << "set_tests_properties(" << test_name << " PROPERTIES ";
   for (auto const& i : this->Test->GetProperties().GetList()) {
     os << " " << i.first << " "
-       << cmOutputConverter::EscapeForCMake(
+       << cmScriptGenerator::Quote(
             ge.Parse(i.second)->Evaluate(this->LG, config));
   }
-  this->GenerateInternalProperties(os);
+  os << ' ';
+  this->GenerateBacktrace(os, this->Test->GetBacktrace());
   os << ")\n";
 }
 
 void cmTestGenerator::GenerateScriptNoConfig(std::ostream& os, Indent indent)
 {
-  // Determine if policy CMP0110 is set to NEW.
-  bool const quote_test_name =
-    needToQuoteTestName(*this->Test->GetMakefile(), this->Test->GetName());
-  // Determine the number of equal-signs needed for quoting test name with
-  // [==[...]==] syntax.
-  std::string const equalSigns(
-    1 + countMaxConsecutiveEqualSigns(this->Test->GetName()), '=');
-
-  if (quote_test_name) {
-    os << indent << "add_test([" << equalSigns << "[" << this->Test->GetName()
-       << "]" << equalSigns << "] NOT_AVAILABLE)\n";
-  } else {
-    os << indent << "add_test(" << this->Test->GetName()
-       << " NOT_AVAILABLE)\n";
-  }
+  os << indent << "add_test(" << TestName(this->Test) << " NOT_AVAILABLE)\n";
 }
 
 bool cmTestGenerator::NeedsScriptNoConfig() const
@@ -277,27 +296,14 @@ void cmTestGenerator::GenerateOldStyle(std::ostream& fout, Indent indent)
 {
   this->TestGenerated = true;
 
-  // Determine if policy CMP0110 is set to NEW.
-  bool const quote_test_name =
-    needToQuoteTestName(*this->Test->GetMakefile(), this->Test->GetName());
-  // Determine the number of equal-signs needed for quoting test name with
-  // [==[...]==] syntax.
-  std::string const equalSigns(
-    1 + countMaxConsecutiveEqualSigns(this->Test->GetName()), '=');
+  auto const test_name = TestName(this->Test);
 
   // Get the test command line to be executed.
   std::vector<std::string> const& command = this->Test->GetCommand();
 
   std::string exe = command[0];
   cmSystemTools::ConvertToUnixSlashes(exe);
-  if (quote_test_name) {
-    fout << indent << "add_test([" << equalSigns << "["
-         << this->Test->GetName() << "]" << equalSigns << "] \"" << exe
-         << "\"";
-  } else {
-    fout << indent << "add_test(" << this->Test->GetName() << " \"" << exe
-         << "\"";
-  }
+  fout << indent << "add_test(" << test_name << " \"" << exe << "\"";
 
   for (std::string const& arg : cmMakeRange(command).advance(1)) {
     // Just double-quote all arguments so they are re-parsed
@@ -317,31 +323,23 @@ void cmTestGenerator::GenerateOldStyle(std::ostream& fout, Indent indent)
   fout << ")\n";
 
   // Output properties for the test.
-  if (quote_test_name) {
-    fout << indent << "set_tests_properties([" << equalSigns << "["
-         << this->Test->GetName() << "]" << equalSigns << "] PROPERTIES ";
-  } else {
-    fout << indent << "set_tests_properties(" << this->Test->GetName()
-         << " PROPERTIES ";
-  }
+  fout << indent << "set_tests_properties(" << test_name << " PROPERTIES ";
   for (auto const& i : this->Test->GetProperties().GetList()) {
-    fout << " " << i.first << " "
-         << cmOutputConverter::EscapeForCMake(i.second);
+    fout << " " << i.first << " " << cmScriptGenerator::Quote(i.second);
   }
-  this->GenerateInternalProperties(fout);
+  fout << ' ';
+  this->GenerateBacktrace(fout, this->Test->GetBacktrace());
   fout << ")\n";
 }
 
-void cmTestGenerator::GenerateInternalProperties(std::ostream& os)
+void cmTestGenerator::GenerateBacktrace(std::ostream& os,
+                                        cmListFileBacktrace bt)
 {
-  cmListFileBacktrace bt = this->Test->GetBacktrace();
   if (bt.Empty()) {
     return;
   }
 
-  os << " "
-     << "_BACKTRACE_TRIPLES"
-     << " \"";
+  os << "_BACKTRACE_TRIPLES \"";
 
   bool prependTripleSeparator = false;
   while (!bt.Empty()) {

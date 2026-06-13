@@ -14,6 +14,19 @@ include(CMakeTestCompilerCommon)
 # We now store this in CMakeCUDACompiler.cmake.
 unset(CMAKE_CUDA_COMPILER_WORKS CACHE)
 
+# If the compiler was not identified, required compiler-specific variables
+# such as _CMAKE_CUDA_WHOLE_FLAG will not be set.  Issue a clear diagnostic
+# rather than the cryptic "required internal CMake variable not set" message
+# that the generator would otherwise emit.
+if(NOT CMAKE_CUDA_COMPILER_ID)
+  PrintTestCompilerStatus("CUDA")
+  PrintTestCompilerResult(CHECK_FAIL "broken")
+  message(FATAL_ERROR "The CUDA compiler\n  \"${CMAKE_CUDA_COMPILER}\"\n"
+    "is not able to compile a simple test program.\nThe compiler could not "
+    "be identified as a supported CUDA compiler.\n\n"
+    "CMake will not be able to correctly generate this project.")
+endif()
+
 # Try to identify the ABI and configure it into CMakeCUDACompiler.cmake
 include(${CMAKE_ROOT}/Modules/CMakeDetermineCompilerABI.cmake)
 CMAKE_DETERMINE_COMPILER_ABI(CUDA ${CMAKE_ROOT}/Modules/CMakeCUDACompilerABI.cu)
@@ -47,12 +60,10 @@ if(NOT CMAKE_CUDA_COMPILER_WORKS)
   # Puts test result in cache variable.
   try_compile(CMAKE_CUDA_COMPILER_WORKS
     SOURCE_FROM_VAR main.cu __TestCompiler_testCudaCompilerSource
+    NO_CACHE
     OUTPUT_VARIABLE __CMAKE_CUDA_COMPILER_OUTPUT)
   unset(__TestCompiler_testCudaCompilerSource)
 
-  # Move result from cache to normal variable.
-  set(CMAKE_CUDA_COMPILER_WORKS ${CMAKE_CUDA_COMPILER_WORKS})
-  unset(CMAKE_CUDA_COMPILER_WORKS CACHE)
   if(NOT CMAKE_CUDA_COMPILER_WORKS)
     PrintTestCompilerResult(CHECK_FAIL "broken")
     string(REPLACE "\n" "\n  " _output "${__CMAKE_CUDA_COMPILER_OUTPUT}")

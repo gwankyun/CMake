@@ -16,6 +16,9 @@ function(instrument test)
     "COPY_QUERIES_GENERATED"
     "STATIC_QUERY"
     "DYNAMIC_QUERY"
+    "CAPTURE_OUTPUT_QUERY"
+    "COMPILE_TRACE_QUERY"
+    "COMPILE_TRACE_QUERY_NULL"
     "TRACE_QUERY"
     "MANUAL_HOOK"
     "PRESERVE_DATA"
@@ -24,7 +27,7 @@ function(instrument test)
     "FAIL"
     "BAD_QUERY"
   )
-  cmake_parse_arguments(ARGS "${OPTIONS}" "CHECK_SCRIPT;CONFIGURE_ARG" "" ${ARGN})
+  cmake_parse_arguments(ARGS "${OPTIONS}" "CHECK_SCRIPT" "CONFIGURE_ARGS" ${ARGN})
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/${test})
   set(v1 ${RunCMake_TEST_BINARY_DIR}/.cmake/instrumentation/v1)
   set(v1 ${v1} PARENT_SCOPE)
@@ -55,7 +58,17 @@ function(instrument test)
   if (ARGS_TRACE_QUERY)
     set(trace_query_hook_arg 1)
   endif()
-  set(GET_HOOK "\\\"${CMAKE_COMMAND}\\\" -P \\\"${RunCMake_SOURCE_DIR}/hook.cmake\\\" ${static_query_hook_arg} ${trace_query_hook_arg}")
+  set(ARGS_COMPILE_TRACE_QUERY ${ARGS_COMPILE_TRACE_QUERY} PARENT_SCOPE)
+  set(ARGS_COMPILE_TRACE_QUERY_NULL ${ARGS_COMPILE_TRACE_QUERY_NULL} PARENT_SCOPE)
+  set(GET_HOOK
+    "\\\"${CMAKE_COMMAND}\\\""
+    "-DSTATIC_QUERY=${static_query_hook_arg}"
+    "-DTRACE_QUERY=${trace_query_hook_arg}"
+    "-DPython_EXECUTABLE=${Python_EXECUTABLE}"
+    "-DCMake_TEST_JSON_SCHEMA=${CMake_TEST_JSON_SCHEMA}"
+    "-P \\\"${RunCMake_SOURCE_DIR}/hook.cmake\\\""
+  )
+  list(JOIN GET_HOOK " " GET_HOOK)
 
   # Load query JSON and cmake (with cmake_instrumentation(...)) files
   set(query ${query_dir}/${test}.json.in)
@@ -64,10 +77,20 @@ function(instrument test)
     file(MAKE_DIRECTORY ${v1}/query)
     configure_file(${query} ${v1}/query/${test}.json)
   else ()
-    if (NOT EXISTS ${cmake_file} AND NOT EXISTS ${cmake_file}.in)
-      set(cmake_file ${query_dir}/default.cmake)
+    if (NOT EXISTS ${cmake_file})
+      if (EXISTS ${cmake_file}.in)
+        cmake_path(GET cmake_file FILENAME cmake_filename)
+        configure_file(
+          "${cmake_file}.in"
+          "${RunCMake_TEST_BINARY_DIR}/${cmake_filename}"
+          @ONLY
+        )
+        set(cmake_file "${RunCMake_TEST_BINARY_DIR}/${cmake_filename}")
+      else ()
+        set(cmake_file "${query_dir}/default.cmake")
+      endif()
     endif()
-    list(APPEND ARGS_CONFIGURE_ARG "-DINSTRUMENT_COMMAND_FILE=${cmake_file}")
+    list(APPEND ARGS_CONFIGURE_ARGS "-DINSTRUMENT_COMMAND_FILE=${cmake_file}")
   endif()
 
   set(copy_loc ${RunCMake_TEST_BINARY_DIR}/query)
@@ -93,10 +116,10 @@ function(instrument test)
   # Configure Test Case
   set(RunCMake_TEST_NO_CLEAN 1)
   if (ARGS_FAIL)
-    list(APPEND ARGS_CONFIGURE_ARG "-DFAIL=ON")
+    list(APPEND ARGS_CONFIGURE_ARGS "-DFAIL=ON")
   endif()
   if (ARGS_DISABLE_TEST)
-    list(APPEND ARGS_CONFIGURE_ARG "-DDISABLE_TEST=ON")
+    list(APPEND ARGS_CONFIGURE_ARGS "-DDISABLE_TEST=ON")
   endif()
   set(RunCMake_TEST_SOURCE_DIR ${RunCMake_SOURCE_DIR}/project)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
@@ -108,24 +131,21 @@ function(instrument test)
       "${RunCMake_TEST_BINARY_DIR}/CMakePresets.json"
       @ONLY
     )
-    configure_file(
-      "${cmake_file}.in"
-      "${RunCMake_TEST_BINARY_DIR}/cmake-command-workflow.cmake"
-      @ONLY
-    )
-    foreach(f IN ITEMS CMakeLists.txt main.cxx lib.cxx lib.h shell_redirect.txt)
+    foreach(f IN ITEMS CMakeLists.txt main.c lib.c lib.h shell_redirect.txt)
       configure_file(
         "${RunCMake_TEST_SOURCE_DIR}/${f}"
         "${RunCMake_TEST_BINARY_DIR}/${f}"
         COPYONLY
       )
     endforeach()
+    set(RunCMake_QUIET_ERROR 1)
     set(v1 ${RunCMake_TEST_BINARY_DIR}/build/.cmake/instrumentation/v1)
     run_cmake_command(${test}-workflow ${CMAKE_COMMAND} --workflow default)
     set(ARGS_NO_CONFIGURE TRUE)
+    unset(RunCMake_QUIET_ERROR)
   endif()
   if (NOT ARGS_NO_CONFIGURE)
-    run_cmake_with_options(${test} ${ARGS_CONFIGURE_ARG} ${maybe_CMAKE_BUILD_TYPE})
+    run_cmake_with_options(${test} ${ARGS_CONFIGURE_ARGS} ${maybe_CMAKE_BUILD_TYPE})
   endif()
 
   # Follow-up Commands
@@ -147,19 +167,23 @@ function(instrument test)
       # errors to different places.
       set(RunCMake_TEST_OUTPUT_MERGE 1)
     endif()
+    set(RunCMake_QUIET_ERROR 1)
     run_cmake_command(${test}-build
       ${CMAKE_COMMAND} --build . ${cmake_build_args} -- ${additional_build_args}
     )
+    unset(RunCMake_QUIET_ERROR)
     if (ARGS_FAIL)
       unset(RunCMake_TEST_OUTPUT_MERGE)
     endif()
   endif()
   if (ARGS_BUILD_MAKE_PROGRAM)
     set(RunCMake_TEST_OUTPUT_MERGE 1)
+    set(RunCMake_QUIET_ERROR 1)
     # Force reconfigure to test for double preBuild & postBuild hooks
     file(TOUCH ${RunCMake_TEST_BINARY_DIR}/CMakeCache.txt)
     run_cmake_command(${test}-make-program ${RunCMake_MAKE_PROGRAM})
     unset(RunCMake_TEST_OUTPUT_MERGE)
+    unset(RunCMake_QUIET_ERROR)
   endif()
   if (ARGS_INSTALL)
     run_cmake_command(${test}-install ${CMAKE_COMMAND} --install . --prefix install --config Debug)
@@ -195,6 +219,18 @@ instrument(empty BAD_QUERY
 instrument(bad-version BAD_QUERY
   CHECK_SCRIPT check-query-dir.cmake
 )
+instrument(bad-version-major BAD_QUERY
+  CHECK_SCRIPT check-query-dir.cmake
+)
+instrument(bad-version-minor BAD_QUERY
+  CHECK_SCRIPT check-query-dir.cmake
+)
+instrument(bad-version-object BAD_QUERY
+  CHECK_SCRIPT check-query-dir.cmake
+)
+instrument(hooks-invalid-version-ignored BUILD
+  CHECK_SCRIPT check-hooks-invalid-version-ignored.cmake
+)
 
 # Verify Hooks Run and Index File
 instrument(hooks-1 BUILD INSTALL TEST STATIC_QUERY
@@ -221,7 +257,7 @@ instrument(dynamic-query
   CHECK_SCRIPT check-data-dir.cmake
 )
 instrument(both-query
-  BUILD INSTALL TEST DYNAMIC_QUERY
+  BUILD INSTALL TEST STATIC_QUERY DYNAMIC_QUERY CAPTURE_OUTPUT_QUERY
   CHECK_SCRIPT check-data-dir.cmake
 )
 
@@ -236,13 +272,14 @@ instrument(cmake-command-data
 )
 instrument(cmake-command-bad-api-version)
 instrument(cmake-command-bad-data-version)
+instrument(cmake-command-unsupported-data-version)
 instrument(cmake-command-missing-version)
 instrument(cmake-command-bad-arg)
 instrument(cmake-command-parallel-install
   BUILD INSTALL TEST INSTALL_PARALLEL DYNAMIC_QUERY
   CHECK_SCRIPT check-data-dir.cmake)
 instrument(cmake-command-initial-cache
-  CONFIGURE_ARG "-C ${RunCMake_BINARY_DIR}/initial.cmake"
+  CONFIGURE_ARGS "-C ${RunCMake_BINARY_DIR}/initial.cmake"
 )
 instrument(cmake-command-resets-generated
   COPY_QUERIES_GENERATED
@@ -270,11 +307,11 @@ instrument(cmake-command-workflow
 # Test CUSTOM_CONTENT
 instrument(cmake-command-custom-content
   BUILD
-  CONFIGURE_ARG "-DN=1"
+  CONFIGURE_ARGS "-DN=1"
 )
 instrument(cmake-command-custom-content
   BUILD PRESERVE_DATA
-  CONFIGURE_ARG "-DN=2"
+  CONFIGURE_ARGS "-DN=2"
   CHECK_SCRIPT check-custom-content.cmake
 )
 set(indexDir ${v1}/data/index)
@@ -312,6 +349,59 @@ instrument(cmake-command-trace
   BUILD PRESERVE_DATA
   CHECK_SCRIPT check-trace-removed.cmake
 )
+
+# Test capture output
+instrument(cmake-command-capture-output
+  BUILD CAPTURE_OUTPUT_QUERY
+  CHECK_SCRIPT check-data-dir.cmake
+)
+
+# Test compile trace collection
+if (CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
+  if (CMAKE_C_COMPILER_VERSION VERSION_LESS 11.1)
+    set(Skip_COMPILE_TRACE_QUERY_Case 1)
+  elseif (CMAKE_C_COMPILER_VERSION VERSION_LESS 15)
+    set(Skip_COMPILE_TRACE_QUERY_ARG_Case 1)
+  endif()
+elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+  if (CMAKE_C_COMPILER_VERSION VERSION_LESS 9)
+    set(Skip_COMPILE_TRACE_QUERY_Case 1)
+  elseif (CMAKE_C_COMPILER_VERSION VERSION_LESS 16)
+    set(Skip_COMPILE_TRACE_QUERY_ARG_Case 1)
+  endif()
+else()
+  set(Skip_COMPILE_TRACE_QUERY_Case 1)
+endif()
+if("$ENV{CMAKE_OSX_ARCHITECTURES}" MATCHES "[;$]")
+  # `-ftime-trace` with multiple `-arch` puts the trace file in TMPDIR.
+  set(Skip_COMPILE_TRACE_QUERY_Case 1)
+endif()
+if(RunCMake_GENERATOR MATCHES "NMake")
+  # `-ftime-trace=` is hidden by `@<< ... <<` response file syntax.
+  set(Skip_COMPILE_TRACE_QUERY_ARG_Case 1)
+endif()
+if (NOT Skip_COMPILE_TRACE_QUERY_Case)
+  instrument(cmake-command-compile-trace
+    BUILD COMPILE_TRACE_QUERY
+    CONFIGURE_ARGS
+      "-DINSTRUMENT_COMPILE_TRACE=DEFAULT"
+      "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+    CHECK_SCRIPT check-data-dir.cmake
+  )
+  instrument(cmake-command-compile-trace-null
+    BUILD COMPILE_TRACE_QUERY_NULL
+    CHECK_SCRIPT check-data-dir.cmake
+  )
+  if (NOT Skip_COMPILE_TRACE_QUERY_ARG_Case)
+    instrument(cmake-command-compile-trace-explicit
+      BUILD COMPILE_TRACE_QUERY
+      CONFIGURE_ARGS
+        "-DINSTRUMENT_COMPILE_TRACE=EXPLICIT"
+        "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+      CHECK_SCRIPT check-data-dir.cmake
+    )
+  endif()
+endif()
 
 # Test make/ninja hooks
 if(RunCMake_GENERATOR STREQUAL "FASTBuild")

@@ -1,0 +1,19 @@
+^Available configure presets:
+
+  "OtherCMakePresetsFile"
+
+Available build presets:
+
+  "OtherCMakePresetsFile"
+
+Available test presets:
+
+  "OtherCMakePresetsFile"
+
+Available package presets:
+
+  "OtherCMakePresetsFile"
+
+Available workflow presets:
+
+  "OtherCMakePresetsFile"$

@@ -90,8 +90,7 @@ void UseCmsysFstreamCheck::createMatcher(StringRef StdName,
     loc(usingType(throughUsingDecl(namedDecl(hasName(CmsysName)))));
 
   Finder->addMatcher(
-    typeLoc(IsStd, unless(IsCmsys), unless(elaboratedTypeLoc()),
-            optionally(hasParent(elaboratedTypeLoc().bind("parentType"))),
+    typeLoc(IsStd, unless(IsCmsys),
             optionally(hasParent(nestedNameSpecifierLoc().bind("parentName"))))
       .bind(Bind),
     this);

@@ -3,8 +3,10 @@ Checks: "-*,\
 bugprone-*,\
 -bugprone-assignment-in-if-condition,\
 -bugprone-crtp-constructor-accessibility,\
+-bugprone-derived-method-shadowing-base-method,\
 -bugprone-easily-swappable-parameters,\
 -bugprone-empty-catch,\
+-bugprone-exception-escape,\
 -bugprone-implicit-widening-of-multiplication-result,\
 -bugprone-inc-dec-in-conditions,\
 -bugprone-macro-parentheses,\
@@ -13,8 +15,10 @@ bugprone-*,\
 -bugprone-return-const-ref-from-parameter,\
 -bugprone-suspicious-stringview-data-usage,\
 -bugprone-switch-missing-default-case,\
+-bugprone-throwing-static-initialization,\
 -bugprone-too-small-loop-variable,\
 -bugprone-unchecked-optional-access,\
+-bugprone-unchecked-string-to-number-conversion,\
 -bugprone-unused-local-non-trivial-variable,\
 -bugprone-unused-return-value,\
 -bugprone-use-after-move,\
@@ -22,17 +26,22 @@ misc-*,\
 -misc-confusable-identifiers,\
 -misc-const-correctness,\
 -misc-include-cleaner,\
+-misc-multiple-inheritance,\
 -misc-non-private-member-variables-in-classes,\
 -misc-no-recursion,\
+-misc-override-with-different-visibility,\
+-misc-predictable-rand,\
 -misc-static-assert,\
 -misc-use-anonymous-namespace,\
 -misc-use-internal-linkage,\
 modernize-*,\
 -modernize-avoid-c-arrays,\
+-modernize-avoid-c-style-cast,\
 -modernize-concat-nested-namespaces,\
 -modernize-macro-to-enum,\
 -modernize-return-braced-init-list,\
 -modernize-type-traits,\
+-modernize-unary-static-assert, \
 -modernize-use-emplace,\
 -modernize-use-nodiscard,\
 -modernize-use-noexcept,\
@@ -59,6 +68,9 @@ readability-*,\
 -readability-make-member-function-const,\
 -readability-math-missing-parentheses,\
 -readability-named-parameter,\
+-readability-redundant-casting,\
+-readability-redundant-parentheses,\
+-readability-redundant-typename,\
 -readability-simplify-boolean-expr,\
 -readability-static-accessed-through-instance,\
 -readability-suspicious-call-argument,\
@@ -78,4 +90,18 @@ CheckOptions:
     value: '0'
   - key:   modernize-use-auto.MinTypeNameLength
     value: '80'
+  - key:   readability-identifier-naming.ClassCase
+    value: 'CamelCase'
+  - key:   readability-identifier-naming.ClassIgnoredRegexp
+    value: 'cm[A-Z][A-Za-z]+|(const_)?iterator'
+  - key:   readability-identifier-naming.ClassMemberCase
+    value: 'CamelCase'
+  - key:   readability-identifier-naming.ClassMemberIgnoredRegexp
+    value: 'prop[A-Z_]+'
+  - key:   readability-identifier-naming.PrivateMemberCase
+    value: 'CamelCase'
+  - key:   readability-identifier-naming.ParameterCase
+    value: 'camelBack'
+  - key:   readability-identifier-naming.LocalVariableCase
+    value: 'camelBack'
 ...

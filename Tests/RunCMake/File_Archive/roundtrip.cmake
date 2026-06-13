@@ -20,6 +20,7 @@ set(CHECK_FILES
   "d_4/f1.txt"
   "d-4/f1.txt"
   "My Special Directory/f1.txt"
+  ${COMPRESSION_ADDITIONAL_FILE_NAMES}
 )
 
 foreach(file ${CHECK_FILES})
@@ -53,16 +54,23 @@ else()
   file(MAKE_DIRECTORY ${FULL_DECOMPRESS_DIR})
 endif()
 
+set(ENCODING_OPTIONS "")
+if (ENCODING)
+  set(ENCODING_OPTIONS ENCODING "${ENCODING}")
+endif()
+
 file(ARCHIVE_CREATE
   OUTPUT ${FULL_OUTPUT_NAME}
   FORMAT "${ARCHIVE_FORMAT}"
   COMPRESSION "${COMPRESSION_TYPE}"
   WORKING_DIRECTORY "${WORKING_DIRECTORY}"
+  ${ENCODING_OPTIONS}
   VERBOSE
   PATHS ${FULL_COMPRESS_DIR})
 
 file(ARCHIVE_EXTRACT
   INPUT ${FULL_OUTPUT_NAME}
+  ${ENCODING_OPTIONS}
   ${DECOMPRESSION_OPTIONS}
   DESTINATION ${FULL_DECOMPRESS_DIR}
   VERBOSE)
@@ -76,18 +84,25 @@ foreach(file ${CHECK_FILES})
   set(output ${FULL_DECOMPRESS_DIR}/${CUSTOM_OUTPUT_DIRECTORY}/${COMPRESS_DIR}/${file})
 
   if(NOT EXISTS ${input})
-    message(SEND_ERROR "Cannot find input file ${input}")
+    message(SEND_ERROR "Cannot find input file:\n  \"${output}\"")
   endif()
 
   if(NOT EXISTS ${output})
-    message(SEND_ERROR "Cannot find output file ${output}")
+    message(SEND_ERROR "Cannot find output file:\n  \"${output}\"")
   endif()
 
   file(MD5 ${input} input_md5)
   file(MD5 ${output} output_md5)
 
   if(NOT input_md5 STREQUAL output_md5)
-    message(SEND_ERROR "Files \"${input}\" and \"${output}\" are different")
+    message(SEND_ERROR
+      "Files:\n"
+      "  \"${input}\"\n"
+      "and\n"
+      "  \"${output}\"\n"
+      "are different"
+    )
+
   endif()
 endforeach()
 
@@ -95,7 +110,7 @@ foreach(file ${NOT_EXISTING_FILES_CHECK})
   set(output ${FULL_DECOMPRESS_DIR}/${COMPRESS_DIR}/${file})
 
   if(EXISTS ${output})
-    message(SEND_ERROR "File ${output} exists but it shouldn't")
+    message(SEND_ERROR "File exists but it shouldn't:\n  \"${output}\"")
   endif()
 endforeach()
 

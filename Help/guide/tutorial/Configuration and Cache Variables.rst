@@ -75,17 +75,18 @@ CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量
 
 .. code-block:: console
 
-  $ cmake -P StickyCacheVariable.cmake
+  $ cmake -B build
+  ...
   StickyCacheVariable: I will not change
 
-由于\ :option:`-D <cmake -D>`\ 标志在任何其他命令之前处理，它们在设置缓存变量的\
+由于\ :option:`-D <cmake -D>`\ 标志在任何项目命令之前处理，它们在设置缓存变量的\
 值时具有优先权。
 
 .. code-block:: console
 
-  $ cmake \
-    -DStickyCacheVariable="Commandline always wins" \
-    -P StickyCacheVariable.cmake
+  $ cmake -B build \
+    -DStickyCacheVariable="Commandline always wins"
+  ...
   StickyCacheVariable: Commandline always wins
 
 虽然缓存变量通常不能被更改，但它们可以被普通变量\ *遮蔽*。我们可以通过\
@@ -103,9 +104,15 @@ CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量
 
 .. code-block:: console
 
-  $ cmake -P ShadowVariable.cmake
+  $ cmake -B build
+  ...
   ShadowVariable: Hiding the cache variable
   ShadowVariable: In the shadows
+
+.. note::
+  :ref:`Script mode <Script Processing Mode>` operates slightly differently,
+  only :option:`-D <cmake -D>` flags provided before the :option:`-P <cmake -P>`
+  flag in the command are evaluated and available in the running script.
 
 练习1 - 使用选项
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -280,7 +287,7 @@ CMake提供了几个重要的普通变量和缓存变量，允许打包者控制
 * :variable:`CMAKE_<LANG>_STANDARD`
 * :variable:`CMAKE_CXX_STANDARD`
 * :prop_tgt:`CXX_STANDARD`
-* `cppreference \<format\> <https://en.cppreference.com/w/cpp/utility/format/format.html>`_
+* `cppreference \<format\> <https://en.cppreference.com/cpp/utility/format/format>`_
 
 待编辑文件
 -------------
@@ -455,6 +462,12 @@ CMake将搜索名为\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的
 
 .. note::
   命令行标志可以与预设混合使用。命令行标志的优先级高于预设中的值。
+
+.. note::
+  On CMake 4.4 and newer, CMake can also load presets from any file specified
+  with :option:`cmake --presets-file`. This can be useful when reusing settings
+  across multiple projects, since it avoids having to duplicate them in
+  separate ``CMakePresets.json`` files for each project.
 
 预设还支持有限的宏，即可以在预设内部进行大括号扩展的变量。我们感兴趣的只有\
 ``${sourceDir}``\ 宏， 它会扩展为项目的根目录。我们可以使用它来设置构建目录，\

@@ -1,13 +1,33 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file LICENSE.rst or https://cmake.org/licensing for details.
 
-cmake_minimum_required(VERSION 3.13...4.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13...4.2 FATAL_ERROR)
+
+if(CMake_TEST_HOST_CMAKE)
+  get_filename_component(CMake_TEST_EXTERNAL_CMAKE "${CMAKE_COMMAND}" DIRECTORY)
+endif()
+
+set(CMake_LANGUAGES "")
+if(CMake_TEST_EXTERNAL_CMAKE)
+  foreach(lang C CXX)
+    if(NOT DEFINED CMake_TEST_${lang})
+      set(CMake_TEST_${lang} 1)
+    endif()
+    if(CMake_TEST_${lang})
+      list(APPEND CMake_LANGUAGES ${lang})
+    endif()
+  endforeach()
+else()
+  set(CMake_TEST_C 1)
+  set(CMake_TEST_CXX 1)
+  list(APPEND CMake_LANGUAGES C CXX)
+endif()
 set(CMAKE_USER_MAKE_RULES_OVERRIDE_C ${CMAKE_CURRENT_SOURCE_DIR}/Source/Modules/OverrideC.cmake)
 set(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX ${CMAKE_CURRENT_SOURCE_DIR}/Source/Modules/OverrideCXX.cmake)
-
-project(CMake)
+project(CMake LANGUAGES ${CMake_LANGUAGES})
 unset(CMAKE_USER_MAKE_RULES_OVERRIDE_CXX)
 unset(CMAKE_USER_MAKE_RULES_OVERRIDE_C)
+unset(CMake_LANGUAGES)
 
 # FIXME: This block should go away after a transition period.
 if(MSVC AND NOT CMAKE_VERSION VERSION_LESS 3.15)
@@ -28,10 +48,6 @@ if(CMAKE_BOOTSTRAP)
   # Running from bootstrap script.  Set local variable and remove from cache.
   set(CMAKE_BOOTSTRAP 1)
   unset(CMAKE_BOOTSTRAP CACHE)
-endif()
-
-if(CMake_TEST_HOST_CMAKE)
-  get_filename_component(CMake_TEST_EXTERNAL_CMAKE "${CMAKE_COMMAND}" DIRECTORY)
 endif()
 
 if(NOT CMake_TEST_EXTERNAL_CMAKE)
@@ -375,6 +391,22 @@ if(CMake_RUN_IWYU)
   list(APPEND CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${CMake_IWYU_OPTIONS})
 endif()
 
+option(CMake_RUN_PVS_STUDIO "Run pvs-studio-analyzer with the compiler." OFF)
+if(CMake_RUN_PVS_STUDIO)
+  if(CMake_SOURCE_DIR STREQUAL CMake_BINARY_DIR)
+    message(FATAL_ERROR "CMake_RUN_PVS_STUDIO requires an out-of-source build!")
+  endif()
+  find_program(PVS_STUDIO_COMMAND NAMES pvs-studio-analyzer)
+  if(NOT PVS_STUDIO_COMMAND)
+    message(FATAL_ERROR "CMake_RUN_PVS_STUDIO is ON but pvs-studio-analyzer is not found!")
+  endif()
+  set(CMAKE_CXX_PVS_STUDIO
+    "${PVS_STUDIO_COMMAND}" analyze
+      -a GA
+      --apply-pvs-configs
+      --project-root "${CMAKE_SOURCE_DIR}"
+  )
+endif()
 
 #-----------------------------------------------------------------------
 # a macro that only sets the FOLDER target property if it's
@@ -397,6 +429,7 @@ if(NOT CMake_TEST_EXTERNAL_CMAKE)
     execute_process(COMMAND ${CMAKE_CXX_COMPILER}
       ${CMAKE_CXX_COMPILER_ARG1} -dumpversion
       OUTPUT_VARIABLE _GXX_VERSION
+      RESULT_VARIABLE _GXX_VERSION_RESULT
     )
     string(REGEX REPLACE "([0-9])\\.([0-9])(\\.[0-9])?" "\\1\\2"
       _GXX_VERSION_SHORT ${_GXX_VERSION})
@@ -466,6 +499,7 @@ endif()
 
 if(CMake_TEST_EXTERNAL_CMAKE)
   set(KWIML_TEST_ENABLE 1)
+  set(KWIML_TEST_LABELS "PellesC")
   add_subdirectory(Utilities/KWIML)
 endif()
 
@@ -577,6 +611,7 @@ if(NOT CMake_TEST_EXTERNAL_CMAKE)
                   GROUP_READ GROUP_EXECUTE
                   WORLD_READ WORLD_EXECUTE
     REGEX "Help/(dev|guide)($|/)" EXCLUDE
+    PATTERN ".git*" EXCLUDE
     )
 
   # Install auxiliary files integrating with other tools.

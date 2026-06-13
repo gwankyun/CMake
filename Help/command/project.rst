@@ -166,7 +166,7 @@ project
 
   选择构建项目所需的编程语言。
 
-.. include:: include/SUPPORTED_LANGUAGES.rst
+  .. include:: include/SUPPORTED_LANGUAGES.rst
 
 默认情况下，如果未指定语言选项，则会启用\ ``C``\ 和\ ``CXX``。指定语言为\ ``NONE``，\
 或者使用\ ``LANGUAGES``\ 关键字且不列出任何语言，可以跳过启用任何语言。

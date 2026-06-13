@@ -8,14 +8,15 @@
 
 #include <cm/optional>
 #include <cm/string_view>
+#include <cmext/string_view>
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmFileSet.h"
 #include "cmGlobalGenerator.h"
 #include "cmInstalledFile.h"
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmPolicies.h"
 #include "cmProperty.h"
 #include "cmRange.h"
@@ -345,8 +346,8 @@ bool HandleAndValidateSourceFilePropertyGENERATED(
   auto isProblematic = [&mf, &propertyValue,
                         op](cm::string_view policy) -> bool {
     if (!cmIsOn(propertyValue) && !cmIsOff(propertyValue)) {
-      mf.IssueMessage(
-        MessageType::AUTHOR_ERROR,
+      mf.IssueDiagnostic(
+        cmDiagnostics::CMD_AUTHOR,
         cmStrCat("Policy ", policy,
                  " is set to NEW and the following non-boolean value given "
                  "for property 'GENERATED' is therefore not allowed:\n",
@@ -354,15 +355,15 @@ bool HandleAndValidateSourceFilePropertyGENERATED(
       return true;
     }
     if (cmIsOff(propertyValue)) {
-      mf.IssueMessage(
-        MessageType::AUTHOR_ERROR,
+      mf.IssueDiagnostic(
+        cmDiagnostics::CMD_AUTHOR,
         cmStrCat("Unsetting the 'GENERATED' property is not allowed under ",
                  policy, "!\n"));
       return true;
     }
     if (op == PropertyOp::Append || op == PropertyOp::AppendAsString) {
-      mf.IssueMessage(
-        MessageType::AUTHOR_ERROR,
+      mf.IssueDiagnostic(
+        cmDiagnostics::CMD_AUTHOR,
         cmStrCat(
           "Policy ", policy,
           " is set to NEW and appending to the 'GENERATED' property is "
@@ -396,29 +397,24 @@ bool HandleAndValidateSourceFilePropertyGENERATED(
 
   if (cmp0118PolicyWARN) {
     if (!cmIsOn(propertyValue) && !cmIsOff(propertyValue)) {
-      mf.IssueMessage(
-        MessageType::AUTHOR_WARNING,
-        cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0118),
-                 "\nAttempt to set property 'GENERATED' with the following "
-                 "non-boolean value (which will be interpreted as \"0\"):\n",
+      mf.IssuePolicyWarning(
+        cmPolicies::CMP0118, {},
+        cmStrCat("Attempt to set property 'GENERATED' with the following "
+                 "non-boolean value (which will be interpreted as \"0\"):\n"_s,
                  propertyValue,
                  "\nThat exact value will not be retrievable. A value of "
                  "\"0\" will be returned instead.\n"
-                 "This will be an error under policy CMP0118.\n"));
+                 "This will be an error under policy CMP0118."_s));
     }
     if (cmIsOff(propertyValue)) {
-      mf.IssueMessage(
-        MessageType::AUTHOR_WARNING,
-        cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0118),
-                 "\nUnsetting property 'GENERATED' will not be allowed under "
-                 "policy CMP0118!\n"));
+      mf.IssuePolicyWarning(cmPolicies::CMP0118, {},
+                            "Unsetting property 'GENERATED' "
+                            "will not be allowed under policy CMP0118!"_s);
     }
     if (op == PropertyOp::Append || op == PropertyOp::AppendAsString) {
-      mf.IssueMessage(
-        MessageType::AUTHOR_WARNING,
-        cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0118),
-                 "\nAppending to property 'GENERATED' will not be allowed "
-                 "under policy CMP0118!\n"));
+      mf.IssuePolicyWarning(cmPolicies::CMP0118, {},
+                            "Appending to property 'GENERATED' "
+                            "will not be allowed under policy CMP0118!"_s);
     }
   }
 

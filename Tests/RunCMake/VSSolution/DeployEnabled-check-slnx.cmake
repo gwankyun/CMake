@@ -23,4 +23,15 @@ RunCMake_check_slnx("${RunCMake_TEST_BINARY_DIR}/DeployEnabled.slnx" [[
     <Deploy Solution="MinSizeRel\|\*"/>
     <Deploy Solution="RelWithDebInfo\|\*"/>
   </Project>
+  <Project Path="utility\.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="[0-9a-f-]+">
+    <BuildDependency Project="ZERO_CHECK\.vcxproj"/>
+    <Build Solution="Debug\|\*" Project="false"/>
+    <Deploy Solution="Debug\|\*"/>
+    <Build Solution="Release\|\*" Project="false"/>
+    <Deploy Solution="Release\|\*"/>
+    <Build Solution="MinSizeRel\|\*" Project="false"/>
+    <Deploy Solution="MinSizeRel\|\*"/>
+    <Build Solution="RelWithDebInfo\|\*" Project="false"/>
+    <Deploy Solution="RelWithDebInfo\|\*"/>
+  </Project>
 </Solution>$]])

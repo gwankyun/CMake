@@ -7,9 +7,9 @@
 #include <cstddef>
 #include <string>
 
+#include "cmDiagnostics.h"
 #include "cmGlobalGenerator.h"
 #include "cmMakefile.h"
-#include "cmMessageType.h"
 #include "cmStringAlgorithms.h"
 #include "cmValue.h"
 
@@ -48,14 +48,14 @@ cmExperimental::FeatureData const LookupTable[] = {
     cmExperimental::TryCompileCondition::Always },
   // ExportBuildDatabase
   { "ExportBuildDatabase",
-    "73194a1d-c0b5-41b9-9190-a4512925e192",
+    "70ef007e-b743-492d-9407-e35eeac03a40",
     "CMAKE_EXPERIMENTAL_EXPORT_BUILD_DATABASE",
     "CMake's support for exporting build databases is experimental. It is "
     "meant only for experimentation and feedback to CMake developers.",
     {},
     cmExperimental::TryCompileCondition::Never },
   { "GenerateSbom",
-    "ca494ed3-b261-4205-a01f-603c95e4cae0",
+    "2d856d6d-53e8-488b-a17f-d486d2cac317",
     "CMAKE_EXPERIMENTAL_GENERATE_SBOM",
     "CMake's support for generating software bill of materials (Sbom) "
     "information in SPDX format is experimental. It is meant only for "
@@ -64,7 +64,7 @@ cmExperimental::FeatureData const LookupTable[] = {
     cmExperimental::TryCompileCondition::Never },
   // Rust support
   { "Rust",
-    "3cc9b32c-47d3-4056-8953-d74e69fc0d6c",
+    "b6fdddce-bf66-41a5-bc5f-077f6fa4d2a1",
     "CMAKE_EXPERIMENTAL_RUST",
     "CMake's support for the Rust programming language is experimental. "
     "It is meant only for experimentation and feedback to CMake developers.",
@@ -111,10 +111,10 @@ bool cmExperimental::HasSupportEnabled(cmMakefile const& mf, Feature f)
 
     if (mf.GetGlobalGenerator()->ShouldWarnExperimental(data.Name, *value)) {
       if (enabled) {
-        mf.IssueMessage(MessageType::AUTHOR_WARNING, data.Description);
+        mf.IssueDiagnostic(cmDiagnostics::CMD_EXPERIMENTAL, data.Description);
       } else {
-        mf.IssueMessage(
-          MessageType::AUTHOR_WARNING,
+        mf.IssueDiagnostic(
+          cmDiagnostics::CMD_EXPERIMENTAL,
           cmStrCat(
             data.Variable, " is set to incorrect value\n  ", value,
             "\n"

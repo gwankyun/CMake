@@ -25,7 +25,7 @@ build_command
 
 .. versionadded:: 3.21
   ``PARALLEL_LEVEL``\ 参数可用于设置\
-  :option:`--parallel <cmake--build --parallel>`\ 标志。
+  :cmake-build-option:`--parallel`\ 标志。
 
 .. code-block:: cmake
 
@@ -34,7 +34,7 @@ build_command
 第二种签名形式已被弃用，但为了向后兼容仍可使用。请使用第一种签名形式。
 
 它会将给定的\ ``<cachevariable>``\ 设置为上述形式的命令行字符串，但不包含\
-:option:`--target <cmake--build --target>`\ 选项。\ ``<makecommand>``\ 会被忽略，\
+:cmake-build-option:`--target`\ 选项。\ ``<makecommand>``\ 会被忽略，\
 但在进行旧版调用时，它应该是devenv、nmake、make或其他终端用户构建工具的完整路径。
 
 .. note::

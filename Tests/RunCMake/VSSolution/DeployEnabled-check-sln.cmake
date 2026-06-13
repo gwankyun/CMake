@@ -8,15 +8,15 @@ if(NOT EXISTS "${vcSlnFile}")
   return()
 endif()
 
+file(STRINGS "${vcSlnFile}" lines)
 
-
+# Foo
 set(FooProjGUID "")
 set(FoundFooProj FALSE)
 set(InFooProj FALSE)
 set(FoundReleaseDeploy FALSE)
-set(DeployConfigs Debug MinSizeRel RelWithDebInfo )
+set(FooDeployConfigs Debug MinSizeRel RelWithDebInfo )
 
-file(STRINGS "${vcSlnFile}" lines)
 foreach(line IN LISTS lines)
 #message(STATUS "${line}")
   if( (NOT InFooProj ) AND (line MATCHES "^[ \\t]*Project\\(\"{[A-F0-9-]+}\"\\) = \"foo\", \"foo.vcxproj\", \"({[A-F0-9-]+})\"[ \\t]*$"))
@@ -32,7 +32,7 @@ foreach(line IN LISTS lines)
   endif()
   if( line MATCHES "{[A-F0-9-]+}\\.([^\\|]+).*\\.Deploy\\.0" )
     # Check that the other configurations ARE set to deploy.
-    list( REMOVE_ITEM DeployConfigs ${CMAKE_MATCH_1})
+    list( REMOVE_ITEM FooDeployConfigs ${CMAKE_MATCH_1})
   endif()
 endforeach()
 
@@ -42,12 +42,45 @@ if(FoundReleaseDeploy)
 endif()
 
 if(NOT FoundFooProj)
-  set(RunCMake_TEST_FAILED "Failed to find foo project in the solution.")
+  set(RunCMake_TEST_FAILED "Failed to find 'foo' project in the solution.")
   return()
 endif()
 
-list(LENGTH DeployConfigs length)
+list(LENGTH FooDeployConfigs length)
 if(  length GREATER 0 )
-  set(RunCMake_TEST_FAILED "Failed to find Deploy lines for non-Release configurations. (${length})")
+  set(RunCMake_TEST_FAILED "Failed to find 'foo' Deploy lines for non-Release configurations. (${length})")
+  return()
+endif()
+
+# Utility
+set(UtilityProjGUID "")
+set(InUtilityProj FALSE)
+set(FoundUtilityProj FALSE)
+set(UtilityDeployConfigs Debug MinSizeRel RelWithDebInfo Release)
+
+foreach(line IN LISTS lines)
+  if( (NOT InUtilityProj) AND (line MATCHES "^[ \\t]*Project\\(\"{[A-F0-9-]+}\"\\) = \"utility\", \"utility.vcxproj\", \"({[A-F0-9-]+})\"[ \\t]*$"))
+    # First, identify the GUID for the utility project, and record it.
+    set(FoundUtilityProj TRUE)
+    set(InUtilityProj TRUE)
+    set(UtilityProjGUID ${CMAKE_MATCH_1})
+  elseif(InUtilityProj AND line MATCHES "EndProject")
+    set(InUtilityProj FALSE)
+  endif()
+
+  if( line MATCHES "{[A-F0-9-]+}\\.([^\\|]+).*\\.Deploy\\.0" )
+    # Check that the other configurations ARE set to deploy.
+    list( REMOVE_ITEM UtilityDeployConfigs ${CMAKE_MATCH_1})
+  endif()
+endforeach()
+
+if(NOT FoundUtilityProj)
+  set(RunCMake_TEST_FAILED "Failed to find 'utility' project in the solution.")
+  return()
+endif()
+
+list(LENGTH UtilityDeployConfigs length)
+if( length GREATER 0 )
+  set(RunCMake_TEST_FAILED "Failed to find 'utility' Deploy lines for all configurations. (${length})")
   return()
 endif()

@@ -1,4 +1,4 @@
-^CMake Deprecation Warning at ([^
+^CMake Warning \(deprecated\) at ([^
 ]*/Tests/RunCMake/CMP0150/)?OLD-build/Top/CMakeLists\.txt:[0-9]+ \(cmake_policy\):
   The OLD behavior for policy CMP0150 will be removed from a future version
   of CMake\.
@@ -6,4 +6,6 @@
   The cmake-policies\(7\) manual explains that the OLD behaviors of all
   policies are deprecated and that a policy should be set to OLD only under
   specific short-term circumstances\.  Projects should be ported to the NEW
-  behavior and not rely on setting a policy to OLD\.$
+  behavior and not rely on setting a policy to OLD\.
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.$

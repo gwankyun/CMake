@@ -25,15 +25,15 @@
 #
 # Input variables:
 #
-# - `GSS_ROOT_DIR`:       Absolute path to the root installation of GSS. (also supported as environment)
+# - `GSS_ROOT_DIR`:        Absolute path to the root installation of GSS. (also supported as environment)
 #
 # Defines:
 #
-# - `GSS_FOUND`:          System has a GSS library.
-# - `GSS_VERSION`:        This is set to version advertised by pkg-config or read from manifest.
-#                         In case the library is found but no version info available it is set to "unknown"
-# - `CURL::gss`:          GSS library target.
-#   - CURL_GSS_FLAVOUR`:  Custom property. "GNU" or "MIT" if detected.
+# - `GSS_FOUND`:           System has a GSS library.
+# - `GSS_VERSION`:         This is set to version advertised by pkg-config or read from manifest.
+#                          In case the library is found but no version info available it is set to "unknown"
+# - `CURL::gss`:           GSS library target.
+#   - `CURL_GSS_FLAVOUR`:  Custom property. "GNU" or "MIT" if detected.
 
 set(_gnu_modname "gss")
 set(_mit_modname "mit-krb5-gssapi")
@@ -258,10 +258,6 @@ mark_as_advanced(
 )
 
 if(GSS_FOUND)
-  if(CMAKE_VERSION VERSION_LESS 3.13)
-    link_directories(${_gss_LIBRARY_DIRS})
-  endif()
-
   if(NOT TARGET CURL::gss)
     add_library(CURL::gss INTERFACE IMPORTED)
     set_target_properties(CURL::gss PROPERTIES

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "configurePresets": [
+    {
+      "name": "OtherCMakePresetsFile",
+      "generator": "@RunCMake_GENERATOR@",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "PRESETS_FILE": "CMakePresets.json"
+      }
+    }
+  ]
+}

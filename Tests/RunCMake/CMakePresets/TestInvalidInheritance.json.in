@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "testPresets": [
+    {
+      "name": "InvalidInheritance",
+      "inherits": [
+        "NoExist"
+      ]
+    }
+  ]
+}

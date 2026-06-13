@@ -19,7 +19,7 @@ Presets
   which allows the files to include other files.
 
 * :manual:`cmake-presets(7)` files now support a ``${fileDir}`` macro, which
-  contains the directory containing the preset file.
+  contains the directory containing the presets file.
 
 * :manual:`cmake-presets(7)` gained support for specifying the
   ``resolvePackageReferences`` command line option in a build preset to control

@@ -433,7 +433,8 @@ public:
     std::string const& module_dir,
     std::vector<std::string> const& linked_target_dirs,
     std::vector<std::string> const& forward_modules_from_target_dirs,
-    std::string const& arg_lang, std::string const& arg_modmapfmt,
+    std::string const& native_target_dir, std::string const& arg_lang,
+    std::string const& arg_modmapfmt,
     cmCxxModuleExportInfo const& export_info);
 
   virtual std::string BuildAlias(std::string const& alias,
@@ -523,6 +524,7 @@ private:
   void WriteDisclaimer(std::ostream& os) const;
 
   void WriteAssumedSourceDependencies();
+  void WriteTestPrepTargets();
 
   void WriteTargetAliases(std::ostream& os);
   void WriteFolderTargets(std::ostream& os);

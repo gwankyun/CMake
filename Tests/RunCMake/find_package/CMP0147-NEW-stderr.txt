@@ -1,4 +1,4 @@
-^CMake Deprecation Warning at CMP0147-common\.cmake:[0-9]+ \(cmake_policy\):
+^CMake Warning \(deprecated\) at CMP0147-common\.cmake:[0-9]+ \(cmake_policy\):
   The OLD behavior for policy CMP0146 will be removed from a future version
   of CMake\.
 
@@ -9,6 +9,8 @@
 Call Stack \(most recent call first\):
   CMP0147-NEW\.cmake:[0-9]+ \(include\)
   CMakeLists\.txt:[0-9]+ \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
 +
 CMake Error at [^
 ]*/Modules/FindCUDA\.cmake:[0-9]+ \(message\):

@@ -13,3 +13,8 @@ Objective-C++ (``*.mm``) files, which lead to compilation failure
 because they are treated (in case of Ninja / Makefile generator)
 as C, and CXX respectively. The precompile headers are not
 compatible between languages.
+
+See Also
+^^^^^^^^
+
+* :prop_fs:`SKIP_PRECOMPILE_HEADERS` file set property

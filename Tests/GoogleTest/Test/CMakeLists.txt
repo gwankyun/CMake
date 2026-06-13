@@ -114,3 +114,12 @@ gtest_add_tests($<TARGET_FILE:test_gtest4> "" main4.h)
 if(NOT TEST GoogleTest.NoKeywords)
   message(FATAL_ERROR "Test case GoogleTest.NoKeywords not defined")
 endif()
+
+# Check if PROPERTIES values are allowed to be lists
+add_executable(test_gtest5 main5.cxx)
+target_link_libraries(test_gtest5 GTest::Main)
+set(environment VALX=1 VALY=2)
+gtest_discover_tests(test_gtest5
+  PROPERTIES
+    ENVIRONMENT "${environment}"
+)

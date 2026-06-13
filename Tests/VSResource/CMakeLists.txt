@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(VSResource)
+project(VSResource LANGUAGES C)
 
 string(REPLACE "/INCREMENTAL:YES" ""
   CMAKE_EXE_LINKER_FLAGS_DEBUG
@@ -13,9 +13,8 @@ message(STATUS "CMAKE_RC_COMPILER='${CMAKE_RC_COMPILER}'")
 # add_definitions is fine for simple definitions (with no spaces and no
 # quoting), but requires avoidance or work-arounds beyond that...
 
-if(CMAKE_RC_COMPILER MATCHES windres)
+if(CMAKE_RC_COMPILER MATCHES "(windres|porc)")
   # windres rc compiler does not properly define quoted /D values as strings
-  message(STATUS "CMAKE_RC_COMPILER MATCHES windres")
   add_definitions(/DCMAKE_RCDEFINE=test.txt)
   add_definitions(/DCMAKE_RCDEFINE_NO_QUOTED_STRINGS)
   if(CMAKE_CURRENT_BINARY_DIR MATCHES " ")
@@ -45,10 +44,13 @@ else()
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
-add_library(ResourceLib STATIC lib.cpp lib.rc)
+add_executable(VSResource main.c test.rc)
 
-add_executable(VSResource main.cpp test.rc)
-target_link_libraries(VSResource ResourceLib)
+if(NOT CMAKE_AR MATCHES "polib")
+  add_library(ResourceLib STATIC lib.c lib.rc)
+  target_link_libraries(VSResource PRIVATE ResourceLib)
+  target_compile_definitions(VSResource PRIVATE HAVE_RESOURCE_LIB)
+endif()
 
 if(MSVC AND NOT MSVC_VERSION VERSION_LESS 1600)
   set_property(SOURCE test.rc PROPERTY COMPILE_FLAGS /nologo)

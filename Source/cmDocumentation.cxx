@@ -26,7 +26,7 @@
 #include "cmVersion.h"
 
 namespace {
-cmDocumentationEntry const cmDocumentationStandardOptions[21] = {
+cmDocumentationEntry const cmDocumentationStandardOptions[] = {
   { "-h,-H,--help,-help,-usage,/?", "Print usage information and exit." },
   { "--version[=json-v1],-version[=json-v1],/V[=json-v1],/version[=json-v1] "
     "[<file>]",
@@ -39,6 +39,12 @@ cmDocumentationEntry const cmDocumentationStandardOptions[21] = {
   { "--help-command-list [<file>]",
     "List commands with help available and exit." },
   { "--help-commands [<file>]", "Print cmake-commands manual and exit." },
+  { "--help-diagnostic <diag> [<file>]",
+    "Print help for one diagnostic and exit." },
+  { "--help-diagnostic-list [<file>]",
+    "List diagnostics with help available and exit." },
+  { "--help-diagnostics [<file>]",
+    "Print cmake-diagnostics manual and exit." },
   { "--help-module <mod> [<file>]", "Print help for one module and exit." },
   { "--help-module-list [<file>]",
     "List modules with help available and exit." },
@@ -164,6 +170,8 @@ bool cmDocumentation::PrintDocumentation(Type ht, std::ostream& os)
       return this->PrintHelpOneManual(os);
     case cmDocumentation::OneCommand:
       return this->PrintHelpOneCommand(os);
+    case cmDocumentation::OneDiagnostic:
+      return this->PrintHelpOneDiagnostic(os);
     case cmDocumentation::OneModule:
       return this->PrintHelpOneModule(os);
     case cmDocumentation::OnePolicy:
@@ -176,6 +184,8 @@ bool cmDocumentation::PrintDocumentation(Type ht, std::ostream& os)
       return this->PrintHelpListManuals(os);
     case cmDocumentation::ListCommands:
       return this->PrintHelpListCommands(os);
+    case cmDocumentation::ListDiagnostics:
+      return this->PrintHelpListDiagnostics(os);
     case cmDocumentation::ListModules:
       return this->PrintHelpListModules(os);
     case cmDocumentation::ListProperties:
@@ -377,6 +387,11 @@ bool cmDocumentation::CheckOptions(int argc, char const* const* argv,
       cmSystemTools::Message(
         "Warning: --help-compatcommands no longer supported");
       return true;
+    } else if (strcmp(argv[i], "--help-diagnostics") == 0) {
+      help.HelpType = cmDocumentation::OneManual;
+      help.Argument = "cmake-diagnostics.7";
+      i += int(get_opt_argument(i + 1, help.Filename));
+      this->WarnFormFromFilename(help, result);
     } else if (strcmp(argv[i], "--help-full") == 0) {
       help.HelpType = cmDocumentation::Full;
       i += int(get_opt_argument(i + 1, help.Filename));
@@ -392,6 +407,12 @@ bool cmDocumentation::CheckOptions(int argc, char const* const* argv,
       i += int(get_opt_argument(i + 1, help.Argument));
       i += int(get_opt_argument(i + 1, help.Filename));
       help.Argument = cmSystemTools::LowerCase(help.Argument);
+      this->WarnFormFromFilename(help, result);
+    } else if (strcmp(argv[i], "--help-diagnostic") == 0) {
+      help.HelpType = cmDocumentation::OneDiagnostic;
+      i += int(get_opt_argument(i + 1, help.Argument));
+      i += int(get_opt_argument(i + 1, help.Filename));
+      help.Argument = cmSystemTools::UpperCase(help.Argument);
       this->WarnFormFromFilename(help, result);
     } else if (strcmp(argv[i], "--help-module") == 0) {
       help.HelpType = cmDocumentation::OneModule;
@@ -420,6 +441,9 @@ bool cmDocumentation::CheckOptions(int argc, char const* const* argv,
       this->WarnFormFromFilename(help, result);
     } else if (strcmp(argv[i], "--help-command-list") == 0) {
       help.HelpType = cmDocumentation::ListCommands;
+      i += int(get_opt_argument(i + 1, help.Filename));
+    } else if (strcmp(argv[i], "--help-diagnostic-list") == 0) {
+      help.HelpType = cmDocumentation::ListDiagnostics;
       i += int(get_opt_argument(i + 1, help.Filename));
     } else if (strcmp(argv[i], "--help-module-list") == 0) {
       help.HelpType = cmDocumentation::ListModules;
@@ -622,6 +646,25 @@ bool cmDocumentation::PrintHelpListCommands(std::ostream& os)
   return true;
 }
 
+bool cmDocumentation::PrintHelpOneDiagnostic(std::ostream& os)
+{
+  std::string dname = cmSystemTools::UpperCase(this->CurrentArgument);
+  if (this->PrintFiles(os, cmStrCat("diagnostic/", dname))) {
+    return true;
+  }
+  // Argument was not a command.  Complain.
+  os << "Argument \"" << this->CurrentArgument
+     << "\" to --help-command is not a CMake diagnostic.  "
+        "Use --help-diagnostic-list to see all diagnostics.\n";
+  return false;
+}
+
+bool cmDocumentation::PrintHelpListDiagnostics(std::ostream& os)
+{
+  this->PrintNames(os, "diagnostic/*");
+  return true;
+}
+
 bool cmDocumentation::PrintHelpOneModule(std::ostream& os)
 {
   std::string mname = this->CurrentArgument;
@@ -702,6 +745,11 @@ bool cmDocumentation::PrintHelpOneVariable(std::ostream& os)
 {
   std::string vname = cmSystemTools::HelpFileName(this->CurrentArgument);
   if (this->PrintFiles(os, cmStrCat("variable/", vname))) {
+    return true;
+  }
+  std::string const generalized = GeneralizeKeyword(vname);
+  if (generalized != vname &&
+      this->PrintFiles(os, cmStrCat("variable/", generalized))) {
     return true;
   }
   // Argument was not a variable.  Complain.

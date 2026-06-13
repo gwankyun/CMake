@@ -30,6 +30,7 @@ public:
     Full,
     ListManuals,
     ListCommands,
+    ListDiagnostics,
     ListModules,
     ListProperties,
     ListVariables,
@@ -38,6 +39,7 @@ public:
     OneArbitrary,
     OneManual,
     OneCommand,
+    OneDiagnostic,
     OneModule,
     OneProperty,
     OneVariable,
@@ -124,12 +126,14 @@ private:
   bool PrintHelpOneArbitrary(std::ostream& os);
   bool PrintHelpOneManual(std::ostream& os);
   bool PrintHelpOneCommand(std::ostream& os);
+  bool PrintHelpOneDiagnostic(std::ostream& os);
   bool PrintHelpOneModule(std::ostream& os);
   bool PrintHelpOnePolicy(std::ostream& os);
   bool PrintHelpOneProperty(std::ostream& os);
   bool PrintHelpOneVariable(std::ostream& os);
   bool PrintHelpListManuals(std::ostream& os);
   bool PrintHelpListCommands(std::ostream& os);
+  bool PrintHelpListDiagnostics(std::ostream& os);
   bool PrintHelpListModules(std::ostream& os);
   bool PrintHelpListProperties(std::ostream& os);
   bool PrintHelpListVariables(std::ostream& os);

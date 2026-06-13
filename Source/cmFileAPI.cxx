@@ -148,10 +148,11 @@ std::vector<std::string> cmFileAPI::LoadDir(std::string const& dir)
   std::vector<std::string> files;
   cmsys::Directory d;
   d.Load(dir);
+  files.reserve(d.GetNumberOfFiles());
   for (unsigned int i = 0; i < d.GetNumberOfFiles(); ++i) {
-    std::string f = d.GetFile(i);
+    std::string const& f = d.GetFileName(i);
     if (f != "." && f != "..") {
-      files.push_back(std::move(f));
+      files.push_back(f);
     }
   }
   std::sort(files.begin(), files.end());
@@ -822,7 +823,7 @@ std::string cmFileAPI::NoSupportedVersion(
 // Update the following files as well when updating this constant:
 //   Help/manual/cmake-file-api.7.rst
 //   Tests/RunCMake/FileAPI/codemodel-v2-check.py (check_objects())
-static unsigned int const CodeModelV2Minor = 10;
+static unsigned int const CodeModelV2Minor = 11;
 
 void cmFileAPI::BuildClientRequestCodeModel(
   ClientRequest& r, std::vector<RequestVersion> const& versions)

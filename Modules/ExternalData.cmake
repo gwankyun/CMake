@@ -169,6 +169,46 @@ calling any of the functions provided by this module.
   some platforms.  The ``ExternalData_NO_SYMLINKS`` variable may be set
   to disable use of symbolic links and enable use of copies instead.
 
+.. variable:: ExternalData_STATE_ROOT
+
+  .. versionadded:: 4.4
+
+  The ``ExternalData_STATE_ROOT`` variable may be set to place module-managed
+  metadata outside ``ExternalData_BINARY_ROOT``. When set, ``ExternalData``
+  stores its hash records under this directory while still materializing real
+  data files under ``ExternalData_BINARY_ROOT``. By default, hash records
+  continue to be placed next to the materialized data.
+
+.. variable:: ExternalData_LINK_MODE
+
+  .. versionadded:: 4.4
+
+  The ``ExternalData_LINK_MODE`` variable selects how real data files are
+  exposed under ``ExternalData_BINARY_ROOT``.
+
+  The value may be one of:
+
+  ``auto``
+    Try each of the supported modes until one succeeds.
+    The default order is ``hardlink -> symlink -> copy`` on Windows
+    and ``symlink -> hardlink -> copy`` on other platforms.
+
+  ``hardlink``
+    Materialize paths as hard links to the real files.
+
+  ``symlink``
+    Materialize paths as symbolic links to the real files.
+
+  ``copy``
+    Materialize paths as copies of the real files.
+
+  Or, the value may be a :ref:`semicolon-separated list <CMake Language Lists>`
+  of ``hardlink``, ``symlink``, and ``copy`` to try the modes in the order
+  specified until one succeeds.
+
+  When ``ExternalData_NO_SYMLINKS`` is set, the ``symlink`` mode is removed
+  from automatic selection and cannot be requested explicitly.
+
 .. variable:: ExternalData_OBJECT_STORES
 
   The ``ExternalData_OBJECT_STORES`` variable may be set to a list of local
@@ -541,7 +581,7 @@ function(ExternalData_add_target target)
     list(GET tuple 2 exts)
     string(REPLACE "+" ";" exts_list "${exts}")
     list(GET exts_list 0 first_ext)
-    set(stamp "-hash-stamp")
+    _ExternalData_compute_stamp_file("${file}" stamp_file)
     if(NOT DEFINED "_ExternalData_FILE_${file}")
       set("_ExternalData_FILE_${file}" 1)
       get_property(added DIRECTORY PROPERTY "_ExternalData_FILE_${file}")
@@ -554,10 +594,11 @@ function(ExternalData_add_target target)
           # List the real file as a second output in case it is a broken link.
           # The files must be listed in this order so CMake can hide from the
           # make tool that a symlink target may not be newer than the input.
-          OUTPUT "${file}${stamp}" "${file}"
+          OUTPUT "${stamp_file}" "${file}"
           # Run the data fetch/update script.
           COMMAND ${CMAKE_COMMAND} -Drelative_top=${CMAKE_BINARY_DIR}
                                    -Dfile=${file} -Dname=${name} -Dexts=${exts}
+                                   -Dstamp_file=${stamp_file}
                                    -DExternalData_ACTION=fetch
                                    -DExternalData_SHOW_PROGRESS=${_ExternalData_add_target_SHOW_PROGRESS}
                                    -DExternalData_CONFIG=${config}
@@ -566,7 +607,7 @@ function(ExternalData_add_target target)
           MAIN_DEPENDENCY "${name}${first_ext}"
           )
       endif()
-      list(APPEND files "${file}${stamp}")
+      list(APPEND files "${stamp_file}")
     endif()
   endforeach()
 
@@ -636,10 +677,38 @@ function(_ExternalData_exact_regex regex_var string)
 endfunction()
 
 function(_ExternalData_atomic_write file content)
+  get_filename_component(dir "${file}" DIRECTORY)
+  file(MAKE_DIRECTORY "${dir}")
   _ExternalData_random(random)
   set(tmp "${file}.tmp${random}")
   file(WRITE "${tmp}" "${content}")
   file(RENAME "${tmp}" "${file}")
+endfunction()
+
+function(_ExternalData_compute_stamp_file file var_stamp)
+  if(DEFINED ExternalData_STATE_ROOT AND NOT "${ExternalData_STATE_ROOT}" STREQUAL "")
+    _ExternalData_compute_state_relative_path("${file}" relfile)
+    set(stamp_file "${ExternalData_STATE_ROOT}/${relfile}-hash-stamp")
+  else()
+    set(stamp_file "${file}-hash-stamp")
+  endif()
+  set(${var_stamp} "${stamp_file}" PARENT_SCOPE)
+endfunction()
+
+function(_ExternalData_compute_state_relative_path file var_relfile)
+  if(NOT ExternalData_BINARY_ROOT)
+    set(top_bin "${CMAKE_BINARY_DIR}")
+  else()
+    set(top_bin "${ExternalData_BINARY_ROOT}")
+  endif()
+  file(RELATIVE_PATH relfile "${top_bin}" "${file}")
+  if(IS_ABSOLUTE "${relfile}" OR "${relfile}" MATCHES "^\\.\\./")
+    message(FATAL_ERROR
+      "File path is not under ExternalData_BINARY_ROOT:\n"
+      "  file = ${file}\n"
+      "  ExternalData_BINARY_ROOT = ${top_bin}")
+  endif()
+  set(${var_relfile} "${relfile}" PARENT_SCOPE)
 endfunction()
 
 function(_ExternalData_link_content name var_ext)
@@ -971,33 +1040,103 @@ if(NOT ExternalData_URL_TEMPLATES AND NOT ExternalData_OBJECT_STORES)
     "Neither ExternalData_URL_TEMPLATES nor ExternalData_OBJECT_STORES is set!")
 endif()
 
+function(_ExternalData_compute_link_target src dst var_tgt)
+  get_filename_component(dst_dir "${dst}" PATH)
+  set(tgt "${src}")
+  if(relative_top)
+    # Use relative path if files are close enough.
+    file(RELATIVE_PATH relsrc "${relative_top}" "${src}")
+    file(RELATIVE_PATH reldst "${relative_top}" "${dst}")
+    if(NOT IS_ABSOLUTE "${relsrc}" AND NOT "${relsrc}" MATCHES "^\\.\\./" AND
+        NOT IS_ABSOLUTE "${reldst}" AND NOT "${reldst}" MATCHES "^\\.\\./")
+      file(RELATIVE_PATH tgt "${dst_dir}" "${src}")
+    endif()
+  endif()
+  set(${var_tgt} "${tgt}" PARENT_SCOPE)
+endfunction()
+
+function(_ExternalData_try_link_mode mode src dst var_result)
+  if(mode STREQUAL "copy")
+    file(COPY_FILE "${src}" "${dst}" RESULT result INPUT_MAY_BE_RECENT)
+  elseif(mode STREQUAL "hardlink")
+    file(CREATE_LINK "${src}" "${dst}" RESULT result)
+  elseif(mode STREQUAL "symlink")
+    _ExternalData_compute_link_target("${src}" "${dst}" tgt)
+    file(CREATE_LINK "${tgt}" "${dst}" RESULT result SYMBOLIC)
+  else()
+    set(result "Unsupported ExternalData_LINK_MODE `${mode}`")
+  endif()
+  set(${var_result} "${result}" PARENT_SCOPE)
+endfunction()
+
+function(_ExternalData_get_auto_link_modes var_modes)
+  if(CMAKE_HOST_WIN32)
+    set(modes hardlink)
+    if(NOT ExternalData_NO_SYMLINKS)
+      list(APPEND modes symlink)
+    endif()
+    list(APPEND modes copy)
+  else()
+    if(NOT ExternalData_NO_SYMLINKS)
+      list(APPEND modes symlink)
+    endif()
+    list(APPEND modes hardlink copy)
+  endif()
+  set(${var_modes} "${modes}" PARENT_SCOPE)
+endfunction()
+
+function(_ExternalData_get_requested_link_modes var_modes)
+  if(DEFINED ExternalData_LINK_MODE AND NOT "${ExternalData_LINK_MODE}" STREQUAL "")
+    set(requested_modes "${ExternalData_LINK_MODE}")
+  else()
+    set(requested_modes auto)
+  endif()
+  string(TOLOWER "${requested_modes}" requested_modes_lower)
+
+  if(requested_modes_lower STREQUAL "auto")
+    _ExternalData_get_auto_link_modes(modes)
+  else()
+    set(modes)
+    foreach(mode IN LISTS requested_modes)
+      string(TOLOWER "${mode}" mode_lower)
+      if(mode_lower STREQUAL "copy" OR mode_lower STREQUAL "hardlink")
+        list(APPEND modes "${mode_lower}")
+      elseif(mode_lower STREQUAL "symlink")
+        if(ExternalData_NO_SYMLINKS)
+          message(FATAL_ERROR
+            "ExternalData_LINK_MODE with `symlink` conflicts with NO_SYMLINKS")
+        endif()
+        list(APPEND modes symlink)
+      else()
+        message(FATAL_ERROR
+          "ExternalData_LINK_MODE must be `auto` or list: hardlink, symlink, copy")
+      endif()
+    endforeach()
+  endif()
+
+  set(${var_modes} "${modes}" PARENT_SCOPE)
+endfunction()
+
 function(_ExternalData_link_or_copy src dst)
   # Create a temporary file first.
   get_filename_component(dst_dir "${dst}" PATH)
   file(MAKE_DIRECTORY "${dst_dir}")
   _ExternalData_random(random)
   set(tmp "${dst}.tmp${random}")
-  if(UNIX AND NOT ExternalData_NO_SYMLINKS)
-    # Create a symbolic link.
-    set(tgt "${src}")
-    if(relative_top)
-      # Use relative path if files are close enough.
-      file(RELATIVE_PATH relsrc "${relative_top}" "${src}")
-      file(RELATIVE_PATH relfile "${relative_top}" "${dst}")
-      if(NOT IS_ABSOLUTE "${relsrc}" AND NOT "${relsrc}" MATCHES "^\\.\\./" AND
-          NOT IS_ABSOLUTE "${reldst}" AND NOT "${reldst}" MATCHES "^\\.\\./")
-        file(RELATIVE_PATH tgt "${dst_dir}" "${src}")
-      endif()
+  _ExternalData_get_requested_link_modes(_ExternalData_link_modes)
+
+  unset(result)
+  foreach(_ExternalData_mode IN LISTS _ExternalData_link_modes)
+    _ExternalData_try_link_mode("${_ExternalData_mode}" "${src}" "${tmp}" result)
+    if(NOT result)
+      break()
     endif()
-    # Create link (falling back to copying if there's a problem).
-    file(CREATE_LINK "${tgt}" "${tmp}" RESULT result COPY_ON_ERROR SYMBOLIC)
-  else()
-    # Create a copy.
-    file(COPY_FILE "${src}" "${tmp}" RESULT result INPUT_MAY_BE_RECENT)
-  endif()
+    file(REMOVE "${tmp}")
+  endforeach()
+
   if(result)
     file(REMOVE "${tmp}")
-    message(FATAL_ERROR "Failed to create:\n  \"${tmp}\"\nfrom:\n  \"${obj}\"\nwith error:\n  ${result}")
+    message(FATAL_ERROR "Failed to create:\n  \"${tmp}\"\nfrom:\n  \"${src}\"\nwith error:\n  ${result}")
   endif()
 
   # Atomically create/replace the real destination.
@@ -1235,10 +1374,16 @@ if("${ExternalData_ACTION}" STREQUAL "fetch")
     message(FATAL_ERROR "${errorMsg}")
   endif()
   # Check if file already corresponds to the object.
-  set(stamp "-hash-stamp")
+  if(NOT DEFINED stamp_file OR "${stamp_file}" STREQUAL "")
+    if(DEFINED ExternalData_STATE_ROOT AND NOT "${ExternalData_STATE_ROOT}" STREQUAL "")
+      message(FATAL_ERROR
+        "stamp_file must be provided when ExternalData_STATE_ROOT is set")
+    endif()
+    set(stamp_file "${file}-hash-stamp")
+  endif()
   set(file_up_to_date 0)
-  if(EXISTS "${file}" AND EXISTS "${file}${stamp}")
-    file(READ "${file}${stamp}" f_hash)
+  if(EXISTS "${file}" AND EXISTS "${stamp_file}")
+    file(READ "${stamp_file}" f_hash)
     string(STRIP "${f_hash}" f_hash)
     if("${f_hash}" STREQUAL "${hash}")
       set(file_up_to_date 1)
@@ -1253,7 +1398,7 @@ if("${ExternalData_ACTION}" STREQUAL "fetch")
   endif()
 
   # Atomically update the hash/timestamp file to record the object referenced.
-  _ExternalData_atomic_write("${file}${stamp}" "${hash}\n")
+  _ExternalData_atomic_write("${stamp_file}" "${hash}\n")
 elseif("${ExternalData_ACTION}" STREQUAL "local")
   foreach(v file name)
     if(NOT DEFINED "${v}")

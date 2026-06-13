@@ -1,10 +1,10 @@
 $erroractionpreference = "stop"
 
-if ("$env:CMAKE_CI_BUILD_NAME".Contains("clang21.1")) {
-    # LLVM/Clang 21.1.8
-    # https://github.com/llvm/llvm-project/releases/tag/llvmorg-21.1.8
-    $filename = "llvm-21.1.8-win-x86_64-1"
-    $sha256sum = "3DB0063A6E434C694799CDD70052F27F08A758F1FF4B4C04D9910AD4198F6064"
+if ("$env:CMAKE_CI_BUILD_NAME".Contains("clang22.1")) {
+    # LLVM/Clang 22.1.5
+    # https://github.com/llvm/llvm-project/releases/tag/llvmorg-22.1.5
+    $filename = "llvm-22.1.5-win-x86_64-1"
+    $sha256sum = "6230FBFBFB9B5B9E148A716787BCB384CB5D6042DDF5C219BFADD1AC20CB0A3F"
 } else {
     throw ('unknown CMAKE_CI_BUILD_NAME: ' + "$env:CMAKE_CI_BUILD_NAME")
 }
@@ -30,6 +30,7 @@ $lib = "$outdir\llvm\lib"
 $null = New-Item -ItemType HardLink -Path "$bin\clang++.exe"      -Target "$bin\clang.exe"
 $null = New-Item -ItemType HardLink -Path "$bin\clang-cl.exe"     -Target "$bin\clang.exe"
 $null = New-Item -ItemType HardLink -Path "$bin\clang-cpp.exe"    -Target "$bin\clang.exe"
+$null = New-Item -ItemType HardLink -Path "$bin\flang-new.exe"    -Target "$bin\flang.exe"
 $null = New-Item -ItemType HardLink -Path "$bin\ld.lld.exe"       -Target "$bin\lld.exe"
 $null = New-Item -ItemType HardLink -Path "$bin\ld64.lld.exe"     -Target "$bin\lld.exe"
 $null = New-Item -ItemType HardLink -Path "$bin\lld-link.exe"     -Target "$bin\lld.exe"

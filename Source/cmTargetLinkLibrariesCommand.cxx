@@ -11,7 +11,9 @@
 
 #include <cm/optional>
 #include <cm/string_view>
+#include <cmext/string_view>
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmGeneratorExpression.h"
 #include "cmGlobalGenerator.h"
@@ -320,8 +322,8 @@ bool cmTargetLinkLibrariesCommand(std::vector<std::string> const& args,
 static void LinkLibraryTypeSpecifierWarning(cmMakefile& mf, int left,
                                             int right)
 {
-  mf.IssueMessage(
-    MessageType::AUTHOR_WARNING,
+  mf.IssueDiagnostic(
+    cmDiagnostics::CMD_AUTHOR,
     cmStrCat(
       "Link library type specifier \"", LinkLibraryTypeNames[left],
       "\" is followed by specifier \"", LinkLibraryTypeNames[right],
@@ -443,17 +445,14 @@ bool TLL::HandleLibrary(ProcessingState currentProcessingState,
   }
 
   if (this->WarnRemoteInterface) {
-    this->Makefile.IssueMessage(
-      MessageType::AUTHOR_WARNING,
-      cmStrCat(
-        cmPolicies::GetPolicyWarning(cmPolicies::CMP0079), "\nTarget\n  ",
-        this->Target->GetName(),
-        "\nis not created in this "
-        "directory.  For compatibility with older versions of CMake, link "
-        "library\n  ",
-        lib,
-        "\nwill be looked up in the directory in which "
-        "the target was created rather than in this calling directory."));
+    this->Makefile.IssuePolicyWarning(
+      cmPolicies::CMP0079, {},
+      cmStrCat("Target\n  "_s, this->Target->GetName(),
+               "\nis not created in this directory.  For compatibility "
+               "with older versions of CMake, link library\n  "_s,
+               lib,
+               "\nwill be looked up in the directory in which the target "
+               "was created rather than in this calling directory."_s));
   }
 
   // Handle (additional) case where the command was called with PRIVATE /

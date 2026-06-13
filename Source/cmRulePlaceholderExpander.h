@@ -5,8 +5,11 @@
 
 #include "cmConfigure.h" // IWYU pragma: keep
 
+#include <functional>
 #include <map>
 #include <string>
+
+#include <cm/string_view>
 
 #include "cmGeneratorOptions.h"
 #include "cmPlaceholderExpander.h"
@@ -16,10 +19,17 @@ class cmOutputConverter;
 class cmRulePlaceholderExpander : public cmPlaceholderExpander
 {
 public:
+  enum class UseShortPaths
+  {
+    No,
+    Yes,
+  };
+
   cmRulePlaceholderExpander(
     cmBuildStep buildStep, std::map<std::string, std::string> compilers,
     std::map<std::string, std::string> variableMappings,
-    std::string compilerSysroot, std::string linkerSysroot);
+    std::string compilerSysroot, std::string linkerSysroot,
+    UseShortPaths useShortPaths);
 
   void SetTargetImpLib(std::string const& targetImpLib)
   {
@@ -69,8 +79,10 @@ public:
     char const* SwiftModuleName = nullptr;
     char const* SwiftOutputFileMapOption = nullptr;
     char const* SwiftSources = nullptr;
-    char const* RustSources = nullptr;
-    char const* RustObjectDeps = nullptr;
+    char const* RustEmit = nullptr;
+    char const* RustMainCrateRoot = nullptr;
+    char const* RustLinkCrates = nullptr;
+    char const* RustNativeObjects = nullptr;
     char const* ISPCHeader = nullptr;
     char const* CudaCompileMode = nullptr;
     char const* Fatbinary = nullptr;
@@ -95,6 +107,7 @@ private:
   std::map<std::string, std::string> VariableMappings;
   std::string CompilerSysroot;
   std::string LinkerSysroot;
+  std::function<std::string(cm::string_view)> ConvertToOutputForExisting;
 
   cmOutputConverter* OutputConverter = nullptr;
   RuleVariables const* ReplaceValues = nullptr;

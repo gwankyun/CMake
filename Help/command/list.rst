@@ -19,7 +19,7 @@ Synopsis
 
   `Modification`_
     list(`APPEND`_ <list> [<element>...])
-    list(`FILTER`_ <list> {INCLUDE | EXCLUDE} REGEX <regex>)
+    list(`FILTER`_ <list> <INCLUDE|EXCLUDE> <MODE>)
     list(`INSERT`_ <list> <index> [<element>...])
     list(`POP_BACK`_ <list> [<out-var>...])
     list(`POP_FRONT`_ <list> [<out-var>...])
@@ -120,15 +120,54 @@ Modification
   that empty list.
 
 .. signature::
-  list(FILTER <list> <INCLUDE|EXCLUDE> REGEX <regular_expression>)
+  list(FILTER <list> <INCLUDE|EXCLUDE> <MODE>)
 
-.. versionadded:: 3.6
+  .. versionadded:: 3.6
 
-Includes or removes items from the list that match the mode's pattern.
-In ``REGEX`` mode, items will be matched against the given regular expression.
+  Includes or removes items from the list that match the mode's pattern.
 
-For more information on regular expressions look under
-:ref:`string(REGEX) <Regex Specification>`.
+  ``<MODE>`` must be one of the following:
+
+    ``REGEX``
+      Items will be matched against the given regular expression.
+
+      .. code-block:: cmake
+
+        list(FILTER <list> <INCLUDE|EXCLUDE> REGEX <regular_expression>)
+
+      For more information on regular expressions look under
+      :ref:`string(REGEX) <Regex Specification>`.
+
+    ``PREDICATE``
+      Specify a user-defined :command:`function` as a predicate.
+
+      .. code-block:: cmake
+
+        list(FILTER <list> <INCLUDE|EXCLUDE> PREDICATE <function>)
+
+      .. versionadded:: 4.4
+
+      ``<function>`` is a user-defined :command:`function` that acts as a
+      unary predicate.  The function must accept exactly two parameters: the
+      input value and the name of an output variable.  The function must set the
+      output variable to a boolean value in the calling scope.
+      The output variable is interpreted using standard CMake boolean evaluation.
+      If the function does not set the output variable, it is an error.
+
+      Example:
+
+      .. code-block:: cmake
+
+        function(file_exists path result)
+          if(EXISTS "${path}")
+            set(${result} TRUE PARENT_SCOPE)
+          else()
+            set(${result} FALSE PARENT_SCOPE)
+          endif()
+        endfunction()
+
+        set(candidate_files main.c missing.c utils.c)
+        list(FILTER candidate_files INCLUDE PREDICATE file_exists)
 
 .. signature::
   list(INSERT <list> <element_index> <element> [<element> ...])
@@ -203,8 +242,7 @@ For more information on regular expressions look under
     the other ones will remain the same as before the transformation.
 
   ``<ACTION>`` specifies the action to apply to the elements of the list.
-  The actions have exactly the same semantics as sub-commands of the
-  :command:`string` command.  ``<ACTION>`` must be one of the following:
+  ``<ACTION>`` must be one of the following:
 
     :command:`APPEND <string(APPEND)>`, :command:`PREPEND <string(PREPEND)>`
       Append, prepend specified value to each element of the list.
@@ -251,6 +289,45 @@ For more information on regular expressions look under
         element instead of the beginning of each repeated search.
         See policy :policy:`CMP0186`.
 
+    ``APPLY``
+      Invoke a user-defined :command:`function` for each element of the list.
+      The function must accept exactly two parameters: the input value and the
+      name of an output variable.  The function must set the output variable
+      in the calling scope.
+
+      .. signature::
+        list(TRANSFORM <list> APPLY <function> ...)
+        :target: TRANSFORM_APPLY
+
+      .. versionadded:: 4.4
+
+      ``<function>`` is a :command:`function` with exactly two formal parameters.
+      Set the output variable via
+      :command:`set(\<variable\> \<value\> PARENT_SCOPE) <set>`:
+
+      .. code-block:: cmake
+
+        function(<function> <input> <output>)
+          # Transform <input>, store result in ${<output>}
+          set(${<output>} "<result>" PARENT_SCOPE)
+        endfunction()
+
+      Before each invocation, the output variable is unset in the calling scope
+      to prevent stale values.
+
+      Example:
+
+      .. code-block:: cmake
+
+        function(make_absolute in out)
+          cmake_path(ABSOLUTE_PATH in BASE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+          set(${out} "${in}" PARENT_SCOPE)
+        endfunction()
+
+        set(mylist main.c utils.c io.c)
+        list(TRANSFORM mylist APPLY make_absolute)
+        # mylist is now absolute paths relative to CMAKE_CURRENT_SOURCE_DIR
+
   ``<SELECTOR>`` determines which elements of the list will be transformed.
   Only one type of selector can be specified at a time.
   When given, ``<SELECTOR>`` must be one of the following:
@@ -278,6 +355,39 @@ For more information on regular expressions look under
 
         list(TRANSFORM <list> <ACTION> REGEX <regular_expression> ...)
 
+    ``PREDICATE``
+      Specify a user-defined :command:`function` as a predicate.
+      Only elements for which the function returns a true value will be
+      transformed.
+
+      .. code-block:: cmake
+
+        list(TRANSFORM <list> <ACTION> PREDICATE <function> ...)
+
+      .. versionadded:: 4.4
+
+      ``<function>`` is a user-defined :command:`function` with exactly
+      two formal parameters: the input value and the name of an output
+      variable.  The function must set the output variable to a boolean
+      value.  Standard CMake boolean evaluation is used.
+      If the function does not set the output variable, it is an error.
+
+      Example:
+
+      .. code-block:: cmake
+
+        function(is_relative path result)
+          if(NOT IS_ABSOLUTE "${path}")
+            set(${result} TRUE PARENT_SCOPE)
+          else()
+            set(${result} FALSE PARENT_SCOPE)
+          endif()
+        endfunction()
+
+        set(search_paths /usr/include src lib /opt/lib)
+        list(TRANSFORM search_paths PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/"
+             PREDICATE is_relative)
+
 
 Ordering
 ^^^^^^^^
@@ -289,6 +399,7 @@ Ordering
 
 .. signature::
   list(SORT <list> [COMPARE <compare>] [CASE <case>] [ORDER <order>])
+  list(SORT <list> COMPARATOR <function> [CASE <case>] [ORDER <order>])
 
   Sorts the list in-place alphabetically.
 
@@ -337,3 +448,47 @@ Ordering
 
     ``DESCENDING``
       Sorts the list in descending order.
+
+  Instead of the built-in ``COMPARE`` methods, a user-defined comparison
+  :command:`function` may be used with the ``COMPARATOR`` keyword.
+
+  .. versionadded:: 4.4
+
+  ``COMPARATOR`` is mutually exclusive with ``COMPARE``.  The ``CASE``
+  and ``ORDER`` options may still be used alongside ``COMPARATOR``:
+  the ``CASE`` filter is applied to both values before they are passed to
+  the function, and ``ORDER DESCENDING`` reverses the comparison by
+  swapping the two arguments.
+
+  The function must accept exactly three parameters: two input values and
+  the name of an output variable.  It must set the output variable to a
+  boolean value (``TRUE`` if the first value should come before the second,
+  ``FALSE`` otherwise) in the calling scope.
+  If the function does not set the output variable, it is an error.
+
+  The comparator must define a
+  `strict weak ordering <https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings>`_.
+  In particular:
+
+  * It must return ``FALSE`` when comparing an element to itself
+    (irreflexivity).
+  * If it returns ``TRUE`` for ``(a, b)``, it must return ``FALSE``
+    for ``(b, a)`` (asymmetry).
+
+  An error is raised if the comparator violates these requirements.
+
+  Example:
+
+  .. code-block:: cmake
+
+    function(version_less a b result)
+      if("${a}" VERSION_LESS "${b}")
+        set(${result} TRUE PARENT_SCOPE)
+      else()
+        set(${result} FALSE PARENT_SCOPE)
+      endif()
+    endfunction()
+
+    set(versions 3.1 1.2 2.0 1.10)
+    list(SORT versions COMPARATOR version_less)
+    # versions is now: 1.2;1.10;2.0;3.1

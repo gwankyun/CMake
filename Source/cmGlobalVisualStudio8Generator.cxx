@@ -360,8 +360,8 @@ bool cmGlobalVisualStudio8Generator::NeedsDeploy(
 {
   cmStateEnums::TargetType const type = target.GetType();
   if (type != cmStateEnums::EXECUTABLE &&
-      type != cmStateEnums::SHARED_LIBRARY) {
-    // deployment only valid on executables and shared libraries.
+      type != cmStateEnums::SHARED_LIBRARY && type != cmStateEnums::UTILITY) {
+    // deployment only valid on executables, shared libraries, and utilities.
     return false;
   }
 

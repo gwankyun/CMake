@@ -36,6 +36,12 @@ cmake-generator-expressions(7)
 如果\ :variable:`CMAKE_CXX_COMPILER_VERSION <CMAKE_<LANG>_COMPILER_VERSION>`\
 小于4.2.0，则上述内容将扩展为\ ``OLD_COMPILER``。
 
+.. note::
+
+  Generator expressions are supported in the values of many properties,
+  but not all.  Check a property's documentation for explicit mention
+  of generator expressions before using them.
+
 空格和引号
 ======================
 
@@ -2995,11 +3001,21 @@ These expressions look up the values of file set properties.
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加（请参阅策略\ :policy:`CMP0112`）。
 
-.. genex:: $<TARGET_OBJECTS:tgt>
+.. genex:: $<TARGET_OBJECTS:tgt[,SOURCE_FILES:source_file[;source_file]...]>
 
   .. versionadded:: 3.1
 
   构建\ ``tgt``\ 产生的对象列表。这通常用于\ :ref:`对象库 <Object Libraries>`\ 目标。
+
+  Additional arguments:
+
+  ``SOURCE_FILES:source_file[;source_file]...``
+
+    .. versionadded:: 4.4
+
+    An optional list of one or more source files for the target. Only the
+    object files built from those source files will be returned (but not
+    necessarily in the same order they were specified).
 
 .. genex:: $<TARGET_RUNTIME_DLLS:tgt>
 

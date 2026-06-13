@@ -24,6 +24,8 @@
 #include "cmCustomCommandLines.h"
 #include "cmGeneratedFileStream.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
+#include "cmGeneratorFileSets.h"
 #include "cmGeneratorOptions.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
@@ -1497,6 +1499,9 @@ cmLocalVisualStudio7GeneratorFCInfo::cmLocalVisualStudio7GeneratorFCInfo(
     }
 
     cmGeneratorExpressionInterpreter genexInterpreter(lg, config, gt, lang);
+    // lookup for the associated file set, if any.
+    auto const* fileSet =
+      gt->GetGeneratorFileSets()->GetFileSetForSource(config, &sf);
 
     bool needfc = false;
     if (!objectName.empty()) {
@@ -1515,9 +1520,20 @@ cmLocalVisualStudio7GeneratorFCInfo::cmLocalVisualStudio7GeneratorFCInfo(
         genexInterpreter.Evaluate(*coptions, COMPILE_OPTIONS));
       needfc = true;
     }
+    // Add flags from file set properties.
+    if (fileSet) {
+      auto options = fileSet->BelongsTo(gt)
+        ? fileSet->GetCompileOptions(config, lang)
+        : fileSet->GetInterfaceCompileOptions(config, lang);
+      if (!options.empty()) {
+        lg->AppendCompileOptions(fc.CompileFlags, cm::remove_BT(options));
+      }
+    }
     // Add precompile headers compile options.
     std::string const pchSource = gt->GetPchSource(config, lang);
-    if (!pchSource.empty() && !sf.GetProperty("SKIP_PRECOMPILE_HEADERS")) {
+    if (!pchSource.empty() &&
+        !((fileSet && fileSet->GetProperty("SKIP_PRECOMPILE_HEADERS")) ||
+          sf.GetProperty("SKIP_PRECOMPILE_HEADERS"))) {
       std::string pchOptions;
       if (sf.GetFullPath() == pchSource) {
         pchOptions = gt->GetPchCreateCompileOptions(config, lang);
@@ -1571,10 +1587,36 @@ cmLocalVisualStudio7GeneratorFCInfo::cmLocalVisualStudio7GeneratorFCInfo(
         genexInterpreter.Evaluate(*ccdefs, COMPILE_DEFINITIONS);
       needfc = true;
     }
+    // Add file set preprocessor definitions
+    if (fileSet) {
+      auto defines = fileSet->BelongsTo(gt)
+        ? fileSet->GetCompileDefinitions(config, lang)
+        : fileSet->GetInterfaceCompileDefinitions(config, lang);
+      if (!defines.empty()) {
+        if (!fc.CompileDefs.empty()) {
+          fc.CompileDefs += ';';
+        }
+        fc.CompileDefs += cmList::to_string(defines);
+        needfc = true;
+      }
+    }
 
+    // Add file set include directories definitions
+    if (fileSet) {
+      auto includes = fileSet->BelongsTo(gt)
+        ? fileSet->GetIncludeDirectories(config, lang)
+        : fileSet->GetInterfaceIncludeDirectories(config, lang);
+      if (!includes.empty()) {
+        fc.IncludeDirs = cmList::to_string(includes);
+        needfc = true;
+      }
+    }
     std::string const INCLUDE_DIRECTORIES("INCLUDE_DIRECTORIES");
     if (cmValue cincs = sf.GetProperty(INCLUDE_DIRECTORIES)) {
-      fc.IncludeDirs = genexInterpreter.Evaluate(*cincs, INCLUDE_DIRECTORIES);
+      if (!fc.IncludeDirs.empty()) {
+        fc.IncludeDirs += ';';
+      }
+      fc.IncludeDirs += genexInterpreter.Evaluate(*cincs, INCLUDE_DIRECTORIES);
       needfc = true;
     }
 
@@ -1597,7 +1639,11 @@ cmLocalVisualStudio7GeneratorFCInfo::cmLocalVisualStudio7GeneratorFCInfo(
       !cm::contains(acs.Configs, ci) ||
       (gt->GetPropertyAsBool("UNITY_BUILD") &&
        sf.GetProperty("UNITY_SOURCE_FILE") &&
-       !sf.GetPropertyAsBool("SKIP_UNITY_BUILD_INCLUSION"));
+       !((fileSet &&
+          (!cm::FileSetMetadata::GetAttributes(fileSet->GetType())
+              .contains(cm::FileSetMetadata::FileSetAttributes::UnityBuild) ||
+           fileSet->GetProperty("SKIP_UNITY_BUILD_INCLUSION").IsOn())) ||
+         sf.GetPropertyAsBool("SKIP_UNITY_BUILD_INCLUSION")));
     if (fc.ExcludedFromBuild) {
       needfc = true;
     }
@@ -1870,7 +1916,8 @@ void cmLocalVisualStudio7Generator::WriteCustomRule(
       for (std::string const& d : ccg.GetDepends()) {
         // Get the real name of the dependency in case it is a CMake target.
         std::string dep;
-        if (this->GetRealDependency(d, config, dep)) {
+        if (this->GetRealDependency(d, config, dep,
+                                    command.GetCMP0212Status())) {
           fout << this->ConvertToXMLOutputPath(dep) << ";";
         }
       }

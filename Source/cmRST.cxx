@@ -20,7 +20,7 @@ cmRST::cmRST(std::ostream& os, std::string docroot)
   : OS(os)
   , DocRoot(std::move(docroot))
   , CMakeDirective("^.. (cmake:)?("
-                   "command|envvar|genex|signature|variable"
+                   "command|diagnostic|envvar|genex|signature|variable"
                    ")::")
   , CMakeModuleDirective("^.. cmake-module::[ \t]+([^ \t\n]+)$")
   , ParsedLiteralDirective("^.. parsed-literal::[ \t]*(.*)$")
@@ -34,7 +34,7 @@ cmRST::cmRST(std::ostream& os, std::string docroot)
   , ModuleRST(R"(^#\[(=*)\[\.rst:$)")
   , CMakeRole("(:cmake)?:("
               "cref|"
-              "command|cpack_gen|generator|genex|"
+              "command|cpack_gen|diagnostic|generator|genex|"
               "variable|envvar|module|policy|"
               "prop_cache|prop_dir|prop_gbl|prop_inst|prop_sf|"
               "prop_test|prop_tgt|"

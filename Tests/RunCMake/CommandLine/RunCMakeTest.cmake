@@ -153,6 +153,15 @@ run_cmake_command(install-unknown-command-long
 run_cmake_command(install-options-to-vars
   ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR}/dir-install-options-to-vars
   --strip --prefix /var/test --config sample --component pack)
+run_cmake_command(install-no-component-value
+  ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR}/dir-install-options-to-vars
+  --component)
+run_cmake_command(install-multi-component-1
+  ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR}/dir-install-options-to-vars
+  --component comp1 comp2)
+run_cmake_command(install-multi-component-2
+  ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR}/dir-install-options-to-vars
+  --component comp1 --component comp2)
 run_cmake_command(install-default-dir-permissions-all
   ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR}/dir-permissions-install-options-to-vars
   --default-directory-permissions u=rwx,g=rx,o=rx)
@@ -659,6 +668,12 @@ run_cmake_command(E_copy-t-argument-target-is-file
   ${CMAKE_COMMAND} -E copy ${in}/f1.txt -t ${out}/f1.txt ${in}/f3.txt)
 run_cmake_command(E_copy-t-argument-no-source-files
   ${CMAKE_COMMAND} -E copy -t ${out})
+run_cmake_command(E_copy_if_different-t-argument
+  ${CMAKE_COMMAND} -E copy_if_different ${in}/f1.txt -t ${out} ${in}/f3.txt)
+run_cmake_command(E_copy_if_different-t-argument-target-is-file
+  ${CMAKE_COMMAND} -E copy_if_different ${in}/f1.txt -t ${out}/f1.txt ${in}/f3.txt)
+run_cmake_command(E_copy_if_different-t-argument-no-source-files
+  ${CMAKE_COMMAND} -E copy_if_different -t ${out})
 run_cmake_command(E_copy_if_different-one-source-directory-target-is-directory
   ${CMAKE_COMMAND} -E copy_if_different ${in}/f1.txt ${out})
 run_cmake_command(E_copy_if_different-three-source-files-target-is-directory
@@ -667,6 +682,12 @@ run_cmake_command(E_copy_if_different-three-source-files-target-is-file
   ${CMAKE_COMMAND} -E copy_if_different ${in}/f1.txt ${in}/f2.txt ${in}/f3.txt ${out}/f1.txt)
 run_cmake_command(E_copy_if_different-nonexistent-source
   ${CMAKE_COMMAND} -E copy_if_different ${in}/nonexistent.txt ${out})
+run_cmake_command(E_copy_if_newer-t-argument
+  ${CMAKE_COMMAND} -E copy_if_newer ${in}/f1.txt -t ${out} ${in}/f3.txt)
+run_cmake_command(E_copy_if_newer-t-argument-target-is-file
+  ${CMAKE_COMMAND} -E copy_if_newer ${in}/f1.txt -t ${out}/f1.txt ${in}/f3.txt)
+run_cmake_command(E_copy_if_newer-t-argument-no-source-files
+  ${CMAKE_COMMAND} -E copy_if_newer -t ${out})
 run_cmake_command(E_copy_if_newer-one-source-directory-target-is-directory
   ${CMAKE_COMMAND} -E copy_if_newer ${in}/f1.txt ${out})
 run_cmake_command(E_copy_if_newer-three-source-files-target-is-directory
@@ -684,8 +705,16 @@ file(REMOVE_RECURSE "${out}")
 file(MAKE_DIRECTORY ${out})
 run_cmake_command(E_copy_directory_if_different
   ${CMAKE_COMMAND} -E copy_directory_if_different ${in} ${out})
+run_cmake_command(E_copy_directory_if_different-t-argument
+  ${CMAKE_COMMAND} -E copy_directory_if_different -t ${out} ${in})
+run_cmake_command(E_copy_directory_if_different-t-argument-no-source-dirs
+  ${CMAKE_COMMAND} -E copy_directory_if_different -t ${out})
 run_cmake_command(E_copy_directory_if_newer
   ${CMAKE_COMMAND} -E copy_directory_if_newer ${in} ${out})
+run_cmake_command(E_copy_directory_if_newer-t-argument
+  ${CMAKE_COMMAND} -E copy_directory_if_newer -t ${out} ${in})
+run_cmake_command(E_copy_directory_if_newer-t-argument-no-source-dirs
+  ${CMAKE_COMMAND} -E copy_directory_if_newer -t ${out})
 run_cmake_command(E_copy_directory_if_newer-nonexistent-source
   ${CMAKE_COMMAND} -E copy_directory_if_newer ${in}/nonexistent ${out}/target)
 unset(in)
@@ -703,6 +732,10 @@ run_cmake_command(E_copy_directory-three-source-files-target-is-file
   ${CMAKE_COMMAND} -E copy_directory ${in}/d1 ${in}/d2 ${in}/d3 ${outfile})
 run_cmake_command(E_copy_directory-three-source-files-target-is-not-exist
   ${CMAKE_COMMAND} -E copy_directory ${in}/d1 ${in}/d2 ${in}/d3 ${out}/not_existing_directory)
+run_cmake_command(E_copy_directory-t-argument
+  ${CMAKE_COMMAND} -E copy_directory -t ${out} ${in}/d1 ${in}/d2 ${in}/d3)
+run_cmake_command(E_copy_directory-t-argument-no-source-dirs
+  ${CMAKE_COMMAND} -E copy_directory -t ${out})
 unset(in)
 unset(out)
 unset(outfile)
@@ -1013,37 +1046,39 @@ set(RunCMake_TEST_OPTIONS
   "-DFOO:STRING=-DBAR:BOOL=BAZ")
 run_cmake(D_typed_nested_cache)
 
-set(RunCMake_TEST_OPTIONS -Wno-dev)
-run_cmake(Wno-dev)
-unset(RunCMake_TEST_OPTIONS)
-
+# -Wdev is a deprecated synonym for -Wauthor
 set(RunCMake_TEST_OPTIONS -Wdev)
 run_cmake(Wdev)
 unset(RunCMake_TEST_OPTIONS)
 
-set(RunCMake_TEST_OPTIONS -Werror=dev)
-run_cmake(Werror_dev)
+set(RunCMake_TEST_OPTIONS -Wno-author)
+run_cmake(Wno-author)
 unset(RunCMake_TEST_OPTIONS)
 
-set(RunCMake_TEST_OPTIONS -Wno-error=dev)
-run_cmake(Wno-error_deprecated)
+set(RunCMake_TEST_OPTIONS -Wauthor)
+run_cmake(Wauthor)
 unset(RunCMake_TEST_OPTIONS)
 
-# -Wdev should not override deprecated options if specified
-set(RunCMake_TEST_OPTIONS -Wdev -Wno-deprecated)
+set(RunCMake_TEST_OPTIONS -Werror=author)
+run_cmake(Werror_author)
+unset(RunCMake_TEST_OPTIONS)
+
+set(RunCMake_TEST_OPTIONS -Wno-error=author)
+run_cmake(Wno-error_author)
+unset(RunCMake_TEST_OPTIONS)
+
+# -Wauthor should not override deprecated options if specified
+set(RunCMake_TEST_OPTIONS -Wauthor -Wno-deprecated)
 run_cmake(Wno-deprecated)
 unset(RunCMake_TEST_OPTIONS)
-set(RunCMake_TEST_OPTIONS -Wno-deprecated -Wdev)
-run_cmake(Wno-deprecated)
-unset(RunCMake_TEST_OPTIONS)
 
-# -Wdev should enable deprecated warnings as well
-set(RunCMake_TEST_OPTIONS -Wdev)
+# -Wauthor should enable deprecated warnings as well
+set(RunCMake_TEST_OPTIONS -Wauthor)
 run_cmake(Wdeprecated)
 unset(RunCMake_TEST_OPTIONS)
 
-# -Werror=dev should enable deprecated errors as well
-set(RunCMake_TEST_OPTIONS -Werror=dev)
+# -Werror=author should enable deprecated errors as well
+set(RunCMake_TEST_OPTIONS -Werror=author)
 run_cmake(Werror_deprecated)
 unset(RunCMake_TEST_OPTIONS)
 
@@ -1067,23 +1102,28 @@ set(RunCMake_TEST_OPTIONS -Werror=deprecated -Wno-error=deprecated)
 run_cmake(Wno-error_deprecated)
 unset(RunCMake_TEST_OPTIONS)
 
-# Dev warnings should be on by default
-run_cmake(Wdev)
+# Author warnings should be on by default
+run_cmake(Wauthor)
 
 # Deprecated warnings should be on by default
 run_cmake(Wdeprecated)
 
 # Conflicting -W options should honor the last value
-set(RunCMake_TEST_OPTIONS -Wno-dev -Wdev)
-run_cmake(Wdev)
+set(RunCMake_TEST_OPTIONS -Wno-author -Wauthor)
+run_cmake(Wauthor)
 unset(RunCMake_TEST_OPTIONS)
-set(RunCMake_TEST_OPTIONS -Wdev -Wno-dev)
-run_cmake(Wno-dev)
+set(RunCMake_TEST_OPTIONS -Wauthor -Wno-author)
+run_cmake(Wno-author)
+unset(RunCMake_TEST_OPTIONS)
+
+set(RunCMake_TEST_OPTIONS -Wno-deprecated -Wuninitialized)
+run_cmake(Wuninitialized)
 unset(RunCMake_TEST_OPTIONS)
 
 run_cmake_command(W_bad-arg1 ${CMAKE_COMMAND} -B DummyBuildDir -W)
 run_cmake_command(W_bad-arg2 ${CMAKE_COMMAND} -B DummyBuildDir -Wno-)
 run_cmake_command(W_bad-arg3 ${CMAKE_COMMAND} -B DummyBuildDir -Werror=)
+run_cmake_command(W_bad-arg4 ${CMAKE_COMMAND} -B DummyBuildDir -Wimaginary)
 
 set(RunCMake_TEST_OPTIONS --debug-output)
 run_cmake(debug-output)
@@ -1098,7 +1138,7 @@ set(RunCMake_TEST_OPTIONS --trace-expand)
 run_cmake(trace-expand)
 unset(RunCMake_TEST_OPTIONS)
 
-set(RunCMake_TEST_OPTIONS --trace-expand --warn-uninitialized)
+set(RunCMake_TEST_OPTIONS --trace-expand -Wuninitialized)
 run_cmake(trace-expand-warn-uninitialized)
 unset(RunCMake_TEST_OPTIONS)
 
@@ -1117,10 +1157,6 @@ unset(RunCMake_TEST_OPTIONS)
 
 set(RunCMake_TEST_OPTIONS --trace-expand --trace-format=json-v1 --trace-redirect=${RunCMake_BINARY_DIR}/json-v1-expand.trace)
 run_cmake(trace-json-v1-expand)
-unset(RunCMake_TEST_OPTIONS)
-
-set(RunCMake_TEST_OPTIONS -Wno-deprecated --warn-uninitialized)
-run_cmake(warn-uninitialized)
 unset(RunCMake_TEST_OPTIONS)
 
 set(RunCMake_TEST_OPTIONS --trace-source=trace-only-this-file.cmake)
@@ -1230,6 +1266,7 @@ run_cmake(ProfilingTest)
 unset(RunCMake_TEST_OPTIONS)
 
 run_cmake_with_options(help-arbitrary "--help" "CMAKE_CXX_IGNORE_EXTENSIONS")
+run_cmake_with_options(help-variable-lang "--help-variable" "CMAKE_CXX_PVS_STUDIO")
 
 if (WIN32 OR DEFINED ENV{HOME})
   set(config_dir_test print-config-dir)

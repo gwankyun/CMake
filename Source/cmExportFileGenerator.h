@@ -4,19 +4,23 @@
 
 #include "cmConfigure.h" // IWYU pragma: keep
 
+#include <functional>
 #include <iosfwd>
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
 
+#include <cm/optional>
 #include <cm/string_view>
 
+#include "cmDiagnostics.h"
 #include "cmGeneratorExpression.h"
 #include "cmMessageType.h"
 
 class cmExportSet;
 class cmGeneratorTarget;
+class cmGeneratorFileSet;
 class cmLocalGenerator;
 
 /** \class cmExportFileGenerator
@@ -29,6 +33,13 @@ class cmExportFileGenerator
 public:
   cmExportFileGenerator();
   virtual ~cmExportFileGenerator() = default;
+
+  struct ExportInfo
+  {
+    std::vector<std::string> Files;
+    std::set<std::string> Sets;
+    std::set<std::string> Namespaces;
+  };
 
   /** Set the full path to the export file to generate.  */
   void SetExportFile(char const* mainFile);
@@ -47,6 +58,7 @@ public:
 
 protected:
   using ImportPropertyMap = std::map<std::string, std::string>;
+  using ImportFileSetPropertyMap = std::map<std::string, ImportPropertyMap>;
 
   // Collect properties with detailed information about targets beyond
   // their location on disk.
@@ -111,6 +123,10 @@ protected:
                                  cmGeneratorTarget const* target,
                                  cmGeneratorExpression::PreprocessContext,
                                  ImportPropertyMap& properties);
+  void PopulateFileSetInterfaceProperty(
+    std::string const& propName, cmGeneratorTarget const* target,
+    cmGeneratorFileSet const* fileSet,
+    cmGeneratorExpression::PreprocessContext, ImportPropertyMap& properties);
   bool PopulateInterfaceLinkLibrariesProperty(
     cmGeneratorTarget const* target, cmGeneratorExpression::PreprocessContext,
     ImportPropertyMap& properties);
@@ -121,20 +137,20 @@ protected:
     cmGeneratorExpression::PreprocessContext preprocessRule,
     ImportPropertyMap& properties);
 
+  bool PopulateFileSetInterfaceProperties(
+    cmGeneratorTarget const* target, cmGeneratorFileSet const* fileSet,
+    cmGeneratorExpression::PreprocessContext preprocessRule,
+    ImportPropertyMap& properties);
+
   virtual void IssueMessage(MessageType type,
                             std::string const& message) const = 0;
+  virtual void IssueDiagnostic(cmDiagnosticCategory category,
+                               std::string const& message) const = 0;
 
   void ReportError(std::string const& errorMessage) const
   {
     this->IssueMessage(MessageType::FATAL_ERROR, errorMessage);
   }
-
-  struct ExportInfo
-  {
-    std::vector<std::string> Files;
-    std::set<std::string> Sets;
-    std::set<std::string> Namespaces;
-  };
 
   /** Find the set of export files and the unique namespace (if any) for a
    *  target. */
@@ -224,3 +240,16 @@ extern template void cmExportFileGenerator::SetImportLinkProperty<cmLinkItem>(
   std::string const&, cmGeneratorTarget const*, std::string const&,
   std::vector<cmLinkItem> const&, ImportPropertyMap& properties,
   ImportLinkPropertyTargetNames);
+
+/** Walk a generator expression and rewrite the target-name slot of each
+    `$<TARGET_PROPERTY:>`, `$<TARGET_NAME:>`, `$<LINK_ONLY:>`, and
+    `$<COMPILE_ONLY:>` construct via the provided callback.  The callback
+    receives the bare target name; if it mutates the name and returns true,
+    the helper splices the new name back into the genex. Returns the
+    parse-level error message, if an error was encountered. Callers handle
+    install-prefix substitution and error reporting themselves. This is used
+    by the cmExportFileGenerator hierarchy, as well as the cmSbomBuilder
+    hierarchy.  */
+cm::optional<std::string> cmResolveTargetsInGeneratorExpression(
+  std::string& input,
+  std::function<bool(std::string& name)> const& addTargetNamespace);

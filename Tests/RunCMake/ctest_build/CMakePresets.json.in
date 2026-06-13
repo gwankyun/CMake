@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "my-configure-preset",
+      "generator": "@RunCMake_GENERATOR@",
+      "binaryDir": "${sourceDir}/../BuildPreset-build"
+    },
+    {
+      "name": "my-build-preset",
+      "inherits": "my-configure-preset"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "my-build-preset",
+      "configurePreset": "my-configure-preset"
+    }
+  ]
+}

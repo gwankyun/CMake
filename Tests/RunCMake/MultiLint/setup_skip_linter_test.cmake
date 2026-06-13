@@ -12,7 +12,12 @@ function(setup_skip_linter_test lang)
   set(CMAKE_${lang}_CPPCHECK "${maybe_genex_pre}${PSEUDO_CPPCHECK}${maybe_genex_post}" -error)
 
   string(TOLOWER "${lang}" ext)
-  add_executable(main main.${ext})
+  add_executable(main)
+  target_sources(main PRIVATE FILE_SET SOURCES FILES main.${ext})
+
+  if(NOT prop_fs STREQUAL "-")
+    set_property(FILE_SET SOURCES TARGET main PROPERTY SKIP_LINTING ${prop_fs})
+  endif()
 
   if(NOT prop_sf STREQUAL "-")
     set_source_files_properties(main.${ext} PROPERTIES SKIP_LINTING ${prop_sf})

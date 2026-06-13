@@ -30,16 +30,15 @@
 #  include <QWinTaskbarProgress>
 #endif
 
-#include "QCMake.h"
-#include "QCMakeCacheView.h"
-#include "QCMakeSizeType.h"
-
 #include "cmSystemTools.h"
 #include "cmVersion.h"
 
 #include "AddCacheEntry.h"
 #include "EnvironmentDialog.h"
 #include "FirstConfigure.h"
+#include "QCMake.h"
+#include "QCMakeCacheView.h"
+#include "QCMakeSizeType.h"
 #include "RegexExplorer.h"
 #include "WarningMessagesDialog.h"
 
@@ -191,9 +190,6 @@ CMakeSetupDialog::CMakeSetupDialog()
   a = OptionsMenu->addAction(tr("Warning Messages..."));
   QObject::connect(a, &QAction::triggered, this,
                    &CMakeSetupDialog::doWarningMessagesDialog);
-  this->WarnUninitializedAction =
-    OptionsMenu->addAction(tr("&Warn Uninitialized (--warn-uninitialized)"));
-  this->WarnUninitializedAction->setCheckable(true);
 
   QAction* debugAction = OptionsMenu->addAction(tr("&Debug Output"));
   debugAction->setCheckable(true);
@@ -341,13 +337,6 @@ void CMakeSetupDialog::initialize()
 
   QObject::connect(this->Environment, &QAbstractButton::clicked, this,
                    &CMakeSetupDialog::editEnvironment);
-
-  QObject::connect(this->WarnUninitializedAction, &QAction::triggered,
-                   this->CMakeThread->cmakeInstance(),
-                   &QCMake::setWarnUninitializedMode);
-  QObject::connect(this->CMakeThread->cmakeInstance(),
-                   &QCMake::warnUninitializedModeChanged,
-                   this->WarnUninitializedAction, &QAction::setChecked);
 
   if (!this->SourceDirectory->text().isEmpty() &&
       !this->DeferredPreset.isNull()) {

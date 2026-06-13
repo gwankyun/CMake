@@ -6,12 +6,13 @@
 #include <utility>
 
 #include <cm/memory>
+#include <cm/string_view>
 #include <cmext/string_view>
 
-#include "cmFileSet.h"
 #include "cmGenExContext.h"
 #include "cmGeneratorExpression.h"
 #include "cmGeneratorExpressionDAGChecker.h"
+#include "cmGeneratorFileSet.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
 #include "cmList.h"
@@ -38,20 +39,25 @@ void cmExportTryCompileFileGenerator::IssueMessage(
 {
   switch (type) {
     case MessageType::FATAL_ERROR:
-    case MessageType::AUTHOR_ERROR:
     case MessageType::INTERNAL_ERROR:
-    case MessageType::DEPRECATION_ERROR:
       cmSystemTools::Error(message);
       break;
     case MessageType::WARNING:
-    case MessageType::AUTHOR_WARNING:
-    case MessageType::DEPRECATION_WARNING:
       cmSystemTools::Message(cmStrCat("CMake Warning: "_s, message),
                              "Warning");
       break;
     default:
       cmSystemTools::Message(message);
   }
+}
+
+void cmExportTryCompileFileGenerator::IssueDiagnostic(
+  cmDiagnosticCategory category, std::string const& message) const
+{
+  cm::string_view const cname =
+    cmDiagnostics::GetCategoryString(category).substr(4);
+  cmSystemTools::Message(
+    cmStrCat("CMake Diagnostic ("_s, cname, "): "_s, message), "Diagnostic");
 }
 
 bool cmExportTryCompileFileGenerator::GenerateMainFile(std::ostream& os)
@@ -176,14 +182,16 @@ std::string cmExportTryCompileFileGenerator::InstallNameDir(
 }
 
 std::string cmExportTryCompileFileGenerator::GetFileSetDirectories(
-  cmGeneratorTarget* /*gte*/, cmFileSet* fileSet, cmTargetExport const* /*te*/)
+  cmGeneratorTarget* /*gte*/, cmGeneratorFileSet const* fileSet,
+  cmTargetExport const* /*te*/)
 {
   return cmOutputConverter::EscapeForCMake(
     cmList::to_string(fileSet->GetDirectoryEntries()));
 }
 
 std::string cmExportTryCompileFileGenerator::GetFileSetFiles(
-  cmGeneratorTarget* /*gte*/, cmFileSet* fileSet, cmTargetExport const* /*te*/)
+  cmGeneratorTarget* /*gte*/, cmGeneratorFileSet const* fileSet,
+  cmTargetExport const* /*te*/)
 {
   return cmOutputConverter::EscapeForCMake(
     cmList::to_string(fileSet->GetFileEntries()));

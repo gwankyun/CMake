@@ -479,8 +479,9 @@ void cmNinjaNormalTargetGenerator::WriteLinkRule(
     }
 
     if (this->TargetLinkLanguage(config) == "Rust") {
-      vars.RustSources = "$RUST_SOURCES";
-      vars.RustObjectDeps = "$RUST_OBJECT_DEPS";
+      vars.RustMainCrateRoot = "$RUST_MAIN_CRATE_ROOT";
+      vars.RustLinkCrates = "$RUST_LINK_CRATES";
+      vars.RustNativeObjects = "$RUST_NATIVE_OBJECTS";
     }
 
     std::string responseFlag;
@@ -496,8 +497,15 @@ void cmNinjaNormalTargetGenerator::WriteLinkRule(
     }
 
     // build response file name
-    std::string cmakeLinkVar = cmakeVarLang + "_RESPONSE_FILE_LINK_FLAG";
-    cmValue flag = this->GetMakefile()->GetDefinition(cmakeLinkVar);
+    cmValue flag;
+    if (targetType == cmStateEnums::STATIC_LIBRARY) {
+      std::string cmakeLinkVar = cmakeVarLang + "_RESPONSE_FILE_ARCHIVE_FLAG";
+      flag = this->GetMakefile()->GetDefinition(cmakeLinkVar);
+    }
+    if (!flag) {
+      std::string cmakeLinkVar = cmakeVarLang + "_RESPONSE_FILE_LINK_FLAG";
+      flag = this->GetMakefile()->GetDefinition(cmakeLinkVar);
+    }
 
     if (flag) {
       responseFlag = *flag;
@@ -1039,7 +1047,8 @@ void cmNinjaNormalTargetGenerator::WriteNvidiaDeviceLinkStatement(
                               vars["LINK_FLAGS"], frameworkPath, linkPath,
                               genTarget);
 
-  this->addPoolNinjaVariable("JOB_POOL_LINK", genTarget, nullptr, vars);
+  this->addPoolNinjaVariable("JOB_POOL_LINK", config, genTarget, nullptr,
+                             vars);
 
   vars["MANIFESTS"] = this->GetManifests(config);
 
@@ -1284,46 +1293,42 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
   } else if (this->TargetLinkLanguage(config) == "Rust") {
     // Use one-step build/link for Rust.
     // Compute specific libraries to link with.
-    std::vector<cmSourceFile const*> sources;
-    gt->GetObjectSources(sources, config);
     cmLocalGenerator const* lg = this->GetLocalGenerator();
-    std::string entry_obj;
-
-    for (auto const& source : sources) {
-      if (source->GetLanguage() == "Rust") {
-        if (vars.count("RUST_SOURCES") == 0) {
-          std::string const sourcePath =
-            this->GetCompiledSourceNinjaPath(source);
-          vars["RUST_SOURCES"] =
-            lg->ConvertToOutputFormat(sourcePath, cmOutputConverter::SHELL);
-          entry_obj = this->GetObjectFilePath(source, config);
-        } else {
-          assert(false && "Rust crate can only have 1 entry");
-        }
-      }
-    }
 
     linkBuild.ExplicitDeps = this->GetObjects(config);
-    std::stringstream obj_deps;
 
-    // Do not try linking to object file created from the crate entry.
-    for (auto const& obj : linkBuild.ExplicitDeps) {
-      if (obj != entry_obj) {
-        obj_deps << " "
-                 << lg->ConvertToOutputFormat(obj, cmOutputConverter::SHELL);
-      }
+    // First we handle Rust rlib and normal native objects.
+    this->ComputeRustFlagsForObjects(vars["RUST_LINK_CRATES"],
+                                     vars["RUST_NATIVE_OBJECTS"],
+                                     linkBuild.ExplicitDeps);
+
+    // Then, we handle the main crate root that is build as part of the link
+    // step.
+    cmSourceFile const* mainCrateRoot = gt->GetRustMainCrateRoot(config);
+    if (!mainCrateRoot) {
+      this->Makefile->IssueMessage(MessageType::FATAL_ERROR,
+                                   "Target " + gt->GetName() +
+                                     " has no main crate root.");
+      return;
     }
-
-    vars["RUST_OBJECT_DEPS"] = obj_deps.str();
+    std::string mainCrateRootPath =
+      this->GetCompiledSourceNinjaPath(mainCrateRoot);
+    linkBuild.ExplicitDeps.emplace_back(mainCrateRootPath);
+    mainCrateRootPath =
+      lg->ConvertToOutputFormat(mainCrateRootPath, cmOutputConverter::SHELL);
+    vars["RUST_MAIN_CRATE_ROOT"] = mainCrateRootPath;
   } else {
     linkBuild.ExplicitDeps = this->GetObjects(config);
   }
 
-  std::vector<std::string> extraISPCObjects =
+  auto extraISPCObjects =
     this->GetGeneratorTarget()->GetGeneratedISPCObjects(config);
-  std::transform(extraISPCObjects.begin(), extraISPCObjects.end(),
-                 std::back_inserter(linkBuild.ExplicitDeps),
-                 this->MapToNinjaPath());
+  auto const mapToNinjaPath = this->MapToNinjaPath();
+  std::transform(
+    extraISPCObjects.begin(), extraISPCObjects.end(),
+    std::back_inserter(linkBuild.ExplicitDeps),
+    [&mapToNinjaPath](std::pair<cmSourceFile const*, std::string> const& obj)
+      -> std::string { return mapToNinjaPath(obj.second); });
 
   linkBuild.ImplicitDeps =
     this->ComputeLinkDeps(this->TargetLinkLanguage(config), config);
@@ -1367,7 +1372,7 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
                            this->TargetLinkLanguage(config), "CURRENT", false);
   }
 
-  this->addPoolNinjaVariable("JOB_POOL_LINK", gt, nullptr, vars);
+  this->addPoolNinjaVariable("JOB_POOL_LINK", config, gt, nullptr, vars);
 
   this->UseLWYU = this->GetLocalGenerator()->AppendLWYUFlags(
     vars["LINK_FLAGS"], this->GetGeneratorTarget(),
@@ -1497,7 +1502,7 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
         std::transform(
           ccByproducts.begin(), ccByproducts.end(),
           std::back_inserter(globalGen->GetByproductsForCleanTarget()),
-          this->MapToNinjaPath());
+          mapToNinjaPath);
       }
     }
   }
@@ -1572,9 +1577,15 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
     cmStrCat("CMAKE_", this->TargetLinkLanguage(config));
 
   // build response file name
-  std::string cmakeLinkVar = cmakeVarLang + "_RESPONSE_FILE_LINK_FLAG";
-
-  cmValue flag = this->GetMakefile()->GetDefinition(cmakeLinkVar);
+  cmValue flag;
+  if (targetType == cmStateEnums::STATIC_LIBRARY) {
+    std::string cmakeLinkVar = cmakeVarLang + "_RESPONSE_FILE_ARCHIVE_FLAG";
+    flag = this->GetMakefile()->GetDefinition(cmakeLinkVar);
+  }
+  if (!flag) {
+    std::string cmakeLinkVar = cmakeVarLang + "_RESPONSE_FILE_LINK_FLAG";
+    flag = this->GetMakefile()->GetDefinition(cmakeLinkVar);
+  }
 
   bool const lang_supports_response =
     !(this->TargetLinkLanguage(config) == "RC" ||
@@ -1622,16 +1633,25 @@ void cmNinjaNormalTargetGenerator::WriteLinkStatement(
     if (cmComputeLinkInformation* cli =
           this->GeneratorTarget->GetLinkInformation(config)) {
       for (auto const& dependency : cli->GetItems()) {
-        // Both the current target and the linked target must be swift targets
-        // in order for there to be a swiftmodule to depend on
+        // Only depend on swiftmodule from targets that actually compile
+        // Swift sources. A C/C++ target may have Swift as its linker
+        // language (due to language propagation) without producing one.
         if (dependency.Target &&
-            dependency.Target->GetLinkerLanguage(config) == "Swift") {
+            dependency.Target->IsLanguageUsed("Swift", config)) {
           std::string swiftmodule = this->ConvertToNinjaPath(
             dependency.Target->GetSwiftModulePath(config));
           linkBuild.ImplicitDeps.emplace_back(swiftmodule);
         }
       }
     }
+  }
+
+  // For split Swift builds, ensure the link edge depends on the target's own
+  // .swiftmodule so the emit-module edge runs even when no other target in
+  // the build depends on it (e.g. install-only targets).
+  std::string swiftModuleOutput = this->GetSwiftModuleOutput(config);
+  if (!swiftModuleOutput.empty()) {
+    linkBuild.ImplicitDeps.emplace_back(std::move(swiftModuleOutput));
   }
 
   // Ninja should restat after linking if and only if there are byproducts.

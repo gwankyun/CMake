@@ -6,10 +6,14 @@
 #include <string>
 #include <vector>
 
+#include <cm/string_view>
+
 #include "cmGeneratorTarget.h"
 #include "cmListFileCache.h"
 
 namespace cm {
+class TargetPropertyEntry;
+
 namespace GenEx {
 struct Context;
 }
@@ -18,6 +22,7 @@ struct Context;
 class cmLinkItem;
 struct cmGeneratorExpressionDAGChecker;
 
+namespace cm {
 // Represent a target property entry after evaluating generator expressions
 // and splitting up lists.
 struct EvaluatedTargetPropertyEntry
@@ -40,8 +45,7 @@ struct EvaluatedTargetPropertyEntry
 
 EvaluatedTargetPropertyEntry EvaluateTargetPropertyEntry(
   cmGeneratorTarget const* thisTarget, cm::GenEx::Context const& context,
-  cmGeneratorExpressionDAGChecker* dagChecker,
-  cmGeneratorTarget::TargetPropertyEntry& entry);
+  cmGeneratorExpressionDAGChecker* dagChecker, cm::TargetPropertyEntry& entry);
 
 struct EvaluatedTargetPropertyEntries
 {
@@ -52,8 +56,7 @@ struct EvaluatedTargetPropertyEntries
 EvaluatedTargetPropertyEntries EvaluateTargetPropertyEntries(
   cmGeneratorTarget const* thisTarget, cm::GenEx::Context const& context,
   cmGeneratorExpressionDAGChecker* dagChecker,
-  std::vector<std::unique_ptr<cmGeneratorTarget::TargetPropertyEntry>> const&
-    in);
+  std::vector<std::unique_ptr<cm::TargetPropertyEntry>> const& in);
 
 // IncludeRuntimeInterface is used to break the cycle in computing
 // the necessary transitive dependencies of targets that can occur
@@ -82,3 +85,10 @@ void AddInterfaceEntries(
   EvaluatedTargetPropertyEntries& entries,
   IncludeRuntimeInterface searchRuntime,
   cmGeneratorTarget::UseTo usage = cmGeneratorTarget::UseTo::Compile);
+
+void AddInterfaceFileSetsEntries(cmGeneratorTarget const* headTarget,
+                                 cm::string_view type, std::string const& prop,
+                                 cm::GenEx::Context const& context,
+                                 cmGeneratorExpressionDAGChecker* dagChecker,
+                                 EvaluatedTargetPropertyEntries& entries);
+}

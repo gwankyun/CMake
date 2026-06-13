@@ -133,7 +133,7 @@ if(ARMADILLO_INCLUDE_DIR)
   set(Armadillo_VERSION_NAME "EARLY RELEASE")
 
   if(EXISTS "${ARMADILLO_INCLUDE_DIR}/armadillo_bits/arma_version.hpp")
-    # Read and parse armdillo version header file for version number
+    # Read and parse Armadillo version header file for version number.
     file(STRINGS "${ARMADILLO_INCLUDE_DIR}/armadillo_bits/arma_version.hpp" _ARMA_HEADER_CONTENTS REGEX "#define ARMA_VERSION_[A-Z]+ ")
     string(REGEX REPLACE ".*#define ARMA_VERSION_MAJOR ([0-9]+).*" "\\1" ARMADILLO_VERSION_MAJOR "${_ARMA_HEADER_CONTENTS}")
     string(REGEX REPLACE ".*#define ARMA_VERSION_MINOR ([0-9]+).*" "\\1" ARMADILLO_VERSION_MINOR "${_ARMA_HEADER_CONTENTS}")
@@ -176,8 +176,6 @@ if(_ARMA_USE_WRAPPER)
     )
   mark_as_advanced(ARMADILLO_LIBRARY)
   set(_ARMA_REQUIRED_VARS ARMADILLO_LIBRARY)
-else()
-  set(ARMADILLO_LIBRARY "")
 endif()
 
 # Transitive linking with the wrapper does not work with MSVC,

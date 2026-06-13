@@ -62,9 +62,9 @@ macro(__windows_compiler_clang_gnu lang)
   set(CMAKE_${lang}_SHARED_LIBRARY_COMPILE_DEFINITIONS "_WINDLL")
 
   # linker selection
-  set(CMAKE_${lang}_USING_LINKER_DEFAULT "-fuse-ld=lld-link")
+  set(CMAKE_${lang}_USING_LINKER_DEFAULT "-fuse-ld=lld")
   set(CMAKE_${lang}_USING_LINKER_SYSTEM "-fuse-ld=link")
-  set(CMAKE_${lang}_USING_LINKER_LLD "-fuse-ld=lld-link")
+  set(CMAKE_${lang}_USING_LINKER_LLD "-fuse-ld=lld")
   set(CMAKE_${lang}_USING_LINKER_MSVC "-fuse-ld=link")
 
   set(CMAKE_${lang}_USE_RESPONSE_FILE_FOR_OBJECTS 1)
@@ -207,19 +207,19 @@ if("x${CMAKE_C_SIMULATE_ID}" STREQUAL "xMSVC"
   if(NOT CMAKE_RC_COMPILER_INIT)
     # Check if rc is already in the path
     # This may happen in cases where the user is already in a visual studio environment when CMake is invoked
-    find_program(__RC_COMPILER_PATH NAMES rc)
+    find_program(__RC_COMPILER_PATH NO_CACHE NAMES rc)
 
     # Default to rc if it's available, otherwise fall back to llvm-rc
     if(__RC_COMPILER_PATH)
       set(CMAKE_RC_COMPILER_INIT rc)
     else()
-      find_program(__RC_COMPILER_PATH NAMES llvm-rc)
+      find_program(__RC_COMPILER_PATH NO_CACHE NAMES llvm-rc)
       if(__RC_COMPILER_PATH)
         set(CMAKE_RC_COMPILER_INIT llvm-rc)
       endif()
     endif()
 
-    unset(__RC_COMPILER_PATH CACHE)
+    unset(__RC_COMPILER_PATH)
   endif()
 
   if ( "x${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC"
