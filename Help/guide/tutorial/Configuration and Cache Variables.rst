@@ -110,9 +110,9 @@ CMake项目通常有一些用户和打包者感兴趣的项目特定配置变量
   ShadowVariable: In the shadows
 
 .. note::
-  :ref:`Script mode <Script Processing Mode>` operates slightly differently,
-  only :option:`-D <cmake -D>` flags provided before the :option:`-P <cmake -P>`
-  flag in the command are evaluated and available in the running script.
+  :ref:`脚本模式 <Script Processing Mode>`\ 的运行方式略有不同，只有命令中位于\
+  :option:`-P <cmake -P>`\ 标志之前的\ :option:`-D <cmake -D>`\ 标志才会被解析并在\
+  运行的脚本中可用。
 
 练习1 - 使用选项
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -464,10 +464,9 @@ CMake将搜索名为\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 的
   命令行标志可以与预设混合使用。命令行标志的优先级高于预设中的值。
 
 .. note::
-  On CMake 4.4 and newer, CMake can also load presets from any file specified
-  with :option:`cmake --presets-file`. This can be useful when reusing settings
-  across multiple projects, since it avoids having to duplicate them in
-  separate ``CMakePresets.json`` files for each project.
+  在CMake 4.4及更高版本中，CMake还可以从由\ :option:`cmake --presets-file`\ 指定的\
+  任意文件中加载预设。这在跨多个项目复用设置时非常有用，因为它避免了为每个项目在各自的\
+  ``CMakePresets.json``\ 文件中重复配置。
 
 预设还支持有限的宏，即可以在预设内部进行大括号扩展的变量。我们感兴趣的只有\
 ``${sourceDir}``\ 宏， 它会扩展为项目的根目录。我们可以使用它来设置构建目录，\

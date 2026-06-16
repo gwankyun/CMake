@@ -9,79 +9,61 @@ cmake-diagnostics(7)
 
 .. _cmake-diagnostics-intro:
 
-Introduction
+简介
 ============
 
 .. versionadded:: 4.4
 
-CMake Diagnostics are the mechanism by which CMake categorizes and presents
-certain advisory information about a project's configuration and the generation
-of its build system.  These diagnostics can be seen as the build system
-equivalent of compiler warnings.  Diagnostics provide feedback on potential
-issues in several categories:
+CMake 诊断是 CMake 对项目配置及其构建系统生成过程中的某些建议信息进行分类和呈现的机制。\
+这些诊断可以看作是构建系统中等效的编译器警告。诊断针对以下几类潜在问题提供反馈：
 
-* Issues that may impact the success of the build.
+* 可能影响构建成功的问题。
 
-* Issues that may impact the correctness of the build.
+* 可能影响构建正确性的问题。
 
-* Issues that may impact the correctness of the project packaging.
+* 可能影响项目打包正确性的问题。
 
-* Issues that may impact the ability of the project
-  to be built with newer versions of dependencies.
+* 可能影响项目使用更新版本依赖项进行构建的能力的问题。
 
-* Issues that may impact the ability of the project
-  to be built with newer versions of CMake.
+* 可能影响项目使用更新版本 CMake 进行构建的能力的问题。
 
-Controlling Diagnostics
+控制诊断
 =======================
 
-Each diagnostic category has an associated action to be taken when that
-diagnostic is triggered.  Most categories will warn by default.  The available
-actions are described in the :command:`cmake_diagnostic` command documentation.
+每个诊断类别都有一个关联的操作，当该诊断被触发时执行。大多数类别默认会发出警告。可用的操作在
+:command:`cmake_diagnostic` 命令文档中有描述。
 
-CMake maintains a diagnostic state stack that is similar to the policy state.
-The initial state of the stack is determined by four factors, which are, in
-order of precedence:
+CMake 维护一个诊断状态栈，类似于策略状态。栈的初始状态由四个因素决定，按优先级顺序为：
 
-* The default action associated with the diagnostic.
+* 与诊断关联的默认操作。
 
-* The action associated with the diagnostic stored in the CMake variable cache,
-  which is used to persist the initial state between CMake runs.
+* 存储在 CMake 变量缓存中的与诊断关联的操作，用于在 CMake 运行之间持久化初始状态。
 
-* The :preset:`configurePresets.warnings` and :preset:`configurePresets.errors`
-  fields of :manual:`CMake Presets <cmake-presets(7)>`.
+* :manual:`CMake Presets <cmake-presets(7)>` 的 :preset:`configurePresets.warnings`
+  和 :preset:`configurePresets.errors` 字段。
 
-* The :option:`-W[no-][error=] <cmake -W>` command line arguments.
+* :option:`-W[no-][error=] <cmake -W>` 命令行参数。
 
 .. note::
 
-  Because command line arguments operate both recursively and in the order
-  specified, some combinations of diagnostic arguments may result in later
-  arguments completely overwriting the action of earlier arguments.  For
-  example, ``-Wno-child -Wparent`` will result in the ``child`` warning being
-  enabled, because ``-Wparent`` promotes both ``parent`` and ``child`` to at
-  least ``WARN`` severity.  CMake presets are evaluated in order from most
-  ancestral to least ancestral.
+  由于命令行参数以递归方式并按指定顺序操作，某些诊断参数的组合可能导致后面的参数完全覆盖前面\
+  参数的操作。例如， ``-Wno-child -Wparent`` 将导致启用 ``child`` 警告，因为 ``-Wparent``
+  会将 ``parent`` 和 ``child`` 的严重性都提升到至少 ``WARN`` 级别。CMake 预设按从最早祖先
+  到最晚祖先的顺序进行评估。
 
-During script execution, the :command:`cmake_diagnostic` command can be used to
-query or alter the state, or to perform limited stack manipulations.
+在脚本执行期间，可以使用 :command:`cmake_diagnostic` 命令查询或更改状态，或执行有限的栈操作。
 
-When a diagnostic is issued at configure time (or during script execution, when
-CMake is running in script mode), the current diagnostic state controls the
-action.  Diagnostics issued at generate time, or outside of the configuration
-and generation phases must make use of recorded state information. While CMake
-strives to preserve this information in a way that matches the recorded state
-to the state as of the CMake command which ultimately causes a diagnostic to be
-issued, CMake may sometimes fall back to the state when processing of a
-subdirectory completed, or even the root state.  This may limit the ability of
-the :command:`cmake_diagnostic` command to control such diagnostics, especially
-if called from a function or included file.  This is especially the case for
-diagnostics that are not directly coupled to a CMake command.
+当诊断在配置期间发出时（或 CMake 在脚本模式下运行时的脚本执行期间），当前的诊断状态控制操作。
+在生成期间发出的诊断，或在配置和生成阶段之外发出的诊断，必须使用记录的状态信息。虽然 CMake
+努力以匹配记录状态与最终导致诊断发出的 CMake 命令时的状态的方式保留此信息，但 CMake 有时可能
+会回退到子目录处理完成时的状态，甚至是根状态。这可能会限制 :command:`cmake_diagnostic`
+命令控制此类诊断的能力，尤其是在从函数或包含文件中调用时。对于与 CMake 命令不直接耦合的诊断，
+这种情况尤为明显。
 
-Diagnostic Categories
+诊断类别
 =====================
 
-The following categories are defined:
+定义了以下类别：
 
 .. toctree::
    :maxdepth: 1

@@ -5,24 +5,24 @@ cmake-cxxmodules(7)
 
 .. versionadded:: 3.28
 
-C++ 20为语言引入了“\ :term:`模块 <C++ module>`\ ”的概念。该设计要求\
-:term:`构建系统 <build system>`\ 对编译进行排序，以可靠地满足\ ``import``\ 语句。\
+C++ 20为语言引入了“\ :term:`模块 <C++模块>`\ ”的概念。该设计要求\
+:term:`构建系统`\ 对编译进行排序，以可靠地满足\ ``import``\ 语句。\
 CMake的实现会在构建过程中要求编译器扫描源文件以查找模块依赖，整理扫描结果以推断\
-排序约束，并告诉\ :term:`构建工具 <build tool>`\ 如何动态更新构建图。
+排序约束，并告诉\ :term:`构建工具`\ 如何动态更新构建图。
 
 编译策略
 ====================
 
-使用C++模块后，编译一组C++源文件不再是\ :term:`易并行 <embarrassingly parallel>`。\
+使用C++模块后，编译一组C++源文件不再是\ :term:`易并行`。\
 也就是说，任何给定的源文件可能需要先编译另一个源文件，以提供C++编译器用于满足其他\
-源文件中\ ``import``\ 语句的“\ :abbr:`BMI (built module interface)`\ ”\
-（或“\ :abbr:`CMI (compiled module interface)`\ ”）。对于包含的头文件，源文件可以\
+源文件中\ ``import``\ 语句的“\ :abbr:`BMI (构建模块接口，built module interface)`\ ”\
+（或“\ :abbr:`CMI (编译模块接口，compiled module interface)`\ ”）。对于包含的头文件，源文件可以\
 共享其声明，以便任何消费者都能独立编译。而对于模块，编译器现在会在编译过程中根据\
 源文件的内容及其\ ``export``\ 语句生成\ :term:`BMI`\ 文件。这意味着，为确保正确\
 构建而无需在每次源文件更改时（通过运行配置和生成步骤）重新生成构建图，必须在构建\
 阶段从源文件中确定正确的编译顺序。
 
-:term:`构建系统 <build system>`\ 必须能够在构建图中对这些编译进行排序。有多种适用\
+:term:`构建系统`\ 必须能够在构建图中对这些编译进行排序。有多种适用\
 于此的策略，但每种策略都有其优缺点。CMake使用“扫描”步骤策略，这是CMake用户在构建\
 上下文中最明显的与模块相关的变更。CMake提供了多种方式来控制源文件的扫描行为。
 
@@ -36,11 +36,9 @@ CMake的实现会在构建过程中要求编译器扫描源文件以查找模块
 - 如果源文件属于\ ``CXX_MODULES``\ 类型的文件集，则会对其进行扫描。
 - 如果目标不使用至少C++ 20，则不会对其进行扫描。
 - 如果源文件不是\ ``CXX``\ 语言，它将不会被扫描。
-- If the source file belongs to a file set that is not of type ``CXX_MODULES``,
-  and the :prop_fs:`CXX_SCAN_FOR_MODULES` file set property is set, its
-  value will be used.
-- If the :prop_sf:`CXX_SCAN_FOR_MODULES` source file property is set in the
-  target's directory, its value will be used.。
+- 如果源文件属于类型不为\ ``CXX_MODULES``\ 的文件集，且\ :prop_fs:`CXX_SCAN_FOR_MODULES`\
+  文件集属性已设置，则将使用其值。
+- 如果\ :prop_sf:`CXX_SCAN_FOR_MODULES`\ 源文件属性在目标的目录中已设置，则将使用其值。
 - 如果设置了\ :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ 目标属性，则将使用其值。设置\
   :variable:`CMAKE_CXX_SCAN_FOR_MODULES`\ 变量，以便在创建所有目标时初始化该属性。
 - 否则，将在编译器和生成器支持的前提下，扫描源文件。参见策略\ :policy:`CMP0155`。
@@ -59,7 +57,7 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
   .. versionadded:: 4.4
 
-    ``clang-cl`` version 19.1 and newer
+    ``clang-cl`` 19.1及更高版本
 
 * GCC 14及更高版本
 
@@ -110,7 +108,7 @@ CMake中当前C++模块支持存在一些已知限制。编译器中的已知限
 
 对于所有生成器：
 
-- :term:`头单元 <header unit>`\ 不被支持。
+- :term:`头单元`\ 不被支持。
 
 对于\ :ref:`Visual Studio Generators`：
 
@@ -172,9 +170,9 @@ MSVC上的\ ``.ixx``\ 和Clang上的\ ``.cppm``），但没有普遍认可的扩
 导入循环
 ^^^^^^^^^^^^^
 
-C++标准不允许\ :term:`translation unit`\ 的\ ``import``\ 图中存在循环；因此，\
-CMake也不允许。目前，CMake会将此检测留给\ :term:`build tool`，基于用于排序模块\
-编译的\ :term:`dynamic dependencies`。\ `CMake Issue 26119`_\ 跟踪了在这种情况下\
+C++标准不允许\ :term:`翻译单元`\ 的\ ``import``\ 图中存在循环；因此，\
+CMake也不允许。目前，CMake会将此检测留给\ :term:`构建工具`，基于用于排序模块\
+编译的\ :term:`动态依赖项`。\ `CMake Issue 26119`_\ 跟踪了在这种情况下\
 改善用户体验的需求。
 
 .. _`CMake Issue 26119`: https://gitlab.kitware.com/cmake/cmake/-/issues/26119
@@ -182,17 +180,17 @@ CMake也不允许。目前，CMake会将此检测留给\ :term:`build tool`，�
 内部模块分区扩展
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-在最初研究C++模块构建的实现时，似乎存在一种代表\ :term:`partition unit`\ 和\
-:term:`implementation unit`\ 交集的\ :term:`translation unit`\ 类型。早期的CMake\
+在最初研究C++模块构建的实现时，似乎存在一种代表\ :term:`分区单元`\ 和\
+:term:`实现单元`\ 交集的\ :term:`翻译单元`\ 类型。早期的CMake\
 设计包含了对这些翻译单元的特定支持；然而，在仔细阅读标准后，发现这些单元实际上并\
 不存在。这些单元本应该使用\ ``module M:part;``\ 作为其模块声明语句。问题在于，\
 这也是用于声明不贡献到主模块外部接口的模块分区的确切语法。只有MSVC支持这种区分。\
-其他编译器不支持，并且会将此类文件视为\ :term:`internal partition unit`，而CMake\
+其他编译器不支持，并且会将此类文件视为\ :term:`内部分区单元`，而CMake\
 会引发错误，指出提供模块的C++源文件必须位于类型为\ ``CXX_MODULES``\ 的\
 ``FILE_SET``\ 中。
 
 修复方法是不使用此扩展，因为它与不使用扩展相比没有提供更多的表达能力。所有\
-:term:`implementation unit`\ 源文件都应该只使用\ ``module M;``\ 作为其模块声明\
+:term:`实现单元`\ 源文件都应该只使用\ ``module M;``\ 作为其模块声明\
 语句，无论所定义的实体在哪个分区中声明。例如：
 
 .. code-block:: cpp
@@ -220,7 +218,7 @@ CMake也不允许。目前，CMake会将此检测留给\ :term:`build tool`，�
 模块可见性
 ^^^^^^^^^^^^^^^^^
 
-CMake在目标之间和目标内部强制实施\ :term:`module visibility`。这本质上意味着，\
+CMake在目标之间和目标内部强制实施\ :term:`模块可见性`。这本质上意味着，\
 从目标\ ``T``\ 的\ ``PRIVATE`` ``FILE_SET``\ 提供的模块（例如\ ``I``\ ）不能被\
 以下对象导入：
 
@@ -231,10 +229,10 @@ CMake在目标之间和目标内部强制实施\ :term:`module visibility`。这
 即使模块\ ``I``\ 仅在模块的部分内容中使用（没有\ ``export``\ 关键字），它也可能\
 以某种方式影响模块内部，使得模块的使用者需要能够传递地\ ``import``\ 它才能正常\
 工作。由于CMake使用模块可见性来确定是否安装\
-:term:`模块接口单元 <module interface unit>`，\ ``PRIVATE``\ 模块接口单元不会被\
+:term:`模块接口单元`，\ ``PRIVATE``\ 模块接口单元不会被\
 安装，这意味着任何导入\ ``I``\ 的已安装模块的使用都将无法正常工作。
 
-相反，仅从\ :term:`implementation unit`\ 内部导入\ ``PRIVATE`` C++ 模块，因为这些\
+相反，仅从\ :term:`实现单元`\ 内部导入\ ``PRIVATE`` C++ 模块，因为这些\
 模块不会暴露给任何模块的使用者。
 
 设计
@@ -267,11 +265,11 @@ CMake的C++模块支持设计与其他设计相比做出了多项权衡。首先
 
 CMake的C++模块构建实现侧重于以下设计目标：
 
-1. `Correct Builds <design-goal-correct-builds_>`__
-2. `Deterministic Builds <design-goal-deterministic-builds_>`__
-3. `Support Generated Sources <design-goal-generated-sources_>`__
-4. `Static Communication <design-goal-static-communication_>`__
-5. `Minimize Regeneration <design-goal-minimize-regeneration_>`__
+1. `正确构建 <design-goal-correct-builds_>`__
+2. `确定性构建 <design-goal-deterministic-builds_>`__
+3. `支持生成的源代码 <design-goal-generated-sources_>`__
+4. `静态通信 <design-goal-static-communication_>`__
+5. `最小化重新生成 <design-goal-minimize-regeneration_>`__
 
 .. _design-goal-correct-builds:
 
@@ -300,7 +298,7 @@ CMake的C++模块构建实现侧重于以下设计目标：
 代码生成在C++生态系统中非常普遍，因此仅支持在配置时已知内容的文件中使用模块是不\
 合适的。如果不支持使用或提供模块的生成源代码，代码生成工具将无法使用模块，并且\
 生成源代码的任何依赖项也必须提供非模块化的方式来使用其接口（即提供头文件）。考虑\
-到所有C++实现都在符号修饰中使用\ :term:`strong module ownership`，当这些接口最终\
+到所有C++实现都在符号修饰中使用\ :term:`强模块所有权`，当这些接口最终\
 引用其他库中已编译的符号时，这会带来问题。
 
 .. _design-goal-static-communication:
@@ -309,10 +307,10 @@ CMake的C++模块构建实现侧重于以下设计目标：
 ^^^^^^^^^^^^^^^^^^^^
 
 构建的不同步骤之间的所有通信都应该静态处理。鉴于CMake支持的\
-:term:`build tools <build tool>`，为需要在编译期间交互的配套工具建立受控生命周期\
+:term:`构建工具`，为需要在编译期间交互的配套工具建立受控生命周期\
 是具有挑战性的。\ ``make``\ 和\ ``ninja``\ 都不提供在构建开始时启动工具并确保在\
 构建结束时停止它的方法。相反，与编译器的通信通过输入和输出文件进行管理，使用\
-:term:`build tool`\ 中的依赖项来保持一切更新。这种方法启用了标准的构建调试策略，\
+:term:`构建工具`\ 中的依赖项来保持一切更新。这种方法启用了标准的构建调试策略，\
 并允许开发人员在调查问题时直接运行构建命令，而无需考虑在后台运行的其他工具。
 
 .. _design-goal-minimize-regeneration:
@@ -325,7 +323,7 @@ CMake的C++模块构建实现侧重于以下设计目标：
 将需要在每次编辑模块感知源文件时重新生成构建图，因为任何更改都可能改变模块依赖关系。
 
 这也意味着所有模块感知源必须在配置时已知（即使它们尚未存在），以便构建图可以包含\
-用于\ :term:`scan`\ 其依赖关系的命令。
+用于\ :term:`扫描`\ 其依赖关系的命令。
 
 .. note::
 
@@ -345,15 +343,15 @@ CMake的C++模块构建实现侧重于以下设计目标：
 选择的设计
 ---------------
 
-CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依赖信息，并使用现有边之\
+CMake使用的一般策略是“\ :term:`扫描`\ ”源文件以提取排序依赖信息，并使用现有边之\
 间的新边更新构建图。这是通过获取每个源文件的扫描结果（由\ `P1689R5`_\ 文件表示），\
-然后使用其依赖项的信息为每个目标“\ :term:`collating <collate>`\ ”它们来完成的。\
-整理器的主要任务是生成“\ :term:`module map`\ ”文件，将其传递给每个编译规则，并\
+然后使用其依赖项的信息为每个目标“\ :term:`聚合`\ ”它们来完成的。\
+整理器的主要任务是生成“\ :term:`模块映射`\ ”文件，将其传递给每个编译规则，并\
 提供满足\ ``import``\ 语句所需的\ :term:`BMIs <BMI>`\ 路径，以及在编译期间通知\
-:term:`build tool`\ 满足这些\ ``import``\ 语句所需的依赖项。整理器还使用构建时\
+:term:`构建工具`\ 满足这些\ ``import``\ 语句所需的依赖项。整理器还使用构建时\
 信息为模块接口单元、它们的\ :term:`BMIs <BMI>`\ 生成\ ``install``\ 规则，以及为\
 任何带有C++模块的导出目标生成属性。它还强制实施\ ``PRIVATE``\ 模块不得被其他目标\
-或目标内的任何\ ``PUBLIC`` :term:`module interface unit`\ 使用的规则。
+或目标内的任何\ ``PUBLIC`` :term:`模块接口单元`\ 使用的规则。
 
 .. _`P1689R5`: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1689r5.html
 
@@ -380,20 +378,20 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 支持模块的编译器还必须提供扫描工具。这通常是编译器本身带有一些额外标志，或者是与\
 编译器一起提供的工具。扫描的命令模板存储在\ ``CMAKE_CXX_SCANDEP_SOURCE``\ 变量中。\
 该命令应将\ `P1689R5`_\ 格式的结果写入\ ``<DYNDEP_FILE>``\ 占位符指定的位置。\
-此外，该命令还应将任何\ :term:`discovered dependencies` ``<DEP_FILE>``\ 占位符。\
-这允许\ :term:`构建工具 <build tool>`\ 在扫描命令的任何依赖项发生变化时重新运行扫描。
+此外，该命令还应将任何\ :term:`探测到的依赖项` ``<DEP_FILE>``\ 占位符。\
+这允许\ :term:`构建工具`\ 在扫描命令的任何依赖项发生变化时重新运行扫描。
 
 此外，工具链应设置以下变量：
 
-* ``CMAKE_CXX_MODULE_MAP_FORMAT``：\ :term:`module map`\ 的格式，用于描述编译期\
+* ``CMAKE_CXX_MODULE_MAP_FORMAT``：\ :term:`模块映射`\ 的格式，用于描述编译期\
   间导入模块的依赖\ :term:`BMI`\ 文件的位置。必须是\ ``gcc``、\ ``clang``\ 或\
   ``msvc``\ 之一。
-* ``CMAKE_CXX_MODULE_MAP_FLAG``：用于告知编译器\ :term:`module map`\ 文件的参数。\
+* ``CMAKE_CXX_MODULE_MAP_FLAG``：用于告知编译器\ :term:`模块映射`\ 文件的参数。\
   它应使用\ ``<MODULE_MAP_FILE>``\ 占位符。
-* ``CMAKE_CXX_COMPILE_BMI``：用于从\ :term:`module interface unit`\ 编译\
+* ``CMAKE_CXX_COMPILE_BMI``：用于从\ :term:`模块接口单元`\ 编译\
   :term:`BMI`\ 文件的命令模板。当\ ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``\ 不能完全\
   添加到对象编译模板时使用。
-* ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``：用于仅从\ :term:`module interface unit`\
+* ``CMAKE_CXX_MODULE_BMI_ONLY_FLAG``：用于仅从\ :term:`模块接口单元`\
   编译\ :term:`BMI`\ 文件的参数。这在从外部项目使用模块时用于编译当前构建中使用的\
   :term:`BMI`\ 文件。
 
@@ -416,64 +414,56 @@ CMake使用的一般策略是“\ :term:`scan`\ ”源文件以提取排序依�
 ^^^^^^^^
 
 在生成步骤中，CMake需要添加额外的规则，以确保提供模块的源文件能够在导入这些模块\
-的源文件之前构建。由于CMake使用\ :term:`static build`，构建图必须包含所有可能的\
+的源文件之前构建。由于CMake使用\ :term:`静态构建`，构建图必须包含所有可能的\
 扫描和模块生成命令。确保提供模块的命令之间的依赖边将确保构建图正确执行。这意味着，\
 虽然所有源文件可能会被扫描，但只有实际使用的模块才会被生成。
 
-The first step CMake performs is to generate any
-:term:`synthetic targets <synthetic target>` needed for a module-providing
-target.  These targets are based on the module provider, but produce only
-:term:`BMI` files for consumers rather than object files. This is necessary
-because the compatibility of :term:`BMI` files is extremely narrow and cannot be
-shared between arbitrary ``import`` instances.
+CMake执行的第一步是为提供模块的目标生成所需的\ :term:`合成目标`。\
+这些目标基于模块提供者，但只为消费者生成\ :term:`BMI`\ 文件而非目标文件。\
+这是必要的，因为\ :term:`BMI`\ 文件的兼容性范围极其狭窄，无法在不同的\ ``import``\ 实例之间共享。
 
-Due to the internal workings of toolchains, there can generally only be a single
-set of settings for a variety of flags for any one compilation, including
-:term:`BMI` files for imported modules.  As an example, the C++ standard in
-use needs to be consistent across all modules imported to a given translation
-unit, mixing standards will cause incompatibilities.
+由于工具链的内部工作机制，对于任何一次编译，包括导入模块的\ :term:`BMI`\ 文件，各种标志通常\
+只能有一组设置。例如，所使用的C++标准需要在导入到给定翻译单元的所有模块之间保持一致，混用不同的\
+标准会导致不兼容。
 
   .. versionadded:: 4.4
 
-    Prior to CMake 4.4, CMake assumed all usages were compatible and would only
-    create one set of :term:`BMIs <BMI>` for each module-providing target. This
-    could cause build failures due to incompatible :term:`BMI` usage.
+    在CMake 4.4之前，CMake假定所有用法都是兼容的，只会为每个提供模块的目标创建一组\
+    :term:`BMIs <BMI>`。这可能因不兼容的\ :term:`BMI`\ 用法而导致构建失败。
 
-    In CMake 4.4 and later, CMake attempts to determine :term:`BMI`
-    compatibility on a target-by-target basis and will generate
-    :term:`synthetic targets <synthetic target>` to provide compatible
-    :term:`BMIs <BMI>` for consumers.
+    在CMake 4.4及更高版本中，CMake尝试逐个目标地确定\ :term:`BMI`\ 的兼容性，\
+    并会生成\ :term:`合成目标`\ 来为消费者提供兼容的\
+    :term:`BMIs <BMI>`。
 
-The generated :term:`synthetic target` has a mix of properties from both
-the provider of the module and the consumer. :prop_tgt:`COMPILE_FEATURES` and
-:prop_tgt:`COMPILE_OPTIONS` are adopted from the consumer, while all other
-relevant properties are inherited from the provider.
+生成的\ :term:`合成目标`\ 混合了模块提供者和消费者的属性。\
+:prop_tgt:`COMPILE_FEATURES`\ 和\ :prop_tgt:`COMPILE_OPTIONS`\ 来自消费者，\
+而所有其他相关属性则继承自提供者。
 
-一旦所有\ :term:`合成目标 <synthetic target>`\ 创建完成，CMake会检查每个包含可能\
-使用C++模块的源文件的目标，并为其中每个源文件创建一个\ :term:`scan`\ 命令。该命令\
+一旦所有\ :term:`合成目标`\ 创建完成，CMake会检查每个包含可能\
+使用C++模块的源文件的目标，并为其中每个源文件创建一个\ :term:`扫描`\ 命令。该命令\
 会输出一个\ `P1689R5`_\ 格式的文件，描述其使用和提供的C++模块（如果有）。CMake\
-还会为合格的编译创建一个\ :term:`collate`\ 模块依赖的命令。该命令依赖于所有合格\
-源文件的\ :term:`scan`\ 结果、目标本身的信息，以及任何提供C++模块的依赖目标的\
-:term:`collate`\ 结果。:term:`collate`\ 步骤使用特定于目标的\
+还会为合格的编译创建一个\ :term:`聚合`\ 模块依赖的命令。该命令依赖于所有合格\
+源文件的\ :term:`扫描`\ 结果、目标本身的信息，以及任何提供C++模块的依赖目标的\
+:term:`聚合`\ 结果。:term:`聚合`\ 步骤使用特定于目标的\
 ``CXXDependInfo.json``\ 文件，其中包含以下信息：
 
 - ``compiler-*``: 基本编译器信息（\ ``id``、\ ``frontend-variant``\ 和\
   ``simulate-id``），用于在为编译器生成路径时生成正确格式化的路径
 - ``cxx-modules``: 对象文件到\ ``FILE_SET``\ 信息的映射，用于强制执行\
-  :term:`module visibility`\ 并为\ :term:`module interface unit`\ 源文件生成安装\
+  :term:`模块可见性`\ 并为\ :term:`模块接口单元`\ 源文件生成安装\
   规则
 - ``module-dir``: 为此目标放置\ :term:`BMI`\ 文件的位置
 - ``dir-{cur,top}-{src,bld}``: 当前目录（\ ``cur``\ ）和项目顶部（\ ``top``\ ）\
-  的源（\ ``src``\ ）和构建（\ ``bld``\ ）目录，用于为\ :term:`build tool`\
+  的源（\ ``src``\ ）和构建（\ ``bld``\ ）目录，用于为\ :term:`构建工具`\
   动态依赖计算准确的相对路径
 - ``exports``: 既包含目标又提供C++模块信息的导出列表，用于从导出的目标中为\
   ``IMPORTED``\ 目标提供准确的模。
 - ``bmi-installation``: 安装信息，用于为\ :term:`BMI`\ 文件生成安装脚本
 - ``database-info``: 如果\ :prop_tgt:`EXPORT_BUILD_DATABASE`\ 请求，则生成\
-  :term:`build database`\ 信息所需的信息
-- ``sources``: 目标中其他源文件的列表，用于在请求时添加到\ :term:`build database`
+  :term:`构建数据库`\ 信息所需的信息
+- ``sources``: 目标中其他源文件的列表，用于在请求时添加到\ :term:`构建数据库`
 - ``config``: 目标的配置，用于在生成的导出文件中设置适当的属性
-- ``language``: :term:`collation <collate>`\ 元数据文件所描述的语言（例如，C++\
+- ``language``: :term:`聚合`\ 元数据文件所描述的语言（例如，C++\
   或Fortra
 - ``include-dirs``\ 和\ ``forward-modules-from-target-dirs``: 对于C++未使用
 
@@ -492,66 +482,66 @@ relevant properties are inherited from the provider.
 - ``type`` (string)：拥有源文件的文件集类型
 - ``visibility`` (string)：拥有源文件的文件集可见性
 
-每次编译时，CMake还会提供一个\ :term:`module map`，该映射由\ :term:`collate`\
+每次编译时，CMake还会提供一个\ :term:`模块映射`，该映射由\ :term:`聚合`\
 命令在构建过程中创建。如何将其提供给编译器由\ ``CMAKE_CXX_MODULE_MAP_FORMAT``\
 和\ ``CMAKE_CXX_MODULE_MAP_FLAG``\ 工具链变量指定。
 
 扫描
 ^^^^
 
-编译器需要实现\ :term:`scan`\ 命令。这是因为只有编译器本身能够可靠地回答像\
+编译器需要实现\ :term:`扫描`\ 命令。这是因为只有编译器本身能够可靠地回答像\
 ``__has_builtin``\ 这样的预处理器谓词，以便在面对编译源文件时可能使用的任意标志\
 时提供准确的模块使用信息。
 
 CMake使用\ ``.ddi``\ 扩展名命名这些文件，它代表“动态依赖信息”\
 （dynamic dependency information）。这些文件采用\ `P1689R5`_\ 格式，并被\
-:term:`collate`\ 命令用于执行其任务。
+:term:`聚合`\ 命令用于执行其任务。
 
 整合
 ^^^^^^^
 
-:term:`collate`\ 命令执行大部分工作，使C++模块在构建图中正常工作。它使用以下文件\
+:term:`聚合`\ 命令执行大部分工作，使C++模块在构建图中正常工作。它使用以下文件\
 作为输入：
 
 - 来自生成步骤的\ ``CXXDependInfo.json``
-- 来自目标源文件的\ :term:`scanning <scan>`\ 结果的\ ``.ddi``\ 文件
-- 来自符合条件的依赖目标的\ :term:`collate`\ 命令输出的\ ``CXXModules.json``\ 文件
+- 来自目标源文件的\ :term:`扫描`\ 结果的\ ``.ddi``\ 文件
+- 来自符合条件的依赖目标的\ :term:`聚合`\ 命令输出的\ ``CXXModules.json``\ 文件
 
 它使用这些文件中的信息生成：
 
-- ``CXX.dd``\ 文件，用于通知\ :term:`build tool`\ 源文件编译与它导入的模块的\
+- ``CXX.dd``\ 文件，用于通知\ :term:`构建工具`\ 源文件编译与它导入的模块的\
   :term:`BMI`\ 文件之间存在的依赖关系
-- 供依赖目标的\ :term:`collate`\ 命令使用的\ ``CXXModules.json``\ 文件
+- 供依赖目标的\ :term:`聚合`\ 命令使用的\ ``CXXModules.json``\ 文件
 - 每个编译用于查找导入模块的\ :term:`BMI`\ 文件的\ ``*.modmap``\ 文件
 - 用于安装任何\ :term:`BMI`\ 文件的\ ``install-cxx-module-bmi-$<CONFIG>.cmake``\
   脚本（由\ ``install``\ 脚本包含）
 - 用于目标的任何导出的\ ``target-*-$<CONFIG>.cmake``\ 导出文件，以提供\
   :prop_tgt:`IMPORTED_CXX_MODULES_<CONFIG>`\ 属性
 - 当目标的\ :prop_tgt:`EXPORT_BUILD_DATABASE`\ 属性设置时，为目标生成\
-  ``CXX_build_database.json`` :term:`build database`\ 文件
+  ``CXX_build_database.json`` :term:`构建数据库`\ 文件
 
 在其处理过程中，它强制执行以下保证：
 
 - :term:`BMI`\ 使用一致
-- 遵守\ :term:`module visibility`
+- 遵守\ :term:`模块可见性`
 
 C++模块有一个规则，即一个程序中只能存在一个给定名称的模块。对于私有模块，这并不\
-完全可执行，但对于公共模块是可执行的。这种强制执行由\ :term:`collate`\ 命令完成。\
+完全可执行，但对于公共模块是可执行的。这种强制执行由\ :term:`聚合`\ 命令完成。\
 ``CXXModules.json``\ 文件的一部分是它提供的每个模块可传递导入的模块集。当导入一个\
-模块时，\ :term:`collate`\ 命令确保所有具有给定名称的模块都同意使用给定的\
+模块时，\ :term:`聚合`\ 命令确保所有具有给定名称的模块都同意使用给定的\
 :term:`BMI`\ 文件来提供该模块。
 
 编译
 ^^^^^^^
 
-编译过程使用由\ :term:`collate`\ 命令生成的\ :term:`module map`\ 文件来在编译期\
-间查找导入的模块。由于CMake只提供由\ :term:`scan`\ 命令发现的模块位置，任何被它\
+编译过程使用由\ :term:`聚合`\ 命令生成的\ :term:`模块映射`\ 文件来在编译期\
+间查找导入的模块。由于CMake只提供由\ :term:`扫描`\ 命令发现的模块位置，任何被它\
 遗漏的模块都不会被提供给编译过程。
 
 安装
 ^^^^^^^
 
-在安装过程中，会包含由构建期间的\ :term:`collate`\ 命令编写的安装脚本，以便根据\
+在安装过程中，会包含由构建期间的\ :term:`聚合`\ 命令编写的安装脚本，以便根据\
 需要安装任何\ :term:`BMI`\ 文件。这些脚本需要生成，因为在CMake生成期间不知道\
 :term:`BMI`\ 文件的名称（因为CMake根据模块名称本身命名\ :term:`BMI`\ 文件）。\
 这些安装脚本包含\ ``OPTIONAL``\ 关键字，因此不完整的构建也可能导致不完整的安装。
@@ -585,9 +575,9 @@ CMake的实现。
 静态扫描
 ^^^^^^^^^^^^^^^
 
-:term:`fixed build`\ 在生成构建图时执行扫描，并预先包含必要的依赖项。在CMake的\
+:term:`固定构建`\ 在生成构建图时执行扫描，并预先包含必要的依赖项。在CMake的\
 情况下，它会在生成阶段查看源文件，并将依赖项直接添加到构建图中。这更可能适用于\
-同时也是其自身\ :term:`build tool`\ 的\ :term:`build system`，其中构建图操作可以\
+同时也是其自身\ :term:`构建工具`\ 的\ :term:`构建系统`，其中构建图操作可以\
 协同完成。
 
 无论是否集成，此策略都需要首先使用合适的C++解析器提取信息，或通过工具链合作获取\
@@ -597,8 +587,8 @@ CMake的实现。
 
 对于CMake来说，此策略意味着对感知模块的源文件的任何更改都可能需要触发构建图的重\
 新生成。即使是良性编辑，至少也需要触发对已更改导入的 *检查*，但如果没有变化，\
-则可以跳过实际重新生成。对于同时也是其自身\ :term:`build tool`\ 的\
-:term:`build system`\ 来说，这可能不太关键，但这直接违反了\
+则可以跳过实际重新生成。对于同时也是其自身\ :term:`构建工具`\ 的\
+:term:`构建系统`\ 来说，这可能不太关键，但这直接违反了\
 `最小化重新生成 <design-goal-minimize-regeneration_>`__\ 目标。
 
 此外，CMake的\ `支持生成的源文件 <design-goal-generated-sources_>`__\ 目标在此\
@@ -615,17 +605,17 @@ CMake的实现。
 
 特别值得注意的是，这与\ `确定性构建 <design-goal-deterministic-builds_>`__\ 和\
 `静态通信 <design-goal-static-communication_>`__\ 目标相冲突，因为磁盘上的状态\
-可能与实际状态不匹配，并且很难协调\ :term:`build tool`\ 本身的生命周期与服务。\
+可能与实际状态不匹配，并且很难协调\ :term:`构建工具`\ 本身的生命周期与服务。\
 主要缺少的功能是构建会话开始和结束时的某种信号，以便此类服务能够知道它在什么上下\
 文中回答请求。还需要一种方法来恢复会话并检测会话何时失效。CMake今天支持的所有\
-:term:`build tool`\ 都没有这些功能。
+:term:`构建工具`\ 都没有这些功能。
 
 还有一些与\ `正确构建 <design-goal-correct-builds_>`__\ 目标相冲突的风险。当导入\
 模块时，编译器会等待响应后再继续。然而，不能保证该名称的（可见）模块确实存在，\
 因此它可能会无限期等待。在等待编译报告它创建该模块时，可能会遇到依赖循环，导致\
 编译挂起，直到达到某个资源限制（可能是时间，或者所有可能的模块提供者都没有报告该\
 名称的模块）。当这些编译正在等待答案时，存在一个问题：它们如何影响所使用的\
-:term:`build tool`\ 的并行度限制？等待答案的编译是否会计入限制并阻止其他编译启动\
+:term:`构建工具`\ 的并行度限制？等待答案的编译是否会计入限制并阻止其他编译启动\
 以潜在地发现模块？如果不计入，那么这些编译可能占用的其他资源（例如，内存或可用\
 文件描述符）怎么办？
 
@@ -695,87 +685,110 @@ CMake当前使用单个规则来同时生成编译所需的\ :term:`BMI`\ 和目
      的替代名称。
 
    build database
+   构建数据库
      包含编译命令、模块依赖关系和分组信息的JSON文件。用于IDE集成和构建分析。
 
    build system
+   构建系统
      一种促进软件构建的工具，包含构建组件之间相互关系的模型。例如CMake、Meson、\
      build2等。
 
    build tool
+   构建工具
      构建图执行工具。例如\ `ninja`\ 和\ `make`。有些构建工具同时也是它们自己的\
-     :term:`build system`。
+     :term:`构建系统`。
 
    C++ module
+   C++模块
      C++20语言特性，用于描述软件组件的API。旨在替代为此目的使用的头文件。
 
    collate
+   聚合
      从扫描的源代码中聚合模块信息的过程，以确保正确的编译顺序，并为构建的其他\
-     部分（例如安装或\ :term:`build database`\ ）提供元数据。
+     部分（例如安装或\ :term:`构建数据库`\ ）提供元数据。
 
    discovered dependencies
+   探测到的依赖项
      在处理命令期间发现的不需要显式声明的依赖项。
 
    dynamic dependencies
+   动态依赖项
      需要单独命令检测的依赖项，以便后续命令的依赖项得到满足。
 
    embarrassingly parallel
+   易并行
      一组任务，由于它们之间的依赖关系最小，可以轻松划分为许多可以并发执行的独立任务。
 
    explicit build
+   显式构建
      一种构建策略，其中模块依赖项是显式指定的，而不是发现的。
 
    fixed build
+   固定构建
      一种构建策略，其中所有模块依赖项都被计算并直接插入到构建图中。
 
    header unit
+   头单元
      通过\ ``import``\ 语句而不是\ ``#include``\ 预处理指令使用的头文件。实现\
      可能还提供将\ ``#include``\ 视为\ ``import``\ 的支持。
 
    implementation unit
-     实现模块接口单元中声明的模块实体的C++ :term:`translation unit`。
+   实现单元
+     实现模块接口单元中声明的模块实体的C++\ :term:`翻译单元`。
 
    implicit build
+   隐式构建
      一种构建策略，其中模块依赖项是在编译期间通过搜索\ :term:`BMI`\ 文件发现的。
 
    internal partition unit
-     包含分区名称且未从\ :term:`primary module interface unit`\ 导出的\
-     :term:`translation unit`。
+   内部分区单元
+     包含分区名称且未从\ :term:`主模块接口单元`\ 导出的\ :term:`翻译单元`。
 
    module interface unit
-     使用\ ``export module``\ 声明模块公共接口的\ :term:`translation unit`。\
-     这样的单元可能是也可能不是\ :term:`partition unit`。
+   模块接口单元
+     使用\ ``export module``\ 声明模块公共接口的\ :term:`翻译单元`。\
+     这样的单元可能是也可能不是\ :term:`分区单元`。
 
    module map
+   模块映射
      将模块名称映射到BMI位置的编译器特定文件。
 
    module visibility
+   模块可见性
      CMake基于模块声明范围（PUBLIC/PRIVATE）对模块访问规则的强制执行。
 
    ODR
      单一定义规则（One Definition Rule）。C++要求每个实体在每个程序中恰好定义一次。
 
    partition unit
-     描述带有分区名称的模块的\ :term:`translation unit`\ （即\
+   分区单元
+     描述带有分区名称的模块的\ :term:`翻译单元`\ （即\
      `module MODNAME:PARTITION;`\ ）。分区可能使用也可能不使用\ ``export``\
-     关键字。如果使用，则它也是\ :term:`module interface unit`\ ；否则，它是\
-     :term:`internal partition unit`。
+     关键字。如果使用，则它也是\ :term:`模块接口单元`\ ；否则，它是\
+     :term:`内部分区单元`。
 
    primary module interface unit
-     导出非\ :term:`partition unit`\ 的命名模块的\ :term:`module interface unit`。
+   主模块接口单元
+     导出非\ :term:`分区单元`\ 的命名模块的\ :term:`模块接口单元`。
 
    scan
-     分析\ :term:`translation unit`\ 以发现模块导入和导出的过程。
+   扫描
+     分析\ :term:`翻译单元`\ 以发现模块导入和导出的过程。
 
    static build
+   静态构建
      在生成时确定所有编译规则的构建配置。
 
    strong module ownership
+   强模块所有权
      C++实现已确定了一种模型，其中模块“拥有”其中声明的符号。实际上，这意味着模块\
      名称被包含在其中声明的实体符号修饰中。
 
    synthetic target
+   合成目标
      CMake生成的构建目标，用于向模块提供目标的特定用户提供\ :term:`BMIs <BMI>`。
 
    translation unit
+   翻译单元
      C++程序编译的最小组件。通常，每个源文件对应一个翻译单元。不使用C++模块的C++\
      源文件可以合并为单个翻译单元。

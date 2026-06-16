@@ -59,16 +59,14 @@ CMake使用工具链来编译、链接库和创建存档，以及其他任务来
 :variable:`CMAKE_<LANG>_COMPILER_VERSION`
   编译器的版本。
 :variable:`CMAKE_<LANG>_FLAGS`
-  These variables and the configuration-specific equivalents contain flags that
-  will be added to all invocations of the compiler for a particular language,
-  including those driving compiling and linking.
+  这些变量及其配置特定的等价变量包含的标志将被添加到特定语言编译器的所有调用中，
+  包括驱动编译和链接的调用。
 
 :variable:`CMAKE_<LANG>_LINK_FLAGS`
   .. versionadded:: 4.3
 
-  These variables and the configuration-specific equivalents contain flags that
-  will be added to all invocations of the compiler for a particular language
-  when driving linking only.
+  这些变量及其配置特定的等价变量包含的标志将被添加到特定语言编译器的所有调用中，
+  但仅在驱动链接时使用。
 
 CMake需要一种方法来确定使用哪个编译器来调用链接器。这是由\
 :manual:`目标 <cmake-buildsystem(7)>`\ 源文件的\ :prop_sf:`LANGUAGE`\ 属性决定的，\
@@ -126,7 +124,7 @@ Linux交叉编译
   set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
   set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-Where:
+其中：
 
 :variable:`CMAKE_SYSTEM_NAME`
   是要构建的目标平台的CMake标识符。
@@ -608,19 +606,17 @@ watchOS   watchOS           watchos              watchsimulator   N/A
 - 使用显式的\ ``-framework``\ 链接器标志，例如\
   ``target_link_libraries(foo PUBLIC "-framework CoreFoundation")``
 
-- Use :command:`find_package` only for libraries installed with
-  :variable:`CMAKE_IOS_INSTALL_COMBINED` feature
+- 仅对使用 :variable:`CMAKE_IOS_INSTALL_COMBINED` 功能安装的库使用 :command:`find_package`
 
 .. _`Cross Compiling for Emscripten`:
 
-Cross Compiling for Emscripten
+Emscripten 交叉编译
 ------------------------------
 
 .. versionadded:: 4.2
 
-A toolchain file may configure cross-compiling for `Emscripten`_ by
-setting the :variable:`CMAKE_SYSTEM_NAME` variable to ``Emscripten``.
-For example, a toolchain file might contain:
+工具链文件可以通过将 :variable:`CMAKE_SYSTEM_NAME` 变量设置为 ``Emscripten``
+来配置 `Emscripten`_ 的交叉编译。例如，工具链文件可能包含：
 
 .. code-block:: cmake
 
@@ -630,22 +626,21 @@ For example, a toolchain file might contain:
 
 .. _`Emscripten`: https://emscripten.org/
 
-Cross Compiling using Renesas compilers
+使用 Renesas 编译器进行交叉编译
 ---------------------------------------
 
-For cross-compiling with Renesas compilers, specify at least:
+要使用 Renesas 编译器进行交叉编译，至少需要指定：
 
 :variable:`CMAKE_SYSTEM_NAME`
-  Set to ``Generic``.  Must be specified to enable cross compiling.
+  设置为 ``Generic``。必须指定此项以启用交叉编译。
 
 :variable:`CMAKE_C_COMPILER <CMAKE_<LANG>_COMPILER>`
-  Set to the path to the Renesas C compiler, e.g.,
-  ``ccrx``, ``ccrl``, or ``ccrh``.
+  设置为 Renesas C 编译器的路径，例如 ``ccrx``、 ``ccrl`` 或 ``ccrh``。
 
 :variable:`CMAKE_C_FLAGS <CMAKE_<LANG>_FLAGS>`
-  Set to the ``-isa=`` or ``-cpu=`` flag the compiler requires.
+  设置为编译器所需的 ``-isa=`` 或 ``-cpu=`` 标志。
 
-See example toolchain files in the following sections.
+请参阅以下各节中的示例工具链文件。
 
 Renesas CC-RX
 ^^^^^^^^^^^^^
@@ -654,8 +649,8 @@ Renesas CC-RX
 
   set(CMAKE_SYSTEM_NAME Generic)
   set(CMAKE_C_COMPILER "ccrx.exe")
-  set(CMAKE_ASM_COMPILER "ccrx.exe") # if using ASM language
-  set(CMAKE_C_FLAGS "-isa=rxv3") # specify the version of target RX CPU
+  set(CMAKE_ASM_COMPILER "ccrx.exe") # 如果使用 ASM 语言
+  set(CMAKE_C_FLAGS "-isa=rxv3") # 指定目标 RX CPU 版本
   set(CMAKE_EXE_LINKER_FLAGS "-lnkopt=<your linker option here>")
 
 Renesas CC-RL
@@ -665,11 +660,11 @@ Renesas CC-RL
 
   set(CMAKE_SYSTEM_NAME Generic)
   set(CMAKE_C_COMPILER "ccrl.exe")
-  set(CMAKE_ASM_COMPILER "ccrl.exe") # if using ASM language
-  set(CMAKE_C_FLAGS "-cpu=S3") # specify the version of target RL CPU
-  # To avoid test executable runs out of const section's size.
+  set(CMAKE_ASM_COMPILER "ccrl.exe") # 如果使用 ASM 语言
+  set(CMAKE_C_FLAGS "-cpu=S3") # 指定目标 RL CPU 版本
+  # 避免测试可执行文件超出 const 节的大小。
   set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-  # Specifying device file and section layout linker options through compiler driver.
+  # 通过编译器驱动程序指定设备文件和节布局链接器选项。
   set(CMAKE_EXE_LINKER_FLAGS "-lnkopt=-device=dr5f10y14.dvf -lnkopt=-auto_section_layout")
 
 Renesas CC-RH
@@ -679,6 +674,6 @@ Renesas CC-RH
 
   set(CMAKE_SYSTEM_NAME Generic)
   set(CMAKE_C_COMPILER "ccrh.exe")
-  set(CMAKE_ASM_COMPILER "ccrh.exe") # if using ASM language
-  set(CMAKE_C_FLAGS "-Xcommon=rh850") # specify the version of target RH850 CPU
-  set(CMAKE_EXE_LINKER_FLAGS "-lnkopt=<your linker option here>")
+  set(CMAKE_ASM_COMPILER "ccrh.exe") # 如果使用 ASM 语言
+  set(CMAKE_C_FLAGS "-Xcommon=rh850") # 指定目标 RH850 CPU 版本
+  set(CMAKE_EXE_LINKER_FLAGS "-lnkopt=<你的链接器选项>")
