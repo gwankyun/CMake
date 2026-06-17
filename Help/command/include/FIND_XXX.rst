@@ -31,30 +31,24 @@
               NO_CMAKE_FIND_ROOT_PATH]
             )
 
-This command is used to find a |SEARCH_XXX_DESC|.
+此命令用于查找\ |SEARCH_XXX_DESC|。
 
-Prior to searching, |FIND_XXX| checks if variable ``<VAR>`` is defined. If
-the variable is not defined, the search will be performed. If the variable is
-defined and its value is ``NOTFOUND``, or ends in ``-NOTFOUND``, the search
-will be performed. If the variable contains any other value the search is not
-performed.
+在搜索之前，|FIND_XXX| 会检查变量 ``<VAR>`` 是否已定义。如果变量未定义，则执行搜索。\
+如果变量已定义且其值为 ``NOTFOUND``，或以 ``-NOTFOUND`` 结尾，则执行搜索。如果变量包含\
+其他任何值，则不执行搜索。
 
   .. note::
-      ``VAR`` is considered defined if it is available in the current scope. See
-      the :ref:`cmake-language(7) variables <CMake Language Variables>`
-      documentation for details on scopes, and the interaction of normal
-      variables and cache entries.
+      如果变量在当前作用域中可用，则 ``VAR`` 被视为已定义。有关作用域以及普通变量与缓存条目\
+      之间交互的详细信息，请参阅 :ref:`cmake-language(7) 变量 <CMake Language Variables>`\
+      文档。
 
-The results of the search will be stored in a cache entry named ``<VAR>``.
-Future calls to |FIND_XXX| will inspect this cache entry when specifying the
-same ``<VAR>``. This optimization ensures successful searches will not be
-repeated unless the cache entry is :command:`unset`.
+搜索结果将存储在名为 ``<VAR>`` 的缓存条目中。后续对 |FIND_XXX| 的调用在指定相同的 ``<VAR>``
+时将检查此缓存条目。此优化确保成功的搜索不会被重复执行，除非缓存条目被 :command:`unset`。
 
-If the |SEARCH_XXX| is found the recorded value in cache entry ``<VAR>`` will
-be the result of the search. If nothing is found, the recorded value will be
-``<VAR>-NOTFOUND``.
+如果找到了\ |SEARCH_XXX|，缓存条目 ``<VAR>`` 中记录的值将是搜索的结果。如果未找到任何内容，\
+记录的值将是 ``<VAR>-NOTFOUND``。
 
-Options include:
+选项包括：
 
 ``NAMES``
   为\ |SEARCH_XXX|\ 指定一个或多个可能的名称。
@@ -108,9 +102,8 @@ Options include:
 
   .. note::
 
-    |FIND_XXX| will still check for ``<VAR>`` as usual, checking first for a
-    variable, and then a cache entry. If either indicate a previous successful
-    search, the search will not be performed.
+    |FIND_XXX| 仍将照常检查 ``<VAR>``，首先检查变量，然后检查缓存条目。如果其中任何一个\
+    指示了之前成功的搜索，则不会执行搜索。
 
   .. warning::
 

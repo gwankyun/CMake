@@ -10,10 +10,9 @@
 所有在后续版本中引入的策略将保持未设置状态（除非\ :variable:`CMAKE_POLICY_DEFAULT_CMP<NNNN>`\
 变量设置了默认值）。\
 这实际上是请求采用指定CMake版本所偏好的行为，并告知较新的CMake版本针对其新策略发出警告。
-This effectively requests behavior preferred as of a given CMake
-version and tells newer CMake versions to warn about their new policies.
+这实际上请求截至指定 CMake 版本所推荐的行为，并告知更新的 CMake 版本对其新策略发出警告。
+
 .. note::
 
-  ``...<policy_max>`` does *not* signify that later CMake versions are
-  forbidden.  It merely specifies the highest CMake version for which
-  the project or module has been actively updated and maintained.
+  ``...<policy_max>`` *并不*\ 意味着禁止使用更高版本的 CMake。它仅指定了项目\
+  或模块已经主动更新和维护的最高 CMake 版本。

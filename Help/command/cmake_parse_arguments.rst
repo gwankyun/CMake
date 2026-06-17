@@ -31,10 +31,9 @@ cmake_parse_arguments
   这使得参数值中可以包含像\ ``;``\ 这样的特殊字符。
 
 .. versionadded:: 4.4
-  The ``PARSE_ARGN`` signature is only for use in a :command:`function`
-  body. This starts parsing after the last named argument of the calling
-  function and works exactly like ``PARSE_ARGV`` with ``<N>`` being the number
-  of parameters in the function definition.
+  ``PARSE_ARGN`` 签名仅用于 :command:`function` 函数体中。它从调用函数的最后一个\
+  命名参数之后开始解析，其工作方式与 ``PARSE_ARGV`` 完全相同，其中 ``<N>`` 为函数定义\
+  中的参数数量。
 
 ``<options>``\ 参数包含了相应函数或宏的所有选项。\
 这些关键字后面不跟随值，例如\ :command:`install`\ 命令中的\ ``OPTIONAL``\ 关键字。

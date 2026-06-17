@@ -149,16 +149,14 @@ try_run
 ``<runResultVar>__TRYRUN_OUTPUT_STDOUT``
   .. versionadded:: 3.25
 
-  Output from stdout if the executable were to be run on the target
-  platform.  This is created only if the ``RUN_OUTPUT_STDOUT_VARIABLE``
-  or ``RUN_OUTPUT_STDERR_VARIABLE`` option was used.
+  如果可执行文件在目标平台上运行时的标准输出内容。仅在使用了 ``RUN_OUTPUT_STDOUT_VARIABLE``
+  或 ``RUN_OUTPUT_STDERR_VARIABLE`` 选项时才会创建此变量。
 
 ``<runResultVar>__TRYRUN_OUTPUT_STDERR``
   .. versionadded:: 3.25
 
-  Output from stderr if the executable were to be run on the target
-  platform.  This is created only if the ``RUN_OUTPUT_STDOUT_VARIABLE``
-  or ``RUN_OUTPUT_STDERR_VARIABLE`` option was used.
+  如果可执行文件在目标平台上运行时的标准错误输出内容。仅在使用了 ``RUN_OUTPUT_STDOUT_VARIABLE``
+  或 ``RUN_OUTPUT_STDERR_VARIABLE`` 选项时才会创建此变量。
 
 为了让项目的交叉编译过程更加简便，仅在确实必要时使用\ ``try_run``\ 命令。\
 如果你使用\ ``try_run``\ 命令，仅在确实必要时使用\ ``RUN_OUTPUT_STDOUT_VARIABLE``、\

@@ -22,9 +22,8 @@ block
   ``DIAGNOSTICS``
     .. versionadded:: 4.4
 
-    Create a new diagnostic scope. This is equivalent to
-    :command:`cmake_diagnostic(PUSH)` with an automatic
-    :command:`cmake_diagnostic(POP)` when leaving the block scope.
+    创建一个新的诊断作用域。这等同于带有自动 :command:`cmake_diagnostic(POP)`
+    的 :command:`cmake_diagnostic(PUSH)`，在离开块作用域时自动弹出。
 
   ``POLICIES``
     创建一个新的策略作用域。这等同于\ :command:`cmake_policy(PUSH)`，并在离开块作用域时\
