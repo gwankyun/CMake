@@ -45,12 +45,12 @@ set_property
 ``FILE_SET``
   .. versionadded:: 4.3
 
-  Scope may name zero or more existing file sets.
+  作用域可以指定零个或多个现有文件集。
 
-  The following option is required:
+  以下选项是必需的：
 
   ``TARGET <target>``
-    The target to which the file set is attached.
+    文件集所附加的目标。
 
 ``SOURCE``
   作用域可以指定零个或多个源文件。\

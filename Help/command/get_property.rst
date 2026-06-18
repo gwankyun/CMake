@@ -43,12 +43,12 @@ get_property
 ``FILE_SET``
   .. versionadded:: 4.3
 
-  Scope must name one existing file set.
+  作用域必须指定一个已有的文件集。
 
-  The following option is required:
+  以下选项是必需的：
 
   ``TARGET <target>``
-    The target to which the file set is attached.
+    文件集所依附的目标。
 
 ``SOURCE``
   作用域必须指定一个源文件。默认情况下，源文件的属性将从当前源目录的作用域中读取。

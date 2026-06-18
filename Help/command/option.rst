@@ -13,8 +13,7 @@ option
 在CMake项目模式下，使用option值创建一个布尔缓存变量。在CMake脚本模式下，使用option值设置\
 一个布尔变量。
 
-See Also
+参见
 ^^^^^^^^
 
-* The :module:`CMakeDependentOption` module to specify boolean options that
-  depend on the values of other options or a set of conditions.
+* :module:`CMakeDependentOption` 模块用于指定依赖于其他选项的值或一组条件的布尔选项。

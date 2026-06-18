@@ -63,8 +63,8 @@ CMake语言代码在\ `目录文件`_\ 或\ `脚本文件`_\ 可以使用\ :comm
 
 .. versionadded:: 4.3
 
-  The :command:`cmake_host_system_information` command's ``LOCALE_CHARSET``
-  query returns the expected character set encoding.
+  :command:`cmake_host_system_information` 命令的 ``LOCALE_CHARSET``
+  查询返回预期的字符集编码。
 
 源文件
 ------------

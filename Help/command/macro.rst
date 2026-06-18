@@ -49,10 +49,8 @@ macro
 参数
 ^^^^^^^^^
 
-When a macro is invoked, first all commands recorded in the macro are
-modified by replacing formal parameters (``${arg1}``, ...)
-with the arguments passed. Then all modified commands are invoked as
-normal commands.
+调用宏时，首先会通过将形式参数（ ``${arg1}`` 等）替换为传入的参数，来修改宏中记录\
+的所有命令。然后所有修改后的命令作为常规命令被调用。
 
 除了引用形式参数外，你还可以引用\ ``${ARGC}``\ 的值，它会被设置为传递给宏的参数数量。\
 同时，还能引用\ ``${ARGV0}``、\ ``${ARGV1}``、\ ``${ARGV2}``\ 等，这些变量将包含\

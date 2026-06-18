@@ -33,24 +33,23 @@ if
 
 复合条件的求值顺序按以下优先级进行：
 
-1. `Parentheses`_。
+1. `括号 <Parentheses_>`_。
 
-2. Unary tests such as:
+2. 一元测试，例如：
 
-  * The `存在性检查`_ :cref:`COMMAND`, :cref:`POLICY`, :cref:`TARGET`,
-    :cref:`TEST`, :cref:`EXISTS`, and :cref:`DEFINED`.
-  * The `文件操作`_ :cref:`IS_READABLE`, :cref:`IS_WRITABLE`,
-    :cref:`IS_EXECUTABLE`, :cref:`IS_DIRECTORY`, :cref:`IS_SYMLINK`, and
-    :cref:`IS_ABSOLUTE`.
+  * `存在性检查`_ :cref:`COMMAND`、 :cref:`POLICY`、 :cref:`TARGET`、
+    :cref:`TEST`、 :cref:`EXISTS` 和 :cref:`DEFINED`。
+  * `文件操作`_ :cref:`IS_READABLE`、 :cref:`IS_WRITABLE`、
+    :cref:`IS_EXECUTABLE`、 :cref:`IS_DIRECTORY`、 :cref:`IS_SYMLINK` 和
+    :cref:`IS_ABSOLUTE`。
 
-3. Binary tests such as those described in `比较`_,
-   `版本比较`_, and `路径比较`_, as well as :cref:`IN_LIST`
-   and :cref:`IS_NEWER_THAN`.
+3. 二元测试，例如\ `比较`_、\ `版本比较`_\ 和\ `路径比较`_\ 中所描述的，\
+   以及 :cref:`IN_LIST` 和 :cref:`IS_NEWER_THAN`。
 
-4. Unary logical operator :cref:`NOT`.
+4. 一元逻辑运算符 :cref:`NOT`。
 
-5. Binary logical operators :cref:`AND` and :cref:`OR`, from left to right,
-   without any short-circuit.
+5. 二元逻辑运算符 :cref:`AND` 和 :cref:`OR`，从左到右计算，
+   不进行短路求值。
 
 基础表达式
 """""""""""""""""
@@ -85,7 +84,7 @@ if
 .. signature:: if()
   :target: empty
 
-  False if no argument is provided.
+  如果未提供参数则为 False。
 
 逻辑运算符
 """""""""""""""
@@ -234,8 +233,8 @@ if
   :target: MATCHES
 
   如果给定的字符串或变量的值与给定的正则表达式匹配，则为真。正则表达式的格式参见\
-  :ref:`Regex Specification`。``()`` groups
-  are captured in :variable:`CMAKE_MATCH_<n>` variables.
+  :ref:`Regex Specification`。\
+  ``()`` 分组将被捕获到 :variable:`CMAKE_MATCH_<n>` 变量中。
 
 .. signature:: if(<variable|string> LESS <variable|string>)
   :target: LESS

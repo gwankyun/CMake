@@ -19,5 +19,4 @@ include
 
 有关\ ``NO_POLICY_SCOPE``\ 选项的讨论，请参阅\ :command:`cmake_policy`\ 命令文档。
 
-See the :command:`cmake_diagnostic` command documentation for discussion of the
-``NO_DIAGNOSTIC_SCOPE`` option.
+有关 ``NO_DIAGNOSTIC_SCOPE`` 选项的讨论，请参见 :command:`cmake_diagnostic` 命令文档。
