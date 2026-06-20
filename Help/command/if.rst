@@ -37,8 +37,9 @@ if
 
 2. 一元测试，例如：
 
-  * `存在性检查`_ :cref:`COMMAND`、 :cref:`POLICY`、 :cref:`TARGET`、
-    :cref:`TEST`、 :cref:`EXISTS` 和 :cref:`DEFINED`。
+  * The `存在性检查`_ :cref:`COMMAND`, :cref:`DEFINED`,
+    :cref:`DIAGNOSTIC`, :cref:`EXISTS`, :cref:`POLICY`, :cref:`TARGET`, and
+    :cref:`TEST`.
   * `文件操作`_ :cref:`IS_READABLE`、 :cref:`IS_WRITABLE`、
     :cref:`IS_EXECUTABLE`、 :cref:`IS_DIRECTORY`、 :cref:`IS_SYMLINK` 和
     :cref:`IS_ABSOLUTE`。
@@ -116,6 +117,12 @@ if
 .. signature:: if(COMMAND <command-name>)
 
   当给定名称是可被调用的命令、宏或函数时，结果为真。
+
+.. signature:: if(DIAGNOSTIC <category>)
+
+  .. versionadded:: 4.4
+
+  True if the given name is an existing diagnostic category.
 
 .. signature:: if(POLICY <policy-id>)
 

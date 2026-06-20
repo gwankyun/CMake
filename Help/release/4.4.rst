@@ -186,6 +186,9 @@ Commands
 * The :command:`file(READ_SYMLINK)` command gained a ``RESULT``
   option to capture errors without failing.
 
+* The :command:`if` command gained a new ``DIAGNOSTIC`` operator that evaluates
+  to true if a given diagnostic category name is known to CMake.
+
 * The :command:`include` command now has a ``NO_DIAGNOSTIC_SCOPE`` option.
 
 * The :command:`list(FILTER)` command gained a new ``PREDICATE`` mode
@@ -352,6 +355,11 @@ CTest
   arguments to the above commands in a :ref:`Dashboard Client` script or
   on the :program:`ctest` command line via the
   :ctest-dashboard-option:`-D` option.
+
+* :manual:`ctest(1)` gained a :ctest-dashboard-option:`--source-dir` option
+  to specify the source directory.  When combined with
+  :ctest-option:`-T` Configure, this allows CTest to perform an
+  initial configure step for an empty binary directory.
 
 * :manual:`ctest(1)` gained support for a :variable:`CTEST_SUBMIT_PARTS`
   variable that restricts which parts are uploaded when operating in

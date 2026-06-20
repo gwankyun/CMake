@@ -8,8 +8,8 @@
 .. |Google Trace File| replace:: :ref:`cmake-instrumentation Google Trace File`
 .. |v1 CMake Content File| replace:: :ref:`cmake-instrumentation v1 CMake Content File`
 .. |v1 CMake Content Files| replace:: :ref:`v1 CMake Content Files <cmake-instrumentation v1 CMake Content File>`
-.. |v1 Indexing File| replace:: :ref:`cmake-instrumentation v1 Indexing File`
-.. |v1 Indexing Files| replace:: :ref:`v1 Indexing Files <cmake-instrumentation v1 Indexing File>`
+.. |v1 Indexing File| replace:: :ref:`cmake-instrumentation v1 Index File`
+.. |v1 Indexing Files| replace:: :ref:`v1 Indexing Files <cmake-instrumentation v1 Index File>`
 
 cmake-instrumentation(7)
 ************************
@@ -570,7 +570,11 @@ Example:
     "cmakeContent" : "content/cmake-2025-07-11T12-46-32-0572.json"
   }
 
-.. _`cmake-instrumentation v1 Indexing File`:
+.. versionadded:: 4.4
+  The JSON format is described in machine-readable form by
+  :download:`this JSON schema </manual/instrumentation/snippet-v1-schema.json>`.
+
+.. _`cmake-instrumentation v1 Index File`:
 
 v1索引文件
 -------------

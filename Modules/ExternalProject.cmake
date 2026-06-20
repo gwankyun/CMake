@@ -2828,7 +2828,8 @@ function(_ep_add_configure_command name)
     PROPERTY _EP_CONFIGURE_ENVIRONMENT_MODIFICATION
   )
   if(environment)
-    set(environment "ENVIRONMENT_MODIFICATION" ${environment})
+    string(JOIN "]==] [==[" environment ${environment})
+    set(environment "ENVIRONMENT_MODIFICATION [==[${environment}]==]")
   endif()
 
   get_property(log
@@ -2947,7 +2948,8 @@ function(_ep_add_build_command name)
     PROPERTY _EP_BUILD_ENVIRONMENT_MODIFICATION
   )
   if(environment)
-    set(environment ENVIRONMENT_MODIFICATION ${environment})
+    string(JOIN "]==] [==[" environment ${environment})
+    set(environment "ENVIRONMENT_MODIFICATION [==[${environment}]==]")
   endif()
 
   set(__cmdQuoted)
@@ -3042,7 +3044,8 @@ function(_ep_add_install_command name)
     PROPERTY _EP_INSTALL_ENVIRONMENT_MODIFICATION
   )
   if(environment)
-    set(environment ENVIRONMENT_MODIFICATION ${environment})
+    string(JOIN "]==] [==[" environment ${environment})
+    set(environment "ENVIRONMENT_MODIFICATION [==[${environment}]==]")
   endif()
 
   set(__cmdQuoted)
@@ -3130,7 +3133,8 @@ function(_ep_add_test_command name)
       PROPERTY _EP_TEST_ENVIRONMENT_MODIFICATION
     )
     if(environment)
-      set(environment ENVIRONMENT_MODIFICATION ${environment})
+      string(JOIN "]==] [==[" environment ${environment})
+      set(environment "ENVIRONMENT_MODIFICATION [==[${environment}]==]")
     endif()
 
     set(__cmdQuoted)
