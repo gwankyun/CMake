@@ -344,14 +344,11 @@ CMake会生成构建规则，将源文件编译为目标文件。
 :prop_tgt:`COMPILE_DEFINITIONS`
   目标中的编译源的编译定义列表。这些参数以未指定的顺序以\ ``-D``\ 标志或等效参数传递给编译器。
 
-  When compiling sources of a ``SHARED`` library, a ``MODULE`` library,
-  or an ``EXECUTABLE`` with :prop_tgt:`ENABLE_EXPORTS` enabled, CMake
-  automatically defines a target-specific preprocessor symbol.
-  By default the definition is of the form ``<target>_EXPORTS``, but it
-  can be overridden by the :prop_tgt:`DEFINE_SYMBOL` target property.
-  This allows headers to detect whether they are included from inside
-  their implementation sources, and to correctly set up export/import
-  annotations or visibility of symbols.
+  当编译 ``SHARED`` 库、 ``MODULE`` 库，或启用了 :prop_tgt:`ENABLE_EXPORTS` 的
+  ``EXECUTABLE`` 的源代码时，CMake 会自动定义一个目标特定的预处理器符号。默认情况下，\
+  该定义的形式为 ``<target>_EXPORTS``，但可以通过 :prop_tgt:`DEFINE_SYMBOL` 目标\
+  属性进行覆盖。这使得头文件能够检测自身是否从其实现源文件内部被包含，从而正确设置导出/导入\
+  标注或符号可见性。
 
 :prop_tgt:`COMPILE_OPTIONS`
   编译目标中的源代码的编译选项列表。它们按照出现的顺序作为标志传递给编译器。

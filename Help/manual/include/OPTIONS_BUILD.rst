@@ -35,14 +35,13 @@
 
  该选项也可以作为单个参数使用：\ ``-D<var>:<type>=<value>``\ 或\ ``-D<var>=<value>``。
 
- The cache :prop_cache:`HELPSTRING` is populated as follows:
+ 缓存 :prop_cache:`HELPSTRING` 的填充方式如下：
 
- * If the cache entry is known to CMake, its help string is
-   set to a one-line description of the variable.
+ * 如果缓存条目是 CMake 已知的，其帮助字符串将被设置为该变量的单行描述。
 
    .. versionadded:: 4.4
 
- * Otherwise, its help string is set to the generic default
+ * 否则，其帮助字符串将被设置为通用默认值
    ``No help, variable specified on the command line.``
 
  重要的是要注意\ ``-C``\ 和\ ``-D``\ 参数的顺序很重要。它们将按照列出的顺序执行，最后一个\
@@ -123,29 +122,24 @@
 
 .. option:: -W<category>
 
- Promote the specified diagnostic category (and any children) to at least
- ``WARN`` severity.  Note that this has no effect on diagnostics already set to
- a higher severity.
+ 将指定的诊断类别（及任何子类别）提升至至少 ``WARN`` 严重级别。请注意，这对已设置为更高严重\
+ 级别的诊断没有影响。
 
- See the :manual:`cmake-diagnostics(7)` manual for a list of accepted values
- for ``<category>``.
+ 有关 ``<category>`` 的可接受值列表，请参阅 :manual:`cmake-diagnostics(7)` 手册。
 
 .. option:: -Wno-<category>
 
- Disable (ignore) all diagnostics of the specified category, including any
- child categories.
+ 禁用（忽略）指定类别的所有诊断，包括任何子类别。
 
 .. option:: -Werror=<category>
 
- Promote the specified diagnostic category (and any children) to at least
- ``SEND_ERROR`` severity.  Note that this has no effect on diagnostics already
- set to a higher severity.
+ 将指定的诊断类别（及任何子类别）提升至至少 ``SEND_ERROR`` 严重级别。请注意，这对已设置为\
+ 更高严重级别的诊断没有影响。
 
 .. option:: -Wno-error=<category>
 
- Demote the specified diagnostic category (and any children) to at most
- ``WARN`` severity.  Note that this has no effect on diagnostics already
- set to a lower severity.
+ 将指定的诊断类别（及任何子类别）降级至最多 ``WARN`` 严重级别。请注意，这对已设置为\
+ 更低严重级别的诊断没有影响。
 
 .. option:: -Wdev, -Wno-dev
 

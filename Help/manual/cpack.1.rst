@@ -103,35 +103,30 @@ cpack(1)
 
 .. option:: --preset <preset>, --preset=<preset>
 
-  Use a package :manual:`preset <cmake-presets(7)>` to specify package
-  options. The project binary directory is inferred from the
-  :preset:`packagePresets.configurePreset` key.
+  使用包\ :manual:`预设 <cmake-presets(7)>`\ 来指定打包选项。项目二进制目录从
+  :preset:`packagePresets.configurePreset` 键推断得出。
 
   .. versionchanged:: 4.4
-    If :cpack-option:`--presets-file` is specified, neither of
-    ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
-    present.  Otherwise, they are required to be present in the top level
-    source directory.  In prior versions, this was strictly required.
+    如果指定了 :cpack-option:`--presets-file`，则 ``CMakePresets.json`` 和
+    ``CMakeUserPresets.json`` 均不必存在。否则，它们必须存在于顶层源目录中。在之前的\
+    版本中，这是严格要求的。
 
 .. option:: --presets-file <file>, --presets-file=<file>
 
   .. versionadded:: 4.4
 
-  Reads :manual:`presets <cmake-presets(7)>` from the given ``<file>``. The
-  specified path may be absolute or relative to the current working directory.
-  If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
-  ``CMakeUserPresets.json`` will be ignored.
+  从给定的 ``<file>`` 读取\ :manual:`预设 <cmake-presets(7)>`。指定的路径可以是绝对路径，\
+  也可以是相对于当前工作目录的相对路径。如果给出了 ``--presets-file``，则 ``CMakePresets.json``
+  和 ``CMakeUserPresets.json`` 中定义的预设将被忽略。
 
 .. option:: --list-presets
 
-  Lists the available package presets.
+  列出可用的包预设。
 
   .. versionchanged:: 4.4
-    If :cpack-option:`--presets-file` is specified, neither of
-    ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
-    present, and only presets defined in the given ``<file>`` will be listed.
-    Otherwise, they are required to be present in the top level source
-    directory.  In prior versions, this was strictly required.
+    如果指定了 :cpack-option:`--presets-file`，则 ``CMakePresets.json`` 和
+    ``CMakeUserPresets.json`` 均不必存在，且仅列出给定 ``<file>`` 中定义的预设。否则，\
+    它们必须存在于顶层源目录中。在之前的版本中，这是严格要求的。
 
 .. include:: include/OPTIONS_HELP.rst
 

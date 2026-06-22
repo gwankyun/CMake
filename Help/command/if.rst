@@ -37,9 +37,9 @@ if
 
 2. 一元测试，例如：
 
-  * The `存在性检查`_ :cref:`COMMAND`, :cref:`DEFINED`,
-    :cref:`DIAGNOSTIC`, :cref:`EXISTS`, :cref:`POLICY`, :cref:`TARGET`, and
-    :cref:`TEST`.
+  * `存在性检查`_ :cref:`COMMAND`、 :cref:`DEFINED`、
+    :cref:`DIAGNOSTIC`、 :cref:`EXISTS`、 :cref:`POLICY`、 :cref:`TARGET` 和
+    :cref:`TEST`。
   * `文件操作`_ :cref:`IS_READABLE`、 :cref:`IS_WRITABLE`、
     :cref:`IS_EXECUTABLE`、 :cref:`IS_DIRECTORY`、 :cref:`IS_SYMLINK` 和
     :cref:`IS_ABSOLUTE`。
@@ -122,7 +122,7 @@ if
 
   .. versionadded:: 4.4
 
-  True if the given name is an existing diagnostic category.
+  若给定名称是已有的诊断类别，则为真。
 
 .. signature:: if(POLICY <policy-id>)
 
