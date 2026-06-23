@@ -1,27 +1,25 @@
 remove_definitions
 ------------------
 
-Removes compile definitions added by :command:`add_compile_definitions`, or
-:command:`add_definitions`:
+移除由 :command:`add_compile_definitions` 或 :command:`add_definitions`
+添加的编译定义：
 
 .. code-block:: cmake
 
   remove_definitions([<definitions>...])
 
-The arguments are:
+参数如下：
 
 ``<definitions>...``
-  Zero or more compile definitions.
+  零个或多个编译定义。
 
-This command can be also used to remove any flags added by
-:command:`add_definitions`, but it is intended to remove preprocessor
-definitions passed with ``-D``, or ``/D``.
+此命令也可用于移除由 :command:`add_definitions` 添加的任何标志，但其主要目的是\
+移除通过 ``-D`` 或 ``/D`` 传递的预处理器定义。
 
-Examples
+示例
 ^^^^^^^^
 
-In the following example targets of the current directory scope will have
-only ``BAZ`` and ``QUUX`` compile definitions:
+在以下示例中，当前目录作用域的目标将只有 ``BAZ`` 和 ``QUUX`` 编译定义：
 
 .. code-block:: cmake
 

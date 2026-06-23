@@ -3,23 +3,21 @@ unset
 
 取消变量、缓存变量或者环境变量的值。
 
-Unset Normal Variable
+取消设置普通变量
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. signature::
   unset(<variable> [PARENT_SCOPE])
   :target: normal
 
-  Removes a normal variable from the current scope, causing it
-  to become undefined.
+  从当前作用域移除普通变量，使其变为未定义状态。
 
-  If ``PARENT_SCOPE`` is present then the variable is removed from the scope
-  above the current scope.  See the same option in the :command:`set` command
-  for further details.
+  如果存在 ``PARENT_SCOPE``，则从当前作用域的上一级作用域中移除该变量。\
+  详见 :command:`set` 命令中的相同选项说明。
 
 .. include:: include/UNSET_NOTE.rst
 
-Unset Cache Entry
+取消设置缓存条目
 ^^^^^^^^^^^^^^^^^
 
 .. signature::
@@ -28,16 +26,15 @@ Unset Cache Entry
 
   .. versionadded:: 4.2
 
-  Removes ``<variable>`` from the cache, causing it to become undefined.
+  从缓存中移除 ``<variable>``，使其变为未定义状态。
 
 .. signature::
   unset(<variable> CACHE)
   :target: CACHE_legacy
 
-  This signature is supported for compatibility purpose. Use preferably the
-  other one.
+  此签名仅为兼容性目的而保留。建议优先使用另一种签名。
 
-Unset Environment Variable
+取消设置环境变量
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. signature::

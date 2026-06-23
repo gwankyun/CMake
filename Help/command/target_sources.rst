@@ -72,10 +72,10 @@ target_sources
 一个或多个基本目录以及这些目录中的文件。
 
 .. versionchanged:: 4.4
-  A file may belong to at most one non-``HEADERS`` file set in a target.
-  See policy :policy:`CMP0211`.
+  一个文件在某个目标中最多只能属于一个非 ``HEADERS`` 文件集。\
+  参见策略 :policy:`CMP0211`。
 
- The acceptable types include:
+ 可接受的类型包括：
 
 ``HEADERS``
 
@@ -84,14 +84,10 @@ target_sources
 ``SOURCES``
   .. versionadded:: 4.4
 
-  Specifies sources to use when building a target and/or its dependents.
-  With the scope ``PRIVATE`` and ``PUBLIC``, items will populate the
-  :prop_fs:`SOURCES` property of ``<set>``, which are used when building the
-  target itself. With the scope ``PUBLIC`` and ``INTERFACE``, items will
-  populate the :prop_fs:`INTERFACE_SOURCES` property of ``<set>``, which are
-  used when building dependents. The sources specified by the
-  :prop_fs:`INTERFACE_SOURCES` property are propagated, transitively, to all
-  the dependents.
+  指定在构建目标及其依赖时所使用的源文件。当作用域为 ``PRIVATE`` 和 ``PUBLIC`` 时，\
+  各项将填充 ``<set>`` 的 :prop_fs:`SOURCES` 属性，用于构建目标本身。当作用域为 ``PUBLIC``
+  和 ``INTERFACE`` 时，各项将填充 ``<set>`` 的 :prop_fs:`INTERFACE_SOURCES` 属性，\
+  用于构建其依赖方。:prop_fs:`INTERFACE_SOURCES` 属性所指定的源文件会传递式地传播到所有依赖方。
 
 ``CXX_MODULES``
   .. versionadded:: 3.28
@@ -99,9 +95,8 @@ target_sources
   包含C++接口模块或分区单元的源代码（即使用\ ``export``\ 关键字的源代码）。除了\
   ``IMPORTED``\ 目标之外，此文件集类型不能有\ ``INTERFACE``\ 范围。
 
-The optional default file sets are named after their type. The target may not
-be a custom target or, for ``HEADERS`` and ``CXX_MODULES`` types, a
-:prop_tgt:`FRAMEWORK` target.
+可选的默认文件集以其类型命名。目标不能是自定义目标，对于 ``HEADERS`` 和
+``CXX_MODULES`` 类型，也不能是 :prop_tgt:`FRAMEWORK` 目标。
 
 为了集成IDE，\ ``PRIVATE``\ 或\ ``PUBLIC``\ 文件集中的文件被标记为源文件。此外，\
 在\ ``HEADERS``\ 文件集中的文件的\ :prop_sf:`HEADER_FILE_ONLY`\ 属性被设置为\
