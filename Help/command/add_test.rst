@@ -53,22 +53,17 @@ add_test
 
   * .. versionadded:: 4.4
 
-      When the :variable:`CMAKE_TEST_BUILD_DEPENDS` variable is enabled,
-      the :ref:`Ninja Generators` generate a convenience build target named
-      ``test_prep/<name>`` that depends on the test executable target. Building
-      this target ensures the executable is up-to-date before the test runs.
+      当启用 :variable:`CMAKE_TEST_BUILD_DEPENDS` 变量时，:ref:`Ninja Generators`\
+      会生成一个名为 ``test_prep/<name>`` 的便捷构建目标，该目标依赖于测试可执行文件目标。\
+      构建此目标可确保在测试运行前可执行文件是最新的。
 
-      Additionally, targets referenced by the test command via generator
-      expressions are added as dependencies of the ``test_prep/<name>`` target.
+      此外，通过生成器表达式在测试命令中引用的目标会被添加为 ``test_prep/<name>`` 目标的依赖项。
 
-      If multiple tests in different directories share the same name, their
-      dependencies are merged into a single ``test_prep/<name>`` target.
+      如果不同目录中的多个测试共享相同的名称，它们的依赖项会被合并到单个 ``test_prep/<name>`` 目标中
 
-      Tests with names that are not valid target names are excluded from this
-      behavior.
+      名称不是有效目标名称的测试会被排除在此行为之外。
 
-      The ``BUILD_DEPENDS`` keyword can be used to add explicit build
-      dependencies.
+      可以使用 ``BUILD_DEPENDS`` 关键字添加显式构建依赖项。
 
   该命令可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 指定。
 
@@ -83,11 +78,9 @@ add_test
 ``BUILD_DEPENDS``
   .. versionadded:: 4.4
 
-  Specify a list of targets or files that must be built before the test can
-  run. Each dependency is added to the ``test_prep/<name>`` build target
-  described above when :variable:`CMAKE_TEST_BUILD_DEPENDS` is enabled
-  with the :ref:`Ninja Generators`. The test name must be a valid target name
-  in order to list build dependencies with this keyword.
+  指定一个目标或文件列表，这些目标或文件必须在测试运行前构建。当使用 :ref:`Ninja Generators`\
+  并启用 :variable:`CMAKE_TEST_BUILD_DEPENDS` 时，每个依赖项都会被添加到上述的
+  ``test_prep/<name>`` 构建目标中。测试名称必须是有效的目标名称，才能使用此关键字列出构建依赖项。
 
 ``COMMAND_EXPAND_LISTS``
   .. versionadded:: 3.16
@@ -127,5 +120,4 @@ add_test
 
 ​与上面的\ ``NAME``\ 签名不同，在命令行中不支持目标名称。此外，添加此签名的测试在命令行或\
 测试属性中不支持\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`，\
-and the :prop_tgt:`TEST_LAUNCHER`
-and :prop_tgt:`CROSSCOMPILING_EMULATOR` target properties are not supported.
+并且不支持 :prop_tgt:`TEST_LAUNCHER` 和 :prop_tgt:`CROSSCOMPILING_EMULATOR` 目标属性。

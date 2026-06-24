@@ -7,24 +7,19 @@ enable_testing
 
   enable_testing()
 
-This command should be invoked in the top-level source directory because
-:manual:`ctest(1)` expects to find a test file in the top-level
-build directory.
+此命令应在顶级源代码目录中调用，因为 :manual:`ctest(1)` 期望在顶级构建目录中找到测试文件。
 
 当包含\ :module:`CTest`\ 模块时，将同样自动调用此命令，除非关闭\ :variable:`BUILD_TESTING`\ 选项。
 
-The following restrictions apply to where ``enable_testing()`` may be called:
+``enable_testing()`` 的调用位置有以下限制：
 
-* It must be called in file scope, not in a :command:`function` call nor inside
-  a :command:`block`.
+* 它必须在文件作用域中调用，不能在 :command:`function` 调用内部，也不能在 :command:`block` 内部。
 
-Examples
+示例
 ^^^^^^^^
 
-In the following example, this command is conditionally called depending on how
-the project is used.  For instance, when the Example project is added via the
-:module:`FetchContent` module as a subdirectory of a parent project that defines
-its own tests, testing for the Example project is disabled.
+在以下示例中，该命令根据项目的使用方式有条件地被调用。例如，当 Example 项目通过 :module:`FetchContent`
+模块作为子目录添加到定义了自身测试的父项目时，Example 项目的测试功能将被禁用。
 
 .. code-block:: cmake
   :caption: ``CMakeLists.txt``
@@ -43,7 +38,7 @@ its own tests, testing for the Example project is disabled.
     add_test(...)
   endif()
 
-See Also
+另请参阅
 ^^^^^^^^
 
-* The :command:`add_test` command.
+* :command:`add_test` 命令。

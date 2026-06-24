@@ -1,4 +1,4 @@
-The supported languages are:
+支持的编程语言包括：
 
 ``C``
 
@@ -35,25 +35,25 @@ The supported languages are:
   .. versionadded:: 3.15
 
 ``ASM``
-  Assembly language supported by the C compiler.
+  C 编译器所支持的汇编语言。
 
-  If enabling ``ASM``, list it last so that CMake can check
-  whether the ``C`` or ``CXX`` compiler supports assembly.
+  如果启用 ``ASM``，请将其列在最后，以便 CMake 能够检查
+  ``C`` 或 ``CXX`` 编译器是否支持汇编。
 
 ``ASM_NASM``
-  Netwide Assembler
+  Netwide 汇编器
 
 ``ASM_MARMASM``
   .. versionadded:: 3.26
 
-  Microsoft Assembler (ARM, ARM64)
+  Microsoft 汇编器（ARM、ARM64）
 
 ``ASM_MASM``
-  Microsoft Assembler (x86, x64)
+  Microsoft 汇编器（x86、x64）
 
 ``ASM_POASM``
   .. versionadded:: 4.4
 
-  Pelles C toolchain assembler.
+  Pelles C 工具链汇编器。
 
 ``ASM-ATT``

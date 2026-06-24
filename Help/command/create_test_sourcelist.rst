@@ -55,29 +55,27 @@ create_test_sourcelist
 
   在调用每个测试函数之后直接插入的代码
 
-The generated test driver supports the following command-line arguments:
+生成的测试驱动程序支持以下命令行参数：
 
 ``<name>``
-  Run the test with the exact name ``<name>`` (case-insensitive).
+  以精确名称 ``<name>`` 运行测试（不区分大小写）。
 
 ``-R <substr>``
-  Run the first test whose name contains ``<substr>`` (case-insensitive).
+  运行名称中包含 ``<substr>`` 的第一个测试（不区分大小写）。
 
 ``-A [<skip_test>...]``
   .. versionadded:: 3.21
 
-    Run all tests and print results in `TAP <https://testanything.org/>`_
-    format.
+    运行所有测试，并以 `TAP <https://testanything.org/>`_ 格式打印结果。
 
-    Any additional arguments after ``-A`` are interpreted as exact test names
-    to skip.
+    ``-A`` 之后的任何额外参数均被视为要跳过的精确测试名称。
 
 ``-N``
   .. versionadded:: 4.4
 
-    List all available test names (one per line) and exit.
+    列出所有可用的测试名称（每行一个）并退出。
 
-Example
+示例
 ^^^^^^^
 
 .. code-block:: cmake
@@ -91,7 +89,7 @@ Example
     TEST_ARGS "\\1"
   )
 
-See Also
+另请参阅
 ^^^^^^^^
 
 * :command:`discover_tests`
