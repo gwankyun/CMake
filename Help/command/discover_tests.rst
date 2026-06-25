@@ -3,8 +3,7 @@ discover_tests
 
 .. versionadded:: 4.4
 
-Register tests with names and properties discovered at test time by
-:manual:`ctest(1)`.
+使用在测试时由 :manual:`ctest(1)` 发现的名称和属性注册测试。
 
 .. code-block:: cmake
 

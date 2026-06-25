@@ -3,8 +3,7 @@ cmake_diagnostic
 
 .. versionadded:: 4.4
 
-Manage CMake Diagnostic settings.  See the :manual:`cmake-diagnostics(7)`
-manual for a list of available categories.
+管理 CMake 诊断设置。有关可用类别的列表，请参阅 :manual:`cmake-diagnostics(7)` 手册。
 
 Synopsis
 ^^^^^^^^
