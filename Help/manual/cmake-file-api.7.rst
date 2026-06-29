@@ -107,8 +107,8 @@ v1客户端有状态查询文件
 这可以用来避免要求CMake不必要地生成多个对象版本。
 
 .. versionadded:: 4.1
-  The ``query.json`` file is described in machine-readable form by
-  :download:`this JSON schema </manual/file_api/schema_stateful_query.json>`.
+  ``query.json`` 文件由 :download:`此 JSON schema </manual/file_api/schema_stateful_query.json>`
+  以机器可读形式描述。
 
 一个\ ``query.json``\ 文件必须包含一个JSON对象：
 
@@ -170,8 +170,8 @@ v1应答索引文件
 按字典顺序排最前的是当前索引文件。
 
 .. versionadded:: 4.1
-  The reply index file is described in machine-readable form by
-  :download:`this JSON schema </manual/file_api/schema_index.json>`.
+  应答索引文件由\ :download:`此 JSON schema </manual/file_api/schema_index.json>`
+  以机器可读形式描述。
 
 应答索引文件包含一个JSON对象：
 
@@ -399,8 +399,8 @@ CMake基于文件的API使用以下类型的JSON对象报告构建系统的语�
 :manual:`cmake-server(7)`\ 模式的版本混淆。
 
 .. versionadded:: 4.1
-  The ``codemodel`` object kind reply is described in machine-readable form
-  by :download:`this JSON schema </manual/file_api/schema_codemodel.json>`.
+  ``codemodel`` 对象类型的应答由 :download:`此 JSON schema </manual/file_api/schema_codemodel.json>`
+  以机器可读形式描述。
 
 "codemodel" version 2
 ^^^^^^^^^^^^^^^^^^^^^
