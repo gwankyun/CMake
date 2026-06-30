@@ -26,8 +26,8 @@ cmake-instrumentation(7)
 CMake插桩API允许在CMake项目的配置、生成、构建、测试和安装步骤期间收集计时数据、目标信息以及\
 系统诊断信息。
 
-All interactions with the CMake instrumentation API must specify both an API
-version and a `Data Version`_. There is only one API version, see the `API v1`_.
+与 CMake 插桩 API 的所有交互都必须同时指定 API 版本和 `Data Version`_。目前只有一个 API 版本，\
+参见 `API v1`_。
 
 .. note::
 
@@ -87,30 +87,24 @@ CMake设置\ :prop_gbl:`RULE_LAUNCH_COMPILE`、\ :prop_gbl:`RULE_LAUNCH_LINK`\ �
 
 作为\ |v1 Query Files|\ 的一部分，用户可以提供一个回调函数列表，用于处理此功能收集的数据。
 
-Whenever |Indexing| occurs, each provided callback is executed, passing the
-path to the generated |v1 Indexing File| as an additional argument.
+每当\ |Indexing|\ 发生时，每个提供的回调都会被执行，并将生成的\ |v1 Indexing File|\ 的路径作为附加参数传入。
 
 这些回调函数可以在用户级别或项目级别定义，应该读取插桩数据并执行任何所需的处理。一旦所有回调\
 函数执行完毕，CMake会自动删除索引文件及其列出的片段文件。请注意，回调函数绝不应手动移动或\
 删除这些数据文件，因为其他回调函数可能还需要它们。
 
-If indexing is triggered again before |Callbacks| have finished running,
-the generated index file will contain only instrumentation data generated since
-the previous indexing.
+如果在\ |Callbacks|\ 完成运行之前再次触发索引，则生成的索引文件将仅包含自上次索引以来生成的插桩数据。
 
 启用插桩功能
 ========================
 
-Instrumentation can be enabled either for an individual CMake project, or
-for all CMake projects configured and built by a user. In all cases, a "query"
-represents a request for instrumentation behavior. See the |v1 Query Files|
-for details on configuring this feature.
+插桩可以为单个 CMake 项目启用，也可以为用户配置和构建的所有 CMake 项目启用。在所有情况下，\
+“查询”表示对插桩行为的请求。有关配置此功能的详细信息，请参见\ |v1 Query Files|。
 
 在项目级别启用插桩功能
 ---------------------------------------------
 
-Project code can contain instrumentation queries by using the
-:command:`cmake_instrumentation` command.
+项目代码可以使用 :command:`cmake_instrumentation` 命令来包含插桩查询。
 
 此外，查询文件可以手动放置在构建树顶部的\ ``<build>/.cmake/instrumentation/<version>/query/``\
 目录下。此版本的CMake仅支持一种版本模式，即\ `API v1`_。
