@@ -522,7 +522,7 @@ CMake该属性仅属于\ ``MyProgram``，不可被继承。
 在此练习中，我们需要使用\ :command:`target_link_libraries`\ 将\ ``MathFunctions``\
 目标添加到\ ``Tutorial``\ 目标的链接库中。
 
-修改完CML后，更新\ ``tutorial.cxx``\ 以使用\ ``mathfunctions::sqrt()``\ 函数\
+修改完CML后，更新\ ``Tutorial.cxx``\ 以使用\ ``mathfunctions::sqrt()``\ 函数\
 代替\ ``std::sqrt``。
 
 构建和运行

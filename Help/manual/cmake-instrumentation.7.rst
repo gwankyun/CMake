@@ -242,8 +242,9 @@ v1查询文件
   for the most recent minor version, even if an earlier minor version is
   requested.
 
-  Currently, the only supported version is ``1.0``. Query files with an unknown
-  data version will be ignored.
+  Currently, the only supported major version is ``1``.  Query files
+  requesting a minor version up to the maximum described in `Data Version`_
+  are accepted; those with an unknown data version will be ignored.
 
 ``callbacks``
   用于处理收集的插桩数据的\ |Callbacks|\ 的命令行字符串列表。每当执行这些回调时，\
@@ -409,8 +410,8 @@ v1片段文件
 片段文件的文件名语法为\ ``<role>-<hash>-<timestamp>.json``，并包含以下数据
 
   ``version``
-    The `Data Version`_ of the snippet file. Currently the version is
-    always ``{ "major": 1, "minor": 0 }``.
+    The `Data Version`_ of the snippet file, written as
+    ``{ "major": 1, "minor": N }`` where ``N`` is the most recent minor version.
 
   ``command``
     执行的完整命令。当\ ``role``\ 为\ ``build``\ 时排除。
@@ -577,8 +578,8 @@ v1索引文件
 时生成，并在任何用户指定的\ |Callbacks|\ 执行完毕后删除。
 
 ``version``
-  The `Data Version`_ of the index file. Currently this is always written as:
-  ``{ "major": 1, "minor": 0 }``.
+  The `Data Version`_ of the index file, written as
+  ``{ "major": 1, "minor": N }`` where ``N`` is the most recent minor version.
 
 ``buildDir``
   CMake项目的构建目录。
@@ -677,8 +678,8 @@ corresponding to the CMake invocation responsible for generating its command.
 Each CMake content file contains the following:
 
   ``version``
-    The `Data Version`_ of the content file. Currently the version is
-    always ``{ "major": 1, "minor": 0 }``.
+    The `Data Version`_ of the content file, written as
+    ``{ "major": 1, "minor": N }`` where ``N`` is the most recent minor version.
 
   ``project``
     The value of :variable:`CMAKE_PROJECT_NAME`.
