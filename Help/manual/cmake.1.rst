@@ -374,8 +374,7 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
  出于向后兼容的原因，\ ``--loglevel``\ 也被接受为该选项的同义词。
 
  .. versionadded:: 3.25
-   See the :command:`cmake_language(GET_MESSAGE_LOG_LEVEL)` command for a way
-   to query the current message logging level.
+   请参阅 :command:`cmake_language(GET_MESSAGE_LOG_LEVEL)` 命令，了解查询当前消息日志级别的方法。
 
 .. option:: --log-context
 

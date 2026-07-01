@@ -445,7 +445,7 @@
     "$schema@v8..": {
       "type": "string",
       "format": "uri-reference",
-      "description": "An optional string that provides a URI to the JSON schema that describes the structure of this JSON document. This field is used for validation and autocompletion in editors that support JSON schema. It doesn't affect the behavior of the document itself. If this field is not specified, the JSON document will still be valid, but tools that use JSON schema for validation and autocompletion may not function correctly."
+      "description": "一个可选字符串，提供描述此 JSON 文档结构的 JSON 模式的 URI。此字段用于支持 JSON 模式的编辑器中进行验证和自动补全。它不影响文档本身的行为。如果未指定此字段，JSON 文档仍然有效，但使用 JSON 模式进行验证和自动补全的工具可能无法正常工作。"
     },
     "cmakeMinimumRequired@v1..v9": {
       "type": "object",

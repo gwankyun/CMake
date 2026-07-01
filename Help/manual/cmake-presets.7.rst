@@ -26,8 +26,7 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 .. presets-versionadded:: 4
 
-  CMake also supports files included with the :preset:`include` field.  See
-  |includes| for more details.
+  CMake 还支持通过 :preset:`include` 字段包含的文件。更多细节请参阅\ |includes|。
 
 ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``\ 存在于项目的根目录中。它们都具\
 有完全相同的格式，并且都是可选的（尽管如果指定了\ :cmake-option:`--preset`，\
@@ -40,10 +39,9 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 .. versionadded:: 4.4
 
-  CMake also supports specifying a file from which to read presets via the
-  :cmake-option:`--presets-file` option.  If this option is specified, neither
-  of ``CMakePresets.json`` nor ``CMakeUserPresets.json`` are required to be
-  present, and any presets defined in those files will be ignored/unavailable.
+  CMake 还支持通过 :cmake-option:`--presets-file` 选项指定一个文件来读取预设。如果指定了\
+  此选项，则不要求 ``CMakePresets.json`` 或 ``CMakeUserPresets.json`` 存在，且这些文件\
+  中定义的任何预设将被忽略/不可用。
 
 格式
 ======
@@ -55,8 +53,7 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 .. presets-versionadded:: 10
 
-  Presets files may include comments using the key ``$comment`` at any level
-  within the JSON object to provide documentation.
+  预设文件可以在 JSON 对象的任意层级使用键 ``$comment`` 来添加注释，以提供文档说明。
 
 根对象识别以下字段：
 

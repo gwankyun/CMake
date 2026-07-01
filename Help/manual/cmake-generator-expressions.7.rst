@@ -38,9 +38,8 @@ cmake-generator-expressions(7)
 
 .. note::
 
-  Generator expressions are supported in the values of many properties,
-  but not all.  Check a property's documentation for explicit mention
-  of generator expressions before using them.
+  生成器表达式在许多属性的值中受支持，但并非全部。在使用之前，请检查属性的文档是否明确\
+  提到了生成器表达式。
 
 空格和引号
 ======================

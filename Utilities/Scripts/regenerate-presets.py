@@ -707,7 +707,7 @@ def readDiagnostics(path: Path | str) -> list[Diagnostic]:
     content = ''
 
     # Extract diagnostics table from header.
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         extracting = False
         for line in f:
             if DIAGNOSTIC_TABLE_MACRO in line:
@@ -740,7 +740,7 @@ def readDiagnostics(path: Path | str) -> list[Diagnostic]:
 # -----------------------------------------------------------------------------
 def main():
     # Read the schema definition.
-    with open(PRESETS / SCHEMA_YAML_FILENAME, 'r') as f:
+    with open(PRESETS / SCHEMA_YAML_FILENAME, 'r', encoding='utf-8') as f:
         schema = yaml.safe_load(f)
 
     # Extract the current (latest) version.
@@ -806,7 +806,7 @@ def main():
         doc = o.doc(1, LATEST + 1)
         if doc is not None:
             print(f'- Generating reST documentation for {n} properties')
-            with open(PRESETS / f'{o.name}-properties.rst', 'w') as f:
+            with open(PRESETS / f'{o.name}-properties.rst', 'w', encoding='utf-8') as f:
                 print(RST_BANNER, file=f)
                 print(doc, file=f)
 
@@ -830,8 +830,8 @@ def main():
         'definitions': types
     }
 
-    with open(PRESETS / SCHEMA_JSON_FILENAME, 'w') as f:
-        print(json.dumps(schema, indent=2), file=f)
+    with open(PRESETS / SCHEMA_JSON_FILENAME, 'w', encoding='utf-8') as f:
+        print(json.dumps(schema, indent=2, ensure_ascii=False), file=f)
 
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

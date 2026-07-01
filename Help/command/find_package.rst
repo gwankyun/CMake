@@ -481,12 +481,10 @@ CMake为包构造一组可能的安装前缀。在每个前缀下搜索几个目
 
 按上述顺序搜索路径。使用找到的第一个可行的包配置文件，即使较新的包版本位于搜索路径列表的后面。
 
-For search paths which contain glob expressions (``*``), directories matching
-the glob are searched in natural, descending order by default. This behavior
-can be overridden by setting variables :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`
-and :variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION` accordingly. Those variables
-determine the order in which CMake considers glob matches. For example, if the
-file system contains the package configuration files
+对于包含 glob 表达式（ ``*`` ）的搜索路径，匹配 glob 的目录默认按自然降序搜索。此行为可通过\
+相应设置变量 :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` 和
+:variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION` 来覆盖。这些变量决定了 CMake 考虑 glob
+匹配项的顺序。例如，如果文件系统包含以下包配置文件：
 
 ::
 
@@ -494,10 +492,9 @@ file system contains the package configuration files
   <prefix>/example-1.10/example-config.cmake
   <prefix>/share/example-2.0/example-config.cmake
 
-then ``find_package(example)`` will (when the aforementioned variables are
-unset) pick ``example-1.10`` (assuming both ``example-1.2`` and ``example-1.10``
-are viable). Note however that ``find_package`` will *not* find ``example-2.0``,
-because one of the other two will be found first.
+那么 ``find_package(example)`` 将（在前述变量未设置时）选择 ``example-1.10`` （假设
+``example-1.2`` 和 ``example-1.10`` 都可行）。但请注意， ``find_package`` 将\ *不会*\ 找到
+``example-2.0``，因为其他两个中的一个会先被找到。
 
 要控制 ``find_package`` 搜索匹配glob表达式的目录的顺序，可以使用\
 :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER`\ 和\
@@ -522,12 +519,10 @@ because one of the other two will be found first.
    匹配的目录的顺序。在以前的 CMake 版本中，这个顺序是未指定的。
 
 .. versionchanged:: 4.2
-   When encountering multiple viable matches, ``find_package`` now picks the
-   one with the most recent version by default. In previous versions of CMake,
-   the result was unspecified. Accordingly, the default of
-   :variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` has changed from ``NONE`` to
-   ``NATURAL`` and :variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION`
-   now defaults to ``DEC`` (descending) instead of ``ASC`` (ascending).
+   当遇到多个可行的匹配项时， ``find_package`` 现在默认选择版本最新的一个。在之前的 CMake
+   版本中，结果是不确定的。相应地，:variable:`CMAKE_FIND_PACKAGE_SORT_ORDER` 的默认值已从
+   ``NONE`` 变为 ``NATURAL``，而 :variable:`CMAKE_FIND_PACKAGE_SORT_DIRECTION` 的默认值\
+   现在从 ``ASC`` （升序）变为 ``DEC`` （降序）。
 
 
 .. include:: include/FIND_XXX_ROOT.rst
