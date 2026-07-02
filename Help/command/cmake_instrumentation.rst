@@ -18,14 +18,13 @@ cmake_instrumentation
     [CUSTOM_CONTENT <name> <type> <content>]
   )
 
-The ``API_VERSION`` and ``DATA_VERSION`` must always be given.
+必须始终指定 ``API_VERSION`` 和 ``DATA_VERSION``。
 
-``API_VERSION`` is an integer. Currently, the only supported value is ``1``.
-See :ref:`cmake-instrumentation API v1` for details.
+``API_VERSION`` 是一个整数。当前唯一支持的值为 ``1``。\
+详见 :ref:`cmake-instrumentation API v1`。
 
-``DATA_VERSION`` is a version value of the form ``major`` or ``major.minor``.
-Currently, the maximum supported version is ``1.1``. See
-:ref:`cmake-instrumentation Data Version` for details.
+``DATA_VERSION`` 是形如 ``major`` 或 ``major.minor`` 的版本值。\
+当前支持的最大版本为 ``1.1``。详见 :ref:`cmake-instrumentation Data Version`。
 
 可选关键字 ``HOOKS``、\ ``OPTIONS``\ 和\ ``CALLBACK``\ 分别对应于\
 :ref:`cmake-instrumentation v1 Query Files`\ 中的一个参数。\
@@ -36,33 +35,29 @@ Currently, the maximum supported version is ``1.1``. See
 
 .. _`cmake_instrumentation CUSTOM_CONTENT`:
 
-Custom CMake Content
+自定义 CMake 内容
 ^^^^^^^^^^^^^^^^^^^^
 
-The ``CUSTOM_CONTENT`` argument specifies certain data from configure time to
-include in each :ref:`cmake-instrumentation v1 CMake Content File`. This
-may be used to associate instrumentation data with certain information about its
-configuration, such as the optimization level or whether it is part of a
-coverage build.
+``CUSTOM_CONTENT`` 参数指定了来自配置阶段的特定数据，以包含在每个
+:ref:`cmake-instrumentation v1 CMake Content File` 中。这可用于将\
+插桩数据与其配置相关的信息进行关联，例如优化级别或是否属于覆盖率构建的一部分。
 
-``CUSTOM_CONTENT`` expects ``name``, ``type`` and ``content`` arguments.
+``CUSTOM_CONTENT`` 接受 ``name``、 ``type`` 和 ``content`` 参数。
 
-``name`` is a specifier to identify the content being reported.
+``name`` 是用于标识所报告内容的标识符。
 
-``type`` specifies how the content should be interpreted. Supported values are:
-  * ``STRING`` the content is a string.
-  * ``BOOL`` the content should be interpreted as a boolean. It will be ``true``
-    under the same conditions that ``if()`` would be true for the given value.
-  * ``LIST`` the content is a CMake ``;`` separated list that should be parsed.
-  * ``JSON`` the content should be parsed as a JSON string. This can be a
-    number such as ``1`` or ``5.0``, a quoted string such as ``\"string\"``,
-    a boolean value ``true``/``false``, or a JSON object such as
-    ``{ \"key\" : \"value\" }`` that may be constructed using
-    ``string(JSON ...)`` commands.
+``type`` 指定内容的解释方式。支持的值为：
+  * ``STRING`` —— 内容是一个字符串。
+  * ``BOOL`` —— 内容应被解释为布尔值。在 ``if()`` 对给定值为真的相同条件下，\
+    其值将为 ``true``。
+  * ``LIST`` —— 内容是一个以 CMake ``;`` 分隔的列表，应被解析。
+  * ``JSON`` —— 内容应被解析为 JSON 字符串。可以是数字，如 ``1`` 或 ``5.0``；
+    引号字符串，如 ``\"string\"``；布尔值 ``true``/``false``；或 JSON 对象，
+    如 ``{ \"key\" : \"value\" }``，可使用 ``string(JSON ...)`` 命令构造。
 
-``content`` is the actual content to report.
+``content`` 是要报告的实际内容。
 
-Example
+示例
 ^^^^^^^
 
 以下示例展示了该命令的调用方式以及与之等效的JSON查询文件。
@@ -97,8 +92,8 @@ Example
     ]
   }
 
-This will also result in the following content included in each
-:ref:`cmake-instrumentation v1 CMake Content File`:
+这还将导致以下内容被包含在每个
+:ref:`cmake-instrumentation v1 CMake Content File` 中：
 
 .. code-block:: json
 
