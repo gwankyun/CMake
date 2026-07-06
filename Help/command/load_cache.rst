@@ -4,62 +4,50 @@ load_cache
 从另一个项目的\ ``CMakeCache.txt``\ 缓存文件中加载值。这对于依赖于在单独目录树中构建的另一个\
 项目的项目很有用。
 
-This command has two signatures.  The recommended signature is:
+此命令有两种签名形式。推荐的签名为：
 
 .. signature::
   load_cache(<build-dir> READ_WITH_PREFIX <prefix> <entry>...)
   :target: READ_WITH_PREFIX
 
-  Loads the cache file from the specified ``<build-dir>`` build directory and
-  retrieves the listed cache entries.  The retrieved values are stored in local
-  variables, with their names prefixed by the provided ``<prefix>``.  This only
-  reads the cache values; it does not create or modify entries in the local
-  project's cache.
+  从指定的 ``<build-dir>`` 构建目录加载缓存文件，并获取所列出的缓存条目。获取的值存储在局部\
+  变量中，其名称以提供的 ``<prefix>`` 为前缀。此操作仅读取缓存值；不会创建或修改本地项目缓存中\
+  的条目。
 
   ``READ_WITH_PREFIX <prefix>``
-    For each cache ``<entry>``, a local variable is created using the specified
-    ``<prefix>`` followed by the entry name.
+    对于每个缓存 ``<entry>``，使用指定的 ``<prefix>`` 加条目名称创建一个局部变量。
 
-  This signature can be also used in :option:`cmake -P` script mode.
+  此签名也可用于 :option:`cmake -P` 脚本模式。
 
-The following signature of this command is strongly discouraged, but it is
-provided for backward compatibility:
+此命令的以下签名形式强烈不建议使用，但为向后兼容而提供。
 
 .. signature::
   load_cache(<build-dir> [EXCLUDE <entry>...] [INCLUDE_INTERNALS <entry>...])
   :target: raw
 
-  This form loads the cache file from the specified ``<build-dir>`` build
-  directory and imports all its non-internal cache entries into the local
-  project's cache as internal cache variables.  By default, only non-internal
-  entries are imported, unless the ``INCLUDE_INTERNALS`` option is used.
+  此形式从指定的 ``<build-dir>`` 构建目录加载缓存文件，并将其所有非内部缓存条目导入到本地\
+  项目的缓存中作为内部缓存变量。默认情况下，仅导入非内部条目，除非使用了 ``INCLUDE_INTERNALS``
+  选项。
 
-  The options are:
+  选项如下：
 
   ``EXCLUDE <entry>...``
-    This option can be used to exclude a given list of non-internal cache
-    entries when importing values.
+    此选项可用于在导入值时排除给定的非内部缓存条目列表。
   ``INCLUDE_INTERNALS <entry>...``
-    This option can be used to provide a list of internal cache entries to
-    include in addition to the non-internal cache entries.
+    此选项可用于提供一份内部缓存条目列表，以便在非内部缓存条目之外额外包含这些条目。
 
-  This signature can be used only in CMake projects.  Script mode is not
-  supported.
+  此签名只能在 CMake 项目中使用。不支持脚本模式。
 
 .. note::
 
-  Instead of loading the outside project's cache file and manually accessing
-  variables, a more robust and convenient approach is to use the
-  :command:`export` command in the outside project, when available.  This allows
-  the project to provide its targets, configuration, or features in a
-  structured and maintainable way, making integration simpler and less
-  error-prone.
+  与加载外部项目的缓存文件并手动访问变量相比，更稳健且更便捷的方法是在外部项目中使用
+  :command:`export` 命令（如果可用）。这允许项目以结构化且可维护的方式提供其目标、\
+  配置或特性，使集成更简单且更不易出错。
 
-Examples
+示例
 ^^^^^^^^
 
-Reading specific cache variables from another project and storing them as local
-variables:
+从另一个项目读取特定的缓存变量并将其存储为局部变量：
 
 .. code-block:: cmake
 
@@ -76,8 +64,7 @@ variables:
   # -- some-value...
   # -- another-value...
 
-Reading all non-internal cache entries from another project and storing them as
-internal cache variables using the obsolete signature:
+使用过时的签名从另一个项目读取所有非内部缓存条目并将其存储为内部缓存变量：
 
 .. code-block:: cmake
 
@@ -89,8 +76,7 @@ internal cache variables using the obsolete signature:
   # -- some-value...
   # -- another-value...
 
-Excluding specific non-internal cache entries and including internal ones using
-the obsolete signature:
+使用过时的签名排除特定的非内部缓存条目并包含内部缓存条目：
 
 .. code-block:: cmake
 
