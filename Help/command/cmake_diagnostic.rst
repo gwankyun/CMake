@@ -5,24 +5,24 @@ cmake_diagnostic
 
 管理 CMake 诊断设置。有关可用类别的列表，请参阅 :manual:`cmake-diagnostics(7)` 手册。
 
-Synopsis
+概述
 ^^^^^^^^
 
 .. parsed-literal::
 
-  `Setting Diagnostics`_
+  `设置诊断`_
     cmake_diagnostic(`SET`_ <category> <action> [RECURSE])
     cmake_diagnostic(`PROMOTE`_ <category> <action> [NO_RECURSE])
     cmake_diagnostic(`DEMOTE`_ <category> <action> [NO_RECURSE])
 
-  `Checking Diagnostic Actions`_
+  `检查诊断动作`_
     cmake_diagnostic(`GET`_ <diagnostic> <out-var>)
 
-  `CMake Diagnostic Stack`_
+  `CMake 诊断栈`_
     cmake_diagnostic(`PUSH`_)
     cmake_diagnostic(`POP`_)
 
-Setting Diagnostics
+设置诊断
 ^^^^^^^^^^^^^^^^^^^
 
 .. signature::
@@ -34,89 +34,71 @@ Setting Diagnostics
     PROMOTE
     DEMOTE
 
-Set or alter the action taken when a diagnostic belonging to a particular
-category is triggered.
+设置或修改当属于特定类别的诊断被触发时采取的动作。
 
-The ``SET`` subcommand sets the action for the specified diagnostic category.
-The ``PROMOTE`` subcommand increases the severity for the specified diagnostic
-category, or does nothing if the action was already set to an equal or higher
-severity.  The ``DEMOTE`` subcommand decreases the severity for the specified
-diagnostic category, or does nothing if the action was already set to an equal
-or lower severity.
+``SET`` 子命令为指定的诊断类别设置动作。 ``PROMOTE`` 子命令提高指定诊断类别的严重级别，\
+如果动作已设置为同等或更高的严重级别，则不做任何操作。 ``DEMOTE`` 子命令降低指定诊断类别的\
+严重级别，如果动作已设置为同等或更低的严重级别，则不做任何操作。
 
-The possible ``<action>``\ s (in order of severity) are:
+可能的 ``<action>`` （按严重级别排序）为：
 
 ``IGNORE``
-  Do nothing.
+  不做任何操作。
 
 ``WARN``
-  Report a warning and continue processing.
+  报告警告并继续处理。
 
 ``SEND_ERROR``
-  Report an error, continue processing, but skip generation.
+  报告错误，继续处理，但跳过生成步骤。
 
-  The :manual:`cmake(1)` executable will return a non-zero
-  :ref:`exit code <CMake Exit Code>`.
+  :manual:`cmake(1)` 可执行文件将返回非零\ :ref:`退出码 <CMake Exit Code>`。
 
 ``FATAL_ERROR``
-  Report an error, stop processing and generation.
+  报告错误，停止处理和生成。
 
-  The :manual:`cmake(1)` executable will return a non-zero
-  :ref:`exit code <CMake Exit Code>`.
+  :manual:`cmake(1)` 可执行文件将返回非零\ :ref:`退出码 <CMake Exit Code>`。
 
-Some diagnostic categories are hierarchical.  The ``RECURSE`` and
-``NO_RECURSE`` options determine whether changing the action for a diagnostic
-category also modifies any child categories.  By default, the ``PROMOTE`` and
-``DEMOTE`` subcommands are recursive, while the ``SET`` subcommand is not.
-Note that the alteration for child categories is independent of the prior
-action set on any parents; that is, ``PROMOTE`` and ``DEMOTE``, when operating
-recursively, will operate on all child categories even if a parent category's
-action was not altered.
+某些诊断类别具有层级结构。 ``RECURSE`` 和 ``NO_RECURSE`` 选项决定修改诊断类别的动作时是否\
+同时修改其子类别。默认情况下， ``PROMOTE`` 和 ``DEMOTE`` 子命令是递归的，而 ``SET`` 子命令\
+不是。请注意，对子类别的修改与父类别上先前设置的动作无关；也就是说， ``PROMOTE`` 和 ``DEMOTE``
+在递归操作时，将对所有子类别进行操作，即使父类别的动作未被修改。
 
-Checking Diagnostic Actions
+检查诊断动作
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. signature:: cmake_diagnostic(GET CMD_<CATEGORY> <variable>)
   :target: GET
 
-Check what action is currently specified for a diagnostic category.
-The output ``<variable>`` value will be one of ``IGNORE``, ``WARN``,
-``SEND_ERROR`` or ``FATAL_ERROR``.
+检查当前为某个诊断类别指定的动作。输出 ``<variable>`` 的值将为 ``IGNORE``、
+``WARN``、 ``SEND_ERROR`` 或 ``FATAL_ERROR`` 之一。
 
-CMake Diagnostic Stack
+CMake 诊断栈
 ^^^^^^^^^^^^^^^^^^^^^^
 
-CMake keeps diagnostic settings on a stack, so changes made by the
-``cmake_diagnostic`` command affect only the top of the stack.  A new entry on
-the diagnostic stack is managed automatically for each subdirectory to protect
-its parents and siblings.  CMake also manages a new entry for scripts loaded by
-:command:`include` and :command:`find_package` commands except when invoked
-with the ``NO_DIAGNOSTIC_SCOPE`` option.  The ``cmake_diagnostic`` command
-provides an interface to manage custom entries on the diagnostic stack:
+CMake 将诊断设置保存在栈中，因此 ``cmake_diagnostic`` 命令所做的更改仅影响栈顶。诊断栈上的\
+新条目会为每个子目录自动管理，以保护其父目录和同级目录。CMake 还会为由 :command:`include`
+和 :command:`find_package` 命令加载的脚本管理新条目，除非调用时使用了 ``NO_DIAGNOSTIC_SCOPE``
+选项。 ``cmake_diagnostic`` 命令提供了管理诊断栈上自定义条目的接口：
 
 .. signature:: cmake_diagnostic(PUSH)
 
-  Create a new entry on the diagnostic stack.
+  在诊断栈上创建新条目。
 
 .. signature:: cmake_diagnostic(POP)
 
-  Remove the last diagnostic stack entry created with
-  ``cmake_diagnostic(PUSH)``.
+  移除由 ``cmake_diagnostic(PUSH)`` 创建的最后一个诊断栈条目。
 
-Each ``PUSH`` must have a matching ``POP`` to erase any changes.
-This is useful to make temporary changes to diagnostic settings.
-Calls to the :command:`cmake_diagnostic(SET)`,
-:command:`cmake_diagnostic(PROMOTE)`, or :command:`cmake_diagnostic(DEMOTE)`
-commands influence only the current top of the diagnostic stack.
+每个 ``PUSH`` 必须有一个匹配的 ``POP`` 来撤销任何更改。这对于临时修改诊断设置非常有用。\
+对 :command:`cmake_diagnostic(SET)`、 :command:`cmake_diagnostic(PROMOTE)` 或
+:command:`cmake_diagnostic(DEMOTE)` 命令的调用仅影响诊断栈的当前栈顶。
 
-The :command:`block(SCOPE_FOR DIAGNOSTICS)` command offers a more flexible
-and more secure way to manage the diagnostic stack. The pop action is done
-automatically when leaving the block scope, so there is no need to
-precede each :command:`return` with a call to :command:`cmake_diagnostic(POP)`.
+:command:`block(SCOPE_FOR DIAGNOSTICS)` 命令提供了一种更灵活、更安全的方式来管理诊断栈。\
+弹出操作在离开块作用域时自动完成，因此无需在每个 :command:`return` 之前调用
+:command:`cmake_diagnostic(POP)`。
 
 .. code-block:: cmake
 
-  # stack management with cmake_diagnostic()
+  # 使用 cmake_diagnostic() 管理栈
   function(my_func)
     cmake_diagnostic(PUSH)
     cmake_diagnostic(SET ...)
@@ -133,7 +115,7 @@ precede each :command:`return` with a call to :command:`cmake_diagnostic(POP)`.
     cmake_diagnostic(POP)
   endfunction()
 
-  # stack management with block()/endblock()
+  # 使用 block()/endblock() 管理栈
   function(my_func)
     block(SCOPE_FOR DIAGNOSTICS)
       cmake_diagnostic(SET ...)
@@ -148,8 +130,6 @@ precede each :command:`return` with a call to :command:`cmake_diagnostic(POP)`.
     endblock()
   endfunction()
 
-Commands created by the :command:`function` and :command:`macro` commands
-record diagnostic settings when they are created and use the pre-record
-diagnostics when they are invoked.  If the function or macro implementation
-sets diagnostics, the changes automatically propagate up through callers until
-they reach the closest nested diagnostic stack entry.
+由 :command:`function` 和 :command:`macro` 命令创建的命令在创建时记录诊断设置，
+并在被调用时使用预先记录的诊断。如果函数或宏的实现设置了诊断，这些更改会自动向上传播到调用者，\
+直到到达最近的嵌套诊断栈条目。

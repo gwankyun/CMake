@@ -17,87 +17,71 @@ discover_tests
     [TEST_PROPERTIES <key> <replacement> [<key> <replacement>]...]
   )
 
-This command configures test discovery rather than defining a single test at
-configure time.  During test execution, :manual:`ctest(1)` runs the specified
-discovery command, parses its output, and registers one or more tests based on
-the provided regular expression and replacement strings.
+该命令配置测试发现机制，而非在配置阶段定义单个测试。在测试执行时，:manual:`ctest(1)`
+运行指定的发现命令，解析其输出，并根据提供的正则表达式和替换字符串注册一个或多个测试。
 
-``discover_tests`` options are:
+``discover_tests`` 的选项如下：
 
 ``COMMAND``
-  Specify the command-line used for test discovery.
+  指定用于测试发现的命令行。
 
-  The command is executed by :manual:`ctest(1)` at test time (not by CMake at
-  configure time).  With ``DISCOVERY_ARGS`` appended, it must print the list of
-  available tests in a format matched by ``DISCOVERY_MATCH``.
+  该命令由 :manual:`ctest(1)` 在测试时执行（而非由 CMake 在配置阶段执行）。附加
+  ``DISCOVERY_ARGS`` 后，该命令必须以 ``DISCOVERY_MATCH`` 所匹配的格式打印可用测试列表。
 
-  If ``<command>`` specifies an executable target created by
-  :command:`add_executable`:
+  如果 ``<command>`` 指定的是由 :command:`add_executable` 创建的可执行目标：
 
-  * It will automatically be replaced by the location of the executable
-    created at build time.
+  * 它将自动被替换为构建时生成的可执行文件的位置。
 
-  * The target's :prop_tgt:`CROSSCOMPILING_EMULATOR`, if set, will be
-    used to run the command on the host::
+  * 如果目标设置了 :prop_tgt:`CROSSCOMPILING_EMULATOR`，将使用该模拟器在主机上运行命令::
 
       <emulator> <command>
 
-    The emulator is used only when
-    :variable:`cross-compiling <CMAKE_CROSSCOMPILING>`.
+    该模拟器仅在\ :variable:`交叉编译 <CMAKE_CROSSCOMPILING>`\ 时使用。
 
-  * The target's :prop_tgt:`TEST_LAUNCHER`, if set, will be used to launch the
-    command::
+  * 如果目标设置了 :prop_tgt:`TEST_LAUNCHER`，将使用该启动器启动命令::
 
       <launcher> <command>
 
-    If the :prop_tgt:`CROSSCOMPILING_EMULATOR` is also set, both are used::
+    如果同时设置了 :prop_tgt:`CROSSCOMPILING_EMULATOR`，则两者同时使用::
 
       <launcher> <emulator> <command>
 
-  The command may be specified using
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  该命令可以使用 :manual:`生成器表达式 <cmake-generator-expressions(7)>` 来指定。
 
 ``COMMAND_EXPAND_LISTS``
-  Lists in ``COMMAND`` arguments will be expanded, including those created with
-  :manual:`generator expressions <cmake-generator-expressions(7)>`.
+  ``COMMAND`` 参数中的列表将被展开，包括由\
+  :manual:`生成器表达式 <cmake-generator-expressions(7)>`\ 创建的列表。
 
 ``CONFIGURATIONS``
-  Restrict the test discovery only to the named configurations.
+  仅在指定的配置中执行测试发现。
 
 ``DISCOVERY_ARGS``
-  Additional arguments passed to ``COMMAND`` when performing discovery.
+  执行测试发现时传递给 ``COMMAND`` 的额外参数。
 
 ``DISCOVERY_MATCH``
-  Regular expression used to parse each line produced by the discovery command.
-  Capturing groups may be referenced by ``TEST_NAME``, ``TEST_ARGS``, and
-  values in ``TEST_PROPERTIES`` using ``\1``, ``\2``, etc.
+  用于解析发现命令输出的每一行的正则表达式。捕获组可通过 ``TEST_NAME``、 ``TEST_ARGS``
+  以及 ``TEST_PROPERTIES`` 中的值使用 ``\1``、 ``\2`` 等来引用。
 
 ``DISCOVERY_PROPERTIES``
-  Specify properties for the discovery run itself.
+  为发现运行本身指定属性。
 
 ``TEST_NAME``
-  Replacement string used to generate the test name for each discovered test.
-  It may reference capture groups from ``DISCOVERY_MATCH``.
+  用于为每个发现的测试生成测试名称的替换字符串。可引用 ``DISCOVERY_MATCH`` 中的捕获组。
 
 ``TEST_ARGS``
-  Replacement strings used to generate the arguments passed to the discovered
-  test.  Each argument may reference capture groups from ``DISCOVERY_MATCH``.
+  用于为每个发现的测试生成传入参数的替换字符串。每个参数均可引用 ``DISCOVERY_MATCH`` 中的捕获组。
 
 ``TEST_PROPERTIES``
-  Specify test properties to set on each discovered test.  Values are
-  replacement strings and may reference capture groups from
-  ``DISCOVERY_MATCH``.
+  为每个发现的测试指定要设置的测试属性。值为替换字符串，可引用 ``DISCOVERY_MATCH`` 中的捕获组。
 
-CTest executes the discovery step to obtain the list of tests and then runs
-each discovered test using the command-line produced by ``COMMAND`` together
-with ``TEST_ARGS``.  The pass/fail behavior of each discovered test follows
-the usual CTest rules (exit code ``0`` indicates success unless inverted by
-the :prop_test:`WILL_FAIL` property). Output written to stdout or stderr is
-captured by :manual:`ctest(1)` and only affects the pass/fail status via the
-:prop_test:`PASS_REGULAR_EXPRESSION`, :prop_test:`FAIL_REGULAR_EXPRESSION`,
-or :prop_test:`SKIP_REGULAR_EXPRESSION` test properties.
+CTest 执行发现步骤以获取测试列表，然后使用由 ``COMMAND`` 和 ``TEST_ARGS`` 生成的命令行\
+来运行每个发现的测试。每个发现的测试的通过/失败行为遵循常规 CTest 规则（退出码 ``0`` 表示成功，\
+除非通过 :prop_test:`WILL_FAIL` 属性反转）。写入 stdout 或 stderr 的输出由
+:manual:`ctest(1)` 捕获，仅通过 :prop_test:`PASS_REGULAR_EXPRESSION`、\
+:prop_test:`FAIL_REGULAR_EXPRESSION` 或 :prop_test:`SKIP_REGULAR_EXPRESSION`
+测试属性影响通过/失败状态。
 
-Example usage:
+示例用法：
 
 .. code-block:: cmake
 
@@ -111,8 +95,6 @@ Example usage:
       LABELS "\\4"
   )
 
-This example configures discovery by running ``testDriver --list-tests``.
-For each line of output that matches ``DISCOVERY_MATCH``, a test name is
-generated using ``TEST_NAME``, the per-test command-line is generated using
-``TEST_ARGS``, and test properties are populated from the remaining capture
-groups.
+此示例通过运行 ``testDriver --list-tests`` 来配置测试发现。\
+对于每行与 ``DISCOVERY_MATCH`` 匹配的输出，使用 ``TEST_NAME`` 生成测试名称，\
+使用 ``TEST_ARGS`` 生成每个测试的命令行，并从其余捕获组填充测试属性。

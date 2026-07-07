@@ -66,11 +66,11 @@ CMake用户经常面临的一个问题是与其他人共享配置项目的常用
 
 .. presets-versionadded:: 4
 
-CMake presets files can include other files with the :preset:`include` field.
-Files included in this manner can also include other files.  If
-``CMakePresets.json`` and ``CMakeUserPresets.json`` are both present,
-``CMakeUserPresets.json`` implicitly includes ``CMakePresets.json``, even with
-no :preset:`include` field, in all versions of the format.
+CMake 预设文件可以通过 :preset:`include` 字段包含其他文件。\
+通过这种方式包含的文件也可以继续包含其他文件。如果
+``CMakePresets.json`` 和 ``CMakeUserPresets.json`` 同时存在，\
+``CMakeUserPresets.json`` 会隐式包含 ``CMakePresets.json``，\
+即使没有 :preset:`include` 字段，在所有版本的格式中均是如此。
 
 如果一个预置文件包含从另一个文件中的预置继承的预置，则该文件必须直接或间接地包含另一个文件。\
 文件之间不允许包含循环。如果\ ``a.json``\ 包含\ ``b.json``，\ ``b.json``\ 不能包含\
@@ -81,14 +81,13 @@ no :preset:`include` field, in all versions of the format.
 
 .. presets-versionchanged:: 7
 
-  The :preset:`include` field supports |macro-expansion|, but only ``$penv{}``
-  macro expansion.
+  :preset:`include` 字段支持\ |macro-expansion|，但仅支持 ``$penv{}``
+  宏展开。
 
 .. presets-versionchanged:: 9
 
-  The :preset:`include` field supports |macro-expansion|, except for
-  ``$env{}`` and preset-specific macros (i.e., those derived from the fields
-  inside a preset's definition like ``presetName``).
+  :preset:`include` 字段支持\ |macro-expansion|，但不支持
+  ``$env{}`` 和预设专属宏（即源自预设定义内部字段的宏，如 ``presetName``）。
 
 .. _`Configure Preset`:
 .. _`CMakePresets configure-preset`:

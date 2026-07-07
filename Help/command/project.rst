@@ -98,36 +98,31 @@ project
 ``SPDX_LICENSE <license-string>``
   .. versionadded:: 4.3
 
-  Optional.
-  Sets the variables
+  可选。
+  设置以下变量
 
   * :variable:`PROJECT_SPDX_LICENSE`,
     :variable:`<PROJECT-NAME>_SPDX_LICENSE`
 
-  to ``<license-string>``, which shall be a |SPDX|_ (SPDX)
-  `License Expression`_ that describes the license(s) of the project as a
-  whole, including documentation, resources, or other materials distributed
-  with the project, in addition to software artifacts. See the SPDX
-  `License List`_ for a list of commonly used licenses and their identifiers.
-  See the :prop_tgt:`SPDX_LICENSE` property for specifying the license(s) on
-  individual software artifacts.
+  为 ``<license-string>``，该值应为 |SPDX|_ (SPDX)
+  `许可证表达式`_，用于描述项目整体的许可证，包括随项目分发的文档、资源或其他材料，以及软件产物。
+  有关常用许可证及其标识符的列表，请参阅 SPDX `许可证列表`_。有关为单个软件产物指定许可证的信息，\
+  请参阅 :prop_tgt:`SPDX_LICENSE` 属性。
 
   .. note::
-    The project license is *not* used to initialize the
-    :prop_tgt:`SPDX_LICENSE` property of individual targets.  This allows the
-    package license and default component license, which are specified when
-    exporting package information, to be meaningful.  Only |CPS| exports make
-    use of this information.
+    项目许可证\ *不会*\ 用于初始化单个目标的 :prop_tgt:`SPDX_LICENSE` 属性。这使得在\
+    导出包信息时指定的包许可证和默认组件许可证具有实际意义。仅 |CPS| 导出会使用此信息。
 
-    The project license *is* inherited as the package license in some cases.
-    Refer to the ``PROJECT`` option and related documentation of the
-    :command:`export` and :command:`install` commands for more information.
+    项目许可证在某些情况下\ *会*\ 被继承为包许可证。有关更多信息，请参阅 :command:`export`
+    和 :command:`install` 命令的 ``PROJECT`` 选项及相关文档。
 
 .. _SPDX: https://spdx.dev/
 .. |SPDX| replace:: System Package Data Exchange
 
 .. _License Expression: https://spdx.github.io/spdx-spec/v3.0.1/annexes/spdx-license-expressions/
 .. _License List: https://spdx.org/licenses/
+.. _许可证表达式: `License Expression`_
+.. _许可证列表: `License List`_
 
 ``DESCRIPTION <description-string>``
   .. versionadded:: 3.9
