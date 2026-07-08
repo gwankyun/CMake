@@ -7,7 +7,7 @@ install
 
 指定安装时运行的规则。
 
-Synopsis
+概要
 ^^^^^^^^
 
 .. parsed-literal::
@@ -23,89 +23,72 @@ Synopsis
   install(`RUNTIME_DEPENDENCY_SET`_ <set-name> [...])
   install(`SBOM`_ <sbom-name> [...])
 
-Introduction
+简介
 ^^^^^^^^^^^^
 
-This command generates installation rules for a project.  Install rules
-specified by calls to the ``install()`` command within a source directory
-are executed in order during installation.
+此命令为项目生成安装规则。通过在源目录中调用 ``install()`` 命令指定的安装规则在安装期\
+间按顺序执行。
 
 .. versionchanged:: 3.14
-  Install rules in subdirectories
-  added by calls to the :command:`add_subdirectory` command are interleaved
-  with those in the parent directory to run in the order declared (see
-  policy :policy:`CMP0082`).
+  通过调用 :command:`add_subdirectory` 命令添加的子目录中的安装规则与父目录中的安装\
+  规则交错执行，按声明的顺序运行（见策略 :policy:`CMP0082` ）。
 
 .. versionchanged:: 3.22
-  The environment variable :envvar:`CMAKE_INSTALL_MODE` can override the
-  default copying behavior of ``install()``.
+  环境变量 :envvar:`CMAKE_INSTALL_MODE` 可以覆盖 ``install()`` 的默认复制行为。
 
 .. versionchanged:: 3.31
-  Projects can enable :prop_gbl:`INSTALL_PARALLEL` to enable a parallel
-  installation. When using the parallel install, subdirectories added by calls
-  to the :command:`add_subdirectory` command are installed independently
-  and the order that install rules added in different subdirectories will run is
-  not guaranteed.
+  项目可以启用 :prop_gbl:`INSTALL_PARALLEL` 以启用并行安装。使用并行安装时，通过调用
+  :command:`add_subdirectory` 命令添加的子目录将独立安装，不同子目录中添加的安装规则的运行\
+  顺序不予保证。
 
-Common Options
+.. _`common options`:
+
+通用选项
 """"""""""""""
 
-There are multiple signatures for this command.  Some of them define
-installation options for files and targets.  Options common to
-multiple signatures are covered here but they are valid only for
-signatures that specify them.  The common options are:
+此命令有多种签名形式。其中一些定义了文件和目标的安装选项。多种签名共用的选项在此处\
+介绍，但它们仅对指定了这些选项的签名有效。通用选项如下：
 
 ``DESTINATION <dir>``
-  Specify the directory on disk to which a file will be installed.
-  ``<dir>`` should be a relative path.  An absolute path is allowed,
-  but not recommended.
+  指定文件将安装到磁盘上的目录。 ``<dir>`` 应为相对路径。绝对路径是允许的，\
+  但不推荐使用。
 
   .. versionadded:: 4.4
-    The :diagnostic:`CMD_INSTALL_ABSOLUTE_DESTINATION` diagnostic can be
-    enabled to warn or error out when an absolute destination is provided.
+    可以启用 :diagnostic:`CMD_INSTALL_ABSOLUTE_DESTINATION` 诊断，\
+    以在提供绝对目标路径时发出警告或报错。
 
-  When a relative path is given, it is interpreted relative to the value
-  of the :variable:`CMAKE_INSTALL_PREFIX` variable.
-  The prefix can be relocated at install time using the ``DESTDIR``
-  mechanism explained in the :variable:`CMAKE_INSTALL_PREFIX` variable
-  documentation.
+  当给定相对路径时，它相对于 :variable:`CMAKE_INSTALL_PREFIX` 变量的值进行解释。\
+  可以使用 :variable:`CMAKE_INSTALL_PREFIX` 变量文档中说明的 ``DESTDIR``
+  机制在安装时重新定位前缀。
 
-  As absolute paths do not work with the ``cmake --install`` command's
-  :option:`--prefix <cmake--install --prefix>` option, or with the
-  :manual:`cpack <cpack(1)>` installer generators, it is strongly recommended
-  to use relative paths throughout for best support by package maintainers.
-  In particular, there is no need to make paths absolute by prepending
-  :variable:`CMAKE_INSTALL_PREFIX`; this prefix is used by default if
-  the DESTINATION is a relative path.
+  由于绝对路径无法与 ``cmake --install`` 命令的
+  :option:`--prefix <cmake--install --prefix>` 选项或 :manual:`cpack <cpack(1)>`
+  安装程序生成器配合使用，因此强烈建议全程使用相对路径，以便为包维护者提供最佳支持。\
+  特别地，无需通过在前面添加 :variable:`CMAKE_INSTALL_PREFIX` 来使路径变为绝对路径；\
+  如果 DESTINATION 是相对路径，默认将使用此前缀。
 
-  If an absolute path (with a leading slash or drive letter) is given
-  it is used verbatim.
+  如果给定绝对路径（以斜杠或驱动器号开头），则原样使用。
 
   .. versionchanged:: 3.31
-    ``<dir>`` will be normalized according to the same
-    :ref:`normalization rules <Normalization>` as the
-    :command:`cmake_path` command.
+    ``<dir>`` 将按照与 :command:`cmake_path` 命令相同的\
+    :ref:`规范化规则 <Normalization>`\ 进行规范化。
 
 ``PERMISSIONS <permission>...``
-  Specify permissions for installed files.  Valid permissions are
-  ``OWNER_READ``, ``OWNER_WRITE``, ``OWNER_EXECUTE``, ``GROUP_READ``,
-  ``GROUP_WRITE``, ``GROUP_EXECUTE``, ``WORLD_READ``, ``WORLD_WRITE``,
-  ``WORLD_EXECUTE``, ``SETUID``, and ``SETGID``.  Permissions that do
-  not make sense on certain platforms are ignored on those platforms.
+  指定已安装文件的权限。有效权限为 ``OWNER_READ``、 ``OWNER_WRITE``、
+  ``OWNER_EXECUTE``、 ``GROUP_READ``、 ``GROUP_WRITE``、 ``GROUP_EXECUTE``、
+  ``WORLD_READ``、 ``WORLD_WRITE``、 ``WORLD_EXECUTE``、 ``SETUID`` 和
+  ``SETGID``。在某些平台上不适用的权限将在这些平台上被忽略。
 
-  If this option is used multiple times in a single call, its list
-  of permissions accumulates.  If an :command:`install(TARGETS)` call
-  uses `\<artifact-kind\>`_ arguments, a separate list of permissions
-  is accumulated for each kind of artifact.
+  如果此选项在单个调用中使用多次，其权限列表会累积。\
+  如果 :command:`install(TARGETS)` 调用使用了 `\<artifact-kind\>`_ 参数，\
+  则每种构件类型会累积单独的权限列表。
 
 ``CONFIGURATIONS <config>...``
-  Specify a list of build configurations for which the install rule
-  applies (Debug, Release, etc.).
+  指定安装规则适用的构建配置列表（Debug、Release 等）。
 
-  If this option is used multiple times in a single call, its list
-  of configurations accumulates.  If an :command:`install(TARGETS)`
-  call uses `\<artifact-kind\>`_ arguments, a separate list of
-  configurations is accumulated for each kind of artifact.
+  如果此选项在单个调用中使用多次，其配置列表会累积。\
+  如果 :command:`install(TARGETS)` 调用使用了 `\<artifact-kind\>`_ 参数，\
+  则每种构件类型会累积单独的配置列表。
 
 ``COMPONENT <component>``
   Specify an installation component name with which the install rule

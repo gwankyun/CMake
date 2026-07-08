@@ -134,8 +134,8 @@ CMake 预设文件可以通过 :preset:`include` 字段包含其他文件。\
 
 .. presets-versionadded:: 6
 
-Each entry of the ``packagePresets`` array is a JSON object
-that may contain the following fields:
+``packagePresets`` 数组中的每个条目是一个 JSON 对象，\
+可能包含以下字段：
 
 .. include:: presets/packagePresets-properties.rst
 
@@ -146,8 +146,8 @@ that may contain the following fields:
 
 .. presets-versionadded:: 6
 
-Each entry of the ``workflowPresets`` array is a JSON object
-that may contain the following fields:
+``workflowPresets`` 数组中的每个条目是一个 JSON 对象，\
+可能包含以下字段：
 
 .. include:: presets/workflowPresets-properties.rst
 
@@ -158,14 +158,11 @@ that may contain the following fields:
 
 .. presets-versionadded:: 3
 
-The ``condition`` field of a preset is used to determine whether or not the
-preset is enabled. For example, this can be used to disable a preset on
-platforms other than Windows. ``condition`` may be either a boolean, ``null``,
-or an object. If it is a boolean, the boolean indicates whether the preset is
-enabled or disabled. If it is ``null``, the preset is enabled, but the ``null``
-condition is not inherited by any presets that may inherit from the preset.
-Sub-conditions (for example in a ``not``, ``anyOf``, or ``allOf`` condition)
-may not be ``null``. If it is an object, it has the following fields:
+预设的 ``condition`` 字段用于确定该预设是否启用。例如，这可用于在非 Windows 平台上禁用\
+某个预设。 ``condition`` 可以是布尔值、 ``null`` 或对象。如果是布尔值，该布尔值指示预设\
+是启用还是禁用。如果是 ``null``，则预设启用，但 ``null`` 条件不会被任何可能继承该预设的\
+预设所继承。子条件（例如在 ``not``、 ``anyOf`` 或 ``allOf`` 条件中）不能为 ``null``。\
+如果是对象，则具有以下字段：
 
 ``type``
   必须的字符串，具有以下值之一：

@@ -172,71 +172,58 @@ project
 
 .. _`Code Injection`:
 
-Code Injection
+代码注入
 ^^^^^^^^^^^^^^
 
-A number of variables can be defined by the user to specify files to include
-at different points during the execution of the ``project()`` command.
-The following outlines the steps performed during a ``project()`` call:
+用户可以定义多个变量，以指定在执行 ``project()`` 命令期间的不同位置要包含的文件。\
+以下概述了 ``project()`` 调用期间执行的步骤：
 
 * .. versionadded:: 3.15
-    For every ``project()`` call regardless of the project
-    name, include the file(s) and module(s) named by
-    :variable:`CMAKE_PROJECT_INCLUDE_BEFORE`, if set.
+    对于每次 ``project()`` 调用，无论项目名称如何，都包含由
+    :variable:`CMAKE_PROJECT_INCLUDE_BEFORE` 指定的文件和模块（如果已设置）。
 
 * .. versionadded:: 3.17
-    If the ``project()`` command specifies ``<PROJECT-NAME>`` as its project
-    name, include the file(s) and module(s) named by
-    :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE_BEFORE`, if set.
+    如果 ``project()`` 命令指定 ``<PROJECT-NAME>`` 作为其项目名称，则包含由
+    :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE_BEFORE`
+    指定的文件和模块（如果已设置）。
 
-* Set the various project-specific variables detailed in the `概要`_
-  and `选项`_ sections above.
+* 设置上面\ `概要`_\ 和\ `选项`_\ 部分中详述的各种项目特定变量。
 
-* For the very first ``project()`` call only:
+* 仅针对第一次 ``project()`` 调用：
 
-  * If :variable:`CMAKE_TOOLCHAIN_FILE` is set, read it at least once.
-    It may be read multiple times and it may also be read again when
-    enabling languages later (see below).
+  * 如果 :variable:`CMAKE_TOOLCHAIN_FILE` 已设置，则至少读取一次。\
+    它可能会被读取多次，并且在稍后启用语言时也可能再次被读取（见下文）。
 
-  * Set the variables describing the host and target platforms.
-    Language-specific variables might or might not be set at this point.
-    On the first run, the only language-specific variables that might be
-    defined are those a toolchain file may have set. On subsequent runs,
-    language-specific variables cached from a previous run may be set.
+  * 设置描述主机和目标平台的变量。此时语言特定变量可能已设置，也可能尚未设置。\
+    在首次运行时，可能已定义的唯一语言特定变量是工具链文件可能已设置的变量。\
+    在后续运行中，可能会设置从先前运行中缓存的语言特定变量。
 
   * .. versionadded:: 3.24
-      Include each file listed in :variable:`CMAKE_PROJECT_TOP_LEVEL_INCLUDES`,
-      if set. The variable is ignored by CMake thereafter.
+      包含 :variable:`CMAKE_PROJECT_TOP_LEVEL_INCLUDES` 中列出的每个文件，\
+      如果已设置。此后 CMake 将忽略该变量。
 
-* Enable any languages specified in the call, or the default languages if
-  none were provided. The toolchain file may be re-read when enabling a
-  language for the first time.
+* 启用调用中指定的任何语言，如果未提供则启用默认语言。当首次启用某种语言时，可能会重新\
+  读取工具链文件。
 
 * .. versionadded:: 3.15
-    For every ``project()`` call regardless of the project
-    name, include the file(s) and module(s) named by
-    :variable:`CMAKE_PROJECT_INCLUDE`, if set.
+    对于每次 ``project()`` 调用，无论项目名称如何，都包含由
+    :variable:`CMAKE_PROJECT_INCLUDE` 指定的文件和模块（如果已设置）。
 
-* If the ``project()`` command specifies ``<PROJECT-NAME>`` as its project
-  name, include the file(s) and module(s) named by
-  :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE`, if set.
+* 如果 ``project()`` 命令指定 ``<PROJECT-NAME>`` 作为其项目名称，则包含由
+  :variable:`CMAKE_PROJECT_<PROJECT-NAME>_INCLUDE`
+  指定的文件和模块（如果已设置）。
 
-Usage
+用法
 ^^^^^
 
-The top-level ``CMakeLists.txt`` file for a project must contain a
-literal, direct call to the ``project()`` command; loading one
-through the :command:`include` command is not sufficient.  If no such
-call exists, CMake will issue a warning and pretend there is a
-``project(Project)`` at the top to enable the default languages
-(``C`` and ``CXX``).
+项目的顶层 ``CMakeLists.txt`` 文件必须包含对 ``project()`` 命令的直接调用；\
+通过 :command:`include` 命令加载是不够的。如果不存在此类调用，CMake 将发出警告，\
+并在顶层假装存在一个 ``project(Project)`` 以启用默认语言（ ``C`` 和 ``CXX`` ）。
 
 .. note::
-  Call the ``project()`` command near the top of the top-level
-  ``CMakeLists.txt``, but *after* calling :command:`cmake_minimum_required`.
-  It is important to establish version and policy settings before invoking
-  other commands whose behavior they may affect and for this reason the
-  ``project()`` command will issue a warning if this order is not kept.
-  See also policy :policy:`CMP0000`.
+  在顶层 ``CMakeLists.txt`` 的靠近顶部位置调用 ``project()`` 命令，但必须在调用
+  :command:`cmake_minimum_required` *之后*。在调用其他可能受版本和策略设置影响\
+  行为的命令之前建立这些设置非常重要，因此如果未保持此顺序， ``project()`` 命令将\
+  发出警告。另见策略 :policy:`CMP0000`。
 
 .. |CPS| replace:: Common Package Specification

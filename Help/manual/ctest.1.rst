@@ -187,12 +187,9 @@ ctest(1)
 
  让CTest保持安静。
 
- This option will suppress all the output.  The output log file will
- still be generated if the :ctest-option:`--output-log` is specified.
- Options such as :ctest-option:`--verbose`,
- :ctest-option:`--extra-verbose`, and
- :ctest-option:`--debug` are ignored
- if ``--quiet`` is specified.
+ 此选项将抑制所有输出。如果指定了 :ctest-option:`--output-log`，仍然会生成\
+ 输出日志文件。如果指定了 ``--quiet``，诸如 :ctest-option:`--verbose`、
+ :ctest-option:`--extra-verbose` 和 :ctest-option:`--debug` 等选项将被忽略。
 
 .. option:: -O <file>, --output-log <file>
 
