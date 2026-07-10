@@ -1098,8 +1098,16 @@ std::string cmInstrumentation::GetCompileTraceFile(
         outputPath.substr(0, outputPath.size() - ext.size()), ".json");
     }
   }
-  if (!cmSystemTools::FileIsFullPath(traceFile)) {
-    traceFile = cmStrCat(workingDir, '/', traceFile);
+
+  if (cmSystemTools::FileIsFullPath(traceFile)) {
+    return traceFile;
+  }
+  if (cmSystemTools::FileExists(cmStrCat(workingDir, '/', traceFile), true)) {
+    return cmStrCat(workingDir, '/', traceFile);
+  }
+  if (cmSystemTools::FileExists(cmStrCat(this->binaryDir, '/', traceFile),
+                                true)) {
+    return cmStrCat(this->binaryDir, '/', traceFile);
   }
 
   return traceFile;

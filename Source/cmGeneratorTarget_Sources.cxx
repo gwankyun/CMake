@@ -266,26 +266,24 @@ std::vector<BT<std::string>> cmGeneratorTarget::GetSourceFilePaths(
   AddFileSetEntries(this, this->FileSets.get(), context, &fsDagChecker,
                     fileSetEntries);
   auto processFileSetEntry = [this, &config](cmSourceFile* sf) {
-    auto const* fileSet = this->GetFileSetForSource(config, sf);
-    if (fileSet->GetType() == cm::FileSetMetadata::HEADERS) {
+    cmGeneratorFileSet const* fileSet = this->GetFileSetForSource(config, sf);
+    if (fileSet && fileSet->GetType() == cm::FileSetMetadata::HEADERS) {
       sf->SetProperty("HEADER_FILE_ONLY", "TRUE");
-    }
 #if !defined(CMAKE_BOOTSTRAP)
-    cmMakefile* mf = this->Target->GetMakefile();
-    auto const& path = sf->GetFullPath();
-    bool found = false;
-    for (auto const& sg : mf->GetSourceGroups()) {
-      if (sg->MatchChildrenFiles(path)) {
-        found = true;
-        break;
+      cmMakefile* mf = this->Target->GetMakefile();
+      std::string const& path = sf->GetFullPath();
+      bool found = false;
+      for (auto const& sg : mf->GetSourceGroups()) {
+        if (sg->MatchChildrenFiles(path)) {
+          found = true;
+          break;
+        }
       }
-    }
-    if (!found) {
-      if (fileSet->GetType() == cm::FileSetMetadata::HEADERS) {
+      if (!found) {
         mf->GetOrCreateSourceGroup("Header Files")->AddGroupFile(path);
       }
-    }
 #endif
+    }
   };
   bool contextDependentFileSets =
     processSources(this, config, fileSetEntries, files, uniqueSrcs,

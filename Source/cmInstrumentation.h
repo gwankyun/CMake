@@ -119,9 +119,9 @@ private:
   static bool IsInstrumentableTargetType(cmStateEnums::TargetType type);
   void PrepareDataForCDash(std::string const& data_dir,
                            std::string const& index_path);
-  static std::string GetCompileTraceFile(
-    std::vector<std::string> const& command, Json::Value const& outputs,
-    std::string const& workingDir);
+  std::string GetCompileTraceFile(std::vector<std::string> const& command,
+                                  Json::Value const& outputs,
+                                  std::string const& workingDir);
   void CollectCompileTraceFile(Json::Value& root, std::string traceFile,
                                long int oldTimestamp,
                                std::string const& commandHash,

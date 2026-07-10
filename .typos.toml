@@ -99,4 +99,9 @@ extend-ignore-re = [
     # NOTE Allow to mark block of text to exclude from spellchecking as RST comments
     "(?s)\\.\\.\\s+(NOQA|noqa):? spellcheck(: *|=| +)off.*?\\n\\.\\.\\s+(NOQA|noqa):? spellcheck(: *|=| +)on"
   ]
+
+[type.rst.extend-identifiers]
+# CMake build options in the `Help/guide/tutorial/Configuration and Cache Variables.rst`
+DCOMPRESSION_SOFTWARE_USE_ZLIB = "DCOMPRESSION_SOFTWARE_USE_ZLIB"
+DCOMPRESSION_SOFTWARE_USE_ZSTD = "DCOMPRESSION_SOFTWARE_USE_ZSTD"
 # END Type-specific settings

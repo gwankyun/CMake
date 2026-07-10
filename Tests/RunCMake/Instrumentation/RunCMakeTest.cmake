@@ -8,6 +8,7 @@ function(instrument test)
   set(OPTIONS
     "BUILD"
     "BUILD_MAKE_PROGRAM"
+    "BUILD_MAKE_PROGRAM_CHANGE_DIR"
     "INSTALL"
     "INSTALL_PARALLEL"
     "TEST"
@@ -181,7 +182,13 @@ function(instrument test)
     set(RunCMake_QUIET_ERROR 1)
     # Force reconfigure to test for double preBuild & postBuild hooks
     file(TOUCH ${RunCMake_TEST_BINARY_DIR}/CMakeCache.txt)
-    run_cmake_command(${test}-make-program ${RunCMake_MAKE_PROGRAM})
+    if (ARGS_BUILD_MAKE_PROGRAM_CHANGE_DIR)
+      set(RunCMake_TEST_COMMAND_WORKING_DIRECTORY ${RunCMake_BINARY_DIR})
+      run_cmake_command(${test}-make-program ${RunCMake_MAKE_PROGRAM} -C ${RunCMake_TEST_BINARY_DIR})
+      unset(RunCMake_TEST_COMMAND_WORKING_DIRECTORY)
+    else()
+      run_cmake_command(${test}-make-program ${RunCMake_MAKE_PROGRAM})
+    endif()
     unset(RunCMake_TEST_OUTPUT_MERGE)
     unset(RunCMake_QUIET_ERROR)
   endif()
@@ -434,4 +441,13 @@ if(NOT Skip_BUILD_MAKE_PROGRAM_Case)
   instrument(cmake-command-build-snippet
     BUILD_MAKE_PROGRAM
     CHECK_SCRIPT check-data-dir.cmake)
+  if (NOT Skip_COMPILE_TRACE_QUERY_Case AND NOT RunCMake_GENERATOR STREQUAL "NMake Makefiles")
+    instrument(cmake-command-compile-trace-make-program
+      BUILD_MAKE_PROGRAM BUILD_MAKE_PROGRAM_CHANGE_DIR COMPILE_TRACE_QUERY
+      CONFIGURE_ARGS
+        "-DINSTRUMENT_COMPILE_TRACE=DEFAULT"
+        "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+      CHECK_SCRIPT check-data-dir.cmake
+    )
+  endif()
 endif()

@@ -865,8 +865,8 @@ CMake提供了一个命令行签名来安装已经生成的项目二进制树：
 
     Supports installing more than one component:
 
-      * ``--component <compA> <compB>``
-      * ``--component <compA> --component <compB>``
+    * ``--component <compA> <compB>``
+    * ``--component <compA> --component <compB>``
 
 .. option:: --default-directory-permissions <permissions>
 

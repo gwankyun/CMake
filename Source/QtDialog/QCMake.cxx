@@ -164,7 +164,7 @@ void QCMake::setPreset(QString const& name, bool setBinary)
 
     if (!name.isNull()) {
       std::string presetName(name.toStdString());
-      auto const& expandedPreset =
+      auto const expandedPreset =
         this->CMakePresetsGraph.ConfigurePresets[presetName].Expanded;
       if (expandedPreset) {
         if (setBinary && !expandedPreset->BinaryDir.empty()) {

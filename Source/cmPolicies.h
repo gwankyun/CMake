@@ -579,7 +579,7 @@ class cmMakefile;
          "GNUInstallDirs caches CMAKE_INSTALL_* with leading 'usr/' for "     \
          "install prefix '/'.",                                               \
          4, 1, 0, WARN)                                                       \
-  SELECT(POLICY, CMP194, "MSVC is not an assembler for language ASM.", 4, 1,  \
+  SELECT(POLICY, CMP0194, "MSVC is not an assembler for language ASM.", 4, 1, \
          0, WARN)                                                             \
   SELECT(                                                                     \
     POLICY, CMP0195,                                                          \
