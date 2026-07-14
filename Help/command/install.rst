@@ -91,50 +91,42 @@ install
   则每种构件类型会累积单独的配置列表。
 
 ``COMPONENT <component>``
-  Specify an installation component name with which the install rule
-  is associated, such as ``Runtime`` or ``Development``.  During
-  component-specific installation only install rules associated with
-  the given component name will be executed.  During a full installation
-  all components are installed unless marked with ``EXCLUDE_FROM_ALL``.
-  If ``COMPONENT`` is not provided a default component "Unspecified" is
-  created.  The default component name may be controlled with the
-  :variable:`CMAKE_INSTALL_DEFAULT_COMPONENT_NAME` variable.
+  指定与安装规则关联的安装组件名称，例如 ``Runtime`` 或 ``Development``。\
+  在组件特定安装期间，仅执行与给定组件名称关联的安装规则。在完整安装期间，所有组件都会被安装，\
+  除非标记为 ``EXCLUDE_FROM_ALL``。如果未提供 ``COMPONENT``，则会创建默认组件\
+  “Unspecified”。默认组件名称可以通过 :variable:`CMAKE_INSTALL_DEFAULT_COMPONENT_NAME`
+  变量控制。
 
-  Installation components can be then used by the ``cmake --install`` command's
-  :option:`--component <cmake--install --component>` option and the
-  :module:`CPackComponent` module.  Global target ``list_install_components``
-  lists all available components.
+  安装组件随后可以通过 ``cmake --install`` 命令的 :option:`--component <cmake--install --component>`
+  选项和 :module:`CPackComponent` 模块使用。全局目标 ``list_install_components``
+  列出所有可用组件。
 
 ``EXCLUDE_FROM_ALL``
   .. versionadded:: 3.6
 
-  Specify that the file is excluded from a full installation and only
-  installed as part of a component-specific installation
+  指定该文件被排除在完整安装之外，仅作为组件特定安装的一部分进行安装。
 
 ``OPTIONAL``
-  Specify that it is not an error if the file to be installed does
-  not exist.
+  指定如果要安装的文件不存在，不视为错误。
 
 .. versionadded:: 3.1
-  Command signatures that install files may print messages during
-  installation.  Use the :variable:`CMAKE_INSTALL_MESSAGE` variable
-  to control which messages are printed.
+
+  安装文件的命令签名可以在安装过程中打印消息。使用 :variable:`CMAKE_INSTALL_MESSAGE`
+  变量控制打印哪些消息。
 
 .. versionadded:: 3.11
-  Many of the ``install()`` variants implicitly create the directories
-  containing the installed files. If
-  :variable:`CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS` is set, these
-  directories will be created with the permissions specified. Otherwise,
-  they will be created according to the uname rules on Unix-like platforms.
-  Windows platforms are unaffected.
 
-Signatures
+  许多 ``install()`` 变体会隐式创建包含已安装文件的目录。如果设置了
+  :variable:`CMAKE_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS`，这些目录将使用指定的权限创建。\
+  否则，在类 Unix 平台上将根据 uname 规则创建。Windows 平台不受影响。
+
+签名
 ^^^^^^^^^^
 
 .. signature::
   install(TARGETS <target>... [...])
 
-  Install target :ref:`Output Artifacts` and associated files:
+  安装目标\ :ref:`Output Artifacts`\ 及关联文件：
 
   .. code-block:: cmake
 
@@ -479,7 +471,7 @@ Signatures
 
   .. versionadded:: 3.21
 
-  Install runtime artifacts of imported targets:
+  安装导入目标的运行时产物：
 
   .. code-block:: cmake
 
@@ -517,11 +509,10 @@ Signatures
 
   .. note::
 
-    If installing header files, consider using file sets defined by
-    :command:`target_sources(FILE_SET)` instead. File sets associate
-    headers with a target and they install as part of the target.
+    如果要安装头文件，请考虑使用 :command:`target_sources(FILE_SET)` 定义文件集代替。\
+    文件集将头文件与目标关联，并作为目标的一部分进行安装
 
-  Install files or programs:
+  安装文件或程序：
 
   .. code-block:: cmake
 
@@ -626,12 +617,10 @@ Signatures
 
   .. note::
 
-    To install a directory sub-tree of headers, consider using file sets
-    defined by :command:`target_sources(FILE_SET)` instead. File sets not only
-    preserve directory structure, they also associate headers with a target
-    and install as part of the target.
+    如果要安装头文件的目录子树，请考虑使用 :command:`target_sources(FILE_SET)` 定义文件集\
+    代替。文件集不仅保留目录结构，还将头文件与目标关联，并作为目标的一部分进行安装。
 
-  Install the contents of one or more directories:
+  安装一个或多个目录的内容：
 
   .. code-block:: cmake
 
@@ -806,7 +795,7 @@ Signatures
   install(SCRIPT <file> [...])
   install(CODE <code> [...])
 
-  Invoke CMake scripts or code during installation:
+  在安装期间调用 CMake 脚本或代码：
 
   .. code-block:: cmake
 
@@ -842,7 +831,7 @@ Signatures
 .. signature::
   install(EXPORT <export-name> [...])
 
-  Install a CMake file exporting targets for dependent projects:
+  安装为依赖项目导出目标的 CMake 文件：
 
   .. code-block:: cmake
 
@@ -970,7 +959,7 @@ Signatures
 
   .. versionadded:: 4.3
 
-  Installs a |CPS|_ ("CPS") file exporting targets for dependent projects:
+  安装为依赖项目导出目标的 |CPS|_ ("CPS") 文件：
 
   .. code-block:: cmake
 
@@ -1116,7 +1105,7 @@ Signatures
 
   .. versionadded:: 3.21
 
-  Installs a runtime dependency set:
+  安装运行时依赖集：
 
   .. code-block:: cmake
 
@@ -1190,9 +1179,9 @@ Signatures
   .. versionadded:: 4.3
   .. note::
 
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_GENERATE_SBOM``.
+    实验性功能。由 ``CMAKE_EXPERIMENTAL_GENERATE_SBOM`` 控制。
 
-  Installs a |SBOM| or "SBOM" which describes the project:
+  安装描述项目的 |SBOM| 或“SBOM”：
 
   .. code-block:: cmake
 
@@ -1272,13 +1261,15 @@ Signatures
   :prop_tgt:`INTERFACE_LINK_LIBRARIES` properties, unless the generator
   expressions are guarded by :genex:`LINK_ONLY`.
 
-Examples
+示例
 ^^^^^^^^
 
-Example: Install Targets with Per-Artifact Components
+.. _`Example: Install Targets with Per-Artifact Components`:
+
+示例：按产物类型分别指定组件安装目标
 """""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Consider a project that defines targets with different artifact kinds:
+考虑一个定义了不同产物类型目标的项目：
 
 .. code-block:: cmake
 
@@ -1289,8 +1280,8 @@ Consider a project that defines targets with different artifact kinds:
   target_sources(mySharedLib PUBLIC FILE_SET HEADERS FILES mySharedLib.h)
   set_property(TARGET mySharedLib PROPERTY SOVERSION 1)
 
-We may call :command:`install(TARGETS)` with `\<artifact-kind\>`_ arguments
-to specify different options for each kind of artifact:
+我们可以调用 :command:`install(TARGETS)` 并使用 `\<artifact-kind\>`_ 参数为每种产物\
+类型指定不同的选项：
 
 .. code-block:: cmake
 
@@ -1298,55 +1289,53 @@ to specify different options for each kind of artifact:
             myExe
             mySharedLib
             myStaticLib
-          RUNTIME           # Following options apply to runtime artifacts.
+          RUNTIME           # 以下选项适用于运行时产物。
             COMPONENT Runtime
-          LIBRARY           # Following options apply to library artifacts.
+          LIBRARY           # 以下选项适用于库产物。
             COMPONENT Runtime
             NAMELINK_COMPONENT Development
-          ARCHIVE           # Following options apply to archive artifacts.
+          ARCHIVE           # 以下选项适用于归档产物。
             COMPONENT Development
             DESTINATION lib/static
-          FILE_SET HEADERS  # Following options apply to file set HEADERS.
+          FILE_SET HEADERS  # 以下选项适用于文件集 HEADERS。
             COMPONENT Development
           )
 
-This will:
+这将：
 
-* Install ``myExe`` to ``<prefix>/bin``, the default RUNTIME artifact
-  destination, as part of the ``Runtime`` component.
+* 将 ``myExe`` 安装到 ``<prefix>/bin``，即默认的 RUNTIME 产物目标路径，\
+  作为 ``Runtime`` 组件的一部分。
 
-* On non-DLL platforms:
+* 在非 DLL 平台上：
 
-  * Install ``libmySharedLib.so.1`` to ``<prefix>/lib``, the default
-    LIBRARY artifact destination, as part of the ``Runtime`` component.
+  * 将 ``libmySharedLib.so.1`` 安装到 ``<prefix>/lib``，即默认的 LIBRARY
+    产物目标路径，作为 ``Runtime`` 组件的一部分。
 
-  * Install the ``libmySharedLib.so`` "namelink" (symbolic link) to
-    ``<prefix>/lib``, the default LIBRARY artifact destination, as part
-    of the ``Development`` component.
+  * 将 ``libmySharedLib.so`` “名称链接”（符号链接）安装到 ``<prefix>/lib``，\
+    即默认的 LIBRARY 产物目标路径，作为 ``Development`` 组件的一部分。
 
-* On DLL platforms:
+* 在 DLL 平台上：
 
-  * Install ``mySharedLib.dll`` to ``<prefix>/bin``, the default RUNTIME
-    artifact destination, as part of the ``Runtime`` component.
+  * 将 ``mySharedLib.dll`` 安装到 ``<prefix>/bin``，即默认的 RUNTIME 产物目标路径，\
+    作为 ``Runtime`` 组件的一部分。
 
-  * Install ``mySharedLib.lib`` to ``<prefix>/lib/static``, the specified
-    ARCHIVE artifact destination, as part of the ``Development`` component.
+  * 将 ``mySharedLib.lib`` 安装到 ``<prefix>/lib/static``，即指定的 ARCHIVE 产物目标\
+    路径，作为 ``Development`` 组件的一部分。
 
-* Install ``myStaticLib`` to ``<prefix>/lib/static``, the specified
-  ARCHIVE artifact destination, as part of the ``Development`` component.
+* 将 ``myStaticLib`` 安装到 ``<prefix>/lib/static``，即指定的 ARCHIVE 产物目标路径，\
+  作为 ``Development`` 组件的一部分。
 
-* Install ``mySharedLib.h`` and ``myStaticLib.h`` to ``<prefix>/include``,
-  the default destination for a file set of type HEADERS, as part of the
-  ``Development`` component.
+* 将 ``mySharedLib.h`` 和 ``myStaticLib.h`` 安装到 ``<prefix>/include``，\
+  即 HEADERS 类型文件集的默认目标路径，作为 ``Development`` 组件的一部分。
 
-Example: Install Targets to Per-Config Destinations
+.. _`Example: Install Targets to Per-Config Destinations`:
+
+示例：按配置分别指定目标路径安装目标
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-Each :command:`install(TARGETS)` call installs a given target
-:ref:`output artifact <Output Artifacts>` to at most one ``DESTINATION``,
-but the install rule itself may be filtered by the ``CONFIGURATIONS`` option.
-In order to install to a different destination for each configuration, one
-call per configuration is needed.  For example, the code:
+每次 :command:`install(TARGETS)` 调用将给定目标的 :ref:`输出产物 <Output Artifacts>`
+安装到最多一个 ``DESTINATION``，但安装规则本身可以通过 ``CONFIGURATIONS`` 选项进行过滤。\
+要为每个配置安装到不同的目标路径，需要为每个配置单独调用一次。例如，以下代码：
 
 .. code-block:: cmake
 
@@ -1361,10 +1350,12 @@ call per configuration is needed.  For example, the code:
             DESTINATION Release/bin
           )
 
-will install ``myExe`` to ``<prefix>/Debug/bin`` in the Debug configuration,
-and to ``<prefix>/Release/bin`` in the Release configuration.
+将在 Debug 配置中将 ``myExe`` 安装到 ``<prefix>/Debug/bin``，在 Release 配置中安装到
+``<prefix>/Release/bin``。
 
-Generated Installation Script
+.. _`Generated Installation Script`:
+
+生成安装脚本
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
