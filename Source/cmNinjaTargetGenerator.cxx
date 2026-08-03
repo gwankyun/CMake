@@ -725,6 +725,7 @@ cmList ExpandRuleCommands(std::string const& command,
                           cmRulePlaceholderExpander::RuleVariables const& vars,
                           cmMakefile const* mf, std::string const& lang,
                           std::string const& launcher,
+                          std::string const& cldeps,
                           cmLocalGenerator* localGenerator,
                           cmRulePlaceholderExpander* rulePlaceholderExpander)
 {
@@ -734,6 +735,9 @@ cmList ExpandRuleCommands(std::string const& command,
   if (!commands.empty()) {
     commands.front().insert(0, "${CODE_CHECK}");
     commands.front().insert(0, "${LAUNCHER}");
+  }
+  if (!commands.empty()) {
+    commands.front().insert(0, cldeps);
   }
   if (!extraCommands.empty()) {
     commands.append(extraCommands);
@@ -1038,12 +1042,8 @@ void cmNinjaTargetGenerator::WriteCompileRule(std::string const& lang,
   std::string const cmdVar = this->GetCompileTemplateVar(lang);
   std::string const& compileCmd = mf->GetRequiredDefinition(cmdVar);
   cmList compileCmds = ExpandRuleCommands(compileCmd, vars, mf, lang, launcher,
-                                          this->GetLocalGenerator(),
+                                          cldeps, this->GetLocalGenerator(),
                                           rulePlaceholderExpander.get());
-
-  if (!compileCmds.empty()) {
-    compileCmds.front().insert(0, cldeps);
-  }
 
   rule.Command =
     this->GetLocalGenerator()->BuildCommandLine(compileCmds, config, config);
@@ -1076,8 +1076,8 @@ void cmNinjaTargetGenerator::WriteCompileRule(std::string const& lang,
       emitModRule.Restat = "1";
 
       cmList emitModCmds = ExpandRuleCommands(
-        *emitModCmdVal, emVars, mf, lang, launcher, this->GetLocalGenerator(),
-        rulePlaceholderExpander.get());
+        *emitModCmdVal, emVars, mf, lang, launcher, cldeps,
+        this->GetLocalGenerator(), rulePlaceholderExpander.get());
       emitModRule.Command = this->GetLocalGenerator()->BuildCommandLine(
         emitModCmds, config, config);
       emitModRule.Comment = "Rule for emitting Swift .swiftmodule files.";

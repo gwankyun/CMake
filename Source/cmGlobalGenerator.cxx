@@ -850,8 +850,11 @@ void cmGlobalGenerator::EnableLanguage(
       this->SetLanguageEnabled("NONE", mf);
       continue;
     }
-    std::string loadedLang = cmStrCat("CMAKE_", lang, "_COMPILER_LOADED");
-    if (!mf->GetDefinition(loadedLang)) {
+    // Compiler information may have already been detected and saved.
+    // Load it if we have not enabled the language anywhere yet, or
+    // if we have not loaded compiler information in this directory.
+    if (!this->GetLanguageEnabled(lang) ||
+        !mf->GetDefinition(cmStrCat("CMAKE_", lang, "_COMPILER_LOADED"))) {
       fpath = cmStrCat(rootBin, "/CMake", lang, "Compiler.cmake");
 
       // If the existing build tree was already configured with this

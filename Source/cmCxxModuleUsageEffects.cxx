@@ -4,15 +4,16 @@
 
 #include <algorithm>
 #include <set>
+#include <utility>
 #include <vector>
 
 #include <cm/string_view>
+#include <cmext/string_view>
 
 #include "cmCryptoHash.h"
 #include "cmGeneratorTarget.h"
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
-#include "cmRange.h"
 #include "cmStringAlgorithms.h"
 #include "cmTarget.h"
 #include "cmValue.h"
@@ -70,34 +71,6 @@ bool IsGNUWarning(cm::string_view flag)
   return long_names.find(flag) != long_names.end();
 }
 
-bool UnknownFilter(cm::string_view)
-{
-  return false;
-}
-
-using FlagFilter = bool (*)(cm::string_view flag);
-
-FlagFilter GetFlagFilter(cmGeneratorTarget const* gt)
-{
-  static FlagFilter filter = nullptr;
-  if (filter) {
-    return filter;
-  }
-
-  cmValue frontendVariant =
-    gt->Makefile->GetDefinition("CMAKE_CXX_COMPILER_FRONTEND_VARIANT");
-
-  if (frontendVariant == "GNU") {
-    filter = IsGNUWarning;
-  } else if (frontendVariant == "MSVC") {
-    filter = IsMSVCWarning;
-  } else {
-    filter = UnknownFilter;
-  }
-
-  return filter;
-}
-
 void AppendUsage(std::string& usageHashInput, std::string const& entry)
 {
   usageHashInput += entry;
@@ -121,28 +94,216 @@ void AppendUsageEntries(std::string& usageHashInput, Range const& entries)
 
   usageHashInput.push_back('\0');
 }
+
+enum class CompileOptionUsage
+{
+  Hash,
+  Ignore,
+  SavePreprocessor,
+};
+
+struct CompileOptionClassification
+{
+  CompileOptionClassification(
+    CompileOptionUsage usage = CompileOptionUsage::Hash,
+    bool saveFollowingArgument = false)
+    : Usage(usage)
+    , SaveFollowingArgument(saveFollowingArgument)
+  {
+  }
+
+  CompileOptionUsage Usage = CompileOptionUsage::Hash;
+  bool SaveFollowingArgument = false;
+};
+
+CompileOptionClassification SaveIfStartsWith(cm::string_view flag,
+                                             cm::string_view prefix)
+{
+  if (flag.rfind(prefix, 0) == 0) {
+    return { CompileOptionUsage::SavePreprocessor,
+             flag.size() == prefix.size() };
+  }
+
+  return {};
+}
+
+CompileOptionClassification ClassifyGNUCompileOption(cm::string_view flag)
+{
+  if (IsGNUWarning(flag)) {
+    return { CompileOptionUsage::Ignore, false };
+  }
+
+  if (flag.size() < 2 || flag.front() != '-') {
+    return {};
+  }
+
+  flag.remove_prefix(1);
+  switch (flag.front()) {
+    case 'D':
+    case 'I':
+    case 'U':
+      return { CompileOptionUsage::SavePreprocessor, flag.size() == 1 };
+    case 'i': {
+      CompileOptionClassification classification =
+        SaveIfStartsWith(flag, "isystem"_s);
+      if (classification.Usage != CompileOptionUsage::Hash) {
+        return classification;
+      }
+    }
+      {
+        CompileOptionClassification classification =
+          SaveIfStartsWith(flag, "iquote"_s);
+        if (classification.Usage != CompileOptionUsage::Hash) {
+          return classification;
+        }
+      }
+      {
+        CompileOptionClassification classification =
+          SaveIfStartsWith(flag, "idirafter"_s);
+        if (classification.Usage != CompileOptionUsage::Hash) {
+          return classification;
+        }
+      }
+      {
+        CompileOptionClassification classification =
+          SaveIfStartsWith(flag, "include"_s);
+        if (classification.Usage != CompileOptionUsage::Hash) {
+          return classification;
+        }
+      }
+      {
+        CompileOptionClassification classification =
+          SaveIfStartsWith(flag, "imacros"_s);
+        if (classification.Usage != CompileOptionUsage::Hash) {
+          return classification;
+        }
+      }
+      break;
+    case '-':
+      flag.remove_prefix(1);
+      return SaveIfStartsWith(flag, "embed-dir"_s);
+    default:
+      break;
+  }
+
+  return {};
+}
+
+CompileOptionClassification ClassifyMSVCCompileOption(cm::string_view flag)
+{
+  if (IsMSVCWarning(flag)) {
+    return { CompileOptionUsage::Ignore, false };
+  }
+
+  if (flag.size() < 2 || (flag.front() != '/' && flag.front() != '-')) {
+    return {};
+  }
+
+  flag.remove_prefix(1);
+  switch (flag.front()) {
+    case 'D':
+    case 'I':
+    case 'U':
+      return { CompileOptionUsage::SavePreprocessor, flag.size() == 1 };
+    default:
+      break;
+  }
+
+  return {};
+}
+
+CompileOptionClassification ClassifyUnknownCompileOption(cm::string_view flag)
+{
+  static_cast<void>(flag);
+  return {};
+}
+
+using CompileOptionClassifier =
+  CompileOptionClassification (*)(cm::string_view flag);
+
+CompileOptionClassifier GetCompileOptionClassifier(cmGeneratorTarget const* gt)
+{
+  static CompileOptionClassifier classifier = nullptr;
+  if (classifier) {
+    return classifier;
+  }
+
+  cmValue frontendVariant =
+    gt->Makefile->GetDefinition("CMAKE_CXX_COMPILER_FRONTEND_VARIANT");
+
+  if (frontendVariant == "GNU") {
+    classifier = ClassifyGNUCompileOption;
+  } else if (frontendVariant == "MSVC") {
+    classifier = ClassifyMSVCCompileOption;
+  } else {
+    classifier = ClassifyUnknownCompileOption;
+  }
+
+  return classifier;
+}
+
+struct SplitCompileOptionsResult
+{
+  std::vector<BT<std::string>> HashEntries;
+  std::vector<BT<std::string>> PreprocessorEntries;
+};
+
+template <typename Range>
+SplitCompileOptionsResult SplitCompileOptions(Range const& entries,
+                                              CompileOptionClassifier classify)
+{
+  SplitCompileOptionsResult result;
+
+  for (auto it = entries.begin(); it != entries.end(); ++it) {
+    BT<std::string> const& option = *it;
+    auto const classification = classify(option.Value);
+
+    switch (classification.Usage) {
+      case CompileOptionUsage::Ignore:
+        continue;
+      case CompileOptionUsage::SavePreprocessor:
+        result.PreprocessorEntries.push_back(option);
+        if (classification.SaveFollowingArgument) {
+          auto next = it;
+          ++next;
+          if (next != entries.end()) {
+            result.PreprocessorEntries.push_back(*next);
+            it = next;
+          }
+        }
+        continue;
+      case CompileOptionUsage::Hash:
+        break;
+    }
+
+    result.HashEntries.push_back(option);
+  }
+
+  return result;
+}
 }
 
 cmCxxModuleUsageEffects::cmCxxModuleUsageEffects(cmGeneratorTarget const* gt,
                                                  std::string const& config)
 {
   auto const* tgt = gt->Target;
-  auto const filter = GetFlagFilter(gt);
+  auto const classify = GetCompileOptionClassifier(gt);
 
   std::string usageHashInput;
   if (tgt->IsImported()) {
     AppendUsageEntries(usageHashInput,
                        tgt->GetImportedCxxModulesCompileFeaturesEntries());
-    AppendUsageEntries(
-      usageHashInput,
-      tgt->GetImportedCxxModulesCompileOptionsEntries().filter(
-        [&](const BT<std::string>& flag) { return !filter(flag.Value); }));
+    auto compileOptions = SplitCompileOptions(
+      tgt->GetImportedCxxModulesCompileOptionsEntries(), classify);
+    this->PreprocessorCompileOptions =
+      std::move(compileOptions.PreprocessorEntries);
+    AppendUsageEntries(usageHashInput, compileOptions.HashEntries);
   } else {
-    AppendUsageEntries(usageHashInput,
-                       cmMakeRange(gt->GetCompileOptions(config, "CXX"))
-                         .filter([&](const BT<std::string>& flag) {
-                           return !filter(flag.Value);
-                         }));
+    auto compileOptions =
+      SplitCompileOptions(gt->GetCompileOptions(config, "CXX"), classify);
+    this->PreprocessorCompileOptions =
+      std::move(compileOptions.PreprocessorEntries);
+    AppendUsageEntries(usageHashInput, compileOptions.HashEntries);
 
     cmValue langStd = gt->GetLanguageStandard("CXX", config);
     if (!langStd) {
@@ -166,4 +327,10 @@ cmCxxModuleUsageEffects::cmCxxModuleUsageEffects(cmGeneratorTarget const* gt,
 std::string const& cmCxxModuleUsageEffects::GetHash() const
 {
   return this->Hash;
+}
+
+std::vector<BT<std::string>> const&
+cmCxxModuleUsageEffects::GetPreprocessorCompileOptions() const
+{
+  return this->PreprocessorCompileOptions;
 }

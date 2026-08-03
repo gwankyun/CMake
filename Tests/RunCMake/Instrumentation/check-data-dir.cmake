@@ -240,6 +240,14 @@ if (ARGS_BUILD AND NOT EXISTS ${RunCMake_TEST_BINARY_DIR}/shell_redirect.out)
   add_error("custom command with shell redirection did not run")
 endif()
 
+if (CHECK_NINJA_INSTRUMENT_ORDER)
+  set(rules_ninja "${RunCMake_TEST_BINARY_DIR}/CMakeFiles/rules.ninja")
+  file(READ "${rules_ninja}" ninja_content)
+  if (NOT ninja_content MATCHES "command = \"[^\"]*ctest(\.exe)?\" --instrument")
+    add_error("Expected compile command to start with ctest --instrument")
+  endif()
+endif()
+
 # Look for build snippet, which may not appear immediately
 if (ARGS_BUILD_MAKE_PROGRAM)
   set(NUM_TRIES 30)

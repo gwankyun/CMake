@@ -694,6 +694,33 @@ function(run_configure_empty_bindir)
 endfunction()
 run_configure_empty_bindir()
 
+# Verify that ctest_configure() does not trigger a spurious unused-cli
+# warning about BUILDNAME/SITE when CTEST_SITE/CTEST_BUILD_NAME are set
+# but the project does not include(CTest).  See issue #27953.
+function(run_configure_site_buildname_no_unused_cli)
+  set(src "${RunCMake_BINARY_DIR}/configure-site-buildname-no-unused-cli-src")
+  set(bin "${RunCMake_BINARY_DIR}/configure-site-buildname-no-unused-cli-bin")
+  file(REMOVE_RECURSE "${src}" "${bin}")
+  file(MAKE_DIRECTORY "${src}")
+  file(WRITE "${src}/CMakeLists.txt"
+    "cmake_minimum_required(VERSION 3.10)\nproject(Minimal LANGUAGES NONE)\n")
+  set(RunCMake_TEST_BINARY_DIR "${bin}")
+  set(RunCMake_TEST_NO_CLEAN 1)
+  ctest_source_dir_generator_args(generator_args)
+  set(RunCMake_TEST_NOT_EXPECT_stdout "CMake Warning \\(unused-cli\\)")
+  run_cmake_command(configure-site-buildname-no-unused-cli
+    ${CMAKE_CTEST_COMMAND}
+    --source-dir "${src}"
+    --build-dir  "${bin}"
+    ${generator_args}
+    -D "CTEST_SITE=Test Site"
+    -D "CTEST_BUILD_NAME=Test Build"
+    -T Configure
+    -V)
+  unset(RunCMake_TEST_NOT_EXPECT_stdout)
+endfunction()
+run_configure_site_buildname_no_unused_cli()
+
 # Verify expected error condition when --source-dir does not contain
 # a CMakeLists.txt file.
 function(run_configure_no_cmakelists)
@@ -860,6 +887,21 @@ set_tests_properties(test5 PROPERTIES  SKIP_REGULAR_EXPRESSION \"please skip\")
   run_cmake_command(output-junit ${CMAKE_CTEST_COMMAND} --output-junit "${RunCMake_TEST_BINARY_DIR}/junit.xml")
 endfunction()
 run_output_junit()
+
+function(run_output_junit_invalid)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/output-junit-invalid)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
+add_test(test1 \"${CMAKE_COMMAND}\" -E true)
+")
+  set(output_dir "${RunCMake_TEST_BINARY_DIR}/not-a-dir")
+  file(WRITE "${output_dir}" "")
+  set(output_file "${output_dir}/junit.xml")
+  run_cmake_command(output-junit-invalid ${CMAKE_CTEST_COMMAND} --output-junit "${output_file}")
+endfunction()
+run_output_junit_invalid()
 
 run_cmake_command(invalid-ctest-argument ${CMAKE_CTEST_COMMAND} --not-a-valid-ctest-argument)
 

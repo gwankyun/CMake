@@ -2763,7 +2763,7 @@ int cmCTest::ExecuteTests(std::vector<std::string> const& args)
 
   cmInstrumentation instrumentation(this->GetBinaryDir());
   auto processHandler = [&handler]() -> int {
-    return handler.ProcessHandler() < 0 ? cmCTest::TEST_ERRORS : 0;
+    return handler.ProcessHandler() != 0 ? cmCTest::TEST_ERRORS : 0;
   };
   std::map<std::string, std::string> data;
   data["showOnly"] = this->GetShowOnly() ? "1" : "0";

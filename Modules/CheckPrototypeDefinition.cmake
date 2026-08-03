@@ -93,6 +93,7 @@ expected prototype:
 #]=======================================================================]
 
 include_guard(GLOBAL)
+include(Internal/CheckCommon)
 
 function(check_prototype_definition _FUNCTION _PROTOTYPE _RETURN _HEADER _VARIABLE)
 
@@ -101,33 +102,6 @@ function(check_prototype_definition _FUNCTION _PROTOTYPE _RETURN _HEADER _VARIAB
       message(CHECK_START "Checking prototype ${_FUNCTION} for ${_VARIABLE}")
     endif()
     set(CHECK_PROTOTYPE_DEFINITION_CONTENT "/* */\n")
-
-    set(CHECK_PROTOTYPE_DEFINITION_FLAGS ${CMAKE_REQUIRED_FLAGS})
-    if (CMAKE_REQUIRED_LINK_OPTIONS)
-      set(CHECK_PROTOTYPE_DEFINITION_LINK_OPTIONS
-        LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
-    else()
-      set(CHECK_PROTOTYPE_DEFINITION_LINK_OPTIONS)
-    endif()
-    if (CMAKE_REQUIRED_LIBRARIES)
-      set(CHECK_PROTOTYPE_DEFINITION_LIBS
-        LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-    else()
-      set(CHECK_PROTOTYPE_DEFINITION_LIBS)
-    endif()
-    if (CMAKE_REQUIRED_INCLUDES)
-      set(CMAKE_SYMBOL_EXISTS_INCLUDES
-        "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}")
-    else()
-      set(CMAKE_SYMBOL_EXISTS_INCLUDES)
-    endif()
-
-    if(CMAKE_REQUIRED_LINK_DIRECTORIES)
-      set(_CPD_LINK_DIRECTORIES
-        "-DLINK_DIRECTORIES:STRING=${CMAKE_REQUIRED_LINK_DIRECTORIES}")
-    else()
-      set(_CPD_LINK_DIRECTORIES)
-    endif()
 
     foreach(_FILE ${_HEADER})
       string(APPEND CHECK_PROTOTYPE_DEFINITION_HEADER
@@ -141,16 +115,19 @@ function(check_prototype_definition _FUNCTION _PROTOTYPE _RETURN _HEADER _VARIAB
     file(READ ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CheckPrototypeDefinition.c.in _SOURCE)
     string(CONFIGURE "${_SOURCE}" _SOURCE @ONLY)
 
+    cmake_check_common_init_args(_CPD)
+
     try_compile(${_VARIABLE}
       SOURCE_FROM_VAR CheckPrototypeDefinition.c _SOURCE
       COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-      ${CHECK_PROTOTYPE_DEFINITION_LINK_OPTIONS}
-      ${CHECK_PROTOTYPE_DEFINITION_LIBS}
-      CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${CHECK_PROTOTYPE_DEFINITION_FLAGS}
-      "${CMAKE_SYMBOL_EXISTS_INCLUDES}"
-      "${_CPD_LINK_DIRECTORIES}"
+      ${_CPD_ADD_LINK_OPTIONS}
+      ${_CPD_ADD_LINK_LIBRARIES}
+      CMAKE_FLAGS
+        -DCOMPILE_DEFINITIONS:STRING=${CMAKE_REQUIRED_FLAGS}
+        ${_CPD_EXTRA_CMAKE_ARGUMENTS}
+        "${_CPD_INCLUDE_DIRECTORIES}"
+        "${_CPD_LINK_DIRECTORIES}"
       )
-    unset(_CPD_LINK_DIRECTORIES)
 
     if (${_VARIABLE})
       set(${_VARIABLE} 1 CACHE INTERNAL "Have correct prototype for ${_FUNCTION}")
@@ -164,5 +141,4 @@ function(check_prototype_definition _FUNCTION _PROTOTYPE _RETURN _HEADER _VARIAB
       set(${_VARIABLE} 0 CACHE INTERNAL "Have correct prototype for ${_FUNCTION}")
     endif ()
   endif()
-
 endfunction()

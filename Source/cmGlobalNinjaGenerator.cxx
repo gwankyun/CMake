@@ -1311,7 +1311,7 @@ void cmGlobalNinjaGenerator::WriteTestPrepTargets()
       auto const& testGenerators = lg->GetMakefile()->GetTestGenerators();
       for (auto const& tester : testGenerators) {
         cmTestGenerator::BuildDependencies testDeps;
-        if (!tester->GetBuildDependencies(lg, testDeps)) {
+        if (!tester->GetBuildDependencies(lg, config, testDeps)) {
           continue;
         }
         std::string const depName = this->ConvertToNinjaPath(

@@ -84,8 +84,11 @@ where ``<dir>`` is one of:
 ``LIBDIR``
   object code libraries (``lib`` or ``lib64``)
 
+  On Linux, when not cross-compiling, the default is the distro's
+  arch-specific library directory, such as ``lib`` or ``lib64``.
   On Debian, this may be ``lib/<multiarch-tuple>`` when
   :variable:`CMAKE_INSTALL_PREFIX` is ``/usr``.
+  When cross-compiling, the default is ``lib``.
 
   .. note::
 
@@ -441,31 +444,28 @@ set(_GNUInstallDirs_DATAROOTDIR_DEFAULT "share")
 function(_GNUInstallDirs_LIBDIR_get_default out_var install_prefix)
   set(${out_var} "${_GNUInstallDirs_LIBDIR_DEFAULT}")
 
-  # Override this default 'lib' with 'lib64' iff:
-  #  - we are on Linux system but NOT cross-compiling
-  #  - we are NOT on debian
-  #  - we are NOT building for conda
-  #  - we are on a 64 bits system
-  # reason is: amd64 ABI: https://github.com/hjl-tools/x86-psABI/wiki/X86-psABI
-  # For Debian with multiarch, use 'lib/${CMAKE_LIBRARY_ARCHITECTURE}' if
-  # CMAKE_LIBRARY_ARCHITECTURE is set (which contains e.g. "i386-linux-gnu"
-  # and CMAKE_INSTALL_PREFIX is "/usr"
-  # See http://wiki.debian.org/Multiarch
   if (NOT DEFINED CMAKE_SYSTEM_NAME OR NOT DEFINED CMAKE_SIZEOF_VOID_P)
     message(AUTHOR_WARNING
       "Unable to determine default CMAKE_INSTALL_LIBDIR directory because no target architecture is known. "
       "Please enable at least one language before including GNUInstallDirs.")
   endif()
+
+  # When not cross-compiling, detect the host distro's arch-specific 'lib'.
+  # When cross-compiling, the host's distro is meaningless to the target,
+  # so it is up to the caller to specify the correct 'lib' directory.
   if(CMAKE_SYSTEM_NAME MATCHES "^(Linux|GNU)$" AND NOT CMAKE_CROSSCOMPILING)
     _GNUInstallDirs_get_system_type_for_install(system_type)
     if(system_type STREQUAL "debian")
+      # For Debian with multiarch, use 'lib/${CMAKE_LIBRARY_ARCHITECTURE}' if
+      # CMAKE_INSTALL_PREFIX is "/usr".  See http://wiki.debian.org/Multiarch
       if(CMAKE_LIBRARY_ARCHITECTURE)
         if("${install_prefix}" MATCHES "^/usr/?$")
           set(${out_var} "lib/${CMAKE_LIBRARY_ARCHITECTURE}")
         endif()
       endif()
     elseif(NOT DEFINED system_type)
-      # not debian, alpine, arch, or conda so rely on CMAKE_SIZEOF_VOID_P:
+      # This host system uses a 'lib64' directory for 64-bit architectures.
+      # See https://gitlab.com/x86-psABIs/x86-64-ABI
       if("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
         set(${out_var} "lib64")
       endif()

@@ -293,13 +293,6 @@ bool cmakeCheckStampList(std::string const& stampList)
   return true;
 }
 
-bool isDiagnosticSet(cmStateSnapshot const& state,
-                     cmDiagnosticCategory category)
-{
-  constexpr cmDiagnosticAction unset = cmDiagnostics::Undefined;
-  return (state.GetDiagnostic(category, unset) == unset);
-}
-
 } // namespace
 
 cmDocumentationEntry cmake::CMAKE_STANDARD_OPTIONS_TABLE[15] = {
@@ -513,22 +506,22 @@ void cmake::SetDiagnosticsFromPreset(
     auto const wi = warnings.find(category);
     if (wi != warnings.end()) {
       if (wi->second) {
-        this->CurrentSnapshot.PromoteDiagnostic( // clang-format: break
-          category, cmDiagnostics::Warn, true);
+        this->AlterDiagnostic(&cmStateSnapshot::PromoteDiagnostic, category,
+                              cmDiagnostics::Warn, true);
       } else {
-        this->CurrentSnapshot.DemoteDiagnostic( // clang-format: break
-          category, cmDiagnostics::Ignore, true);
+        this->AlterDiagnostic(&cmStateSnapshot::DemoteDiagnostic, category,
+                              cmDiagnostics::Ignore, true);
       }
     }
 
     auto const ei = errors.find(category);
     if (ei != errors.end()) {
       if (ei->second) {
-        this->CurrentSnapshot.PromoteDiagnostic( // clang-format: break
-          category, cmDiagnostics::SendError, true);
+        this->AlterDiagnostic(&cmStateSnapshot::PromoteDiagnostic, category,
+                              cmDiagnostics::SendError, true);
       } else {
-        this->CurrentSnapshot.DemoteDiagnostic( // clang-format: break
-          category, cmDiagnostics::Warn, true);
+        this->AlterDiagnostic(&cmStateSnapshot::DemoteDiagnostic, category,
+                              cmDiagnostics::Warn, true);
       }
     }
   }
@@ -676,13 +669,13 @@ bool cmake::SetCacheArgs(std::vector<std::string> const& args)
     }
 
     if (foundNo) {
-      state->CurrentSnapshot.DemoteDiagnostic(
-        *category, foundError ? cmDiagnostics::Warn : cmDiagnostics::Ignore,
-        true);
+      state->AlterDiagnostic(
+        &cmStateSnapshot::DemoteDiagnostic, *category,
+        foundError ? cmDiagnostics::Warn : cmDiagnostics::Ignore, true);
     } else {
-      state->CurrentSnapshot.PromoteDiagnostic(
-        *category, foundError ? cmDiagnostics::SendError : cmDiagnostics::Warn,
-        true);
+      state->AlterDiagnostic(
+        &cmStateSnapshot::PromoteDiagnostic, *category,
+        foundError ? cmDiagnostics::SendError : cmDiagnostics::Warn, true);
     }
     return true;
   };
@@ -1333,8 +1326,9 @@ void cmake::SetArgs(std::vector<std::string> const& args)
       "--warn-uninitialized", CommandArgument::Values::Zero,
       [](std::string const&, cmake* state) -> bool {
         warnDeprecated("--warn-uninitialized"_s, "-Wuninitialized"_s);
-        state->CurrentSnapshot.PromoteDiagnostic(
-          cmDiagnostics::CMD_UNINITIALIZED, cmDiagnostics::Warn, true);
+        state->AlterDiagnostic(&cmStateSnapshot::PromoteDiagnostic,
+                               cmDiagnostics::CMD_UNINITIALIZED,
+                               cmDiagnostics::Warn, true);
         return true;
       } },
     CommandArgument{ "--warn-unused-vars", CommandArgument::Values::Zero,
@@ -1343,8 +1337,9 @@ void cmake::SetArgs(std::vector<std::string> const& args)
       "--no-warn-unused-cli", CommandArgument::Values::Zero,
       [](std::string const&, cmake* state) -> bool {
         warnDeprecated("--no-warn-unused-cli"_s, "-Wno-unused-cli"_s);
-        state->CurrentSnapshot.DemoteDiagnostic(cmDiagnostics::CMD_UNUSED_CLI,
-                                                cmDiagnostics::Ignore, true);
+        state->AlterDiagnostic(&cmStateSnapshot::DemoteDiagnostic,
+                               cmDiagnostics::CMD_UNUSED_CLI,
+                               cmDiagnostics::Ignore, true);
         return true;
       } },
     CommandArgument{
@@ -2436,13 +2431,9 @@ int cmake::Configure()
 #endif
 
   // We now need to harmonize the previous initial diagnostic state with any
-  // changes requested via command line options. This is a bit tricky, because
-  // we need to underlay what is specified by the cache beneath whatever state
-  // has been built from command line processing.
-
-  cmDiagnosticAction deprecated = this->CurrentSnapshot.GetDiagnostic(
-    cmDiagnostics::CMD_DEPRECATED, cmDiagnostics::Undefined);
-  bool const deprecatedAlreadySet = (deprecated != cmDiagnostics::Undefined);
+  // changes requested via command line options and/or presets. We do this by
+  // first applying the prior (cached) state, then applying all deferred
+  // alterations.
 
   if (cmValue cachedDiagnostics =
         this->State->GetCacheEntryValue("CMAKE_DIAGNOSTIC_INIT")) {
@@ -2456,11 +2447,7 @@ int cmake::Configure()
           cmDiagnostics::GetDiagnosticAction(v.substr(n + 1));
 
         if (category && action) {
-          // Only use the cache if command-line options have not modified the
-          // diagnostic.
-          if (isDiagnosticSet(this->CurrentSnapshot, *category)) {
-            this->CurrentSnapshot.SetDiagnostic(*category, *action, false);
-          }
+          this->CurrentSnapshot.SetDiagnostic(*category, *action, false);
         }
       }
     }
@@ -2470,9 +2457,11 @@ int cmake::Configure()
     this->State->GetCacheEntryValue("CMAKE_WARN_DEPRECATED");
   if (cachedWarnDeprecated) {
     if (cachedWarnDeprecated.IsOn()) {
-      deprecated = cmDiagnostics::Warn;
+      this->CurrentSnapshot.PromoteDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                                              cmDiagnostics::Warn, false);
     } else {
-      deprecated = cmDiagnostics::Ignore;
+      this->CurrentSnapshot.DemoteDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                                             cmDiagnostics::Ignore, false);
     }
   }
 
@@ -2480,15 +2469,17 @@ int cmake::Configure()
     this->State->GetCacheEntryValue("CMAKE_ERROR_DEPRECATED");
   if (cachedErrorDeprecated) {
     if (cachedErrorDeprecated.IsOn()) {
-      deprecated = cmDiagnostics::SendError;
+      this->CurrentSnapshot.PromoteDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                                              cmDiagnostics::SendError, false);
+    } else {
+      this->CurrentSnapshot.DemoteDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                                             cmDiagnostics::Warn, false);
     }
   }
 
-  if (!deprecatedAlreadySet && deprecated != cmDiagnostics::Undefined) {
-    // CMD_DEPRECATED was not set by command-line options, but was altered by
-    // one or both of CMAKE_{WARN,ERROR}_DEPRECATED.
-    this->CurrentSnapshot.SetDiagnostic(cmDiagnostics::CMD_DEPRECATED,
-                                        deprecated, false);
+  for (DiagnosticAlteration const& da : this->DiagnosticAlterations) {
+    (this->CurrentSnapshot.*da.Alteration)(da.Category, da.DesiredAction,
+                                           da.Recurse);
   }
 
   // Now write the diagnostic state back to the cache.
@@ -4386,6 +4377,15 @@ int cmake::Workflow(cmCMakePresetsWorkflowArgs const& args)
     }
   };
 
+  auto buildPresetCommand = [&args](std::vector<std::string> cmd,
+                                    std::string const& presetName) {
+    cmd.insert(cmd.end(), { "--preset", presetName });
+    if (!args.PresetsFile.empty()) {
+      cmd.insert(cmd.end(), { "--presets-file", args.PresetsFile });
+    }
+    return cmd;
+  };
+
   std::vector<CalculatedStep> steps;
   steps.reserve(expandedPreset->Steps.size());
   int stepNumber = 1;
@@ -4399,9 +4399,8 @@ int cmake::Workflow(cmCMakePresetsWorkflowArgs const& args)
         if (!configurePreset) {
           return 1;
         }
-        std::vector<std::string> configureCmdArgs{
-          cmSystemTools::GetCMakeCommand(), "--preset", step.PresetName
-        };
+        std::vector<std::string> configureCmdArgs = buildPresetCommand(
+          { cmSystemTools::GetCMakeCommand() }, step.PresetName);
         if (args.Fresh) {
           configureCmdArgs.emplace_back("--fresh");
         }
@@ -4414,10 +4413,10 @@ int cmake::Workflow(cmCMakePresetsWorkflowArgs const& args)
         if (!buildPreset) {
           return 1;
         }
-        steps.emplace_back(
-          stepNumber, "build"_s, step.PresetName,
-          buildWorkflowStep({ cmSystemTools::GetCMakeCommand(), "--build",
-                              "--preset", step.PresetName }));
+        std::vector<std::string> buildCmdArgs = buildPresetCommand(
+          { cmSystemTools::GetCMakeCommand(), "--build" }, step.PresetName);
+        steps.emplace_back(stepNumber, "build"_s, step.PresetName,
+                           buildWorkflowStep(buildCmdArgs));
       } break;
       case cmCMakePresetsGraph::WorkflowPreset::WorkflowStep::Type::Test: {
         auto const* testPreset = this->FindPresetForWorkflow(
@@ -4425,10 +4424,10 @@ int cmake::Workflow(cmCMakePresetsWorkflowArgs const& args)
         if (!testPreset) {
           return 1;
         }
-        steps.emplace_back(
-          stepNumber, "test"_s, step.PresetName,
-          buildWorkflowStep({ cmSystemTools::GetCTestCommand(), "--preset",
-                              step.PresetName }));
+        std::vector<std::string> testCmdArgs = buildPresetCommand(
+          { cmSystemTools::GetCTestCommand() }, step.PresetName);
+        steps.emplace_back(stepNumber, "test"_s, step.PresetName,
+                           buildWorkflowStep(testCmdArgs));
       } break;
       case cmCMakePresetsGraph::WorkflowPreset::WorkflowStep::Type::Package: {
         auto const* packagePreset = this->FindPresetForWorkflow(
@@ -4436,10 +4435,10 @@ int cmake::Workflow(cmCMakePresetsWorkflowArgs const& args)
         if (!packagePreset) {
           return 1;
         }
-        steps.emplace_back(
-          stepNumber, "package"_s, step.PresetName,
-          buildWorkflowStep({ cmSystemTools::GetCPackCommand(), "--preset",
-                              step.PresetName }));
+        std::vector<std::string> packageCmdArgs = buildPresetCommand(
+          { cmSystemTools::GetCPackCommand() }, step.PresetName);
+        steps.emplace_back(stepNumber, "package"_s, step.PresetName,
+                           buildWorkflowStep(packageCmdArgs));
       } break;
     }
     stepNumber++;
@@ -4517,6 +4516,21 @@ void cmake::RunCheckForUnusedVariables()
     }
   }
 #endif
+}
+
+void cmake::AlterDiagnostic(DiagnosticAlterationMethod alteration,
+                            cmDiagnosticCategory category,
+                            cmDiagnosticAction desiredAction, bool recurse)
+{
+  // In Project mode, we need to defer applying any diagnostic changes until
+  // after reading the prior state from the cache. In all other modes, changes
+  // should be applied immediately.
+  if (this->State->GetRole() == cmState::Role::Project) {
+    this->DiagnosticAlterations.emplace_back( // clang-format: break
+      DiagnosticAlteration{ alteration, category, desiredAction, recurse });
+  } else {
+    (this->CurrentSnapshot.*alteration)(category, desiredAction, recurse);
+  }
 }
 
 void cmake::SetDebugFindOutputPkgs(std::string const& args)

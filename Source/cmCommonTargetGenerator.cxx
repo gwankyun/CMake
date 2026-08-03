@@ -183,8 +183,8 @@ cmCommonTargetGenerator::GetLinkedTargetDirectories(
         this->GeneratorTarget->GetLinkInformation(config)) {
 
     auto findSyntheticTarget =
-      [this,
-       &config](cmGeneratorTarget const* linkee) -> cmGeneratorTarget const* {
+      [this, &config,
+       cli](cmGeneratorTarget const* linkee) -> cmGeneratorTarget const* {
       if (!linkee) {
         return nullptr;
       }
@@ -193,10 +193,10 @@ cmCommonTargetGenerator::GetLinkedTargetDirectories(
       auto const& synthDeps = this->GeneratorTarget->GetSyntheticDeps(config);
       auto it = synthDeps.find(linkee);
       if (it != synthDeps.end() && !it->second.empty()) {
-        return it->second.front();
+        return *it->second.begin();
       }
 
-      // Check linked targets to finding synthetic targets for transitive deps
+      // Check linked targets to find synthetic targets for transitive deps
       std::vector<cmGeneratorTarget const*> pending;
       std::set<cmGeneratorTarget const*> visited;
       for (auto const& dep : synthDeps) {
@@ -207,6 +207,19 @@ cmCommonTargetGenerator::GetLinkedTargetDirectories(
         }
       }
 
+      // Also seed the search from direct linked targets that have
+      // CXX20 module sources, in case they hold synthetic deps for
+      // transitive dependencies that we need to inherit. Skip targets
+      // that already have synthetic substitutes in our own synthDeps
+      // (their transitive deps will be explored via the substitute).
+      for (auto const& item : cli->GetItems()) {
+        if (item.Target && item.Target->HaveCxx20ModuleSources() &&
+            synthDeps.find(item.Target) == synthDeps.end() &&
+            visited.insert(item.Target).second) {
+          pending.push_back(item.Target);
+        }
+      }
+
       while (!pending.empty()) {
         auto const* current = pending.back();
         pending.pop_back();
@@ -214,7 +227,7 @@ cmCommonTargetGenerator::GetLinkedTargetDirectories(
         auto itLinkeeSynth = transitiveSynthDeps.find(linkee);
         if (itLinkeeSynth != transitiveSynthDeps.end() &&
             !itLinkeeSynth->second.empty()) {
-          return itLinkeeSynth->second.front();
+          return *itLinkeeSynth->second.begin();
         }
         for (auto const& entry : transitiveSynthDeps) {
           for (auto const* synth : entry.second) {

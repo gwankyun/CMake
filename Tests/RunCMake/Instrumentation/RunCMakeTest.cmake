@@ -255,6 +255,9 @@ instrument(no-query
   BUILD INSTALL TEST
   CHECK_SCRIPT check-data-dir.cmake
 )
+if(RunCMake_GENERATOR STREQUAL "Ninja")
+  set(CHECK_NINJA_INSTRUMENT_ORDER 1)
+endif()
 instrument(disabled-test
   BUILD TEST DISABLE_TEST
   CHECK_SCRIPT check-data-dir.cmake
@@ -267,6 +270,7 @@ instrument(both-query
   BUILD INSTALL TEST STATIC_QUERY DYNAMIC_QUERY CAPTURE_OUTPUT_QUERY
   CHECK_SCRIPT check-data-dir.cmake
 )
+unset(CHECK_NINJA_INSTRUMENT_ORDER)
 
 # Test cmake_instrumentation command
 instrument(cmake-command

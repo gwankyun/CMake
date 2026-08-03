@@ -282,6 +282,7 @@ include(CheckIncludeFile)
 include(CheckIncludeFileCXX)
 
 include_guard(GLOBAL)
+include(Internal/CheckCommon)
 
 block(SCOPE_FOR POLICIES)
 cmake_policy(SET CMP0140 NEW)
@@ -334,12 +335,7 @@ function(__check_type_size_impl type var result_var map builtin language)
     string(APPEND headers "#include \"${h}\"\n")
   endforeach()
 
-  if(CMAKE_REQUIRED_LINK_DIRECTORIES)
-    set(_CTS_LINK_DIRECTORIES
-      "-DLINK_DIRECTORIES:STRING=${CMAKE_REQUIRED_LINK_DIRECTORIES}")
-  else()
-    set(_CTS_LINK_DIRECTORIES)
-  endif()
+  cmake_check_common_init_args(_CTS)
 
   # Perform the check.
   set(bin ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CheckTypeSize/${var}.bin)
@@ -347,15 +343,14 @@ function(__check_type_size_impl type var result_var map builtin language)
   string(CONFIGURE "${src_content}" src_content @ONLY)
   try_compile(${result_var} SOURCE_FROM_VAR "${src}" src_content
     COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-    LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS}
-    LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES}
+    ${_CTS_ADD_LINK_OPTIONS}
+    ${_CTS_ADD_LINK_LIBRARIES}
     CMAKE_FLAGS
-      "-DCOMPILE_DEFINITIONS:STRING=${CMAKE_REQUIRED_FLAGS}"
-      "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}"
+      -DCOMPILE_DEFINITIONS:STRING=${CMAKE_REQUIRED_FLAGS}
+      "${_CTS_INCLUDE_DIRECTORIES}"
       "${_CTS_LINK_DIRECTORIES}"
     COPY_FILE ${bin}
     )
-  unset(_CTS_LINK_DIRECTORIES)
 
   if(${result_var})
     # The check compiled.  Load information from the binary.

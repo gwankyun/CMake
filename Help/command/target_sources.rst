@@ -14,26 +14,26 @@ target_sources
 指定在构建目标和/或其依赖项时要使用的源。命名的\ ``<target>``\ 必须是由\
 :command:`add_executable`\ 或\ :command:`add_library`\ 或\
 :command:`add_custom_target`\ 等命令创建的，并且不能是\
-:ref:`别名目标 <Alias Targets>`。\ ``<items>``\ 可以使用\
+:ref:`别名目标 <Alias Targets>`。\ ``<source>``\ 可以使用\
 :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 .. versionadded:: 3.20
   ``<target>``\ 可以是自定义目标。
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字需要指定源文件路径的\
-:ref:`范围 <Target Command Scope>` （\ ``<items>``\）。\ ``PRIVATE``\ 和\ ``PUBLIC``\
-项将填充\ ``<target>``\ 的\ :prop_tgt:`SOURCES`\ 属性，该属性在构建目标本身时使用。\
-``PUBLIC``\ 和\ ``INTERFACE``\ 项将填充\ ``<target>``\ 的\
+:ref:`范围 <Target Command Scope>` （\ ``<source>...``\ ）。\ ``PRIVATE``\ 和\ ``PUBLIC``\
+源文件将填充\ ``<target>``\ 的\ :prop_tgt:`SOURCES`\ 属性，该属性在构建目标本身时使用。\
+``PUBLIC``\ 和\ ``INTERFACE``\ 源文件将填充\ ``<target>``\ 的\
 :prop_tgt:`INTERFACE_SOURCES`\ 属性，该属性在构建依赖项时使用。\
 :command:`add_custom_target`\ 创建的目标只能有\ ``PRIVATE``\ 作用域。
 
-重复调用相同的\ ``<target>``\ 将元素按照调用的顺序添加。
+重复调用相同的\ ``<target>``\ 将元素按照调用的顺序添加源文件。
 
 .. versionadded:: 3.3
   允许使用\ :prop_tgt:`INTERFACE_SOURCES`\ 导出目标。
 
 .. versionadded:: 3.11
-  允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
+  允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 源文件。
 
 .. versionchanged:: 3.13
   相对源文件路径被解释为相对于当前源目录（即\ :variable:`CMAKE_CURRENT_SOURCE_DIR`\ ）。\
@@ -85,8 +85,8 @@ target_sources
   .. versionadded:: 4.4
 
   指定在构建目标及其依赖时所使用的源文件。当作用域为 ``PRIVATE`` 和 ``PUBLIC`` 时，\
-  各项将填充 ``<set>`` 的 :prop_fs:`SOURCES` 属性，用于构建目标本身。当作用域为 ``PUBLIC``
-  和 ``INTERFACE`` 时，各项将填充 ``<set>`` 的 :prop_fs:`INTERFACE_SOURCES` 属性，\
+  ``<files>``\ 将填充 ``<set>`` 的 :prop_fs:`SOURCES` 属性，用于构建目标本身。当作用域为 ``PUBLIC``
+  和 ``INTERFACE`` 时，``<files>``\ 将填充 ``<set>`` 的 :prop_fs:`INTERFACE_SOURCES` 属性，\
   用于构建其依赖方。:prop_fs:`INTERFACE_SOURCES` 属性所指定的源文件会传递式地传播到所有依赖方。
 
 ``CXX_MODULES``

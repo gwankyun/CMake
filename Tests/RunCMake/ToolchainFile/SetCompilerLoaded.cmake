@@ -1,0 +1,5 @@
+enable_language(C)
+try_compile(SHOULD_PASS SOURCE_FROM_CONTENT "main.c" "int main(void) { return 0; }")
+if(NOT SHOULD_PASS)
+  message(FATAL_ERROR "try_compile failed but should have passed!")
+endif()

@@ -293,13 +293,15 @@ cmVisualStudio10TargetGenerator::cmVisualStudio10TargetGenerator(
   this->Android = gg->TargetsAndroid();
   this->WindowsKernelMode = gg->TargetsWindowsKernelModeDriver();
   auto scanProp = target->GetProperty("CXX_SCAN_FOR_MODULES");
+  bool const scanDepsSupported = gg->IsScanDependenciesSupported();
   for (auto const& config : this->Configurations) {
     if (scanProp.IsSet()) {
-      this->ScanSourceForModuleDependencies[config] = scanProp.IsOn();
-    } else {
       this->ScanSourceForModuleDependencies[config] =
+        scanDepsSupported && scanProp.IsOn();
+    } else {
+      this->ScanSourceForModuleDependencies[config] = scanDepsSupported &&
         target->NeedCxxDyndep(config) ==
-        cmGeneratorTarget::CxxModuleSupport::Enabled;
+          cmGeneratorTarget::CxxModuleSupport::Enabled;
     }
   }
   for (unsigned int& version : this->NsightTegraVersion) {
@@ -3012,8 +3014,9 @@ void cmVisualStudio10TargetGenerator::OutputSourceSpecificFlags(
       if (compileAsPerConfig) {
         clOptions.AddFlag("CompileAs", compileAsPerConfig);
       }
-      if (shouldScanForModules !=
-          this->ScanSourceForModuleDependencies[config]) {
+      if (gg->IsScanDependenciesSupported() &&
+          shouldScanForModules !=
+            this->ScanSourceForModuleDependencies[config]) {
         clOptions.AddFlag("ScanSourceForModuleDependencies",
                           shouldScanForModules ? "true" : "false");
       }

@@ -71,6 +71,9 @@ public:
   char const* GetPlatformToolset() const;
   std::string const& GetPlatformToolsetString() const;
 
+  /** Return true when using a Visual Studio clang-cl toolset.  */
+  bool IsClangClToolset() const;
+
   /** The toolset version props file, if any.  */
   std::string const& GetPlatformToolsetVersionProps() const;
 

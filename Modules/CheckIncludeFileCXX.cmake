@@ -85,15 +85,10 @@ See Also
 #]=======================================================================]
 
 include_guard(GLOBAL)
+include(Internal/CheckCommon)
 
 macro(CHECK_INCLUDE_FILE_CXX INCLUDE VARIABLE)
   if(NOT DEFINED "${VARIABLE}" OR "x${${VARIABLE}}" STREQUAL "x${VARIABLE}")
-    if(CMAKE_REQUIRED_INCLUDES)
-      set(CHECK_INCLUDE_FILE_CXX_INCLUDE_DIRS "-DINCLUDE_DIRECTORIES=${CMAKE_REQUIRED_INCLUDES}")
-    else()
-      set(CHECK_INCLUDE_FILE_CXX_INCLUDE_DIRS)
-    endif()
-    set(MACRO_CHECK_INCLUDE_FILE_FLAGS ${CMAKE_REQUIRED_FLAGS})
     set(CHECK_INCLUDE_FILE_VAR ${INCLUDE})
     file(READ ${CMAKE_ROOT}/Modules/CheckIncludeFile.cxx.in _CIF_SOURCE_CONTENT)
     string(CONFIGURE "${_CIF_SOURCE_CONTENT}" _CIF_SOURCE_CONTENT)
@@ -105,18 +100,17 @@ macro(CHECK_INCLUDE_FILE_CXX INCLUDE VARIABLE)
       string(APPEND CMAKE_CXX_FLAGS " ${ARGV2}")
     endif()
 
-    set(_CIF_LINK_OPTIONS)
-    if(CMAKE_REQUIRED_LINK_OPTIONS)
-      set(_CIF_LINK_OPTIONS LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
-    endif()
+    cmake_check_common_init_compile_args(_CIF)
+    cmake_check_common_init_link_options(_CIF)
+    cmake_check_common_init_link_directories(_CIF)
 
-    set(_CIF_LINK_LIBRARIES "")
+    set(_CIF_ADD_LINK_LIBRARIES "")
     if(CMAKE_REQUIRED_LIBRARIES)
       cmake_policy(GET CMP0075 _CIF_CMP0075
         PARENT_SCOPE # undocumented, do not use outside of CMake
         )
       if("x${_CIF_CMP0075}x" STREQUAL "xNEWx")
-        set(_CIF_LINK_LIBRARIES LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+        set(_CIF_ADD_LINK_LIBRARIES LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
       elseif("x${_CIF_CMP0075}x" STREQUAL "xOLDx")
       elseif(NOT _CIF_CMP0075_WARNED)
         set(_CIF_CMP0075_WARNED 1)
@@ -129,26 +123,17 @@ macro(CHECK_INCLUDE_FILE_CXX INCLUDE VARIABLE)
       unset(_CIF_CMP0075)
     endif()
 
-    if(CMAKE_REQUIRED_LINK_DIRECTORIES)
-      set(_CIF_LINK_DIRECTORIES
-        "-DLINK_DIRECTORIES:STRING=${CMAKE_REQUIRED_LINK_DIRECTORIES}")
-    else()
-      set(_CIF_LINK_DIRECTORIES)
-    endif()
-
     try_compile(${VARIABLE}
       SOURCE_FROM_VAR CheckIncludeFile.cxx _CIF_SOURCE_CONTENT
       COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-      ${_CIF_LINK_OPTIONS}
-      ${_CIF_LINK_LIBRARIES}
+      ${_CIF_ADD_LINK_OPTIONS}
+      ${_CIF_ADD_LINK_LIBRARIES}
       CMAKE_FLAGS
-      -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_INCLUDE_FILE_FLAGS}
-      "${CHECK_INCLUDE_FILE_CXX_INCLUDE_DIRS}"
-      "${_CIF_LINK_DIRECTORIES}"
+        -DCOMPILE_DEFINITIONS:STRING=${CMAKE_REQUIRED_FLAGS}
+        "${_CIF_INCLUDE_DIRECTORIES}"
+        "${_CIF_LINK_DIRECTORIES}"
       )
-    unset(_CIF_LINK_OPTIONS)
-    unset(_CIF_LINK_LIBRARIES)
-    unset(_CIF_LINK_DIRECTORIES)
+    cmake_check_common_cleanup(_CIF)
 
     if(${ARGC} EQUAL 3)
       set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_SAVE})

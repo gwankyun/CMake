@@ -1,0 +1,8 @@
+CMake Warning \(author\) at [^
+]*/Modules/GoogleTest\.cmake:[0-9]+ \(message\):
+  gtest_discover_tests\(\) invoked multiple times with the same arguments for
+  the same target 'fake_gtest'\.  This invocation will be ignored\.
+Call Stack \(most recent call first\):
+  GoogleTestDiscoveryDuplicate\.cmake:[0-9]+ \(gtest_discover_tests\)
+  CMakeLists\.txt:[0-9]+ \(include\)
+This warning is for project developers\.  Use -Wno-author to suppress it\.

@@ -24,6 +24,7 @@
 #include "cmJSONState.h"
 #include "cmList.h"
 #include "cmMakefile.h"
+#include "cmOutputConverter.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmValue.h"
@@ -127,17 +128,29 @@ bool ConstructConfigureCommand(cmExecutionStatus& status, cmMakefile& mf,
 
   // Propagate CTEST_SITE / CTEST_BUILD_NAME into the SITE / BUILDNAME
   // cache variables so DartConfiguration.tcl gets generated with
-  // correct values.
+  // correct values. We use an initial cache script (-C) instead of
+  // defining them on the command-line (-D) to avoid unused-cli warnings
+  // for projects that don't include the CTest module.
   cmValue site = mf.GetDefinition("CTEST_SITE");
-  if (cmNonempty(site)) {
-    configureCommand += " \"-DSITE:STRING=";
-    configureCommand += *site;
-    configureCommand += "\"";
-  }
   cmValue buildName = mf.GetDefinition("CTEST_BUILD_NAME");
-  if (cmNonempty(buildName)) {
-    configureCommand += " \"-DBUILDNAME:STRING=";
-    configureCommand += *buildName;
+  if (cmNonempty(site) || cmNonempty(buildName)) {
+    std::string const initialCacheFile =
+      cmStrCat(cmSystemTools::CollapseFullPath(buildDirectory),
+               "/Testing/Temporary/CTestConfigureInitialCache.cmake");
+    cmGeneratedFileStream initialCache(initialCacheFile);
+    if (cmNonempty(site)) {
+      initialCache << "set(SITE " << cmOutputConverter::EscapeForCMake(*site)
+                   << " CACHE STRING \"\")\n";
+    }
+    if (cmNonempty(buildName)) {
+      initialCache << "set(BUILDNAME "
+                   << cmOutputConverter::EscapeForCMake(*buildName)
+                   << " CACHE STRING \"\")\n";
+    }
+    initialCache.Close();
+
+    configureCommand += " \"-C";
+    configureCommand += initialCacheFile;
     configureCommand += "\"";
   }
 

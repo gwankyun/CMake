@@ -8,6 +8,7 @@ target_sources(importable
   PUBLIC FILE_SET CXX_MODULES FILES importable.cxx)
 
 target_compile_features(importable PUBLIC cxx_std_20)
+target_compile_options(importable PRIVATE "-DIMPORTABLE_PRIVATE_DEFINE=1")
 
 add_executable(consumer20 consumer20.cxx)
 target_compile_features(consumer20 PRIVATE cxx_std_20)
@@ -17,5 +18,11 @@ add_executable(consumer23 consumer23.cxx)
 target_compile_features(consumer23 PRIVATE cxx_std_23)
 target_link_libraries(consumer23 PRIVATE importable)
 
+add_executable(consumer23flag consumer23.cxx)
+target_compile_features(consumer23flag PRIVATE cxx_std_23)
+target_compile_options(consumer23flag PRIVATE "-DCONSUMER23FLAG_ONLY=1")
+target_link_libraries(consumer23flag PRIVATE importable)
+
 add_test(NAME consumer20 COMMAND consumer20)
 add_test(NAME consumer23 COMMAND consumer23)
+add_test(NAME consumer23flag COMMAND consumer23flag)

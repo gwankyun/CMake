@@ -817,6 +817,23 @@ private:
   cmStateSnapshot CurrentSnapshot;
   std::unique_ptr<cmMessenger> Messenger;
 
+  using DiagnosticAlterationMethod =
+    void (cmStateSnapshot::*)(cmDiagnosticCategory, cmDiagnosticAction, bool);
+
+  struct DiagnosticAlteration
+  {
+    DiagnosticAlterationMethod const Alteration;
+    cmDiagnosticCategory const Category;
+    cmDiagnosticAction const DesiredAction;
+    bool const Recurse;
+  };
+
+  std::vector<DiagnosticAlteration> DiagnosticAlterations;
+
+  void AlterDiagnostic(DiagnosticAlterationMethod alteration,
+                       cmDiagnosticCategory category,
+                       cmDiagnosticAction desiredAction, bool recurse);
+
 #ifndef CMAKE_BOOTSTRAP
   bool SarifFileOutput = false;
   std::string SarifFilePath;

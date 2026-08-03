@@ -118,30 +118,18 @@ See Also
 #]=======================================================================]
 
 include_guard(GLOBAL)
+include(Internal/CheckCommon)
 
 macro(CHECK_LIBRARY_EXISTS LIBRARY FUNCTION LOCATION VARIABLE)
   if(NOT DEFINED "${VARIABLE}")
-    set(MACRO_CHECK_LIBRARY_EXISTS_DEFINITION
-      "-DCHECK_FUNCTION_EXISTS=${FUNCTION} ${CMAKE_REQUIRED_FLAGS}")
     if(NOT CMAKE_REQUIRED_QUIET)
       message(CHECK_START "Looking for ${FUNCTION} in ${LIBRARY}")
     endif()
-    set(CHECK_LIBRARY_EXISTS_LINK_OPTIONS)
-    if(CMAKE_REQUIRED_LINK_OPTIONS)
-      set(CHECK_LIBRARY_EXISTS_LINK_OPTIONS
-        LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
-    endif()
-    set(CHECK_LIBRARY_EXISTS_LIBRARIES ${LIBRARY})
-    if(CMAKE_REQUIRED_LIBRARIES)
-      set(CHECK_LIBRARY_EXISTS_LIBRARIES
-        ${CHECK_LIBRARY_EXISTS_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES})
-    endif()
-    if(CMAKE_REQUIRED_LINK_DIRECTORIES)
-      set(_CLE_LINK_DIRECTORIES
-        "-DLINK_DIRECTORIES:STRING=${LOCATION};${CMAKE_REQUIRED_LINK_DIRECTORIES}")
-    else()
-      set(_CLE_LINK_DIRECTORIES "-DLINK_DIRECTORIES:STRING=${LOCATION}")
-    endif()
+
+    cmake_check_common_init_compile_flags(_CLE)
+    cmake_check_common_init_link_options(_CLE)
+    cmake_check_common_init_link_libraries(_CLE "${LIBRARY}")
+    cmake_check_common_init_link_directories(_CLE "${LOCATION}")
 
     if(CMAKE_C_COMPILER_LOADED)
       set(_cle_source CheckFunctionExists.c)
@@ -153,15 +141,17 @@ macro(CHECK_LIBRARY_EXISTS LIBRARY FUNCTION LOCATION VARIABLE)
 
     try_compile(${VARIABLE}
       SOURCE_FROM_FILE "${_cle_source}" "${CMAKE_ROOT}/Modules/CheckFunctionExists.c"
-      COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-      ${CHECK_LIBRARY_EXISTS_LINK_OPTIONS}
-      LINK_LIBRARIES ${CHECK_LIBRARY_EXISTS_LIBRARIES}
+      COMPILE_DEFINITIONS
+        -DCHECK_FUNCTION_EXISTS=${FUNCTION}
+        ${CMAKE_REQUIRED_DEFINITIONS}
+      ${_CLE_ADD_LINK_OPTIONS}
+      ${_CLE_ADD_LINK_LIBRARIES}
       CMAKE_FLAGS
-      -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_LIBRARY_EXISTS_DEFINITION}
-      "${_CLE_LINK_DIRECTORIES}"
+        -DCOMPILE_DEFINITIONS:STRING=${CMAKE_REQUIRED_FLAGS}
+        "${_CLE_LINK_DIRECTORIES}"
       )
     unset(_cle_source)
-    unset(_CLE_LINK_DIRECTORIES)
+    cmake_check_common_cleanup(_CLE)
 
     if(${VARIABLE})
       if(NOT CMAKE_REQUIRED_QUIET)

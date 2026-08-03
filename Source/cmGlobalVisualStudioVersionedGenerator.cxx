@@ -777,6 +777,12 @@ bool cmGlobalVisualStudioVersionedGenerator::IsUtf8EncodingSupported() const
 bool cmGlobalVisualStudioVersionedGenerator::IsScanDependenciesSupported()
   const
 {
+  if (this->IsClangClToolset()) {
+    // FIXME(#27977): The ClangCL toolset does not support
+    // ScanSourceForModuleDependencies yet.
+    return false;
+  }
+
   // Supported from Visual Studio 17.6 Preview 7.
   if (this->Version > cmGlobalVisualStudioGenerator::VSVersion::VS17) {
     return true;

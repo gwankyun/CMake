@@ -91,6 +91,7 @@ See Also
 #]=======================================================================]
 
 include_guard(GLOBAL)
+include(Internal/CheckCommon)
 
 macro(CHECK_SYMBOL_EXISTS SYMBOL FILES VARIABLE)
   if(CMAKE_C_COMPILER_LOADED)
@@ -134,32 +135,7 @@ endmacro()
 macro(__CHECK_SYMBOL_EXISTS_IMPL SOURCEFILE SYMBOL FILES VARIABLE)
   if(NOT DEFINED "${VARIABLE}" OR "x${${VARIABLE}}" STREQUAL "x${VARIABLE}")
     set(_CSE_SOURCE "/* */\n")
-    set(MACRO_CHECK_SYMBOL_EXISTS_FLAGS ${CMAKE_REQUIRED_FLAGS})
-    if(CMAKE_REQUIRED_LINK_OPTIONS)
-      set(CHECK_SYMBOL_EXISTS_LINK_OPTIONS
-        LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
-    else()
-      set(CHECK_SYMBOL_EXISTS_LINK_OPTIONS)
-    endif()
-    if(CMAKE_REQUIRED_LIBRARIES)
-      set(CHECK_SYMBOL_EXISTS_LIBS
-        LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-    else()
-      set(CHECK_SYMBOL_EXISTS_LIBS)
-    endif()
-    if(CMAKE_REQUIRED_INCLUDES)
-      set(CMAKE_SYMBOL_EXISTS_INCLUDES
-        "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}")
-    else()
-      set(CMAKE_SYMBOL_EXISTS_INCLUDES)
-    endif()
 
-    if(CMAKE_REQUIRED_LINK_DIRECTORIES)
-      set(_CSE_LINK_DIRECTORIES
-        "-DLINK_DIRECTORIES:STRING=${CMAKE_REQUIRED_LINK_DIRECTORIES}")
-    else()
-      set(_CSE_LINK_DIRECTORIES)
-    endif()
     foreach(FILE ${FILES})
       string(APPEND _CSE_SOURCE
         "#include <${FILE}>\n")
@@ -187,20 +163,23 @@ int main(int argc, char** argv)
 }\n")
     unset(_CSE_CHECK_NON_MACRO)
 
+    cmake_check_common_init_args(_CSE)
+
     if(NOT CMAKE_REQUIRED_QUIET)
       message(CHECK_START "Looking for ${SYMBOL}")
     endif()
     try_compile(${VARIABLE}
       SOURCE_FROM_VAR "${SOURCEFILE}" _CSE_SOURCE
       COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-      ${CHECK_SYMBOL_EXISTS_LINK_OPTIONS}
-      ${CHECK_SYMBOL_EXISTS_LIBS}
+      ${_CSE_ADD_LINK_OPTIONS}
+      ${_CSE_ADD_LINK_LIBRARIES}
       CMAKE_FLAGS
-      -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_SYMBOL_EXISTS_FLAGS}
-      "${CMAKE_SYMBOL_EXISTS_INCLUDES}"
-      "${_CSE_LINK_DIRECTORIES}"
+        -DCMAKE_SKIP_RPATH:BOOL=${CMAKE_SKIP_RPATH}
+        "${_CSE_INCLUDE_DIRECTORIES}"
+        "${_CSE_LINK_DIRECTORIES}"
       )
-    unset(_CSE_LINK_DIRECTORIES)
+    cmake_check_common_cleanup(_CSE)
+
     if(${VARIABLE})
       if(NOT CMAKE_REQUIRED_QUIET)
         message(CHECK_PASS "found")

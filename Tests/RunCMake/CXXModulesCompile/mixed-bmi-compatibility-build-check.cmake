@@ -1,8 +1,8 @@
-# Verify the build system reused the owning target BMI when compatible and
-# generated a synthetic target BMI only for the incompatible importer.
-set(expected_consumers consumer20 consumer23)
-set(linked_dir_keys "")
-set(linked_dir_names "")
+# Verify the build system reused the owning target BMI when compatible,
+# generated a shared synthetic target BMI for the incompatible importers,
+# and ignored preprocessor-only compile options in the BMI compatibility hash.
+set(expected_consumers consumer20 consumer23 consumer23flag)
+set(shared_synth_target_name "")
 
 if (DEFINED RunCMake_TEST_CONFIG)
   set(config_dir "${RunCMake_TEST_CONFIG}")
@@ -36,9 +36,10 @@ foreach (consumer IN LISTS expected_consumers)
     set(expected_linked_tgt_regex "^importable\.dir$")
     set(expected_linked_tgt_desc "owning target dir for 'importable'")
     set(expected_linked_tgt_has_bmi 0)
-  elseif (consumer STREQUAL "consumer23")
+  elseif (consumer STREQUAL "consumer23" OR
+          consumer STREQUAL "consumer23flag")
     set(expected_linked_tgt_regex "^importable@synth_[A-Za-z0-9_]+\.dir$")
-    set(expected_linked_tgt_desc "synthetic target dir for 'importable'")
+    set(expected_linked_tgt_desc "shared synthetic target dir for 'importable'")
     set(expected_linked_tgt_has_bmi 1)
   else ()
     list(APPEND RunCMake_TEST_FAILED
@@ -97,33 +98,15 @@ foreach (consumer IN LISTS expected_consumers)
     endif ()
   endif ()
 
-  if (linked_tgt_name MATCHES "^importable@synth_[A-Za-z0-9_]+\.dir$")
-    # Record the consumers of each synthetic dir to verify uniqueness.
-    string(REGEX REPLACE "[^A-Za-z0-9_]" "_" linked_dir_key "${linked_tgt_name}")
-    set(linked_dir_consumers_var "linked_dir_consumers_${linked_dir_key}")
-    if (NOT DEFINED ${linked_dir_consumers_var})
-      list(APPEND linked_dir_keys "${linked_dir_key}")
-      list(APPEND linked_dir_names "${linked_tgt_name}")
+  if (consumer STREQUAL "consumer23" OR consumer STREQUAL "consumer23flag")
+    if (shared_synth_target_name STREQUAL "")
+      set(shared_synth_target_name "${linked_tgt_name}")
+    elseif (NOT linked_tgt_name STREQUAL shared_synth_target_name)
+      list(APPEND RunCMake_TEST_FAILED
+        "Expected consumer23 and consumer23flag to share one synthetic target dir, but found '${shared_synth_target_name}' and '${linked_tgt_name}'")
     endif ()
-
-    list(APPEND ${linked_dir_consumers_var} ${consumer})
   endif ()
 
-endforeach ()
-
-# Verify each synthetic target is consumed exactly once.
-foreach (linked_dir_key IN LISTS linked_dir_keys)
-  set(consumers "${linked_dir_consumers_${linked_dir_key}}")
-  list(LENGTH consumers linked_dir_consumer_count)
-
-  if (linked_dir_consumer_count GREATER 1)
-    list(FIND linked_dir_keys ${linked_dir_key} linked_dir_index)
-    list(GET linked_dir_names ${linked_dir_index} linked_tgt_name)
-
-    string(JOIN ", " linked_dir_consumers_joined ${consumers})
-    list(APPEND RunCMake_TEST_FAILED
-      "Expected per-compatibility synthetic BMI generation, but '${linked_tgt_name}' is linked to by multiple targets: ${linked_dir_consumers_joined}")
-  endif ()
 endforeach ()
 
 string(REPLACE ";" "\n  " RunCMake_TEST_FAILED "${RunCMake_TEST_FAILED}")

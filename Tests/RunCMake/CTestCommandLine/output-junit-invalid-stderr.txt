@@ -1,0 +1,10 @@
+^CMake Error: Cannot open file for write: [^
+]*/Tests/RunCMake/CTestCommandLine/output-junit-invalid/not-a-dir/junit\.xml\.tmp[^
+]*
+CMake Error: : System Error: (Not a directory|No such file or directory)
+Problem opening file: [^
+]*/Tests/RunCMake/CTestCommandLine/output-junit-invalid/not-a-dir/junit\.xml
+Errors while running CTest
+Output from these tests are in: [^
+]*/Tests/RunCMake/CTestCommandLine/output-junit-invalid/Testing/Temporary/LastTest\.log
+Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely\.$

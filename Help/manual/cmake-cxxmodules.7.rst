@@ -57,7 +57,9 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
   .. versionadded:: 4.4
 
-    ``clang-cl`` 19.1及更高版本
+    ``clang-cl`` version 19.1 and newer, except with the
+    :ref:`Visual Studio Generators` (i.e., the ``ClangCl``
+    :variable:`toolset <CMAKE_GENERATOR_TOOLSET>`).
 
 * GCC 14及更高版本
 

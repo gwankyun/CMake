@@ -5563,6 +5563,13 @@ cmGeneratorTarget const* cmGeneratorTarget::GetCxxSyntheticTarget(
   // compile features and options.
   tgt->CopyUsageEffects(&bmiConsumer, config);
 
+  auto const& preprocessorCompileOptions =
+    this->GetCxxModuleUsageEffects(config).GetPreprocessorCompileOptions();
+  for (auto it = preprocessorCompileOptions.rbegin();
+       it != preprocessorCompileOptions.rend(); ++it) {
+    tgt->InsertCompileOption(*it, true);
+  }
+
   // Copy properties which don't effect consumer compatibility
   tgt->CopyCxxModulesEntries(model);
 
@@ -5590,8 +5597,11 @@ cmGeneratorTarget const* cmGeneratorTarget::GetCxxSyntheticTarget(
 
   lg->AddGeneratorTarget(std::move(gtp));
   this->SynthCxxTargets[usageHash] = syntheticTarget;
-  if (!syntheticTarget->DiscoverSyntheticTargets(config, &bmiConsumer)) {
-    return nullptr;
+  for (auto const& innerConfig : allConfigs) {
+    if (!syntheticTarget->DiscoverSyntheticTargets(innerConfig,
+                                                   &bmiConsumer)) {
+      return nullptr;
+    }
   }
 
   return syntheticTarget;
@@ -5629,7 +5639,7 @@ bool cmGeneratorTarget::DiscoverSyntheticTargets(
       return false;
     }
     if (dep->IsSynthetic()) {
-      SyntheticDeps[gt].push_back(dep);
+      SyntheticDeps[gt].insert(dep);
     }
   }
 

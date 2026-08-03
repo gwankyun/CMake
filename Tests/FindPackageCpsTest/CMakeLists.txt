@@ -192,7 +192,7 @@ if(NOT Global_FOUND)
 elseif(NOT TARGET Global::Target)
   message(SEND_ERROR "Global::Target missing !")
 else()
-  expect_global(Foo::Empty FALSE)
+  expect_global(Global::Target TRUE)
 endif()
 
 ###############################################################################

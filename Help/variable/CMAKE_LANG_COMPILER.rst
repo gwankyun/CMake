@@ -3,13 +3,21 @@ CMAKE_<LANG>_COMPILER
 
 ``LANG``\ 编译器的完整路径。
 
-This is the command that will be used as the ``<LANG>`` compiler.  Once
-set, you can not change this variable.
+This is the command that will be used as the ``<LANG>`` compiler.
+Once set, you can not change this variable.
+
+.. note::
+
+  With :ref:`IDE Build Tool Generators`, including
+  :ref:`Visual Studio Generators` and :generator:`Xcode`, this variable is
+  computed automatically and should not be set.  Instead, specify a toolset
+  using :option:`cmake -T`.
 
 Usage
 ^^^^^
 
-This variable can be set by the user during the first time a build tree is configured.
+With :ref:`Command-Line Build Tool Generators` this variable can be
+set by the user during the first time a build tree is configured.
 
 If a non-full path value is supplied then CMake will resolve the full path of
 the compiler.

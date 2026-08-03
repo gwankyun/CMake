@@ -742,6 +742,16 @@ std::string const& cmGlobalVisualStudio10Generator::GetPlatformToolsetString()
   return empty;
 }
 
+bool cmGlobalVisualStudio10Generator::IsClangClToolset() const
+{
+  std::string const& toolset = this->GetPlatformToolsetString();
+  static cmsys::RegularExpression llvmToolset(
+    "^[Ll][Ll][Vv][Mm](_v[0-9]+(_xp)?)?$");
+  static cmsys::RegularExpression clangClToolset(
+    "^[Cc][Ll][Aa][Nn][Gg]([Cc][Ll]$|_[0-9])");
+  return llvmToolset.find(toolset) || clangClToolset.find(toolset);
+}
+
 std::string const&
 cmGlobalVisualStudio10Generator::GetPlatformToolsetVersionProps() const
 {

@@ -219,11 +219,15 @@ if ("named" IN_LIST CMake_TEST_MODULE_COMPILATION)
   run_cxx_module_test(scan_props)
   run_cxx_module_test(target-objects)
 
-  # mixed-bmi-compatibility requires a generator that implements per-importer
-  # BMI generation
+  # Requires a generator that implements per-importer BMI generation
   if ("cxx_std_23" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND
       RunCMake_GENERATOR MATCHES "Ninja")
     run_cxx_module_test(mixed-bmi-compatibility)
+    if (RunCMake_GENERATOR_IS_MULTI_CONFIG AND
+        "collation" IN_LIST CMake_TEST_MODULE_COMPILATION AND
+        "bmionly" IN_LIST CMake_TEST_MODULE_COMPILATION)
+      run_cxx_module_test(multi-config-synth)
+    endif()
   endif()
 
   if ("cxx_std_23" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND
@@ -331,6 +335,7 @@ endfunction ()
 
 # Tests which install BMIs
 if ("export_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
+  run_cxx_module_test(exp-nested-dirs-build)
   run_cxx_module_test(exp-iface-no-props-build)
   run_cxx_module_test(exp-iface-build)
   run_cxx_module_test(exp-incdirs-build)

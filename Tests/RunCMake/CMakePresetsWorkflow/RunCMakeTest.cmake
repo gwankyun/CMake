@@ -86,9 +86,11 @@ unset(CMakePresets_FILE)
 unset(CMakeUserPresets_FILE)
 unset(CMakePresets_ASSETS)
 
+set(CMakePresets_FILE "${RunCMake_SOURCE_DIR}/DoesNotExist.json.in")
 set(CMakePresets_FILE_ARG "OtherCMakePresetsFile.json")
 run_cmake_workflow_presets(OtherCMakePresetsFile)
-run_cmake_workflow_presets(OtherCMakePresetsFileListPreset --list-presets)
+run_cmake_workflow_presets(OtherCMakePresetsFileListPresets --list-presets)
+unset(CMakePresets_FILE)
 unset(CMakePresets_FILE_ARG)
 
 run_cmake_workflow_presets(ListPresets --list-presets)

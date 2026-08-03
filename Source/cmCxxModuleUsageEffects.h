@@ -5,6 +5,9 @@
 #include "cmConfigure.h" // IWYU pragma: keep
 
 #include <string>
+#include <vector>
+
+#include "cmListFileCache.h"
 
 class cmGeneratorTarget;
 
@@ -14,7 +17,9 @@ public:
   cmCxxModuleUsageEffects(cmGeneratorTarget const* gt,
                           std::string const& config);
   std::string const& GetHash() const;
+  std::vector<BT<std::string>> const& GetPreprocessorCompileOptions() const;
 
 private:
   std::string Hash;
+  std::vector<BT<std::string>> PreprocessorCompileOptions;
 };
