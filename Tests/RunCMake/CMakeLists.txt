@@ -270,9 +270,17 @@ if(CMAKE_GENERATOR MATCHES "Ninja")
   if(DEFINED CMake_TEST_CUDA)
     list(APPEND NinjaMultiConfig_ARGS -DCMake_TEST_CUDA=${CMake_TEST_CUDA})
   endif()
-  add_RunCMake_test(NinjaMultiConfig)
-  set_property(TEST RunCMake.NinjaMultiConfig APPEND
-    PROPERTY LABELS "CUDA")
+  function(add_RunCMake_NinjaMultiConfig_test variant)
+    add_RunCMake_test(NinjaMultiConfig${variant}
+      TEST_DIR NinjaMultiConfig
+      ${NinjaMultiConfig_ARGS}
+      -DCMake_TEST_NinjaMultiConfig_VARIANT=${variant})
+    set_property(TEST RunCMake.NinjaMultiConfig${variant} APPEND
+      PROPERTY LABELS "CUDA" "NinjaMultiConfig")
+  endfunction()
+  add_RunCMake_NinjaMultiConfig_test(Simple)
+  add_RunCMake_NinjaMultiConfig_test(CustomCommands)
+  add_RunCMake_NinjaMultiConfig_test("")
   add_RunCMake_test(NinjaPrivateDeps
     -DCMAKE_C_OUTPUT_EXTENSION=${CMAKE_C_OUTPUT_EXTENSION}
     -DRunCMake_GENERATOR_IS_MULTI_CONFIG=${_isMultiConfig})
@@ -439,11 +447,22 @@ add_RunCMake_test(FileAPI -DPython_EXECUTABLE=${Python_EXECUTABLE}
                           -DCMAKE_CXX_SIMULATE_ID=${CMAKE_CXX_SIMULATE_ID}
                           -DCMake_TEST_JSON_SCHEMA=${CMake_TEST_JSON_SCHEMA})
 if(CMAKE_GENERATOR MATCHES "Make|Ninja|FASTBuild")
-  add_RunCMake_test(Instrumentation -DPython_EXECUTABLE=${Python_EXECUTABLE}
-                                    -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
-                                    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-                                    -DCMAKE_C_COMPILER_VERSION=${CMAKE_C_COMPILER_VERSION}
-                                    -DCMake_TEST_JSON_SCHEMA=${CMake_TEST_JSON_SCHEMA})
+  function(add_RunCMake_Instrumentation_test variant)
+    add_RunCMake_test(Instrumentation${variant}
+      TEST_DIR Instrumentation
+      -DPython_EXECUTABLE=${Python_EXECUTABLE}
+      -DCMAKE_C_COMPILER_ID=${CMAKE_C_COMPILER_ID}
+      -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+      -DCMAKE_C_COMPILER_VERSION=${CMAKE_C_COMPILER_VERSION}
+      -DCMake_TEST_JSON_SCHEMA=${CMake_TEST_JSON_SCHEMA}
+      -DCMake_TEST_INSTRUMENTATION_VARIANT=${variant}
+    )
+    set_property(TEST RunCMake.Instrumentation${variant} APPEND PROPERTY
+      LABELS "Instrumentation"
+    )
+  endfunction()
+  add_RunCMake_Instrumentation_test("")
+  add_RunCMake_Instrumentation_test(MakeProgram)
 endif()
 add_RunCMake_test(ConfigDir)
 if(CMake_TEST_FindPython2)
