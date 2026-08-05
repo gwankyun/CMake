@@ -288,33 +288,30 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   如果\ ``v1``\ 是大于等于\ ``v2``\ 的版本，则为\ ``1``，否则为\ ``0``。
 
-String Expressions
+.. _`String Expressions`:
+
+字符串表达式
 ------------------
 
-Most of the expressions in this section are closely associated with the
-:command:`string` command, providing the same capabilities, but in
-the form of a generator expression.
+本节中的大多数表达式与 :command:`string` 命令密切相关，提供相同的功能，\
+但以生成器表达式的形式呈现。
 
-In each of the following string-related generator expressions, the ``string``
-must not contain any commas if that generator expression expects something to
-be provided after the ``string``.  For example, the expression
-``$<STRING:FIND,string,value>`` requires a ``value`` after the ``string``.
-Since a comma is used to separate the ``string`` and the ``value``, the
-``string`` cannot itself contain a comma.  This restriction does not apply to
-the :command:`string` command, it is specific to the string-handling generator
-expressions only. The :genex:`$<COMMA>` generator expression can be used to
-specify a comma as part of the arguments of the string-related generator
-expressions.
+在以下每个与字符串相关的生成器表达式中，如果生成器表达式期望在 ``string``
+之后提供内容，则 ``string`` 中不得包含逗号。例如，表达式
+``$<STRING:FIND,string,value>`` 需要在 ``string`` 之后提供一个 ``value``。
+由于逗号用于分隔 ``string`` 和 ``value``，因此 ``string`` 本身不能包含逗号。
+此限制不适用于 :command:`string` 命令，仅适用于处理字符串的生成器表达式。
+:genex:`$<COMMA>` 生成器表达式可用于在与字符串相关的生成器表达式的参数中指定逗号
 
 .. _`String Comparisons Generator Expressions`:
 
-String Comparisons
+字符串比较
 ^^^^^^^^^^^^^^^^^^
 
-The comparisons are case-sensitive.  For a case-insensitive comparison,
-combine with a :ref:`string transforming generator expression
-<String Transforming Generator Expressions>`.  For example, the following
-evaluates to ``1`` if ``${foo}`` is any of ``BAR``, ``Bar``, ``bar``, etc.
+比较区分大小写。对于不区分大小写的比较，可结合使用\
+:ref:`字符串转换生成器表达式 <String Transforming Generator Expressions>`。
+例如，如果 ``${foo}`` 是 ``BAR``、 ``Bar``、 ``bar`` 等中的任何一个，
+以下表达式求值为 ``1``：
 
   .. code-block:: cmake
 
@@ -322,94 +319,90 @@ evaluates to ``1`` if ``${foo}`` is any of ``BAR``, ``Bar``, ``bar``, etc.
 
 .. genex:: $<STREQUAL:string1,string2>
 
-  ``1`` if ``string1`` and ``string2`` are lexicographically equal, else ``0``.
+  如果 ``string1`` 和 ``string2`` 按字典序相等，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<STRLESS:string1,string2>
 
   .. versionadded:: 4.3
 
-  ``1`` if ``string1`` is lexicographically less than ``string2``, else ``0``.
+  如果 ``string1`` 按字典序小于 ``string2``，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<STRGREATER:string1,string2>
 
   .. versionadded:: 4.3
 
-  ``1`` if ``string1`` is lexicographically greater than ``string2``, else
-  ``0``.
+  如果 ``string1`` 按字典序大于 ``string2``，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<STRLESS_EQUAL:string1,string2>
 
   .. versionadded:: 4.3
 
-  ``1`` if ``string1`` is lexicographically less than or equal to ``string2``,
-  else ``0``.
+  如果 ``string1`` 按字典序小于或等于 ``string2``，则为 ``1``，
+  否则为 ``0``。
 
 .. genex:: $<STRGREATER_EQUAL:string1,string2>
 
   .. versionadded:: 4.3
 
-  ``1`` if ``string1`` is lexicographically greater than or equal to
-  ``string2``, else ``0``.
+  如果 ``string1`` 按字典序大于或等于 ``string2``，则为 ``1``，
+  否则为 ``0``。
 
 .. _`String Queries Generator Expressions`:
 
-String Queries
+字符串查询
 ^^^^^^^^^^^^^^
 
 .. genex:: $<STRING:LENGTH,string>
 
   .. versionadded:: 4.3
 
-  The given string's length in bytes. Note that this means, if ``string``
-  contains multi-byte characters, the result will *not* be the number of
-  characters.
+  给定字符串的字节长度。注意，这意味着如果 ``string`` 包含多字节字符，
+  结果将\ *不是*\ 字符数。
 
 .. genex:: $<STRING:SUBSTRING,string,begin,length>
 
   .. versionadded:: 4.3
 
-  The substring of the given ``string``. If ``length`` is ``-1`` or greater
-  than the ``string`` length the remainder of the string starting at ``begin``
-  will be returned.
+  给定 ``string`` 的子字符串。如果 ``length`` 为 ``-1`` 或大于 ``string``
+  长度，将返回从 ``begin`` 开始的字符串剩余部分。
 
-  Both ``begin`` and ``length`` are counted in bytes, so care must
-  be exercised if ``string`` could contain multi-byte characters.
+  ``begin`` 和 ``length`` 都以字节计数，因此如果 ``string`` 可能包含多字节字符，
+  必须格外小心。
 
 .. genex:: $<STRING:FIND,string[,FROM:(BEGIN|END)],substring>
 
   .. versionadded:: 4.3
 
-  The position where the given ``substring`` was found in the supplied
-  ``string``. If the ``substring`` is not found, a position of -1 is returned.
+  给定 ``substring`` 在提供的 ``string`` 中找到的位置。如果未找到 ``substring``，
+  则返回 -1。
 
-  The ``FROM:`` option defines how the search will be done:
+  ``FROM:`` 选项定义搜索方式：
 
   ``BEGIN``
-    The search will start at the beginning of the ``string``. This the default.
+    搜索将从 ``string`` 的开头开始。这是默认值。
 
   ``END``
-    The search will start from the end of the ``string``.
+    搜索将从 ``string`` 的末尾开始。
 
-  The ``$<STRING:FIND>`` generator expression treats all strings as ASCII-only
-  characters. The index returned will also be counted in bytes, so strings
-  containing multi-byte characters may lead to unexpected results.
+  ``$<STRING:FIND>`` 生成器表达式将所有字符串视为纯ASCII字符。
+  返回的索引也以字节计数，因此包含多字节字符的字符串可能导致意外结果。
 
 .. genex:: $<STRING:MATCH,string[,SEEK:(ONCE|ALL)],regular_expression>
 
   .. versionadded:: 4.3
 
-  Match, in the ``string``, the ``regular_expression``.
+  在 ``string`` 中匹配 ``regular_expression``。
 
-  The ``SEEK:`` option specifies the match behavior:
+  ``SEEK:`` 选项指定匹配行为：
 
   ``ONCE``
-    Match only the first occurrence. This is the default.
+    仅匹配首次出现。这是默认值。
 
   ``ALL``
-    Match as many times as possible and return the matches as a list.
+    尽可能多地匹配并将匹配结果作为列表返回。
 
-  See the :ref:`Regular expressions specification <Regex Specification>` for
-  the syntax of the ``regular_expression`` parameter.
+  有关 ``regular_expression`` 参数的语法，
+  请参见\ :ref:`正则表达式规范 <Regex Specification>`。
 
 .. _`String Generating Generator Expressions`:
 
