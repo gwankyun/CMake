@@ -406,111 +406,106 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
 .. _`String Generating Generator Expressions`:
 
-String Generations
+字符串生成
 ^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<STRING:JOIN,glue,input[,input]...>
 
   .. versionadded:: 4.3
 
-  Join all the ``input`` arguments together using the ``glue`` string.
+  使用 ``glue`` 字符串将所有 ``input`` 参数连接在一起。
 
 .. genex:: $<STRING:ASCII,number[,number]...>
 
   .. versionadded:: 4.3
 
-  Convert all numbers, in the range 1-255, into corresponding ASCII
-  characters. Any number outside this range will raise an error.
+  将 1 到 255 范围内的所有数字转换为对应的 ASCII 字符。超出此范围的任何数字都将引发错误。
 
 .. genex:: $<STRING:TIMESTAMP[,(UTC|format)]...>
 
   .. versionadded:: 4.3
 
-  Produce a string representation of the current date and/or time.
+  生成当前日期和/或时间的字符串表示形式。
 
-  If the generator expression is unable to obtain a timestamp, the result will
-  be the empty string ``""``.
+  如果生成器表达式无法获取时间戳，结果将是空字符串 ``""``。
 
-  The optional ``UTC`` flag requests the current date/time representation to
-  be in Coordinated Universal Time (UTC) rather than local time.
+  可选的 ``UTC`` 标志要求当前日期/时间表示使用协调世界时（UTC），而非本地时间。
 
-  If the ``SOURCE_DATE_EPOCH`` environment variable is set, its value will be
-  used instead of the current time.
-  See https://reproducible-builds.org/specs/source-date-epoch/ for details.
+  如果设置了 ``SOURCE_DATE_EPOCH`` 环境变量，将使用该值代替当前时间。
+  详情请参见 https://reproducible-builds.org/specs/source-date-epoch/。
 
-  The optional ``<format>`` may contain the following format specifiers:
+  可选的 ``<format>`` 可以包含以下格式说明符：
 
   ``%%``
-    A literal percent sign (%).
+    字面意义上的百分号（%）。
 
   ``%d``
-    The day of the current month (01-31).
+    当月的天数（01-31）。
 
   ``%H``
-    The hour on a 24-hour clock (00-23).
+    24 小时制的小时数（00-23）。
 
   ``%I``
-    The hour on a 12-hour clock (01-12).
+    12 小时制的小时数（01-12）。
 
   ``%j``
-    The day of the current year (001-366).
+    当年的天数（001-366）。
 
   ``%m``
-    The month of the current year (01-12).
+    当年的月份数（01-12）。
 
   ``%b``
-    Abbreviated month name (e.g. Oct).
+    缩写的月份名称（例如 Oct）。
 
   ``%B``
-    Full month name (e.g. October).
+    完整的月份名称（例如 October）。
 
   ``%M``
-    The minute of the current hour (00-59).
+    当前小时的分钟数（00-59）。
 
   ``%s``
-    Seconds since midnight (UTC) 1-Jan-1970 (UNIX time).
+    自 1970 年 1 月 1 日午夜（UTC）以来的秒数（UNIX 时间）。
 
   ``%S``
-    The second of the current minute.  60 represents a leap second. (00-60)
+    当前分钟的秒数。60 代表闰秒。（00-60）
 
   ``%f``
-    The microsecond of the current second (000000-999999).
+    当前秒的微秒数（000000-999999）。
 
   ``%U``
-    The week number of the current year (00-53).
+    当年的周数（00-53）。
 
   ``%V``
-    The ISO 8601 week number of the current year (01-53).
+    当年的 ISO 8601 周数（01-53）。
 
   ``%w``
-    The day of the current week. 0 is Sunday. (0-6)
+    当周的星期几。0 表示星期日。（0-6）
 
   ``%a``
-    Abbreviated weekday name (e.g. Fri).
+    缩写的星期名称（例如 Fri）。
 
   ``%A``
-    Full weekday name (e.g. Friday).
+    完整的星期名称（例如 Friday）。
 
   ``%y``
-    The last two digits of the current year (00-99).
+    当前年份的最后两位数字（00-99）。
 
   ``%Y``
-    The current year.
+    当前年份。
 
   ``%z``
-    The offset of the time zone from UTC, in hours and minutes,
-    with format ``+hhmm`` or ``-hhmm``.
+    时区相对于 UTC 的偏移量，以小时和分钟表示，
+    格式为 ``+hhmm`` 或 ``-hhmm``。
 
   ``%Z``
-    The time zone name.
+    时区名称。
 
-  Unknown format specifiers will be ignored and copied to the output
-  as-is.
+  未知的格式说明符将被忽略，并按原样复制到输出中。
 
-  If no explicit ``format`` is given, it will default to:
+  如果未明确指定 ``format``，则默认使用以下格式：
 
-  * ``%Y-%m-%dT%H:%M:%S`` for local time.
-  * ``%Y-%m-%dT%H:%M:%SZ`` for UTC.
+  * 本地时间使用 ``%Y-%m-%dT%H:%M:%S``。
+  * UTC 使用 ``%Y-%m-%dT%H:%M:%SZ``。
 
 .. genex:: $<STRING:RANDOM[,(LENGTH:length|ALPHABET:alphabet|RANDOM_SEED:seed)]...>
 

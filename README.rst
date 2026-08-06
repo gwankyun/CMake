@@ -81,9 +81,8 @@ UNIX/Mac OSX/MinGW/MSYS/Cygwin
   $ mkdir build && cd build
   $ ../bootstrap && make
 
-By default the ``bootstrap`` script configures CMake to build with vendored
-dependencies.  However, CMake does not vendor OpenSSL.  To bootstrap in a
-minimal environment, disable use of OpenSSL::
+默认情况下， ``bootstrap`` 脚本会配置 CMake 使用内嵌依赖进行构建。然而，CMake 并不内嵌 OpenSSL。\
+要在最小化环境中进行引导构建，请禁用 OpenSSL 的使用::
 
   $ ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
 
