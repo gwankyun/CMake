@@ -511,52 +511,51 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 4.3
 
-  Produce a random string of ASCII characters. The possible options are:
+  生成一个由 ASCII 字符组成的随机字符串。可用的选项有：
 
   ``LENGTH:length``
-    Define the length of the string. The default length is 5 characters.
+    定义字符串的长度。默认长度为 5 个字符。
 
   ``ALPHABET:alphabet``
-    Define the characters used for the generation. The alphabet is always
-    interpreted as holding ASCII characters. The default alphabet is all
-    numbers and upper and lower case letters.
+    定义用于生成字符的字符集。该字符集始终被解释为仅包含 ASCII 字符。
+    默认字符集为所有数字以及大写和小写字母。
 
   ``RANDOM_SEED:seed``
-    Specify an integer which will be used to seed the random number generator.
+    指定一个整数，用于作为随机数生成器的种子。
 
 .. genex:: $<STRING:UUID,NAMESPACE:namespace,TYPE:(MD5|SHA1)[,NAME:name][,CASE:(LOWER|UPPER)]>
 
   .. versionadded:: 4.3
 
-  Create a universally unique identifier (aka GUID) as per RFC4122.
-  A UUID has the format ``xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx``
-  where each ``x`` represents an hexadecimal character.
+  依据 RFC4122 创建通用唯一标识符（又称 GUID）。
+  UUID 的格式为 ``xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx``，
+  其中每个 ``x`` 代表一个十六进制字符。
 
-  The UUID is based on the hash of the combined values of:
+  UUID 基于以下组合值计算得到的哈希生成：
 
   ``NAMESPACE:namespace``
-    ``namespace`` which has to be a valid UUID.
+    ``namespace`` 必须是一个有效的 UUID。
 
   ``NAME:name``
-    ``name`` is an arbitrary string.
+    ``name`` 是任意字符串。
 
   ``TYPE:``
-    The hash algorithm can be either:
+    哈希算法可以是以下两种之一：
 
     ``MD5``
-      Version 3 UUID.
+      版本 3 UUID。
 
     ``SHA1``
-      Version 5 UUID.
+      版本 5 UUID。
 
   ``CASE:``
-    Specify the case of the hexadecimal characters.
+    指定十六进制字符的大小写。
 
     ``LOWER``
-      Hexadecimal characters are all of lowercase. This is the default.
+      十六进制字符全部为小写。此为默认值。
 
     ``UPPER``
-      Hexadecimal characters are all of uppercase.
+      十六进制字符全部为大写。
 
 .. _`String Transforming Generator Expressions`:
 
@@ -567,94 +566,91 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 4.3
 
-  Replace all occurrences of ``match_string`` in the ``string`` with
-  ``replace_string``.
+  将 ``string`` 中所有出现的 ``match_string`` 替换为 ``replace_string``。
 
-  The ``match_string`` can be of two different types:
+  ``match_string`` 可以是以下两种类型之一：
 
   ``STRING``
-    ``match_string`` is a literal string and match will be done by simple
-    string comparison. This is the default.
+    ``match_string`` 是字面字符串，将使用简单的字符串比较进行匹配。
+    这是默认类型。
 
   ``REGEX``
-    ``match_string`` is a regular expression. Match this regular_expression as
-    many times as possible and substitute the ``replace_string`` for the match
-    in the ``string``.
+    ``match_string`` 是正则表达式。尽可能多次地匹配此 regular_expression，
+    并将 ``string`` 中匹配到的部分替换为 ``replace_string``。
 
-    The ``replace_string`` may refer to parenthesis-delimited subexpressions of
-    the match using \\1, \\2, ..., \\9. Note that two backslashes (\\\\1) are
-    required in CMake code to get a backslash through argument parsing.
+    在 ``replace_string`` 中可以使用 \\1、\\2、……、\\9 来引用匹配结果中用
+    括号括起的子表达式。注意，在 CMake 代码中需要两个反斜杠（\\\\1）才能
+    让一个反斜杠通过参数解析。
 
 .. genex:: $<STRING:APPEND,string,input[,input]...>
 
   .. versionadded:: 4.3
 
-  Append all the ``input`` arguments to the ``string``.
+  将所有 ``input`` 参数追加到 ``string`` 之后。
 
 .. genex:: $<STRING:PREPEND,string,input[,input]...>
 
   .. versionadded:: 4.3
 
-  Prepend all the ``input`` arguments to the ``string``.
+  将所有 ``input`` 参数前置到 ``string`` 之前。
 
 .. genex:: $<STRING:TOLOWER,string>
 
   .. versionadded:: 4.3
 
-  Content of ``string`` converted to lower case.
+  将 ``string`` 的内容转换为小写。
 
 .. genex:: $<STRING:TOUPPER,string>
 
   .. versionadded:: 4.3
 
-  Content of ``string`` converted to upper case.
+  将 ``string`` 的内容转换为大写。
 
 .. genex:: $<STRING:STRIP,SPACES,string>
 
   .. versionadded:: 4.3
 
-  Remove the specified elements from the ``string``. The possible options are:
+  从 ``string`` 中移除指定的元素。可用的选项有：
 
   ``SPACES``
-    Remove the leading and trailing spaces of the ``string``.
+    移除 ``string`` 开头和结尾的空格。
 
 .. genex:: $<STRING:QUOTE,REGEX,string>
 
   .. versionadded:: 4.3
 
-  Escape the specified elements of the ``string``. The possible options are:
+  对 ``string`` 中指定的元素进行转义。可用的选项有：
 
   ``REGEX``
-    Escape all characters that have special meaning in a regular expressions,
-    such that the ``string`` can be used as part of a regular expression to
-    match the input literally.
+    转义所有在正则表达式中具有特殊含义的字符，使得 ``string``
+    可以作为正则表达式的一部分使用，以字面方式匹配输入。
 
 .. genex:: $<STRING:HEX,string>
 
   .. versionadded:: 4.3
 
-  Convert each byte in the ``string`` to its hexadecimal representation.
-  Letters in the result (a through f) are in lowercase.
+  将 ``string`` 中的每个字节转换为其十六进制表示形式。
+  结果中的字母（a 到 f）均为小写。
 
 .. genex:: $<STRING:HASH,string,ALGORITHM:algorithm>
 
   .. versionadded:: 4.3
 
-  Compute a cryptographic hash of the ``string``. The supported algorithm
-  names, as specified by the ``ALGORITHM:`` option are:
+  计算 ``string`` 的密码学哈希值。通过 ``ALGORITHM:`` 选项指定的受支持算法
+  名称如下：
 
   ``MD5``
-    Message-Digest Algorithm 5, RFC 1321.
+    消息摘要算法 5（Message-Digest Algorithm 5），RFC 1321。
   ``SHA1``
-    US Secure Hash Algorithm 1, RFC 3174.
+    美国安全哈希算法 1（US Secure Hash Algorithm 1），RFC 3174。
   ``SHA224``
-    US Secure Hash Algorithms, RFC 4634.
+    美国安全哈希算法（US Secure Hash Algorithms），RFC 4634。
   ``SHA256``
-    US Secure Hash Algorithms, RFC 4634.
+    美国安全哈希算法（US Secure Hash Algorithms），RFC 4634。
   ``SHA384``
-    US Secure Hash Algorithms, RFC 4634.
+    美国安全哈希算法（US Secure Hash Algorithms），RFC 4634。
   ``SHA512``
-    US Secure Hash Algorithms, RFC 4634.
+    美国安全哈希算法（US Secure Hash Algorithms），RFC 4634。
   ``SHA3_224``
     Keccak SHA-3.
   ``SHA3_256``
@@ -668,9 +664,8 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 4.3
 
-  Convert each non-alphanumeric character in the ``string`` to an underscore.
-  If the first character of the ``string`` is a digit, an underscore will also
-  be prepended.
+  将 ``string`` 中每个非字母数字字符转换为下划线。
+  如果 ``string`` 的第一个字符是数字，则会在其前面添加一个下划线。
 
 .. genex:: $<LOWER_CASE:string>
 
