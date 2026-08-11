@@ -979,7 +979,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   比较两个路径的词法表示。在任何路径上都不执行归一化。如果路径相等则返回\ ``1``，否则返回\ ``0``。
 
-  See :ref:`cmake_path(COMPARE) <Path Comparison>` for more details.
+  有关更多详细信息，请参阅 :ref:`cmake_path(COMPARE) <Path Comparison>`。
 
 .. _GenEx Path Queries:
 
@@ -1019,15 +1019,15 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 3.24
 
-  Returns ``1`` if the path is absolute according to
-  :command:`cmake_path(IS_ABSOLUTE)`, ``0`` otherwise.
+  如果路径根据 :command:`cmake_path(IS_ABSOLUTE)` 判断为绝对路径，\
+  则返回 ``1``，否则返回 ``0``。
 
 .. genex:: $<PATH:IS_RELATIVE,path>
 
   .. versionadded:: 3.24
 
-  Returns ``1`` if the path is relative according to
-  :command:`cmake_path(IS_RELATIVE)`, ``0`` otherwise.
+  如果路径根据 :command:`cmake_path(IS_RELATIVE)` 判断为相对路径，\
+  则返回 ``1``，否则返回 ``0``。
 
 .. genex:: $<PATH:IS_PREFIX[,NORMALIZE],path,input>
 
@@ -1108,7 +1108,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回以\ ``/``\ 作为\ ``directory-separator``\ 附加到\ ``path``\ 的所有\ ``input``\
   参数。根据\ ``input``\ 的不同，\ ``path``\ 的值可能会被丢弃。
 
-  See :command:`cmake_path(APPEND)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(APPEND)`。
 
 .. genex:: $<PATH:REMOVE_FILENAME,path...>
 
@@ -1117,7 +1117,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回删除了文件名组件（由\ ``$<PATH:GET_FILENAME>``\ 返回）的\ ``path``。删除之后，\
   任何尾随的\ ``directory-separator``\ （如果存在的话）都将保持不变。
 
-  See :command:`cmake_path(REMOVE_FILENAME)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(REMOVE_FILENAME)`。
 
 .. genex:: $<PATH:REPLACE_FILENAME,path...,input>
 
@@ -1126,7 +1126,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回\ ``path``，其中文件组件被\ ``input``\ 替换。如果\ ``path``\ 没有文件名组件\
   （例如\ ``$<PATH:HAS_FILENAME>``\ 返回\ ``0``），\ ``path``\ 不变。
 
-  See :command:`cmake_path(REPLACE_FILENAME)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(REPLACE_FILENAME)`。
 
 .. genex:: $<PATH:REMOVE_EXTENSION[,LAST_ONLY],path...>
 
@@ -1134,7 +1134,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   返回已删除\ :ref:`extension <EXTENSION_DEF>`\ 的\ ``path``，如果有的话。
 
-  See :command:`cmake_path(REMOVE_EXTENSION)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(REMOVE_EXTENSION)`。
 
 .. genex:: $<PATH:REPLACE_EXTENSION[,LAST_ONLY],path...,input>
 
@@ -1143,7 +1143,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   返回\ ``path``，其中\ :ref:`extension <EXTENSION_DEF>`\ 替换为\ ``input``，\
   如果有的话。
 
-  See :command:`cmake_path(REPLACE_EXTENSION)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(REPLACE_EXTENSION)`。
 
 .. genex:: $<PATH:NORMAL_PATH,path...>
 
@@ -1157,7 +1157,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   返回\ ``path``，修改后使其相对于\ ``base_directory``\ 参数。
 
-  See :command:`cmake_path(RELATIVE_PATH)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(RELATIVE_PATH)`。
 
 .. genex:: $<PATH:ABSOLUTE_PATH[,NORMALIZE],path...,base_directory>
 
@@ -1168,7 +1168,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   当指定\ ``NORMALIZE``\ 选项时，在路径计算之后对路径进行\ :ref:`normalized <Normalization>`。
 
-  See :command:`cmake_path(ABSOLUTE_PATH)` for more details.
+  有关更多详细信息，请参阅 :command:`cmake_path(ABSOLUTE_PATH)`。
 
 Shell路径
 ^^^^^^^^^^^
@@ -1821,11 +1821,10 @@ Shell路径
       add_library(lib2 ...)
       add_library(lib3 ...)
 
-      # lib1 will be associated with feature1
+      # lib1 将与 feature1 关联
       target_link_libraries(lib2 PUBLIC "$<LINK_LIBRARY:feature1,lib1>")
 
-      # lib1 is being linked with no feature here. This conflicts with the
-      # use of feature1 in the line above and would result in an error.
+      # lib1 在此处没有关联任何特性。这与上面一行中使用 feature1 冲突，将导致错误。
       target_link_libraries(lib3 PRIVATE lib1 lib2)
 
     如果不可能在整个构建过程中对给定的目标或库使用相同的特性，则可以使用\
@@ -1889,12 +1888,11 @@ Shell路径
 
     target_link_libraries(lib3 PUBLIC  "$<LINK_GROUP:feature1,lib1,lib2>")
     target_link_libraries(lib4 PRIVATE "$<LINK_GROUP:feature1,lib1,lib3>")
-    # lib4 will be linked with the groups {lib1,lib2} and {lib1,lib3}.
-    # Both groups specify the same feature, so this is fine.
+    # lib4 将与 {lib1,lib2} 和 {lib1,lib3} 两个组链接。
+    # 两个组指定了相同的特性，因此这是可以的。
 
     target_link_libraries(lib5 PRIVATE "$<LINK_GROUP:feature2,lib1,lib3>")
-    # An error will be raised here because both lib1 and lib3 are part of two
-    # groups with different features.
+    # 此处将引发错误，因为 lib1 和 lib3 都属于具有不同特性的两个组。
 
   当目标或外部库作为组的一部分参与链接步骤，同时又不属于任何组时，任何出现的非组链接项都将被\
   它所属的组替换。
@@ -1909,7 +1907,7 @@ Shell路径
     target_link_libraries(lib3 PUBLIC lib1)
 
     target_link_libraries(lib4 PRIVATE lib3 "$<LINK_GROUP:feature1,lib1,lib2>")
-    # lib4 will only be linked with lib3 and the group {lib1,lib2}
+    # lib4 将仅与 lib3 和 {lib1,lib2} 组链接
 
   因为\ ``lib1``\ 是为\ ``lib4``\ 定义的组的一部分，所以这个组将应用回对\ ``lib3``\ 使用\
   ``lib1``。最终结果就像\ ``lib3``\ 的链接关系被指定为：
@@ -1929,11 +1927,11 @@ Shell路径
     add_library(lib2B ...)
     add_library(lib3 ...)
 
-    # Non-group linking relationships, these are non-circular so far
+    # 非组链接关系，目前是非循环的
     target_link_libraries(lib1A PUBLIC lib2A)
     target_link_libraries(lib2B PUBLIC lib1B)
 
-    # The addition of these groups creates circular dependencies
+    # 这些组的添加创建了循环依赖
     target_link_libraries(lib3 PRIVATE
       "$<LINK_GROUP:feat,lib1A,lib1B>"
       "$<LINK_GROUP:feat,lib2A,lib2B>"

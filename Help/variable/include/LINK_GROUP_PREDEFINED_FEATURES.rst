@@ -12,5 +12,4 @@
   该特性在使用针对Linux、BSD和SunOS的工具链时可用。如果使用GNU工具链，它也可以用于Windows平台。
 
   .. versionadded:: 4.4
-    ``RESCAN`` is additionally available when using toolchains targeting
-    Haiku.
+    当使用面向 Haiku 的工具链时，还可以使用 ``RESCAN``。
