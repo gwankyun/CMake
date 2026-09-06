@@ -209,7 +209,7 @@ AUTORCC
   If Qt 5.15 or later is used and a depfile is used to track the ``moc``
   dependencies, see :ref:`<ORIGIN>_autogen_timestamp_deps`.  When using the
   :ref:`Visual Studio Generators`, the ``<ORIGIN>_autogen`` target may not be
-  created at all, see `Visual Studio Generators`_ below.
+  created at all, see `Visual Studio生成器`_ below.
 
 .. _`<ORIGIN>_autogen_timestamp_deps`:
 
@@ -236,7 +236,7 @@ target.
 .. note::
   When using the :ref:`Visual Studio Generators`, neither this target nor the
   :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>` target is created in the common
-  case, see `Visual Studio Generators`_ below.
+  case, see `Visual Studio生成器`_ below.
 
 Visual Studio生成器
 ========================
