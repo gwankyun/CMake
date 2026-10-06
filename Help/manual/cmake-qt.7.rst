@@ -206,60 +206,59 @@ AUTORCC
 添加到\ ``<ORIGIN>_autogen``\ 目标中。
 
 .. note::
-  If Qt 5.15 or later is used and a depfile is used to track the ``moc``
-  dependencies, see :ref:`<ORIGIN>_autogen_timestamp_deps`.  When using the
-  :ref:`Visual Studio Generators`, the ``<ORIGIN>_autogen`` target may not be
-  created at all, see `Visual Studio生成器`_ below.
+  如果使用 Qt 5.15 或更高版本，并且使用 depfile 来跟踪 ``moc``
+  依赖项，请参见 :ref:`<ORIGIN>_autogen_timestamp_deps`。当使用
+  :ref:`Visual Studio Generators` 时， ``<ORIGIN>_autogen`` 目标可能根本不会被创建，
+  请参见下面的 `Visual Studio生成器`_。
 
 .. _`<ORIGIN>_autogen_timestamp_deps`:
 
 ``<ORIGIN>_autogen_timestamp_deps``\ 目标
 ==============================================
 
-If Qt 5.15 or later is used and the generator is :generator:`Ninja`, a
-:ref:`Makefile <Makefile Generators>` generator, a
-:ref:`Visual Studio <Visual Studio Generators>` generator or
-:generator:`Xcode`, the ``moc`` dependencies are tracked with a depfile.  In
-that case the ``<ORIGIN>_autogen_timestamp_deps`` target is also created in
-addition to the :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`
-target.  
-这个目标没有任何要\
-执行的源或命令，但是它有以前由Qt 5.15之前的\ :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`\
-继承的依赖项。这些依赖项将作为自定义命令的顺序依赖项列表，而不会强制重新执行自定\
+如果使用 Qt 5.15 或更高版本，且生成器为 :generator:`Ninja`、
+:ref:`Makefile <Makefile Generators>` 生成器、
+:ref:`Visual Studio <Visual Studio Generators>` 生成器或
+:generator:`Xcode`，则 ``moc`` 依赖项通过 depfile 进行跟踪。在
+这种情况下，除 :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`
+目标之外，还会创建 ``<ORIGIN>_autogen_timestamp_deps`` 目标。
+这个目标没有任何要执行的源或命令，但是它有以前由Qt 5.15之前的
+:ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>` 继承的依赖项。这些依赖项将作为自定义\
+命令的顺序依赖项列表，而不会强制重新执行自定\
 义命令。
 
 .. versionadded:: 4.4
-  Depfile support for the :ref:`Visual Studio Generators` and
-  :generator:`Xcode`.  Earlier versions used a depfile only for the
-  :generator:`Ninja` and :ref:`Makefile Generators`.
+  :ref:`Visual Studio Generators` 和 :generator:`Xcode` 的\
+  depfile 支持。早期版本仅为 :generator:`Ninja` 和
+  :ref:`Makefile Generators` 使用 depfile。
 
 .. note::
-  When using the :ref:`Visual Studio Generators`, neither this target nor the
-  :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>` target is created in the common
-  case, see `Visual Studio生成器`_ below.
+  当使用 :ref:`Visual Studio Generators` 时，在常见情况下，此目标和
+  :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>` 目标都不会被创建，
+  请参见下面的 `Visual Studio生成器`_。
 
 Visual Studio生成器
 ========================
 
-When using the :ref:`Visual Studio Generators`, CMake adds the ``moc`` and
-``uic`` step to the ``<ORIGIN>`` project itself instead of creating the
+当使用 :ref:`Visual Studio Generators` 时，CMake 会将 ``moc`` 和
+``uic`` 步骤添加到 ``<ORIGIN>`` 项目本身，而不是创建
 :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`
-:command:`custom target <add_custom_target>` (for :prop_tgt:`AUTOMOC` and
-:prop_tgt:`AUTOUIC`).  With Qt 5.15 or later, the step is a
-:command:`custom command <add_custom_command>` with a depfile, and therefore
-runs only when one of its dependencies changed.  With earlier Qt versions it is
-a ``PRE_BUILD`` command that runs on every build of ``<ORIGIN>``.
+:command:`custom target <add_custom_target>` （用于 :prop_tgt:`AUTOMOC` 和
+:prop_tgt:`AUTOUIC`）。对于 Qt 5.15 或更高版本，该步骤是一个
+:command:`custom command <add_custom_command>`，带有 depfile，因此\
+仅在其依赖项之一发生更改时才会运行。对于较早的 Qt 版本，它是一个
+``PRE_BUILD`` 命令，在每次构建 ``<ORIGIN>`` 时都会运行。
 
 .. versionchanged:: 4.4.3
-  With Qt 5.15 or later, the ``moc`` and ``uic`` step is a custom command in
-  the ``<ORIGIN>`` project.  CMake 4.4.0 through 4.4.2 created the
-  :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>` and
+  对于 Qt 5.15 或更高版本， ``moc`` 和 ``uic`` 步骤是
+  ``<ORIGIN>`` 项目中的一个自定义命令。CMake 4.4.0 至 4.4.2 版本则会
+  创建 :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>` 和
   :ref:`<ORIGIN>_autogen_timestamp_deps <<ORIGIN>_autogen_timestamp_deps>`
-  targets instead.
+  目标。
 
-This isn't always possible though and an
+但这并非始终可行，当满足以下任一条件时，将使用
 :ref:`<ORIGIN>_autogen <<ORIGIN>_autogen>`
-:command:`custom target <add_custom_target>` is used, when either
+:command:`custom target <add_custom_target>`：
 
 - ``<ORIGIN>``\ 目标依赖于来自\ :prop_tgt:`AUTOMOC`\ 和\ :prop_tgt:`AUTOUIC`\
   而未被\ :prop_sf:`SKIP_AUTOMOC`、:prop_sf:`SKIP_AUTOUIC`、:prop_sf:`SKIP_AUTOGEN`\
@@ -267,9 +266,9 @@ This isn't always possible though and an
 - :prop_tgt:`AUTOGEN_TARGET_DEPENDS`\ 列出了一个源文件
 - :variable:`CMAKE_GLOBAL_AUTOGEN_TARGET`\ 已启用
 
-With Qt 5.15 or later, the
-:ref:`<ORIGIN>_autogen_timestamp_deps <<ORIGIN>_autogen_timestamp_deps>` target
-is created along with it.
+对于 Qt 5.15 或更高版本，
+:ref:`<ORIGIN>_autogen_timestamp_deps <<ORIGIN>_autogen_timestamp_deps>` 目标\
+会与之一同创建。
 
 Windows上的qtmain.lib
 =====================
