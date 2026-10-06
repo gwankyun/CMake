@@ -458,11 +458,9 @@ TargetProperty const StaticTargetProperties[] = {
   // ---- C++
   { "CXX_LINKER_LAUNCHER"_s, IC::CanCompileSources },
   // ---- CUDA
-  { "CUDA_LINKER_LAUNCHER"_s, IC::CanCompileSources },
   { "CUDA_RESOLVE_DEVICE_SYMBOLS"_s, IC::CanCompileSources },
   { "CUDA_RUNTIME_LIBRARY"_s, IC::CanCompileSources },
   // ---- HIP
-  { "HIP_LINKER_LAUNCHER"_s, IC::CanCompileSources },
   { "HIP_RUNTIME_LIBRARY"_s, IC::CanCompileSources },
   // ---- Objective C
   { "OBJC_LINKER_LAUNCHER"_s, IC::CanCompileSources },
@@ -3580,7 +3578,8 @@ bool cmTarget::GetMappedConfigNew(std::string desiredConfig, cmValue& loc,
   }
 
   // Get imported configurations, if specified.
-  if (cmValue iconfigs = this->GetProperty("IMPORTED_CONFIGURATIONS")) {
+  cmValue const iconfigs = this->GetProperty("IMPORTED_CONFIGURATIONS");
+  if (!iconfigs.IsEmpty()) {
     cmList const availableConfigs{ cmSystemTools::UpperCase(*iconfigs) };
 
     if (!mappedConfigs.empty()) {

@@ -10,19 +10,11 @@ CMAKE_<LANG>_LINKER_LAUNCHER
 
 * ``CXX``
 
-* ``CUDA``
-
-  .. versionadded:: 4.1
-
 * ``OBJC``
 
 * ``OBJCXX``
 
 * ``Fortran``
-
-  .. versionadded:: 4.1
-
-* ``HIP``
 
   .. versionadded:: 4.1
 

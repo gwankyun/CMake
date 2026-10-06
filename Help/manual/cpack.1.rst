@@ -56,6 +56,9 @@ cpack(1)
   设置一个CPack变量。这将覆盖在\ :program:`cpack`\ 读取的输入文件中为\ ``<var>``\ 设置\
   的任何值。
 
+  .. versionadded:: 4.0
+    The single-argument form ``-D<var>=<value>`` is now supported.
+
 .. option:: --config <configFile>
 
   指定由\ :program:`cpack`\ 读取的配置文件，以提供打包细节。默认将使用当前目录下的\

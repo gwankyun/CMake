@@ -163,6 +163,8 @@ ctest(1)
     * 否则，如果该值为\ ``0``，则并行度不受限制。
 
  这个选项可以由\ :envvar:`CTEST_PARALLEL_LEVEL`\ 环境变量指定。
+ See the documentation of that variable for how it
+ interacts with a test preset's :preset:`testPresets.execution.jobs` field.
 
  这个选项可以与\ :prop_test:`PROCESSORS`\ 测试属性一起使用。请查看\ `标签和子项目摘要`_。
 
@@ -474,6 +476,9 @@ ctest(1)
  .. versionadded:: 3.26
 
  这个选项也可以通过设置\ :envvar:`CTEST_NO_TESTS_ACTION`\ 环境变量来设置。
+ See the documentation of that variable for how it
+ interacts with a test preset's :preset:`testPresets.execution.noTestsAction`
+ field.
 
 .. option:: --collect-instrumentation <build>
 
