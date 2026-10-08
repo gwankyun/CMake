@@ -162,9 +162,8 @@ ctest(1)
 
     * 否则，如果该值为\ ``0``，则并行度不受限制。
 
- 这个选项可以由\ :envvar:`CTEST_PARALLEL_LEVEL`\ 环境变量指定。
- See the documentation of that variable for how it
- interacts with a test preset's :preset:`testPresets.execution.jobs` field.
+ 这个选项可以由\ :envvar:`CTEST_PARALLEL_LEVEL`\ 环境变量指定。\
+ 请参阅该变量的文档，了解它如何与测试预设的 :preset:`testPresets.execution.jobs` 字段交互。
 
  这个选项可以与\ :prop_test:`PROCESSORS`\ 测试属性一起使用。请查看\ `标签和子项目摘要`_。
 
@@ -457,61 +456,55 @@ ctest(1)
 
 .. option:: --no-tests=<action>
 
- Specify behavior when no tests are executed, e.g., when
- ``CTestTestfile.cmake`` defines no tests, or when the given arguments
- exclude all tests.  The ``<action>`` may be one of:
+ 指定未执行任何测试时的行为，例如 ``CTestTestfile.cmake`` 未定义任何测试，\
+ 或给定的参数排除了所有测试。 ``<action>`` 可以是以下之一：
 
  ``error``
-   Consider running no tests to be an error.
+   将未运行任何测试视为错误。
 
-   This is the default when running :option:`ctest -S` scripts.
+   这是运行 :option:`ctest -S` 脚本时的默认行为。
 
  ``ignore``
-   Consider running no tests to be normal.
+   将未运行任何测试视为正常情况。
 
-   This is the default when `running tests <Run Tests_>`__ via the
-   :program:`ctest` command line, even when running as a
-   `dashboard client <Dashboard Client_>`__.
+   这是通过 :program:`ctest` 命令行 `运行测试 <Run Tests_>`__ 时的默认行为，即使作为
+   `仪表盘客户端 <Dashboard Client_>`__ 运行时也是如此。
 
  .. versionadded:: 3.26
 
- 这个选项也可以通过设置\ :envvar:`CTEST_NO_TESTS_ACTION`\ 环境变量来设置。
- See the documentation of that variable for how it
- interacts with a test preset's :preset:`testPresets.execution.noTestsAction`
- field.
+ 这个选项也可以通过设置\ :envvar:`CTEST_NO_TESTS_ACTION`\ 环境变量来设置。\
+ 请参阅该变量的文档，了解它如何与测试预设的 :preset:`testPresets.execution.noTestsAction`
+ 字段交互。
 
 .. option:: --collect-instrumentation <build>
 
  .. versionadded:: 4.0
 
- Manually collect instrumentation data from the specified build directory. See
- the :ref:`cmake-instrumentation Indexing` section of CMake instrumentation for
- more details.
+ 从指定的构建目录手动收集插桩数据。更多细节请参阅 CMake 插桩的
+ :ref:`cmake-instrumentation Indexing` 部分。
 
 .. option:: -- <test-args>...
 
  .. versionadded:: 4.4
 
- Forward extra arguments to test executables.
+ 将额外的参数转发给测试可执行文件。
 
- All arguments after ``--`` are appended to the end of every executed
- test's command line.  This is useful for passing options to test
- frameworks like Google Test or doctest.  For example:
+ ``--`` 之后的所有参数都会被追加到每个被执行测试的命令行末尾。这对于向
+ Google Test 或 doctest 等测试框架传递选项非常有用。例如：
 
  .. code-block:: shell
 
    ctest -R my_test -- --gtest_filter=SomeTest.Case
    ctest --verbose -- --success
 
- All selected tests receive the same extra arguments.
- Use :ctest-option:`-R` or :ctest-option:`-L` to limit
- which tests are executed.
+ 所有被选中的测试都会收到相同的额外参数。请使用 :ctest-option:`-R`
+ 或 :ctest-option:`-L` 来限制要执行的测试。
 
- A bare ``--`` with no following arguments is silently ignored.
+ 不带后续参数的单独 ``--`` 会被静默忽略。
 
- When both ``<test-args>`` and
- :preset:`testPresets.execution.testPassthroughArguments` are provided,
- the test preset arguments will appear first, followed by the ``<test-args>``.
+ 当同时提供 ``<test-args>`` 和
+ :preset:`testPresets.execution.testPassthroughArguments` 时，
+ 测试预设的参数将排在前面，随后是 ``<test-args>``。
 
 查看帮助
 =========

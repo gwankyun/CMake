@@ -57,7 +57,7 @@ cpack(1)
   的任何值。
 
   .. versionadded:: 4.0
-    The single-argument form ``-D<var>=<value>`` is now supported.
+    现在支持单参数形式 ``-D<var>=<value>``。
 
 .. option:: --config <configFile>
 
