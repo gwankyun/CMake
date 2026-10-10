@@ -743,65 +743,59 @@ CTest可以作为\ `CDash`_\ 软件质量指示板应用程序的客户端操作
 
 .. option:: -D <var>:<type>=<value>, -D <var>=<value>
 
- Define a variable for dashboard client mode.
+ 为仪表板客户端模式定义一个变量。
 
- Pass in variable values on the command line.  Use in conjunction with
- :ctest-option:`-S` to pass variable values to a dashboard script, or with
- :ctest-option:`-T` to override `仪表板客户端配置`_ settings.
- Parsing ``-D`` arguments as variable values is only attempted if the value
- following ``-D`` does not match any of the known dashboard types.
+ 在命令行上传入变量值。与 :ctest-option:`-S` 结合使用可将变量值传递给仪表板脚本，
+ 或与 :ctest-option:`-T` 结合使用可覆盖 `仪表板客户端配置`_ 中的设置。
+ 仅当 ``-D`` 后面的值不匹配任何已知的仪表板类型时，才会尝试将 ``-D``
+ 参数解析为变量值。
 
- The ``<var>:<type>=<value>`` form accepts any variable name.  The simpler
- ``<var>=<value>`` form (without a type) is accepted only for variables whose
- names begin with ``CTEST_``.  In both cases the value overrides the
- corresponding setting from the `仪表板客户端配置`_ file
- (e.g., ``DartConfiguration.tcl``) when using :ctest-option:`-T`.
+ ``<var>:<type>=<value>`` 形式接受任意变量名。较简单的
+ ``<var>=<value>`` 形式（不带类型）仅接受名称以 ``CTEST_`` 开头的变量。
+ 在这两种情况下，当使用 :ctest-option:`-T` 时，该值都会覆盖
+ `仪表板客户端配置`_ 文件（例如 ``DartConfiguration.tcl`` ）中的相应设置。
 
  .. note::
-   These definitions set CTest script variables
-   (e.g., :variable:`CTEST_BUILD_NAME`), not CMake cache variables.
-   To pass CMake cache variables to the configure step, consider using a
-   `CTest Script`_, a :manual:`configure preset <cmake-presets(7)>`, or
-   setting :variable:`CTEST_CONFIGURE_COMMAND`.
+   这些定义设置的是 CTest 脚本变量
+   （例如 :variable:`CTEST_BUILD_NAME` ），而不是 CMake 缓存变量。
+   若要向配置步骤传递 CMake 缓存变量，请考虑使用
+   `CTest Script`_、:manual:`配置预设 <cmake-presets(7)>`，
+   或设置 :variable:`CTEST_CONFIGURE_COMMAND`。
 
 .. option:: --source-dir <path-to-source>
 
  .. versionadded:: 4.4
 
- Specify the project source directory. When combined with
- :option:`-T Configure <ctest -T>`, this allows CTest to perform an initial
- configure step for an empty binary directory.  The binary directory defaults
- to the current working directory; use :ctest-dashboard-option:`--build-dir` to
- specify a different location. The binary directory is created automatically
- if it does not yet exist.
+ 指定项目的源目录。当与 :option:`-T Configure <ctest -T>` 结合使用时，
+ 这允许 CTest 对空的二进制目录执行初始的配置步骤。
+ 二进制目录默认为当前工作目录；使用 :ctest-dashboard-option:`--build-dir`
+ 可指定其他位置。如果二进制目录尚不存在，则会自动创建。
 
- When a :manual:`configure preset <cmake-presets(7)>` is specified that
- defines a :preset:`binaryDir <configurePresets.binaryDir>`, CTest uses that
- path as the binary directory automatically (without requiring
- :ctest-dashboard-option:`--build-dir`).  An explicit
- :ctest-dashboard-option:`--build-dir` takes precedence over the preset's
- :preset:`binaryDir <configurePresets.binaryDir>`.
+ 当指定的 :manual:`配置预设 <cmake-presets(7)>` 定义了
+ :preset:`binaryDir <configurePresets.binaryDir>` 时，CTest 会自动使用该
+ 路径作为二进制目录（无需 :ctest-dashboard-option:`--build-dir`）。
+ 显式指定的 :ctest-dashboard-option:`--build-dir` 优先于预设中的
+ :preset:`binaryDir <configurePresets.binaryDir>`。
 
- A CMake generator must also be specified. Use
- :option:`-D CTEST_CMAKE_GENERATOR=\<gen\> <ctest-dashboard -D>` to supply one,
- or set :variable:`CTEST_CONFIGURE_PRESET` to specify a
- :manual:`configure preset <cmake-presets(7)>` that includes a
- :preset:`generator <configurePresets.generator>`.
+ 还必须指定 CMake 生成器。使用
+ :option:`-D CTEST_CMAKE_GENERATOR=\<gen\> <ctest-dashboard -D>` 提供一个
+ 生成器，或设置 :variable:`CTEST_CONFIGURE_PRESET` 以指定包含
+ :preset:`generator <configurePresets.generator>` 的
+ :manual:`配置预设 <cmake-presets(7)>`。
 
- See the `CTest Configure Step`_ settings for more details.
+ 更多细节请参阅 `CTest Configure Step`_ 的相关设置。
 
 .. option:: --build-dir <path-to-build>
 
  .. versionadded:: 4.4
 
- Specify the project binary (build) directory. This is an alias for
- :ctest-option:`--test-dir` intended for use with
- :ctest-dashboard-option:`--source-dir` when bootstrapping a build with
- :option:`-T Configure <ctest -T>`.
+ 指定项目的二进制（构建）目录。这是 :ctest-option:`--test-dir` 的别名，
+ 旨在与 :ctest-dashboard-option:`--source-dir` 结合使用，以便在使用
+ :option:`-T Configure <ctest -T>` 引导构建时使用。
 
 .. option:: --group <group>
 
- Specify the group to which to submit results.
+ 指定提交结果所属的分组。
 
  提交仪表板到指定组，而不是默认组。默认情况下，仪表板被提交到Nightly、Experimental或\
  Continuous组，但通过指定此选项，该组可以是任意的。
