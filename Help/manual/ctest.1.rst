@@ -903,10 +903,9 @@ CTest可以在已经生成的构建树上执行测试。运行\ :program:`ctest`
   ctest -D <mode>[<step>]
   ctest -M <mode> [-T <step>]...
 
-The :ctest-dashboard-option:`--source-dir` option additionally allows the
-``Configure`` step to be performed on a build tree that does not yet
-exist, in which case the :ctest-dashboard-option:`--build-dir` option specifies
-where to create it::
+此外，:ctest-dashboard-option:`--source-dir` 选项还允许在尚不存在的构建树上执行
+``Configure``\ （配置）步骤，此时 :ctest-dashboard-option:`--build-dir` 选项用于
+指定创建该构建树的位置： ::
 
   ctest [-M <mode>] -T Configure
       --source-dir <path-to-source> [--build-dir <path-to-build>]
@@ -973,11 +972,11 @@ CTest开始步骤
   * :module:`CTest`\ 变量：:variable:`PROJECT_SOURCE_DIR`
 
 ``CheckoutCommand``
-  Command-line to run before the start step to initialize the source
-  directory, e.g. to perform an initial checkout from version control.
+  在 start 步骤之前运行的命令行，用于初始化
+  源目录，例如从版本控制系统执行初始检出。
 
-  * `CTest Script`_ variable: :variable:`CTEST_CHECKOUT_COMMAND`
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量：:variable:`CTEST_CHECKOUT_COMMAND`
+  * :module:`CTest` 模块变量：无
 
 .. _`CTest Update Step`:
 
@@ -1131,7 +1130,7 @@ CTest更新步骤
   指定希望版本控制更新命令只发现签出的当前版本，而不更新到不同的版本。
 
   * `CTest Script`_\ 变量：:variable:`CTEST_UPDATE_VERSION_ONLY`
-  * :command:`ctest_update` option: ``VERSION_ONLY``
+  * :command:`ctest_update` 选项： ``VERSION_ONLY``
 
 .. _`UpdateVersionOverride`:
 
@@ -1143,7 +1142,7 @@ CTest更新步骤
   一样，使用这个变量告诉CTest不要将源树更新为不同的版本。
 
   * `CTest Script`_\ 变量：:variable:`CTEST_UPDATE_VERSION_OVERRIDE`
-  * :command:`ctest_update` option: ``VERSION_OVERRIDE <version>``
+  * :command:`ctest_update` 选项： ``VERSION_OVERRIDE <version>``
 
 其他配置设置包括：
 
@@ -1183,25 +1182,22 @@ CTest配置步骤
   请参阅\ `标签和子项目摘要`_。
 
 ``CMakeGenerator``
-  The CMake generator to use for the configure step when
-  ``ConfigureCommand`` is not set.
+  当未设置 ``ConfigureCommand`` 时，配置（configure）步骤所使用的 CMake 生成器。
 
-  * `CTest Script`_ variable: ``CTEST_CMAKE_GENERATOR``
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： ``CTEST_CMAKE_GENERATOR``
+  * :module:`CTest` 模块变量：无
 
 ``CMakeGeneratorPlatform``
-  The CMake generator platform to use for the configure step when
-  ``ConfigureCommand`` is not set.
+  当未设置 ``ConfigureCommand`` 时，配置步骤所使用的 CMake 生成器平台。
 
-  * `CTest Script`_ variable: ``CTEST_CMAKE_GENERATOR_PLATFORM``
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： ``CTEST_CMAKE_GENERATOR_PLATFORM``
+  * :module:`CTest` 模块变量：无
 
 ``CMakeGeneratorToolset``
-  The CMake generator toolset to use for the configure step when
-  ``ConfigureCommand`` is not set.
+  当未设置 ``ConfigureCommand`` 时，配置步骤所使用的 CMake 生成器工具集。
 
-  * `CTest Script`_ variable: ``CTEST_CMAKE_GENERATOR_TOOLSET``
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： ``CTEST_CMAKE_GENERATOR_TOOLSET``
+  * :module:`CTest` 模块变量：无
 
 .. _`CTest Build Step`:
 
@@ -1250,18 +1246,18 @@ CTest构建步骤
   * :module:`CTest`\ 变量：\ ``CTEST_USE_LAUNCHERS``
 
 ``BuildFlags``
-  Additional flags to pass to the build tool when building the project.
-  Only used when ``MakeCommand`` is not set explicitly.
+  构建项目时传递给构建工具的附加标志。
+  仅在未显式设置 ``MakeCommand`` 时使用。
 
-  * `CTest Script`_ variable: ``CTEST_BUILD_FLAGS``
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： ``CTEST_BUILD_FLAGS``
+  * :module:`CTest` 模块变量：无
 
 ``BuildTarget``
-  Specify a specific target to build instead of the default target.
-  Only used when ``MakeCommand`` is not set explicitly.
+  指定要构建的特定目标，而非默认目标。
+  仅在未显式设置 ``MakeCommand`` 时使用。
 
-  * `CTest Script`_ variable: ``CTEST_BUILD_TARGET``
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： ``CTEST_BUILD_TARGET``
+  * :module:`CTest` 模块变量：无
 
 .. _`CTest Test Step`:
 
@@ -1309,31 +1305,28 @@ CTest测试步骤
 ``CoverageTool``
   .. versionadded:: 4.4
 
-  Specify the tool used for collecting coverage during the running
-  of the tests.  The tool may be one of:
+  指定在测试运行期间用于收集覆盖率信息的工具。该工具可以是以下之一：
 
   ``LLVM-COV``
-    This value indicates the usage of Clang's source-based code coverage
-    which "operates on AST and preprocessor information directly".
-    For more information, see the `Clang Source-based Code Coverage`_
-    documentation.
+    此值表示使用 Clang 的基于源代码的覆盖率（source-based code coverage），
+    该功能“直接在 AST 和预处理器信息上操作”。
+    更多信息请参阅 `Clang Source-based Code Coverage`_ 文档。
 
-    CTest will run each test with the ``LLVM_PROFILE_FILE`` environment
-    variable set to ``<directory>/<test-name>_<process-id>.profraw``,
-    where ``<directory>`` is the absolute path to the directory where
-    the ``CTestTestfile.cmake`` that describes the test is located.
-    This configures Clang Source-based Code Coverage to uniquely identify
-    the coverage information gathered by each test without any collisions.
+    CTest 在运行每个测试时会将 ``LLVM_PROFILE_FILE`` 环境变量设置为
+    ``<directory>/<test-name>_<process-id>.profraw``，
+    其中 ``<directory>`` 是描述该测试的 ``CTestTestfile.cmake``
+    所在目录的绝对路径。
+    这使得 Clang 基于源代码的覆盖率功能能够唯一标识每个测试
+    所收集的覆盖率信息，而不会产生任何冲突。
 
-    Any existing ``<directory>/<test-name>_*.profraw`` files for a test
-    are removed before running the test.  Any existing ``LLVM_PROFILE_FILE``
-    environment variable is ignored.
+    在运行测试之前，会删除该测试已有的任何
+    ``<directory>/<test-name>_*.profraw`` 文件。
+    任何已存在的 ``LLVM_PROFILE_FILE`` 环境变量都会被忽略。
 
-  If no value is specified, no work is done and nothing is added to the
-  environment.
+  如果未指定值，则不执行任何操作，也不会向环境中添加任何内容。
 
-  * `CTest Script`_ variable: :variable:`CTEST_TEST_COVERAGE_TOOL`
-  * :module:`CTest` module variable: :variable:`CTEST_TEST_COVERAGE_TOOL`
+  * `CTest Script`_ 变量：:variable:`CTEST_TEST_COVERAGE_TOOL`
+  * :module:`CTest` 模块变量：:variable:`CTEST_TEST_COVERAGE_TOOL`
 
 要向CDash报告额外的测试值，请参阅\ :ref:`Additional Test Measurements`
 
