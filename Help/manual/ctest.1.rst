@@ -1357,11 +1357,10 @@ CTest覆盖步骤
   这些选项是传递给\ ``CoverageCommand``\ 的第一个参数。
 
 ``ExtraCoverageGlob``
-  A semicolon-separated list of glob patterns for additional source files
-  to include in the coverage analysis.
+  一个以分号分隔的 glob 模式列表，用于指定要纳入覆盖率分析的额外源文件。
 
-  * `CTest Script`_ variable: :variable:`CTEST_EXTRA_COVERAGE_GLOB`
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量：:variable:`CTEST_EXTRA_COVERAGE_GLOB`
+  * :module:`CTest` 模块变量： 无
 
 .. _`CTest MemCheck Step`:
 
@@ -1574,37 +1573,35 @@ CTest提交步骤
 ``SubmitInactivityTimeout``
   等待提交的时间，如果提交未完成，提交将被取消。指定一个零值来禁用超时。
 
-  * `CTest Script`_\ 变量：:variable:`CTEST_SUBMIT_INACTIVITY_TIMEOUT`
+  * `CTest Script`_\ 变量： :variable:`CTEST_SUBMIT_INACTIVITY_TIMEOUT`
   * :module:`CTest`\ 变量：\ ``CTEST_SUBMIT_INACTIVITY_TIMEOUT``
 
 ``NotesFiles``
-  A semicolon-separated list of notes files to upload with the submission.
+  一个以分号分隔的备注文件列表，这些文件将随提交一起上传。
 
-  * `CTest Script`_ variable: :variable:`CTEST_NOTES_FILES`
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： :variable:`CTEST_NOTES_FILES`
+  * :module:`CTest` 模块变量： 无
 
 ``ExtraSubmitFiles``
-  A semicolon-separated list of extra ``.xml`` files to upload with the
-  submission.
+  一个以分号分隔的额外 ``.xml`` 文件列表，这些文件将随提交一起上传。
 
-  * `CTest Script`_ variable: :variable:`CTEST_EXTRA_SUBMIT_FILES`
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： :variable:`CTEST_EXTRA_SUBMIT_FILES`
+  * :module:`CTest` 模块变量： 无
 
 ``SubmitParts``
-  A semicolon-separated list of part names to submit.  When set, only the
-  named parts are submitted rather than all available parts.  Valid names
-  are the same as the ``PARTS`` option of :command:`ctest_submit`.
+  一个以分号分隔的要提交的部分（part）名称列表。设置后，仅提交指定的部分，
+  而非所有可用部分。有效的名称与 :command:`ctest_submit` 的 ``PARTS`` 选项
+  相同。
 
-  * `CTest Script`_ variable: :variable:`CTEST_SUBMIT_PARTS`
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： :variable:`CTEST_SUBMIT_PARTS`
+  * :module:`CTest` 模块变量： 无
 
 ``TimeLimit``
-  Maximum total time (in seconds) allowed for the entire dashboard run.
-  CTest will not start additional steps once the remaining time drops
-  below two minutes.
+  整个 dashboard 运行所允许的最大总时间（以秒为单位）。当剩余时间降到
+  两分钟以下时，CTest 将不再启动额外的步骤。
 
-  * `CTest Script`_ variable: ``CTEST_TIME_LIMIT``
-  * :module:`CTest` module variable: none
+  * `CTest Script`_ 变量： ``CTEST_TIME_LIMIT``
+  * :module:`CTest` 模块变量： 无
 
 ``TLSVersion``
   .. versionadded:: 3.30
@@ -1812,8 +1809,6 @@ CTest资源分配特性由最少两个输入组成：
       }
     ]
   }
-
-The members are:
 
 成员包括：
 

@@ -1992,102 +1992,102 @@ Shell路径
   如果是普通的链接步骤，则返回列表，否则返回空列表。当还涉及到设备链接步骤时，此表达式相当有用\
   （请参阅\ :genex:`$<DEVICE_LINK:list>`\ 生成器表达式）。此表达式只能用于指定链接选项。
 
-Linker ID and Frontend-Variant
+链接器 ID 与前端变体
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-See also the :variable:`CMAKE_<LANG>_COMPILER_LINKER_ID` and
-:variable:`CMAKE_<LANG>_COMPILER_LINKER_FRONTEND_VARIANT` variables, which are
-closely related to most of the expressions in this sub-section.
+另请参阅 :variable:`CMAKE_<LANG>_COMPILER_LINKER_ID` 和
+:variable:`CMAKE_<LANG>_COMPILER_LINKER_FRONTEND_VARIANT` 变量，
+它们与本小节中的大多数表达式密切相关。
 
 .. genex:: $<C_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the C linker used.
+  所使用的 C 链接器的 CMake 链接器标识。
 
 .. genex:: $<C_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the C linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 C 链接器的 CMake 链接器标识与 ``linker_ids`` 中的
+  任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<CXX_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the C++ linker used.
+  所使用的 C++ 链接器的 CMake 链接器标识。
 
 .. genex:: $<CXX_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the C++ linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 C++ 链接器的 CMake 链接器标识与 ``linker_ids`` 中的
+  任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<CUDA_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the CUDA linker used.
+  所使用的 CUDA 链接器的 CMake 链接器标识。
 
 .. genex:: $<CUDA_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the CUDA linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 CUDA 链接器的 CMake 链接器标识与 ``linker_ids`` 中的
+  任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<OBJC_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the Objective-C linker used.
+  所使用的 Objective-C 链接器的 CMake 链接器标识。
 
 .. genex:: $<OBJC_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the Objective-C linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 Objective-C 链接器的 CMake 链接器标识与 ``linker_ids``
+  中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<OBJCXX_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the Objective-C++ linker used.
+  所使用的 Objective-C++ 链接器的 CMake 链接器标识。
 
 .. genex:: $<OBJCXX_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the Objective-C++ linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 Objective-C++ 链接器的 CMake 链接器标识与
+  ``linker_ids`` 中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<Fortran_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the Fortran linker used.
+  所使用的 Fortran 链接器的 CMake 链接器标识。
 
 .. genex:: $<Fortran_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the Fortran linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 Fortran 链接器的 CMake 链接器标识与 ``linker_ids``
+  中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<HIP_COMPILER_LINKER_ID>
 
   .. versionadded:: 4.2
 
-  CMake's linker id of the HIP linker used.
+  所使用的 HIP 链接器的 CMake 链接器标识。
 
 .. genex:: $<HIP_COMPILER_LINKER_ID:linker_ids>
 

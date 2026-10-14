@@ -3,9 +3,9 @@
   和\ :prop_tgt:`LINK_LIBRARY_OVERRIDE_<LIBRARY>`\ 目标属性一起使用。
 
 ``WHOLE_ARCHIVE``
-  Force inclusion of all members of a static library when linked as a
-  dependency of consuming :ref:`Executables`, :ref:`Shared Libraries`,
-  and :ref:`Module Libraries`.此功能仅支持以下平台，其局限性如下所示：
+  在作为使用者的 :ref:`Executables`、:ref:`Shared Libraries`
+  和 :ref:`Module Libraries` 的链接依赖时，强制包含静态库的所有成员。
+  此功能仅支持以下平台，其局限性如下所示：
 
   * Linux.
   * 所有BSD变体.
@@ -19,11 +19,10 @@
 
   .. note::
 
-    Since :ref:`Static Libraries` are archives and not linked binaries,
-    CMake records their link dependencies for transitive use when linking
-    consuming binaries.  Therefore ``WHOLE_ARCHIVE`` does not cause a
-    static library's objects to be included in other static libraries.
-    Use :ref:`Object Libraries` for that.
+    由于 :ref:`Static Libraries` 是归档（archive）而非已链接的二进制文件，
+    CMake 会记录其链接依赖，以便在链接使用它们的二进制文件时传递使用。
+    因此， ``WHOLE_ARCHIVE`` 不会使静态库的目标文件（objects）被包含到其他
+    静态库中。如需实现该效果，请使用 :ref:`Object Libraries`。
 
 ``FRAMEWORK``
   该选项告诉链接器使用\ ``-framework``\ 链接器选项搜索指定的框架。它只能在苹果平台上使用，\
