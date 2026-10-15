@@ -2093,107 +2093,106 @@ Shell路径
 
   .. versionadded:: 4.2
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the HIP linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 HIP 链接器的 CMake 链接器标识与 ``linker_ids`` 中的
+  任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<C_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the C linker used.
+  所使用的 C 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<C_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the C linker matches any one
-  of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 C 链接器的 CMake 链接器前端变体与 ``variant_ids`` 中的
+  任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<CXX_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the C++ linker used.
+  所使用的 C++ 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<CXX_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the C++ linker matches any one
-  of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 C++ 链接器的 CMake 链接器前端变体与 ``variant_ids``
+  中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<CUDA_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the CUDA linker used.
+  所使用的 CUDA 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<CUDA_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the CUDA linker matches any one
-  of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 CUDA 链接器的 CMake 链接器前端变体与 ``variant_ids``
+  中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<OBJC_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the Objective-C linker used.
+  所使用的 Objective-C 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<OBJC_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the Objective-C linker matches
-  any one of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 Objective-C 链接器的 CMake 链接器前端变体与
+  ``variant_ids`` 中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<OBJCXX_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the Objective-C++ linker used.
+  所使用的 Objective-C++ 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<OBJCXX_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the Objective-C++ linker matches
-  any one of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 Objective-C++ 链接器的 CMake 链接器前端变体与
+  ``variant_ids`` 中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<Fortran_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the Fortran linker used.
+  所使用的 Fortran 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<Fortran_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the Fortran linker matches
-  any one of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个以逗号分隔的列表。
+  如果所使用的 Fortran 链接器的 CMake 链接器前端变体与
+  ``variant_ids`` 中的任意一项匹配，则为 ``1``，否则为 ``0``。
 
 .. genex:: $<HIP_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
 
-  CMake's linker frontend variant of the HIP linker used.
+  所使用的 HIP 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<HIP_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.2
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the HIP linker matches
-  any one of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是一个逗号分隔的列表。
+  如果 CMake 的 HIP 链接器前端变体与 ``variant_ids`` 中的任一项匹配，则返回 ``1``，否则返回 ``0``。
 
 
 .. _`Source-Dependent Expressions`:
