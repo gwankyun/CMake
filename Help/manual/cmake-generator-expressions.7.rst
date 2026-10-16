@@ -2197,18 +2197,16 @@ Shell路径
 
 .. _`Source-Dependent Expressions`:
 
-Source-Dependent Expressions
+依赖源文件的表达式
 ----------------------------
 
-The source file, as specified in the following expressions, can be nonexistent
-on the file system (i.e. generated file) but must be known from CMake. A source
-file becomes known from CMake if it is part of some target (library or
-executable) or when a source file property is defined. Moreover, this
-information is specific to the directory where the declaration occurred.
+以下表达式中所指定的源文件可以不存在于文件系统中（即生成的文件），
+但必须为 CMake 所知。如果某个源文件是某个目标（库或可执行文件）的
+一部分，或者已为该源文件定义了源文件属性，则 CMake 便知晓该源文件。
+此外，此信息仅对发生声明的那个目录有效。
 
-For example, these generator expressions enable to offer a uniform behavior,
-for the :command:`add_custom_command` and :command:`add_custom_target`
-commands, regarding the source properties:
+例如，下列生成器表达式可针对 :command:`add_custom_command` 和
+:command:`add_custom_target` 命令，就源文件属性提供统一的行为：
 
 .. code-block:: cmake
 
@@ -2230,99 +2228,92 @@ commands, regarding the source properties:
   set_property(SOURCE file1.x PROPERTY COMPILE_OPTIONS -X)
   set_property(SOURCE file2.x PROPERTY COMPILE_OPTIONS -Y)
 
-Source Meta-Data
+源文件元数据
 ^^^^^^^^^^^^^^^^
 
-These expressions look up information about a source file.
+这些表达式用于查询有关某个源文件的信息。
 
 .. genex:: $<SOURCE_EXISTS:src[,(DIRECTORY:dir|TARGET_DIRECTORY:tgt)]>
 
   .. versionadded:: 4.3
 
-  ``1`` if ``src`` exists as a CMake source file, else ``0``. By default, the
-  source file is searched in the scope of the current source directory or the
-  directory of the consuming target.
+  如果 ``src`` 作为 CMake 源文件存在，则为 ``1``，否则为 ``0``。
+  默认情况下，会在当前源目录的作用域中，或者在使用该文件的
+  目标（consuming target）所在目录的作用域中查找该源文件。
 
-  Directory scope can be overridden with one of the following sub-options:
+  可以使用下列子选项之一来覆盖目录作用域：
 
   ``DIRECTORY:dir``
-    The source file will be searched in the ``dir`` directory's scope.
-    CMake must know about the directory, either by having added  it through a
-    call to :command:`add_subdirectory` or ``dir`` being the top level
-    directory. Relative paths are treated as relative to the current source
-    directory.
+    将在 ``dir`` 目录的作用域中查找该源文件。CMake 必须知晓该目录：
+    要么已通过调用 :command:`add_subdirectory` 添加了该目录，
+    要么 ``dir`` 本身就是顶层目录。相对路径会被视为相对于当前源目录。
 
   ``TARGET_DIRECTORY:target``
-      The source file will be searched in the directory scope in which
-      ``target`` was created (``target`` must therefore exist).
+      将在创建 ``target`` 时所在的目录作用域中查找该源文件（因此 ``target`` 必须存在）。
 
-Source Properties
+源文件属性
 ^^^^^^^^^^^^^^^^^
 
-These expressions look up the values of
-:ref:`source file properties <Source File Properties>`.
+这些表达式用于查询 :ref:`源文件属性 <Source File Properties>` 的值。
 
 .. genex:: $<SOURCE_PROPERTY:src[,(DIRECTORY:dir|TARGET_DIRECTORY:target)],prop>
 
   .. versionadded:: 4.3
 
-  Value of the property ``prop`` on the source file ``src``, or empty if
-  the property is not set. An error will be raised if the source file is not
-  known by CMake. By default, the source file's property will be read from the
-  current source directory's scope or the directory of the consuming target.
+  源文件 ``src`` 上属性 ``prop`` 的值，若该属性未设置则为空。
+  如果 CMake 不知晓该源文件，则会引发错误。默认情况下，会从当前
+  源目录的作用域中，或者从使用该文件的目标所在目录的作用域中
+  读取该源文件的属性。
 
-  Directory scope can be overridden with one of the following sub-options:
+  可以使用下列子选项之一来覆盖目录作用域：
 
   ``DIRECTORY:dir``
-    The source file property will be read from the ``dir`` directory's scope.
-    CMake must know about the directory, either by having added  it through a
-    call to :command:`add_subdirectory` or ``dir`` being the top level
-    directory. Relative paths are treated as relative to the current source
-    directory.
+    将从 ``dir`` 目录的作用域中读取该源文件属性。CMake 必须知晓
+    该目录：要么已通过调用 :command:`add_subdirectory` 添加了
+    该目录，要么 ``dir`` 本身就是顶层目录。相对路径会被视为
+    相对于当前源目录。
 
   ``TARGET_DIRECTORY:target``
-      The source file property will be read from the directory scope in which
-      ``target`` was created (``target`` must therefore exist).
+      将从创建 ``target`` 时所在的目录作用域中读取该源文件属性（因此 ``target`` 必须存在）。
 
 .. _`FileSet-Dependent Expressions`:
 
-FileSet-Dependent Expressions
+依赖文件集的表达式
 -----------------------------
 
-FileSet Meta-Data
+文件集元数据
 ^^^^^^^^^^^^^^^^^
 
-These expressions look up information about a file set.
+这些表达式用于查询有关某个文件集的信息。
 
 .. genex:: $<FILE_SET_EXISTS:fileset,TARGET:target>
 
   .. versionadded:: 4.3
 
-  ``1`` if the ``fileset`` exists as a CMake file set attached to the
-  ``target``, else ``0``.
+  如果 ``fileset`` 作为附着于 ``target`` 的 CMake 文件集存在，
+  则为 ``1``，否则为 ``0``。
 
-  The possible sub-options are:
+  可用的子选项如下：
 
   ``TARGET:target``
-    The target on which the file set depends.
+    文件集所依赖的目标。
 
-FileSet Properties
+文件集属性
 ^^^^^^^^^^^^^^^^^^
 
-These expressions look up the values of file set properties.
+这些表达式用于查询文件集属性的值。
 
 .. genex:: $<FILE_SET_PROPERTY:fileset,TARGET:target,prop>
 
   .. versionadded:: 4.3
 
-  Value of the property ``prop`` on the file set ``fileset``, or empty if
-  the property is not set. An error will be raised if the file set is not
-  known by CMake.
+  文件集 ``fileset`` 上属性 ``prop`` 的值，若该属性未设置则为空。
+  如果 CMake 不知晓该文件集，则会引发错误。
 
-  The possible sub-options are:
+  可用的子选项如下：
 
   ``TARGET:target``
-    The target on which the file set depends.
+    文件集所依赖的目标。
 
 .. _`Target-Dependent Expressions`:
 
