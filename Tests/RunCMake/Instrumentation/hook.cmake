@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 
 include(${CMAKE_CURRENT_LIST_DIR}/json.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/validate_schema.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../validate_json_schema.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/verify-snippet.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/verify-trace.cmake)
 
@@ -53,12 +53,8 @@ function(add_error error)
   return(PROPAGATE ERROR_MESSAGE)
 endfunction()
 
-validate_schema(
-  "${index}"
-  "${CMAKE_CURRENT_LIST_DIR}/../../../Help/manual/instrumentation/index-v1-schema.json"
-  # We expect to always generate valid index files.
-  0
-)
+set(index_schema "${CMAKE_CURRENT_LIST_DIR}/../../../Help/manual/instrumentation/index-v1-schema.json")
+validate_json_schema("${index_schema}" "${index}")
 if (RunCMake_TEST_FAILED)
   add_error("${RunCMake_TEST_FAILED}")
   unset(RunCMake_TEST_FAILED)
@@ -68,8 +64,8 @@ json_has_key("${index}" "${contents}" version)
 
 string(JSON version_major GET "${contents}" version major)
 string(JSON version_minor GET "${contents}" version minor)
-if (NOT version_major EQUAL 1 OR NOT version_minor LESS_EQUAL 1)
-  add_error("Version must be <= 1.1, got: ${version_major}.${version_minor}")
+if (NOT version_major EQUAL 1 OR NOT version_minor LESS_EQUAL 2)
+  add_error("Version must be <= 1.2, got: ${version_major}.${version_minor}")
 endif()
 
 json_has_key("${index}" "${contents}" buildDir)

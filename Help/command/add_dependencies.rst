@@ -29,6 +29,10 @@ add_dependencies
   此命令可以在不指定依赖项的情况下调用。\
   此前，至少需要指定一个依赖项。
 
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, dependencies are
+  added to the target which the alias references.
+
 另请参阅
 ^^^^^^^^
 

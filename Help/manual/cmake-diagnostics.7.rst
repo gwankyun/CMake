@@ -72,6 +72,8 @@ CMake 维护一个诊断状态栈，类似于策略状态。栈的初始状态�
    /diagnostic/CMD_DEPRECATED
    /diagnostic/CMD_EXPERIMENTAL
    /diagnostic/CMD_INSTALL_ABSOLUTE_DESTINATION
+   /diagnostic/CMD_NON_TARGET_DIRECTIVE
    /diagnostic/CMD_POLICY
+   /diagnostic/CMD_STRICT
    /diagnostic/CMD_UNINITIALIZED
    /diagnostic/CMD_UNUSED_CLI

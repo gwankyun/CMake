@@ -5,8 +5,12 @@ CMAKE_<LANG>_COMPILER_ARCHITECTURE_ID
 
 :ref:`标识符列表 <CMake Language Lists>`，用于指示语言为\ ``<LANG>``\ 的编译器的目标架构。
 
-Typically the list has one entry unless :variable:`CMAKE_OSX_ARCHITECTURES`
-lists multiple architectures.
+Typically the list has one entry unless the compiler stores multiple
+architectures in each object file.  For example:
+
+* The build targets an Apple platform with
+  :variable:`CMAKE_OSX_ARCHITECTURES` listing multiple architectures.
+* The build targets Windows ARM64 using Clang with the ``-marm64x`` flag.
 
 Possible values for each platform are documented in the following sections.
 
@@ -144,6 +148,9 @@ targets Windows with a GNU ABI (``_WIN32`` and ``__MINGW32__`` are defined).
 
 ``aarch64``
   ARM 64-bit
+
+``arm64ec``
+  ARM 64-bit Emulation-Compatible
 
 ``armv7``
   ARM 32-bit

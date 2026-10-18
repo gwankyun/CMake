@@ -7,7 +7,6 @@
 #include <cstddef> // IWYU pragma: keep
 #include <cstdint>
 #include <cstdio>
-#include <iomanip>
 #include <ratio>
 #include <sstream>
 #include <utility>
@@ -16,6 +15,8 @@
 #include <cm/optional>
 #include <cm/string_view>
 #include <cmext/string_view>
+
+#include <cm3p/json/value.h>
 
 #include "cmsys/FStream.hxx"
 #include "cmsys/Glob.hxx"
@@ -27,6 +28,9 @@
 #include "cmDuration.h"
 #include "cmEnvironment.h"
 #include "cmInstrumentation.h"
+#include "cmInstrumentationQuery.h"
+#include "cmJSONState.h"
+#include "cmList.h"
 #include "cmProcess.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
@@ -45,8 +49,8 @@ cmCTestRunTest::cmCTestRunTest(cmCTestMultiProcessHandler& multiHandler,
 
 void cmCTestRunTest::CheckOutput(std::string const& line)
 {
-  cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-             this->GetIndex() << ": " << line << std::endl);
+  cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->GetIndex(), ": ", line,
+             '\n');
 
   // Check for special CTest XML tags in this line of output.
   // If any are found, this line is excluded from ProcessOutput.
@@ -56,11 +60,9 @@ void cmCTestRunTest::CheckOutput(std::string const& line)
       ctest_tag_found = true;
       this->TestResult.CustomCompletionStatus =
         this->TestHandler->CustomCompletionStatusRegex.match(1);
-      cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                 this->GetIndex() << ": "
-                                  << "Test Details changed to '"
-                                  << this->TestResult.CustomCompletionStatus
-                                  << "'" << std::endl);
+      cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->GetIndex(), ": ",
+                 "Test Details changed to '",
+                 this->TestResult.CustomCompletionStatus, "'\n");
     } else if (this->TestHandler->CustomLabelRegex.find(line)) {
       ctest_tag_found = true;
       auto label = this->TestHandler->CustomLabelRegex.match(1);
@@ -68,10 +70,8 @@ void cmCTestRunTest::CheckOutput(std::string const& line)
       if (std::find(labels.begin(), labels.end(), label) == labels.end()) {
         labels.push_back(label);
         std::sort(labels.begin(), labels.end());
-        cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                   this->GetIndex()
-                     << ": "
-                     << "Test Label added: '" << label << "'" << std::endl);
+        cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->GetIndex(), ": ",
+                   "Test Label added: '", label, "'\n");
       }
     }
     if (ctest_tag_found) {
@@ -79,21 +79,18 @@ void cmCTestRunTest::CheckOutput(std::string const& line)
     }
   }
 
-  this->ProcessOutput += line;
-  this->ProcessOutput += "\n";
+  this->ProcessOutput = cmStrCat(std::move(this->ProcessOutput), line, '\n');
 
   // Check for TIMEOUT_AFTER_MATCH property.
   if (!this->TestProperties->TimeoutRegularExpressions.empty()) {
     for (auto& reg : this->TestProperties->TimeoutRegularExpressions) {
       if (reg.first.find(this->ProcessOutput)) {
-        cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                   this->GetIndex()
-                     << ": "
-                     << "Test timeout changed to "
-                     << std::chrono::duration_cast<std::chrono::seconds>(
-                          this->TestProperties->AlternateTimeout)
-                          .count()
-                     << std::endl);
+        cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->GetIndex(), ": ",
+                   "Test timeout changed to ",
+                   std::chrono::duration_cast<std::chrono::seconds>(
+                     this->TestProperties->AlternateTimeout)
+                     .count(),
+                   '\n');
         this->TestProcess->ResetStartTime();
         this->TestProcess->ChangeTimeout(
           this->TestProperties->AlternateTimeout);
@@ -132,10 +129,9 @@ cmCTestRunTest::EndTestResult cmCTestRunTest::EndTest(size_t completed,
     if (!found) {
       reason = "Required regular expression not found. Regex=[";
       for (auto& pass : this->TestProperties->RequiredRegularExpressions) {
-        reason += pass.second;
-        reason += "\n";
+        reason = cmStrCat(std::move(reason), pass.second, '\n');
       }
-      reason += "]";
+      reason += ']';
       forceFail = true;
     }
   }
@@ -238,6 +234,10 @@ cmCTestRunTest::EndTestResult cmCTestRunTest::EndTest(size_t completed,
                    this->TestResult.ExceptionStatus);
         this->TestResult.Status = cmCTestTestHandler::OTHER_FAULT;
     }
+  } else if ("SKIP_INSUFFICIENT_RESOURCES" ==
+             this->TestResult.CompletionStatus) {
+    outputStream << "***Skipped (Resource error)";
+    skipped = true;
   } else if ("Disabled" == this->TestResult.CompletionStatus) {
     outputStream << "***Not Run (Disabled) ";
   } else // cmProcess::State::Error
@@ -257,19 +257,19 @@ cmCTestRunTest::EndTestResult cmCTestRunTest::EndTest(size_t completed,
       // If the test did not pass, reprint test name and error
       std::string output = this->GetTestPrefix(completed, total);
       std::string testName = this->TestProperties->Name;
-      int const maxTestNameWidth = this->CTest->GetMaxTestNameWidth();
+      size_t const maxTestNameWidth =
+        std::max<size_t>(this->CTest->GetMaxTestNameWidth(), testName.size());
       testName.resize(maxTestNameWidth + 4, '.');
 
-      output += testName;
-      output += outputStream.str();
+      output = cmStrCat(std::move(output), testName, outputStream.str());
       outputStream.str("");
       outputStream.clear();
       outputStream << output;
       cmCTestLog(this->CTest, HANDLER_TEST_PROGRESS_OUTPUT, "\n"); // flush
     }
     if (completed == total) {
-      std::string testName = this->GetTestPrefix(completed, total) +
-        this->TestProperties->Name + "\n";
+      std::string testName = cmStrCat(this->GetTestPrefix(completed, total),
+                                      this->TestProperties->Name, '\n');
       cmCTestLog(this->CTest, HANDLER_TEST_PROGRESS_OUTPUT, testName);
     }
   }
@@ -278,17 +278,15 @@ cmCTestRunTest::EndTestResult cmCTestRunTest::EndTest(size_t completed,
   }
 
   if (outputTestErrorsToConsole) {
-    cmCTestLog(this->CTest, HANDLER_OUTPUT, this->ProcessOutput << std::endl);
+    cmCTestLog(this->CTest, HANDLER_OUTPUT, this->ProcessOutput, '\n');
   }
 
   if (!resourceSpecParseError.empty()) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               resourceSpecParseError << std::endl);
+    cmCTestLog(this->CTest, ERROR_MESSAGE, resourceSpecParseError, '\n');
   } else if (!this->TestProperties->GeneratedResourceSpecFile.empty()) {
     cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-               "Using generated resource spec file "
-                 << this->TestProperties->GeneratedResourceSpecFile
-                 << std::endl);
+               "Using generated resource spec file ",
+               this->TestProperties->GeneratedResourceSpecFile, '\n');
   }
 
   if (this->TestHandler->LogFile) {
@@ -375,6 +373,12 @@ cmCTestRunTest::EndTestResult cmCTestRunTest::EndTest(size_t completed,
     this->TestResult.ExecutionTime = this->TestProcess->GetTotalTime();
     this->MemCheckPostProcess();
     this->ComputeWeightedCost();
+
+    std::string const stampDir = this->CTest->GetStampDir();
+    cmSystemTools::MakeDirectory(stampDir);
+    std::string const stampFile =
+      cmStrCat(stampDir, '/', this->TestProperties->GetStampFile());
+    cmSystemTools::Touch(stampFile, true);
   }
   // If the test does not need to rerun push the current TestResult onto the
   // TestHandler vector
@@ -383,6 +387,7 @@ cmCTestRunTest::EndTestResult cmCTestRunTest::EndTest(size_t completed,
   }
   cmCTestRunTest::EndTestResult testResult;
   testResult.Passed = passed || skipped;
+  testResult.TestStatus = this->TestResult.Status;
   if (res == cmProcess::State::Expired &&
       this->TestProcess->GetTimeoutReason() ==
         cmProcess::TimeoutReason::StopTime) {
@@ -416,8 +421,7 @@ bool cmCTestRunTest::StartAgain(std::unique_ptr<cmCTestRunTest> runner,
 
 bool cmCTestRunTest::NeedsToRepeat()
 {
-  this->NumberOfRunsLeft--;
-  if (this->NumberOfRunsLeft == 0) {
+  if (this->RunNumber == this->RunCount) {
     return false;
   }
   // If a test is marked as NOT_RUN it will not be repeated
@@ -425,9 +429,8 @@ bool cmCTestRunTest::NeedsToRepeat()
   if (this->TestResult.Status == cmCTestTestHandler::NOT_RUN) {
     return false;
   }
-  // if number of runs left is not 0, and we are running until
-  // we find a failed (or passed) test, then return true so the test can be
-  // restarted
+  // The test has runs left, so run it again if we are running until we find
+  // a failed (or passed) test.
   if ((this->RepeatMode == cmCTest::Repeat::UntilFail &&
        this->TestResult.Status == cmCTestTestHandler::COMPLETED) ||
       (this->RepeatMode == cmCTest::Repeat::UntilPass &&
@@ -435,6 +438,7 @@ bool cmCTestRunTest::NeedsToRepeat()
       (this->RepeatMode == cmCTest::Repeat::AfterTimeout &&
        this->TestResult.Status == cmCTestTestHandler::TIMEOUT)) {
     this->RunAgain = true;
+    this->RunNumber++;
     return true;
   }
   return false;
@@ -458,10 +462,9 @@ void cmCTestRunTest::MemCheckPostProcess()
     return;
   }
   cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     this->Index << ": process test output now: "
-                                 << this->TestProperties->Name << " "
-                                 << this->TestResult.Name << std::endl,
-                     this->TestHandler->GetQuiet());
+                     this->TestHandler->GetQuiet(), this->Index,
+                     ": process test output now: ", this->TestProperties->Name,
+                     ' ', this->TestResult.Name, '\n');
   cmCTestMemCheckHandler* handler =
     static_cast<cmCTestMemCheckHandler*>(this->TestHandler);
   handler->PostProcessTest(this->TestResult, this->Index);
@@ -486,17 +489,16 @@ void cmCTestRunTest::StartFailure(size_t total, std::string const& output,
   // attempt to start this test
   if (!this->CTest->GetTestProgressOutput()) {
     cmCTestLog(this->CTest, HANDLER_OUTPUT,
-               std::setw(2 * getNumWidth(total) + 8)
-                 << "Start "
-                 << std::setw(getNumWidth(this->TestHandler->GetMaxIndex()))
-                 << this->TestProperties->Index << ": "
-                 << this->TestProperties->Name << std::endl);
+               cmPadToWidth(2 * getNumWidth(total) + 8, "Start "),
+               cmPadToWidth(getNumWidth(this->TestHandler->GetMaxIndex()),
+                            std::to_string(this->TestProperties->Index)),
+               ": ", this->TestProperties->Name, '\n');
   }
 
   this->ProcessOutput.clear();
   if (!output.empty()) {
     *this->TestHandler->LogFile << output << std::endl;
-    cmCTestLog(this->CTest, ERROR_MESSAGE, output << std::endl);
+    cmCTestLog(this->CTest, ERROR_MESSAGE, output, '\n');
   }
 
   this->TestResult.Properties = this->TestProperties;
@@ -515,23 +517,15 @@ void cmCTestRunTest::StartFailure(size_t total, std::string const& output,
 
 std::string cmCTestRunTest::GetTestPrefix(size_t completed, size_t total) const
 {
-  std::ostringstream outputStream;
-  outputStream << std::setw(getNumWidth(total)) << completed << "/";
-  outputStream << std::setw(getNumWidth(total)) << total << " ";
-
-  if (this->TestHandler->MemCheck) {
-    outputStream << "MemCheck";
-  } else {
-    outputStream << "Test";
-  }
-
-  std::ostringstream indexStr;
-  indexStr << " #" << this->Index << ":";
-  outputStream << std::setw(3 + getNumWidth(this->TestHandler->GetMaxIndex()))
-               << indexStr.str();
-  outputStream << " ";
-
-  return outputStream.str();
+  int const numWidth = getNumWidth(total);
+  std::string indexStr = cmStrCat(" #", this->Index, ':');
+  return cmStrCat(
+    cmPadToWidth(numWidth, std::to_string(completed)), '/',
+    cmPadToWidth(numWidth, std::to_string(total)), ' ',
+    (this->TestHandler->MemCheck ? "MemCheck" : "Test"),
+    cmPadToWidth(3 + getNumWidth(this->TestHandler->GetMaxIndex()),
+                 std::move(indexStr)),
+    ' ');
 }
 
 void cmCTestRunTest::StartTest(std::unique_ptr<cmCTestRunTest> runner,
@@ -550,16 +544,21 @@ void cmCTestRunTest::StartTest(std::unique_ptr<cmCTestRunTest> runner,
 bool cmCTestRunTest::StartTest(size_t completed, size_t total)
 {
   this->TotalNumberOfTests = total; // save for rerun case
+
+  std::string runIterationSuffix;
+  if (this->RunCount > 1) {
+    runIterationSuffix =
+      cmStrCat(" (run ", this->RunNumber, '/', this->RunCount, ')');
+  }
   if (!this->CTest->GetTestProgressOutput()) {
     cmCTestLog(this->CTest, HANDLER_OUTPUT,
-               std::setw(2 * getNumWidth(total) + 8)
-                 << "Start "
-                 << std::setw(getNumWidth(this->TestHandler->GetMaxIndex()))
-                 << this->TestProperties->Index << ": "
-                 << this->TestProperties->Name << std::endl);
+               cmPadToWidth(2 * getNumWidth(total) + 8, "Start "),
+               cmPadToWidth(getNumWidth(this->TestHandler->GetMaxIndex()),
+                            std::to_string(this->TestProperties->Index)),
+               ": ", this->TestProperties->Name, runIterationSuffix, '\n');
   } else {
-    std::string testName = this->GetTestPrefix(completed, total) +
-      this->TestProperties->Name + "\n";
+    std::string testName = cmStrCat(this->GetTestPrefix(completed, total),
+                                    this->TestProperties->Name, '\n');
     cmCTestLog(this->CTest, HANDLER_TEST_PROGRESS_OUTPUT, testName);
   }
 
@@ -577,7 +576,7 @@ bool cmCTestRunTest::StartTest(size_t completed, size_t total)
   if (this->TestProperties->Error) {
     std::string const& msg = *this->TestProperties->Error;
     *this->TestHandler->LogFile << msg << std::endl;
-    cmCTestLog(this->CTest, HANDLER_OUTPUT, msg << std::endl);
+    cmCTestLog(this->CTest, HANDLER_OUTPUT, msg, '\n');
     this->TestResult.CompletionStatus = "Invalid Test Properties";
     this->TestResult.Status = cmCTestTestHandler::NOT_RUN;
     this->TestResult.Output = msg;
@@ -606,10 +605,10 @@ bool cmCTestRunTest::StartTest(size_t completed, size_t total)
   if (!this->FailedDependencies.empty()) {
     std::string msg = "Failed test dependencies:";
     for (std::string const& failedDep : this->FailedDependencies) {
-      msg += " " + failedDep;
+      msg = cmStrCat(std::move(msg), ' ', failedDep);
     }
     *this->TestHandler->LogFile << msg << std::endl;
-    cmCTestLog(this->CTest, HANDLER_OUTPUT, msg << std::endl);
+    cmCTestLog(this->CTest, HANDLER_OUTPUT, msg, '\n');
     this->TestResult.Output = msg;
     this->TestResult.FullCommandLine.clear();
     this->TestResult.Environment.clear();
@@ -630,7 +629,7 @@ bool cmCTestRunTest::StartTest(size_t completed, size_t total)
                      this->CTest->GetConfigType(), "\".");
     }
     *this->TestHandler->LogFile << msg << std::endl;
-    cmCTestLog(this->CTest, ERROR_MESSAGE, msg << std::endl);
+    cmCTestLog(this->CTest, ERROR_MESSAGE, msg, '\n');
     this->TestResult.Output = msg;
     this->TestResult.FullCommandLine.clear();
     this->TestResult.Environment.clear();
@@ -646,7 +645,7 @@ bool cmCTestRunTest::StartTest(size_t completed, size_t total)
       *this->TestHandler->LogFile << "Unable to find required file: " << file
                                   << std::endl;
       cmCTestLog(this->CTest, ERROR_MESSAGE,
-                 "Unable to find required file: " << file << std::endl);
+                 "Unable to find required file: ", file, '\n');
       this->TestResult.Output = "Unable to find required file: " + file;
       this->TestResult.FullCommandLine.clear();
       this->TestResult.Environment.clear();
@@ -662,13 +661,27 @@ bool cmCTestRunTest::StartTest(size_t completed, size_t total)
     *this->TestHandler->LogFile << "Unable to find executable: " << args[1]
                                 << std::endl;
     cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Unable to find executable: " << args[1] << std::endl);
+               "Unable to find executable: ", args[1], '\n');
     this->TestResult.Output = "Unable to find executable: " + args[1];
     this->TestResult.FullCommandLine.clear();
     this->TestResult.Environment.clear();
     this->TestResult.CompletionStatus = "Unable to find executable";
     this->TestResult.Status = cmCTestTestHandler::NOT_RUN;
     return false;
+  }
+  // log and return if we did not find any other test dependencies
+  for (std::string const& dep : cmList{ this->TestProperties->BuildDepends }) {
+    if (!dep.empty() && !cmSystemTools::FileExists(dep)) {
+      std::string const msg = "Unable to find build dependency: " + dep;
+      *this->TestHandler->LogFile << msg << std::endl;
+      cmCTestLog(this->CTest, ERROR_MESSAGE, msg, '\n');
+      this->TestResult.Output = msg;
+      this->TestResult.FullCommandLine.clear();
+      this->TestResult.Environment.clear();
+      this->TestResult.CompletionStatus = "Build Dependencies Missing";
+      this->TestResult.Status = cmCTestTestHandler::NOT_RUN;
+      return false;
+    }
   }
   this->StartTime = this->CTest->CurrentTime();
   if (this->CTest->GetInstrumentation().HasQuery()) {
@@ -681,6 +694,9 @@ bool cmCTestRunTest::StartTest(size_t completed, size_t total)
 void cmCTestRunTest::ComputeArguments()
 {
   this->Arguments.clear(); // reset because this might be a rerun
+  this->InstrumentationCommand.clear();
+  this->InstrumentationArguments.clear();
+  this->ProcessResourceUsage = cm::nullopt;
   auto j = this->TestProperties->Args.begin();
   ++j; // skip test name
   // find the test executable
@@ -701,15 +717,11 @@ void cmCTestRunTest::ComputeArguments()
   // Prepends memcheck args to our command string
   this->TestHandler->GenerateTestCommand(this->Arguments, this->Index);
   for (std::string const& arg : this->Arguments) {
-    testCommand += " \"";
-    testCommand += arg;
-    testCommand += "\"";
+    testCommand = cmStrCat(std::move(testCommand), " \"", arg, '"');
   }
 
   for (; j != this->TestProperties->Args.end(); ++j) {
-    testCommand += " \"";
-    testCommand += *j;
-    testCommand += "\"";
+    testCommand = cmStrCat(std::move(testCommand), " \"", *j, '"');
     this->Arguments.push_back(*j);
   }
   // Append passthrough arguments from ctest command line (after --)
@@ -718,43 +730,59 @@ void cmCTestRunTest::ComputeArguments()
     testCommand = cmStrCat(std::move(testCommand), " \"", arg, '"');
     this->Arguments.push_back(arg);
   }
+
+  this->InstrumentationCommand = this->ActualCommand;
+  this->InstrumentationArguments = this->Arguments;
+
+  if (this->CTest->GetInstrumentation().HasOption(
+        cmInstrumentationQuery::Option::ProcessMetrics)) {
+    std::string const realCommand = this->ActualCommand;
+    std::vector<std::string> realArguments = this->Arguments;
+    std::string metricsFile = GetTestMetricsFile();
+    cmSystemTools::MakeDirectory(cmSystemTools::GetFilenamePath(metricsFile));
+
+    this->ActualCommand = cmSystemTools::GetCTestCommand();
+    this->Arguments.clear();
+    this->Arguments.insert(this->Arguments.end(),
+                           { "--instrument-test", "--metrics-file",
+                             metricsFile, "--", realCommand });
+    this->Arguments.insert(this->Arguments.end(), realArguments.begin(),
+                           realArguments.end());
+
+    testCommand = cmSystemTools::ConvertToOutputPath(this->ActualCommand);
+    testCommand += cmWrap(" \"", this->Arguments, "\"", "");
+    this->TestResult.Environment.clear();
+  }
   this->TestResult.FullCommandLine = testCommand;
 
   // Print the test command in verbose mode
-  cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-             std::endl
-               << this->Index << ": "
-               << (this->TestHandler->MemCheck ? "MemCheck" : "Test")
-               << " command: " << testCommand << std::endl);
+  cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, '\n', this->Index, ": ",
+             (this->TestHandler->MemCheck ? "MemCheck" : "Test"),
+             " command: ", testCommand, '\n');
 
   // Print any test-specific env vars in verbose mode
   if (!this->TestProperties->Directory.empty()) {
-    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-               this->Index << ": "
-                           << "Working Directory: "
-                           << this->TestProperties->Directory << std::endl);
+    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Index, ": ",
+               "Working Directory: ", this->TestProperties->Directory, '\n');
   }
 
   // Print any test-specific env vars in verbose mode
   if (!this->TestProperties->Environment.empty()) {
-    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-               this->Index << ": "
-                           << "Environment variables: " << std::endl);
+    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Index, ": ",
+               "Environment variables: \n");
   }
   for (std::string const& env : this->TestProperties->Environment) {
-    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-               this->Index << ":  " << env << std::endl);
+    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Index, ":  ", env,
+               '\n');
   }
   if (!this->TestProperties->EnvironmentModification.empty()) {
-    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-               this->Index << ": "
-                           << "Environment variable modifications: "
-                           << std::endl);
+    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Index, ": ",
+               "Environment variable modifications: \n");
   }
   for (std::string const& envmod :
        this->TestProperties->EnvironmentModification) {
-    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-               this->Index << ":  " << envmod << std::endl);
+    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Index, ":  ", envmod,
+               '\n');
   }
 }
 
@@ -849,19 +877,15 @@ bool cmCTestRunTest::ForkProcess()
 
   if (timeout) {
     cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                       this->Index << ": "
-                                   << "Test timeout computed to be: "
-                                   << cmDurationTo<unsigned int>(*timeout)
-                                   << "\n",
-                       this->TestHandler->GetQuiet());
+                       this->TestHandler->GetQuiet(), this->Index, ": ",
+                       "Test timeout computed to be: ",
+                       cmDurationTo<unsigned int>(*timeout), '\n');
 
     this->TestProcess->SetTimeout(*timeout);
   } else {
     cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                       this->Index
-                         << ": "
-                         << "Test timeout suppressed by TIMEOUT property.\n",
-                       this->TestHandler->GetQuiet());
+                       this->TestHandler->GetQuiet(), this->Index, ": ",
+                       "Test timeout suppressed by TIMEOUT property.\n");
   }
 
   // Record the original environment before modifying it
@@ -891,10 +915,9 @@ bool cmCTestRunTest::ForkProcess()
 
     std::string profRawPath = this->GenerateLLVMPath("_%p.profraw");
     cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                       this->Index
-                         << ": Using environment variable LLVM_PROFILE_FILE="_s
-                         << profRawPath << " \n",
-                       this->TestHandler->GetQuiet());
+                       this->TestHandler->GetQuiet(), this->Index,
+                       ": Using environment variable LLVM_PROFILE_FILE="_s,
+                       profRawPath, " \n");
     env.PutEnv(cmStrCat("LLVM_PROFILE_FILE="_s, profRawPath));
     // ProcessID -> * to allow for glob to find all
     // files generated by the test
@@ -949,7 +972,7 @@ void cmCTestRunTest::SetupResourcesEnvironment(cmEnvironment& env)
           var += ';';
         }
         firstName = false;
-        var += cmStrCat("id:", it2.Id, ",slots:", it2.Slots);
+        var = cmStrCat(std::move(var), "id:", it2.Id, ",slots:", it2.Slots);
       }
       env.PutEnv(var);
     }
@@ -960,46 +983,49 @@ void cmCTestRunTest::SetupResourcesEnvironment(cmEnvironment& env)
 
 void cmCTestRunTest::WriteLogOutputTop(size_t completed, size_t total)
 {
-  std::ostringstream outputStream;
-
-  // If this is the last or only run of this test, or progress output is
-  // requested, then print out completed / total.
-  // Only issue is if a test fails and we are running until fail
-  // then it will never print out the completed / total, same would
-  // got for run until pass.  Trick is when this is called we don't
-  // yet know if we are passing or failing.
-  bool const progressOnLast =
-    (this->RepeatMode != cmCTest::Repeat::UntilPass &&
-     this->RepeatMode != cmCTest::Repeat::AfterTimeout);
-  if ((progressOnLast && this->NumberOfRunsLeft == 1) ||
-      (!progressOnLast && this->NumberOfRunsLeft == this->NumberOfRunsTotal) ||
-      this->CTest->GetTestProgressOutput()) {
-    outputStream << std::setw(getNumWidth(total)) << completed << "/";
-    outputStream << std::setw(getNumWidth(total)) << total << " ";
+  // Print "completed/total" on the run whose result is the one recorded for
+  // the test, and blanks on its other runs.  Which run that is has to be
+  // decided before the run finishes: with until-fail it is the last run, and
+  // with until-pass and after-timeout the repetitions may end early, so it
+  // is the first.  A test that its fixture repeats records every run.
+  bool countThisRun = true;
+  switch (this->RepeatMode) {
+    case cmCTest::Repeat::Never:
+      break;
+    case cmCTest::Repeat::UntilFail:
+      countThisRun = this->RunNumber == this->RunCount;
+      break;
+    case cmCTest::Repeat::UntilPass:
+      CM_FALLTHROUGH;
+    case cmCTest::Repeat::AfterTimeout:
+      countThisRun = this->RunNumber == 1;
+      break;
+  }
+  int const numWidth = getNumWidth(total);
+  std::string countField;
+  if (countThisRun || this->CTest->GetTestProgressOutput()) {
+    countField =
+      cmStrCat(cmPadToWidth(numWidth, std::to_string(completed)), '/',
+               cmPadToWidth(numWidth, std::to_string(total)), ' ');
   }
   // if this is one of several runs of a test just print blank space
   // to keep things neat
   else {
-    outputStream << std::setw(getNumWidth(total)) << "  ";
-    outputStream << std::setw(getNumWidth(total)) << "  ";
+    countField = cmPadToWidth(2 * numWidth + 2, " ");
   }
 
-  if (this->TestHandler->MemCheck) {
-    outputStream << "MemCheck";
-  } else {
-    outputStream << "Test";
-  }
+  std::string indexStr = cmStrCat(" #", this->Index, ':');
+  std::string output = cmStrCat(
+    std::move(countField), (this->TestHandler->MemCheck ? "MemCheck" : "Test"),
+    cmPadToWidth(3 + getNumWidth(this->TestHandler->GetMaxIndex()),
+                 std::move(indexStr)),
+    ' ');
 
-  std::ostringstream indexStr;
-  indexStr << " #" << this->Index << ":";
-  outputStream << std::setw(3 + getNumWidth(this->TestHandler->GetMaxIndex()))
-               << indexStr.str();
-  outputStream << " ";
-
-  int const maxTestNameWidth = this->CTest->GetMaxTestNameWidth();
   std::string outname = this->TestProperties->Name + " ";
+  size_t const maxTestNameWidth =
+    std::max<size_t>(this->CTest->GetMaxTestNameWidth(), outname.size() - 1);
   outname.resize(maxTestNameWidth + 4, '.');
-  outputStream << outname;
+  output += outname;
 
   *this->TestHandler->LogFile << this->TestProperties->Index << "/"
                               << this->TestHandler->TotalNumberOfTests
@@ -1028,18 +1054,27 @@ void cmCTestRunTest::WriteLogOutputTop(size_t completed, size_t total)
                               << std::endl;
 
   if (!this->CTest->GetTestProgressOutput()) {
-    cmCTestLog(this->CTest, HANDLER_OUTPUT, outputStream.str());
+    cmCTestLog(this->CTest, HANDLER_OUTPUT, output);
   }
 
-  cmCTestLog(this->CTest, DEBUG,
-             "Testing " << this->TestProperties->Name << " ... ");
+  cmCTestLog(this->CTest, DEBUG, "Testing ", this->TestProperties->Name,
+             " ... ");
 }
 
 std::string cmCTestRunTest::GenerateLLVMPath(std::string fileString)
 {
   std::string dir = this->TestProperties->CTestDirectory;
-  std::string profRawRoot = cmStrCat(dir, "/", this->TestProperties->Name);
+  std::string profRawRoot = cmStrCat(dir, '/', this->TestProperties->Name);
   return cmStrCat(profRawRoot, fileString);
+}
+
+std::string cmCTestRunTest::GetTestMetricsFile() const
+{
+  std::string safeName = this->TestProperties->Name;
+  cmSystemTools::ReplaceString(safeName, "/", "_");
+  cmSystemTools::ReplaceString(safeName, "\\", "_");
+  return cmStrCat(this->CTest->GetInstrumentation().GetDataDir(),
+                  "/test/test-", safeName, '-', this->Index, ".json");
 }
 
 void cmCTestRunTest::CollectLLVMCoverage()
@@ -1049,16 +1084,15 @@ void cmCTestRunTest::CollectLLVMCoverage()
   std::vector<std::string> profRawFiles;
   std::string profRawPath = this->GenerateLLVMPath("_*.profraw");
   cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "   looking for .profraw files in: " << profRawPath
-                                                          << std::endl,
-                     this->TestHandler->Quiet);
+                     this->TestHandler->Quiet,
+                     "   looking for .profraw files in: ", profRawPath, '\n');
   gl.FindFiles(profRawPath);
   // Keep a list of all profraw files
   profRawFiles = gl.GetFiles();
   if (profRawFiles.empty()) {
     cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                       " Cannot find any profraw coverage files." << std::endl,
-                       this->TestHandler->Quiet);
+                       this->TestHandler->Quiet,
+                       " Cannot find any profraw coverage files.\n");
     // No coverage files is a valid thing, so the exit code is 0
     return;
   }
@@ -1118,11 +1152,43 @@ void cmCTestRunTest::FinalizeTest(bool started)
   }
 
   if (started && this->CTest->GetInstrumentation().HasQuery()) {
+    if (this->CTest->GetInstrumentation().HasOption(
+          cmInstrumentationQuery::Option::ProcessMetrics)) {
+      std::string metricsFile = GetTestMetricsFile();
+      if (cmSystemTools::FileExists(metricsFile)) {
+        Json::Value root;
+        cmJSONState state(metricsFile, &root);
+        if (state.errors.empty()) {
+          ProcessMetrics usage{};
+          Json::Value const& processMetrics = root["processMetrics"];
+          usage.ru_maxrss = processMetrics["maxRSS"].asLargestUInt();
+          auto userUSec = processMetrics["userTime"].asLargestUInt();
+          auto systemUSec = processMetrics["systemTime"].asLargestUInt();
+          usage.ru_utime.tv_sec = static_cast<long>(userUSec / 1000000ULL);
+          usage.ru_utime.tv_usec = static_cast<long>(userUSec % 1000000ULL);
+          usage.ru_stime.tv_sec = static_cast<long>(systemUSec / 1000000ULL);
+          usage.ru_stime.tv_usec = static_cast<long>(systemUSec % 1000000ULL);
+          this->ProcessResourceUsage = usage;
+        }
+        cmSystemTools::RemoveFile(metricsFile);
+      }
+    }
+    cm::optional<cmInstrumentation::ProcessMetrics> processMetrics;
+    if (this->ProcessResourceUsage) {
+      cmInstrumentation::ProcessMetrics metrics;
+      metrics.ru_maxrss = this->ProcessResourceUsage->ru_maxrss;
+      metrics.ru_utime.tv_sec = this->ProcessResourceUsage->ru_utime.tv_sec;
+      metrics.ru_utime.tv_usec = this->ProcessResourceUsage->ru_utime.tv_usec;
+      metrics.ru_stime.tv_sec = this->ProcessResourceUsage->ru_stime.tv_sec;
+      metrics.ru_stime.tv_usec = this->ProcessResourceUsage->ru_stime.tv_usec;
+      processMetrics = metrics;
+    }
     std::string data_file = this->CTest->GetInstrumentation().InstrumentTest(
-      this->TestProperties->Name, this->ActualCommand, this->Arguments,
-      this->TestProcess->GetExitValue(), this->TestProcess->GetStartTime(),
+      this->TestProperties->Name, this->InstrumentationCommand,
+      this->InstrumentationArguments, this->TestProcess->GetExitValue(),
+      this->TestProcess->GetStartTime(),
       this->TestProcess->GetSystemStartTime(),
-      this->GetCTest()->GetConfigType(), this->ProcessOutput);
+      this->GetCTest()->GetConfigType(), this->ProcessOutput, processMetrics);
     this->TestResult.InstrumentationFile = data_file;
   }
   this->MultiTestHandler.FinishTestProcess(this->TestProcess->GetRunner(),

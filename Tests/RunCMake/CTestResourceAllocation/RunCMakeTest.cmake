@@ -196,6 +196,7 @@ endfunction()
 
 run_ctest_resource_dynamic(dynamic-resource -VV)
 run_ctest_resource_dynamic(dynamic-resource-notenough)
+run_ctest_resource_dynamic(dynamic-resource-notenough-skip)
 run_ctest_resource_dynamic(dynamic-resource-nofile)
 run_ctest_resource_dynamic(dynamic-resource-multiple-generators)
 run_ctest_resource_dynamic(dynamic-resource-no-setup-fixture)
@@ -205,3 +206,25 @@ run_ctest_resource_dynamic(dynamic-resource-conflicting-spec -DCTEST_RESOURCE_SP
 run_ctest_resource_dynamic(dynamic-resource-circular)
 run_ctest_resource_dynamic(dynamic-resource-circular-no-required-fixtures)
 run_ctest_resource_dynamic(dynamic-resource-relative-path)
+
+function(run_resource_dynamic_subdirectory_cli test_name test_dir)
+  set(RunCMake_TEST_BINARY_DIR "${RunCMake_BINARY_DIR}/${test_name}-build")
+  run_cmake(${test_name})
+  set(RunCMake_TEST_NO_CLEAN 1)
+  set(RunCMake_TEST_OUTPUT_MERGE 1)
+  if(test_dir)
+    set(RunCMake_TEST_COMMAND_WORKING_DIRECTORY "${test_dir}")
+  endif()
+  run_cmake_command(${test_name}-test ${CMAKE_CTEST_COMMAND} -C Debug ${ARGN})
+endfunction()
+
+block()
+  run_resource_dynamic_subdirectory_cli(
+    dynamic-resource-relative-path-subdirectory ""
+    --test-dir "${RunCMake_BINARY_DIR}/dynamic-resource-relative-path-subdirectory-build"
+  )
+  run_resource_dynamic_subdirectory_cli(
+    dynamic-resource-relative-path-test-dir "${RunCMake_BINARY_DIR}"
+    --test-dir "${RunCMake_BINARY_DIR}/dynamic-resource-relative-path-test-dir-build"
+  )
+endblock()

@@ -8,23 +8,17 @@
 #include <vector>
 
 #include "cmGccDepfileReaderTypes.h"
+#include "cmSystemTools.h"
 
 #include "LexerParser/cmGccDepfileLexer.h"
 
 #ifdef _WIN32
-#  include "cmsys/Encoding.h"
 #  include "cmsys/String.h"
 #endif
 
 bool cmGccDepfileLexerHelper::readFile(char const* filePath)
 {
-#ifdef _WIN32
-  wchar_t* wpath = cmsysEncoding_DupToWide(filePath);
-  FILE* file = _wfopen(wpath, L"rb");
-  free(wpath);
-#else
-  FILE* file = fopen(filePath, "r");
-#endif
+  FILE* file = cmsys::SystemTools::Fopen(filePath, "rb");
   if (!file) {
     return false;
   }

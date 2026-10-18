@@ -52,13 +52,6 @@ set(ENV{HOME} \"${TEST_HOME}\")
 ")
 endif()
 
-# Suppress generator deprecation warnings in test suite.
-if(CMAKE_GENERATOR MATCHES "^Visual Studio 14 2015")
-  set(TEST_WARN_VS_CODE "set(ENV{CMAKE_WARN_VS14} OFF)")
-else()
-  set(TEST_WARN_VS_CODE "")
-endif()
-
 # 3.9 or later provides a definitive answer to whether we are multi-config
 # through a global property. Prior to 3.9, CMAKE_CONFIGURATION_TYPES being set
 # is assumed to mean multi-config, but developers might modify it so it is
@@ -208,11 +201,9 @@ if(BUILD_TESTING)
   endif()
 
   if(WIN32)
-    set(reg_vs14 "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\14.0;InstallDir]")
     set(reg_ws10_0 "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\14.0\\Setup\\Build Tools for Windows 10;srcPath]")
-    set(reg_tegra "[HKEY_LOCAL_MACHINE\\SOFTWARE\\NVIDIA Corporation\\Nsight Tegra;sdkRoot]")
     set(reg_nasm "[HKEY_CURRENT_USER\\SOFTWARE\\nasm]")
-    foreach(reg IN ITEMS vs14 ws10_0 tegra nasm)
+    foreach(reg IN ITEMS ws10_0 nasm)
       get_filename_component(r "${reg_${reg}}" ABSOLUTE)
       if(IS_DIRECTORY "${r}" AND NOT "${r}" STREQUAL "/registry")
         set(${reg} 1)
@@ -411,6 +402,22 @@ if(BUILD_TESTING)
     set(CMake_TEST_FindPython3_SABIModule TRUE)
   endif()
 
+  if(NOT DEFINED CMake_TEST_ASM_MASM)
+    if(MSVC AND NOT MSVC_VERSION LESS 1310
+        AND (NOT CMAKE_C_COMPILER_ARCHITECTURE_ID STREQUAL "ARM64")
+      )
+      set(CMake_TEST_ASM_MASM 1)
+    endif()
+  endif()
+
+  if(NOT DEFINED CMake_TEST_ASM_MARMASM)
+    if(MSVC AND NOT MSVC_VERSION LESS 1700
+        AND (CMAKE_C_COMPILER_ARCHITECTURE_ID STREQUAL "ARM64")
+      )
+      set(CMake_TEST_ASM_MARMASM 1)
+    endif()
+  endif()
+
   # Use 1500 or CTEST_TEST_TIMEOUT for long test timeout value,
   # whichever is greater.
   set(CMAKE_LONG_TEST_TIMEOUT 1500)
@@ -445,6 +452,7 @@ if(BUILD_TESTING)
   string(REPLACE ";" "$<SEMICOLON>" TEST_STDS_CXX "${CMake_TEST_CXX_STANDARDS}")
   string(REPLACE ";" "$<SEMICOLON>" TEST_STDS_CUDA "${CMake_TEST_CUDA_STANDARDS}")
   string(REPLACE ";" "$<SEMICOLON>" TEST_STDS_HIP "${CMake_TEST_HIP_STANDARDS}")
+  string(REPLACE ";" "$<SEMICOLON>" TEST_STDS_SYCL "${CMake_TEST_SYCL_STANDARDS}")
   set(CompileFeatures_BUILD_OPTIONS
     -DCMake_TEST_CXX=${CMake_TEST_CXX}
     -DCMake_TEST_C_STANDARDS=${TEST_STDS_C}
@@ -453,9 +461,11 @@ if(BUILD_TESTING)
     -DCMake_TEST_CUDA_STANDARDS=${TEST_STDS_CUDA}
     -DCMake_TEST_HIP=${CMake_TEST_HIP}
     -DCMake_TEST_HIP_STANDARDS=${TEST_STDS_HIP}
+    -DCMake_TEST_SYCL=${CMake_TEST_SYCL}
+    -DCMake_TEST_SYCL_STANDARDS=${TEST_STDS_SYCL}
     )
   ADD_TEST_MACRO(CompileFeatures CompileFeatures)
-  set_property(TEST CompileFeatures APPEND PROPERTY LABELS "CUDA" "HIP")
+  set_property(TEST CompileFeatures APPEND PROPERTY LABELS "CUDA" "HIP" "SYCL")
   set_property(TEST CompileFeatures APPEND PROPERTY LABELS "PellesC")
 
   ADD_TEST_MACRO(CMakeCommands.target_compile_features)
@@ -933,6 +943,8 @@ if(BUILD_TESTING)
   ADD_TEST_MACRO(CustomCommandByproducts CustomCommandByproducts)
 
   ADD_TEST_MACRO(CommandLength CommandLength)
+
+  ADD_TEST_MACRO(PlusInFileName PlusInFileName)
 
   ADD_TEST_MACRO(EmptyDepends ${CMAKE_CTEST_COMMAND})
 
@@ -1545,6 +1557,7 @@ if(BUILD_TESTING)
       Protobuf
       SDL
       SQLite3
+      TCL
       TIFF
       Vulkan
       wxWidgets
@@ -1560,6 +1573,12 @@ if(BUILD_TESTING)
   if(CMake_TEST_CUDA)
     add_subdirectory(Cuda)
     add_subdirectory(CudaOnly)
+  endif()
+
+  if(CMake_TEST_SYCL AND
+     NOT CMAKE_GENERATOR MATCHES "Xcode")
+    add_subdirectory(Sycl)
+    add_subdirectory(SyclOnly)
   endif()
 
   if(CMake_TEST_HIP)
@@ -2151,15 +2170,10 @@ if(BUILD_TESTING)
     list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/MFC")
   endif()
 
-  if(MSVC AND NOT MSVC_VERSION LESS 1700
-     AND (CMAKE_C_COMPILER_ARCHITECTURE_ID STREQUAL "ARM64")
-      )
+  if(CMake_TEST_ASM_MARMASM)
     ADD_TEST_MACRO(VSMARMASM VSMARMASM)
   endif()
-
-  if(MSVC AND NOT MSVC_VERSION LESS 1310
-     AND (NOT CMAKE_C_COMPILER_ARCHITECTURE_ID STREQUAL "ARM64")
-      )
+  if(CMake_TEST_ASM_MASM)
     ADD_TEST_MACRO(VSMASM VSMASM)
   endif()
 
@@ -2284,11 +2298,6 @@ if(BUILD_TESTING)
       add_test_VSWinStorePhone(vs15-store10_0-X64 "Visual Studio 15 2017" WindowsStore 10.0 x64)
       add_test_VSWinStorePhone(vs15-store10_0-ARM64 "Visual Studio 15 2017" WindowsStore 10.0 ARM64)
     endif()
-    if(vs14 AND ws10_0)
-      add_test_VSWinStorePhone(vs14-store10_0-X86 "Visual Studio 14 2015" WindowsStore 10.0 Win32)
-      add_test_VSWinStorePhone(vs14-store10_0-ARM "Visual Studio 14 2015" WindowsStore 10.0 ARM)
-      add_test_VSWinStorePhone(vs14-store10_0-X64 "Visual Studio 14 2015" WindowsStore 10.0 x64)
-    endif()
   endif()
 
   if(CMAKE_GENERATOR MATCHES "Visual Studio" AND nasm)
@@ -2410,14 +2419,6 @@ if(BUILD_TESTING)
       )
     list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/VSAndroid/${name}")
   endmacro()
-  if(tegra AND NOT "${CMake_SOURCE_DIR};${CMake_BINARY_DIR}" MATCHES " ")
-    if(vs14)
-      add_test_VSAndroid(vs14 "Visual Studio 14 2015" "Tegra-Android")
-    endif()
-  endif()
-  if(vs14 AND CMake_TEST_ANDROID_VS14)
-    add_test_VSAndroid(vs14 "Visual Studio 14 2015" "ARM")
-  endif()
   if(vs15 AND CMake_TEST_ANDROID_VS15)
     add_test_VSAndroid(vs15 "Visual Studio 15 2017" "ARM")
   endif()
@@ -3198,6 +3199,7 @@ if(BUILD_TESTING)
         -D "bootstrap=${bootstrap}"
         -D "bin_dir=${CMake_BINARY_DIR}/Tests/BootstrapTest"
         -D "generator=${CMAKE_GENERATOR}"
+        -D "args=${CMake_TEST_BOOTSTRAP_ARGS}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/BootstrapTest.cmake
       )
     list(APPEND TEST_BUILD_DIRS "${CMake_BINARY_DIR}/Tests/BootstrapTest")

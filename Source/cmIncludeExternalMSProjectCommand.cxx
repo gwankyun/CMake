@@ -82,7 +82,7 @@ bool cmIncludeExternalMSProjectCommand(std::vector<std::string> const& args,
     }
 
     // Create a target instance for this utility.
-    cmTarget* target = mf.AddNewTarget(cmStateEnums::UTILITY, utility_name);
+    cmTarget* target = mf.AddNewTarget(cm::TargetType::UTILITY, utility_name);
     if (mf.GetPropertyAsBool("EXCLUDE_FROM_ALL")) {
       target->SetProperty("EXCLUDE_FROM_ALL", "TRUE");
     }

@@ -1,0 +1,2 @@
+CMake Error in CMakeLists\.txt:
+  given target "foo" more than once\.

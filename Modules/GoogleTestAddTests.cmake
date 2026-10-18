@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 4.2)
 include("${CMAKE_CURRENT_LIST_DIR}/GoogleTest/ParseTestList.cmake")
 
 macro(write_test_to_file)
+
   # Store the gtest test name before messing with these strings
   set(gtest_name ${current_test_suite}.${current_test_name})
 
@@ -96,6 +97,7 @@ macro(write_test_to_file)
     "set_tests_properties(${guarded_testname}\n"
     "  PROPERTIES\n"
     "    ${maybe_DISABLED}\n"
+    "    _CMAKE_TEST_BUILD_DEPENDS [==[${arg_TEST_EXECUTABLE}]==]\n"
     "    ${maybe_LOCATION}\n"
     "    WORKING_DIRECTORY [==[${arg_TEST_WORKING_DIR}]==]\n"
     "    SKIP_REGULAR_EXPRESSION [==[\\[  SKIPPED \\]]==]\n"

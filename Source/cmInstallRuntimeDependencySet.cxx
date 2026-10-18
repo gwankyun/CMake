@@ -10,8 +10,8 @@
 #include "cmGlobalGenerator.h"
 #include "cmInstallImportedRuntimeArtifactsGenerator.h"
 #include "cmInstallTargetGenerator.h"
-#include "cmStateTypes.h"
 #include "cmTargetDepend.h"
+#include "cmTargetTypes.h"
 
 cmInstallRuntimeDependencySet::cmInstallRuntimeDependencySet(std::string name)
   : Name(std::move(name))
@@ -51,6 +51,28 @@ std::string cmInstallRuntimeDependencySet::TargetItem::GetItemPath(
   return this->Target->GetTarget()->GetFullPath(config);
 }
 
+cmGeneratorTarget const*
+cmInstallRuntimeDependencySet::TargetItem::GetGeneratorTarget() const
+{
+  return this->Target->GetTarget();
+}
+
+void cmInstallRuntimeDependencySet::GetInstallBuildDependencies(
+  std::vector<cmGeneratorTarget const*>& dependencies) const
+{
+  auto appendTargets =
+    [&dependencies](std::vector<std::unique_ptr<Item>> const& items) {
+      for (auto const& item : items) {
+        if (cmGeneratorTarget const* target = item->GetGeneratorTarget()) {
+          dependencies.push_back(target);
+        }
+      }
+    };
+  appendTargets(this->Executables);
+  appendTargets(this->Libraries);
+  appendTargets(this->Modules);
+}
+
 namespace {
 std::set<cmGeneratorTarget const*> const& GetTargetDependsClosure(
   std::map<cmGeneratorTarget const*, std::set<cmGeneratorTarget const*>>&
@@ -64,9 +86,9 @@ std::set<cmGeneratorTarget const*> const& GetTargetDependsClosure(
     for (auto const& dep : deps) {
       if (!dep.IsCross() && dep.IsLink()) {
         auto type = dep->GetType();
-        if (type == cmStateEnums::EXECUTABLE ||
-            type == cmStateEnums::SHARED_LIBRARY ||
-            type == cmStateEnums::MODULE_LIBRARY) {
+        if (type == cm::TargetType::EXECUTABLE ||
+            type == cm::TargetType::SHARED_LIBRARY ||
+            type == cm::TargetType::MODULE_LIBRARY) {
           retval.insert(dep);
         }
         auto const& depDeps = GetTargetDependsClosure(targetDepends, dep);
@@ -92,4 +114,10 @@ std::string cmInstallRuntimeDependencySet::ImportedTargetItem::GetItemPath(
   std::string const& config) const
 {
   return this->Target->GetTarget()->GetFullPath(config);
+}
+
+cmGeneratorTarget const*
+cmInstallRuntimeDependencySet::ImportedTargetItem::GetGeneratorTarget() const
+{
+  return this->Target->GetTarget();
 }

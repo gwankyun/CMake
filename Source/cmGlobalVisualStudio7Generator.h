@@ -119,7 +119,7 @@ protected:
   cmGlobalVisualStudio7Generator(cmake* cm);
 
   std::string const& GetDevEnvCommand();
-  virtual std::string FindDevEnvCommand();
+  virtual std::string FindDevEnvCommand() = 0;
 
   bool MarmasmEnabled;
   bool MasmEnabled;

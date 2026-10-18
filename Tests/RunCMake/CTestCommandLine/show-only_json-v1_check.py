@@ -73,14 +73,25 @@ def check_generated_resource_spec_file_property(p):
     assert p["name"] == "GENERATED_RESOURCE_SPEC_FILE"
     assert p["value"] == "/Path/Does/Not/Exist"
 
+def check_labels_property(p):
+    assert is_dict(p)
+    assert sorted(p.keys()) == ["name", "value"]
+    assert is_string(p["name"])
+    assert is_list(p["value"])
+    assert p["name"] == "LABELS"
+    assert len(p["value"]) == 2
+    assert p["value"][0] == "DirectoryLabel"
+    assert p["value"][1] == "TestLabel"
+
 def check_reqfiles_property(p):
     assert is_dict(p)
     assert sorted(p.keys()) == ["name", "value"]
     assert is_string(p["name"])
     assert is_list(p["value"])
     assert p["name"] == "REQUIRED_FILES"
-    assert len(p["value"]) == 1
+    assert len(p["value"]) == 2
     assert p["value"][0] == "RequiredFileDoesNotExist"
+    assert p["value"][1] == "AnotherRequiredFileDoesNotExist"
 
 def check_timeout_property(p):
     assert is_dict(p)
@@ -190,25 +201,27 @@ def check_defined_properties(p_list):
 def check_properties(p):
     assert is_list(p)
     if sys.platform in ("win32"):
-      assert len(p) == 8
+      assert len(p) == 9
       check_generated_resource_spec_file_property(p[0])
-      check_resource_groups_property(p[1])
-      check_reqfiles_property(p[2])
-      check_timeout_property(p[3])
-      check_willfail_property(p[4])
-      check_workingdir_property(p[5])
-      check_defined_properties(p[6:7])
+      check_labels_property(p[1])
+      check_resource_groups_property(p[2])
+      check_reqfiles_property(p[3])
+      check_timeout_property(p[4])
+      check_willfail_property(p[5])
+      check_workingdir_property(p[6])
+      check_defined_properties(p[7:9])
     else:
-      assert len(p) == 10
+      assert len(p) == 11
       check_generated_resource_spec_file_property(p[0])
-      check_resource_groups_property(p[1])
-      check_reqfiles_property(p[2])
-      check_timeout_property(p[3])
-      check_timeout_signal_name_property(p[4])
-      check_timeout_signal_grace_property(p[5])
-      check_willfail_property(p[6])
-      check_workingdir_property(p[7])
-      check_defined_properties(p[8:9])
+      check_labels_property(p[1])
+      check_resource_groups_property(p[2])
+      check_reqfiles_property(p[3])
+      check_timeout_property(p[4])
+      check_timeout_signal_name_property(p[5])
+      check_timeout_signal_grace_property(p[6])
+      check_willfail_property(p[7])
+      check_workingdir_property(p[8])
+      check_defined_properties(p[9:11])
 
 def check_tests(t):
     assert is_list(t)

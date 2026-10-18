@@ -33,13 +33,45 @@ Inline cref ``Link_Text_<Placeholder>``.
 Inline link Link Dest.
 Inline link Link Text.
 Inline link Link Text <With \-escaped Brackets>.
+Inline link anon Link Dest.
+Inline link anon Link Text.
+Inline link anon Link Text <With \-escaped Brackets>.
 Inline literal ``__`` followed by inline link Link Text.
 Inline literal ``~!@#$%^&*( )_+-=\\[]{}'":;,<>.?/``.
+
+Try running ``cmake``.
+Enable ``CMD_AUTHOR`` warnings with ``-Wauthor``,
+or with the ``configurePresets.warnings.author`` preset field.
+Read the ``cmake(1)`` manual.
+Learn about the ``GNUInstallDirs`` module.
+Policy ``CMP9999`` doesn't exist. (Yet?)
+
+Some properties that don't exist:
+- ``NO_SUCH_CACHE_PROPERTY``
+- ``NO_SUCH_DIRECTORY_PROPERTY``
+- ``NO_SUCH_FILESET_PROPERTY``
+- ``NO_SUCH_GLOBAL_PROPERTY``
+- ``NO_SUCH_INSTALL_PROPERTY``
+- ``NO_SUCH_SOURCE_FILE_PROPERTY``
+- ``NO_SUCH_TEST_PROPERTY``
+- ``NO_SUCH_TARGET_PROPERTY``
+
+Various ways to reference command-line options:
+- ``cmake --build \<dir\>``
+- ``--log-level``
+- ``--parallel``
+- ``--config``
+- ``--preset``
+- ``-G``
+- ``--parallel``
+- ``--build-dir``
 
 First TOC entry.
 
 |not replaced|
 Second TOC entry.
+
+Replacements should work within a toctree.
 
 CMake Module Content
 
@@ -147,3 +179,12 @@ End of first include.
 Cross-include substitution text with ``some_cmd()`` reference.
 
 End of second include.
+
+Testing a replacement defined after use.
+
+this text is a different length
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Substitutions in headers should cause the header line's length to be updated.
+
+A second definition uses only the last definition.

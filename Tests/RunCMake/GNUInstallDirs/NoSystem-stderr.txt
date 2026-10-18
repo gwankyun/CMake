@@ -1,7 +1,6 @@
 ^CMake Warning \(author\) at .*/Modules/GNUInstallDirs\.cmake:[0-9]+ \(message\):
   Unable to determine default CMAKE_INSTALL_LIBDIR directory because no
-  target architecture is known\.  Please enable at least one language before
-  including GNUInstallDirs\.
+  target platform is known\.
 Call Stack \(most recent call first\):
   .*GNUInstallDirs\.cmake:[0-9]+ \(_GNUInstallDirs_LIBDIR_get_default\)
   .*GNUInstallDirs\.cmake:[0-9]+ \(cmake_language\)

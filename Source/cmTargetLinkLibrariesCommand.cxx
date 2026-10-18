@@ -22,11 +22,11 @@
 #include "cmMessageType.h"
 #include "cmPolicies.h"
 #include "cmState.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetLinkLibraryType.h"
+#include "cmTargetTypes.h"
 
 namespace {
 
@@ -78,12 +78,6 @@ bool cmTargetLinkLibrariesCommand(std::vector<std::string> const& args,
 
   cmMakefile& mf = status.GetMakefile();
 
-  // Alias targets cannot be on the LHS of this command.
-  if (mf.IsAlias(args[0])) {
-    status.SetError("can not be used on an ALIAS target.");
-    return false;
-  }
-
   // Lookup the target for which libraries are specified.
   cmTarget* target = mf.GetGlobalGenerator()->FindTarget(args[0]);
   if (!target) {
@@ -110,7 +104,7 @@ bool cmTargetLinkLibrariesCommand(std::vector<std::string> const& args,
   }
 
   // Having a UTILITY library on the LHS is a bug.
-  if (target->GetType() == cmStateEnums::UTILITY) {
+  if (target->GetType() == cm::TargetType::UTILITY) {
     mf.IssueMessage(
       MessageType::FATAL_ERROR,
       cmStrCat(
@@ -359,7 +353,7 @@ TLL::TLL(cmMakefile& mf, cmTarget* target)
 bool TLL::HandleLibrary(ProcessingState currentProcessingState,
                         std::string const& lib, cmTargetLinkLibraryType llt)
 {
-  if (this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY &&
+  if (this->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY &&
       currentProcessingState != ProcessingKeywordLinkInterface) {
     this->Makefile.IssueMessage(
       MessageType::FATAL_ERROR,
@@ -424,11 +418,11 @@ bool TLL::HandleLibrary(ProcessingState currentProcessingState,
 
     cmTarget* tgt = this->Makefile.GetGlobalGenerator()->FindTarget(lib);
 
-    if (tgt && (tgt->GetType() != cmStateEnums::STATIC_LIBRARY) &&
-        (tgt->GetType() != cmStateEnums::SHARED_LIBRARY) &&
-        (tgt->GetType() != cmStateEnums::UNKNOWN_LIBRARY) &&
-        (tgt->GetType() != cmStateEnums::OBJECT_LIBRARY) &&
-        (tgt->GetType() != cmStateEnums::INTERFACE_LIBRARY) &&
+    if (tgt && (tgt->GetType() != cm::TargetType::STATIC_LIBRARY) &&
+        (tgt->GetType() != cm::TargetType::SHARED_LIBRARY) &&
+        (tgt->GetType() != cm::TargetType::UNKNOWN_LIBRARY) &&
+        (tgt->GetType() != cm::TargetType::OBJECT_LIBRARY) &&
+        (tgt->GetType() != cm::TargetType::INTERFACE_LIBRARY) &&
         !tgt->IsExecutableWithExports()) {
       this->Makefile.IssueMessage(
         MessageType::FATAL_ERROR,
@@ -461,14 +455,14 @@ bool TLL::HandleLibrary(ProcessingState currentProcessingState,
   // STATIC library.)
   if (currentProcessingState == ProcessingKeywordPrivateInterface ||
       currentProcessingState == ProcessingPlainPrivateInterface) {
-    if (this->Target->GetType() == cmStateEnums::STATIC_LIBRARY ||
-        this->Target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+    if (this->Target->GetType() == cm::TargetType::STATIC_LIBRARY ||
+        this->Target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
       // TODO: Detect and no-op `$<COMPILE_ONLY>` genexes here.
       std::string configLib =
         this->Target->GetDebugGeneratorExpressions(lib, llt);
       if (cmGeneratorExpression::IsValidTargetName(lib) ||
           cmGeneratorExpression::Find(lib) != std::string::npos) {
-        configLib = "$<LINK_ONLY:" + configLib + ">";
+        configLib = cmStrCat("$<LINK_ONLY:", std::move(configLib), '>');
       }
       this->AppendProperty("INTERFACE_LINK_LIBRARIES", configLib);
     }

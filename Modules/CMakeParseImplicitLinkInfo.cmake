@@ -96,7 +96,7 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
   endif()
   # Construct a regex to match linker lines.  It must match both the
   # whole line and just the command (argv[0]).
-  set(linker_regex "^( *|.*[/\\])(${linker}|${startfile}|([^/\\]+-)?ld|collect2)[^/\\]*( |$)")
+  set(linker_regex "^( *|.*[/\\])(${linker}|${startfile}|([^/\\]+-)?ld|collect2)(\\.exe)?\"?( |$)")
   set(linker_exclude_regex "collect2 version |^[A-Za-z0-9_]+=|/ldfe ")
 
   # Skip FASTBuild's output mangling, like:
@@ -125,7 +125,7 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
       elseif("${line}" MATCHES "^export XL_LINKER=(.*/${linker})[ \t]*$") # IBM XL
         set(linker_tool "${CMAKE_MATCH_1}")
         string(APPEND log "  link line: [${line}] ==> linker [${linker_tool}]\n")
-      elseif("${line}" MATCHES "--with-ld=") # GNU
+      elseif("${line}" MATCHES "^Configured with: ") # GNU
         # The GNU compiler reports how it was configured.
         # This does not account for -fuse-ld= so use it only as a fallback.
         if("${line}" MATCHES " --with-ld=([^ ]+/${linker})( |$)")
@@ -143,8 +143,8 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
     if(linker_tool)
       # pick-up useful flags influencing linker behavior
       # these flags are meaningful only for LLVM and GNU linkers. Check will be done later
-      if("${line}" MATCHES "-m ([a-zA-Z0-9]+)")
-        list(APPEND linker_tool_arch -m "${CMAKE_MATCH_1}")
+      if("${line}" MATCHES "(^|[ \t])-m[ \t]+([a-zA-Z0-9_]+)([ \t]|$)")
+        list(APPEND linker_tool_arch -m "${CMAKE_MATCH_2}")
         string(APPEND log "  link line: [${line}] ==> linker architecture flags [${linker_tool_arch}]\n")
       endif()
     endif()
@@ -192,7 +192,7 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
     if(NOT link_line_parsed AND "${cmd}" MATCHES "${linker_regex}")
       set(link_line_parsed 1)
       string(APPEND log "  link line: [${line}]\n")
-      string(REGEX REPLACE ";-([LYz]);" ";-\\1" args "${args}")
+      string(REGEX REPLACE ";-([LlYz]);" ";-\\1" args "${args}")
       set(skip_value_of "")
       foreach(arg IN LISTS args)
         if(skip_value_of)
@@ -239,7 +239,12 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
             list(APPEND implicit_libs_tmp ${lib})
             string(APPEND log "    arg [${arg}] ==> lib [${lib}]\n")
           endif()
-        elseif("${arg}" MATCHES "^(.:)?[/\\].*\\.a$")
+        elseif("${arg}" MATCHES "^(-o|--output|-dynamic-linker|--dynamic-linker|-plugin|--plugin)$")
+          # These paths are not implicit libraries, even when they name a
+          # shared object (for example, the ELF interpreter or an LTO plugin).
+          set(skip_value_of "${arg}")
+          string(APPEND log "    arg [${arg}] ==> ignore, skip following value\n")
+        elseif("${arg}" MATCHES "^(.:)?[/\\].*\\.(a|so(\\.[0-9]+)*|dylib)$")
           if(EXTRA_PARSE_COMPUTE_IMPLICIT_LIBS)
             # Unix library full path.
             list(APPEND implicit_libs_tmp ${arg})
@@ -304,6 +309,22 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
         list(APPEND implicit_dirs_tmp ${paths})
         string(APPEND log "    dirs [${paths}]\n")
       endif()
+    elseif(NOT link_line_parsed
+        AND "${line}" MATCHES [[ld\.exe ([^-]|-[^L])*(( -L([^ ]| +[^-])+)+) ([^-]|-[^l])*(( -l[^ ]+)+)]])
+      set(link_line_parsed 1)
+      set(implicit_dirs_str "${CMAKE_MATCH_2}")
+      set(implicit_libs_str "${CMAKE_MATCH_6}")
+      string(APPEND log "  link line: [${line}]\n")
+      if(EXTRA_PARSE_COMPUTE_IMPLICIT_DIRS)
+        string(REPLACE " -L" ";" implicit_dirs_tmp "${implicit_dirs_str}")
+        list(REMOVE_ITEM implicit_dirs_tmp "")
+        string(APPEND log "    dirs [${implicit_dirs_tmp}]\n")
+      endif()
+      if(EXTRA_PARSE_COMPUTE_IMPLICIT_LIBS)
+        string(REPLACE " -l" ";" implicit_libs_tmp "${implicit_libs_str}")
+        list(REMOVE_ITEM implicit_libs_tmp "")
+        string(APPEND log "    libs [${implicit_libs_tmp}]\n")
+      endif()
     else()
       string(APPEND log "  ignore line: [${line}]\n")
     endif()
@@ -345,6 +366,10 @@ function(cmake_parse_implicit_link_info2 text log_var obj_regex)
       set(search_static 0)
     endif()
     if("x${lib}" MATCHES "^x(crt.*\\.o|gcc_eh.*|.*libgcc_eh.*|System.*|.*libclang_rt.*|msvcrt.*|libvcruntime.*|libucrt.*|libcmt.*)$")
+      string(APPEND log "  remove lib [${lib}]\n")
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten" AND
+           lib MATCHES "libemscripten_js_symbols\\.so$")
+      # This is a temporary symbol stub generated for this particular link.
       string(APPEND log "  remove lib [${lib}]\n")
     elseif(search_static)
       # This library appears after a -Bstatic flag.  Due to ordering

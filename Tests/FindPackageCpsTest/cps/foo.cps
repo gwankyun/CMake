@@ -9,6 +9,9 @@
     },
     "Empty": {
       "type": "interface"
+    },
+    "ExecutableTest": {
+      "type": "executable"
     }
   }
 }

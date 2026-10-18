@@ -44,16 +44,21 @@ extern "C" int LLVMFuzzerTestOneInput(uint8_t const* data, size_t size)
   result = parser.Finish();
   (void)result;
 
-  // Access parsed data to exercise accessors
-  auto& entries = parser.Data();
-  for (auto const& entry : entries) {
-    (void)entry.IsVariable;
-    (void)entry.Key;
-    for (auto const& elem : entry.Val) {
-      (void)elem.IsVariable;
-      (void)elem.Data;
-    }
-  }
+  parser.ParseComplete();
+
+  (void)parser.GetLiteral("Name");
+  (void)parser.GetLiteral("Description");
+  (void)parser.GetLiteral("Version");
+  (void)parser.GetFragments("Cflags");
+  (void)parser.GetFragments("Cflags.private");
+  (void)parser.GetFragments("CFlags");
+  (void)parser.GetFragments("CFlags.private");
+  (void)parser.GetFragments("Libs");
+  (void)parser.GetFragments("Libs.private");
+  (void)parser.GetDependencies("Requires");
+  (void)parser.GetDependencies("Requires.private");
+  (void)parser.GetDependencies("Conflicts");
+  (void)parser.GetDependencies("Provides");
 
   return 0;
 }

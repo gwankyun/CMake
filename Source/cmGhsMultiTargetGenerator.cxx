@@ -32,10 +32,10 @@
 #include "cmSourceGroup.h"
 #include "cmStateDirectory.h"
 #include "cmStateSnapshot.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmGhsMultiTargetGenerator::cmGhsMultiTargetGenerator(cmGeneratorTarget* target)
@@ -61,7 +61,7 @@ void cmGhsMultiTargetGenerator::Generate()
 {
   // Determine type of target for this project
   switch (this->GeneratorTarget->GetType()) {
-    case cmStateEnums::EXECUTABLE: {
+    case cm::TargetType::EXECUTABLE: {
       // Get the name of the executable to generate.
       this->TargetNameReal =
         this->GeneratorTarget->GetExecutableNames(this->ConfigName).Real;
@@ -72,36 +72,36 @@ void cmGhsMultiTargetGenerator::Generate()
       }
       break;
     }
-    case cmStateEnums::STATIC_LIBRARY: {
+    case cm::TargetType::STATIC_LIBRARY: {
       this->TargetNameReal =
         this->GeneratorTarget->GetLibraryNames(this->ConfigName).Real;
       this->TagType = GhsMultiGpj::LIBRARY;
       break;
     }
-    case cmStateEnums::SHARED_LIBRARY: {
+    case cm::TargetType::SHARED_LIBRARY: {
       std::string msg =
         cmStrCat("add_library(<name> SHARED ...) not supported: ", this->Name);
       cmSystemTools::Message(msg);
       return;
     }
-    case cmStateEnums::OBJECT_LIBRARY: {
+    case cm::TargetType::OBJECT_LIBRARY: {
       this->TargetNameReal =
         this->GeneratorTarget->GetLibraryNames(this->ConfigName).Real;
       this->TagType = GhsMultiGpj::SUBPROJECT;
       break;
     }
-    case cmStateEnums::MODULE_LIBRARY: {
+    case cm::TargetType::MODULE_LIBRARY: {
       std::string msg =
         cmStrCat("add_library(<name> MODULE ...) not supported: ", this->Name);
       cmSystemTools::Message(msg);
       return;
     }
-    case cmStateEnums::UTILITY: {
+    case cm::TargetType::UTILITY: {
       this->TargetNameReal = this->GeneratorTarget->GetName();
       this->TagType = GhsMultiGpj::CUSTOM_TARGET;
       break;
     }
-    case cmStateEnums::GLOBAL_TARGET: {
+    case cm::TargetType::GLOBAL_TARGET: {
       this->TargetNameReal = this->GeneratorTarget->GetName();
       if (this->TargetNameReal ==
           this->GetGlobalGenerator()->GetInstallTargetName()) {
@@ -120,7 +120,7 @@ void cmGhsMultiTargetGenerator::Generate()
 
 void cmGhsMultiTargetGenerator::GenerateTarget()
 {
-  if (this->GeneratorTarget->GetType() == cmStateEnums::EXECUTABLE &&
+  if (this->GeneratorTarget->GetType() == cm::TargetType::EXECUTABLE &&
       !this->GeneratorTarget
          ->GetLinkerTypeProperty(
            this->GeneratorTarget->GetLinkerLanguage(this->ConfigName),
@@ -476,12 +476,12 @@ void cmGhsMultiTargetGenerator::WriteCustomCommandsHelper(
         // This command was specified as a path to a file in the
         // current directory.  Add a leading "./" so it can run
         // without the current directory being in the search path.
-        cmd = cmStrCat("./", cmd);
+        cmd = cmStrCat("./", std::move(cmd));
       }
       cmd = this->LocalGenerator->ConvertToOutputFormat(
         cmd, cmOutputConverter::SHELL);
       if (useCall) {
-        cmd = cmStrCat("call ", cmd);
+        cmd = cmStrCat("call ", std::move(cmd));
       }
       ccg.AppendArguments(c, cmd);
       cmdLines.push_back(std::move(cmd));
@@ -545,8 +545,8 @@ void cmGhsMultiTargetGenerator::WriteSources(std::ostream& fout_proj)
   std::map<std::string, std::vector<cmSourceFile*>> groupFiles;
   std::set<std::string> groupNames;
   for (cmSourceFile* sf : sources) {
-    cmSourceGroup const* sourceGroup =
-      this->LocalGenerator->FindSourceGroup(sf->ResolveFullPath());
+    cmSourceGroup const* sourceGroup = this->LocalGenerator->FindSourceGroup(
+      this->GeneratorTarget, sf, this->ConfigName);
     std::string gn = sourceGroup->GetFullName();
     groupFiles[gn].push_back(sf);
     groupNames.insert(std::move(gn));

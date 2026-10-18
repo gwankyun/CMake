@@ -68,4 +68,26 @@ CMake Warning \(author\) at [^
 
     -9223372036854775808
 
+This warning is for project developers\.  Use -Wno-author to suppress it\.
+
+CMake Warning \(author\) at [^
+]+/Tests/RunCMake/math/Overflow\.cmake:[0-9]+ \(math\):
+  signed integer overflow while incrementing:
+
+    9223372036854775807
+
+Call Stack \(most recent call first\):
+  [^
+]+/Tests/RunCMake/math/Overflow\.cmake:[0-9]+ \(inc_dec\)
+This warning is for project developers\.  Use -Wno-author to suppress it\.
+
+CMake Warning \(author\) at [^
+]+/Tests/RunCMake/math/Overflow\.cmake:[0-9]+ \(math\):
+  signed integer overflow while decrementing:
+
+    -9223372036854775808
+
+Call Stack \(most recent call first\):
+  [^
+]+/Tests/RunCMake/math/Overflow\.cmake:[0-9]+ \(inc_dec\)
 This warning is for project developers\.  Use -Wno-author to suppress it\.$

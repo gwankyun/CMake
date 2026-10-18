@@ -24,7 +24,8 @@
               "type": "integer",
               "enum": [
                 0,
-                1
+                1,
+                2
               ]
             }
           },
@@ -65,6 +66,7 @@
         "enum": [
           "staticSystemInformation",
           "dynamicSystemInformation",
+          "processMetrics",
           "compileTrace",
           "cdashSubmit",
           "cdashVerbose",

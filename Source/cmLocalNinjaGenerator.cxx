@@ -25,6 +25,8 @@
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
 #include "cmGlobalNinjaGenerator.h"
+#include "cmInstrumentation.h"
+#include "cmInstrumentationQuery.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
@@ -35,10 +37,10 @@
 #include "cmRulePlaceholderExpander.h"
 #include "cmSourceFile.h"
 #include "cmState.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -111,7 +113,7 @@ void cmLocalNinjaGenerator::Generate()
       if (target->Target->IsPerConfig()) {
         for (auto const& config : this->GetConfigNames()) {
           tg->Generate(config);
-          if (target->GetType() == cmStateEnums::GLOBAL_TARGET &&
+          if (target->GetType() == cm::TargetType::GLOBAL_TARGET &&
               this->GetGlobalGenerator()->IsMultiConfig()) {
             cmNinjaBuild phonyAlias("phony");
             this->GetGlobalNinjaGenerator()->AppendTargetOutputs(
@@ -124,7 +126,7 @@ void cmLocalNinjaGenerator::Generate()
               phonyAlias);
           }
         }
-        if (target->GetType() == cmStateEnums::GLOBAL_TARGET &&
+        if (target->GetType() == cm::TargetType::GLOBAL_TARGET &&
             this->GetGlobalGenerator()->IsMultiConfig()) {
           if (!this->GetGlobalNinjaGenerator()->GetDefaultConfigs().empty()) {
             cmNinjaBuild phonyAlias("phony");
@@ -438,7 +440,7 @@ std::string cmLocalNinjaGenerator::WriteCommandScript(
   scriptPath += '/';
   scriptPath += customStep;
   if (this->GlobalGenerator->IsMultiConfig()) {
-    scriptPath += cmStrCat('-', commandConfig);
+    scriptPath = cmStrCat(std::move(scriptPath), '-', commandConfig);
   }
 #ifdef _WIN32
   scriptPath += ".bat";
@@ -476,6 +478,13 @@ std::string cmLocalNinjaGenerator::WriteCommandScript(
             "echo Batch file failed at line %FAIL_LINE% "
             "with errorcode %ERRORLEVEL%\n"
             "exit /b %ERROR_CODE%";
+#elif !defined(CMAKE_BOOTSTRAP)
+  if (this->GetCMakeInstance()->GetInstrumentation()->HasOption(
+        cmInstrumentationQuery::Option::ProcessMetrics)) {
+    // Prevent shell exec optimization from passing accumulated child resource
+    // usage to the final instrumentation wrapper.
+    script << ":\n";
+  }
 #endif
 
   return scriptPath;
@@ -500,7 +509,7 @@ bool RuleNeedsCMD(std::string const& cmd)
 std::string cmLocalNinjaGenerator::BuildCommandLine(
   std::vector<std::string> const& cmdLines, std::string const& outputConfig,
   std::string const& commandConfig, std::string const& customStep,
-  cmGeneratorTarget const* target) const
+  cmGeneratorTarget const* target, CommandLineContext context) const
 {
   // If we have no commands but we need to build a command anyway, use noop.
   // This happens when building a POST_BUILD value for link targets that
@@ -540,6 +549,7 @@ std::string cmLocalNinjaGenerator::BuildCommandLine(
 
   std::ostringstream cmd;
 #ifdef _WIN32
+  (void)context;
   cmGlobalNinjaGenerator const* gg = this->GetGlobalNinjaGenerator();
   bool const needCMD =
     cmdLines.size() > 1 || (customStep.empty() && RuleNeedsCMD(cmdLines[0]));
@@ -567,6 +577,18 @@ std::string cmLocalNinjaGenerator::BuildCommandLine(
     }
     cmd << *li;
   }
+#  ifndef CMAKE_BOOTSTRAP
+  if (context == CommandLineContext::Build &&
+      this->GetCMakeInstance()->GetInstrumentation()->HasOption(
+        cmInstrumentationQuery::Option::ProcessMetrics)) {
+    // Prevent shell exec optimization from passing accumulated child resource
+    // usage to the final instrumentation wrapper. Keep this build-only shell
+    // syntax out of compile_commands.json, for compiler tooling support
+    cmd << " && :";
+  }
+#  else
+  (void)context;
+#  endif
 #endif
   return cmd.str();
 }
@@ -901,18 +923,23 @@ std::string cmLocalNinjaGenerator::MakeCustomLauncher(
 
   std::string output;
   std::vector<std::string> const& outputs = ccg.GetOutputs();
-  for (size_t i = 0; i < outputs.size(); ++i) {
-    output = cmStrCat(output,
-                      this->ConvertToOutputFormat(
-                        ccg.GetWorkingDirectory().empty()
-                          ? this->MaybeRelativeToCurBinDir(outputs[i])
-                          : outputs[i],
-                        cmOutputConverter::SHELL));
-    if (i != outputs.size() - 1) {
-      output = cmStrCat(output, ',');
-    }
+  for (std::string const& ccgOut : outputs) {
+    output = cmStrCat(
+      std::move(output),
+      this->ConvertToOutputFormat(ccg.GetWorkingDirectory().empty()
+                                    ? this->MaybeRelativeToCurBinDir(ccgOut)
+                                    : ccgOut,
+                                  cmOutputConverter::SHELL),
+      ',');
+  }
+  if (!output.empty()) {
+    output.pop_back();
   }
   vars.Output = output.c_str();
+
+  std::string filePathWithOutput = ccg.StoreContentToFile(output);
+  vars.FilePathWithOutput = filePathWithOutput.c_str();
+
   vars.Role = ccg.GetCC().GetRole().c_str();
   vars.CMTargetName = ccg.GetCC().GetTarget().c_str();
   vars.Config = ccg.GetOutputConfig().c_str();

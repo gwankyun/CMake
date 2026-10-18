@@ -9,11 +9,14 @@ CMAKE_<LANG>_STANDARD
 * :variable:`CMAKE_HIP_STANDARD`
 * :variable:`CMAKE_OBJC_STANDARD`
 * :variable:`CMAKE_OBJCXX_STANDARD`
+* :variable:`CMAKE_SYCL_CXX_STANDARD` (C++ standard for SYCL compilations)
+
+.. note::
+   SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 Default values for :prop_tgt:`<LANG>_STANDARD` target properties if set when a
 target is created.
 
 For supported CMake versions see the respective pages.
 
-See the :manual:`cmake-compile-features(7)` manual for information on
-compile features and a list of supported compilers.
+.. include:: ../include/COMPILE_FEATURES_NOTE.rst

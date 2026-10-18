@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <cm/optional>
+
 #include "cmCTest.h"
 #include "cmCTestMultiProcessHandler.h"
 #include "cmCTestTestHandler.h"
@@ -28,10 +30,13 @@ class cmCTestRunTest
 public:
   explicit cmCTestRunTest(cmCTestMultiProcessHandler& multiHandler, int index);
 
-  void SetNumberOfRuns(int n)
+  // Report this run as run `number` of `count` in the test's "(run N/M)"
+  // suffix.  A test repeating on its own starts at run 1 and counts up
+  // itself; a test repeated by its fixture is told which run it is.
+  void SetRunNumber(int number, int count)
   {
-    this->NumberOfRunsLeft = n;
-    this->NumberOfRunsTotal = n;
+    this->RunNumber = number;
+    this->RunCount = count;
   }
 
   void SetRepeatMode(cmCTest::Repeat r) { this->RepeatMode = r; }
@@ -71,6 +76,7 @@ public:
   {
     bool Passed = false;
     bool StopTimePassed = false;
+    int TestStatus = cmCTestTestHandler::NOT_RUN;
   };
 
   // launch the test process, return whether it started correctly
@@ -107,6 +113,19 @@ public:
   }
 
 private:
+  struct TimeValue
+  {
+    long tv_sec;
+    long tv_usec;
+  };
+
+  struct ProcessMetrics
+  {
+    TimeValue ru_utime{};
+    TimeValue ru_stime{};
+    long ru_maxrss = 0;
+  };
+
   bool NeedsToRepeat();
   void ParseOutputForMeasurements();
   void ExeNotFound(std::string exe);
@@ -115,6 +134,7 @@ private:
   // Run post processing of the process output for MemCheck
   void MemCheckPostProcess();
   std::string GenerateLLVMPath(std::string fileString);
+  std::string GetTestMetricsFile() const;
   void CollectLLVMCoverage();
   void SetupResourcesEnvironment(cmEnvironment& env);
 
@@ -134,14 +154,19 @@ private:
   std::string StartTime;
   std::string ActualCommand;
   std::vector<std::string> Arguments;
+  std::string InstrumentationCommand;
+  std::vector<std::string> InstrumentationArguments;
+  cm::optional<ProcessMetrics> ProcessResourceUsage;
   bool UseAllocatedResources = false;
   std::vector<std::map<
     std::string, std::vector<cmCTestMultiProcessHandler::ResourceAllocation>>>
     AllocatedResources;
+  // Never unless this test repeats itself.  A test repeated by its fixture
+  // leaves this Never; the fixture decides when to repeat.
   cmCTest::Repeat RepeatMode = cmCTest::Repeat::Never;
-  int NumberOfRunsLeft = 1;  // default to 1 run of the test
-  int NumberOfRunsTotal = 1; // default to 1 run of the test
-  bool RunAgain = false;     // default to not having to run again
+  int RunNumber = 1; // which run of the test this is
+  int RunCount = 1;  // how many runs it may be given
+  bool RunAgain = false;
   bool UseLLVMCov = false;
   size_t TotalNumberOfTests;
 };

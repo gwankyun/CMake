@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file LICENSE.rst or https://cmake.org/licensing for details.
 
-subdirs(Doxygen)
+add_subdirectory(Doxygen)
 
 if (CMake_DOC_ARTIFACT_PREFIX)
   # Undocumented option for CI usage to reuse already

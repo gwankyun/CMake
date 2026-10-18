@@ -15,7 +15,6 @@
 #include <cm/string_view>
 #include <cmext/algorithm>
 
-#include <cm3p/json/reader.h>
 #include <cm3p/json/version.h>
 #include <cm3p/json/writer.h>
 #include <cm3p/uv.h>
@@ -29,8 +28,10 @@
 #include "cmCryptoHash.h"
 #include "cmFileLock.h"
 #include "cmFileLockResult.h"
+#include "cmGeneratedFileStream.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
+#include "cmInstrumentationInterrupt.h"
 #include "cmInstrumentationQuery.h"
 #include "cmJSONState.h"
 #include "cmList.h"
@@ -38,6 +39,7 @@
 #include "cmState.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmTimestamp.h"
 #include "cmUVProcessChain.h"
 #include "cmValue.h"
@@ -48,6 +50,7 @@ using LoadQueriesAfter = cmInstrumentation::LoadQueriesAfter;
 namespace {
 cmInstrumentationQuery::Version latestDataVersion =
   cmInstrumentationQuery::LatestDataVersion();
+
 }
 
 std::map<std::string, std::string> cmInstrumentation::cdashSnippetsMap = {
@@ -298,7 +301,7 @@ void cmInstrumentation::RemoveOldFiles(std::string const& dataSubdir)
   std::string oldIndex =
     this->GetFileByTimestamp(LatestOrOldest::Oldest, "index");
   if (!oldIndex.empty()) {
-    oldIndex = cmStrCat(this->dataDir, "/index/", oldIndex);
+    oldIndex = cmStrCat(this->dataDir, "/index/", std::move(oldIndex));
   }
   if (cmSystemTools::FileExists(dataSubdirPath)) {
     std::string latestFile =
@@ -534,28 +537,22 @@ void cmInstrumentation::InsertTimingData(
 
 Json::Value cmInstrumentation::ReadJsonSnippet(std::string const& file_name)
 {
-  Json::CharReaderBuilder builder;
-  builder["collectComments"] = false;
-  cmsys::ifstream ftmp(
-    cmStrCat(this->timingDirv1, "/data/", file_name).c_str());
   Json::Value snippetData;
-  builder["collectComments"] = false;
-
-  if (!Json::parseFromStream(builder, ftmp, &snippetData, nullptr)) {
+  std::string snippetPath = cmStrCat(this->timingDirv1, "/data/", file_name);
+  cmJSONState parseState(snippetPath, &snippetData);
+  if (!parseState.errors.empty()) {
 #if JSONCPP_VERSION_HEXA < 0x01070300
     snippetData = Json::Value::null;
 #else
     snippetData = Json::Value::nullSingleton();
 #endif
   }
-
-  ftmp.close();
   return snippetData;
 }
 
 void cmInstrumentation::WriteInstrumentationJson(
   cmInstrumentationQuery::Version version, Json::Value& root,
-  std::string const& subdir, std::string const& file_name)
+  std::string const& subdir, std::string const& file_name, Atomic atomic)
 {
   root["version"] = Json::objectValue;
   root["version"]["major"] = version.Major;
@@ -567,8 +564,28 @@ void cmInstrumentation::WriteInstrumentationJson(
     std::unique_ptr<Json::StreamWriter>(wbuilder.newStreamWriter());
   std::string const& directory = cmStrCat(this->timingDirv1, '/', subdir);
   cmSystemTools::MakeDirectory(directory);
+  std::string const file_path = cmStrCat(directory, '/', file_name);
 
-  cmsys::ofstream ftmp(cmStrCat(directory, '/', file_name).c_str());
+  if (atomic == Atomic::Yes) {
+    // Write to a temporary file and atomically rename it into place, so that
+    // an interrupt during the write cannot leave a truncated snippet.
+    cmGeneratedFileStream ftmp(file_path);
+    if (!ftmp) {
+      throw std::runtime_error(std::string("Unable to open: ") + file_name);
+    }
+    try {
+      JsonWriter->write(root, &ftmp);
+      ftmp << "\n";
+      // The atomic rename happens when the stream is closed/destroyed.
+    } catch (std::ios_base::failure& fail) {
+      cmSystemTools::Error(cmStrCat("Failed to write JSON: ", fail.what()));
+    } catch (...) {
+      cmSystemTools::Error("Error writing JSON output for instrumentation.");
+    }
+    return;
+  }
+
+  cmsys::ofstream ftmp(file_path.c_str());
   if (!ftmp.good()) {
     throw std::runtime_error(std::string("Unable to open: ") + file_name);
   }
@@ -589,7 +606,8 @@ std::string cmInstrumentation::InstrumentTest(
   std::vector<std::string> const& args, int64_t result,
   std::chrono::steady_clock::time_point steadyStart,
   std::chrono::system_clock::time_point systemStart, std::string config,
-  cm::optional<std::string> output)
+  cm::optional<std::string> output,
+  cm::optional<ProcessMetrics> processMetrics)
 {
   // Store command info
   Json::Value root(this->preTestStats);
@@ -603,6 +621,11 @@ std::string cmInstrumentation::InstrumentTest(
   if (this->HasOption(cmInstrumentationQuery::Option::CaptureOutput)) {
     root["stdout"] = output ? *output : "";
     root["stderr"] = "";
+  }
+  if (this->HasOption(cmInstrumentationQuery::Option::ProcessMetrics)) {
+    root["processMetrics"] = processMetrics
+      ? cmInstrumentation::ResourceUsageToJSON(*processMetrics)
+      : Json::nullValue;
   }
 
   // Post-Command
@@ -720,6 +743,16 @@ int cmInstrumentation::InstrumentCommand(
       root["stderr"] = *callbackResult.StdErr;
     }
   }
+  bool const supportsProcessMetrics = command_type == "compile" ||
+    command_type == "link" || command_type == "custom" ||
+    command_type == "install" || command_type == "test";
+  if (this->HasOption(cmInstrumentationQuery::Option::ProcessMetrics) &&
+      supportsProcessMetrics) {
+    root["processMetrics"] = callbackResult.ChildResourceUsage
+      ? cmInstrumentation::ResourceUsageToJSON(
+          *callbackResult.ChildResourceUsage)
+      : Json::nullValue;
+  }
 
   // Exit early if configure didn't generate a query
   if (reloadQueriesAfterCommand == LoadQueriesAfter::Yes) {
@@ -746,6 +779,15 @@ int cmInstrumentation::InstrumentCommand(
 
   // See SpawnBuildDaemon(); this data is currently meaningless for build.
   root["result"] = command_type == "build" ? Json::nullValue : ret;
+
+  // If the command was interrupted (e.g. by Ctrl+C), record the signal number
+  // that stopped it, so consumers can distinguish an interrupted command from
+  // one that ran to completion.  Omitted when no interrupt occurred; only a
+  // command wrapped by HandleInterrupt can observe a pending signal here.
+  int sig = cmInstrumentationInterrupt::PendingInterruptSignal();
+  if (sig != 0) {
+    root["interruptSignal"] = sig;
+  }
 
   // Output Sizes
   if (root.isMember("outputs")) {
@@ -808,7 +850,15 @@ int cmInstrumentation::InstrumentCommand(
       }
       this->configureSnippetData.clear();
     }
-    this->WriteInstrumentationJson(latestDataVersion, root, "data", file_name);
+    // Write the cmakeBuild/cmakeInstall/ctest envelope atomically (temp file +
+    // rename).  This is the snippet flushed while unwinding from a user
+    // interrupt, where a second Ctrl+C could otherwise truncate it mid-write;
+    // the atomic write guarantees it is either absent or complete.  Per-step
+    // snippets are never flushed under interrupt and are left non-atomic.
+    bool const atomicEnvelope = command_type == "cmakeBuild" ||
+      command_type == "cmakeInstall" || command_type == "ctest";
+    this->WriteInstrumentationJson(latestDataVersion, root, "data", file_name,
+                                   atomicEnvelope ? Atomic::Yes : Atomic::No);
   }
   return ret;
 }
@@ -817,15 +867,15 @@ std::string cmInstrumentation::GetCommandStr(
   std::vector<std::string> const& args)
 {
   std::string command_str;
-  for (size_t i = 0; i < args.size(); ++i) {
-    if (args[i].find(' ') != std::string::npos) {
-      command_str = cmStrCat(command_str, '"', args[i], '"');
+  for (std::string const& arg : args) {
+    if (arg.find(' ') != std::string::npos) {
+      command_str = cmStrCat(std::move(command_str), '"', arg, "\" ");
     } else {
-      command_str = cmStrCat(command_str, args[i]);
+      command_str = cmStrCat(std::move(command_str), arg, ' ');
     }
-    if (i < args.size() - 1) {
-      command_str = cmStrCat(command_str, ' ');
-    }
+  }
+  if (!command_str.empty()) {
+    command_str.pop_back();
   }
   return command_str;
 }
@@ -859,14 +909,13 @@ std::string cmInstrumentation::ComputeSuffixTime(
   return ss.str();
 }
 
-bool cmInstrumentation::IsInstrumentableTargetType(
-  cmStateEnums::TargetType type)
+bool cmInstrumentation::IsInstrumentableTargetType(cm::TargetType type)
 {
-  return type == cmStateEnums::TargetType::EXECUTABLE ||
-    type == cmStateEnums::TargetType::SHARED_LIBRARY ||
-    type == cmStateEnums::TargetType::STATIC_LIBRARY ||
-    type == cmStateEnums::TargetType::MODULE_LIBRARY ||
-    type == cmStateEnums::TargetType::OBJECT_LIBRARY;
+  return type == cm::TargetType::EXECUTABLE ||
+    type == cm::TargetType::SHARED_LIBRARY ||
+    type == cm::TargetType::STATIC_LIBRARY ||
+    type == cm::TargetType::MODULE_LIBRARY ||
+    type == cm::TargetType::OBJECT_LIBRARY;
 }
 
 /*
@@ -954,7 +1003,7 @@ int cmInstrumentation::CollectTimingAfterBuild(int ppid)
   int ret = this->InstrumentCommand(
     "build", {},
     [waitForBuild]() -> cmInstrumentation::CommandResult {
-      return { waitForBuild(), cm::nullopt, cm::nullopt };
+      return { waitForBuild(), cm::nullopt, cm::nullopt, cm::nullopt };
     },
     cm::nullopt, cm::nullopt, LoadQueriesAfter::Yes);
   this->buildLock.Release();
@@ -1083,7 +1132,9 @@ std::string cmInstrumentation::GetCompileTraceFile(
 {
   cm::string_view const prefix = "-ftime-trace=";
   std::string traceFile;
-  for (auto it = command.rbegin(); it != command.rend(); ++it) {
+  std::vector<std::string> fullCommand =
+    cmSystemTools::HandleResponseFile(command.cbegin(), command.cend());
+  for (auto it = fullCommand.rbegin(); it != fullCommand.rend(); ++it) {
     std::string const& arg = *it;
     if (cmHasPrefix(arg, prefix)) {
       traceFile = arg.substr(prefix.size());
@@ -1215,6 +1266,17 @@ void cmInstrumentation::WriteTraceFile(Json::Value const& index,
   } catch (...) {
     cmSystemTools::Error("Error writing Google trace output.");
   }
+}
+
+Json::Value cmInstrumentation::ResourceUsageToJSON(ProcessMetrics const& usage)
+{
+  Json::Value root(Json::objectValue);
+  root["maxRSS"] = static_cast<Json::Value::UInt64>(usage.ru_maxrss);
+  root["userTime"] = static_cast<Json::Value::UInt64>(
+    usage.ru_utime.tv_sec * 1000000ULL + usage.ru_utime.tv_usec);
+  root["systemTime"] = static_cast<Json::Value::UInt64>(
+    usage.ru_stime.tv_sec * 1000000ULL + usage.ru_stime.tv_usec);
+  return root;
 }
 
 Json::Value cmInstrumentation::BuildTraceEvent(std::vector<uint64_t>& workers,

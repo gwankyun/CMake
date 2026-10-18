@@ -87,7 +87,7 @@ bool cmCTestCVS::UpdateImpl()
 
   // Specify the start time for nightly testing.
   if (this->CTest->GetTestModel() == cmCTest::NIGHTLY) {
-    args.push_back("-D" + this->GetNightlyTime() + " UTC");
+    args.push_back(cmStrCat("-D", this->GetNightlyTime(), " UTC"));
   }
 
   // Run "cvs update" to update the work tree.
@@ -217,7 +217,7 @@ std::string cmCTestCVS::ComputeBranchFlag(std::string const& dir)
 void cmCTestCVS::LoadRevisions(std::string const& file, char const* branchFlag,
                                std::vector<Revision>& revisions)
 {
-  cmCTestLog(this->CTest, HANDLER_OUTPUT, "." << std::flush);
+  cmCTestLog(this->CTest, HANDLER_OUTPUT, '.');
 
   // Run "cvs log" to get revisions of this file on this branch.
   std::string cvs = this->CommandLineTool;
@@ -241,7 +241,7 @@ void cmCTestCVS::WriteXMLDirectory(cmXMLWriter& xml, std::string const& path,
   // Load revisions and write an entry for each file in this directory.
   std::vector<Revision> revisions;
   for (auto const& fi : dir) {
-    std::string full = path + slash + fi.first;
+    std::string full = cmStrCat(path, slash, fi.first);
 
     // Load two real or unknown revisions.
     revisions.clear();
@@ -264,14 +264,13 @@ bool cmCTestCVS::WriteXMLUpdates(cmXMLWriter& xml)
 {
   cmCTestLog(this->CTest, HANDLER_OUTPUT,
              "   Gathering version information (one . per updated file):\n"
-             "    "
-               << std::flush);
+             "    ");
 
   for (auto const& d : this->Dirs) {
     this->WriteXMLDirectory(xml, d.first, d.second);
   }
 
-  cmCTestLog(this->CTest, HANDLER_OUTPUT, std::endl);
+  cmCTestLog(this->CTest, HANDLER_OUTPUT, '\n');
 
   return true;
 }

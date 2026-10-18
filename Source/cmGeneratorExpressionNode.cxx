@@ -12,7 +12,6 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <sstream>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
@@ -29,12 +28,14 @@
 #include "cmCMakePath.h"
 #include "cmCMakeString.hxx"
 #include "cmComputeLinkInformation.h"
+#include "cmDirectoryPropertyHelper.h"
 #include "cmGenExContext.h"
 #include "cmGenExEvaluation.h"
 #include "cmGeneratorExpression.h"
 #include "cmGeneratorExpressionDAGChecker.h"
 #include "cmGeneratorExpressionEvaluator.h"
 #include "cmGeneratorFileSet.h"
+#include "cmGeneratorRule.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
 #include "cmLinkItem.h"
@@ -46,6 +47,7 @@
 #include "cmOutputConverter.h"
 #include "cmPolicies.h"
 #include "cmRange.h"
+#include "cmRule.h"
 #include "cmSourceFile.h"
 #include "cmStandardLevelResolver.h"
 #include "cmState.h"
@@ -54,10 +56,30 @@
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
+#include "cmUnreachable.h"
 #include "cmValue.h"
 #include "cmake.h"
 
 namespace {
+
+bool IsValidPropertyName(std::string const& propertyName)
+{
+  static cmsys::RegularExpression propertyNameValidator("^[A-Za-z0-9_:]+$");
+
+  return propertyNameValidator.find(propertyName);
+}
+bool IsValidPropertyName(cm::GenEx::Evaluation* eval,
+                         GeneratorExpressionContent const* content,
+                         std::string const& propertyName)
+{
+  if (!IsValidPropertyName(propertyName)) {
+    reportError(eval, content->GetOriginalExpression(),
+                "Property name not supported.");
+    return false;
+  }
+  return true;
+}
 
 bool HasKnownObjectFileLocation(cm::GenEx::Evaluation* eval,
                                 GeneratorExpressionContent const* content,
@@ -67,14 +89,12 @@ bool HasKnownObjectFileLocation(cm::GenEx::Evaluation* eval,
   std::string reason;
   if (!eval->EvaluateForBuildsystem &&
       !target->Target->HasKnownObjectFileLocation(&reason)) {
-    std::ostringstream e;
-    e << "The evaluation of the " << genex
-      << " generator expression "
-         "is only suitable for consumption by CMake (limited"
-      << reason
-      << ").  "
-         "It is not suitable for writing out elsewhere.";
-    reportError(eval, content->GetOriginalExpression(), e.str());
+    reportError(
+      eval, content->GetOriginalExpression(),
+      cmStrCat("The evaluation of the ", genex,
+               " generator expression is only suitable for consumption by "
+               "CMake (limited",
+               reason, ").  It is not suitable for writing out elsewhere."));
     return false;
   }
   return true;
@@ -104,6 +124,94 @@ std::string cmGeneratorExpressionNode::EvaluateDependentExpression(
   if (cge->GetHadLinkLanguageSensitiveCondition()) {
     eval->HadLinkLanguageSensitiveCondition = true;
   }
+  return result;
+}
+
+// Re-evaluate the unevaluated <body> subtree of a binding operation with the
+// given operands bound (accessible as $<_0>, $<_1>, ...).  A fresh Evaluation
+// is built from a copied, mutated Context so that nested binding operations
+// can shadow the operands and restore them on exit.
+static std::string EvaluateBodyWithBoundOperands(
+  cmGeneratorExpressionEvaluatorVector const& bodyExpr,
+  std::vector<std::string> operands, cm::GenEx::Evaluation* eval,
+  cmGeneratorExpressionDAGChecker* dagChecker)
+{
+  cm::GenEx::Context elemContext = eval->Context; // copy
+  elemContext.SetBoundOperands(std::move(operands));
+  cm::GenEx::Evaluation elemEval(
+    elemContext, eval->Quiet, eval->HeadTarget, eval->CurrentTarget,
+    eval->EvaluateForBuildsystem, eval->Backtrace);
+
+  std::string result;
+  for (auto const& pExprEval : bodyExpr) {
+    result += pExprEval->Evaluate(&elemEval, dagChecker);
+    if (elemEval.HadError) {
+      eval->HadError = true;
+      return std::string{};
+    }
+  }
+  eval->HadContextSensitiveCondition |= elemEval.HadContextSensitiveCondition;
+  eval->HadHeadSensitiveCondition |= elemEval.HadHeadSensitiveCondition;
+  eval->HadLinkLanguageSensitiveCondition |=
+    elemEval.HadLinkLanguageSensitiveCondition;
+  eval->DependTargets.insert(elemEval.DependTargets.begin(),
+                             elemEval.DependTargets.end());
+  eval->AllTargets.insert(elemEval.AllTargets.begin(),
+                          elemEval.AllTargets.end());
+  eval->SeenTargetProperties.insert(elemEval.SeenTargetProperties.begin(),
+                                    elemEval.SeenTargetProperties.end());
+  eval->SourceSensitiveTargets.insert(elemEval.SourceSensitiveTargets.begin(),
+                                      elemEval.SourceSensitiveTargets.end());
+  for (auto const& entry : elemEval.MaxLanguageStandard) {
+    eval->MaxLanguageStandard[entry.first].insert(entry.second.begin(),
+                                                  entry.second.end());
+  }
+  return result;
+}
+
+static std::string EvaluateBodyWithBoundOperand(
+  cmGeneratorExpressionEvaluatorVector const& bodyExpr,
+  std::string const& operand, cm::GenEx::Evaluation* eval,
+  cmGeneratorExpressionDAGChecker* dagChecker)
+{
+  return EvaluateBodyWithBoundOperands(bodyExpr, { operand }, eval,
+                                       dagChecker);
+}
+
+// Evaluate `predicateBody` once per element of `list`, binding `$<_0>` to the
+// element (reusing EvaluateBodyWithBoundOperand).  Each result must be exactly
+// "0" or "1".  Returns the per-element boolean mask, or cm::nullopt after
+// reporting an error (non-boolean result, or a failure inside the body).
+static cm::optional<std::vector<bool>> EvaluatePredicateMask(
+  cmGeneratorExpressionEvaluatorVector const& predicateBody,
+  cmList const& list, cm::string_view subCommand, cm::GenEx::Evaluation* eval,
+  GeneratorExpressionContent const* content,
+  cmGeneratorExpressionDAGChecker* dagChecker)
+{
+  cm::optional<std::vector<bool>> result;
+  std::vector<bool> mask;
+  mask.reserve(list.size());
+  for (auto const& element : list) {
+    std::string r =
+      EvaluateBodyWithBoundOperand(predicateBody, element, eval, dagChecker);
+    if (eval->HadError) {
+      return result;
+    }
+    if (r == "1") {
+      mask.push_back(true);
+    } else if (r == "0") {
+      mask.push_back(false);
+    } else {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("sub-command ", subCommand,
+                 ", PREDICATE body must evaluate to \"0\" or \"1\", but "
+                 "evaluated to \"",
+                 r, "\"."));
+      return result;
+    }
+  }
+  result = std::move(mask);
   return result;
 }
 
@@ -140,6 +248,46 @@ static const struct OneNode : public cmGeneratorExpressionNode
     return parameters.front();
   }
 } oneNode;
+
+struct BoundOperandNode : public cmGeneratorExpressionNode
+{
+  explicit BoundOperandNode(std::size_t index)
+    : Index(index)
+  {
+  }
+
+  int NumExpectedParameters() const override { return 0; }
+
+  std::string Evaluate(
+    std::vector<std::string> const& /*parameters*/,
+    cm::GenEx::Evaluation* eval, GeneratorExpressionContent const* content,
+    cmGeneratorExpressionDAGChecker* /*dagChecker*/) const override
+  {
+    if (!eval->Context.HasBoundOperand(this->Index)) {
+      std::size_t const count = eval->Context.BoundOperandCount();
+      if (count == 0) {
+        reportError(eval, content->GetOriginalExpression(),
+                    cmStrCat("$<_", this->Index,
+                             "> may only be used inside the body of a binding "
+                             "operation."));
+      } else {
+        reportError(
+          eval, content->GetOriginalExpression(),
+          cmStrCat(
+            "$<_", this->Index,
+            "> is out of range for the current binding operation, which "
+            "binds only ",
+            count, " operand(s) (maximum $<_", count - 1, ">)."));
+      }
+      return std::string();
+    }
+    return eval->Context.GetBoundOperand(this->Index);
+  }
+
+  std::size_t Index;
+};
+static BoundOperandNode const boundOperandNode0{ 0 };
+static BoundOperandNode const boundOperandNode1{ 1 };
 
 static const struct OneNode buildInterfaceNode;
 
@@ -179,10 +327,9 @@ struct BooleanOpNode : public cmGeneratorExpressionNode
         return this->failureVal;
       }
       if (param != this->successVal) {
-        std::ostringstream e;
-        e << "Parameters to $<" << this->op;
-        e << "> must resolve to either '0' or '1'.";
-        reportError(eval, content->GetOriginalExpression(), e.str());
+        reportError(eval, content->GetOriginalExpression(),
+                    cmStrCat("Parameters to $<", this->op,
+                             "> must resolve to either '0' or '1'."));
         return std::string();
       }
     }
@@ -228,6 +375,30 @@ static const struct BoolNode : public cmGeneratorExpressionNode
     return !cmIsOff(parameters.front()) ? "1" : "0";
   }
 } boolNode;
+
+static const struct ArgsNode : public cmGeneratorExpressionNode
+{
+  ArgsNode() {} // NOLINT(modernize-use-equals-default)
+
+  int NumExpectedParameters() const override { return ZeroOrMoreParameters; }
+
+  std::string Evaluate(std::vector<std::string> const& parameters,
+                       cm::GenEx::Evaluation*,
+                       GeneratorExpressionContent const*,
+                       cmGeneratorExpressionDAGChecker*) const override
+  {
+    if (parameters.empty()) {
+      return std::string{};
+    }
+    if (parameters.size() == 1 && parameters[0].empty()) {
+      return parameters.front();
+    }
+
+    cmList args{ parameters.begin(), parameters.end(),
+                 cmList::ExpandElements::Yes, cmList::EmptyElements::Yes };
+    return cmStrCat("<ARGS>", args.join(","_s), "</ARGS>");
+  }
+} argsNode;
 
 static const struct IfNode : public cmGeneratorExpressionNode
 {
@@ -363,8 +534,8 @@ static const struct EqualNode : public cmGeneratorExpressionNode
     for (int i = 0; i < 2; ++i) {
       if (!ParameterToLong(parameters[i].c_str(), &numbers[i])) {
         reportError(eval, content->GetOriginalExpression(),
-                    "$<EQUAL> parameter " + parameters[i] +
-                      " is not a valid integer.");
+                    cmStrCat("$<EQUAL> parameter ", parameters[i],
+                             " is not a valid integer."));
         return {};
       }
     }
@@ -633,10 +804,9 @@ static const struct TargetGenexEvalNode : public GenexEvaluator
     auto const* target =
       eval->Context.LG->FindGeneratorTargetToUse(targetName);
     if (!target) {
-      std::ostringstream e;
-      e << "$<TARGET_GENEX_EVAL:tgt, ...> target \"" << targetName
-        << "\" not found.";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("$<TARGET_GENEX_EVAL:tgt, ...> target \"",
+                           targetName, "\" not found."));
       return std::string();
     }
 
@@ -832,6 +1002,25 @@ bool GetNumericArguments(
     indexes.push_back(index);
   }
   return true;
+}
+
+// CMP0223: an empty path used to be a prefix of every path.
+bool IsPrefixCMP0223(cmCMakePath const& prefix, cm::GenEx::Evaluation* eval)
+{
+  if (!prefix.IsEmpty()) {
+    return false;
+  }
+  cmLocalGenerator const* const lg = eval->Context.LG;
+  switch (lg->GetPolicyStatus(cmPolicies::CMP0223)) {
+    case cmPolicies::WARN:
+      lg->IssuePolicyWarning(cmPolicies::CMP0223, {}, {}, eval->Backtrace);
+      CM_FALLTHROUGH;
+    case cmPolicies::OLD:
+      return true;
+    case cmPolicies::NEW:
+      break;
+  }
+  return false;
 }
 
 bool CheckPathParametersEx(cm::GenEx::Evaluation* eval,
@@ -1078,12 +1267,14 @@ static const struct PathNode : public cmGeneratorExpressionNode
             if (CheckPathParametersEx(
                   ev, cnt, normalize ? "IS_PREFIX,NORMALIZE"_s : "IS_PREFIX"_s,
                   args.size(), 2)) {
+              cmCMakePath prefix{ args[0] };
+              cmCMakePath value{ args[1] };
               if (normalize) {
-                return ToString(cmCMakePath{ args[0] }.Normal().IsPrefix(
-                  cmCMakePath{ args[1] }.Normal()));
+                prefix = prefix.Normal();
+                value = value.Normal();
               }
-              return ToString(
-                cmCMakePath{ args[0] }.IsPrefix(cmCMakePath{ args[1] }));
+              return ToString(prefix.IsPrefix(value) ||
+                              IsPrefixCMP0223(prefix, ev));
             }
             return std::string{};
           } },
@@ -1858,6 +2049,437 @@ inline cmList GetList(std::string const& list)
 {
   return list.empty() ? cmList{} : cmList{ list, cmList::EmptyElements::Yes };
 }
+
+struct TransformActionDescriptor
+{
+  cmList::TransformAction Action;
+  int Arity;
+};
+
+// Look up a canned TRANSFORM action by name (APPLY is handled separately).
+cm::optional<TransformActionDescriptor> FindTransformActionDescriptor(
+  std::string const& name)
+{
+  static std::unordered_map<cm::string_view, TransformActionDescriptor> const
+    descriptors{
+      { "APPEND"_s, { cmList::TransformAction::APPEND, 1 } },
+      { "PREPEND"_s, { cmList::TransformAction::PREPEND, 1 } },
+      { "TOUPPER"_s, { cmList::TransformAction::TOUPPER, 0 } },
+      { "TOLOWER"_s, { cmList::TransformAction::TOLOWER, 0 } },
+      { "STRIP"_s, { cmList::TransformAction::STRIP, 0 } },
+      { "REPLACE"_s, { cmList::TransformAction::REPLACE, 2 } },
+    };
+  auto it = descriptors.find(name);
+  if (it == descriptors.end()) {
+    return cm::nullopt;
+  }
+  return it->second;
+}
+
+// Index in `parameters` at which a TRANSFORM action's selector region begins,
+// or nullopt if this is not a TRANSFORM or the action is unknown.  For the
+// APPLY action the <body> occupies slot 3, so the selector starts at slot 4.
+cm::optional<std::size_t> TransformSelectorStart(
+  std::vector<std::string> const& parameters)
+{
+  if (parameters.size() < 3 || parameters[0] != "TRANSFORM") {
+    return cm::nullopt;
+  }
+  std::string const& action = parameters[2];
+  if (action == "APPLY") {
+    return std::size_t{ 4 };
+  }
+  if (auto d = FindTransformActionDescriptor(action)) {
+    return std::size_t{ 3 } + static_cast<std::size_t>(d->Arity);
+  }
+  return cm::nullopt;
+}
+
+// Handle $<LIST:TRANSFORM,...,PREDICATE,<body>>.  `predIndex` is the index of
+// the PREDICATE token in `parameters`; the <body> follows it.  PREDICATE is
+// the sole selector: only elements whose predicate is "1" are transformed.
+std::string EvaluateTransformPredicate(
+  std::vector<std::string> const& parameters, std::size_t predIndex,
+  cm::GenEx::Evaluation* eval, GeneratorExpressionContent const* content,
+  cmGeneratorExpressionDAGChecker* dagChecker)
+{
+  // PREDICATE must take exactly one <body> and not be combined with another
+  // selector (AT/FOR/REGEX) or trailing tokens.
+  if (parameters.size() < predIndex + 2) {
+    reportError(eval, content->GetOriginalExpression(),
+                "sub-command TRANSFORM, selector PREDICATE expects a <body> "
+                "argument.");
+    return std::string();
+  }
+  if (parameters.size() > predIndex + 2) {
+    reportError(eval, content->GetOriginalExpression(),
+                "sub-command TRANSFORM, selector PREDICATE expects a single "
+                "<body> argument and cannot be combined with another "
+                "selector.");
+    return std::string();
+  }
+
+  cmList list = GetList(parameters[1]);
+  if (list.empty()) {
+    return std::string();
+  }
+
+  cmGeneratorExpressionEvaluatorVector const& predicateBody =
+    content->GetParamChildren()[predIndex + 1];
+  auto mask = EvaluatePredicateMask(predicateBody, list, "TRANSFORM"_s, eval,
+                                    content, dagChecker);
+  if (!mask) {
+    return std::string();
+  }
+
+  if (parameters[2] == "APPLY") {
+    cmGeneratorExpressionEvaluatorVector const& applyBody =
+      content->GetParamChildren()[3];
+    std::vector<std::string> out;
+    out.reserve(list.size());
+    std::size_t i = 0;
+    for (auto const& element : list) {
+      if ((*mask)[i]) {
+        out.push_back(
+          EvaluateBodyWithBoundOperand(applyBody, element, eval, dagChecker));
+        if (eval->HadError) {
+          return std::string();
+        }
+      } else {
+        out.push_back(element);
+      }
+      ++i;
+    }
+    return cmList{ out.begin(), out.end(), cmList::ExpandElements::No,
+                   cmList::EmptyElements::Yes }
+      .to_string();
+  }
+
+  std::string const& action = parameters[2];
+  auto descriptor = FindTransformActionDescriptor(action);
+  if (!descriptor) {
+    reportError(
+      eval, content->GetOriginalExpression(),
+      cmStrCat(" sub-command TRANSFORM, ", action, " invalid action."));
+    return std::string();
+  }
+
+  // Action arguments occupy parameters[3 .. predIndex); TransformSelectorStart
+  // guarantees there are exactly descriptor->Arity of them.
+  std::vector<std::string> arguments(parameters.begin() + 3,
+                                     parameters.begin() + predIndex);
+
+  std::vector<cmList::index_type> indices;
+  for (std::size_t i = 0; i < mask->size(); ++i) {
+    if ((*mask)[i]) {
+      indices.push_back(static_cast<cmList::index_type>(i));
+    }
+  }
+  if (indices.empty()) {
+    // No element selected: TRANSFORM is a no-op.
+    return list.to_string();
+  }
+
+  auto selector =
+    cmList::TransformSelector::New<cmList::TransformSelector::AT>(
+      std::move(indices));
+  selector->Makefile = eval->Context.LG->GetMakefile();
+  try {
+    return list.transform(descriptor->Action, arguments, std::move(selector))
+      .to_string();
+  } catch (cmList::transform_error& e) {
+    reportError(eval, content->GetOriginalExpression(), e.what());
+    return std::string();
+  }
+}
+
+enum class SortOptionResult
+{
+  NotRecognized, // `arg` is not a SORT option keyword
+  Parsed,        // recognized and applied to `sortConfig`
+  Error,         // recognized but malformed or duplicate (already reported)
+};
+
+// Parse one $<LIST:SORT> colon-option (COMPARE:/CASE:/ORDER:) into sortConfig.
+SortOptionResult ParseSortOption(std::string const& arg,
+                                 cmList::SortConfiguration& sortConfig,
+                                 cm::GenEx::Evaluation* eval,
+                                 GeneratorExpressionContent const* content)
+{
+  using SortConfig = cmList::SortConfiguration;
+  auto const COMPARE = "COMPARE:"_s;
+  auto const CASE = "CASE:"_s;
+  auto const ORDER = "ORDER:"_s;
+
+  if (cmHasPrefix(arg, COMPARE)) {
+    if (sortConfig.Compare != SortConfig::CompareMethod::DEFAULT) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "sub-command SORT, COMPARE option has been specified "
+                  "multiple times.");
+      return SortOptionResult::Error;
+    }
+    auto option = cm::string_view{ arg.c_str() + COMPARE.length() };
+    if (option == "STRING"_s) {
+      sortConfig.Compare = SortConfig::CompareMethod::STRING;
+    } else if (option == "FILE_BASENAME"_s) {
+      sortConfig.Compare = SortConfig::CompareMethod::FILE_BASENAME;
+    } else if (option == "NATURAL"_s) {
+      sortConfig.Compare = SortConfig::CompareMethod::NATURAL;
+    } else {
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("sub-command SORT, an invalid COMPARE option has "
+                           "been specified: \"",
+                           option, "\"."));
+      return SortOptionResult::Error;
+    }
+    return SortOptionResult::Parsed;
+  }
+
+  if (cmHasPrefix(arg, CASE)) {
+    if (sortConfig.Case != SortConfig::CaseSensitivity::DEFAULT) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "sub-command SORT, CASE option has been specified multiple "
+                  "times.");
+      return SortOptionResult::Error;
+    }
+    auto option = cm::string_view{ arg.c_str() + CASE.length() };
+    if (option == "SENSITIVE"_s) {
+      sortConfig.Case = SortConfig::CaseSensitivity::SENSITIVE;
+    } else if (option == "INSENSITIVE"_s) {
+      sortConfig.Case = SortConfig::CaseSensitivity::INSENSITIVE;
+    } else {
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("sub-command SORT, an invalid CASE option has been "
+                           "specified: \"",
+                           option, "\"."));
+      return SortOptionResult::Error;
+    }
+    return SortOptionResult::Parsed;
+  }
+
+  if (cmHasPrefix(arg, ORDER)) {
+    if (sortConfig.Order != SortConfig::OrderMode::DEFAULT) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "sub-command SORT, ORDER option has been specified multiple "
+                  "times.");
+      return SortOptionResult::Error;
+    }
+    auto option = cm::string_view{ arg.c_str() + ORDER.length() };
+    if (option == "ASCENDING"_s) {
+      sortConfig.Order = SortConfig::OrderMode::ASCENDING;
+    } else if (option == "DESCENDING"_s) {
+      sortConfig.Order = SortConfig::OrderMode::DESCENDING;
+    } else {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("sub-command SORT, an invalid ORDER option has been "
+                 "specified: \"",
+                 option, "\"."));
+      return SortOptionResult::Error;
+    }
+    return SortOptionResult::Parsed;
+  }
+
+  return SortOptionResult::NotRecognized;
+}
+
+// $<LIST:SORT,...,COMPARATOR,body>: sort with a per-comparison genex body, the
+// two elements bound to $<_0> and $<_1>; body must yield "0" or "1".
+std::string EvaluateSortComparator(std::vector<std::string> const& parameters,
+                                   std::size_t comparatorIndex,
+                                   cm::GenEx::Evaluation* eval,
+                                   GeneratorExpressionContent const* content,
+                                   cmGeneratorExpressionDAGChecker* dagChecker)
+{
+  if (comparatorIndex + 1 >= parameters.size()) {
+    reportError(eval, content->GetOriginalExpression(),
+                "sub-command SORT, COMPARATOR expects a <body> argument.");
+    return std::string();
+  }
+  cmGeneratorExpressionEvaluatorVector const& bodyExpr =
+    content->GetParamChildren()[comparatorIndex + 1];
+
+  using SortConfig = cmList::SortConfiguration;
+  SortConfig sortConfig;
+  sortConfig.Compare = SortConfig::CompareMethod::COMPARATOR;
+  for (std::size_t i = 2; i < parameters.size(); ++i) {
+    if (i == comparatorIndex || i == comparatorIndex + 1) {
+      continue; // COMPARATOR keyword + its (empty) body slot
+    }
+    std::string const& arg = parameters[i];
+    // COMPARATOR defines the ordering, so reject COMPARE:; CASE:/ORDER: are
+    // accepted as in list(SORT ... COMPARATOR) (CASE: folds the body
+    // operands).
+    if (cmHasPrefix(arg, "COMPARE:"_s)) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "sub-command SORT, option \"COMPARE\" is incompatible with "
+                  "\"COMPARATOR\".");
+      return std::string();
+    }
+    switch (ParseSortOption(arg, sortConfig, eval, content)) {
+      case SortOptionResult::Parsed:
+        break;
+      case SortOptionResult::Error:
+        return std::string();
+      case SortOptionResult::NotRecognized:
+        reportError(
+          eval, content->GetOriginalExpression(),
+          cmStrCat("sub-command SORT, option \"", arg, "\" is invalid."));
+        return std::string();
+    }
+  }
+
+  cmList list = GetList(parameters[1]);
+  if (list.size() < 2) {
+    return list.to_string();
+  }
+
+  // The strict-weak-ordering guard in cmList::sort may call this twice per
+  // pair, so the body can be evaluated up to twice per comparison.
+  auto comparator = [&](std::string const& a, std::string const& b) -> bool {
+    std::string r =
+      EvaluateBodyWithBoundOperands(bodyExpr, { a, b }, eval, dagChecker);
+    if (eval->HadError) {
+      throw cmList::transform_error(std::string{}); // body already reported
+    }
+    if (r == "1") {
+      return true;
+    }
+    if (r == "0") {
+      return false;
+    }
+    throw cmList::transform_error(
+      cmStrCat("sub-command SORT, COMPARATOR body must evaluate to \"0\" or "
+               "\"1\", but evaluated to \"",
+               r, "\"."));
+  };
+
+  try {
+    list.sort(sortConfig, comparator);
+  } catch (std::invalid_argument& e) {
+    if (!eval->HadError) {
+      reportError(eval, content->GetOriginalExpression(), e.what());
+    }
+    return std::string();
+  }
+  return list.to_string();
+}
+
+// Parse the optional trailing selector of a $<LIST:TRANSFORM,...> action
+// (AT <i>... / FOR <start> <stop> [<step>] / REGEX <re>) into a
+// cmList::TransformSelector.  Returns nullptr (after reporting via `eval`) on
+// a malformed selector; empty `tokens` yields a select-all selector.
+std::unique_ptr<cmList::TransformSelector> ParseTransformSelector(
+  std::vector<std::string> const& tokens, cm::GenEx::Evaluation* eval,
+  GeneratorExpressionContent const* content)
+{
+  static std::string const REGEX{ "REGEX" };
+  static std::string const AT{ "AT" };
+  static std::string const FOR{ "FOR" };
+
+  std::unique_ptr<cmList::TransformSelector> selector;
+
+  std::size_t i = 0;
+  while (i < tokens.size()) {
+    std::string const& tok = tokens[i];
+
+    if ((tok == REGEX || tok == AT || tok == FOR) && selector) {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("sub-command TRANSFORM, selector already specified (",
+                 selector->GetTag(), ")."));
+      return nullptr;
+    }
+
+    if (tok == REGEX) {
+      if (i + 1 >= tokens.size()) {
+        reportError(eval, content->GetOriginalExpression(),
+                    "sub-command TRANSFORM, selector REGEX expects "
+                    "'regular expression' argument.");
+        return nullptr;
+      }
+      selector =
+        cmList::TransformSelector::New<cmList::TransformSelector::REGEX>(
+          tokens[i + 1]);
+      i += 2;
+      continue;
+    }
+
+    if (tok == AT) {
+      ++i;
+      std::vector<cmList::index_type> indexes;
+      for (; i < tokens.size(); ++i) {
+        cmList indexList{ tokens[i] };
+        for (auto const& index : indexList) {
+          cmList::index_type value;
+          if (!GetNumericArgument(index, value)) {
+            reportError(eval, content->GetOriginalExpression(),
+                        cmStrCat("sub-command TRANSFORM, selector AT: '",
+                                 index, "': unexpected argument."));
+            return nullptr;
+          }
+          indexes.push_back(value);
+        }
+      }
+      if (indexes.empty()) {
+        reportError(eval, content->GetOriginalExpression(),
+                    "sub-command TRANSFORM, selector AT expects at least one "
+                    "numeric value.");
+        return nullptr;
+      }
+      selector = cmList::TransformSelector::New<cmList::TransformSelector::AT>(
+        std::move(indexes));
+      continue;
+    }
+
+    if (tok == FOR) {
+      if (i + 2 >= tokens.size()) {
+        reportError(eval, content->GetOriginalExpression(),
+                    "sub-command TRANSFORM, selector FOR expects, at least, "
+                    "two arguments.");
+        return nullptr;
+      }
+      cmList::index_type start = 0;
+      cmList::index_type stop = 0;
+      cmList::index_type step = 1;
+      if (!GetNumericArgument(tokens[i + 1], start) ||
+          !GetNumericArgument(tokens[i + 2], stop)) {
+        reportError(eval, content->GetOriginalExpression(),
+                    "sub-command TRANSFORM, selector FOR expects, at least, "
+                    "two numeric values.");
+        return nullptr;
+      }
+      i += 3;
+      if (i < tokens.size()) {
+        if (!GetNumericArgument(tokens[i], step)) {
+          step = -1;
+        }
+        ++i;
+      }
+      if (step <= 0) {
+        reportError(eval, content->GetOriginalExpression(),
+                    "sub-command TRANSFORM, selector FOR expects positive "
+                    "numeric value for <step>.");
+        return nullptr;
+      }
+      selector =
+        cmList::TransformSelector::New<cmList::TransformSelector::FOR>(
+          { start, stop, step });
+      continue;
+    }
+
+    std::vector<std::string> const rest(tokens.begin() + i, tokens.end());
+    reportError(eval, content->GetOriginalExpression(),
+                cmStrCat("sub-command TRANSFORM, '", cmJoin(rest, ", "),
+                         "': unexpected argument(s)."));
+    return nullptr;
+  }
+
+  if (!selector) {
+    selector = cmList::TransformSelector::New();
+  }
+  return selector;
+}
 }
 
 static const struct ListNode : public cmGeneratorExpressionNode
@@ -1868,11 +2490,160 @@ static const struct ListNode : public cmGeneratorExpressionNode
 
   bool AcceptsArbitraryContentParameter() const override { return true; }
 
+  bool ShouldEvaluateNextParameter(std::vector<std::string> const& parameters,
+                                   std::string&) const override
+  {
+    // Leave the FILTER PREDICATE <body> (slot 4) unevaluated so $<_0> is never
+    // evaluated unbound.
+    if (parameters.size() == 4 && parameters[0] == "FILTER" &&
+        parameters[3] == "PREDICATE") {
+      return false;
+    }
+    // Leave a TRANSFORM PREDICATE selector's <body> unevaluated.  PREDICATE is
+    // the selector keyword only when it sits exactly at the selector position
+    // (not when it is a literal action argument such as APPEND PREDICATE).
+    if (auto start = TransformSelectorStart(parameters)) {
+      if (parameters.size() == *start + 1 &&
+          parameters.back() == "PREDICATE") {
+        return false;
+      }
+    }
+    // Leave the SORT COMPARATOR <body> unevaluated; a bare COMPARATOR token is
+    // unambiguous since SORT's other options are colon-style.
+    if (parameters.size() >= 3 && parameters[0] == "SORT" &&
+        parameters.back() == "COMPARATOR") {
+      return false;
+    }
+    // Skip the APPLY <body> (4th parameter) so $<_0> is not evaluated unbound;
+    // selector args (5th+) evaluate normally.
+    return !(parameters.size() == 3 && parameters[0] == "TRANSFORM" &&
+             parameters[2] == "APPLY");
+  }
+
   std::string Evaluate(
     std::vector<std::string> const& parameters, cm::GenEx::Evaluation* eval,
     GeneratorExpressionContent const* content,
-    cmGeneratorExpressionDAGChecker* /*dagChecker*/) const override
+    cmGeneratorExpressionDAGChecker* dagChecker) const override
   {
+    // TRANSFORM ... PREDICATE <body>: genex-native predicate selector, usable
+    // with any action (canned or APPLY).  Handled here (not in the
+    // listCommands lambda) because the predicate <body> needs the DAG checker.
+    if (parameters.size() >= 3 && parameters[0] == "TRANSFORM") {
+      if (auto start = TransformSelectorStart(parameters)) {
+        if (*start < parameters.size() && parameters[*start] == "PREDICATE") {
+          return EvaluateTransformPredicate(parameters, *start, eval, content,
+                                            dagChecker);
+        }
+      }
+    }
+
+    if (parameters.size() >= 3 && parameters[0] == "TRANSFORM" &&
+        parameters[2] == "APPLY") {
+      if (parameters.size() < 4) {
+        reportError(
+          eval, content->GetOriginalExpression(),
+          "sub-command TRANSFORM, action APPLY expects a <body> argument.");
+        return std::string();
+      }
+      cmList list = GetList(parameters[1]);
+      if (list.empty()) {
+        return std::string{};
+      }
+      cmGeneratorExpressionEvaluatorVector const& bodyExpr =
+        content->GetParamChildren()[3];
+      std::vector<std::string> const selectorTokens(parameters.begin() + 4,
+                                                    parameters.end());
+      std::unique_ptr<cmList::TransformSelector> selector =
+        ParseTransformSelector(selectorTokens, eval, content);
+      if (!selector) {
+        return std::string();
+      }
+      // selector->Makefile is left unset: the REGEX/AT/FOR selectors never
+      // consult it, and the only one that does (list()'s PREDICATE) cannot
+      // reach here.
+      std::vector<bool> selected;
+      try {
+        selected = list.GetTransformSelection(*selector);
+      } catch (cmList::transform_error& e) {
+        reportError(eval, content->GetOriginalExpression(), e.what());
+        return std::string();
+      }
+
+      std::vector<std::string> out;
+      out.reserve(list.size());
+      std::size_t i = 0;
+      for (auto const& element : list) {
+        if (i < selected.size() && selected[i]) {
+          out.push_back(
+            EvaluateBodyWithBoundOperand(bodyExpr, element, eval, dagChecker));
+          if (eval->HadError) {
+            return std::string();
+          }
+        } else {
+          out.push_back(element);
+        }
+        ++i;
+      }
+      // Join per-element results with ';'; keep empty elements so a body that
+      // yields "" is not dropped.
+      return cmList{ out.begin(), out.end(), cmList::ExpandElements::No,
+                     cmList::EmptyElements::Yes }
+        .to_string();
+    }
+
+    // FILTER ... PREDICATE <body>: genex-native predicate filter.
+    if (parameters.size() >= 4 && parameters[0] == "FILTER" &&
+        parameters[3] == "PREDICATE") {
+      if (parameters.size() != 5) {
+        reportError(eval, content->GetOriginalExpression(),
+                    "sub-command FILTER, PREDICATE expects a single <body> "
+                    "argument.");
+        return std::string();
+      }
+      std::string const& op = parameters[2];
+      if (op != "INCLUDE" && op != "EXCLUDE") {
+        reportError(
+          eval, content->GetOriginalExpression(),
+          cmStrCat("sub-command FILTER does not recognize operator \"", op,
+                   "\". It must be either INCLUDE or EXCLUDE."));
+        return std::string();
+      }
+      cmList list = GetList(parameters[1]);
+      if (list.empty()) {
+        return std::string();
+      }
+      cmGeneratorExpressionEvaluatorVector const& predicateBody =
+        content->GetParamChildren()[4];
+      auto mask = EvaluatePredicateMask(predicateBody, list, "FILTER"_s, eval,
+                                        content, dagChecker);
+      if (!mask) {
+        return std::string();
+      }
+      bool const keepWhenTrue = (op == "INCLUDE");
+      std::vector<std::string> out;
+      std::size_t i = 0;
+      for (auto const& element : list) {
+        if ((*mask)[i] == keepWhenTrue) {
+          out.push_back(element);
+        }
+        ++i;
+      }
+      return cmList{ out.begin(), out.end(), cmList::ExpandElements::No,
+                     cmList::EmptyElements::Yes }
+        .to_string();
+    }
+
+    // SORT COMPARATOR is handled here, not the listCommands SORT lambda,
+    // because the body needs the DAG checker.
+    if (parameters.size() >= 3 && parameters[0] == "SORT") {
+      for (std::size_t i = 2; i < parameters.size(); ++i) {
+        if (parameters[i] == "COMPARATOR") {
+          return EvaluateSortComparator(parameters, i, eval, content,
+                                        dagChecker);
+        }
+      }
+    }
+
     static std::unordered_map<
       cm::string_view,
       std::function<std::string(cm::GenEx::Evaluation*,
@@ -2085,7 +2856,13 @@ static const struct ListNode : public cmGeneratorExpressionNode
         { "FILTER"_s,
           [](cm::GenEx::Evaluation* ev, GeneratorExpressionContent const* cnt,
              Arguments& args) -> std::string {
-            if (CheckListParameters(ev, cnt, "FILTER"_s, args, 3)) {
+            // args = [list, INCLUDE|EXCLUDE, <regex> | REGEX <regex>].
+            // (PREDICATE is handled up-front in Evaluate and never reaches
+            // here.)
+            bool const explicitRegex =
+              args.size() >= 3 && args[2] == "REGEX"_s;
+            int const required = explicitRegex ? 4 : 3;
+            if (CheckListParameters(ev, cnt, "FILTER"_s, args, required)) {
               auto const& op = args[1];
               if (op != "INCLUDE"_s && op != "EXCLUDE"_s) {
                 reportError(
@@ -2094,9 +2871,10 @@ static const struct ListNode : public cmGeneratorExpressionNode
                            op, "\". It must be either INCLUDE or EXCLUDE."));
                 return std::string{};
               }
+              auto const& regex = explicitRegex ? args[3] : args[2];
               try {
                 return GetList(args.front())
-                  .filter(args[2],
+                  .filter(regex,
                           op == "INCLUDE"_s ? cmList::FilterMode::INCLUDE
                                             : cmList::FilterMode::EXCLUDE)
                   .to_string();
@@ -2104,7 +2882,7 @@ static const struct ListNode : public cmGeneratorExpressionNode
                 reportError(
                   ev, cnt->GetOriginalExpression(),
                   cmStrCat("sub-command FILTER, failed to compile regex \"",
-                           args[2], "\"."));
+                           regex, "\"."));
                 return std::string{};
               }
             }
@@ -2117,47 +2895,12 @@ static const struct ListNode : public cmGeneratorExpressionNode
                                       false)) {
               auto list = GetList(args.front());
               if (!list.empty()) {
-                struct ActionDescriptor
-                {
-                  ActionDescriptor(std::string name)
-                    : Name(std::move(name))
-                  {
-                  }
-                  ActionDescriptor(std::string name,
-                                   cmList::TransformAction action, int arity)
-                    : Name(std::move(name))
-                    , Action(action)
-                    , Arity(arity)
-                  {
-                  }
-
-                  operator std::string const&() const { return this->Name; }
-
-                  std::string Name;
-                  cmList::TransformAction Action;
-                  int Arity = 0;
-                };
-
-                static std::set<
-                  ActionDescriptor,
-                  std::function<bool(std::string const&, std::string const&)>>
-                  descriptors{
-                    { { "APPEND", cmList::TransformAction::APPEND, 1 },
-                      { "PREPEND", cmList::TransformAction::PREPEND, 1 },
-                      { "TOUPPER", cmList::TransformAction::TOUPPER, 0 },
-                      { "TOLOWER", cmList::TransformAction::TOLOWER, 0 },
-                      { "STRIP", cmList::TransformAction::STRIP, 0 },
-                      { "REPLACE", cmList::TransformAction::REPLACE, 2 } },
-                    [](std::string const& x, std::string const& y) {
-                      return x < y;
-                    }
-                  };
-
-                auto descriptor = descriptors.find(args.advance(1).front());
-                if (descriptor == descriptors.end()) {
+                std::string const actionName = args.advance(1).front();
+                auto descriptor = FindTransformActionDescriptor(actionName);
+                if (!descriptor) {
                   reportError(ev, cnt->GetOriginalExpression(),
-                              cmStrCat(" sub-command TRANSFORM, ",
-                                       args.front(), " invalid action."));
+                              cmStrCat(" sub-command TRANSFORM, ", actionName,
+                                       " invalid action."));
                   return std::string{};
                 }
 
@@ -2166,7 +2909,7 @@ static const struct ListNode : public cmGeneratorExpressionNode
                 if (args.size() < descriptor->Arity) {
                   reportError(ev, cnt->GetOriginalExpression(),
                               cmStrCat("sub-command TRANSFORM, action ",
-                                       descriptor->Name, " expects ",
+                                       actionName, " expects ",
                                        descriptor->Arity, " argument(s)."));
                   return std::string{};
                 }
@@ -2177,137 +2920,14 @@ static const struct ListNode : public cmGeneratorExpressionNode
                   args.advance(descriptor->Arity);
                 }
 
-                std::string const REGEX{ "REGEX" };
-                std::string const AT{ "AT" };
-                std::string const FOR{ "FOR" };
                 std::unique_ptr<cmList::TransformSelector> selector;
 
                 try {
-                  // handle optional arguments
-                  while (!args.empty()) {
-                    if ((args.front() == REGEX || args.front() == AT ||
-                         args.front() == FOR) &&
-                        selector) {
-                      reportError(ev, cnt->GetOriginalExpression(),
-                                  cmStrCat("sub-command TRANSFORM, selector "
-                                           "already specified (",
-                                           selector->GetTag(), ")."));
-
-                      return std::string{};
-                    }
-
-                    // REGEX selector
-                    if (args.front() == REGEX) {
-                      if (args.advance(1).empty()) {
-                        reportError(
-                          ev, cnt->GetOriginalExpression(),
-                          "sub-command TRANSFORM, selector REGEX expects "
-                          "'regular expression' argument.");
-                        return std::string{};
-                      }
-
-                      selector = cmList::TransformSelector::New<
-                        cmList::TransformSelector::REGEX>(args.front());
-
-                      args.advance(1);
-                      continue;
-                    }
-
-                    // AT selector
-                    if (args.front() == AT) {
-                      args.advance(1);
-                      // get all specified indexes
-                      std::vector<cmList::index_type> indexes;
-                      while (!args.empty()) {
-                        cmList indexList{ args.front() };
-                        for (auto const& index : indexList) {
-                          cmList::index_type value;
-
-                          if (!GetNumericArgument(index, value)) {
-                            // this is not a number, stop processing
-                            reportError(
-                              ev, cnt->GetOriginalExpression(),
-                              cmStrCat("sub-command TRANSFORM, selector AT: '",
-                                       index, "': unexpected argument."));
-                            return std::string{};
-                          }
-                          indexes.push_back(value);
-                        }
-                        args.advance(1);
-                      }
-
-                      if (indexes.empty()) {
-                        reportError(ev, cnt->GetOriginalExpression(),
-                                    "sub-command TRANSFORM, selector AT "
-                                    "expects at least one "
-                                    "numeric value.");
-                        return std::string{};
-                      }
-
-                      selector = cmList::TransformSelector::New<
-                        cmList::TransformSelector::AT>(std::move(indexes));
-
-                      continue;
-                    }
-
-                    // FOR selector
-                    if (args.front() == FOR) {
-                      if (args.advance(1).size() < 2) {
-                        reportError(ev, cnt->GetOriginalExpression(),
-                                    "sub-command TRANSFORM, selector FOR "
-                                    "expects, at least,"
-                                    " two arguments.");
-                        return std::string{};
-                      }
-
-                      cmList::index_type start = 0;
-                      cmList::index_type stop = 0;
-                      cmList::index_type step = 1;
-                      bool valid = false;
-
-                      if (GetNumericArgument(args.front(), start) &&
-                          GetNumericArgument(args.advance(1).front(), stop)) {
-                        valid = true;
-                      }
-
-                      if (!valid) {
-                        reportError(
-                          ev, cnt->GetOriginalExpression(),
-                          "sub-command TRANSFORM, selector FOR expects, "
-                          "at least, two numeric values.");
-                        return std::string{};
-                      }
-                      // try to read a third numeric value for step
-                      if (!args.advance(1).empty()) {
-                        if (!GetNumericArgument(args.front(), step)) {
-                          // this is not a number
-                          step = -1;
-                        }
-                        args.advance(1);
-                      }
-
-                      if (step <= 0) {
-                        reportError(
-                          ev, cnt->GetOriginalExpression(),
-                          "sub-command TRANSFORM, selector FOR expects "
-                          "positive numeric value for <step>.");
-                        return std::string{};
-                      }
-
-                      selector = cmList::TransformSelector::New<
-                        cmList::TransformSelector::FOR>({ start, stop, step });
-                      continue;
-                    }
-
-                    reportError(ev, cnt->GetOriginalExpression(),
-                                cmStrCat("sub-command TRANSFORM, '",
-                                         cmJoin(args, ", "),
-                                         "': unexpected argument(s)."));
-                    return std::string{};
-                  }
-
+                  std::vector<std::string> const tokens(args.begin(),
+                                                        args.end());
+                  selector = ParseTransformSelector(tokens, ev, cnt);
                   if (!selector) {
-                    selector = cmList::TransformSelector::New();
+                    return std::string{};
                   }
                   selector->Makefile = ev->Context.LG->GetMakefile();
 
@@ -2338,97 +2958,19 @@ static const struct ListNode : public cmGeneratorExpressionNode
                                       false)) {
               auto list = GetList(args.front());
               args.advance(1);
-              auto const COMPARE = "COMPARE:"_s;
-              auto const CASE = "CASE:"_s;
-              auto const ORDER = "ORDER:"_s;
-              using SortConfig = cmList::SortConfiguration;
-              SortConfig sortConfig;
+              cmList::SortConfiguration sortConfig;
               for (auto const& arg : args) {
-                if (cmHasPrefix(arg, COMPARE)) {
-                  if (sortConfig.Compare !=
-                      SortConfig::CompareMethod::DEFAULT) {
-                    reportError(ev, cnt->GetOriginalExpression(),
-                                "sub-command SORT, COMPARE option has been "
-                                "specified multiple times.");
+                switch (ParseSortOption(arg, sortConfig, ev, cnt)) {
+                  case SortOptionResult::Parsed:
+                    break;
+                  case SortOptionResult::Error:
                     return std::string{};
-                  }
-                  auto option =
-                    cm::string_view{ arg.c_str() + COMPARE.length() };
-                  if (option == "STRING"_s) {
-                    sortConfig.Compare = SortConfig::CompareMethod::STRING;
-                    continue;
-                  }
-                  if (option == "FILE_BASENAME"_s) {
-                    sortConfig.Compare =
-                      SortConfig::CompareMethod::FILE_BASENAME;
-                    continue;
-                  }
-                  if (option == "NATURAL"_s) {
-                    sortConfig.Compare = SortConfig::CompareMethod::NATURAL;
-                    continue;
-                  }
-                  reportError(
-                    ev, cnt->GetOriginalExpression(),
-                    cmStrCat(
-                      "sub-command SORT, an invalid COMPARE option has been "
-                      "specified: \"",
-                      option, "\"."));
-                  return std::string{};
-                }
-                if (cmHasPrefix(arg, CASE)) {
-                  if (sortConfig.Case !=
-                      SortConfig::CaseSensitivity::DEFAULT) {
+                  case SortOptionResult::NotRecognized:
                     reportError(ev, cnt->GetOriginalExpression(),
-                                "sub-command SORT, CASE option has been "
-                                "specified multiple times.");
+                                cmStrCat("sub-command SORT, option \"", arg,
+                                         "\" is invalid."));
                     return std::string{};
-                  }
-                  auto option = cm::string_view{ arg.c_str() + CASE.length() };
-                  if (option == "SENSITIVE"_s) {
-                    sortConfig.Case = SortConfig::CaseSensitivity::SENSITIVE;
-                    continue;
-                  }
-                  if (option == "INSENSITIVE"_s) {
-                    sortConfig.Case = SortConfig::CaseSensitivity::INSENSITIVE;
-                    continue;
-                  }
-                  reportError(
-                    ev, cnt->GetOriginalExpression(),
-                    cmStrCat(
-                      "sub-command SORT, an invalid CASE option has been "
-                      "specified: \"",
-                      option, "\"."));
-                  return std::string{};
                 }
-                if (cmHasPrefix(arg, ORDER)) {
-                  if (sortConfig.Order != SortConfig::OrderMode::DEFAULT) {
-                    reportError(ev, cnt->GetOriginalExpression(),
-                                "sub-command SORT, ORDER option has been "
-                                "specified multiple times.");
-                    return std::string{};
-                  }
-                  auto option =
-                    cm::string_view{ arg.c_str() + ORDER.length() };
-                  if (option == "ASCENDING"_s) {
-                    sortConfig.Order = SortConfig::OrderMode::ASCENDING;
-                    continue;
-                  }
-                  if (option == "DESCENDING"_s) {
-                    sortConfig.Order = SortConfig::OrderMode::DESCENDING;
-                    continue;
-                  }
-                  reportError(
-                    ev, cnt->GetOriginalExpression(),
-                    cmStrCat(
-                      "sub-command SORT, an invalid ORDER option has been "
-                      "specified: \"",
-                      option, "\"."));
-                  return std::string{};
-                }
-                reportError(ev, cnt->GetOriginalExpression(),
-                            cmStrCat("sub-command SORT, option \"", arg,
-                                     "\" is invalid."));
-                return std::string{};
               }
 
               return list.sort(sortConfig).to_string();
@@ -2500,11 +3042,11 @@ struct CompilerIdNode : public cmGeneratorExpressionNode
     cmGeneratorExpressionDAGChecker* dagChecker) const override
   {
     if (!eval->HeadTarget) {
-      std::ostringstream e;
-      e << "$<" << this->CompilerLanguage
-        << "_COMPILER_ID> may only be used with binary targets.  It may "
-           "not be used with add_custom_command or add_custom_target.";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("$<", this->CompilerLanguage,
+                 "_COMPILER_ID> may only be used with binary targets.  It may "
+                 "not be used with add_custom_command or add_custom_target."));
       return {};
     }
     return this->EvaluateWithLanguage(parameters, eval, content, dagChecker,
@@ -2518,8 +3060,8 @@ struct CompilerIdNode : public cmGeneratorExpressionNode
                                    std::string const& lang) const
   {
     std::string const& compilerId =
-      eval->Context.LG->GetMakefile()->GetSafeDefinition("CMAKE_" + lang +
-                                                         "_COMPILER_ID");
+      eval->Context.LG->GetMakefile()->GetSafeDefinition(
+        cmStrCat("CMAKE_", lang, "_COMPILER_ID"));
     if (parameters.empty()) {
       return compilerId;
     }
@@ -2548,7 +3090,8 @@ struct CompilerIdNode : public cmGeneratorExpressionNode
 static CompilerIdNode const cCompilerIdNode("C"), cxxCompilerIdNode("CXX"),
   cudaCompilerIdNode("CUDA"), objcCompilerIdNode("OBJC"),
   objcxxCompilerIdNode("OBJCXX"), fortranCompilerIdNode("Fortran"),
-  hipCompilerIdNode("HIP"), ispcCompilerIdNode("ISPC");
+  hipCompilerIdNode("HIP"), ispcCompilerIdNode("ISPC"),
+  syclCompilerIdNode("SYCL");
 
 struct CompilerVersionNode : public cmGeneratorExpressionNode
 {
@@ -2565,11 +3108,11 @@ struct CompilerVersionNode : public cmGeneratorExpressionNode
     cmGeneratorExpressionDAGChecker* dagChecker) const override
   {
     if (!eval->HeadTarget) {
-      std::ostringstream e;
-      e << "$<" << this->CompilerLanguage
-        << "_COMPILER_VERSION> may only be used with binary targets.  It "
-           "may not be used with add_custom_command or add_custom_target.";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("$<", this->CompilerLanguage,
+                           "_COMPILER_VERSION> may only be used with binary "
+                           "targets.  It may not be used with "
+                           "add_custom_command or add_custom_target."));
       return {};
     }
     return this->EvaluateWithLanguage(parameters, eval, content, dagChecker,
@@ -2583,8 +3126,8 @@ struct CompilerVersionNode : public cmGeneratorExpressionNode
                                    std::string const& lang) const
   {
     std::string const& compilerVersion =
-      eval->Context.LG->GetMakefile()->GetSafeDefinition("CMAKE_" + lang +
-                                                         "_COMPILER_VERSION");
+      eval->Context.LG->GetMakefile()->GetSafeDefinition(
+        cmStrCat("CMAKE_", lang, "_COMPILER_VERSION"));
     if (parameters.empty()) {
       return compilerVersion;
     }
@@ -2612,7 +3155,7 @@ static CompilerVersionNode const cCompilerVersionNode("C"),
   cxxCompilerVersionNode("CXX"), cudaCompilerVersionNode("CUDA"),
   objcCompilerVersionNode("OBJC"), objcxxCompilerVersionNode("OBJCXX"),
   fortranCompilerVersionNode("Fortran"), ispcCompilerVersionNode("ISPC"),
-  hipCompilerVersionNode("HIP");
+  hipCompilerVersionNode("HIP"), syclCompilerVersionNode("SYCL");
 
 struct CompilerFrontendVariantNode : public cmGeneratorExpressionNode
 {
@@ -2629,11 +3172,12 @@ struct CompilerFrontendVariantNode : public cmGeneratorExpressionNode
     cmGeneratorExpressionDAGChecker* dagChecker) const override
   {
     if (!eval->HeadTarget) {
-      std::ostringstream e;
-      e << "$<" << this->CompilerLanguage
-        << "_COMPILER_FRONTEND_VARIANT> may only be used with binary targets. "
-           " It may not be used with add_custom_command or add_custom_target.";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("$<", this->CompilerLanguage,
+                 "_COMPILER_FRONTEND_VARIANT> may only be used with binary "
+                 "targets.  It may not be used with add_custom_command or "
+                 "add_custom_target."));
       return {};
     }
     return this->EvaluateWithLanguage(parameters, eval, content, dagChecker,
@@ -2681,7 +3225,8 @@ static CompilerFrontendVariantNode const cCompilerFrontendVariantNode("C"),
   objcxxCompilerFrontendVariantNode("OBJCXX"),
   fortranCompilerFrontendVariantNode("Fortran"),
   hipCompilerFrontendVariantNode("HIP"),
-  ispcCompilerFrontendVariantNode("ISPC");
+  ispcCompilerFrontendVariantNode("ISPC"),
+  syclCompilerFrontendVariantNode("SYCL");
 
 struct PlatformIdNode : public cmGeneratorExpressionNode
 {
@@ -2826,14 +3371,15 @@ static const struct ConfigurationTestNode : public cmGeneratorExpressionNode
         }
         // for backwards compat invalid config names are only errors as
         // the first parameter
-        std::ostringstream e;
-        /* clang-format off */
-        e << "Warning evaluating generator expression:\n"
-          << "  " << content->GetOriginalExpression() << "\n"
-          << "The config name of \"" << param << "\" is invalid";
-        /* clang-format on */
         eval->Context.LG->GetCMakeInstance()->IssueMessage(
-          MessageType::WARNING, e.str(), eval->Backtrace);
+          MessageType::WARNING,
+          cmStrCat("Warning evaluating generator expression:\n"
+                   "  ",
+                   content->GetOriginalExpression(),
+                   "\n"
+                   "The config name of \"",
+                   param, "\" is invalid"),
+          eval->Backtrace);
       }
       firstParam = false;
     }
@@ -2908,8 +3454,7 @@ static const struct ConfigurationTestNode : public cmGeneratorExpressionNode
               return false;
           }
 
-          // Should be unreachable
-          assert(false);
+          CM_UNREACHABLE;
           return false;
         }();
 
@@ -2997,8 +3542,8 @@ static const struct CompileLanguageNode : public cmGeneratorExpressionNode
       reportError(
         eval, content->GetOriginalExpression(),
         "$<COMPILE_LANGUAGE:...> may only be used to specify include "
-        "directories, compile definitions, compile options, and to evaluate "
-        "components of the file(GENERATE) command.");
+        "directories, compile definitions, compile options, compile wrappers, "
+        "and to evaluate components of the file(GENERATE) command.");
       return std::string();
     }
 
@@ -3047,9 +3592,9 @@ static const struct CompileLanguageAndIdNode : public cmGeneratorExpressionNode
         eval, content->GetOriginalExpression(),
         "$<COMPILE_LANG_AND_ID:lang,id> may only be used with binary "
         "targets "
-        "to specify include directories, compile definitions, and compile "
-        "options.  It may not be used with the add_custom_command, "
-        "add_custom_target, or file(GENERATE) commands.");
+        "to specify include directories, compile definitions, compile "
+        "options, and compile wrappers.  It may not be used with the "
+        "add_custom_command, add_custom_target, or file(GENERATE) commands.");
       return std::string();
     }
     cmGlobalGenerator const* gg = eval->Context.LG->GetGlobalGenerator();
@@ -3095,8 +3640,8 @@ static const struct LinkLanguageNode : public cmGeneratorExpressionNode
           dagChecker->EvaluatingLinkerLauncher())) {
       reportError(eval, content->GetOriginalExpression(),
                   "$<LINK_LANGUAGE:...> may only be used with binary targets "
-                  "to specify link libraries, link directories, link options "
-                  "and link depends.");
+                  "to specify link libraries, link directories, link options, "
+                  "link depends, and link wrappers.");
       return std::string();
     }
     if (dagChecker->EvaluatingLinkLibraries() && parameters.empty()) {
@@ -3147,8 +3692,8 @@ struct LinkerId
                               std::string const& lang)
   {
     std::string const& linkerId =
-      eval->Context.LG->GetMakefile()->GetSafeDefinition("CMAKE_" + lang +
-                                                         "_COMPILER_ID");
+      eval->Context.LG->GetMakefile()->GetSafeDefinition(
+        cmStrCat("CMAKE_", lang, "_COMPILER_ID"));
     if (parameters.empty()) {
       return linkerId;
     }
@@ -3191,9 +3736,8 @@ static const struct LinkLanguageAndIdNode : public cmGeneratorExpressionNode
       reportError(
         eval, content->GetOriginalExpression(),
         "$<LINK_LANG_AND_ID:lang,id> may only be used with binary targets "
-        "to specify link libraries, link directories, link options, and "
-        "link "
-        "depends.");
+        "to specify link libraries, link directories, link options, link "
+        "depends, and link wrappers.");
       return std::string();
     }
 
@@ -3292,7 +3836,8 @@ struct CompilerLinkerIdNode : public cmGeneratorExpressionNode
 static CompilerLinkerIdNode const cCompilerLinkerIdNode("C"),
   cxxCompilerLinkerIdNode("CXX"), cudaCompilerLinkerIdNode("CUDA"),
   objcCompilerLinkerIdNode("OBJC"), objcxxCompilerLinkerIdNode("OBJCXX"),
-  fortranCompilerLinkerIdNode("Fortran"), hipCompilerLinkerIdNode("HIP");
+  fortranCompilerLinkerIdNode("Fortran"), hipCompilerLinkerIdNode("HIP"),
+  syclCompilerLinkerIdNode("SYCL");
 
 struct CompilerLinkerFrontendVariantNode : public cmGeneratorExpressionNode
 {
@@ -3363,7 +3908,8 @@ static CompilerLinkerFrontendVariantNode const
   objcCompilerLinkerFrontendVariantNode("OBJC"),
   objcxxCompilerLinkerFrontendVariantNode("OBJCXX"),
   fortranCompilerLinkerFrontendVariantNode("Fortran"),
-  hipCompilerLinkerFrontendVariantNode("HIP");
+  hipCompilerLinkerFrontendVariantNode("HIP"),
+  syclCompilerLinkerFrontendVariantNode("SYCL");
 
 static const struct LinkLibraryNode : public cmGeneratorExpressionNode
 {
@@ -3578,6 +4124,81 @@ static const struct DeviceLinkNode : public cmGeneratorExpressionNode
   }
 } deviceLinkNode;
 
+static const struct GlobalPropertyNode : public cmGeneratorExpressionNode
+{
+  GlobalPropertyNode() {} // NOLINT(modernize-use-equals-default)
+
+  // This node handles errors on parameter count itself.
+  int NumExpectedParameters() const override { return 1; }
+
+  std::string Evaluate(
+    std::vector<std::string> const& parameters, cm::GenEx::Evaluation* eval,
+    GeneratorExpressionContent const* content,
+    cmGeneratorExpressionDAGChecker* /*dagCheckerParent*/) const override
+  {
+    auto const& propertyName = parameters[0];
+
+    if (propertyName.empty()) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "$<GLOBAL_PROPERTY:property> expression requires a "
+                  "non-empty property name.");
+      return std::string{};
+    }
+    if (!IsValidPropertyName(eval, content, propertyName)) {
+      return std::string{};
+    }
+    cmake* cm = eval->Context.LG->GetCMakeInstance();
+    return cm->GetState()->GetGlobalProperty(propertyName);
+  }
+} globalPropertyNode;
+
+static const struct DirectoryPropertyNode : public cmGeneratorExpressionNode
+{
+  DirectoryPropertyNode() {} // NOLINT(modernize-use-equals-default)
+
+  // This node handles errors on parameter count itself.
+  int NumExpectedParameters() const override { return 2; }
+
+  std::string Evaluate(
+    std::vector<std::string> const& parameters, cm::GenEx::Evaluation* eval,
+    GeneratorExpressionContent const* content,
+    cmGeneratorExpressionDAGChecker* /*dagCheckerParent*/) const override
+  {
+    auto const& directoryName = parameters[0];
+    auto const& propertyName = parameters[1];
+
+    if (directoryName.empty()) {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        "$<DIRECTORY_PROPERTY:directory,property> expression requires a "
+        "non-empty directory name.");
+      return std::string{};
+    }
+    if (propertyName.empty()) {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        "$<DIRECTORY_PROPERTY:directory,property> expression requires a "
+        "non-empty property name.");
+      return std::string{};
+    }
+    if (!IsValidPropertyName(eval, content, propertyName)) {
+      return std::string{};
+    }
+
+    cmValue value;
+    cmGetDirectoryPropertyResult status = cmGetDirectoryProperty(
+      directoryName, propertyName, *eval->Context.LG->GetMakefile(), value);
+    if (status == cmGetDirectoryPropertyResult::DirectoryNotFound) {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("Directory \"", directoryName, "\" was not found."));
+      return std::string{};
+    }
+
+    return value;
+  }
+} directoryPropertyNode;
+
 namespace {
 bool GetFileSet(std::vector<std::string> const& parameters,
                 cm::GenEx::Evaluation* eval,
@@ -3660,8 +4281,6 @@ static const struct FileSetPropertyNode : public cmGeneratorExpressionNode
     GeneratorExpressionContent const* content,
     cmGeneratorExpressionDAGChecker* dagCheckerParent) const override
   {
-    static cmsys::RegularExpression propertyNameValidator("^[A-Za-z0-9_]+$");
-
     std::string const& fileSetName = parameters.front();
     std::string const& propertyName = parameters.back();
 
@@ -3685,9 +4304,7 @@ static const struct FileSetPropertyNode : public cmGeneratorExpressionNode
         "non-empty property name.");
       return std::string{};
     }
-    if (!propertyNameValidator.find(propertyName)) {
-      reportError(eval, content->GetOriginalExpression(),
-                  "Property name not supported.");
+    if (!IsValidPropertyName(eval, content, propertyName)) {
       return std::string{};
     }
 
@@ -3849,8 +4466,6 @@ static const struct SourcePropertyNode : public cmGeneratorExpressionNode
     GeneratorExpressionContent const* content,
     cmGeneratorExpressionDAGChecker* dagCheckerParent) const override
   {
-    static cmsys::RegularExpression propertyNameValidator("^[A-Za-z0-9_]+$");
-
     if (parameters.size() > 3) {
       reportError(eval, content->GetOriginalExpression(),
                   "$<SOURCE_PROPERTY:...> expression requires at most three "
@@ -3879,9 +4494,7 @@ static const struct SourcePropertyNode : public cmGeneratorExpressionNode
                   "non-empty property name.");
       return std::string{};
     }
-    if (!propertyNameValidator.find(propertyName)) {
-      reportError(eval, content->GetOriginalExpression(),
-                  "Property name not supported.");
+    if (!IsValidPropertyName(eval, content, propertyName)) {
       return std::string{};
     }
 
@@ -3941,6 +4554,102 @@ static const struct SourcePropertyNode : public cmGeneratorExpressionNode
   }
 } sourcePropertyNode;
 
+static const struct RulePropertyNode : public cmGeneratorExpressionNode
+{
+  RulePropertyNode() {} // NOLINT(modernize-use-equals-default)
+
+  // This node handles errors on parameter count itself.
+  int NumExpectedParameters() const override { return 2; }
+
+  std::string Evaluate(
+    std::vector<std::string> const& parameters, cm::GenEx::Evaluation* eval,
+    GeneratorExpressionContent const* content,
+    cmGeneratorExpressionDAGChecker* dagCheckerParent) const override
+  {
+    std::string ruleName = parameters.front();
+    std::string const& propertyName = parameters.back();
+
+    if (ruleName.empty() && propertyName.empty()) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "$<RULE_PROPERTY:rule,prop> expression requires a "
+                  "non-empty rule name and property name.");
+      return std::string{};
+    }
+    if (ruleName.empty()) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "$<RULE_PROPERTY:rule,prop> expression requires a "
+                  "non-empty rule name.");
+      return std::string{};
+    }
+    if (propertyName.empty()) {
+      reportError(eval, content->GetOriginalExpression(),
+                  "$<RULE_PROPERTY:src,prop> expression requires a "
+                  "non-empty property name.");
+      return std::string{};
+    }
+    if (!IsValidPropertyName(eval, content, propertyName)) {
+      return std::string{};
+    }
+
+    cmValue propertyValue;
+    cmGeneratorRule* genRule = nullptr;
+
+    genRule = eval->Context.LG->FindGeneratorRuleToUse(ruleName);
+    if (!genRule) {
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("Rule \"", ruleName, "\" is not known to CMake."));
+      return std::string{};
+    }
+
+    // retrieve associated target
+    cmGeneratorTarget* target = eval->Context.LG->FindGeneratorTargetToUse(
+      genRule->GetTarget()->GetName());
+    if (!target) {
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("Internal error for rule \"",
+                           genRule->GetRule()->GetName(), "\"."));
+      return std::string{};
+    }
+
+    propertyValue = genRule->GetProperty(propertyName);
+
+    static cmsys::RegularExpression commandIndex("^COMMAND_[0-9]+$");
+    if (propertyValue &&
+        (propertyName == "OUTPUT"_s || propertyName == "COMMAND"_s ||
+         commandIndex.find(propertyName) || propertyName == "DEPENDS"_s ||
+         propertyName == "DEPFILE"_s ||
+         propertyName == "INCLUDE_DIRECTORIES"_s ||
+         propertyName == "COMPILE_OPTIONS"_s ||
+         propertyName == "COMPILE_DEFINITIONS"_s ||
+         propertyName == "WORKING_DIRECTORY"_s ||
+         propertyName == "COMMENT"_s)) {
+      cmGeneratorExpressionDAGChecker dagChecker{
+        target,           propertyName,  content,
+        dagCheckerParent, eval->Context, eval->Backtrace,
+      };
+      switch (dagChecker.Check()) {
+        case cmGeneratorExpressionDAGChecker::SELF_REFERENCE:
+          reportError(eval, content->GetOriginalExpression(),
+                      cmStrCat("Self reference on rule \"",
+                               genRule->GetRule()->GetName(), "\"."));
+          return std::string{};
+        case cmGeneratorExpressionDAGChecker::CYCLIC_REFERENCE:
+          // No error. We just skip cyclic references.
+          return std::string{};
+        case cmGeneratorExpressionDAGChecker::ALREADY_SEEN:
+          CM_FALLTHROUGH;
+        case cmGeneratorExpressionDAGChecker::DAG:
+          break;
+      }
+
+      return cmGeneratorExpression::StripEmptyListElements(
+        this->EvaluateDependentExpression(propertyValue, eval, target,
+                                          &dagChecker, target));
+    }
+    return propertyValue;
+  }
+} rulePropertyNode;
+
 static std::string getLinkedTargetsContent(
   cmGeneratorTarget const* target, std::string const& prop,
   cm::GenEx::Evaluation* eval, cmGeneratorExpressionDAGChecker* dagChecker,
@@ -3989,7 +4698,6 @@ static const struct TargetPropertyNode : public cmGeneratorExpressionNode
   static char const* GetErrorText(std::string const& targetName,
                                   std::string const& propertyName)
   {
-    static cmsys::RegularExpression propertyNameValidator("^[A-Za-z0-9_]+$");
     if (targetName.empty() && propertyName.empty()) {
       return "$<TARGET_PROPERTY:tgt,prop> expression requires a non-empty "
              "target name and property name.";
@@ -3999,7 +4707,7 @@ static const struct TargetPropertyNode : public cmGeneratorExpressionNode
              "target name.";
     }
     if (!cmGeneratorExpression::IsValidTargetName(targetName)) {
-      if (!propertyNameValidator.find(propertyName)) {
+      if (!IsValidPropertyName(propertyName)) {
         return "Target name and property name not supported.";
       }
       return "Target name not supported.";
@@ -4012,8 +4720,6 @@ static const struct TargetPropertyNode : public cmGeneratorExpressionNode
     GeneratorExpressionContent const* content,
     cmGeneratorExpressionDAGChecker* dagCheckerParent) const override
   {
-    static cmsys::RegularExpression propertyNameValidator("^[A-Za-z0-9_]+$");
-
     cmGeneratorTarget const* target = nullptr;
     std::string targetName;
     std::string propertyName;
@@ -4049,9 +4755,8 @@ static const struct TargetPropertyNode : public cmGeneratorExpressionNode
       target = lg->FindGeneratorTargetToUse(targetName);
 
       if (!target) {
-        std::ostringstream e;
-        e << "Target \"" << targetName << "\" not found.";
-        reportError(eval, content->GetOriginalExpression(), e.str());
+        reportError(eval, content->GetOriginalExpression(),
+                    cmStrCat("Target \"", targetName, "\" not found."));
         return std::string();
       }
       eval->AllTargets.insert(target);
@@ -4097,9 +4802,7 @@ static const struct TargetPropertyNode : public cmGeneratorExpressionNode
       return std::string();
     }
 
-    if (!propertyNameValidator.find(propertyName)) {
-      ::reportError(eval, content->GetOriginalExpression(),
-                    "Property name not supported.");
+    if (!IsValidPropertyName(eval, content, propertyName)) {
       return std::string();
     }
 
@@ -4249,7 +4952,12 @@ static const struct TargetPropertyNode : public cmGeneratorExpressionNode
       std::string linkedTargetsContent = getLinkedTargetsContent(
         target, interfacePropertyName, eval, &dagChecker, usage);
       if (!linkedTargetsContent.empty()) {
-        result += (result.empty() ? "" : ";") + linkedTargetsContent;
+        if (result.empty()) {
+          result = std::move(linkedTargetsContent);
+        } else {
+          result =
+            cmStrCat(std::move(result), ';', std::move(linkedTargetsContent));
+        }
       }
     }
     return result;
@@ -4263,7 +4971,6 @@ static const struct targetIntermediateDirNode
 
   static char const* GetErrorText(std::string const& targetName)
   {
-    static cmsys::RegularExpression propertyNameValidator("^[A-Za-z0-9_]+$");
     if (targetName.empty()) {
       return "$<TARGET_INTERMEDIATE_DIR:tgt> expression requires a non-empty "
              "target name.";
@@ -4295,9 +5002,8 @@ static const struct targetIntermediateDirNode
       target = lg->FindGeneratorTargetToUse(targetName);
 
       if (!target) {
-        std::ostringstream e;
-        e << "Target \"" << targetName << "\" not found.";
-        reportError(eval, content->GetOriginalExpression(), e.str());
+        reportError(eval, content->GetOriginalExpression(),
+                    cmStrCat("Target \"", targetName, "\" not found."));
         return std::string();
       }
       eval->AllTargets.insert(target);
@@ -4356,23 +5062,22 @@ static const struct TargetObjectsNode : public cmGeneratorExpressionNode
     cmGeneratorTarget* gt =
       eval->Context.LG->FindGeneratorTargetToUse(tgtName);
     if (!gt) {
-      std::ostringstream e;
-      e << "Objects of target \"" << tgtName
-        << "\" referenced but no such target exists.";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("Objects of target \"", tgtName,
+                           "\" referenced but no such target exists."));
       return std::string();
     }
-    cmStateEnums::TargetType type = gt->GetType();
-    if (type != cmStateEnums::EXECUTABLE &&
-        type != cmStateEnums::STATIC_LIBRARY &&
-        type != cmStateEnums::SHARED_LIBRARY &&
-        type != cmStateEnums::MODULE_LIBRARY &&
-        type != cmStateEnums::OBJECT_LIBRARY) {
-      std::ostringstream e;
-      e << "Objects of target \"" << tgtName
-        << "\" referenced but is not one of the allowed target types "
-        << "(EXECUTABLE, STATIC, SHARED, MODULE, OBJECT).";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+    cm::TargetType type = gt->GetType();
+    if (type != cm::TargetType::EXECUTABLE &&
+        type != cm::TargetType::STATIC_LIBRARY &&
+        type != cm::TargetType::SHARED_LIBRARY &&
+        type != cm::TargetType::MODULE_LIBRARY &&
+        type != cm::TargetType::OBJECT_LIBRARY) {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("Objects of target \"", tgtName,
+                 "\" referenced but is not one of the allowed target types "
+                 "(EXECUTABLE, STATIC, SHARED, MODULE, OBJECT)."));
       return std::string();
     }
     cmGlobalGenerator const* gg = eval->Context.LG->GetGlobalGenerator();
@@ -4459,7 +5164,7 @@ static const struct TargetObjectsNode : public cmGeneratorExpressionNode
       }
 
       for (auto& o : objects) {
-        o = cmStrCat(obj_dir, o);
+        o = cmStrCat(obj_dir, std::move(o));
       }
     }
 
@@ -4485,21 +5190,20 @@ struct TargetRuntimeDllsBaseNode : public cmGeneratorExpressionNode
     cmGeneratorTarget* gt =
       eval->Context.LG->FindGeneratorTargetToUse(tgtName);
     if (!gt) {
-      std::ostringstream e;
-      e << "Objects of target \"" << tgtName
-        << "\" referenced but no such target exists.";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+      reportError(eval, content->GetOriginalExpression(),
+                  cmStrCat("Objects of target \"", tgtName,
+                           "\" referenced but no such target exists."));
       return std::vector<std::string>();
     }
-    cmStateEnums::TargetType type = gt->GetType();
-    if (type != cmStateEnums::EXECUTABLE &&
-        type != cmStateEnums::SHARED_LIBRARY &&
-        type != cmStateEnums::MODULE_LIBRARY) {
-      std::ostringstream e;
-      e << "Objects of target \"" << tgtName
-        << "\" referenced but is not one of the allowed target types "
-        << "(EXECUTABLE, SHARED, MODULE).";
-      reportError(eval, content->GetOriginalExpression(), e.str());
+    cm::TargetType type = gt->GetType();
+    if (type != cm::TargetType::EXECUTABLE &&
+        type != cm::TargetType::SHARED_LIBRARY &&
+        type != cm::TargetType::MODULE_LIBRARY) {
+      reportError(
+        eval, content->GetOriginalExpression(),
+        cmStrCat("Objects of target \"", tgtName,
+                 "\" referenced but is not one of the allowed target types "
+                 "(EXECUTABLE, SHARED, MODULE)."));
       return std::vector<std::string>();
     }
 
@@ -4660,7 +5364,7 @@ static cmPolicies::PolicyStatus statusForTarget(cmGeneratorTarget const* tgt,
 
 #undef RETURN_POLICY
 
-  assert(false && "Unreachable code. Not a valid policy");
+  CM_UNREACHABLE;
   return cmPolicies::WARN;
 }
 
@@ -4675,7 +5379,7 @@ static cmPolicies::PolicyID policyForString(char const* policy_id)
 
 #undef RETURN_POLICY_ID
 
-  assert(false && "Unreachable code. Not a valid policy");
+  CM_UNREACHABLE;
   return cmPolicies::CMPCOUNT;
 }
 
@@ -4858,7 +5562,7 @@ struct TargetFilesystemArtifactResultCreator<ArtifactSonameTag>
                     "for DLL target platforms.");
       return std::string();
     }
-    if (target->GetType() != cmStateEnums::SHARED_LIBRARY) {
+    if (target->GetType() != cm::TargetType::SHARED_LIBRARY) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_SONAME_FILE is allowed only for "
                     "SHARED libraries.");
@@ -4891,7 +5595,7 @@ struct TargetFilesystemArtifactResultCreator<ArtifactSonameImportTag>
                     "for DLL target platforms.");
       return std::string();
     }
-    if (target->GetType() != cmStateEnums::SHARED_LIBRARY) {
+    if (target->GetType() != cm::TargetType::SHARED_LIBRARY) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_SONAME_IMPORT_FILE is allowed only for "
                     "SHARED libraries.");
@@ -4940,11 +5644,11 @@ struct TargetFilesystemArtifactResultCreator<ArtifactPdbTag>
       return std::string();
     }
 
-    cmStateEnums::TargetType targetType = target->GetType();
+    cm::TargetType targetType = target->GetType();
 
-    if (targetType != cmStateEnums::SHARED_LIBRARY &&
-        targetType != cmStateEnums::MODULE_LIBRARY &&
-        targetType != cmStateEnums::EXECUTABLE) {
+    if (targetType != cm::TargetType::SHARED_LIBRARY &&
+        targetType != cm::TargetType::MODULE_LIBRARY &&
+        targetType != cm::TargetType::EXECUTABLE) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_PDB_FILE is allowed only for "
                     "targets with linker created artifacts.");
@@ -4990,7 +5694,7 @@ struct TargetFilesystemArtifactResultCreator<ArtifactLinkerLibraryTag>
   {
     // The file used to link to the target (.dylib, .so, .a).
     if (!target->IsLinkable() ||
-        target->GetType() == cmStateEnums::EXECUTABLE) {
+        target->GetType() == cm::TargetType::EXECUTABLE) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_LINKER_LIBRARY_FILE is allowed only for libraries "
                     "with ENABLE_EXPORTS.");
@@ -4998,7 +5702,7 @@ struct TargetFilesystemArtifactResultCreator<ArtifactLinkerLibraryTag>
     }
 
     if (!target->IsDLLPlatform() ||
-        target->GetType() == cmStateEnums::STATIC_LIBRARY) {
+        target->GetType() == cm::TargetType::STATIC_LIBRARY) {
       return target->GetFullPath(eval->Context.Config,
                                  cmStateEnums::RuntimeBinaryArtifact);
     }
@@ -5197,8 +5901,8 @@ protected:
                     cmStrCat("No target \"", name, '"'));
       return nullptr;
     }
-    if (target->GetType() >= cmStateEnums::OBJECT_LIBRARY &&
-        target->GetType() != cmStateEnums::UNKNOWN_LIBRARY) {
+    if (target->GetType() >= cm::TargetType::OBJECT_LIBRARY &&
+        target->GetType() != cm::TargetType::UNKNOWN_LIBRARY) {
       ::reportError(
         eval, content->GetOriginalExpression(),
         cmStrCat("Target \"", name, "\" is not an executable or library."));
@@ -5388,7 +6092,7 @@ struct TargetOutputNameArtifactResultGetter<ArtifactLinkerLibraryTag>
   {
     // The library file used to link to the target (.so, .lib, .a).
     if (!target->IsLinkable() ||
-        target->GetType() == cmStateEnums::EXECUTABLE) {
+        target->GetType() == cm::TargetType::EXECUTABLE) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_LINKER_LIBRARY_FILE_BASE_NAME is allowed only for "
                     "libraries with ENABLE_EXPORTS.");
@@ -5396,7 +6100,7 @@ struct TargetOutputNameArtifactResultGetter<ArtifactLinkerLibraryTag>
     }
 
     if (!target->IsDLLPlatform() ||
-        target->GetType() == cmStateEnums::STATIC_LIBRARY) {
+        target->GetType() == cm::TargetType::STATIC_LIBRARY) {
       auto output = target->GetOutputName(eval->Context.Config,
                                           cmStateEnums::ImportLibraryArtifact);
       return postfix != Postfix::Exclude
@@ -5463,11 +6167,11 @@ struct TargetOutputNameArtifactResultGetter<ArtifactPdbTag>
       return std::string();
     }
 
-    cmStateEnums::TargetType targetType = target->GetType();
+    cm::TargetType targetType = target->GetType();
 
-    if (targetType != cmStateEnums::SHARED_LIBRARY &&
-        targetType != cmStateEnums::MODULE_LIBRARY &&
-        targetType != cmStateEnums::EXECUTABLE) {
+    if (targetType != cm::TargetType::SHARED_LIBRARY &&
+        targetType != cm::TargetType::MODULE_LIBRARY &&
+        targetType != cm::TargetType::EXECUTABLE) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_PDB_FILE_BASE_NAME is allowed only for "
                     "targets with linker created artifacts.");
@@ -5628,7 +6332,7 @@ struct TargetFileArtifactResultGetter<ArtifactLinkerLibraryFilePrefixTag>
                          GeneratorExpressionContent const* content)
   {
     if (!target->IsLinkable() ||
-        target->GetType() == cmStateEnums::EXECUTABLE) {
+        target->GetType() == cm::TargetType::EXECUTABLE) {
       ::reportError(
         eval, content->GetOriginalExpression(),
         "TARGET_LINKER_LIBRARY_FILE_PREFIX is allowed only for libraries "
@@ -5637,7 +6341,7 @@ struct TargetFileArtifactResultGetter<ArtifactLinkerLibraryFilePrefixTag>
     }
 
     if (!target->IsDLLPlatform() ||
-        target->GetType() == cmStateEnums::STATIC_LIBRARY) {
+        target->GetType() == cm::TargetType::STATIC_LIBRARY) {
       return target->GetFilePrefix(eval->Context.Config,
                                    cmStateEnums::RuntimeBinaryArtifact);
     }
@@ -5721,7 +6425,7 @@ struct TargetFileArtifactResultGetter<ArtifactLinkerLibraryFileSuffixTag>
                          GeneratorExpressionContent const* content)
   {
     if (!target->IsLinkable() ||
-        target->GetType() == cmStateEnums::STATIC_LIBRARY) {
+        target->GetType() == cm::TargetType::STATIC_LIBRARY) {
       ::reportError(eval, content->GetOriginalExpression(),
                     "TARGET_LINKER_LIBRARY_FILE_SUFFIX is allowed only for "
                     "libraries with ENABLE_EXPORTS.");
@@ -5729,7 +6433,7 @@ struct TargetFileArtifactResultGetter<ArtifactLinkerLibraryFileSuffixTag>
     }
 
     if (!target->IsDLLPlatform() ||
-        target->GetType() == cmStateEnums::STATIC_LIBRARY) {
+        target->GetType() == cm::TargetType::STATIC_LIBRARY) {
       return target->GetFileSuffix(eval->Context.Config,
                                    cmStateEnums::RuntimeBinaryArtifact);
     }
@@ -5846,6 +6550,7 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
     { "AND", &andNode },
     { "OR", &orNode },
     { "NOT", &notNode },
+    { "ARGS", &argsNode },
     { "C_COMPILER_ID", &cCompilerIdNode },
     { "CXX_COMPILER_ID", &cxxCompilerIdNode },
     { "OBJC_COMPILER_ID", &objcCompilerIdNode },
@@ -5853,6 +6558,7 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
     { "CUDA_COMPILER_ID", &cudaCompilerIdNode },
     { "Fortran_COMPILER_ID", &fortranCompilerIdNode },
     { "HIP_COMPILER_ID", &hipCompilerIdNode },
+    { "SYCL_COMPILER_ID", &syclCompilerIdNode },
     { "VERSION_GREATER", &versionGreaterNode },
     { "VERSION_GREATER_EQUAL", &versionGreaterEqNode },
     { "VERSION_LESS", &versionLessNode },
@@ -5865,6 +6571,7 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
     { "OBJCXX_COMPILER_VERSION", &objcxxCompilerVersionNode },
     { "Fortran_COMPILER_VERSION", &fortranCompilerVersionNode },
     { "HIP_COMPILER_VERSION", &hipCompilerVersionNode },
+    { "SYCL_COMPILER_VERSION", &syclCompilerVersionNode },
     { "C_COMPILER_FRONTEND_VARIANT", &cCompilerFrontendVariantNode },
     { "CXX_COMPILER_FRONTEND_VARIANT", &cxxCompilerFrontendVariantNode },
     { "CUDA_COMPILER_FRONTEND_VARIANT", &cudaCompilerFrontendVariantNode },
@@ -5873,6 +6580,7 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
     { "Fortran_COMPILER_FRONTEND_VARIANT",
       &fortranCompilerFrontendVariantNode },
     { "HIP_COMPILER_FRONTEND_VARIANT", &hipCompilerFrontendVariantNode },
+    { "SYCL_COMPILER_FRONTEND_VARIANT", &syclCompilerFrontendVariantNode },
     { "PLATFORM_ID", &platformIdNode },
     { "COMPILE_FEATURES", &compileFeaturesNode },
     { "CONFIGURATION", &configurationNode },
@@ -5945,11 +6653,16 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
     { "PATH_EQUAL", &pathEqualNode },
     { "MAKE_C_IDENTIFIER", &makeCIdentifierNode },
     { "BOOL", &boolNode },
+    { "_0", &boundOperandNode0 },
+    { "_1", &boundOperandNode1 },
     { "IF", &ifNode },
     { "ANGLE-R", &angle_rNode },
     { "COMMA", &commaNode },
     { "SEMICOLON", &semicolonNode },
     { "QUOTE", &quoteNode },
+    { "GLOBAL_PROPERTY", &globalPropertyNode },
+    { "DIRECTORY_PROPERTY", &directoryPropertyNode },
+    { "RULE_PROPERTY", &rulePropertyNode },
     { "SOURCE_EXISTS", &sourceExistsNode },
     { "SOURCE_PROPERTY", &sourcePropertyNode },
     { "FILE_SET_EXISTS", &fileSetExistsNode },
@@ -5983,6 +6696,7 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
     { "CUDA_COMPILER_LINKER_ID", &cudaCompilerLinkerIdNode },
     { "Fortran_COMPILER_LINKER_ID", &fortranCompilerLinkerIdNode },
     { "HIP_COMPILER_LINKER_ID", &hipCompilerLinkerIdNode },
+    { "SYCL_COMPILER_LINKER_ID", &syclCompilerLinkerIdNode },
     { "C_COMPILER_LINKER_FRONTEND_VARIANT",
       &cCompilerLinkerFrontendVariantNode },
     { "CXX_COMPILER_LINKER_FRONTEND_VARIANT",
@@ -5997,6 +6711,8 @@ cmGeneratorExpressionNode const* cmGeneratorExpressionNode::GetNode(
       &fortranCompilerLinkerFrontendVariantNode },
     { "HIP_COMPILER_LINKER_FRONTEND_VARIANT",
       &hipCompilerLinkerFrontendVariantNode },
+    { "SYCL_COMPILER_LINKER_FRONTEND_VARIANT",
+      &syclCompilerLinkerFrontendVariantNode },
     { "LINK_LIBRARY", &linkLibraryNode },
     { "LINK_GROUP", &linkGroupNode },
     { "HOST_LINK", &hostLinkNode },
@@ -6021,12 +6737,10 @@ void reportError(cm::GenEx::Evaluation* eval, std::string const& expr,
     return;
   }
 
-  std::ostringstream e;
-  /* clang-format off */
-  e << "Error evaluating generator expression:\n"
-    << "  " << expr << "\n"
-    << result;
-  /* clang-format on */
-  eval->Context.LG->GetCMakeInstance()->IssueMessage(MessageType::FATAL_ERROR,
-                                                     e.str(), eval->Backtrace);
+  eval->Context.LG->GetCMakeInstance()->IssueMessage(
+    MessageType::FATAL_ERROR,
+    cmStrCat("Error evaluating generator expression:\n"
+             "  ",
+             expr, '\n', result),
+    eval->Backtrace);
 }

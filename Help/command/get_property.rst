@@ -8,6 +8,7 @@ get_property
   get_property(<variable>
                <GLOBAL                                                  |
                 DIRECTORY [<dir>]                                       |
+                RULE      <rule>                                        |
                 TARGET    <target>                                      |
                 FILE_SET  <file_set> TARGET <target>                    |
                 SOURCE    <source>
@@ -35,6 +36,12 @@ get_property
 
   .. versionadded:: 3.19
     ``<dir>``\ 可以引用一个二进制目录。
+
+``RULE``
+  .. versionadded:: 4.5
+
+  Scope must name one existing rule in the current directory, created
+  by the :command:`add_custom_rule` command.
 
 ``TARGET``
   作用域必须指定一个已存在的目标。\

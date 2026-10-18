@@ -15,9 +15,9 @@
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmSourceFile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmExtraKateGenerator::cmExtraKateGenerator() = default;
@@ -124,7 +124,7 @@ void cmExtraKateGenerator::WriteTargets(cmLocalGenerator const& lg,
     for (auto const& target : targets) {
       std::string const& targetName = target->GetName();
       switch (target->GetType()) {
-        case cmStateEnums::GLOBAL_TARGET: {
+        case cm::TargetType::GLOBAL_TARGET: {
           bool insertTarget = false;
           // Only add the global targets from CMAKE_BINARY_DIR,
           // not from the subdirs
@@ -146,7 +146,7 @@ void cmExtraKateGenerator::WriteTargets(cmLocalGenerator const& lg,
                                currentDir, homeOutputDir);
           }
         } break;
-        case cmStateEnums::UTILITY:
+        case cm::TargetType::UTILITY:
           // Add all utility targets, except the Nightly/Continuous/
           // Experimental-"sub"targets as e.g. NightlyStart
           if ((cmHasLiteralPrefix(targetName, "Nightly") &&
@@ -161,11 +161,11 @@ void cmExtraKateGenerator::WriteTargets(cmLocalGenerator const& lg,
           this->AppendTarget(fout, targetName, configs, make, makeArgs,
                              currentDir, homeOutputDir);
           break;
-        case cmStateEnums::EXECUTABLE:
-        case cmStateEnums::STATIC_LIBRARY:
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::OBJECT_LIBRARY: {
+        case cm::TargetType::EXECUTABLE:
+        case cm::TargetType::STATIC_LIBRARY:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::OBJECT_LIBRARY: {
           this->AppendTarget(fout, targetName, configs, make, makeArgs,
                              currentDir, homeOutputDir);
           if (!this->UseNinja) {

@@ -32,9 +32,9 @@
 #include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmState.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -206,11 +206,11 @@ bool IsFeatureSupported(cmMakefile* makefile, std::string const& linkLanguage,
 // LINK_LIBRARY feature attributes management
 struct LinkLibraryFeatureAttributeSet
 {
-  std::set<cmStateEnums::TargetType> LibraryTypes = {
-    cmStateEnums::EXECUTABLE, cmStateEnums::STATIC_LIBRARY,
-    cmStateEnums::SHARED_LIBRARY, cmStateEnums::MODULE_LIBRARY,
-    cmStateEnums::UNKNOWN_LIBRARY
-  };
+  std::set<cm::TargetType> LibraryTypes = { cm::TargetType::EXECUTABLE,
+                                            cm::TargetType::STATIC_LIBRARY,
+                                            cm::TargetType::SHARED_LIBRARY,
+                                            cm::TargetType::MODULE_LIBRARY,
+                                            cm::TargetType::UNKNOWN_LIBRARY };
   std::set<std::string> Override;
 
   enum DeduplicationKind
@@ -261,23 +261,25 @@ LinkLibraryFeatureAttributeSet const& GetLinkLibraryFeatureAttributes(
                cmTokenize(processingOption.match(2), ',')) {
             if (value == "STATIC") {
               featureAttributes.LibraryTypes.emplace(
-                cmStateEnums::STATIC_LIBRARY);
+                cm::TargetType::STATIC_LIBRARY);
             } else if (value == "SHARED") {
               featureAttributes.LibraryTypes.emplace(
-                cmStateEnums::SHARED_LIBRARY);
+                cm::TargetType::SHARED_LIBRARY);
             } else if (value == "MODULE") {
               featureAttributes.LibraryTypes.emplace(
-                cmStateEnums::MODULE_LIBRARY);
+                cm::TargetType::MODULE_LIBRARY);
             } else if (value == "EXECUTABLE") {
-              featureAttributes.LibraryTypes.emplace(cmStateEnums::EXECUTABLE);
+              featureAttributes.LibraryTypes.emplace(
+                cm::TargetType::EXECUTABLE);
             } else {
-              errorMessage += cmStrCat("  ", option, '\n');
+              errorMessage =
+                cmStrCat(std::move(errorMessage), "  ", option, '\n');
               break;
             }
           }
           // Always add UNKNOWN type
           featureAttributes.LibraryTypes.emplace(
-            cmStateEnums::UNKNOWN_LIBRARY);
+            cm::TargetType::UNKNOWN_LIBRARY);
         } else if (processingOption.match(1) == "DEDUPLICATION") {
           if (processingOption.match(2) == "YES") {
             featureAttributes.Deduplication =
@@ -289,7 +291,8 @@ LinkLibraryFeatureAttributeSet const& GetLinkLibraryFeatureAttributes(
             featureAttributes.Deduplication =
               LinkLibraryFeatureAttributeSet::Default;
           } else {
-            errorMessage += cmStrCat("  ", option, '\n');
+            errorMessage =
+              cmStrCat(std::move(errorMessage), "  ", option, '\n');
           }
         } else if (processingOption.match(1) == "OVERRIDE") {
           featureAttributes.Override.clear();
@@ -298,7 +301,7 @@ LinkLibraryFeatureAttributeSet const& GetLinkLibraryFeatureAttributes(
           featureAttributes.Override.insert(values.begin(), values.end());
         }
       } else {
-        errorMessage += cmStrCat("  ", option, '\n');
+        errorMessage = cmStrCat(std::move(errorMessage), "  ", option, '\n');
       }
     }
     if (!errorMessage.empty()) {
@@ -402,7 +405,8 @@ public:
                 } else if (processingOption.match(2) == "REVERSE") {
                   this->Order = Reverse;
                 } else {
-                  errorMessage += cmStrCat("  ", option, '\n');
+                  errorMessage =
+                    cmStrCat(std::move(errorMessage), "  ", option, '\n');
                 }
               } else if (processingOption.match(1) == "UNICITY" ||
                          processingOption.match(1) == "DEDUPLICATION") {
@@ -413,11 +417,13 @@ public:
                 } else if (processingOption.match(2) == "SHARED") {
                   this->Deduplication = Shared;
                 } else {
-                  errorMessage += cmStrCat("  ", option, '\n');
+                  errorMessage =
+                    cmStrCat(std::move(errorMessage), "  ", option, '\n');
                 }
               }
             } else {
-              errorMessage += cmStrCat("  ", option, '\n');
+              errorMessage =
+                cmStrCat(std::move(errorMessage), "  ", option, '\n');
             }
           }
           if (!errorMessage.empty()) {
@@ -466,7 +472,7 @@ public:
         for (auto index : libEntries) {
           LinkEntry const& entry = this->Entries[index];
           if (!entry.Target ||
-              entry.Target->GetType() != cmStateEnums::STATIC_LIBRARY) {
+              entry.Target->GetType() != cm::TargetType::STATIC_LIBRARY) {
             entries.emplace_back(index);
             continue;
           }
@@ -567,7 +573,7 @@ private:
     return this->Deduplication == None ||
       (this->Deduplication == Shared &&
        (!entry.Target ||
-        entry.Target->GetType() != cmStateEnums::SHARED_LIBRARY)) ||
+        entry.Target->GetType() != cm::TargetType::SHARED_LIBRARY)) ||
       (this->Deduplication == All && entry.Kind != LinkEntry::Library);
   }
 
@@ -854,7 +860,7 @@ void cmComputeLinkDepends::FollowLinkEntry(BFSEntry qe)
     if (cmLinkInterface const* iface =
           entry.Target->GetLinkInterface(this->Config, this->Target)) {
       bool const isIface =
-        entry.Target->GetType() == cmStateEnums::INTERFACE_LIBRARY;
+        entry.Target->GetType() == cm::TargetType::INTERFACE_LIBRARY;
       // This target provides its own link interface information.
       this->AddLinkEntries(depender_index, iface->Libraries);
       this->AddLinkObjects(iface->Objects);
@@ -1107,25 +1113,39 @@ void cmComputeLinkDepends::AddLinkEntries(cm::optional<size_t> depender_index,
     dependee_index = ale.first;
     LinkEntry& entry = this->EntryList[dependee_index];
     bool supportedItem = true;
-    auto const& itemFeature =
+    std::string itemFeature =
       this->GetCurrentFeature(entry.Item.Value, item.Feature);
+    if (entry.Target &&
+        entry.Target->GetType() == cm::TargetType::STATIC_LIBRARY &&
+        entry.Target->GetPropertyAsBool("SYCL_RESOLVE_DEVICE_SYMBOLS") &&
+        (entry.Target->IsImported() ||
+         entry.Target->Makefile->IsOn(
+           "CMAKE_SYCL_COMPILER_HAS_DEVICE_LINK_PHASE"))) {
+      if (itemFeature != LinkEntry::DEFAULT &&
+          itemFeature != "WHOLE_ARCHIVE") {
+        this->CMakeInstance->IssueMessage(
+          MessageType::FATAL_ERROR,
+          cmStrCat("Finalized SYCL static library \"", entry.Item.Value,
+                   "\" requires the WHOLE_ARCHIVE link-library feature."),
+          this->Target->GetBacktrace());
+      }
+      itemFeature = "WHOLE_ARCHIVE";
+    }
     if (group && ale.second && entry.Target &&
-        (entry.Target->GetType() == cmStateEnums::TargetType::OBJECT_LIBRARY ||
-         entry.Target->GetType() ==
-           cmStateEnums::TargetType::INTERFACE_LIBRARY)) {
+        (entry.Target->GetType() == cm::TargetType::OBJECT_LIBRARY ||
+         entry.Target->GetType() == cm::TargetType::INTERFACE_LIBRARY)) {
       supportedItem = false;
       auto const& groupFeature = this->EntryList[group->first].Feature;
       this->CMakeInstance->IssueDiagnostic(
         cmDiagnostics::CMD_AUTHOR,
-        cmStrCat(
-          "The feature '", groupFeature,
-          "', specified as part of a generator-expression "
-          "'$",
-          LG_BEGIN, groupFeature, ">', will not be applied to the ",
-          (entry.Target->GetType() == cmStateEnums::TargetType::OBJECT_LIBRARY
-             ? "OBJECT"
-             : "INTERFACE"),
-          " library '", entry.Item.Value, "'."),
+        cmStrCat("The feature '", groupFeature,
+                 "', specified as part of a generator-expression "
+                 "'$",
+                 LG_BEGIN, groupFeature, ">', will not be applied to the ",
+                 (entry.Target->GetType() == cm::TargetType::OBJECT_LIBRARY
+                    ? "OBJECT"
+                    : "INTERFACE"),
+                 " library '", entry.Item.Value, "'."),
         this->Target->GetBacktrace());
     }
     // check if feature is applicable to this item

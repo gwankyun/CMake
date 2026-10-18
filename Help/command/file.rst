@@ -28,6 +28,7 @@ Synopsis
     file(`STRINGS`_ <filename> <out-var> [...])
     file(`\<HASH\>`_ <filename> <out-var>)
     file(`TIMESTAMP`_ <filename> <out-var> [...])
+    file(`DIFFERENT`_ <out-var> FILES <file1> <file2>)
 
   `Writing`_
     file({`WRITE`_ | `APPEND`_} <filename> <content>...)
@@ -114,7 +115,7 @@ Reading
 
     ``REGEX <regex>``
       Consider only strings that match the given regular expression,
-      as described under :ref:`string(REGEX) <Regex Specification>`.
+      as described in the :ref:`CMake Language Regex Specification`.
 
       .. versionchanged:: 3.29
         Capture groups from the last match in the file are stored in
@@ -159,6 +160,16 @@ Reading
 
   See the :command:`string(TIMESTAMP)` command for documentation of
   the ``<format>`` and ``UTC`` options.
+
+.. signature::
+  file(DIFFERENT <variable> FILES <file1> <file2>)
+
+  Compare the contents of ``<file1>`` and ``<file2>`` byte for byte and
+  store true in ``<variable>`` if they differ, or false if they are the
+  same.  If either file does not exist, or an error occurs while comparing
+  the files, the files are considered different.  Relative paths are
+  evaluated with respect to the current working directory rather than the
+  current source directory, so absolute paths are recommended.
 
 Writing
 ^^^^^^^
@@ -764,10 +775,16 @@ Transfer
 
     ``STATUS <variable>``
       Store the resulting status of the operation in a variable.
-      The status is a ``;`` separated list of length 2.
+      The status is a
+      :ref:`semicolon-separated list <CMake Language Lists>` of length 2.
       The first element is the numeric return value for the operation,
       and the second element is a string value for the error.
-      A ``0`` numeric error means no error in the operation.
+      A ``0`` numeric error means no error in the operation (``CURLE_OK``).
+
+      The return value and description are produced directly from libcurl.
+      See the `libcurl documentation`_ on error codes for more information.
+
+    .. _`libcurl documentation`: https://curl.se/libcurl/c/libcurl-errors.html
 
     ``TIMEOUT <seconds>``
       Terminate the operation after a given total time has elapsed.
@@ -931,6 +948,7 @@ Archiving
     [MTIME <mtime>]
     [THREADS <number>]
     [WORKING_DIRECTORY <dir>]
+    [PATTERNS_EXCLUDE <pattern>...]
     [VERBOSE])
   :target: ARCHIVE_CREATE
   :break: verbatim
@@ -1071,6 +1089,17 @@ Archiving
     this directory.  If this option is not provided, the current working
     directory will be used by default.
 
+  ``PATTERNS_EXCLUDE <pattern>...``
+    .. versionadded:: 4.5
+
+    Do not add files or directories that match one of the given patterns.
+    Wildcards are supported.  When a directory matches a pattern, it is
+    excluded together with everything beneath it.
+
+    Exclusion patterns are not anchored to the start of an entry's path: a
+    pattern matches if it matches any portion of the path.  This is consistent
+    with the ``--exclude`` option of command-line ``tar``.
+
   ``VERBOSE``
     Enable verbose output from the archive operation.
 
@@ -1080,6 +1109,7 @@ Archiving
     [DESTINATION <dir>]
     [ENCODING <encoding>]
     [PATTERNS <pattern>...]
+    [PATTERNS_EXCLUDE <pattern>...]
     [LIST_ONLY]
     [VERBOSE]
     [TOUCH])
@@ -1136,6 +1166,18 @@ Archiving
     Extract/list only files and directories that match one of the given
     patterns.  Wildcards are supported.  If the ``PATTERNS`` option is
     not given, the entire archive will be listed or extracted.
+
+  ``PATTERNS_EXCLUDE <pattern>...``
+    .. versionadded:: 4.5
+
+    Do not extract or list files and directories that match one of the given
+    patterns.  Wildcards are supported.  This option may be combined with
+    ``PATTERNS``; an entry that matches both an inclusion pattern and an
+    exclusion pattern is excluded.
+
+    Unlike ``PATTERNS``, exclusion patterns are not anchored to the start of
+    an entry's path: a pattern matches if it matches any portion of the path.
+    This is consistent with the ``--exclude`` option of command-line ``tar``.
 
   ``LIST_ONLY``
     List the files in the archive rather than extract them.
@@ -1456,7 +1498,13 @@ Handling Runtime Binaries
     for. This could be one of several values:
 
     * ``linux+elf``
+
+    * ``freebsd+elf``
+
+      .. versionadded:: 4.5
+
     * ``windows+pe``
+
     * ``macos+macho``
 
     If this variable is not specified, it is determined automatically by system
@@ -1471,7 +1519,7 @@ Handling Runtime Binaries
     ================================================= =============================================
        ``CMAKE_GET_RUNTIME_DEPENDENCIES_PLATFORM``       ``CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL``
     ================================================= =============================================
-    ``linux+elf``                                     ``objdump``
+    ``linux+elf``, ``freebsd+elf``                    ``objdump``
     ``windows+pe``                                    ``objdump`` or ``dumpbin``
     ``macos+macho``                                   ``otool``
     ================================================= =============================================

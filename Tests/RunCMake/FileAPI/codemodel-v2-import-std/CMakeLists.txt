@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.29)
+project(codemodel_v2_import_std CXX)
+
+cmake_file_api(QUERY API_VERSION 1 CODEMODEL 2)
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/../../CXXModulesCompile/cxx-modules-rules.cmake")
+
+add_executable(main
+  main.cxx)
+target_compile_features(main PRIVATE cxx_std_23)

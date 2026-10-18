@@ -1,0 +1,13 @@
+.*--.*
+ +All targets matching REGEX '\^zz_' \(case sensitive\):
+ +zz_parent \(INTERFACE_LIBRARY\)
+
+.*--.*
+ +All targets matching REGEX '\^zz_' \(case sensitive\):
+ +zz_child \(INTERFACE_LIBRARY\)
+ +zz_parent \(INTERFACE_LIBRARY\)
+
+.*--.*
+ +All targets matching REGEX '\^zz_' \(case sensitive\):
+ +zz_child \(INTERFACE_LIBRARY\)
+ +zz_parent \(INTERFACE_LIBRARY\)

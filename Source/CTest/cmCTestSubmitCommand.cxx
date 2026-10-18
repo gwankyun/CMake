@@ -3,7 +3,6 @@
 #include "cmCTestSubmitCommand.h"
 
 #include <set>
-#include <sstream>
 #include <utility>
 
 #include <cm/memory>
@@ -19,6 +18,7 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmRange.h"
+#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmValue.h"
 
@@ -50,19 +50,17 @@ std::unique_ptr<cmCTestGenericHandler> cmCTestSubmitCommand::InitializeHandler(
         &mf, "TLSVersion", "CTEST_TLS_VERSION", args.Quiet)) {
     if (cmValue tlsVersionVar = mf.GetDefinition("CMAKE_TLS_VERSION")) {
       cmCTestOptionalLog(
-        this->CTest, HANDLER_VERBOSE_OUTPUT,
-        "SetCTestConfiguration from CMAKE_TLS_VERSION:TLSVersion:"
-          << *tlsVersionVar << std::endl,
-        args.Quiet);
+        this->CTest, HANDLER_VERBOSE_OUTPUT, args.Quiet,
+        "SetCTestConfiguration from CMAKE_TLS_VERSION:TLSVersion:",
+        *tlsVersionVar, '\n');
       this->CTest->SetCTestConfiguration("TLSVersion", *tlsVersionVar,
                                          args.Quiet);
     } else if (cm::optional<std::string> tlsVersionEnv =
                  cmSystemTools::GetEnvVar("CMAKE_TLS_VERSION")) {
       cmCTestOptionalLog(
-        this->CTest, HANDLER_VERBOSE_OUTPUT,
-        "SetCTestConfiguration from ENV{CMAKE_TLS_VERSION}:TLSVersion:"
-          << *tlsVersionEnv << std::endl,
-        args.Quiet);
+        this->CTest, HANDLER_VERBOSE_OUTPUT, args.Quiet,
+        "SetCTestConfiguration from ENV{CMAKE_TLS_VERSION}:TLSVersion:",
+        *tlsVersionEnv, '\n');
       this->CTest->SetCTestConfiguration("TLSVersion", *tlsVersionEnv,
                                          args.Quiet);
     }
@@ -71,19 +69,17 @@ std::unique_ptr<cmCTestGenericHandler> cmCTestSubmitCommand::InitializeHandler(
         &mf, "TLSVerify", "CTEST_TLS_VERIFY", args.Quiet)) {
     if (cmValue tlsVerifyVar = mf.GetDefinition("CMAKE_TLS_VERIFY")) {
       cmCTestOptionalLog(
-        this->CTest, HANDLER_VERBOSE_OUTPUT,
-        "SetCTestConfiguration from CMAKE_TLS_VERIFY:TLSVerify:"
-          << *tlsVerifyVar << std::endl,
-        args.Quiet);
+        this->CTest, HANDLER_VERBOSE_OUTPUT, args.Quiet,
+        "SetCTestConfiguration from CMAKE_TLS_VERIFY:TLSVerify:",
+        *tlsVerifyVar, '\n');
       this->CTest->SetCTestConfiguration("TLSVerify", *tlsVerifyVar,
                                          args.Quiet);
     } else if (cm::optional<std::string> tlsVerifyEnv =
                  cmSystemTools::GetEnvVar("CMAKE_TLS_VERIFY")) {
       cmCTestOptionalLog(
-        this->CTest, HANDLER_VERBOSE_OUTPUT,
-        "SetCTestConfiguration from ENV{CMAKE_TLS_VERIFY}:TLSVerify:"
-          << *tlsVerifyEnv << std::endl,
-        args.Quiet);
+        this->CTest, HANDLER_VERBOSE_OUTPUT, args.Quiet,
+        "SetCTestConfiguration from ENV{CMAKE_TLS_VERIFY}:TLSVerify:",
+        *tlsVerifyEnv, '\n');
       this->CTest->SetCTestConfiguration("TLSVerify", *tlsVerifyEnv,
                                          args.Quiet);
     }
@@ -223,9 +219,8 @@ void cmCTestSubmitCommand::CheckArguments(HandlerArguments& arguments,
     cm::erase_if(*(args.Parts), [this, &mf](std::string const& arg) -> bool {
       cmCTest::Part p = this->CTest->GetPartFromName(arg);
       if (p == cmCTest::PartCount) {
-        std::ostringstream e;
-        e << "Part name \"" << arg << "\" is invalid.";
-        mf.IssueMessage(MessageType::FATAL_ERROR, e.str());
+        mf.IssueMessage(MessageType::FATAL_ERROR,
+                        cmStrCat("Part name \"", arg, "\" is invalid."));
         return true;
       }
       return false;
@@ -235,10 +230,10 @@ void cmCTestSubmitCommand::CheckArguments(HandlerArguments& arguments,
   if (args.Files) {
     cm::erase_if(*(args.Files), [&mf](std::string const& arg) -> bool {
       if (!cmSystemTools::FileExists(arg)) {
-        std::ostringstream e;
-        e << "File \"" << arg << "\" does not exist. Cannot submit "
-          << "a non-existent file.";
-        mf.IssueMessage(MessageType::FATAL_ERROR, e.str());
+        mf.IssueMessage(
+          MessageType::FATAL_ERROR,
+          cmStrCat("File \"", arg,
+                   "\" does not exist. Cannot submit a non-existent file."));
         return true;
       }
       return false;

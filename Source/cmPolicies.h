@@ -658,7 +658,31 @@ class cmMakefile;
          4, 4, 0, WARN)                                                       \
   SELECT(POLICY, CMP0219,                                                     \
          "Macro invocations preserve backslashes in arguments.", 4, 4, 0,     \
-         WARN)
+         WARN)                                                                \
+  SELECT(POLICY, CMP0220,                                                     \
+         "Languages enabled in subdirectories propagate to the top-level "    \
+         "directory.",                                                        \
+         4, 5, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0221,                                                     \
+         "cmake_host_system_information() DISTRIB_* queries read the host "   \
+         "os-release.",                                                       \
+         4, 5, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0222,                                                     \
+         "The if() command supports path prefix tests using "                 \
+         "PATH_IS_PREFIX operator.",                                          \
+         4, 5, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0223, "An empty path is not a prefix of any path.", 4, 5, \
+         0, WARN)                                                             \
+  SELECT(POLICY, CMP0224,                                                     \
+         "Test fixtures use AROUND_EACH_REPEAT mode by default with "         \
+         "ctest --repeat.",                                                   \
+         4, 5, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0225,                                                     \
+         "ExternalProject sets CMAKE_INSTALL_PREFIX to <INSTALL_DIR> in the " \
+         "default configure command.",                                        \
+         4, 5, 0, WARN)                                                       \
+  SELECT(POLICY, CMP0226, "Respect Swift_MODULE_NAME with Xcode Generator",   \
+         4, 5, 0, WARN)
 
 #define CM_SELECT_ID(F, A1, A2, A3, A4, A5, A6) F(A1)
 #define CM_FOR_EACH_POLICY_ID(POLICY)                                         \
@@ -717,7 +741,8 @@ class cmMakefile;
   F(CMP0211)                                                                  \
   F(CMP0214)                                                                  \
   F(CMP0215)                                                                  \
-  F(CMP0216)
+  F(CMP0216)                                                                  \
+  F(CMP0226)
 
 #define CM_FOR_EACH_CUSTOM_COMMAND_POLICY(F)                                  \
   F(CMP0116)                                                                  \

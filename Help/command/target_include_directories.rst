@@ -9,8 +9,13 @@ target_include_directories
     {INTERFACE|PUBLIC|PRIVATE} <dir...
     [{INTERFACE|PUBLIC|PRIVATE} <dir>...]...)
 
-指定编译给定目标时要使用的包含目录。命名的\ ``<target>``\ 必须是由\ :command:`add_executable`\
-或\ :command:`add_library`\ 等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
+Specifies include directories to use when compiling a given target.
+The named ``<target>`` must have been created by a command such
+as :command:`add_executable` or :command:`add_library`.
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 通过显式地使用\ ``AFTER``\ 或\ ``BEFORE``，你可以在附加和前置之间进行选择，而不依赖于默认值。
 

@@ -12,9 +12,9 @@
 #include "cmGeneratorTarget.h"
 #include "cmLinkItem.h"
 #include "cmList.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 
 cmExportAndroidMKGenerator::cmExportAndroidMKGenerator() = default;
 
@@ -66,8 +66,8 @@ void cmExportAndroidMKGenerator::GenerateInterfaceProperties(
           std::string const& lib = item.AsStr();
           if (gt) {
 
-            if (gt->GetType() == cmStateEnums::SHARED_LIBRARY ||
-                gt->GetType() == cmStateEnums::MODULE_LIBRARY) {
+            if (gt->GetType() == cm::TargetType::SHARED_LIBRARY ||
+                gt->GetType() == cm::TargetType::MODULE_LIBRARY) {
               sharedLibs = cmStrCat(std::move(sharedLibs), ' ', lib);
             } else {
               staticLibs = cmStrCat(std::move(staticLibs), ' ', lib);
@@ -119,7 +119,7 @@ void cmExportAndroidMKGenerator::GenerateInterfaceProperties(
   }
 
   // Tell the NDK build system if prebuilt static libraries use C++.
-  if (target->GetType() == cmStateEnums::STATIC_LIBRARY) {
+  if (target->GetType() == cm::TargetType::STATIC_LIBRARY) {
     cmLinkImplementation const* li =
       target->GetLinkImplementation(config, cmGeneratorTarget::UseTo::Link);
     if (cm::contains(li->Languages, "CXX")) {
@@ -128,19 +128,19 @@ void cmExportAndroidMKGenerator::GenerateInterfaceProperties(
   }
 
   switch (target->GetType()) {
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       os << "include $(PREBUILT_SHARED_LIBRARY)\n";
       break;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       os << "include $(PREBUILT_STATIC_LIBRARY)\n";
       break;
-    case cmStateEnums::EXECUTABLE:
-    case cmStateEnums::UTILITY:
-    case cmStateEnums::OBJECT_LIBRARY:
-    case cmStateEnums::GLOBAL_TARGET:
-    case cmStateEnums::INTERFACE_LIBRARY:
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::EXECUTABLE:
+    case cm::TargetType::UTILITY:
+    case cm::TargetType::OBJECT_LIBRARY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::INTERFACE_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       break;
   }
   os << "\n";

@@ -2,20 +2,18 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmCxxModuleMapper.h"
 
-#include <cassert>
 #include <cstddef>
 #include <set>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <cm/string_view>
 #include <cmext/string_view>
 
 #include "cmScanDepFormat.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmUnreachable.h"
 
 CxxBmiLocation::CxxBmiLocation() = default;
 
@@ -131,8 +129,6 @@ std::string CxxModuleMapContentClang(CxxModuleLocations const& loc,
                                      cmScanDepInfo const& obj,
                                      CxxModuleUsage const& usages)
 {
-  std::stringstream mm;
-
   // Clang's command line only supports a single output. If more than one is
   // expected, we cannot make a useful module map file.
   if (obj.Provides.size() > 1) {
@@ -141,32 +137,32 @@ std::string CxxModuleMapContentClang(CxxModuleLocations const& loc,
 
   // A series of flags which tell the compiler where to look for modules.
 
+  std::string mm;
   for (auto const& p : obj.Provides) {
     auto bmi_loc = loc.BmiGeneratorPathForModule(p.LogicalName);
     if (bmi_loc.IsKnown()) {
       // Force the TU to be considered a C++ module source file regardless of
       // extension.
-      mm << "-x c++-module\n";
-
-      mm << "-fmodule-output=\"" << bmi_loc.Location() << "\"\n";
+      mm = cmStrCat(std::move(mm),
+                    "-x c++-module\n"
+                    "-fmodule-output=\"",
+                    bmi_loc.Location(), "\"\n");
       break;
     }
   }
 
   auto all_usages = GetTransitiveUsages(loc, obj.Requires, usages);
   for (auto const& usage : all_usages) {
-    mm << "-fmodule-file=\"" << usage.LogicalName << '=' << usage.Location
-       << "\"\n";
+    mm = cmStrCat(std::move(mm), "-fmodule-file=\"", usage.LogicalName, '=',
+                  usage.Location, "\"\n");
   }
 
-  return mm.str();
+  return mm;
 }
 
 std::string CxxModuleMapContentGcc(CxxModuleLocations const& loc,
                                    cmScanDepInfo const& obj)
 {
-  std::stringstream mm;
-
   // Documented in GCC's documentation. The format is a series of
   // lines with a module name and the associated filename separated
   // by spaces. The first line may use `$root` as the module name
@@ -175,30 +171,30 @@ std::string CxxModuleMapContentGcc(CxxModuleLocations const& loc,
   // generate any).
 
   // Write the root directory to use for module paths.
-  mm << "$root " << loc.RootDirectory << '\n';
+  std::string mm = cmStrCat("$root ", loc.RootDirectory, '\n');
 
   for (auto const& p : obj.Provides) {
     auto bmi_loc = loc.BmiGeneratorPathForModule(p.LogicalName);
     if (bmi_loc.IsKnown()) {
-      mm << p.LogicalName << ' ' << bmi_loc.Location() << '\n';
+      mm =
+        cmStrCat(std::move(mm), p.LogicalName, ' ', bmi_loc.Location(), '\n');
     }
   }
   for (auto const& r : obj.Requires) {
     auto bmi_loc = loc.BmiGeneratorPathForModule(r.LogicalName);
     if (bmi_loc.IsKnown()) {
-      mm << r.LogicalName << ' ' << bmi_loc.Location() << '\n';
+      mm =
+        cmStrCat(std::move(mm), r.LogicalName, ' ', bmi_loc.Location(), '\n');
     }
   }
 
-  return mm.str();
+  return mm;
 }
 
 std::string CxxModuleMapContentMsvc(CxxModuleLocations const& loc,
                                     cmScanDepInfo const& obj,
                                     CxxModuleUsage const& usages)
 {
-  std::stringstream mm;
-
   // A response file of `-reference NAME=PATH` arguments.
 
   // MSVC's command line only supports a single output. If more than one is
@@ -216,20 +212,22 @@ std::string CxxModuleMapContentMsvc(CxxModuleLocations const& loc,
       case LookupMethod::IncludeQuote:
         return "-headerUnit:quote"_s;
     }
-    assert(false && "unsupported lookup method");
+    CM_UNREACHABLE;
     return ""_s;
   };
 
+  std::string mm;
   for (auto const& p : obj.Provides) {
     if (p.IsInterface) {
-      mm << "-interface\n";
+      mm += "-interface\n";
     } else {
-      mm << "-internalPartition\n";
+      mm += "-internalPartition\n";
     }
 
     auto bmi_loc = loc.BmiGeneratorPathForModule(p.LogicalName);
     if (bmi_loc.IsKnown()) {
-      mm << "-ifcOutput \"" << bmi_loc.Location() << "\"\n";
+      mm =
+        cmStrCat(std::move(mm), "-ifcOutput \"", bmi_loc.Location(), "\"\n");
     }
   }
 
@@ -237,11 +235,11 @@ std::string CxxModuleMapContentMsvc(CxxModuleLocations const& loc,
   for (auto const& usage : all_usages) {
     auto flag = flag_for_method(usage.Method);
 
-    mm << flag << " \"" << usage.LogicalName << '=' << usage.Location
-       << "\"\n";
+    mm = cmStrCat(std::move(mm), flag, " \"", usage.LogicalName, '=',
+                  usage.Location, "\"\n");
   }
 
-  return mm.str();
+  return mm;
 }
 }
 
@@ -265,7 +263,7 @@ bool CxxModuleUsage::AddReference(std::string const& logical,
         case LookupMethod::IncludeQuote:
           return "include-quote"_s;
       }
-      assert(false && "unsupported lookup method");
+      CM_UNREACHABLE;
       return ""_s;
     };
 
@@ -432,7 +430,7 @@ std::string CxxModuleMapContent(CxxModuleMapFormat format,
       return CxxModuleMapContentMsvc(loc, obj, usages);
   }
 
-  assert(false);
+  CM_UNREACHABLE;
   return {};
 }
 
@@ -446,6 +444,6 @@ CxxModuleMapMode CxxModuleMapOpenMode(CxxModuleMapFormat format)
       return CxxModuleMapMode::Default;
   }
 
-  assert(false);
+  CM_UNREACHABLE;
   return CxxModuleMapMode::Default;
 }

@@ -84,6 +84,8 @@ macro(get_json_member_with_default json_variable member_name out_variable)
   if(error_param)
     # Member not present
     set(${out_variable} "")
+  else()
+    string(STRIP "${${out_variable}}" "${out_variable}")
   endif()
 endmacro()
 
@@ -111,6 +113,7 @@ macro(parse_tests_from_json json_file per_test_callback)
       # before accounting for pretty names. This may be used to construct the
       # name of XML output results files.
       string(JSON current_test_suite GET "${test_suite_json}" "name")
+      string(STRIP "${current_test_suite}" current_test_suite)
       string(JSON tests_json GET "${test_suite_json}" "testsuite")
 
       # Skip test suites without tests

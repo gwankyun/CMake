@@ -7,7 +7,15 @@ INTERFACE_HEADER_SETS
 的文件集）。这些头文件集中列出的文件可以用\ :command:`install(TARGETS)`\ 安装，用\
 :command:`install(EXPORT)`\ 和\ :command:`export`\ 导出。
 
-Header sets may be defined using the :command:`target_sources` command
-``FILE_SET`` option with type ``HEADERS``.
+See Also
+^^^^^^^^
 
-See also :prop_tgt:`HEADER_SETS`.
+Related properties:
+
+* :prop_tgt:`INTERFACE_FILE_SETS_<TYPE>`
+* :prop_tgt:`FILE_SETS_<TYPE>`
+* :prop_tgt:`HEADER_SETS`
+
+Related commands:
+
+* :command:`target_sources` to define file sets of type ``HEADERS``

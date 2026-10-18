@@ -2,7 +2,7 @@
 # file LICENSE.rst or https://cmake.org/licensing for details.
 
 
-if(NOT DEFINED CMAKE_Fortran_COMPILER)
+if(NOT DEFINED CMAKE_Fortran_COMPILER AND NOT CMAKE_GENERATOR MATCHES "Visual Studio")
   set(_desc "Looking for a Fortran compiler")
   message(STATUS ${_desc})
   file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/CheckFortran)

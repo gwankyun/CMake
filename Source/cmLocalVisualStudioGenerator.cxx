@@ -135,8 +135,8 @@ cmLocalVisualStudioGenerator::MaybeCreateImplibDir(cmGeneratorTarget* target,
   // If an executable exports symbols then VS wants to create an
   // import library but forgets to create the output directory.
   // The Intel Fortran plugin always forgets to the directory.
-  if (target->GetType() != cmStateEnums::EXECUTABLE &&
-      !(isFortran && target->GetType() == cmStateEnums::SHARED_LIBRARY)) {
+  if (target->GetType() != cm::TargetType::EXECUTABLE &&
+      !(isFortran && target->GetType() == cm::TargetType::SHARED_LIBRARY)) {
     return pcc;
   }
   std::string outDir =
@@ -197,14 +197,14 @@ std::string cmLocalVisualStudioGenerator::ConstructScript(
 
   if (!workingDirectory.empty()) {
     // Change the working directory.
-    script = cmStrCat(script, newline, "cd ",
+    script = cmStrCat(std::move(script), newline, "cd ",
                       this->ConvertToOutputFormat(workingDirectory, SHELL),
                       check_error);
     newline = newline_text;
 
     // Change the working drive.
     if (workingDirectory.size() > 1 && workingDirectory[1] == ':') {
-      script = cmStrCat(script, newline, workingDirectory[0],
+      script = cmStrCat(std::move(script), newline, workingDirectory[0],
                         workingDirectory[1], check_error);
       newline = newline_text;
     }
@@ -216,7 +216,8 @@ std::string cmLocalVisualStudioGenerator::ConstructScript(
     cmValue extraPath =
       this->Makefile->GetDefinition("CMAKE_MSVCIDE_RUN_PATH");
     if (extraPath) {
-      script = cmStrCat(script, newline, "set PATH=", *extraPath, ";%PATH%");
+      script = cmStrCat(std::move(script), newline, "set PATH=", *extraPath,
+                        ";%PATH%");
       newline = newline_text;
     }
   }
@@ -264,7 +265,7 @@ std::string cmLocalVisualStudioGenerator::ConstructScript(
   if (useLocal) {
     // clang-format off
     script = cmStrCat(
-        script
+        std::move(script)
       , newline
       , ":cmEnd"
       , newline

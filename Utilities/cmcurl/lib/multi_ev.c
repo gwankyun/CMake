@@ -34,11 +34,9 @@
 #include "uint-spbset.h"
 #include "multihandle.h"
 
-
-static void mev_in_callback(struct Curl_multi *multi, bool value)
-{
-  multi->in_callback = value;
-}
+#ifdef DEBUGBUILD
+#define SH_ENTRY_MAGIC 0x570091d
+#endif
 
 /* Information about a socket for which we inform the libcurl application
  * what to supervise (CURL_POLL_IN/CURL_POLL_OUT/CURL_POLL_REMOVE)
@@ -51,30 +49,21 @@ struct mev_sh_entry {
                          * libcurl application to watch out for */
   unsigned int readers; /* this many transfers want to read */
   unsigned int writers; /* this many transfers want to write */
+#ifdef DEBUGBUILD
+  unsigned int magic;
+#endif
   BIT(announced);       /* this socket has been passed to the socket
                            callback at least once */
 };
-
-static size_t mev_sh_entry_hash(void *key, size_t key_length, size_t slots_num)
-{
-  curl_socket_t fd = *((curl_socket_t *)key);
-  (void)key_length;
-  return (fd % (curl_socket_t)slots_num);
-}
-
-static size_t mev_sh_entry_compare(void *k1, size_t k1_len,
-                                   void *k2, size_t k2_len)
-{
-  (void)k1_len;
-  (void)k2_len;
-  return (*((curl_socket_t *)k1)) == (*((curl_socket_t *)k2));
-}
 
 /* sockhash entry destructor callback */
 static void mev_sh_entry_dtor(void *freethis)
 {
   struct mev_sh_entry *entry = (struct mev_sh_entry *)freethis;
   Curl_uint32_spbset_destroy(&entry->xfers);
+#ifdef DEBUGBUILD
+  entry->magic = 0;
+#endif
   curlx_free(entry);
 }
 
@@ -84,7 +73,7 @@ static struct mev_sh_entry *mev_sh_entry_get(struct Curl_hash *sh,
 {
   if(s != CURL_SOCKET_BAD) {
     /* only look for proper sockets */
-    return Curl_hash_pick(sh, (char *)&s, sizeof(curl_socket_t));
+    return Curl_hash_pick(sh, (const char *)&s, sizeof(curl_socket_t));
   }
   return NULL;
 }
@@ -113,7 +102,9 @@ static struct mev_sh_entry *mev_sh_entry_add(struct Curl_hash *sh,
     mev_sh_entry_dtor(check);
     return NULL; /* major failure */
   }
-
+#ifdef DEBUGBUILD
+  check->magic = SH_ENTRY_MAGIC;
+#endif
   return check; /* things are good in sockhash land */
 }
 
@@ -138,6 +129,52 @@ static bool mev_sh_entry_conn_known(struct mev_sh_entry *e,
                                     struct connectdata *conn)
 {
   return (e->conn == conn);
+}
+
+static void mev_pollset_dtor(const void *key, size_t klen, void *entry)
+{
+  struct easy_pollset *ps = entry;
+  (void)key;
+  (void)klen;
+  if(ps) {
+    Curl_pollset_cleanup(ps);
+    curlx_free(ps);
+  }
+}
+
+static struct easy_pollset *mev_add_new_conn_pollset(struct connectdata *conn)
+{
+  struct easy_pollset *ps;
+
+  ps = Curl_pollset_create();
+  if(!ps)
+    return NULL;
+  if(Curl_conn_meta_set(conn, CURL_META_MEV_POLLSET, ps, mev_pollset_dtor))
+    return NULL;
+  return ps;
+}
+
+static struct easy_pollset *mev_add_new_xfer_pollset(struct Curl_easy *data)
+{
+  struct easy_pollset *ps;
+
+  ps = Curl_pollset_create();
+  if(!ps)
+    return NULL;
+  if(Curl_meta_set(data, CURL_META_MEV_POLLSET, ps, mev_pollset_dtor))
+    return NULL;
+  return ps;
+}
+
+static struct easy_pollset *mev_get_last_pollset(struct Curl_easy *data,
+                                                 struct connectdata *conn)
+{
+  if(data) {
+    if(conn)
+      return Curl_conn_meta_get(conn, CURL_META_MEV_POLLSET);
+    return Curl_meta_get(data, CURL_META_MEV_POLLSET);
+  }
+  return NULL;
 }
 
 static bool mev_sh_entry_xfer_add(struct mev_sh_entry *e,
@@ -188,20 +225,43 @@ static CURLMcode mev_forget_socket(struct Curl_multi *multi,
                                    const char *cause)
 {
   struct mev_sh_entry *entry = mev_sh_entry_get(&multi->ev.sh_entries, s);
+  uint32_t mid;
   int rc = 0;
 
   if(!entry) /* we never knew or already forgot about this socket */
     return CURLM_OK;
 
+  /* Remove the socket from any pollset that is still registered. */
+  if(Curl_uint32_spbset_first(&entry->xfers, &mid)) {
+    do {
+      struct Curl_easy *sdata = Curl_multi_get_easy(multi, mid);
+      if(sdata) {
+        struct easy_pollset *ps = mev_get_last_pollset(sdata, NULL);
+        if(ps)
+          Curl_pollset_remove(ps, s);
+      }
+    } while(Curl_uint32_spbset_next(&entry->xfers, mid, &mid));
+  }
+
+  if(entry->conn) {
+    struct easy_pollset *ps = mev_get_last_pollset(data, entry->conn);
+    if(ps)
+      Curl_pollset_remove(ps, s);
+  }
+
   /* We managed this socket before, tell the socket callback to forget it. */
   if(entry->announced && multi->socket_cb) {
+    struct Curl_mapi_guard guard;
+
     NOVERBOSE((void)cause);
     CURL_TRC_M(data, "ev %s, call(fd=%" FMT_SOCKET_T ", ev=REMOVE)", cause, s);
-    mev_in_callback(multi, TRUE);
+    CURL_CBAPI_MULTI_START(&guard, multi, multi_socket_cb);
     rc = multi->socket_cb(data, s, CURL_POLL_REMOVE,
                           multi->socket_userp, entry->user_data);
-    mev_in_callback(multi, FALSE);
-    entry->announced = FALSE;
+    CURL_CBAPI_END(&guard);
+    entry = mev_sh_entry_get(&multi->ev.sh_entries, s);
+    if(entry)
+      entry->announced = FALSE;
   }
 
   mev_sh_entry_kill(multi, s);
@@ -223,6 +283,7 @@ static CURLMcode mev_sh_entry_update(struct Curl_multi *multi,
 
   /* we should only be called when the callback exists */
   DEBUGASSERT(multi->socket_cb);
+  DEBUGASSERT(entry->magic == SH_ENTRY_MAGIC);
   if(!multi->socket_cb)
     return CURLM_OK;
 
@@ -268,16 +329,25 @@ static CURLMcode mev_sh_entry_update(struct Curl_multi *multi,
   CURL_TRC_M(data, "ev update call(fd=%" FMT_SOCKET_T ", ev=%s%s)",
              s, (comboaction & CURL_POLL_IN) ? "IN" : "",
              (comboaction & CURL_POLL_OUT) ? "OUT" : "");
-  mev_in_callback(multi, TRUE);
-  rc = multi->socket_cb(data, s, comboaction, multi->socket_userp,
-                        entry->user_data);
-  mev_in_callback(multi, FALSE);
-  entry->announced = TRUE;
+  {
+    struct Curl_mapi_guard guard;
+    CURL_CBAPI_MULTI_START(&guard, multi, multi_socket_cb);
+    rc = multi->socket_cb(data, s, comboaction, multi->socket_userp,
+                          entry->user_data);
+    CURL_CBAPI_MULTI_END(&guard);
+  }
   if(rc == -1) {
     multi->dead = TRUE;
     return CURLM_ABORTED_BY_CALLBACK;
   }
-  entry->action = (unsigned int)comboaction;
+  /* curl_easy_pause() is documented as callable from any callback; it
+   * re-enters mev_assess() which may free this 'entry'. Re-fetch. */
+  entry = mev_sh_entry_get(&multi->ev.sh_entries, s);
+  if(entry) {
+    DEBUGASSERT(entry->magic == SH_ENTRY_MAGIC);
+    entry->announced = TRUE;
+    entry->action = (unsigned int)comboaction;
+  }
   return CURLM_OK;
 }
 
@@ -428,52 +498,6 @@ static CURLMcode mev_pollset_diff(struct Curl_multi *multi,
   return CURLM_OK;
 }
 
-static void mev_pollset_dtor(void *key, size_t klen, void *entry)
-{
-  struct easy_pollset *ps = entry;
-  (void)key;
-  (void)klen;
-  if(ps) {
-    Curl_pollset_cleanup(ps);
-    curlx_free(ps);
-  }
-}
-
-static struct easy_pollset *mev_add_new_conn_pollset(struct connectdata *conn)
-{
-  struct easy_pollset *ps;
-
-  ps = Curl_pollset_create();
-  if(!ps)
-    return NULL;
-  if(Curl_conn_meta_set(conn, CURL_META_MEV_POLLSET, ps, mev_pollset_dtor))
-    return NULL;
-  return ps;
-}
-
-static struct easy_pollset *mev_add_new_xfer_pollset(struct Curl_easy *data)
-{
-  struct easy_pollset *ps;
-
-  ps = Curl_pollset_create();
-  if(!ps)
-    return NULL;
-  if(Curl_meta_set(data, CURL_META_MEV_POLLSET, ps, mev_pollset_dtor))
-    return NULL;
-  return ps;
-}
-
-static struct easy_pollset *mev_get_last_pollset(struct Curl_easy *data,
-                                                 struct connectdata *conn)
-{
-  if(data) {
-    if(conn)
-      return Curl_conn_meta_get(conn, CURL_META_MEV_POLLSET);
-    return Curl_meta_get(data, CURL_META_MEV_POLLSET);
-  }
-  return NULL;
-}
-
 static CURLMcode mev_assess(struct Curl_multi *multi,
                             struct Curl_easy *data,
                             struct connectdata *conn)
@@ -486,9 +510,9 @@ static CURLMcode mev_assess(struct Curl_multi *multi,
 
   Curl_pollset_init(&ps);
   if(conn) {
-    CURLcode r = Curl_conn_adjust_pollset(data, conn, &ps);
-    if(r) {
-      mresult = (r == CURLE_OUT_OF_MEMORY) ?
+    CURLcode result = Curl_conn_adjust_pollset(data, conn, &ps);
+    if(result) {
+      mresult = (result == CURLE_OUT_OF_MEMORY) ?
         CURLM_OUT_OF_MEMORY : CURLM_INTERNAL_ERROR;
       goto out;
     }
@@ -617,8 +641,8 @@ void Curl_multi_ev_conn_done(struct Curl_multi *multi,
 
 void Curl_multi_ev_init(struct Curl_multi *multi, size_t hashsize)
 {
-  Curl_hash_init(&multi->ev.sh_entries, hashsize, mev_sh_entry_hash,
-                 mev_sh_entry_compare, mev_sh_entry_dtor);
+  Curl_hash_init(&multi->ev.sh_entries, hashsize, CURL_HASH_TYPE_SOCKET,
+                 mev_sh_entry_dtor);
 }
 
 void Curl_multi_ev_cleanup(struct Curl_multi *multi)

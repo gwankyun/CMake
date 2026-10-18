@@ -3,7 +3,6 @@
 
 #include "cmBinUtilsMacOSMachOLinker.h"
 
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -14,6 +13,7 @@
 #include "cmRuntimeDependencyArchive.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 
 namespace {
 bool IsMissingSystemDylib(std::string const& path)
@@ -44,9 +44,8 @@ bool cmBinUtilsMacOSMachOLinker::Prepare()
       cm::make_unique<cmBinUtilsMacOSMachOOToolGetRuntimeDependenciesTool>(
         this->Archive);
   } else {
-    std::ostringstream e;
-    e << "Invalid value for CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL: " << tool;
-    this->SetError(e.str());
+    this->SetError(cmStrCat(
+      "Invalid value for CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL: ", tool));
     return false;
   }
 
@@ -73,11 +72,11 @@ auto cmBinUtilsMacOSMachOLinker::GetFileInfo(std::string const& file)
   return &iter_inserted.first->second;
 }
 
-bool cmBinUtilsMacOSMachOLinker::ScanDependencies(
-  std::string const& file, cmStateEnums::TargetType type)
+bool cmBinUtilsMacOSMachOLinker::ScanDependencies(std::string const& file,
+                                                  cm::TargetType type)
 {
   std::string executableFile;
-  if (type == cmStateEnums::EXECUTABLE) {
+  if (type == cm::TargetType::EXECUTABLE) {
     executableFile = file;
   } else {
     executableFile = this->Archive->GetBundleExecutable();

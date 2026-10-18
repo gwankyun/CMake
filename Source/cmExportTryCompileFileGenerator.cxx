@@ -20,10 +20,10 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmOutputConverter.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmExportTryCompileFileGenerator::cmExportTryCompileFileGenerator(
@@ -114,7 +114,7 @@ std::string cmExportTryCompileFileGenerator::FindTargets(
 
   std::unique_ptr<cmCompiledGeneratorExpression> cge = ge.Parse(*prop);
 
-  cmTarget dummyHead("try_compile_dummy_exe", cmStateEnums::EXECUTABLE,
+  cmTarget dummyHead("try_compile_dummy_exe", cm::TargetType::EXECUTABLE,
                      cmTarget::Visibility::Normal, tgt->Target->GetMakefile(),
                      cmTarget::PerConfig::Yes);
   dummyHead.SetIsForTryCompile();

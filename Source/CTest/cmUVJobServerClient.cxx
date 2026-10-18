@@ -3,17 +3,18 @@
 #include "cmUVJobServerClient.h"
 
 #include <cassert>
+#include <cstdio>
+#include <string>
 #include <utility>
+#include <vector>
 
 #ifndef _WIN32
-#  include <cstdio>
-#  include <string>
-#  include <vector>
-
 #  include <fcntl.h>
 #  include <unistd.h>
 
 #  include <sys/types.h>
+#else
+#  include <windows.h>
 #endif
 
 #include <cm/memory>
@@ -469,6 +470,209 @@ void ImplPosix::StopReceivingTokens()
 #endif
 
 //---------------------------------------------------------------------------
+// Implementation on Windows platforms.
+// https://www.gnu.org/software/make/manual/html_node/Windows-Jobserver.html
+
+#ifdef _WIN32
+namespace {
+unsigned int const JobServerPollInterval = 10;
+unsigned int const JobServerMaxTokensPerPoll = 32;
+
+class ImplWin32 : public cmUVJobServerClient::Impl
+{
+public:
+  enum class Connection
+  {
+    None,
+    Semaphore,
+  };
+  Connection Conn = Connection::None;
+
+  HANDLE Semaphore = nullptr;
+  cm::uv_timer_ptr PollTimer;
+  bool ReceivingTokens = false;
+
+  void Connect();
+  void Disconnect(int status);
+  void PollTokens();
+
+  bool IsConnected() const;
+
+  void SendToken() override;
+  void StartReceivingTokens() override;
+  void StopReceivingTokens() override;
+
+  ImplWin32(uv_loop_t& loop);
+  ~ImplWin32() override;
+};
+
+ImplWin32::ImplWin32(uv_loop_t& loop)
+  : Impl(loop)
+{
+  if (this->PollTimer.init(this->Loop, this) == 0) {
+    this->Connect();
+  }
+}
+
+ImplWin32::~ImplWin32()
+{
+  this->Disconnect(0);
+}
+
+void ImplWin32::Connect()
+{
+  static std::vector<cm::string_view> const prefixes = {
+    "--jobserver-auth=", "--jobserver-fds=", "-J"
+  };
+
+  cm::optional<std::string> makeflags = cmSystemTools::GetEnvVar("MAKEFLAGS");
+  if (!makeflags) {
+    return;
+  }
+
+  cm::optional<std::string> auth;
+  std::vector<std::string> args;
+  cmSystemTools::ParseUnixCommandLine(makeflags->c_str(), args);
+  for (cm::string_view arg : cmReverseRange(args)) {
+    for (cm::string_view prefix : prefixes) {
+      if (cmHasPrefix(arg, prefix)) {
+        auth = cmTrimWhitespace(arg.substr(prefix.length()));
+        break;
+      }
+    }
+    if (auth) {
+      break;
+    }
+  }
+
+  if (!auth || auth->empty()) {
+    return;
+  }
+
+  int reader;
+  int writer;
+  char trailing;
+  if (cmHasLiteralPrefix(*auth, "fifo:") ||
+      std::sscanf(auth->c_str(), "%d,%d%c", &reader, &writer, &trailing) ==
+        2) {
+    return;
+  }
+
+  HANDLE semaphore =
+    OpenSemaphoreA(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, FALSE, auth->c_str());
+  if (!semaphore) {
+    return;
+  }
+
+  this->Semaphore = semaphore;
+  this->Conn = Connection::Semaphore;
+}
+
+void ImplWin32::Disconnect(int status)
+{
+  if (this->Conn == Connection::None) {
+    return;
+  }
+
+  this->StopReceivingTokens();
+  this->Conn = Connection::None;
+  CloseHandle(this->Semaphore);
+  this->Semaphore = nullptr;
+  this->PollTimer.reset();
+
+  if (status != 0) {
+    this->Disconnected(status);
+  }
+}
+
+void ImplWin32::PollTokens()
+{
+  unsigned int taken = 0;
+  while (this->Conn == Connection::Semaphore && this->NeedTokens > 0 &&
+         !uv_is_active(this->ImplicitToken) &&
+         taken < JobServerMaxTokensPerPoll) {
+    DWORD const result = WaitForSingleObject(this->Semaphore, 0);
+    if (result == WAIT_OBJECT_0) {
+      ++taken;
+      this->ReceivedToken();
+    } else if (result == WAIT_TIMEOUT) {
+      return;
+    } else if (result == WAIT_FAILED) {
+      this->Disconnect(uv_translate_sys_error(GetLastError()));
+      return;
+    } else {
+      assert(result != WAIT_ABANDONED);
+      this->Disconnect(UV_EINVAL);
+      return;
+    }
+  }
+
+  if (this->Conn == Connection::Semaphore && this->NeedTokens > 0 &&
+      !uv_is_active(this->ImplicitToken) &&
+      taken == JobServerMaxTokensPerPoll) {
+    int const status = uv_timer_start(
+      this->PollTimer,
+      [](uv_timer_t* handle) {
+        static_cast<ImplWin32*>(handle->data)->PollTokens();
+      },
+      0, JobServerPollInterval);
+    if (status != 0) {
+      this->Disconnect(status);
+    }
+  }
+}
+
+bool ImplWin32::IsConnected() const
+{
+  return this->Conn != Connection::None;
+}
+
+void ImplWin32::SendToken()
+{
+  if (this->Conn == Connection::None) {
+    return;
+  }
+
+  if (!ReleaseSemaphore(this->Semaphore, 1, nullptr)) {
+    DWORD const error = GetLastError();
+    assert(error != ERROR_TOO_MANY_POSTS);
+    this->Disconnect(uv_translate_sys_error(error));
+  }
+}
+
+void ImplWin32::StartReceivingTokens()
+{
+  if (this->Conn == Connection::None || this->ReceivingTokens) {
+    return;
+  }
+
+  int const status = uv_timer_start(
+    this->PollTimer,
+    [](uv_timer_t* handle) {
+      static_cast<ImplWin32*>(handle->data)->PollTokens();
+    },
+    0, JobServerPollInterval);
+  if (status != 0) {
+    this->Disconnect(status);
+    return;
+  }
+
+  this->ReceivingTokens = true;
+}
+
+void ImplWin32::StopReceivingTokens()
+{
+  if (this->Conn == Connection::None || !this->ReceivingTokens) {
+    return;
+  }
+
+  this->ReceivingTokens = false;
+  uv_timer_stop(this->PollTimer);
+}
+}
+#endif
+
+//---------------------------------------------------------------------------
 // Implementation of public interface.
 
 cmUVJobServerClient::cmUVJobServerClient(std::unique_ptr<Impl> impl)
@@ -508,10 +712,12 @@ cm::optional<cmUVJobServerClient> cmUVJobServerClient::Connect(
   std::function<void(int)> onDisconnect)
 {
 #if defined(_WIN32)
-  // FIXME: Windows job server client not yet implemented.
-  static_cast<void>(loop);
-  static_cast<void>(onToken);
-  static_cast<void>(onDisconnect);
+  auto impl = cm::make_unique<ImplWin32>(loop);
+  if (impl && impl->IsConnected()) {
+    impl->OnToken = std::move(onToken);
+    impl->OnDisconnect = std::move(onDisconnect);
+    return cmUVJobServerClient(std::move(impl));
+  }
 #else
   auto impl = cm::make_unique<ImplPosix>(loop);
   if (impl && impl->IsConnected()) {

@@ -36,6 +36,7 @@
 #include "cmSourceFileLocationKind.h"
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 // IWYU does not see that 'std::unordered_map<std::string, cmTarget>'
@@ -51,6 +52,7 @@ enum class cmObjectLibraryCommands;
 
 class cmCompiledGeneratorExpression;
 class cmCustomCommandLines;
+class cmRule;
 class cmExecutionStatus;
 class cmExpandedCommandArgument;
 class cmBuildSbomGenerator;
@@ -260,6 +262,25 @@ public:
     cmCustomCommandLines const& commandLines);
 
   /**
+   * Add a custom rule to the build.
+   */
+  cmRule* AddRule(std::unique_ptr<cmRule> rule);
+
+  // -- List of custom rules
+  std::vector<std::unique_ptr<cmRule>> const& GetOwnedRules() const
+  {
+    return this->RulesOwned;
+  }
+  using cmRuleMap = std::unordered_map<std::string, cmRule*>;
+  /** Get the rules map */
+  cmRuleMap const& GetRules() const { return this->Rules; }
+
+  /**
+   * Lookup for a rule
+   */
+  cmRule* FindRuleToUse(std::string const& name) const;
+
+  /**
    * Add a define flag to the build.
    */
   void AddDefineFlag(std::string const& definition);
@@ -270,21 +291,23 @@ public:
   void AddLinkDirectory(std::string const& directory, bool before = false);
 
   /** Create a new imported target with the name and type given.  */
-  cmTarget* AddImportedTarget(std::string const& name,
-                              cmStateEnums::TargetType type, bool global);
+  cmTarget* AddImportedTarget(std::string const& name, cm::TargetType type,
+                              cm::ImportedTargetScope scope);
 
   cmTarget* AddForeignTarget(std::string const& origin,
                              std::string const& name);
 
+  /** Find a foreign target previously created by AddForeignTarget.  */
+  cmTarget* FindForeignTarget(std::string const& origin,
+                              std::string const& name) const;
+
   std::pair<cmTarget&, bool> CreateNewTarget(
-    std::string const& name, cmStateEnums::TargetType type,
+    std::string const& name, cm::TargetType type,
     cmTarget::PerConfig perConfig = cmTarget::PerConfig::Yes,
     cmTarget::Visibility vis = cmTarget::Visibility::Normal);
 
-  cmTarget* AddNewTarget(cmStateEnums::TargetType type,
-                         std::string const& name);
-  cmTarget* AddSynthesizedTarget(cmStateEnums::TargetType type,
-                                 std::string const& name);
+  cmTarget* AddNewTarget(cm::TargetType type, std::string const& name);
+  cmTarget* AddSynthesizedTarget(cm::TargetType type, std::string const& name);
 
   /** Create a target instance for the utility.  */
   cmTarget* AddNewUtilityTarget(std::string const& utilityName,
@@ -390,8 +413,7 @@ public:
   /**
    * Set the name of the library.
    */
-  cmTarget* AddLibrary(std::string const& libname,
-                       cmStateEnums::TargetType type,
+  cmTarget* AddLibrary(std::string const& libname, cm::TargetType type,
                        std::vector<std::string> const& srcs,
                        bool excludeFromAll = false);
   void AddAlias(std::string const& libname, std::string const& tgt,
@@ -535,9 +557,9 @@ public:
   /** Find a target to use in place of the given name.  The target
       returned may be imported or built within the project.  */
   cmTarget* FindTargetToUse(std::string const& name,
-                            cmStateEnums::TargetDomainSet domains = {
-                              cmStateEnums::TargetDomain::NATIVE,
-                              cmStateEnums::TargetDomain::ALIAS }) const;
+                            cm::TargetDomainSet domains = {
+                              cm::TargetDomain::NATIVE,
+                              cm::TargetDomain::ALIAS }) const;
   bool IsAlias(std::string const& name) const;
 
   std::map<std::string, std::string> GetAliasTargets() const
@@ -682,14 +704,14 @@ public:
   /**
    * Add a root source group for consideration when adding a new source.
    */
-  void AddSourceGroup(std::string const& name, char const* regex = nullptr);
+  void AddSourceGroup(std::string const& name, cm::string_view regex = {});
 
   /**
    * Add a source group for consideration when adding a new source.
    * name is tokenized.
    */
   void AddSourceGroup(std::vector<std::string> const& name,
-                      char const* regex = nullptr);
+                      cm::string_view regex = {});
 
   /**
    * Get and existing or create a new source group.
@@ -974,6 +996,8 @@ public:
     this->RaiseScope(var, value.GetCStr());
   }
   void RaiseScope(std::vector<std::string> const& variables);
+  cmStateSnapshot::WarnCMP0220 RaiseToRoot(std::string const& var,
+                                           char const* varDef);
 
   // push and pop loop scopes
   void PushLoopBlockBarrier();
@@ -981,22 +1005,17 @@ public:
 
   bool IsImportedTargetGlobalScope() const;
 
-  enum class ImportedTargetScope
-  {
-    Local,
-    Global,
-  };
-
   /** Helper class to manage whether imported packages
    * should be globally scoped based off the find package command
    */
   class SetGlobalTargetImportScope
   {
   public:
-    SetGlobalTargetImportScope(cmMakefile* mk, ImportedTargetScope const scope)
+    SetGlobalTargetImportScope(cmMakefile* mk,
+                               cm::ImportedTargetScope const scope)
       : Makefile(mk)
     {
-      if (scope == ImportedTargetScope::Global &&
+      if (scope == cm::ImportedTargetScope::Global &&
           !this->Makefile->IsImportedTargetGlobalScope()) {
         this->Makefile->CurrentImportedTargetScope = scope;
         this->Set = true;
@@ -1008,7 +1027,7 @@ public:
     {
       if (this->Set) {
         this->Makefile->CurrentImportedTargetScope =
-          ImportedTargetScope::Local;
+          cm::ImportedTargetScope::Local;
       }
     }
 
@@ -1373,5 +1392,9 @@ private:
   std::set<std::string> WarnedCMP0144;
   std::set<std::string> WarnedCMP0219;
   bool IsSourceFileTryCompile;
-  ImportedTargetScope CurrentImportedTargetScope = ImportedTargetScope::Local;
+  cm::ImportedTargetScope CurrentImportedTargetScope =
+    cm::ImportedTargetScope::Local;
+  // -- List of custom rules
+  std::vector<std::unique_ptr<cmRule>> RulesOwned;
+  cmRuleMap Rules;
 };

@@ -77,7 +77,7 @@
 
 #if defined(__MINGW32__) && \
   (!defined(__MINGW64_VERSION_MAJOR) || (__MINGW64_VERSION_MAJOR < 3))
-#error "Building curl requires mingw-w64 3.0 or later"
+#error "mingw-w64 3.0 or greater required"
 #endif
 
 /* Visual Studio 2010 is the minimum Visual Studio version we support.
@@ -90,7 +90,7 @@
 /* Disable Visual Studio warnings: 4127 "conditional expression is constant" */
 #pragma warning(disable:4127)
 #ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS  /* for getenv(), sscanf() */
+#define _CRT_SECURE_NO_WARNINGS  /* for getenv(), sscanf(), vsnprintf() */
 #endif
 #endif /* _MSC_VER */
 
@@ -125,11 +125,6 @@
 #define SECURITY_WIN32  /* for <sspi.h> */
 #endif
 
-/* Compatibility */
-#ifdef ENABLE_IPV6
-#define USE_IPV6 1
-#endif
-
 /*
  * Include configuration script results or hand-crafted
  * configuration file for platforms which lack config tool.
@@ -147,10 +142,6 @@
 
 #ifdef macintosh
 #  include "config-mac.h"
-#endif
-
-#ifdef __riscos__
-#  include "config-riscos.h"
 #endif
 
 #ifdef __OS400__
@@ -186,7 +177,7 @@
 
 #ifdef HAVE_LIBZ
 #  ifndef ZLIB_CONST
-#  define ZLIB_CONST  /* Use z_const. Supported by v1.2.5.2 and upper. */
+#  define ZLIB_CONST  /* Use z_const. Supported by v1.2.5.2 or greater. */
 #  endif
 #endif
 
@@ -223,64 +214,9 @@
 /*  please, do it beyond the point further indicated in this file.  */
 /* ================================================================ */
 
-/* Give calloc a chance to be dragging in early, so we do not redefine */
+/* Give calloc a chance to be included early, so we do not redefine */
 #ifdef HAVE_THREADS_POSIX
 #  include <pthread.h>
-#endif
-
-/*
- * Disable other protocols when http is the only one desired.
- */
-#ifdef HTTP_ONLY
-#  ifndef CURL_DISABLE_DICT
-#  define CURL_DISABLE_DICT
-#  endif
-#  ifndef CURL_DISABLE_FILE
-#  define CURL_DISABLE_FILE
-#  endif
-#  ifndef CURL_DISABLE_FTP
-#  define CURL_DISABLE_FTP
-#  endif
-#  ifndef CURL_DISABLE_GOPHER
-#  define CURL_DISABLE_GOPHER
-#  endif
-#  ifndef CURL_DISABLE_IMAP
-#  define CURL_DISABLE_IMAP
-#  endif
-#  ifndef CURL_DISABLE_LDAP
-#  define CURL_DISABLE_LDAP
-#  endif
-#  ifndef CURL_DISABLE_LDAPS
-#  define CURL_DISABLE_LDAPS
-#  endif
-#  ifndef CURL_DISABLE_MQTT
-#  define CURL_DISABLE_MQTT
-#  endif
-#  ifndef CURL_DISABLE_POP3
-#  define CURL_DISABLE_POP3
-#  endif
-#  ifndef CURL_DISABLE_RTSP
-#  define CURL_DISABLE_RTSP
-#  endif
-#  ifndef CURL_DISABLE_SMTP
-#  define CURL_DISABLE_SMTP
-#  endif
-#  ifndef CURL_DISABLE_TELNET
-#  define CURL_DISABLE_TELNET
-#  endif
-#  ifndef CURL_DISABLE_TFTP
-#  define CURL_DISABLE_TFTP
-#  endif
-#  ifndef CURL_DISABLE_WEBSOCKETS
-#  define CURL_DISABLE_WEBSOCKETS
-#  endif
-#endif
-
-/*
- * When http is disabled rtsp is not supported.
- */
-#if defined(CURL_DISABLE_HTTP) && !defined(CURL_DISABLE_RTSP)
-#  define CURL_DISABLE_RTSP
 #endif
 
 /*
@@ -290,8 +226,8 @@
 #  ifndef CURL_DISABLE_ALTSVC
 #  define CURL_DISABLE_ALTSVC
 #  endif
-#  ifndef CURL_DISABLE_COOKIES
-#  define CURL_DISABLE_COOKIES
+#  ifndef CURL_DISABLE_AWS
+#  define CURL_DISABLE_AWS
 #  endif
 #  ifndef CURL_DISABLE_BASIC_AUTH
 #  define CURL_DISABLE_BASIC_AUTH
@@ -299,8 +235,8 @@
 #  ifndef CURL_DISABLE_BEARER_AUTH
 #  define CURL_DISABLE_BEARER_AUTH
 #  endif
-#  ifndef CURL_DISABLE_AWS
-#  define CURL_DISABLE_AWS
+#  ifndef CURL_DISABLE_COOKIES
+#  define CURL_DISABLE_COOKIES
 #  endif
 #  ifndef CURL_DISABLE_DOH
 #  define CURL_DISABLE_DOH
@@ -314,8 +250,14 @@
 #  ifndef CURL_DISABLE_HSTS
 #  define CURL_DISABLE_HSTS
 #  endif
+#  ifndef CURL_DISABLE_HTTPSIG
+#  define CURL_DISABLE_HTTPSIG
+#  endif
 #  ifndef CURL_DISABLE_HTTP_AUTH
 #  define CURL_DISABLE_HTTP_AUTH
+#  endif
+#  ifndef CURL_DISABLE_RTSP
+#  define CURL_DISABLE_RTSP
 #  endif
 #  ifndef CURL_DISABLE_WEBSOCKETS
 #  define CURL_DISABLE_WEBSOCKETS /* no WebSockets without HTTP present */
@@ -349,6 +291,30 @@
 #endif
 
 #include <curl/system.h>
+
+#if !defined(HAVE_PIPE2) && \
+  ((defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && \
+            __MAC_OS_X_VERSION_MAX_ALLOWED >= 270000 && \
+    defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && \
+            __MAC_OS_X_VERSION_MIN_REQUIRED >= 270000) || \
+   (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && \
+            __IPHONE_OS_VERSION_MAX_ALLOWED >= 270000 && \
+    defined(__IPHONE_OS_VERSION_MIN_REQUIRED) && \
+            __IPHONE_OS_VERSION_MIN_REQUIRED >= 270000) || \
+   (defined(__TV_OS_VERSION_MAX_ALLOWED) && \
+            __TV_OS_VERSION_MAX_ALLOWED >= 270000 && \
+    defined(__TV_OS_VERSION_MIN_REQUIRED) && \
+            __TV_OS_VERSION_MIN_REQUIRED >= 270000) || \
+   (defined(__WATCH_OS_VERSION_MAX_ALLOWED) && \
+            __WATCH_OS_VERSION_MAX_ALLOWED >= 270000 && \
+    defined(__WATCH_OS_VERSION_MIN_REQUIRED) && \
+            __WATCH_OS_VERSION_MIN_REQUIRED >= 270000) || \
+   (defined(__VISION_OS_VERSION_MAX_ALLOWED) && \
+            __VISION_OS_VERSION_MAX_ALLOWED >= 270000 && \
+    defined(__VISION_OS_VERSION_MIN_REQUIRED) && \
+            __VISION_OS_VERSION_MIN_REQUIRED >= 270000))
+#define HAVE_PIPE2
+#endif
 
 /* Helper macro to expand and concatenate two macros.
  * Direct macros concatenation does not work because macros
@@ -465,7 +431,7 @@
 #    undef HAVE_FCNTL
 #    undef HAVE_FCNTL_O_NONBLOCK
 #  else
-     /* use libc networking and hence close() and fnctl() */
+     /* use libc networking and hence close() and fcntl() */
 #    undef HAVE_CLOSESOCKET_CAMEL
 #    undef HAVE_IOCTLSOCKET_CAMEL
 #  endif
@@ -494,10 +460,6 @@
 #  endif
 #endif
 
-#ifndef STDC_HEADERS /* no standard C headers! */
-#include <curl/stdcheaders.h>
-#endif
-
 #include <stdint.h>
 #define HAVE_UINTPTR_T  /* assume uintptr_t is provided by stdint.h */
 
@@ -514,6 +476,10 @@
 #endif
 
 #include <limits.h>
+/* Include after setting system macros that may affect type sizes
+   (e.g. 'off_t' or 'time_t'), or suppress warnings
+   (e.g. '_CRT_SECURE_NO_WARNINGS`), but before including sys/stat.h */
+#include <sys/types.h>
 
 /* Default Windows file API selection.  */
 #ifdef _WIN32
@@ -530,7 +496,6 @@
 #  ifdef HAVE_IO_H
 #  include <io.h>
 #  endif
-#  include <sys/types.h>
 #  include <sys/stat.h>
    /* Large file (>2Gb) support using Win32 functions. */
 #  define curl_lseek                      _lseeki64
@@ -602,7 +567,7 @@
 #  endif
 #endif
 
-#if (SIZEOF_CURL_OFF_T < 8)
+#if SIZEOF_CURL_OFF_T < 8
 #error "too small curl_off_t"
 #else
    /* assume SIZEOF_CURL_OFF_T == 8 */
@@ -613,7 +578,7 @@
 #define FMT_OFF_T  CURL_FORMAT_CURL_OFF_T
 #define FMT_OFF_TU CURL_FORMAT_CURL_OFF_TU
 
-#if (SIZEOF_TIME_T == 4)
+#if SIZEOF_TIME_T == 4
 #  ifdef HAVE_TIME_T_UNSIGNED
 #  define TIME_T_MAX UINT_MAX
 #  define TIME_T_MIN 0
@@ -849,10 +814,6 @@
 #include <time.h>
 #include <errno.h>
 
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
 #include <sys/stat.h>
 
 #if !defined(_WIN32) || defined(__MINGW32__)
@@ -972,7 +933,7 @@ struct timeval {
                                      (RECV_TYPE_ARG4)(0))
 #else /* HAVE_RECV */
 #ifndef sread
-#error "Missing definition of macro sread!"
+#error "Missing definition of macro sread"
 #endif
 #endif /* HAVE_RECV */
 
@@ -995,7 +956,7 @@ struct timeval {
 #endif /* SEND_NONCONST_ARG2 */
 #else /* HAVE_SEND */
 #ifndef swrite
-#error "Missing definition of macro swrite!"
+#error "Missing definition of macro swrite"
 #endif
 #endif /* HAVE_SEND */
 
@@ -1075,6 +1036,10 @@ typedef unsigned int curl_bit;
 
 #include "curl_ctype.h"
 
+#if defined(DEBUGBUILD) && defined(NDEBUG)
+#error "Debug-enabled builds cannot be combined with NDEBUG"
+#endif
+
 /*
  * Macro used to include code only in debug builds.
  */
@@ -1128,7 +1093,7 @@ typedef unsigned int curl_bit;
 #define SOCKEISCONN       WSAEISCONN
 #define SOCKEMSGSIZE      WSAEMSGSIZE
 /* Use literal value to work around clang-tidy <=20 misreporting
-  'readability-uppercase-literal-suffix' with mingw-w64 headers */
+   'readability-uppercase-literal-suffix' with mingw-w64 headers */
 #define SOCKENOMEM        8L  /* WSA_NOT_ENOUGH_MEMORY */
 #define SOCKETIMEDOUT     WSAETIMEDOUT
 #define SOCKEWOULDBLOCK   WSAEWOULDBLOCK
@@ -1150,6 +1115,15 @@ typedef unsigned int curl_bit;
 #define SOCKETIMEDOUT     ETIMEDOUT
 #endif
 #define SOCKEWOULDBLOCK   EWOULDBLOCK
+#endif
+
+/* The socket error may be EWOULDBLOCK or on some systems EAGAIN when
+   it returned due to its inability to send/read data without blocking.
+   We treat both error codes the same here. */
+#if !defined(USE_WINSOCK) && EAGAIN != SOCKEWOULDBLOCK
+#define SOCK_EAGAIN(e) ((e) == SOCKEWOULDBLOCK || (e) == EAGAIN)
+#else
+#define SOCK_EAGAIN(e) ((e) == SOCKEWOULDBLOCK)
 #endif
 
 /*
@@ -1200,7 +1174,7 @@ typedef unsigned int curl_bit;
  */
 #if defined(__LWIP_OPT_H__) || defined(LWIP_HDR_OPT_H)
 #  if defined(SOCKET) || defined(USE_WINSOCK)
-#    error "Winsock and lwIP TCP/IP stack definitions shall not coexist!"
+#    error "Winsock and lwIP TCP/IP stack definitions shall not coexist"
 #  endif
 #endif
 
@@ -1260,19 +1234,17 @@ typedef unsigned int curl_bit;
 #endif
 
 /* In Windows the default file mode is text but an application can override it.
-Therefore we specify it explicitly. https://github.com/curl/curl/pull/258
-*/
+   Therefore we specify it explicitly. https://github.com/curl/curl/pull/258 */
 #if defined(_WIN32) || defined(MSDOS)
 #define FOPEN_READTEXT   "rt"
 #define FOPEN_WRITETEXT  "wt"
 #define FOPEN_APPENDTEXT "at"
 #elif defined(__CYGWIN__)
 /* Cygwin has specific behavior we need to address when _WIN32 is not defined.
-https://cygwin.com/cygwin-ug-net/using-textbinary.html
-For write we want our output to have line endings of LF and be compatible with
-other Cygwin utilities. For read we want to handle input that may have line
-endings either CRLF or LF so 't' is appropriate.
-*/
+   https://cygwin.com/cygwin-ug-net/using-textbinary.html
+   For write we want our output to have line endings of LF and be compatible
+   with other Cygwin utilities. For read we want to handle input that may have
+   line endings either CRLF or LF so 't' is appropriate. */
 #define FOPEN_READTEXT   "rt"
 #define FOPEN_WRITETEXT  "w"
 #define FOPEN_APPENDTEXT "a"
@@ -1301,10 +1273,14 @@ endings either CRLF or LF so 't' is appropriate.
 #define CURLMAX(x, y) ((x) > (y) ? (x) : (y))
 #define CURLMIN(x, y) ((x) < (y) ? (x) : (y))
 
+/* Convenience macro to provide the length of a string literal size without
+   the null-terminator. Equivalent to strlen() for constant strings. */
+#define CURL_CSTRLEN(x) (sizeof(x) - 1)
+
 /* A convenience macro to provide both the string literal and the length of
    the string literal in one go, useful for functions that take "string,len"
    as their argument */
-#define STRCONST(x) x, sizeof(x) - 1
+#define STRCONST(x) x, CURL_CSTRLEN(x)
 
 #define CURL_ARRAYSIZE(A) (sizeof(A) / sizeof((A)[0]))
 
@@ -1379,13 +1355,15 @@ extern FILE *curl_dbg_logfile;
 /* memory functions */
 CURL_EXTERN void curl_dbg_free(void *ptr, int line, const char *source);
 CURL_EXTERN ALLOC_FUNC ALLOC_SIZE(1)
-  void *curl_dbg_malloc(size_t size, int line, const char *source);
+  void *curl_dbg_malloc(size_t wantedsize, int line, const char *source);
 CURL_EXTERN ALLOC_FUNC ALLOC_SIZE2(1, 2)
-  void *curl_dbg_calloc(size_t n, size_t size, int line, const char *source);
+  void *curl_dbg_calloc(size_t wanted_elements, size_t wanted_size,
+                        int line, const char *source);
 CURL_EXTERN ALLOC_SIZE(2)
-  void *curl_dbg_realloc(void *ptr, size_t size, int line, const char *source);
+  void *curl_dbg_realloc(void *ptr, size_t wantedsize, int line,
+                         const char *source);
 CURL_EXTERN ALLOC_FUNC
-  char *curl_dbg_strdup(const char *str, int line, const char *src);
+  char *curl_dbg_strdup(const char *str, int line, const char *source);
 #if defined(_WIN32) && defined(UNICODE)
 CURL_EXTERN ALLOC_FUNC
   wchar_t *curl_dbg_wcsdup(const wchar_t *str, int line, const char *source);
@@ -1557,7 +1535,7 @@ int getpwuid_r(uid_t uid, struct passwd *pwd, char *buf,
 #endif
 
 #if defined(USE_UNIX_SOCKETS) && defined(_WIN32)
-/* Offered by mingw-w64 v10+. MS SDK 10.17763/~VS2017+. */
+/* Offered by mingw-w64 v10+, MS SDK 10.0.16299.0/VS2017 15.4+ */
 #if defined(__MINGW32__) && (__MINGW64_VERSION_MAJOR >= 10)
 #  include <afunix.h>
 #elif !defined(UNIX_PATH_MAX) /* Replicate logic present in afunix.h */
@@ -1573,9 +1551,9 @@ typedef struct sockaddr_un {
 #ifdef USE_OPENSSL
 /* OpenSSL 3 marks these functions deprecated but we have no replacements (yet)
    so tell the compiler to not warn for them:
-   - DES_* (for NTLM), SSL_CTX_set_srp_* (for TLS-SRP)
-   - EVP_PKEY_get1_RSA, MD5_*, RSA_flags, RSA_free (auto-skipped for OpenSSL
-     built with no-deprecated) */
+   - DES_* (for NTLM)
+   - EVP_PKEY_get1_RSA, RSA_flags, RSA_free (auto-skipped for OpenSSL built
+     with no-deprecated) */
 #  define OPENSSL_SUPPRESS_DEPRECATED
 #  ifdef _WIN32
 /* Silence LibreSSL warnings about wincrypt.h collision. Works in 3.8.2+ */
@@ -1593,7 +1571,7 @@ typedef struct sockaddr_un {
 /* The code is compiled with C++ compiler.
    C++ always supports 'inline'. */
 #  define CURL_INLINE inline /* 'inline' keyword supported */
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 /* C99 (and later) supports 'inline' keyword */
 #  define CURL_INLINE inline /* 'inline' keyword supported */
 #elif defined(__GNUC__) && __GNUC__ >= 3
@@ -1622,5 +1600,50 @@ typedef struct sockaddr_un {
 #define VERBOSE(x) Curl_nop_stmt
 #define NOVERBOSE(x) x
 #endif
+
+/* For FreeBSD it is included from curl/curl.h */
+#if defined(__DragonFly__) || defined(__OpenBSD__) || defined(__NetBSD__)
+#include <sys/param.h>  /* for __DragonFly_version, OpenBSD,
+                           __NetBSD_Version__ */
+#endif
+
+/* NetBSD before 6.1 did not set SS_NBIO for SOCK_NONBLOCK. */
+#if defined(SOCK_NONBLOCK) && \
+  (!defined(__NetBSD__) || (__NetBSD_Version__ >= 601000000))
+#define CURL_USE_SOCK_NONBLOCK
+#endif
+
+#ifndef _CURL_LOCAL_MEMZERO /* to be removed after a couple of releases */
+#ifdef _WIN32
+#if defined(_MSC_VER) && defined(NTDDI_VERSION) && \
+  (NTDDI_VERSION >= 0x0A000010) /* MS SDK 10.0.26100.0+ */
+#pragma comment(lib, "volatileaccessu.lib")
+#define curlx_memzero_low(buf, size)  SecureZeroMemory2(buf, size)
+#else
+#define curlx_memzero_low(buf, size)  SecureZeroMemory(buf, size)
+#endif
+#elif defined(HAVE_MEMSET_S)
+#define curlx_memzero_low(buf, size)  (void)memset_s(buf, size, 0, size)
+#elif defined(HAVE_MEMSET_EXPLICIT)
+#define curlx_memzero_low(buf, size)  (void)memset_explicit(buf, 0, size)
+#elif defined(__CYGWIN__) || \
+  (defined(__NEWLIB__) && !defined(__CLIB2__)) || \
+  (defined(__GLIBC__) && \
+    (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 25))) || \
+  (defined(__DragonFly__) && __DragonFly_version >= 500600 /* 5.6+ */) || \
+  (defined(__FreeBSD__) && __FreeBSD_version >= 1100037 /* 11.0+ */) || \
+  (defined(__OpenBSD__) && OpenBSD >= 201405 /* 5.5+ */)
+#define curlx_memzero_low(buf, size)  explicit_bzero(buf, size)
+#elif defined(__NetBSD__) && __NetBSD_Version__ >= 702000000 /* 7.2+ */
+#define curlx_memzero_low(buf, size)  (void)explicit_memset(buf, 0, size)
+#endif
+#endif /* !_CURL_LOCAL_MEMZERO */
+
+#ifndef curlx_memzero_low
+#define USE_CURLX_MEMZERO
+void curlx_memzero_low(void *buf, size_t size);
+#endif
+void curlx_memzero(void *buf, size_t size);
+void curlx_strzero(void *buf);
 
 #endif /* HEADER_CURL_SETUP_H */

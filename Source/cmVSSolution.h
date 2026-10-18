@@ -134,9 +134,6 @@ struct Solution final
   /** Visual Studio major version number, if known.  */
   cm::optional<Version> VSVersion;
 
-  /** Whether this is a VS Express edition, if known.  */
-  cm::optional<VersionExpress> VSExpress;
-
   /** Solution-wide target platform.  This is a Windows architecture.  */
   std::string Platform;
 

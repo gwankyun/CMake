@@ -83,6 +83,15 @@ gtest_discover_tests(
   PROPERTIES LABELS TEST8
 )
 
+gtest_discover_tests(
+  fake_gtest
+  TEST_PREFIX TEST:
+  TEST_SUFFIX !9
+  TEST_FILTER newline*
+  EXTRA_ARGS how now "\"brown\" cow"
+  PROPERTIES LABELS TEST9
+)
+
 add_executable(no_tests_defined no_tests_defined.cpp)
 xcode_sign_adhoc(no_tests_defined)
 

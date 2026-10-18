@@ -534,5 +534,5 @@ bool cmXCodeScheme::IsExecutable(cmXCodeObject const* target)
     return false;
   }
 
-  return gt->GetType() == cmStateEnums::EXECUTABLE;
+  return gt->GetType() == cm::TargetType::EXECUTABLE;
 }

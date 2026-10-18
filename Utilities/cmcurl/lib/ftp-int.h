@@ -79,11 +79,6 @@ struct ftp_parselist_data; /* defined later in ftplistparser.c */
 
 struct ftp_wc {
   struct ftp_parselist_data *parser;
-
-  struct {
-    curl_write_callback write_function;
-    FILE *file_descriptor;
-  } backup;
 };
 
 /* This FTP struct is used in the Curl_easy. All FTP data that is
@@ -113,10 +108,10 @@ struct ftp_conn {
   char *account;
   char *alternative_to_user;
   char *entrypath; /* the PWD reply when we logged on */
-  const char *file; /* url-decoded filename (or path), points into rawpath */
+  const char *file; /* URL-decoded filename (or path), points into rawpath */
   char *rawpath; /* URL decoded, allocated, version of the path */
   struct pathcomp *dirs; /* allocated array for path components */
-  char *prevpath;   /* url-decoded conn->path from the previous transfer */
+  char *prevpath;   /* URL-decoded conn->path from the previous transfer */
   char transfertype; /* set by ftp_transfertype for use by Curl_client_write()a
                         and others (A/I or zero) */
   char *server_os;     /* The target server operating system. */

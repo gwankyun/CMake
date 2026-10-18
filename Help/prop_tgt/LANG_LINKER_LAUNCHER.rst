@@ -6,12 +6,31 @@
 仅当\ ``<LANG>``\ 为以下其中一种语言时，此属性才会生效：
 
 * ``C``
+
 * ``CXX``
+
+* ``CUDA``
+
+  .. versionadded:: 4.5
+
 * ``OBJC``
+
 * ``OBJCXX``
+
 * ``Fortran``
 
   .. versionadded:: 4.1
+
+* ``HIP``
+
+  .. versionadded:: 4.5
+
+* ``SYCL``
+
+  .. versionadded:: 4.5
+
+  .. note::
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 Specify a :ref:`semicolon-separated list <CMake Language Lists>` containing a
 command line for a linker launching tool. The :ref:`Makefile Generators` and the
@@ -26,3 +45,12 @@ created.
 
   The property value may use
   :manual:`generator expressions <cmake-generator-expressions(7)>`.
+
+The launcher is used only for linking executables, shared libraries, and
+module libraries.  It is not used when creating static libraries.
+
+.. versionadded:: 4.5
+
+  Any wrappers specified by :prop_tgt:`LINK_WRAPPERS` and
+  :prop_tgt:`INTERFACE_LINK_WRAPPERS` are placed before the launcher command
+  line. See :prop_tgt:`LINK_WRAPPERS` for details.

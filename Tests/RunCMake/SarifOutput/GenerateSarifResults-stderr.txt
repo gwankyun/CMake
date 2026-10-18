@@ -6,4 +6,41 @@ Call Stack \(most recent call first\):
 CMake Warning at GenerateSarifResults\.cmake:5 \(message\):
   A second example warning message
 Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)$
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Warning \(author\) at GenerateSarifResults\.cmake:11 \(message\):
+  Example author warning message
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)
+This warning is for project developers\.  Use -Wno-author to suppress it\.
++
+CMake Error \(author\) at GenerateSarifResults\.cmake:16 \(message\):
+  Another example author warning message
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)
+This error is for project developers\.  Use -Wno-error=author to suppress it\.
++
+CMake Warning at GenerateSarifResults\.cmake:20 \(message\):
+  Warning from a nested function call
+Call Stack \(most recent call first\):
+  GenerateSarifResults\.cmake:24 \(a\)
+  GenerateSarifResults\.cmake:27 \(b\)
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Warning at GenerateSarifResults-Included\.cmake:1 \(message\):
+  Warning from an included file
+Call Stack \(most recent call first\):
+  GenerateSarifResults\.cmake:30 \(include\)
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Warning at GenerateSarifResults\.cmake:38 \(message\):
+  Warning from a variable_watch callback
+Call Stack \(most recent call first\):
+  GenerateSarifResults\.cmake:[0-9]+ \(warn_callback\)
+  GenerateSarifResults\.cmake:42 \(set\)
+  CMakeLists\.txt:[0-9]+ \(include\)
++
+CMake Error at GenerateSarifResults\.cmake:46 \(message\):
+  Encabulator: a deferred error
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:DEFERRED$

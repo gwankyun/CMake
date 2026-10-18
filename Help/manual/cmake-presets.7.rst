@@ -248,6 +248,18 @@ exception to this rule.
 
   这是一个预设特定的宏。
 
+``${configurePresetName}``
+  .. presets-versionadded:: 13
+
+  Name of the configure preset associated with the preset being evaluated.
+  For configure presets, this is equivalent to ``${presetName}``. For build,
+  test, and package presets, this is the name specified by the
+  ``configurePreset`` field.
+
+  This macro is not available for workflow presets.
+
+  This is a preset-specific macro.
+
 ``${generator}``
   在预设的\ ``generator``\ 字段中指定的生成器。对于构建和测试预设，这将计算为\
   ``configurePreset``\ 指定的生成器。
@@ -255,6 +267,7 @@ exception to this rule.
   这是一个预设特定的宏。
 
 .. _`CMakePresets hostSystemName`:
+.. |CMakePresets hostSystemName| replace:: ``${hostSystemName}``
 
 ``${hostSystemName}``
   .. presets-versionadded:: 3
@@ -263,6 +276,7 @@ exception to this rule.
   :variable:`CMAKE_HOST_SYSTEM_NAME`.
 
 .. _`CMakePresets fileDir`:
+.. |CMakePresets fileDir| replace:: ``${fileDir}``
 
 ``${fileDir}``
   .. presets-versionadded:: 4
@@ -303,6 +317,7 @@ exception to this rule.
   字面上的美元符号（\ ``$``\ ）。
 
 .. _`CMakePresets pathListSep`:
+.. |CMakePresets pathListSep| replace:: ``${pathListSep}``
 
 ``${pathListSep}``
   .. presets-versionadded:: 5
@@ -369,7 +384,8 @@ versions are added and allowed in newer versions of CMake.
       * The :preset:`configurePresets.generator` field is now optional.
 
 
-    * 对\ |macro-expansion|\ 的更改
+      * The |CMakePresets hostSystemName|_ macro was
+        added.
 
       * 添加了\ `${hostSystemName} <CMakePresets hostSystemName_>`_\ 宏。
 
@@ -384,7 +400,7 @@ versions are added and allowed in newer versions of CMake.
 
     * 对\ |macro-expansion|\ 的更改
 
-      * 添加了\ `${fileDir} <CMakePresets fileDir_>`_\ 宏。
+      * The |CMakePresets fileDir|_ macro was added.
 
   ``5``
     .. versionadded:: 3.24
@@ -396,7 +412,7 @@ versions are added and allowed in newer versions of CMake.
 
     * 对\ |macro-expansion|\ 的更改
 
-      * 添加了\ `${pathListSep} <CMakePresets pathListSep_>`_\ 宏。
+      * The |CMakePresets pathListSep|_ macro was added.
 
   ``6``
     .. versionadded:: 3.25
@@ -461,19 +477,32 @@ versions are added and allowed in newer versions of CMake.
         :preset:`configurePresets.errors`.
 
       * The ``installAbsoluteDestination`` field was added to
-        :preset:`configurePresets.warnings` and :preset:`configurePresets.errors`.
+        :preset:`configurePresets.warnings` and
+        :preset:`configurePresets.errors`.
 
     * Changes to |macro-expansion|:
       
-      * The `${fileDir} <CMakePresets fileDir_>`_ macro now always expands to
-        the directory of presets file containing the ``${fileDir}`` macro,
-        regardless of whether it is inherited by another preset in a different
-        directory.
+      * The |CMakePresets fileDir|_ macro now always expands to the directory
+        of presets file containing the ``${fileDir}`` macro, regardless of
+        whether it is inherited by another preset in a different directory.
 
     * Changes to `Test Presets <Test Preset_>`_
 
       * The :preset:`testPresets.execution.testPassthroughArguments` field was
         added to forward arguments to test executables.
+
+  ``13``
+    .. versionadded:: 4.5
+
+    * Changes to `Configure Presets <Configure Preset_>`_:
+
+      * The ``strict`` and ``nonTargetDirective`` fields were added to
+        :preset:`configurePresets.warnings` and
+        :preset:`configurePresets.errors`.
+
+    * Changes to `宏扩展`_
+
+      * The ``${configurePresetName}`` macro was added.
 
 Schema
 ======

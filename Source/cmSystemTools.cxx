@@ -86,7 +86,6 @@
 #include <iostream>
 #include <memory>
 #include <random>
-#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -1556,7 +1555,7 @@ cmSystemTools::CopyResult cmSystemTools::CopySingleFile(
   CopyInputRecent inputRecent, std::string* err)
 {
   switch (when) {
-    case CopyWhen::Always:
+    case CopyWhen::Unconditional:
       break;
     case CopyWhen::OnlyIfDifferent:
       if (!FilesDiffer(oldname, newname)) {
@@ -2024,6 +2023,81 @@ std::string cmSystemTools::RelativeIfUnder(std::string const& top,
   return out;
 }
 
+std::string cmSystemTools::GetActualCaseForPath(std::string const& p)
+{
+#ifdef _WIN32
+  std::string casePath;
+
+  // First check if the file is relative. We don't fix relative paths since the
+  // real case depends on the root directory and the given path fragment may
+  // have meaning elsewhere in the project.
+  if (!cmsys::SystemTools::FileIsFullPath(p)) {
+    // This looks unnecessary, but it allows for the return value optimization
+    // since all return paths return the same local variable.
+    casePath = p;
+    return casePath;
+  }
+
+  std::vector<std::string> path_components;
+  cmsys::SystemTools::SplitPath(p, path_components);
+
+  // Start with root component.
+  std::vector<std::string>::size_type idx = 0;
+  casePath = path_components[idx++];
+  // make sure drive letter is always upper case
+  if (casePath.size() > 1 && casePath[1] == ':') {
+    casePath[0] = cmsysString_toupper(casePath[0]);
+  }
+  char const* sep = "";
+
+  // If network path, fill casePath with server/share so FindFirstFile
+  // will work after that.  Maybe someday call other APIs to get
+  // actual case of servers and shares.
+  if (path_components.size() > 2 && path_components[0] == "//") {
+    casePath += path_components[idx++];
+    casePath += '/';
+    casePath += path_components[idx++];
+    sep = "/";
+  }
+
+  // Convert case of all components that exist.
+  bool converting = true;
+  for (; idx < path_components.size(); idx++) {
+    casePath += sep;
+    sep = "/";
+
+    if (converting) {
+      // If path component contains wildcards, we skip matching
+      // because these filenames are not allowed on windows,
+      // and we do not want to match a different file.
+      if (path_components[idx].find('*') != std::string::npos ||
+          path_components[idx].find('?') != std::string::npos) {
+        converting = false;
+      } else {
+        std::string test_str = casePath;
+        test_str += path_components[idx];
+
+        WIN32_FIND_DATAW findData;
+        HANDLE hFind = ::FindFirstFileW(
+          cmsys::Encoding::ToWide(test_str).c_str(), &findData);
+        if (INVALID_HANDLE_VALUE != hFind) {
+          auto case_file_name = cmsys::Encoding::ToNarrow(findData.cFileName);
+          path_components[idx] = std::move(case_file_name);
+          ::FindClose(hFind);
+        } else {
+          converting = false;
+        }
+      }
+    }
+
+    casePath += path_components[idx];
+  }
+  return casePath;
+#else
+  return p;
+#endif
+}
+
 cm::optional<std::string> cmSystemTools::GetEnvVar(std::string const& var)
 {
   cm::optional<std::string> result;
@@ -2238,6 +2312,7 @@ bool cmSystemTools::IsPathToMacOSSharedLibrary(std::string const& path)
 
 bool cmSystemTools::CreateTar(
   std::string const& arFileName, std::vector<std::string> const& files,
+  std::vector<std::string> const& excludeFiles,
   std::string const& workingDirectory, cmTarCompression compressType,
   std::string const& encoding, bool verbose, std::string const& mtime,
   std::string const& format, int compressionLevel, int numThreads)
@@ -2300,6 +2375,10 @@ bool cmSystemTools::CreateTar(
   }
   a.SetMTime(mtime);
   a.SetVerbose(verbose);
+  if (!a.SetExcludePatterns(excludeFiles)) {
+    cmSystemTools::Error(a.GetError());
+    return false;
+  }
   bool tarCreatedSuccessfully = true;
   for (auto path : files) {
     if (cmSystemTools::FileIsFullPath(path)) {
@@ -2315,6 +2394,7 @@ bool cmSystemTools::CreateTar(
 #else
   (void)arFileName;
   (void)files;
+  (void)excludeFiles;
   (void)encoding;
   (void)verbose;
   return false;
@@ -2520,6 +2600,7 @@ struct ArchiveMatchDeleter
 
 bool extract_tar(std::string const& arFileName,
                  std::vector<std::string> const& files,
+                 std::vector<std::string> const& excludeFiles,
                  std::string const& encoding, bool verbose,
                  cmSystemTools::cmTarExtractTimestamps extractTimestamps,
                  bool extract)
@@ -2566,6 +2647,14 @@ bool extract_tar(std::string const& arFileName,
     if (archive_match_include_pattern(matching, filename.c_str()) !=
         ARCHIVE_OK) {
       cmSystemTools::Error("Failed to add to inclusion list: " + filename);
+      return false;
+    }
+  }
+
+  for (auto const& filename : excludeFiles) {
+    if (archive_match_exclude_pattern(matching, filename.c_str()) !=
+        ARCHIVE_OK) {
+      cmSystemTools::Error("Failed to add to exclusion list: " + filename);
       return false;
     }
   }
@@ -2636,8 +2725,7 @@ bool extract_tar(std::string const& arFileName,
 
     while ((ar = archive_match_path_unmatched_inclusions_next(matching, &p)) ==
            ARCHIVE_OK) {
-      cmSystemTools::Error("tar: " + std::string(p) +
-                           ": Not found in archive");
+      cmSystemTools::Error(cmStrCat("tar: ", p, ": Not found in archive"));
       error_occurred = true;
     }
     if (error_occurred) {
@@ -2655,15 +2743,17 @@ bool extract_tar(std::string const& arFileName,
 
 bool cmSystemTools::ExtractTar(std::string const& arFileName,
                                std::vector<std::string> const& files,
+                               std::vector<std::string> const& excludeFiles,
                                cmTarExtractTimestamps extractTimestamps,
                                std::string const& encoding, bool verbose)
 {
 #if !defined(CMAKE_BOOTSTRAP)
-  return extract_tar(arFileName, files, encoding, verbose, extractTimestamps,
-                     true);
+  return extract_tar(arFileName, files, excludeFiles, encoding, verbose,
+                     extractTimestamps, true);
 #else
   (void)arFileName;
   (void)files;
+  (void)excludeFiles;
   (void)extractTimestamps;
   (void)encoding;
   (void)verbose;
@@ -2673,14 +2763,16 @@ bool cmSystemTools::ExtractTar(std::string const& arFileName,
 
 bool cmSystemTools::ListTar(std::string const& arFileName,
                             std::vector<std::string> const& files,
+                            std::vector<std::string> const& excludeFiles,
                             std::string const& encoding, bool verbose)
 {
 #if !defined(CMAKE_BOOTSTRAP)
-  return extract_tar(arFileName, files, encoding, verbose,
+  return extract_tar(arFileName, files, excludeFiles, encoding, verbose,
                      cmTarExtractTimestamps::Yes, false);
 #else
   (void)arFileName;
   (void)files;
+  (void)excludeFiles;
   (void)encoding;
   (void)verbose;
   return false;
@@ -3487,15 +3579,16 @@ static cm::optional<bool> ChangeRPathELF(std::string const& file,
         return true;
       }
       if (emsg2) {
-        std::ostringstream e;
-        /* clang-format off */
-        e << "The current " << se_name << " is:\n"
-             "  " << inRPath << "\n"
-             "which does not contain:\n"
-             "  " << oldRPath << "\n"
-             "as was expected.";
-        /* clang-format on */
-        *emsg2 = e.str();
+        *emsg2 = cmStrCat("The current ", se_name,
+                          " is:\n"
+                          "  ",
+                          inRPath,
+                          "\n"
+                          "which does not contain:\n"
+                          "  ",
+                          oldRPath,
+                          "\n"
+                          "as was expected.");
       }
       return false;
     }
@@ -3574,15 +3667,15 @@ static cm::optional<bool> ChangeRPathXCOFF(std::string const& file,
         return true;
       }
       if (emsg) {
-        std::ostringstream e;
-        /* clang-format off */
-        e << "The current RPATH is:\n"
-             "  " << libPath << "\n"
-             "which does not contain:\n"
-             "  " << oldRPath << "\n"
-             "as was expected.";
-        /* clang-format on */
-        *emsg = e.str();
+        *emsg = cmStrCat("The current RPATH is:\n"
+                         "  ",
+                         libPath,
+                         "\n"
+                         "which does not contain:\n"
+                         "  ",
+                         oldRPath,
+                         "\n"
+                         "as was expected.");
       }
       return false;
     }
@@ -3876,7 +3969,8 @@ static cm::optional<bool> RemoveRPathELF(std::string const& file,
       // There is no RPATH or RUNPATH anyway.
       return true;
     }
-    if (se_count == 2 && se[1]->IndexInSection < se[0]->IndexInSection) {
+    if (se_count == 2 && se[0] && se[1] &&
+        se[1]->IndexInSection < se[0]->IndexInSection) {
       std::swap(se[0], se[1]);
     }
 

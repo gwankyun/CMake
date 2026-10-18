@@ -49,17 +49,17 @@ void cmExportBuildFileGenerator::Compute(cmLocalGenerator* lg)
   }
 }
 
-cmStateEnums::TargetType cmExportBuildFileGenerator::GetExportTargetType(
+cm::TargetType cmExportBuildFileGenerator::GetExportTargetType(
   cmGeneratorTarget const* target) const
 {
-  cmStateEnums::TargetType targetType = target->GetType();
+  cm::TargetType targetType = target->GetType();
   // An object library exports as an interface library if we cannot
   // tell clients where to find the objects.  This is sufficient
   // to support transitive usage requirements on other targets that
   // use the object library.
-  if (targetType == cmStateEnums::OBJECT_LIBRARY &&
+  if (targetType == cm::TargetType::OBJECT_LIBRARY &&
       !target->Target->HasKnownObjectFileLocation(nullptr)) {
-    targetType = cmStateEnums::INTERFACE_LIBRARY;
+    targetType = cm::TargetType::INTERFACE_LIBRARY;
   }
   return targetType;
 }
@@ -76,7 +76,7 @@ void cmExportBuildFileGenerator::SetImportLocationProperty(
   // Get the makefile in which to lookup target information.
   cmMakefile* mf = target->Makefile;
 
-  if (target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+  if (target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
     std::string prop = cmStrCat("IMPORTED_OBJECTS", suffix);
 
     // Compute all the object files inside this target and setup
@@ -242,9 +242,8 @@ void cmExportBuildFileGenerator::ComplainAboutMissingTarget(
 void cmExportBuildFileGenerator::ComplainAboutDuplicateTarget(
   std::string const& targetName) const
 {
-  std::ostringstream e;
-  e << "given target \"" << targetName << "\" more than once.";
-  this->ReportError(e.str());
+  this->ReportError(
+    cmStrCat("given target \"", targetName, "\" more than once."));
 }
 
 void cmExportBuildFileGenerator::IssueMessage(MessageType type,

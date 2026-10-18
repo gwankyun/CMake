@@ -176,6 +176,19 @@ function (run_cxx_module_test_rebuild directory)
   run_cxx_module_test("${directory}" ${ARGN})
 endfunction ()
 
+function (run_cxx_module_install_prep_test kind)
+  set(test "install-prep-${kind}")
+  set(prefix "${RunCMake_BINARY_DIR}/${test}-install")
+  file(REMOVE_RECURSE "${prefix}")
+  set(RunCMake_CXXModules_INSTALL 0)
+  run_cxx_module_test_target("${test}" "install_prep/${kind}"
+    "${test}" "-DCMAKE_INSTALL_PREFIX=${prefix}")
+
+  set(RunCMake_TEST_BINARY_DIR "${RunCMake_BINARY_DIR}/${test}-build")
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command("${test}-install" "${CMAKE_COMMAND}" --install . --config Debug)
+endfunction ()
+
 if (RunCMake_GENERATOR MATCHES "Ninja")
   if (RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(ninja_cmp0154_target "CMakeFiles/ninja_cmp0154.dir/Debug/unrelated.cxx${CMAKE_CXX_OUTPUT_EXTENSION}")
@@ -233,11 +246,12 @@ if ("named" IN_LIST CMake_TEST_MODULE_COMPILATION)
   if ("cxx_std_23" IN_LIST CMAKE_CXX_COMPILE_FEATURES AND
       "import_std23" IN_LIST CMake_TEST_MODULE_COMPILATION)
     run_cxx_module_test(imp-std)
-    run_cxx_module_test(imp-dummy-std)
     set(RunCMake_CXXModules_NO_TEST 1)
-    run_cxx_module_test(imp-std-no-std-prop)
+    run_cxx_module_test(imp-std-no-std-json)
     unset(RunCMake_CXXModules_NO_TEST)
+    run_cxx_module_test(imp-dummy-std)
     run_cxx_module_test(imp-std-exp-no-std-build)
+    run_cxx_module_test(imp-std-shared)
     set(RunCMake_CXXModules_INSTALL 1)
     run_cxx_module_test(imp-std-exp-no-std-install)
     unset(RunCMake_CXXModules_INSTALL)
@@ -249,10 +263,10 @@ if ("named" IN_LIST CMake_TEST_MODULE_COMPILATION)
       set(RunCMake_CXXModules_INSTALL 1)
       run_cxx_module_test(imp-std-not-in-exp-install)
       unset(RunCMake_CXXModules_INSTALL)
-      run_cxx_module_test(imp-std-trans imp-std-trans-not-in-exp-install "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/imp-std-not-in-exp-install-install")
+      run_cxx_module_test(imp-std-trans imp-std-trans-not-in-exp-install "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/imp-std-not-in-exp-install-install" "-Dimport_std_not_in_export_cps_DIR=${RunCMake_BINARY_DIR}/imp-std-not-in-exp-install-install/lib/cmake/import_std_not_in_export_cps")
 
       run_cxx_module_test(imp-std-trans imp-std-trans-exp-no-std-build "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/imp-std-exp-no-std-build-build" -DEXPORT_NO_STD=1)
-      run_cxx_module_test(imp-std-trans imp-std-trans-exp-no-std-install "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/imp-std-exp-no-std-install-install" -DEXPORT_NO_STD=1)
+      run_cxx_module_test(imp-std-trans imp-std-trans-exp-no-std-install "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/imp-std-exp-no-std-install-install" "-Dimport_std_export_no_std_cps_DIR=${RunCMake_BINARY_DIR}/imp-std-exp-no-std-install-install/lib/cmake/import_std_export_no_std_cps" -DEXPORT_NO_STD=1)
     endif ()
   endif ()
 endif ()
@@ -352,6 +366,11 @@ if ("export_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
   if ("collation" IN_LIST CMake_TEST_MODULE_COMPILATION AND
       "bmionly" IN_LIST CMake_TEST_MODULE_COMPILATION)
     run_cxx_module_import_test(build exp-iface-build)
+    if ("compile_commands" IN_LIST CMake_TEST_MODULE_COMPILATION)
+      run_cxx_module_test(imp-mods imp-mods-exp-compile-commands
+        "-DCMAKE_PREFIX_PATH=${RunCMake_BINARY_DIR}/exp-iface-build-build"
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
+    endif ()
     run_cxx_module_import_test(build exp-iface-no-props-build -DNO_PROPERTIES=1)
     run_cxx_module_import_test(build exp-incdirs-build -DINCLUDE_PROPERTIES=1)
     run_cxx_module_import_test(build exp-bmi-and-iface-build -DWITH_BMIS=1)
@@ -373,6 +392,17 @@ endif ()
 
 # All of the following tests perform installation.
 set(RunCMake_CXXModules_INSTALL 1)
+
+if (RunCMake_GENERATOR MATCHES "Ninja" AND
+    NOT CMake_TEST_MODULE_VARIANT MATCHES "^Build")
+  if ("install_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
+    run_cxx_module_install_prep_test(BMI)
+  endif ()
+  if ("export_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)
+    run_cxx_module_install_prep_test(Metadata)
+  endif ()
+  include("${CMAKE_CURRENT_LIST_DIR}/install-prep.cmake")
+endif ()
 
 # Tests which install BMIs
 if ("install_bmi" IN_LIST CMake_TEST_MODULE_COMPILATION)

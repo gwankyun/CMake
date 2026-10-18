@@ -3,18 +3,20 @@
 #include "cmInstallExportGenerator.h"
 
 #include <map>
-#include <sstream>
+#include <ostream>
 #include <utility>
 
 #include "cmCryptoHash.h"
 #include "cmDiagnosticContext.h"
 #include "cmExportInstallFileGenerator.h"
 #include "cmExportSet.h"
+#include "cmGeneratorTarget.h"
 #include "cmInstallType.h"
 #include "cmLocalGenerator.h"
 #include "cmScriptGenerator.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetExport.h"
 
 cmInstallExportGenerator::cmInstallExportGenerator(
   cmExportSet* exportSet, std::string destination, std::string filePermissions,
@@ -40,6 +42,23 @@ bool cmInstallExportGenerator::Compute(cmLocalGenerator* lg)
 {
   this->LocalGenerator = lg;
   return this->ExportSet->Compute(lg);
+}
+
+void cmInstallExportGenerator::GetInstallBuildDependencies(
+  std::string const&, std::vector<BuildDependency>& dependencies) const
+{
+  if (this->CxxModulesDirectory.empty()) {
+    return;
+  }
+
+  // Module export metadata is generated during the target's build.
+  for (auto const& targetExport : this->ExportSet->GetTargetExports()) {
+    auto const* target = targetExport->Target;
+    if (!targetExport->NamelinkOnly && target &&
+        target->HaveCxx20ModuleSources()) {
+      dependencies.push_back({ target, BuildDependencyType::Normal });
+    }
+  }
 }
 
 std::string cmInstallExportGenerator::TempDirCalculate() const
@@ -77,10 +96,9 @@ void cmInstallExportGenerator::GenerateScript(std::ostream& os)
 {
   // Skip empty sets.
   if (this->ExportSet->GetTargetExports().empty()) {
-    std::ostringstream e;
-    e << "INSTALL(" << this->InstallSubcommand() << ") given unknown export \""
-      << this->ExportSet->GetName() << "\"";
-    cmSystemTools::Error(e.str());
+    cmSystemTools::Error(cmStrCat("INSTALL(", this->InstallSubcommand(),
+                                  ") given unknown export \"",
+                                  this->ExportSet->GetName(), '"'));
     return;
   }
 

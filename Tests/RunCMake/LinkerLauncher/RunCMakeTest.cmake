@@ -1,5 +1,9 @@
 include(RunCMake)
 
+if(CMake_TEST_SYCL)
+  list(APPEND RunCMake_TEST_OPTIONS -Wno-experimental)
+endif()
+
 function(run_linker_launcher lang)
   # Preserve build tree so we can reuse it for the ${lang}-Build subtest below
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/${lang}-build)
@@ -27,8 +31,17 @@ function(run_linker_launcher_env lang)
 endfunction()
 
 set(langs C CXX)
+if(CMake_TEST_CUDA)
+  list(APPEND langs CUDA)
+endif()
 if(CMake_TEST_Fortran)
   list(APPEND langs Fortran)
+endif()
+if(CMake_TEST_HIP)
+  list(APPEND langs HIP)
+endif()
+if(CMake_TEST_SYCL)
+  list(APPEND langs SYCL)
 endif()
 if(CMake_TEST_OBJC)
   list(APPEND langs OBJC OBJCXX)
@@ -42,3 +55,9 @@ foreach(lang ${langs})
     run_linker_launcher_env(${lang}-launch-env)
   endif()
 endforeach()
+
+if(NOT RunCMake_GENERATOR MATCHES "FASTBuild")
+  # FIXME(#27402): FASTBuild builds its launcher command line without shell
+  # quoting, so it can't handle empty or special-character arguments.
+  run_linker_launcher(C-special-args)
+endif()

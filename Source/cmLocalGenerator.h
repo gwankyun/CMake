@@ -11,6 +11,7 @@
 #include <set>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -32,6 +33,7 @@
 
 class cmCompiledGeneratorExpression;
 class cmComputeLinkInformation;
+class cmGeneratorRule;
 class cmCustomCommand;
 class cmCustomCommandGenerator;
 class cmCustomCommandLines;
@@ -51,6 +53,10 @@ class cmake;
 
 template <typename Iter>
 class cmRange;
+
+namespace cm {
+enum class TargetType;
+} // namespace cm
 
 /** Target and source file which have a specific output.  */
 struct cmSourcesWithOutput
@@ -73,6 +79,31 @@ struct cmSourcesWithOutput
 class cmLocalGenerator : public cmOutputConverter
 {
 public:
+  struct DirectoryTestPrepDependency
+  {
+    DirectoryTestPrepDependency(std::string raw, cmGeneratorTarget* target,
+                                cmGeneratorTarget* owner = nullptr,
+                                bool generated = false)
+      : Raw(std::move(raw))
+      , Target(target)
+      , Owner(owner)
+      , Generated(generated)
+    {
+    }
+
+    std::string Raw;
+    cmGeneratorTarget* Target;
+    cmGeneratorTarget* Owner;
+    bool Generated;
+  };
+
+  struct DirectoryTestPrepTarget
+  {
+    std::string Name;
+    std::string Comment;
+    std::vector<DirectoryTestPrepDependency> Dependencies;
+  };
+
   cmLocalGenerator(cmGlobalGenerator* gg, cmMakefile* makefile);
   ~cmLocalGenerator() override;
 
@@ -129,6 +160,11 @@ public:
   virtual std::unique_ptr<cmRulePlaceholderExpander>
   CreateRulePlaceholderExpander(
     cmBuildStep buildStep = cmBuildStep::Compile) const;
+
+  void AddDirectoryTestPrepDependency(std::string const& config,
+                                      DirectoryTestPrepDependency dependency);
+  bool GetDirectoryTestPrepTarget(DirectoryTestPrepTarget& out,
+                                  std::string const& config);
 
   std::string GetExeExportFlags(std::string const& linkLanguage,
                                 cmGeneratorTarget& tgt) const;
@@ -252,6 +288,9 @@ public:
     std::string const& name) const;
   cmGeneratorTarget* FindGeneratorTargetToUse(std::string const& name) const;
 
+  void AddGeneratorRule(std::unique_ptr<cmGeneratorRule> gr);
+  cmGeneratorRule* FindGeneratorRuleToUse(std::string const& name) const;
+
   /**
    * Process a list of include directories
    */
@@ -315,6 +354,17 @@ public:
    */
   bool GetRealDependency(std::string const& name, std::string const& config,
                          std::string& dep, cmPolicies::PolicyStatus cmp0212);
+
+  /**
+   * Translate a file dependency as given in CMake code to a full path.
+   * - If \a name is a full path, it will be returned.
+   * - If \a name names a source file known to this directory, such as the
+   *   output of a custom command, its full path will be returned.
+   * - Otherwise \a name is treated as a relative path with respect to the
+   *   source directory of this generator if it exists there, or else with
+   *   respect to its binary directory.
+   */
+  std::string GetRealFileDependency(std::string const& name) const;
 
   /** Called from command-line hook to clear dependencies.  */
   virtual void ClearDependencies(cmMakefile* /* mf */, bool /* verbose */) {}
@@ -435,6 +485,14 @@ public:
    * Return the source file which has the provided source name as output.
    */
   cmSourcesWithOutput GetSourcesWithOutput(std::string const& name) const;
+
+  /**
+   * Add every path recorded as an output or byproduct of a custom command or
+   * custom target in this directory, as they are keyed for the efficient
+   * full-path lookup of GetSourcesWithOutput.
+   */
+  void AppendOutputsAndByproducts(
+    std::unordered_set<std::string>& outputs) const;
 
   /**
    * Is there a source file that has the provided source name as an output?
@@ -623,13 +681,11 @@ public:
   std::string CreateSafeObjectFileName(std::string const& sin) const;
 
   /**
-   * Build the search index from source files to source groups
-   */
-  void ComputeSourceGroupSearchIndex();
-
-  /**
    * find what source group this source is in
    */
+  cmSourceGroup* FindSourceGroup(cmGeneratorTarget const* target,
+                                 cmSourceFile const* source,
+                                 std::string const& config);
   cmSourceGroup* FindSourceGroup(std::string const& source);
 
 protected:
@@ -682,6 +738,11 @@ protected:
   GeneratorTargetVector OwnedImportedGeneratorTargets;
   std::map<std::string, std::string> AliasTargets;
 
+  using GeneratorRuleMap = std::unordered_map<std::string, cmGeneratorRule*>;
+  GeneratorRuleMap GeneratorRuleSearchIndex;
+  using GeneratorRuleVector = std::vector<std::unique_ptr<cmGeneratorRule>>;
+  GeneratorRuleVector GeneratorRules;
+
   std::map<std::string, std::string> Compilers;
   std::map<std::string, std::string> VariableMappings;
   std::string CompilerSysroot;
@@ -697,6 +758,8 @@ protected:
 #endif
 
 private:
+  std::map<std::string, std::vector<DirectoryTestPrepDependency>>
+    DiscoveryTestPrepDependencies;
   /**
    * See LinearGetSourceFileWithOutput for background information
    */
@@ -728,7 +791,7 @@ private:
                                cmCommandOrigin origin);
 
   void AddPositionIndependentFlags(std::string& flags, std::string const& l,
-                                   int targetType);
+                                   cm::TargetType targetType);
 
   void ComputeObjectMaxPath();
   bool AllAppleArchSysrootsAreTheSame(std::vector<std::string> const& archs,

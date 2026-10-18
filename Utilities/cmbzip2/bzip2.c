@@ -150,6 +150,8 @@
          ERROR_IF_MINUS_ONE ( retVal );               \
       } while ( 0 )
 
+#   define STDERR_FILENO _fileno(stderr)
+
 #endif /* BZ_LCCWIN32 */
 
 
@@ -815,10 +817,9 @@ void mySignalCatcher ( IntNative n )
 static 
 void mySIGSEGVorSIGBUScatcher ( IntNative n )
 {
+   const char *msg;
    if (opMode == OM_Z)
-      fprintf ( 
-      stderr,
-      "\n%s: Caught a SIGSEGV or SIGBUS whilst compressing.\n"
+      msg = ": Caught a SIGSEGV or SIGBUS whilst compressing.\n"
       "\n"
       "   Possible causes are (most likely first):\n"
       "   (1) This computer has unreliable memory or cache hardware\n"
@@ -834,12 +835,9 @@ void mySIGSEGVorSIGBUScatcher ( IntNative n )
       "   bug report should have.  If the manual is available on your\n"
       "   system, please try and read it before mailing me.  If you don't\n"
       "   have the manual or can't be bothered to read it, mail me anyway.\n"
-      "\n",
-      progName );
-      else
-      fprintf ( 
-      stderr,
-      "\n%s: Caught a SIGSEGV or SIGBUS whilst decompressing.\n"
+      "\n";
+   else
+      msg = ": Caught a SIGSEGV or SIGBUS whilst decompressing.\n"
       "\n"
       "   Possible causes are (most likely first):\n"
       "   (1) The compressed data is corrupted, and bzip2's usual checks\n"
@@ -857,13 +855,25 @@ void mySIGSEGVorSIGBUScatcher ( IntNative n )
       "   bug report should have.  If the manual is available on your\n"
       "   system, please try and read it before mailing me.  If you don't\n"
       "   have the manual or can't be bothered to read it, mail me anyway.\n"
-      "\n",
-      progName );
+      "\n";
+   write ( STDERR_FILENO, "\n", 1 );
+   write ( STDERR_FILENO, progName, strlen ( progName ) );
+   write ( STDERR_FILENO, msg, strlen ( msg ) );
 
-   showFileNames();
-   if (opMode == OM_Z)
-      cleanUpAndFail( 3 ); else
-      { cadvise(); cleanUpAndFail( 2 ); }
+   msg = "\tInput file = ";
+   write ( STDERR_FILENO, msg, strlen (msg) );
+   write ( STDERR_FILENO, inName, strlen (inName) );
+   write ( STDERR_FILENO, "\n", 1 );
+   msg = "\tOutput file = ";
+   write ( STDERR_FILENO, msg, strlen (msg) );
+   write ( STDERR_FILENO, outName, strlen (outName) );
+   write ( STDERR_FILENO, "\n", 1 );
+
+   /* Don't call cleanupAndFail. If we ended up here something went
+      terribly wrong. Trying to clean up might fail spectacularly. */
+
+   if (opMode == OM_Z) setExit(3); else setExit(2);
+   _exit(exitValue);
 }
 
 
@@ -1757,8 +1767,8 @@ void addFlagsFromEnvVar ( Cell** argList, Char* varName )
          if (p[i] == 0) break;
          p += i;
          i = 0;
-         while (isspace((Int32)(p[0]))) p++;
-         while (p[i] != 0 && !isspace((Int32)(p[i]))) i++;
+         while (isspace((UChar)(p[0]))) p++;
+         while (p[i] != 0 && !isspace((UChar)(p[i]))) i++;
          if (i > 0) {
             k = i; if (k > FILE_NAME_LEN-10) k = FILE_NAME_LEN-10;
             for (j = 0; j < k; j++) tmpName[j] = p[j];
@@ -1815,7 +1825,11 @@ IntNative main ( IntNative argc, Char *argv[] )
    copyFileName ( inName,  (Char*)"(none)" );
    copyFileName ( outName, (Char*)"(none)" );
 
-   copyFileName ( progNameReally, argv[0] );
+   if (argc >= 1 && argv[0] != NULL)
+      copyFileName ( progNameReally, argv[0] );
+   else
+      copyFileName ( progNameReally, (Char*)"bzip2" );
+
    progName = &progNameReally[0];
    for (tmp = &progNameReally[0]; *tmp != '\0'; tmp++)
       if (*tmp == PATH_SEP) progName = tmp + 1;

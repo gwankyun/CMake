@@ -6,6 +6,7 @@
 #include <utility>
 
 #include <cm/memory>
+#include <cm/optional>
 
 #include "cmCustomCommand.h"
 #include "cmDiagnostics.h"
@@ -17,10 +18,10 @@
 #include "cmQtAutoGen.h"
 #include "cmQtAutoGenInitializer.h"
 #include "cmState.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmQtAutoGenGlobalInitializer::Keywords::Keywords()
@@ -79,11 +80,11 @@ cmQtAutoGenGlobalInitializer::cmQtAutoGenGlobalInitializer(
     for (auto const& target : localGen->GetGeneratorTargets()) {
       // Process only certain target types
       switch (target->GetType()) {
-        case cmStateEnums::EXECUTABLE:
-        case cmStateEnums::STATIC_LIBRARY:
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::OBJECT_LIBRARY:
+        case cm::TargetType::EXECUTABLE:
+        case cm::TargetType::STATIC_LIBRARY:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::OBJECT_LIBRARY:
           // Process target
           break;
         default:
@@ -171,9 +172,9 @@ void cmQtAutoGenGlobalInitializer::GetOrCreateGlobalTarget(
 
     // Create utility target
     auto cc = cm::make_unique<cmCustomCommand>();
-    cc->SetWorkingDirectory(makefile->GetHomeOutputDirectory().c_str());
+    cc->SetWorkingDirectory(makefile->GetHomeOutputDirectory());
     cc->SetEscapeOldStyle(false);
-    cc->SetComment(comment.c_str());
+    cc->SetComment(comment);
     cmTarget* target = localGen->AddUtilityCommand(name, true, std::move(cc));
     localGen->AddGeneratorTarget(
       cm::make_unique<cmGeneratorTarget>(target, localGen));

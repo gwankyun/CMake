@@ -24,6 +24,7 @@
 #include "cmsys/String.h"
 
 #include "cmAlgorithms.h"
+#include "cmCMakePkgConfigCommand.h"
 #include "cmConfigureLog.h"
 #include "cmDependencyProvider.h"
 #include "cmDiagnostics.h"
@@ -42,6 +43,8 @@
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
+#include "cmUnreachable.h"
 #include "cmValue.h"
 #include "cmVersionMacros.h"
 #include "cmWindowsRegistry.h"
@@ -86,7 +89,7 @@ std::size_t collectPathsForDebug(std::string& buffer,
     return 0;
   }
   for (auto i = startIndex; i < paths.size(); i++) {
-    buffer += cmStrCat("  ", paths[i].Path, '\n');
+    buffer = cmStrCat(std::move(buffer), "  ", paths[i].Path, '\n');
   }
   return paths.size();
 }
@@ -930,17 +933,16 @@ bool cmFindPackageCommand::InitialPass(std::vector<std::string> const& args)
     this->UseCpsFiles = false;
   }
   if (!this->UseFindModules && !this->UseConfigFiles) {
-    std::ostringstream e;
-    e << "given options exclusive to Module mode:\n";
+    std::string e = "given options exclusive to Module mode:\n";
     for (auto si : moduleArgs) {
-      e << "  " << args[si] << "\n";
+      e = cmStrCat(std::move(e), "  ", args[si], '\n');
     }
-    e << "and options exclusive to Config mode:\n";
+    e = cmStrCat(std::move(e), "and options exclusive to Config mode:\n");
     for (auto si : configArgs) {
-      e << "  " << args[si] << "\n";
+      e = cmStrCat(std::move(e), "  ", args[si], '\n');
     }
-    e << "The options are incompatible.";
-    this->SetError(e.str());
+    e = cmStrCat(std::move(e), "The options are incompatible.");
+    this->SetError(e);
     return false;
   }
 
@@ -1245,7 +1247,7 @@ bool cmFindPackageCommand::FindPackage(
       // When this property is set, the FetchContent module has already been
       // included at least once, so we know the FetchContent_MakeAvailable()
       // command will be defined. Any future find_package() calls after this
-      // one for this package will by-pass this once-only delegation.
+      // one for this package will bypass this once-only delegation.
       // The following call will typically create a <name>-config.cmake file
       // in the redirectsDir, which we still want to process like any other
       // config file to ensure we follow normal find_package() processing.
@@ -1550,10 +1552,11 @@ bool cmFindPackageCommand::FindModule(bool& found)
     moduleFileName, system, this->DebugModeEnabled(), debugBuffer);
   if (this->DebugModeEnabled()) {
     if (mfile.empty()) {
-      debugBuffer = cmStrCat(debugBuffer, "The file was not found.\n");
-    } else {
       debugBuffer =
-        cmStrCat(debugBuffer, "The file was found at\n  ", mfile, '\n');
+        cmStrCat(std::move(debugBuffer), "The file was not found.\n");
+    } else {
+      debugBuffer = cmStrCat(std::move(debugBuffer),
+                             "The file was found at\n  ", mfile, '\n');
     }
     this->DebugBuffer = cmStrCat(this->DebugBuffer, debugBuffer);
   }
@@ -2078,7 +2081,7 @@ bool cmFindPackageCommand::ReadListFile(std::string const& f,
     ps = cm::PolicyScope::None;
   }
 
-  using ITScope = cmMakefile::ImportedTargetScope;
+  using ITScope = cm::ImportedTargetScope;
   ITScope scope = this->GlobalScope ? ITScope::Global : ITScope::Local;
   cmMakefile::SetGlobalTargetImportScope globScope(this->Makefile, scope);
 
@@ -2191,8 +2194,17 @@ bool cmFindPackageCommand::FindPackageDependencies(
   std::string const& filePath, cmPackageInfoReader const& reader,
   RequiredStatus required)
 {
-  // Get package requirements.
-  for (cmPackageRequirement const& dep : reader.GetRequirements()) {
+  for (auto const& dep : reader.GetRequirements()) {
+    // Try domain-based resolution first.
+#ifndef CMAKE_BOOTSTRAP
+    if (cm::contains(dep.Domains, cm::PackageDomain::PkgConfig)) {
+      cmExecutionStatus status{ *this->Makefile };
+      if (cmImportPkgConfigPackage(*this->Makefile, status, dep.Name)) {
+        continue;
+      }
+    }
+#endif
+
     cmExecutionStatus status{ *this->Makefile };
     cmMakefile::CallRAII scope{ this->Makefile, filePath, status };
 
@@ -2241,7 +2253,10 @@ bool cmFindPackageCommand::ImportPackageTargets(cmPackageState& packageState,
   }
 
   // Import base file.
-  if (!reader.ImportTargets(this->Makefile, this->Status, this->GlobalScope)) {
+  if (!reader.ImportTargets(this->Makefile, this->Status,
+                            this->GlobalScope
+                              ? cm::ImportedTargetScope::Global
+                              : cm::ImportedTargetScope::Local)) {
     return false;
   }
 
@@ -2521,7 +2536,7 @@ void cmFindPackageCommand::FillPrefixesCMakeEnvironment()
   // And now the general CMake environment variables
   paths.AddEnvPath("CMAKE_PREFIX_PATH");
   if (this->DebugModeEnabled()) {
-    debugBuffer = cmStrCat(debugBuffer,
+    debugBuffer = cmStrCat(std::move(debugBuffer),
                            "CMAKE_PREFIX_PATH env variable "
                            "[CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH].\n");
     debugOffset = collectPathsForDebug(debugBuffer, paths, debugOffset);
@@ -2531,7 +2546,7 @@ void cmFindPackageCommand::FillPrefixesCMakeEnvironment()
   paths.AddEnvPath("CMAKE_APPBUNDLE_PATH");
   if (this->DebugModeEnabled()) {
     debugBuffer =
-      cmStrCat(debugBuffer,
+      cmStrCat(std::move(debugBuffer),
                "CMAKE_FRAMEWORK_PATH and CMAKE_APPBUNDLE_PATH env "
                "variables [CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH].\n");
     collectPathsForDebug(debugBuffer, paths, debugOffset);
@@ -2555,7 +2570,7 @@ void cmFindPackageCommand::FillPrefixesCMakeVariable()
   paths.AddCMakePath("CMAKE_APPBUNDLE_PATH");
   if (this->DebugModeEnabled()) {
     debugBuffer =
-      cmStrCat(debugBuffer,
+      cmStrCat(std::move(debugBuffer),
                "CMAKE_FRAMEWORK_PATH and CMAKE_APPBUNDLE_PATH variables "
                "[CMAKE_FIND_USE_CMAKE_PATH].\n");
     collectPathsForDebug(debugBuffer, paths, debugOffset);
@@ -3664,7 +3679,7 @@ void cmFindPackageDebugState::WriteEvent(cmConfigureLog& log,
         case pdt::Cps:
           return "cps";
       }
-      assert(false);
+      CM_UNREACHABLE;
       return "<UNKNOWN>";
     };
 
@@ -3708,7 +3723,7 @@ void cmFindPackageDebugState::WriteEvent(cmConfigureLog& log,
         case cmFindPackageCommand::RequiredStatus::RequiredFromFindVar:
           return "required_from_find_variable";
       }
-      assert(false);
+      CM_UNREACHABLE;
       return "<UNKNOWN>";
     };
     log.BeginObject("settings"_s);
@@ -3745,7 +3760,7 @@ void cmFindPackageDebugState::WriteEvent(cmConfigureLog& log,
           case cmFindCommon::RootPathModeBoth:
             return "BOTH";
         }
-        assert(false);
+        CM_UNREACHABLE;
         return "<UNKNOWN>";
       };
       log.BeginObject("paths"_s);
@@ -3785,7 +3800,7 @@ void cmFindPackageDebugState::WriteEvent(cmConfigureLog& log,
       case cmFindPackageCommand::FoundPackageMode::Provider:
         return "provider";
     }
-    assert(false);
+    CM_UNREACHABLE;
     return "<UNKNOWN>";
   };
   if (!fpc->ConsideredPaths.empty()) {
@@ -3809,7 +3824,7 @@ void cmFindPackageDebugState::WriteEvent(cmConfigureLog& log,
         case cmFindPackageCommand::SearchResult::NotFound:
           return "not_found";
       }
-      assert(false);
+      CM_UNREACHABLE;
       return "<UNKNOWN>";
     };
 

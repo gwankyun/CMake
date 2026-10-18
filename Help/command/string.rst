@@ -49,6 +49,9 @@ Synopsis
            {`GET <JSON-GET_>`__ | `GET_RAW <JSON-GET-RAW_>`__ | `TYPE <JSON-TYPE_>`__ | `LENGTH <JSON-LENGTH_>`__}
            <json-string> [<member|index> ...])
     string(JSON <out-var> [ERROR_VARIABLE <error-var>]
+           `ARRAY_SPLIT <JSON-ARRAY_SPLIT_>`__
+           <json-string> [<member|index> ...])
+    string(JSON <out-var> [ERROR_VARIABLE <error-var>]
            `REMOVE <JSON-REMOVE_>`__
            <json-string> <member|index> [<member|index> ...])
     string(JSON <out-var> [ERROR_VARIABLE <error-var>]
@@ -141,71 +144,8 @@ Search and Replace With Regular Expressions
 Regex Specification
 """""""""""""""""""
 
-The following characters have special meaning in regular expressions:
-
-``^``
-  Matches at beginning of input
-``$``
-  Matches at end of input
-``.``
-  Matches any single character
-``\<char>``
-  Matches the single character specified by ``<char>``.  Use this to
-  match special regex characters, e.g. ``\.`` for a literal ``.``
-  or ``\\`` for a literal backslash ``\``.  Escaping a non-special
-  character is unnecessary but allowed, e.g. ``\a`` matches ``a``.
-``[ ]``
-  Matches any character(s) inside the brackets.
-  To match a literal ``]``, make it the first character, e.g., ``[]ab]``.
-``[^ ]``
-  Matches any character(s) not inside the brackets.
-  To not match a literal ``]``, make it the first character, e.g., ``[^]ab]``.
-``-``
-  Inside brackets, specifies an inclusive range between characters on
-  either side, e.g., ``[a-f]`` is ``[abcdef]``.
-  To match a literal ``-`` using brackets, make it the first or the last
-  character, e.g., ``[+*/-]`` matches basic mathematical operators.
-``*``
-  Matches preceding pattern zero or more times
-``+``
-  Matches preceding pattern one or more times
-``?``
-  Matches preceding pattern zero or once only
-``|``
-  Matches a pattern on either side of the ``|``
-``()``
-  Saves a matched subexpression, which can be referenced
-  in the ``REGEX REPLACE`` operation.
-
-  .. versionadded:: 3.9
-    All regular expression-related commands, including e.g.
-    :command:`if(MATCHES)`, save subgroup matches in the variables
-    :variable:`CMAKE_MATCH_<n>` for ``<n>`` 0..9.
-
-.. noqa: spellcheck off
-
-``*``, ``+`` and ``?`` have higher precedence than concatenation.  ``|``
-has lower precedence than concatenation.  This means that the regular
-expression ``^ab+d$`` matches ``abbd`` but not ``ababd``, and the regular
-expression ``^(ab|cd)$`` matches ``ab`` but not ``abd``.
-
-.. noqa: spellcheck on
-
-CMake language :ref:`Escape Sequences` such as ``\t``, ``\r``, ``\n``,
-and ``\\`` may be used to construct literal tabs, carriage returns,
-newlines, and backslashes (respectively) to pass in a regex.  For example:
-
-* The quoted argument ``"[ \t\r\n]"`` specifies a regex that matches
-  any single whitespace character.
-* The quoted argument ``"[/\\]"`` specifies a regex that matches
-  a single forward slash ``/`` or backslash ``\``.
-* The quoted argument ``"[A-Za-z0-9_]"`` specifies a regex that matches
-  any single "word" character in the C locale.
-* The quoted argument ``"\\(\\a\\+b\\)"`` specifies a regex that matches
-  the exact string ``(a+b)``.  Each ``\\`` is parsed in a quoted argument
-  as just ``\``, so the regex itself is actually ``\(\a\+\b\)``.  This
-  can alternatively be specified in a :ref:`bracket argument` without
-  having to escape the backslashes, e.g. ``[[\(\a\+\b\)]]``.
+For more details on CMake's regular expression syntax, please refer to
+:ref:`CMake Language Regex Specification`.
 
 Manipulation
 ^^^^^^^^^^^^
@@ -280,7 +220,7 @@ Manipulation
   string(STRIP <string> <output_variable>)
 
   Store in an ``<output_variable>`` a substring of a given ``<string>``
-  with leading and trailing spaces removed.
+  with leading and trailing spaces and newlines removed.
 
 .. signature::
   string(GENEX_STRIP <string> <output_variable>)
@@ -607,6 +547,39 @@ string is passed as a single argument even if it contains semicolons.
   Get the length of an element in ``<json-string>`` at the location
   given by the list of ``<member|index>`` arguments.
   Requires an element of array or object type.
+
+.. signature::
+  string(JSON <out-var> [ERROR_VARIABLE <error-variable>]
+         ARRAY_SPLIT <json-string> [<member|index> ...])
+  :target: JSON-ARRAY_SPLIT
+
+  .. versionadded:: 4.5
+
+  Split the array in ``<json-string>`` at the location given by the list of
+  ``<member|index>`` arguments into a :ref:`semicolon-separated list <CMake
+  Language Lists>`, one entry per array element.  Requires an element of array
+  type.
+
+  This enables iterating an array with a single parse of ``<json-string>``,
+  instead of re-parsing the whole string for each element:
+
+  .. code-block:: cmake
+
+    string(JSON elements ARRAY_SPLIT "${json}")
+    foreach(element IN LISTS elements)
+      string(JSON value GET "${element}" some_member)
+    endforeach()
+
+  Each entry is the corresponding element re-serialized as compact JSON.  It is
+  *semantically* equal to the source element (as compared by
+  :cref:`EQUAL <JSON-EQUAL_>`), but not necessarily byte-for-byte identical:
+  insignificant whitespace is removed and object members may be reordered.
+
+  The result is a regular CMake list and should be consumed with list-aware
+  constructs such as :command:`foreach(IN LISTS) <foreach>` or the
+  :command:`list` command.  Elements may contain characters that are encoded to
+  keep the list well-formed, so operating on the raw ``<out-var>`` value with
+  plain string operations may expose that internal encoding.
 
 .. signature::
   string(JSON <out-var> [ERROR_VARIABLE <error-variable>]

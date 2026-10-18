@@ -1,5 +1,5 @@
 ---
-version: 12
+version: 13
 types:
   - id: condition
     type: variant
@@ -1431,8 +1431,8 @@ properties:
                     Equivalent to passing :ctest-option:`--tests-regex` on the
                     command line. This field supports |macro-expansion|.
 
-                    CMake regex syntax is described under
-                    :ref:`string(REGEX) <Regex Specification>`.
+                    See the :ref:`CMake Language Regex Specification` for the
+                    regex syntax.
                 label:
                   type: string
                   description:
@@ -1659,9 +1659,11 @@ properties:
               enum:
                 - human
                 - json-v1
+                - json-v1-raw
               description:
                 An optional string. Equivalent to passing --show-only on the
-                command line. Value must be "human" or "json-v1".
+                command line. Value must be "human", "json-v1", or
+                "json-v1-raw".
               sphinxDescription: |
                 An optional string. Equivalent to passing
                 :ctest-option:`--show-only` on the command line. The string
@@ -1670,6 +1672,8 @@ properties:
                 * ``human``
 
                 * ``json-v1``
+
+                * ``json-v1-raw``
             repeat:
               type: object
               description:

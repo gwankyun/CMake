@@ -15,6 +15,16 @@
 #include "cmStringAlgorithms.h"
 
 namespace cmCMakePresetsErrors {
+namespace {
+std::string CapitalizePresetKind(std::string kind)
+{
+  if (!kind.empty() && kind.front() >= 'a' && kind.front() <= 'z') {
+    kind.front() = static_cast<char>(kind.front() - 'a' + 'A');
+  }
+  return kind;
+}
+}
+
 Json::Value const* getPreset(cmJSONState* state)
 {
   if (state->parseStack.size() < 2) {
@@ -32,7 +42,10 @@ std::string getPresetName(cmJSONState* state)
 {
   Json::Value const* preset = getPreset(state);
   if (preset && preset->isMember("name")) {
-    return preset->operator[]("name").asString();
+    Json::Value const& name = preset->operator[]("name");
+    if (name.isConvertibleTo(Json::ValueType::stringValue)) {
+      return name.asString();
+    }
   }
   return "";
 }
@@ -41,7 +54,8 @@ std::string getVariableName(cmJSONState* state)
 {
   std::string var = state->key_after("cacheVariables");
   std::string errMsg = cmStrCat("variable \"", var, '"');
-  errMsg = cmStrCat(errMsg, " for preset \"", getPresetName(state), '"');
+  errMsg =
+    cmStrCat(std::move(errMsg), " for preset \"", getPresetName(state), '"');
   return errMsg;
 }
 
@@ -72,7 +86,8 @@ void UNRECOGNIZED_VERSION(Json::Value const* value, cmJSONState* state)
 
 void INVALID_PRESETS(Json::Value const* value, cmJSONState* state)
 {
-  state->AddErrorAtValue("Invalid \"configurePresets\" field", value);
+  state->AddErrorAtValue(cmStrCat("Invalid \"", state->key(), "\" field"),
+                         value);
 }
 
 void INVALID_PRESET(Json::Value const* value, cmJSONState* state)
@@ -87,7 +102,7 @@ void INVALID_PRESET_NAMED(std::string const& presetName,
   std::string err_msg =
     cmStrCat("Invalid ", kind, " preset: \"", presetName, '"');
   if (!detail.empty()) {
-    err_msg = cmStrCat(err_msg, ": ", detail);
+    err_msg = cmStrCat(std::move(err_msg), ": ", detail);
   }
   state->AddError(err_msg);
 }
@@ -112,18 +127,25 @@ void CYCLIC_PRESET_INHERITANCE(std::string const& presetName,
 }
 
 void INHERITED_PRESET_UNREACHABLE_FROM_FILE(std::string const& presetName,
+                                            std::string const& inheritedPreset,
                                             std::string const& kind,
                                             cmJSONState* state)
 {
-  state->AddError(cmStrCat("Inherited ", kind, " preset \"", presetName,
-                           "\" is unreachable from preset's file"));
+  state->AddError(cmStrCat(CapitalizePresetKind(kind), " preset \"",
+                           presetName, "\" inherits preset \"",
+                           inheritedPreset, "\", but \"", inheritedPreset,
+                           "\" is not reachable from the preset's file"));
 }
 
 void CONFIGURE_PRESET_UNREACHABLE_FROM_FILE(std::string const& presetName,
+                                            std::string const& kind,
+                                            std::string const& configurePreset,
                                             cmJSONState* state)
 {
-  state->AddError(cmStrCat("Configure preset \"", presetName,
-                           "\" is unreachable from preset's file"));
+  state->AddError(cmStrCat(CapitalizePresetKind(kind), " preset \"",
+                           presetName, "\" references configure preset \"",
+                           configurePreset, "\", but \"", configurePreset,
+                           "\" is not reachable from the preset's file"));
 }
 
 void INVALID_MACRO_EXPANSION(std::string const& presetName, cmJSONState* state)
@@ -159,11 +181,14 @@ void INVALID_INCLUDE(Json::Value const* value, cmJSONState* state)
   state->AddErrorAtValue("Invalid \"include\" field", value);
 }
 
-void INVALID_CONFIGURE_PRESET(std::string const& presetName,
-                              cmJSONState* state)
+void CONFIGURE_PRESET_NOT_FOUND(std::string const& presetName,
+                                std::string const& kind,
+                                std::string const& configurePreset,
+                                cmJSONState* state)
 {
-  state->AddError(
-    cmStrCat(R"(Invalid "configurePreset": ")", presetName, '"'));
+  state->AddError(cmStrCat(
+    CapitalizePresetKind(kind), " preset \"", presetName,
+    "\" references unknown configure preset \"", configurePreset, '"'));
 }
 
 void INSTALL_PREFIX_UNSUPPORTED(Json::Value const* value, cmJSONState* state)
@@ -214,10 +239,38 @@ void TEST_OUTPUT_TRUNCATION_UNSUPPORTED(cmJSONState* state)
                   "preset support");
 }
 
-void INVALID_WORKFLOW_STEPS(std::string const& workflowStep,
-                            cmJSONState* state)
+namespace {
+std::string WorkflowStepLabel(cm::string_view stepType,
+                              std::string const& stepName)
 {
-  state->AddError(cmStrCat("Invalid workflow step \"", workflowStep, '"'));
+  return cmStrCat("of type \"", stepType, "\" named \"", stepName, '"');
+}
+}
+
+void INVALID_WORKFLOW_STEPS(cm::string_view stepType,
+                            std::string const& stepName, cmJSONState* state)
+{
+  state->AddError(
+    cmStrCat("Invalid workflow step ", WorkflowStepLabel(stepType, stepName)));
+}
+
+void WORKFLOW_STEP_CONFIGURE_PRESET_MISMATCH(
+  std::string const& kind, std::string const& workflowStep,
+  std::string const& stepConfigurePreset,
+  std::string const& workflowConfigurePreset, cmJSONState* state)
+{
+  state->AddError(cmStrCat(
+    CapitalizePresetKind(kind), " workflow step \"", workflowStep,
+    "\" uses configure preset \"", stepConfigurePreset,
+    "\", but workflow configure preset is \"", workflowConfigurePreset, '"'));
+}
+
+void INVALID_TEST_FILTER_INCLUDE_INDEX(Json::Value const* value,
+                                       cmJSONState* state)
+{
+  state->AddErrorAtValue(
+    "Invalid \"filter.include.index\" field: expected a string or object",
+    value);
 }
 
 void NO_WORKFLOW_STEPS(std::string const& presetName, cmJSONState* state)
@@ -226,25 +279,31 @@ void NO_WORKFLOW_STEPS(std::string const& presetName, cmJSONState* state)
     cmStrCat("No workflow steps specified for \"", presetName, '"'));
 }
 
-void FIRST_WORKFLOW_STEP_NOT_CONFIGURE(std::string const& stepName,
+void FIRST_WORKFLOW_STEP_NOT_CONFIGURE(cm::string_view stepType,
+                                       std::string const& stepName,
                                        cmJSONState* state)
 {
-  state->AddError(cmStrCat("First workflow step \"", stepName,
-                           "\" must be a configure step"));
+  state->AddError(cmStrCat("First workflow step ",
+                           WorkflowStepLabel(stepType, stepName),
+                           " must be a configure step"));
 }
 
-void CONFIGURE_WORKFLOW_STEP_NOT_FIRST(std::string const& stepName,
+void CONFIGURE_WORKFLOW_STEP_NOT_FIRST(cm::string_view stepType,
+                                       std::string const& stepName,
                                        cmJSONState* state)
 {
-  state->AddError(cmStrCat("Configure workflow step \"", stepName,
-                           "\" must be the first step"));
+  state->AddError(cmStrCat("Workflow step ",
+                           WorkflowStepLabel(stepType, stepName),
+                           " must be the first step"));
 }
 
-void WORKFLOW_STEP_UNREACHABLE_FROM_FILE(std::string const& workflowStep,
+void WORKFLOW_STEP_UNREACHABLE_FROM_FILE(cm::string_view stepType,
+                                         std::string const& stepName,
                                          cmJSONState* state)
 {
-  state->AddError(cmStrCat("Workflow step \"", workflowStep,
-                           "\" is unreachable from preset's file"));
+  state->AddError(cmStrCat("Workflow step ",
+                           WorkflowStepLabel(stepType, stepName),
+                           " is unreachable from preset's file"));
 }
 
 void CTEST_JUNIT_UNSUPPORTED(cmJSONState* state)
@@ -285,7 +344,7 @@ void INVALID_PRESET_NAME(Json::Value const* value, cmJSONState* state)
   std::string errMsg = "Invalid Preset Name";
   if (value && value->isConvertibleTo(Json::ValueType::stringValue) &&
       !value->asString().empty()) {
-    errMsg = cmStrCat(errMsg, ": ", value->asString());
+    errMsg = cmStrCat(std::move(errMsg), ": ", value->asString());
   }
   state->AddErrorAtValue(errMsg, value);
 }

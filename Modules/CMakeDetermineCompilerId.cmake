@@ -331,6 +331,7 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
 
   set(_variant "")
   if("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xClang"
+    OR "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xDPClang"
     OR "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xIntelLLVM")
     if("x${CMAKE_${lang}_SIMULATE_ID}" STREQUAL "xMSVC")
       if(CMAKE_GENERATOR MATCHES "Visual Studio")
@@ -358,6 +359,7 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
       set(CMAKE_${lang}_COMPILER_FRONTEND_VARIANT "GNU")
     endif()
   elseif("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xGNU"
+    OR "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xAdaptiveCpp"
     OR "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xAppleClang"
     OR "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xFujitsuClang"
     OR "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xIBMClang"
@@ -373,7 +375,7 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
   # for C++ and the GNU-frontend variant.
   set(CMAKE_${lang}_COMPILER_CLANG_RESOURCE_DIR "")
   if ("x${lang}" STREQUAL "xCXX" AND
-      "x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xClang" AND
+      CMAKE_${lang}_COMPILER_ID MATCHES "^(Clang|DPClang)$" AND
       "x${CMAKE_${lang}_COMPILER_FRONTEND_VARIANT}" STREQUAL "xGNU")
     execute_process(
       COMMAND "${CMAKE_${lang}_COMPILER}"
@@ -393,16 +395,46 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
   endif ()
 
   set(CMAKE_${lang}_STANDARD_LIBRARY "")
+  set(CMAKE_${lang}_STANDARD_LIBRARY_INCLUDE_DIRECTORY "")
   if ("x${lang}" STREQUAL "xCXX" AND
       EXISTS "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${lang}-DetectStdlib.h" AND
-      ("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xClang" AND
-       "x${CMAKE_${lang}_COMPILER_FRONTEND_VARIANT}" STREQUAL "xGNU") OR
+      ("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xClang") OR
+      ("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xDPClang") OR
       ("x${CMAKE_${lang}_COMPILER_ID}" STREQUAL "xGNU"))
     # See #20851 for a proper abstraction for this.
+
+    # Forward configured stdlib include dirs so this probe can find <version>
+    # in non-default toolchain layouts (e.g. clang-cl with MSVC STL).
+    set(_inc_dirs)
+    set(_inc_opt "")
+    if (CMAKE_${lang}_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
+      set(_inc_opt -isystem)
+    elseif (CMAKE_${lang}_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+      set(_inc_opt -imsvc)
+    endif ()
+    if (_inc_opt)
+      foreach(_inc_path IN LISTS CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES)
+        list(APPEND _inc_dirs "${_inc_opt}" "${_inc_path}")
+      endforeach()
+    endif ()
+
+    # Locate the standard library headers selected by Clang, including toolsets
+    # discovered by the driver without a developer command prompt environment.
+    set(_stdlib_trace_flags)
+    if (CMAKE_${lang}_COMPILER_ID MATCHES "^(Clang|DPClang)$")
+      if (CMAKE_${lang}_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+        list(APPEND _stdlib_trace_flags -clang:-H)
+      else ()
+        list(APPEND _stdlib_trace_flags -H)
+      endif ()
+    endif ()
+
     execute_process(
       COMMAND "${CMAKE_${lang}_COMPILER}"
         ${CMAKE_${lang}_COMPILER_ID_ARG1}
+        ${_inc_dirs}
         ${CMAKE_CXX_COMPILER_ID_FLAGS_LIST}
+        ${_stdlib_trace_flags}
         -E
         -x c++-header
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${lang}-DetectStdlib.h"
@@ -413,6 +445,13 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
       ERROR_STRIP_TRAILING_WHITESPACE)
     if (_lang_stdlib_res EQUAL 0)
       string(REGEX REPLACE ".*CMAKE-STDLIB-DETECT: (.+)\n.*" "\\1" "CMAKE_${lang}_STANDARD_LIBRARY" "${_lang_stdlib_out}")
+      if (_stdlib_trace_flags AND
+          _lang_stdlib_err MATCHES "(^|\n)\\. ([^\r\n]*[/\\\\]version)(\r?\n|$)")
+        # Clang may escape backslashes in the include trace on Windows.
+        string(REPLACE "\\\\" "/" _stdlib_version_header "${CMAKE_MATCH_2}")
+        string(REPLACE "\\" "/" _stdlib_version_header "${_stdlib_version_header}")
+        cmake_path(GET _stdlib_version_header PARENT_PATH CMAKE_${lang}_STANDARD_LIBRARY_INCLUDE_DIRECTORY)
+      endif ()
     endif ()
   endif ()
 
@@ -490,6 +529,7 @@ function(CMAKE_DETERMINE_COMPILER_ID lang flagvar src)
   set(CMAKE_${lang}_COMPILER_PRODUCED_FILES "${COMPILER_${lang}_PRODUCED_FILES}" PARENT_SCOPE)
   set(CMAKE_${lang}_COMPILER_CLANG_RESOURCE_DIR "${CMAKE_${lang}_COMPILER_CLANG_RESOURCE_DIR}" PARENT_SCOPE)
   set(CMAKE_${lang}_STANDARD_LIBRARY "${CMAKE_${lang}_STANDARD_LIBRARY}" PARENT_SCOPE)
+  set(CMAKE_${lang}_STANDARD_LIBRARY_INCLUDE_DIRECTORY "${CMAKE_${lang}_STANDARD_LIBRARY_INCLUDE_DIRECTORY}" PARENT_SCOPE)
   set(CMAKE_${lang}_COMPILER_APPLE_SYSROOT "${CMAKE_${lang}_COMPILER_APPLE_SYSROOT}" PARENT_SCOPE)
 endfunction()
 
@@ -507,19 +547,24 @@ function(CMAKE_DETERMINE_COMPILER_ID_WRITE lang src)
     PLATFORM_DEFAULT_COMPILER
   )
 
-  if(lang MATCHES "^(CUDA|HIP)$")
+  if(lang MATCHES "^(CUDA|HIP|SYCL)$")
     compiler_id_detection(CMAKE_${lang}_HOST_COMPILER_ID_CONTENT CXX
       PREFIX HOST_
       ID_STRING
       VERSION_STRINGS
     )
+    if(lang STREQUAL "SYCL")
+      set(host_compiler_condition "defined(__ADAPTIVECPP__) || defined(__ACPP__) || defined(__OPENSYCL__) || defined(__HIPSYCL__)")
+    else()
+      set(host_compiler_condition "defined(__NVCC__)")
+    endif()
     string(APPEND CMAKE_${lang}_COMPILER_ID_CONTENT
       "\n"
       "\n"
-      "/* Detect host compiler used by NVCC. */\n"
-      "#ifdef __NVCC__\n"
+      "/* Detect the underlying host compiler. */\n"
+      "#if ${host_compiler_condition}\n"
       "${CMAKE_${lang}_HOST_COMPILER_ID_CONTENT}\n"
-      "#endif /* __NVCC__ */\n"
+      "#endif\n"
     )
   endif()
 
@@ -700,6 +745,9 @@ Id flags: ${testflags} ${CMAKE_${lang}_COMPILER_ID_FLAGS_ALWAYS}
     set(id_dir ${CMAKE_${lang}_COMPILER_ID_DIR})
     set(id_src "${src}")
     set(id_compile "ClCompile")
+    if(lang STREQUAL SYCL)
+      set(id_cl_var "CLToolExe")
+    endif()
     if(id_cl_var)
       set(id_PostBuildEvent_Command "echo CMAKE_${lang}_COMPILER=$(${id_cl_var})")
     else()
@@ -709,9 +757,24 @@ Id flags: ${testflags} ${CMAKE_${lang}_COMPILER_ID_FLAGS_ALWAYS}
     set(id_Import_targets "")
     set(id_ItemDefinitionGroup_entry "")
     set(id_Link_AdditionalDependencies "")
-    if(lang STREQUAL CUDA)
+    set(id_project_template "VS-${v}.${ext}.in")
+    if(lang STREQUAL SYCL)
+      set(id_project_template "VS-SYCL.vcxproj.in")
+    elseif(lang STREQUAL CUDA)
       if(NOT CMAKE_VS_PLATFORM_TOOLSET_CUDA)
-        message(FATAL_ERROR "No CUDA toolset found.")
+        set(maybe_dir "")
+        if(_CMAKE_VS_PLATFORM_TOOLSET_CUDA_INTEGRATION_DIR)
+          string(CONCAT maybe_dir "  "
+            "The folder:\n"
+            "  \"${_CMAKE_VS_PLATFORM_TOOLSET_CUDA_INTEGRATION_DIR}\"\n"
+            "does not contain any \"CUDA *.props\" files.")
+        endif()
+        message(FATAL_ERROR
+          "No CUDA Toolkit integration found in Visual Studio.${maybe_dir}\n"
+          "Install the CUDA Toolkit with its Visual Studio integration component.  "
+          "Make sure the CUDA Toolkit version supports integration with\n"
+          "  ${CMAKE_GENERATOR}\n"
+        )
       endif()
       set(cuda_tools "CUDA ${CMAKE_VS_PLATFORM_TOOLSET_CUDA}")
       set(id_compile "CudaCompile")
@@ -744,7 +807,7 @@ Id flags: ${testflags} ${CMAKE_${lang}_COMPILER_ID_FLAGS_ALWAYS}
         set(id_Link_AdditionalDependencies "<AdditionalDependencies>cudart_static.lib</AdditionalDependencies>")
       endif()
     endif()
-    configure_file(${CMAKE_ROOT}/Modules/CompilerId/VS-${v}.${ext}.in
+    configure_file(${CMAKE_ROOT}/Modules/CompilerId/${id_project_template}
       ${id_dir}/CompilerId${lang}.${ext} @ONLY)
     if(CMAKE_VS_MSBUILD_COMMAND AND NOT lang STREQUAL "Fortran")
       set(command "${CMAKE_VS_MSBUILD_COMMAND}" "CompilerId${lang}.${ext}"
@@ -1123,7 +1186,7 @@ function(CMAKE_DETERMINE_COMPILER_ID_CHECK lang file)
         set(PLATFORM_ID "${CMAKE_MATCH_1}")
       endif()
       if("${info}" MATCHES "INFO:arch\\[([^]\"]*)\\]")
-        set(ARCHITECTURE_ID "${CMAKE_MATCH_1}")
+        list(APPEND ARCHITECTURE_ID "${CMAKE_MATCH_1}")
       endif()
       if("${info}" MATCHES "INFO:compiler_version\\[([^]\"]*)\\]")
         string(REGEX REPLACE "^0+([0-9]+)" "\\1" COMPILER_VERSION "${CMAKE_MATCH_1}")
@@ -1209,6 +1272,7 @@ function(CMAKE_DETERMINE_COMPILER_ID_CHECK lang file)
     if(COMPILER_ID AND NOT COMPILER_ID_TWICE)
       set(CMAKE_${lang}_COMPILER_ID "${COMPILER_ID}")
       set(CMAKE_${lang}_PLATFORM_ID "${PLATFORM_ID}")
+      list(SORT ARCHITECTURE_ID)
       set(CMAKE_${lang}_COMPILER_ARCHITECTURE_ID "${ARCHITECTURE_ID}")
       set(MSVC_${lang}_ARCHITECTURE_ID "${ARCHITECTURE_ID}")
       set(CMAKE_${lang}_COMPILER_VERSION "${COMPILER_VERSION}")

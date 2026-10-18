@@ -1,0 +1,3 @@
+CMake Error at PrintTargetsIgnoreCaseRequiresRegex\.cmake:[0-9]+ \(cmake_language\):
+  cmake_language IGNORE_CASE keyword in cmake_language\(PRINT_TARGETS\) call is
+  only valid with REGEX\.

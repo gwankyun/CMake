@@ -15,6 +15,7 @@ discover_tests
     TEST_NAME <replacement>
     TEST_ARGS <replacement>...
     [TEST_PROPERTIES <key> <replacement> [<key> <replacement>]...]
+    [BUILD_DEPENDS <dependencies>...]
   )
 
 该命令配置测试发现机制，而非在配置阶段定义单个测试。在测试执行时，:manual:`ctest(1)`
@@ -73,6 +74,33 @@ discover_tests
 
 ``TEST_PROPERTIES``
   为每个发现的测试指定要设置的测试属性。值为替换字符串，可引用 ``DISCOVERY_MATCH`` 中的捕获组。
+
+  .. versionchanged:: 4.5
+    If the properties make the discovered tests part of a test fixture, and
+    they do not set :prop_test:`FIXTURE_REPEAT_MODE`, policy :policy:`CMP0224`
+    determines the behavior when the :ctest-option:`--repeat` option is used.
+
+``BUILD_DEPENDS``
+  .. versionadded:: 4.5
+
+  Specify a list of targets or files that must be built before the test
+  discovery can run.  A relative file path is interpreted with respect to the
+  current source directory if the file exists there, and otherwise with respect
+  to the current binary directory.
+
+  When :ref:`Test Preparation Targets` are not disabled, these dependencies are
+  built by the ``test_prep/all`` target.  If ``COMMAND`` names an executable
+  target created by :command:`add_executable`, that target is also added
+  automatically.
+
+  Individual ``test_prep/<test-name>`` targets are not created for discovered
+  tests because their names are not known at generation time.
+
+  Build dependencies added by this argument, and an executable target
+  named by ``COMMAND``, also enable the
+  :ctest-option:`--out-of-date` behavior of :manual:`ctest(1)`.
+
+  Tests with missing build dependencies will not be run.
 
 CTest 执行发现步骤以获取测试列表，然后使用由 ``COMMAND`` 和 ``TEST_ARGS`` 生成的命令行\
 来运行每个发现的测试。每个发现的测试的通过/失败行为遵循常规 CTest 规则（退出码 ``0`` 表示成功，\

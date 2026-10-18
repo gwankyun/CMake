@@ -7,214 +7,307 @@
 #include <cstring>
 #include <iterator>
 #include <string>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include <cm/optional>
-#include <cm/string_view>
 
 #include "cmsys/String.h"
 
+#include "cmOutputConverter.h"
 #include "cmPkgConfigParser.h"
 #include "cmStringAlgorithms.h"
 
 namespace {
 
-void TrimBack(std::string& str)
+bool HasPrefix(std::string const& value, char const* prefix)
 {
-  if (!str.empty()) {
-    auto it = str.end() - 1;
-    for (; cmsysString_isspace(*it); --it) {
-      if (it == str.begin()) {
-        str.clear();
-        return;
-      }
-    }
-    str.erase(++it, str.end());
-  }
+  std::size_t const len = std::strlen(prefix);
+  return value.size() >= len && value.compare(0, len, prefix) == 0;
 }
 
-std::string AppendAndTrim(std::string& str, cm::string_view sv)
+void AppendFlag(std::string& flagline, std::string const& flag)
 {
-  auto size = str.length();
-  str += sv;
-  if (str.empty()) {
-    return {};
+  if (!flagline.empty()) {
+    flagline += ' ';
   }
-
-  auto begin = str.begin() + size;
-  auto cur = str.end() - 1;
-
-  while (cur != begin && cmsysString_isspace(*cur)) {
-    --cur;
-  }
-
-  if (cmsysString_isspace(*cur)) {
-    return {};
-  }
-
-  return { &*begin, static_cast<std::size_t>(cur - begin) + 1 };
+  flagline += flag;
 }
 
-cm::string_view TrimFlag(cm::string_view flag)
+bool IsSystemPath(std::string const& path,
+                  std::vector<std::string> const& systemPaths)
 {
-  std::size_t trim_size = 2;
-  for (auto c = flag.rbegin(); c != flag.rend() && cmsysString_isspace(*c);
-       ++c) {
-    ++trim_size;
+  return std::find(systemPaths.begin(), systemPaths.end(), path) !=
+    systemPaths.end();
+}
+
+std::vector<std::string> DefaultSystemIncludePaths()
+{
+  return std::vector<std::string>{ "/usr/include" };
+}
+
+std::vector<std::string> DefaultSystemLibraryPaths()
+{
+  return std::vector<std::string>{ "/usr/lib" };
+}
+
+std::vector<std::string> const& SystemCflags(cmPkgConfigEnv const& env,
+                                             std::vector<std::string>& def)
+{
+  if (env.SysCflags) {
+    return *env.SysCflags;
   }
-  return { flag.data() + 2, flag.size() - trim_size };
+  def = DefaultSystemIncludePaths();
+  return def;
+}
+
+std::vector<std::string> const& SystemLibs(cmPkgConfigEnv const& env,
+                                           std::vector<std::string>& def)
+{
+  if (env.SysLibs) {
+    return *env.SysLibs;
+  }
+  def = DefaultSystemLibraryPaths();
+  return def;
 }
 
 } // namespace
 
-std::string cmPkgConfigVersionReq::string() const
+std::string cmPkgConfigResolver::VersionReqString(
+  cmPkgConfigDependencySpec const& spec)
 {
-  switch (Operation) {
-    case ANY:
+  switch (spec.Operation) {
+    case cmPkgConfigDependencyOperation::None:
       return "";
-    case LT:
-      return cmStrCat('<', Version);
-    case LT_EQ:
-      return cmStrCat("<=", Version);
-    case EQ:
-      return cmStrCat('=', Version);
-    case NEQ:
-      return cmStrCat("!=", Version);
-    case GT_EQ:
-      return cmStrCat(">=", Version);
-    case GT:
-      return cmStrCat('>', Version);
+    case cmPkgConfigDependencyOperation::LessThan:
+      return cmStrCat('<', spec.Version);
+    case cmPkgConfigDependencyOperation::LessThanEqual:
+      return cmStrCat("<=", spec.Version);
+    case cmPkgConfigDependencyOperation::Equal:
+      return cmStrCat('=', spec.Version);
+    case cmPkgConfigDependencyOperation::NotEqual:
+      return cmStrCat("!=", spec.Version);
+    case cmPkgConfigDependencyOperation::GreaterThanEqual:
+      return cmStrCat(">=", spec.Version);
+    case cmPkgConfigDependencyOperation::GreaterThan:
+      return cmStrCat('>', spec.Version);
   }
   return "";
 }
 
-std::string cmPkgConfigResult::StrOrDefault(std::string const& key,
-                                            cm::string_view def)
+cmPkgConfigResolver::cmPkgConfigResolver(cmPkgConfigParser parser,
+                                         cmPkgConfigEnv const& env,
+                                         std::string const& pcFileDir)
+  : Parser{ std::move(parser) }
+  , Env{ &env }
 {
-  auto it = Keywords.find(key);
-  return it == Keywords.end() ? std::string{ def } : it->second;
-};
-
-std::string cmPkgConfigResult::Name()
-{
-  return StrOrDefault("Name");
+  this->Parser.ParseComplete();
+  this->ConfigureParser(pcFileDir);
 }
 
-std::string cmPkgConfigResult::Description()
+cm::optional<cmPkgConfigResolver> cmPkgConfigResolver::Resolve(
+  cmPkgConfigParser parser, cmPkgConfigEnv const& env, Strictness strictness,
+  std::string const& pcFileDir)
 {
-  return StrOrDefault("Description");
-}
-
-std::string cmPkgConfigResult::Version()
-{
-  return StrOrDefault("Version");
-}
-
-std::vector<cmPkgConfigDependency> cmPkgConfigResult::Conflicts()
-{
-  auto it = Keywords.find("Conflicts");
-  if (it == Keywords.end()) {
+  cmPkgConfigResolver resolver{ std::move(parser), env, pcFileDir };
+  if (strictness != Strictness::BestEffort && !resolver.HasRequiredFields()) {
     return {};
   }
-
-  return cmPkgConfigResolver::ParseDependencies(it->second);
-}
-
-std::vector<cmPkgConfigDependency> cmPkgConfigResult::Provides()
-{
-  auto it = Keywords.find("Provides");
-  if (it == Keywords.end()) {
+  if (strictness == Strictness::Strict && resolver.HasStrictConflicts()) {
     return {};
   }
-
-  return cmPkgConfigResolver::ParseDependencies(it->second);
+  return resolver;
 }
 
-std::vector<cmPkgConfigDependency> cmPkgConfigResult::Requires(bool priv)
+cm::optional<cmPkgConfigResolver> cmPkgConfigResolver::ResolveStrict(
+  cmPkgConfigParser parser, cmPkgConfigEnv const& env,
+  std::string const& pcFileDir)
 {
-  auto it = Keywords.find(priv ? "Requires.private" : "Requires");
-  if (it == Keywords.end()) {
-    return {};
-  }
-
-  return cmPkgConfigResolver::ParseDependencies(it->second);
+  return Resolve(std::move(parser), env, Strictness::Strict, pcFileDir);
 }
 
-cmPkgConfigCflagsResult cmPkgConfigResult::Cflags(bool priv)
+cm::optional<cmPkgConfigResolver> cmPkgConfigResolver::ResolvePermissive(
+  cmPkgConfigParser parser, cmPkgConfigEnv const& env,
+  std::string const& pcFileDir)
 {
-  std::string cflags;
-  auto it = Keywords.find(priv ? "Cflags.private" : "Cflags");
-  if (it != Keywords.end()) {
-    cflags += it->second;
-  }
-
-  it = Keywords.find(priv ? "CFlags.private" : "CFlags");
-  if (it != Keywords.end()) {
-    if (!cflags.empty()) {
-      cflags += " ";
-    }
-    cflags += it->second;
-  }
-
-  auto tokens = cmPkgConfigResolver::TokenizeFlags(cflags);
-
-  if (env->AllowSysCflags) {
-    if (env->SysrootDir) {
-      return cmPkgConfigResolver::MangleCflags(tokens, *env->SysrootDir);
-    }
-    return cmPkgConfigResolver::MangleCflags(tokens);
-  }
-
-  if (env->SysCflags) {
-    if (env->SysrootDir) {
-      return cmPkgConfigResolver::MangleCflags(tokens, *env->SysrootDir,
-                                               *env->SysCflags);
-    }
-    return cmPkgConfigResolver::MangleCflags(tokens, *env->SysCflags);
-  }
-
-  if (env->SysrootDir) {
-    return cmPkgConfigResolver::MangleCflags(
-      tokens, *env->SysrootDir, std::vector<std::string>{ "/usr/include" });
-  }
-
-  return cmPkgConfigResolver::MangleCflags(
-    tokens, std::vector<std::string>{ "/usr/include" });
+  return Resolve(std::move(parser), env, Strictness::Permissive, pcFileDir);
 }
 
-cmPkgConfigLibsResult cmPkgConfigResult::Libs(bool priv)
+cmPkgConfigResolver cmPkgConfigResolver::ResolveBestEffort(
+  cmPkgConfigParser parser, cmPkgConfigEnv const& env,
+  std::string const& pcFileDir)
 {
-  auto it = Keywords.find(priv ? "Libs.private" : "Libs");
-  if (it == Keywords.end()) {
-    return cmPkgConfigLibsResult();
+  return cmPkgConfigResolver{ std::move(parser), env, pcFileDir };
+}
+
+void cmPkgConfigResolver::ConfigureParser(std::string const& pcFileDir)
+{
+  if (this->Env->SysrootDir) {
+    this->Parser.SetVariable(
+      "pc_sysrootdir",
+      cmOutputConverter::EscapeForShell(*this->Env->SysrootDir,
+                                        cmOutputConverter::Shell_Flag_IsUnix));
+  } else {
+    this->Parser.SetVariable("pc_sysrootdir", "/");
   }
 
-  auto tokens = cmPkgConfigResolver::TokenizeFlags(it->second);
+  if (this->Env->TopBuildDir) {
+    this->Parser.SetVariable(
+      "pc_top_builddir",
+      cmOutputConverter::EscapeForShell(*this->Env->TopBuildDir,
+                                        cmOutputConverter::Shell_Flag_IsUnix));
+  }
 
-  if (env->AllowSysLibs) {
-    if (env->SysrootDir) {
-      return cmPkgConfigResolver::MangleLibs(tokens, *env->SysrootDir);
+  this->Parser.SetVariable("pcfiledir",
+                           cmOutputConverter::EscapeForShell(
+                             pcFileDir, cmOutputConverter::Shell_Flag_IsUnix));
+}
+
+bool cmPkgConfigResolver::HasRequiredFields() const
+{
+  return this->Parser.HasProperty("Name") &&
+    this->Parser.HasProperty("Description") &&
+    this->Parser.HasProperty("Version");
+}
+
+bool cmPkgConfigResolver::HasStrictConflicts() const
+{
+  return (this->Parser.HasProperty("Cflags") &&
+          this->Parser.HasProperty("CFlags")) ||
+    (this->Parser.HasProperty("Cflags.private") &&
+     this->Parser.HasProperty("CFlags.private"));
+}
+
+std::string cmPkgConfigResolver::Literal(std::string const& key) const
+{
+  return this->Parser.GetLiteral(key);
+}
+
+std::string cmPkgConfigResolver::Name() const
+{
+  return this->Literal("Name");
+}
+
+std::string cmPkgConfigResolver::Description() const
+{
+  return this->Literal("Description");
+}
+
+std::string cmPkgConfigResolver::Version() const
+{
+  return this->Literal("Version");
+}
+
+std::vector<std::string> cmPkgConfigResolver::Fragments(
+  std::string const& key) const
+{
+  return this->Parser.GetFragments(key);
+}
+
+std::vector<cmPkgConfigDependencySpec> cmPkgConfigResolver::Dependencies(
+  std::string const& key) const
+{
+  return this->Parser.GetDependencies(key);
+}
+
+std::vector<cmPkgConfigDependencySpec> cmPkgConfigResolver::Conflicts() const
+{
+  return this->Dependencies("Conflicts");
+}
+
+std::vector<cmPkgConfigDependencySpec> cmPkgConfigResolver::Provides() const
+{
+  return this->Dependencies("Provides");
+}
+
+std::vector<cmPkgConfigDependencySpec> cmPkgConfigResolver::Requires(
+  bool priv) const
+{
+  return this->Dependencies(priv ? "Requires.private" : "Requires");
+}
+
+cmPkgConfigCflagsResult cmPkgConfigResolver::Cflags(bool priv) const
+{
+  auto flags = this->Fragments(priv ? "Cflags.private" : "Cflags");
+  auto alt = this->Fragments(priv ? "CFlags.private" : "CFlags");
+  flags.insert(flags.end(), alt.begin(), alt.end());
+  return MangleCflags(flags, *this->Env);
+}
+
+cmPkgConfigLibsResult cmPkgConfigResolver::Libs(bool priv) const
+{
+  return MangleLibs(this->Fragments(priv ? "Libs.private" : "Libs"),
+                    *this->Env);
+}
+
+cmPkgConfigCflagsResult cmPkgConfigResolver::MangleCflags(
+  std::vector<std::string> const& flags, cmPkgConfigEnv const& env)
+{
+  cmPkgConfigCflagsResult result;
+  std::vector<std::string> defaultSystemPaths;
+  auto const& systemPaths = SystemCflags(env, defaultSystemPaths);
+
+  for (auto const& flag : flags) {
+    std::string mangled = flag;
+    if (HasPrefix(flag, "-I") && env.SysrootDir) {
+      mangled = Reroot(flag, "-I", *env.SysrootDir);
     }
-    return cmPkgConfigResolver::MangleLibs(tokens);
-  }
 
-  if (env->SysLibs) {
-    if (env->SysrootDir) {
-      return cmPkgConfigResolver::MangleLibs(tokens, *env->SysrootDir,
-                                             *env->SysLibs);
+    if (HasPrefix(mangled, "-I")) {
+      if (!env.AllowSysCflags &&
+          IsSystemPath(mangled.substr(2), systemPaths)) {
+        continue;
+      }
+      AppendFlag(result.Flagline, mangled);
+      result.Includes.push_back(mangled);
+    } else {
+      AppendFlag(result.Flagline, mangled);
+      result.CompileOptions.push_back(mangled);
     }
-    return cmPkgConfigResolver::MangleLibs(tokens, *env->SysLibs);
   }
 
-  if (env->SysrootDir) {
-    return cmPkgConfigResolver::MangleLibs(
-      tokens, *env->SysrootDir, std::vector<std::string>{ "/usr/lib" });
+  return result;
+}
+
+cmPkgConfigLibsResult cmPkgConfigResolver::MangleLibs(
+  std::vector<std::string> const& flags, cmPkgConfigEnv const& env)
+{
+  cmPkgConfigLibsResult result;
+  std::vector<std::string> defaultSystemPaths;
+  auto const& systemPaths = SystemLibs(env, defaultSystemPaths);
+
+  for (auto const& flag : flags) {
+    std::string mangled = flag;
+    if (HasPrefix(flag, "-L") && env.SysrootDir) {
+      mangled = Reroot(flag, "-L", *env.SysrootDir);
+    }
+
+    if (HasPrefix(mangled, "-L")) {
+      if (!env.AllowSysLibs && IsSystemPath(mangled.substr(2), systemPaths)) {
+        continue;
+      }
+      AppendFlag(result.Flagline, mangled);
+      result.LibDirs.push_back(mangled);
+    } else if (HasPrefix(mangled, "-l")) {
+      AppendFlag(result.Flagline, mangled);
+      result.LibNames.push_back(mangled);
+    } else {
+      AppendFlag(result.Flagline, mangled);
+      result.LinkOptions.push_back(mangled);
+    }
   }
 
-  return cmPkgConfigResolver::MangleLibs(
-    tokens, std::vector<std::string>{ "/usr/lib" });
+  return result;
+}
+
+std::string cmPkgConfigResolver::Reroot(std::string const& flag,
+                                        char const* prefix,
+                                        std::string const& sysroot)
+{
+  std::string result = prefix;
+  result += sysroot;
+  result += flag.substr(std::strlen(prefix));
+  return result;
 }
 
 void cmPkgConfigResolver::ReplaceSep(std::string& list)
@@ -222,538 +315,30 @@ void cmPkgConfigResolver::ReplaceSep(std::string& list)
 #ifndef _WIN32
   std::replace(list.begin(), list.end(), ':', ';');
 #else
-  static_cast<void>(list); // Unused parameter
+  static_cast<void>(list);
 #endif
 }
 
-cm::optional<cmPkgConfigResult> cmPkgConfigResolver::ResolveStrict(
-  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env)
+bool cmPkgConfigResolver::CheckVersion(
+  cmPkgConfigDependencySpec const& desired, std::string const& provided)
 {
-  cm::optional<cmPkgConfigResult> result;
-  cmPkgConfigResult config;
-  auto& keys = config.Keywords;
-
-  if (env.SysrootDir) {
-    config.Variables["pc_sysrootdir"] = *env.SysrootDir;
-  } else {
-    config.Variables["pc_sysrootdir"] = "/";
-  }
-
-  if (env.TopBuildDir) {
-    config.Variables["pc_top_builddir"] = *env.TopBuildDir;
-  }
-
-  config.env = &env;
-
-  for (auto const& entry : entries) {
-    std::string key(entry.Key);
-    if (entry.IsVariable) {
-      if (config.Variables.find(key) != config.Variables.end()) {
-        return result;
-      }
-      auto var = HandleVariableStrict(entry, config.Variables);
-      if (!var) {
-        return result;
-      }
-      config.Variables[key] = *var;
-    } else {
-      if (key == "Cflags" && keys.find("CFlags") != keys.end()) {
-        return result;
-      }
-      if (key == "CFlags" && keys.find("Cflags") != keys.end()) {
-        return result;
-      }
-      if (key == "Cflags.private" &&
-          keys.find("CFlags.private") != keys.end()) {
-        return result;
-      }
-      if (key == "CFlags.private" &&
-          keys.find("Cflags.private") != keys.end()) {
-        return result;
-      }
-      if (keys.find(key) != keys.end()) {
-        return result;
-      }
-      keys[key] = HandleKeyword(entry, config.Variables);
-    }
-  }
-
-  if (keys.find("Name") == keys.end() ||
-      keys.find("Description") == keys.end() ||
-      keys.find("Version") == keys.end()) {
-    return result;
-  }
-
-  result = std::move(config);
-  return result;
-}
-
-cm::optional<cmPkgConfigResult> cmPkgConfigResolver::ResolvePermissive(
-  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env)
-{
-  cm::optional<cmPkgConfigResult> result;
-
-  cmPkgConfigResult config = ResolveBestEffort(entries, env);
-  auto const& keys = config.Keywords;
-
-  if (keys.find("Name") == keys.end() ||
-      keys.find("Description") == keys.end() ||
-      keys.find("Version") == keys.end()) {
-    return result;
-  }
-
-  result = std::move(config);
-  return result;
-}
-
-cmPkgConfigResult cmPkgConfigResolver::ResolveBestEffort(
-  std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env)
-{
-  cmPkgConfigResult result;
-
-  if (env.SysrootDir) {
-    result.Variables["pc_sysrootdir"] = *env.SysrootDir;
-  } else {
-    result.Variables["pc_sysrootdir"] = "/";
-  }
-
-  if (env.TopBuildDir) {
-    result.Variables["pc_top_builddir"] = *env.TopBuildDir;
-  }
-
-  result.env = &env;
-
-  for (auto const& entry : entries) {
-    std::string key(entry.Key);
-    if (entry.IsVariable) {
-      result.Variables[key] =
-        HandleVariablePermissive(entry, result.Variables);
-    } else {
-      result.Keywords[key] += HandleKeyword(entry, result.Variables);
-    }
-  }
-  return result;
-}
-
-std::string cmPkgConfigResolver::HandleVariablePermissive(
-  cmPkgConfigEntry const& entry,
-  std::unordered_map<std::string, std::string> const& variables)
-{
-  std::string result;
-  for (auto const& segment : entry.Val) {
-    if (!segment.IsVariable) {
-      result += segment.Data;
-    } else if (entry.Key != segment.Data) {
-      auto it = variables.find(std::string{ segment.Data });
-      if (it != variables.end()) {
-        result += it->second;
-      }
-    }
-  }
-
-  TrimBack(result);
-  return result;
-}
-
-cm::optional<std::string> cmPkgConfigResolver::HandleVariableStrict(
-  cmPkgConfigEntry const& entry,
-  std::unordered_map<std::string, std::string> const& variables)
-{
-  cm::optional<std::string> result;
-
-  std::string value;
-  for (auto const& segment : entry.Val) {
-    if (!segment.IsVariable) {
-      value += segment.Data;
-    } else if (entry.Key == segment.Data) {
-      return result;
-    } else {
-      auto it = variables.find(std::string{ segment.Data });
-      if (it != variables.end()) {
-        value += it->second;
-      } else {
-        return result;
-      }
-    }
-  }
-
-  TrimBack(value);
-  result = std::move(value);
-  return result;
-}
-
-std::string cmPkgConfigResolver::HandleKeyword(
-  cmPkgConfigEntry const& entry,
-  std::unordered_map<std::string, std::string> const& variables)
-{
-  std::string result;
-  for (auto const& segment : entry.Val) {
-    if (!segment.IsVariable) {
-      result += segment.Data;
-    } else {
-      auto it = variables.find(std::string{ segment.Data });
-      if (it != variables.end()) {
-        result += it->second;
-      }
-    }
-  }
-
-  TrimBack(result);
-  return result;
-}
-
-std::vector<cm::string_view> cmPkgConfigResolver::TokenizeFlags(
-  std::string const& flagline)
-{
-  std::vector<cm::string_view> result;
-
-  auto it = flagline.begin();
-  while (it != flagline.end() && cmsysString_isspace(*it)) {
-    ++it;
-  }
-
-  while (it != flagline.end()) {
-    char const* start = &(*it);
-    std::size_t len = 0;
-
-    for (; it != flagline.end() && !cmsysString_isspace(*it); ++it) {
-      ++len;
-    }
-
-    for (; it != flagline.end() && cmsysString_isspace(*it); ++it) {
-      ++len;
-    }
-
-    result.emplace_back(start, len);
-  }
-
-  return result;
-}
-
-cmPkgConfigCflagsResult cmPkgConfigResolver::MangleCflags(
-  std::vector<cm::string_view> const& flags)
-{
-  cmPkgConfigCflagsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-I", 0) == 0) {
-      result.Includes.emplace_back(AppendAndTrim(result.Flagline, flag));
-    } else {
-      result.CompileOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigCflagsResult cmPkgConfigResolver::MangleCflags(
-  std::vector<cm::string_view> const& flags, std::string const& sysroot)
-{
-  cmPkgConfigCflagsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-I", 0) == 0) {
-      std::string reroot = Reroot(flag, "-I", sysroot);
-      result.Includes.emplace_back(AppendAndTrim(result.Flagline, reroot));
-    } else {
-      result.CompileOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigCflagsResult cmPkgConfigResolver::MangleCflags(
-  std::vector<cm::string_view> const& flags,
-  std::vector<std::string> const& syspaths)
-{
-  cmPkgConfigCflagsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-I", 0) == 0) {
-      cm::string_view trimmed = TrimFlag(flag);
-      if (std::all_of(
-            syspaths.begin(), syspaths.end(),
-            [&](std::string const& path) { return path != trimmed; })) {
-        result.Includes.emplace_back(AppendAndTrim(result.Flagline, flag));
-      }
-
-    } else {
-      result.CompileOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigCflagsResult cmPkgConfigResolver::MangleCflags(
-  std::vector<cm::string_view> const& flags, std::string const& sysroot,
-  std::vector<std::string> const& syspaths)
-{
-  cmPkgConfigCflagsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-I", 0) == 0) {
-      std::string reroot = Reroot(flag, "-I", sysroot);
-      cm::string_view trimmed = TrimFlag(reroot);
-      if (std::all_of(
-            syspaths.begin(), syspaths.end(),
-            [&](std::string const& path) { return path != trimmed; })) {
-        result.Includes.emplace_back(AppendAndTrim(result.Flagline, reroot));
-      }
-
-    } else {
-      result.CompileOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigLibsResult cmPkgConfigResolver::MangleLibs(
-  std::vector<cm::string_view> const& flags)
-{
-  cmPkgConfigLibsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-L", 0) == 0) {
-      result.LibDirs.emplace_back(AppendAndTrim(result.Flagline, flag));
-    } else if (flag.rfind("-l", 0) == 0) {
-      result.LibNames.emplace_back(AppendAndTrim(result.Flagline, flag));
-    } else {
-      result.LinkOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigLibsResult cmPkgConfigResolver::MangleLibs(
-  std::vector<cm::string_view> const& flags, std::string const& sysroot)
-{
-  cmPkgConfigLibsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-L", 0) == 0) {
-      std::string reroot = Reroot(flag, "-L", sysroot);
-      result.LibDirs.emplace_back(AppendAndTrim(result.Flagline, reroot));
-    } else if (flag.rfind("-l", 0) == 0) {
-      result.LibNames.emplace_back(AppendAndTrim(result.Flagline, flag));
-    } else {
-      result.LinkOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigLibsResult cmPkgConfigResolver::MangleLibs(
-  std::vector<cm::string_view> const& flags,
-  std::vector<std::string> const& syspaths)
-{
-  cmPkgConfigLibsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-L", 0) == 0) {
-      cm::string_view trimmed = TrimFlag(flag);
-      if (std::all_of(
-            syspaths.begin(), syspaths.end(),
-            [&](std::string const& path) { return path != trimmed; })) {
-        result.LibDirs.emplace_back(AppendAndTrim(result.Flagline, flag));
-      }
-
-    } else if (flag.rfind("-l", 0) == 0) {
-      result.LibNames.emplace_back(AppendAndTrim(result.Flagline, flag));
-    } else {
-      result.LinkOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-cmPkgConfigLibsResult cmPkgConfigResolver::MangleLibs(
-  std::vector<cm::string_view> const& flags, std::string const& sysroot,
-  std::vector<std::string> const& syspaths)
-{
-  cmPkgConfigLibsResult result;
-
-  for (auto flag : flags) {
-    if (flag.rfind("-L", 0) == 0) {
-      std::string reroot = Reroot(flag, "-L", sysroot);
-      cm::string_view trimmed = TrimFlag(reroot);
-      if (std::all_of(
-            syspaths.begin(), syspaths.end(),
-            [&](std::string const& path) { return path != trimmed; })) {
-        result.LibDirs.emplace_back(AppendAndTrim(result.Flagline, reroot));
-      }
-
-    } else if (flag.rfind("-l", 0) == 0) {
-      result.LibNames.emplace_back(AppendAndTrim(result.Flagline, flag));
-    } else {
-      result.LinkOptions.emplace_back(AppendAndTrim(result.Flagline, flag));
-    }
-  }
-
-  return result;
-}
-
-std::string cmPkgConfigResolver::Reroot(cm::string_view flag,
-                                        cm::string_view prefix,
-                                        std::string const& sysroot)
-{
-  std::string result = std::string{ prefix };
-  result += sysroot;
-  result += cm::string_view{ flag.data() + prefix.length(),
-                             flag.size() - prefix.length() };
-  return result;
-}
-
-cmPkgConfigVersionReq cmPkgConfigResolver::ParseVersion(
-  std::string::const_iterator& cur, std::string::const_iterator end)
-{
-  cmPkgConfigVersionReq result;
-  if (*cur == '=') {
-    result.Operation = result.EQ;
-    ++cur;
-  } else if (*cur == '>') {
-    ++cur;
-
-    if (cur == end) {
-      result.Operation = result.GT;
-      return result;
-    }
-
-    if (*cur == '=') {
-      result.Operation = result.GT_EQ;
-      ++cur;
-    } else {
-      result.Operation = result.GT;
-    }
-
-  } else if (*cur == '<') {
-    ++cur;
-
-    if (cur == end) {
-      result.Operation = result.LT;
-      return result;
-    }
-
-    if (*cur == '=') {
-      result.Operation = result.LT_EQ;
-      ++cur;
-    } else {
-      result.Operation = result.LT;
-    }
-
-  } else if (*cur == '!') {
-    ++cur;
-
-    if (cur == end) {
-      result.Operation = result.ANY;
-      return result;
-    }
-
-    if (*cur == '=') {
-      result.Operation = result.NEQ;
-      ++cur;
-    } else {
-      result.Operation = result.ANY;
-    }
-  }
-
-  for (;; ++cur) {
-    if (cur == end) {
-      return result;
-    }
-
-    if (!cmsysString_isspace(*cur)) {
-      break;
-    }
-  }
-
-  for (; cur != end && !cmsysString_isspace(*cur) && *cur != ','; ++cur) {
-    result.Version += *cur;
-  }
-
-  return result;
-}
-
-std::vector<cmPkgConfigDependency> cmPkgConfigResolver::ParseDependencies(
-  std::string const& deps)
-{
-
-  std::vector<cmPkgConfigDependency> result;
-
-  auto cur = deps.begin();
-  auto end = deps.end();
-
-  while (cur != end) {
-    while ((cmsysString_isspace(*cur) || *cur == ',')) {
-      if (++cur == end) {
-        return result;
-      }
-    }
-
-    result.emplace_back();
-    auto& dep = result.back();
-
-    while (!cmsysString_isspace(*cur) && *cur != ',') {
-      dep.Name += *cur;
-      if (++cur == end) {
-        return result;
-      }
-    }
-
-    auto in_operator = [&]() -> bool {
-      for (;; ++cur) {
-        if (cur == end) {
-          return false;
-        }
-
-        if (*cur == '>' || *cur == '=' || *cur == '<' || *cur == '!') {
-          return true;
-        }
-
-        if (!cmsysString_isspace(*cur)) {
-          return false;
-        }
-      }
-    };
-
-    if (!in_operator()) {
-      continue;
-    }
-
-    dep.VerReq = ParseVersion(cur, end);
-  }
-
-  return result;
-}
-
-bool cmPkgConfigResolver::CheckVersion(cmPkgConfigVersionReq const& desired,
-                                       std::string const& provided)
-{
-
-  if (desired.Operation == cmPkgConfigVersionReq::ANY) {
+  if (desired.Operation == cmPkgConfigDependencyOperation::None) {
     return true;
   }
 
-  // https://blog.jasonantman.com/2014/07/how-yum-and-rpm-compare-versions/
-
   auto check_with_op = [&](int comp) -> bool {
     switch (desired.Operation) {
-      case cmPkgConfigVersionReq::EQ:
+      case cmPkgConfigDependencyOperation::Equal:
         return comp == 0;
-      case cmPkgConfigVersionReq::NEQ:
+      case cmPkgConfigDependencyOperation::NotEqual:
         return comp != 0;
-      case cmPkgConfigVersionReq::GT:
+      case cmPkgConfigDependencyOperation::GreaterThan:
         return comp < 0;
-      case cmPkgConfigVersionReq::GT_EQ:
+      case cmPkgConfigDependencyOperation::GreaterThanEqual:
         return comp <= 0;
-      case cmPkgConfigVersionReq::LT:
+      case cmPkgConfigDependencyOperation::LessThan:
         return comp > 0;
-      case cmPkgConfigVersionReq::LT_EQ:
+      case cmPkgConfigDependencyOperation::LessThanEqual:
         return comp >= 0;
       default:
         return true;
@@ -869,27 +454,4 @@ bool cmPkgConfigResolver::CheckVersion(cmPkgConfigVersionReq const& desired,
   }
 
   return check_with_op(1);
-}
-
-cmPkgConfigVersionReq cmPkgConfigResolver::ParseVersion(
-  std::string const& version)
-{
-  cmPkgConfigVersionReq result;
-
-  auto cur = version.begin();
-  auto end = version.end();
-
-  if (cur == end) {
-    result.Operation = cmPkgConfigVersionReq::EQ;
-    return result;
-  }
-
-  result = ParseVersion(cur, end);
-  cur = version.begin();
-
-  if (*cur != '=' && *cur != '!' && *cur != '<' && *cur != '>') {
-    result.Operation = cmPkgConfigVersionReq::EQ;
-  }
-
-  return result;
 }

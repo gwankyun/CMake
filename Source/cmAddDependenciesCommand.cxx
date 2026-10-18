@@ -19,12 +19,6 @@ bool cmAddDependenciesCommand(std::vector<std::string> const& args,
 
   cmMakefile& mf = status.GetMakefile();
   std::string const& target_name = args[0];
-  if (mf.IsAlias(target_name)) {
-    mf.IssueMessage(
-      MessageType::FATAL_ERROR,
-      cmStrCat("Cannot add target-level dependencies to alias target \"",
-               target_name, "\".\n"));
-  }
   if (cmTarget* target = mf.FindTargetToUse(target_name)) {
 
     // skip over target_name

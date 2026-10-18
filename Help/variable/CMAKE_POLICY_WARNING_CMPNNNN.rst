@@ -41,6 +41,10 @@ CMAKE_POLICY_WARNING_CMP<NNNN>
   policy :policy:`CMP0172`.
 * ``CMAKE_POLICY_WARNING_CMP0206`` controls the warning for
   policy :policy:`CMP0206`.
+* ``CMAKE_POLICY_WARNING_CMP0220`` controls the warning for
+  policy :policy:`CMP0220`.
+* ``CMAKE_POLICY_WARNING_CMP0224`` controls the warning for
+  policy :policy:`CMP0224`.
 
 This variable should not be set by a project in CMake code.  Project
 developers running CMake may set this variable in their cache to

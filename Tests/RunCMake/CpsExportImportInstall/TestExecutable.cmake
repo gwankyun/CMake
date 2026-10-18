@@ -4,8 +4,15 @@ set(CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}/../install")
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/../install")
 
 find_package(libb REQUIRED COMPONENTS libb)
+find_package(tool REQUIRED COMPONENTS tool)
 
-add_executable(app app.c)
+add_custom_command(
+  OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/gen.c"
+  COMMAND tool::tool "${CMAKE_CURRENT_BINARY_DIR}/gen.c"
+  VERBATIM
+)
+
+add_executable(app app.c "${CMAKE_CURRENT_BINARY_DIR}/gen.c")
 
 target_link_libraries(app PUBLIC libb::libb)
 

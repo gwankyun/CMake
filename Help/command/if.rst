@@ -37,9 +37,9 @@ if
 
 2. 一元测试，例如：
 
-  * `存在性检查`_ :cref:`COMMAND`、 :cref:`DEFINED`、
-    :cref:`DIAGNOSTIC`、 :cref:`EXISTS`、 :cref:`POLICY`、 :cref:`TARGET` 和
-    :cref:`TEST`。
+  * The `存在性检查`_ :cref:`COMMAND`, :cref:`DEFINED`,
+    :cref:`DIAGNOSTIC`, :cref:`EXISTS`, :cref:`POLICY`, :cref:`RULE`,
+    :cref:`TARGET`, and :cref:`TEST`.
   * `文件操作`_ :cref:`IS_READABLE`、 :cref:`IS_WRITABLE`、
     :cref:`IS_EXECUTABLE`、 :cref:`IS_DIRECTORY`、 :cref:`IS_SYMLINK` 和
     :cref:`IS_ABSOLUTE`。
@@ -127,6 +127,13 @@ if
 .. signature:: if(POLICY <policy-id>)
 
   当给定名称是存在的策略（格式为\ ``CMP<NNNN>``\ ）时，结果为真。
+
+.. signature:: if(RULE <rule-name>)
+
+  .. versionadded:: 4.5
+
+  True if the given name is an existing rule created by a call to the
+  :command:`add_custom_rule` command and is visible in the current directory.
 
 .. signature:: if(TARGET <target-name>)
 
@@ -240,7 +247,7 @@ if
   :target: MATCHES
 
   如果给定的字符串或变量的值与给定的正则表达式匹配，则为真。正则表达式的格式参见\
-  :ref:`Regex Specification`。\
+  :ref:`CMake Language Regex Specification`。\
   ``()`` 分组将被捕获到 :variable:`CMAKE_MATCH_<n>` 变量中。
 
 .. signature:: if(<variable|string> LESS <variable|string>)
@@ -372,6 +379,43 @@ if
     endif()
 
   详见\ :command:`cmake_path(COMPARE)`。
+
+.. signature:: if(<variable|string> PATH_IS_PREFIX <variable|string>)
+  :target: PATH_IS_PREFIX
+
+  .. versionadded:: 4.5
+
+  True if the path on the left is a prefix of the path on the right.
+
+  .. code-block:: cmake
+
+    # comparison is TRUE
+    if ("/a/b" PATH_IS_PREFIX "/a/b/c")
+       ...
+    endif()
+
+    # comparison is FALSE: '/a/bc' is a sibling, not a child
+    if ("/a/b" PATH_IS_PREFIX "/a/bc")
+       ...
+    endif()
+
+  Component-wise comparison is superior to a regular expression match
+  against the start of the path.  The ``if (<path> MATCHES "^<prefix>")``
+  idiom mishandles regex metacharacters in ``<prefix>`` and accepts
+  siblings.
+
+  The test is lexical, not a containment check.  No
+  :ref:`path normalization <Normalization>` is performed, so a ``..``
+  escape still tests true: ``"/a/b" PATH_IS_PREFIX "/a/b/../../etc"``.
+  Normalize with :command:`cmake_path(NORMAL_PATH)` first if that must be
+  rejected.
+
+  An empty prefix is not a prefix of any path.  See policy
+  :policy:`CMP0223`.
+
+  Equivalent to :command:`cmake_path(IS_PREFIX)` and
+  ``$<PATH:IS_PREFIX>`` without their ``NORMALIZE`` option.  See
+  :command:`cmake_path(IS_PREFIX)` for more details.
 
 变量展开
 ^^^^^^^^^^^^^^^^^^

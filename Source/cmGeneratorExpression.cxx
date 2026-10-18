@@ -3,7 +3,6 @@
 #include "cmGeneratorExpression.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cstddef>
 #include <memory>
 #include <stack>
@@ -26,6 +25,7 @@
 #include "cmMessageType.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmUnreachable.h"
 #include "cmake.h"
 
 cmGeneratorExpression::cmGeneratorExpression(cmake& cmakeInstance,
@@ -213,7 +213,7 @@ static std::string extractAllGeneratorExpressions(
     }
     std::string::size_type const traversed = (c - cStart) + 1;
     if (!*c) {
-      result += cmStrCat("$<", input.substr(pos, traversed));
+      result = cmStrCat(std::move(result), "$<", input.substr(pos, traversed));
     }
     pos += traversed;
     lastPos = pos;
@@ -283,7 +283,7 @@ static std::string stripExportInterface(
       foundGenex = FoundGenex::BuildLocalInterface;
       pos += cmStrLen("$<BUILD_LOCAL_INTERFACE:");
     } else {
-      assert(false && "Invalid position found");
+      CM_UNREACHABLE;
     }
     nestingLevel = 1;
     char const* c = input.data() + pos;
@@ -320,13 +320,16 @@ static std::string stripExportInterface(
       auto remaining = input.substr(pos, traversed);
       switch (foundGenex) {
         case FoundGenex::BuildInterface:
-          result = cmStrCat(result, "$<BUILD_INTERFACE:", remaining);
+          result =
+            cmStrCat(std::move(result), "$<BUILD_INTERFACE:", remaining);
           break;
         case FoundGenex::InstallInterface:
-          result = cmStrCat(result, "$<INSTALL_INTERFACE:", remaining);
+          result =
+            cmStrCat(std::move(result), "$<INSTALL_INTERFACE:", remaining);
           break;
         case FoundGenex::BuildLocalInterface:
-          result = cmStrCat(result, "$<BUILD_LOCAL_INTERFACE:", remaining);
+          result =
+            cmStrCat(std::move(result), "$<BUILD_LOCAL_INTERFACE:", remaining);
           break;
       }
     }
@@ -406,8 +409,7 @@ std::string cmGeneratorExpression::Preprocess(cm::string_view input,
     return stripExportInterface(input, context, importPrefix);
   }
 
-  assert(false &&
-         "cmGeneratorExpression::Preprocess called with invalid args");
+  CM_UNREACHABLE;
   return std::string();
 }
 
@@ -521,7 +523,6 @@ std::string const& cmGeneratorExpressionInterpreter::Evaluate(
     nullptr,
     context,
   };
-
   return this->CompiledGeneratorExpression->Evaluate(context, &dagChecker,
                                                      this->HeadTarget);
 }

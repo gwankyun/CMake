@@ -26,6 +26,7 @@
 #include "cmDuration.h"
 #include "cmExportFileGenerator.h"
 #include "cmExportSet.h"
+#include "cmInstallGenerator.h"
 #include "cmLocalGenerator.h"
 #include "cmSbomBuilder.h"
 #include "cmStateSnapshot.h"
@@ -34,6 +35,8 @@
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetDepend.h"
+#include "cmTargetTypes.h"
+#include "cmTestGenerator.h"
 #include "cmValue.h"
 #include "cmXcFramework.h"
 
@@ -55,6 +58,8 @@ class cmExternalMakefileProjectGenerator;
 class cmBuildSbomGenerator;
 class cmInstallSbomGenerator;
 class cmGeneratorTarget;
+class cmRule;
+class cmGeneratorRule;
 class cmInstallRuntimeDependencySet;
 class cmLinkLineComputer;
 class cmMakefile;
@@ -97,7 +102,6 @@ struct GeneratedMakeCommand
   std::string QuotedPrintable() const;
 
   std::vector<std::string> PrimaryCommand;
-  bool RequiresOutputForward = false;
 };
 }
 namespace Json {
@@ -129,6 +133,56 @@ public:
 
   //! Get the name for this generator
   virtual std::string GetName() const { return "Generic"; }
+
+  virtual std::vector<std::string> GetTestBuildDependencyPaths(
+    std::string const& config,
+    cmTestGenerator::BuildDependencies const& deps) const;
+
+  struct InstallPrepTargets
+  {
+    struct TargetRequirements
+    {
+      bool Normal = false;
+      bool InstallArtifact = false;
+      std::set<std::string> GeneratedFiles;
+    };
+
+    using TargetMap = std::map<cmGeneratorTarget const*, TargetRequirements>;
+
+    TargetMap All;
+    std::map<std::string, TargetMap> Components;
+
+    // Generated files that no target prepares, such as byproducts installed
+    // by install(FILES).  Only generators that support depending on them
+    // prepare these files.
+    std::set<std::string> AllFiles;
+    std::map<std::string, std::set<std::string>> ComponentFiles;
+  };
+
+  InstallPrepTargets GetInstallPrepTargets(std::string const& config);
+
+  // Whether install preparation targets can depend on a generated file that
+  // is not the unique output of a target.
+  virtual bool SupportsInstallPrepFileDependencies() const { return false; }
+
+  // Whether the name of an install component can be used in the name of its
+  // install preparation target.
+  virtual bool IsInstallPrepComponentRepresentable(
+    std::string const& component) const;
+
+  // Diagnose install rules that no install preparation target prepares.
+  // Generators that write install preparation targets call this once.
+  void CheckInstallPrepTargets();
+
+  // Whether a generated file to be prepared for installation is the unique
+  // output of a target.  Generators that cannot depend on a file with no such
+  // owner build its installing target instead, and call this to diagnose it
+  // once per file.
+  bool CheckInstallPrepGeneratedFile(cmGeneratorTarget const* target,
+                                     std::string const& file,
+                                     std::set<std::string>& diagnosed);
+
+  bool AreInstallPrepTargetsEnabled() const;
 
   /** Check whether the given name matches the current generator.  */
   virtual bool MatchesGeneratorName(std::string const& name) const
@@ -172,6 +226,9 @@ public:
   virtual void Configure();
 
   virtual bool InspectConfigTypeVariables() { return true; }
+
+  // Produce custom commands for file sets attached to a custom rule
+  void CreateCustomCommandsFromRules();
 
   enum class CxxModuleSupportQuery
   {
@@ -313,6 +370,28 @@ public:
   std::vector<cmGeneratorTarget*> GetLocalGeneratorTargetsInOrder(
     cmLocalGenerator* lg) const;
 
+  // Find the single build-system target that produces the given path as a
+  // primary custom-command output, or nullptr if there is none or more than
+  // one.  Used to resolve file-level test build dependencies.
+  cmGeneratorTarget* FindOutputOwningTarget(std::string const& output);
+
+  // Whether the build generates the file, as the output or byproduct of a
+  // custom command or custom target.
+  bool IsGeneratedByBuild(std::string const& file);
+
+  // Called by local generators when they record a new output or byproduct,
+  // so that IsGeneratedByBuild rebuilds its index before its next lookup.
+  void InvalidateGeneratedByBuildIndex()
+  {
+    this->GeneratedByBuildIndexComputed = false;
+  }
+
+  // Find the single build-system target whose build produces the given path
+  // as a linked artifact for the given configuration, or nullptr if there is
+  // none or more than one.
+  cmGeneratorTarget* FindArtifactOwningTarget(std::string const& artifact,
+                                              std::string const& config);
+
   cmMakefile* GetCurrentMakefile() const
   {
     return this->CurrentConfigureMakefile;
@@ -393,14 +472,18 @@ public:
 
   //! Find a target by name by searching the local generators.
   cmTarget* FindTarget(std::string const& name,
-                       cmStateEnums::TargetDomainSet domains = {
-                         cmStateEnums::TargetDomain::NATIVE,
-                         cmStateEnums::TargetDomain::ALIAS }) const;
+                       cm::TargetDomainSet domains = {
+                         cm::TargetDomain::NATIVE,
+                         cm::TargetDomain::ALIAS }) const;
 
   cmGeneratorTarget* FindGeneratorTarget(std::string const& name) const;
 
   void AddAlias(std::string const& name, std::string const& tgtName);
   bool IsAlias(std::string const& name) const;
+
+  //! Find a rule by name.
+  cmRule* FindRule(std::string const& name) const;
+  cmGeneratorRule* FindGeneratorRule(std::string const& name) const;
 
   /** Determine if a name resolves to a framework on disk or a built target
       that is a framework. */
@@ -521,6 +604,9 @@ public:
   virtual char const* GetEditCacheTargetName() const { return nullptr; }
   virtual char const* GetRebuildCacheTargetName() const { return nullptr; }
   virtual char const* GetCleanTargetName() const { return nullptr; }
+
+  void IndexRule(cmRule* rule);
+  void IndexGeneratorRule(cmGeneratorRule* gt);
 
   // Lookup edit_cache target command preferred by this generator.
   virtual std::string GetEditCacheCommand() const { return ""; }
@@ -686,6 +772,7 @@ public:
   cmExportBuildFileGenerator* GetExportedTargetsFile(
     std::string const& filename) const;
   void AddCMP0068WarnTarget(std::string const& target);
+  void AddCMP0224WarnTest(std::string const& test);
 
   virtual bool SupportsShortObjectNames() const;
   bool UseShortObjectNames(
@@ -773,6 +860,9 @@ public:
                                   cmXcFrameworkPlist const& content);
 
 protected:
+  virtual std::string GetTestBuildDependencyPath(
+    cmGeneratorTarget const* target, std::string const& config) const;
+
   /** Get all targets produced under the given root, plus the transitive
       closure of targets on which they depend, possibly from other dirs.  */
   TargetDependSet GetTargetsForProject(
@@ -801,6 +891,7 @@ protected:
   virtual bool CheckALLOW_DUPLICATE_CUSTOM_TARGETS() const;
 
   bool ApplyCXXStdTarget();
+  void WriteCxxImportErrorModules();
   bool DiscoverSyntheticTargets();
 
   bool AddHeaderSetVerification();
@@ -875,7 +966,7 @@ protected:
   std::map<std::string, std::string> AliasTargets;
 
   cmTarget* FindTargetImpl(std::string const& name,
-                           cmStateEnums::TargetDomainSet domains) const;
+                           cm::TargetDomainSet domains) const;
 
   cmGeneratorTarget* FindGeneratorTargetImpl(std::string const& name) const;
 
@@ -885,6 +976,8 @@ private:
   using TargetMap = std::unordered_map<std::string, cmTarget*>;
   using GeneratorTargetMap =
     std::unordered_map<std::string, cmGeneratorTarget*>;
+  using RuleMap = std::unordered_map<std::string, cmRule*>;
+  using GeneratorRuleMap = std::unordered_map<std::string, cmGeneratorRule*>;
   using MakefileMap = std::unordered_map<std::string, cmMakefile*>;
   using LocalGeneratorMap = std::unordered_map<std::string, cmLocalGenerator*>;
   using TargetDirectoryRegistrationMap =
@@ -901,6 +994,12 @@ private:
   mutable TargetDirectoryRegistrationMap TargetDirectoryRegistrations;
   // Map from target directories to targets using it.
   mutable TargetDirectoryMap TargetDirectories;
+
+  // Map efficiently from rule name to cmRule instance.
+  // Do not use this structure for looping over all rules.
+  // It may not contain all of them.
+  RuleMap RuleSearchIndex;
+  GeneratorRuleMap GeneratorRuleSearchIndex;
 
   // Map efficiently from source directory path to cmMakefile instance.
   // Do not use this structure for looping over all directories.
@@ -978,6 +1077,35 @@ private:
   using TargetDependMap = std::map<cmGeneratorTarget const*, TargetDependSet>;
   TargetDependMap TargetDependencies;
 
+  // Map from a custom-command primary output (collapsed full path) to the
+  // build-system target(s) that produce it.  Built lazily on first use and
+  // cleared with the other generator members.
+  std::map<std::string, std::vector<cmGeneratorTarget*>> OutputOwnerIndex;
+  bool OutputOwnerIndexComputed = false;
+  void ComputeOutputOwnerIndex();
+
+  // Map from a configuration to a map from a linked artifact (collapsed full
+  // path) to the build-system target(s) that produce it.  Built lazily for
+  // each configuration and cleared with the other generator members.
+  std::map<std::string, std::map<std::string, std::vector<cmGeneratorTarget*>>>
+    ArtifactOwnerIndex;
+
+  // Every output and byproduct path recorded by any local generator, keyed
+  // as for cmLocalGenerator::GetSourcesWithOutput.  Built lazily on first use
+  // and invalidated whenever a local generator records a new path.
+  std::unordered_set<std::string> GeneratedByBuildIndex;
+  bool GeneratedByBuildIndexComputed = false;
+
+  // The build dependencies of each install rule for each configuration,
+  // computed once and shared by CheckInstallPrepTargets and
+  // GetInstallPrepTargets.
+  std::map<std::pair<cmInstallGenerator const*, std::string>,
+           std::vector<cmInstallGenerator::BuildDependency>>
+    InstallPrepDependencies;
+  std::vector<cmInstallGenerator::BuildDependency> const&
+  GetInstallPrepDependencies(cmInstallGenerator const* installer,
+                             std::string const& config);
+
   friend class cmake;
   void CreateGeneratorTargets(
     TargetTypes targetTypes, cmMakefile* mf, cmLocalGenerator* lg,
@@ -1016,6 +1144,9 @@ private:
 
   // track targets to issue CMP0068 warning for.
   std::set<std::string> CMP0068WarnTargets;
+
+  // track tests to issue CMP0224 warning for.
+  std::set<std::string> CMP0224WarnTests;
 
   std::unordered_set<std::string> WarnedCMP0210Languages;
 

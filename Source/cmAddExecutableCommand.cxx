@@ -6,9 +6,9 @@
 #include "cmGeneratorExpression.h"
 #include "cmGlobalGenerator.h"
 #include "cmMakefile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 
 bool cmAddExecutableCommand(std::vector<std::string> const& args,
                             cmExecutionStatus& status)
@@ -109,15 +109,15 @@ bool cmAddExecutableCommand(std::vector<std::string> const& args,
       return false;
     }
     cmTarget* aliasedTarget =
-      mf.FindTargetToUse(aliasedName, { cmStateEnums::TargetDomain::NATIVE });
+      mf.FindTargetToUse(aliasedName, { cm::TargetDomain::NATIVE });
     if (!aliasedTarget) {
       status.SetError(cmStrCat("cannot create ALIAS target \"", exename,
                                "\" because target \"", aliasedName,
                                "\" does not already exist."));
       return false;
     }
-    cmStateEnums::TargetType type = aliasedTarget->GetType();
-    if (type != cmStateEnums::EXECUTABLE) {
+    cm::TargetType type = aliasedTarget->GetType();
+    if (type != cm::TargetType::EXECUTABLE) {
       status.SetError(cmStrCat("cannot create ALIAS target \"", exename,
                                "\" because target \"", aliasedName,
                                "\" is not an executable."));
@@ -140,7 +140,9 @@ bool cmAddExecutableCommand(std::vector<std::string> const& args,
     }
 
     // Create the imported target.
-    mf.AddImportedTarget(exename, cmStateEnums::EXECUTABLE, importGlobal);
+    mf.AddImportedTarget(exename, cm::TargetType::EXECUTABLE,
+                         importGlobal ? cm::ImportedTargetScope::Global
+                                      : cm::ImportedTargetScope::Local);
     return true;
   }
 

@@ -1,0 +1,5 @@
+EXPORTS 
+	bss 	 DATA
+	data 	 DATA
+	??_7Example@@6B@
+	text

@@ -25,6 +25,7 @@
 #include "cmStateSnapshot.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -54,21 +55,21 @@ char const* getShapeForTarget(cmLinkItem const& item)
   }
 
   switch (item.Target->GetType()) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       return GRAPHVIZ_NODE_SHAPE_EXECUTABLE;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       return GRAPHVIZ_NODE_SHAPE_LIBRARY_STATIC;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       return GRAPHVIZ_NODE_SHAPE_LIBRARY_SHARED;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       return GRAPHVIZ_NODE_SHAPE_LIBRARY_MODULE;
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       return GRAPHVIZ_NODE_SHAPE_LIBRARY_OBJECT;
-    case cmStateEnums::UTILITY:
+    case cm::TargetType::UTILITY:
       return GRAPHVIZ_NODE_SHAPE_UTILITY;
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::INTERFACE_LIBRARY:
       return GRAPHVIZ_NODE_SHAPE_LIBRARY_INTERFACE;
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
     default:
       return GRAPHVIZ_NODE_SHAPE_LIBRARY_UNKNOWN;
   }
@@ -482,7 +483,7 @@ bool cmGraphVizWriter::ItemExcluded(cmLinkItem const& item)
     return !this->GenerateForExternals;
   }
 
-  if (item.Target->GetType() == cmStateEnums::UTILITY) {
+  if (item.Target->GetType() == cm::TargetType::UTILITY) {
     if (cmHasLiteralPrefix(itemName, "Nightly") ||
         cmHasLiteralPrefix(itemName, "Continuous") ||
         cmHasLiteralPrefix(itemName, "Experimental")) {
@@ -520,26 +521,26 @@ bool cmGraphVizWriter::ItemNameFilteredOut(std::string const& itemName)
 }
 
 bool cmGraphVizWriter::TargetTypeEnabled(
-  cmStateEnums::TargetType targetType) const
+  cm::TargetType targetType) const
 {
   switch (targetType) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       return this->GenerateForExecutables;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       return this->GenerateForStaticLibs;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       return this->GenerateForSharedLibs;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       return this->GenerateForModuleLibs;
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::INTERFACE_LIBRARY:
       return this->GenerateForInterfaceLibs;
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       return this->GenerateForObjectLibs;
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       return this->GenerateForUnknownLibs;
-    case cmStateEnums::UTILITY:
+    case cm::TargetType::UTILITY:
       return this->GenerateForCustomTargets;
-    case cmStateEnums::GLOBAL_TARGET:
+    case cm::TargetType::GLOBAL_TARGET:
       // Built-in targets like edit_cache, etc.
       // We don't need/want those in the dot file.
       return false;
@@ -566,7 +567,7 @@ std::string cmGraphVizWriter::ItemNameWithAliases(
 
   auto nameWithAliases = itemName;
   for(auto const& item : items) {
-    nameWithAliases += "\\n(" + item + ")";
+    nameWithAliases = cmStrCat(std::move(nameWithAliases), "\\n(" , item , ')');
   }
 
   return nameWithAliases;
@@ -577,10 +578,10 @@ std::string cmGraphVizWriter::GetEdgeStyle(DependencyType dt)
   std::string style;
   switch (dt) {
     case DependencyType::LinkPrivate:
-      style = "[ style = " + std::string(GRAPHVIZ_EDGE_STYLE_PRIVATE) + " ]";
+      style = cmStrCat("[ style = ", GRAPHVIZ_EDGE_STYLE_PRIVATE, " ]");
       break;
     case DependencyType::LinkInterface:
-      style = "[ style = " + std::string(GRAPHVIZ_EDGE_STYLE_INTERFACE) + " ]";
+      style = cmStrCat("[ style = ", GRAPHVIZ_EDGE_STYLE_INTERFACE, " ]");
       break;
     default:
       break;

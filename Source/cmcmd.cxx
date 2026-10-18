@@ -2,6 +2,7 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmcmd.h"
 
+#include <algorithm>
 #include <functional>
 #include <iomanip>
 #include <iterator>
@@ -51,8 +52,6 @@
 #endif
 
 #if !defined(CMAKE_BOOTSTRAP) || defined(CMAKE_BOOTSTRAP_MAKEFILES)
-#  include <algorithm>
-
 #  include "cmCMakePath.h"
 #  include "cmProcessTools.h"
 #endif
@@ -98,63 +97,119 @@ std::ostream& operator<<(
 }
 
 namespace {
+struct cmCommandLineHelpEntry
+{
+  char const* Name;
+  char const* Usage;
+  char const* Help;
+};
+
 // ATTENTION If you add new commands, change here,
 // and in `cmakemain.cxx` in the options table
-char const* const HELP_AVAILABLE_COMMANDS = R"(Available commands:
-  bin2c                     - Turn a binary file into a C array
-  capabilities              - Report capabilities built into cmake in JSON format
-  cat [--] <files>...       - concat the files and print them to the standard output
-  chdir dir cmd [args...]   - run command in a given directory
-  compare_files [--ignore-eol] file1 file2
-                            - check if file1 is same as file2
-  copy <file>... destination | -t <destination> <file>...
-                            - copy files to destination (either file or directory)
-  copy_directory <dir>... destination | -t <destination> <dir>...
-                            - copy content of <dir>... directories to 'destination' directory
-  copy_directory_if_different <dir>... destination | -t <destination> <dir>...
-                            - copy changed content of <dir>... directories to 'destination' directory
-  copy_directory_if_newer <dir>... destination | -t <destination> <dir>...
-                            - copy newer content of <dir>... directories to 'destination' directory
-  copy_if_different <file>... destination | -t <destination> <file>...
-                            - copy files if source has changed
-  copy_if_newer <file>... destination | -t <destination> <file>...
-                            - copy files if source is newer than destination
-  echo [<string>...]        - displays arguments as text
-  echo_append [<string>...] - displays arguments as text but no new line
-  env [--unset=NAME ...] [NAME=VALUE ...] [--] <command> [<arg>...]
-                            - run command in a modified environment
-  environment               - display the current environment
-  make_directory <dir>...   - create parent and <dir> directories
-  md5sum <file>...          - create MD5 checksum of files
-  sha1sum <file>...         - create SHA1 checksum of files
-  sha224sum <file>...       - create SHA224 checksum of files
-  sha256sum <file>...       - create SHA256 checksum of files
-  sha384sum <file>...       - create SHA384 checksum of files
-  sha512sum <file>...       - create SHA512 checksum of files
-  remove [-f] <file>...     - remove the file(s), use -f to force it (deprecated: use rm instead)
-  remove_directory <dir>... - remove directories and their contents (deprecated: use rm instead)
-  rename oldname newname    - rename a file or directory (on one volume)
-  rm [-rRf] [--] <file/dir>... - remove files or directories, use -f to force it, r or R to remove directories and their contents recursively
-  sleep <number>...         - sleep for given number of seconds
-  tar [cxt][vf][zjJ] file.tar [file/dir1 file/dir2 ...]
-                            - create or extract a tar or zip archive
-  time command [args...]    - run command and display elapsed time
-  touch <file>...           - touch a <file>.
-  touch_nocreate <file>...  - touch a <file> but do not create it.
-  create_symlink old new    - create a symbolic link new -> old
-  create_hardlink old new   - create a hard link new -> old
-  true                      - do nothing with an exit code of 0
-  false                     - do nothing with an exit code of 1
-)";
+std::vector<cmCommandLineHelpEntry> const AvailableCommands = {
+  { "bin2c", "", "Turn a binary file into a C array" },
+  { "capabilities", "",
+    "Report capabilities built into cmake in JSON format" },
+  { "cat", "[--] <files>...",
+    "concat the files and print them to the standard output" },
+  { "chdir", "dir cmd [args...]", "run command in a given directory" },
+  { "compare_files", "[--ignore-eol] file1 file2",
+    "check if file1 is same as file2" },
+  { "copy", "<file>... destination | -t <destination> <file>...",
+    "copy files to destination (either file or directory)" },
+  { "copy_directory", "<dir>... destination | -t <destination> <dir>...",
+    "copy content of <dir>... directories to 'destination' directory" },
+  { "copy_directory_if_different",
+    "<dir>... destination | -t <destination> <dir>...",
+    "copy changed content of <dir>... directories to 'destination' "
+    "directory" },
+  { "copy_directory_if_newer",
+    "<dir>... destination | -t <destination> <dir>...",
+    "copy newer content of <dir>... directories to 'destination' "
+    "directory" },
+  { "copy_if_different", "<file>... destination | -t <destination> <file>...",
+    "copy files if source has changed" },
+  { "copy_if_newer", "<file>... destination | -t <destination> <file>...",
+    "copy files if source is newer than destination" },
+  { "echo", "[<string>...]", "displays arguments as text" },
+  { "echo_append", "[<string>...]",
+    "displays arguments as text but no new line" },
+  { "env", "[--unset=NAME ...] [NAME=VALUE ...] [--] <command> [<arg>...]",
+    "run command in a modified environment" },
+  { "environment", "", "display the current environment" },
+  { "make_directory", "<dir>...", "create parent and <dir> directories" },
+  { "md5sum", "<file>...", "create MD5 checksum of files" },
+  { "sha1sum", "<file>...", "create SHA1 checksum of files" },
+  { "sha224sum", "<file>...", "create SHA224 checksum of files" },
+  { "sha256sum", "<file>...", "create SHA256 checksum of files" },
+  { "sha384sum", "<file>...", "create SHA384 checksum of files" },
+  { "sha512sum", "<file>...", "create SHA512 checksum of files" },
+  { "remove", "[-f] <file>...",
+    "remove the file(s), use -f to force it (deprecated: use rm instead)" },
+  { "remove_directory", "<dir>...",
+    "remove directories and their contents (deprecated: use rm instead)" },
+  { "rename", "oldname newname",
+    "rename a file or directory (on one volume)" },
+  { "rm", "[-rRf] [--] <file/dir>...",
+    "remove files or directories, use -f to force it, r or R to remove "
+    "directories and their contents recursively" },
+  { "sleep", "<number>...", "sleep for given number of seconds" },
+  { "tar", "[cxt][vf][zjJ] file.tar [file/dir1 file/dir2 ...]",
+    "create or extract a tar or zip archive" },
+  { "time", "command [args...]", "run command and display elapsed time" },
+  { "touch", "<file>...", "touch a <file>." },
+  { "touch_nocreate", "<file>...", "touch a <file> but do not create it." },
+  { "create_symlink", "old new", "create a symbolic link new -> old" },
+  { "create_hardlink", "old new", "create a hard link new -> old" },
+  { "true", "", "do nothing with an exit code of 0" },
+  { "false", "", "do nothing with an exit code of 1" },
+};
+
 #if defined(_WIN32) && !defined(__CYGWIN__)
-char const* const HELP_AVAILABLE_WINDOWS_COMMANDS =
-  R"(Available on Windows only:
-  delete_regv key           - delete registry value
-  env_vs8_wince sdkname     - displays a batch file which sets the environment for the provided Windows CE SDK installed in VS2005
-  env_vs9_wince sdkname     - displays a batch file which sets the environment for the provided Windows CE SDK installed in VS2008
-  write_regv key value      - write registry value
-)";
+std::vector<cmCommandLineHelpEntry> const AvailableWindowsCommands = {
+  { "delete_regv", "key", "delete registry value" },
+  { "env_vs8_wince", "sdkname",
+    "displays a batch file which sets the environment for the provided "
+    "Windows CE SDK installed in VS2005" },
+  { "env_vs9_wince", "sdkname",
+    "displays a batch file which sets the environment for the provided "
+    "Windows CE SDK installed in VS2008" },
+  { "write_regv", "key value", "write registry value" },
+};
 #endif
+
+std::string FormatCommandLineHelp(
+  cm::string_view header, std::vector<cmCommandLineHelpEntry> const& entries)
+{
+  std::size_t const helpColumn = 28;
+  std::string result = cmStrCat(header, ":\n");
+  for (cmCommandLineHelpEntry const& entry : entries) {
+    std::string invocation = entry.Name;
+    if (*entry.Usage) {
+      invocation = cmStrCat(std::move(invocation), ' ', entry.Usage);
+    }
+    std::string line = cmStrCat("  ", invocation);
+    if (line.size() + 2 <= helpColumn) {
+      line.resize(helpColumn, ' ');
+      result = cmStrCat(std::move(result), line, "- ", entry.Help, '\n');
+    } else {
+      result = cmStrCat(std::move(result), line, '\n',
+                        std::string(helpColumn, ' '), "- ", entry.Help, '\n');
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> CommandLineHelpEntryNames(
+  std::vector<cmCommandLineHelpEntry> const& entries)
+{
+  std::vector<std::string> names;
+  names.reserve(entries.size());
+  for (cmCommandLineHelpEntry const& entry : entries) {
+    names.emplace_back(entry.Name);
+  }
+  return names;
+}
 
 void CMakeCommandUsage(std::string const& program)
 {
@@ -170,9 +225,10 @@ void CMakeCommandUsage(std::string const& program)
     "Usage: "
   , program
   , " -E <command> [arguments...]\n"
-  , HELP_AVAILABLE_COMMANDS
+  , FormatCommandLineHelp("Available commands", AvailableCommands)
 #if defined(_WIN32) && !defined(__CYGWIN__)
-  , HELP_AVAILABLE_WINDOWS_COMMANDS
+  , FormatCommandLineHelp("Available on Windows only",
+                          AvailableWindowsCommands)
 #endif
   );
   /* clang-format on */
@@ -623,32 +679,30 @@ int HandleIcstat(std::string const& runCmd, std::string const& sourceFile,
 {
   // Construct the IAR C-STAT command line.
   cmList icstat_cmd{ runCmd, cmList::EmptyElements::Yes };
-  std::string icstat_analyze{ "analyze" };
-  std::string icstat_dashdash{ "--" };
   std::string stdOut;
   std::string stdErr;
   int ret;
 
-  icstat_cmd.push_back(icstat_analyze);
-  icstat_cmd.push_back(sourceFile);
-  icstat_cmd.push_back(icstat_dashdash);
+  std::string const double_dash{ "--" };
+  icstat_cmd.push_back(double_dash);
 
   for (auto const& cmd : orig_cmd) {
-    icstat_cmd.push_back(cmd);
+    icstat_cmd.emplace_back(cmd);
   }
 
-  // Create the default manifest ruleset file when not found
+  // Create a default C-STAT manifest file containing standard checks
+  // if it does not already exist.
   if (!cmSystemTools::FileExists("cstat_sel_checks.txt")) {
     std::vector<std::string> ichecks_cmd;
     ichecks_cmd.emplace_back(
       cmStrCat(cmSystemTools::GetFilenamePath(orig_cmd[0]), "/ichecks"));
-    ichecks_cmd.emplace_back("--default");
-    ichecks_cmd.emplace_back("stdchecks");
+    ichecks_cmd.emplace_back("--default=stdchecks");
+
     if (!cmSystemTools::RunSingleCommand(ichecks_cmd, &stdOut, &stdErr, &ret,
                                          nullptr,
                                          cmSystemTools::OUTPUT_NONE)) {
-      std::cerr << "Error generating default manifest file '" << ichecks_cmd[0]
-                << "': " << stdOut << '\n';
+      std::cerr << "C-STAT: Error creating default manifest file '"
+                << ichecks_cmd[0] << "': " << stdOut << '\n';
       return 1;
     }
   }
@@ -656,13 +710,50 @@ int HandleIcstat(std::string const& runCmd, std::string const& sourceFile,
   // Run the IAR C-STAT command line. Capture its output.
   if (!cmSystemTools::RunSingleCommand(icstat_cmd, &stdOut, &stdErr, &ret,
                                        nullptr, cmSystemTools::OUTPUT_NONE)) {
-    std::cerr << "Error running '" << icstat_cmd[0] << "': " << stdOut << '\n';
+    std::cerr << "C-STAT: Error running '" << icstat_cmd[0] << "': " << stdOut
+              << '\n';
     return 1;
   }
+
+  // Post-process successful output for consistent messaging and path cleanup.
   if (ret == 0) {
-    std::cerr << "Warning: C-STAT static analysis reported diagnostics:\n";
-  } else {
-    std::cerr << "Error: C-STAT static analysis reported failure:\n";
+    // Harmonize IAR C-STAT headers between the first-time analysis
+    // and subsequent builds that use cached results.
+    std::cerr << "C-STAT: ";
+    if (stdOut.find("Analyzing") == std::string::npos) {
+      std::string prepend;
+      prepend =
+        cmStrCat("Analyzing ", cmSystemTools::GetFilenameName(sourceFile),
+                 " (cached)\n");
+      stdOut.insert(0, prepend);
+    }
+
+    // Single-pass removal of consecutive spurious relative paths,
+    // `"../` or `"..\`, that might appear after a newline followed by
+    // an opening quote, effectively displaying paths relative to
+    // CMAKE_SOURCE_DIR.
+    // Example: `\n"../../../src/file.c` -> `\n"src/file.c`
+    std::string cleaned;
+    size_t const n = stdOut.size();
+    cleaned.reserve(n);
+    size_t pos = 0;
+    while (pos < n) {
+      if (pos + 1 < n && stdOut[pos] == '\n' && stdOut[pos + 1] == '"') {
+        cleaned += "\n\"";
+        pos += 2; // skip `\n"`
+
+        while (pos + 2 < n && stdOut[pos] == '.' && stdOut[pos + 1] == '.' &&
+               (stdOut[pos + 2] == '/' || stdOut[pos + 2] == '\\')) {
+          pos += 3; // skip `../` or `..\`
+        }
+      } else {
+        cleaned += stdOut[pos];
+        ++pos;
+      }
+    }
+    stdOut.swap(cleaned);
+  } else if (ret != 0) {
+    std::cerr << "C-STAT ";
   }
   std::cerr << stdOut;
   std::cerr << stdErr;
@@ -803,9 +894,10 @@ std::function<std::ostream&(std::ostream& sout)> Bin2CPrintChars(
         BIN2C_ROW_WIDTH +
       cmStrLen("\n"));
     for (std::size_t i = 0; i < BIN2C_ROW_WIDTH; i++) {
-      line = cmStrCat(line, base == Bin2CBase::Hex ? " 0x__," : "____,");
+      line =
+        cmStrCat(std::move(line), base == Bin2CBase::Hex ? " 0x__," : "____,");
     }
-    line = cmStrCat(line, '\n');
+    line = cmStrCat(std::move(line), '\n');
 
     bool any = false;
     std::uint64_t pos = 0;
@@ -1096,7 +1188,8 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
     if (args[1] == "copy_directory" ||
         args[1] == "copy_directory_if_different" ||
         args[1] == "copy_directory_if_newer") {
-      cmsys::SystemTools::CopyWhen when = cmsys::SystemTools::CopyWhen::Always;
+      cmsys::SystemTools::CopyWhen when =
+        cmsys::SystemTools::CopyWhen::Unconditional;
       if (args[1] == "copy_directory_if_different") {
         when = cmsys::SystemTools::CopyWhen::OnlyIfDifferent;
       } else if (args[1] == "copy_directory_if_newer") {
@@ -1201,13 +1294,20 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         std::cerr << "could not open object list file: " << args[3] << '\n';
         return 1;
       }
-      std::vector<std::string> files;
+      std::vector<std::string> defFiles;
+      std::vector<std::string> objFiles;
       {
         std::string file;
         cmFileTime outTime;
         bool outValid = outTime.Load(args[2]);
         while (cmSystemTools::GetLineFromStream(fin, file)) {
-          files.push_back(file);
+          std::string const& ext =
+            cmSystemTools::GetFilenameLastExtension(file);
+          if (cmSystemTools::LowerCase(ext) == ".def") {
+            defFiles.push_back(file);
+          } else {
+            objFiles.push_back(file);
+          }
           if (outValid) {
             cmFileTime inTime;
             outValid = inTime.Load(file) && inTime.Older(outTime);
@@ -1219,7 +1319,8 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
           return 0;
         }
       }
-      FILE* fout = cmsys::SystemTools::Fopen(args[2], "w+");
+      fin.close();
+      cmsys::ofstream fout(args[2].c_str());
       if (!fout) {
         std::cerr << "could not open output .def file: " << args[2] << '\n';
         return 1;
@@ -1233,20 +1334,14 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
           std::cerr << "unknown argument: " << a << '\n';
         }
       }
-      for (std::string const& file : files) {
-        std::string const& ext = cmSystemTools::GetFilenameLastExtension(file);
-        if (cmSystemTools::LowerCase(ext) == ".def") {
-          if (!deffile.AddDefinitionFile(file.c_str())) {
-            return 1;
-          }
-        } else {
-          if (!deffile.AddObjectFile(file.c_str())) {
-            return 1;
-          }
-        }
+      if (!deffile.AddDefinitionFile(defFiles) ||
+          !deffile.AddObjectFile(objFiles, cmStrCat(args[3], ".rsp"))) {
+        return 1;
       }
-      deffile.WriteFile(fout);
-      fclose(fout);
+      if (!deffile.WriteFile(fout)) {
+        std::cerr << "could not write output .def file: " << args[2] << '\n';
+        return 1;
+      }
       return 0;
     }
 #endif
@@ -2121,7 +2216,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
       }
 
       if (action == cmSystemTools::TarActionList) {
-        if (!cmSystemTools::ListTar(outFile, files, encoding, verbose)) {
+        if (!cmSystemTools::ListTar(outFile, files, {}, encoding, verbose)) {
           cmSystemTools::Error("Problem listing tar: " + outFile);
           return 1;
         }
@@ -2129,14 +2224,14 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         if (files.empty()) {
           std::cerr << "tar: No files or directories specified\n";
         }
-        if (!cmSystemTools::CreateTar(outFile, files, {}, compress, encoding,
-                                      verbose, mtime, format, compressionLevel,
-                                      numThreads)) {
+        if (!cmSystemTools::CreateTar(outFile, files, {}, {}, compress,
+                                      encoding, verbose, mtime, format,
+                                      compressionLevel, numThreads)) {
           cmSystemTools::Error(cmStrCat("Problem creating tar:\n  ", outFile));
           return 1;
         }
       } else if (action == cmSystemTools::TarActionExtract) {
-        if (!cmSystemTools::ExtractTar(outFile, files, extractTimestamps,
+        if (!cmSystemTools::ExtractTar(outFile, files, {}, extractTimestamps,
                                        encoding, verbose)) {
           cmSystemTools::Error(
             cmStrCat("Problem extracting tar:\n  ", outFile));
@@ -2175,7 +2270,7 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         return 1;
       };
       auto const isFilename = [](std::string const& arg) -> bool {
-        return arg == "-"_s || !cmHasLiteralPrefix(arg, "-");
+        return arg == "-"_s || !cmHasPrefix(arg, '-');
       };
 
       static char const validPlaceholderChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -2423,6 +2518,27 @@ int cmcmd::ExecuteCMakeCommand(std::vector<std::string> const& args,
         return cmTransformDepfile(format, *lgd, args[8], args[9]) ? 0 : 2;
       }
       return 1;
+    }
+
+    std::vector<std::string> availableCommands =
+      CommandLineHelpEntryNames(AvailableCommands);
+#if defined(_WIN32) && !defined(__CYGWIN__)
+    cm::append(availableCommands,
+               CommandLineHelpEntryNames(AvailableWindowsCommands));
+#endif
+    // Some commands above only fall through to here when they were
+    // matched by name but had the wrong number/form of arguments; only
+    // offer a suggestion when the name itself is not recognized.
+    if (std::find(availableCommands.begin(), availableCommands.end(),
+                  args[1]) == availableCommands.end()) {
+      std::string error = cmStrCat("Unknown command \"", args[1], "\".");
+      std::string const suggestion =
+        cmFindClosestString(args[1], availableCommands);
+      if (!suggestion.empty()) {
+        error =
+          cmStrCat(std::move(error), " Did you mean \"", suggestion, "\"?");
+      }
+      cmSystemTools::Error(error);
     }
   }
 
@@ -3286,8 +3402,8 @@ int cmVSLink::LinkNonIncremental()
     }
 
     // Run the manifest tool to embed the final manifest in the binary.
-    std::string mtOut = "/outputresource:" + this->TargetFile +
-      (this->Type == 1 ? ";#1" : ";#2");
+    std::string mtOut = cmStrCat("/outputresource:", this->TargetFile,
+                                 (this->Type == 1 ? ";#1" : ";#2"));
     return this->RunMT(mtOut, false);
   }
 

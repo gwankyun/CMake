@@ -13,11 +13,14 @@
 
 #include "cmExportFileGenerator.h"
 #include "cmGeneratorExpression.h"
-#include "cmStateTypes.h"
 
 class cmGeneratorFileSet;
 class cmGeneratorTarget;
 class cmTargetExport;
+
+namespace cm {
+enum class TargetType;
+} // namespace cm
 
 /** \class cmExportCMakeConfigGenerator
  * \brief Generate CMake configuration files exporting targets from a build or
@@ -56,7 +59,7 @@ protected:
   void GenerateImportVersionCode(std::ostream& os);
   virtual void GenerateImportTargetCode(std::ostream& os,
                                         cmGeneratorTarget const* target,
-                                        cmStateEnums::TargetType targetType);
+                                        cm::TargetType targetType);
   virtual void GenerateImportPropertyCode(
     std::ostream& os, std::string const& config, std::string const& suffix,
     cmGeneratorTarget const* target, ImportPropertyMap const& properties,

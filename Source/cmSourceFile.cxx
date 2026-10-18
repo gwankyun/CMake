@@ -49,8 +49,6 @@ std::string const& cmSourceFile::GetExtension() const
   return this->Extension;
 }
 
-std::string const propTRUE = "1";
-std::string const propFALSE = "0";
 std::string const cmSourceFile::propLANGUAGE = "LANGUAGE";
 std::string const cmSourceFile::propLOCATION = "LOCATION";
 std::string const cmSourceFile::propGENERATED = "GENERATED";
@@ -234,9 +232,9 @@ bool cmSourceFile::FindFullPath(std::string* error,
   switch (cmp0115) {
     case cmPolicies::OLD:
     case cmPolicies::WARN:
-      err = cmStrCat(err, "\nTried extensions");
+      err = cmStrCat(std::move(err), "\nTried extensions");
       for (auto const& ext : exts) {
-        err = cmStrCat(err, " .", ext);
+        err = cmStrCat(std::move(err), " .", ext);
       }
       break;
     case cmPolicies::NEW:
@@ -387,9 +385,9 @@ cmValue cmSourceFile::GetPropertyForUser(std::string const& prop)
       (cmp0118 != cmPolicies::OLD && cmp0118 != cmPolicies::WARN);
     if (this->GetIsGenerated((!cmp0118new) ? CheckScope::GlobalAndLocal
                                            : CheckScope::Global)) {
-      return cmValue(propTRUE);
+      return cmValue::True;
     }
-    return cmValue(propFALSE);
+    return cmValue::False;
   }
 
   // Perform the normal property lookup.

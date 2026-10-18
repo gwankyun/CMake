@@ -67,9 +67,13 @@ add_fuzzer(cmExprParserFuzzer cmExprParserFuzzer.cxx)
 
 # pkg-config parser fuzzer
 add_fuzzer(cmPkgConfigParserFuzzer cmPkgConfigParserFuzzer.cxx)
+add_fuzzer(cmPkgConfigResolverFuzzer cmPkgConfigResolverFuzzer.cxx)
 
 # JSON parser fuzzer
 add_fuzzer(cmJSONParserFuzzer cmJSONParserFuzzer.cxx)
+
+# CMakePresets.json graph fuzzer
+add_fuzzer(cmCMakePresetsFuzzer cmCMakePresetsFuzzer.cxx)
 
 # GCC dependency file fuzzer
 add_fuzzer(cmGccDepfileFuzzer cmGccDepfileFuzzer.cxx)
@@ -97,3 +101,9 @@ add_fuzzer(cmFileLockFuzzer cmFileLockFuzzer.cxx)
 
 # CMake script fuzzer
 add_fuzzer(cmScriptFuzzer cmScriptFuzzer.cxx)
+
+# Fortran dependency scanner fuzzer
+add_fuzzer(cmFortranParserFuzzer cmFortranParserFuzzer.cxx)
+
+# CPS (Common Package Specification) package-info reader fuzzer
+add_fuzzer(cmPackageInfoReaderFuzzer cmPackageInfoReaderFuzzer.cxx)

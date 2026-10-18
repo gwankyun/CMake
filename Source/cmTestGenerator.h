@@ -15,6 +15,7 @@ class cmListFileBacktrace;
 class cmGeneratorExpression;
 class cmGeneratorTarget;
 class cmLocalGenerator;
+class cmMakefile;
 class cmTest;
 
 /** \class cmTestGenerator
@@ -26,9 +27,29 @@ class cmTestGenerator : public cmScriptGenerator
 public:
   struct BuildDependencies
   {
+    // A file dependency together with how the build produces it.
+    struct FileDependency
+    {
+      std::string Path;
+      // The single build-system target that produces Path as a primary
+      // custom-command output, or nullptr if there is no such unique target.
+      cmGeneratorTarget* Owner = nullptr;
+      // Whether Path is produced by the build at all (output or byproduct).
+      bool Generated = false;
+    };
+    // Build-system targets the test depends on (filtered to targets that are
+    // part of the build system).
     std::vector<cmGeneratorTarget*> Targets;
-    std::vector<std::string> Files;
+    // BUILD_DEPENDS entries that did not name a target.
+    std::vector<FileDependency> Files;
   };
+
+  static bool EvaluateBuildDependencies(
+    cmLocalGenerator* lg, std::string const& config,
+    cmListFileBacktrace const& backtrace, std::string const& testName,
+    std::vector<std::string> const& command,
+    std::vector<std::string> const& buildDepends, BuildDependencies& info,
+    cmMakefile* mf);
 
   cmTestGenerator(cmTest* test,
                   std::vector<std::string> const& configurations =
@@ -38,7 +59,7 @@ public:
   cmTestGenerator(cmTestGenerator const&) = delete;
   cmTestGenerator& operator=(cmTestGenerator const&) = delete;
 
-  void Compute(cmLocalGenerator* lg);
+  virtual void Compute(cmLocalGenerator* lg);
   bool GetBuildDependencies(cmLocalGenerator* lg, std::string const& config,
                             BuildDependencies& deps);
 
@@ -54,6 +75,7 @@ private:
 
 protected:
   void GenerateBacktrace(std::ostream& os, cmListFileBacktrace bt);
+  void GenerateDefaultFixtureRepeatMode(std::ostream& os);
   void GenerateCommand(std::ostream& os,
                        std::vector<std::string> const& command,
                        std::string const& config, bool expand,

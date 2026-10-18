@@ -14,4 +14,5 @@ function(build_project test)
 endfunction()
 
 build_project(TestLibrary)
+build_project(TestTool)
 build_project(TestExecutable)

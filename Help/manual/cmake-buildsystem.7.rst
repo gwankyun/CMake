@@ -30,6 +30,47 @@ cmake-buildsystem(7)
 和\ ``lzma.cpp``\ 编译对象的存档。\ ``zipapp``\ 被定义为通过编译和链接\ ``zipapp.cpp``\
 而形成的可执行文件。当链接\ ``zipapp``\ 可执行文件时，\ ``archive``\ 静态库会被链接到。
 
+.. _`Target Names`:
+
+Target Names
+------------
+
+Targets are addressed by name throughout the buildsystem.  A target name
+must be non-empty and contain only ASCII letters, digits, ``_``, ``.``, ``+``,
+and ``-``.  As a special case, ``ALIAS`` and :prop_tgt:`IMPORTED`
+targets may also contain ``:``.  By convention, a double colon (``::``) is used
+as a namespace separator, such as ``Upstream::lib1``, to distinguish
+``ALIAS`` and ``IMPORTED`` targets from targets of other types, and to reduce
+the likelihood of naming collisions.  See the :manual:`cmake-packages(7)`
+manual for more details.
+
+Target names must be globally unique.  Non-``GLOBAL`` :prop_tgt:`IMPORTED`
+targets are visible only in the directory that defines them and their
+subdirectories.
+
+CMake reserves some names for special targets created by the build tools and
+project-wide convenience targets.
+
+* The names ``all``, ``ALL_BUILD``, ``help``, ``install``, ``INSTALL``,
+  ``preinstall``, ``clean``, ``edit_cache``, ``rebuild_cache``, and
+  ``ZERO_CHECK`` are always reserved.
+* Some modules reserve additional names: e.g., ``test`` when :module:`CTest`
+  is enabled, and ``package`` when :module:`CPack` is enabled.
+* Generators may also create their own convenience targets, such as
+  ``install/parallel`` with the :ref:`Ninja Generators`.  See the
+  :manual:`cmake-generators(7)` manual for the target names documented by
+  each generator.
+
+Some convenience targets derive their names from other names in the project:
+
+* The ``test_prep/<name>`` targets use test names, which have their own
+  representability rules beyond those above.  The :ref:`Makefile Generators` do
+  not allow ``:``.  See also :ref:`Test Preparation Targets`.
+* The ``install_prep/<component>`` targets use install component names.
+  A component name may contain the characters allowed in target names above,
+  plus ``:`` and ``/``.  The :ref:`Makefile Generators` do not allow ``:``.
+  See also :ref:`Install Preparation Targets`.
+
 .. _`Executables`:
 
 可执行文件
@@ -324,6 +365,154 @@ CMake会生成构建规则，将源文件编译为目标文件。
   填充\ :prop_tgt:`LINK_OPTIONS`\ 构建规范和\ :prop_tgt:`INTERFACE_LINK_OPTIONS`\
   使用要求属性。
 
+.. _`File Sets`:
+
+File Sets
+^^^^^^^^^
+
+.. versionadded:: 3.23
+
+File sets associate files with a target as structured groups. A target has
+zero or more named file sets. Each file set has:
+
+* a name
+* a type
+* a scope of ``INTERFACE``, ``PUBLIC``, or ``PRIVATE``
+* one or more base directories
+* files within those directories
+
+File sets are added to targets with :command:`target_sources` using the
+``FILE_SET`` signature. See :command:`target_sources` for argument syntax and
+validation details.
+
+.. versionchanged:: 4.4
+  A file may belong to at most one non-``HEADERS`` file set in a target.
+  See policy :policy:`CMP0211`.
+
+Acceptable file set types are:
+
+``HEADERS``
+
+  Sources intended to be used via a language's ``#include`` mechanism.
+
+``SOURCES``
+  .. versionadded:: 4.4
+
+  Specifies sources to use when building a target and/or its dependents.
+  With the scope ``PRIVATE`` and ``PUBLIC``, items populate the
+  :prop_fs:`SOURCES` property of the file set, which is used when building the
+  target itself. With the scope ``PUBLIC`` and ``INTERFACE``, items populate
+  the :prop_fs:`INTERFACE_SOURCES` property of the file set, which is used
+  when building dependents. Sources specified by
+  :prop_fs:`INTERFACE_SOURCES` propagate transitively to dependents.
+
+``SYCL``
+  .. versionadded:: 4.5
+
+  An alias for ``SOURCES`` that initializes the file set's
+  :prop_fs:`LANGUAGE` property to ``SYCL``.  Files in the set are compiled as
+  SYCL sources even when their file name extension would normally select
+  another language.  The source file's :prop_sf:`LANGUAGE` property is not
+  changed.
+
+  The file set is recorded as type ``SOURCES`` and otherwise has the same
+  behavior and target properties as that type.
+
+  This alias is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+``SYCL_HEADERS``
+  .. versionadded:: 4.5
+
+  An alias for ``HEADERS`` that initializes the file set's
+  :prop_fs:`LANGUAGE` property to ``SYCL``.  A target compiles all of its C++
+  sources as SYCL when this file set is visible to its own build, or is
+  reachable through the interface of a linked target.  This behavior
+  propagates transitively through linked target interfaces.
+
+  The file set is recorded as type ``HEADERS`` and otherwise has the same
+  behavior and target properties as that type.  The header files themselves
+  are not compiled.
+
+  This alias is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+``CXX_MODULES``
+  .. versionadded:: 3.28
+
+  Sources which contain C++ interface module or partition units (i.e., those
+  using the ``export`` keyword). This file set type may not have an
+  ``INTERFACE`` scope except on ``IMPORTED`` targets.
+
+``<rule>``
+  .. versionadded:: 4.5
+
+  Specifies sources which will be processed by the custom rule defined by the
+  :command:`add_custom_rule` command.
+
+For ``HEADERS``, ``SOURCES``, and ``CXX_MODULES`` types, the optional default
+file sets are named after their type.
+
+For ``<rule>`` types, the target may be a custom target.
+
+For ``HEADERS`` and ``CXX_MODULES`` types, the target may not be a
+:prop_tgt:`FRAMEWORK` target.
+
+Files in a ``PRIVATE`` or ``PUBLIC`` file set are marked as source files for
+IDE integration. Additionally, files in ``HEADERS`` file sets have their
+:prop_sf:`HEADER_FILE_ONLY` property set to ``TRUE``.
+
+Files in an ``INTERFACE`` or ``PUBLIC`` file set can be installed by
+:command:`install(TARGETS)` and exported by :command:`install(EXPORT)` and
+:command:`export`.
+
+The following target properties are set by file sets and should not generally
+be manipulated directly:
+
+For file sets of type ``HEADERS``:
+
+* :prop_tgt:`HEADER_SETS`
+* :prop_tgt:`INTERFACE_HEADER_SETS`
+* :prop_tgt:`HEADER_SET`
+* :prop_tgt:`HEADER_SET_<NAME>`
+* :prop_tgt:`HEADER_DIRS`
+* :prop_tgt:`HEADER_DIRS_<NAME>`
+
+For file sets of type ``SOURCES``:
+
+* :prop_tgt:`SOURCE_SETS`
+* :prop_tgt:`INTERFACE_SOURCE_SETS`
+* :prop_tgt:`SOURCE_SET`
+* :prop_tgt:`SOURCE_SET_<NAME>`
+* :prop_tgt:`SOURCE_DIRS`
+* :prop_tgt:`SOURCE_DIRS_<NAME>`
+
+For file sets of type ``CXX_MODULES``:
+
+* :prop_tgt:`CXX_MODULE_SETS`
+* :prop_tgt:`INTERFACE_CXX_MODULE_SETS`
+* :prop_tgt:`CXX_MODULE_SET`
+* :prop_tgt:`CXX_MODULE_SET_<NAME>`
+* :prop_tgt:`CXX_MODULE_DIRS`
+* :prop_tgt:`CXX_MODULE_DIRS_<NAME>`
+
+Target properties related to include directories are also modified by file
+sets as follows:
+
+:prop_tgt:`INCLUDE_DIRECTORIES`
+
+  If the type is ``HEADERS``, and the scope of the file set is ``PRIVATE`` or
+  ``PUBLIC``, all ``BASE_DIRS`` of the file set are wrapped in
+  :genex:`$<BUILD_INTERFACE>` and appended to this property.
+
+:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
+
+  If the type is ``HEADERS``, and the scope of the file set is ``INTERFACE``
+  or ``PUBLIC``, all ``BASE_DIRS`` of the file set are wrapped in
+  :genex:`$<BUILD_INTERFACE>` and appended to this property.
+
+File sets do not populate the :prop_tgt:`SOURCES` or
+:prop_tgt:`INTERFACE_SOURCES` target properties. They are represented by
+their own file set and type-specific properties.
+
 .. _`Target Build Specification`:
 
 目标构建规范
@@ -380,6 +569,12 @@ CMake会生成构建规则，将源文件编译为目标文件。
 
   在目标中编译源代码时要预编译和包含的头文件列表。
 
+:prop_tgt:`COMPILE_WRAPPERS`
+  .. versionadded:: 4.5
+
+  List of wrapper names to be prepended to the compile commands for a target's
+  sources. See also :prop_gbl:`CMAKE_COMPILE_WRAPPER_<NAME>`.
+
 :prop_tgt:`AUTOMOC_MACRO_NAMES`
   .. versionadded:: 3.10
 
@@ -426,6 +621,13 @@ CMake会生成构建规则，将源文件编译为目标文件。
 :prop_tgt:`LINK_DEPENDS`
   链接目标所依赖的文件列表，如果目标是可执行文件、共享库或模块库。例如，可以在此处列出通过\
   :prop_tgt:`LINK_OPTIONS`\ 指定的链接器脚本，以便更改它们会导致再次链接二进制文件。
+
+:prop_tgt:`LINK_WRAPPERS`
+  .. versionadded:: 4.5
+
+  List of wrapper names to be prepended to the link command for a target's
+  output artifact, if it is an executable, shared library, or module library.
+  See also :prop_gbl:`CMAKE_LINK_WRAPPER_<NAME>`.
 
 .. _`Target Usage Requirements`:
 
@@ -536,6 +738,13 @@ CMake会生成构建规则，将源文件编译为目标文件。
 
   要预编译的头文件列表，以及在编译目标使用者中的源文件时要包含的头文件列表。
 
+:prop_tgt:`INTERFACE_COMPILE_WRAPPERS`
+  .. versionadded:: 4.5
+
+  List of wrapper names to be prepended to the compile commands when compiling
+  sources in the target's consumers. See also
+  :prop_gbl:`CMAKE_COMPILE_WRAPPER_<NAME>`.
+
 :prop_tgt:`INTERFACE_AUTOMOC_MACRO_NAMES`
   .. versionadded:: 3.27
 
@@ -576,6 +785,13 @@ CMake会生成构建规则，将源文件编译为目标文件。
   .. versionadded:: 3.13
 
   链接目标使用者所依赖的文件列表，包括可执行文件、共享库或模块库。
+
+:prop_tgt:`INTERFACE_LINK_WRAPPERS`
+  .. versionadded:: 4.5
+
+  List of wrapper names to be prepended to the link commands for a target's
+  consumers' output artifact, for those that are executables, shared libraries,
+  and module libraries. See also :prop_gbl:`CMAKE_LINK_WRAPPER_<NAME>`.
 
 .. _`Custom Transitive Properties`:
 
@@ -1205,8 +1421,18 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
   add_executable(exe1 exe1.cpp)
   target_link_libraries(exe1 Upstream::lib1)
 
-``ALIAS``\ 目标是不可变的、不可安装的或不可导出的。它们完全局限于构建系统描述。一个名称可以\
-通过读取它的\ :prop_tgt:`ALIASED_TARGET`\ 属性来测试它是否是一个\ ``ALIAS``\ 名称：
+``ALIAS``\ 目标是不可变的、不可安装的或不可导出的。它们完全局限于构建系统描述。
+
+.. versionchanged:: 4.5
+  ``ALIAS`` targets may be used as the operand for :command:`set_property` and
+  similar commands used to modify properties of targets.  The
+  :command:`install` and :command:`export` commands may also use an ``ALIAS``
+  target as the operand.  The commands operate on the target which the alias
+  references.  CMake 4.4 and earlier did not allow modifying, installing,
+  or exporting targets via an ``ALIAS``.
+
+A name can be tested for whether it is an ``ALIAS`` name by reading the
+:prop_tgt:`ALIASED_TARGET` property from it:
 
 .. code-block:: cmake
 
@@ -1314,4 +1540,193 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
   :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`。
 
 * .. versionadded:: 3.11
-    以前导下划线（\ ``_``\ ）或小写ASCII字符命名的属性。
+    Properties named with a leading underscore (``_``)
+    or lowercase ASCII character.
+
+Preparation Targets
+===================
+
+The :ref:`Ninja Generators`, :ref:`Makefile Generators`, and
+:generator:`FASTBuild` generator provide convenience targets that build only
+the prerequisites of a later step, such as running tests or installing.
+
+.. _`Test Preparation Targets`:
+
+Test Preparation Targets
+------------------------
+
+.. versionadded:: 4.4
+
+The generators which support preparation targets provide convenience build
+targets that build the known prerequisites of tests before running the tests,
+unless :variable:`CMAKE_SKIP_TEST_PREP_TARGETS` is enabled:
+
+``test_prep/all``
+  Prepare to run all tests.
+
+``test_prep/<name>``
+  Prepare to run the test ``<name>``.  If multiple tests in different
+  directories share the same name, their dependencies are merged into a single
+  ``test_prep/<name>`` target.
+
+Building a test preparation target ensures that the test executable is
+up-to-date before the test runs.
+
+A test preparation target is generated only when its name can be represented
+safely by the native build tool, as described under :ref:`Target Names`.
+CMake warns about a test that has build dependencies but whose name cannot be
+represented.
+
+CMake infers dependencies associated with tests from the test executable, as
+well as any targets referenced by the test command via generator expressions.
+The ``BUILD_DEPENDS`` option of the :command:`add_test` command can be used to
+add explicit build dependencies.
+
+How file dependencies are prepared depends on how the file is produced.  See
+:ref:`Preparation Target File Dependencies`.
+
+.. versionadded:: 4.5
+
+  Modules may also extend ``test_prep/all`` with directory-scoped dependencies
+  via the :prop_dir:`CMAKE_TEST_BUILD_DEPENDS` directory property.
+
+.. versionchanged:: 4.5
+
+  Test preparation targets are enabled by default.  :generator:`FASTBuild` and
+  the :ref:`Makefile Generators` gained support for test preparation targets.
+  Previously, test preparation targets were only enabled if the
+  :variable:`CMAKE_TEST_BUILD_DEPENDS` variable was enabled.
+
+.. _`Install Preparation Targets`:
+
+Install Preparation Targets
+---------------------------
+
+.. versionadded:: 4.5
+
+If the project has install rules, the generators which support preparation
+targets provide convenience build targets that build the known prerequisites
+of an installation before running the installation, unless
+:variable:`CMAKE_SKIP_INSTALL_PREP_TARGETS` or
+:variable:`CMAKE_SKIP_INSTALL_RULES` is enabled:
+
+``install_prep/all``
+  Prepare for an installation that does not select a component, such as
+  :option:`cmake --install \<build-dir\> <cmake --install>` without
+  :cmake-install-option:`--component`.  This includes rules of every component,
+  but omits :command:`install` rules using the ``EXCLUDE_FROM_ALL`` option.
+
+``install_prep/<component>``
+  Prepare to install ``<component>``.  Rules for that component are included
+  even when they use the ``EXCLUDE_FROM_ALL`` option.
+
+Building ``install_prep/all`` does not necessarily prepare the installation
+of a particular component, because installing a component also runs that
+component's ``EXCLUDE_FROM_ALL`` rules.  Build the matching
+``install_prep/<component>`` target before installing a specific component.
+
+For example:
+
+.. code-block:: console
+
+  cmake --build <build-dir> --config Release --target install_prep/Runtime
+  cmake --install <build-dir> --config Release --component Runtime
+
+Only install rules active for the selected configuration contribute build
+dependencies.  For multi-config generators, the same configuration should
+be used for the preparation and installation steps.
+
+A component preparation target is generated only when its name can be
+represented safely by the native build tool, as described under
+:ref:`Target Names`.  CMake warns about a component that has build
+dependencies but whose name cannot be represented.
+
+.. note::
+  A component named ``all`` does not get its own target because its name would
+  conflict with ``install_prep/all``.  Its rules contribute to
+  ``install_prep/all`` only when they do not use the ``EXCLUDE_FROM_ALL``
+  option.
+
+CMake infers dependencies associated with installed target artifacts,
+imported runtime artifacts, runtime dependency sets, C++ module BMIs, and
+C++ module export metadata.  Preparing BMIs or module export metadata builds
+the targets that produce them.
+
+Installing files with the ``FILES`` or ``PROGRAMS`` signatures of the
+:command:`install` command, or a target's file sets or its
+:prop_tgt:`PUBLIC_HEADER`, :prop_tgt:`PRIVATE_HEADER`, or :prop_tgt:`RESOURCE`
+files, implies build dependencies only for files that the build produces,
+i.e., target output artifacts, and outputs and byproducts of custom commands
+and custom targets.  How such a file is prepared depends on how it is produced.
+See :ref:`Preparation Target File Dependencies`.
+
+.. _`Preparation Target File Dependencies`:
+
+Preparation Target File Dependencies
+------------------------------------
+
+The manner in which a file dependency of a test or install preparation target
+is prepared depends on how it is produced:
+
+* A target's output artifact, such as one named by :genex:`TARGET_FILE`, is
+  prepared by building that target.
+
+* A file that is the output of a custom command attached to exactly one
+  target is prepared by running that custom command.  The
+  :ref:`Makefile Generators` cannot depend on individual files, so they build
+  the target owning the custom command instead.
+
+  The target which installs the file (or the file set to which the file
+  belongs), if any, is not built by installation preparation targets.
+
+* Any other generated file, such as a byproduct or the output of a custom
+  command attached to more than one target, is prepared by depending on the
+  file itself, which runs whatever produces it.  The
+  :ref:`Makefile Generators` and :generator:`FASTBuild` cannot do so, so they
+  warn.
+
+  For install preparation targets, if a target installs the file (or the file
+  set to which the file belongs), the preparation target will build that target
+  instead, which must therefore depend on the producer, e.g., through
+  :command:`add_dependencies`.  Otherwise, the preparation target does not
+  prepare the file.
+
+For example:
+
+.. code-block:: cmake
+
+  # Preparation which depends on `generated.h` runs only the custom command,
+  # not the library build.
+  add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/generated.h"
+    COMMAND ...)
+  add_library(A a.c "${CMAKE_CURRENT_BINARY_DIR}/generated.h")
+  set_property(TARGET A PROPERTY PUBLIC_HEADER
+    "${CMAKE_CURRENT_BINARY_DIR}/generated.h")
+
+  # Preparation which depends on `byproduct.h` runs `gen`, or with some
+  # generators builds `B` instead, so `B` must depend on the producer of its
+  # byproduct.
+  add_custom_target(gen COMMAND ...
+    BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/byproduct.h")
+  add_library(B b.c)
+  add_dependencies(B gen)
+
+  # The preparation target for an install which installs `B` will implicitly
+  # depend on `byproduct.h` when it appears in an associated file set.
+  set_property(TARGET B PROPERTY PUBLIC_HEADER
+    "${CMAKE_CURRENT_BINARY_DIR}/byproduct.h")
+
+  # A test depending on `byproduct.h` needs to express that dependency
+  # explicitly using `BUILD_DEPENDS`.
+  add_test(test_B COMMAND test_B BUILD_DEPENDS
+    "${CMAKE_CURRENT_BINARY_DIR}/byproduct.h")
+
+The ``BUILD_DEPENDS`` option of the ``FILES``, ``PROGRAMS``, ``DIRECTORY``,
+``SCRIPT``, and ``CODE`` signatures of the :command:`install` command can
+be used to specify targets or files that CMake cannot infer.  ``DIRECTORY``,
+``SCRIPT``, and ``CODE`` rules do not imply build dependencies without
+``BUILD_DEPENDS``.  The deprecated :command:`install_targets` command does not
+contribute dependencies.
+
+Install rules below a directory added with :prop_dir:`EXCLUDE_FROM_ALL` are
+ignored, matching installation from the parent directory.

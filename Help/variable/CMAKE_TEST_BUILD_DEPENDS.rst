@@ -1,17 +1,17 @@
 CMAKE_TEST_BUILD_DEPENDS
 ------------------------
 
+.. deprecated:: 4.5
+
 .. versionadded:: 4.4
 
-Enable ``test_prep/<name>`` build targets for tests added by
-:command:`add_test` when using the :ref:`Ninja Generators`.
+Enabling this variable previously enabled generation of ``test_prep/<name>``
+build targets for tests when using :ref:`Ninja Generators`.  Since CMake 4.5,
+these targets are now enabled by default.  Since CMake 4.5, the
+:variable:`CMAKE_SKIP_TEST_PREP_TARGETS` may be used to disable generation of
+these targets.
 
-When this variable is set to a true value, CMake generates a
-``test_prep/<name>`` target for each eligible test and a ``test_prep/all``
-target for all such tests. Building these targets ensures the test executable,
-targets referenced by test command generator expressions, and explicit
-``BUILD_DEPENDS`` entries are up-to-date before the test runs.
+See Also
+^^^^^^^^
 
-Tests whose names are not valid target names are excluded from this behavior.
-If multiple tests in different directories share the same name, their
-dependencies are merged into a single ``test_prep/<name>`` target.
+* :ref:`Test Preparation Targets`

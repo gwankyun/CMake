@@ -11,6 +11,8 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
+#include "cmsys/FStream.hxx"
+
 #include "cmCryptoHash.h"
 #include "cmCustomCommand.h"
 #include "cmCustomCommandLines.h"
@@ -20,9 +22,9 @@
 #include "cmList.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmTransformDepfile.h"
 #include "cmValue.h"
 
@@ -150,7 +152,7 @@ std::string EvaluateDepfile(std::string const& path,
   return cge->Evaluate(lg, config);
 }
 
-std::string EvaluateComment(char const* comment,
+std::string EvaluateComment(std::string const& comment,
                             cmGeneratorExpression const& ge,
                             cmLocalGenerator* lg, std::string const& config)
 {
@@ -206,7 +208,7 @@ cmCustomCommandGenerator::cmCustomCommandGenerator(
       // If the command references an executable target by name,
       // collect the target to add a target-level dependency on it.
       cmGeneratorTarget* gt = this->LG->FindGeneratorTargetToUse(argv.front());
-      if (gt && gt->GetType() == cmStateEnums::EXECUTABLE) {
+      if (gt && gt->GetType() == cm::TargetType::EXECUTABLE) {
         // GetArgv0Location uses the command config, so use a cross-dependency.
         bool const cross = true;
         this->Utilities.emplace(BT<std::pair<std::string, bool>>(
@@ -292,7 +294,7 @@ void cmCustomCommandGenerator::FillEmulatorsWithArguments()
     // launch it with its emulator.
     std::string const& argv0 = this->CommandLines[c][0];
     cmGeneratorTarget* target = this->LG->FindGeneratorTargetToUse(argv0);
-    if (target && target->GetType() == cmStateEnums::EXECUTABLE &&
+    if (target && target->GetType() == cm::TargetType::EXECUTABLE &&
         !target->IsImported()) {
 
       cmValue emulator_property =
@@ -326,7 +328,7 @@ char const* cmCustomCommandGenerator::GetArgv0Location(unsigned int c) const
   // with the path to the executable artifact in the command config.
   std::string const& argv0 = this->CommandLines[c][0];
   cmGeneratorTarget* target = this->LG->FindGeneratorTargetToUse(argv0);
-  if (target && target->GetType() == cmStateEnums::EXECUTABLE &&
+  if (target && target->GetType() == cm::TargetType::EXECUTABLE &&
       (target->IsImported() ||
        target->GetProperty("CROSSCOMPILING_EMULATOR") ||
        !this->LG->GetMakefile()->IsOn("CMAKE_CROSSCOMPILING"))) {
@@ -444,7 +446,8 @@ std::string cmCustomCommandGenerator::GetFullDepfile() const
   }
 
   if (!cmSystemTools::FileIsFullPath(depfile)) {
-    depfile = cmStrCat(this->LG->GetCurrentBinaryDirectory(), '/', depfile);
+    depfile =
+      cmStrCat(this->LG->GetCurrentBinaryDirectory(), '/', std::move(depfile));
   }
   return cmSystemTools::CollapseFullPath(depfile);
 }
@@ -482,12 +485,12 @@ std::string cmCustomCommandGenerator::GetInternalDepfile() const
 
 cm::optional<std::string> cmCustomCommandGenerator::GetComment() const
 {
-  char const* comment = this->CC->GetComment();
-  if (!comment) {
+  if (!this->CC->GetComment()) {
     return cm::nullopt;
   }
-  if (!*comment) {
-    return std::string();
+  std::string const& comment = this->CC->GetComment().value();
+  if (comment.empty()) {
+    return comment;
   }
 
   cmGeneratorExpression ge(*this->LG->GetCMakeInstance(),
@@ -519,4 +522,25 @@ std::set<BT<std::pair<std::string, bool>>> const&
 cmCustomCommandGenerator::GetUtilities() const
 {
   return this->Utilities;
+}
+
+std::string cmCustomCommandGenerator::StoreContentToFile(
+  std::string const& content) const
+{
+  cmCryptoHash hash(cmCryptoHash::AlgoSHA256);
+
+  std::string fileDir =
+    cmStrCat(this->LG->GetBinaryDirectory(), "/CMakeFiles/c");
+  if (!cmSystemTools::MakeDirectory(fileDir)) {
+    return "";
+  }
+
+  std::string fileName = cmStrCat(fileDir, '/', hash.HashString(content));
+
+  cmsys::ofstream file(fileName.c_str(), std::ios::out);
+  if (!file) {
+    return "";
+  }
+  file.write(content.data(), content.size());
+  return fileName;
 }

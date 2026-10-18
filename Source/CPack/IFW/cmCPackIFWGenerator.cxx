@@ -28,7 +28,7 @@ cmCPackIFWGenerator::~cmCPackIFWGenerator() = default;
 
 int cmCPackIFWGenerator::PackageFiles()
 {
-  cmCPackIFWLogger(OUTPUT, "- Configuration" << std::endl);
+  cmCPackIFWLogger(OUTPUT, "- Configuration\n");
 
   // Installer configuragion
   this->Installer.GenerateInstallerFile();
@@ -93,10 +93,9 @@ std::vector<std::string> cmCPackIFWGenerator::BuildRepogenCommand()
     } else {
       cmCPackIFWLogger(WARNING,
                        "The \"CPACK_IFW_REPOSITORIES_DIRECTORIES\" "
-                         << "variable is set, but content will be skipped, "
-                         << "because this feature available only since "
-                         << "QtIFW 3.1. Please update your QtIFW instance."
-                         << std::endl);
+                       "variable is set, but content will be skipped, "
+                       "because this feature available only since "
+                       "QtIFW 3.1. Please update your QtIFW instance.\n");
     }
   }
 
@@ -106,7 +105,7 @@ std::vector<std::string> cmCPackIFWGenerator::BuildRepogenCommand()
     std::string ifwArg = (*it)->Name;
     ++it;
     while (it != this->DownloadedPackages.end()) {
-      ifwArg += "," + (*it)->Name;
+      ifwArg = cmStrCat(std::move(ifwArg), ',', (*it)->Name);
       ++it;
     }
     ifwCmd.emplace_back(ifwArg);
@@ -123,12 +122,11 @@ int cmCPackIFWGenerator::RunRepogen(std::string const& ifwTmpFile)
   }
 
   std::vector<std::string> ifwCmd = this->BuildRepogenCommand();
-  cmCPackIFWLogger(VERBOSE,
-                   "Execute: " << cmSystemTools::PrintSingleCommand(ifwCmd)
-                               << std::endl);
+  cmCPackIFWLogger(
+    VERBOSE, "Execute: ", cmSystemTools::PrintSingleCommand(ifwCmd), '\n');
   std::string output;
   int retVal = 1;
-  cmCPackIFWLogger(OUTPUT, "- Generate repository" << std::endl);
+  cmCPackIFWLogger(OUTPUT, "- Generate repository\n");
   bool res = cmSystemTools::RunSingleCommand(ifwCmd, &output, &output, &retVal,
                                              nullptr, this->GeneratorVerbose,
                                              cmDuration::zero());
@@ -138,11 +136,9 @@ int cmCPackIFWGenerator::RunRepogen(std::string const& ifwTmpFile)
         << std::endl
         << "# Output:" << std::endl
         << output << std::endl;
-    cmCPackIFWLogger(
-      ERROR,
-      "Problem running IFW command: "
-        << cmSystemTools::PrintSingleCommand(ifwCmd) << std::endl
-        << "Please check \"" << ifwTmpFile << "\" for errors" << std::endl);
+    cmCPackIFWLogger(ERROR, "Problem running IFW command: ",
+                     cmSystemTools::PrintSingleCommand(ifwCmd),
+                     "\nPlease check \"", ifwTmpFile, "\" for errors\n");
     return 0;
   }
 
@@ -150,14 +146,12 @@ int cmCPackIFWGenerator::RunRepogen(std::string const& ifwTmpFile)
       !this->Repository.PatchUpdatesXml()) {
     cmCPackIFWLogger(WARNING,
                      "Problem patch IFW \"Updates\" "
-                       << "file: \"" << this->toplevel
-                       << "/repository/Updates.xml\"" << std::endl);
+                     "file: \"",
+                     this->toplevel, "/repository/Updates.xml\"\n");
   }
 
-  cmCPackIFWLogger(OUTPUT,
-                   "- repository: \"" << this->toplevel
-                                      << "/repository\" generated"
-                                      << std::endl);
+  cmCPackIFWLogger(OUTPUT, "- repository: \"", this->toplevel,
+                   "/repository\" generated\n");
   return 1;
 }
 
@@ -200,7 +194,7 @@ std::vector<std::string> cmCPackIFWGenerator::BuildBinaryCreatorCommand()
     ifwArg = path + *it;
     ++it;
     while (it != this->Installer.Resources.end()) {
-      ifwArg += "," + path + *it;
+      ifwArg = cmStrCat(std::move(ifwArg), ',', path, *it);
       ++it;
     }
     ifwCmd.emplace_back(ifwArg);
@@ -225,10 +219,9 @@ std::vector<std::string> cmCPackIFWGenerator::BuildBinaryCreatorCommand()
     } else {
       cmCPackIFWLogger(WARNING,
                        "The \"CPACK_IFW_REPOSITORIES_DIRECTORIES\" "
-                         << "variable is set, but content will be skipped, "
-                         << "because this feature available only since "
-                         << "QtIFW 3.1. Please update your QtIFW instance."
-                         << std::endl);
+                       "variable is set, but content will be skipped, "
+                       "because this feature available only since "
+                       "QtIFW 3.1. Please update your QtIFW instance.\n");
     }
   }
 
@@ -241,7 +234,7 @@ std::vector<std::string> cmCPackIFWGenerator::BuildBinaryCreatorCommand()
     ifwArg = (*it)->Name;
     ++it;
     while (it != this->DownloadedPackages.end()) {
-      ifwArg += "," + (*it)->Name;
+      ifwArg = cmStrCat(std::move(ifwArg), ',', (*it)->Name);
       ++it;
     }
     ifwCmd.emplace_back(ifwArg);
@@ -251,7 +244,7 @@ std::vector<std::string> cmCPackIFWGenerator::BuildBinaryCreatorCommand()
     // Binary
     auto bit = this->BinaryPackages.begin();
     while (bit != this->BinaryPackages.end()) {
-      ifwArg += (*bit)->Name + ",";
+      ifwArg = cmStrCat(std::move(ifwArg), (*bit)->Name, ',');
       ++bit;
     }
     // Depend
@@ -259,7 +252,7 @@ std::vector<std::string> cmCPackIFWGenerator::BuildBinaryCreatorCommand()
     ifwArg += it->second.Name;
     ++it;
     while (it != this->DependentPackages.end()) {
-      ifwArg += "," + it->second.Name;
+      ifwArg = cmStrCat(std::move(ifwArg), ',', it->second.Name);
       ++it;
     }
     ifwCmd.emplace_back(ifwArg);
@@ -277,12 +270,11 @@ std::vector<std::string> cmCPackIFWGenerator::BuildBinaryCreatorCommand()
 int cmCPackIFWGenerator::RunBinaryCreator(std::string const& ifwTmpFile)
 {
   std::vector<std::string> ifwCmd = this->BuildBinaryCreatorCommand();
-  cmCPackIFWLogger(VERBOSE,
-                   "Execute: " << cmSystemTools::PrintSingleCommand(ifwCmd)
-                               << std::endl);
+  cmCPackIFWLogger(
+    VERBOSE, "Execute: ", cmSystemTools::PrintSingleCommand(ifwCmd), '\n');
   std::string output;
   int retVal = 1;
-  cmCPackIFWLogger(OUTPUT, "- Generate package" << std::endl);
+  cmCPackIFWLogger(OUTPUT, "- Generate package\n");
   bool res = cmSystemTools::RunSingleCommand(ifwCmd, &output, &output, &retVal,
                                              nullptr, this->GeneratorVerbose,
                                              cmDuration::zero());
@@ -292,11 +284,9 @@ int cmCPackIFWGenerator::RunBinaryCreator(std::string const& ifwTmpFile)
         << std::endl
         << "# Output:" << std::endl
         << output << std::endl;
-    cmCPackIFWLogger(
-      ERROR,
-      "Problem running IFW command: "
-        << cmSystemTools::PrintSingleCommand(ifwCmd) << std::endl
-        << "Please check \"" << ifwTmpFile << "\" for errors" << std::endl);
+    cmCPackIFWLogger(ERROR, "Problem running IFW command: ",
+                     cmSystemTools::PrintSingleCommand(ifwCmd),
+                     "\nPlease check \"", ifwTmpFile, "\" for errors\n");
     return 0;
   }
 
@@ -310,7 +300,8 @@ char const* cmCPackIFWGenerator::GetPackagingInstallPrefix()
   std::string tmpPref = defPrefix ? defPrefix : "";
 
   if (this->Components.empty()) {
-    tmpPref += "packages/" + this->GetRootPackageName() + "/data";
+    tmpPref = cmStrCat(std::move(tmpPref), "packages/",
+                       this->GetRootPackageName(), "/data");
   }
 
   this->SetOption("CPACK_IFW_PACKAGING_INSTALL_PREFIX", tmpPref);
@@ -348,8 +339,7 @@ int cmCPackIFWGenerator::InitializeInternal()
   if (this->BinCreator.empty()) {
     cmCPackIFWLogger(ERROR,
                      "Cannot find QtIFW compiler \"binarycreator\": "
-                     "likely it is not installed, or not in your PATH"
-                       << std::endl);
+                     "likely it is not installed, or not in your PATH\n");
     return 0;
   }
 
@@ -427,8 +417,7 @@ int cmCPackIFWGenerator::InitializeInternal()
   if (!this->Installer.RemoteRepositories.empty() && this->RepoGen.empty()) {
     cmCPackIFWLogger(ERROR,
                      "Cannot find QtIFW repository generator \"repogen\": "
-                     "likely it is not installed, or not in your PATH"
-                       << std::endl);
+                     "likely it is not installed, or not in your PATH\n");
     return 0;
   }
 
@@ -471,8 +460,9 @@ std::string cmCPackIFWGenerator::GetComponentInstallSuffix(
     return cmStrCat(prefix, this->GetRootPackageName(), suffix);
   }
 
-  return prefix +
-    this->GetComponentPackageName(&this->Components[componentName]) + suffix;
+  return cmStrCat(
+    prefix, this->GetComponentPackageName(&this->Components[componentName]),
+    suffix);
 }
 
 std::string cmCPackIFWGenerator::GetComponentInstallDirNameSuffix(
@@ -485,10 +475,11 @@ std::string cmCPackIFWGenerator::GetComponentInstallDirNameSuffix(
     return cmStrCat(prefix, this->GetRootPackageName(), suffix);
   }
 
-  return prefix +
+  return cmStrCat(
+    prefix,
     this->GetSanitizedDirOrFileName(
-      this->GetComponentPackageName(&this->Components[componentName])) +
-    suffix;
+      this->GetComponentPackageName(&this->Components[componentName])),
+    suffix);
 }
 
 cmCPackComponent* cmCPackIFWGenerator::GetComponent(
@@ -527,10 +518,8 @@ cmCPackComponent* cmCPackIFWGenerator::GetComponent(
     }
   } else {
     this->Packages.erase(name);
-    cmCPackIFWLogger(ERROR,
-                     "Cannot configure package \""
-                       << name << "\" for component \"" << component->Name
-                       << "\"" << std::endl);
+    cmCPackIFWLogger(ERROR, "Cannot configure package \"", name,
+                     "\" for component \"", component->Name, "\"\n");
   }
 
   return component;
@@ -563,10 +552,8 @@ cmCPackComponentGroup* cmCPackIFWGenerator::GetComponentGroup(
     this->BinaryPackages.insert(package);
   } else {
     this->Packages.erase(name);
-    cmCPackIFWLogger(ERROR,
-                     "Cannot configure package \""
-                       << name << "\" for component group \"" << group->Name
-                       << "\"" << std::endl);
+    cmCPackIFWLogger(ERROR, "Cannot configure package \"", name,
+                     "\" for component group \"", group->Name, "\"\n");
   }
   return group;
 }
@@ -624,15 +611,15 @@ std::string cmCPackIFWGenerator::GetGroupPackageName(
   if (cmCPackIFWPackage* package = this->GetGroupPackage(group)) {
     return package->Name;
   }
-  cmValue option =
-    this->GetOption("CPACK_IFW_COMPONENT_GROUP_" +
-                    cmsys::SystemTools::UpperCase(group->Name) + "_NAME");
+  cmValue option = this->GetOption(
+    cmStrCat("CPACK_IFW_COMPONENT_GROUP_",
+             cmsys::SystemTools::UpperCase(group->Name), "_NAME"));
   name = option ? *option : group->Name;
   if (group->ParentGroup) {
     cmCPackIFWPackage* package = this->GetGroupPackage(group->ParentGroup);
     bool dot = !this->ResolveDuplicateNames;
     if (dot && !cmHasPrefix(name, package->Name)) {
-      name = package->Name + "." + name;
+      name = cmStrCat(package->Name, '.', std::move(name));
     }
   }
   return name;
@@ -648,8 +635,9 @@ std::string cmCPackIFWGenerator::GetComponentPackageName(
   if (cmCPackIFWPackage* package = this->GetComponentPackage(component)) {
     return package->Name;
   }
-  std::string prefix = "CPACK_IFW_COMPONENT_" +
-    cmsys::SystemTools::UpperCase(component->Name) + "_";
+  std::string prefix =
+    cmStrCat("CPACK_IFW_COMPONENT_",
+             cmsys::SystemTools::UpperCase(component->Name), '_');
   cmValue option = this->GetOption(prefix + "NAME");
   name = option ? *option : component->Name;
   if (component->Group) {
@@ -661,7 +649,7 @@ std::string cmCPackIFWGenerator::GetComponentPackageName(
     }
     bool dot = !this->ResolveDuplicateNames;
     if (dot && !cmHasPrefix(name, package->Name)) {
-      name = package->Name + "." + name;
+      name = cmStrCat(package->Name, '.', std::move(name));
     }
   }
   return name;
@@ -701,11 +689,8 @@ cmCPackIFWRepository* cmCPackIFWGenerator::GetRepository(
   } else {
     this->Repositories.erase(repositoryName);
     repository = nullptr;
-    cmCPackIFWLogger(WARNING,
-                     "Invalid repository \""
-                       << repositoryName << "\""
-                       << " configuration. Repository will be skipped."
-                       << std::endl);
+    cmCPackIFWLogger(WARNING, "Invalid repository \"", repositoryName,
+                     "\" configuration. Repository will be skipped.\n");
   }
   return repository;
 }

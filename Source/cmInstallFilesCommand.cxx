@@ -4,6 +4,7 @@
 
 #include <cm/memory>
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmGeneratorExpression.h"
 #include "cmGlobalGenerator.h"
@@ -27,12 +28,16 @@ static void FinalAction(cmMakefile& makefile, std::string const& dest,
 bool cmInstallFilesCommand(std::vector<std::string> const& args,
                            cmExecutionStatus& status)
 {
+  cmMakefile& mf = status.GetMakefile();
+
+  mf.IssueDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                     "The 'install_files' command has been superseded. "
+                     "Use 'install(FILES)' instead.");
+
   if (args.size() < 2) {
     status.SetError("called with incorrect number of arguments");
     return false;
   }
-
-  cmMakefile& mf = status.GetMakefile();
 
   // Enable the install target.
   mf.GetGlobalGenerator()->EnableInstallTarget();
@@ -77,8 +82,9 @@ static void FinalAction(cmMakefile& makefile, std::string const& dest,
       // replace any variables
       std::string const& temps = *s;
       if (!cmSystemTools::GetFilenamePath(temps).empty()) {
-        testf = cmSystemTools::GetFilenamePath(temps) + "/" +
-          cmSystemTools::GetFilenameWithoutLastExtension(temps) + ext;
+        testf =
+          cmStrCat(cmSystemTools::GetFilenamePath(temps), '/',
+                   cmSystemTools::GetFilenameWithoutLastExtension(temps), ext);
       } else {
         testf = cmSystemTools::GetFilenameWithoutLastExtension(temps) + ext;
       }
@@ -125,7 +131,7 @@ static void CreateInstallGenerator(cmMakefile& makefile,
     cmInstallGenerator::SelectMessageLevel(&makefile);
   makefile.AddInstallGenerator(cm::make_unique<cmInstallFilesGenerator>(
     files, destination, false, no_permissions, no_configurations, no_component,
-    message, no_exclude_from_all, no_rename, false,
+    std::vector<std::string>(), message, no_exclude_from_all, no_rename, false,
     cmInstallGenerator::CaptureContext(makefile)));
 }
 

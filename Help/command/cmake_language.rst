@@ -17,6 +17,19 @@ Synopsis
   cmake_language(`GET_MESSAGE_LOG_LEVEL`_ <out-var>)
   cmake_language(`EXIT`_ <exit-code>)
   cmake_language(`TRACE`_ <boolean> ...)
+  cmake_language(`PRINT_TARGETS`_ <filter>...)
+  cmake_language(`PRINT_VARIABLES`_
+                 [{ ALL [<filter>...] | NAMED <vars>... }])
+  cmake_language(PRINT_PROPERTIES
+                 `TARGETS <PRINT_PROPERTIES-TARGETS_>`__ <targets>...
+                 <options>...
+                 [{ ALL [<filter>] | NAMED <properties>... }])
+  cmake_language(PRINT_PROPERTIES
+                 { `SOURCES <PRINT_PROPERTIES-SOURCES_>`__       <sources>... |
+                   `DIRECTORIES <PRINT_PROPERTIES-DIRECTORIES_>`__   <dirs>...    |
+                   `TESTS <PRINT_PROPERTIES-TESTS_>`__         <tests>...   |
+                   `CACHE_ENTRIES <PRINT_PROPERTIES-CACHE_ENTRIES_>`__ <entries>... }
+                 NAMED <properties>...)
 
 Introduction
 ^^^^^^^^^^^^
@@ -557,3 +570,292 @@ Trace Control
   those options override and force tracing globally, regardless of
   ``cmake_language(TRACE OFF)`` calls. In such cases, the command may still
   be invoked but has no effect on the trace state.
+
+Printing Targets
+^^^^^^^^^^^^^^^^
+
+.. versionadded:: 4.5
+
+.. signature::
+  cmake_language(PRINT_TARGETS <filter>...)
+
+  Prints the names of all targets that currently exist, one per line,
+  annotated with their types (e.g. ``EXECUTABLE``, ``STATIC_LIBRARY``,
+  ``INTERFACE_LIBRARY``, ``UTILITY``).  Imported targets are additionally
+  annotated with ``IMPORTED``.  :ref:`Alias Targets` are not listed; their
+  aliased target is.
+
+  The output is sorted by target name and printed as a single status message.
+  Each ``<filter>`` may be one of:
+
+  ``REGEX <regex>``
+    Only list targets whose name matches the given
+    :ref:`regular expression <CMake Language Regex Specification>`.
+    If no target matches, a warning is issued.
+
+  ``IGNORE_CASE``
+    Match the ``REGEX`` case-insensitively.  Only valid with ``REGEX``.
+
+  ``IMPORTED_ONLY``
+    Only list :ref:`Imported Targets`.
+
+  ``NO_IMPORTED``
+    Exclude imported targets; only list targets built by this project.
+
+  ``IMPORTED_ONLY`` and ``NO_IMPORTED`` are mutually exclusive.  When neither
+  is given, both imported and non-imported targets are listed.
+
+Printing Targets Examples
+"""""""""""""""""""""""""
+
+.. code-block:: cmake
+
+  add_executable(app main.c)
+  add_library(util STATIC util.c)
+  find_package(Threads REQUIRED)  # provides imported Threads::Threads
+
+  cmake_language(PRINT_TARGETS REGEX "^(app|util)$" NO_IMPORTED)
+
+Gives::
+
+  -- Printing targets...
+   Non-imported targets matching REGEX '^(app|util)$' (case sensitive):
+     app (EXECUTABLE)
+     util (STATIC_LIBRARY)
+
+Printing Variables
+^^^^^^^^^^^^^^^^^^
+
+.. versionadded:: 4.5
+
+.. signature::
+  cmake_language(PRINT_VARIABLES
+    [{ ALL [<filter>...] | NAMED <vars>... }])
+
+  Prints the values of variables in the current scope.  The set of
+  variables to print may be specified by one of:
+
+  ``ALL [<filter>...]`` (default)
+    Enumerates every regular variable in the current scope and every
+    cache entry, printing one entry per line.  Cache entries are annotated
+    as ``CACHE{<name>}:<TYPE>`` (e.g.
+    ``CACHE{CMAKE_INSTALL_PREFIX}:PATH = "/usr/local"``).  If a name
+    corresponds to both a cache entry and a regular variable, both are printed.
+
+    Each ``<filter>`` may be one of:
+
+    ``NAME_REGEX <name-regex>``
+      Print only variables whose name matches the given
+      :ref:`regular expression <CMake Language Regex Specification>`.
+    ``VALUE_REGEX <value-regex>``
+      Print only variables whose value matches the given
+      :ref:`regular expression <CMake Language Regex Specification>`.
+    ``IGNORE_CASE``
+      Lower-case both the pattern and the candidate string before matching,
+      so ``NAME_REGEX`` and ``VALUE_REGEX`` match case-insensitively.
+
+  ``NAMED <vars>...``
+    Prints one ``<var> = "<value>"`` entry per line, in the order given.  Note
+    that a regular variable shadows a cache entry of the same name.  A
+    ``<var>`` that is not defined prints as ``<var> = <NOTFOUND>``; a variable
+    set to the empty string is *defined* and prints as ``<var> = ""``.
+
+Printing Variables Examples
+"""""""""""""""""""""""""""
+
+Printing a few specific variables:
+
+.. code-block:: cmake
+
+  cmake_language(
+    PRINT_VARIABLES NAMED CMAKE_C_COMPILER CMAKE_MAJOR_VERSION NOT_SET
+  )
+
+Gives::
+
+  -- Printing variables...
+   Named variables:
+     CMAKE_C_COMPILER = "/usr/bin/cc"
+     CMAKE_MAJOR_VERSION = "4"
+     NOT_SET = <NOTFOUND>
+
+Enumerating user variables and cache entries:
+
+.. code-block:: cmake
+
+  set(MY_FLAG "on")
+  set(MY_PATH "/some/path" CACHE FILEPATH "")
+  cmake_language(PRINT_VARIABLES ALL NAME_REGEX "^MY_")
+
+Gives::
+
+  -- Printing variables...
+   Variables in scope at '/path/to/CMakeLists.txt' matching name '^MY_' (case sensitive):
+     MY_FLAG = "on"
+     CACHE{MY_PATH}:FILEPATH = "/some/path"
+
+Printing Properties
+^^^^^^^^^^^^^^^^^^^
+
+.. versionadded:: 4.5
+
+.. signature::
+  cmake_language(PRINT_PROPERTIES
+    TARGETS <targets>... <options>...
+   [{ ALL [<filter>] | NAMED <properties>... }])
+  :target: PRINT_PROPERTIES-TARGETS
+
+  Prints the values of properties for the specified targets.
+  The set of properties to print may be specified by one of:
+
+  ``ALL [<filter>]`` (default)
+    Enumerates every property set on each named target, printing one entry
+    per property.
+
+    The optional ``<filter>`` may be one of:
+
+    ``PROPERTY_NAME_REGEX <name-regex>``
+      Print properties whose name matches the given regular expression.
+    ``PROPERTY_VALUE_REGEX <value-regex>``
+      Print properties whose value matches the given regular expression.
+
+    If no property survives the regex filters for a given target, a
+    ``CMake Warning`` is emitted in place of that target's block.
+
+  ``NAMED <properties>...``
+    Prints exactly the named properties on each entity, in the order given.
+    A property that is not set prints as ``<NOTFOUND>``.
+
+  The ``<options>...`` are:
+
+  ``DEFERRED``
+    Defers the print to generation time rather than running during
+    configure.  Useful when the properties of interest are populated by
+    later configure-time commands.  On its own it does not change which
+    targets are visited - only the named targets are printed.
+
+  ``FOLLOW_DEPENDENCIES``
+    Implies ``DEFERRED``.  When set, the walk visits every target reachable
+    from each named target through any linkage - ``PUBLIC``, ``INTERFACE``,
+    ``PRIVATE``, and :genex:`$<LINK_ONLY:...>` - and prints the requested
+    properties for each.
+
+    .. note::
+       ``FOLLOW_DEPENDENCIES`` does not turn on generator-expression
+       evaluation for the property *values* this command prints.
+       The only place generator expression evaluation happens is internal:
+       on each visited target's link list (the effective ``LINK_LIBRARIES`` /
+       ``INTERFACE_LINK_LIBRARIES``), evaluated solely to identify which
+       dependencies are reachable.  Every printed property value,
+       including the link-list properties themselves, is emitted exactly
+       as stored, with generator expressions intact and unsubstituted.
+       This matches the behavior of :command:`get_target_property`.
+
+.. signature::
+  cmake_language(PRINT_PROPERTIES SOURCES <sources>... NAMED <properties>...)
+  cmake_language(PRINT_PROPERTIES DIRECTORIES <dirs>... NAMED <properties>...)
+  cmake_language(PRINT_PROPERTIES TESTS <tests>... NAMED <properties>...)
+  cmake_language(PRINT_PROPERTIES CACHE_ENTRIES <entries>... NAMED <properties>...)
+  :target:
+    PRINT_PROPERTIES-SOURCES
+    PRINT_PROPERTIES-DIRECTORIES
+    PRINT_PROPERTIES-TESTS
+    PRINT_PROPERTIES-CACHE_ENTRIES
+
+  Prints the values of properties for the specified source files, directories,
+  tests, or cache entries.  Exactly one scope keyword must be specified.
+  The set of properties to print must be specified by:
+
+  ``NAMED <properties>...``
+    Prints exactly the named properties on each entity, in the order given.
+    A property that is not set prints as ``<NOTFOUND>``.
+
+Printing Properties Examples
+""""""""""""""""""""""""""""
+
+Printing the ``LOCATION`` and ``INTERFACE_INCLUDE_DIRECTORIES`` properties for
+both targets ``foo`` and ``bar``:
+
+.. code-block:: cmake
+
+  cmake_language(
+    PRINT_PROPERTIES
+    TARGETS foo bar
+    NAMED LOCATION INTERFACE_INCLUDE_DIRECTORIES
+  )
+
+Gives::
+
+  -- Printing properties...
+   Properties for TARGET foo:
+     foo.LOCATION = "/usr/lib/libfoo.so"
+     foo.INTERFACE_INCLUDE_DIRECTORIES = "/usr/include;/usr/include/foo"
+   Properties for TARGET bar:
+     bar.LOCATION = "/usr/lib/libbar.so"
+     bar.INTERFACE_INCLUDE_DIRECTORIES = "/usr/include;/usr/include/bar"
+
+Printing all properties on a target, filtered to a couple of names:
+
+.. code-block:: cmake
+
+  add_library(my_lib src.cpp)
+
+  cmake_language(
+    PRINT_PROPERTIES
+    TARGETS my_lib
+    ALL
+    PROPERTY_NAME_REGEX "AUTOMOC"
+    PROPERTY_VALUE_REGEX "(ON|OFF)"
+  )
+
+Gives::
+
+  -- Printing properties...
+   All properties for TARGET my_lib matching name 'AUTOMOC' and value '(ON|OFF)':
+     my_lib.AUTOMOC_COMPILER_PREDEFINES = "ON"
+     my_lib.AUTOMOC_PATH_PREFIX = "OFF"
+
+Deferring the print of one target's properties to generation time, without
+visiting any dependencies:
+
+.. code-block:: cmake
+
+  add_executable(myexe main.c)
+
+  cmake_language(
+    PRINT_PROPERTIES
+    TARGETS myexe
+    DEFERRED
+    NAMED SOURCES
+  )
+
+Gives::
+
+  -- Printing properties...
+   Properties for TARGET myexe:
+     myexe.SOURCES = "main.c"
+
+Printing a property on a target and every reachable dependency:
+
+.. code-block:: cmake
+
+  add_library(leaflib STATIC src.c)
+  set_target_properties(leaflib PROPERTIES MY_PROP "leaf")
+
+  add_library(mylib STATIC src.c)
+  target_link_libraries(mylib PRIVATE leaflib)
+  set_target_properties(mylib PROPERTIES MY_PROP "mylib")
+
+  cmake_language(
+    PRINT_PROPERTIES
+    TARGETS mylib
+    FOLLOW_DEPENDENCIES
+    NAMED MY_PROP
+  )
+
+Gives::
+
+  -- Printing properties...
+   Properties for TARGET mylib (and all reachable):
+     mylib.MY_PROP = "mylib"
+     leaflib.MY_PROP = "leaf"

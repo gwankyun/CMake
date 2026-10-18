@@ -29,6 +29,7 @@
 #include "cmStateSnapshot.h"
 #include "cmStateTypes.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmTest.h"
 #include "cmake.h"
 
@@ -64,7 +65,7 @@ static Dummies CreateDummies(
   snapshot.GetDirectory().SetCurrentBinary(currentBinaryDirectory);
   dummies.Makefile =
     std::make_shared<cmMakefile>(dummies.GlobalGenerator.get(), snapshot);
-  dummies.Makefile->CreateNewTarget(targetName, cmStateEnums::EXECUTABLE);
+  dummies.Makefile->CreateNewTarget(targetName, cm::TargetType::EXECUTABLE);
   return dummies;
 }
 
@@ -212,7 +213,7 @@ static bool testCreateFromTarget()
   ASSERT_VARIABLE(variables[12], "PolicyMap", "", "collection");
   ASSERT_VARIABLE(variables[13], "Properties",
                   std::to_string(dummies.Makefile->GetOrderedTargets()[0]
-                                   ->GetProperties()
+                                   ->GetDirectProperties()
                                    .GetList()
                                    .size()),
                   "collection");

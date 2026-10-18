@@ -3,6 +3,11 @@
 #include "cmMathCommand.h"
 
 #include <cstdio>
+#include <limits>
+#include <stdexcept>
+
+#include <cm/string_view>
+#include <cmext/string_view>
 
 #include <cm3p/kwiml/int.h>
 
@@ -10,10 +15,16 @@
 #include "cmExecutionStatus.h"
 #include "cmExprParserHelper.h"
 #include "cmMakefile.h"
+#include "cmStringAlgorithms.h"
+#include "cmValue.h"
 
 namespace {
 bool HandleExprCommand(std::vector<std::string> const& args,
                        cmExecutionStatus& status);
+bool HandleIncDecCommand(std::vector<std::string> const& args,
+                         cmExecutionStatus& status, int amount,
+                         long long overflowFrom, long long overflowTo,
+                         cm::string_view verbing);
 }
 
 bool cmMathCommand(std::vector<std::string> const& args,
@@ -27,8 +38,17 @@ bool cmMathCommand(std::vector<std::string> const& args,
   if (subCommand == "EXPR") {
     return HandleExprCommand(args, status);
   }
-  std::string e = "does not recognize sub-command " + subCommand;
-  status.SetError(e);
+  if (subCommand == "INCREMENT") {
+    return HandleIncDecCommand(
+      args, status, 1, std::numeric_limits<long long>::max(),
+      std::numeric_limits<long long>::min(), "incrementing"_s);
+  }
+  if (subCommand == "DECREMENT") {
+    return HandleIncDecCommand(
+      args, status, -1, std::numeric_limits<long long>::min(),
+      std::numeric_limits<long long>::max(), "decrementing"_s);
+  }
+  status.SetError(cmStrCat("does not recognize sub-command ", subCommand));
   return false;
 }
 
@@ -66,21 +86,19 @@ bool HandleExprCommand(std::vector<std::string> const& args,
         } else if (argument == "HEXADECIMAL") {
           outputFormat = NumericFormat::HEXADECIMAL;
         } else {
-          std::string error = messageHint + "value \"" + argument +
-            "\" for option \"" + option + "\" is invalid.";
-          status.SetError(error);
+          status.SetError(cmStrCat(messageHint, "value \"", argument,
+                                   "\" for option \"", option,
+                                   "\" is invalid."));
           return false;
         }
       } else {
-        std::string error =
-          messageHint + "missing argument for option \"" + option + "\".";
-        status.SetError(error);
+        status.SetError(cmStrCat(messageHint, "missing argument for option \"",
+                                 option, "\"."));
         return false;
       }
     } else {
-      std::string error =
-        messageHint + "option \"" + option + "\" is unknown.";
-      status.SetError(error);
+      status.SetError(
+        cmStrCat(messageHint, "option \"", option, "\" is unknown."));
       return false;
     }
   }
@@ -115,6 +133,52 @@ bool HandleExprCommand(std::vector<std::string> const& args,
   }
 
   status.GetMakefile().AddDefinition(outputVariable, buffer);
+  return true;
+}
+
+bool HandleIncDecCommand(std::vector<std::string> const& args,
+                         cmExecutionStatus& status, int amount,
+                         long long overflowFrom, long long overflowTo,
+                         cm::string_view verbing)
+{
+  std::string const messageHint = cmStrCat("sub-command ", args[0], ' ');
+  if (args.size() != 2) {
+    status.SetError(cmStrCat(messageHint, "wrong number of arguments"));
+    return false;
+  }
+  auto value = status.GetMakefile().GetDefinition(args[1]);
+  if (!value) {
+    status.SetError(
+      cmStrCat(messageHint, "variable \"", args[1], "\" is not defined"));
+    return false;
+  }
+  if (value->empty()) {
+    status.SetError(
+      cmStrCat(messageHint, "value \"\" is not a valid integer"));
+    return false;
+  }
+  std::size_t pos = 0;
+  long long intValue = 0;
+  try {
+    intValue = std::stoll(*value, &pos, 10);
+  } catch (std::invalid_argument&) {
+    // Do nothing, leave pos as is, which will trigger the error
+  }
+  if (pos != value->length()) {
+    status.SetError(
+      cmStrCat(messageHint, "value \"", *value, "\" is not a valid integer"));
+    return false;
+  }
+  auto newValue = intValue + amount;
+  if (intValue == overflowFrom) {
+    status.GetMakefile().IssueDiagnostic(
+      cmDiagnosticCategory::CMD_AUTHOR,
+      cmStrCat("signed integer overflow while ", verbing, ":\n  ", intValue,
+               '\n'));
+    // Overflow is undefined behavior in C++, so define it manually
+    newValue = overflowTo;
+  }
+  status.GetMakefile().AddDefinition(args[1], std::to_string(newValue));
   return true;
 }
 }

@@ -7,6 +7,7 @@ set_property
 
   set_property({GLOBAL                                    |
                 DIRECTORY [<dir>]                         |
+                RULE      <rule>...                       |
                 TARGET    <target>...                     |
                 FILE_SET  <file_set>... TARGET <target>   |
                 SOURCE    <source>...
@@ -36,11 +37,19 @@ set_property
   .. versionadded:: 3.19
     ``<dir>``\ 可以引用一个二进制目录。
 
+``RULE``
+  .. versionadded:: 4.5
+
+  Scope may name zero or more existing rules in the current directory, created
+  by the :command:`add_custom_rule` command.
+
 ``TARGET``
   作用域可以指定零个或多个已存在的目标。\
   另请参阅\ :command:`set_target_properties`\ 命令。
 
-  :ref:`Alias Targets`\ 不支持设置目标属性。
+  .. versionchanged:: 4.5
+    If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, properties are
+    set on the target which the alias references.
 
 ``FILE_SET``
   .. versionadded:: 4.3

@@ -15,7 +15,7 @@
 #include "cmDiagnosticContext.h"
 #include "cmDiagnostics.h"
 #include "cmExportFileGenerator.h"
-#include "cmStateTypes.h"
+#include "cmTargetTypes.h"
 
 class cmExportSet;
 class cmGeneratorTarget;
@@ -87,8 +87,7 @@ public:
   static cmDiagnosticContext CaptureContext(cmMakefile const& mf);
 
 protected:
-  cmStateEnums::TargetType GetExportTargetType(
-    cmGeneratorTarget const* target) const;
+  cm::TargetType GetExportTargetType(cmGeneratorTarget const* target) const;
 
   /** Walk the list of targets to be exported.  Returns true iff no duplicates
       are found.  */

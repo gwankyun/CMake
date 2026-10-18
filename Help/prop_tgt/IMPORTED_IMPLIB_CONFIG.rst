@@ -1,7 +1,15 @@
 IMPORTED_IMPLIB_<CONFIG>
 ------------------------
 
-特定<配置>版本的\ :prop_tgt:`IMPORTED_IMPLIB`\ 属性。
+Full path to the ``<CONFIG>``-specific import library for an
+:ref:`IMPORTED <Imported Targets>` target.  This is the
+``<CONFIG>``-specific version of the :prop_tgt:`IMPORTED_IMPLIB`
+property.
 
-Configuration names correspond to those provided by the project from
-which the target is imported.
+The ``<CONFIG>`` name corresponds to that provided by the project from
+which the target is imported.  The :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`
+target property may be used to map between a project's configurations and
+those of an imported target.
+
+Each ``<CONFIG>`` for which this property is set should also be
+listed in the :prop_tgt:`IMPORTED_CONFIGURATIONS` target property.

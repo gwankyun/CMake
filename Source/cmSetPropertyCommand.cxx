@@ -3,7 +3,6 @@
 #include "cmSetPropertyCommand.h"
 
 #include <set>
-#include <sstream>
 #include <unordered_set>
 
 #include <cm/optional>
@@ -20,6 +19,7 @@
 #include "cmPolicies.h"
 #include "cmProperty.h"
 #include "cmRange.h"
+#include "cmRule.h"
 #include "cmSourceFile.h"
 #include "cmSourceFileLocation.h"
 #include "cmState.h"
@@ -41,6 +41,11 @@ bool HandleDirectoryMode(cmExecutionStatus& status,
                          std::string const& propertyName,
                          std::string const& propertyValue, bool appendAsString,
                          bool appendMode, bool remove);
+bool HandleRuleMode(cmExecutionStatus& status,
+                    std::set<std::string> const& names,
+                    std::string const& propertyName,
+                    std::string const& propertyValue, bool appendAsString,
+                    bool appendMode, bool remove);
 bool HandleTargetMode(cmExecutionStatus& status,
                       std::set<std::string> const& names,
                       std::string const& propertyName,
@@ -453,6 +458,8 @@ bool cmSetPropertyCommand(std::vector<std::string> const& args,
     scope = cmProperty::GLOBAL;
   } else if (scopeName == "DIRECTORY") {
     scope = cmProperty::DIRECTORY;
+  } else if (scopeName == "RULE") {
+    scope = cmProperty::RULE;
   } else if (scopeName == "TARGET") {
     scope = cmProperty::TARGET;
   } else if (scopeName == "FILE_SET") {
@@ -466,9 +473,10 @@ bool cmSetPropertyCommand(std::vector<std::string> const& args,
   } else if (scopeName == "INSTALL") {
     scope = cmProperty::INSTALL;
   } else {
-    status.SetError(cmStrCat("given invalid scope ", scopeName,
-                             ".  Valid scopes are GLOBAL, DIRECTORY, TARGET, "
-                             "FILE_SET, SOURCE, TEST, CACHE, INSTALL."));
+    status.SetError(
+      cmStrCat("given invalid scope ", scopeName,
+               ".  Valid scopes are GLOBAL, DIRECTORY, RULE, TARGET, "
+               "FILE_SET, SOURCE, TEST, CACHE, INSTALL."));
     return false;
   }
 
@@ -574,6 +582,9 @@ bool cmSetPropertyCommand(std::vector<std::string> const& args,
     case cmProperty::DIRECTORY:
       return HandleDirectoryMode(status, names, propertyName, propertyValue,
                                  appendAsString, appendMode, remove);
+    case cmProperty::RULE:
+      return HandleRuleMode(status, names, propertyName, propertyValue,
+                            appendAsString, appendMode, remove);
     case cmProperty::TARGET:
       return HandleTargetMode(status, names, propertyName, propertyValue,
                               appendAsString, appendMode, remove);
@@ -702,6 +713,36 @@ bool HandleDirectoryMode(cmExecutionStatus& status,
   return true;
 }
 
+bool HandleRuleMode(cmExecutionStatus& status,
+                    std::set<std::string> const& names,
+                    std::string const& propertyName,
+                    std::string const& propertyValue, bool appendAsString,
+                    bool appendMode, bool remove)
+{
+  for (std::string const& name : names) {
+    if (cmRule* rule = status.GetMakefile().FindRuleToUse(name)) {
+      // Handle the current rule.
+      // Set or append the property.
+      if (appendMode) {
+        rule->AppendProperty(propertyName, propertyValue, appendAsString);
+      } else {
+        if (remove) {
+          rule->SetProperty(propertyName, nullptr);
+        } else {
+          rule->SetProperty(propertyName, propertyValue);
+        }
+      }
+      // Check the resulting value.
+      rule->CheckProperty(propertyName, status.GetMakefile());
+    } else {
+      status.SetError(cmStrCat("could not find RULE ", name,
+                               ".  Perhaps it has not yet been created."));
+      return false;
+    }
+  }
+  return true;
+}
+
 bool HandleTargetMode(cmExecutionStatus& status,
                       std::set<std::string> const& names,
                       std::string const& propertyName,
@@ -709,11 +750,14 @@ bool HandleTargetMode(cmExecutionStatus& status,
                       bool appendMode, bool remove)
 {
   for (std::string const& name : names) {
-    if (status.GetMakefile().IsAlias(name)) {
-      status.SetError("can not be used on an ALIAS target.");
-      return false;
+    // Better error message for alias properties set on an alias target.
+    if (propertyName == "ALIASED_TARGET" || propertyName == "ALIAS_GLOBAL") {
+      if (status.GetMakefile().IsAlias(name)) {
+        status.SetError(cmStrCat("can not set property ", propertyName,
+                                 " on an ALIAS target: ", name));
+        return false;
+      }
     }
-
     if (cmTarget* target = status.GetMakefile().FindTargetToUse(name)) {
       if (target->IsSymbolic()) {
         status.SetError("can not be used on a SYMBOLIC target.");
@@ -880,12 +924,8 @@ bool HandleTestMode(cmExecutionStatus& status, std::set<std::string>& names,
 
   // Names that are still left were not found.
   if (!names.empty()) {
-    std::ostringstream e;
-    e << "given TEST names that do not exist:\n";
-    for (std::string const& name : names) {
-      e << "  " << name << "\n";
-    }
-    status.SetError(e.str());
+    status.SetError(cmStrCat("given TEST names that do not exist:\n",
+                             cmWrap("  ", names, "\n", "")));
     return false;
   }
   return true;

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "kind": "function",
+                  "name": "message"
+                }
+              ],
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "ToggleExportSarifVariable.cmake",
+                  "uriBaseId": "CMAKE_SOURCE_DIR"
+                },
+                "region": {
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Example warning message"
+          },
+          "ruleId": "CMake.Warning",
+          "ruleIndex": 0,
+          "stacks": [
+            {
+              "frames": [
+                {
+                  "location": {
+                    "logicalLocations": [
+                      {
+                        "kind": "function",
+                        "name": "message"
+                      }
+                    ],
+                    "physicalLocation": {
+                      "artifactLocation": {
+                        "uri": "ToggleExportSarifVariable.cmake",
+                        "uriBaseId": "CMAKE_SOURCE_DIR"
+                      },
+                      "region": {
+                        "startLine": 2
+                      }
+                    }
+                  }
+                },
+                {
+                  "location": {
+                    "logicalLocations": [
+                      {
+                        "kind": "function",
+                        "name": "include"
+                      }
+                    ],
+                    "physicalLocation": {
+                      "artifactLocation": {
+                        "uri": "CMakeLists.txt",
+                        "uriBaseId": "CMAKE_SOURCE_DIR"
+                      },
+                      "region": {
+                        "startLine": 3
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "originalUriBaseIds": {
+        "CMAKE_BINARY_DIR": {
+          "uri": "file://PATH:<BINARY_DIR>/"
+        },
+        "CMAKE_SOURCE_DIR": {
+          "uri": "file://PATH:<SOURCE_DIR>/"
+        }
+      },
+      "tool": {
+        "driver": {
+          "name": "CMake",
+          "rules": [
+            {
+              "id": "CMake.Warning",
+              "name": "CMake Warning"
+            }
+          ],
+          "version": "<IGNORE>"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

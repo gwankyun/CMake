@@ -9,6 +9,10 @@
 * :prop_tgt:`HIP_STANDARD`
 * :prop_tgt:`OBJC_STANDARD`
 * :prop_tgt:`OBJCXX_STANDARD`
+* :prop_tgt:`SYCL_CXX_STANDARD` (C++ standard for SYCL compilations)
+
+.. note::
+   SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 这些属性指定所请求的语言标准版本。当指定的标准比编译器支持的新时，它将回退到最新支持的标准。\
 这种“衰减”行为可以通过\ :prop_tgt:`<LANG>_STANDARD_REQUIRED`\ 目标属性来控制。
@@ -27,5 +31,4 @@ created.
 For supported values and CMake versions see the respective pages.
 To control compiler-specific extensions see :prop_tgt:`<LANG>_EXTENSIONS`.
 
-See the :manual:`cmake-compile-features(7)` manual for information on
-compile features and a list of supported compilers.
+.. include:: ../include/COMPILE_FEATURES_NOTE.rst

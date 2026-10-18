@@ -1,7 +1,7 @@
 IMPORTED_IMPLIB
 ---------------
 
-``IMPORTED``\ 目标的导入库的完整路径。
+:ref:`IMPORTED <Imported Targets>` 目标的导入库的完整路径。
 
 This property may be set:
 

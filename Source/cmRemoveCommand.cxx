@@ -2,6 +2,7 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmRemoveCommand.h"
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmList.h"
 #include "cmMakefile.h"
@@ -11,13 +12,19 @@
 bool cmRemoveCommand(std::vector<std::string> const& args,
                      cmExecutionStatus& status)
 {
+  cmMakefile& mf = status.GetMakefile();
+
+  mf.IssueDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                     "The 'remove' command has been superseded. "
+                     "Use 'list(REMOVE_ITEM)' instead.");
+
   if (args.empty()) {
     return true;
   }
 
   std::string const& variable = args[0]; // VAR is always first
   // get the old value
-  cmValue cacheValue = status.GetMakefile().GetDefinition(variable);
+  cmValue cacheValue = mf.GetDefinition(variable);
 
   // if there is no old value then return
   if (!cacheValue) {
@@ -50,7 +57,7 @@ bool cmRemoveCommand(std::vector<std::string> const& args,
   }
 
   // add the definition
-  status.GetMakefile().AddDefinition(variable, value);
+  mf.AddDefinition(variable, value);
 
   return true;
 }

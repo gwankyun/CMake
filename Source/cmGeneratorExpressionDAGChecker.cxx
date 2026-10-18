@@ -2,7 +2,6 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmGeneratorExpressionDAGChecker.h"
 
-#include <sstream>
 #include <utility>
 
 #include <cm/optional>
@@ -76,36 +75,38 @@ void cmGeneratorExpressionDAGChecker::ReportError(cm::GenEx::Evaluation* eval,
   cmGeneratorExpressionDAGChecker const* parent = this->Parent;
 
   if (parent && !parent->Parent) {
-    std::ostringstream e;
-    e << "Error evaluating generator expression:\n"
-      << "  " << expr << "\n"
-      << "Self reference on target \"" << eval->HeadTarget->GetName()
-      << "\".\n";
     eval->Context.LG->GetCMakeInstance()->IssueMessage(
-      MessageType::FATAL_ERROR, e.str(), parent->Backtrace);
+      MessageType::FATAL_ERROR,
+      cmStrCat("Error evaluating generator expression:\n"
+               "  ",
+               expr,
+               "\n"
+               "Self reference on target \"",
+               eval->HeadTarget->GetName(), "\".\n"),
+      parent->Backtrace);
     return;
   }
 
   {
-    std::ostringstream e;
-    /* clang-format off */
-  e << "Error evaluating generator expression:\n"
-    << "  " << expr << "\n"
-    << "Dependency loop found.";
-    /* clang-format on */
     eval->Context.LG->GetCMakeInstance()->IssueMessage(
-      MessageType::FATAL_ERROR, e.str(), eval->Backtrace);
+      MessageType::FATAL_ERROR,
+      cmStrCat("Error evaluating generator expression:\n"
+               "  ",
+               expr,
+               "\n"
+               "Dependency loop found."),
+      eval->Backtrace);
   }
 
   int loopStep = 1;
   while (parent) {
-    std::ostringstream e;
-    e << "Loop step " << loopStep << "\n"
-      << "  "
-      << (parent->Content ? parent->Content->GetOriginalExpression() : expr)
-      << "\n";
     eval->Context.LG->GetCMakeInstance()->IssueMessage(
-      MessageType::FATAL_ERROR, e.str(), parent->Backtrace);
+      MessageType::FATAL_ERROR,
+      cmStrCat("Loop step ", loopStep, "\n  ",
+               parent->Content ? parent->Content->GetOriginalExpression()
+                               : expr,
+               '\n'),
+      parent->Backtrace);
     parent = parent->Parent;
     ++loopStep;
   }
@@ -159,7 +160,8 @@ bool cmGeneratorExpressionDAGChecker::EvaluatingCompileExpression() const
   cm::string_view property(this->Top->Property);
 
   return property == "INCLUDE_DIRECTORIES"_s ||
-    property == "COMPILE_DEFINITIONS"_s || property == "COMPILE_OPTIONS"_s;
+    property == "COMPILE_DEFINITIONS"_s || property == "COMPILE_OPTIONS"_s ||
+    property == "COMPILE_WRAPPERS"_s;
 }
 
 bool cmGeneratorExpressionDAGChecker::EvaluatingSources() const
@@ -174,7 +176,7 @@ bool cmGeneratorExpressionDAGChecker::EvaluatingLinkExpression() const
 
   return property == "LINK_DIRECTORIES"_s || property == "LINK_OPTIONS"_s ||
     property == "LINK_DEPENDS"_s || property == "LINK_LIBRARY_OVERRIDE"_s ||
-    property == "LINKER_TYPE"_s;
+    property == "LINKER_TYPE"_s || property == "LINK_WRAPPERS"_s;
 }
 
 bool cmGeneratorExpressionDAGChecker::EvaluatingLinkOptionsExpression() const

@@ -18,13 +18,17 @@ target_link_libraries
 
   target_link_libraries(<target> ... <item>... ...)
 
-命名\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
-等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。如果策略\ :policy:`CMP0079`\
+The named ``<target>`` must have been created by a command such as
+:command:`add_executable` or :command:`add_library`.如果策略\ :policy:`CMP0079`\
 没有设置为\ ``NEW``，则目标必须已经在当前目录下创建。重复调用相同的\ ``<target>``\ 将元素\
 按照调用的顺序添加。
 
 .. versionadded:: 3.13
   ``<target>``\ 不必定义在\ ``target_link_libraries``\ 调用所在的目录中。
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 每个\ ``<item>``\ 可能是：
 

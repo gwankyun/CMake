@@ -35,10 +35,6 @@ bool cmSetTargetPropertiesCommand(std::vector<std::string> const& args,
 
   // loop over all the targets
   for (std::string const& tname : cmStringRange{ args.begin(), propsIter }) {
-    if (mf.IsAlias(tname)) {
-      status.SetError("can not be used on an ALIAS target.");
-      return false;
-    }
     if (cmTarget* target = mf.FindTargetToUse(tname)) {
       if (target->IsSymbolic()) {
         status.SetError("can not be used on a SYMBOLIC target.");
@@ -46,6 +42,14 @@ bool cmSetTargetPropertiesCommand(std::vector<std::string> const& args,
       }
       // loop through all the props and set them
       for (auto k = propsIter + 1; k != args.end(); k += 2) {
+        // Better error message for alias properties set on an alias target.
+        if (*k == "ALIASED_TARGET" || *k == "ALIAS_GLOBAL") {
+          if (mf.IsAlias(tname)) {
+            status.SetError(cmStrCat("can not set property ", *k,
+                                     " on an ALIAS target: ", tname));
+            return false;
+          }
+        }
         target->SetProperty(*k, *(k + 1));
         target->CheckProperty(*k, &mf);
       }

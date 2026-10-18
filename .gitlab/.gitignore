@@ -1,9 +1,13 @@
 # Ignore files known to be downloaded by CI jobs.
 /6.9.3-0-202509261208*
 /6.9.3-0-202509261207*
+/android-ndk
+/android-sdk
+/ast-grep
 /appimagetool
 /bcc*
 /cmake*
+/dpclang
 /emsdk
 /fastbuild
 /iar

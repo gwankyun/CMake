@@ -10,6 +10,10 @@ CMAKE_<LANG>_LINKER_LAUNCHER
 
 * ``CXX``
 
+* ``CUDA``
+
+  .. versionadded:: 4.5
+
 * ``OBJC``
 
 * ``OBJCXX``
@@ -17,6 +21,17 @@ CMAKE_<LANG>_LINKER_LAUNCHER
 * ``Fortran``
 
   .. versionadded:: 4.1
+
+* ``HIP``
+
+  .. versionadded:: 4.5
+
+* ``SYCL``
+
+  .. versionadded:: 4.5
+
+  .. note::
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 This variable is initialized to the :envvar:`CMAKE_<LANG>_LINKER_LAUNCHER`
 environment variable if it is set.

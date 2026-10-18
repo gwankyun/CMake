@@ -51,14 +51,18 @@ CMake是在OSI认证BSD 3条款许可下发布的。详情见\ `LICENSE.rst`_。
 你可以使用基于CMake的构建系统将CMake构建为任何其他项目：使用你首选的生成器和选项在此源树上\
 运行已经安装的CMake。然后构建并安装它。
 
-要构建文档，请安装\ `Sphinx`_\ 并使用\ ``-DSPHINX_HTML=ON``\ 和/或\ ``-DSPHINX_MAN=ON``\
-配置CMake以启用"html"或"man"构建器。如果没有自动找到sphinx-build工具，请添加\
-``-DSPHINX_EXECUTABLE=/path/to/sphinx-build``。
+To build the documentation, install `Sphinx`_ and configure CMake with
+``-DSPHINX_HTML=ON`` and/or ``-DSPHINX_MAN=ON`` to enable the "html" or
+"man" builder.  Add ``-DSPHINX_EXECUTABLE=/path/to/sphinx-build`` if the
+tool is not found automatically.  See the `CMake Documentation Guide`_ for
+details.See the `CMake Documentation Guide`_ for
+details.
 
 要运行测试套件，构建后在CMake构建目录下运行\ ``ctest``。详情请参阅\ `CMake测试指南`_ 。
 
 .. _`Sphinx`: https://sphinx-doc.org
-.. _`CMake测试指南`: Help/dev/testing.rst
+.. _`CMake Documentation Guide`: Help/dev/documentation.rst
+.. _`CMake Testing Guide`: Help/dev/testing.rst
 
 从头开始建造CMake
 ---------------------------

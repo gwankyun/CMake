@@ -1,0 +1,55 @@
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_files\):
+  The 'install_files' command has been superseded\.  Use 'install\(FILES\)'
+  instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_files\):
+  The 'install_files' command has been superseded\.  Use 'install\(FILES\)'
+  instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_files\):
+  The 'install_files' command has been superseded\.  Use 'install\(FILES\)'
+  instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_targets\):
+  The 'install_targets' command has been superseded\.  Use 'install\(TARGETS\)'
+  instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_programs\):
+  The 'install_programs' command has been superseded\.  Use
+  'install\(PROGRAMS\)' instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_programs\):
+  The 'install_programs' command has been superseded\.  Use
+  'install\(PROGRAMS\)' instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
+CMake Warning \(deprecated\) at Deprecated\.cmake:[0-9]+ \(install_programs\):
+  The 'install_programs' command has been superseded\.  Use
+  'install\(PROGRAMS\)' instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.

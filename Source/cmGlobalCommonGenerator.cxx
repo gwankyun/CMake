@@ -19,6 +19,7 @@
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -44,8 +45,8 @@ cmGlobalCommonGenerator::ComputeDirectoryTargets() const
     // The directory-level rule should depend on the target-level rules
     // for all targets in the directory.
     for (auto const& gt : lg->GetGeneratorTargets()) {
-      cmStateEnums::TargetType const type = gt->GetType();
-      if (type == cmStateEnums::GLOBAL_TARGET || !gt->IsInBuildSystem()) {
+      cm::TargetType const type = gt->GetType();
+      if (type == cm::TargetType::GLOBAL_TARGET || !gt->IsInBuildSystem()) {
         continue;
       }
       DirectoryTarget::Target t;

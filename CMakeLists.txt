@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
 # file LICENSE.rst or https://cmake.org/licensing for details.
 
-cmake_minimum_required(VERSION 3.13...4.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13...4.3 FATAL_ERROR)
 
 if(CMake_TEST_HOST_CMAKE)
   get_filename_component(CMake_TEST_EXTERNAL_CMAKE "${CMAKE_COMMAND}" DIRECTORY)
@@ -208,7 +208,7 @@ if(NOT CMake_TEST_EXTERNAL_CMAKE)
     cmake_instrumentation(
         API_VERSION 1
         DATA_VERSION 1
-        OPTIONS cdashSubmit cdashVerbose trace
+        OPTIONS cdashSubmit cdashVerbose trace processMetrics
     )
   endif()
 endif()
@@ -440,6 +440,10 @@ if(NOT CMake_TEST_EXTERNAL_CMAKE)
         "${CMAKE_CXX_COMPILER} version is: ${_GXX_VERSION}")
     endif()
   endif()
+endif()
+
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/.git")
+  option(CMake_VERSION_NO_GIT "Do not attempt to determine CMake version from Git" OFF)
 endif()
 
 #-----------------------------------------------------------------------

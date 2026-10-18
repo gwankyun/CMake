@@ -29,6 +29,7 @@
 #include "cmGlobalGenerator.h"
 #include "cmGlobalUnixMakefileGenerator3.h"
 #include "cmInstrumentation.h"
+#include "cmInstrumentationQuery.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
@@ -38,15 +39,14 @@
 #include "cmRange.h"
 #include "cmRulePlaceholderExpander.h"
 #include "cmScriptGenerator.h"
-#include "cmSourceFile.h"
 #include "cmState.h"
 #include "cmStateSnapshot.h"
-#include "cmStateTypes.h"
 #include "cmStdIoStream.h"
 #include "cmStdIoTerminal.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTargetDepend.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmVersion.h"
 #include "cmake.h"
@@ -89,7 +89,8 @@ void addInstrumentationCommand(cmInstrumentation* instrumentation,
      * Use exec so that Make is the parent process of the command.
      * Add a `;` to convince BSD make to not optimize out the shell.
      */
-    instrumentationCommand = cmStrCat("exec ", instrumentationCommand, " ;");
+    instrumentationCommand =
+      cmStrCat("exec ", std::move(instrumentationCommand), " ;");
 #  endif
     commands.push_back(instrumentationCommand);
   }
@@ -247,7 +248,8 @@ void cmLocalUnixMakefileGenerator3::GetLocalObjectFiles(
       }
       LocalObjectInfo& info = localObjectFiles[objectName];
       info.HasSourceExtension = hasSourceExtension;
-      info.emplace_back(gt.get(), sf->GetLanguage());
+      info.emplace_back(gt.get(),
+                        gt->GetSourceFileLanguage(sf, this->GetConfigName()));
     }
   }
 }
@@ -327,16 +329,16 @@ void cmLocalUnixMakefileGenerator3::WriteLocalMakefile()
       localObjectFile.second);
 
     // Check whether preprocessing and assembly rules make sense.
-    // They make sense only for C and C++ sources.
     bool lang_has_preprocessor = false;
     bool lang_has_assembly = false;
 
     for (LocalObjectEntry const& entry : localObjectFile.second) {
       if (entry.Language == "C" || entry.Language == "CXX" ||
           entry.Language == "CUDA" || entry.Language == "Fortran" ||
-          entry.Language == "HIP" || entry.Language == "ISPC") {
-        // Right now, C, C++, CUDA, Fortran, HIP and ISPC have both a
-        // preprocessor and the ability to generate assembly code
+          entry.Language == "HIP" || entry.Language == "ISPC" ||
+          entry.Language == "SYCL") {
+        // These languages have both a preprocessor and the ability to generate
+        // assembly code.
         lang_has_preprocessor = true;
         lang_has_assembly = true;
         break;
@@ -431,12 +433,12 @@ void cmLocalUnixMakefileGenerator3::WriteLocalMakefileTargets(
   // on the target
   std::string localName;
   for (auto const& target : this->GetGeneratorTargets()) {
-    if ((target->GetType() == cmStateEnums::EXECUTABLE) ||
-        (target->GetType() == cmStateEnums::STATIC_LIBRARY) ||
-        (target->GetType() == cmStateEnums::SHARED_LIBRARY) ||
-        (target->GetType() == cmStateEnums::MODULE_LIBRARY) ||
-        (target->GetType() == cmStateEnums::OBJECT_LIBRARY) ||
-        (target->GetType() == cmStateEnums::UTILITY)) {
+    if ((target->GetType() == cm::TargetType::EXECUTABLE) ||
+        (target->GetType() == cm::TargetType::STATIC_LIBRARY) ||
+        (target->GetType() == cm::TargetType::SHARED_LIBRARY) ||
+        (target->GetType() == cm::TargetType::MODULE_LIBRARY) ||
+        (target->GetType() == cm::TargetType::OBJECT_LIBRARY) ||
+        (target->GetType() == cm::TargetType::UTILITY)) {
       emitted.insert(target->GetName());
 
       // for subdirs add a rule to build this specific target by name.
@@ -631,7 +633,24 @@ void cmLocalUnixMakefileGenerator3::WriteMakeRule(
 
   if (!commands.empty()) {
     // Write the list of commands.
-    os << cmWrap("\t", commands, "", "\n") << '\n';
+    bool protectProcessMetrics = false;
+#if !defined(_WIN32) && !defined(CMAKE_BOOTSTRAP)
+    if (this->GetCMakeInstance()->GetInstrumentation()->HasOption(
+          cmInstrumentationQuery::Option::ProcessMetrics)) {
+      // Prevent shell exec optimization from passing accumulated child
+      // resource usage to the final instrumentation wrapper.
+      protectProcessMetrics = true;
+    }
+#endif
+    for (std::string const& command : commands) {
+      os << '\t' << command;
+      // Preserve the instrumentation daemon's explicit exec command.
+      if (protectProcessMetrics && !command.empty() &&
+          !cmHasLiteralPrefix(command, "exec ")) {
+        os << " && :";
+      }
+      os << '\n';
+    }
   }
   if (symbolic && !this->IsWatcomWMake()) {
     os << ".PHONY : " << tgt << '\n';
@@ -673,6 +692,13 @@ void cmLocalUnixMakefileGenerator3::WriteMakeVariables(
                       "!ELSE\n"
                       "NULL=nul\n"
                       "!ENDIF\n";
+  }
+  if (gg->IsGNUMakeJobServerAware()) {
+    // Toggle for USES_TERMINAL recipes: empty here, set to "+" by
+    // "cmake --build" under --output-sync (see AppendCustomCommand).
+    makefileStream << "# Prefix for USES_TERMINAL recipes under output sync.\n"
+                      "CMAKE_USES_TERMINAL_PREFIX =\n"
+                      "\n";
   }
   if (this->IsWindowsShell()) {
     makefileStream << "SHELL = cmd.exe\n"
@@ -1035,7 +1061,7 @@ void cmLocalUnixMakefileGenerator3::AppendCustomCommand(
         // This command was specified as a path to a file in the
         // current directory.  Add a leading "./" so it can run
         // without the current directory being in the search path.
-        cmd = cmStrCat("./", cmd);
+        cmd = cmStrCat("./", std::move(cmd));
       }
 
       std::string launcher;
@@ -1059,18 +1085,23 @@ void cmLocalUnixMakefileGenerator3::AppendCustomCommand(
           cmState::GetTargetTypeName(target->GetType()).c_str();
         std::string output;
         std::vector<std::string> const& outputs = ccg.GetOutputs();
-        for (size_t i = 0; i < outputs.size(); ++i) {
-          output = cmStrCat(output,
+        for (std::string const& ccgOut : outputs) {
+          output = cmStrCat(std::move(output),
                             this->ConvertToOutputFormat(
                               ccg.GetWorkingDirectory().empty()
-                                ? this->MaybeRelativeToCurBinDir(outputs[i])
-                                : outputs[i],
-                              cmOutputConverter::SHELL));
-          if (i != outputs.size() - 1) {
-            output = cmStrCat(output, ',');
-          }
+                                ? this->MaybeRelativeToCurBinDir(ccgOut)
+                                : ccgOut,
+                              cmOutputConverter::SHELL),
+                            ',');
+        }
+        if (!output.empty()) {
+          output.pop_back();
         }
         vars.Output = output.c_str();
+
+        std::string filePathWithOutput = ccg.StoreContentToFile(output);
+        vars.FilePathWithOutput = filePathWithOutput.c_str();
+
         vars.Role = ccg.GetCC().GetRole().c_str();
         vars.CMTargetName = ccg.GetCC().GetTarget().c_str();
         vars.Config = ccg.GetOutputConfig().c_str();
@@ -1112,9 +1143,9 @@ void cmLocalUnixMakefileGenerator3::AppendCustomCommand(
       }
       if (launcher.empty()) {
         if (useCall) {
-          cmd = cmStrCat("call ", cmd);
+          cmd = cmStrCat("call ", std::move(cmd));
         } else if (this->IsNMake() && cmd[0] == '"') {
-          cmd = cmStrCat("echo >nul && ", cmd);
+          cmd = cmStrCat("echo >nul && ", std::move(cmd));
         }
       }
       commands1.push_back(std::move(cmd));
@@ -1131,6 +1162,16 @@ void cmLocalUnixMakefileGenerator3::AppendCustomCommand(
   if (ccg.GetCC().GetJobserverAware() && gg->IsGNUMakeJobServerAware()) {
     std::transform(commands1.begin(), commands1.end(), commands1.begin(),
                    [](std::string const& cmd) { return cmStrCat('+', cmd); });
+  } else if (ccg.GetCC().GetUsesTerminal() && gg->IsGNUMakeJobServerAware()) {
+    // Prefix USES_TERMINAL recipes with $(CMAKE_USES_TERMINAL_PREFIX): empty
+    // by default, but set to "+" by "cmake --build" under --output-sync so
+    // GNU Make leaves the recipe unbuffered and an interactive command keeps
+    // the terminal.  Jobserver-aware commands already carry "+" from the
+    // branch above and are excluded here to avoid a doubled prefix.
+    std::transform(commands1.begin(), commands1.end(), commands1.begin(),
+                   [](std::string const& cmd) {
+                     return cmStrCat("$(CMAKE_USES_TERMINAL_PREFIX)", cmd);
+                   });
   }
 
   // push back the custom commands
@@ -1231,6 +1272,58 @@ void cmLocalUnixMakefileGenerator3::AppendDirectoryCleanCommand(
   }
 }
 
+std::string cmLocalUnixMakefileGenerator3::TrimLongCommand(
+  std::string cmd, std::string& line) const
+{
+  cm::static_string_view longCommandFinalizer = "..."_s;
+
+  size_t commandLineLimit = cmSystemTools::CalculateCommandLineLengthLimit();
+
+  if (this->GetState()->UseBorlandMake()) {
+    constexpr size_t BORLAND_MAKE_COMMAND_LINE_LIMIT = 4096;
+    commandLineLimit =
+      std::min(commandLineLimit, BORLAND_MAKE_COMMAND_LINE_LIMIT);
+    if (commandLineLimit == 0) {
+      commandLineLimit = BORLAND_MAKE_COMMAND_LINE_LIMIT;
+    }
+  }
+
+  if (commandLineLimit == 0) {
+    // No limit, just return the command as is.
+    return cmStrCat(std::move(cmd), this->EscapeForShell(line));
+  }
+
+  size_t usedCommandLineLength = cmd.size() + longCommandFinalizer.size();
+
+  if (usedCommandLineLength >= commandLineLimit) {
+    cmSystemTools::Error(cmStrCat(
+      "CMake command line length limit exceeded for command: ", cmd, line));
+    return cmd;
+  }
+
+  size_t remainingSpace = commandLineLimit - usedCommandLineLength;
+  if (remainingSpace < line.size()) {
+    line.erase(remainingSpace);
+    line.append(longCommandFinalizer.data(), longCommandFinalizer.size());
+  }
+
+  // re-escape the line: we cannot just trim the line, because it may contain
+  // characters that cannot be removed without their pairs:
+  // * quotes in the end of the line
+  // * backslash-escaped characters in the middle of the line
+  std::string escapedLine = this->EscapeForShell(line);
+  size_t overflowSize = escapedLine.size() > remainingSpace
+    ? escapedLine.size() - remainingSpace
+    : 0;
+  if (overflowSize > 0) {
+    line.erase(remainingSpace - overflowSize);
+    line.append(longCommandFinalizer.data(), longCommandFinalizer.size());
+    escapedLine = this->EscapeForShell(line);
+  }
+
+  return cmStrCat(std::move(cmd), std::move(escapedLine));
+}
+
 void cmLocalUnixMakefileGenerator3::AppendEcho(
   std::vector<std::string>& commands, std::string const& text, EchoColor color,
   EchoProgress const* progress)
@@ -1279,12 +1372,12 @@ void cmLocalUnixMakefileGenerator3::AppendEcho(
             "@$(CMAKE_COMMAND) -E cmake_echo_color \"--switch=$(COLOR)\" ",
             color_name);
           if (progress) {
-            cmd = cmStrCat(cmd, "--progress-dir=",
+            cmd = cmStrCat(std::move(cmd), "--progress-dir=",
                            this->ConvertToOutputFormat(
                              progress->Dir, cmOutputConverter::SHELL),
                            " --progress-num=", progress->Arg, ' ');
           }
-          cmd += this->EscapeForShell(line);
+          cmd = this->TrimLongCommand(std::move(cmd), line);
         }
         commands.emplace_back(std::move(cmd));
       }
@@ -1368,11 +1461,11 @@ std::string cmLocalUnixMakefileGenerator3::CreateMakeVariable(
     char buffer[12];
     int ni = 0;
     snprintf(buffer, sizeof(buffer), "%04d", ni);
-    ret = str1 + str2 + buffer;
+    ret = cmStrCat(str1, str2, buffer);
     while (this->ShortMakeVariableMap.count(ret) && ni < 1000) {
       ++ni;
       snprintf(buffer, sizeof(buffer), "%04d", ni);
-      ret = str1 + str2 + buffer;
+      ret = cmStrCat(str1, str2, buffer);
     }
     if (ni == 1000) {
       cmSystemTools::Error("Borland makefile variable length too long");
@@ -1621,7 +1714,7 @@ bool cmLocalUnixMakefileGenerator3::ScanDependencies(
     std::unique_ptr<cmDepends> scanner;
     if (lang == "C" || lang == "CXX" || lang == "RC" || lang == "ASM" ||
         lang == "OBJC" || lang == "OBJCXX" || lang == "CUDA" ||
-        lang == "HIP" || lang == "ISPC") {
+        lang == "HIP" || lang == "ISPC" || lang == "SYCL") {
       // TODO: Handle RC (resource files) dependencies correctly.
       scanner = cm::make_unique<cmDependsC>(this, targetDir, lang, &validDeps);
     }
@@ -1719,7 +1812,7 @@ void cmLocalUnixMakefileGenerator3::WriteLocalAllRules(
                     "\n";
   auto const& targets = this->GetGeneratorTargets();
   for (auto const& gt : targets) {
-    if (gt->GetType() == cmStateEnums::GLOBAL_TARGET) {
+    if (gt->GetType() == cm::TargetType::GLOBAL_TARGET) {
       std::string targetString =
         "Special rule for the target " + gt->GetName();
       std::vector<std::string> commands;
@@ -2312,7 +2405,7 @@ void cmLocalUnixMakefileGenerator3::CreateCDCommand(
     // directory and build because make resets the directory between
     // each command.
     std::string outputForExisting = this->ConvertToOutputForExisting(tgtDir);
-    std::string prefix = cd_cmd + outputForExisting + " && ";
+    std::string prefix = cmStrCat(cd_cmd, outputForExisting, " && ");
     std::transform(commands.begin(), commands.end(), commands.begin(),
                    [&prefix](std::string const& s) { return prefix + s; });
   }

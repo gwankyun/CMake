@@ -4,8 +4,9 @@
 
 #include <chrono>
 #include <cstdlib>
-#include <sstream>
+#include <ostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <cm/memory>
@@ -43,22 +44,20 @@ bool ConstructConfigureCommand(cmExecutionStatus& status, cmMakefile& mf,
                                std::string const presetsFile,
                                std::string& configureCommand)
 {
-  configureCommand = cmStrCat('"', cmSystemTools::GetCMakeCommand(), '"');
-  configureCommand += " \"-S";
-  configureCommand += cmSystemTools::CollapseFullPath(sourceDirectory);
-  configureCommand += "\"";
+  configureCommand =
+    cmStrCat('"', cmSystemTools::GetCMakeCommand(), "\" \"-S",
+             cmSystemTools::CollapseFullPath(sourceDirectory), '"');
 
   if (!buildDirectory.empty()) {
-    configureCommand += " \"-B";
-    configureCommand += cmSystemTools::CollapseFullPath(buildDirectory);
-    configureCommand += "\"";
+    configureCommand =
+      cmStrCat(std::move(configureCommand), " \"-B",
+               cmSystemTools::CollapseFullPath(buildDirectory), '"');
   }
 
   cmValue cmakeGenerator = mf.GetDefinition("CTEST_CMAKE_GENERATOR");
   if (cmNonempty(cmakeGenerator)) {
-    configureCommand += " \"-G";
-    configureCommand += cmakeGenerator;
-    configureCommand += "\"";
+    configureCommand =
+      cmStrCat(std::move(configureCommand), " \"-G", cmakeGenerator, '"');
   }
 
   bool presetProvidesBuildDir = false;
@@ -86,16 +85,12 @@ bool ConstructConfigureCommand(cmExecutionStatus& status, cmMakefile& mf,
 
     auto const* expandedPreset = resolveResult.Preset;
 
-    configureCommand += " \"--preset\"";
-    configureCommand += " \"";
-    configureCommand += presetName;
-    configureCommand += "\"";
+    configureCommand = cmStrCat(std::move(configureCommand),
+                                R"( "--preset" ")", presetName, '"');
 
     if (!presetsFile.empty()) {
-      configureCommand += " \"--presets-file\"";
-      configureCommand += " \"";
-      configureCommand += presetsFile;
-      configureCommand += "\"";
+      configureCommand = cmStrCat(std::move(configureCommand),
+                                  R"( "--presets-file" ")", presetsFile, '"');
     }
 
     if (!expandedPreset->BinaryDir.empty()) {
@@ -149,25 +144,22 @@ bool ConstructConfigureCommand(cmExecutionStatus& status, cmMakefile& mf,
     }
     initialCache.Close();
 
-    configureCommand += " \"-C";
-    configureCommand += initialCacheFile;
-    configureCommand += "\"";
+    configureCommand =
+      cmStrCat(std::move(configureCommand), " \"-C", initialCacheFile, '"');
   }
 
   cmValue cmakeGeneratorPlatform =
     mf.GetDefinition("CTEST_CMAKE_GENERATOR_PLATFORM");
   if (cmNonempty(cmakeGeneratorPlatform)) {
-    configureCommand += " \"-A";
-    configureCommand += *cmakeGeneratorPlatform;
-    configureCommand += "\"";
+    configureCommand = cmStrCat(std::move(configureCommand), " \"-A",
+                                *cmakeGeneratorPlatform, '"');
   }
 
   cmValue cmakeGeneratorToolset =
     mf.GetDefinition("CTEST_CMAKE_GENERATOR_TOOLSET");
   if (cmNonempty(cmakeGeneratorToolset)) {
-    configureCommand += " \"-T";
-    configureCommand += *cmakeGeneratorToolset;
-    configureCommand += "\"";
+    configureCommand = cmStrCat(std::move(configureCommand), " \"-T",
+                                *cmakeGeneratorToolset, '"');
   }
 
   // Append OPTIONS to the configure command.
@@ -183,16 +175,15 @@ bool ConstructConfigureCommand(cmExecutionStatus& status, cmMakefile& mf,
 
   auto const optionsList = cmList(options);
   for (std::string const& option : optionsList) {
-    configureCommand += " \"";
-    configureCommand += option;
-    configureCommand += "\"";
+    configureCommand =
+      cmStrCat(std::move(configureCommand), " \"", option, '"');
   }
 
   cmValue cmakeBuildType = mf.GetDefinition("CTEST_CONFIGURATION_TYPE");
   if (!multiConfig && !buildTypeInOptions && cmNonempty(cmakeBuildType)) {
-    configureCommand += " \"-DCMAKE_BUILD_TYPE:STRING=";
-    configureCommand += cmakeBuildType;
-    configureCommand += "\"";
+    configureCommand =
+      cmStrCat(std::move(configureCommand),
+               " \"-DCMAKE_BUILD_TYPE:STRING=", cmakeBuildType, '"');
   }
 
   return true;
@@ -247,10 +238,9 @@ bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
   if (presetName.empty()) {
     configureCommand = mf.GetDefinition("CTEST_CONFIGURE_COMMAND");
   } else if (cmNonempty(mf.GetDefinition("CTEST_CONFIGURE_COMMAND"))) {
-    cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                       "Ignoring CTEST_CONFIGURE_COMMAND because preset \""
-                         << presetName << "\" is in use.\n",
-                       args.Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, args.Quiet,
+                       "Ignoring CTEST_CONFIGURE_COMMAND because preset \"",
+                       presetName, "\" is in use.\n");
   }
   if (configureCommand.empty() &&
       !ConstructConfigureCommand(status, mf, sourceDirectory, buildDirectory,
@@ -259,13 +249,12 @@ bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
     return false;
   }
 
-  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "Configure project\n",
-                     args.Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, args.Quiet,
+                     "Configure project\n");
 
   if (this->CTest->GetShowOnly()) {
-    cmCTestOptionalLog(this->CTest, DEBUG,
-                       "Configure with command: " << configureCommand << '\n',
-                       args.Quiet);
+    cmCTestOptionalLog(this->CTest, DEBUG, args.Quiet,
+                       "Configure with command: ", configureCommand, '\n');
     if (!args.ReturnValue.empty()) {
       mf.AddDefinition(args.ReturnValue, "0");
     }
@@ -277,9 +266,8 @@ bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
     return false;
   }
 
-  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "Configure with command: " << configureCommand << '\n',
-                     args.Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, args.Quiet,
+                     "Configure with command: ", configureCommand, '\n');
 
   int const submitIndex =
     args.SubmitIndex.empty() ? 0 : std::atoi(args.SubmitIndex.c_str());
@@ -301,7 +289,7 @@ bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
   auto const elapsedMinutes =
     std::chrono::duration_cast<std::chrono::minutes>(endTime - startTime);
 
-  cmCTestOptionalLog(this->CTest, DEBUG, "End\n", args.Quiet);
+  cmCTestOptionalLog(this->CTest, DEBUG, args.Quiet, "End\n");
 
   if (!res || retVal) {
     cmCTestLog(this->CTest, ERROR_MESSAGE,
@@ -324,8 +312,7 @@ bool cmCTestConfigureCommand::ExecuteConfigure(ConfigureArguments const& args,
   cmGeneratedFileStream xmlFile;
   if (!this->CTest->StartResultingXML(cmCTest::PartConfigure, "Configure",
                                       submitIndex, xmlFile)) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Cannot open configure file" << std::endl);
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "Cannot open configure file\n");
     return false;
   }
 

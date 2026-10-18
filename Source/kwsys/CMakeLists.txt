@@ -879,22 +879,25 @@ endif()
 
 # For building kwsys itself, we use a macro defined on the command
 # line to configure the namespace in the C and C++ source files.
-add_definitions("-DKWSYS_NAMESPACE=${KWSYS_NAMESPACE}")
+add_compile_definitions(KWSYS_NAMESPACE=${KWSYS_NAMESPACE})
 
 # Disable deprecation warnings for standard C functions.
 if(MSVC OR (WIN32 AND (CMAKE_C_COMPILER_ID STREQUAL "Intel" OR
    (CMAKE_C_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC"))))
-  add_definitions(
-    -D_CRT_NONSTDC_NO_DEPRECATE
-    -D_CRT_SECURE_NO_DEPRECATE
-    -D_CRT_SECURE_NO_WARNINGS
-    -D_SCL_SECURE_NO_DEPRECATE
+  add_compile_definitions(
+    _CRT_NONSTDC_NO_DEPRECATE
+    _CRT_SECURE_NO_DEPRECATE
+    _CRT_SECURE_NO_WARNINGS
+    _SCL_SECURE_NO_DEPRECATE
     )
 endif()
 
 if(WIN32)
   # Help enforce the use of wide Windows apis.
-  add_definitions(-DUNICODE -D_UNICODE)
+  add_compile_definitions(UNICODE _UNICODE)
+
+  # Minimize "windows.h".  We include granular Windows SDK headers as needed.
+  add_compile_definitions(WIN32_LEAN_AND_MEAN)
 endif()
 
 if(KWSYS_USE_String)
@@ -951,8 +954,15 @@ if(KWSYS_STANDALONE OR CMake_SOURCE_DIR)
         testFStream.cxx
         )
     endif()
+    if(KWSYS_USE_RegularExpression)
+      set(KWSYS_CXX_TESTS ${KWSYS_CXX_TESTS} testRegularExpression.cxx)
+    endif()
     if(KWSYS_USE_SystemInformation)
       set(KWSYS_CXX_TESTS ${KWSYS_CXX_TESTS} testSystemInformation.cxx)
+      if(KWSYS_USE_SystemTools)
+        set(KWSYS_CXX_TESTS ${KWSYS_CXX_TESTS}
+          testSystemInformationBaseFrequency.cxx)
+      endif()
     endif()
     if(KWSYS_USE_DynamicLoader)
       set(KWSYS_CXX_TESTS ${KWSYS_CXX_TESTS} testDynamicLoader.cxx)

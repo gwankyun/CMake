@@ -24,7 +24,5 @@ add_compile_definitions
 .. |command_name| replace:: ``add_compile_definitions``
 .. include:: include/GENEX_NOTE.rst
 
-另请参阅
-^^^^^^^^
-
-* :command:`target_compile_definitions`\ 命令用于添加特定于目标的定义。
+.. |target_command_name| replace:: :command:`target_compile_definitions`
+.. include:: include/NON_TARGET_NOTE.rst

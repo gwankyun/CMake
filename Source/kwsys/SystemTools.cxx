@@ -298,7 +298,7 @@ static time_t windows_filetime_to_posix_time(const FILETIME& ft)
 typedef KWSYS_NAMESPACE::SystemTools::mode_t mode_t;
 #  endif
 
-inline int Mkdir(std::string const& dir, mode_t const* mode)
+static inline int Mkdir(std::string const& dir, mode_t const* mode)
 {
   int ret =
     _wmkdir(KWSYS_NAMESPACE::Encoding::ToWindowsExtendedPath(dir).c_str());
@@ -306,12 +306,12 @@ inline int Mkdir(std::string const& dir, mode_t const* mode)
     KWSYS_NAMESPACE::SystemTools::SetPermissions(dir, *mode);
   return ret;
 }
-inline int Rmdir(std::string const& dir)
+static inline int Rmdir(std::string const& dir)
 {
   return _wrmdir(
     KWSYS_NAMESPACE::Encoding::ToWindowsExtendedPath(dir).c_str());
 }
-inline char const* Getcwd(char* buf, unsigned int len)
+static inline char const* Getcwd(char* buf, unsigned int len)
 {
   std::vector<wchar_t> w_buf(len);
   if (_wgetcwd(&w_buf[0], len)) {
@@ -329,15 +329,16 @@ inline char const* Getcwd(char* buf, unsigned int len)
   }
   return 0;
 }
-inline int Chdir(std::string const& dir)
+static inline int Chdir(std::string const& dir)
 {
   // We cannot use ToWindowsExtendedPath here because that causes a
   // UNC path to be recorded as the process working directory, and
   // can break child processes.
   return _wchdir(KWSYS_NAMESPACE::Encoding::ToWide(dir).c_str());
 }
-inline void Realpath(std::string const& path, std::string& resolved_path,
-                     std::string* errorMessage = nullptr)
+static inline void Realpath(std::string const& path,
+                            std::string& resolved_path,
+                            std::string* errorMessage = nullptr)
 {
   std::wstring tmp = KWSYS_NAMESPACE::Encoding::ToWide(path);
   wchar_t fullpath[MAX_PATH];
@@ -372,25 +373,26 @@ inline void Realpath(std::string const& path, std::string& resolved_path,
 
 #  include <fcntl.h>
 #  include <unistd.h>
-inline int Mkdir(std::string const& dir, mode_t const* mode)
+static inline int Mkdir(std::string const& dir, mode_t const* mode)
 {
   return mkdir(dir.c_str(), mode ? *mode : 00777);
 }
-inline int Rmdir(std::string const& dir)
+static inline int Rmdir(std::string const& dir)
 {
   return rmdir(dir.c_str());
 }
-inline char const* Getcwd(char* buf, unsigned int len)
+static inline char const* Getcwd(char* buf, unsigned int len)
 {
   return getcwd(buf, len);
 }
 
-inline int Chdir(std::string const& dir)
+static inline int Chdir(std::string const& dir)
 {
   return chdir(dir.c_str());
 }
-inline void Realpath(std::string const& path, std::string& resolved_path,
-                     std::string* errorMessage = nullptr)
+static inline void Realpath(std::string const& path,
+                            std::string& resolved_path,
+                            std::string* errorMessage = nullptr)
 {
   char resolved_name[KWSYS_SYSTEMTOOLS_MAXPATH];
 
@@ -495,112 +497,36 @@ public:
   }
 };
 
+#ifdef _WIN32
 /**
  * SystemTools static variables singleton class.
  */
 class SystemToolsStatic
 {
 public:
-#ifdef _WIN32
-  static std::string GetCasePathName(std::string const& pathIn);
   static char const* GetEnvBuffered(char const* key);
+  // This map exists so that the encoding conversion performed on Windows has a
+  // storage location which behaves like the global environment. Note that if
+  // an environment variable is set, previously returned values of that
+  // variable's value may be invalidated (and it is just as hazardous as
+  // keeping `getenv` results across `setenv` calls on POSIX platforms).
   std::map<std::string, std::string> EnvMap;
-#endif
-
-  /**
-   * Actual implementation of ReplaceString.
-   */
-  static void ReplaceString(std::string& source, char const* replace,
-                            size_t replaceSize, std::string const& with);
-
-  /**
-   * Actual implementation of FileIsFullPath.
-   */
-  static bool FileIsFullPath(char const*, size_t);
-
-  /**
-   * Find a filename (file or directory) in the system PATH, with
-   * optional extra paths.
-   */
-  static std::string FindName(
-    std::string const& name,
-    std::vector<std::string> const& userPaths = std::vector<std::string>(),
-    bool no_system_path = false);
 };
 
 // Do NOT initialize.  Default initialization to zero is necessary.
 static SystemToolsStatic* SystemToolsStatics;
 
-#ifdef _WIN32
-std::string SystemToolsStatic::GetCasePathName(std::string const& pathIn)
+char const* SystemToolsStatic::GetEnvBuffered(char const* key)
 {
-  std::string casePath;
-
-  // First check if the file is relative. We don't fix relative paths since the
-  // real case depends on the root directory and the given path fragment may
-  // have meaning elsewhere in the project.
-  if (!SystemTools::FileIsFullPath(pathIn)) {
-    // This looks unnecessary, but it allows for the return value optimization
-    // since all return paths return the same local variable.
-    casePath = pathIn;
-    return casePath;
-  }
-
-  std::vector<std::string> path_components;
-  SystemTools::SplitPath(pathIn, path_components);
-
-  // Start with root component.
-  std::vector<std::string>::size_type idx = 0;
-  casePath = path_components[idx++];
-  // make sure drive letter is always upper case
-  if (casePath.size() > 1 && casePath[1] == ':') {
-    casePath[0] = kwsysString_toupper(casePath[0]);
-  }
-  char const* sep = "";
-
-  // If network path, fill casePath with server/share so FindFirstFile
-  // will work after that.  Maybe someday call other APIs to get
-  // actual case of servers and shares.
-  if (path_components.size() > 2 && path_components[0] == "//") {
-    casePath += path_components[idx++];
-    casePath += '/';
-    casePath += path_components[idx++];
-    sep = "/";
-  }
-
-  // Convert case of all components that exist.
-  bool converting = true;
-  for (; idx < path_components.size(); idx++) {
-    casePath += sep;
-    sep = "/";
-
-    if (converting) {
-      // If path component contains wildcards, we skip matching
-      // because these filenames are not allowed on windows,
-      // and we do not want to match a different file.
-      if (path_components[idx].find('*') != std::string::npos ||
-          path_components[idx].find('?') != std::string::npos) {
-        converting = false;
-      } else {
-        std::string test_str = casePath;
-        test_str += path_components[idx];
-
-        WIN32_FIND_DATAW findData;
-        HANDLE hFind =
-          ::FindFirstFileW(Encoding::ToWide(test_str).c_str(), &findData);
-        if (INVALID_HANDLE_VALUE != hFind) {
-          auto case_file_name = Encoding::ToNarrow(findData.cFileName);
-          path_components[idx] = std::move(case_file_name);
-          ::FindClose(hFind);
-        } else {
-          converting = false;
-        }
-      }
+  std::string env;
+  if (SystemTools::GetEnv(key, env)) {
+    std::string& menv = SystemToolsStatics->EnvMap[key];
+    if (menv != env) {
+      menv = std::move(env);
     }
-
-    casePath += path_components[idx];
+    return menv.c_str();
   }
-  return casePath;
+  return nullptr;
 }
 #endif
 
@@ -640,21 +566,6 @@ void SystemTools::GetPath(std::vector<std::string>& path, char const* env)
     SystemTools::ConvertToUnixSlashes(*i);
   }
 }
-
-#if defined(_WIN32)
-char const* SystemToolsStatic::GetEnvBuffered(char const* key)
-{
-  std::string env;
-  if (SystemTools::GetEnv(key, env)) {
-    std::string& menv = SystemToolsStatics->EnvMap[key];
-    if (menv != env) {
-      menv = std::move(env);
-    }
-    return menv.c_str();
-  }
-  return nullptr;
-}
-#endif
 
 char const* SystemTools::GetEnv(char const* key)
 {
@@ -972,8 +883,8 @@ void SystemTools::ReplaceString(std::string& source,
     return;
   }
 
-  SystemToolsStatic::ReplaceString(source, replace.c_str(), replace.size(),
-                                   with);
+  SystemTools::ReplaceStringImpl(source, replace.c_str(), replace.size(),
+                                 with);
 }
 
 void SystemTools::ReplaceString(std::string& source, char const* replace,
@@ -984,13 +895,13 @@ void SystemTools::ReplaceString(std::string& source, char const* replace,
     return;
   }
 
-  SystemToolsStatic::ReplaceString(source, replace, strlen(replace),
-                                   with ? with : "");
+  SystemTools::ReplaceStringImpl(source, replace, strlen(replace),
+                                 with ? with : "");
 }
 
-void SystemToolsStatic::ReplaceString(std::string& source, char const* replace,
-                                      size_t replaceSize,
-                                      std::string const& with)
+void SystemTools::ReplaceStringImpl(std::string& source, char const* replace,
+                                    size_t replaceSize,
+                                    std::string const& with)
 {
   char const* src = source.c_str();
   char* searchPos = const_cast<char*>(strstr(src, replace));
@@ -1252,7 +1163,8 @@ bool SystemTools::DeleteRegistryValue(std::string const& key, KeyWOW64 view)
                     &hKey) != ERROR_SUCCESS) {
     return false;
   } else {
-    if (RegDeleteValue(hKey, (LPTSTR)valuename.c_str()) == ERROR_SUCCESS) {
+    if (RegDeleteValueW(hKey, Encoding::ToWide(valuename).c_str()) ==
+        ERROR_SUCCESS) {
       RegCloseKey(hKey);
       return true;
     }
@@ -1435,7 +1347,7 @@ bool SystemTools::FileExists(std::string const& filename)
         return false;
       }
 
-      byte buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
+      BYTE buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
       DWORD bytesReturned = 0;
 
       if (!DeviceIoControl(handle, FSCTL_GET_REPARSE_POINT, nullptr, 0, buffer,
@@ -2277,11 +2189,17 @@ SystemTools::CopyStatus SystemTools::CopyFileIfNewer(
   }
 }
 
-#define KWSYS_ST_BUFFER 4096
+// 4 KiB. This value is historical.
+#define KWSYS_ST_STACK_BUFFER (1 << 12)
+// 1 MiB. This seems to be the maximum value that modern Windows CopyFile uses.
+#define KWSYS_ST_HEAP_BUFFER (1 << 20)
+// 16 KiB. This seems roughly appropriate.
+#define KWSYS_ST_HEAP_SWITCHOVER (1 << 14)
 
 bool SystemTools::FilesDiffer(std::string const& source,
                               std::string const& destination)
 {
+  // Get the size of the files. If they are different sizes, they differ.
 
 #if defined(_WIN32)
   WIN32_FILE_ATTRIBUTE_DATA statSource;
@@ -2305,8 +2223,9 @@ bool SystemTools::FilesDiffer(std::string const& source,
   if (statSource.nFileSizeHigh == 0 && statSource.nFileSizeLow == 0) {
     return false;
   }
-  auto nleft =
-    ((__int64)statSource.nFileSizeHigh << 32) + statSource.nFileSizeLow;
+  auto const fileSize =
+    (static_cast<unsigned long long>(statSource.nFileSizeHigh) << 32) +
+    statSource.nFileSizeLow;
 
 #else
 
@@ -2327,51 +2246,87 @@ bool SystemTools::FilesDiffer(std::string const& source,
   if (statSource.st_size == 0) {
     return false;
   }
-  off_t nleft = statSource.st_size;
+  auto const fileSize = static_cast<unsigned long long>(statSource.st_size);
 #endif
 
-#if defined(_WIN32)
-  kwsys::ifstream finSource(source.c_str(), (std::ios::binary | std::ios::in));
-  kwsys::ifstream finDestination(destination.c_str(),
-                                 (std::ios::binary | std::ios::in));
-#else
-  kwsys::ifstream finSource(source.c_str());
-  kwsys::ifstream finDestination(destination.c_str());
-#endif
-  if (!finSource || !finDestination) {
+  // Open the files using C I/O to avoid `fstream`'s internal buffer.
+  FILE* const fSource = Fopen(source.c_str(), "rb");
+  if (!fSource) {
+    return true;
+  }
+  FILE* const fDestination = Fopen(destination.c_str(), "rb");
+  if (!fDestination) {
+    fclose(fSource);
     return true;
   }
 
-  // Compare the files a block at a time.
-  char source_buf[KWSYS_ST_BUFFER];
-  char dest_buf[KWSYS_ST_BUFFER];
-  while (nleft > 0) {
-    // Read a block from each file.
-    std::streamsize nnext = (nleft > KWSYS_ST_BUFFER)
-      ? KWSYS_ST_BUFFER
-      : static_cast<std::streamsize>(nleft);
-    finSource.read(source_buf, nnext);
-    finDestination.read(dest_buf, nnext);
+  // Prepare the buffers for reading the files. Use stack buffers for the first
+  // comparison regardless of file size for a quick exit for early differences.
+  char* heapBuffer = nullptr;
+  bool triedHeapBuffer = false;
+  char sourceStackBuffer[KWSYS_ST_STACK_BUFFER];
+  char destStackBuffer[KWSYS_ST_STACK_BUFFER];
+  char* source_buf = sourceStackBuffer;
+  char* dest_buf = destStackBuffer;
+  size_t bufferSize = KWSYS_ST_STACK_BUFFER;
 
+  // Compare the files a block at a time.
+  auto blockSize = bufferSize;
+  auto nleft = fileSize;
+  while (true) {
+    // Read a block from each file.
     // If either failed to read assume they are different.
-    if (static_cast<std::streamsize>(finSource.gcount()) != nnext ||
-        static_cast<std::streamsize>(finDestination.gcount()) != nnext) {
-      return true;
+    auto nnext = static_cast<size_t>(nleft > blockSize ? blockSize : nleft);
+    if (fread(source_buf, 1, nnext, fSource) != nnext) {
+      break;
+    }
+    if (fread(dest_buf, 1, nnext, fDestination) != nnext) {
+      break;
     }
 
     // If this block differs the file differs.
     if (memcmp(static_cast<void const*>(source_buf),
-               static_cast<void const*>(dest_buf),
-               static_cast<size_t>(nnext)) != 0) {
-      return true;
+               static_cast<void const*>(dest_buf), nnext) != 0) {
+      break;
     }
 
     // Update the byte count remaining.
     nleft -= nnext;
+
+    // If no bytes remain, the files are the same.
+    if (nleft == 0) {
+      break;
+    }
+
+    // Switch from stack buffers to heap buffers if we haven't already tried,
+    // enough file size remains, and the allocation succeeds.
+    if (!triedHeapBuffer && nleft > KWSYS_ST_HEAP_SWITCHOVER) {
+      triedHeapBuffer = true;
+      auto heapBufferSize = 2 *
+        static_cast<size_t>(nleft < KWSYS_ST_HEAP_BUFFER
+                              ? nleft
+                              : KWSYS_ST_HEAP_BUFFER);
+      heapBuffer = static_cast<char*>(malloc(heapBufferSize));
+      if (heapBuffer) {
+        bufferSize = heapBufferSize / 2;
+        source_buf = heapBuffer;
+        dest_buf = source_buf + bufferSize;
+      }
+    }
+
+    // Buffer size allowing, scale up the block size. The more bytes we've seen
+    // without difference, the less likely the following bytes will differ, so
+    // the larger the optimal block size that balances the number of reads with
+    // the number of wasted bytes read beyond the first difference.
+    blockSize = bufferSize < blockSize * 2 ? bufferSize : blockSize * 2;
   }
 
-  // No differences found.
-  return false;
+  // Free resources.
+  free(heapBuffer);
+  fclose(fDestination);
+  fclose(fSource);
+
+  return nleft > 0;
 }
 
 bool SystemTools::TextFilesDiffer(std::string const& path1,
@@ -2403,54 +2358,82 @@ bool SystemTools::TextFilesDiffer(std::string const& path1,
 SystemTools::CopyStatus SystemTools::CopyFileContentBlockwise(
   std::string const& source, std::string const& destination)
 {
-  // Open files
-  kwsys::ifstream fin(source.c_str(), std::ios::in | std::ios::binary);
-  if (!fin) {
-    return CopyStatus{ Status::POSIX_errno(), CopyStatus::SourcePath };
-  }
-
   // try and remove the destination file so that read only destination files
   // can be written to.
   // If the remove fails continue so that files in read only directories
   // that do not allow file removal can be modified.
   SystemTools::RemoveFile(destination);
 
-  kwsys::ofstream fout(destination.c_str(),
-                       std::ios::out | std::ios::trunc | std::ios::binary);
+  // Open the files using C I/O to avoid `fstream`'s internal buffer.
+  FILE* const fin = Fopen(source.c_str(), "rb");
+  if (!fin) {
+    return CopyStatus{ Status::POSIX_errno(), CopyStatus::SourcePath };
+  }
+  FILE* const fout = Fopen(destination.c_str(), "wb");
   if (!fout) {
-    return CopyStatus{ Status::POSIX_errno(), CopyStatus::DestPath };
+    auto status = Status::POSIX_errno();
+    fclose(fin);
+    return CopyStatus{ status, CopyStatus::DestPath };
   }
 
-  // This copy loop is very sensitive on certain platforms with
-  // slightly broken stream libraries (like HPUX).  Normally, it is
-  // incorrect to not check the error condition on the fin.read()
-  // before using the data, but the fin.gcount() will be zero if an
-  // error occurred.  Therefore, the loop should be safe everywhere.
-  while (fin) {
-    int const bufferSize = 4096;
-    char buffer[bufferSize];
+  // Attempt to get the size of the source file. Failure (0) is tolerated.
+  auto const fileSize = FileLength(source);
 
-    fin.read(buffer, bufferSize);
-    if (fin.gcount()) {
-      fout.write(buffer, fin.gcount());
-    } else {
+  // Prepare the buffer for reading the file. Use a stack buffer for small
+  // files and a heap buffer for large files if the allocation succeeds.
+  char* heapBuffer = nullptr;
+  char stackBuffer[KWSYS_ST_STACK_BUFFER];
+  char* buffer = stackBuffer;
+  size_t bufferSize = KWSYS_ST_STACK_BUFFER;
+  if (fileSize > KWSYS_ST_HEAP_SWITCHOVER) {
+    auto heapBufferSize = static_cast<size_t>(
+      fileSize < KWSYS_ST_HEAP_BUFFER ? fileSize : KWSYS_ST_HEAP_BUFFER);
+    heapBuffer = static_cast<char*>(malloc(heapBufferSize));
+    if (heapBuffer) {
+      bufferSize = heapBufferSize;
+      buffer = heapBuffer;
+    }
+  }
+
+  auto status = Status::Success();
+  auto path = CopyStatus::NoPath;
+
+  // Copy the file a block at a time and detect short reads/writes.
+  while (status.IsSuccess()) {
+    auto bytesRead = fread(buffer, 1, bufferSize, fin);
+    if (bytesRead > 0 && fwrite(buffer, 1, bytesRead, fout) != bytesRead) {
+      status = Status::POSIX_errno();
+      path = CopyStatus::DestPath;
+      break;
+    }
+
+    if (bytesRead < bufferSize) {
+      if (ferror(fin)) {
+        status = Status::POSIX_errno();
+        path = CopyStatus::SourcePath;
+      }
       break;
     }
   }
 
-  // Make sure the operating system has finished writing the file
-  // before closing it.  This will ensure the file is finished before
-  // the check below.
-  fout.flush();
-
-  fin.close();
-  fout.close();
-
-  if (!fout) {
-    return CopyStatus{ Status::POSIX_errno(), CopyStatus::DestPath };
+  // Make sure the operating system has finished writing the file.
+  if (status.IsSuccess() && fflush(fout) != 0) {
+    status = Status::POSIX_errno();
+    path = CopyStatus::DestPath;
   }
 
-  return CopyStatus{ Status::Success(), CopyStatus::NoPath };
+  // Free resources.
+  free(heapBuffer);
+  if (fclose(fout) != 0 && status.IsSuccess()) {
+    status = Status::POSIX_errno();
+    path = CopyStatus::DestPath;
+  }
+  if (fclose(fin) != 0 && status.IsSuccess()) {
+    status = Status::POSIX_errno();
+    path = CopyStatus::SourcePath;
+  }
+
+  return CopyStatus{ status, path };
 }
 
 /**
@@ -2618,7 +2601,7 @@ SystemTools::CopyStatus SystemTools::CopyAFile(std::string const& source,
                                                SystemTools::CopyWhen when)
 {
   switch (when) {
-    case SystemTools::CopyWhen::Always:
+    case SystemTools::CopyWhen::Unconditional:
       return SystemTools::CopyFileAlways(source, destination);
     case SystemTools::CopyWhen::OnlyIfDifferent:
       return SystemTools::CopyFileIfDifferent(source, destination);
@@ -2636,7 +2619,7 @@ SystemTools::CopyStatus SystemTools::CopyAFile(std::string const& source,
                                                bool always)
 {
   return SystemTools::CopyAFile(source, destination,
-                                always ? CopyWhen::Always
+                                always ? CopyWhen::Unconditional
                                        : CopyWhen::OnlyIfDifferent);
 }
 
@@ -2689,29 +2672,25 @@ Status SystemTools::CopyADirectory(std::string const& source,
                                    std::string const& destination, bool always)
 {
   return SystemTools::CopyADirectory(source, destination,
-                                     always ? CopyWhen::Always
+                                     always ? CopyWhen::Unconditional
                                             : CopyWhen::OnlyIfDifferent);
 }
 
 // return size of file; also returns zero if no file exists
-unsigned long SystemTools::FileLength(std::string const& filename)
+unsigned long long SystemTools::FileLength(std::string const& filename)
 {
-  unsigned long length = 0;
+  unsigned long long length = 0;
 #ifdef _WIN32
   WIN32_FILE_ATTRIBUTE_DATA fs;
   if (GetFileAttributesExW(Encoding::ToWindowsExtendedPath(filename).c_str(),
                            GetFileExInfoStandard, &fs) != 0) {
-    /* To support the full 64-bit file size, use fs.nFileSizeHigh
-     * and fs.nFileSizeLow to construct the 64 bit size
-
-    length = ((__int64)fs.nFileSizeHigh << 32) + fs.nFileSizeLow;
-     */
-    length = static_cast<unsigned long>(fs.nFileSizeLow);
+    length = (static_cast<unsigned long long>(fs.nFileSizeHigh) << 32) +
+      fs.nFileSizeLow;
   }
 #else
   struct stat fs;
   if (stat(filename.c_str(), &fs) == 0) {
-    length = static_cast<unsigned long>(fs.st_size);
+    length = static_cast<unsigned long long>(fs.st_size);
   }
 #endif
   return length;
@@ -2879,7 +2858,7 @@ size_t SystemTools::GetMaximumFilePathLength()
  * the system search path.  Returns the full path to the file if it is
  * found.  Otherwise, the empty string is returned.
  */
-std::string SystemToolsStatic::FindName(
+std::string SystemTools::FindNameImpl(
   std::string const& name, std::vector<std::string> const& userPaths,
   bool no_system_path)
 {
@@ -2917,7 +2896,7 @@ std::string SystemTools::FindFile(std::string const& name,
                                   bool no_system_path)
 {
   std::string tryPath =
-    SystemToolsStatic::FindName(name, userPaths, no_system_path);
+    SystemTools::FindNameImpl(name, userPaths, no_system_path);
   if (!tryPath.empty() && !SystemTools::FileIsDirectory(tryPath)) {
     return SystemTools::CollapseFullPath(tryPath);
   }
@@ -2935,7 +2914,7 @@ std::string SystemTools::FindDirectory(
   bool no_system_path)
 {
   std::string tryPath =
-    SystemToolsStatic::FindName(name, userPaths, no_system_path);
+    SystemTools::FindNameImpl(name, userPaths, no_system_path);
   if (!tryPath.empty() && SystemTools::FileIsDirectory(tryPath)) {
     return SystemTools::CollapseFullPath(tryPath);
   }
@@ -3114,7 +3093,7 @@ bool SystemTools::FileIsSymlinkWithAttr(std::wstring const& path,
       if (hFile == INVALID_HANDLE_VALUE) {
         return false;
       }
-      byte buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
+      BYTE buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
       DWORD bytesReturned = 0;
       if (!DeviceIoControl(hFile, FSCTL_GET_REPARSE_POINT, nullptr, 0, buffer,
                            MAXIMUM_REPARSE_DATA_BUFFER_SIZE, &bytesReturned,
@@ -3180,7 +3159,7 @@ Status SystemTools::ReadSymlink(std::string const& newName,
   if (hFile == INVALID_HANDLE_VALUE) {
     return Status::Windows_GetLastError();
   }
-  byte buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
+  BYTE buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
   DWORD bytesReturned = 0;
   Status status;
   if (!DeviceIoControl(hFile, FSCTL_GET_REPARSE_POINT, nullptr, 0, buffer,
@@ -3461,15 +3440,6 @@ std::string SystemTools::RelativePath(std::string const& local,
     relativePath += fp;
   }
   return relativePath;
-}
-
-std::string SystemTools::GetActualCaseForPath(std::string const& p)
-{
-#ifdef _WIN32
-  return SystemToolsStatic::GetCasePathName(p);
-#else
-  return p;
-#endif
 }
 
 char const* SystemTools::SplitPathRootComponent(std::string const& p,
@@ -3988,18 +3958,8 @@ bool SystemTools::LocateFileInDir(char const* filename, char const* dir,
   return res;
 }
 
-bool SystemTools::FileIsFullPath(std::string const& in_name)
-{
-  return SystemToolsStatic::FileIsFullPath(in_name.c_str(), in_name.size());
-}
-
-bool SystemTools::FileIsFullPath(char const* in_name)
-{
-  return SystemToolsStatic::FileIsFullPath(
-    in_name, in_name[0] ? (in_name[1] ? 2 : 1) : 0);
-}
-
-bool SystemToolsStatic::FileIsFullPath(char const* in_name, size_t len)
+namespace {
+bool FileIsFullPathImpl(char const* in_name, size_t len)
 {
 #if defined(_WIN32) && !defined(__CYGWIN__)
   // On Windows, the name must be at least two characters long.
@@ -4030,6 +3990,17 @@ bool SystemToolsStatic::FileIsFullPath(char const* in_name, size_t len)
     return true;
   }
   return false;
+}
+}
+
+bool SystemTools::FileIsFullPath(std::string const& in_name)
+{
+  return FileIsFullPathImpl(in_name.c_str(), in_name.size());
+}
+
+bool SystemTools::FileIsFullPath(char const* in_name)
+{
+  return FileIsFullPathImpl(in_name, in_name[0] ? (in_name[1] ? 2 : 1) : 0);
 }
 
 Status SystemTools::GetShortPath(std::string const& path,
@@ -4653,6 +4624,13 @@ std::string SystemTools::DecodeURL(std::string const& url)
   return ret;
 }
 
+#if defined(__VMS) || defined(_WIN32)
+#  define KWSYS_NEED_SYSTEM_TOOLS_MANAGER 1
+#else
+#  define KWSYS_NEED_SYSTEM_TOOLS_MANAGER 0
+#endif
+
+#if KWSYS_NEED_SYSTEM_TOOLS_MANAGER
 // ----------------------------------------------------------------------
 // Do NOT initialize.  Default initialization to zero is necessary.
 static unsigned int SystemToolsManagerCount;
@@ -4677,7 +4655,7 @@ SystemToolsManager::~SystemToolsManager()
   }
 }
 
-#if defined(__VMS)
+#  if defined(__VMS)
 // On VMS we configure the run time C library to be more UNIX like.
 // https://h71000.www7.hp.com/doc/732final/5763/5763pro_004.html
 extern "C" int decc$feature_get_index(char* name);
@@ -4689,22 +4667,27 @@ static int SetVMSFeature(char* name, int value)
   i = decc$feature_get_index(name);
   return i >= 0 && (decc$feature_set_value(i, 1, value) >= 0 || errno == 0);
 }
-#endif
+#  endif
 
 void SystemTools::ClassInitialize()
 {
-#ifdef __VMS
+#  ifdef __VMS
   SetVMSFeature("DECC$FILENAME_UNIX_ONLY", 1);
-#endif
+#  endif
 
+#  ifdef _WIN32
   // Create statics singleton instance
   SystemToolsStatics = new SystemToolsStatic;
+#  endif
 }
 
 void SystemTools::ClassFinalize()
 {
+#  ifdef _WIN32
   delete SystemToolsStatics;
+#  endif
 }
+#endif
 
 } // namespace KWSYS_NAMESPACE
 

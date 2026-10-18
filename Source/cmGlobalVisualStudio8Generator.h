@@ -58,8 +58,6 @@ protected:
 
   void AddExtraIDETargets() override;
 
-  std::string FindDevEnvCommand() override;
-
   bool VSLinksDependencies() const override { return false; }
 
   bool AddCheckTarget();

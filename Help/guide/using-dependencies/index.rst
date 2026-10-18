@@ -153,7 +153,7 @@ Find模块文件
 ----------------
 
 配置文件和查找模块文件都可以定义\ :ref:`Imported targets`。它们通常具有\
-``SomePrefix::ThingName``\ 形式的名称。在可用的情况下，项目应该更倾向于使用它们，而不是\
+``SomePackage::ThingName``\ 形式的名称。在可用的情况下，项目应该更倾向于使用它们，而不是\
 可能还提供的任何CMake变量。这样的目标通常携带使用需求，并自动将诸如头搜索路径、编译器定义等\
 应用到链接到它们的其他目标（例如使用\ :command:`target_link_libraries`\ ）。这比试图手\
 动使用变量应用相同的东西更健壮，也更方便。检查包或Find模块的文档，查看它定义的导入目标（如果\
@@ -174,7 +174,7 @@ Find模块文件
 
   find_package(SomePackage REQUIRED)
   add_executable(MyExe main.cpp)
-  target_link_libraries(MyExe PRIVATE SomePrefix::LibName)
+  target_link_libraries(MyExe PRIVATE SomePackage::LibName)
 
 注意，上面对\ :command:`find_package`\ 的调用可以通过配置文件或Find模块解析。\
 它只使用\ :ref:`basic signature`\ 支持的基本参数。\
@@ -213,7 +213,7 @@ Find模块文件
 Git、Subversion和Mercurial。还可以使用自定义下载、更新和补丁命令来支持任意用例。
 
 当使用\ :module:`FetchContent`\ 将依赖项添加到项目中时，项目将链接到依赖项的目标，就像项\
-目中的任何其他目标一样。如果依赖项提供了\ ``SomePrefix::ThingName``\ 形式的命名空间目标，\
+目中的任何其他目标一样。如果依赖项提供了\ ``SomePackage::ThingName``\ 形式的命名空间目标，\
 项目应该链接到这些目标，而不是任何非命名空间目标。请参阅下一节了解为什么推荐这样做。
 
 并不是所有的依赖关系都可以通过这种方式引入项目。一些依赖项定义的目标名称与项目或其他依赖项中\

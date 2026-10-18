@@ -9,7 +9,7 @@
 #  include <ostream>
 #  include <stdexcept>
 
-#  include <cm3p/kwiml/int.h>
+#  include <cm3p/rapidhash.h>
 
 namespace cm {
 
@@ -282,15 +282,7 @@ std::string& operator+=(std::string& s, string_view v)
 std::hash<cm::string_view>::result_type std::hash<cm::string_view>::operator()(
   argument_type const& s) const noexcept
 {
-  // FNV-1a hash.
-  static KWIML_INT_uint64_t const fnv_offset_basis = 0xcbf29ce484222325;
-  static KWIML_INT_uint64_t const fnv_prime = 0x100000001b3;
-  KWIML_INT_uint64_t h = fnv_offset_basis;
-  for (char const& c : s) {
-    h = h ^ KWIML_INT_uint64_t(KWIML_INT_uint8_t(c));
-    h = h * fnv_prime;
-  }
-  return result_type(h);
+  return result_type(rapidhash(s.data(), s.size()));
 }
 #else
 // Avoid empty translation unit.

@@ -5,8 +5,8 @@
 #include "cmExecutionStatus.h"
 #include "cmGlobalGenerator.h"
 #include "cmMakefile.h"
-#include "cmStateTypes.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmTargetPropCommandBase::cmTargetPropCommandBase(cmExecutionStatus& status)
@@ -29,10 +29,6 @@ bool cmTargetPropCommandBase::HandleArguments(
     return false;
   }
 
-  if (this->Makefile->IsAlias(args[0])) {
-    this->SetError("can not be used on an ALIAS target.");
-    return false;
-  }
   // Lookup the target for which property-values are specified.
   this->Target = this->Makefile->GetGlobalGenerator()->FindTarget(args[0]);
   if (!this->Target) {
@@ -47,14 +43,15 @@ bool cmTargetPropCommandBase::HandleArguments(
     return false;
   }
   bool const isRegularTarget =
-    (this->Target->GetType() == cmStateEnums::EXECUTABLE) ||
-    (this->Target->GetType() == cmStateEnums::STATIC_LIBRARY) ||
-    (this->Target->GetType() == cmStateEnums::SHARED_LIBRARY) ||
-    (this->Target->GetType() == cmStateEnums::MODULE_LIBRARY) ||
-    (this->Target->GetType() == cmStateEnums::OBJECT_LIBRARY) ||
-    (this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY) ||
-    (this->Target->GetType() == cmStateEnums::UNKNOWN_LIBRARY);
-  bool const isCustomTarget = this->Target->GetType() == cmStateEnums::UTILITY;
+    (this->Target->GetType() == cm::TargetType::EXECUTABLE) ||
+    (this->Target->GetType() == cm::TargetType::STATIC_LIBRARY) ||
+    (this->Target->GetType() == cm::TargetType::SHARED_LIBRARY) ||
+    (this->Target->GetType() == cm::TargetType::MODULE_LIBRARY) ||
+    (this->Target->GetType() == cm::TargetType::OBJECT_LIBRARY) ||
+    (this->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY) ||
+    (this->Target->GetType() == cm::TargetType::UNKNOWN_LIBRARY);
+  bool const isCustomTarget =
+    this->Target->GetType() == cm::TargetType::UTILITY;
 
   if (prop == "SOURCES") {
     if (!isRegularTarget && !isCustomTarget) {
@@ -81,14 +78,16 @@ bool cmTargetPropCommandBase::HandleArguments(
   }
 
   bool prepend = false;
-  if ((flags & PROCESS_BEFORE) && args[argIndex] == "BEFORE") {
+  if ((flags & PROCESS_BEFORE) && argIndex < args.size() &&
+      args[argIndex] == "BEFORE") {
     if (args.size() < 3) {
       this->SetError("called with incorrect number of arguments");
       return false;
     }
     prepend = true;
     ++argIndex;
-  } else if ((flags & PROCESS_AFTER) && args[argIndex] == "AFTER") {
+  } else if ((flags & PROCESS_AFTER) && argIndex < args.size() &&
+             args[argIndex] == "AFTER") {
     if (args.size() < 3) {
       this->SetError("called with incorrect number of arguments");
       return false;
@@ -97,7 +96,8 @@ bool cmTargetPropCommandBase::HandleArguments(
     ++argIndex;
   }
 
-  if ((flags & PROCESS_REUSE_FROM) && args[argIndex] == "REUSE_FROM") {
+  if ((flags & PROCESS_REUSE_FROM) && argIndex < args.size() &&
+      args[argIndex] == "REUSE_FROM") {
     if (args.size() != 3) {
       this->SetError("called with incorrect number of arguments");
       return false;
@@ -141,7 +141,7 @@ bool cmTargetPropCommandBase::ProcessContentArgs(
     content.push_back(args[i]);
   }
   if (!content.empty()) {
-    if (this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY &&
+    if (this->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY &&
         scope != "INTERFACE" && this->Property != "SOURCES") {
       this->SetError("may only set INTERFACE properties on INTERFACE targets");
       return false;
@@ -150,7 +150,7 @@ bool cmTargetPropCommandBase::ProcessContentArgs(
       this->SetError("may only set INTERFACE properties on IMPORTED targets");
       return false;
     }
-    if (this->Target->GetType() == cmStateEnums::UTILITY &&
+    if (this->Target->GetType() == cm::TargetType::UTILITY &&
         scope != "PRIVATE") {
       this->SetError("may only set PRIVATE properties on custom targets");
       return false;

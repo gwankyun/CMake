@@ -15,12 +15,15 @@
 #include "cmArgumentParser.h"
 #include "cmArgumentParserTypes.h"
 #include "cmList.h"
-#include "cmStateTypes.h"
 
 class cmConfigureLog;
 class cmMakefile;
 template <typename Iter>
 class cmRange;
+
+namespace cm {
+enum class TargetType;
+} // namespace cm
 
 struct cmTryCompileResult
 {
@@ -125,8 +128,8 @@ public:
    * This function requires at least two \p arguments and will crash if given
    * fewer.
    */
-  cm::optional<cmTryCompileResult> TryCompileCode(
-    Arguments& arguments, cmStateEnums::TargetType targetType);
+  cm::optional<cmTryCompileResult> TryCompileCode(Arguments& arguments,
+                                                  cm::TargetType targetType);
 
   /**
    * Returns \c true if \p path resides within a CMake temporary directory,

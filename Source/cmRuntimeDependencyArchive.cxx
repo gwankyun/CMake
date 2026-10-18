@@ -4,7 +4,6 @@
 #include "cmRuntimeDependencyArchive.h"
 
 #include <algorithm>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -17,8 +16,9 @@
 #include "cmExecutionStatus.h"
 #include "cmList.h"
 #include "cmMakefile.h"
-#include "cmStateTypes.h"
+#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 
 #if defined(_WIN32)
 #  include "cmGlobalGenerator.h"
@@ -153,19 +153,20 @@ bool cmRuntimeDependencyArchive::Prepare()
       platform = "macos+macho";
     } else if (systemName == "Linux") {
       platform = "linux+elf";
+    } else if (systemName == "FreeBSD") {
+      platform = "freebsd+elf";
     }
   }
-  if (platform == "linux+elf") {
+  if (platform == "linux+elf" || platform == "freebsd+elf") {
     this->Linker = cm::make_unique<cmBinUtilsLinuxELFLinker>(this);
   } else if (platform == "windows+pe") {
     this->Linker = cm::make_unique<cmBinUtilsWindowsPELinker>(this);
   } else if (platform == "macos+macho") {
     this->Linker = cm::make_unique<cmBinUtilsMacOSMachOLinker>(this);
   } else {
-    std::ostringstream e;
-    e << "Invalid value for CMAKE_GET_RUNTIME_DEPENDENCIES_PLATFORM: "
-      << platform;
-    this->SetError(e.str());
+    this->SetError(
+      cmStrCat("Invalid value for CMAKE_GET_RUNTIME_DEPENDENCIES_PLATFORM: ",
+               platform));
     return false;
   }
 
@@ -178,19 +179,20 @@ bool cmRuntimeDependencyArchive::GetRuntimeDependencies(
   std::vector<std::string> const& modules)
 {
   for (auto const& exe : executables) {
-    if (!this->Linker->ScanDependencies(exe, cmStateEnums::EXECUTABLE)) {
+    if (!this->Linker->ScanDependencies(exe, cm::TargetType::EXECUTABLE)) {
       return false;
     }
   }
   for (auto const& lib : libraries) {
-    if (!this->Linker->ScanDependencies(lib, cmStateEnums::SHARED_LIBRARY)) {
+    if (!this->Linker->ScanDependencies(lib, cm::TargetType::SHARED_LIBRARY)) {
       return false;
     }
   }
-  return std::all_of(
-    modules.begin(), modules.end(), [this](std::string const& mod) -> bool {
-      return this->Linker->ScanDependencies(mod, cmStateEnums::MODULE_LIBRARY);
-    });
+  return std::all_of(modules.begin(), modules.end(),
+                     [this](std::string const& mod) -> bool {
+                       return this->Linker->ScanDependencies(
+                         mod, cm::TargetType::MODULE_LIBRARY);
+                     });
 }
 
 void cmRuntimeDependencyArchive::SetError(std::string const& e)
@@ -331,6 +333,12 @@ bool cmRuntimeDependencyArchive::IsPreExcluded(std::string const& name) const
 
 bool cmRuntimeDependencyArchive::IsPostExcluded(std::string const& name) const
 {
+  return this->IsPostExcluded(name, name);
+}
+
+bool cmRuntimeDependencyArchive::IsPostExcluded(
+  std::string const& name, std::string const& fileName) const
+{
   cmsys::RegularExpressionMatch match;
   auto const regexMatch =
     [&match, name](cmsys::RegularExpression const& regex) -> bool {
@@ -341,8 +349,8 @@ bool cmRuntimeDependencyArchive::IsPostExcluded(std::string const& name) const
       std::vector<cmsys::RegularExpression> const& regexes) -> bool {
     return std::any_of(regexes.begin(), regexes.end(), regexMatch);
   };
-  auto const fileMatch = [name](std::string const& file) -> bool {
-    return cmSystemTools::SameFile(file, name);
+  auto const fileMatch = [fileName](std::string const& file) -> bool {
+    return cmSystemTools::SameFile(file, fileName);
   };
   auto const fileSearch =
     [&fileMatch](std::vector<std::string> const& files) -> bool {
@@ -403,7 +411,11 @@ cmRuntimeDependencyArchive::GetRPaths() const
 bool cmRuntimeDependencyArchive::PlatformSupportsRuntimeDependencies(
   std::string const& platform)
 {
-  static std::set<std::string> const supportedPlatforms = { "Windows", "Linux",
-                                                            "Darwin" };
+  static std::set<std::string> const supportedPlatforms = {
+    "Windows",
+    "Linux",
+    "Darwin",
+    "FreeBSD",
+  };
   return supportedPlatforms.count(platform);
 }

@@ -8,7 +8,6 @@
 #include <functional>
 #include <iterator>
 #include <list>
-#include <sstream>
 #include <utility>
 
 #include <cm/optional>
@@ -53,6 +52,7 @@ auto const keyOR = "OR"_s;
 auto const keyParenL = "("_s;
 auto const keyParenR = ")"_s;
 auto const keyPOLICY = "POLICY"_s;
+auto const keyRULE = "RULE"_s;
 auto const keySTREQUAL = "STREQUAL"_s;
 auto const keySTRGREATER = "STRGREATER"_s;
 auto const keySTRGREATER_EQUAL = "STRGREATER_EQUAL"_s;
@@ -66,6 +66,7 @@ auto const keyVERSION_GREATER_EQUAL = "VERSION_GREATER_EQUAL"_s;
 auto const keyVERSION_LESS = "VERSION_LESS"_s;
 auto const keyVERSION_LESS_EQUAL = "VERSION_LESS_EQUAL"_s;
 auto const keyPATH_EQUAL = "PATH_EQUAL"_s;
+auto const keyPATH_IS_PREFIX = "PATH_IS_PREFIX"_s;
 
 cmSystemTools::CompareOp const MATCH2CMPOP[5] = {
   cmSystemTools::OP_LESS, cmSystemTools::OP_LESS_EQUAL,
@@ -115,6 +116,24 @@ bool looksLikeSpecialVariable(std::string const& var,
   // <prefix> + `{` + <varname> + `}`
   return ((prefix.size() + 3) <= varNameLen) &&
     cmHasPrefix(var, cmStrCat(prefix, '{')) && var[varNameLen - 1] == '}';
+}
+
+// CMP0223: an empty path used to be a prefix of every path.
+bool IsPrefixCMP0223(cmCMakePath const& prefix, cmMakefile& mf)
+{
+  if (!prefix.IsEmpty()) {
+    return false;
+  }
+  switch (mf.GetPolicyStatus(cmPolicies::CMP0223)) {
+    case cmPolicies::WARN:
+      mf.IssuePolicyWarning(cmPolicies::CMP0223);
+      CM_FALLTHROUGH;
+    case cmPolicies::OLD:
+      return true;
+    case cmPolicies::NEW:
+      break;
+  }
+  return false;
 }
 } // anonymous namespace
 
@@ -222,6 +241,7 @@ cmConditionEvaluator::cmConditionEvaluator(cmMakefile& makefile,
   : Makefile(makefile)
   , Backtrace(std::move(bt))
   , Policy139Status(makefile.GetPolicyStatus(cmPolicies::CMP0139))
+  , Policy222Status(makefile.GetPolicyStatus(cmPolicies::CMP0222))
 {
 }
 
@@ -495,6 +515,12 @@ bool cmConditionEvaluator::HandleLevel1(cmArgumentList& newArgs, std::string&,
       newArgs.ReduceOneArg(
         cmPolicies::GetPolicyID(args.next->GetValue().c_str(), pid), args);
     }
+    // does a rule exist
+    else if (this->IsKeyword(keyRULE, *args.current)) {
+      newArgs.ReduceOneArg(
+        static_cast<bool>(this->Makefile.FindRuleToUse(args.next->GetValue())),
+        args);
+    }
     // does a target exist
     else if (this->IsKeyword(keyTARGET, *args.current)) {
       newArgs.ReduceOneArg(static_cast<bool>(this->Makefile.FindTargetToUse(
@@ -576,9 +602,8 @@ bool cmConditionEvaluator::HandleLevel2(cmArgumentList& newArgs,
       auto const& rex = args.nextnext->GetValue();
       cmsys::RegularExpression regEntry;
       if (!regEntry.compile(rex)) {
-        std::ostringstream error;
-        error << "Regular expression \"" << rex << "\" cannot compile";
-        errorString = error.str();
+        errorString =
+          cmStrCat("Regular expression \"", rex, "\" cannot compile");
         status = MessageType::FATAL_ERROR;
         return false;
       }
@@ -675,6 +700,28 @@ bool cmConditionEvaluator::HandleLevel2(cmArgumentList& newArgs,
         this->Makefile.IssuePolicyWarning(
           cmPolicies::CMP0139, {},
           "PATH_EQUAL will be interpreted as an operator "
+          "when the policy is set to NEW.  "
+          "Since the policy is not set the OLD behavior will be used."_s);
+      }
+    }
+
+    else if (this->IsKeyword(keyPATH_IS_PREFIX, *args.next)) {
+
+      if (this->Policy222Status != cmPolicies::OLD &&
+          this->Policy222Status != cmPolicies::WARN) {
+
+        cmValue lhs = this->GetVariableOrString(*args.current);
+        cmValue rhs = this->GetVariableOrString(*args.nextnext);
+        cmCMakePath const prefix{ *lhs };
+        auto const result = prefix.IsPrefix(cmCMakePath{ *rhs }) ||
+          IsPrefixCMP0223(prefix, this->Makefile);
+        newArgs.ReduceTwoArgs(result, args);
+      }
+
+      else if (this->Policy222Status == cmPolicies::WARN) {
+        this->Makefile.IssuePolicyWarning(
+          cmPolicies::CMP0222, {},
+          "PATH_IS_PREFIX will be interpreted as an operator "
           "when the policy is set to NEW.  "
           "Since the policy is not set the OLD behavior will be used."_s);
       }

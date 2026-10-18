@@ -19,9 +19,9 @@
 #include "cmMakefile.h"
 #include "cmRange.h"
 #include "cmSourceFile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmXMLWriter.h"
 #include "cmake.h"
@@ -154,7 +154,8 @@ void Tree::BuildVirtualFolder(cmXMLWriter& xml) const
 void Tree::BuildVirtualFolderImpl(std::string& virtualFolders,
                                   std::string const& prefix) const
 {
-  virtualFolders += cmStrCat("CMake Files\\", prefix, this->path, "\\;");
+  virtualFolders = cmStrCat(std::move(virtualFolders), "CMake Files\\", prefix,
+                            this->path, "\\;");
   for (Tree const& folder : this->folders) {
     folder.BuildVirtualFolderImpl(virtualFolders,
                                   cmStrCat(prefix, this->path, '\\'));
@@ -293,7 +294,7 @@ void cmExtraCodeBlocksGenerator::CreateNewProjectFile(
     for (auto const& target : targets) {
       std::string targetName = target->GetName();
       switch (target->GetType()) {
-        case cmStateEnums::GLOBAL_TARGET: {
+        case cm::TargetType::GLOBAL_TARGET: {
           // Only add the global targets from CMAKE_BINARY_DIR,
           // not from the subdirs
           if (lg->GetCurrentBinaryDirectory() == lg->GetBinaryDirectory()) {
@@ -301,7 +302,7 @@ void cmExtraCodeBlocksGenerator::CreateNewProjectFile(
                                makeArgs);
           }
         } break;
-        case cmStateEnums::UTILITY:
+        case cm::TargetType::UTILITY:
           // Add all utility targets, except the Nightly/Continuous/
           // Experimental-"sub"targets as e.g. NightlyStart
           if ((cmHasLiteralPrefix(targetName, "Nightly") &&
@@ -316,11 +317,11 @@ void cmExtraCodeBlocksGenerator::CreateNewProjectFile(
           this->AppendTarget(xml, targetName, nullptr, make, lg, compiler,
                              makeArgs);
           break;
-        case cmStateEnums::EXECUTABLE:
-        case cmStateEnums::STATIC_LIBRARY:
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::OBJECT_LIBRARY: {
+        case cm::TargetType::EXECUTABLE:
+        case cm::TargetType::STATIC_LIBRARY:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::OBJECT_LIBRARY: {
           cmGeneratorTarget* gt = target.get();
           this->AppendTarget(xml, targetName, gt, make, lg, compiler,
                              makeArgs);
@@ -350,12 +351,12 @@ void cmExtraCodeBlocksGenerator::CreateNewProjectFile(
     auto const& targets = lg->GetGeneratorTargets();
     for (auto const& target : targets) {
       switch (target->GetType()) {
-        case cmStateEnums::EXECUTABLE:
-        case cmStateEnums::STATIC_LIBRARY:
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::OBJECT_LIBRARY:
-        case cmStateEnums::UTILITY: // can have sources since 2.6.3
+        case cm::TargetType::EXECUTABLE:
+        case cm::TargetType::STATIC_LIBRARY:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::OBJECT_LIBRARY:
+        case cm::TargetType::UTILITY: // can have sources since 2.6.3
         {
           std::vector<cmSourceFile*> sources;
           target->GetSourceFiles(
@@ -363,7 +364,7 @@ void cmExtraCodeBlocksGenerator::CreateNewProjectFile(
           for (cmSourceFile* s : sources) {
             // don't add source files from UTILITY target which have the
             // GENERATED property set:
-            if (target->GetType() == cmStateEnums::UTILITY &&
+            if (target->GetType() == cm::TargetType::UTILITY &&
                 s->GetIsGenerated()) {
               continue;
             }
@@ -497,7 +498,7 @@ void cmExtraCodeBlocksGenerator::AppendTarget(
   if (target) {
     int cbTargetType = this->GetCBTargetType(target);
     std::string workingDir = lg->GetCurrentBinaryDirectory();
-    if (target->GetType() == cmStateEnums::EXECUTABLE) {
+    if (target->GetType() == cm::TargetType::EXECUTABLE) {
       // Determine the directory where the executable target is created, and
       // set the working directory to this dir.
       cmValue runtimeOutputDir =
@@ -515,7 +516,7 @@ void cmExtraCodeBlocksGenerator::AppendTarget(
 
     std::string buildType = makefile->GetSafeDefinition("CMAKE_BUILD_TYPE");
     std::string location;
-    if (target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+    if (target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
       location = this->CreateDummyTargetFile(target);
     } else {
       location = target->GetLocation(buildType);
@@ -697,18 +698,18 @@ std::string cmExtraCodeBlocksGenerator::GetCBCompilerId(cmMakefile const* mf)
 int cmExtraCodeBlocksGenerator::GetCBTargetType(cmGeneratorTarget* target)
 {
   switch (target->GetType()) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       if ((target->IsWin32Executable(
             target->Makefile->GetSafeDefinition("CMAKE_BUILD_TYPE"))) ||
           (target->GetPropertyAsBool("MACOSX_BUNDLE"))) {
         return 0;
       }
       return 1;
-    case cmStateEnums::STATIC_LIBRARY:
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       return 2;
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       return 3;
     default:
       return 4;
@@ -723,8 +724,7 @@ std::string cmExtraCodeBlocksGenerator::BuildMakeCommand(
 {
   std::string command = make;
   if (!makeFlags.empty()) {
-    command += " ";
-    command += makeFlags;
+    command = cmStrCat(std::move(command), ' ', makeFlags);
   }
 
   std::string generator = this->GlobalGenerator->GetName();
@@ -733,29 +733,20 @@ std::string cmExtraCodeBlocksGenerator::BuildMakeCommand(
     // These need to be escaped, see
     // https://gitlab.kitware.com/cmake/cmake/-/issues/13952
     std::string makefileName = cmSystemTools::ConvertToOutputPath(makefile);
-    command += " /NOLOGO /f ";
-    command += makefileName;
-    command += " VERBOSE=1 ";
-    command += target;
+    command = cmStrCat(std::move(command), " /NOLOGO /f ", makefileName,
+                       " VERBOSE=1 ", target);
   } else if (generator == "MinGW Makefiles") {
     // no escaping of spaces in this case, see
     // https://gitlab.kitware.com/cmake/cmake/-/issues/10014
     std::string const& makefileName = makefile;
-    command += " -f \"";
-    command += makefileName;
-    command += "\" ";
-    command += " VERBOSE=1 ";
-    command += target;
+    command = cmStrCat(std::move(command), " -f \"", makefileName,
+                       "\" VERBOSE=1 ", target);
   } else if (generator == "Ninja") {
-    command += " -v ";
-    command += target;
+    command = cmStrCat(std::move(command), " -v ", target);
   } else {
     std::string makefileName = cmSystemTools::ConvertToOutputPath(makefile);
-    command += " -f \"";
-    command += makefileName;
-    command += "\" ";
-    command += " VERBOSE=1 ";
-    command += target;
+    command = cmStrCat(std::move(command), " -f \"", makefileName,
+                       "\" VERBOSE=1 ", target);
   }
   return command;
 }

@@ -30,6 +30,8 @@ cmake-env-variables(7)
    /envvar/CMAKE_PROGRAM_PATH
    /envvar/CMAKE_TLS_VERIFY
    /envvar/CMAKE_TLS_VERSION
+   /envvar/CMAKE_SYSTEM_ENVIRONMENT_ACTION
+   /envvar/CMAKE_SYSTEM_ENVIRONMENT_ID
    /envvar/NO_COLOR
    /envvar/SSL_CERT_DIR
    /envvar/SSL_CERT_FILE
@@ -83,6 +85,7 @@ cmake-env-variables(7)
 .. toctree::
    :maxdepth: 1
 
+   /envvar/ACPP_TARGETS
    /envvar/ASM_DIALECT
    /envvar/ASM_DIALECTFLAGS
    /envvar/CC
@@ -99,6 +102,7 @@ cmake-env-variables(7)
    /envvar/HIPCXX
    /envvar/HIPFLAGS
    /envvar/HIPHOSTCXX
+   /envvar/HIPSYCL_TARGETS
    /envvar/ISPC
    /envvar/ISPCFLAGS
    /envvar/OBJC
@@ -107,6 +111,8 @@ cmake-env-variables(7)
    /envvar/OBJCXXFLAGS
    /envvar/RC
    /envvar/RCFLAGS
+   /envvar/SYCLCXX
+   /envvar/SYCLFLAGS
    /envvar/SWIFTC
 
 CTest相关环境变量

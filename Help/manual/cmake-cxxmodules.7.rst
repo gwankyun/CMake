@@ -66,11 +66,14 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 ``import std``\ 支持
 ======================
 
+.. versionadded:: 4.5
+
 对\ ``import std``\ 的支持仅限于以下工具链和标准库组合：
 
 * Clang 18.1.2及更高版本，搭配标准库\ ``libc++``\ 或\ ``libstdc++`` 
 * MSVC toolset 14.36及更高版本（随Visual Studio 17.6及更高版本提供）
-* GCC 15及更高版本
+* GCC 15 and newer, with the exception of MacOS
+* GCC 16 and newer on MacOS
 
   .. note::
 
@@ -79,16 +82,12 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
 .. _`Ubuntu issue 2141579`: https://bugs.launchpad.net/ubuntu/+source/gcc-15/+bug/2141579
 
-:variable:`CMAKE_CXX_COMPILER_IMPORT_STD`\ 变量列出了活动C++工具链中支持\
-``import std``\ 的标准级别。  
+Only the :ref:`Ninja Generators` currently support ``import std`` because
+:ref:`Visual Studio Generators` do not support building :term:`BMIs <BMI>`
+for ``IMPORTED`` targets.
 
-此外，目前只有\ :ref:`Ninja Generators`\ 支持\ ``import std``，因为\
-:ref:`Visual Studio Generators`\ 不支持为\ ``IMPORTED``\ 目标构建\ :term:`BMIs <BMI>`。
-
-.. note::
-
-   仅当通过\ ``CMAKE_EXPERIMENTAL_CXX_IMPORT_STD``\ 开关启用了对\ ``import std``\
-   的实验性支持时，才提供此支持。
+``import std`` is available for all language standards which support C++ module
+scanning (ie, C++20 and newer).
 
 生成器支持
 =================
@@ -408,9 +407,6 @@ CMake使用的一般策略是“\ :term:`扫描`\ ”源文件以提取排序依
 在其内部目标表示结构（\ ``cmTarget``\ ）中跟踪这些信息。可以使用\
 :command:`target_sources`、\ :command:`target_compile_features`\ 和\
 :command:`set_property`\ 命令修改需要扫描的源文件集合。
-
-此外，目标可以使用\ :prop_tgt:`CXX_MODULE_STD`\ 目标属性来表示希望在目标的源文件\
-中使用\ ``import std``。
 
 生成
 ^^^^^^^^

@@ -10,8 +10,12 @@
 #include <string>
 #include <vector>
 
+#include <cm/string_view>
+
 #include "cmValue.h"
 
+template <typename T>
+class BT;
 class cmGeneratorTarget;
 class cmGlobalCommonGenerator;
 class cmLocalCommonGenerator;
@@ -68,12 +72,12 @@ protected:
   std::string GetManifests(std::string const& config);
   std::string GetAIXExports(std::string const& config);
   std::string GenerateCodeCheckRules(
-    cmSourceFile const& source, std::string& compilerLauncher,
+    cmSourceFile const& source, std::vector<std::string>& compilerLauncher,
     std::string const& cmakeCmd, std::string const& config,
     std::function<std::string(std::string const&)> const& pathConverter);
 
-  std::string GetCompilerLauncher(std::string const& lang,
-                                  std::string const& config);
+  std::vector<std::string> GetCompilerLauncher(std::string const& lang,
+                                               std::string const& config);
 
   struct LinkedTargetDirs
   {
@@ -85,14 +89,23 @@ protected:
                                               std::string const& config) const;
   std::string ComputeTargetCompilePDB(std::string const& config) const;
 
-  std::string GetLinkerLauncher(std::string const& config);
+  std::vector<std::string> GetLinkerLauncher(std::string const& config);
+
+  std::string ConvertLauncherToShell(
+    std::vector<std::string> const& launcher) const;
 
   bool HaveRequiredLanguages(std::vector<cmSourceFile const*> const& sources,
+                             std::string const& config,
                              std::set<std::string>& languagesNeeded) const;
 
   void ComputeRustFlagsForObjects(std::string& linkCrates,
                                   std::string& nativeObjects,
                                   std::vector<std::string> const& objects);
+
+  std::vector<std::string> ParseWrappers(
+    std::vector<BT<std::string>> const& wrappers, cm::string_view prefix,
+    cm::string_view targetPropName, std::string const& targetName,
+    std::string const& config, std::string const& lang) const;
 
 private:
   using ByLanguageMap = std::map<std::string, std::string>;

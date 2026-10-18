@@ -16,17 +16,29 @@ cmake-compile-features(7)
 虽然特性通常在编程语言标准中指定，但CMake提供了一个基于特性的细粒度处理的主要用户界面，而不\
 是引入相应特性的语言标准。
 
-:prop_gbl:`CMAKE_C_KNOWN_FEATURES`、:prop_gbl:`CMAKE_CUDA_KNOWN_FEATURES`\ 和\
-:prop_gbl:`CMAKE_CXX_KNOWN_FEATURES`\ 全局属性包含CMake已知的所有特性，\
+:prop_gbl:`CMAKE_C_KNOWN_FEATURES`、:prop_gbl:`CMAKE_CUDA_KNOWN_FEATURES`、\
+:prop_gbl:`CMAKE_CXX_KNOWN_FEATURES`\ 和 :prop_gbl:`CMAKE_SYCL_KNOWN_FEATURES` 全局属性包含CMake已知的所有特性，\
 不管编译器是否支持这些特性。:variable:`CMAKE_C_COMPILE_FEATURES`、\
-:variable:`CMAKE_CUDA_COMPILE_FEATURES`\ 和\ :variable:`CMAKE_CXX_COMPILE_FEATURES`\
+:variable:`CMAKE_CUDA_COMPILE_FEATURES`、 :variable:`CMAKE_CXX_COMPILE_FEATURES` 和\ :variable:`CMAKE_SYCL_COMPILE_FEATURES`\
 变量包含CMake知道的编译器所知道的所有特性，不管使用它们需要的语言标准或编译标志。
+
+.. note::
+   SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有一些例外，比如CMake使用\
 ``cxx_final``\ 和\ ``cxx_override``\ 而不是Clang使用的单个\ ``cxx_override_control``。
 
 注意，对于\ ``OBJC``\ 或\ ``OBJCXX``\ 语言，没有单独的编译特性、属性或变量。它们分别基于\
 ``C``\ 或\ ``C++``，因此应该使用它们对应的基本语言的属性和变量。
+
+SYCL uses the ``cxx_*`` names for granular C++ compile features in addition to
+the ``sycl_cxx_std_*`` meta-features.  For a target containing only SYCL sources,
+these granular features select the target's :prop_tgt:`SYCL_CXX_STANDARD` rather
+than its :prop_tgt:`CXX_STANDARD`.
+
+.. note::
+   SYCL compile features are experimental and gated by
+   ``CMAKE_EXPERIMENTAL_SYCL``.
 
 编译特性需求
 ============================
@@ -238,6 +250,18 @@ CMake目前知道的\ :prop_tgt:`CUDA标准 <CUDA_STANDARD>`\ 及其相关的元
 
 * ``Clang``: Clang 编译器 5.0+。
 * ``NVIDIA``: NVIDIA nvcc 编译器 7.5+。
+
+CMake is currently aware of the
+:prop_tgt:`C++ standards for SYCL <SYCL_CXX_STANDARD>` and their compile
+features available from the following
+:variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>`:
+
+* ``AdaptiveCpp``: AdaptiveCpp compiler.
+* ``Clang``: SYCL-capable Clang distributions.
+* ``IntelLLVM``: Intel oneAPI DPC++/C++ compiler.
+
+.. note::
+   SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 .. _`Language Standard Flags`:
 

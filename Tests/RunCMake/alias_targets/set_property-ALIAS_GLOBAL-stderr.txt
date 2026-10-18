@@ -1,0 +1,2 @@
+CMake Error at set_property-ALIAS_GLOBAL\.cmake:[0-9]+ \(set_property\):
+  set_property can not set property ALIAS_GLOBAL on an ALIAS target: alias

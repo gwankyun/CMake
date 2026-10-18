@@ -21,10 +21,10 @@
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmOutputConverter.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 
 cmExportBuildCMakeConfigGenerator::cmExportBuildCMakeConfigGenerator(
   cmDiagnosticContext context)
@@ -41,11 +41,12 @@ bool cmExportBuildCMakeConfigGenerator::GenerateMainFile(std::ostream& os)
     std::string sep;
     bool generatedInterfaceRequired = false;
     auto visitor = [&](cmGeneratorTarget const* te) {
-      expectedTargets += sep + this->Namespace + te->GetExportName();
+      expectedTargets = cmStrCat(std::move(expectedTargets), sep,
+                                 this->Namespace, te->GetExportName());
       sep = " ";
 
       generatedInterfaceRequired |=
-        this->GetExportTargetType(te) == cmStateEnums::INTERFACE_LIBRARY;
+        this->GetExportTargetType(te) == cm::TargetType::INTERFACE_LIBRARY;
     };
 
     if (!this->CollectExports(visitor)) {
@@ -121,13 +122,14 @@ void cmExportBuildCMakeConfigGenerator::GenerateImportTargetsConfig(
     // Collect import properties for this target.
     ImportPropertyMap properties;
 
-    if (this->GetExportTargetType(target) != cmStateEnums::INTERFACE_LIBRARY) {
+    if (this->GetExportTargetType(target) !=
+        cm::TargetType::INTERFACE_LIBRARY) {
       this->SetImportLocationProperty(config, suffix, target, properties);
     }
     if (!properties.empty()) {
       // Get the rest of the target details.
       if (this->GetExportTargetType(target) !=
-          cmStateEnums::INTERFACE_LIBRARY) {
+          cm::TargetType::INTERFACE_LIBRARY) {
         this->SetImportDetailProperties(config, suffix, target, properties);
         this->SetImportLinkInterface(config, suffix,
                                      cmGeneratorExpression::BuildInterface,
@@ -153,7 +155,7 @@ void cmExportBuildCMakeConfigGenerator::GenerateImportTargetsConfig(
             !cmSystemTools::FileIsFullPath(importedXcFrameworkLocation)) {
           importedXcFrameworkLocation =
             cmStrCat(this->LG->GetCurrentBinaryDirectory(), '/',
-                     importedXcFrameworkLocation);
+                     std::move(importedXcFrameworkLocation));
         }
       }
       this->GenerateImportPropertyCode(os, config, suffix, target, properties,

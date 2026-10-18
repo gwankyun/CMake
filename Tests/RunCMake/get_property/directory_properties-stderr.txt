@@ -4,6 +4,12 @@ get_directory_property: -->value<--
 get_property: -->value<--
 get_directory_property: --><--
 get_property: --><--
+CMake Warning \(deprecated\) at directory_properties/CMakeLists\.txt:2 \(subdirs\):
+  The 'subdirs' command has been superseded\.  Use the 'add_subdirectory'
+  command instead\.
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.
+
 get_directory_property: -->[^<;]*Tests/RunCMake/get_property/directory_properties<--
 get_property: -->[^<;]*Tests/RunCMake/get_property/directory_properties<--
 get_directory_property: -->[^<;]*Tests/RunCMake/get_property/directory_properties/sub1;[^<;]*Tests/RunCMake/get_property/directory_properties/sub2<--
@@ -16,6 +22,10 @@ get_directory_property: -->Imported1Top;Imported2Top<--
 get_property: -->Imported1Top;Imported2Top<--
 get_directory_property: -->Imported1Sub;Imported2Sub<--
 get_property: -->Imported1Sub;Imported2Sub<--
+get_directory_property: -->Rule1Top;Rule2Top<--
+get_property: -->Rule1Top;Rule2Top<--
+get_directory_property: -->Rule1Sub;Rule2Sub<--
+get_property: -->Rule1Sub;Rule2Sub<--
 get_directory_property: -->[^<;]*/Tests/RunCMake/get_property/directory_properties-build<--
 get_property: -->[^<;]*/Tests/RunCMake/get_property/directory_properties-build<--
 get_directory_property: -->[^<;]*/RunCMake/get_property<--

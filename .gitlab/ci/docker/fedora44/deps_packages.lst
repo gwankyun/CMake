@@ -35,6 +35,7 @@ zlib-devel
 # Install documentation tools.
 python3-sphinx
 python3-sphinxcontrib-qthelp
+python3-sphinx-copybutton
 qt5-qttools-devel
 qt6-qttools-devel
 texinfo
@@ -138,6 +139,8 @@ SDL-devel
 sqlite-devel
 swig
 systemd-devel
+tcl-devel
+tk-devel
 unixODBC-devel
 wxGTK-devel
 xalan-c-devel
@@ -146,3 +149,7 @@ xz-devel
 
 # Packages needed to test third-party binaries.
 ncurses-compat-libs
+
+# Packages needed to test SYCL with AdaptiveCpp.
+clang20
+libomp20-devel

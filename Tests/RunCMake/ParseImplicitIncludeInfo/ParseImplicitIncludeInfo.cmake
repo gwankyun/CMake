@@ -41,6 +41,7 @@ set(targets
     linux_nostdinc-C-XL-12.1.0 linux_nostdinc-CXX-XL-12.1.0
     linux_nostdinc_i-C-XL-12.1.0 linux_nostdinc-CXX-XL-12.1.0
   linux-C-XL-16.1.0.0 linux-CXX-XL-16.1.0.0
+  linux-CUDA-Clang-23.1.0
   linux-CUDA-NVIDIA-10.1.168-CLANG linux-CUDA-NVIDIA-10.1.168-XLClang-v-empty
     linux-CUDA-NVIDIA-9.2.148-GCC
   linux-custom_clang-C-Clang-13.0.0 linux-custom_clang-CXX-Clang-13.0.0
@@ -52,16 +53,17 @@ set(targets
   sunos5.10_sparc32-C-GNU-5.5.0 sunos5.10_sparc32-CXX-GNU-5.5.0 sunos5.10_sparc32-Fortran-GNU-5.5.0
   sunos5.11_i386-C-GNU-5.5.0 sunos5.11_i386-CXX-GNU-5.5.0 sunos5.11_i386-Fortran-GNU-5.5.0
   windows_x86_64-CUDA-NVIDIA-13.1.115
+  windows_x86_64-C-GNU-13.2.0-space windows_x86_64-CXX-GNU-13.2.0-space windows_x86_64-Fortran-GNU-13.2.0-space
   )
 
-if(CMAKE_HOST_WIN32)
-  # The KWSys actual-case cache breaks case sensitivity on Windows.
-  list(FILTER targets EXCLUDE REGEX "-XL|-SunPro")
-else()
-  # Windows drive letters are not recognized as absolute on other platforms.
-  list(FILTER targets EXCLUDE REGEX "mingw")
-  # Windows path separators are not parsed properly on other platforms
-  list(FILTER targets EXCLUDE REGEX "CUDA-NVIDIA")
+if(NOT CMAKE_HOST_WIN32)
+  list(REMOVE_ITEM targets
+    # Windows drive letters are not recognized as absolute on other platforms.
+    mingw.org-C-GNU-4.9.3 mingw.org-CXX-GNU-4.9.3
+    windows_x86_64-C-GNU-13.2.0-space windows_x86_64-CXX-GNU-13.2.0-space windows_x86_64-Fortran-GNU-13.2.0-space
+    # Windows path separators are not parsed properly on other platforms
+    windows_x86_64-CUDA-NVIDIA-13.1.115
+  )
 endif()
 
 include(${CMAKE_ROOT}/Modules/CMakeParseImplicitIncludeInfo.cmake)

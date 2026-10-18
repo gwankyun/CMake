@@ -1,0 +1,9 @@
+Name: BuiltinDirs
+Description: Uses built-in directory variables
+Version: 1.0.0
+
+includedir=${pcfiledir}/include
+libdir=${pcfiledir}/lib
+
+Cflags: -I${includedir} -DROOT=${pc_sysrootdir}/include -DTOP=${pc_top_builddir}/generated
+Libs: -L${libdir} -lbuiltindirs

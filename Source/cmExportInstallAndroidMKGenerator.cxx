@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <functional>
 #include <memory>
-#include <sstream>
+#include <ostream>
 #include <vector>
 
 #include "cmExportSet.h"
@@ -13,11 +13,11 @@
 #include "cmGeneratorTarget.h"
 #include "cmInstallExportGenerator.h"
 #include "cmInstallTargetGenerator.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetExport.h"
+#include "cmTargetTypes.h"
 
 cmExportInstallAndroidMKGenerator::cmExportInstallAndroidMKGenerator(
   cmInstallExportGenerator* iegen)
@@ -28,12 +28,10 @@ cmExportInstallAndroidMKGenerator::cmExportInstallAndroidMKGenerator(
 void cmExportInstallAndroidMKGenerator::ReportDuplicateTarget(
   std::string const& targetName) const
 {
-  std::ostringstream e;
-  e << "install(EXPORT_ANDROID_MK \"" << this->GetExportSet()->GetName()
-    << "\" ...) "
-    << "includes target \"" << targetName
-    << "\" more than once in the export set.";
-  this->ReportError(e.str());
+  this->ReportError(cmStrCat("install(EXPORT_ANDROID_MK \"",
+                             this->GetExportSet()->GetName(),
+                             "\" ...) includes target \"", targetName,
+                             "\" more than once in the export set."));
 }
 
 bool cmExportInstallAndroidMKGenerator::GenerateMainFile(std::ostream& os)
@@ -82,7 +80,7 @@ void cmExportInstallAndroidMKGenerator::GenerateImportHeaderCode(
   for (std::unique_ptr<cmTargetExport> const& te :
        this->IEGen->GetExportSet()->GetTargetExports()) {
     // Collect import properties for this target.
-    if (te->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY) {
+    if (te->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY) {
       continue;
     }
     std::string dest;
@@ -98,7 +96,7 @@ void cmExportInstallAndroidMKGenerator::GenerateImportHeaderCode(
 
 void cmExportInstallAndroidMKGenerator::GenerateImportTargetCode(
   std::ostream& os, cmGeneratorTarget const* target,
-  cmStateEnums::TargetType /*targetType*/)
+  cm::TargetType /*targetType*/)
 {
   std::string targetName = cmStrCat(this->Namespace, target->GetExportName());
   os << "include $(CLEAR_VARS)\n";

@@ -47,7 +47,7 @@ void processLinkDirectories(cmGeneratorTarget const* tgt,
             cmStrCat("Target \"", targetName,
                      "\" contains relative path"
                      " in its INTERFACE_LINK_DIRECTORIES:\n  \"",
-                     entryDirectory, "\""));
+                     entryDirectory, '"'));
           return;
         }
         switch (tgt->GetPolicyStatusCMP0081()) {
@@ -76,7 +76,8 @@ void processLinkDirectories(cmGeneratorTarget const* tgt,
       if (uniqueDirectories.insert(entryDirectory).second) {
         directories.emplace_back(entryDirectory, entry.Backtrace);
         if (debugDirectories) {
-          usedDirectories += cmStrCat(" * ", entryDirectory, '\n');
+          usedDirectories =
+            cmStrCat(std::move(usedDirectories), " * ", entryDirectory, '\n');
         }
       }
     }

@@ -14,6 +14,9 @@ add_compile_options
 
   链接时不使用这些选项。参见\ :command:`add_link_options`\ 命令。
 
+.. |target_command_name| replace:: :command:`target_compile_options`
+.. include:: include/NON_TARGET_NOTE.rst
+
 参数
 ^^^^^^^^^
 

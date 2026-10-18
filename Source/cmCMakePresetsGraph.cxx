@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <functional>
 #include <iomanip>
 #include <iostream>
@@ -11,6 +12,7 @@
 #include <utility>
 
 #include <cm/memory>
+#include <cm/string_view>
 
 #include "cmsys/RegularExpression.hxx"
 
@@ -62,6 +64,21 @@ using ImmediateMacroExpander =
 using cmCMakePresetsGraphInternal::ExpandMacros;
 
 bool gSkipNewLine = true;
+
+char const* WorkflowStepTypeToString(WorkflowPreset::WorkflowStep::Type type)
+{
+  switch (type) {
+    case WorkflowPreset::WorkflowStep::Type::Configure:
+      return "configure";
+    case WorkflowPreset::WorkflowStep::Type::Build:
+      return "build";
+    case WorkflowPreset::WorkflowStep::Type::Test:
+      return "test";
+    case WorkflowPreset::WorkflowStep::Type::Package:
+      return "package";
+  }
+  return "";
+}
 
 void InheritString(std::string& child, std::string const& parent)
 {
@@ -139,14 +156,14 @@ bool VisitPreset(
     if (parent == presets.end()) {
       cmCMakePresetsErrors::INVALID_PRESET_NAMED(
         preset.Name, preset.kind(), &graph.parseState,
-        cmStrCat("Could not find inherited preset \"", i, "\""));
+        cmStrCat("Could not find inherited preset \"", i, '"'));
       return false;
     }
 
     auto& parentPreset = parent->second.Unexpanded;
     if (!preset.OriginFile->ReachableFiles.count(parentPreset.OriginFile)) {
       cmCMakePresetsErrors::INHERITED_PRESET_UNREACHABLE_FROM_FILE(
-        preset.Name, preset.kind(), &graph.parseState);
+        preset.Name, i, preset.kind(), &graph.parseState);
       return false;
     }
 
@@ -290,7 +307,7 @@ bool CheckExpandMacros(ConfigurePreset const& preset,
   if (!binaryDir.empty()) {
     if (graph) {
       if (!cmSystemTools::FileIsFullPath(binaryDir)) {
-        binaryDir = cmStrCat(graph->SourceDir, '/', binaryDir);
+        binaryDir = cmStrCat(graph->SourceDir, '/', std::move(binaryDir));
       }
       out->BinaryDir = cmSystemTools::CollapseFullPath(binaryDir);
       cmSystemTools::ConvertToUnixSlashes(out->BinaryDir);
@@ -307,7 +324,7 @@ bool CheckExpandMacros(ConfigurePreset const& preset,
 
     if (graph) {
       if (!cmSystemTools::FileIsFullPath(installDir)) {
-        installDir = cmStrCat(graph->SourceDir, '/', installDir);
+        installDir = cmStrCat(graph->SourceDir, '/', std::move(installDir));
       }
       out->InstallDir = cmSystemTools::CollapseFullPath(installDir);
       cmSystemTools::ConvertToUnixSlashes(out->InstallDir);
@@ -511,22 +528,28 @@ ExpandMacroResult VisitEnv(std::string& value, CycleStatus& status,
   return ExpandMacroResult::Ok;
 }
 
-void PrintPresets(
-  std::vector<cmCMakePresetsGraph::Preset const*> const& presets)
+struct PresetListEntry
+{
+  cmCMakePresetsGraph::Preset const* Preset;
+  cm::optional<std::string> UnavailableReason;
+};
+
+void PrintPresets(std::vector<PresetListEntry> const& presets)
 {
   if (presets.empty()) {
     return;
   }
 
-  auto presetWithLongestName =
-    std::max_element(presets.begin(), presets.end(),
-                     [](cmCMakePresetsGraph::Preset const* a,
-                        cmCMakePresetsGraph::Preset const* b) {
-                       return a->Name.length() < b->Name.length();
-                     });
-  auto longestLength = (*presetWithLongestName)->Name.length();
+  auto presetWithLongestName = std::max_element(
+    presets.begin(), presets.end(),
+    [](PresetListEntry const& a, PresetListEntry const& b) {
+      return a.Preset->Name.length() < b.Preset->Name.length();
+    });
+  auto longestLength = presetWithLongestName->Preset->Name.length();
 
-  for (auto const* preset : presets) {
+  for (auto entryIt = presets.begin(); entryIt != presets.end(); ++entryIt) {
+    auto const& entry = *entryIt;
+    auto const* preset = entry.Preset;
     std::string name = cmStrCat("  \"", preset->Name, '"');
     if (!preset->DisplayName.empty()) {
       int const width = static_cast<int>(longestLength + name.length() -
@@ -536,38 +559,106 @@ void PrintPresets(
     } else {
       std::cout << name << '\n';
     }
+    if (entry.UnavailableReason) {
+      std::cout << "    Unavailable: " << *entry.UnavailableReason << '\n';
+      if (entryIt + 1 != presets.end()) {
+        std::cout << '\n';
+      }
+    }
   }
 }
 
-struct AlwaysTrue
+template <typename PresetType>
+cm::optional<std::string> GetUnavailableReason(
+  cmCMakePresetsGraph::PresetPair<PresetType> const& preset)
 {
-  template <typename T>
-  constexpr bool operator()(T const&) const noexcept
-  {
-    return true;
+  if (preset.Unexpanded.Hidden) {
+    return "hidden";
   }
-};
+  if (!preset.Expanded) {
+    // Expansion errors abort preset loading.  A missing expanded preset means
+    // expansion was ignored, such as for an unsupported vendor macro.
+    return "unsupported macro expansion";
+  }
+  if (!preset.Expanded->ConditionResult) {
+    auto const& condition = preset.Expanded->ConditionEvaluator;
+    return cmStrCat("condition evaluated to false",
+                    !condition || condition->ConditionJson.empty()
+                      ? ""
+                      : cmStrCat(": ", condition->ConditionJson));
+  }
+  return cm::nullopt;
+}
 
-template <typename PresetType, typename Filter = AlwaysTrue>
+template <typename PresetType>
+cm::optional<std::string> GetUnavailableReason(
+  std::string const& name,
+  std::map<std::string, PresetPair<PresetType>> const& presets)
+{
+  auto const preset = presets.find(name);
+  if (preset == presets.end()) {
+    return cmStrCat(PresetType::kind(), " preset \"", name,
+                    "\" does not exist");
+  }
+  auto reason = GetUnavailableReason(preset->second);
+  if (!reason) {
+    return cm::nullopt;
+  }
+  return cmStrCat(PresetType::kind(), " preset \"", name, "\": ", *reason);
+}
+
+cm::optional<std::string> GetUnavailableReason(
+  std::string const& name,
+  std::map<std::string, PresetPair<ConfigurePreset>> const& presets,
+  cmCMakePresetsGraph::ConfigurePresetUsabilityCheck const&
+    additionalUsabilityCheck)
+{
+  auto const preset = presets.find(name);
+  if (preset == presets.end()) {
+    return cmStrCat("configure preset \"", name, "\" does not exist");
+  }
+  auto reason = GetUnavailableReason(preset->second);
+  if (!reason && additionalUsabilityCheck) {
+    assert(preset->second.Expanded);
+    reason = additionalUsabilityCheck(*preset->second.Expanded);
+  }
+  if (!reason) {
+    return cm::nullopt;
+  }
+  return cmStrCat("configure preset \"", name, "\": ", *reason);
+}
+
+template <typename PresetType, typename UsabilityCheck>
 void PrintPresetList(
   cmCMakePresetsGraph const* const graph,
   std::map<std::string, cmCMakePresetsGraph::PresetPair<PresetType>>
     cmCMakePresetsGraph::*data,
-  std::vector<std::string> cmCMakePresetsGraph::*index, Filter filter = {})
+  std::vector<std::string> cmCMakePresetsGraph::*index,
+  cmCMakePresetsGraph::PresetListMode mode,
+  UsabilityCheck const& additionalUsabilityCheck)
 {
-  std::vector<cmCMakePresetsGraph::Preset const*> presets;
+  std::vector<PresetListEntry> presets;
   presets.reserve((graph->*index).size());
-  for (auto const& p : graph->*index) {
-    auto const& preset = (graph->*data).at(p);
-    if (!preset.Unexpanded.Hidden && preset.Expanded &&
-        preset.Expanded->ConditionResult && filter(preset.Unexpanded)) {
-      presets.push_back(
-        static_cast<cmCMakePresetsGraph::Preset const*>(&preset.Unexpanded));
+  for (auto const& name : graph->*index) {
+    auto const& preset = (graph->*data).at(name);
+    if (preset.Unexpanded.Hidden) {
+      continue;
+    }
+    auto reason = GetUnavailableReason(preset);
+    if (!reason) {
+      assert(preset.Expanded);
+      reason = additionalUsabilityCheck(*preset.Expanded);
+    }
+    if (mode == cmCMakePresetsGraph::PresetListMode::Defined || !reason) {
+      presets.push_back({ &preset.Unexpanded, std::move(reason) });
     }
   }
 
   if (!presets.empty()) {
-    std::cout << (gSkipNewLine ? "" : "\n") << "Available "
+    std::cout << (gSkipNewLine ? "" : "\n")
+              << (mode == cmCMakePresetsGraph::PresetListMode::Defined
+                    ? "Defined "
+                    : "Available ")
               << PresetType::kind() << " presets:\n\n";
     gSkipNewLine = false;
     PrintPresets(presets);
@@ -700,10 +791,13 @@ namespace {
 template <typename T>
 bool SetupWorkflowConfigurePreset(T const& preset,
                                   ConfigurePreset const*& configurePreset,
+                                  char const*, std::string const&,
                                   cmJSONState* state)
 {
   if (preset.ConfigurePreset != configurePreset->Name) {
-    cmCMakePresetsErrors::INVALID_WORKFLOW_STEPS(configurePreset->Name, state);
+    cmCMakePresetsErrors::WORKFLOW_STEP_CONFIGURE_PRESET_MISMATCH(
+      preset.kind(), preset.Name, preset.ConfigurePreset,
+      configurePreset->Name, state);
     return false;
   }
   return true;
@@ -712,7 +806,7 @@ bool SetupWorkflowConfigurePreset(T const& preset,
 template <>
 bool SetupWorkflowConfigurePreset<ConfigurePreset>(
   ConfigurePreset const& preset, ConfigurePreset const*& configurePreset,
-  cmJSONState*)
+  char const*, std::string const&, cmJSONState*)
 {
   configurePreset = &preset;
   return true;
@@ -722,20 +816,23 @@ template <typename T>
 bool TryReachPresetFromWorkflow(
   WorkflowPreset const& origin,
   std::map<std::string, PresetPair<T>> const& presets, std::string const& name,
-  ConfigurePreset const*& configurePreset, cmJSONState* state)
+  char const* workflowStepType, ConfigurePreset const*& configurePreset,
+  cmJSONState* state)
 {
   auto it = presets.find(name);
   if (it == presets.end()) {
-    cmCMakePresetsErrors::INVALID_WORKFLOW_STEPS(name, state);
+    cmCMakePresetsErrors::INVALID_WORKFLOW_STEPS(workflowStepType, name,
+                                                 state);
     return false;
   }
   if (!origin.OriginFile->ReachableFiles.count(
         it->second.Unexpanded.OriginFile)) {
-    cmCMakePresetsErrors::WORKFLOW_STEP_UNREACHABLE_FROM_FILE(name, state);
+    cmCMakePresetsErrors::WORKFLOW_STEP_UNREACHABLE_FROM_FILE(workflowStepType,
+                                                              name, state);
     return false;
   }
-  return SetupWorkflowConfigurePreset<T>(it->second.Unexpanded,
-                                         configurePreset, state);
+  return SetupWorkflowConfigurePreset<T>(
+    it->second.Unexpanded, configurePreset, workflowStepType, name, state);
 }
 }
 
@@ -947,6 +1044,13 @@ bool cmCMakePresetsGraph::ConfigurePreset::VisitPresetAfterInherit(
       auto const ei = preset.Errors.find(w.first);
       if (ei != preset.Errors.end()) {
         if (w.second == false && ei->second == true) {
+          cm::string_view const diagnostic =
+            version < 12 && w.first == cmDiagnostics::CMD_AUTHOR
+            ? cm::string_view{ "dev" }
+            : cmCMakePresetsGraphInternal::GetDiagnosticJSONName(w.first);
+          this->ErrorDetail = cmStrCat("\"errors.", diagnostic,
+                                       "\" is enabled while \"warnings.",
+                                       diagnostic, "\" is disabled");
           return false;
         }
       }
@@ -1208,6 +1312,54 @@ std::string cmCMakePresetsGraph::GetGeneratorForPreset(
   return {};
 }
 
+template <typename T>
+bool cmCMakePresetsGraph::ResolveDependentPresets(
+  std::map<std::string, PresetPair<T>>& presets)
+{
+  for (auto& it : presets) {
+    if (!it.second.Unexpanded.Hidden) {
+      auto const configurePreset =
+        this->ConfigurePresets.find(it.second.Unexpanded.ConfigurePreset);
+      if (configurePreset == this->ConfigurePresets.end()) {
+        cmCMakePresetsErrors::CONFIGURE_PRESET_NOT_FOUND(
+          it.first, T::kind(), it.second.Unexpanded.ConfigurePreset,
+          &this->parseState);
+        return false;
+      }
+      if (!it.second.Unexpanded.OriginFile->ReachableFiles.count(
+            configurePreset->second.Unexpanded.OriginFile)) {
+        cmCMakePresetsErrors::CONFIGURE_PRESET_UNREACHABLE_FROM_FILE(
+          it.first, T::kind(), it.second.Unexpanded.ConfigurePreset,
+          &this->parseState);
+        return false;
+      }
+      if (it.second.Unexpanded.InheritConfigureEnvironment.value_or(true)) {
+        it.second.Unexpanded.Environment.insert(
+          configurePreset->second.Unexpanded.Environment.begin(),
+          configurePreset->second.Unexpanded.Environment.end());
+      }
+    }
+    if (!ExpandMacros(this, it.second.Unexpanded, it.second.Expanded)) {
+      cmCMakePresetsErrors::INVALID_MACRO_EXPANSION(it.first,
+                                                    &this->parseState);
+      return false;
+    }
+  }
+  return true;
+}
+
+template bool
+cmCMakePresetsGraph::ResolveDependentPresets<cmCMakePresetsGraph::BuildPreset>(
+  std::map<std::string, PresetPair<cmCMakePresetsGraph::BuildPreset>>&);
+
+template bool
+cmCMakePresetsGraph::ResolveDependentPresets<cmCMakePresetsGraph::TestPreset>(
+  std::map<std::string, PresetPair<cmCMakePresetsGraph::TestPreset>>&);
+
+template bool cmCMakePresetsGraph::ResolveDependentPresets<
+  cmCMakePresetsGraph::PackagePreset>(
+  std::map<std::string, PresetPair<cmCMakePresetsGraph::PackagePreset>>&);
+
 bool cmCMakePresetsGraph::ReadProjectPresetsInternal(
   std::string const& presetsFile, ReadOption readFilesOption)
 {
@@ -1271,94 +1423,10 @@ bool cmCMakePresetsGraph::ReadProjectPresetsInternal(
     }
   }
 
-  for (auto& it : this->BuildPresets) {
-    if (!it.second.Unexpanded.Hidden) {
-      auto const configurePreset =
-        this->ConfigurePresets.find(it.second.Unexpanded.ConfigurePreset);
-      if (configurePreset == this->ConfigurePresets.end()) {
-        cmCMakePresetsErrors::INVALID_CONFIGURE_PRESET(it.first,
-                                                       &this->parseState);
-        return false;
-      }
-      if (!it.second.Unexpanded.OriginFile->ReachableFiles.count(
-            configurePreset->second.Unexpanded.OriginFile)) {
-        cmCMakePresetsErrors::CONFIGURE_PRESET_UNREACHABLE_FROM_FILE(
-          it.first, &this->parseState);
-        return false;
-      }
-
-      if (it.second.Unexpanded.InheritConfigureEnvironment.value_or(true)) {
-        it.second.Unexpanded.Environment.insert(
-          configurePreset->second.Unexpanded.Environment.begin(),
-          configurePreset->second.Unexpanded.Environment.end());
-      }
-    }
-
-    if (!ExpandMacros(this, it.second.Unexpanded, it.second.Expanded)) {
-      cmCMakePresetsErrors::INVALID_MACRO_EXPANSION(it.first,
-                                                    &this->parseState);
-      return false;
-    }
-  }
-
-  for (auto& it : this->TestPresets) {
-    if (!it.second.Unexpanded.Hidden) {
-      auto const configurePreset =
-        this->ConfigurePresets.find(it.second.Unexpanded.ConfigurePreset);
-      if (configurePreset == this->ConfigurePresets.end()) {
-        cmCMakePresetsErrors::INVALID_CONFIGURE_PRESET(it.first,
-                                                       &this->parseState);
-        return false;
-      }
-      if (!it.second.Unexpanded.OriginFile->ReachableFiles.count(
-            configurePreset->second.Unexpanded.OriginFile)) {
-        cmCMakePresetsErrors::CONFIGURE_PRESET_UNREACHABLE_FROM_FILE(
-          it.first, &this->parseState);
-        return false;
-      }
-
-      if (it.second.Unexpanded.InheritConfigureEnvironment.value_or(true)) {
-        it.second.Unexpanded.Environment.insert(
-          configurePreset->second.Unexpanded.Environment.begin(),
-          configurePreset->second.Unexpanded.Environment.end());
-      }
-    }
-
-    if (!ExpandMacros(this, it.second.Unexpanded, it.second.Expanded)) {
-      cmCMakePresetsErrors::INVALID_MACRO_EXPANSION(it.first,
-                                                    &this->parseState);
-      return false;
-    }
-  }
-
-  for (auto& it : this->PackagePresets) {
-    if (!it.second.Unexpanded.Hidden) {
-      auto const configurePreset =
-        this->ConfigurePresets.find(it.second.Unexpanded.ConfigurePreset);
-      if (configurePreset == this->ConfigurePresets.end()) {
-        cmCMakePresetsErrors::INVALID_CONFIGURE_PRESET(it.first,
-                                                       &this->parseState);
-        return false;
-      }
-      if (!it.second.Unexpanded.OriginFile->ReachableFiles.count(
-            configurePreset->second.Unexpanded.OriginFile)) {
-        cmCMakePresetsErrors::CONFIGURE_PRESET_UNREACHABLE_FROM_FILE(
-          it.first, &this->parseState);
-        return false;
-      }
-
-      if (it.second.Unexpanded.InheritConfigureEnvironment.value_or(true)) {
-        it.second.Unexpanded.Environment.insert(
-          configurePreset->second.Unexpanded.Environment.begin(),
-          configurePreset->second.Unexpanded.Environment.end());
-      }
-    }
-
-    if (!ExpandMacros(this, it.second.Unexpanded, it.second.Expanded)) {
-      cmCMakePresetsErrors::INVALID_MACRO_EXPANSION(it.first,
-                                                    &this->parseState);
-      return false;
-    }
+  if (!ResolveDependentPresets(this->BuildPresets) ||
+      !ResolveDependentPresets(this->TestPresets) ||
+      !ResolveDependentPresets(this->PackagePresets)) {
+    return false;
   }
 
   for (auto& it : this->WorkflowPresets) {
@@ -1366,14 +1434,15 @@ bool cmCMakePresetsGraph::ReadProjectPresetsInternal(
 
     ConfigurePreset const* configurePreset = nullptr;
     for (auto const& step : it.second.Unexpanded.Steps) {
+      char const* const stepType = WorkflowStepTypeToString(step.PresetType);
       if (!configurePreset && step.PresetType != Type::Configure) {
         cmCMakePresetsErrors::FIRST_WORKFLOW_STEP_NOT_CONFIGURE(
-          step.PresetName, &this->parseState);
+          stepType, step.PresetName, &this->parseState);
         return false;
       }
       if (configurePreset && step.PresetType == Type::Configure) {
         cmCMakePresetsErrors::CONFIGURE_WORKFLOW_STEP_NOT_FIRST(
-          step.PresetName, &this->parseState);
+          stepType, step.PresetName, &this->parseState);
         return false;
       }
 
@@ -1381,22 +1450,22 @@ bool cmCMakePresetsGraph::ReadProjectPresetsInternal(
         case Type::Configure:
           result = TryReachPresetFromWorkflow(
             it.second.Unexpanded, this->ConfigurePresets, step.PresetName,
-            configurePreset, &this->parseState);
+            stepType, configurePreset, &this->parseState);
           break;
         case Type::Build:
           result = TryReachPresetFromWorkflow(
             it.second.Unexpanded, this->BuildPresets, step.PresetName,
-            configurePreset, &this->parseState);
+            stepType, configurePreset, &this->parseState);
           break;
         case Type::Test:
           result = TryReachPresetFromWorkflow(
-            it.second.Unexpanded, this->TestPresets, step.PresetName,
+            it.second.Unexpanded, this->TestPresets, step.PresetName, stepType,
             configurePreset, &this->parseState);
           break;
         case Type::Package:
           result = TryReachPresetFromWorkflow(
             it.second.Unexpanded, this->PackagePresets, step.PresetName,
-            configurePreset, &this->parseState);
+            stepType, configurePreset, &this->parseState);
           break;
       }
       if (!result) {
@@ -1436,58 +1505,129 @@ void cmCMakePresetsGraph::ClearPresets()
   this->Files.clear();
 }
 
-void cmCMakePresetsGraph::PrintConfigurePresetList() const
-{
-  PrintPresetList<ConfigurePreset>(this,
-                                   &cmCMakePresetsGraph::ConfigurePresets,
-                                   &cmCMakePresetsGraph::ConfigurePresetOrder);
-}
-
 void cmCMakePresetsGraph::PrintConfigurePresetList(
-  std::function<bool(ConfigurePreset const&)> const& filter) const
+  PresetListMode mode,
+  ConfigurePresetUsabilityCheck const& usabilityCheck) const
 {
+  auto check = [&usabilityCheck](
+                 ConfigurePreset const& preset) -> cm::optional<std::string> {
+    if (!usabilityCheck) {
+      return cm::nullopt;
+    }
+    return usabilityCheck(preset);
+  };
   PrintPresetList<ConfigurePreset>(
     this, &cmCMakePresetsGraph::ConfigurePresets,
-    &cmCMakePresetsGraph::ConfigurePresetOrder, filter);
+    &cmCMakePresetsGraph::ConfigurePresetOrder, mode, check);
 }
 
-void cmCMakePresetsGraph::PrintBuildPresetList() const
+void cmCMakePresetsGraph::PrintBuildPresetList(
+  PresetListMode mode,
+  ConfigurePresetUsabilityCheck const& configureUsabilityCheck) const
 {
+  auto usabilityCheck = [this,
+                         &configureUsabilityCheck](BuildPreset const& preset) {
+    return GetUnavailableReason(preset.ConfigurePreset, this->ConfigurePresets,
+                                configureUsabilityCheck);
+  };
   PrintPresetList<BuildPreset>(this, &cmCMakePresetsGraph::BuildPresets,
-                               &cmCMakePresetsGraph::BuildPresetOrder);
+                               &cmCMakePresetsGraph::BuildPresetOrder, mode,
+                               usabilityCheck);
 }
 
-void cmCMakePresetsGraph::PrintTestPresetList() const
+void cmCMakePresetsGraph::PrintTestPresetList(
+  PresetListMode mode,
+  ConfigurePresetUsabilityCheck const& configureUsabilityCheck) const
 {
+  auto usabilityCheck = [this,
+                         &configureUsabilityCheck](TestPreset const& preset) {
+    return GetUnavailableReason(preset.ConfigurePreset, this->ConfigurePresets,
+                                configureUsabilityCheck);
+  };
   PrintPresetList<TestPreset>(this, &cmCMakePresetsGraph::TestPresets,
-                              &cmCMakePresetsGraph::TestPresetOrder);
-}
-
-void cmCMakePresetsGraph::PrintPackagePresetList() const
-{
-  PrintPresetList<PackagePreset>(this, &cmCMakePresetsGraph::PackagePresets,
-                                 &cmCMakePresetsGraph::PackagePresetOrder);
+                              &cmCMakePresetsGraph::TestPresetOrder, mode,
+                              usabilityCheck);
 }
 
 void cmCMakePresetsGraph::PrintPackagePresetList(
-  std::function<bool(PackagePreset const&)> const& filter) const
+  PresetListMode mode,
+  ConfigurePresetUsabilityCheck const& configureUsabilityCheck) const
 {
+  auto usabilityCheck = [this, &configureUsabilityCheck](
+                          PackagePreset const& preset) {
+    return GetUnavailableReason(preset.ConfigurePreset, this->ConfigurePresets,
+                                configureUsabilityCheck);
+  };
   PrintPresetList<PackagePreset>(this, &cmCMakePresetsGraph::PackagePresets,
                                  &cmCMakePresetsGraph::PackagePresetOrder,
-                                 filter);
+                                 mode, usabilityCheck);
 }
 
-void cmCMakePresetsGraph::PrintWorkflowPresetList() const
+void cmCMakePresetsGraph::PrintPackagePresetList(
+  std::function<bool(PackagePreset const&)> const& packageGeneratorsPresent,
+  PresetListMode mode,
+  ConfigurePresetUsabilityCheck const& configureUsabilityCheck) const
 {
+  auto usabilityCheck = [this, &packageGeneratorsPresent,
+                         &configureUsabilityCheck](
+                          PackagePreset const& preset) {
+    auto configureReason = GetUnavailableReason(
+      preset.ConfigurePreset, this->ConfigurePresets, configureUsabilityCheck);
+    if (configureReason) {
+      return configureReason;
+    }
+    cm::optional<std::string> generatorReason;
+    if (!packageGeneratorsPresent(preset)) {
+      generatorReason = "one or more package generators are not available";
+    }
+    return generatorReason;
+  };
+  PrintPresetList<PackagePreset>(this, &cmCMakePresetsGraph::PackagePresets,
+                                 &cmCMakePresetsGraph::PackagePresetOrder,
+                                 mode, usabilityCheck);
+}
+
+void cmCMakePresetsGraph::PrintWorkflowPresetList(
+  PresetListMode mode,
+  ConfigurePresetUsabilityCheck const& configureUsabilityCheck) const
+{
+  auto usabilityCheck = [this, &configureUsabilityCheck](
+                          WorkflowPreset const& preset) {
+    return this->GetWorkflowUnavailableReason(preset, configureUsabilityCheck);
+  };
   PrintPresetList<WorkflowPreset>(this, &cmCMakePresetsGraph::WorkflowPresets,
-                                  &cmCMakePresetsGraph::WorkflowPresetOrder);
+                                  &cmCMakePresetsGraph::WorkflowPresetOrder,
+                                  mode, usabilityCheck);
 }
 
-void cmCMakePresetsGraph::PrintAllPresets() const
+cm::optional<std::string> cmCMakePresetsGraph::GetWorkflowUnavailableReason(
+  WorkflowPreset const& preset,
+  ConfigurePresetUsabilityCheck const& configureUsabilityCheck) const
 {
-  this->PrintConfigurePresetList();
-  this->PrintBuildPresetList();
-  this->PrintTestPresetList();
-  this->PrintPackagePresetList();
-  this->PrintWorkflowPresetList();
+  using Type = WorkflowPreset::WorkflowStep::Type;
+
+  std::size_t stepNumber = 0;
+  for (auto const& step : preset.Steps) {
+    ++stepNumber;
+    cm::optional<std::string> reason;
+    switch (step.PresetType) {
+      case Type::Configure:
+        reason = GetUnavailableReason(step.PresetName, this->ConfigurePresets,
+                                      configureUsabilityCheck);
+        break;
+      case Type::Build:
+        reason = GetUnavailableReason(step.PresetName, this->BuildPresets);
+        break;
+      case Type::Test:
+        reason = GetUnavailableReason(step.PresetName, this->TestPresets);
+        break;
+      case Type::Package:
+        reason = GetUnavailableReason(step.PresetName, this->PackagePresets);
+        break;
+    }
+    if (reason) {
+      return cmStrCat("step ", stepNumber, ": ", *reason);
+    }
+  }
+  return cm::nullopt;
 }

@@ -14,9 +14,15 @@ add_definitions
 
   该命令已被替代：
 
-  * 使用\ :command:`add_compile_definitions`\ 来添加预处理器定义。
-  * 使用\ :command:`include_directories`\ 添加包含目录。
-  * 使用\ :command:`add_compile_options`\ 添加其他选项。
+  * Use :command:`add_compile_definitions`
+    or :command:`target_compile_definitions`
+    to add preprocessor definitions.
+  * Use :command:`add_compile_options`
+    or :command:`target_compile_options`
+    to add other options.
+  * Use :command:`include_directories`
+    or :command:`target_include_directories`
+    to add include directories.
 
 以\ ``-D``\ 或\ ``/D``\ 开始的标志看起来像是预处理器定义，会自动添加到当前目录的\
 :prop_dir:`COMPILE_DEFINITIONS`\ 目录属性中。具有非平凡值的定义可以留在标志集中，而不是\

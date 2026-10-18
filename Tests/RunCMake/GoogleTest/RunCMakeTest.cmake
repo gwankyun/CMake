@@ -13,17 +13,18 @@ endif()
 
 run_cmake(PropertiesOdd)
 
+# Policy CMP0224 has to reach the tests that discovery creates.
+run_cmake(FixtureRepeatMode-NEW)
+run_cmake(FixtureRepeatMode-OLD)
+
 function(run_GoogleTest DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTest -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-build
     ${CMAKE_COMMAND}
@@ -95,6 +96,23 @@ function(run_GoogleTest DISCOVERY_MODE)
     --no-label-summary
   )
 
+  run_cmake_command(GoogleTest-test9
+    ${CMAKE_CTEST_COMMAND}
+    -C Debug
+    -L TEST9
+    --no-label-summary
+  )
+
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/test9-names.txt"
+    "TEST:newline_name/suite.case/trailing_param!9\n"
+  )
+  run_cmake_command(GoogleTest-test9-from-file
+    ${CMAKE_CTEST_COMMAND}
+    -C Debug
+    --tests-from-file "${RunCMake_TEST_BINARY_DIR}/test9-names.txt"
+    --no-label-summary
+  )
+
   run_cmake_command(GoogleTest-test-missing
     ${CMAKE_CTEST_COMMAND}
     -C Debug
@@ -144,11 +162,9 @@ function(run_Launcher_CMP0178 DISCOVERY_MODE cmp0178)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-
   run_cmake_with_options(Launcher-CMP0178-${cmp0178}
     -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE}
   )
-
   set(RunCMake_TEST_NO_CLEAN 1)
 
   # do not issue any warnings on stderr that would cause the build to fail
@@ -171,14 +187,11 @@ endfunction()
 function(run_GoogleTestXML DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTestXML-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestXML -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTestXML-discovery
   ${CMAKE_COMMAND}
@@ -205,14 +218,11 @@ endfunction()
 function(run_GoogleTest_discovery_timeout DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-timeout)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestDiscoveryTimeout -DDISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   set(RunCMake_TEST_OUTPUT_MERGE 1)
   run_cmake_command(GoogleTest-discovery-${DISCOVERY_MODE}-timeout-build
@@ -234,14 +244,12 @@ endfunction()
 function(run_GoogleTest_discovery_arg_change DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-arg-change)
-  set(RunCMake_TEST_NO_CLEAN 1)
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestDiscoveryArgChange
     -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE}
     -DTEST_FILTER=basic
   )
+  set(RunCMake_TEST_NO_CLEAN 1)
+
   run_cmake_command(GoogleTest-discovery-arg-change-build
     ${CMAKE_COMMAND}
     --build .
@@ -274,11 +282,8 @@ endfunction()
 function(run_GoogleTest_discovery_multi_config)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-multi-config)
-  set(RunCMake_TEST_NO_CLEAN 1)
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake(GoogleTestDiscoveryMultiConfig)
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-build-release
     ${CMAKE_COMMAND}
@@ -310,14 +315,11 @@ endfunction()
 function(run_GoogleTest_discovery_test_list DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-test-list-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestDiscoveryTestList -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-discovery-test-list-build
     ${CMAKE_COMMAND}
@@ -336,14 +338,11 @@ endfunction()
 function(run_GoogleTest_discovery_flush_script DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-flush-script-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestDiscoveryFlushScript -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-discovery-flush-script-build
     ${CMAKE_COMMAND}
@@ -362,14 +361,11 @@ endfunction()
 function(run_GoogleTest_discovery_post_build_race)
   # Use a single build tree for this test without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-post-build-race)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake(GoogleTestDiscoveryPostBuildRace)
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-discovery-post-build-race-build
     ${CMAKE_COMMAND}
@@ -383,14 +379,11 @@ endfunction()
 function(run_GoogleTest_discovery_test_list_scoped DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-test-list-scoped-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestDiscoveryTestListScoped -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-discovery-test-list-scoped-build
     ${CMAKE_COMMAND}
@@ -409,14 +402,11 @@ endfunction()
 function(run_GoogleTest_discovery_test_list_extra_args DISCOVERY_MODE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-test-list-extra-args-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake_with_options(GoogleTestDiscoveryTestListExtraArgs -DCMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE=${DISCOVERY_MODE})
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-discovery-test-list-extra-args-build
     ${CMAKE_COMMAND}
@@ -435,16 +425,13 @@ endfunction()
 function(run_GoogleTest_LegacyParser)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTestLegacyParser-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   set(ENV{NO_GTEST_JSON_OUTPUT} 1)
 
   run_cmake(GoogleTestLegacyParser)
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTestLegacyParser-build
     ${CMAKE_COMMAND}
@@ -466,14 +453,11 @@ endfunction()
 function(run_GoogleTest_DEF_SOURCE_LINE)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-DEF_SOURCE_LINE-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake(GoogleTestDefSourceLine)
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(GoogleTest-DEF_SOURCE_LINE-build
     ${CMAKE_COMMAND}
@@ -492,6 +476,24 @@ endfunction()
 function(run_GoogleTest_discovery_duplicate)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-discovery-duplicate-build)
+  if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
+    set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
+  endif()
+  run_cmake(GoogleTestDiscoveryDuplicate)
+  set(RunCMake_TEST_NO_CLEAN 1)
+
+  set(RunCMake_TEST_OUTPUT_MERGE 1)
+  run_cmake_command(GoogleTest-discovery-duplicate-build
+    ${CMAKE_COMMAND}
+    --build .
+    --config Debug
+    --target fake_gtest
+  )
+  unset(RunCMake_TEST_OUTPUT_MERGE)
+endfunction()
+
+function(run_GoogleTest_build_depends)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/GoogleTest-build-depends-build)
   set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
@@ -499,13 +501,20 @@ function(run_GoogleTest_discovery_duplicate)
   file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
   file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
 
-  run_cmake(GoogleTestDiscoveryDuplicate)
+  run_cmake(GoogleTestBuildDepends)
 
-  run_cmake_command(GoogleTest-discovery-duplicate-build
+  run_cmake_command(GoogleTest-build-depends-build
     ${CMAKE_COMMAND}
     --build .
     --config Debug
-    --target fake_gtest
+    --target test_prep/all
+  )
+
+  run_cmake_command(GoogleTest-build-depends-test
+    ${CMAKE_CTEST_COMMAND}
+    -C Debug
+    -R "^PREP:basic\\.case_(foo|bar)$"
+    --no-label-summary
   )
 endfunction()
 
@@ -533,14 +542,11 @@ endif()
 block(SCOPE_FOR VARIABLES)
   # Use a single build tree for a few tests without cleaning.
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/WorkDirWithSpaces-build)
-  set(RunCMake_TEST_NO_CLEAN 1)
   if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
     set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
   endif()
-  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
-  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
-
   run_cmake(WorkDirWithSpaces)
+  set(RunCMake_TEST_NO_CLEAN 1)
 
   run_cmake_command(WorkDirWithSpaces-build
     ${CMAKE_COMMAND}
@@ -566,3 +572,7 @@ if (NOT RunCMake_GENERATOR MATCHES "(Borland|NMake|Watcom)")
 endif()
 
 run_GoogleTest_discovery_duplicate()
+
+if(RunCMake_GENERATOR MATCHES "Ninja|FASTBuild|Makefiles")
+  run_GoogleTest_build_depends()
+endif()

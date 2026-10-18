@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 4.3)
+
+project(TestDependencyColonName C)
+
+enable_testing()
+
+add_custom_target(TestDependencyPrereq
+  COMMAND
+    "${CMAKE_COMMAND}" -E touch
+    "${CMAKE_CURRENT_BINARY_DIR}/TestDependencyPrereq-built.txt"
+  BYPRODUCTS
+    "${CMAKE_CURRENT_BINARY_DIR}/TestDependencyPrereq-built.txt"
+  VERBATIM)
+
+add_test(NAME "Foo::Bar"
+  COMMAND
+    "${CMAKE_COMMAND}" -E true
+  BUILD_DEPENDS
+    TestDependencyPrereq)

@@ -57,3 +57,4 @@
   Pelles C 工具链汇编器。
 
 ``ASM-ATT``
+  AT&T-syntax assembler (e.g. GNU ``as``)

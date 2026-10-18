@@ -1,0 +1,18 @@
+set(xcProjectFile "${RunCMake_TEST_BINARY_DIR}/XcodeCustomCommandComment.xcodeproj/project.pbxproj")
+if(NOT EXISTS "${xcProjectFile}")
+  set(RunCMake_TEST_FAILED "Project file ${xcProjectFile} does not exist.")
+  return()
+endif()
+
+set(foundComment 0)
+file(STRINGS "${xcProjectFile}" lines)
+foreach(line IN LISTS lines)
+  if(line MATCHES [[name = "My Custom Command Build Phase Name Debug";]])
+    set(foundComment 1)
+    break()
+  endif()
+endforeach()
+
+if(NOT foundComment)
+  set(RunCMake_TEST_FAILED "Did not find expected custom command comment in project.pbxproj")
+endif()

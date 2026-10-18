@@ -359,9 +359,7 @@ bool cmCPackWIXGenerator::PackageWithWix3()
     std::string uniqueBaseName = baseName;
 
     while (usedBaseNames.find(uniqueBaseName) != usedBaseNames.end()) {
-      std::ostringstream tmp;
-      tmp << baseName << ++counter;
-      uniqueBaseName = tmp.str();
+      uniqueBaseName = cmStrCat(baseName, ++counter);
     }
 
     usedBaseNames.insert(uniqueBaseName);
@@ -530,10 +528,7 @@ void cmCPackWIXGenerator::AddDefinition(cmWIXSourceWriter& source,
                                         std::string const& name,
                                         std::string const& value)
 {
-  std::ostringstream tmp;
-  tmp << name << "=\"" << value << '"';
-
-  source.AddProcessingInstruction("define", tmp.str());
+  source.AddProcessingInstruction("define", cmStrCat(name, "=\"", value, '"'));
 }
 
 bool cmCPackWIXGenerator::CreateWiXSourceFiles()
@@ -551,7 +546,7 @@ bool cmCPackWIXGenerator::CreateWiXSourceFiles()
     GetOption("CPACK_WIX_COMPONENT_KEYS_REGISTRY_PATH");
   if (componentKeysRegistryPath.empty()) {
     componentKeysRegistryPath =
-      cmStrCat("Software\\", GetOption("CPACK_PACKAGE_VENDOR"), "\\",
+      cmStrCat("Software\\", GetOption("CPACK_PACKAGE_VENDOR"), '\\',
                GetOption("CPACK_PACKAGE_NAME"), "\\Components");
   }
   cmSystemTools::ReplaceString(componentKeysRegistryPath, "/", "\\");
@@ -952,7 +947,7 @@ bool cmCPackWIXGenerator::CreateShortcutsOfSpecificType(
 
   std::string componentId = "CM_SHORTCUT";
   if (!idPrefix.empty()) {
-    componentId += cmStrCat('_', idPrefix);
+    componentId = cmStrCat(std::move(componentId), '_', idPrefix);
   }
 
   componentId += idSuffix;
@@ -1357,11 +1352,12 @@ void cmCPackWIXGenerator::CollectXmlNamespaces(std::string const& variableName,
   if (this->WixVersion >= 4 &&
       cm::contains(this->WixExtensions, "WixToolset.UI.wixext") &&
       !cm::contains(namespaces, "ui")) {
-    xmlns = cmStrCat(
-      xmlns, "\n    xmlns:ui=\"http://wixtoolset.org/schemas/v4/wxs/ui\"");
+    xmlns =
+      cmStrCat(std::move(xmlns),
+               "\n    xmlns:ui=\"http://wixtoolset.org/schemas/v4/wxs/ui\"");
   }
   for (auto& ns : namespaces) {
-    xmlns = cmStrCat(xmlns, "\n    xmlns:", ns.first, "=\"",
+    xmlns = cmStrCat(std::move(xmlns), "\n    xmlns:", ns.first, "=\"",
                      cmWIXSourceWriter::EscapeAttributeValue(ns.second), '"');
   }
   SetOption("CPACK_WIX_CUSTOM_XMLNS_EXPANDED", xmlns);

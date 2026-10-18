@@ -4,8 +4,8 @@
 
 #include <cstring>
 #include <memory>
+#include <ostream>
 #include <set>
-#include <sstream>
 #include <utility>
 
 #include "cmsys/RegularExpression.hxx"
@@ -19,9 +19,9 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmSourceFile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -156,11 +156,11 @@ void cmExtraSublimeTextGenerator::CreateNewProjectFile(
 
         fout << "\n\t\t\t\"" << varName << "\":\"" << varValue << "\"";
       } else {
-        std::ostringstream e;
-        e << "Could not parse Env Vars specified in "
-             "\"CMAKE_SUBLIME_TEXT_2_ENV_SETTINGS\""
-          << ", corrupted string " << t;
-        mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
+        mf->IssueMessage(MessageType::FATAL_ERROR,
+                         cmStrCat("Could not parse Env Vars specified in "
+                                  "\"CMAKE_SUBLIME_TEXT_2_ENV_SETTINGS\""
+                                  ", corrupted string ",
+                                  t));
       }
     }
     fout << "\n\t\t}";
@@ -190,7 +190,7 @@ void cmExtraSublimeTextGenerator::AppendAllTargets(
     for (auto const& target : targets) {
       std::string targetName = target->GetName();
       switch (target->GetType()) {
-        case cmStateEnums::GLOBAL_TARGET: {
+        case cm::TargetType::GLOBAL_TARGET: {
           // Only add the global targets from CMAKE_BINARY_DIR,
           // not from the subdirs
           if (lg->GetCurrentBinaryDirectory() == lg->GetBinaryDirectory()) {
@@ -199,7 +199,7 @@ void cmExtraSublimeTextGenerator::AppendAllTargets(
                                false);
           }
         } break;
-        case cmStateEnums::UTILITY:
+        case cm::TargetType::UTILITY:
           // Add all utility targets, except the Nightly/Continuous/
           // Experimental-"sub"targets as e.g. NightlyStart
           if ((cmHasLiteralPrefix(targetName, "Nightly") &&
@@ -215,11 +215,11 @@ void cmExtraSublimeTextGenerator::AppendAllTargets(
                              makefile, compiler.c_str(), sourceFileFlags,
                              false);
           break;
-        case cmStateEnums::EXECUTABLE:
-        case cmStateEnums::STATIC_LIBRARY:
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::OBJECT_LIBRARY: {
+        case cm::TargetType::EXECUTABLE:
+        case cm::TargetType::STATIC_LIBRARY:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::OBJECT_LIBRARY: {
           this->AppendTarget(fout, targetName, lg, target.get(), make.c_str(),
                              makefile, compiler.c_str(), sourceFileFlags,
                              false);
@@ -344,17 +344,16 @@ std::string cmExtraSublimeTextGenerator::ComputeFlagsForObject(
   cmSourceFile* source, cmLocalGenerator* lg, cmGeneratorTarget* gtgt)
 {
   std::string flags;
-  std::string language = source->GetOrDetermineLanguage();
+  std::string const& config =
+    lg->GetMakefile()->GetSafeDefinition("CMAKE_BUILD_TYPE");
+  std::string language = gtgt->GetSourceFileLanguage(source, config);
   if (language.empty()) {
     language = "C";
   }
 
   // Explicitly add the explicit language flag before any other flag
   // so user flags can override it.
-  gtgt->AddExplicitLanguageFlags(flags, *source);
-
-  std::string const& config =
-    lg->GetMakefile()->GetSafeDefinition("CMAKE_BUILD_TYPE");
+  gtgt->AddExplicitLanguageFlags(flags, *source, config);
 
   lg->GetTargetCompileFlags(gtgt, config, language, flags);
 

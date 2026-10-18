@@ -1,0 +1,8 @@
+if(EXISTS ${RunCMake_TEST_BINARY_DIR}/ExpandSourceDir/test.tmp)
+  set(RunCMake_TEST_FAILED "test.tmp was not deleted")
+endif()
+file(READ ${RunCMake_TEST_BINARY_DIR}/ExpandSourceDir/llvmrc.result LLVMRC_RESULT)
+if(NOT "${LLVMRC_RESULT}" STREQUAL "This is a test\n")
+  set(RunCMake_TEST_FAILED "llvmrc.result was not created")
+endif()
+unset(LLVMRC_RESULT)

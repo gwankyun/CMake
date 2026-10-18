@@ -32,6 +32,10 @@ class cmMakefile;
 class cmake;
 struct cmCxxModuleExportInfo;
 
+namespace Json {
+class Value;
+}
+
 /**
  * \class cmGlobalNinjaGenerator
  * \brief Write a build.ninja file.
@@ -98,6 +102,8 @@ public:
   static bool SupportsPlatform() { return false; }
 
   bool IsIPOSupported() const override { return true; }
+
+  bool SupportsInstallPrepFileDependencies() const override { return true; }
 
   /**
    * Write a build statement @a build to @a os.
@@ -434,8 +440,8 @@ public:
     std::vector<std::string> const& linked_target_dirs,
     std::vector<std::string> const& forward_modules_from_target_dirs,
     std::string const& native_target_dir, std::string const& arg_lang,
-    std::string const& arg_modmapfmt,
-    cmCxxModuleExportInfo const& export_info);
+    std::string const& arg_modmapfmt, cmCxxModuleExportInfo const& export_info,
+    Json::Value const* cxx_interface_objects = nullptr);
 
   virtual std::string BuildAlias(std::string const& alias,
                                  std::string const& /*config*/) const
@@ -520,11 +526,21 @@ private:
   void CloseRulesFileStream();
   void CleanMetaData();
 
+  void AppendCodegenTargetDepends(cmGeneratorTarget const* target,
+                                  cmNinjaDeps& deps,
+                                  std::string const& config) const;
+
   /// Write the common disclaimer text at the top of each build file.
   void WriteDisclaimer(std::ostream& os) const;
 
   void WriteAssumedSourceDependencies();
+  void WriteInstallPrepTargets();
   void WriteTestPrepTargets();
+
+  void WritePerConfigPhony(std::string const& config,
+                           cmNinjaBuild const& build);
+  void WritePerConfigPhonyAliases(
+    std::map<std::string, std::set<std::string>> const& configsByName);
 
   void WriteTargetAliases(std::ostream& os);
   void WriteFolderTargets(std::ostream& os);

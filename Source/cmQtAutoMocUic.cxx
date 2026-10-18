@@ -125,6 +125,15 @@ public:
     std::unordered_map<std::string, FileHandleT> Map_;
   };
 
+  /** Kind of source file processed by moc.  Headers and module units carry
+      a moc build path in the info file, sources do not.  */
+  enum class SourceFileKind
+  {
+    Header,
+    Source,
+    ModuleUnit,
+  };
+
   /** Source file data.  */
   class SourceFileT
   {
@@ -138,7 +147,7 @@ public:
     cmFileTime FileTime;
     ParseCacheT::FileHandleT ParseData;
     std::string BuildPath;
-    bool IsHeader = false;
+    SourceFileKind Kind = SourceFileKind::Source;
     bool Moc = false;
     bool Uic = false;
   };
@@ -201,6 +210,7 @@ public:
     // -- Sources
     SourceFileMapT Headers;
     SourceFileMapT Sources;
+    SourceFileMapT ModuleUnits;
   };
 
   /** Moc settings.  */
@@ -249,6 +259,8 @@ public:
     // -- Mappings
     MappingMapT HeaderMappings;
     MappingMapT SourceMappings;
+    // Module unit outputs are implementation units, kept out of CompFiles.
+    MappingMapT ModuleMappings;
     MappingMapT Includes;
     // -- Discovered files
     SourceFileMapT HeadersDiscovered;
@@ -347,7 +359,8 @@ public:
     /** @brief Run an external process. Use only during Process() call!  */
     bool RunProcess(GenT genType, cmWorkerPool::ProcessResultT& result,
                     std::vector<std::string> const& command,
-                    std::string* infoMessage = nullptr);
+                    std::string* infoMessage = nullptr,
+                    bool mergedOutput = true);
   };
 
   /** Fence job utility class.  */
@@ -420,6 +433,7 @@ public:
   {
     void Process() override;
     bool EvalHeader(SourceFileHandleT source);
+    bool EvalModuleUnit(SourceFileHandleT source);
     bool EvalSource(SourceFileHandleT const& source);
     bool FindIncludedHeader(SourceFileHandleT& headerHandle,
                             cm::string_view includerDir,
@@ -562,6 +576,9 @@ public:
 private:
   // -- Abstract processing interface
   bool InitFromInfo(InfoT const& info) override;
+  // Read the source-entry array of the given kind from the info file into the
+  // matching source map.
+  bool InitSourceEntries(InfoT const& info, SourceFileKind kind);
   void InitJobs();
   bool Process() override;
   // -- Settings file
@@ -847,7 +864,8 @@ void cmQtAutoMocUicT::JobT::MaybeWriteResponseFile(
 bool cmQtAutoMocUicT::JobT::RunProcess(GenT genType,
                                        cmWorkerPool::ProcessResultT& result,
                                        std::vector<std::string> const& command,
-                                       std::string* infoMessage)
+                                       std::string* infoMessage,
+                                       bool mergedOutput)
 {
   // Log command
   if (this->Log().Verbose()) {
@@ -862,7 +880,7 @@ bool cmQtAutoMocUicT::JobT::RunProcess(GenT genType,
   }
   // Run command
   return this->cmWorkerPool::JobT::RunProcess(
-    result, command, this->BaseConst().AutogenBuildDir);
+    result, command, this->BaseConst().AutogenBuildDir, mergedOutput);
 }
 
 void cmQtAutoMocUicT::JobMocPredefsT::Process()
@@ -888,13 +906,15 @@ void cmQtAutoMocUicT::JobMocPredefsT::Process()
       // Check if response file is necessary
       MaybeWriteResponseFile(this->MocConst().PredefsFileAbs, cmd);
 
-      // Execute command
-      if (!this->RunProcess(GenT::MOC, result, cmd, reason.get())) {
+      // Execute command.  Keep stderr out of the captured stdout, which is
+      // written to the predefs file verbatim: MSVC-like compilers echo the
+      // name of the source file they preprocess.
+      if (!this->RunProcess(GenT::MOC, result, cmd, reason.get(), false)) {
         this->LogCommandError(GenT::MOC,
                               cmStrCat("The content generation command for ",
                                        this->MessagePath(predefsFileAbs),
                                        " failed.\n", result.ErrorMessage),
-                              cmd, result.StdOut);
+                              cmd, result.StdOut + result.StdErr);
         return;
       }
     }
@@ -1180,6 +1200,12 @@ void cmQtAutoMocUicT::JobEvalCacheMocT::Process()
       return;
     }
   }
+  // Evaluate module units
+  for (auto const& pair : this->BaseEval().ModuleUnits) {
+    if (!this->EvalModuleUnit(pair.second)) {
+      return;
+    }
+  }
   // Evaluate sources
   for (auto const& pair : this->BaseEval().Sources) {
     if (!this->EvalSource(pair.second)) {
@@ -1201,8 +1227,11 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::EvalHeader(SourceFileHandleT source)
     MappingHandleT handle = std::make_shared<MappingT>();
     handle->SourceFile = std::move(source);
 
-    // Absolute build path
-    if (this->BaseConst().MultiConfig) {
+    // A module unit's moc output is added as a target source at the include
+    // dir for every config, so it must be written there too, regardless of
+    // single- vs multi-config.
+    if (sourceFile.Kind == SourceFileKind::ModuleUnit ||
+        this->BaseConst().MultiConfig) {
       handle->OutputFile =
         this->Gen()->AbsoluteIncludePath(sourceFile.BuildPath);
     } else {
@@ -1212,9 +1241,53 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::EvalHeader(SourceFileHandleT source)
 
     // Register mapping in headers map
     this->RegisterMapping(handle);
+  } else if (sourceFile.Kind == SourceFileKind::ModuleUnit) {
+    // A CXX_MODULES member without a meta-object macro still needs its
+    // registered moc output to exist; an empty TU is valid and scans clean.
+    std::string const outputFile =
+      this->Gen()->AbsoluteIncludePath(sourceFile.BuildPath);
+    std::string const placeholder =
+      "enum some_compilers { need_more_than_nothing };\n";
+    if (cmQtAutoGenerator::FileDiffers(outputFile, placeholder)) {
+      if (!cmQtAutoGenerator::FileWrite(outputFile, placeholder)) {
+        this->LogError(GenT::MOC,
+                       cmStrCat("Writing MOC placeholder ",
+                                this->MessagePath(outputFile), " failed."));
+        return false;
+      }
+    }
   }
 
   return true;
+}
+
+bool cmQtAutoMocUicT::JobEvalCacheMocT::EvalModuleUnit(
+  SourceFileHandleT source)
+{
+  if (this->BaseConst().QtVersion >= IntegerVersion(6, 13)) {
+    return this->EvalHeader(std::move(source));
+  }
+
+  // Older moc cannot process C++ module units at all, so nothing can be
+  // generated for this one.  Report a meta-object macro in it instead of
+  // leaving the user with a missing meta-object at link time.
+  SourceFileT const& sourceFile = *source;
+  auto const& parseData = sourceFile.ParseData->Moc;
+  if (!sourceFile.Moc || parseData.Macro.empty()) {
+    return true;
+  }
+  this->LogError(
+    GenT::MOC,
+    cmStrCat(this->MessagePath(sourceFile.FileName), "\ncontains a ",
+             Quoted(parseData.Macro),
+             " macro, but it is a C++ module unit and moc from Qt ",
+             this->BaseConst().QtVersion.Major, '.',
+             this->BaseConst().QtVersion.Minor,
+             " cannot process those.\nAUTOMOC handles meta-object macros in"
+             " C++ module units with Qt 6.13 or newer.\nConsider to\n"
+             "  - move the affected class out of the module unit\n"
+             "  - enable SKIP_AUTOMOC for this file"));
+  return false;
 }
 
 bool cmQtAutoMocUicT::JobEvalCacheMocT::EvalSource(
@@ -1369,7 +1442,7 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::EvalSource(
             this->MocConst().MacrosString(),
             " macro.\nRunning moc on the header\n  ",
             this->MessagePath(headerHandle->FileName), "!\nBetter include ",
-            this->MessagePath("moc_" + incKey.Base + ".cpp"),
+            this->MessagePath(cmStrCat("moc_", incKey.Base, ".cpp")),
             " for a compatibility with regular mode.\n"
             "This is a CMAKE_AUTOMOC_RELAXED_MODE warning.\n"));
       } else {
@@ -1378,10 +1451,10 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::EvalSource(
           cmStrCat(
             this->MessagePath(sourceFile.FileName), "\nincludes the moc file ",
             this->MessagePath(incKey.Key), " instead of ",
-            this->MessagePath("moc_" + incKey.Base + ".cpp"),
+            this->MessagePath(cmStrCat("moc_", incKey.Base, ".cpp")),
             ".\nRunning moc on the header\n  ",
             this->MessagePath(headerHandle->FileName), "!\nBetter include ",
-            this->MessagePath("moc_" + incKey.Base + ".cpp"),
+            this->MessagePath(cmStrCat("moc_", incKey.Base, ".cpp")),
             " for compatibility with regular mode.\n"
             "This is a CMAKE_AUTOMOC_RELAXED_MODE warning.\n"));
       }
@@ -1464,7 +1537,7 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::FindIncludedHeader(
         if (!handle) {
           handle = std::make_shared<SourceFileT>(testPath);
           handle->FileTime = fileTime;
-          handle->IsHeader = true;
+          handle->Kind = SourceFileKind::Header;
           handle->Moc = true;
         }
         headerHandle = handle;
@@ -1503,7 +1576,8 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::RegisterIncluded(
       std::string files =
         cmStrCat("  ", this->MessagePath(includerFileHandle->FileName), '\n');
       for (auto const& item : handle->IncluderFiles) {
-        files += cmStrCat("  ", this->MessagePath(item->FileName), '\n');
+        files = cmStrCat(std::move(files), "  ",
+                         this->MessagePath(item->FileName), '\n');
       }
       this->LogError(
         GenT::MOC,
@@ -1542,11 +1616,23 @@ bool cmQtAutoMocUicT::JobEvalCacheMocT::RegisterIncluded(
 void cmQtAutoMocUicT::JobEvalCacheMocT::RegisterMapping(
   MappingHandleT mappingHandle) const
 {
-  auto& regMap = mappingHandle->SourceFile->IsHeader
-    ? this->MocEval().HeaderMappings
-    : this->MocEval().SourceMappings;
+  // Module units must never land in HeaderMappings: that map feeds
+  // CompFiles/mocs_compilation.cpp, and amalgamating multiple "module M;"
+  // implementation units into one TU is invalid.
+  MappingMapT* regMap = nullptr;
+  switch (mappingHandle->SourceFile->Kind) {
+    case SourceFileKind::Header:
+      regMap = &this->MocEval().HeaderMappings;
+      break;
+    case SourceFileKind::Source:
+      regMap = &this->MocEval().SourceMappings;
+      break;
+    case SourceFileKind::ModuleUnit:
+      regMap = &this->MocEval().ModuleMappings;
+      break;
+  }
   // Check if source file already gets mapped
-  auto& regHandle = regMap[mappingHandle->SourceFile->FileName];
+  auto& regHandle = (*regMap)[mappingHandle->SourceFile->FileName];
   if (!regHandle) {
     // Yet unknown mapping
     regHandle = std::move(mappingHandle);
@@ -1687,7 +1773,8 @@ bool cmQtAutoMocUicT::JobEvalCacheUicT::RegisterMapping(
       std::string files =
         cmStrCat("  ", this->MessagePath(includerFileHandle->FileName), '\n');
       for (auto const& item : handle->IncluderFiles) {
-        files += cmStrCat("  ", this->MessagePath(item->FileName), '\n');
+        files = cmStrCat(std::move(files), "  ",
+                         this->MessagePath(item->FileName), '\n');
       }
       this->LogError(
         GenT::UIC,
@@ -1758,6 +1845,14 @@ void cmQtAutoMocUicT::JobProbeDepsMocT::Process()
 
   // Create moc source jobs
   for (auto const& pair : this->MocEval().SourceMappings) {
+    if (!this->Generate(pair.second, false)) {
+      return;
+    }
+  }
+
+  // Create moc module unit jobs. Never added to CompFiles: each output is
+  // a module implementation unit and must be compiled as its own TU.
+  for (auto const& pair : this->MocEval().ModuleMappings) {
     if (!this->Generate(pair.second, false)) {
       return;
     }
@@ -2056,8 +2151,10 @@ void cmQtAutoMocUicT::JobCompileMocT::Process()
       cmd.emplace_back("--include");
       cmd.push_back(this->MocConst().PredefsFileAbs);
     }
-    // Add path prefix on demand
-    if (this->MocConst().PathPrefix && this->Mapping->SourceFile->IsHeader) {
+    // Add path prefix on demand. Module units are compiled directly, not
+    // included, so the prefix is meaningless for them.
+    if (this->MocConst().PathPrefix &&
+        this->Mapping->SourceFile->Kind == SourceFileKind::Header) {
       for (std::string const& dir : this->MocConst().IncludePaths) {
         cm::string_view prefix = sourceFile;
         if (cmHasPrefix(prefix, dir)) {
@@ -2099,7 +2196,8 @@ void cmQtAutoMocUicT::JobCompileMocT::Process()
     if (!this->Mapping->IncluderFiles.empty()) {
       includers = "included by\n";
       for (auto const& item : this->Mapping->IncluderFiles) {
-        includers += cmStrCat("  ", this->MessagePath(item->FileName), '\n');
+        includers = cmStrCat(std::move(includers), "  ",
+                             this->MessagePath(item->FileName), '\n');
       }
     }
     this->LogCommandError(GenT::MOC,
@@ -2128,8 +2226,9 @@ void cmQtAutoMocUicT::JobCompileMocT::Process()
     }
     if (!cmSystemTools::FileExists(depfile)) {
       this->Log().Warning(GenT::MOC,
-                          "Dependency file " + this->MessagePath(depfile) +
-                            " does not exist.");
+                          cmStrCat("Dependency file ",
+                                   this->MessagePath(depfile),
+                                   " does not exist."));
       return;
     }
     this->CacheEntry->Moc.Depends =
@@ -2169,7 +2268,8 @@ void cmQtAutoMocUicT::JobCompileUicT::Process()
     // Uic command failed
     std::string includers;
     for (auto const& item : this->Mapping->IncluderFiles) {
-      includers += cmStrCat("  ", this->MessagePath(item->FileName), '\n');
+      includers = cmStrCat(std::move(includers), "  ",
+                           this->MessagePath(item->FileName), '\n');
     }
     this->LogCommandError(GenT::UIC,
                           cmStrCat("The uic process failed to compile\n  ",
@@ -2267,9 +2367,9 @@ std::vector<std::string>
 cmQtAutoMocUicT::JobDepFilesMergeT::initialDependencies() const
 {
   std::vector<std::string> dependencies;
-  dependencies.reserve(this->BaseConst().ListFiles.size() +
-                       this->BaseEval().Headers.size() +
-                       this->BaseEval().Sources.size());
+  dependencies.reserve(
+    this->BaseConst().ListFiles.size() + this->BaseEval().Headers.size() +
+    this->BaseEval().Sources.size() + this->BaseEval().ModuleUnits.size());
   cm::append(dependencies, this->BaseConst().ListFiles);
   auto append_file_path =
     [&dependencies](SourceFileMapT::value_type const& p) {
@@ -2279,6 +2379,9 @@ cmQtAutoMocUicT::JobDepFilesMergeT::initialDependencies() const
                 this->BaseEval().Headers.end(), append_file_path);
   std::for_each(this->BaseEval().Sources.begin(),
                 this->BaseEval().Sources.end(), append_file_path);
+  // Module unit sources must also trigger autogen reruns.
+  std::for_each(this->BaseEval().ModuleUnits.begin(),
+                this->BaseEval().ModuleUnits.end(), append_file_path);
   return dependencies;
 }
 
@@ -2314,6 +2417,10 @@ void cmQtAutoMocUicT::JobDepFilesMergeT::Process()
                 this->MocEval().HeaderMappings.end(), processMappingEntry);
   std::for_each(this->MocEval().SourceMappings.begin(),
                 this->MocEval().SourceMappings.end(), processMappingEntry);
+  // Module units also produce a moc ".d" file that must feed the
+  // merged depfile, even though they are excluded from CompFiles.
+  std::for_each(this->MocEval().ModuleMappings.begin(),
+                this->MocEval().ModuleMappings.end(), processMappingEntry);
 
   // Remove SKIP_AUTOMOC files.
   // Also remove AUTOUIC header files to avoid cyclic dependency.
@@ -2379,6 +2486,133 @@ cmQtAutoMocUicT::cmQtAutoMocUicT()
 {
 }
 cmQtAutoMocUicT::~cmQtAutoMocUicT() = default;
+
+bool cmQtAutoMocUicT::InitSourceEntries(InfoT const& info, SourceFileKind kind)
+{
+  cm::string_view key;
+  cm::string_view fileNoun;
+  bool optional = false;
+  SourceFileMapT* map = nullptr;
+  // Sources are 3-tuples of name, flags and configs.  Headers and module
+  // units add a moc build path: ahead of the configs for headers, behind
+  // them for module units.  buildPathIndex is read only when hasBuildPath.
+  bool hasBuildPath = false;
+  Json::ArrayIndex entrySize = 3u;
+  Json::ArrayIndex configsIndex = 2u;
+  Json::ArrayIndex buildPathIndex = 0u;
+  switch (kind) {
+    case SourceFileKind::Header:
+      key = "HEADERS";
+      fileNoun = "header";
+      map = &this->BaseEval().Headers;
+      hasBuildPath = true;
+      entrySize = 4u;
+      configsIndex = 3u;
+      buildPathIndex = 2u;
+      break;
+    case SourceFileKind::Source:
+      key = "SOURCES";
+      fileNoun = "source";
+      map = &this->BaseEval().Sources;
+      break;
+    case SourceFileKind::ModuleUnit:
+      key = "CXX_MODULE_UNITS";
+      fileNoun = "module unit";
+      optional = true;
+      map = &this->BaseEval().ModuleUnits;
+      hasBuildPath = true;
+      entrySize = 4u;
+      configsIndex = 2u;
+      buildPathIndex = 3u;
+      break;
+  }
+
+  Json::Value const& entries = info.GetValue(std::string(key));
+  if (optional && entries.isNull()) {
+    return true;
+  }
+  if (!entries.isArray()) {
+    return info.LogError(cmStrCat(key, " JSON value is not an array."));
+  }
+  Json::ArrayIndex const arraySize = entries.size();
+  for (Json::ArrayIndex ii = 0; ii != arraySize; ++ii) {
+    auto testEntry = [&info, key, ii](bool test, cm::string_view msg) -> bool {
+      if (!test) {
+        info.LogError(cmStrCat(key, " entry ", ii, ": ", msg));
+      }
+      return !test;
+    };
+
+    Json::Value const& entry = entries[ii];
+    if (testEntry(entry.isArray(), "JSON value is not an array.") ||
+        testEntry(entry.size() == entrySize, "JSON array size invalid.")) {
+      return false;
+    }
+
+    Json::Value const& entryName = entry[0u];
+    Json::Value const& entryFlags = entry[1u];
+    Json::Value const& entryConfigs = entry[configsIndex];
+    if (testEntry(entryName.isString(),
+                  "JSON value for name is not a string.") ||
+        testEntry(entryFlags.isString(),
+                  "JSON value for flags is not a string.") ||
+        testEntry(entryConfigs.isNull() || entryConfigs.isArray(),
+                  "JSON value for configs is not null or array.")) {
+      return false;
+    }
+    if (hasBuildPath &&
+        testEntry(entry[buildPathIndex].isString(),
+                  "JSON value for build path is not a string.")) {
+      return false;
+    }
+
+    std::string name = entryName.asString();
+    std::string flags = entryFlags.asString();
+    if (testEntry(flags.size() == 2, "Invalid flags string size")) {
+      return false;
+    }
+
+    if (entryConfigs.isArray()) {
+      bool configFound = false;
+      Json::ArrayIndex const configArraySize = entryConfigs.size();
+      for (Json::ArrayIndex ci = 0; ci != configArraySize; ++ci) {
+        Json::Value const& config = entryConfigs[ci];
+        if (testEntry(config.isString(),
+                      "JSON value in config array is not a string.")) {
+          return false;
+        }
+        configFound = configFound || config.asString() == this->InfoConfig();
+      }
+      if (!configFound) {
+        continue;
+      }
+    }
+
+    cmFileTime fileTime;
+    if (!fileTime.Load(name)) {
+      return info.LogError(cmStrCat("The ", fileNoun, " file ",
+                                    this->MessagePath(name),
+                                    " does not exist."));
+    }
+
+    SourceFileHandleT sourceHandle = std::make_shared<SourceFileT>(name);
+    sourceHandle->FileTime = fileTime;
+    sourceHandle->Kind = kind;
+    sourceHandle->Moc = (flags[0] == 'M');
+    sourceHandle->Uic = (flags[1] == 'U');
+    if (hasBuildPath && sourceHandle->Moc && this->MocConst().Enabled) {
+      std::string build = entry[buildPathIndex].asString();
+      if (build.empty()) {
+        return info.LogError(cmStrCat("The ", fileNoun, " file ",
+                                      this->MessagePath(name),
+                                      " has an empty build path."));
+      }
+      sourceHandle->BuildPath = std::move(build);
+    }
+    map->emplace(std::move(name), std::move(sourceHandle));
+  }
+  return true;
+}
 
 bool cmQtAutoMocUicT::InitFromInfo(InfoT const& info)
 {
@@ -2616,158 +2850,18 @@ bool cmQtAutoMocUicT::InitFromInfo(InfoT const& info)
   }
 
   // -- Headers
-  {
-    Json::Value const& val = info.GetValue("HEADERS");
-    if (!val.isArray()) {
-      return info.LogError("HEADERS JSON value is not an array.");
-    }
-    Json::ArrayIndex const arraySize = val.size();
-    for (Json::ArrayIndex ii = 0; ii != arraySize; ++ii) {
-      // Test entry closure
-      auto testEntry = [&info, ii](bool test, cm::string_view msg) -> bool {
-        if (!test) {
-          info.LogError(cmStrCat("HEADERS entry ", ii, ": ", msg));
-        }
-        return !test;
-      };
+  if (!this->InitSourceEntries(info, SourceFileKind::Header)) {
+    return false;
+  }
 
-      Json::Value const& entry = val[ii];
-      if (testEntry(entry.isArray(), "JSON value is not an array.") ||
-          testEntry(entry.size() == 4, "JSON array size invalid.")) {
-        return false;
-      }
-
-      Json::Value const& entryName = entry[0u];
-      Json::Value const& entryFlags = entry[1u];
-      Json::Value const& entryBuild = entry[2u];
-      Json::Value const& entryConfigs = entry[3u];
-      if (testEntry(entryName.isString(),
-                    "JSON value for name is not a string.") ||
-          testEntry(entryFlags.isString(),
-                    "JSON value for flags is not a string.") ||
-          testEntry(entryConfigs.isNull() || entryConfigs.isArray(),
-                    "JSON value for configs is not null or array.") ||
-          testEntry(entryBuild.isString(),
-                    "JSON value for build path is not a string.")) {
-        return false;
-      }
-
-      std::string name = entryName.asString();
-      std::string flags = entryFlags.asString();
-      std::string build = entryBuild.asString();
-      if (testEntry(flags.size() == 2, "Invalid flags string size")) {
-        return false;
-      }
-
-      if (entryConfigs.isArray()) {
-        bool configFound = false;
-        Json::ArrayIndex const configArraySize = entryConfigs.size();
-        for (Json::ArrayIndex ci = 0; ci != configArraySize; ++ci) {
-          Json::Value const& config = entryConfigs[ci];
-          if (testEntry(config.isString(),
-                        "JSON value in config array is not a string.")) {
-            return false;
-          }
-          configFound = configFound || config.asString() == this->InfoConfig();
-        }
-        if (!configFound) {
-          continue;
-        }
-      }
-
-      cmFileTime fileTime;
-      if (!fileTime.Load(name)) {
-        return info.LogError(cmStrCat(
-          "The header file ", this->MessagePath(name), " does not exist."));
-      }
-
-      SourceFileHandleT sourceHandle = std::make_shared<SourceFileT>(name);
-      sourceHandle->FileTime = fileTime;
-      sourceHandle->IsHeader = true;
-      sourceHandle->Moc = (flags[0] == 'M');
-      sourceHandle->Uic = (flags[1] == 'U');
-      if (sourceHandle->Moc && this->MocConst().Enabled) {
-        if (build.empty()) {
-          return info.LogError(
-            cmStrCat("Header file ", ii, " build path is empty"));
-        }
-        sourceHandle->BuildPath = std::move(build);
-      }
-      this->BaseEval().Headers.emplace(std::move(name),
-                                       std::move(sourceHandle));
-    }
+  // -- C++ module units
+  if (!this->InitSourceEntries(info, SourceFileKind::ModuleUnit)) {
+    return false;
   }
 
   // -- Sources
-  {
-    Json::Value const& val = info.GetValue("SOURCES");
-    if (!val.isArray()) {
-      return info.LogError("SOURCES JSON value is not an array.");
-    }
-    Json::ArrayIndex const arraySize = val.size();
-    for (Json::ArrayIndex ii = 0; ii != arraySize; ++ii) {
-      // Test entry closure
-      auto testEntry = [&info, ii](bool test, cm::string_view msg) -> bool {
-        if (!test) {
-          info.LogError(cmStrCat("SOURCES entry ", ii, ": ", msg));
-        }
-        return !test;
-      };
-
-      Json::Value const& entry = val[ii];
-      if (testEntry(entry.isArray(), "JSON value is not an array.") ||
-          testEntry(entry.size() == 3, "JSON array size invalid.")) {
-        return false;
-      }
-
-      Json::Value const& entryName = entry[0u];
-      Json::Value const& entryFlags = entry[1u];
-      Json::Value const& entryConfigs = entry[2u];
-      if (testEntry(entryName.isString(),
-                    "JSON value for name is not a string.") ||
-          testEntry(entryFlags.isString(),
-                    "JSON value for flags is not a string.") ||
-          testEntry(entryConfigs.isNull() || entryConfigs.isArray(),
-                    "JSON value for configs is not null or array.")) {
-        return false;
-      }
-
-      std::string name = entryName.asString();
-      std::string flags = entryFlags.asString();
-      if (testEntry(flags.size() == 2, "Invalid flags string size")) {
-        return false;
-      }
-
-      if (entryConfigs.isArray()) {
-        bool configFound = false;
-        Json::ArrayIndex const configArraySize = entryConfigs.size();
-        for (Json::ArrayIndex ci = 0; ci != configArraySize; ++ci) {
-          Json::Value const& config = entryConfigs[ci];
-          if (testEntry(config.isString(),
-                        "JSON value in config array is not a string.")) {
-            return false;
-          }
-          configFound = configFound || config.asString() == this->InfoConfig();
-        }
-        if (!configFound) {
-          continue;
-        }
-      }
-
-      cmFileTime fileTime;
-      if (!fileTime.Load(name)) {
-        return info.LogError(cmStrCat(
-          "The source file ", this->MessagePath(name), " does not exist."));
-      }
-
-      SourceFileHandleT sourceHandle = std::make_shared<SourceFileT>(name);
-      sourceHandle->FileTime = fileTime;
-      sourceHandle->IsHeader = false;
-      sourceHandle->Moc = (flags[0] == 'M');
-      sourceHandle->Uic = (flags[1] == 'U');
-      this->BaseEval().Sources.emplace(std::move(name),
-                                       std::move(sourceHandle));
-    }
+  if (!this->InitSourceEntries(info, SourceFileKind::Source)) {
+    return false;
   }
 
   // -- Init derived information
@@ -2840,6 +2934,8 @@ void cmQtAutoMocUicT::InitJobs()
 
   // Add header parse jobs
   this->CreateParseJobs<JobParseHeaderT>(this->BaseEval().Headers);
+  // Add module unit parse jobs (header-style: macro scan, no moc_/.moc scan)
+  this->CreateParseJobs<JobParseHeaderT>(this->BaseEval().ModuleUnits);
   // Add source parse jobs
   this->CreateParseJobs<JobParseSourceT>(this->BaseEval().Sources);
 
@@ -2977,7 +3073,7 @@ bool cmQtAutoMocUicT::SettingsFileWrite()
       auto SettingAppend = [&content](cm::string_view key,
                                       cm::string_view value) {
         if (!value.empty()) {
-          content += cmStrCat(key, ':', value, '\n');
+          content = cmStrCat(std::move(content), key, ':', value, '\n');
         }
       };
       SettingAppend("moc", this->SettingsStringMoc_);

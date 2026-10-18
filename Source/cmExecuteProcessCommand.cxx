@@ -7,7 +7,6 @@
 #include <iostream>
 #include <map>
 #include <memory>
-#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -79,7 +78,7 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
 
   struct Arguments : public ArgumentParser::ParseResult
   {
-    std::vector<std::vector<std::string>> Commands;
+    ArgumentParser::MaybeEmpty<std::vector<std::vector<std::string>>> Commands;
     std::string OutputVariable;
     std::string ErrorVariable;
     std::string ResultVariable;
@@ -135,8 +134,8 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
     return true;
   }
   if (!unparsedArguments.empty()) {
-    status.SetError(" given unknown argument \"" + unparsedArguments.front() +
-                    "\".");
+    status.SetError(cmStrCat(" given unknown argument \"",
+                             unparsedArguments.front(), "\"."));
     return false;
   }
 
@@ -159,8 +158,8 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
   }
 
   if (!status.GetMakefile().CanIWriteThisFile(outputFilename)) {
-    status.SetError("attempted to output into a file: " + outputFilename +
-                    " into a source directory.");
+    status.SetError(cmStrCat("attempted to output into a file: ",
+                             outputFilename, " into a source directory."));
     cmSystemTools::SetFatalErrorOccurred();
     return false;
   }
@@ -310,8 +309,8 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
       } else {
         error = " called with '";
       }
-      error += echo_output;
-      error += "' expected STDERR|STDOUT|NONE";
+      error = cmStrCat(std::move(error), std::move(echo_output),
+                       "' expected STDERR|STDOUT|NONE");
       if (!echo_output_from_variable) {
         error += " for COMMAND_ECHO.";
       }
@@ -322,10 +321,7 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
   if (echo_stdout || echo_stderr) {
     std::string command;
     for (auto const& cmd : arguments.Commands) {
-      command += "'";
-      command += cmJoin(cmd, "' '");
-      command += "'";
-      command += "\n";
+      command = cmStrCat(std::move(command), '\'', cmJoin(cmd, "' '"), "'\n");
     }
     if (echo_stdout) {
       std::cout << command;
@@ -534,12 +530,12 @@ bool cmExecuteProcessCommand(std::vector<std::string> const& args,
         }
       }
       if (!failureIndices.empty()) {
-        std::ostringstream oss;
-        oss << "failed command indexes:\n";
+        std::string oss = "failed command indexes:\n";
         for (auto const& e : failureIndices) {
-          oss << "  " << e.first + 1 << ": \"" << e.second << "\"\n";
+          oss = cmStrCat(std::move(oss), "  ", e.first + 1, ": \"", e.second,
+                         "\"\n");
         }
-        status.SetError(oss.str());
+        status.SetError(oss);
         ret = false;
       }
     }

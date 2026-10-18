@@ -14,6 +14,8 @@ cmake_policy(PUSH)
 cmake_policy (SET CMP0124 NEW)
 # registry view behavior
 cmake_policy (SET CMP0134 NEW)
+# return(PROPAGATE)
+cmake_policy(SET CMP0140 NEW)
 # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 cmake_policy(SET CMP0159 NEW)
 
@@ -768,7 +770,7 @@ except Exception:
 import sys
 import re
 import importlib.machinery
-sys.stdout.write(next(filter(lambda x: re.search('^\\.abi', x), importlib.machinery.EXTENSION_SUFFIXES)))
+sys.stdout.write(';'.join(filter(lambda x: re.search('^\\.abi', x), importlib.machinery.EXTENSION_SUFFIXES)))
 ]==]
                        RESULT_VARIABLE _result
                        OUTPUT_VARIABLE _values
@@ -777,7 +779,7 @@ sys.stdout.write(next(filter(lambda x: re.search('^\\.abi', x), importlib.machin
       if (_result)
         unset (_values)
       else()
-        string (REGEX REPLACE "^\\.(.+)\\.[^.]+$" "\\1" _values "${_values}")
+        list (TRANSFORM _values REPLACE "^\\.(.+)\\.[^.]+$" "\\1")
       endif()
     elseif (NAME STREQUAL "ABIFLAGS" AND WIN32)
       # config var ABIFLAGS does not exist for version < 3.14, check GIL specific variable
@@ -849,6 +851,18 @@ except Exception:
   endif()
 
   set (${_PYTHON_PGCV_VALUE} "${_values}" PARENT_SCOPE)
+endfunction()
+
+function (_PYTHON_GET_SOSABI)
+  _python_get_config_var (sosabi SOSABI)
+  if (sosabi MATCHES "(^|.+;)(abi${${_PYTHON_PREFIX}_VERSION_MAJOR}t?)(;.+|$)")
+    set (${_PYTHON_PREFIX}_SOSABI "${CMAKE_MATCH_2}")
+  endif()
+  if (sosabi MATCHES "(^|.+;)(abi${${_PYTHON_PREFIX}_VERSION_MAJOR}t?-[^;]+)(;.+|$)")
+    set (${_PYTHON_PREFIX}_SOSABI_PLATFORM "${CMAKE_MATCH_2}")
+  endif()
+
+  return (PROPAGATE ${_PYTHON_PREFIX}_SOSABI ${_PYTHON_PREFIX}_SOSABI_PLATFORM)
 endfunction()
 
 function (_PYTHON_GET_VERSION)
@@ -1628,7 +1642,9 @@ endif()
 
 ## handle cross-compiling constraints for components:
 ##  If Interpreter and/or Compiler are specified with Development components
-##  the CMAKE_CROSSCOMPILING_EMULATOR variable should be defined
+##  the Python_CROSSCOMPILING_EMULATOR or CMAKE_CROSSCOMPILING_EMULATOR variable
+##  should be defined
+cmake_policy (GET CMP0190 _${_PYTHON_PREFIX}_CROSSCOMPILING_POLICY)
 unset (_${_PYTHON_PREFIX}_CROSSCOMPILING)
 unset (_${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR)
 if (CMAKE_CROSSCOMPILING)
@@ -1636,15 +1652,16 @@ if (CMAKE_CROSSCOMPILING)
       AND ${_PYTHON_BASE}_FIND_COMPONENTS MATCHES "Development")
     cmake_policy (GET CMP0190 _${_PYTHON_PREFIX}_CROSSCOMPILING_POLICY)
     if (_${_PYTHON_PREFIX}_CROSSCOMPILING_POLICY STREQUAL "NEW")
-      if (CMAKE_CROSSCOMPILING_EMULATOR)
+      if (DEFINED ${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR OR CMAKE_CROSSCOMPILING_EMULATOR)
         set (_${_PYTHON_PREFIX}_CROSSCOMPILING TRUE)
-        set (_${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR "${CMAKE_CROSSCOMPILING_EMULATOR}")
+        if (DEFINED ${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR)
+          set (_${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR "${${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR}")
+        else()
+          set (_${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR "${CMAKE_CROSSCOMPILING_EMULATOR}")
+        endif()
       else()
-        _python_display_failure ("${_PYTHON_PREFIX}: When cross-compiling, Interpreter and/or Compiler components cannot be searched when CMAKE_CROSSCOMPILING_EMULATOR variable is not specified (see policy CMP0190)." FATAL)
+        _python_display_failure ("${_PYTHON_PREFIX}: When cross-compiling, Interpreter and/or Compiler components cannot be searched when ${_PYTHON_PREFIX}_CROSSCOMPILING_EMULATOR or CMAKE_CROSSCOMPILING_EMULATOR variable is not specified (see policy CMP0190)." FATAL)
       endif()
-    else()
-      # CMP0190 == OLD : no condition regarding crosscompiling environment
-      set (_${_PYTHON_PREFIX}_CROSSCOMPILING TRUE)
     endif()
   endif()
 endif()
@@ -1711,6 +1728,11 @@ if (_${_PYTHON_PREFIX}_REQUIRED_VERSION_MAJOR VERSION_LESS "3")
   # ABI not supported
   unset (_${_PYTHON_PREFIX}_FIND_ABI)
   set (_${_PYTHON_PREFIX}_ABIFLAGS "<none>")
+elseif(NOT DEFINED ${_PYTHON_PREFIX}_FIND_ABI
+    AND CMAKE_CROSSCOMPILING AND NOT _${_PYTHON_PREFIX}_CROSSCOMPILING_POLICY STREQUAL "NEW")
+  # cannot manage ABI reliably
+  unset (_${_PYTHON_PREFIX}_FIND_ABI)
+  set (_${_PYTHON_PREFIX}_ABIFLAGS "<none>")
 else()
   unset (_${_PYTHON_PREFIX}_FIND_ABI)
   if (DEFINED ${_PYTHON_PREFIX}_FIND_ABI)
@@ -1735,6 +1757,7 @@ else()
 endif()
 unset (${_PYTHON_PREFIX}_SOABI)
 unset (${_PYTHON_PREFIX}_SOSABI)
+unset (${_PYTHON_PREFIX}_SOSABI_PLATFORM)
 unset (${_PYTHON_PREFIX}_FREE_THREADED)
 
 # Windows CPython implementation may be requiring a postfix in debug mode
@@ -2446,7 +2469,7 @@ if ("Interpreter" IN_LIST ${_PYTHON_BASE}_FIND_COMPONENTS)
 
   if (_${_PYTHON_PREFIX}_EXECUTABLE AND _${_PYTHON_PREFIX}_EXECUTABLE_USABLE)
     list (LENGTH _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES _properties_length)
-    if (NOT _properties_length EQUAL "12")
+    if (NOT _properties_length EQUAL "13")
       # cache variable comes from some older Python module version: not usable
       unset (_${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES CACHE)
     endif()
@@ -2466,11 +2489,12 @@ if ("Interpreter" IN_LIST ${_PYTHON_BASE}_FIND_COMPONENTS)
       list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 5 _${_PYTHON_PREFIX}_ABIFLAGS)
       list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 6 ${_PYTHON_PREFIX}_SOABI)
       list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 7 ${_PYTHON_PREFIX}_SOSABI)
+      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 8 ${_PYTHON_PREFIX}_SOSABI_PLATFORM)
 
-      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 8 ${_PYTHON_PREFIX}_STDLIB)
-      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 9 ${_PYTHON_PREFIX}_STDARCH)
-      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 10 ${_PYTHON_PREFIX}_SITELIB)
-      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 11 ${_PYTHON_PREFIX}_SITEARCH)
+      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 9 ${_PYTHON_PREFIX}_STDLIB)
+      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 10 ${_PYTHON_PREFIX}_STDARCH)
+      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 11 ${_PYTHON_PREFIX}_SITELIB)
+      list (GET _${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES 12 ${_PYTHON_PREFIX}_SITEARCH)
     else()
       string (REGEX MATCHALL "[0-9]+" _${_PYTHON_PREFIX}_VERSIONS "${${_PYTHON_PREFIX}_VERSION}")
       list (GET _${_PYTHON_PREFIX}_VERSIONS 0 ${_PYTHON_PREFIX}_VERSION_MAJOR)
@@ -2605,11 +2629,11 @@ else:
         endif()
 
         _python_get_config_var (${_PYTHON_PREFIX}_SOABI SOABI)
-        _python_get_config_var (${_PYTHON_PREFIX}_SOSABI SOSABI)
+        _python_get_sosabi ()
 
         # store properties in the cache to speed-up future searches
         set (_${_PYTHON_PREFIX}_INTERPRETER_PROPERTIES
-          "${${_PYTHON_PREFIX}_INTERPRETER_ID};${${_PYTHON_PREFIX}_VERSION_MAJOR};${${_PYTHON_PREFIX}_VERSION_MINOR};${${_PYTHON_PREFIX}_VERSION_PATCH};${_${_PYTHON_PREFIX}_ARCH};${_${_PYTHON_PREFIX}_ABIFLAGS};${${_PYTHON_PREFIX}_SOABI};${${_PYTHON_PREFIX}_SOSABI};${${_PYTHON_PREFIX}_STDLIB};${${_PYTHON_PREFIX}_STDARCH};${${_PYTHON_PREFIX}_SITELIB};${${_PYTHON_PREFIX}_SITEARCH}" CACHE INTERNAL "${_PYTHON_PREFIX} Properties")
+          "${${_PYTHON_PREFIX}_INTERPRETER_ID};${${_PYTHON_PREFIX}_VERSION_MAJOR};${${_PYTHON_PREFIX}_VERSION_MINOR};${${_PYTHON_PREFIX}_VERSION_PATCH};${_${_PYTHON_PREFIX}_ARCH};${_${_PYTHON_PREFIX}_ABIFLAGS};${${_PYTHON_PREFIX}_SOABI};${${_PYTHON_PREFIX}_SOSABI};${${_PYTHON_PREFIX}_SOSABI_PLATFORM};${${_PYTHON_PREFIX}_STDLIB};${${_PYTHON_PREFIX}_STDARCH};${${_PYTHON_PREFIX}_SITELIB};${${_PYTHON_PREFIX}_SITEARCH}" CACHE INTERNAL "${_PYTHON_PREFIX} Properties")
       else()
         unset (_${_PYTHON_PREFIX}_INTERPRETER_SIGNATURE CACHE)
         unset (${_PYTHON_PREFIX}_INTERPRETER_ID)
@@ -4236,7 +4260,7 @@ if (("Development.Module" IN_LIST ${_PYTHON_BASE}_FIND_COMPONENTS
   endif()
 
   if (NOT DEFINED ${_PYTHON_PREFIX}_SOSABI)
-    _python_get_config_var (${_PYTHON_PREFIX}_SOSABI SOSABI)
+    _python_get_sosabi()
   endif()
 
   if (WIN32 AND NOT DEFINED ${_PYTHON_PREFIX}_DEBUG_POSTFIX)
@@ -4614,7 +4638,7 @@ if(_${_PYTHON_PREFIX}_CMAKE_ROLE STREQUAL "PROJECT")
     # It is used to build modules for python.
     #
     function (__${_PYTHON_PREFIX}_ADD_LIBRARY prefix name)
-      cmake_parse_arguments (PARSE_ARGV 2 PYTHON_ADD_LIBRARY "STATIC;SHARED;MODULE;WITH_SOABI" "USE_SABI" "")
+      cmake_parse_arguments (PARSE_ARGV 2 PYTHON_ADD_LIBRARY "STATIC;SHARED;MODULE;WITH_SOABI;PLATFORM" "USE_SABI" "")
 
       if (PYTHON_ADD_LIBRARY_STATIC)
         set (type STATIC)
@@ -4680,6 +4704,12 @@ if(_${_PYTHON_PREFIX}_CMAKE_ROLE STREQUAL "PROJECT")
       get_property (type TARGET ${name} PROPERTY TYPE)
 
       if (type STREQUAL "MODULE_LIBRARY")
+        if ((NOT PYTHON_ADD_LIBRARY_USE_SABI OR NOT PYTHON_ADD_LIBRARY_WITH_SOABI)
+            AND PYTHON_ADD_LIBRARY_PLATFORM)
+          message (AUTHOR_WARNING "Find${prefix}: Option 'PLATFORM' is only valid with options 'USE_SABI' and 'WITH_SOABI'.")
+          unset(PYTHON_ADD_LIBRARY_PLATFORM)
+        endif()
+
         if (PYTHON_ADD_LIBRARY_USE_SABI)
           if (${prefix}_FREE_THREADED AND
               "${major_version}.${minor_version}" VERSION_GREATER_EQUAL "3.15")
@@ -4713,8 +4743,12 @@ if(_${_PYTHON_PREFIX}_CMAKE_ROLE STREQUAL "PROJECT")
             if (NOT suffix)
               set (suffix "${CMAKE_SHARED_MODULE_SUFFIX}")
             endif()
+            if (PYTHON_ADD_LIBRARY_PLATFORM AND ${prefix}_SOSABI_PLATFORM)
+              set_property (TARGET ${name} PROPERTY SUFFIX ".${${prefix}_SOSABI_PLATFORM}${suffix}")
+            else()
             set_property (TARGET ${name} PROPERTY SUFFIX ".${${prefix}_SOSABI}${suffix}")
           endif()
+        endif()
         endif()
       else()
         if (PYTHON_ADD_LIBRARY_WITH_SOABI OR PYTHON_ADD_LIBRARY_USE_SABI)

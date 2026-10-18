@@ -122,6 +122,13 @@ public:
   bool IsGNUMakeJobServerAware() const override { return true; }
 
   /**
+   * Utilized to determine if the make tool matches target names
+   * case-insensitively, so that generated target names may not differ
+   * only in case.
+   */
+  virtual bool TargetNamesAreCaseInsensitive() const { return false; }
+
+  /**
    * Generate the all required files for building this project/tree. This
    * basically creates a series of LocalGenerators for each directory and
    * requests that they Generate.
@@ -194,6 +201,9 @@ public:
 
   bool IsIPOSupported() const override { return true; }
 
+  bool IsInstallPrepComponentRepresentable(
+    std::string const& component) const override;
+
   bool SupportsShortObjectNames() const override;
   void ComputeTargetObjectDirectory(cmGeneratorTarget* gt) const override;
 
@@ -225,6 +235,34 @@ protected:
 
   void AppendCodegenTargetDepends(std::vector<std::string>& depends,
                                   cmGeneratorTarget* target);
+
+  // Compute the "test_prep/<name>" build targets.  Each test's dependencies
+  // are resolved to the build-system targets that produce them so that the
+  // recursive Makefile graph can build them.
+  void ComputeTestPrepTargets();
+
+  // Write the internal "test_prep/<name>" and "test_prep/all" rules into
+  // CMakeFiles/Makefile2.
+  void WriteTestPrepRules(std::ostream& makefileStream,
+                          cmLocalUnixMakefileGenerator3& rootLG);
+
+  // Write the top-level "test_prep/<name>" convenience rules that forward
+  // into CMakeFiles/Makefile2.
+  void WriteTestPrepConvenienceRules(std::ostream& ruleFileStream);
+
+  // Compute the "install_prep/<component>" build targets. Each installation
+  // component's dependencies are resolved to the build-system targets that
+  // produce them so that the recursive Makefile graph can build them.
+  void ComputeInstallPrepTargets();
+
+  // Write the internal "install_prep/<component>" and "install_prep/all" rules
+  // into CMakeFiles/Makefile2.
+  void WriteInstallPrepRules(std::ostream& makefileStream,
+                             cmLocalUnixMakefileGenerator3& rootLG);
+
+  // Write the top-level "install_prep/<component>" convenience rules that
+  // forward into CMakeFiles/Makefile2.
+  void WriteInstallPrepConvenienceRules(std::ostream& ruleFileStream);
 
   // Target name hooks for superclass.
   char const* GetAllTargetName() const override { return "all"; }
@@ -294,8 +332,58 @@ protected:
 private:
   char const* GetBuildIgnoreErrorsFlag() const override { return "-i"; }
 
+  // Probe the make tool (once, memoized) for whether it is GNU Make 4.0 or
+  // newer and thus supports grouped output via --output-sync.
+  bool MakeSupportsOutputSync(std::string const& makeProgram);
+
+  enum class OutputSyncSupport
+  {
+    Unknown,
+    Yes,
+    No
+  };
+  OutputSyncSupport OutputSyncSupportState = OutputSyncSupport::Unknown;
+
   std::map<cmStateSnapshot, std::set<cmGeneratorTarget const*>,
            cmStateSnapshot::StrictWeakOrder>
     DirectoryTargetsMap;
   void InitializeProgressMarks() override;
+
+  // A "test_prep/<name>" target and the "<target>.dir/all" recursive rules
+  // that must be built to prepare the named test.
+  struct TestPrepTarget
+  {
+    std::string Name;
+    std::vector<std::string> Rules;
+  };
+
+  // Ordered map of "test_prep/" target name -> its rules.  Populated by
+  // ComputeTestPrepTargets when test preparation targets are enabled.
+  std::map<std::string, TestPrepTarget> TestPrepTargets;
+  TestPrepTarget& GetTestPrepTarget(std::string const& name);
+  void AddDirectoryTestPrepTargets(cmLocalGenerator* lg);
+  bool TestPrepEnabled = false;
+
+  // An "install_prep/<component>" target and the "<target>.dir/all"
+  // recursive rules that must be built to prepare the named installation
+  // component.
+  struct InstallPrepTarget
+  {
+    std::string Name;
+    std::vector<std::string> Rules;
+  };
+
+  // Ordered map of "install_prep/" target name -> its rules.  Populated by
+  // ComputeInstallPrepTargets.
+  std::map<std::string, InstallPrepTarget> InstallPrepComponentTargets;
+  std::vector<std::string> InstallPrepAllTargets;
+
+  struct InstallPrepOrderedTarget
+  {
+    std::string NormalRule;
+    std::string PreinstallRule;
+  };
+  std::map<std::string, InstallPrepOrderedTarget> InstallPrepOrderedTargets;
+
+  bool InstallPrepEnabled = false;
 };

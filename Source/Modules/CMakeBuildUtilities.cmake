@@ -103,6 +103,12 @@ else()
 endif()
 
 #---------------------------------------------------------------------
+# rapidhash is a header-only hashing library used to speed up
+# string-keyed hash tables (e.g. cmDefinitions).  No system option is
+# provided because it has no conventional system package.
+add_subdirectory(Utilities/cmrapidhash)
+
+#---------------------------------------------------------------------
 # Build zlib library for Curl, CMake, and CTest.
 if(CMAKE_USE_SYSTEM_ZLIB)
   find_package(ZLIB)
@@ -282,7 +288,8 @@ else()
   set(ENABLE_PCREPOSIX OFF)
   set(ENABLE_PCRE2POSIX OFF)
   set(ENABLE_LIBGCC OFF)
-  set(ENABLE_CNG OFF)
+  set(ENABLE_CLANG_TIDY OFF)
+  set(ENABLE_CNG ON)
   set(ENABLE_TAR OFF)
   set(ENABLE_TAR_SHARED OFF)
   set(ENABLE_CPIO OFF)

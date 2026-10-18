@@ -3,7 +3,7 @@ CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM
 
 .. versionadded:: 3.19
 
-覆盖\ :ref:`Windows 10 SDK Maximum Version for VS 2015`\ 及以后。
+Override the Windows 10 SDK Maximum Version.
 
 The ``CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM`` variable may
 be set to a false value (e.g. ``OFF``, ``FALSE``, or ``0``) or the SDK version

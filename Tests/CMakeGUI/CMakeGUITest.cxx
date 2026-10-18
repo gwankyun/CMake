@@ -353,6 +353,33 @@ void CMakeGUITest::presetArg_data()
     << CMakeGUITest_BINARY_DIR "/presetArg-presetConfigExists/src"
     << CMakeGUITest_BINARY_DIR "/presetArg-presetConfigExists/src/build"
     << makePresetProperties("presetArg-presetConfigExists");
+  QCMakePropertyList installDirProperties{
+    QCMakeProperty{
+      /*Key=*/"CMAKE_INSTALL_PREFIX",
+      /*Value=*/
+      QString::fromLocal8Bit(CMakeGUITest_BINARY_DIR
+                             "/presetArg-installDir/src/install"),
+      /*Strings=*/{},
+      /*Help=*/"",
+      /*Type=*/QCMakeProperty::PATH,
+      /*Advanced=*/false,
+    },
+    QCMakeProperty{
+      /*Key=*/"CMAKE_TOOLCHAIN_FILE",
+      /*Value=*/
+      QString::fromLocal8Bit(CMakeGUITest_BINARY_DIR
+                             "/presetArg-installDir/src/toolchain.cmake"),
+      /*Strings=*/{},
+      /*Help=*/"",
+      /*Type=*/QCMakeProperty::FILEPATH,
+      /*Advanced=*/false,
+    },
+  };
+  QTest::newRow("installDir")
+    << WindowSetupHelper{} << "installDir"
+    << CMakeGUITest_BINARY_DIR "/presetArg-installDir/src"
+    << CMakeGUITest_BINARY_DIR "/presetArg-installDir/src/build"
+    << installDirProperties;
   QTest::newRow("noExist") << WindowSetupHelper{} << QString{}
                            << CMakeGUITest_BINARY_DIR "/presetArg-noExist/src"
                            << "" << QCMakePropertyList{};
@@ -477,6 +504,138 @@ void CMakeGUITest::changingPresets()
   QCOMPARE(this->m_window->BinaryDirectory->currentText(),
            CMakeGUITest_BINARY_DIR "/changingPresets/src2/build3/preset2");
   QCOMPARE(this->m_window->Preset->isEnabled(), false);
+}
+
+namespace {
+QString modelValue(QCMakeCacheModel* model, QString const& key)
+{
+  for (auto const& prop : model->properties()) {
+    if (prop.Key == key) {
+      return prop.Value.toString();
+    }
+  }
+  return QString{};
+}
+
+QString readCacheValue(QString const& buildDir, QString const& key)
+{
+  QFile cache(buildDir + "/CMakeCache.txt");
+  if (!cache.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    return QString{};
+  }
+  QString const prefix = key + ":";
+  while (!cache.atEnd()) {
+    QString const line = QString::fromLocal8Bit(cache.readLine()).trimmed();
+    if (line.startsWith(prefix)) {
+      int const eq = line.indexOf('=');
+      if (eq >= 0) {
+        return line.mid(eq + 1);
+      }
+    }
+  }
+  return QString{};
+}
+}
+
+void CMakeGUITest::presetApplyOrdering()
+{
+  QFETCH(QString, scenario);
+  QFETCH(QString, buildDir);
+  QFETCH(QString, expectedValue);
+
+  auto* cmake = this->m_window->findChild<QCMakeThread*>()->cmakeInstance();
+
+  // Let the initial cache load from the preconfigured build settle.
+  loopSleep();
+
+  QSignalSpy configureDoneSpy(cmake, &QCMake::configureDone);
+  QVERIFY(configureDoneSpy.isValid());
+
+  // Select and configure in one main-thread run, with no yield between, to
+  // hit the race.
+  this->m_window->Preset->setPresetName("raceA");
+  if (scenario == "replace" || scenario == "replaceCycle") {
+    this->m_window->Preset->setPresetName("raceB");
+  }
+  if (scenario == "replaceCycle") {
+    this->m_window->Preset->setPresetName("raceA");
+  }
+
+  // Dependent actions must be off the instant the request is submitted.
+  QVERIFY(!this->m_window->ConfigureButton->isEnabled());
+  QVERIFY(!this->m_window->GenerateButton->isEnabled());
+
+  // Activating while a preset applies must not configure with the stale model.
+  this->m_window->ConfigureButton->click();
+  QCOMPARE(configureDoneSpy.count(), 0);
+
+  // Gate lifts only once the accepted completion has installed the model.
+  QTRY_VERIFY(this->m_window->ConfigureButton->isEnabled());
+
+  // The click during the pending window did nothing.
+  QCOMPARE(configureDoneSpy.count(), 0);
+
+  // Model holds the winning preset, not the preconfigured value.
+  QCOMPARE(modelValue(this->m_window->CacheValues->cacheModel(), "RACE_VALUE"),
+           expectedValue);
+
+  // A real configure writes that value through to the cache.
+  this->tryConfigure();
+  QCOMPARE(readCacheValue(buildDir, "RACE_VALUE"), expectedValue);
+}
+
+void CMakeGUITest::presetApplyOrdering_data()
+{
+  QTest::addColumn<QString>("scenario");
+  QTest::addColumn<QString>("buildDir");
+  QTest::addColumn<QString>("expectedValue");
+
+  QTest::newRow("apply") << "apply"
+                         << CMakeGUITest_BINARY_DIR
+    "/presetApplyOrdering-apply/build"
+                         << "presetA";
+  QTest::newRow("replace") << "replace"
+                           << CMakeGUITest_BINARY_DIR
+    "/presetApplyOrdering-replace/build"
+                           << "presetB";
+  QTest::newRow("replaceCycle")
+    << "replaceCycle"
+    << CMakeGUITest_BINARY_DIR "/presetApplyOrdering-replaceCycle/build"
+    << "presetA";
+}
+
+void CMakeGUITest::presetApplyStartup()
+{
+  QFETCH(QString, requestedPreset);
+  QFETCH(bool, available);
+
+  // The deferred gate must have the actions off at startup, before presets
+  // load.  Deterministic: pending was set on the main thread before the event
+  // loop processed any worker result.
+  QVERIFY(!this->m_window->ConfigureButton->isEnabled());
+  QVERIFY(!this->m_window->GenerateButton->isEnabled());
+
+  // Gate lifts once presets resolve, applied or not.
+  QTRY_VERIFY(this->m_window->ConfigureButton->isEnabled());
+  QVERIFY(this->m_window->GenerateButton->isEnabled());
+
+  if (available) {
+    QCOMPARE(this->m_window->Preset->presetName(), requestedPreset);
+    QCOMPARE(
+      modelValue(this->m_window->CacheValues->cacheModel(), "RACE_VALUE"),
+      QString("presetA"));
+  } else {
+    QVERIFY(this->m_window->Preset->presetName() != requestedPreset);
+  }
+}
+
+void CMakeGUITest::presetApplyStartup_data()
+{
+  QTest::addColumn<QString>("requestedPreset");
+  QTest::addColumn<bool>("available");
+
+  QTest::newRow("available") << "raceA" << true;
+  QTest::newRow("unavailable") << "doesNotExist" << false;
 }
 
 void SetupDefaultQSettings()

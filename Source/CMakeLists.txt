@@ -138,6 +138,8 @@ add_library(
   cmCMakePresetsGraphReadJSONTestPresets.cxx
   cmCMakePresetsGraphReadJSONWorkflowPresets.cxx
   cmCMakePresetsGraphResolve.cxx
+  cmCMakeSarifLogger.h
+  cmCMakeSarifLogger.cxx
   cmCMakeString.hxx
   cmCMakeString.cxx
   cmCommandLineArgument.h
@@ -161,6 +163,10 @@ add_library(
   cmCryptoHash.h
   cmCurl.cxx
   cmCurl.h
+  cmRule.cxx
+  cmRule.h
+  cmCustomRule.cxx
+  cmSpecializedRule.cxx
   cmCustomCommand.cxx
   cmCustomCommand.h
   cmCustomCommandGenerator.cxx
@@ -193,6 +199,8 @@ add_library(
   cmDiagnosticContext.cxx
   cmDiagnostics.h
   cmDiagnostics.cxx
+  cmDirectoryPropertyHelper.cxx
+  cmDirectoryPropertyHelper.h
   cmDocumentation.cxx
   cmDocumentationFormatter.cxx
   cmDyndepCollation.cxx
@@ -316,6 +324,8 @@ add_library(
   cmGeneratorFileSet.h
   cmGeneratorFileSets.cxx
   cmGeneratorFileSets.h
+  cmGeneratorRule.cxx
+  cmGeneratorRule.h
   cmGeneratorTarget.cxx
   cmGeneratorTarget.h
   cmGeneratorTarget_CompatibleInterface.cxx
@@ -326,6 +336,7 @@ add_library(
   cmGeneratorTarget_Options.cxx
   cmGeneratorTarget_Sources.cxx
   cmGeneratorTarget_TransitiveProperty.cxx
+  cmGeneratorTarget_Wrappers.cxx
   cmLinkItemGraphVisitor.cxx
   cmLinkItemGraphVisitor.h
   cmGetPipes.cxx
@@ -385,6 +396,8 @@ add_library(
   cmInstallScriptHandler.cxx
   cmInstrumentation.h
   cmInstrumentation.cxx
+  cmInstrumentationInterrupt.h
+  cmInstrumentationInterrupt.cxx
   cmInstrumentationCommand.h
   cmInstrumentationCommand.cxx
   cmInstrumentationQuery.h
@@ -483,8 +496,8 @@ add_library(
   cmRST.h
   cmRuntimeDependencyArchive.cxx
   cmRuntimeDependencyArchive.h
-  cmSarifLog.cxx
-  cmSarifLog.h
+  cmSarif.cxx
+  cmSarif.h
   cmScriptGenerator.h
   cmScriptGenerator.cxx
   cmSourceFile.cxx
@@ -492,6 +505,8 @@ add_library(
   cmSourceFileLocation.cxx
   cmSourceFileLocation.h
   cmSourceFileLocationKind.h
+  cmSourceFilePropertyHelper.cxx
+  cmSourceFilePropertyHelper.h
   cmSourceGroup.cxx
   cmSourceGroup.h
   cmStandardLevel.h
@@ -518,17 +533,22 @@ add_library(
   cmSystemTools.h
   cmTarget.cxx
   cmTarget.h
+  cmTargetExport.h
   cmTargetPropertyComputer.cxx
   cmTargetPropertyComputer.h
   cmTargetPropertyEntry.cxx
   cmTargetPropertyEntry.h
-  cmTargetExport.h
+  cmTargetPropertyHelper.cxx
+  cmTargetPropertyHelper.h
   cmTargetTraceDependencies.cxx
   cmTargetTraceDependencies.h
+  cmTargetTypes.h
   cmTest.cxx
   cmTest.h
   cmTestGenerator.cxx
   cmTestGenerator.h
+  cmTestPropertyHelper.cxx
+  cmTestPropertyHelper.h
   cmTransformDepfile.cxx
   cmTransformDepfile.h
   cmUuid.cxx
@@ -572,6 +592,8 @@ add_library(
   cmAddCustomCommandCommand.h
   cmAddCustomTargetCommand.cxx
   cmAddCustomTargetCommand.h
+  cmAddCustomRuleCommand.cxx
+  cmAddCustomRuleCommand.h
   cmAddDefinitionsCommand.cxx
   cmAddDefinitionsCommand.h
   cmAddDependenciesCommand.cxx
@@ -1255,6 +1277,8 @@ endif()
 #
 add_library(
   CPackLib
+  CPack/cmCPackAPKGenerator.cxx
+  CPack/cmCPackAPKGenerator.h
   CPack/cmCPackArchiveGenerator.cxx
   CPack/cmCPackComponentGroup.cxx
   CPack/cmCPackDebGenerator.cxx

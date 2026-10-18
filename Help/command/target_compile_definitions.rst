@@ -1,4 +1,4 @@
-﻿target_compile_definitions
+target_compile_definitions
 --------------------------
 
 向目标添加编译定义。
@@ -9,9 +9,13 @@
     <INTERFACE|PUBLIC|PRIVATE> <definition>...
     [<INTERFACE|PUBLIC|PRIVATE> <definition>... ...])
 
-指定编译给定\ ``<target>``\ 时要使用的编译定义。命名的\ ``<target>``\ 必须是由\
-:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\
-:ref:`别名目标 <Alias Targets>`。
+Specifies compile definitions to use when compiling a given ``<target>``.  The
+named ``<target>`` must have been created by a command such as
+:command:`add_executable` or :command:`add_library`.
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字用于指定下列参数的\
 :ref:`作用域 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\

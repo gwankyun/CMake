@@ -5,6 +5,7 @@
 #include "cmConfigure.h" // IWYU pragma: keep
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -39,6 +40,10 @@ struct cmListFileArgument;
 template <typename T>
 class BT;
 
+namespace cm {
+enum class TargetType;
+} // namespace cm
+
 class cmState
 {
   friend class cmStateSnapshot;
@@ -67,8 +72,7 @@ public:
   cmState(cmState const&) = delete;
   cmState& operator=(cmState const&) = delete;
 
-  static std::string const& GetTargetTypeName(
-    cmStateEnums::TargetType targetType);
+  static std::string const& GetTargetTypeName(cm::TargetType targetType);
 
   cmStateSnapshot CreateBaseSnapshot();
   cmStateSnapshot CreateBuildsystemDirectorySnapshot(
@@ -263,6 +267,22 @@ public:
   }
   bool InTopLevelIncludes() const { return this->ProcessingTopLevelIncludes; }
 
+  void ClearDeleteCacheChangeVars() { this->DeleteCacheChangeVars.clear(); }
+  void AddDeleteCacheChangeVar(std::string var, std::string value)
+  {
+    this->DeleteCacheChangeVars[var] = value;
+  }
+  std::map<std::string, std::string> GetDeleteCacheChangeVars() const
+  {
+    return this->DeleteCacheChangeVars;
+  }
+
+  void SetReconfiguring(bool reconfiguring)
+  {
+    this->Reconfiguring = reconfiguring;
+  }
+  bool IsReconfiguring() const { return this->Reconfiguring; }
+
 private:
   friend class cmake;
   cmStateSnapshot Reset(cmStateSnapshot const& diagnosticState);
@@ -342,4 +362,6 @@ private:
   TryCompile IsTryCompile = TryCompile::No;
   cm::optional<cmDependencyProvider> DependencyProvider;
   bool ProcessingTopLevelIncludes = false;
+  std::map<std::string, std::string> DeleteCacheChangeVars;
+  bool Reconfiguring = false;
 };

@@ -5,6 +5,9 @@
   "components": {
     "PrefixTest": {
       "includes": ["@prefix@/include"]
+    },
+    "ExecutableTest": {
+      "location": "@prefix@/foo"
     }
   }
 }

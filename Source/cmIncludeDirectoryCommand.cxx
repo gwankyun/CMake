@@ -8,6 +8,7 @@
 
 #include <cmext/algorithm>
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmGeneratorExpression.h"
 #include "cmMakefile.h"
@@ -22,11 +23,15 @@ static void NormalizeInclude(cmMakefile& mf, std::string& inc);
 bool cmIncludeDirectoryCommand(std::vector<std::string> const& args,
                                cmExecutionStatus& status)
 {
+  cmMakefile& mf = status.GetMakefile();
+
+  mf.IssueDiagnostic(cmDiagnostics::CMD_NON_TARGET_DIRECTIVE,
+                     "Use of non-target directives is not recommended. "
+                     "Consider target_include_directories instead.");
+
   if (args.empty()) {
     return true;
   }
-
-  cmMakefile& mf = status.GetMakefile();
 
   auto i = args.begin();
 
@@ -127,7 +132,7 @@ static void NormalizeInclude(cmMakefile& mf, std::string& inc)
     cmSystemTools::ConvertToUnixSlashes(inc);
     if (!cmSystemTools::FileIsFullPath(inc) &&
         !cmGeneratorExpression::StartsWithGeneratorExpression(inc)) {
-      inc = cmStrCat(mf.GetCurrentSourceDirectory(), '/', inc);
+      inc = cmStrCat(mf.GetCurrentSourceDirectory(), '/', std::move(inc));
     }
   }
 }

@@ -7,8 +7,7 @@ CMAKE_<LANG>_STANDARD_LATEST
 它的值将设置为对应的\ :prop_tgt:`<LANG>_STANDARD`\ 目标属性支持的值之一；有关支持的语言\
 列表，请参阅该属性的文档。
 
-See the :manual:`cmake-compile-features(7)` manual for information on compile
-features and a list of supported compilers.
+.. include:: ../include/COMPILE_FEATURES_NOTE.rst
 
 .. note::
 

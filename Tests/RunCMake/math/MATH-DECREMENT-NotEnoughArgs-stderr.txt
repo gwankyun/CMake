@@ -1,0 +1,4 @@
+^CMake Error at MATH-DECREMENT-NotEnoughArgs\.cmake:[0-9]+ \(math\):
+  math sub-command DECREMENT wrong number of arguments
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)$

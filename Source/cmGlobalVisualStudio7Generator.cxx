@@ -140,39 +140,6 @@ std::string const& cmGlobalVisualStudio7Generator::GetDevEnvCommand()
   return this->DevEnvCommand;
 }
 
-std::string cmGlobalVisualStudio7Generator::FindDevEnvCommand()
-{
-  std::string vscmd;
-  std::string vskey;
-
-  // Search in standard location.
-  vskey = cmStrCat(this->GetRegistryBase(), ";InstallDir");
-  if (cmSystemTools::ReadRegistryValue(vskey, vscmd,
-                                       cmSystemTools::KeyWOW64_32)) {
-    cmSystemTools::ConvertToUnixSlashes(vscmd);
-    vscmd += "/devenv.com";
-    if (cmSystemTools::FileExists(vscmd, true)) {
-      return vscmd;
-    }
-  }
-
-  // Search where VS15Preview places it.
-  vskey =
-    cmStrCat(R"(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\SxS\VS7;)",
-             this->GetIDEVersion());
-  if (cmSystemTools::ReadRegistryValue(vskey, vscmd,
-                                       cmSystemTools::KeyWOW64_32)) {
-    cmSystemTools::ConvertToUnixSlashes(vscmd);
-    vscmd += "/Common7/IDE/devenv.com";
-    if (cmSystemTools::FileExists(vscmd, true)) {
-      return vscmd;
-    }
-  }
-
-  vscmd = "devenv.com";
-  return vscmd;
-}
-
 std::vector<cmGlobalGenerator::GeneratedMakeCommand>
 cmGlobalVisualStudio7Generator::GenerateBuildCommand(
   std::string const& makeProgram, std::string const& projectName,
@@ -196,9 +163,6 @@ cmGlobalVisualStudio7Generator::GenerateBuildCommand(
     makeProgramSelected = this->GetDevEnvCommand();
   }
 
-  // Workaround to convince VCExpress.exe to produce output.
-  bool const requiresOutputForward =
-    (makeProgramLower.find("vcexpress") != std::string::npos);
   std::vector<GeneratedMakeCommand> makeCommands;
 
   std::vector<std::string> realTargetNames = targetNames;
@@ -219,7 +183,6 @@ cmGlobalVisualStudio7Generator::GenerateBuildCommand(
       realTarget = "ALL_BUILD";
     }
     GeneratedMakeCommand makeCommand;
-    makeCommand.RequiresOutputForward = requiresOutputForward;
     makeCommand.Add(makeProgramSelected);
     makeCommand.Add(slnFile);
     makeCommand.Add((clean ? "/clean" : "/build"));
@@ -262,7 +225,7 @@ void cmGlobalVisualStudio7Generator::AppendDirectoryForConfig(
   std::string const& suffix, std::string& dir)
 {
   if (!config.empty()) {
-    dir += cmStrCat(prefix, config, suffix);
+    dir = cmStrCat(std::move(dir), prefix, config, suffix);
   }
 }
 

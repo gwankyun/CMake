@@ -6,14 +6,11 @@
 #include "cmConfigure.h" // IWYU pragma: keep
 
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include <cm/optional>
-#include <cm/string_view>
 
-// From cmPkgConfigParser.h, IWYU doesn't like including the header
-struct cmPkgConfigEntry;
+#include "cmPkgConfigParser.h"
 
 struct cmPkgConfigCflagsResult
 {
@@ -28,29 +25,6 @@ struct cmPkgConfigLibsResult
   std::vector<std::string> LibDirs;
   std::vector<std::string> LibNames;
   std::vector<std::string> LinkOptions;
-};
-
-struct cmPkgConfigVersionReq
-{
-  enum
-  {
-    ANY = 0,
-    LT,
-    LT_EQ,
-    EQ,
-    NEQ,
-    GT_EQ,
-    GT,
-  } Operation = ANY;
-  std::string Version;
-
-  std::string string() const;
-};
-
-struct cmPkgConfigDependency
-{
-  std::string Name;
-  cmPkgConfigVersionReq VerReq;
 };
 
 struct cmPkgConfigEnv
@@ -70,46 +44,51 @@ struct cmPkgConfigEnv
   bool AllowSysLibs = true;
 };
 
-class cmPkgConfigResult
-{
-public:
-  std::unordered_map<std::string, std::string> Keywords;
-  std::unordered_map<std::string, std::string> Variables;
-
-  std::string Name();
-  std::string Description();
-  std::string Version();
-
-  std::vector<cmPkgConfigDependency> Conflicts();
-  std::vector<cmPkgConfigDependency> Provides();
-  std::vector<cmPkgConfigDependency> Requires(bool priv = false);
-
-  cmPkgConfigCflagsResult Cflags(bool priv = false);
-  cmPkgConfigLibsResult Libs(bool priv = false);
-
-  cmPkgConfigEnv* env;
-
-private:
-  std::string StrOrDefault(std::string const& key, cm::string_view def = "");
-};
-
 class cmPkgConfigResolver
 {
-  friend class cmPkgConfigResult;
-
 public:
-  static cm::optional<cmPkgConfigResult> ResolveStrict(
-    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env);
+  enum class Strictness
+  {
+    Strict,
+    Permissive,
+    BestEffort,
+  };
 
-  static cm::optional<cmPkgConfigResult> ResolvePermissive(
-    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env);
+  cmPkgConfigResolver(cmPkgConfigParser parser, cmPkgConfigEnv const& env,
+                      std::string const& pcFileDir);
 
-  static cmPkgConfigResult ResolveBestEffort(
-    std::vector<cmPkgConfigEntry> const& entries, cmPkgConfigEnv& env);
+  static cm::optional<cmPkgConfigResolver> Resolve(
+    cmPkgConfigParser parser, cmPkgConfigEnv const& env, Strictness strictness,
+    std::string const& pcFileDir);
 
-  static cmPkgConfigVersionReq ParseVersion(std::string const& version);
+  static cm::optional<cmPkgConfigResolver> ResolveStrict(
+    cmPkgConfigParser parser, cmPkgConfigEnv const& env,
+    std::string const& pcFileDir);
 
-  static bool CheckVersion(cmPkgConfigVersionReq const& desired,
+  static cm::optional<cmPkgConfigResolver> ResolvePermissive(
+    cmPkgConfigParser parser, cmPkgConfigEnv const& env,
+    std::string const& pcFileDir);
+
+  static cmPkgConfigResolver ResolveBestEffort(cmPkgConfigParser parser,
+                                               cmPkgConfigEnv const& env,
+                                               std::string const& pcFileDir);
+
+  std::string Literal(std::string const& key) const;
+
+  std::string Name() const;
+  std::string Description() const;
+  std::string Version() const;
+
+  std::vector<cmPkgConfigDependencySpec> Conflicts() const;
+  std::vector<cmPkgConfigDependencySpec> Provides() const;
+  std::vector<cmPkgConfigDependencySpec> Requires(bool priv = false) const;
+
+  cmPkgConfigCflagsResult Cflags(bool priv = false) const;
+  cmPkgConfigLibsResult Libs(bool priv = false) const;
+
+  static std::string VersionReqString(cmPkgConfigDependencySpec const& spec);
+
+  static bool CheckVersion(cmPkgConfigDependencySpec const& desired,
                            std::string const& provided);
 
   static void ReplaceSep(std::string& list);
@@ -121,55 +100,23 @@ public:
 #endif
 
 private:
-  static std::string HandleVariablePermissive(
-    cmPkgConfigEntry const& entry,
-    std::unordered_map<std::string, std::string> const& variables);
+  void ConfigureParser(std::string const& pcFileDir);
+  bool HasRequiredFields() const;
+  bool HasStrictConflicts() const;
 
-  static cm::optional<std::string> HandleVariableStrict(
-    cmPkgConfigEntry const& entry,
-    std::unordered_map<std::string, std::string> const& variables);
-
-  static std::string HandleKeyword(
-    cmPkgConfigEntry const& entry,
-    std::unordered_map<std::string, std::string> const& variables);
-
-  static std::vector<cm::string_view> TokenizeFlags(
-    std::string const& flagline);
+  std::vector<std::string> Fragments(std::string const& key) const;
+  std::vector<cmPkgConfigDependencySpec> Dependencies(
+    std::string const& key) const;
 
   static cmPkgConfigCflagsResult MangleCflags(
-    std::vector<cm::string_view> const& flags);
-
-  static cmPkgConfigCflagsResult MangleCflags(
-    std::vector<cm::string_view> const& flags, std::string const& sysroot);
-
-  static cmPkgConfigCflagsResult MangleCflags(
-    std::vector<cm::string_view> const& flags,
-    std::vector<std::string> const& syspaths);
-
-  static cmPkgConfigCflagsResult MangleCflags(
-    std::vector<cm::string_view> const& flags, std::string const& sysroot,
-    std::vector<std::string> const& syspaths);
+    std::vector<std::string> const& flags, cmPkgConfigEnv const& env);
 
   static cmPkgConfigLibsResult MangleLibs(
-    std::vector<cm::string_view> const& flags);
+    std::vector<std::string> const& flags, cmPkgConfigEnv const& env);
 
-  static cmPkgConfigLibsResult MangleLibs(
-    std::vector<cm::string_view> const& flags, std::string const& sysroot);
-
-  static cmPkgConfigLibsResult MangleLibs(
-    std::vector<cm::string_view> const& flags,
-    std::vector<std::string> const& syspaths);
-
-  static cmPkgConfigLibsResult MangleLibs(
-    std::vector<cm::string_view> const& flags, std::string const& sysroot,
-    std::vector<std::string> const& syspaths);
-
-  static std::string Reroot(cm::string_view flag, cm::string_view prefix,
+  static std::string Reroot(std::string const& flag, char const* prefix,
                             std::string const& sysroot);
 
-  static cmPkgConfigVersionReq ParseVersion(std::string::const_iterator& cur,
-                                            std::string::const_iterator end);
-
-  static std::vector<cmPkgConfigDependency> ParseDependencies(
-    std::string const& deps);
+  mutable cmPkgConfigParser Parser;
+  cmPkgConfigEnv const* Env;
 };

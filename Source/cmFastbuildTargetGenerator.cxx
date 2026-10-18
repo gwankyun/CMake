@@ -9,6 +9,7 @@
 
 #include <cm/memory>
 #include <cm/optional>
+#include <cm/string_view>
 
 #include "cmCryptoHash.h"
 #include "cmCustomCommand.h"
@@ -20,6 +21,8 @@
 #include "cmGeneratorTarget.h"
 #include "cmGlobalCommonGenerator.h"
 #include "cmGlobalFastbuildGenerator.h"
+#include "cmInstrumentation.h"
+#include "cmInstrumentationQuery.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmLocalCommonGenerator.h"
@@ -35,7 +38,9 @@
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
+#include "cmake.h"
 
 #define FASTBUILD_DOLLAR_TAG "FASTBUILD_DOLLAR_TAG"
 
@@ -48,16 +53,16 @@ cmFastbuildTargetGenerator* cmFastbuildTargetGenerator::New(
   cmGeneratorTarget* target, std::string config)
 {
   switch (target->GetType()) {
-    case cmStateEnums::EXECUTABLE:
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::STATIC_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::EXECUTABLE:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       return new cmFastbuildNormalTargetGenerator(target, std::move(config));
 
-    case cmStateEnums::UTILITY:
-    case cmStateEnums::GLOBAL_TARGET:
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::UTILITY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::INTERFACE_LIBRARY:
       return new cmFastbuildUtilityTargetGenerator(target, std::move(config));
 
     default:
@@ -155,7 +160,8 @@ std::string cmFastbuildTargetGenerator::GetCustomCommandTargetName(
   extras += std::to_string(static_cast<int>(step));
 
   cmCryptoHash hash(cmCryptoHash::AlgoSHA256);
-  targetName += "-" + hash.HashString(extras).substr(0, 14);
+  targetName = cmStrCat(std::move(targetName), '-',
+                        hash.HashString(extras).substr(0, 14));
 
   return targetName;
 }
@@ -178,6 +184,15 @@ void cmFastbuildTargetGenerator::WriteScriptEpilog(cmsys::ofstream& file) const
           "echo Batch file failed at line %FAIL_LINE% "
           "with errorcode %ERRORLEVEL%\n"
           "exit /b %ERROR_CODE%";
+#elif !defined(CMAKE_BOOTSTRAP)
+  cmInstrumentation* instrumentation =
+    this->GetLocalGenerator()->GetCMakeInstance()->GetInstrumentation();
+  if (instrumentation->HasOption(
+        cmInstrumentationQuery::Option::ProcessMetrics)) {
+    // Prevent shell exec optimization from passing accumulated child resource
+    // usage to the final instrumentation wrapper.
+    file << ":\n";
+  }
 #endif
 }
 
@@ -356,8 +371,10 @@ void cmFastbuildTargetGenerator::GetDepends(
   for (auto dep : ccg.GetDepends()) {
     LogMessage("Dep: " + dep);
     auto orig = dep;
+    std::string realDep;
     if (this->LocalCommonGenerator->GetRealDependency(
-          dep, Config, dep, ccg.GetCC().GetCMP0212Status())) {
+          orig, Config, realDep, ccg.GetCC().GetCMP0212Status())) {
+      dep = std::move(realDep);
       LogMessage("Real dep: " + dep);
       if (!dep.empty()) {
         LogMessage("Custom command real dep: " + dep);
@@ -365,6 +382,18 @@ void cmFastbuildTargetGenerator::GetDepends(
                this->ConvertToFastbuildPath(dep), this->LocalGenerator,
                Config) }) {
           fileLevelDeps.emplace_back(item);
+        }
+        // FASTBuild requires the node producing a file to be defined before
+        // the file is used as an input, so depend on the target that links
+        // it.
+        if (cmGeneratorTarget const* owner =
+              this->GetGlobalGenerator()->FindArtifactOwningTarget(dep,
+                                                                   Config)) {
+          if (owner != this->GeneratorTarget) {
+            LogMessage("Additional dep on artifact owner: " +
+                       owner->GetName());
+            targetDep.emplace(owner->GetName());
+          }
         }
       }
     }
@@ -502,27 +531,99 @@ FastbuildExecNode cmFastbuildTargetGenerator::GetAppleTextStubCommand() const
   res.PreBuildDependencies.emplace(this->GetTargetName());
   return res;
 }
-FastbuildExecNode cmFastbuildTargetGenerator::GetDepsCheckExec(
+
+namespace {
+std::vector<std::vector<cm::string_view>> GroupDeps(
+  FastbuildExecNode const& depender, size_t commandLineUsedLength)
+{
+  std::vector<cm::string_view> depsCheckExecNames;
+  depsCheckExecNames.reserve(
+    depender.OutputsAlias.PreBuildDependencies.size() +
+    depender.ByproductsAlias.PreBuildDependencies.size());
+  for (FastbuildTargetDep const& dep :
+       depender.OutputsAlias.PreBuildDependencies) {
+    depsCheckExecNames.emplace_back(dep.Name);
+  }
+  for (FastbuildTargetDep const& dep :
+       depender.ByproductsAlias.PreBuildDependencies) {
+    depsCheckExecNames.emplace_back(dep.Name);
+  }
+
+  size_t commandLineLimit = cmSystemTools::CalculateCommandLineLengthLimit();
+
+  std::vector<std::vector<cm::string_view>> depsCheckExecNamesGrouped;
+  if (commandLineLimit == 0) {
+    depsCheckExecNamesGrouped.emplace_back(std::move(depsCheckExecNames));
+    return depsCheckExecNamesGrouped;
+  }
+
+  commandLineLimit -= commandLineUsedLength;
+
+  std::vector<cm::string_view> currentGroup;
+  currentGroup.reserve(depsCheckExecNames.size());
+  size_t currentGroupSizeMayUse = commandLineLimit;
+
+  for (size_t i = 0; i < depsCheckExecNames.size(); ++i) {
+    cm::string_view depsCheckExecName = depsCheckExecNames[i];
+    if (currentGroupSizeMayUse > depsCheckExecName.size()) {
+      currentGroup.emplace_back(depsCheckExecName);
+
+      // +1 for the space between arguments
+      currentGroupSizeMayUse -= depsCheckExecName.size() + 1;
+      continue;
+    }
+
+    // Current dependency cannot be placed in the current group
+    if (currentGroup.empty()) {
+      cmSystemTools::Error(cmStrCat("Failed to group dependencies: command "
+                                    "line limit exceeded. Filename too long: ",
+                                    depsCheckExecName,
+                                    ". Size limit: ", commandLineLimit));
+      return {};
+    }
+
+    depsCheckExecNamesGrouped.emplace_back(std::move(currentGroup));
+    currentGroup.clear();
+    currentGroup.reserve(depsCheckExecNames.size() - i);
+    currentGroupSizeMayUse = commandLineLimit;
+
+    // Go back to the previous dependency to check if it can be placed in the
+    // current group.
+    --i;
+  }
+
+  if (!currentGroup.empty()) {
+    depsCheckExecNamesGrouped.emplace_back(std::move(currentGroup));
+  }
+
+  return depsCheckExecNamesGrouped;
+}
+}
+
+std::vector<FastbuildExecNode> cmFastbuildTargetGenerator::GetDepsCheckExecs(
   FastbuildExecNode const& depender)
 {
-  FastbuildExecNode exec;
-  exec.Name = depender.Name + "-check-depends";
-  exec.ExecAlways = true;
-  exec.ExecUseStdOutAsOutput = true;
-  exec.ExecOutput = depender.ExecOutput + ".deps-checker";
-  exec.ExecExecutable = cmSystemTools::GetCMakeCommand();
-  exec.ExecArguments =
-    cmStrCat(std::move(exec.ExecArguments),
-             "-E cmake_fastbuild_check_depends ", depender.ExecOutput);
-  for (auto const& dep : depender.OutputsAlias.PreBuildDependencies) {
+  std::string const& executable = cmSystemTools::GetCMakeCommand();
+  std::string execArgumentsBase =
+    cmStrCat("-E cmake_fastbuild_check_depends ", depender.ExecOutput, ' ');
+
+  std::vector<std::vector<cm::string_view>> depsCheckExecNamesGrouped =
+    GroupDeps(depender, executable.size() + execArgumentsBase.size());
+
+  std::vector<FastbuildExecNode> res;
+  res.reserve(depsCheckExecNamesGrouped.size());
+  for (size_t i = 0; i < depsCheckExecNamesGrouped.size(); ++i) {
+    FastbuildExecNode exec;
+    exec.Name = cmStrCat(depender.Name, "-check-depends-", i);
+    exec.ExecAlways = true;
+    exec.ExecUseStdOutAsOutput = true;
+    exec.ExecOutput = cmStrCat(depender.ExecOutput, '.', i, ".deps-checker");
+    exec.ExecExecutable = executable;
     exec.ExecArguments =
-      cmStrCat(std::move(exec.ExecArguments), ' ', dep.Name);
+      cmJoinStrings(depsCheckExecNamesGrouped[i], " ", execArgumentsBase);
+    res.emplace_back(std::move(exec));
   }
-  for (auto const& dep : depender.ByproductsAlias.PreBuildDependencies) {
-    exec.ExecArguments =
-      cmStrCat(std::move(exec.ExecArguments), ' ', dep.Name);
-  }
-  return exec;
+  return res;
 }
 
 FastbuildExecNodes cmFastbuildTargetGenerator::GenerateCommands(
@@ -600,8 +701,8 @@ FastbuildExecNodes cmFastbuildTargetGenerator::GenerateCommands(
                execNode.PreBuildDependencies);
     for (auto const& util : ccg.GetUtilities()) {
       auto const& utilTargetName = util.Value.first;
-      LogMessage("Util: " + utilTargetName +
-                 ", cross: " + std::to_string(util.Value.second));
+      LogMessage(cmStrCat("Util: ", utilTargetName,
+                          ", cross: ", std::to_string(util.Value.second)));
       auto* const target = this->Makefile->FindTargetToUse(utilTargetName);
 
       if (target && target->IsImported()) {
@@ -633,7 +734,7 @@ FastbuildExecNodes cmFastbuildTargetGenerator::GenerateCommands(
 
     if (!cmdLines.empty()) {
       std::string const scriptFileName = GetScriptFilename(execName);
-      cmsys::ofstream scriptFile(scriptFileName.c_str());
+      cmsys::ofstream scriptFile(scriptFileName);
 
       AddOutput(ccg, execNode);
       AddExecArguments(execNode, scriptFileName);
@@ -678,10 +779,20 @@ FastbuildExecNodes cmFastbuildTargetGenerator::GenerateCommands(
       }
     }
     if (exec.NeedsDepsCheckExec) {
-      auto depsCheckExec = GetDepsCheckExec(exec);
-      LogMessage("Adding deps check Exec: " + depsCheckExec.Name);
-      exec.PreBuildDependencies.emplace(depsCheckExec.Name);
-      this->GetGlobalGenerator()->AddTarget(std::move(depsCheckExec));
+      std::vector<FastbuildExecNode> depsCheckExecs = GetDepsCheckExecs(exec);
+
+      std::vector<cm::string_view> depsCheckExecNames;
+      depsCheckExecNames.reserve(depsCheckExecs.size());
+      for (FastbuildExecNode const& depsCheckExec : depsCheckExecs) {
+        depsCheckExecNames.emplace_back(depsCheckExec.Name);
+      }
+      LogMessage(
+        cmJoinStrings(depsCheckExecNames, ", ", "Adding deps check Exec: "));
+
+      for (FastbuildExecNode& depsCheckExec : depsCheckExecs) {
+        exec.PreBuildDependencies.emplace(depsCheckExec.Name);
+        this->GetGlobalGenerator()->AddTarget(std::move(depsCheckExec));
+      }
     }
   }
   return execs;
@@ -704,17 +815,21 @@ std::string cmFastbuildTargetGenerator::MakeCustomLauncher(
   std::vector<std::string> const& outputs = ccg.GetOutputs();
   for (size_t i = 0; i < outputs.size(); ++i) {
     output =
-      cmStrCat(output,
+      cmStrCat(std::move(output),
                this->LocalGenerator->ConvertToOutputFormat(
                  ccg.GetWorkingDirectory().empty()
                    ? this->LocalGenerator->MaybeRelativeToCurBinDir(outputs[i])
                    : outputs[i],
                  cmOutputConverter::SHELL));
     if (i != outputs.size() - 1) {
-      output = cmStrCat(output, ',');
+      output = cmStrCat(std::move(output), ',');
     }
   }
   vars.Output = output.c_str();
+
+  std::string filePathWithOutput = ccg.StoreContentToFile(output);
+  vars.FilePathWithOutput = filePathWithOutput.c_str();
+
   vars.Role = ccg.GetCC().GetRole().c_str();
   vars.CMTargetName = ccg.GetCC().GetTarget().c_str();
   vars.Config = ccg.GetOutputConfig().c_str();
@@ -735,7 +850,7 @@ std::string cmFastbuildTargetGenerator::MakeCustomLauncher(
 
 std::string cmFastbuildTargetGenerator::GetTargetName() const
 {
-  if (this->GeneratorTarget->GetType() == cmStateEnums::GLOBAL_TARGET) {
+  if (this->GeneratorTarget->GetType() == cm::TargetType::GLOBAL_TARGET) {
     return this->GetGlobalGenerator()->GetTargetName(GeneratorTarget);
   }
   return this->GeneratorTarget->GetName();
@@ -743,7 +858,7 @@ std::string cmFastbuildTargetGenerator::GetTargetName() const
 
 cmGeneratorTarget::Names cmFastbuildTargetGenerator::DetectOutput() const
 {
-  if (GeneratorTarget->GetType() == cmStateEnums::EXECUTABLE) {
+  if (GeneratorTarget->GetType() == cm::TargetType::EXECUTABLE) {
     return GeneratorTarget->GetExecutableNames(Config);
   }
   return GeneratorTarget->GetLibraryNames(Config);

@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <map>
-#include <sstream>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -158,7 +157,7 @@ std::vector<BT<std::string>> ProcessIncludes(
           MessageType::FATAL_ERROR,
           cmStrCat("File set \"", fileSetName, "\" from the target \"",
                    target->GetName(), "\" contains relative path in its ",
-                   property, ":\n  \"", include, "\""));
+                   property, ":\n  \"", include, '"'));
         return includes;
       }
 
@@ -174,10 +173,12 @@ std::vector<BT<std::string>> ProcessIncludes(
 //
 // Class cmGeneratorFileSet
 //
-cmGeneratorFileSet::cmGeneratorFileSet(cmGeneratorTarget const* target,
-                                       cmFileSet const* fileSet)
+cmGeneratorFileSet::cmGeneratorFileSet(
+  cmGeneratorTarget const* target, cmFileSet const* fileSet,
+  cm::FileSetMetadata::FileSetDomain domain)
   : Target(target)
   , FileSet(fileSet)
+  , Domain(domain)
 {
   auto& cmake = *target->GetLocalGenerator()->GetCMakeInstance();
 
@@ -456,7 +457,8 @@ std::vector<std::string> cmGeneratorFileSet::EvaluateDirectoryEntries(
     cmList dirs{ entry };
     for (std::string dir : dirs) {
       if (!cmSystemTools::FileIsFullPath(dir)) {
-        dir = cmStrCat(context.LG->GetCurrentSourceDirectory(), '/', dir);
+        dir = cmStrCat(context.LG->GetCurrentSourceDirectory(), '/',
+                       std::move(dir));
       }
 
       auto dirCacheResult = dirCache.emplace(dir, DirCacheEntry());
@@ -498,8 +500,7 @@ std::vector<std::string> cmGeneratorFileSet::EvaluateDirectoryEntries(
 }
 
 void cmGeneratorFileSet::EvaluateFileEntry(
-  std::vector<std::string> const& dirs,
-  std::map<std::string, std::vector<std::string>>& filesPerDir,
+  std::vector<std::string> const& dirs, EvaluateFileEntryFunction handler,
   std::unique_ptr<cmCompiledGeneratorExpression> const& cge,
   cm::GenEx::Context const& context, cmGeneratorTarget const* target,
   cmGeneratorExpressionDAGChecker* dagChecker) const
@@ -507,34 +508,46 @@ void cmGeneratorFileSet::EvaluateFileEntry(
   auto files = cge->Evaluate(context, dagChecker, target);
   for (std::string file : cmList{ files }) {
     if (!cmSystemTools::FileIsFullPath(file)) {
-      file = cmStrCat(context.LG->GetCurrentSourceDirectory(), '/', file);
+      file = cmStrCat(context.LG->GetCurrentSourceDirectory(), '/',
+                      std::move(file));
     }
     auto collapsedFile = cmSystemTools::CollapseFullPath(file);
-    bool found = false;
-    std::string relDir;
+    std::string baseDir;
+    std::string relPath;
     for (auto const& dir : dirs) {
       auto collapsedDir = cmSystemTools::CollapseFullPath(dir);
       if (cmSystemTools::IsSubDirectory(collapsedFile, collapsedDir)) {
-        found = true;
-        relDir = cmSystemTools::GetParentDirectory(
-          cmSystemTools::RelativePath(collapsedDir, collapsedFile));
+        baseDir = collapsedDir;
+        relPath = cmSystemTools::RelativePath(collapsedDir, collapsedFile);
         break;
       }
     }
-    if (!found) {
-      std::ostringstream e;
-      e << "File:\n  " << file
-        << "\nmust be in one of the file set's base directories:";
-      for (auto const& dir : dirs) {
-        e << "\n  " << dir;
-      }
+    if (baseDir.empty()) {
       context.LG->GetCMakeInstance()->IssueMessage(
-        MessageType::FATAL_ERROR, e.str(), cge->GetBacktrace());
+        MessageType::FATAL_ERROR,
+        cmStrCat("File:\n  ", file,
+                 "\nmust be in one of the file set's base directories:",
+                 cmWrap("\n  ", dirs, "", "")),
+        cge->GetBacktrace());
       return;
     }
 
-    filesPerDir[relDir].push_back(file);
+    handler(std::move(baseDir), std::move(relPath), std::move(file));
   }
+}
+
+void cmGeneratorFileSet::EvaluateFileEntry(
+  std::vector<std::string> const& dirs, FileMap& filesPerDir,
+  std::unique_ptr<cmCompiledGeneratorExpression> const& cge,
+  cm::GenEx::Context const& context, cmGeneratorTarget const* target,
+  cmGeneratorExpressionDAGChecker* dagChecker) const
+{
+  auto handler = [&filesPerDir](std::string&& /*baseDir*/,
+                                std::string&& relPath, std::string&& file) {
+    std::string relDir = cmSystemTools::GetParentDirectory(relPath);
+    filesPerDir[std::move(relDir)].emplace_back(std::move(file));
+  };
+  this->EvaluateFileEntry(dirs, handler, cge, context, target, dagChecker);
 }
 
 namespace {
@@ -577,10 +590,9 @@ std::pair<std::vector<std::string>, bool> cmGeneratorFileSet::GetDirectories(
   return std::make_pair(std::move(directories), contextSensitive);
 }
 
-std::pair<std::map<std::string, std::vector<std::string>>, bool>
-cmGeneratorFileSet::GetFiles(cm::GenEx::Context const& context,
-                             cmGeneratorTarget const* target,
-                             cmGeneratorExpressionDAGChecker* dagChecker) const
+std::pair<cmGeneratorFileSet::FileMap, bool> cmGeneratorFileSet::GetFiles(
+  cm::GenEx::Context const& context, cmGeneratorTarget const* target,
+  cmGeneratorExpressionDAGChecker* dagChecker) const
 {
   auto directories = this->GetDirectories(context, target, dagChecker);
 
@@ -595,4 +607,21 @@ cmGeneratorFileSet::GetFiles(cm::GenEx::Context const& context,
                 EntryIsContextSensitive);
 
   return std::make_pair(std::move(files), contextSensitive);
+}
+
+bool cmGeneratorFileSet::EvaluateFiles(
+  cm::GenEx::Context const& context, cmGeneratorTarget const* target,
+  EvaluateFileEntryFunction callback,
+  cmGeneratorExpressionDAGChecker* dagChecker) const
+{
+  auto directories = this->GetDirectories(context, target, dagChecker);
+
+  auto const& fileEntries = this->CompileFileEntries();
+  for (auto const& entry : fileEntries) {
+    this->EvaluateFileEntry(directories.first, callback, entry, context,
+                            target, dagChecker);
+  }
+  return directories.second ||
+    std::any_of(fileEntries.begin(), fileEntries.end(),
+                EntryIsContextSensitive);
 }

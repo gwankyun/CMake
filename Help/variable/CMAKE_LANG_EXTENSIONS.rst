@@ -9,6 +9,7 @@ CMAKE_<LANG>_EXTENSIONS
 * :variable:`CMAKE_HIP_EXTENSIONS`
 * :variable:`CMAKE_OBJC_EXTENSIONS`
 * :variable:`CMAKE_OBJCXX_EXTENSIONS`
+* :variable:`CMAKE_SYCL_EXTENSIONS`
 
 Default values for :prop_tgt:`<LANG>_EXTENSIONS` target properties if set when
 a target is created.  For the compiler's default setting see
@@ -16,5 +17,4 @@ a target is created.  For the compiler's default setting see
 
 For supported CMake versions see the respective pages.
 
-See the :manual:`cmake-compile-features(7)` manual for information on
-compile features and a list of supported compilers.
+.. include:: ../include/COMPILE_FEATURES_NOTE.rst

@@ -54,6 +54,10 @@ Modify cmFortranLexer.cxx:
 %s free_fmt fixed_fmt
 %x str_sq str_dq
 
+ /* Continuation splitting a token, possibly across comment lines.
+    Preprocessors may replace blank lines with line markers.  */
+SPLIT_CONT &[ \t]*(!.*)?\r?\n([ \t]*(!.*|#([ \t]*(line|LINE))?[ \t]*[0-9]+.*)?\r?\n)*[ \t]*&
+
 %%
 
 \"              {
@@ -101,29 +105,29 @@ Modify cmFortranLexer.cxx:
 !.*\n                   { return EOSTMT; } /* Treat comments like */
 <fixed_fmt>^[cC*dD].*\n { return EOSTMT; } /* empty lines */
 
-^[ \t]*#([ \t]*line)?[ \t]*[0-9]+[ \t]* { return CPP_LINE_DIRECTIVE; }
-^[ \t]*#[ \t]*line[ \t]* { return CPP_LINE_DIRECTIVE; }
-^[ \t]*#[ \t]*include[ \t]*<[^>]+> {
+^[ \t]*#([ \t]*(line|LINE))?[ \t]*[0-9]+[ \t]* { return CPP_LINE_DIRECTIVE; }
+^[ \t]*#[ \t]*(line|LINE)[ \t]*                { return CPP_LINE_DIRECTIVE; }
+^[ \t]*#[ \t]*(include|INCLUDE)[ \t]*<[^>]+>   {
   yytext[yyleng-1] = 0;
   yylvalp->string = strdup(strchr(yytext, '<')+1);
   return CPP_INCLUDE_ANGLE;
 }
-^[ \t]*#[ \t]*include  { return CPP_INCLUDE; }
+^[ \t]*#[ \t]*(include|INCLUDE) { return CPP_INCLUDE; }
 \$[ \t]*include { return F90PPR_INCLUDE; }
 \?\?[ \t]*include { return COCO_INCLUDE; }
 
-^[ \t]*#[ \t]*define   { return CPP_DEFINE; }
+^[ \t]*#[ \t]*(define|DEFINE)   { return CPP_DEFINE; }
 \$[ \t]*DEFINE   { return F90PPR_DEFINE; }
 
-^[ \t]*#[ \t]*undef    { return CPP_UNDEF; }
+^[ \t]*#[ \t]*(undef|UNDEF)     { return CPP_UNDEF; }
 \$[ \t]*UNDEF   { return F90PPR_UNDEF; }
 
-^[ \t]*#[ \t]*ifdef    { return CPP_IFDEF; }
-^[ \t]*#[ \t]*ifndef   { return CPP_IFNDEF; }
-^[ \t]*#[ \t]*if       { return CPP_IF; }
-^[ \t]*#[ \t]*elif     { return CPP_ELIF; }
-^[ \t]*#[ \t]*else     { return CPP_ELSE; }
-^[ \t]*#[ \t]*endif    { return CPP_ENDIF; }
+^[ \t]*#[ \t]*(ifdef|IFDEF)     { return CPP_IFDEF; }
+^[ \t]*#[ \t]*(ifndef|IFNDEF)   { return CPP_IFNDEF; }
+^[ \t]*#[ \t]*(if|IF)           { return CPP_IF; }
+^[ \t]*#[ \t]*(elif|ELIF)       { return CPP_ELIF; }
+^[ \t]*#[ \t]*(else|ELSE)       { return CPP_ELSE; }
+^[ \t]*#[ \t]*(endif|ENDIF)     { return CPP_ENDIF; }
 
 $[ \t]*ifdef    { return F90PPR_IFDEF; }
 $[ \t]*ifndef   { return F90PPR_IFNDEF; }
@@ -132,12 +136,36 @@ $[ \t]*elif     { return F90PPR_ELIF; }
 $[ \t]*else     { return F90PPR_ELSE; }
 $[ \t]*endif    { return F90PPR_ENDIF; }
 
+ /* Rescan a token split by continuation as if written on one line.  */
+[a-zA-Z_][a-zA-Z_0-9]*({SPLIT_CONT}[a-zA-Z_0-9]+)+ {
+  char const* in = yytext;
+  char const* end = yytext + yyleng;
+  int len = 0;
+  while (in < end) {
+    if (*in == '&') {
+      /* Skip to the '&' resuming the token, past comments and markers.  */
+      do {
+        in = (char const*)memchr(in, '\n', end - in) + 1;
+        in += strspn(in, " \t");
+      } while (*in != '&');
+    } else {
+      yytext[len++] = *in;
+    }
+    ++in;
+  }
+  /* unput eats yytext from the end, so the shorter token stays intact.  */
+  while (len > 0) {
+    unput(yytext[--len]);
+  }
+}
+
  /* Line continuations, possible involving comments.  */
 &([ \t\r\n]*|!.*)*
 &([ \t\r\n]*|!.*)*&
 
 , { return COMMA; }
 
+:{SPLIT_CONT}: |
 :: { return DCOLON; }
 : { return COLON; }
 

@@ -755,7 +755,7 @@ bool HandleGlobImpl(std::vector<std::string> const& args, bool recurse,
         expr = status.GetMakefile().GetCurrentSourceDirectory();
         // Handle script mode
         if (!expr.empty()) {
-          expr += "/" + *i;
+          expr = cmStrCat(std::move(expr), '/', *i);
         } else {
           expr = *i;
         }
@@ -1570,7 +1570,7 @@ bool HandleCopyFile(std::vector<std::string> const& args,
   if (arguments.OnlyIfDifferent) {
     when = cmSystemTools::CopyWhen::OnlyIfDifferent;
   } else {
-    when = cmSystemTools::CopyWhen::Always;
+    when = cmSystemTools::CopyWhen::Unconditional;
   }
   cmSystemTools::CopyInputRecent const inputRecent = arguments.InputMayBeRecent
     ? cmSystemTools::CopyInputRecent::Yes
@@ -2126,10 +2126,10 @@ bool HandleDownloadCommand(std::vector<std::string> const& args,
     std::string dir = cmSystemTools::GetFilenamePath(file);
     if (!dir.empty() && !cmSystemTools::FileExists(dir) &&
         !cmSystemTools::MakeDirectory(dir)) {
-      std::string errstring = "DOWNLOAD error: cannot create directory '" +
-        dir +
-        "' - Specify file by full path name and verify that you "
-        "have directory creation and file write privileges.";
+      std::string errstring =
+        cmStrCat("DOWNLOAD error: cannot create directory '", dir,
+                 "' - Specify file by full path name and verify that you "
+                 "have directory creation and file write privileges.");
       status.SetError(errstring);
       return false;
     }
@@ -2358,10 +2358,10 @@ bool HandleDownloadCommand(std::vector<std::string> const& args,
     if (expectedHash != actualHash) {
       if (!statusVar.empty() && res == 0) {
         status.GetMakefile().AddDefinition(statusVar,
-                                           "1;HASH mismatch: "
-                                           "expected: " +
-                                             expectedHash +
-                                             " actual: " + actualHash);
+                                           cmStrCat("1;HASH mismatch: "
+                                                    "expected: ",
+                                                    expectedHash,
+                                                    " actual: ", actualHash));
       }
 
       status.SetError(cmStrCat("DOWNLOAD HASH mismatch\n"
@@ -3112,7 +3112,7 @@ bool HandleTimestampCommand(std::vector<std::string> const& args,
   std::string filename = args[argsIndex++];
   if (!cmsys::SystemTools::FileIsFullPath(filename)) {
     filename = cmStrCat(status.GetMakefile().GetCurrentSourceDirectory(), '/',
-                        filename);
+                        std::move(filename));
   }
 
   std::string const& outputVariable = args[argsIndex++];
@@ -3529,12 +3529,9 @@ bool HandleGetRuntimeDependenciesCommand(std::vector<std::string> const& args,
       std::string pathsStr = cmList::to_string(paths);
       status.GetMakefile().AddDefinition(varName, pathsStr);
     } else {
-      std::ostringstream e;
-      e << "Multiple conflicting paths found for " << val.first << ":";
-      for (auto const& path : val.second) {
-        e << "\n  " << path;
-      }
-      status.SetError(e.str());
+      status.SetError(cmStrCat("Multiple conflicting paths found for ",
+                               val.first, ':',
+                               cmWrap("\n  ", val.second, "", "")));
       cmSystemTools::SetFatalErrorOccurred();
       return false;
     }
@@ -3545,12 +3542,9 @@ bool HandleGetRuntimeDependenciesCommand(std::vector<std::string> const& args,
                             archive.GetUnresolvedPaths().begin(),
                             archive.GetUnresolvedPaths().end());
     } else {
-      std::ostringstream e;
-      e << "Could not resolve runtime dependencies:";
-      for (auto const& path : archive.GetUnresolvedPaths()) {
-        e << "\n  " << path;
-      }
-      status.SetError(e.str());
+      status.SetError(
+        cmStrCat("Could not resolve runtime dependencies:",
+                 cmWrap("\n  ", archive.GetUnresolvedPaths(), "", "")));
       cmSystemTools::SetFatalErrorOccurred();
       return false;
     }
@@ -3644,8 +3638,8 @@ bool HandleConfigureCommand(std::vector<std::string> const& args,
 
   cmMakefile& makeFile = status.GetMakefile();
   if (!makeFile.CanIWriteThisFile(outputFile)) {
-    cmSystemTools::Error("Attempt to write file: " + outputFile +
-                         " into a source directory.");
+    cmSystemTools::Error(cmStrCat("Attempt to write file: ", outputFile,
+                                  " into a source directory."));
     return false;
   }
 
@@ -3720,6 +3714,7 @@ bool HandleArchiveCreateCommand(std::vector<std::string> const& args,
     bool Verbose = false;
     // "PATHS" requires at least one value, but use a custom check below.
     ArgumentParser::MaybeEmpty<std::vector<std::string>> Paths;
+    ArgumentParser::MaybeEmpty<std::vector<std::string>> PatternsExclude;
   };
 
   static auto const parser =
@@ -3733,7 +3728,8 @@ bool HandleArchiveCreateCommand(std::vector<std::string> const& args,
       .Bind("THREADS"_s, &Arguments::Threads)
       .Bind("WORKING_DIRECTORY"_s, &Arguments::WorkingDirectory)
       .Bind("VERBOSE"_s, &Arguments::Verbose)
-      .Bind("PATHS"_s, &Arguments::Paths);
+      .Bind("PATHS"_s, &Arguments::Paths)
+      .Bind("PATTERNS_EXCLUDE"_s, &Arguments::PatternsExclude);
 
   std::vector<std::string> unrecognizedArguments;
   auto parsedArgs =
@@ -3866,9 +3862,10 @@ bool HandleArchiveCreateCommand(std::vector<std::string> const& args,
   }
 
   if (!cmSystemTools::CreateTar(
-        parsedArgs.Output, parsedArgs.Paths, parsedArgs.WorkingDirectory,
-        compress, parsedArgs.Encoding, parsedArgs.Verbose, parsedArgs.MTime,
-        parsedArgs.Format, compressionLevel, threads)) {
+        parsedArgs.Output, parsedArgs.Paths, parsedArgs.PatternsExclude,
+        parsedArgs.WorkingDirectory, compress, parsedArgs.Encoding,
+        parsedArgs.Verbose, parsedArgs.MTime, parsedArgs.Format,
+        compressionLevel, threads)) {
     status.SetError(cmStrCat("failed to compress: ", parsedArgs.Output));
     cmSystemTools::SetFatalErrorOccurred();
     return false;
@@ -3888,17 +3885,20 @@ bool HandleArchiveExtractCommand(std::vector<std::string> const& args,
     bool ListOnly = false;
     std::string Destination;
     ArgumentParser::MaybeEmpty<std::vector<std::string>> Patterns;
+    ArgumentParser::MaybeEmpty<std::vector<std::string>> PatternsExclude;
     bool Touch = false;
   };
 
-  static auto const parser = cmArgumentParser<Arguments>{}
-                               .Bind("INPUT"_s, &Arguments::Input)
-                               .Bind("ENCODING"_s, &Arguments::Encoding)
-                               .Bind("VERBOSE"_s, &Arguments::Verbose)
-                               .Bind("LIST_ONLY"_s, &Arguments::ListOnly)
-                               .Bind("DESTINATION"_s, &Arguments::Destination)
-                               .Bind("PATTERNS"_s, &Arguments::Patterns)
-                               .Bind("TOUCH"_s, &Arguments::Touch);
+  static auto const parser =
+    cmArgumentParser<Arguments>{}
+      .Bind("INPUT"_s, &Arguments::Input)
+      .Bind("ENCODING"_s, &Arguments::Encoding)
+      .Bind("VERBOSE"_s, &Arguments::Verbose)
+      .Bind("LIST_ONLY"_s, &Arguments::ListOnly)
+      .Bind("DESTINATION"_s, &Arguments::Destination)
+      .Bind("PATTERNS"_s, &Arguments::Patterns)
+      .Bind("PATTERNS_EXCLUDE"_s, &Arguments::PatternsExclude)
+      .Bind("TOUCH"_s, &Arguments::Touch);
 
   std::vector<std::string> unrecognizedArguments;
   auto parsedArgs =
@@ -3928,6 +3928,7 @@ bool HandleArchiveExtractCommand(std::vector<std::string> const& args,
 
   if (parsedArgs.ListOnly) {
     if (!cmSystemTools::ListTar(inFile, parsedArgs.Patterns,
+                                parsedArgs.PatternsExclude,
                                 parsedArgs.Encoding, parsedArgs.Verbose)) {
       status.SetError(cmStrCat("failed to list: ", inFile));
       cmSystemTools::SetFatalErrorOccurred();
@@ -3939,7 +3940,7 @@ bool HandleArchiveExtractCommand(std::vector<std::string> const& args,
       if (cmSystemTools::FileIsFullPath(parsedArgs.Destination)) {
         destDir = parsedArgs.Destination;
       } else {
-        destDir = cmStrCat(destDir, '/', parsedArgs.Destination);
+        destDir = cmStrCat(std::move(destDir), '/', parsedArgs.Destination);
       }
 
       if (!cmSystemTools::MakeDirectory(destDir)) {
@@ -3949,8 +3950,8 @@ bool HandleArchiveExtractCommand(std::vector<std::string> const& args,
       }
 
       if (!cmSystemTools::FileIsFullPath(inFile)) {
-        inFile =
-          cmStrCat(cmSystemTools::GetLogicalWorkingDirectory(), '/', inFile);
+        inFile = cmStrCat(cmSystemTools::GetLogicalWorkingDirectory(), '/',
+                          std::move(inFile));
       }
     }
 
@@ -3962,7 +3963,7 @@ bool HandleArchiveExtractCommand(std::vector<std::string> const& args,
     }
 
     if (!cmSystemTools::ExtractTar(
-          inFile, parsedArgs.Patterns,
+          inFile, parsedArgs.Patterns, parsedArgs.PatternsExclude,
           parsedArgs.Touch ? cmSystemTools::cmTarExtractTimestamps::No
                            : cmSystemTools::cmTarExtractTimestamps::Yes,
           parsedArgs.Encoding, parsedArgs.Verbose)) {

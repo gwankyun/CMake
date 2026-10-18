@@ -29,6 +29,8 @@ int main(int argc, char** argv)
     !is_filtered || (std::string(argv[3]).find("value*") != std::string::npos);
   bool add_dynamic_tests = !is_filtered ||
     (std::string(argv[3]).find("dynamic*") != std::string::npos);
+  bool add_newline_tests = !is_filtered ||
+    (std::string(argv[3]).find("newline*") != std::string::npos);
 
   if (argc > 2 && std::string(argv[1]) == "--gtest_list_tests" &&
       std::string(argv[2]).find("--gtest_output=json:") != std::string::npos) {
@@ -238,6 +240,45 @@ int main(int argc, char** argv)
              "        }";
         tests += 8;
       }
+    }
+    if (add_newline_tests) {
+      std::cout << "newline/test." << std::endl;
+      std::cout << "  case/0  # GetParam() = wrapped_value" << std::endl;
+      std::cout << "  case/1  # GetParam() = wrapped_value" << std::endl;
+      std::cout << "  case/2  # GetParam() = wrapped_value" << std::endl;
+      std::cout << "newline_name/suite." << std::endl;
+      std::cout << "  case/trailing_param" << std::endl;
+      std::cout << "  case/leading_param" << std::endl;
+
+      if (tests)
+        ostrm << ",";
+      ostrm << "\n"
+               "        {\n"
+               "            \"name\": \"newline/test\",\n"
+               "            \"tests\": 3,\n"
+               "            \"testsuite\": [\n"
+               "                { \"name\": \"case/a\", \"value_param\": "
+               "\"wrapped_value\\n\", \"file\": \"file4.cpp\", \"line\": 1 "
+               "},\n"
+               "                { \"name\": \"case/b\", \"value_param\": "
+               "\"\\nwrapped_value\", \"file\": \"file4.cpp\", \"line\": 2 "
+               "},\n"
+               "                { \"name\": \"case/c\", \"value_param\": "
+               "\"\\nwrapped_value\\n\", \"file\": \"file4.cpp\", \"line\": 3 "
+               "}\n"
+               "            ]\n"
+               "        },\n"
+               "        {\n"
+               "            \"name\": \"newline_name/suite\",\n"
+               "            \"tests\": 2,\n"
+               "            \"testsuite\": [\n"
+               "                { \"name\": \"case/trailing_param\\n\", "
+               "\"file\": \"file5.cpp\", \"line\": 1 },\n"
+               "                { \"name\": \"\\ncase/leading_param\", "
+               "\"file\": \"file5.cpp\", \"line\": 2 }\n"
+               "            ]\n"
+               "        }";
+      tests += 5;
     }
     if (add_value_tests || add_typed_tests || add_dynamic_tests) {
       char const* both_suite_names[] = { "both_suite", "both/suite",

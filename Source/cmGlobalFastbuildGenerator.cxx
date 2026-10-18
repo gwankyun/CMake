@@ -7,8 +7,8 @@
 #include <cstdlib>
 #include <initializer_list>
 #include <iterator>
+#include <map>
 #include <queue>
-#include <sstream>
 
 #include <cm/memory>
 
@@ -32,6 +32,8 @@
 #include "cmStateSnapshot.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTest.h"
+#include "cmTestGenerator.h"
 #include "cmValue.h"
 #include "cmVersion.h"
 #include "cmake.h"
@@ -85,8 +87,9 @@ constexpr auto FASTBUILD_FORCE_RESPONSE_FILE =
 constexpr auto FASTBUILD_IDE_ARGS = "CMAKE_FASTBUILD_IDE_ARGS";
 
 static std::map<std::string, std::string> const compilerIdToFastbuildFamily = {
-  { "MSVC", "msvc" }, { "Clang", "clang" },      { "AppleClang", "clang" },
-  { "GNU", "gcc" },   { "NVIDIA", "cuda-nvcc" }, { "Clang-cl", "clang-cl" },
+  { "DPClang", "clang" },     { "MSVC", "msvc" }, { "Clang", "clang" },
+  { "AppleClang", "clang" },  { "GNU", "gcc" },   { "NVIDIA", "cuda-nvcc" },
+  { "Clang-cl", "clang-cl" },
 };
 
 static std::set<std::string> const supportedLanguages = { "C", "CXX", "CUDA",
@@ -163,7 +166,7 @@ void FastbuildTarget::GenerateAliases()
         linkerNode.Type == FastbuildLinkerNode::EXECUTABLE) {
       std::string postfix = FASTBUILD_LINK_ARTIFACTS_ALIAS_POSTFIX;
       if (!linkerNode.Arch.empty()) {
-        postfix += cmStrCat('-', linkerNode.Arch);
+        postfix = cmStrCat(std::move(postfix), '-', linkerNode.Arch);
       }
 #ifdef _WIN32
       // On Windows DLL and Executables must be linked via Import Lib file
@@ -324,10 +327,10 @@ bool cmGlobalFastbuildGenerator::FindMakeProgram(cmMakefile* mf)
                                          nullptr,
                                          cmSystemTools::OUTPUT_NONE)) {
       mf->IssueMessage(MessageType::FATAL_ERROR,
-                       "Running\n '" + cmJoin(command, "' '") +
-                         "'\n"
-                         "failed with:\n " +
-                         error);
+                       cmStrCat("Running\n '", cmJoin(command, "' '"),
+                                "'\n"
+                                "failed with:\n ",
+                                error));
       cmSystemTools::SetFatalErrorOccurred();
       return false;
     }
@@ -425,7 +428,7 @@ void cmGlobalFastbuildGenerator::AppendDirectoryForConfig(
   std::string const& suffix, std::string& dir)
 {
   if (!config.empty() && this->IsMultiConfig()) {
-    dir += cmStrCat(prefix, config, suffix);
+    dir = cmStrCat(std::move(dir), prefix, config, suffix);
   }
 }
 
@@ -441,12 +444,11 @@ void cmGlobalFastbuildGenerator::Generate()
   if (cmSystemTools::VersionCompare(cmSystemTools::OP_LESS,
                                     this->FastbuildVersion,
                                     RequiredFastbuildVersion())) {
-    std::ostringstream msg;
-    msg << "The detected version of Fastbuild (" << this->FastbuildVersion;
-    msg << ") is less than the version of Fastbuild required by CMake (";
-    msg << this->RequiredFastbuildVersion() << ").";
-    this->GetCMakeInstance()->IssueMessage(MessageType::FATAL_ERROR,
-                                           msg.str());
+    this->GetCMakeInstance()->IssueMessage(
+      MessageType::FATAL_ERROR,
+      cmStrCat("The detected version of Fastbuild (", this->FastbuildVersion,
+               ") is less than the version of Fastbuild required by CMake (",
+               this->RequiredFastbuildVersion(), ")."));
     return;
   }
   this->ProcessEnvironment();
@@ -631,7 +633,8 @@ void cmGlobalFastbuildGenerator::WriteVariable(std::string const& key,
                                                int indent)
 {
   Indent(indent);
-  *this->BuildFileStream << "." << key << " " + op + (value.empty() ? "" : " ")
+  *this->BuildFileStream << "." << key
+                         << cmStrCat(' ', op, (value.empty() ? "" : " "))
                          << value << "\n";
 }
 
@@ -695,7 +698,7 @@ std::string cmGlobalFastbuildGenerator::Quote(std::string const& str,
   std::string result = str;
   cmSystemTools::ReplaceString(result, quotation, "^" + quotation);
   cmSystemTools::ReplaceString(result, FASTBUILD_DOLLAR_TAG, "$");
-  return quotation + result + quotation;
+  return cmStrCat(quotation, result, quotation);
 }
 std::string cmGlobalFastbuildGenerator::QuoteIfHasSpaces(std::string str)
 {
@@ -720,7 +723,7 @@ struct WrapHelper
     cmSystemTools::ReplaceString(in, "\r", "\\r");
     // Escaping of single quotes tested in "RunCMake.CompilerArgs" test.
     cmSystemTools::ReplaceString(in, "'", "^'");
-    std::string result = Prefix + in + Suffix;
+    std::string result = cmStrCat(Prefix, in, Suffix);
     if (EscapeDollar) {
       cmSystemTools::ReplaceString(result, "$", "^$");
       cmSystemTools::ReplaceString(result, FASTBUILD_DOLLAR_TAG, "$");
@@ -838,9 +841,11 @@ void cmGlobalFastbuildGenerator::TopologicalSort(
 void cmGlobalFastbuildGenerator::WriteDisclaimer()
 {
   *this->BuildFileStream << "// CMAKE generated file: DO NOT EDIT!\n"
-                         << "// Generated by \"" << this->GetName() << "\""
-                         << " Generator, CMake Version "
-                         << cmVersion::GetMajorVersion() << "."
+                            "// Generated by \""
+                         << this->GetName()
+                         << "\""
+                            " Generator, CMake Version "
+                         << cmVersion::GetMajorVersion() << '.'
                          << cmVersion::GetMinorVersion() << "\n\n";
 }
 
@@ -848,9 +853,8 @@ void cmGlobalFastbuildGenerator::OpenBuildFileStream()
 {
   // Compute Fastbuild's build file path.
   std::string buildFilePath =
-    this->GetCMakeInstance()->GetHomeOutputDirectory();
-  buildFilePath += "/";
-  buildFilePath += FASTBUILD_BUILD_FILE;
+    this->GetCMakeInstance()->GetHomeOutputDirectory() +
+    "/" FASTBUILD_BUILD_FILE;
 
   // Get a stream where to generate things.
   if (!this->BuildFileStream) {
@@ -996,7 +1000,8 @@ void cmGlobalFastbuildGenerator::AddCompiler(std::string const& language,
   compilerDef.Executable = compilerLocation;
   compilerDef.CmakeCompilerID =
     mf->GetSafeDefinition(cmStrCat("CMAKE_", language, "_COMPILER_ID"));
-  if (compilerDef.CmakeCompilerID == "Clang" &&
+  if ((compilerDef.CmakeCompilerID == "Clang" ||
+       compilerDef.CmakeCompilerID == "DPClang") &&
       mf->GetSafeDefinition(cmStrCat(
         "CMAKE_", language, "_COMPILER_FRONTEND_VARIANT")) == "MSVC") {
     compilerDef.CmakeCompilerID = "Clang-cl";
@@ -1040,28 +1045,29 @@ void cmGlobalFastbuildGenerator::AddCompiler(std::string const& language,
     if (cmSystemTools::VersionCompare(cmSystemTools::OP_GREATER_EQUAL,
                                       compilerDef.CmakeCompilerVersion,
                                       "19.20")) {
-      compilerDef.ExtraFiles.push_back("$Root$/c1.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/c1xx.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/c2.dll");
-      compilerDef.ExtraFiles.push_back(
+      compilerDef.ExtraFiles.reserve(compilerDef.ExtraFiles.size() + 16);
+      compilerDef.ExtraFiles.emplace_back("$Root$/c1.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/c1xx.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/c2.dll");
+      compilerDef.ExtraFiles.emplace_back(
         "$Root$/atlprov.dll"); // Only needed if using ATL
-      compilerDef.ExtraFiles.push_back("$Root$/msobj140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/mspdb140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/mspdbcore.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/mspdbsrv.exe");
-      compilerDef.ExtraFiles.push_back("$Root$/mspft140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/msvcp140.dll");
-      compilerDef.ExtraFiles.push_back(
+      compilerDef.ExtraFiles.emplace_back("$Root$/msobj140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspdb140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspdbcore.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspdbsrv.exe");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspft140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/msvcp140.dll");
+      compilerDef.ExtraFiles.emplace_back(
         "$Root$/msvcp140_atomic_wait.dll"); // Required circa 16.8.3
                                             // (14.28.29333)
-      compilerDef.ExtraFiles.push_back(
+      compilerDef.ExtraFiles.emplace_back(
         "$Root$/tbbmalloc.dll"); // Required as of 16.2 (14.22.27905)
-      compilerDef.ExtraFiles.push_back("$Root$/vcruntime140.dll");
-      compilerDef.ExtraFiles.push_back(
+      compilerDef.ExtraFiles.emplace_back("$Root$/vcruntime140.dll");
+      compilerDef.ExtraFiles.emplace_back(
         "$Root$/vcruntime140_1.dll"); // Required as of 16.5.1 (14.25.28610)
-      compilerDef.ExtraFiles.push_back(
+      compilerDef.ExtraFiles.emplace_back(
         cmStrCat("$Root$/", i18nNum, "/clui.dll"));
-      compilerDef.ExtraFiles.push_back(cmStrCat(
+      compilerDef.ExtraFiles.emplace_back(cmStrCat(
         "$Root$/", i18nNum, "/mspft140ui.dll")); // Localized messages for
                                                  // static analysis
     }
@@ -1069,19 +1075,21 @@ void cmGlobalFastbuildGenerator::AddCompiler(std::string const& language,
     else if (cmSystemTools::VersionCompare(cmSystemTools::OP_GREATER_EQUAL,
                                            compilerDef.CmakeCompilerVersion,
                                            "19.10")) {
-      compilerDef.ExtraFiles.push_back("$Root$/c1.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/c1xx.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/c2.dll");
-      compilerDef.ExtraFiles.push_back(
+      compilerDef.ExtraFiles.reserve(compilerDef.ExtraFiles.size() + 12);
+      compilerDef.ExtraFiles.emplace_back("$Root$/c1.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/c1xx.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/c2.dll");
+      compilerDef.ExtraFiles.emplace_back(
         "$Root$/atlprov.dll"); // Only needed if using ATL
-      compilerDef.ExtraFiles.push_back("$Root$/msobj140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/mspdb140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/mspdbcore.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/mspdbsrv.exe");
-      compilerDef.ExtraFiles.push_back("$Root$/mspft140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/msvcp140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/vcruntime140.dll");
-      compilerDef.ExtraFiles.push_back("$Root$/" + i18nNum + "/clui.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/msobj140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspdb140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspdbcore.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspdbsrv.exe");
+      compilerDef.ExtraFiles.emplace_back("$Root$/mspft140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/msvcp140.dll");
+      compilerDef.ExtraFiles.emplace_back("$Root$/vcruntime140.dll");
+      compilerDef.ExtraFiles.emplace_back(
+        cmStrCat("$Root$/", i18nNum, "/clui.dll"));
     }
   }
   // TODO: Handle Intel compiler
@@ -1424,7 +1432,7 @@ void cmGlobalFastbuildGenerator::WriteTarget(FastbuildTarget const& target)
 
   // Libraries / executables.
   if (!target.LinkerNode.empty()) {
-    for (auto const& cudaDeviceLinkNode : target.CudaDeviceLinkNode) {
+    for (auto const& cudaDeviceLinkNode : target.DeviceLinkNodes) {
       this->WriteLinker(cudaDeviceLinkNode, target.AllowDistribution);
     }
     for (auto const& linkerNode : target.LinkerNode) {
@@ -1583,6 +1591,160 @@ void cmGlobalFastbuildGenerator::AddTargetAll()
   this->AddTarget(std::move(allAliasNode));
 }
 
+void cmGlobalFastbuildGenerator::WriteInstallPrepTargets()
+{
+  if (!this->AreInstallPrepTargetsEnabled()) {
+    return;
+  }
+  this->CheckInstallPrepTargets();
+
+  cmGlobalGenerator::InstallPrepTargets prepTargets =
+    this->GetInstallPrepTargets(this->GetConfigNames().front());
+
+  // FASTBuild target names are case-insensitive, so merge preparation targets
+  // whose names differ only in case.  Each of them then prepares a superset of
+  // what its installation needs.
+  std::map<std::string, FastbuildAliasNode> aliases;
+  std::set<std::string> unownedGeneratedFiles;
+  auto addAlias =
+    [this, &aliases, &unownedGeneratedFiles](
+      std::string const& name,
+      cmGlobalGenerator::InstallPrepTargets::TargetMap const& targets) {
+      FastbuildAliasNode& alias = aliases[cmSystemTools::LowerCase(name)];
+      if (alias.Name.empty()) {
+        alias.Name = name;
+        alias.Hidden = false;
+      }
+      for (auto const& dependency : targets) {
+        cmGeneratorTarget const* target = dependency.first;
+        bool buildTarget =
+          dependency.second.Normal || dependency.second.InstallArtifact;
+        // FASTBuild has no node for a generated file that is not the unique
+        // output of a target, such as a byproduct, so build its installing
+        // target instead.
+        for (std::string const& file : dependency.second.GeneratedFiles) {
+          if (this->CheckInstallPrepGeneratedFile(target, file,
+                                                  unownedGeneratedFiles)) {
+            alias.PreBuildDependencies.emplace(
+              this->ConvertToFastbuildPath(file));
+          } else if (target->IsInBuildSystem()) {
+            buildTarget = true;
+          }
+        }
+        if (buildTarget) {
+          alias.PreBuildDependencies.emplace(target->GetName());
+        }
+      }
+    };
+
+  // Add install_prep/all first so that it keeps its spelling.
+  addAlias("install_prep/all", prepTargets.All);
+  for (auto const& component : prepTargets.Components) {
+    addAlias(cmStrCat("install_prep/", component.first), component.second);
+  }
+
+  for (auto& entry : aliases) {
+    FastbuildAliasNode& alias = entry.second;
+    if (alias.PreBuildDependencies.empty()) {
+      alias.PreBuildDependencies.emplace(FASTBUILD_NOOP_FILE_NAME);
+    }
+    this->WriteAlias(alias);
+  }
+}
+
+void cmGlobalFastbuildGenerator::WriteTestPrepTargets()
+{
+  if (this->Makefiles.front()->IsOn("CMAKE_SKIP_TEST_PREP_TARGETS")) {
+    return;
+  }
+
+  struct TestPrepTarget
+  {
+    std::string Name;
+    std::string Comment;
+    std::set<FastbuildTargetDep> Dependencies;
+  };
+
+  // FASTBuild alias names are case-insensitive, so merge tests whose
+  // test_prep target names differ only in case.
+  std::string const allName = "test_prep/all";
+  std::map<std::string, TestPrepTarget> testPrepTargets;
+  for (auto const& localGen : this->LocalGenerators) {
+    auto const& testGenerators = localGen->GetMakefile()->GetTestGenerators();
+    for (auto const& tester : testGenerators) {
+      cmTestGenerator::BuildDependencies testDeps;
+      if (!tester->GetBuildDependencies(localGen.get(), std::string(),
+                                        testDeps)) {
+        continue;
+      }
+      std::string const depName =
+        cmStrCat("test_prep/", tester->GetTest()->GetName());
+      auto& testPrepTarget =
+        testPrepTargets[cmSystemTools::LowerCase(depName)];
+      if (testPrepTarget.Name.empty()) {
+        testPrepTarget.Name = depName;
+      }
+      testPrepTarget.Comment =
+        cmStrCat("Build dependencies for test ", tester->GetTest()->GetName());
+
+      for (cmGeneratorTarget* depTarget : testDeps.Targets) {
+        testPrepTarget.Dependencies.emplace(depTarget->GetName());
+      }
+      for (cmTestGenerator::BuildDependencies::FileDependency const& depFile :
+           testDeps.Files) {
+        testPrepTarget.Dependencies.emplace(depFile.Path);
+      }
+    }
+    cmLocalGenerator::DirectoryTestPrepTarget directoryTarget;
+    if (localGen->GetDirectoryTestPrepTarget(
+          directoryTarget,
+          localGen->GetMakefile()->GetSafeDefinition("CMAKE_BUILD_TYPE"))) {
+      TestPrepTarget& testPrepTarget =
+        testPrepTargets[cmSystemTools::LowerCase(directoryTarget.Name)];
+      if (testPrepTarget.Name.empty()) {
+        testPrepTarget.Name = directoryTarget.Name;
+      }
+      testPrepTarget.Comment = std::move(directoryTarget.Comment);
+
+      for (cmLocalGenerator::DirectoryTestPrepDependency const& dep :
+           directoryTarget.Dependencies) {
+        if (dep.Target) {
+          testPrepTarget.Dependencies.emplace(dep.Target->GetName());
+        } else {
+          testPrepTarget.Dependencies.emplace(dep.Raw);
+        }
+      }
+    }
+  }
+
+  FastbuildAliasNode allAliasNode;
+  allAliasNode.Name = allName;
+  allAliasNode.Hidden = false;
+  for (auto& prepEntry : testPrepTargets) {
+    // A test whose target name matches test_prep/all is prepared by it.
+    if (prepEntry.first == allName) {
+      allAliasNode.PreBuildDependencies.insert(
+        prepEntry.second.Dependencies.begin(),
+        prepEntry.second.Dependencies.end());
+      continue;
+    }
+    FastbuildAliasNode alias;
+    alias.Name = prepEntry.second.Name;
+    alias.Hidden = false;
+    alias.PreBuildDependencies = std::move(prepEntry.second.Dependencies);
+    if (alias.PreBuildDependencies.empty()) {
+      alias.PreBuildDependencies.emplace(FASTBUILD_NOOP_FILE_NAME);
+    }
+    this->WriteComment(prepEntry.second.Comment);
+    this->WriteAlias(alias);
+    allAliasNode.PreBuildDependencies.emplace(prepEntry.second.Name);
+  }
+  if (!allAliasNode.PreBuildDependencies.empty()) {
+    this->WriteComment("Build dependencies for all tests");
+    this->WriteAlias(allAliasNode);
+  }
+}
+
 void cmGlobalFastbuildGenerator::AddGlobCheckExec()
 {
   // Tested in "RunCMake.file" test.
@@ -1643,7 +1805,9 @@ void cmGlobalFastbuildGenerator::WriteSolution()
   *this->BuildFileStream << "{\n";
 
   WriteVariable("SolutionOutput",
-                Quote(cmJoin({ "VisualStudio", solutionName + ".sln" }, "/")),
+                Quote(cmStrCat("VisualStudio"
+                               "/",
+                               solutionName, ".sln")),
                 1);
 
   auto const& configs = IDEProjects.begin()->second.first.ProjectConfigs;
@@ -1712,11 +1876,14 @@ void cmGlobalFastbuildGenerator::WriteXCodeTopLevelProject()
   WriteCommand("XCodeProject", Quote("xcode"));
   *this->BuildFileStream << "{\n";
 
-  WriteVariable(
-    "ProjectOutput",
-    Quote(
-      cmJoin({ "XCode", projectName + ".xcodeproj", "project.pbxproj" }, "/")),
-    1);
+  WriteVariable("ProjectOutput",
+                Quote(cmStrCat("XCode"
+                               "/",
+                               projectName,
+                               ".xcodeproj"
+                               "/"
+                               "project.pbxproj")),
+                1);
   WriteVariable("ProjectBasePath", Quote(FASTBUILD_XCODE_BASE_PATH), 1);
 
   auto const& configs = IDEProjects.begin()->second.second.ProjectConfigs;
@@ -1875,6 +2042,9 @@ void cmGlobalFastbuildGenerator::WriteTargets()
     *BuildFileStream << "}\n";
   }
 
+  WriteInstallPrepTargets();
+  WriteTestPrepTargets();
+
   if (!this->GetCMakeInstance()->GetIsInTryCompile()) {
     if (!IDEProjects.empty()) {
       this->WriteIDEProjects();
@@ -1888,9 +2058,8 @@ std::string cmGlobalFastbuildGenerator::GetTargetName(
   cmGeneratorTarget const* GeneratorTarget) const
 {
   std::string targetName =
-    GeneratorTarget->GetLocalGenerator()->GetCurrentBinaryDirectory();
-  targetName += "/";
-  targetName += GeneratorTarget->GetName();
+    cmStrCat(GeneratorTarget->GetLocalGenerator()->GetCurrentBinaryDirectory(),
+             '/', GeneratorTarget->GetName());
   targetName = this->ConvertToFastbuildPath(targetName);
   return targetName;
 }
@@ -1918,8 +2087,8 @@ void cmGlobalFastbuildGenerator::AddIDEProject(
 {
   auto const& configs = GetConfigNames();
   if (std::find(configs.begin(), configs.end(), config) == configs.end()) {
-    LogMessage("Config " + config + " doesn't exist, IDE projest for " +
-               target.Name + " won't be generated");
+    LogMessage(cmStrCat("Config ", config, " doesn't exist, IDE project for ",
+                        target.Name, " won't be generated"));
     return;
   }
   auto& IDEProject = IDEProjects[target.BaseName];
@@ -1929,7 +2098,7 @@ void cmGlobalFastbuildGenerator::AddIDEProject(
   auto& VSProject = IDEProject.first;
   VSProject.Alias = cmStrCat(target.BaseName, FASTBUILD_VS_PROJECT_SUFFIX);
   VSProject.ProjectOutput = cmStrCat("VisualStudio/Projects/", relativeSubdir,
-                                     '/', target.BaseName + ".vcxproj");
+                                     '/', target.BaseName, ".vcxproj");
   VSProject.ProjectBasePath = target.BasePath;
   VSProject.folder = relativeSubdir;
   VSProject.deps = target.PreBuildDependencies;
@@ -1937,8 +2106,8 @@ void cmGlobalFastbuildGenerator::AddIDEProject(
   auto& XCodeProject = IDEProject.second;
   XCodeProject.Alias = target.BaseName + "-xcodeproj";
   XCodeProject.ProjectOutput =
-    cmStrCat("XCode/Projects/", relativeSubdir, '/',
-             target.BaseName + ".xcodeproj/project.pbxproj");
+    cmStrCat("XCode/Projects/", relativeSubdir, '/', target.BaseName,
+             ".xcodeproj/project.pbxproj");
   XCodeProject.ProjectBasePath = target.BasePath;
 
   IDEProjectConfig VSConfig;
@@ -1968,7 +2137,7 @@ bool cmGlobalFastbuildGenerator::Open(std::string const& bindir,
                                       bool dryRun)
 {
 #ifdef _WIN32
-  std::string sln = bindir + "/VisualStudio/" + projectName + ".sln";
+  std::string sln = cmStrCat(bindir, "/VisualStudio/", projectName, ".sln");
 
   if (dryRun) {
     return cmSystemTools::FileExists(sln, true);

@@ -132,7 +132,7 @@ void cmLocalVisualStudio7Generator::FixGlobalTargets()
   // rules to force these targets to build.
   auto const& tgts = this->GetGeneratorTargets();
   for (auto const& l : tgts) {
-    if (l->GetType() == cmStateEnums::GLOBAL_TARGET) {
+    if (l->GetType() == cm::TargetType::GLOBAL_TARGET) {
       cmCustomCommandLines force_commands =
         cmMakeSingleCommandLine({ "cd", "." });
       std::string force = cmStrCat(this->GetCurrentBinaryDirectory(),
@@ -272,7 +272,7 @@ cmSourceFile* cmLocalVisualStudio7Generator::CreateVCProjBuildRule()
   cc->SetMainDependency(makefileIn);
   cc->SetDepends(listFiles);
   cc->SetCommandLines(commandLines);
-  cc->SetComment(comment.c_str());
+  cc->SetComment(comment);
   cc->SetEscapeOldStyle(false);
   cc->SetStdPipesUTF8(true);
   cc->SetUsesTerminal(true);
@@ -642,27 +642,27 @@ void cmLocalVisualStudio7Generator::WriteConfiguration(
   bool targetBuilds = true;
 
   switch (target->GetType()) {
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       targetBuilds = false; // no manifest tool for object library
       CM_FALLTHROUGH;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       projectType = "typeStaticLibrary";
       configType = "4";
       break;
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       projectType = "typeDynamicLibrary";
       configType = "2";
       break;
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       configType = "1";
       break;
-    case cmStateEnums::UTILITY:
-    case cmStateEnums::GLOBAL_TARGET:
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::UTILITY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::INTERFACE_LIBRARY:
       configType = "10";
       CM_FALLTHROUGH;
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       targetBuilds = false;
       break;
   }
@@ -680,7 +680,7 @@ void cmLocalVisualStudio7Generator::WriteConfiguration(
                target->GetName()));
     return;
   }
-  if (target->GetType() <= cmStateEnums::OBJECT_LIBRARY) {
+  if (target->GetType() <= cm::TargetType::OBJECT_LIBRARY) {
     langForClCompile = linkLanguage;
     if (langForClCompile == "C" || langForClCompile == "CXX" ||
         langForClCompile == "Fortran") {
@@ -777,9 +777,9 @@ void cmLocalVisualStudio7Generator::WriteConfiguration(
   std::string intermediateDir = this->MaybeRelativeToCurBinDir(
     cmStrCat(target->GetSupportDirectory(), '/', configName));
 
-  if (target->GetType() < cmStateEnums::UTILITY) {
+  if (target->GetType() < cm::TargetType::UTILITY) {
     std::string const& outDir =
-      target->GetType() == cmStateEnums::OBJECT_LIBRARY
+      target->GetType() == cm::TargetType::OBJECT_LIBRARY
       ? intermediateDir
       : target->GetDirectory(configName);
     fout << "\t\t\tOutputDirectory=\""
@@ -803,7 +803,7 @@ void cmLocalVisualStudio7Generator::WriteConfiguration(
     std::string const targetName =
       cmSystemTools::GetFilenameWithoutLastExtension(targetNameFull);
     std::string const targetExt =
-      target->GetType() == cmStateEnums::OBJECT_LIBRARY
+      target->GetType() == cm::TargetType::OBJECT_LIBRARY
       ? ".lib"
       : cmSystemTools::GetFilenameLastExtension(targetNameFull);
     if (cm::optional<std::string> fortran = gg->GetPlatformToolsetFortran()) {
@@ -852,7 +852,7 @@ void cmLocalVisualStudio7Generator::WriteConfiguration(
   targetOptions.OutputFlagMap(fout, 4);
   targetOptions.OutputPreprocessorDefinitions(fout, 4, langForClCompile);
   fout << "\t\t\t\tObjectFile=\"$(IntDir)\\\"\n";
-  if (target->GetType() <= cmStateEnums::OBJECT_LIBRARY) {
+  if (target->GetType() <= cm::TargetType::OBJECT_LIBRARY) {
     // Specify the compiler program database file if configured.
     std::string pdb = target->GetCompilePDBPath(configName);
     if (!pdb.empty()) {
@@ -1000,9 +1000,9 @@ void cmLocalVisualStudio7Generator::OutputBuildTool(
   }
 
   switch (target->GetType()) {
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       break;
-    case cmStateEnums::OBJECT_LIBRARY: {
+    case cm::TargetType::OBJECT_LIBRARY: {
       std::string libpath = this->MaybeRelativeToCurBinDir(
         cmStrCat(target->GetSupportDirectory(), '/', configName, '/',
                  target->GetName(), ".lib"));
@@ -1016,7 +1016,7 @@ void cmLocalVisualStudio7Generator::OutputBuildTool(
            << this->ConvertToXMLOutputPathSingle(libpath) << "\"/>\n";
       break;
     }
-    case cmStateEnums::STATIC_LIBRARY: {
+    case cm::TargetType::STATIC_LIBRARY: {
       std::string targetNameFull = target->GetFullName(configName);
       std::string libpath =
         cmStrCat(target->GetDirectory(configName), '/', targetNameFull);
@@ -1047,8 +1047,8 @@ void cmLocalVisualStudio7Generator::OutputBuildTool(
            << this->ConvertToXMLOutputPathSingle(libpath) << "\"/>\n";
       break;
     }
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY: {
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY: {
       cmGeneratorTarget::Names targetNames =
         target->GetLibraryNames(configName);
 
@@ -1132,7 +1132,7 @@ void cmLocalVisualStudio7Generator::OutputBuildTool(
       }
       fout << "/>\n";
     } break;
-    case cmStateEnums::EXECUTABLE: {
+    case cm::TargetType::EXECUTABLE: {
       cmGeneratorTarget::Names targetNames =
         target->GetExecutableNames(configName);
 
@@ -1228,9 +1228,9 @@ void cmLocalVisualStudio7Generator::OutputBuildTool(
            << this->ConvertToXMLOutputPathSingle(temp) << "\"/>\n";
       break;
     }
-    case cmStateEnums::UTILITY:
-    case cmStateEnums::GLOBAL_TARGET:
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::UTILITY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::INTERFACE_LIBRARY:
       break;
   }
 }
@@ -1310,8 +1310,8 @@ void cmLocalVisualStudio7GeneratorInternals::OutputLibraries(
       fout << (lib.HasFeature() ? lib.GetFormattedItem(rel).Value : rel)
            << " ";
     } else if (!lib.Target ||
-               (lib.Target->GetType() != cmStateEnums::INTERFACE_LIBRARY &&
-                lib.Target->GetType() != cmStateEnums::OBJECT_LIBRARY)) {
+               (lib.Target->GetType() != cm::TargetType::INTERFACE_LIBRARY &&
+                lib.Target->GetType() != cm::TargetType::OBJECT_LIBRARY)) {
       fout << lib.Value.Value << " ";
     }
   }
@@ -1391,7 +1391,7 @@ void cmLocalVisualStudio7Generator::WriteVCProjFile(std::ostream& fout,
   cmSourceGroupFiles sourceGroupFiles;
 
   // Add CMakeLists.txt file with rule to re-run CMake for user convenience.
-  if (target->GetType() != cmStateEnums::GLOBAL_TARGET &&
+  if (target->GetType() != cm::TargetType::GLOBAL_TARGET &&
       target->GetName() != CMAKE_CHECK_BUILD_SYSTEM_TARGET) {
     if (cmSourceFile* sf = this->CreateVCProjBuildRule()) {
       cmGeneratorTarget::AllConfigSource acs;
@@ -1427,7 +1427,11 @@ void cmLocalVisualStudio7Generator::WriteVCProjFile(std::ostream& fout,
       }
     }
     // Add the file to the list of sources.
-    sourceGroupFiles.Add(this->FindSourceGroup(sf->GetFullPath()), sf);
+    sourceGroupFiles.Add(
+      this->FindSourceGroup(
+        target, sf,
+        configs.empty() ? "" : configs[sources.Sources[si].Configs.front()]),
+      sf);
   }
 
   // open the project
@@ -1736,9 +1740,9 @@ bool cmLocalVisualStudio7Generator::WriteGroup(
 
     std::string source = sf->GetFullPath();
 
-    if (source != libName || target->GetType() == cmStateEnums::UTILITY ||
-        target->GetType() == cmStateEnums::GLOBAL_TARGET ||
-        target->GetType() == cmStateEnums::INTERFACE_LIBRARY) {
+    if (source != libName || target->GetType() == cm::TargetType::UTILITY ||
+        target->GetType() == cm::TargetType::GLOBAL_TARGET ||
+        target->GetType() == cm::TargetType::INTERFACE_LIBRARY) {
       cmGeneratorTarget::AllConfigSource const& acs =
         sources.Sources[si->second];
 
@@ -1960,7 +1964,7 @@ void cmLocalVisualStudio7Generator::OutputTargetRules(
   std::ostream& fout, std::string const& configName, cmGeneratorTarget* target,
   std::string const& /*libName*/)
 {
-  if (target->GetType() > cmStateEnums::GLOBAL_TARGET) {
+  if (target->GetType() > cm::TargetType::GLOBAL_TARGET) {
     return;
   }
   EventWriter event(this, configName, fout);
@@ -2043,30 +2047,30 @@ void cmLocalVisualStudio7Generator::WriteProjectStartFortran(
   char const* keyword = p ? p->c_str() : "Console Application";
   char const* projectType = nullptr;
   switch (target->GetType()) {
-    case cmStateEnums::OBJECT_LIBRARY:
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       projectType = "typeStaticLibrary";
       if (keyword) {
         keyword = "Static Library";
       }
       break;
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       projectType = "typeDynamicLibrary";
       if (!keyword) {
         keyword = "Dll";
       }
       break;
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       if (!keyword) {
         keyword = "Console Application";
       }
       projectType = nullptr;
       break;
-    case cmStateEnums::UTILITY:
-    case cmStateEnums::GLOBAL_TARGET:
-    case cmStateEnums::INTERFACE_LIBRARY:
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UTILITY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::INTERFACE_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       break;
   }
   if (projectType) {

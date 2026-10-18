@@ -16,7 +16,7 @@
 #include "cmExportFileGenerator.h"
 #include "cmGeneratorExpression.h"
 #include "cmInstallExportGenerator.h"
-#include "cmStateTypes.h"
+#include "cmTargetTypes.h"
 
 class cmGeneratorTarget;
 class cmGeneratorFileSet;
@@ -69,8 +69,7 @@ public:
   virtual std::string GetConfigImportFileGlob() const = 0;
 
 protected:
-  cmStateEnums::TargetType GetExportTargetType(
-    cmTargetExport const* targetExport) const;
+  cm::TargetType GetExportTargetType(cmTargetExport const* targetExport) const;
 
   virtual std::string const& GetExportName() const;
 

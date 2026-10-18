@@ -64,6 +64,13 @@ std::string cmRemoveQuotes(cm::string_view str);
 /** Escape quotes in a string.  */
 std::string cmEscapeQuotes(cm::string_view str);
 
+/** Compute the Levenshtein distance between two strings.  */
+std::size_t cmLevenshteinDistance(cm::string_view a, cm::string_view b);
+
+/** Return the closest candidate string to the given input.  */
+std::string cmFindClosestString(cm::string_view input,
+                                std::vector<std::string> const& candidates);
+
 /** Joins elements of a range with separator into a single string.  */
 template <typename Range>
 std::string cmJoin(Range const& rng, cm::string_view separator)
@@ -373,6 +380,19 @@ inline void cmStripSuffixIfExists(std::string& str, cm::string_view suffix)
   if (cmHasSuffix(str, suffix)) {
     str.resize(str.size() - suffix.size());
   }
+}
+
+/** Pad a string to a given width. */
+inline std::string cmPadToWidth(int width, std::string text)
+{
+  if (width <= 0) {
+    return text;
+  }
+  std::size_t width_size = static_cast<std::size_t>(width);
+  if (width_size > text.size()) {
+    text.insert(0, width_size - text.size(), ' ');
+  }
+  return text;
 }
 
 /** Converts a string to long. Expects that the whole string is an integer.  */

@@ -3,42 +3,49 @@ source_group
 
 在IDE中定义一个源码分组。有两个不同的签名来创建源码分组。
 
-.. code-block:: cmake
+Synopsis
+^^^^^^^^
 
-  source_group(<name> [FILES <src>...] [REGULAR_EXPRESSION <regex>])
-  source_group(TREE <root> [PREFIX <prefix>] [FILES <src>...])
+.. parsed-literal::
 
-定义一个组，项目文件中的源文件将被放入该组中。这旨在为Visual Studio设置文件选项卡。\
-该组的作用域为调用此命令的目录，并且适用于在该目录中创建的目标中的源文件。
+  source_group(`\<group\>`_ [FILES <src>...] [REGULAR_EXPRESSION <regex>]
+                       [FILE_SETS <fileset>... TARGET <target>]...)
 
-选项如下：
+  source_group(`TREE`_ <root> [PREFIX <prefix>] [FILES <src>...])
 
-``TREE``
- .. versionadded:: 3.8
+Overview
+^^^^^^^^
 
- CMake将根据\ ``<src>``\ 文件的路径自动检测需要创建的源文件组，以使源文件组的结构与项目中\
- 实际的文件和目录结构相似。\ ``<src>``\ 文件的路径将被截取为相对于\ ``<root>``\ 的路径。\
- 如果\ ``src``\ 中的路径不是以\ ``root``\ 开头，该命令将失败。
+定义一个组，项目文件中的源文件将被放入该组中。这旨在为Visual Studio设置文件选项卡。
 
-``PREFIX``
- .. versionadded:: 3.8
+The group is scoped in the directory where the command is called, and applies
+to sources in targets created in that directory.
 
- 直接位于\ ``<root>``\ 路径下的源文件组和文件将被放置在\ ``<prefix>``\ 源文件组中。
+If the file set or the source file matches multiple groups, the *last* group
+that explicitly lists the file set with ``FILE_SETS`` or the file with
+``FILES`` will be favored, if any.
 
-``FILES``
- 任何显式指定的源文件都将被放入名为\ ``<name>``\ 的组中。相对路径是相对于当前源目录来解释的。
+To determine the group of a source file, the algorithm used is as follows:
 
- .. versionadded:: 4.3
-   ``FILES`` 的参数可以使用\ :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
+1. The file is part of a file set:
 
-``REGULAR_EXPRESSION``
- 任何文件名与正则表达式匹配的源文件都将被放入名为\ ``<name>``\ 的组中。
+  .. versionadded:: 4.5
 
-如果一个源文件匹配多个组，若有使用\ ``FILES``\ 显式列出该文件的组，则优先选择\ *最后一个*\
-这样的组。如果没有组显式列出该文件，则优先选择正则表达式匹配该文件的\ *最后一个*\ 组。
+  a. Use the :prop_fs:`SOURCE_GROUP` file set property if any.
+  b. Search for the *last* group which explicitly lists this file set.
 
-组的名称\ ``<name>``\ 和前缀参数\ ``<prefix>``\ 可以包含正斜杠或反斜杠，以指定子组。\
-反斜杠需要进行适当的转义：
+2. The file is not part of a file set or no group was defined for this file
+   set:
+
+  a. Use the :prop_sf:`SOURCE_GROUP` source property if any.
+  b. Search for the *last* group which explicitly lists this source file.
+
+3. If no group explicitly lists the file set or the file, the *last* group
+   whose regular expression matches the file will be favored.
+
+The ``<group>`` and ``<prefix>`` arguments may contain forward
+slashes or backslashes to specify subgroups.  Backslashes need to be escaped
+appropriately:
 
 .. code-block:: cmake
 
@@ -49,7 +56,81 @@ source_group
 .. versionadded:: 3.18
   允许使用正斜杠（\ ``/``\ ）来指定子组。
 
-为了实现向后兼容，提供了以下简写形式：
+Commands
+^^^^^^^^
+
+.. signature::
+  source_group(<group> [FILES <src>...] [REGULAR_EXPRESSION <regex>]
+                       [FILE_SETS <fileset>... TARGET <target>]...)
+  :target: <group>
+
+  The options are:
+
+  ``<group>``
+    The name of the group.
+
+  ``FILES <src>...``
+    Any source file specified explicitly will be placed in group
+    ``<group>``.  Relative paths are interpreted with respect to the
+    current source directory.
+
+    .. versionadded:: 4.3
+      Arguments to ``FILES`` may use
+      :manual:`generator expressions <cmake-generator-expressions(7)>`.
+
+  ``REGULAR_EXPRESSION <regex>``
+    Any source file whose name matches the regular expression will
+    be placed in group ``<group>``.
+
+  ``FILE_SETS <fileset>...``
+    .. versionadded:: 4.5
+
+    List of file sets. Files of these file sets will be placed in group
+    ``<group>``. Arguments to ``FILE_SETS`` may use
+    :manual:`generator expressions <cmake-generator-expressions(7)>`.
+    See the :manual:`cmake-buildsystem(7)` manual for more details on
+    :ref:`File Sets`.
+
+  ``TARGET <target>``
+    .. versionadded:: 4.5
+
+    Associate the file sets declared with the previous ``FILE_SETS`` keyword
+    with the target ``<target>``.
+
+  .. note::
+
+    The pattern ``FILE_SETS <fileset>... TARGET <target>`` can be repeated
+    multiple times.
+
+.. signature::
+  source_group(TREE <root> [PREFIX <prefix>] [FILES <src>...])
+
+  .. versionadded:: 3.8
+
+  The options are:
+
+  ``TREE <root>``
+    CMake will automatically detect, from ``<src>`` files paths, source groups
+    it needs to create, to keep structure of source groups analogically to the
+    actual files and directories structure in the project. Paths of ``<src>``
+    files will be cut to be relative to ``<root>``. The command fails if the
+    paths within ``src`` do not start with ``root``.
+
+  ``PREFIX <prefix>``
+    Source group and files located directly in ``<root>`` path, will be placed
+    in ``<prefix>`` source groups.
+
+  ``FILES <src>...``
+    List of files used to create source group structure. Relative paths are
+    interpreted with respect to the current source directory.
+
+    .. versionadded:: 4.3
+      Arguments to ``FILES`` may use
+      :manual:`generator expressions <cmake-generator-expressions(7)>`.
+
+Legacy Support
+^^^^^^^^^^^^^^
+为了实现向后兼容，提供了以下简写形式
 
 .. code-block:: cmake
 

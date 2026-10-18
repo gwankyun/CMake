@@ -12,6 +12,7 @@
 #include "cmCTest.h"
 #include "cmCTestVC.h"
 #include "cmMakefile.h"
+#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmXMLParser.h"
 
@@ -109,8 +110,7 @@ bool cmCTestHG::NoteOldRevision()
 {
   this->OldRevision = this->GetWorkingRevision();
   cmCTestLog(this->CTest, HANDLER_OUTPUT,
-             "   Old revision of repository is: " << this->OldRevision
-                                                  << "\n");
+             "   Old revision of repository is: ", this->OldRevision, '\n');
   this->PriorRev.Rev = this->OldRevision;
   return true;
 }
@@ -119,8 +119,7 @@ bool cmCTestHG::NoteNewRevision()
 {
   this->NewRevision = this->GetWorkingRevision();
   cmCTestLog(this->CTest, HANDLER_OUTPUT,
-             "   New revision of repository is: " << this->NewRevision
-                                                  << "\n");
+             "   New revision of repository is: ", this->NewRevision, '\n');
   return true;
 }
 
@@ -272,7 +271,7 @@ bool cmCTestHG::LoadRevisions()
   // The "list of strings" templates like {files} will not work when
   // the project has spaces in the path.  Also, they may not have
   // proper XML escapes.
-  std::string range = this->OldRevision + ":" + this->NewRevision;
+  std::string range = cmStrCat(this->OldRevision, ':', this->NewRevision);
   std::string hg = this->CommandLineTool;
   std::string hgXMLTemplate = "<logentry\n"
                               "   revision=\"{node|short}\">\n"

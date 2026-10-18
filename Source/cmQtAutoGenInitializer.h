@@ -63,6 +63,9 @@ public:
     bool SkipUic = false;
     bool MocIt = false;
     bool UicIt = false;
+    // Memoized GetMocBuildPath() result. Mutable because the info file
+    // writer reaches this through const references.
+    mutable std::string MocBuildPath;
   };
   using MUFileHandle = std::unique_ptr<MUFile>;
 
@@ -108,6 +111,9 @@ private:
     return (this->Moc.Enabled || this->Uic.Enabled);
   }
 
+  /** Whether the CXX compiler targets the MSVC ABI.  */
+  bool IsMsvcAbi() const;
+
   bool InitMoc();
   bool InitUic();
   bool InitRcc();
@@ -119,12 +125,23 @@ private:
   bool SetupWriteAutogenInfo();
   bool SetupWriteRccInfo();
 
-  cmSourceFile* RegisterGeneratedSource(std::string const& filename);
+  /** Whether a generated source is scanned for C++ module dependencies.  */
+  enum class ModuleScan
+  {
+    Never,      // It imports nothing.
+    Always,     // It is a unit of a module.
+    LikeTarget, // It may import whatever the target's own sources import.
+  };
+
+  cmSourceFile* RegisterGeneratedSource(
+    std::string const& filename, ModuleScan moduleScan = ModuleScan::Never);
   cmSourceFile* AddGeneratedSource(std::string const& filename,
                                    GenVarsT const& genVars,
-                                   bool prepend = false);
+                                   bool prepend = false,
+                                   ModuleScan moduleScan = ModuleScan::Never);
   void AddGeneratedSource(ConfigString const& filename,
-                          GenVarsT const& genVars, bool prepend = false);
+                          GenVarsT const& genVars, bool prepend = false,
+                          ModuleScan moduleScan = ModuleScan::Never);
   void AddToSourceGroup(std::string const& fileName,
                         cm::string_view genNameUpper);
   void AddCMakeProcessToCommandLines(std::string const& infoFile,
@@ -140,7 +157,7 @@ private:
                             std::string const& fileName);
   void ConfigFileClean(ConfigString& configString);
 
-  std::string GetMocBuildPath(MUFile const& muf);
+  std::string const& GetMocBuildPath(MUFile const& muf);
 
   bool GetQtExecutable(GenVarsT& genVars, std::string const& executable,
                        bool ignoreMissingTarget) const;
@@ -204,6 +221,7 @@ private:
     // Sources to process
     std::unordered_map<cmSourceFile*, MUFileHandle> Headers;
     std::unordered_map<cmSourceFile*, MUFileHandle> Sources;
+    std::unordered_map<cmSourceFile*, MUFileHandle> ModuleUnits;
     std::vector<MUFile*> FilesGenerated;
     std::vector<cmSourceFile*> CMP0100HeadersWarn;
   } AutogenTarget;

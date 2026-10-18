@@ -3,7 +3,7 @@
 #include "cmExportCommand.h"
 
 #include <map>
-#include <sstream>
+#include <ostream>
 #include <utility>
 
 #include <cm/memory>
@@ -34,11 +34,11 @@
 #include "cmPolicies.h"
 #include "cmRange.h"
 #include "cmSbomArguments.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSubcommandTable.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 #if defined(__HAIKU__)
@@ -89,22 +89,17 @@ static void AddExportGenerator(
   makefile.AddExportBuildFileGenerator(std::move(exportGenerator));
 }
 
-static bool ValidateExportableTarget(std::string const& name, cmMakefile& mf,
+static bool ValidateExportableTarget(std::string const& name,
                                      cmGlobalGenerator* gg,
                                      cmExecutionStatus& status)
 {
-  if (mf.IsAlias(name)) {
-    status.SetError(cmStrCat("given ALIAS target \"", name,
-                             "\" which may not be exported."));
-    return false;
-  }
   cmTarget const* target = gg->FindTarget(name);
   if (!target) {
     status.SetError(cmStrCat("given target \"", name,
                              "\" which is not built by this project."));
     return false;
   }
-  if (target->GetType() == cmStateEnums::UTILITY) {
+  if (target->GetType() == cm::TargetType::UTILITY) {
     status.SetError(cmStrCat("given custom target \"", name,
                              "\" which may not be exported."));
     return false;
@@ -157,10 +152,9 @@ static bool HandleTargetsMode(std::vector<std::string> const& args,
   } else {
     // Make sure the file has a .cmake extension.
     if (!cmHasSuffix(arguments.Filename, ".cmake"_s)) {
-      std::ostringstream e;
-      e << "FILE option given filename \"" << arguments.Filename
-        << "\" which does not have an extension of \".cmake\".\n";
-      status.SetError(e.str());
+      status.SetError(
+        cmStrCat("FILE option given filename \"", arguments.Filename,
+                 "\" which does not have an extension of \".cmake\".\n"));
       return false;
     }
     fname = arguments.Filename;
@@ -171,23 +165,21 @@ static bool HandleTargetsMode(std::vector<std::string> const& args,
   // Get the file to write.
   if (cmSystemTools::FileIsFullPath(fname)) {
     if (!mf.CanIWriteThisFile(fname)) {
-      std::ostringstream e;
-      e << "FILE option given filename \"" << fname
-        << "\" which is in the source tree.\n";
-      status.SetError(e.str());
+      status.SetError(cmStrCat("FILE option given filename \"", fname,
+                               "\" which is in the source tree.\n"));
       return false;
     }
   } else {
     // Interpret relative paths with respect to the current build dir.
     std::string const& dir = mf.GetCurrentBinaryDirectory();
-    fname = cmStrCat(dir, '/', fname);
+    fname = cmStrCat(dir, '/', std::move(fname));
   }
 
   std::vector<cmExportBuildFileGenerator::TargetExport> targets;
   cmGlobalGenerator* gg = mf.GetGlobalGenerator();
 
   for (std::string const& currentTarget : *arguments.Targets) {
-    if (!ValidateExportableTarget(currentTarget, mf, gg, status)) {
+    if (!ValidateExportableTarget(currentTarget, gg, status)) {
       return false;
     }
     targets.emplace_back(currentTarget, std::string{});
@@ -302,10 +294,9 @@ static bool HandleExportMode(std::vector<std::string> const& args,
     fname = arguments.ExportSetName + ".cmake";
   } else {
     if (!cmHasSuffix(arguments.Filename, ".cmake"_s)) {
-      std::ostringstream e;
-      e << "FILE option given filename \"" << arguments.Filename
-        << "\" which does not have an extension of \".cmake\".\n";
-      status.SetError(e.str());
+      status.SetError(
+        cmStrCat("FILE option given filename \"", arguments.Filename,
+                 "\" which does not have an extension of \".cmake\".\n"));
       return false;
     }
     fname = arguments.Filename;
@@ -313,16 +304,14 @@ static bool HandleExportMode(std::vector<std::string> const& args,
 
   if (cmSystemTools::FileIsFullPath(fname)) {
     if (!mf.CanIWriteThisFile(fname)) {
-      std::ostringstream e;
-      e << "FILE option given filename \"" << fname
-        << "\" which is in the source tree.\n";
-      status.SetError(e.str());
+      status.SetError(cmStrCat("FILE option given filename \"", fname,
+                               "\" which is in the source tree.\n"));
       return false;
     }
   } else {
     // Interpret relative paths with respect to the current build dir.
     std::string const& dir = mf.GetCurrentBinaryDirectory();
-    fname = cmStrCat(dir, '/', fname);
+    fname = cmStrCat(dir, '/', std::move(fname));
   }
 
   cm::optional<cmExportSet*> const exportSet =
@@ -418,12 +407,6 @@ static bool HandlePackageInfoMode(std::vector<std::string> const& args,
 static bool HandleSbomMode(std::vector<std::string> const& args,
                            cmExecutionStatus& status)
 {
-  if (!cmExperimental::HasSupportEnabled(
-        status.GetMakefile(), cmExperimental::Feature::GenerateSbom)) {
-    status.SetError("does not recognize sub-command SBOM");
-    return false;
-  }
-
   struct SbomExportArguments
     : public cmSbomArguments
     , public ArgumentParser::ParseResult
@@ -459,7 +442,7 @@ static bool HandleSbomMode(std::vector<std::string> const& args,
 
   std::string const dir =
     arguments.GetDefaultDestination(mf.GetCurrentBinaryDirectory());
-  std::string const fpath = cmStrCat(dir, '/', arguments.GetPackageFileName());
+  std::string const fpath = cmStrCat(dir, '/', arguments.GetPackageName());
 
   if (gg->IsBuildSbomFile(fpath)) {
     status.SetError(cmStrCat("SBOM command already specified for the file "_s,
@@ -479,7 +462,6 @@ static bool HandleSbomMode(std::vector<std::string> const& args,
   }
 
   auto builder = cm::make_unique<cmBuildSbomGenerator>(arguments, sets, fpath);
-
   cmBuildSbomGenerator* rawPtr = builder.get();
   mf.AddBuildSbomGenerator(std::move(builder));
   gg->AddBuildSbomGenerator(rawPtr);
@@ -493,8 +475,10 @@ static bool HandleSetupMode(std::vector<std::string> const& args,
   {
     ArgumentParser::NonEmpty<std::string> ExportSetName;
     ArgumentParser::NonEmpty<std::string> CxxModulesDirectory;
-    std::vector<std::vector<std::string>> PackageDependencyArgs;
-    std::vector<std::vector<std::string>> TargetArgs;
+    ArgumentParser::MaybeEmpty<std::vector<std::vector<std::string>>>
+      PackageDependencyArgs;
+    ArgumentParser::MaybeEmpty<std::vector<std::vector<std::string>>>
+      TargetArgs;
   };
 
   auto parser = cmArgumentParser<SetupArguments>{};
@@ -511,8 +495,8 @@ static bool HandleSetupMode(std::vector<std::string> const& args,
   SetupArguments arguments = parser.Parse(args, &unknownArgs);
 
   if (!unknownArgs.empty()) {
-    status.SetError("SETUP given unknown argument: \"" + unknownArgs.front() +
-                    "\".");
+    status.SetError(cmStrCat("SETUP given unknown argument: \"",
+                             unknownArgs.front(), "\"."));
     return false;
   }
 
@@ -611,9 +595,7 @@ static bool HandlePackageMode(std::vector<std::string> const& args,
       package = args[i];
       doing = DoingNone;
     } else {
-      std::ostringstream e;
-      e << "PACKAGE given unknown argument: " << args[i];
-      status.SetError(e.str());
+      status.SetError("PACKAGE given unknown argument: " + args[i]);
       return false;
     }
   }
@@ -626,10 +608,9 @@ static bool HandlePackageMode(std::vector<std::string> const& args,
   char const* packageExpr = "^[A-Za-z0-9_.-]+$";
   cmsys::RegularExpression packageRegex(packageExpr);
   if (!packageRegex.find(package)) {
-    std::ostringstream e;
-    e << "PACKAGE given invalid package name \"" << package << "\".  "
-      << "Package names must match \"" << packageExpr << "\".";
-    status.SetError(e.str());
+    status.SetError(cmStrCat("PACKAGE given invalid package name \"", package,
+                             "\".  Package names must match \"", packageExpr,
+                             "\"."));
     return false;
   }
 
@@ -669,17 +650,15 @@ static bool HandlePackageMode(std::vector<std::string> const& args,
 static void ReportRegistryError(cmMakefile& mf, std::string const& msg,
                                 std::string const& key, long err)
 {
-  std::ostringstream e;
-  e << msg << "\n"
-    << "  HKEY_CURRENT_USER\\" << key << "\n";
+  std::string e = cmStrCat(msg, "\n  HKEY_CURRENT_USER\\", key, '\n');
   wchar_t winmsg[1024];
   if (FormatMessageW(
         FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, 0, err,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), winmsg, 1024, 0) > 0) {
-    e << "Windows reported:\n"
-      << "  " << cmsys::Encoding::ToNarrow(winmsg);
+    e = cmStrCat(std::move(e), "Windows reported:\n  ",
+                 cmsys::Encoding::ToNarrow(winmsg));
   }
-  mf.IssueMessage(MessageType::WARNING, e.str());
+  mf.IssueMessage(MessageType::WARNING, e);
 }
 
 static void StorePackageRegistry(cmMakefile& mf, std::string const& package,
@@ -702,9 +681,9 @@ static void StorePackageRegistry(cmMakefile& mf, std::string const& package,
                    static_cast<DWORD>(wcontent.size() + 1) * sizeof(wchar_t));
   RegCloseKey(hKey);
   if (err != ERROR_SUCCESS) {
-    std::ostringstream msg;
-    msg << "Cannot set registry value \"" << hash << "\" under key";
-    ReportRegistryError(mf, msg.str(), key, err);
+    ReportRegistryError(
+      mf, cmStrCat("Cannot set registry value \"", hash, "\" under key"), key,
+      err);
     return;
   }
 }

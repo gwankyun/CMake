@@ -10,6 +10,7 @@
 
 #include "cmArgumentParser.h"
 #include "cmArgumentParserTypes.h"
+#include "cmExperimental.h"
 #include "cmFileSet.h"
 #include "cmFileSetMetadata.h"
 #include "cmGeneratorExpression.h"
@@ -18,11 +19,11 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmPolicies.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetPropCommandBase.h"
+#include "cmTargetTypes.h"
 
 namespace {
 
@@ -42,7 +43,7 @@ auto const FileSetArgsParser = cmArgumentParser<FileSetArgs>()
 
 struct FileSetsArgs
 {
-  std::vector<std::vector<std::string>> FileSets;
+  ArgumentParser::MaybeEmpty<std::vector<std::vector<std::string>>> FileSets;
 };
 
 auto const FileSetsArgsParser =
@@ -204,24 +205,22 @@ bool TargetSourcesImpl::HandleOneFileSet(
 
   if (!unparsed.empty()) {
     this->SetError(
-      cmStrCat("Unrecognized keyword: \"", unparsed.front(), '"'));
+      cmStrCat("Unrecognized keyword: \"", unparsed.front(), "\"."));
     return false;
   }
 
   if (args.FileSet.empty()) {
-    this->SetError("FILE_SET must not be empty");
+    this->SetError("FILE_SET must not be empty.");
     return false;
   }
 
-  if (this->Target->GetType() == cmStateEnums::UTILITY) {
-    this->SetError("FILE_SETs may not be added to custom targets");
-    return false;
-  }
-
-  if (!args.Type.empty() && !cm::FileSetMetadata::IsKnownType(args.Type)) {
+  if (!args.Type.empty() && !cm::FileSetMetadata::IsKnownType(args.Type) &&
+      // rule must be known from the target directory
+      !this->Makefile->FindRuleToUse(args.Type)) {
     this->SetError(
-      cmStrCat("File set TYPE may only be \"",
-               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""), '"'));
+      cmStrCat("File set TYPE may only be one of the built-in types \"",
+               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""),
+               "\" or a RULE visible from the current directory."));
     return false;
   }
   if (args.Type.empty() && args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z' &&
@@ -229,48 +228,77 @@ bool TargetSourcesImpl::HandleOneFileSet(
     this->SetError(
       cmStrCat("FILE_SET names starting with a capital letter are reserved "
                "for built-in file sets and may only be \"",
-               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""), '"'));
+               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""), "\"."));
     return false;
   }
+  auto const fileSetDescriptor =
+    cm::FileSetMetadata::GetFileSetDescriptor(args.FileSet);
+  bool const isCanonicalAlias = !args.Type.empty() && fileSetDescriptor &&
+    fileSetDescriptor->Type == args.Type;
   if (!args.Type.empty() && args.FileSet[0] >= 'A' && args.FileSet[0] <= 'Z' &&
-      args.Type != args.FileSet) {
+      args.Type != args.FileSet && !isCanonicalAlias) {
     this->SetError(cmStrCat("FILE_SET name starting with a capital letter "
                             "must match the TYPE name \"",
-                            args.Type, '"'));
+                            args.Type, "\"."));
     return false;
   }
 
-  bool const isDefault = args.Type == args.FileSet ||
+  bool const isDefault = isCanonicalAlias || args.Type == args.FileSet ||
     (args.Type.empty() && cm::FileSetMetadata::IsKnownType(args.FileSet));
 
   if (!isDefault && !cm::FileSetMetadata::IsValidName(args.FileSet)) {
     this->SetError("Non-default file set name must contain only letters, "
                    "numbers, and underscores, and must not start with a "
-                   "capital letter or underscore");
+                   "capital letter or underscore.");
     return false;
   }
 
-  std::string type = isDefault ? args.FileSet : args.Type;
+  std::string requestedType = isDefault ? args.FileSet : args.Type;
+  bool const isSycl = requestedType == cm::FileSetMetadata::SYCL ||
+    requestedType == cm::FileSetMetadata::SYCL_HEADERS;
+  if (isSycl &&
+      !cmExperimental::HasSupportEnabled(*this->Makefile,
+                                         cmExperimental::Feature::SYCL)) {
+    this->SetError(cmStrCat("File set TYPE \"", requestedType,
+                            "\" is experimental and must be enabled by "
+                            "the CMAKE_EXPERIMENTAL_SYCL gate."));
+    return false;
+  }
+
+  std::string type = requestedType;
+  if (auto const descriptor =
+        cm::FileSetMetadata::GetFileSetDescriptor(requestedType)) {
+    type = std::string{ descriptor->Type };
+  }
+  if (cm::FileSetMetadata::IsKnownType(type) &&
+      this->Target->GetType() == cm::TargetType::UTILITY) {
+    this->SetError(
+      cmStrCat("FILE_SETs of type \"",
+               cmJoin(cm::FileSetMetadata::GetKnownTypes(), "\", \""),
+               "\" may not be added to custom targets."));
+    return false;
+  }
+
   cm::FileSetMetadata::Visibility visibility =
     cm::FileSetMetadata::VisibilityFromName(scope, this->Makefile);
 
   if (this->Target->IsFrameworkOnApple() &&
       !cm::FileSetMetadata::IsFrameworkSupported(type)) {
     this->SetError(cmStrCat(R"(FILE_SETs, of type ")", type,
-                            R"(", may not be added to FRAMEWORK targets)"));
+                            R"(", may not be added to FRAMEWORK targets.)"));
     return false;
   }
 
-  auto fileSet =
-    this->Target->GetOrCreateFileSet(args.FileSet, type, visibility);
+  auto fileSet = this->Target->GetOrCreateFileSet(args.FileSet, type,
+                                                  visibility, this->Makefile);
   if (fileSet.second) {
     if (type.empty()) {
-      this->SetError("Must specify a TYPE when creating file set");
+      this->SetError("Must specify a TYPE when creating file set.");
       return false;
     }
 
     if (cm::FileSetMetadata::VisibilityIsForSelf(visibility) &&
-        this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY &&
+        this->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY &&
         !this->Target->IsImported()) {
       if (type == cm::FileSetMetadata::CXX_MODULES) {
         this->SetError(
@@ -289,13 +317,13 @@ bool TargetSourcesImpl::HandleOneFileSet(
       if (type == cm::FileSetMetadata::CXX_MODULES) {
         this->SetError(cmStrCat(R"(File set TYPE ")",
                                 cm::FileSetMetadata::CXX_MODULES,
-                                R"(" may not have "INTERFACE" scope)"));
+                                R"(" may not have "INTERFACE" scope.)"));
         return false;
       }
     }
 
     if (cm::FileSetMetadata::VisibilityIsForSelf(visibility) &&
-        this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY &&
+        this->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY &&
         type == cm::FileSetMetadata::SOURCES) {
       this->SetError(
         cmStrCat(R"(File set TYPE ")", cm::FileSetMetadata::SOURCES,
@@ -309,21 +337,30 @@ bool TargetSourcesImpl::HandleOneFileSet(
     }
   } else {
     type = fileSet.first->GetType();
-    if (!args.Type.empty() && args.Type != type) {
+    std::string specifiedType = args.Type;
+    if (auto const descriptor =
+          cm::FileSetMetadata::GetFileSetDescriptor(specifiedType)) {
+      specifiedType = std::string{ descriptor->Type };
+    }
+    if (!args.Type.empty() && specifiedType != type) {
       this->SetError(cmStrCat(
         "Type \"", args.Type, "\" for file set \"", fileSet.first->GetName(),
-        "\" does not match original type \"", type, '"'));
+        "\" does not match original type \"", type, "\"."));
       return false;
     }
 
     if (visibility != fileSet.first->GetVisibility()) {
-      this->SetError(cmStrCat("Scope ", scope, " for file set \"",
-                              args.FileSet,
-                              "\" does not match original scope ",
-                              cm::FileSetMetadata::VisibilityToName(
-                                fileSet.first->GetVisibility())));
+      this->SetError(cmStrCat(
+        "Scope ", scope, " for file set \"", args.FileSet,
+        "\" does not match original scope ",
+        cm::FileSetMetadata::VisibilityToName(fileSet.first->GetVisibility()),
+        '.'));
       return false;
     }
+  }
+
+  if (isSycl) {
+    fileSet.first->SetProperty("LANGUAGE", "SYCL");
   }
 
   auto files = this->Join(this->ConvertToAbsoluteContent(

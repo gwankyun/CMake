@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.4.json",
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
   "runs": [
     {
       "results": [
@@ -7,9 +7,16 @@
           "level": "error",
           "locations": [
             {
+              "logicalLocations": [
+                {
+                  "kind": "function",
+                  "name": "message"
+                }
+              ],
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "PATH:<SOURCE_DIR>/ProjectFatalError.cmake"
+                  "uri": "ProjectFatalError.cmake",
+                  "uriBaseId": "CMAKE_SOURCE_DIR"
                 },
                 "region": {
                   "startLine": 1
@@ -21,20 +28,67 @@
             "text": "Example error"
           },
           "ruleId": "CMake.FatalError",
-          "ruleIndex": 0
+          "ruleIndex": 0,
+          "stacks": [
+            {
+              "frames": [
+                {
+                  "location": {
+                    "logicalLocations": [
+                      {
+                        "kind": "function",
+                        "name": "message"
+                      }
+                    ],
+                    "physicalLocation": {
+                      "artifactLocation": {
+                        "uri": "ProjectFatalError.cmake",
+                        "uriBaseId": "CMAKE_SOURCE_DIR"
+                      },
+                      "region": {
+                        "startLine": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "location": {
+                    "logicalLocations": [
+                      {
+                        "kind": "function",
+                        "name": "include"
+                      }
+                    ],
+                    "physicalLocation": {
+                      "artifactLocation": {
+                        "uri": "CMakeLists.txt",
+                        "uriBaseId": "CMAKE_SOURCE_DIR"
+                      },
+                      "region": {
+                        "startLine": 3
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
+      "originalUriBaseIds": {
+        "CMAKE_BINARY_DIR": {
+          "uri": "file://PATH:<BINARY_DIR>/"
+        },
+        "CMAKE_SOURCE_DIR": {
+          "uri": "file://PATH:<SOURCE_DIR>/"
+        }
+      },
       "tool": {
         "driver": {
           "name": "CMake",
           "rules": [
             {
               "id": "CMake.FatalError",
-              "messageStrings": {
-                "default": {
-                  "text": "CMake Error: {0}"
-                }
-              },
               "name": "CMake Error"
             }
           ],

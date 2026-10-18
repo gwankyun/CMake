@@ -28,6 +28,7 @@
 // https://msdn.microsoft.com/en-us/library/ms683219(VS.85).aspx
 
 #include "kwsysPrivate.h"
+
 #include KWSYS_HEADER(String.h)
 #include KWSYS_HEADER(SystemInformation.hxx)
 #include KWSYS_HEADER(Process.h)
@@ -48,6 +49,10 @@
 #include <limits>
 #include <map>
 #include <set>
+
+#if !defined(_WIN32)
+#  include <sys/resource.h>
+#endif
 #include <sstream>
 #include <string>
 #include <vector>
@@ -65,16 +70,18 @@
 using siginfo_t = int;
 #  endif
 #  include <powerbase.h>
+#  include <winternl.h> // NTSTATUS
 #else
-#  include <sys/types.h>
-
 #  include <cerrno> // extern int errno;
 #  include <csignal>
+
 #  include <fcntl.h>
+#  include <unistd.h>
+
 #  include <sys/resource.h> // getrlimit
 #  include <sys/time.h>
+#  include <sys/types.h>
 #  include <sys/utsname.h> // int uname(struct utsname *buf);
-#  include <unistd.h>
 #endif
 
 #if defined(__CYGWIN__) && !defined(_WIN32)
@@ -86,6 +93,7 @@ using siginfo_t = int;
   defined(__DragonFly__)
 #  include <netdb.h>
 #  include <netinet/in.h>
+
 #  include <sys/param.h>
 #  include <sys/socket.h>
 #  include <sys/sysctl.h>
@@ -107,6 +115,7 @@ using siginfo_t = int;
 #  include <mach/vm_statistics.h>
 #  include <netdb.h>
 #  include <netinet/in.h>
+
 #  include <sys/socket.h>
 #  include <sys/sysctl.h>
 #  if defined(KWSYS_SYS_HAS_IFADDRS_H)
@@ -123,6 +132,7 @@ using siginfo_t = int;
   defined(__GLIBC__) || defined(__GNU__)
 #  include <netdb.h>
 #  include <netinet/in.h>
+
 #  include <sys/socket.h>
 #  if defined(KWSYS_SYS_HAS_IFADDRS_H)
 #    include <ifaddrs.h>
@@ -154,6 +164,18 @@ using ResourceLimitType = struct rlimit;
 #  include <OS.h>
 #endif
 
+#if defined(_WIN32) || defined(__CYGWIN__)
+namespace {
+unsigned __int64 fileTimeToUInt64(FILETIME const& ft)
+{
+  LARGE_INTEGER out;
+  out.HighPart = ft.dwHighDateTime;
+  out.LowPart = ft.dwLowDateTime;
+  return out.QuadPart;
+}
+}
+#endif
+
 #if defined(KWSYS_SYSTEMINFORMATION_HAS_BACKTRACE)
 #  include <execinfo.h>
 #  if defined(KWSYS_SYSTEMINFORMATION_HAS_CPP_DEMANGLE)
@@ -170,6 +192,7 @@ using ResourceLimitType = struct rlimit;
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+
 #include <memory.h>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1300) && !defined(_WIN64) &&            \
@@ -255,7 +278,116 @@ static bool call_cpuid(int select, int result[4])
 }
 #endif
 
+// CPUID leaf 0x16 (processor frequency) reader, kept separate from USE_CPUID
+// so GCC/Clang gain this query without the other MSVC-only CPUID routines.
+#if defined(__x86_64__) || defined(__i386__) || defined(_M_X64) ||            \
+  defined(_M_IX86)
+#  define KWSYS_CPUID_FREQ 1
+#else
+#  define KWSYS_CPUID_FREQ 0
+#endif
+
+#if KWSYS_CPUID_FREQ
+#  if defined(_MSC_VER)
+#    include <intrin.h>
+#  else
+#    include <cpuid.h>
+#  endif
+namespace {
+// Base clock in MHz from CPUID leaf 0x16; 0 if the leaf is unsupported.
+float kwsysCpuidBaseFrequencyMHz()
+{
+  unsigned int eax = 0;
+#  if defined(_MSC_VER)
+  int regs[4] = { 0, 0, 0, 0 };
+  __cpuid(regs, 0);
+  if (static_cast<unsigned int>(regs[0]) < 0x16u) {
+    return 0.0f;
+  }
+  __cpuidex(regs, 0x16, 0);
+  eax = static_cast<unsigned int>(regs[0]);
+#  else
+  // __get_cpuid_count() is missing from older <cpuid.h> (GCC < 7, the Apple
+  // Clang in the macOS 10.10/10.11 SDK), so gate on the max leaf ourselves and
+  // read via the long-standing __cpuid_count() macro.
+  if (static_cast<unsigned int>(__get_cpuid_max(0, nullptr)) < 0x16u) {
+    return 0.0f;
+  }
+  unsigned int ebx = 0;
+  unsigned int ecx = 0;
+  unsigned int edx = 0;
+  __cpuid_count(0x16u, 0u, eax, ebx, ecx, edx);
+#  endif
+  return static_cast<float>(eax & 0xffffu); // EAX[15:0] = base MHz
+}
+}
+#endif
+
 namespace KWSYS_NAMESPACE {
+// Linux cpufreq sysfs resolution, at namespace scope so the test suite can
+// drive it with an injected sysfs tree.
+namespace SystemInformationDetail {
+// First base-10 unsigned integer in a file; false if missing or non-numeric.
+static bool ReadFileUInt(std::string const& path, unsigned long long& value)
+{
+  FILE* f = fopen(path.c_str(), "r");
+  if (!f) {
+    return false;
+  }
+  char buf[64];
+  size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+  fclose(f);
+  buf[n] = '\0';
+  char* end = nullptr;
+  unsigned long long const v = strtoull(buf, &end, 10);
+  if (end == buf) {
+    return false;
+  }
+  value = v;
+  return true;
+}
+
+// Lowest online CPU; 0 (cpu0) when the online file is absent.
+static int RepresentativeCpu(std::string const& cpuRoot)
+{
+  unsigned long long v = 0;
+  if (ReadFileUInt(cpuRoot + "/online", v)) {
+    return static_cast<int>(v);
+  }
+  return 0;
+}
+
+// Base/nominal frequency in MHz from cpufreq, or 0 if unavailable.
+float LinuxBaseFrequencyMHz(std::string const& cpuRoot)
+{
+  std::string const cpu =
+    cpuRoot + "/cpu" + std::to_string(RepresentativeCpu(cpuRoot));
+  unsigned long long value = 0;
+  // Intel P-state base frequency (kHz).
+  if (ReadFileUInt(cpu + "/cpufreq/base_frequency", value) && value > 0) {
+    return static_cast<float>(value) / 1000.0f;
+  }
+  // AMD CPPC nominal frequency (MHz).
+  if (ReadFileUInt(cpu + "/acpi_cppc/nominal_freq", value) && value > 0) {
+    return static_cast<float>(value);
+  }
+  return 0.0f;
+}
+
+// Maximum frequency in MHz from cpufreq, or 0 if unavailable.  Used as a
+// fallback where no base frequency exists.
+float LinuxMaxFrequencyMHz(std::string const& cpuRoot)
+{
+  std::string const cpu =
+    cpuRoot + "/cpu" + std::to_string(RepresentativeCpu(cpuRoot));
+  unsigned long long value = 0;
+  if (ReadFileUInt(cpu + "/cpufreq/cpuinfo_max_freq", value) && value > 0) {
+    return static_cast<float>(value) / 1000.0f;
+  }
+  return 0.0f;
+}
+}
+
 template <typename T>
 T min(T a, T b)
 {
@@ -777,6 +909,72 @@ double SystemInformation::GetLoadAverage()
 long long SystemInformation::GetProcessId()
 {
   return this->Implementation->GetProcessId();
+}
+
+bool SystemInformation::GetProcessResourceUsage(
+  SystemInformation::ProcessResourceUsage& usage, void* processHandle)
+{
+#if defined(_WIN32)
+#  if defined(KWSYS_SYS_HAS_PSAPI)
+  HANDLE hProc = static_cast<HANDLE>(processHandle);
+  if (!hProc || hProc == INVALID_HANDLE_VALUE) {
+    return false;
+  }
+
+  FILETIME creationTime;
+  FILETIME exitTime;
+  FILETIME kernelTime;
+  FILETIME userTime;
+  if (!GetProcessTimes(hProc, &creationTime, &exitTime, &kernelTime,
+                       &userTime)) {
+    return false;
+  }
+
+  PROCESS_MEMORY_COUNTERS pmc;
+  if (!GetProcessMemoryInfo(hProc, &pmc, sizeof(pmc))) {
+    return false;
+  }
+
+  usage = SystemInformation::ProcessResourceUsage{};
+  usage.ru_maxrss =
+    static_cast<decltype(usage.ru_maxrss)>(pmc.PeakWorkingSetSize / 1024);
+
+  unsigned __int64 const user100ns = fileTimeToUInt64(userTime);
+  unsigned __int64 const kernel100ns = fileTimeToUInt64(kernelTime);
+  unsigned __int64 const userUSec = user100ns / 10ULL;
+  unsigned __int64 const kernelUSec = kernel100ns / 10ULL;
+
+  usage.ru_utime.tv_sec = static_cast<long>(userUSec / 1000000ULL);
+  usage.ru_utime.tv_usec = static_cast<long>(userUSec % 1000000ULL);
+  usage.ru_stime.tv_sec = static_cast<long>(kernelUSec / 1000000ULL);
+  usage.ru_stime.tv_usec = static_cast<long>(kernelUSec % 1000000ULL);
+  return true;
+#  else // !defined(KWSYS_SYS_HAS_PSAPI)
+  static_cast<void>(usage);
+  static_cast<void>(processHandle);
+  return false;
+#  endif
+#else // !defined(_WIN32)
+  static_cast<void>(processHandle);
+  struct rusage rusage;
+  if (getrusage(RUSAGE_CHILDREN, &rusage) != 0) {
+    return false;
+  }
+  usage = SystemInformation::ProcessResourceUsage{};
+  usage.ru_maxrss = rusage.ru_maxrss;
+#  if defined(__APPLE__)
+  // Apple platforms report bytes.  Convert to KiB.
+  usage.ru_maxrss /= 1024;
+#  elif defined(__sun)
+  // Solaris platforms report pages.  Convert to KiB.
+  usage.ru_maxrss *= getpagesize() / 1024;
+#  endif
+  usage.ru_utime.tv_sec = rusage.ru_utime.tv_sec;
+  usage.ru_utime.tv_usec = rusage.ru_utime.tv_usec;
+  usage.ru_stime.tv_sec = rusage.ru_stime.tv_sec;
+  usage.ru_stime.tv_usec = rusage.ru_stime.tv_usec;
+  return true;
+#endif
 }
 
 void SystemInformation::SetStackTraceOnError(int enable)
@@ -1387,13 +1585,6 @@ double calculateCPULoad(unsigned __int64 idleTicks,
   return load;
 }
 
-unsigned __int64 fileTimeToUInt64(FILETIME const& ft)
-{
-  LARGE_INTEGER out;
-  out.HighPart = ft.dwHighDateTime;
-  out.LowPart = ft.dwLowDateTime;
-  return out.QuadPart;
-}
 #endif
 
 } // anonymous namespace
@@ -2502,6 +2693,14 @@ typedef struct _PROCESSOR_POWER_INFORMATION
   ULONG MaxIdleState;
   ULONG CurrentIdleState;
 } PROCESSOR_POWER_INFORMATION, *PPROCESSOR_POWER_INFORMATION;
+
+#  ifndef ALL_PROCESSOR_GROUPS
+#    define ALL_PROCESSOR_GROUPS 0xffff
+#  endif
+
+#  ifndef STATUS_BUFFER_TOO_SMALL
+#    define STATUS_BUFFER_TOO_SMALL ((NTSTATUS)0xC0000023L)
+#  endif
 #endif
 
 /** */
@@ -2510,12 +2709,48 @@ bool SystemInformationImplementation::RetrieveCPUClockSpeed()
   bool retrieved = false;
 
 #if defined(_WIN32)
-  PROCESSOR_POWER_INFORMATION powerInfo[64];
-  NTSTATUS status =
-    CallNtPowerInformation(ProcessorInformation, nullptr, 0, powerInfo,
-                           sizeof(PROCESSOR_POWER_INFORMATION) * 64);
+#  if KWSYS_CPUID_FREQ
+  // Prefer CPUID leaf 0x16 base frequency; fall back to the OS max clock.
+  {
+    float const baseMHz = kwsysCpuidBaseFrequencyMHz();
+    if (baseMHz > 0.0f) {
+      this->CPUSpeedInMHz = baseMHz;
+      return true;
+    }
+  }
+#  endif
+  // CallNtPowerInformation writes one record per logical processor; a
+  // fixed 64-entry buffer overflows across multiple processor groups.
+  using GetMaximumProcessorCountType = DWORD(WINAPI*)(WORD);
+  static GetMaximumProcessorCountType pGetMaximumProcessorCount =
+    reinterpret_cast<GetMaximumProcessorCountType>((void*)GetProcAddress(
+      GetModuleHandleW(L"kernel32"), "GetMaximumProcessorCount"));
 
-  if (status == 0) {
+  // GetMaximumProcessorCount() needs Windows 7+; older systems cap at 64.
+  DWORD processorCount = 64;
+  if (pGetMaximumProcessorCount) {
+    DWORD const maxProcessorCount =
+      pGetMaximumProcessorCount(ALL_PROCESSOR_GROUPS);
+    if (maxProcessorCount > 0) {
+      processorCount = maxProcessorCount;
+    }
+  }
+
+  std::vector<PROCESSOR_POWER_INFORMATION> powerInfo(processorCount);
+  NTSTATUS status = STATUS_BUFFER_TOO_SMALL;
+  // Grow and retry if the estimate was too small (e.g. CPU hot-add).
+  for (int attempt = 0; attempt < 4 && status == STATUS_BUFFER_TOO_SMALL;
+       ++attempt) {
+    status = CallNtPowerInformation(
+      ProcessorInformation, nullptr, 0, powerInfo.data(),
+      static_cast<ULONG>(sizeof(PROCESSOR_POWER_INFORMATION) *
+                         powerInfo.size()));
+    if (status == STATUS_BUFFER_TOO_SMALL) {
+      powerInfo.resize(powerInfo.size() * 2);
+    }
+  }
+
+  if (status == 0 && !powerInfo.empty()) {
     this->CPUSpeedInMHz = (float)powerInfo[0].MaxMhz;
     retrieved = true;
   }
@@ -3505,29 +3740,45 @@ bool SystemInformationImplementation::RetrieveInformationFromCpuInfoFile()
   this->Features.ExtendedFeatures.LogicalProcessorsPerPhysical =
     this->NumberOfLogicalCPU / this->NumberOfPhysicalCPU;
 
-  // CPU speed (checking only the first processor)
-  std::string CPUSpeed = this->ExtractValueFromCpuInfoFile(buffer, "cpu MHz");
-  if (!CPUSpeed.empty()) {
-    this->CPUSpeedInMHz = static_cast<float>(atof(CPUSpeed.c_str()));
-  }
-#ifdef __linux
-  else {
-    // Linux Sparc: CPU speed is in Hz and encoded in hexadecimal
-    CPUSpeed = this->ExtractValueFromCpuInfoFile(buffer, "Cpu0ClkTck");
-    if (!CPUSpeed.empty()) {
-      this->CPUSpeedInMHz =
-        static_cast<float>(strtoull(CPUSpeed.c_str(), nullptr, 16)) /
-        1000000.0f;
-    } else {
-      // if the kernel is build as Sparc32 it's in decimal, note the different
-      // case
-      CPUSpeed = this->ExtractValueFromCpuInfoFile(buffer, "CPU0ClkTck");
-      this->CPUSpeedInMHz =
-        static_cast<float>(strtoull(CPUSpeed.c_str(), nullptr, 10)) /
-        1000000.0f;
-    }
+  // Prefer a stable base frequency over the fluctuating "cpu MHz" current.
+  char const* const cpuRoot = "/sys/devices/system/cpu";
+  float baseMHz = SystemInformationDetail::LinuxBaseFrequencyMHz(cpuRoot);
+#if KWSYS_CPUID_FREQ
+  if (baseMHz == 0.0f) {
+    baseMHz = kwsysCpuidBaseFrequencyMHz();
   }
 #endif
+  if (baseMHz == 0.0f) {
+    baseMHz = SystemInformationDetail::LinuxMaxFrequencyMHz(cpuRoot);
+  }
+  if (baseMHz > 0.0f) {
+    this->CPUSpeedInMHz = baseMHz;
+  } else {
+    // Last resort: current frequency, so we do not regress to no value.
+    std::string CPUSpeed =
+      this->ExtractValueFromCpuInfoFile(buffer, "cpu MHz");
+    if (!CPUSpeed.empty()) {
+      this->CPUSpeedInMHz = static_cast<float>(atof(CPUSpeed.c_str()));
+    }
+#ifdef __linux
+    else {
+      // Linux Sparc: CPU speed is in Hz and encoded in hexadecimal
+      CPUSpeed = this->ExtractValueFromCpuInfoFile(buffer, "Cpu0ClkTck");
+      if (!CPUSpeed.empty()) {
+        this->CPUSpeedInMHz =
+          static_cast<float>(strtoull(CPUSpeed.c_str(), nullptr, 16)) /
+          1000000.0f;
+      } else {
+        // if the kernel is build as Sparc32 it's in decimal, note the
+        // different case
+        CPUSpeed = this->ExtractValueFromCpuInfoFile(buffer, "CPU0ClkTck");
+        this->CPUSpeedInMHz =
+          static_cast<float>(strtoull(CPUSpeed.c_str(), nullptr, 10)) /
+          1000000.0f;
+      }
+    }
+#endif
+  }
 
   // Chip family
   std::string familyStr =
@@ -3980,12 +4231,18 @@ std::string SystemInformationImplementation::GetProgramStack(int firstFrame,
 
   void* stack[TRACE_MAX_STACK_FRAMES];
   HANDLE process = GetCurrentProcess();
+  // SymSetOptions affects the process-global symbol handler options, so
+  // save the caller's options and restore them before returning.
+  DWORD options = SymGetOptions();
+  SymSetOptions(options | SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS |
+                SYMOPT_LOAD_LINES);
   SymInitialize(process, nullptr, TRUE);
   WORD numberOfFrames =
     CaptureStackBackTrace(firstFrame, TRACE_MAX_STACK_FRAMES, stack, nullptr);
   SYMBOL_INFO* symbol = static_cast<SYMBOL_INFO*>(
-    malloc(sizeof(SYMBOL_INFO) +
-           (TRACE_MAX_FUNCTION_NAME_LENGTH - 1) * sizeof(TCHAR)));
+    calloc(1,
+           sizeof(SYMBOL_INFO) +
+             (TRACE_MAX_FUNCTION_NAME_LENGTH - 1) * sizeof(TCHAR)));
   symbol->MaxNameLen = TRACE_MAX_FUNCTION_NAME_LENGTH;
   symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
   DWORD displacement;
@@ -3993,15 +4250,58 @@ std::string SystemInformationImplementation::GetProgramStack(int firstFrame,
   line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
   for (int i = 0; i < numberOfFrames; i++) {
     DWORD64 address = reinterpret_cast<DWORD64>(stack[i]);
-    SymFromAddr(process, address, nullptr, symbol);
-    if (SymGetLineFromAddr64(process, address, &displacement, &line)) {
+    DWORD64 symDisplacement = 0;
+    bool haveName =
+      SymFromAddr(process, address, &symDisplacement, symbol) != FALSE;
+    // When a module has no matching PDB, dbghelp falls back to its export
+    // table and reports the nearest preceding export, which is generally not
+    // the (non-exported) function the address really belongs to. Names are
+    // only exact when real debug info was loaded for the module, so ask the
+    // module how its symbols were obtained rather than trusting the name.
+    // Inexact names are still printed, but marked and always accompanied by
+    // the module-relative address so they cannot be mistaken for the truth.
+    bool exactName = haveName;
+    if (exactName) {
+      IMAGEHLP_MODULE64 moduleInfo;
+      memset(&moduleInfo, 0, sizeof(moduleInfo));
+      moduleInfo.SizeOfStruct = sizeof(moduleInfo);
+      if (!SymGetModuleInfo64(process, address, &moduleInfo) ||
+          moduleInfo.SymType == SymNone || moduleInfo.SymType == SymExport ||
+          moduleInfo.SymType == SymDeferred) {
+        exactName = false;
+      }
+    }
+    if (exactName &&
+        SymGetLineFromAddr64(process, address, &displacement, &line)) {
       oss << " at " << symbol->Name << " in " << line.FileName << " line "
           << line.LineNumber << std::endl;
+    } else if (exactName) {
+      oss << " at " << symbol->Name << "+0x" << std::hex << symDisplacement
+          << std::dec << std::endl;
     } else {
-      oss << " at " << symbol->Name << std::endl;
+      // Report the module containing the address together with the offset
+      // into that module, which is what a disassembler needs, plus the
+      // nearest export as an approximate location hint when one is known.
+      wchar_t modulePath[MAX_PATH];
+      DWORD64 moduleBase = SymGetModuleBase64(process, address);
+      if (moduleBase &&
+          GetModuleFileNameW(reinterpret_cast<HMODULE>(moduleBase), modulePath,
+                             MAX_PATH) > 0) {
+        oss << " at " << modulePath << "+0x" << std::hex
+            << (address - moduleBase) << std::dec;
+      } else {
+        oss << " at 0x" << std::hex << address << std::dec;
+      }
+      if (haveName) {
+        oss << " (near " << symbol->Name << "+0x" << std::hex
+            << symDisplacement << std::dec << ")";
+      }
+      oss << std::endl;
     }
   }
   free(symbol);
+  SymSetOptions(options);
+  SymCleanup(process);
 
 #else
   programStack += ""

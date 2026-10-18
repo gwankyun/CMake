@@ -7,6 +7,11 @@
     "corrupt": {
       "type": "archive",
       "link_location": []
-    }
+    },
+    "badconfigs": {
+      "type": "interface",
+      "configurations": [""]
+    },
+    "invalid": "not-an-object"
   }
 }

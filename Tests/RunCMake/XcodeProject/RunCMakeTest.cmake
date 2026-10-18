@@ -14,6 +14,19 @@ run_cmake_with_options(ArchsStandard "-DCMAKE_OSX_ARCHITECTURES=$(ARCHS_STANDARD
 run_cmake(ExplicitCMakeLists)
 run_cmake(ImplicitCMakeLists)
 run_cmake(InterfaceLibSources)
+
+function(DeterministicProductIds)
+  # Generate the same project into two separate build trees and verify that the
+  # product PBXFileReference object ids are byte-identical: deterministic and
+  # independent of the build tree location.
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/DeterministicProductIds-build1)
+  run_cmake(DeterministicProductIds)
+  set(DeterministicProductIds_FirstBinaryDir ${RunCMake_TEST_BINARY_DIR})
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/DeterministicProductIds-build2)
+  run_cmake(DeterministicProductIds)
+endfunction()
+DeterministicProductIds()
+
 run_cmake_with_options(SearchPaths -DCMAKE_CONFIGURATION_TYPES=Debug)
 run_cmake_with_options(InheritedParameters -DCMake_TEST_Swift=${CMake_TEST_Swift})
 
@@ -186,6 +199,11 @@ if(XCODE_VERSION VERSION_GREATER_EQUAL 12)
     set(RunCMake_TEST_NO_CLEAN 1)
     run_cmake_command(XcodeWorkspace-build ${CMAKE_COMMAND} --build . --config Debug)
     run_cmake_command(XcodeWorkspace-build2 ${CMAKE_COMMAND} --build . --config Debug --target custom1 custom2)
+  endblock()
+
+  block()
+    set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/XcodeCustomCommandComment-build)
+    run_cmake(XcodeCustomCommandComment)
   endblock()
 endif()
 

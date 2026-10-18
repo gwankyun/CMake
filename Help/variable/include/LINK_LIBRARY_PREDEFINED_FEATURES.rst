@@ -69,9 +69,25 @@
   ``-weak_framework``\ 选项，并具有与\ ``FRAMEWORK``\ 相同的链接器约束。
 
 ``NEEDED_LIBRARY``
-  这类似于\ ``NEEDED_FRAMEWORK``\ 特性，除了它用于非框架目标或库（仅限苹果平台）。它适当\
-  地使用\ ``-needed_library``\ 或\ ``-needed-l``\ 选项，并具有与\ ``NEEDED_FRAMEWORK``\
-  相同的链接器约束。
+  这类似于\ ``NEEDED_FRAMEWORK``\ 特性，除了它用于非框架目标或库。
+  This feature is only supported on the following platforms:
+
+  Apple
+    Uses the ``-needed_library`` or ``-needed-l`` option as appropriate,
+    with the same linker constraints as ``NEEDED_FRAMEWORK``.
+
+  Linux
+    .. versionadded:: 4.5
+
+    Wraps the library with ``--no-as-needed`` / ``--as-needed`` to force
+    an entry in the binary's ``DT_NEEDED`` list regardless of whether any
+    symbols from the library are directly referenced.  When the linker
+    supports ``--push-state`` / ``--pop-state`` (GNU ld >= 2.25, gold,
+    LLD, MOLD), the state-stacking form is used instead to correctly
+    restore the pre-existing ``--as-needed`` state rather than
+    unconditionally enabling it after the library.  This feature is only
+    meaningful for shared libraries; applying it to a static library
+    produces a developer warning and has no effect.
 
 ``REEXPORT_LIBRARY``
   这类似于\ ``REEXPORT_FRAMEWORK``\ 特性，除了它用于非框架目标或库（仅限苹果平台）。\

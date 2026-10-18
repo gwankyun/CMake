@@ -13,12 +13,15 @@ target_sources
 
 指定在构建目标和/或其依赖项时要使用的源。命名的\ ``<target>``\ 必须是由\
 :command:`add_executable`\ 或\ :command:`add_library`\ 或\
-:command:`add_custom_target`\ 等命令创建的，并且不能是\
-:ref:`别名目标 <Alias Targets>`。\ ``<source>``\ 可以使用\
+:command:`add_custom_target`\ 等命令创建的。\ ``<source>``\ 可以使用\
 :manual:`生成器表达式 <cmake-generator-expressions(7)>`。
 
 .. versionadded:: 3.20
   ``<target>``\ 可以是自定义目标。
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字需要指定源文件路径的\
 :ref:`范围 <Target Command Scope>` （\ ``<source>...``\ ）。\ ``PRIVATE``\ 和\ ``PUBLIC``\
@@ -53,8 +56,6 @@ target_sources
 
 有关定义buildsystem属性的更多信息，请参阅\ :manual:`cmake-buildsystem(7)`\ 手册。
 
-.. _`File Sets`:
-
 文件集
 ^^^^^^^^^
 
@@ -67,42 +68,11 @@ target_sources
      [FILE_SET <set> [TYPE <type>] [BASE_DIRS <dirs>...] [FILES <files>...]]...
     ]...)
 
-将文件集添加到目标，或将文件添加到现有文件集。目标有零个或多个命名文件集。每个\
-文件集都有名称、类型、\ ``INTERFACE``\ 、\ ``PUBLIC``\ 或\ ``PRIVATE``\ 范围、\
-一个或多个基本目录以及这些目录中的文件。
+将文件集添加到目标，或将文件添加到现有文件集。目标有零个或多个命名文件集。
 
-.. versionchanged:: 4.4
-  一个文件在某个目标中最多只能属于一个非 ``HEADERS`` 文件集。\
-  参见策略 :policy:`CMP0211`。
-
- 可接受的类型包括：
-
-``HEADERS``
-
-  打算通过语言的\ ``#include``\ 机制使用的源文件。
-
-``SOURCES``
-  .. versionadded:: 4.4
-
-  指定在构建目标及其依赖时所使用的源文件。当作用域为 ``PRIVATE`` 和 ``PUBLIC`` 时，\
-  ``<files>``\ 将填充 ``<set>`` 的 :prop_fs:`SOURCES` 属性，用于构建目标本身。当作用域为 ``PUBLIC``
-  和 ``INTERFACE`` 时，``<files>``\ 将填充 ``<set>`` 的 :prop_fs:`INTERFACE_SOURCES` 属性，\
-  用于构建其依赖方。:prop_fs:`INTERFACE_SOURCES` 属性所指定的源文件会传递式地传播到所有依赖方。
-
-``CXX_MODULES``
-  .. versionadded:: 3.28
-
-  包含C++接口模块或分区单元的源代码（即使用\ ``export``\ 关键字的源代码）。除了\
-  ``IMPORTED``\ 目标之外，此文件集类型不能有\ ``INTERFACE``\ 范围。
-
-可选的默认文件集以其类型命名。目标不能是自定义目标，对于 ``HEADERS`` 和
-``CXX_MODULES`` 类型，也不能是 :prop_tgt:`FRAMEWORK` 目标。
-
-为了集成IDE，\ ``PRIVATE``\ 或\ ``PUBLIC``\ 文件集中的文件被标记为源文件。此外，\
-在\ ``HEADERS``\ 文件集中的文件的\ :prop_sf:`HEADER_FILE_ONLY`\ 属性被设置为\
-``TRUE``。\ ``INTERFACE``\ 或\ ``PUBLIC``\ 文件集中的文件可以用\
-:command:`install(TARGETS)`\ 命令安装，也可以用\ :command:`install(EXPORT)`\ 和\
-:command:`export`\ 命令导出。
+See the :manual:`cmake-buildsystem(7)` manual for more on :ref:`File Sets`,
+including their types and scope semantics, properties, and installation/export
+behavior.
 
 每个\ ``target_sources(FILE_SET)``\ 项都以\ ``INTERFACE``、\ ``PUBLIC``\ 或\
 ``PRIVATE``\ 开头，接受下列参数：
@@ -115,9 +85,25 @@ target_sources
 
 ``TYPE <type>``
 
-  每个文件集都与特定类型的文件相关联。只有上面指定的类型才能使用，其他类型都是\
-  错误的。作为一个特殊情况，如果文件集的名称是类型之一，则不需要指定类型，并且\
-  可以省略\ ``TYPE <type>``\ 参数。对于所有其他文件集名称，\ ``TYPE``\ 是必需的。
+  Every file set is associated with a particular type of file. Only types
+  listed under :ref:`File Sets` may be used and it is an error to specify
+  anything else. As a special case, if the name of the file set is one of these
+  types, the type does not need to be specified and the ``TYPE <type>``
+  arguments can be omitted. For all other file set names, ``TYPE`` is required.
+
+  .. versionadded:: 4.5
+    ``SYCL`` may be specified as an alias for ``SOURCES``.  It initializes the
+    file set's :prop_fs:`LANGUAGE` property to ``SYCL``.
+
+    ``SYCL_HEADERS`` may be specified as an alias for ``HEADERS``.  It also
+    initializes :prop_fs:`LANGUAGE` to ``SYCL``.  A target with such a file set
+    in its own build specification, or reachable through linked interface
+    properties, compiles all of its C++ sources as SYCL.
+
+    The canonical spellings ``FILE_SET SYCL TYPE SOURCES`` and
+    ``FILE_SET SYCL_HEADERS TYPE HEADERS`` are also accepted.
+
+    Both aliases are experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
 
 ``BASE_DIRS <dirs>...``
 
@@ -137,49 +123,6 @@ target_sources
   如果指定了相对路径，它们被认为是在调用\ ``target_sources()``\ 时相对于\
   :variable:`CMAKE_CURRENT_SOURCE_DIR`\ 的路径。一个例外是以\ ``$<``\ 开始的路径。\
   在生成器表达式求值之后，这些路径被视为相对于目标的源目录的路径。
-
-下列目标属性由\ ``target_sources(FILE_SET)``\ 设置，但通常不应该直接操作。
-
-对于\ ``HEADERS``\ 类型文件集：
-
-* :prop_tgt:`HEADER_SETS`
-* :prop_tgt:`INTERFACE_HEADER_SETS`
-* :prop_tgt:`HEADER_SET`
-* :prop_tgt:`HEADER_SET_<NAME>`
-* :prop_tgt:`HEADER_DIRS`
-* :prop_tgt:`HEADER_DIRS_<NAME>`
-
-For file sets of type ``SOURCES``:
-
-* :prop_tgt:`SOURCE_SETS`
-* :prop_tgt:`INTERFACE_SOURCE_SETS`
-* :prop_tgt:`SOURCE_SET`
-* :prop_tgt:`SOURCE_SET_<NAME>`
-* :prop_tgt:`SOURCE_DIRS`
-* :prop_tgt:`SOURCE_DIRS_<NAME>`
-
-对于\ ``CXX_MODULES``\ 类型文件集：
-
-* :prop_tgt:`CXX_MODULE_SETS`
-* :prop_tgt:`INTERFACE_CXX_MODULE_SETS`
-* :prop_tgt:`CXX_MODULE_SET`
-* :prop_tgt:`CXX_MODULE_SET_<NAME>`
-* :prop_tgt:`CXX_MODULE_DIRS`
-* :prop_tgt:`CXX_MODULE_DIRS_<NAME>`
-
-与include目录相关的目标属性也由\ ``target_sources(FILE_SET)``\ 修改，如下所示：
-
-:prop_tgt:`INCLUDE_DIRECTORIES`
-
-  如果\ ``TYPE``\ 是\ ``HEADERS``，并且文件集的作用域是\ ``PRIVATE``\ 或\
-  ``PUBLIC``，则文件集的所有\ ``BASE_DIRS``\ 都包装在\ :genex:`$<BUILD_INTERFACE>`\
-  中，并附加到此属性。
-
-:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
-
-  如果\ ``TYPE``\ 是\ ``HEADERS``，并且文件集的范围是\ ``INTERFACE``\ 或\
-  ``PUBLIC``，则文件集的所有\ ``BASE_DIRS``\ 都包装在\ :genex:`$<BUILD_INTERFACE>`\
-  中，并附加到此属性。
 
 另请参阅
 ^^^^^^^^

@@ -40,8 +40,38 @@ Inline cref :cref:`Link_Text_<Placeholder> <ExternalDest>`.
 Inline link `Link Dest`_.
 Inline link `Link Text <ExternalDest>`_.
 Inline link `Link Text \<With \\-escaped Brackets\> <ExternalDest>`_.
+Inline link anon `Link Dest`__.
+Inline link anon `Link Text <ExternalDest>`__.
+Inline link anon `Link Text \<With \\-escaped Brackets\> <ExternalDest>`__.
 Inline literal ``__`` followed by inline link `Link Text <InternalDest_>`_.
 Inline literal ``~!@#$%^&*( )_+-=\\[]{}'":;,<>.?/``.
+
+Try running :program:`cmake`.
+Enable :diagnostic:`CMD_AUTHOR` warnings with :cmake-option:`-Wauthor`,
+or with the :preset:`configurePresets.warnings.author` preset field.
+Read the :manual:`cmake(1)` manual.
+Learn about the :module:`GNUInstallDirs` module.
+Policy :policy:`CMP9999` doesn't exist. (Yet?)
+
+Some properties that don't exist:
+- :prop_cache:`NO_SUCH_CACHE_PROPERTY`
+- :prop_dir:`NO_SUCH_DIRECTORY_PROPERTY`
+- :prop_fs:`NO_SUCH_FILESET_PROPERTY`
+- :prop_gbl:`NO_SUCH_GLOBAL_PROPERTY`
+- :prop_inst:`NO_SUCH_INSTALL_PROPERTY`
+- :prop_sf:`NO_SUCH_SOURCE_FILE_PROPERTY`
+- :prop_test:`NO_SUCH_TEST_PROPERTY`
+- :prop_tgt:`NO_SUCH_TARGET_PROPERTY`
+
+Various ways to reference command-line options:
+- :option:`cmake --build \<dir\> <cmake --build>`
+- :cmake-option:`--log-level`
+- :cmake-build-option:`--parallel`
+- :cmake-install-option:`--config`
+- :cmake-workflow-option:`--preset`
+- :cpack-option:`-G`
+- :ctest-option:`--parallel`
+- :ctest-dashboard-option:`--build-dir`
 
 .. |not replaced| replace:: not replaced through toctree
 .. |not replaced in literal| replace:: replaced in parsed literal
@@ -154,3 +184,19 @@ A literal block can be empty::
 
 .. include:: testRSTinclude1.rst
 .. include:: /testRSTinclude2.rst
+
+Testing a |delayed substitution|.
+
+.. |delayed substitution| replace:: replacement defined after use
+
+|header substitution|
+^^^^^^^^^^^^^^^^^^^^^
+
+.. |header substitution| replace:: this text is a different length
+
+Substitutions in headers should cause the header line's length to be updated.
+
+.. |redefined substitution| replace:: first definition
+.. |redefined substitution| replace:: second definition
+
+A |redefined substitution| uses only the last definition.

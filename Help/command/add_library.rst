@@ -249,9 +249,16 @@ Windows上总是有一个关联的导入库。
   目录。\ :prop_tgt:`ALIAS_GLOBAL`\ 目标属性可用于检查别名是否是全局的。
 
 ``ALIAS``\ 目标可以用作可链接的目标，也可以用作从中读取属性的目标。还可以使用常规\
-:command:`if(TARGET)`\ 子命令测试它们是否存在。\ ``<name>``\ 不能用于修改\ ``<target>``\
-的属性，即不能作为\ :command:`set_property`、\ :command:`set_target_properties`、\
-:command:`target_link_libraries`\ 等的操作数。\ ``ALIAS``\ 目标不能安装或导出。
+:command:`if(TARGET)`\ 子命令测试它们是否存在。
+
+.. versionchanged:: 4.5
+  The ``<name>`` may be used as the operand of :command:`set_property`,
+  :command:`set_target_properties`, :command:`target_link_libraries`, etc. to
+  modify properties of ``<target>``.  If an ``ALIAS`` target is passed to an
+  :command:`install` or :command:`export` command, the target that the alias
+  references is installed or exported.  CMake 4.4 and earlier did not allow
+  using the ``<name>`` to modify properties of ``<target>``, or using the
+  ``<name>`` in :command:`install` and :command:`export` commands.
 
 另外参阅
 ^^^^^^^^

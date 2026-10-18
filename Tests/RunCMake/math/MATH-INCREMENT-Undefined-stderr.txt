@@ -1,0 +1,4 @@
+^CMake Error at MATH-INCREMENT-Undefined\.cmake:[0-9]+ \(math\):
+  math sub-command INCREMENT variable "value" is not defined
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)$

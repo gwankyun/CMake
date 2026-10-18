@@ -12,7 +12,8 @@ target_compile_features
     [{INTERFACE|PUBLIC|PRIVATE} <feature>...]...)
 
 指定编译给定目标时所需的编译器特性。如果\ :variable:`CMAKE_C_COMPILE_FEATURES`、\
-:variable:`CMAKE_CUDA_COMPILE_FEATURES`\ 或\ :variable:`CMAKE_CXX_COMPILE_FEATURES`\
+:variable:`CMAKE_CUDA_COMPILE_FEATURES`、 \ :variable:`CMAKE_CXX_COMPILE_FEATURES`\ 或
+:variable:`CMAKE_SYCL_COMPILE_FEATURES` 
 变量中未列出该特性，则CMake将报告一个错误。如果使用该特性需要一个额外的编译器标志，例如\
 ``-std=gnu++11``，该标志将自动添加。
 
@@ -25,12 +26,16 @@ target_compile_features
   允许在\ :ref:`导入目标 <Imported Targets>`\ 上设置\ ``INTERFACE``\ 项。
 
 命名\ ``<target>``\ 必须是由\ :command:`add_executable`\ 或\ :command:`add_library`\
-等命令创建的，并且不能是\ :ref:`别名目标 <Alias Targets>`。
+等命令创建的。
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 .. |command_name| replace:: ``target_compile_features``
-.. |more_see_also| replace:: 请参阅\ :manual:`cmake-compile-features(7)`\ 手册，了解有关编译特性的信息和支持的编译器列表。
 .. include:: include/GENEX_NOTE.rst
-   :start-line: 2
+
+.. include:: /include/COMPILE_FEATURES_NOTE.rst
 
 另请参阅
 ^^^^^^^^

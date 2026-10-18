@@ -1349,14 +1349,16 @@ with members:
 ``fileSets``
   .. codemodel-versionadded:: 2.5
 
-  一个可选成员，当目标定义了一个或多个文件集时出现。该值是一个JSON数组，其条目\
+  一个可选成员，当目标定义了一个或多个 :ref:`File Sets` 时出现。该值是一个JSON数组，其条目\
   对应目标的文件集。每个条目都是一个JSON对象，包含以下成员：
 
   ``name``
     指定文件集名称的字符串。
 
   ``type``
-    指定文件集类型的字符串。请参阅\ :command:`target_sources`\ 支持的文件集类型。
+    A string specifying the type of the file set.  See the
+    :manual:`cmake-buildsystem(7)` manual for the list of supported file set
+    types.
 
   ``visibility``
     指定文件集可见性的字符串；\ ``PUBLIC``、\ ``PRIVATE``\ 或\ ``INTERFACE``\ 其中之一。
@@ -1399,7 +1401,7 @@ with members:
 
     Optional member that is present when the source is part of at least one
     file set; see also policy :policy:`CMP0211`. The value is
-    an array of unsigned integer 0-based indexes inte the ``fileSets`` array.
+    an array of unsigned integer 0-based indexes into the ``fileSets`` array.
 
   ``backtrace``
     .. deprecated:: 4.4
@@ -1464,7 +1466,38 @@ with members:
 
     Optional member that is present when the source is part of at least one
     file set; see also policy :policy:`CMP0211`. The value is
-    an array of unsigned integer 0-based indexes inte the ``fileSets`` array.
+    an array of unsigned integer 0-based indexes into the ``fileSets`` array.
+
+``interfaceIncludes``
+  .. codemodel-versionadded:: 2.12
+
+  An optional member that is present when the :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
+  property is set on a target. Note that non-private ``HEADERS`` file sets
+  automatically populate this property.
+
+  The value is a JSON array with entries describing the directories.
+  Transitive usage requirements from dependencies are not included.
+  Each entry is a JSON object with members:
+
+  ``path``
+    A string specifying the path to the include directory,
+    represented with forward slashes.
+
+  ``isSystem``
+    Optional member that is present with boolean value ``true`` if
+    the include directory is marked as a system include directory.
+
+  ``languages``
+    Optional member that is present when the entry applies to only a subset
+    of enabled languages.  The value is an array of language strings for
+    which the path and its ``isSystem`` classification apply. This member is
+    omitted if the entry applies to all enabled languages.
+
+  ``backtrace``
+    Optional member that is present when a CMake language backtrace to
+    the command invocation that added this include directory is available.
+    The value is an unsigned integer 0-based index into the
+    ``backtraceGraph`` member's ``nodes`` array.
 
 ``sourceGroups``
   可选成员，当通过\ :command:`source_group`\ 命令或默认情况下将源分组在一起时出现。该值\

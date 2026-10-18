@@ -29,6 +29,7 @@
 #include "cmStandardLevel.h"
 #include "cmStateTypes.h"
 #include "cmTargetPropertyEntry.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 namespace cm {
@@ -119,7 +120,7 @@ public:
     ~CheckLinkLibrariesSuppressionRAII();
   };
 
-  cmStateEnums::TargetType GetType() const;
+  cm::TargetType GetType() const;
   std::string const& GetName() const;
   std::string GetFamilyName() const;
   std::string GetExportName() const;
@@ -135,6 +136,8 @@ public:
                       std::string const& config) const;
   std::vector<BT<cmSourceFile*>> GetSourceFiles(
     std::string const& config) const;
+  std::string GetSourceFileLanguage(cmSourceFile const* source,
+                                    std::string const& config) const;
 
   /** Source file kinds (classifications).
       Generators use this to decide how to treat a source file.  */
@@ -194,7 +197,7 @@ public:
 
   void GetObjectSources(std::vector<cmSourceFile const*>&,
                         std::string const& config) const;
-  std::string const& GetObjectName(cmSourceFile const* file);
+  std::string const& GetObjectName(cmSourceFile const* file) const;
   char const* GetCustomObjectExtension() const;
 
   bool HasExplicitObjectName(cmSourceFile const* file) const;
@@ -210,6 +213,14 @@ public:
 
   bool GetLanguageStandardRequired(std::string const& lang) const;
 
+  enum class SYCLExtensionMode
+  {
+    Append,
+    Replace
+  };
+
+  SYCLExtensionMode GetSYCLExtensionMode() const;
+  bool IsSYCLAppendMode(std::string const& lang) const;
   void GetModuleDefinitionSources(std::vector<cmSourceFile const*>&,
                                   std::string const& config) const;
   void GetExternalObjects(std::vector<cmSourceFile const*>&,
@@ -232,7 +243,7 @@ public:
 
   std::set<cmLinkItem> const& GetUtilityItems() const;
 
-  void ComputeObjectMapping();
+  void ComputeObjectMapping() const;
 
   cmValue GetFeature(std::string const& feature,
                      std::string const& config) const;
@@ -392,7 +403,7 @@ public:
 
   bool LinkLanguagePropagatesToDependents() const
   {
-    return this->GetType() == cmStateEnums::STATIC_LIBRARY;
+    return this->GetType() == cm::TargetType::STATIC_LIBRARY;
   }
 
   /** Get the macro to define when building sources in this target.
@@ -610,8 +621,8 @@ public:
   SourceVariables GetSourceVariables(cmSourceFile const* sf,
                                      std::string const& config);
 
-  void AddExplicitLanguageFlags(std::string& flags,
-                                cmSourceFile const& sf) const;
+  void AddExplicitLanguageFlags(std::string& flags, cmSourceFile const& sf,
+                                std::string const& config) const;
 
   void AddCUDAArchitectureFlags(cmBuildStep compileOrLink,
                                 std::string const& config,
@@ -625,6 +636,9 @@ public:
   void AddHIPArchitectureFlags(cmBuildStep compileOrLink,
                                std::string const& config,
                                std::string& flags) const;
+  void AddSYCLDeviceTargetFlags(cmBuildStep compileOrLink,
+                                std::string const& config,
+                                std::string& flags) const;
 
   void AddISPCTargetFlags(std::string& flags) const;
 
@@ -672,11 +686,19 @@ private:
   mutable ConfigAndLanguageToBTStrings IncludeDirectoriesCache;
   mutable ConfigAndLanguageToBTStrings CompileOptionsCache;
   mutable ConfigAndLanguageToBTStrings CompileDefinitionsCache;
+  mutable ConfigAndLanguageToBTStrings CompileWrappersCache;
   mutable ConfigAndLanguageToBTStrings PrecompileHeadersCache;
   mutable ConfigAndLanguageToBTStrings LinkOptionsCache;
   mutable ConfigAndLanguageToBTStrings LinkDirectoriesCache;
+  mutable ConfigAndLanguageToBTStrings LinkWrappersCache;
 
 public:
+  /** Get the wrapper entries for this target.  */
+  std::vector<BT<std::string>> GetCompileWrappers(
+    std::string const& config, std::string const& lang) const;
+  std::vector<BT<std::string>> GetLinkWrappers(std::string const& config,
+                                               std::string const& lang) const;
+
   /** Get the include directories for this target.  */
   std::vector<BT<std::string>> GetIncludeDirectories(
     std::string const& config, std::string const& lang) const;
@@ -1147,6 +1169,7 @@ public:
   std::string GetImportedXcFrameworkPath(std::string const& config) const;
 
   bool ApplyCXXStdTarget();
+  bool HasCxxImportModuleErrors() const;
   cmCxxModuleUsageEffects const& GetCxxModuleUsageEffects(
     std::string const& config) const;
   cmGeneratorTarget const* GetTargetForCxxModules(
@@ -1381,8 +1404,10 @@ private:
   TargetPropertyEntryVector CompileOptionsEntries;
   TargetPropertyEntryVector CompileFeaturesEntries;
   TargetPropertyEntryVector CompileDefinitionsEntries;
+  TargetPropertyEntryVector CompileWrappersEntries;
   TargetPropertyEntryVector LinkOptionsEntries;
   TargetPropertyEntryVector LinkDirectoriesEntries;
+  TargetPropertyEntryVector LinkWrappersEntries;
   TargetPropertyEntryVector PrecompileHeadersEntries;
   TargetPropertyEntryVector SourceEntries;
   mutable std::set<std::string> LinkImplicitNullProperties;
@@ -1468,11 +1493,13 @@ private:
   mutable bool DebugCompileOptionsDone = false;
   mutable bool DebugCompileFeaturesDone = false;
   mutable bool DebugCompileDefinitionsDone = false;
+  mutable bool DebugCompileWrappersDone = false;
   mutable bool DebugLinkOptionsDone = false;
   mutable bool DebugLinkDirectoriesDone = false;
   mutable bool DebugPrecompileHeadersDone = false;
   mutable bool DebugSourcesDone = false;
   mutable bool UtilityItemsDone = false;
+  mutable bool DebugLinkWrappersDone = false;
   enum class Tribool
   {
     False = 0x0,

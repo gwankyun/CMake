@@ -176,12 +176,49 @@ run_cmake_gui_test(presetArg:presetConfigExists
     -S "${CMakeGUITest_BINARY_DIR}/presetArg-presetConfigExists/src"
     "--preset=ninja"
   )
+run_cmake_gui_test(presetArg:installDir
+  ARGS
+    -S "${CMakeGUITest_BINARY_DIR}/presetArg-installDir/src/"
+    "--preset=installDir"
+  )
 run_cmake_gui_test(presetArg:noExist
   ARGS
     -S "${CMakeGUITest_BINARY_DIR}/presetArg-noExist/src"
     "--preset=noExist"
   )
 run_cmake_gui_test(changingPresets)
+
+run_cmake_gui_test(presetApplyOrdering:apply
+  DO_CONFIGURE
+  CONFIGURE_ARGS -DRACE_VALUE:STRING=old
+  ARGS
+    -S "${CMakeGUITest_BINARY_DIR}/presetApplyOrdering-apply/src"
+    -B "${CMakeGUITest_BINARY_DIR}/presetApplyOrdering-apply/build"
+  )
+run_cmake_gui_test(presetApplyOrdering:replace
+  DO_CONFIGURE
+  CONFIGURE_ARGS -DRACE_VALUE:STRING=old
+  ARGS
+    -S "${CMakeGUITest_BINARY_DIR}/presetApplyOrdering-replace/src"
+    -B "${CMakeGUITest_BINARY_DIR}/presetApplyOrdering-replace/build"
+  )
+run_cmake_gui_test(presetApplyOrdering:replaceCycle
+  DO_CONFIGURE
+  CONFIGURE_ARGS -DRACE_VALUE:STRING=old
+  ARGS
+    -S "${CMakeGUITest_BINARY_DIR}/presetApplyOrdering-replaceCycle/src"
+    -B "${CMakeGUITest_BINARY_DIR}/presetApplyOrdering-replaceCycle/build"
+  )
+run_cmake_gui_test(presetApplyStartup:available
+  ARGS
+    -S "${CMakeGUITest_BINARY_DIR}/presetApplyStartup-available/src"
+    "--preset=raceA"
+  )
+run_cmake_gui_test(presetApplyStartup:unavailable
+  ARGS
+    -S "${CMakeGUITest_BINARY_DIR}/presetApplyStartup-unavailable/src"
+    "--preset=doesNotExist"
+  )
 
 if("${CMakeGUITest_GENERATOR}" MATCHES "Make|Ninja|FASTBuild")
   run_cmake_gui_test(instrumentation)

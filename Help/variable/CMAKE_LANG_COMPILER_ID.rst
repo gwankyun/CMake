@@ -10,6 +10,7 @@ include:
 Value                           Name
 =============================== ===============================================
 ``Absoft``                      Absoft Fortran
+``AdaptiveCpp``                 `AdaptiveCpp`_ (SYCL)
 ``ADSP``                        Analog VisualDSP++
 ``AppleClang``                  Apple Clang
 ``ARMCC``                       ARM Compiler
@@ -20,6 +21,7 @@ Value                           Name
 ``Cray``                        Cray Compiler
 ``CrayClang``                   Cray Clang-based Compiler
 ``Diab``                        `Wind River Systems Diab Compiler`_
+``DPClang``                     `Open-source DPC++ Compiler`_
 ``Embarcadero``, ``Borland``    `Embarcadero`_
 ``Flang``                       `Classic Flang Fortran Compiler`_
 ``LLVMFlang``                   `LLVM Flang Fortran Compiler`_
@@ -60,7 +62,18 @@ Value                           Name
 This variable is not guaranteed to be defined for all compilers or
 languages.
 
+.. versionadded:: 4.5
+  The ``AdaptiveCpp`` ID identifies the AdaptiveCpp SYCL compiler, formerly
+  known as hipSYCL and Open SYCL.  Its underlying host compiler is identified
+  separately by :variable:`CMAKE_<LANG>_HOST_COMPILER_ID`.
+
+  .. note::
+    SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+.. _AdaptiveCpp: https://adaptivecpp.github.io/
 .. _LLVM Clang: https://clang.llvm.org
+.. _Wind River Systems Diab Compiler: https://www.windriver.com/resource/wind-river-diab-compiler-product-overview
+.. _Open-source DPC++ Compiler: https://github.com/intel/llvm
 .. _Embarcadero: https://www.embarcadero.com
 .. _Classic Flang Fortran Compiler: https://github.com/flang-compiler/flang
 .. _LLVM Flang Fortran Compiler: https://github.com/llvm/llvm-project/tree/main/flang
@@ -76,7 +89,6 @@ languages.
 .. _Pelles C: https://pellesc.se
 .. _Renesas Compiler: https://www.renesas.com
 .. _Small Device C Compiler: https://sdcc.sourceforge.net
-.. _Tiny C Compiler: https://bellard.org/tcc
 .. _Tasking Compiler Toolsets: https://www.tasking.com
 .. _Texas Instruments Clang-based Compilers: https://www.ti.com/tool/download/ARM-CGT-CLANG
-.. _Wind River Systems Diab Compiler: https://www.windriver.com/resource/wind-river-diab-compiler-product-overview
+.. _Tiny C Compiler: https://bellard.org/tcc

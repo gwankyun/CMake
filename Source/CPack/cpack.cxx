@@ -8,7 +8,6 @@
 #include <iterator>
 #include <map>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -62,7 +61,8 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
   { "--vendor <vendorName>", "Override/define CPACK_PACKAGE_VENDOR" },
   { "--preset", "Read arguments from a package preset" },
   { "--presets-file", "Load package presets from the given file" },
-  { "--list-presets", "List available package presets" }
+  { "--list-presets[=defined]",
+    "List available or all defined package presets" }
 };
 
 void cpackProgressCallback(std::string const& message, float /*unused*/)
@@ -209,8 +209,16 @@ int main(int argc, char const* const* argv)
     CommandArgument{ "--preset", "No preset specified for --preset",
                      CommandArgument::Values::One,
                      CommandArgument::setToValue(presetsArgs.PresetName) },
-    CommandArgument{ "--list-presets", CommandArgument::Values::Zero,
-                     CommandArgument::setToTrue(presetsArgs.ListPresets) },
+    CommandArgument{
+      "--list-presets", CommandArgument::Values::ZeroOrOne,
+      [&presetsArgs](std::string const& value, cmake*, cmMakefile*) -> bool {
+        if (presetsArgs.SetListPresets(value)) {
+          return true;
+        }
+        cmSystemTools::Error("Invalid value specified for --list-presets.\n"
+                             "The only supported value is \"defined\".");
+        return false;
+      } },
     CommandArgument{ "--presets-file", "No file specified for --presets-file",
                      CommandArgument::Values::One, presetFileLambda },
     CommandArgument{ "-D", CommandArgument::Values::One,
@@ -244,13 +252,26 @@ int main(int argc, char const* const* argv)
   bool parsed = true;
   for (std::size_t i = 0; i < inputArgs.size(); i++) {
     auto const& arg = inputArgs[i];
+    bool matched = false;
     for (auto const& m : arguments) {
       if (m.matches(arg)) {
+        matched = true;
         if (!m.parse(arg, i, inputArgs, &cminst, &globalMF)) {
           parsed = false;
         }
         break;
       }
+    }
+    if (!matched && cmHasPrefix(arg, '-')) {
+      std::string error = cmStrCat("Unknown argument: ", arg);
+      std::string const suggestion =
+        cmFindClosestCommandLineArgument(arg, arguments);
+      if (!suggestion.empty()) {
+        error =
+          cmStrCat(std::move(error), ". Did you mean: ", suggestion, '?');
+      }
+      cmCPack_Log(&log, cmCPackLog::LOG_ERROR, error << '\n');
+      parsed = false;
     }
   }
 
@@ -269,6 +290,8 @@ int main(int argc, char const* const* argv)
                                       gen) != 0;
                            });
       };
+    auto configureUsabilityCheck =
+      cminst.CreateConfigurePresetUsabilityCheck();
 
     cmCMakePresetsGraph presetsGraph;
     auto result = presetsGraph.ReadProjectPresets(workingDirectory,
@@ -276,13 +299,15 @@ int main(int argc, char const* const* argv)
     if (result != true) {
       cmCPack_Log(&log, cmCPackLog::LOG_ERROR,
                   "Could not read presets from "
-                    << workingDirectory << ":"
+                    << workingDirectory << ":\n"
                     << presetsGraph.parseState.GetErrorMessage() << '\n');
       return 1;
     }
 
-    if (presetsArgs.ListPresets) {
-      presetsGraph.PrintPackagePresetList(presetGeneratorsPresent);
+    if (presetsArgs.ListPresetsMode) {
+      presetsGraph.PrintPackagePresetList(presetGeneratorsPresent,
+                                          *presetsArgs.ListPresetsMode,
+                                          configureUsabilityCheck);
       return 0;
     }
 
@@ -294,14 +319,20 @@ int main(int argc, char const* const* argv)
                                           workingDirectory);
     if (resolveError) {
       cmCPack_Log(&log, cmCPackLog::LOG_ERROR, *resolveError << "\n");
-      presetsGraph.PrintPackagePresetList(presetGeneratorsPresent);
+      presetsGraph.PrintPackagePresetList(
+        presetGeneratorsPresent,
+        cmCMakePresetsGraph::PresetListMode::Available,
+        configureUsabilityCheck);
       return 1;
     }
     auto const* expandedPreset = resolveResult.Preset;
 
     if (!presetGeneratorsPresent(*expandedPreset)) {
       cmCPack_Log(&log, cmCPackLog::LOG_ERROR, "Cannot use preset");
-      presetsGraph.PrintPackagePresetList(presetGeneratorsPresent);
+      presetsGraph.PrintPackagePresetList(
+        presetGeneratorsPresent,
+        cmCMakePresetsGraph::PresetListMode::Available,
+        configureUsabilityCheck);
       return 1;
     }
 
@@ -312,7 +343,9 @@ int main(int argc, char const* const* argv)
                   "No such configure preset in "
                     << workingDirectory << ": \""
                     << expandedPreset->ConfigurePreset << "\"\n");
-      presetsGraph.PrintConfigurePresetList();
+      presetsGraph.PrintConfigurePresetList(
+        cmCMakePresetsGraph::PresetListMode::Available,
+        configureUsabilityCheck);
       return 1;
     }
 
@@ -321,7 +354,9 @@ int main(int argc, char const* const* argv)
                   "Cannot use hidden configure preset in "
                     << workingDirectory << ": \""
                     << expandedPreset->ConfigurePreset << "\"\n");
-      presetsGraph.PrintConfigurePresetList();
+      presetsGraph.PrintConfigurePresetList(
+        cmCMakePresetsGraph::PresetListMode::Available,
+        configureUsabilityCheck);
       return 1;
     }
 
@@ -568,10 +603,10 @@ int main(int argc, char const* const* argv)
                 mf->GetDefinition("CPACK_PACKAGE_VERSION_MINOR");
               cmValue projVersionPatch =
                 mf->GetDefinition("CPACK_PACKAGE_VERSION_PATCH");
-              std::ostringstream ostr;
-              ostr << *projVersionMajor << '.' << *projVersionMinor << '.'
-                   << *projVersionPatch;
-              mf->AddDefinition("CPACK_PACKAGE_VERSION", ostr.str());
+              mf->AddDefinition("CPACK_PACKAGE_VERSION",
+                                cmStrCat(*projVersionMajor, '.',
+                                         *projVersionMinor, '.',
+                                         *projVersionPatch));
             }
 
             int res = cpackGenerator->DoPackage();

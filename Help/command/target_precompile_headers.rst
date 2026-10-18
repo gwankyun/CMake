@@ -19,8 +19,11 @@ target_precompile_headers
 
 该命令将头文件添加到\ ``<target>``\ 的\ :prop_tgt:`PRECOMPILE_HEADERS`\ 和/或\
 :prop_tgt:`INTERFACE_PRECOMPILE_HEADERS`\ 目标属性中。命名\ ``<target>``\ 必须是由\
-:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\
-:ref:`别名目标 <Alias Targets>`。
+:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的。
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字用于指定下列参数的\
 :ref:`作用域 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\
@@ -59,13 +62,15 @@ target_precompile_headers
   )
 
 .. |command_name| replace:: ``target_precompile_headers``
-.. |more_see_also| replace:: :genex:`$<COMPILE_LANGUAGE:...> <COMPILE_LANGUAGE:languages>` \
-   生成器表达式在指定仅针对某一种语言（例如\ ``CXX``\ 而非\ ``C``\ 语言）进行预\
-   编译的特定语言头文件时尤其有用。\
-   在这种情况下，没有显式用双引号或尖括号括起来的头文件名称必须用绝对路径指定。此外，当在\
-   生成器表达式中指定尖括号时，请确保将结束的\ ``>``\ 编码为\ :genex:`$<ANGLE-R>`。例如：
 .. include:: include/GENEX_NOTE.rst
-   :start-line: 2
+
+The :genex:`$<COMPILE_LANGUAGE:...> <COMPILE_LANGUAGE:languages>` generator
+expression is particularly useful for specifying a language-specific header
+to precompile for only one language (e.g. ``CXX`` and not ``C``).  In this
+case, header file names that are not explicitly in double quotes or angle
+brackets must be specified by absolute path.  Also, when specifying angle
+brackets inside a generator expression, be sure to encode the closing
+``>`` as :genex:`$<ANGLE-R>`.  For example:
 
 .. code-block:: cmake
 

@@ -1,0 +1,15 @@
+Test project .*
+ *Start +[0-9]+: TEST:newline/test\.case/a!9
+ *[0-9]+/[0-9]+ +Test.*TEST:newline/test\.case/a!9 .+ +Passed +[0-9\.]+ sec
+ *Start +[0-9]+: TEST:newline/test\.case/b!9
+ *[0-9]+/[0-9]+ +Test.*TEST:newline/test\.case/b!9 .+ +Passed +[0-9\.]+ sec
+ *Start +[0-9]+: TEST:newline/test\.case/c!9
+ *[0-9]+/[0-9]+ +Test.*TEST:newline/test\.case/c!9 .+ +Passed +[0-9\.]+ sec
+ *Start +[0-9]+: TEST:newline_name/suite\.case/trailing_param!9
+ *[0-9]+/[0-9]+ +Test.*TEST:newline_name/suite\.case/trailing_param!9 .+ +Passed +[0-9\.]+ sec
+ *Start +[0-9]+: TEST:newline_name/suite\.case/leading_param!9
+ *[0-9]+/[0-9]+ +Test.*TEST:newline_name/suite\.case/leading_param!9 .+ +Passed +[0-9\.]+ sec
+
+100% tests passed out of [0-9]+
+
+Total Test time \(real\) = +[0-9\.]+ sec

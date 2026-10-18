@@ -1,7 +1,7 @@
 IMPORTED_LOCATION
 -----------------
 
-已\ ``IMPORTED``\ 目标的磁盘上主文件全路径。
+已 :ref:`IMPORTED <Imported Targets>` 目标的磁盘上主文件全路径。
 
 Set this to the location of an ``IMPORTED`` target file on disk.  For
 executables this is the location of the executable file.  For ``STATIC``

@@ -2,7 +2,10 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #pragma once
 
+#include <cstddef>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include <cm/optional>
 
@@ -25,9 +28,36 @@ struct Context final
   void SetCMP0189(cmPolicies::PolicyStatus cmp0189);
   cmPolicies::PolicyStatus GetCMP0189() const;
 
+  void SetBoundOperands(std::vector<std::string> operands);
+  void SetBoundOperand(std::string value);
+  std::size_t BoundOperandCount() const;
+  bool HasBoundOperand(std::size_t index = 0) const;
+  std::string const& GetBoundOperand(std::size_t index = 0) const;
+
 private:
   cm::optional<cmPolicies::PolicyStatus> CMP0189;
+  std::vector<std::string> BoundOperands;
 };
 
+inline void Context::SetBoundOperands(std::vector<std::string> operands)
+{
+  this->BoundOperands = std::move(operands);
+}
+inline void Context::SetBoundOperand(std::string value)
+{
+  this->SetBoundOperands({ std::move(value) });
+}
+inline std::size_t Context::BoundOperandCount() const
+{
+  return this->BoundOperands.size();
+}
+inline bool Context::HasBoundOperand(std::size_t index) const
+{
+  return index < this->BoundOperandCount();
+}
+inline std::string const& Context::GetBoundOperand(std::size_t index) const
+{
+  return this->BoundOperands[index];
+}
 }
 }

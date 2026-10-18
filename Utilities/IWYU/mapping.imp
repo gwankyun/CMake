@@ -39,7 +39,7 @@
   { include: [ "@<.*expat_external.h>", private, "<cm3p/expat.h>", public ] },
   { include: [ "@<.*zconf.h>", private, "<cm3p/zlib.h>", public ] },
   { include: [ "@<.*cm_zlib_mangle.h>", private, "<cm3p/zlib.h>", public ] },
-  { include: [ "<cmllpkgc/llpkgc__internal.h>", public, "<cmllpkgc/llpkgc.h>", public ] },
+  { include: [ "@<.*cmllpkgc/.+\\.h>", private, "<cmllpkgc/llpkgc.h>", public ] },
 
   { symbol: [ "std::ifstream", private, "\"cmsys/FStream.hxx\"", public ] },
   { symbol: [ "std::ofstream", private, "\"cmsys/FStream.hxx\"", public ] },

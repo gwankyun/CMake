@@ -4,6 +4,12 @@
 
 # This module is shared by multiple languages; use include blocker.
 if(__WINDOWS_CLANG)
+  # A later enable_language() may introduce another compiler frontend.
+  __verify_same_language_values(COMPILER_FRONTEND_VARIANT "C;CXX;CUDA;HIP;SYCL"
+                                "The current configuration uses the Clang compiler "
+                                "tool with mixed frontend variants, both the GNU and in MSVC CL "
+                                "like variants. This is not supported. Use either clang/clang++ "
+                                "or clang-cl as all C, C++, CUDA, HIP, and/or SYCL compilers.")
   return()
 endif()
 set(__WINDOWS_CLANG 1)
@@ -14,6 +20,7 @@ set(__pch_header_OBJC "objective-c-header")
 set(__pch_header_OBJCXX "objective-c++-header")
 
 macro(__windows_compiler_clang_gnu lang)
+  set(CMAKE_${lang}_LIBRARY_PATH_FLAG "-L")
   set(CMAKE_LIBRARY_PATH_FLAG "-L")
   set(CMAKE_LINK_LIBRARY_FLAG "-l")
 
@@ -191,18 +198,19 @@ endfunction()
 if("x${CMAKE_C_SIMULATE_ID}" STREQUAL "xMSVC"
     OR "x${CMAKE_CXX_SIMULATE_ID}" STREQUAL "xMSVC"
     OR "x${CMAKE_CUDA_SIMULATE_ID}" STREQUAL "xMSVC"
-    OR "x${CMAKE_HIP_SIMULATE_ID}" STREQUAL "xMSVC")
+    OR "x${CMAKE_HIP_SIMULATE_ID}" STREQUAL "xMSVC"
+    OR "x${CMAKE_SYCL_SIMULATE_ID}" STREQUAL "xMSVC")
 
   __verify_same_language_values(COMPILER_ID "C;CXX;HIP"
                                 "The current configuration mixes Clang and MSVC or "
                                 "some other CL compatible compiler tool. This is not supported. "
                                 "Use either Clang or MSVC as the compiler for all of C, C++, and/or HIP.")
 
-  __verify_same_language_values(COMPILER_FRONTEND_VARIANT "C;CXX;CUDA;HIP"
+  __verify_same_language_values(COMPILER_FRONTEND_VARIANT "C;CXX;CUDA;HIP;SYCL"
                                 "The current configuration uses the Clang compiler "
                                 "tool with mixed frontend variants, both the GNU and in MSVC CL "
                                 "like variants. This is not supported. Use either clang/clang++ "
-                                "or clang-cl as all C, C++, CUDA, and/or HIP compilers.")
+                                "or clang-cl as all C, C++, CUDA, HIP, and/or SYCL compilers.")
 
   if(NOT CMAKE_RC_COMPILER_INIT)
     # Check if rc is already in the path
@@ -225,7 +233,8 @@ if("x${CMAKE_C_SIMULATE_ID}" STREQUAL "xMSVC"
   if ( "x${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC"
       OR "x${CMAKE_C_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC"
       OR "x${CMAKE_CUDA_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC"
-      OR "x${CMAKE_HIP_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC")
+      OR "x${CMAKE_HIP_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC"
+      OR "x${CMAKE_SYCL_COMPILER_FRONTEND_VARIANT}" STREQUAL "xMSVC")
 
     include(Platform/Windows-MSVC)
     # Set the clang option forwarding prefix for clang-cl usage in the llvm-rc processing stage
@@ -294,4 +303,24 @@ macro(__windows_compiler_clang lang)
     set(CMAKE_${lang}_COMPILE_OPTIONS_TARGET "--target=")
   endif()
   __windows_compiler_clang_base(${lang})
+endmacro()
+
+macro(__windows_compiler_clang_msvc_offload_link lang extra_flags extra_link_flags)
+  # Preserve compiler-driven offload linking while retaining the standard
+  # MSVC manifest, import-library, PDB, and response-file handling.
+  set(CMAKE_${lang}_LINK_MODE DRIVER)
+  # Native linker flags are passed after /link.
+  set(CMAKE_${lang}_LINKER_WRAPPER_FLAG "")
+  set(CMAKE_${lang}_LINKER_WRAPPER_FLAG_SEP "")
+  # clang-linker-wrapper recognizes the native option's lowercase spelling;
+  # uppercase -LIBPATH can otherwise be parsed as the GNU -L option.
+  set(CMAKE_${lang}_LIBRARY_PATH_FLAG "-libpath:")
+  set(CMAKE_${lang}_STANDARD_LIBRARIES_INIT "${CMAKE_C_STANDARD_LIBRARIES_INIT}")
+  # The driver needs the final output name before /link, including when
+  # naming its device-link intermediates.
+  set(CMAKE_${lang}_LINK_EXECUTABLE
+    "${_CMAKE_VS_LINK_EXE}<CMAKE_${lang}_COMPILER> ${extra_flags} <FLAGS> ${CMAKE_CL_NOLOGO} <OBJECTS> ${CMAKE_START_TEMP_FILE} /Fe<TARGET> /link /implib:<TARGET_IMPLIB> /pdb:<TARGET_PDB> /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR>${_PLATFORM_LINK_FLAGS} <LINK_FLAGS> <LINK_LIBRARIES>${_CMAKE_FASTBUILD_MANIFESTS} ${extra_link_flags} ${CMAKE_END_TEMP_FILE}")
+  set(CMAKE_${lang}_CREATE_SHARED_LIBRARY
+    "${_CMAKE_VS_LINK_DLL}<CMAKE_${lang}_COMPILER> ${extra_flags} <LANGUAGE_COMPILE_FLAGS> ${CMAKE_CL_NOLOGO} /LD <OBJECTS> ${CMAKE_START_TEMP_FILE} /Fe<TARGET> /link /implib:<TARGET_IMPLIB> /pdb:<TARGET_PDB> /version:<TARGET_VERSION_MAJOR>.<TARGET_VERSION_MINOR>${_PLATFORM_LINK_FLAGS} <LINK_FLAGS> <LINK_LIBRARIES>${_CMAKE_FASTBUILD_MANIFESTS} ${extra_link_flags} ${CMAKE_END_TEMP_FILE}")
+  set(CMAKE_${lang}_CREATE_SHARED_MODULE "${CMAKE_${lang}_CREATE_SHARED_LIBRARY}")
 endmacro()

@@ -22,6 +22,8 @@
 #include "cmExportSet.h"
 #include "cmFindPackageStack.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorFileSet.h"
+#include "cmGeneratorFileSets.h"
 #include "cmGeneratorTarget.h"
 #include "cmList.h"
 #include "cmMakefile.h"
@@ -30,8 +32,9 @@
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 
-static std::string const kCPS_VERSION_STR = "0.14.1";
+static std::string const kCPS_VERSION_STR = "0.15.0";
 
 cmExportPackageInfoGenerator::cmExportPackageInfoGenerator(
   cmPackageInfoArguments arguments)
@@ -225,6 +228,19 @@ void cmExportPackageInfoGenerator::GeneratePackageRequires(
         data["version"] = *requirement.second.Version;
       }
 
+      if (!requirement.second.Domains.empty()) {
+        auto requirementDomains = Json::Value{ Json::arrayValue };
+        for (cm::PackageDomain domain : requirement.second.Domains) {
+          if (domain == cm::PackageDomain::PkgConfig) {
+            requirementDomains.append("pkg-config");
+          }
+        }
+        if (!requirementDomains.empty()) {
+          data["extensions"]["cmake"]["domains@v1"] =
+            std::move(requirementDomains);
+        }
+      }
+
       requirements[requirement.first] = data;
     }
   }
@@ -232,7 +248,7 @@ void cmExportPackageInfoGenerator::GeneratePackageRequires(
 
 Json::Value* cmExportPackageInfoGenerator::GenerateImportTarget(
   Json::Value& components, cmGeneratorTarget const* target,
-  cmStateEnums::TargetType targetType) const
+  cm::TargetType targetType) const
 {
   auto const& name = target->GetExportName();
   if (name.empty()) {
@@ -243,19 +259,19 @@ Json::Value* cmExportPackageInfoGenerator::GenerateImportTarget(
   Json::Value& type = component["type"];
 
   switch (targetType) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       type = "executable";
       break;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       type = "archive";
       break;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       type = "dylib";
       break;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       type = "module";
       break;
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::INTERFACE_LIBRARY:
       type = target->IsSymbolic() ? "symbolic" : "interface";
       break;
     default:
@@ -296,6 +312,54 @@ bool cmExportPackageInfoGenerator::GenerateInterfaceProperties(
   return result;
 }
 
+void cmExportPackageInfoGenerator::GenerateTargetFileSets(
+  Json::Value& component, cmGeneratorTarget const* target,
+  cmTargetExport const* targetExport) const
+{
+  cmGeneratorFileSets const* gfs = target->GetGeneratorFileSets();
+
+  for (auto const& type : gfs->GetInterfaceFileSetTypes()) {
+    // Do we support this file set type?
+    std::string fsType;
+    if (type == "HEADERS") {
+      fsType = "includes";
+    } else {
+      continue;
+    }
+
+    // Generate CPS file set(s) for each CMake file set
+    Json::Value fileSets;
+    for (cmGeneratorFileSet const* fileSet : gfs->GetInterfaceFileSets(type)) {
+      this->GenerateTargetFileSets(fileSets, target, fileSet, targetExport,
+                                   fsType);
+    }
+
+    if (!fileSets.empty()) {
+      component["file_sets"] = fileSets;
+    }
+  }
+}
+
+void cmExportPackageInfoGenerator::GenerateTargetFileSet(
+  Json::Value& fileSets, cmGeneratorFileSet const* fileSet,
+  std::string const& type, std::string const& root,
+  std::vector<std::string> const& files)
+{
+  Json::Value fileSetOut;
+  fileSetOut["type"] = type;
+  fileSetOut["root"] = root;
+
+  Json::Value filesOut;
+  for (auto const& f : files) {
+    filesOut.append(f);
+  }
+  fileSetOut["files"] = filesOut;
+
+  fileSetOut["extensions"]["cmake"]["name@v1"] = fileSet->GetName();
+
+  fileSets.append(fileSetOut);
+}
+
 bool cmExportPackageInfoGenerator::NoteLinkedTarget(
   cmGeneratorTarget const* target, std::string const& linkedName,
   cmGeneratorTarget const* linkedTarget)
@@ -306,6 +370,25 @@ bool cmExportPackageInfoGenerator::NoteLinkedTarget(
                               cmStrCat(':', linkedTarget->GetExportName()));
     return true;
   }
+
+  auto getRequirement =
+    [&](std::string const& name,
+        cmPackageInformation&& requirement) -> cmPackageInformation* {
+    // emplace may move from requirement even when the key already exists.
+    auto const domains = requirement.Domains;
+    auto record = this->Requirements.emplace(name, std::move(requirement));
+    if (!record.second) {
+      if (record.first->second.Domains != domains) {
+        target->Makefile->IssueMessage(
+          MessageType::FATAL_ERROR,
+          cmStrCat("Package \"", this->GetPackageName(),
+                   "\" requires package \"", name,
+                   "\" in multiple domain sets. This is not supported."));
+        return nullptr;
+      }
+    }
+    return &record.first->second;
+  };
 
   if (linkedTarget->IsImported()) {
     // Target is imported from a found package.
@@ -328,6 +411,26 @@ bool cmExportPackageInfoGenerator::NoteLinkedTarget(
     }(linkedTarget->Target);
 
     if (!pkgInfo) {
+      if (cmTarget* foreignTarget = linkedTarget->Target->GetForeignTarget()) {
+        cmPackageInformation reqInit;
+        reqInit.Domains = { cm::PackageDomain::PkgConfig };
+
+        std::string foreignPkgName = foreignTarget->GetForeignPackageName();
+        cmPackageInformation* req =
+          getRequirement(foreignPkgName, std::move(reqInit));
+        if (!req) {
+          return false;
+        }
+
+        // A pkg-config package has no components of its own; expose it as a
+        // component named after the package itself.
+        this->LinkTargets.emplace(
+          linkedName, cmStrCat(foreignPkgName, ':', foreignPkgName));
+
+        req->Components.emplace(std::move(foreignPkgName));
+        return true;
+      }
+
       target->Makefile->IssueMessage(
         MessageType::FATAL_ERROR,
         cmStrCat("Target \"", target->GetName(),
@@ -351,10 +454,13 @@ bool cmExportPackageInfoGenerator::NoteLinkedTarget(
     }
 
     std::string component = linkedName.substr(prefix.length());
+    cmPackageInformation* req =
+      getRequirement(pkgName, std::move(pkgInfo->second));
+    if (!req) {
+      return false;
+    }
     this->LinkTargets.emplace(linkedName, cmStrCat(pkgName, ':', component));
-    cmPackageInformation& req =
-      this->Requirements.insert(std::move(*pkgInfo)).first->second;
-    req.Components.emplace(std::move(component));
+    req->Components.emplace(std::move(component));
     return true;
   }
 
@@ -377,8 +483,12 @@ bool cmExportPackageInfoGenerator::NoteLinkedTarget(
     if (pkgName == this->GetPackageName()) {
       this->LinkTargets.emplace(linkedName, cmStrCat(':', component));
     } else {
+      cmPackageInformation* req = getRequirement(pkgName, {});
+      if (!req) {
+        return false;
+      }
       this->LinkTargets.emplace(linkedName, cmStrCat(pkgName, ':', component));
-      this->Requirements[pkgName].Components.emplace(std::move(component));
+      req->Components.emplace(std::move(component));
     }
     return true;
   }
@@ -468,7 +578,7 @@ void cmExportPackageInfoGenerator::GenerateInterfaceCompileFeatures(
   for (auto const& value : cmList{ iter->second }) {
     if (cmHasLiteralPrefix(value, "c_std_")) {
       auto suffix = cm::string_view{ value }.substr(6, 2);
-      features.emplace(cmStrCat("c", suffix));
+      features.emplace(cmStrCat('c', suffix));
     } else if (cmHasLiteralPrefix(value, "cxx_std_")) {
       auto suffix = cm::string_view{ value }.substr(8, 2);
       features.emplace(cmStrCat("c++", suffix));

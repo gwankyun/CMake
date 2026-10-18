@@ -11,8 +11,11 @@ target_compile_options
 
 向\ :prop_tgt:`COMPILE_OPTIONS`\ 或\ :prop_tgt:`INTERFACE_COMPILE_OPTIONS`\ 目标\
 属性添加选项。这些选项在编译给定的\ ``<target>``\ 时使用，该\ ``<target>``\ 必须是由\
-:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的，并且不能是\
-:ref:`别名目标 <Alias Targets>`。
+:command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的。
+
+.. versionchanged:: 4.5
+  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
+  operates on the target which the alias references.
 
 .. note::
 

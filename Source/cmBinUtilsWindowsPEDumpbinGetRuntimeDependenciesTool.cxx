@@ -3,12 +3,13 @@
 
 #include "cmBinUtilsWindowsPEDumpbinGetRuntimeDependenciesTool.h"
 
-#include <sstream>
+#include <istream>
 #include <vector>
 
 #include <cmsys/RegularExpression.hxx>
 
 #include "cmRuntimeDependencyArchive.h"
+#include "cmStringAlgorithms.h"
 #include "cmUVProcessChain.h"
 #include "cmUVStream.h"
 
@@ -36,15 +37,13 @@ bool cmBinUtilsWindowsPEDumpbinGetRuntimeDependenciesTool::GetFileInfo(
 
   auto process = builder.Start();
   if (!process.Valid() || process.GetStatus(0).SpawnResult != 0) {
-    std::ostringstream e;
-    e << "Failed to start dumpbin process for:\n  " << file;
-    this->SetError(e.str());
+    this->SetError(cmStrCat("Failed to start dumpbin process for:\n  ", file));
     return false;
   }
 
   std::string line;
   static cmsys::RegularExpression const regex(
-    "^    ([^\n]*\\.[Dd][Ll][Ll])\r$");
+    "^    ([^\n]*\\.[Dd][Ll][Ll])\r?$");
   cmUVIStream output(process.OutputStream());
   while (std::getline(output, line)) {
     cmsys::RegularExpressionMatch match;
@@ -54,15 +53,12 @@ bool cmBinUtilsWindowsPEDumpbinGetRuntimeDependenciesTool::GetFileInfo(
   }
 
   if (!process.Wait()) {
-    std::ostringstream e;
-    e << "Failed to wait on dumpbin process for:\n  " << file;
-    this->SetError(e.str());
+    this->SetError(
+      cmStrCat("Failed to wait on dumpbin process for:\n  ", file));
     return false;
   }
   if (process.GetStatus(0).ExitStatus != 0) {
-    std::ostringstream e;
-    e << "Failed to run dumpbin on:\n  " << file;
-    this->SetError(e.str());
+    this->SetError(cmStrCat("Failed to run dumpbin on:\n  ", file));
     return false;
   }
 

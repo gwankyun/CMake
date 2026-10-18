@@ -16,10 +16,10 @@
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
 #include "cmSourceFile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmTarget.h"
 #include "cmTargetDepend.h"
+#include "cmTargetTypes.h"
 
 cmFastbuildUtilityTargetGenerator::cmFastbuildUtilityTargetGenerator(
   cmGeneratorTarget* gt, std::string configParam)
@@ -34,7 +34,7 @@ void cmFastbuildUtilityTargetGenerator::Generate()
   }
   std::string targetName = GeneratorTarget->GetName();
 
-  if (this->GeneratorTarget->GetType() == cmStateEnums::GLOBAL_TARGET) {
+  if (this->GeneratorTarget->GetType() == cm::TargetType::GLOBAL_TARGET) {
     targetName = GetGlobalGenerator()->GetTargetName(GeneratorTarget);
   }
 
@@ -72,11 +72,11 @@ void cmFastbuildUtilityTargetGenerator::Generate()
     // Since interface target don't appear in the generated build files,
     // transitively propagate their deps (if any).
     // Tested in "ExternalProjectSubdir" test.
-    if (target && target->GetType() == cmStateEnums::INTERFACE_LIBRARY) {
+    if (target && target->GetType() == cm::TargetType::INTERFACE_LIBRARY) {
       for (auto const& dep : target->GetUtilities()) {
         auto const& depName = this->ConvertToFastbuildPath(dep.Value.first);
-        LogMessage("Transitively propagating iface dep: " + depName +
-                   ", is cross: " + std::to_string(dep.Value.second));
+        LogMessage(cmStrCat("Transitively propagating iface dep: ", depName,
+                            ", is cross: ", std::to_string(dep.Value.second)));
         nonImportedUtils.emplace_back(depName);
         addUtilDepToTarget(this->ConvertToFastbuildPath(depName));
       }
@@ -117,8 +117,8 @@ void cmFastbuildUtilityTargetGenerator::Generate()
   for (auto& exec : GenerateCommands(FastbuildBuildStep::REST).Nodes) {
     addUtilDepToTarget(exec.Name);
     for (auto const& dep : TargetDirectDependencies) {
-      LogMessage("Direct dep " + dep->GetName() +
-                 "-all propagating to CC: " + exec.Name);
+      LogMessage(cmStrCat("Direct dep ", dep->GetName(),
+                          "-all propagating to CC: ", exec.Name));
       // All custom commands from within the target must be executed AFTER all
       // the target's deps.
       exec.PreBuildDependencies.emplace(dep->GetName());
@@ -150,7 +150,7 @@ void cmFastbuildUtilityTargetGenerator::Generate()
   this->AdditionalCleanFiles();
 
   fastbuildTarget.BasePath = this->GetMakefile()->GetCurrentSourceDirectory();
-  if (this->GetGeneratorTarget()->GetType() != cmStateEnums::GLOBAL_TARGET) {
+  if (this->GetGeneratorTarget()->GetType() != cm::TargetType::GLOBAL_TARGET) {
     this->GetGlobalGenerator()->AddIDEProject(fastbuildTarget, Config);
   }
   this->GetGlobalGenerator()->AddTarget(std::move(fastbuildTarget));

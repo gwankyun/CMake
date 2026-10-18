@@ -314,9 +314,12 @@ void cmCursesMainForm::PrintKeys(int process /* = 0 */)
     char secondLine[512] = "";
     char thirdLine[512] = "";
     if (process) {
-      memset(firstLine, ' ', 68);
-      memset(secondLine, ' ', 68);
-      memset(thirdLine, ' ', 68);
+      std::fill_n(firstLine, 68, ' ');
+      firstLine[68] = '\0';
+      std::fill_n(secondLine, 68, ' ');
+      secondLine[68] = '\0';
+      std::fill_n(thirdLine, 68, ' ');
+      thirdLine[68] = '\0';
     } else {
       if (this->OkToGenerate) {
         snprintf(firstLine, sizeof(firstLine),
@@ -340,7 +343,8 @@ void cmCursesMainForm::PrintKeys(int process /* = 0 */)
     move(y - 4, 0);
     char fmt[512] = "Keys: [enter] Edit an entry [d] Delete an entry";
     if (process) {
-      memset(fmt, ' ', 57);
+      std::fill_n(fmt, 57, ' ');
+      fmt[57] = '\0';
     }
     printw(fmt_s, fmt);
     move(y - 3, 0);
@@ -452,10 +456,11 @@ void cmCursesMainForm::UpdateProgress(std::string const& msg, float prog)
     int percentCompleted = static_cast<int>(100 * prog);
     this->LastProgress = (percentCompleted < 100 ? " " : "");
     this->LastProgress += (percentCompleted < 10 ? " " : "");
-    this->LastProgress += std::to_string(percentCompleted) + "% [";
+    this->LastProgress =
+      cmStrCat(this->LastProgress, std::to_string(percentCompleted), "% [");
     this->LastProgress.append(progressBarCompleted, '#');
     this->LastProgress.append(progressBarWidth - progressBarCompleted, ' ');
-    this->LastProgress += "] " + msg + "...";
+    this->LastProgress = cmStrCat(this->LastProgress, "] ", msg, "...");
     this->DisplayOutputs(std::string());
   } else {
     this->Outputs.emplace_back(msg);
@@ -740,7 +745,8 @@ void cmCursesMainForm::HandleInput()
             static_cast<std::string::size_type>(x - 10)) {
           this->SearchString += static_cast<char>(key);
         }
-      } else if (key == ctrl('h') || key == KEY_BACKSPACE || key == KEY_DC) {
+      } else if (key == ctrl('h') || key == 127 || key == KEY_BACKSPACE ||
+                 key == KEY_DC) {
         if (!this->SearchString.empty()) {
           this->SearchString.pop_back();
         }

@@ -13,3 +13,12 @@ foreach(expr IN ITEMS
   math(EXPR result "${expr}")
   message(STATUS "${expr}: ${result}")
 endforeach()
+
+function(inc_dec command value)
+  set(new_value "${value}")
+  math("${command}" new_value)
+  message(STATUS "${command} ${value}: ${new_value}")
+endfunction()
+
+inc_dec(INCREMENT 9223372036854775807)
+inc_dec(DECREMENT -9223372036854775808)

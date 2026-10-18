@@ -71,3 +71,30 @@ function(json_equals expected_file actual_file)
   endif()
   return(PROPAGATE RunCMake_TEST_FAILED ERROR_MESSAGE)
 endfunction()
+
+# Verify the aftermath of an interrupted top-level command whose overall
+# instrumentation snippet has role `role` and whose post-command hook is `hook`.
+# Exactly one such snippet must be present and marked with the interrupting
+# signal (any snippet from an earlier uninterrupted warm-up run was collated and
+# removed by its hook).  The hook must have been skipped entirely, so its
+# callback (hook.cmake writes a `${hook}.hook` marker whenever it runs, and any
+# earlier copy was removed before the interrupted run) must not have run.
+function(check_interrupted_snippet role hook)
+  file(GLOB snippets LIST_DIRECTORIES false ${v1}/data/${role}-*.json)
+  list(LENGTH snippets num)
+  if (NOT num EQUAL 1)
+    add_error("Expected exactly one ${role} snippet, found ${num}: ${snippets}")
+  else()
+    read_json("${snippets}" contents)
+    string(JSON interruptSignal ERROR_VARIABLE noSignal GET "${contents}" interruptSignal)
+    if (noSignal OR NOT interruptSignal MATCHES "^[1-9][0-9]*$")
+      add_error("${role} snippet is not marked interrupted:\n${contents}")
+    endif()
+  endif()
+
+  if (EXISTS ${v1}/${hook}.hook)
+    add_error("${hook} hook should be skipped on interrupt, but it ran")
+  endif()
+
+  return(PROPAGATE RunCMake_TEST_FAILED ERROR_MESSAGE)
+endfunction()

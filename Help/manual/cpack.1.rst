@@ -122,14 +122,19 @@ cpack(1)
   也可以是相对于当前工作目录的相对路径。如果给出了 ``--presets-file``，则 ``CMakePresets.json``
   和 ``CMakeUserPresets.json`` 中定义的预设将被忽略。
 
-.. option:: --list-presets
+.. option:: --list-presets[=defined]
 
-  列出可用的包预设。
+  列出可用的包预设。 With ``defined``, all non-hidden
+  defined package presets are listed, including unavailable presets with the
+  reason they cannot be used.
 
   .. versionchanged:: 4.4
     如果指定了 :cpack-option:`--presets-file`，则 ``CMakePresets.json`` 和
     ``CMakeUserPresets.json`` 均不必存在，且仅列出给定 ``<file>`` 中定义的预设。否则，\
     它们必须存在于顶层源目录中。在之前的版本中，这是严格要求的。
+
+  .. versionadded:: 4.5
+    Support for the ``defined`` value.
 
 .. include:: include/OPTIONS_HELP.rst
 

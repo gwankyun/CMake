@@ -9,6 +9,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -16,18 +17,14 @@
 #include <cm/string_view>
 
 #include "cmAlgorithms.h"
+#include "cmFileSetMetadata.h"
 #include "cmListFileCache.h"
 #include "cmPolicies.h"
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmTargetLinkLibraryType.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
-
-namespace cm {
-namespace FileSetMetadata {
-enum class Visibility;
-}
-}
 
 class cmCustomCommand;
 class cmFileSet;
@@ -70,8 +67,15 @@ public:
     No
   };
 
-  cmTarget(std::string const& name, cmStateEnums::TargetType type,
-           Visibility vis, cmMakefile* mf, PerConfig perConfig);
+  static Visibility ImportedVisibility(cm::ImportedTargetScope scope)
+  {
+    return (scope == cm::ImportedTargetScope::Global
+              ? Visibility::ImportedGlobally
+              : Visibility::Imported);
+  }
+
+  cmTarget(std::string name, cm::TargetType type, Visibility vis,
+           cmMakefile* mf, PerConfig perConfig);
 
   cmTarget(cmTarget const&) = delete;
   cmTarget(cmTarget&&) noexcept;
@@ -81,7 +85,7 @@ public:
   cmTarget& operator=(cmTarget&&) noexcept;
 
   //! Return the type of target.
-  cmStateEnums::TargetType GetType() const;
+  cm::TargetType GetType() const;
 
   //! Set the origin of the target.
   void SetOrigin(Origin origin);
@@ -202,6 +206,8 @@ public:
 
   void SetSymbolic(bool value);
 
+  void SetExportPassthrough(bool value);
+
   //! Set/Get a property of this target file
   void SetProperty(std::string const& prop, cmValue value);
   void SetProperty(std::string const& prop, std::nullptr_t)
@@ -222,9 +228,15 @@ public:
   std::string const& GetSafeProperty(std::string const& prop) const;
   bool GetPropertyAsBool(std::string const& prop) const;
   void CheckProperty(std::string const& prop, cmMakefile* context) const;
+  static std::unordered_set<std::string> const& GetSpecialPropertyNames();
   cmValue GetComputedProperty(std::string const& prop, cmMakefile& mf) const;
-  //! Get all properties
-  cmPropertyMap const& GetProperties() const;
+  //! Get properties set directly on this target (no special/computed/chained)
+  cmPropertyMap const& GetDirectProperties() const;
+  /**
+   * Get the properties in the property map plus
+   * special properties, fileset properties, etc.
+   */
+  cmPropertyMap GetExtendedProperties() const;
 
   //! Return whether or not the target is for a DLL platform.
   bool IsDLLPlatform() const;
@@ -245,6 +257,13 @@ public:
   bool CanCompileSources() const;
   void SetIsForTryCompile();
   bool IsForTryCompile() const;
+
+  /**
+   * Get the list of targets which should replace this target on export. This
+   * equals the target's interface link libraries iff the target is an export
+   * passthrough target. For all other targets, this returns an empty list.
+   */
+  std::vector<std::string> GetExportTargets() const;
 
   bool GetMappedConfig(std::string const& desiredConfig, cmValue& loc,
                        cmValue& imp, std::string& suffix) const;
@@ -269,6 +288,11 @@ public:
   bool IsAndroidGuiExecutable() const;
 
   bool HasKnownObjectFileLocation(std::string* reason = nullptr) const;
+
+  void SetForeignPackageName(std::string const& name);
+  std::string const& GetForeignPackageName() const;
+  void SetForeignTarget(cmTarget* target);
+  cmTarget* GetForeignTarget() const;
 
   //! Get a backtrace from the creation of the target.
   cmListFileBacktrace const& GetBacktrace() const;
@@ -297,6 +321,10 @@ public:
   cmStringRange GetInstallIncludeDirectoriesEntries(
     cmTargetExport const& te) const;
 
+  //! Control if the target generates object files for module interfaces
+  bool CxxModuleNeedsInterfaceObjects() const;
+  void SetCxxModuleNeedsInterfaceObjects(bool);
+
   BTs<std::string> const* GetLanguageStandardProperty(
     std::string const& propertyName) const;
 
@@ -310,6 +338,9 @@ public:
   cmBTStringRange GetImportedCxxModulesCompileOptionsEntries() const;
 
   cmBTStringRange GetCompileFeaturesEntries() const;
+
+  cmBTStringRange GetCompileWrappersEntries() const;
+
   cmBTStringRange GetImportedCxxModulesCompileFeaturesEntries() const;
 
   cmBTStringRange GetCompileDefinitionsEntries() const;
@@ -319,6 +350,8 @@ public:
   cmBTStringRange GetSourceEntries() const;
 
   cmBTStringRange GetLinkOptionsEntries() const;
+
+  cmBTStringRange GetLinkWrappersEntries() const;
 
   cmBTStringRange GetLinkDirectoriesEntries() const;
 
@@ -357,11 +390,23 @@ public:
   cmFileSet* GetFileSet(std::string const& name);
   std::pair<cmFileSet*, bool> GetOrCreateFileSet(
     std::string const& name, std::string const& type,
-    cm::FileSetMetadata::Visibility vis);
+    cm::FileSetMetadata::Visibility vis)
+  {
+    return this->GetOrCreateFileSet(name, type, vis, this->GetMakefile());
+  }
+  std::pair<cmFileSet*, bool> GetOrCreateFileSet(
+    std::string const& name, std::string const& type,
+    cm::FileSetMetadata::Visibility vis, cmMakefile* mf);
 
-  std::vector<std::string> GetAllFileSetNames() const;
-  std::vector<std::string> GetAllPrivateFileSets() const;
-  std::vector<std::string> GetAllInterfaceFileSets() const;
+  std::vector<std::string> GetAllFileSetNames(
+    cm::FileSetMetadata::FileSetDomainSet domains = {
+      cm::FileSetMetadata::FileSetDomain::NATIVE }) const;
+  std::vector<std::string> GetAllPrivateFileSets(
+    cm::FileSetMetadata::FileSetDomainSet domains = {
+      cm::FileSetMetadata::FileSetDomain::NATIVE }) const;
+  std::vector<std::string> GetAllInterfaceFileSets(
+    cm::FileSetMetadata::FileSetDomainSet domains = {
+      cm::FileSetMetadata::FileSetDomain::NATIVE }) const;
 
   std::string GetFileSetsPropertyName(std::string const& type) const;
   std::string GetInterfaceFileSetsPropertyName(std::string const& type) const;

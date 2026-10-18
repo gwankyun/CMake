@@ -1,10 +1,10 @@
-.*(Performing custom step for 'CustomCommand'|CustomCommand-custom).*
+.*Performing\\? custom\\? step\\? for\\? \\?'CustomCommand\\?'.*
  *-- Variable - CustomVar: custom.*
  *-- Variable - CustomVar2: custom two.*
  *-- Stage: custom
  *-- Separator: ;
  *-- List: 1;2;3
-.*(Performing configure step for 'CustomCommand'|CustomCommand-configure).*
+.*Performing\\? configure\\? step\\? for\\? \\?'CustomCommand\\?'.*
  *-- Stage: config step
  *-- Separator: ;
  *-- List: 4;5;6
@@ -14,27 +14,27 @@
  *-- -- c.*
  *-- Variable - Stage: config.*
  *-- Variable - ListVar: 4;5;6
-.*(Performing build step for 'CustomCommand'|CustomCommand-build).*
+.*Performing\\? build\\? step\\? for\\? \\?'CustomCommand\\?'.*
  *-- Stage: build step
  *-- Separator: ;
  *-- List: 4;5;6
-.*(Performing install step for 'CustomCommand'|CustomCommand-install).*
+.*Performing\\? install\\? step\\? for\\? \\?'CustomCommand\\?'.*
  *-- Stage: install step
  *-- Separator: ;
  *-- List: 4;5;6
-.*(Performing test step for 'CustomCommand'|CustomCommand-test).*
+.*Performing\\? test\\? step\\? for\\? \\?'CustomCommand\\?'.*
  *-- Stage: test step
  *-- Separator: ;
  *-- List: 4;5;6
-.*(Performing configure step for 'DefaultCommand'|DefaultCommand-configure).*
+.*Performing\\? configure\\? step\\? for\\? \\?'DefaultCommand\\?'.*
  *-- ConfigVar: config
  *-- Separator: ,
  *-- List: 7,8,9
-.*(Performing build step for 'DefaultCommand'|DefaultCommand-build).*
+.*Performing\\? build\\? step\\? for\\? \\?'DefaultCommand\\?'.*
  *-- Stage: build
  *-- Separator: ,
  *-- List: 7,8,9,10
-.*(Performing configure step for 'DefaultCommandListSep'|DefaultCommandListSep-configure).*
+.*Performing\\? configure\\? step\\? for\\? \\?'DefaultCommandListSep\\?'.*
  *-- ConfigVar: config
  *-- Separator: ;
  *-- List: 9;8;7
@@ -43,15 +43,15 @@
  *-- -- e
  *-- -- f
  *-- -- g
-.*(Performing configure step for 'DefaultCommandListColon'|DefaultCommandListColon-configure).*
+.*Performing\\? configure\\? step\\? for\\? \\?'DefaultCommandListColon\\?'.*
  *-- ConfigVar: config
  *-- Separator: ;
  *-- List: 10;11;12
-.*(Performing build step for 'DefaultCommandListColon'|DefaultCommandListColon-build).*
+.*Performing\\? build\\? step\\? for\\? \\?'DefaultCommandListColon\\?'.*
  *-- Stage: build
  *-- Separator: ;
  *-- List: 10;11;12
-.*(Performing install step for 'DefaultCommandListColon'|DefaultCommandListColon-install).*
+.*Performing\\? install\\? step\\? for\\? \\?'DefaultCommandListColon\\?'.*
  *-- Stage: install
  *-- Separator: ;
  *-- List: 10;11;12;13

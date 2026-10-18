@@ -40,6 +40,17 @@ if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
   run_SingleConfig()
 endif()
 
+function(run_ColorOutput)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/ColorOutput-build)
+  run_cmake(ColorOutput)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command(ColorOutput-build ${CMAKE_COMMAND} --build . --config Debug)
+  run_cmake_command(ColorOutput-test
+    ${CMAKE_COMMAND} -E env CLICOLOR_FORCE=1
+    ${CMAKE_CTEST_COMMAND} -C Debug --output-log output-log.txt)
+endfunction()
+run_ColorOutput()
+
 run_cmake(CMP0145-Dart-OLD)
 run_cmake(CMP0145-Dart-WARN)
 run_cmake(CMP0145-Dart-NEW)

@@ -16,6 +16,8 @@
 #include <cm/string_view>
 #include <cmext/string_view>
 
+#include <cm3p/rapidhash.h>
+
 namespace cm {
 
 class String;
@@ -961,8 +963,8 @@ struct hash<cm::String>
 
   result_type operator()(argument_type const& s) const noexcept
   {
-    result_type const h(std::hash<cm::string_view>{}(s.view()));
-    return h;
+    cm::string_view const v = s.view();
+    return static_cast<result_type>(rapidhash(v.data(), v.size()));
   }
 };
 }

@@ -13,7 +13,9 @@ set_target_properties
 你想要的属性值对，然后使用\ :command:`get_property`\ 或\ :command:`get_target_property`\
 命令提取它。
 
-:ref:`Alias Targets`\ 不支持设置目标属性。
+.. versionchanged:: 4.5
+  If ``<targets>`` contains :ref:`Alias Targets`, properties are set on the
+  corresponding target referenced by each alias.
 
 另请参阅
 ^^^^^^^^

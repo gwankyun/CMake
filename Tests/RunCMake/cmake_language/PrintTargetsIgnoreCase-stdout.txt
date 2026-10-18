@@ -1,0 +1,3 @@
+.*--.*
+ +All targets matching REGEX 'ZZ_IC_LOWER' \(case insensitive\):
+ +zz_ic_lower \(INTERFACE_LIBRARY\)

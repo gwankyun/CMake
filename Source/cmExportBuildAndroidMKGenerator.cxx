@@ -10,7 +10,6 @@
 #include "cmDiagnosticContext.h"
 #include "cmGeneratorExpression.h"
 #include "cmGeneratorTarget.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
@@ -57,7 +56,7 @@ void cmExportBuildAndroidMKGenerator::GenerateImportHeaderCode(
 
 void cmExportBuildAndroidMKGenerator::GenerateImportTargetCode(
   std::ostream& os, cmGeneratorTarget const* target,
-  cmStateEnums::TargetType /*targetType*/)
+  cm::TargetType /*targetType*/)
 {
   std::string targetName = cmStrCat(this->Namespace, target->GetExportName());
   os << "include $(CLEAR_VARS)\n";

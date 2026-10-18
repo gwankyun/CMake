@@ -24,10 +24,10 @@
 #include "cmMessageType.h"
 #include "cmOutputConverter.h"
 #include "cmScriptGenerator.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmVersionMacros.h"
 
@@ -127,13 +127,14 @@ void cmExportCMakeConfigGenerator::SetImportLinkInterface(
 
   if (!this->ExportOld) {
     cmLocalGenerator* lg = target->GetLocalGenerator();
-    std::ostringstream e;
-    e << "Target \"" << target->GetName()
-      << "\" has policy CMP0022 enabled, "
-         "but also has old-style LINK_INTERFACE_LIBRARIES properties "
-         "populated, but it was exported without the "
-         "EXPORT_LINK_INTERFACE_LIBRARIES to export the old-style properties";
-    lg->IssueMessage(MessageType::FATAL_ERROR, e.str());
+    lg->IssueMessage(
+      MessageType::FATAL_ERROR,
+      cmStrCat(
+        "Target \"", target->GetName(),
+        "\" has policy CMP0022 enabled, "
+        "but also has old-style LINK_INTERFACE_LIBRARIES properties "
+        "populated, but it was exported without the "
+        "EXPORT_LINK_INTERFACE_LIBRARIES to export the old-style properties"));
     return;
   }
 
@@ -176,7 +177,7 @@ void cmExportCMakeConfigGenerator::GeneratePolicyHeaderCode(std::ostream& os)
   // Isolate the file policy level.
   // Support CMake versions as far back as the
   // RequiredCMakeVersion{Major,Minor,Patch}, but also support using NEW
-  // policy settings for up to CMake 4.2 (this upper limit may be reviewed
+  // policy settings for up to CMake 4.3 (this upper limit may be reviewed
   // and increased from time to time). This reduces the opportunity for CMake
   // warnings when an older export file is later used with newer CMake
   // versions.
@@ -185,8 +186,14 @@ void cmExportCMakeConfigGenerator::GeneratePolicyHeaderCode(std::ostream& os)
         "cmake_policy(VERSION "
      << this->RequiredCMakeVersionMajor << '.'
      << this->RequiredCMakeVersionMinor << '.'
-     << this->RequiredCMakeVersionPatch << "...4.2)\n";
+     << this->RequiredCMakeVersionPatch;
   /* clang-format on */
+  if (CMake_VERSION_ENCODE(
+        this->RequiredCMakeVersionMajor, this->RequiredCMakeVersionMinor,
+        this->RequiredCMakeVersionPatch) <= CMake_VERSION_ENCODE(4, 3, 0)) {
+    os << "...4.3";
+  }
+  os << ")\n";
 }
 
 void cmExportCMakeConfigGenerator::GeneratePolicyFooterCode(std::ostream& os)
@@ -265,8 +272,7 @@ void cmExportCMakeConfigGenerator::GenerateExpectedTargetsCode(
 }
 
 void cmExportCMakeConfigGenerator::GenerateImportTargetCode(
-  std::ostream& os, cmGeneratorTarget const* target,
-  cmStateEnums::TargetType targetType)
+  std::ostream& os, cmGeneratorTarget const* target, cm::TargetType targetType)
 {
   // Construct the imported target name.
   std::string targetName = this->Namespace;
@@ -276,25 +282,25 @@ void cmExportCMakeConfigGenerator::GenerateImportTargetCode(
   // Create the imported target.
   os << "# Create imported target " << targetName << "\n";
   switch (targetType) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       os << "add_executable(" << targetName << " IMPORTED)\n";
       break;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       os << "add_library(" << targetName << " STATIC IMPORTED)\n";
       break;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       os << "add_library(" << targetName << " SHARED IMPORTED)\n";
       break;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       os << "add_library(" << targetName << " MODULE IMPORTED)\n";
       break;
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       os << "add_library(" << targetName << " UNKNOWN IMPORTED)\n";
       break;
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       os << "add_library(" << targetName << " OBJECT IMPORTED)\n";
       break;
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::INTERFACE_LIBRARY:
       if (target->IsSymbolic()) {
         os << "if(CMAKE_VERSION VERSION_GREATER_EQUAL \"4.2.0\")\n"
               "  add_library("
@@ -637,6 +643,18 @@ void cmExportCMakeConfigGenerator::GenerateTargetFileSets(
     std::string targetName = cmStrCat(this->Namespace, gte->GetExportName());
     for (auto const& type : types) {
       auto fsInfo = GetFileSetInformation(type);
+      bool const requiresFileSetLanguage = fsInfo &&
+        std::any_of(gfs->GetInterfaceFileSets(type).begin(),
+                    gfs->GetInterfaceFileSets(type).end(),
+                    [](cmGeneratorFileSet const* fileSet) {
+                      return fileSet->GetName() == cm::FileSetMetadata::SYCL ||
+                        fileSet->GetName() ==
+                        cm::FileSetMetadata::SYCL_HEADERS ||
+                        !fileSet->GetProperty("LANGUAGE").IsEmpty();
+                    });
+      if (requiresFileSetLanguage) {
+        fsInfo->CMakeVersion = "4.5.0"_s;
+      }
       if (fsInfo) {
         os << "if(NOT CMAKE_VERSION VERSION_LESS \"" << fsInfo->CMakeVersion
            << "\")\n  ";
@@ -666,12 +684,21 @@ void cmExportCMakeConfigGenerator::GenerateTargetFileSets(
 
       if (fsInfo) {
         if (type == cm::FileSetMetadata::HEADERS) {
-          os << "\nelse()\n  set_property(TARGET " << targetName
-             << "\n    APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES";
-          for (auto const* fileSet : gfs->GetInterfaceFileSets(type)) {
-            os << "\n      " << this->GetFileSetDirectories(gte, fileSet, te);
+          if (requiresFileSetLanguage) {
+            os << "\nelse()\n  message(FATAL_ERROR \"The target '"
+               << targetName
+               << "' cannot be imported because it relies on the 'LANGUAGE' "
+                  "property of a 'HEADERS' file set which is not supported "
+                  "by this CMake version.\")";
+          } else {
+            os << "\nelse()\n  set_property(TARGET " << targetName
+               << "\n    APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES";
+            for (auto const* fileSet : gfs->GetInterfaceFileSets(type)) {
+              os << "\n      "
+                 << this->GetFileSetDirectories(gte, fileSet, te);
+            }
+            os << "\n  )";
           }
-          os << "\n  )";
         } else if (type == cm::FileSetMetadata::SOURCES) {
           os << "\nelse()\n  message(FATAL_ERROR \"The target '" << targetName
              << "' cannot be imported because it relies on 'FILE_SET' of type "

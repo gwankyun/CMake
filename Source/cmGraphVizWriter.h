@@ -14,13 +14,16 @@
 #include "cmGeneratedFileStream.h"
 #include "cmLinkItem.h"
 #include "cmLinkItemGraphVisitor.h"
-#include "cmStateTypes.h"
 
 namespace cmsys {
 class RegularExpression;
 }
 
 class cmGlobalGenerator;
+
+namespace cm {
+enum class TargetType;
+} // namespace cm
 
 /** This class implements writing files for graphviz (dot) for graphs
  * representing the dependencies between the targets in the project. */
@@ -97,7 +100,7 @@ private:
 
   bool ItemExcluded(cmLinkItem const& item);
   bool ItemNameFilteredOut(std::string const& itemName);
-  bool TargetTypeEnabled(cmStateEnums::TargetType targetType) const;
+  bool TargetTypeEnabled(cm::TargetType targetType) const;
 
   std::string ItemNameWithAliases(std::string const& itemName) const;
 

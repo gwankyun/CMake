@@ -1,24 +1,30 @@
 function (_cmake_cxx_find_modules_json)
   if (CMAKE_CXX_STDLIB_MODULES_JSON)
-    return ()
-  endif ()
-
-  find_file(_msvc_modules_json_file
-    NAME modules.json
-    HINTS
-      "$ENV{VCToolsInstallDir}/modules"
-    PATHS
-      "$ENV{INCLUDE}"
-      "${CMAKE_CXX_COMPILER}/../../.."
-      "${CMAKE_CXX_COMPILER}/../.."    # msvc-wine layout
-    PATH_SUFFIXES
-      ../modules
-    NO_CACHE)
-
-  # Without this file, we do not have modules installed.
-  if (NOT EXISTS "${_msvc_modules_json_file}")
-    set(CMAKE_CXX_COMPILER_IMPORT_STD_ERROR_MESSAGE "Could not find `modules.json` resource" PARENT_SCOPE)
-    return ()
+    set(_msvc_modules_json_file "${CMAKE_CXX_STDLIB_MODULES_JSON}")
+  elseif (CMAKE_CXX_STANDARD_LIBRARY_INCLUDE_DIRECTORY AND
+      EXISTS "${CMAKE_CXX_STANDARD_LIBRARY_INCLUDE_DIRECTORY}/../modules/modules.json")
+    # Prefer the toolset whose headers the compiler actually selected over
+    # environment variables that may refer to a different installation.
+    set(_msvc_modules_json_file "${CMAKE_CXX_STANDARD_LIBRARY_INCLUDE_DIRECTORY}/../modules/modules.json")
+    cmake_path(NORMAL_PATH _msvc_modules_json_file)
+  else ()
+    find_file(_msvc_modules_json_file
+      NAME modules.json
+      HINTS
+        "$ENV{VCToolsInstallDir}/modules"
+      PATHS
+        "$ENV{INCLUDE}"
+        ${CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES}
+        "${CMAKE_CXX_COMPILER}/../../.."
+        "${CMAKE_CXX_COMPILER}/../.."    # msvc-wine layout
+      PATH_SUFFIXES
+        ../modules
+      NO_CACHE)
+    # Without this file, we do not have modules installed.
+    if (NOT EXISTS "${_msvc_modules_json_file}")
+      set(CMAKE_CXX_COMPILER_IMPORT_STD_ERROR_MESSAGE "Could not find `modules.json` resource" PARENT_SCOPE)
+      return ()
+    endif ()
   endif ()
 
   file(READ "${_msvc_modules_json_file}" _msvc_modules_json)

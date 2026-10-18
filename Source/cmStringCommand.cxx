@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <exception>
 #include <limits>
-#include <memory>
+#include <sstream>
 #include <stdexcept>
 #include <utility>
 
@@ -19,12 +19,12 @@
 #include <cm/string_view>
 #include <cmext/string_view>
 
-#include <cm3p/json/reader.h>
 #include <cm3p/json/value.h>
 #include <cm3p/json/writer.h>
 
 #include "cmCMakeString.hxx"
 #include "cmExecutionStatus.h"
+#include "cmJSONState.h"
 #include "cmList.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
@@ -909,15 +909,12 @@ Json::Value& ResolvePath(Json::Value& json, Args path)
 
 Json::Value ReadJson(std::string const& jsonstr)
 {
-  Json::CharReaderBuilder builder;
-  builder["collectComments"] = false;
-  auto jsonReader = std::unique_ptr<Json::CharReader>(builder.newCharReader());
+  std::istringstream iss(jsonstr);
   Json::Value json;
-  std::string error;
-  if (!jsonReader->parse(jsonstr.data(), jsonstr.data() + jsonstr.size(),
-                         &json, &error)) {
-    throw json_error(
-      cmStrCat("failed parsing json string:\n"_s, jsonstr, '\n', error));
+  cmJSONState parseState(iss, &json, cmJSONState::StrictMode::Relaxed);
+  if (!parseState.errors.empty()) {
+    throw json_error(cmStrCat("failed parsing json string:\n"_s,
+                              parseState.GetErrorMessage()));
   }
   return json;
 }
@@ -927,6 +924,41 @@ std::string WriteJson(Json::Value const& value)
   writer["indentation"] = "  ";
   writer["commentStyle"] = "None";
   return Json::writeString(writer, value);
+}
+
+// Rewrite a compact JSON value so it survives CMake's list grammar as one
+// element.  CMake list parsing splits on ';' only at bracket-nesting depth
+// zero and un-escapes only '\;', never '[' or ']'.  So inside string tokens
+// emit '[' and ']' as the JSON escapes \u005B and \u005D (the list nesting
+// counter never sees a literal bracket), and escape every ';' as '\;'.  Both
+// stay valid JSON that string(JSON) decodes back to the original characters.
+std::string EncodeJsonListElement(std::string const& element)
+{
+  std::string result;
+  result.reserve(element.size());
+  bool inString = false;
+  bool escaped = false;
+  for (char const c : element) {
+    if (escaped) {
+      result += c;
+      escaped = false;
+    } else if (c == '\\') {
+      escaped = true;
+      result += c;
+    } else if (c == '"') {
+      inString = !inString;
+      result += c;
+    } else if (inString && c == '[') {
+      result += "\\u005B";
+    } else if (inString && c == ']') {
+      result += "\\u005D";
+    } else if (c == ';') {
+      result += "\\;";
+    } else {
+      result += c;
+    }
+  }
+  return result;
 }
 
 bool JsonPartialMatch(Json::Value const& pattern, Json::Value const& actual)
@@ -1004,13 +1036,13 @@ bool HandleJSONCommand(std::vector<std::string> const& arguments,
 
     auto const& mode = args.PopFront("missing mode argument"_s);
     if (mode != "GET"_s && mode != "GET_RAW"_s && mode != "TYPE"_s &&
-        mode != "MEMBER"_s && mode != "LENGTH"_s && mode != "REMOVE"_s &&
-        mode != "SET"_s && mode != "EQUAL"_s && mode != "STRING_ENCODE"_s &&
-        mode != "PARTIAL_EQUAL"_s) {
+        mode != "MEMBER"_s && mode != "LENGTH"_s && mode != "ARRAY_SPLIT"_s &&
+        mode != "REMOVE"_s && mode != "SET"_s && mode != "EQUAL"_s &&
+        mode != "STRING_ENCODE"_s && mode != "PARTIAL_EQUAL"_s) {
       throw json_error(cmStrCat(
         "got an invalid mode '"_s, mode,
-        "', expected one of GET, GET_RAW, TYPE, MEMBER, LENGTH, REMOVE, SET, "
-        " EQUAL, PARTIAL_EQUAL, STRING_ENCODE"_s));
+        "', expected one of GET, GET_RAW, TYPE, MEMBER, LENGTH, ARRAY_SPLIT, "
+        "REMOVE, SET, EQUAL, PARTIAL_EQUAL, STRING_ENCODE"_s));
     }
 
     auto const& jsonstr = args.PopFront("missing json string argument"_s);
@@ -1066,6 +1098,26 @@ bool HandleJSONCommand(std::vector<std::string> const& arguments,
 
         cmAlphaNum sizeStr{ value.size() };
         makefile.AddDefinition(*outputVariable, sizeStr.View());
+
+      } else if (mode == "ARRAY_SPLIT"_s) {
+        auto const& value = ResolvePath(json, args);
+        if (!value.isArray()) {
+          throw json_error(cmStrCat("ARRAY_SPLIT needs to be called with an "
+                                    "element of type ARRAY, got "_s,
+                                    JsonTypeToString(value.type())),
+                           args);
+        }
+
+        Json::StreamWriterBuilder writer;
+        writer["indentation"] = "";
+        writer["commentStyle"] = "None";
+        std::vector<std::string> elements;
+        elements.reserve(value.size());
+        for (Json::Value const& element : value) {
+          elements.push_back(
+            EncodeJsonListElement(Json::writeString(writer, element)));
+        }
+        makefile.AddDefinition(*outputVariable, cmList::to_string(elements));
 
       } else if (mode == "REMOVE"_s) {
         auto const& toRemove =

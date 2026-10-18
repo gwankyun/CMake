@@ -29,9 +29,9 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 .. code-block:: cmake
 
-  cmake_minimum_required(VERSION 3.10...4.3)
+  cmake_minimum_required(VERSION 3.10...4.4)
 
-这使用了\ ``<min>...<policy_max>``\ 语法，以启用CMake 4.3及更早版本引入的策略的\ ``NEW``\ 行为，\
+这使用了\ ``<min>...<policy_max>``\ 语法，以启用CMake 4.4及更早版本引入的策略的\ ``NEW``\ 行为，\
 同时仅要求最低版本为CMake 3.10。预计该项目在这两个版本之间引入的策略的\ ``OLD``\ 行为和\
 ``NEW``\ 行为下都能正常工作。
 
@@ -79,6 +79,20 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 ==================
 
 以下策略是受支持的。
+
+Policies Introduced by CMake 4.5
+--------------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+   CMP0226: Apply Swift module name to targets when using the Xcode generator. </policy/CMP0226>
+   CMP0225: ExternalProject sets CMAKE_INSTALL_PREFIX to <INSTALL_DIR> in the default configure command. </policy/CMP0225>
+   CMP0224: Test fixtures use AROUND_EACH_REPEAT mode by default with ctest --repeat. </policy/CMP0224>
+   CMP0223: An empty path is not a prefix of any path. </policy/CMP0223>
+   CMP0222: The if() command supports path prefix tests using PATH_IS_PREFIX operator. </policy/CMP0222>
+   CMP0221: cmake_host_system_information() DISTRIB_* queries read the host os-release. </policy/CMP0221>
+   CMP0220: Languages enabled in subdirectories propagate to the top-level directory. </policy/CMP0220>
 
 CMake 4.4引入的策略
 --------------------------------

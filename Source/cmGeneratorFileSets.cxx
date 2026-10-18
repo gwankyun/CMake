@@ -12,9 +12,9 @@
 #include <cm/memory>
 #include <cm/optional>
 #include <cmext/algorithm>
+#include <cmext/enum_set>
 
 #include "cmFileSet.h"
-#include "cmFileSetMetadata.h"
 #include "cmGenExContext.h"
 #include "cmGenExEvaluation.h"
 #include "cmGeneratorExpression.h"
@@ -25,6 +25,7 @@
 #include "cmLinkItem.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
+#include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmSourceFile.h"
@@ -48,23 +49,8 @@ cmGeneratorFileSets::cmGeneratorFileSets(cmGeneratorTarget* target,
                target->GetName(), R"(".)"));
   };
 
-  for (auto const& name : target->Target->GetAllPrivateFileSets()) {
-    cmFileSet const* fileSet = target->Target->GetFileSet(name);
-    if (isFramework &&
-        !cm::FileSetMetadata::IsFrameworkSupported(fileSet->GetType())) {
-      issueMessage(fileSet);
-      continue;
-    }
-    auto entry = this->FileSets.emplace(
-      name, cm::make_unique<cmGeneratorFileSet>(target, fileSet));
-    auto const* genFileSet = entry.first->second.get();
-    this->AllFileSets.push_back(genFileSet);
-    this->SelfFileSets[genFileSet->GetType()].push_back(genFileSet);
-  }
-  for (auto const& name : target->Target->GetAllInterfaceFileSets()) {
-    auto it = this->FileSets.find(name);
-    cmGeneratorFileSet const* genFileSet = nullptr;
-    if (it == this->FileSets.end()) {
+  for (auto domain : cm::FileSetMetadata::AllFileSetDomains) {
+    for (auto const& name : target->Target->GetAllPrivateFileSets(domain)) {
       cmFileSet const* fileSet = target->Target->GetFileSet(name);
       if (isFramework &&
           !cm::FileSetMetadata::IsFrameworkSupported(fileSet->GetType())) {
@@ -72,13 +58,30 @@ cmGeneratorFileSets::cmGeneratorFileSets(cmGeneratorTarget* target,
         continue;
       }
       auto entry = this->FileSets.emplace(
-        name, cm::make_unique<cmGeneratorFileSet>(target, fileSet));
-      genFileSet = entry.first->second.get();
+        name, cm::make_unique<cmGeneratorFileSet>(target, fileSet, domain));
+      auto const* genFileSet = entry.first->second.get();
       this->AllFileSets.push_back(genFileSet);
-    } else {
-      genFileSet = it->second.get();
+      this->SelfFileSets[genFileSet->GetType()].push_back(genFileSet);
     }
-    this->InterfaceFileSets[genFileSet->GetType()].push_back(genFileSet);
+    for (auto const& name : target->Target->GetAllInterfaceFileSets(domain)) {
+      auto it = this->FileSets.find(name);
+      cmGeneratorFileSet const* genFileSet = nullptr;
+      if (it == this->FileSets.end()) {
+        cmFileSet const* fileSet = target->Target->GetFileSet(name);
+        if (isFramework &&
+            !cm::FileSetMetadata::IsFrameworkSupported(fileSet->GetType())) {
+          issueMessage(fileSet);
+          continue;
+        }
+        auto entry = this->FileSets.emplace(
+          name, cm::make_unique<cmGeneratorFileSet>(target, fileSet, domain));
+        genFileSet = entry.first->second.get();
+        this->AllFileSets.push_back(genFileSet);
+      } else {
+        genFileSet = it->second.get();
+      }
+      this->InterfaceFileSets[genFileSet->GetType()].push_back(genFileSet);
+    }
   }
 }
 cmGeneratorFileSets::~cmGeneratorFileSets() = default;
@@ -165,16 +168,58 @@ cmGeneratorFileSets::GetAllFileSetsForSource(std::string const& config,
 cmGeneratorFileSet const* cmGeneratorFileSets::GetFileSetForSource(
   std::string const& config, std::string const& file) const
 {
-  auto const& fileSets = this->GetAllFileSetsForSource(config, file);
-  if (fileSets.empty()) {
-    return nullptr;
+  this->BuildInfoCache(config);
+  auto const& info = this->Configs[config];
+
+  using FileSetCache =
+    std::map<std::string, std::unordered_set<cmGeneratorFileSet const*>>;
+  auto lookup = [&file](FileSetCache const& cache, bool nonHeaderOnly) {
+    auto const entry = cache.find(file);
+    if (entry == cache.end()) {
+      return static_cast<cmGeneratorFileSet const*>(nullptr);
+    }
+    auto const fileSet =
+      std::find_if(entry->second.begin(), entry->second.end(),
+                   [nonHeaderOnly](cmGeneratorFileSet const* candidate) {
+                     return !nonHeaderOnly ||
+                       candidate->GetType() != cm::FileSetMetadata::HEADERS;
+                   });
+    return fileSet == entry->second.end() ? nullptr : *fileSet;
+  };
+
+  if (auto const* fileSet = lookup(info.FileSetCache, true)) {
+    return fileSet;
   }
-  return *fileSets.begin();
+  if (auto const* fileSet = lookup(info.InterfaceFileSetCache, true)) {
+    return fileSet;
+  }
+  if (auto const* fileSet = lookup(info.FileSetCache, false)) {
+    return fileSet;
+  }
+  return lookup(info.InterfaceFileSetCache, false);
 }
 cmGeneratorFileSet const* cmGeneratorFileSets::GetFileSetForSource(
   std::string const& config, cmSourceFile const* sf) const
 {
   return this->GetFileSetForSource(config, sf->GetFullPath());
+}
+
+cm::optional<std::string> cmGeneratorFileSets::GetLanguageForSource(
+  std::string const& config, cmSourceFile const* sf) const
+{
+  this->BuildInfoCache(config);
+  auto const& languages = this->Configs[config].LanguageCache;
+  auto const language = languages.find(sf->GetFullPath());
+  if (language == languages.end()) {
+    return cm::nullopt;
+  }
+  return language->second;
+}
+
+bool cmGeneratorFileSets::HasSyclHeaders(std::string const& config) const
+{
+  this->BuildInfoCache(config);
+  return this->Configs[config].HasSyclHeaders;
 }
 
 std::vector<std::unique_ptr<cm::TargetPropertyEntry>>
@@ -199,11 +244,12 @@ cmGeneratorFileSets::GetSources(
 std::vector<std::unique_ptr<cm::TargetPropertyEntry>>
 cmGeneratorFileSets::GetSources(
   cm::GenEx::Context const& context, cmGeneratorTarget const* target,
+  cm::FileSetMetadata::FileSetDomainSet domains,
   cmGeneratorExpressionDAGChecker* dagChecker) const
 {
   return this->GetSources(
-    [](cmGeneratorFileSet const* fileSet) -> bool {
-      return fileSet->IsForSelf();
+    [&domains](cmGeneratorFileSet const* fileSet) -> bool {
+      return fileSet->IsForSelf() && domains.contains(fileSet->GetDomain());
     },
     context, target, dagChecker);
 }
@@ -223,11 +269,13 @@ cmGeneratorFileSets::GetSources(
 std::vector<std::unique_ptr<cm::TargetPropertyEntry>>
 cmGeneratorFileSets::GetInterfaceSources(
   cm::GenEx::Context const& context, cmGeneratorTarget const* target,
+  cm::FileSetMetadata::FileSetDomainSet domains,
   cmGeneratorExpressionDAGChecker* dagChecker) const
 {
   return this->GetSources(
-    [](cmGeneratorFileSet const* fileSet) -> bool {
-      return fileSet->IsForInterface();
+    [&domains](cmGeneratorFileSet const* fileSet) -> bool {
+      return fileSet->IsForInterface() &&
+        domains.contains(fileSet->GetDomain());
     },
     context, target, dagChecker);
 }
@@ -372,7 +420,8 @@ std::string cmGeneratorFileSets::EvaluateInterfaceProperty(
 
 namespace {
 void GetInterfaceFiles(
-  cmGeneratorTarget const* target, cm::GenEx::Context const& context,
+  cmGeneratorTarget const* target, cmGeneratorTarget const* headTarget,
+  cm::GenEx::Context const& context,
   std::unordered_set<cmGeneratorTarget const*>& targets,
   std::map<std::string, std::unordered_set<cmGeneratorFileSet const*>>& cache)
 {
@@ -383,7 +432,7 @@ void GetInterfaceFiles(
     if (fileSetDescriptor &&
         fileSetDescriptor->Lookup == Metadata::FileSetLookup::Dependencies) {
       for (auto const* fileSet : target->GetInterfaceFileSets(type)) {
-        auto files = fileSet->GetFiles(context, target);
+        auto files = fileSet->GetFiles(context, headTarget);
 
         for (auto const& it : files.first) {
           for (auto const& filename : it.second) {
@@ -396,15 +445,41 @@ void GetInterfaceFiles(
   }
 
   if (cmLinkInterfaceLibraries const* iface =
-        target->GetLinkInterfaceLibraries(context.Config, target,
+        target->GetLinkInterfaceLibraries(context.Config, headTarget,
                                           cmGeneratorTarget::UseTo::Compile)) {
     for (cmLinkItem const& lib : iface->Libraries) {
       if (lib.Target && lib.Target != target &&
           targets.insert(lib.Target).second) {
-        GetInterfaceFiles(lib.Target, context, targets, cache);
+        GetInterfaceFiles(lib.Target, headTarget, context, targets, cache);
       }
     }
   }
+}
+
+bool HasInterfaceSyclHeaders(
+  cmGeneratorTarget const* target, cmGeneratorTarget const* headTarget,
+  std::string const& config,
+  std::unordered_set<cmGeneratorTarget const*>& targets)
+{
+  for (auto const* fileSet :
+       target->GetInterfaceFileSets(cm::FileSetMetadata::HEADERS)) {
+    if (fileSet->GetProperty("LANGUAGE") == cm::FileSetMetadata::SYCL) {
+      return true;
+    }
+  }
+
+  if (cmLinkInterfaceLibraries const* iface =
+        target->GetLinkInterfaceLibraries(config, headTarget,
+                                          cmGeneratorTarget::UseTo::Compile)) {
+    for (cmLinkItem const& lib : iface->Libraries) {
+      if (lib.Target && lib.Target != target &&
+          targets.insert(lib.Target).second &&
+          HasInterfaceSyclHeaders(lib.Target, headTarget, config, targets)) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 }
 
@@ -418,8 +493,18 @@ void cmGeneratorFileSets::BuildInfoCache(std::string const& config) const
 
   cm::GenEx::Context context(this->LocalGenerator, config);
 
+  info.HasSyclHeaders = std::any_of(
+    this->GetFileSets(cm::FileSetMetadata::HEADERS).begin(),
+    this->GetFileSets(cm::FileSetMetadata::HEADERS).end(),
+    [](cmGeneratorFileSet const* fileSet) {
+      return fileSet->GetProperty("LANGUAGE") == cm::FileSetMetadata::SYCL;
+    });
+
   for (auto const& item : this->FileSets) {
     auto const* fileSet = item.second.get();
+    if (!fileSet->IsForSelf()) {
+      continue;
+    }
 
     auto files = fileSet->GetFiles(context, this->Target);
 
@@ -433,17 +518,52 @@ void cmGeneratorFileSets::BuildInfoCache(std::string const& config) const
 
   // retrieve all files inherited from dependent targets
   std::unordered_set<cmGeneratorTarget const*> targets;
+  std::unordered_set<cmGeneratorTarget const*> syclHeaderTargets;
 
   if (cmLinkImplementationLibraries const* impl =
         this->Target->GetLinkImplementationLibraries(
           config, cmGeneratorTarget::UseTo::Compile)) {
     for (cmLinkItem const& lib : impl->Libraries) {
-      if (lib.Target) {
-        GetInterfaceFiles(lib.Target, context, targets,
+      if (!info.HasSyclHeaders && lib.Target &&
+          syclHeaderTargets.insert(lib.Target).second) {
+        info.HasSyclHeaders = HasInterfaceSyclHeaders(
+          lib.Target, this->Target, config, syclHeaderTargets);
+      }
+      if (lib.Target && targets.insert(lib.Target).second) {
+        GetInterfaceFiles(lib.Target, this->Target, context, targets,
                           info.InterfaceFileSetCache);
       }
     }
   }
+
+  auto indexLanguages =
+    [this,
+     &info](std::map<std::string,
+                     std::unordered_set<cmGeneratorFileSet const*>> const&
+              fileSets) {
+      for (auto const& file : fileSets) {
+        for (auto const* fileSet : file.second) {
+          if (fileSet->GetType() != cm::FileSetMetadata::SOURCES) {
+            continue;
+          }
+          cmValue const language = fileSet->GetProperty("LANGUAGE");
+          if (language.IsEmpty()) {
+            continue;
+          }
+          auto const inserted =
+            info.LanguageCache.emplace(file.first, *language);
+          if (!inserted.second && inserted.first->second != *language) {
+            this->LocalGenerator->IssueMessage(
+              MessageType::FATAL_ERROR,
+              cmStrCat("Source file\n  ", file.first,
+                       "\nbelongs to multiple SOURCES file sets with "
+                       "conflicting LANGUAGE properties."));
+          }
+        }
+      }
+    };
+  indexLanguages(info.FileSetCache);
+  indexLanguages(info.InterfaceFileSetCache);
 
   info.BuiltCache = true;
 }

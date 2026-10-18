@@ -36,12 +36,13 @@ This module defines the following variables:
   Boolean indicating whether the library implementing the BLAS interface
   was found.
 ``BLAS_LINKER_FLAGS``
-  Uncached list of required linker flags (excluding ``-l`` and ``-L``).
+  List of required linker flags, excluding ``-l`` and ``-L``,
+  to pass to :command:`target_link_options`.
 ``BLAS_LIBRARIES``
-  Uncached list of libraries (using full path name) to link against
+  List of libraries to link via :command:`target_link_libraries`
   to use BLAS (may be empty if compiler implicitly links BLAS).
 ``BLAS95_LIBRARIES``
-  Uncached list of libraries (using full path name) to link against
+  List of libraries to link via :command:`target_link_libraries`
   to use BLAS95 interface.
 ``BLAS95_FOUND``
   Boolean indicating whether the library implementing the BLAS95 interface
@@ -501,13 +502,21 @@ if(BLA_VENDOR MATCHES "Intel" OR BLA_VENDOR STREQUAL "All")
           set(BLAS_mkl_START_GROUP "")
           set(BLAS_mkl_END_GROUP "")
         endif()
-        # Switch to GNU Fortran support layer if needed (but not on Apple, where MKL does not provide it)
-        if(CMAKE_Fortran_COMPILER_LOADED AND (CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" OR CMAKE_Fortran_COMPILER_ID STREQUAL "LCC") AND NOT APPLE)
+        # Switch to GNU Fortran ABI regarding how functions return complex numbers and how characters are passed (but not on Apple, where MKL does not provide it).
+        # GNU and LLVMFlang families of compilers follow modern C99 _Complex ABI convention.
+        # Intel, IntelLLVM, NVHPC follows the legacy convention.
+        if(CMAKE_Fortran_COMPILER_LOADED AND NOT (CMAKE_Fortran_COMPILER_ID MATCHES "^Intel" OR CMAKE_Fortran_COMPILER_ID STREQUAL "NVHPC") AND NOT APPLE)
             set(BLAS_mkl_INTFACE "gf")
+        else()
+            set(BLAS_mkl_INTFACE "intel")
+        endif()
+        # Switch to GNU libgomp ABI regarding the OpenMP runtime.
+        if(OpenMP_FOUND AND NOT OpenMP_iomp5_LIBRARY)
+            # Most OpenMP runtime libraries claim to support drop-in replacement of libgomp.
             set(BLAS_mkl_THREADING "gnu")
             set(BLAS_mkl_OMP "gomp")
         else()
-            set(BLAS_mkl_INTFACE "intel")
+            # Safe to select Intel OpenMP runtime when compiler doesn't directly enable OpenMP or the runtime found was already iomp5.
             set(BLAS_mkl_THREADING "intel")
             set(BLAS_mkl_OMP "iomp5")
         endif()
@@ -792,7 +801,7 @@ if(BLA_VENDOR STREQUAL "FlexiBLAS" OR BLA_VENDOR STREQUAL "All")
   unset(_blas_flexiblas_lib)
 endif()
 
-# OpenBLAS? (http://www.openblas.net)
+# OpenBLAS? (https://www.openmathlib.org/OpenBLAS)
 if(BLA_VENDOR STREQUAL "OpenBLAS" OR BLA_VENDOR STREQUAL "All")
   set(_blas_openblas_lib "openblas")
 
@@ -1378,8 +1387,8 @@ if(BLA_VENDOR STREQUAL "NVPL" OR BLA_VENDOR STREQUAL "All")
   endif()
 
   if(NOT BLAS_LIBRARIES)
-    find_package(nvpl QUIET)
-    if(nvpl_FOUND)
+    find_package(nvpl QUIET COMPONENTS blas)
+    if(nvpl_blas_FOUND)
       foreach(_nvpl_thread IN LISTS _blas_nvpl_threads)
         foreach(_nvpl_int IN LISTS _blas_nvpl_ints)
 

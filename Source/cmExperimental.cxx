@@ -29,14 +29,6 @@ cmExperimental::FeatureData const LookupTable[] = {
     "only for experimentation and feedback to CMake developers.",
     {},
     cmExperimental::TryCompileCondition::Always },
-  // CxxImportStd
-  { "CxxImportStd",
-    "f35a9ac6-8463-4d38-8eec-5d6008153e7d",
-    "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD",
-    "CMake's support for `import std;` in C++23 and newer is experimental. It "
-    "is meant only for experimentation and feedback to CMake developers.",
-    {},
-    cmExperimental::TryCompileCondition::Always },
   // MappedPackageInfo
   { "MappedPackageInfo",
     "ababa1b5-7099-495f-a9cd-e22d38f274f2",
@@ -54,19 +46,19 @@ cmExperimental::FeatureData const LookupTable[] = {
     "meant only for experimentation and feedback to CMake developers.",
     {},
     cmExperimental::TryCompileCondition::Never },
-  { "GenerateSbom",
-    "2d856d6d-53e8-488b-a17f-d486d2cac317",
-    "CMAKE_EXPERIMENTAL_GENERATE_SBOM",
-    "CMake's support for generating software bill of materials (Sbom) "
-    "information in SPDX format is experimental. It is meant only for "
-    "experimentation and feedback to CMake developers.",
-    {},
-    cmExperimental::TryCompileCondition::Never },
   // Rust support
   { "Rust",
     "b6fdddce-bf66-41a5-bc5f-077f6fa4d2a1",
     "CMAKE_EXPERIMENTAL_RUST",
     "CMake's support for the Rust programming language is experimental. "
+    "It is meant only for experimentation and feedback to CMake developers.",
+    {},
+    cmExperimental::TryCompileCondition::Never },
+  // SYCL support
+  { "SYCL",
+    "c0d1fb10-2ece-420e-9d29-7d7f2b300f25",
+    "CMAKE_EXPERIMENTAL_SYCL",
+    "CMake's support for the SYCL programming language is experimental. "
     "It is meant only for experimentation and feedback to CMake developers.",
     {},
     cmExperimental::TryCompileCondition::Never },

@@ -185,6 +185,11 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
    设置填充的依赖项，将删除它们以前运行的戳码和脚本文件。因此，下载、更新和补丁步骤将被迫重新\
    执行。
 
+ .. versionadded:: 4.5
+   See the :envvar:`CMAKE_SYSTEM_ENVIRONMENT_ID` and
+   :envvar:`CMAKE_SYSTEM_ENVIRONMENT_ACTION` environment variables for a
+   mechanism to hint to :program:`cmake` when ``--fresh`` may be necessary.
+
 .. option:: -L[A][H]
 
  列出非高级缓存变量。
@@ -647,9 +652,16 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
 
 .. option:: --list-presets[=<type>]
 
- 列出指定\ ``<type>``\ 的可用预设。\ ``<type>``\ 的有效值是\ ``configure``、\
- ``build``、\ ``test``、\ ``package``\ 或\ ``all``。如果省略\ ``<type>``，则假定为\
- ``configure``。
+ Lists presets according to the specified ``<type>``.  Valid values are
+ ``configure``, ``build``, ``test``, ``package``, ``workflow``, ``all``, or
+ any of those values with ``-defined`` appended.  The ``defined`` value is an
+ alias for ``configure-defined``.  If ``<type>`` is omitted, ``configure`` is
+ assumed.
+
+ The values without the ``-defined`` suffix list available presets.  The
+ suffixed values list all non-hidden defined presets of the selected type,
+ including unavailable presets with the reason they cannot be used.  The
+ ``all`` and ``all-defined`` values select every preset type.
 
  .. versionchanged:: 4.4
    If :cmake-option:`--presets-file` is specified, the presets defined in the
@@ -657,6 +669,9 @@ CMake通过一个称为\ *生成器*\ 的后端为每个用户在本地生成一
    (whether via :cmake-option:`-S` or the current working directory) must
    contain ``CMakePresets.json`` and/or ``CMakeUserPresets.json``.
    In prior versions, the latter was strictly required.
+
+ .. versionadded:: 4.5
+   Support for the ``workflow``, ``defined``, and ``-defined`` values.
 
 .. option:: --debugger
 
@@ -750,9 +765,11 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
   If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
   ``CMakeUserPresets.json`` will be ignored.
 
-.. option:: --list-presets
+.. option:: --list-presets[=defined]
 
-  列出可用的构建预设。
+  Lists the available build presets. With ``defined``, all non-hidden defined
+  build presets are listed, including unavailable presets with the reason they
+  cannot be used.
 
   .. versionchanged:: 4.4
     ``cmake --build <dir> --list-presets`` no longer needs to be called from
@@ -760,6 +777,9 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
     If :cmake-build-option:`--presets-file` is specified, only presets defined
     in the given ``<file>`` will be listed; otherwise, the presets file(s) are
     inferred from the current build directory's ``CMakeCache.txt``.
+
+  .. versionadded:: 4.5
+    Support for the ``defined`` value.
 
 .. option:: -j [<jobs>], --parallel [<jobs>]
 
@@ -771,6 +791,16 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
   认并行级别。
 
   一些本地构建工具总是并行构建。\ ``<jobs>``\ 值\ ``1``\ 的使用可用于限制为单个作业。
+
+  .. versionadded:: 4.5
+    When CMake is the one passing the parallel flag to the build tool (through
+    this option or the :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` environment
+    variable) and that tool is GNU Make 4.0 or newer, the output of each
+    recipe is grouped so that concurrent jobs do not interleave.  Request
+    parallelism natively, e.g. ``cmake --build . -- -j``, to opt out and
+    stream output as it is produced.  Since
+    :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` likewise enables grouping, unset it
+    to opt out when it is set.
 
 .. option:: -t <tgt>..., --target <tgt>...
 
@@ -1078,6 +1108,21 @@ CMake通过签名提供内置命令行工具
       ``version``
         一个JSON数组，其每个元素都是一个JSON对象，其中包含指定非负整数版本组件的\ ``major``\
         和\ ``minor``\ 成员。
+
+  ``instrumentation``
+    .. versionadded:: 4.5
+
+    A JSON object describing the supported :manual:`cmake-instrumentation(7)`
+    versions.  Keys are:
+
+    ``apiVersion``
+      The supported instrumentation API version as an integer.
+      See :ref:`cmake-instrumentation API v1`.
+
+    ``dataVersion``
+      A JSON object containing ``major`` and ``minor`` integer members
+      specifying the latest supported instrumentation data version.
+      See :ref:`cmake-instrumentation Data Version`.
 
   ``serverMode``
     如果cmake支持服务器模式，则为\ ``true``，否则为\ ``false``。自CMake 3.20以来总是false。
@@ -1783,9 +1828,11 @@ CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
   If ``--presets-file`` is given, presets defined in ``CMakePresets.json`` and
   ``CMakeUserPresets.json`` will be ignored.
 
-.. option:: --list-presets
+.. option:: --list-presets[=defined]
 
-  列出可用的工作流预设。
+  Lists the available workflow presets. With ``defined``, all defined
+  workflow presets are listed. Unavailable presets are shown with the first
+  unavailable step and its reason.
 
   .. versionchanged:: 4.4
     If :cmake-workflow-option:`--presets-file` is specified, neither of
@@ -1793,6 +1840,9 @@ CMake为基于Makefile的项目提供了一个类似pkg-config的助手：
     present, and only presets defined in the given ``<file>`` will be listed.
     Otherwise, they are required to be present in the top level source
     directory.  In prior versions, this was strictly required.
+
+  .. versionadded:: 4.5
+    Support for the ``defined`` value.
 
 .. option:: --fresh
 

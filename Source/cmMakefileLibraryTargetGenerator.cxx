@@ -4,7 +4,6 @@
 
 #include <cstddef>
 #include <set>
-#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -30,6 +29,7 @@
 #include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmMakefileLibraryTargetGenerator::cmMakefileLibraryTargetGenerator(
@@ -37,7 +37,7 @@ cmMakefileLibraryTargetGenerator::cmMakefileLibraryTargetGenerator(
   : cmMakefileTargetGenerator(target)
 {
   this->CustomCommandDriver = OnDepends;
-  if (this->GeneratorTarget->GetType() != cmStateEnums::INTERFACE_LIBRARY) {
+  if (this->GeneratorTarget->GetType() != cm::TargetType::INTERFACE_LIBRARY) {
     this->TargetNames =
       this->GeneratorTarget->GetLibraryNames(this->GetConfigName());
   }
@@ -69,10 +69,10 @@ void cmMakefileLibraryTargetGenerator::WriteRuleFiles()
   // write the link rules
   // Write the rule for this target type.
   switch (this->GeneratorTarget->GetType()) {
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       this->WriteStaticLibraryRules();
       break;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       this->WriteSharedLibraryRules(false);
       if (this->GeneratorTarget->NeedRelinkBeforeInstall(
             this->GetConfigName())) {
@@ -80,7 +80,7 @@ void cmMakefileLibraryTargetGenerator::WriteRuleFiles()
         this->WriteSharedLibraryRules(true);
       }
       break;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       this->WriteModuleLibraryRules(false);
       if (this->GeneratorTarget->NeedRelinkBeforeInstall(
             this->GetConfigName())) {
@@ -88,7 +88,7 @@ void cmMakefileLibraryTargetGenerator::WriteRuleFiles()
         this->WriteModuleLibraryRules(true);
       }
       break;
-    case cmStateEnums::OBJECT_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
       this->WriteObjectLibraryRules();
       break;
     default:
@@ -132,10 +132,12 @@ void cmMakefileLibraryTargetGenerator::WriteObjectLibraryRules()
 
 void cmMakefileLibraryTargetGenerator::WriteStaticLibraryRules()
 {
-  bool const requiresDeviceLinking = requireDeviceLinking(
+  this->DeviceLinkLanguage = deviceLinkLanguage(
     *this->GeneratorTarget, *this->LocalGenerator, this->GetConfigName());
-  if (requiresDeviceLinking) {
-    this->WriteDeviceLibraryRules("CMAKE_CUDA_DEVICE_LINK_LIBRARY", false);
+  if (!this->DeviceLinkLanguage.empty()) {
+    this->WriteDeviceLibraryRules(
+      cmStrCat("CMAKE_", this->DeviceLinkLanguage, "_DEVICE_LINK_LIBRARY"),
+      false);
   }
 
   std::string linkLanguage =
@@ -158,17 +160,19 @@ void cmMakefileLibraryTargetGenerator::WriteSharedLibraryRules(bool relink)
   }
 
   if (!relink) {
-    bool const requiresDeviceLinking = requireDeviceLinking(
+    this->DeviceLinkLanguage = deviceLinkLanguage(
       *this->GeneratorTarget, *this->LocalGenerator, this->GetConfigName());
-    if (requiresDeviceLinking) {
-      this->WriteDeviceLibraryRules("CMAKE_CUDA_DEVICE_LINK_LIBRARY", relink);
+    if (!this->DeviceLinkLanguage.empty()) {
+      this->WriteDeviceLibraryRules(
+        cmStrCat("CMAKE_", this->DeviceLinkLanguage, "_DEVICE_LINK_LIBRARY"),
+        relink);
     }
   }
 
   std::string linkLanguage =
     this->GeneratorTarget->GetLinkerLanguage(this->GetConfigName());
-  std::string linkRuleVar =
-    cmStrCat("CMAKE_", linkLanguage, "_CREATE_SHARED_LIBRARY");
+  std::string linkRuleVar = this->GeneratorTarget->GetCreateRuleVariable(
+    linkLanguage, this->GetConfigName());
 
   if (this->GeneratorTarget->IsArchivedAIXSharedLibrary()) {
     linkRuleVar =
@@ -203,17 +207,19 @@ void cmMakefileLibraryTargetGenerator::WriteSharedLibraryRules(bool relink)
 void cmMakefileLibraryTargetGenerator::WriteModuleLibraryRules(bool relink)
 {
   if (!relink) {
-    bool const requiresDeviceLinking = requireDeviceLinking(
+    this->DeviceLinkLanguage = deviceLinkLanguage(
       *this->GeneratorTarget, *this->LocalGenerator, this->GetConfigName());
-    if (requiresDeviceLinking) {
-      this->WriteDeviceLibraryRules("CMAKE_CUDA_DEVICE_LINK_LIBRARY", relink);
+    if (!this->DeviceLinkLanguage.empty()) {
+      this->WriteDeviceLibraryRules(
+        cmStrCat("CMAKE_", this->DeviceLinkLanguage, "_DEVICE_LINK_LIBRARY"),
+        relink);
     }
   }
 
   std::string linkLanguage =
     this->GeneratorTarget->GetLinkerLanguage(this->GetConfigName());
-  std::string linkRuleVar =
-    cmStrCat("CMAKE_", linkLanguage, "_CREATE_SHARED_MODULE");
+  std::string linkRuleVar = this->GeneratorTarget->GetCreateRuleVariable(
+    linkLanguage, this->GetConfigName());
 
   std::string extraFlags;
   this->LocalGenerator->AppendTargetCreationLinkFlags(
@@ -265,12 +271,14 @@ void cmMakefileLibraryTargetGenerator::WriteDeviceLibraryRules(
   // TODO: Merge the methods that call this method to avoid
   // code duplication.
   std::vector<std::string> commands;
-  std::string const objExt =
-    this->Makefile->GetSafeDefinition("CMAKE_CUDA_OUTPUT_EXTENSION");
+  this->GeneratorTarget->GetLinkInformation(this->GetConfigName());
+  cmGeneratorTarget::DeviceLinkSetter deviceLink(*this->GeneratorTarget);
+  std::string const objExt = this->Makefile->GetSafeDefinition(
+    cmStrCat("CMAKE_", this->DeviceLinkLanguage, "_OUTPUT_EXTENSION"));
 
   // Get the name of the device object to generate.
-  std::string const targetOutput =
-    this->GeneratorTarget->ObjectDirectory + "cmake_device_link" + objExt;
+  std::string const targetOutput = cmStrCat(
+    this->GeneratorTarget->ObjectDirectory, "cmake_device_link", objExt);
   this->DeviceLinkObject = targetOutput;
 
   this->NumberOfProgressActions++;
@@ -279,7 +287,7 @@ void cmMakefileLibraryTargetGenerator::WriteDeviceLibraryRules(
     this->MakeEchoProgress(progress);
     // Add the link message.
     std::string buildEcho = cmStrCat(
-      "Linking CUDA device code ",
+      "Linking ", this->DeviceLinkLanguage, " device code ",
       this->LocalGenerator->ConvertToOutputFormat(
         this->LocalGenerator->MaybeRelativeToCurBinDir(this->DeviceLinkObject),
         cmOutputConverter::SHELL));
@@ -287,10 +295,11 @@ void cmMakefileLibraryTargetGenerator::WriteDeviceLibraryRules(
       commands, buildEcho, cmLocalUnixMakefileGenerator3::EchoLink, &progress);
   }
 
-  if (this->Makefile->GetSafeDefinition("CMAKE_CUDA_COMPILER_ID") == "Clang") {
+  if (this->DeviceLinkLanguage == "CUDA" &&
+      this->Makefile->GetSafeDefinition("CMAKE_CUDA_COMPILER_ID") == "Clang") {
     this->WriteDeviceLinkRule(commands, targetOutput);
   } else {
-    this->WriteNvidiaDeviceLibraryRules(linkRuleVar, relink, commands,
+    this->WriteDriverDeviceLibraryRules(linkRuleVar, relink, commands,
                                         targetOutput);
   }
 
@@ -298,11 +307,11 @@ void cmMakefileLibraryTargetGenerator::WriteDeviceLibraryRules(
   this->WriteTargetDriverRule(targetOutput, relink);
 }
 
-void cmMakefileLibraryTargetGenerator::WriteNvidiaDeviceLibraryRules(
+void cmMakefileLibraryTargetGenerator::WriteDriverDeviceLibraryRules(
   std::string const& linkRuleVar, bool relink,
   std::vector<std::string>& commands, std::string const& targetOutput)
 {
-  std::string linkLanguage = "CUDA";
+  std::string const& linkLanguage = this->DeviceLinkLanguage;
 
   // Build list of dependencies.
   std::vector<std::string> depends;
@@ -340,7 +349,8 @@ void cmMakefileLibraryTargetGenerator::WriteNvidiaDeviceLibraryRules(
     std::unique_ptr<cmLinkLineDeviceComputer> linkLineComputer(
       new cmLinkLineDeviceComputer(
         this->LocalGenerator,
-        this->LocalGenerator->GetStateSnapshot().GetDirectory()));
+        this->LocalGenerator->GetStateSnapshot().GetDirectory(),
+        linkLanguage));
     linkLineComputer->SetForResponse(useResponseFileForLibs);
     linkLineComputer->SetRelink(relink);
 
@@ -412,7 +422,7 @@ void cmMakefileLibraryTargetGenerator::WriteNvidiaDeviceLibraryRules(
 
     // Expand placeholders.
     for (auto& real_link_command : real_link_commands) {
-      real_link_command = cmStrCat(launcher, real_link_command);
+      real_link_command = cmStrCat(launcher, std::move(real_link_command));
       rulePlaceholderExpander->ExpandRuleVariables(this->LocalGenerator,
                                                    real_link_command, vars);
     }
@@ -465,8 +475,9 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
 
   // Make sure we have a link language.
   if (linkLanguage.empty()) {
-    cmSystemTools::Error("Cannot determine link language for target \"" +
-                         this->GeneratorTarget->GetName() + "\".");
+    cmSystemTools::Error(
+      cmStrCat("Cannot determine link language for target \"",
+               this->GeneratorTarget->GetName(), "\"."));
     return;
   }
 
@@ -486,8 +497,8 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
     linkFlags, this->GeneratorTarget, this->GetConfigName(), linkLanguage);
 
   // Add OSX version flags, if any.
-  if (this->GeneratorTarget->GetType() == cmStateEnums::SHARED_LIBRARY ||
-      this->GeneratorTarget->GetType() == cmStateEnums::MODULE_LIBRARY) {
+  if (this->GeneratorTarget->GetType() == cm::TargetType::SHARED_LIBRARY ||
+      this->GeneratorTarget->GetType() == cm::TargetType::MODULE_LIBRARY) {
     this->AppendOSXVerFlag(linkFlags, linkLanguage, "COMPATIBILITY", true);
     this->AppendOSXVerFlag(linkFlags, linkLanguage, "CURRENT", false);
   }
@@ -581,13 +592,13 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
     // Add the link message.
     std::string buildEcho = cmStrCat("Linking ", linkLanguage);
     switch (this->GeneratorTarget->GetType()) {
-      case cmStateEnums::STATIC_LIBRARY:
+      case cm::TargetType::STATIC_LIBRARY:
         buildEcho += " static library ";
         break;
-      case cmStateEnums::SHARED_LIBRARY:
+      case cm::TargetType::SHARED_LIBRARY:
         buildEcho += " shared library ";
         break;
-      case cmStateEnums::MODULE_LIBRARY:
+      case cm::TargetType::MODULE_LIBRARY:
         if (this->GeneratorTarget->IsCFBundleOnApple()) {
           buildEcho += " CFBundle";
         }
@@ -610,7 +621,7 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
   std::vector<std::string> commands1;
   // Add a command to remove any existing files for this library.
   // for static libs only
-  if (this->GeneratorTarget->GetType() == cmStateEnums::STATIC_LIBRARY) {
+  if (this->GeneratorTarget->GetType() == cm::TargetType::STATIC_LIBRARY) {
     this->LocalGenerator->AppendCleanCommand(commands1, libCleanFiles,
                                              this->GeneratorTarget, "target");
     this->LocalGenerator->CreateCDCommand(
@@ -649,7 +660,7 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
 #ifdef _WIN32
   // There may be a manifest file for this target.  Add it to the
   // clean set just in case.
-  if (this->GeneratorTarget->GetType() != cmStateEnums::STATIC_LIBRARY) {
+  if (this->GeneratorTarget->GetType() != cm::TargetType::STATIC_LIBRARY) {
     libCleanFiles.insert(this->LocalGenerator->MaybeRelativeToCurBinDir(
       targetFullPath + ".manifest"));
   }
@@ -679,7 +690,7 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
   cmList archiveAppendCommands;
   cmList archiveFinishCommands;
   std::string::size_type archiveCommandLimit = std::string::npos;
-  if (this->GeneratorTarget->GetType() == cmStateEnums::STATIC_LIBRARY) {
+  if (this->GeneratorTarget->GetType() == cm::TargetType::STATIC_LIBRARY) {
     haveStaticLibraryRule = this->Makefile->IsDefinitionSet(linkRuleVar);
     std::string arCreateVar =
       cmStrCat("CMAKE_", linkLanguage, "_ARCHIVE_CREATE");
@@ -738,7 +749,7 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
 
     // Collect up flags to link in needed libraries.
     std::string linkLibs;
-    if (this->GeneratorTarget->GetType() != cmStateEnums::STATIC_LIBRARY) {
+    if (this->GeneratorTarget->GetType() != cm::TargetType::STATIC_LIBRARY) {
 
       std::unique_ptr<cmLinkLineComputer> linkLineComputer =
         this->CreateLinkLineComputer(
@@ -756,18 +767,18 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
     // rule.
     std::string buildObjs;
     cmMakefileTargetGenerator::ResponseFlagFor responseMode =
-      this->GeneratorTarget->GetType() == cmStateEnums::STATIC_LIBRARY
+      this->GeneratorTarget->GetType() == cm::TargetType::STATIC_LIBRARY
       ? cmMakefileTargetGenerator::ResponseFlagFor::Archive
       : cmMakefileTargetGenerator::ResponseFlagFor::Link;
     this->CreateObjectLists(useLinkScript, useArchiveRules,
                             useResponseFileForObjects, buildObjs, depends,
                             useWatcomQuote, linkLanguage, responseMode);
     if (!this->DeviceLinkObject.empty()) {
-      buildObjs += " " +
-        this->LocalGenerator->ConvertToOutputFormat(
-          this->LocalGenerator->MaybeRelativeToCurBinDir(
-            this->DeviceLinkObject),
-          cmOutputConverter::SHELL);
+      buildObjs = cmStrCat(std::move(buildObjs), ' ',
+                           this->LocalGenerator->ConvertToOutputFormat(
+                             this->LocalGenerator->MaybeRelativeToCurBinDir(
+                               this->DeviceLinkObject),
+                             cmOutputConverter::SHELL));
     }
 
     std::string const& aixExports = this->GetAIXExports(this->GetConfigName());
@@ -784,15 +795,11 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
     std::string targetVersionMajor;
     std::string targetVersionMinor;
     {
-      std::ostringstream majorStream;
-      std::ostringstream minorStream;
       int major;
       int minor;
       this->GeneratorTarget->GetTargetVersion(major, minor);
-      majorStream << major;
-      minorStream << minor;
-      targetVersionMajor = majorStream.str();
-      targetVersionMinor = minorStream.str();
+      targetVersionMajor = std::to_string(major);
+      targetVersionMinor = std::to_string(minor);
     }
     vars.TargetVersionMajor = targetVersionMajor.c_str();
     vars.TargetVersionMinor = targetVersionMinor.c_str();
@@ -849,7 +856,7 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
 
     // Compute the directory portion of the install_name setting.
     std::string install_name_dir;
-    if (this->GeneratorTarget->GetType() == cmStateEnums::SHARED_LIBRARY) {
+    if (this->GeneratorTarget->GetType() == cm::TargetType::SHARED_LIBRARY) {
       // Get the install_name directory for the build tree.
       install_name_dir = this->GeneratorTarget->GetInstallNameDirForBuildTree(
         this->GetConfigName());
@@ -858,9 +865,10 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
       if (install_name_dir.empty()) {
         vars.TargetInstallNameDir = "";
       } else {
-        // Convert to a path for the native build tool.
-        install_name_dir = this->LocalGenerator->ConvertToOutputFormat(
-          install_name_dir, cmOutputConverter::SHELL);
+        // The install name is target data embedded in the binary, not a
+        // host path: escape it for the shell without converting separators.
+        install_name_dir =
+          this->LocalGenerator->EscapeForShell(install_name_dir, true);
         vars.TargetInstallNameDir = install_name_dir.c_str();
       }
     }
@@ -875,8 +883,8 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
 
     vars.LanguageCompileFlags = langFlags.c_str();
 
-    std::string linkerLauncher =
-      this->GetLinkerLauncher(this->GetConfigName());
+    std::string const linkerLauncher = this->ConvertLauncherToShell(
+      this->GetLinkerLauncher(this->GetConfigName()));
     if (cmNonempty(linkerLauncher)) {
       vars.Launcher = linkerLauncher.c_str();
     }
@@ -950,14 +958,15 @@ void cmMakefileLibraryTargetGenerator::WriteLibraryRules(
               cmSystemTools::GetCMakeCommand(), cmLocalGenerator::SHELL),
             " -E __run_co_compile --lwyu=");
           cmakeCommand += this->LocalGenerator->EscapeForShell(*lwyuCheck);
-          cmakeCommand += cmStrCat(" --source=", targetOutPathReal);
+          cmakeCommand =
+            cmStrCat(std::move(cmakeCommand), " --source=", targetOutPathReal);
           real_link_commands.push_back(std::move(cmakeCommand));
         }
       }
 
       // Expand placeholders.
       for (auto& real_link_command : real_link_commands) {
-        real_link_command = cmStrCat(launcher, real_link_command);
+        real_link_command = cmStrCat(launcher, std::move(real_link_command));
         rulePlaceholderExpander->ExpandRuleVariables(this->LocalGenerator,
                                                      real_link_command, vars);
       }

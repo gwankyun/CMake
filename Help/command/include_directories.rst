@@ -24,10 +24,8 @@ include_directories
 .. |command_name| replace:: ``include_directories``
 .. include:: include/GENEX_NOTE.rst
 
-.. note::
-
-  建议使用\ :command:`target_include_directories`\ 命令为单个目标添加包含目录，并可选择\
-  将这些目录传播/导出给依赖项。
+.. |target_command_name| replace:: :command:`target_include_directories`
+.. include:: include/NON_TARGET_NOTE.rst
 
 另请参阅
 ^^^^^^^^

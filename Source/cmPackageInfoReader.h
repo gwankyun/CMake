@@ -14,11 +14,15 @@
 
 #include <cm3p/json/value.h>
 
-#include "cmStateTypes.h"
-
 class cmExecutionStatus;
 class cmMakefile;
 class cmTarget;
+
+namespace cm {
+enum class ImportedTargetScope;
+enum class PackageDomain;
+enum class TargetType;
+} // namespace cm
 
 struct cmPackageRequirement
 {
@@ -26,6 +30,7 @@ struct cmPackageRequirement
   std::string Version;
   std::vector<std::string> Components;
   std::vector<std::string> Hints;
+  std::vector<cm::PackageDomain> Domains;
 };
 
 /** \class cmPackageInfoReader
@@ -73,12 +78,16 @@ public:
   cm::optional<Pep440Version> ParseVersion(
     cm::optional<std::string> const& version) const;
 
-  std::vector<cmPackageRequirement> GetRequirements() const;
+  /// Requirements declared by this file, excluding inherited requirements.
+  std::vector<cmPackageRequirement> const& GetRequirements() const
+  {
+    return this->Requirements;
+  }
   std::vector<std::string> GetComponentNames() const;
 
   /// Create targets for components specified in the CPS file.
   bool ImportTargets(cmMakefile* makefile, cmExecutionStatus& status,
-                     bool global);
+                     cm::ImportedTargetScope scope);
 
   /// Add configuration-specific properties for targets.
   bool ImportTargetConfigurations(cmMakefile* makefile,
@@ -87,14 +96,16 @@ public:
 private:
   cmPackageInfoReader() = default;
 
-  cmTarget* AddLibraryComponent(cmMakefile* makefile,
-                                cmStateEnums::TargetType type,
-                                std::string const& name,
-                                Json::Value const& data,
-                                std::string const& package, bool global) const;
+  cmTarget* AddComponent(cmMakefile* makefile, cm::TargetType type,
+                         std::string const& name, Json::Value const& data,
+                         std::string const& package,
+                         cm::ImportedTargetScope scope) const;
 
   void AddTargetConfiguration(cmTarget* target,
                               cm::string_view configuration) const;
+
+  void AddTargetSources(cmMakefile* makefile, cmTarget* target,
+                        Json::Value const& data) const;
 
   void SetTargetProperties(cmMakefile* makefile, cmTarget* target,
                            Json::Value const& data, std::string const& package,
@@ -113,10 +124,16 @@ private:
                               Json::Value const& object) const;
 
   std::string ResolvePath(std::string path) const;
+  std::string ResolveTargetName(cmMakefile* makefile, std::string const& name,
+                                std::string const& context) const;
+
+  void ReadRequirements();
 
   std::string Path;
   Json::Value Data;
   std::string Prefix;
+  std::vector<cmPackageRequirement> Requirements;
+  std::map<std::string, std::vector<cm::PackageDomain>> RequirementDomains;
 
   std::map<std::string, cmTarget*> ComponentTargets;
   std::vector<std::string> DefaultConfigurations;

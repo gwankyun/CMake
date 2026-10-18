@@ -24,7 +24,7 @@ cmake_instrumentation
 详见 :ref:`cmake-instrumentation API v1`。
 
 ``DATA_VERSION`` 是形如 ``major`` 或 ``major.minor`` 的版本值。\
-当前支持的最大版本为 ``1.1``。详见 :ref:`cmake-instrumentation Data Version`。
+当前支持的最大版本为 ``1.2``。详见 :ref:`cmake-instrumentation Data Version`。
 
 可选关键字 ``HOOKS``、\ ``OPTIONS``\ 和\ ``CALLBACK``\ 分别对应于\
 :ref:`cmake-instrumentation v1 Query Files`\ 中的一个参数。\
@@ -66,7 +66,7 @@ cmake_instrumentation
 
   cmake_instrumentation(
     API_VERSION 1
-    DATA_VERSION 1.0
+    DATA_VERSION 1.2
     HOOKS postGenerate preCMakeBuild postCMakeBuild
     OPTIONS staticSystemInformation dynamicSystemInformation compileTrace trace
     CALLBACK ${CMAKE_COMMAND} -P /path/to/handle_data.cmake
@@ -79,7 +79,10 @@ cmake_instrumentation
 .. code-block:: json
 
   {
-    "version": 1,
+    "version": {
+      "major": 1,
+      "minor": 2
+    },
     "hooks": [
       "postGenerate", "preCMakeBuild", "postCMakeBuild"
     ],

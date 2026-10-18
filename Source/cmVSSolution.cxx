@@ -129,22 +129,13 @@ void Solution::CanonicalizeOrder()
 
 namespace {
 
-void WriteSlnHeader(std::ostream& sln, Version version, VersionExpress express)
+void WriteSlnHeader(std::ostream& sln, Version version)
 {
   char utf8bom[] = { char(0xEF), char(0xBB), char(0xBF) };
   sln.write(utf8bom, 3);
   sln << '\n';
 
   switch (version) {
-    case Version::VS14:
-      // Visual Studio 14 writes .sln format 12.00
-      sln << "Microsoft Visual Studio Solution File, Format Version 12.00\n";
-      if (express == VersionExpress::Yes) {
-        sln << "# Visual Studio Express 14 for Windows Desktop\n";
-      } else {
-        sln << "# Visual Studio 14\n";
-      }
-      break;
     case Version::VS15:
       // Visual Studio 15 writes .sln format 12.00
       sln << "Microsoft Visual Studio Solution File, Format Version 12.00\n";
@@ -276,7 +267,6 @@ void WriteSlnPropertyGroup(std::ostream& sln,
 void WriteSln(std::ostream& sln, Solution const& solution)
 {
   assert(solution.VSVersion);
-  assert(solution.VSExpress);
 
   std::vector<Solution::Project const*> projects = solution.GetAllProjects();
   std::sort(projects.begin(), projects.end(),
@@ -291,7 +281,7 @@ void WriteSln(std::ostream& sln, Solution const& solution)
               return l->Name < r->Name;
             });
 
-  WriteSlnHeader(sln, *solution.VSVersion, *solution.VSExpress);
+  WriteSlnHeader(sln, *solution.VSVersion);
   for (Solution::Folder const* folder : solution.Folders) {
     WriteSlnFolder(sln, *folder);
   }

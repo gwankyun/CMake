@@ -27,9 +27,9 @@ function(expect PACKAGE VAR OP VALUE WHAT)
   endif()
 endfunction()
 
-function(expect_property TARGET PROPERTY DESCRIPTION EXPECTED)
+function(expect_property TARGET PROPERTY DESCRIPTION)
   get_target_property(actual ${TARGET} ${PROPERTY})
-  if(NOT "${actual}" STREQUAL "${EXPECTED}")
+  if(NOT "${actual}" STREQUAL "${ARGN}")
     message(SEND_ERROR "${TARGET} has wrong ${DESCRIPTION} '${actual}' !")
   endif()
 endfunction()
@@ -169,16 +169,24 @@ elseif(NOT TARGET Foo::PrefixTest)
   message(SEND_ERROR "Foo::PrefixTest missing !")
 elseif(NOT TARGET Foo::RelativeTest)
   message(SEND_ERROR "Foo::RelativeTest missing !")
+elseif(NOT TARGET Foo::ExecutableTest)
+  message(SEND_ERROR "Foo::ExecutableTest missing !")
 elseif(NOT TARGET Foo::Empty)
   message(SEND_ERROR "Foo::Empty missing !")
 else()
+  expect_property(Foo::PrefixTest TYPE "type" "INTERFACE_LIBRARY")
   expect_property(
     Foo::PrefixTest INTERFACE_INCLUDE_DIRECTORIES "includes"
     "$<$<CONFIG:default>:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 
+  expect_property(Foo::RelativeTest TYPE "type" "INTERFACE_LIBRARY")
   expect_property(
     Foo::RelativeTest INTERFACE_INCLUDE_DIRECTORIES "includes"
     "$<$<CONFIG:default>:${CMAKE_CURRENT_SOURCE_DIR}/cps/../include>")
+
+  expect_property(Foo::ExecutableTest TYPE "type" "EXECUTABLE")
+  expect_property(Foo::ExecutableTest IMPORTED_LOCATION_DEFAULT "location"
+    "${CMAKE_CURRENT_SOURCE_DIR}/foo")
 
   expect_global(Foo::Empty FALSE)
 endif()
@@ -375,3 +383,125 @@ else()
     DefaultConfigurationsTest::Target2 IMPORTED_CONFIGURATIONS
     "configurations" "TEST")
 endif()
+
+###############################################################################
+# Test unnamed file sets.
+
+find_package(FileSets-Anonymous)
+if(NOT FileSets-Anonymous_FOUND)
+  message(SEND_ERROR "FileSets-Anonymous not found !")
+elseif(NOT TARGET FileSets-Anonymous::Target)
+  message(SEND_ERROR "FileSets-Anonymous::Target missing !")
+else()
+  expect_property(
+    FileSets-Anonymous::Target INTERFACE_HEADER_SETS
+    "include set names" "HEADERS")
+  expect_property(
+    FileSets-Anonymous::Target HEADER_DIRS
+    "include set roots"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/include")
+  expect_property(
+    FileSets-Anonymous::Target HEADER_DIRS_HEADERS
+    "include set 'HEADERS' roots"
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/include")
+  expect_property(
+    FileSets-Anonymous::Target HEADER_SET
+    "include set files"
+    "${CMAKE_SOURCE_DIR}/include/header1.h"
+    "${CMAKE_SOURCE_DIR}/include/header2.h"
+    "${CMAKE_SOURCE_DIR}/include/header3.h")
+  expect_property(
+    FileSets-Anonymous::Target HEADER_SET_HEADERS
+    "include set 'HEADERS' files"
+    "${CMAKE_SOURCE_DIR}/include/header1.h"
+    "${CMAKE_SOURCE_DIR}/include/header2.h"
+    "${CMAKE_SOURCE_DIR}/include/header3.h")
+endif()
+
+###############################################################################
+# Test named file sets.
+
+find_package(FileSets-Named)
+if(NOT FileSets-Named_FOUND)
+  message(SEND_ERROR "FileSets-Named not found !")
+elseif(NOT TARGET FileSets-Named::Target)
+  message(SEND_ERROR "FileSets-Named::Target missing !")
+else()
+  expect_property(
+    FileSets-Named::Target INTERFACE_HEADER_SETS
+    "include set names" "foo;bar")
+  expect_property(
+    FileSets-Named::Target HEADER_DIRS_foo
+    "include set roots"
+    "${CMAKE_SOURCE_DIR}/include/a"
+    "${CMAKE_SOURCE_DIR}/include/b")
+  expect_property(
+    FileSets-Named::Target HEADER_DIRS_foo
+    "include set 'foo' roots"
+    "${CMAKE_SOURCE_DIR}/include/a"
+    "${CMAKE_SOURCE_DIR}/include/b")
+  expect_property(
+    FileSets-Named::Target HEADER_DIRS_bar
+    "include set 'bar' roots"
+    "${CMAKE_SOURCE_DIR}/include")
+  expect_property(
+    FileSets-Named::Target HEADER_SET_foo
+    "include set 'foo' files"
+    "${CMAKE_SOURCE_DIR}/include/a/foo1.h"
+    "${CMAKE_SOURCE_DIR}/include/a/foo2.h"
+    "${CMAKE_SOURCE_DIR}/include/b/foo3.h")
+  expect_property(
+    FileSets-Named::Target HEADER_SET_bar
+    "include set 'bar' files"
+    "${CMAKE_SOURCE_DIR}/include/bar.h")
+endif()
+
+###############################################################################
+# Test CPS + pkg-config interoperability.
+
+set(ENV{PKG_CONFIG_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/pc")
+find_package(pc-link-test)
+if(NOT pc-link-test_FOUND)
+  message(SEND_ERROR "pc-link-test not found !")
+elseif(NOT TARGET pc-link-test::Parent)
+  message(SEND_ERROR "pc-link-test::Parent missing !")
+elseif(NOT TARGET pc-link-test::InheritsRequirement)
+  message(SEND_ERROR "pc-link-test::InheritsRequirement missing !")
+elseif(NOT TARGET pc-link-test::ShadowsRequirement)
+  message(SEND_ERROR "pc-link-test::ShadowsRequirement missing !")
+elseif(NOT TARGET pc-link-test::UnknownDomain)
+  message(SEND_ERROR "pc-link-test::UnknownDomain missing !")
+endif()
+
+expect_property(pc-link-test::Parent INTERFACE_LINK_LIBRARIES
+  "link libraries (from pkg-config dependency)"
+  "@foreign_pkgcfg::cps-pkg-test"
+  "$<$<CONFIG:debug>:$<COMPILE_ONLY:@foreign_pkgcfg::cps-pkg-test>>"
+  "$<$<CONFIG:debug>:$<LINK_ONLY:@foreign_pkgcfg::cps-pkg-test>>")
+expect_property(pc-link-test::Parent IMPORTED_LINK_DEPENDENT_LIBRARIES_DEBUG
+  "dyld requirements (from pkg-config dependency)"
+  "@foreign_pkgcfg::cps-pkg-test")
+
+# Appendices inherit base requirement domains and keep additional requirements
+# local. Configuration supplements inherit both levels of requirement domains.
+# Their package-level requires blocks are ignored, including attempted
+# overrides of the inherited pkg-config domains.
+expect_property(pc-link-test::InheritsRequirement INTERFACE_LINK_LIBRARIES
+  "link libraries (from inherited and local dependencies)"
+  "@foreign_pkgcfg::cps-pkg-test"
+  "@foreign_pkgcfg::cps-pkg-appendix"
+  "$<$<CONFIG:debug>:@foreign_pkgcfg::cps-pkg-test>"
+  "$<$<CONFIG:debug>:@foreign_pkgcfg::cps-pkg-appendix>")
+expect_property(pc-link-test::ShadowsRequirement INTERFACE_LINK_LIBRARIES
+  "link libraries (from shadowing dependency)"
+  "cps-pkg-test::cps-pkg-test"
+  "$<COMPILE_ONLY:cps-pkg-test::cps-pkg-test>"
+  "$<LINK_ONLY:cps-pkg-test::cps-pkg-test>")
+expect_property(pc-link-test::ShadowsRequirement IMPORTED_LINK_DEPENDENT_LIBRARIES
+  "dyld requirements (from shadowing dependency)"
+  "cps-pkg-test::cps-pkg-test")
+expect_property(pc-link-test::UnknownDomain INTERFACE_LINK_LIBRARIES
+  "link libraries (from unknown domain dependency)"
+  "cps-pkg-test::cps-pkg-test")

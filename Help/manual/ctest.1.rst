@@ -89,14 +89,20 @@ ctest(1)
  或相对于当前工作目录的路径。如果给定 ``--presets-file``，则 ``CMakePresets.json`` 和
  ``CMakeUserPresets.json`` 中定义的预设将被忽略。
 
-.. option:: --list-presets
+.. option:: --list-presets[=defined]
 
- 列出可用的测试预设。当前工作目录必须包含\ ``CMakePresets.json``\ 和\ ``CMakeUserPresets.json``。
+ Lists the available test presets. With ``defined``, all non-hidden defined
+ test presets are listed, including unavailable presets with the reason they
+ cannot be used. The current working directory must contain
+ ``CMakePresets.json`` and/or ``CMakeUserPresets.json``.
 
  .. versionchanged:: 4.4
    如果指定了 :ctest-option:`--presets-file`，则不要求 ``CMakePresets.json`` 或
    ``CMakeUserPresets.json`` 存在，且仅会列出给定 ``<file>`` 中定义的预设。否则，\
    它们必须存在于顶层源目录中。在之前的版本中，这是严格要求的。
+
+ .. versionadded:: 4.5
+   Support for the ``defined`` value.
 
 .. option:: -C <cfg>, --build-config <cfg>
 
@@ -227,9 +233,16 @@ ctest(1)
    ``json-v1``
      以JSON格式转储测试信息。参见显示为\ `显示为JSON对象模型`_。
 
+   ``json-v1-raw``
+
+     .. versionadded:: 4.5
+
+     Dump the test information in JSON format, but leaves test property
+     values as raw strings. See `Show as JSON Object Model`_.
+
 .. option:: -L <regex>, --label-regex <regex>
 
- 运行与\ :ref:`string(REGEX) <Regex Specification>`\ 下描述的正则表达式匹配的标签的测试。
+ 运行与\ :ref:`CMake Language Regex Specification`\ 下描述的正则表达式匹配的标签的测试。
 
  此选项告诉CTest只运行标签与给定正则表达式匹配的测试。当给出多个\ ``-L``\ 选项时，只有当每\
  个正则表达式匹配至少一个测试的标签（即多个\ ``-L``\ 标签形成一个\ ``AND``\ 关系）时，才\
@@ -505,6 +518,28 @@ ctest(1)
  当同时提供 ``<test-args>`` 和
  :preset:`testPresets.execution.testPassthroughArguments` 时，
  测试预设的参数将排在前面，随后是 ``<test-args>``。
+
+.. option:: --out-of-date
+
+ .. versionadded:: 4.5
+
+ Run only tests whose build dependencies are newer than the last time the
+ test ran.
+
+ This option tells CTest to skip tests that are already up to date with
+ respect to their recorded build dependencies. Build dependencies include
+ executables and targets in generator expressions as part of the test
+ ``COMMAND``, as well as the outputs of targets or files added as explicit
+ dependencies with the ``BUILD_DEPENDS`` argument of :command:`add_test` or
+ :command:`discover_tests`. Tests discovered by
+ :command:`gtest_discover_tests` also record their test executable as a build
+ dependency.
+
+ A test is selected to run when any of its recorded build dependencies are
+ newer than the test's last-run timestamp, when any dependency is missing, or
+ when the test has not been run before. Selected tests with missing build
+ dependencies are reported as ``Not Run``. Tests without any known build
+ dependencies are excluded when this argument is provided.
 
 查看帮助
 =========
@@ -1640,7 +1675,7 @@ CTest提交步骤
 
 .. versionadded:: 3.14
 
-当给出\ ``--show-only=json-v1``\ 命令行选项时，测试信息以JSON格式输出。版本1.0的JSON对\
+当给出\ ``--show-only=json-v1``\ 或 ``--show-only=json-v1-raw`` 命令行选项时，测试信息以JSON格式输出。版本1.0的JSON对\
 象模型定义如下：
 
 ``kind``
@@ -1755,6 +1790,10 @@ CTest资源分配特性由最少两个输入组成：
 :program:`ctest`\ 进程中。如果测试绝对必须有资源分配，那么它可以返回失败的退出代码，或者使\
 用\ :prop_test:`SKIP_RETURN_CODE`\ 或\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ 属性\
 来指示跳过的测试。
+
+The :prop_test:`RESOURCE_ERROR_ACTION` test property can be used to steer the
+behavior in case the resources requested cannot be satisfied. By default the
+test is marked as failed.
 
 .. _`ctest-resource-specification-file`:
 
@@ -1931,9 +1970,14 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 
 .. versionadded:: 3.29
 
-在POSIX系统上，当在\ `Job Server`_\ 上下文中运行时，CTest共享其作业槽。这独立于\
-:prop_test:`PROCESSORS`\ 测试属性，该属性仍然对CTest的\ :ctest-option:`-j`\
-并行级别进行计数。CTest在运行每个测试之前从作业服务器获取一个令牌，并在测试结束时返回它。
+.. versionadded:: 4.5
+  Integration is now implemented on Windows.
+
+When running under the context of a `Job Server`_, CTest shares its job slots.
+This is independent of the :prop_test:`PROCESSORS` test property, which still
+counts against CTest's :ctest-option:`-j` parallel level.  CTest acquires
+exactly one token from the job server before running each test, and returns it
+when the test finishes.
 
 例如，考虑\ ``Makefile``：
 
@@ -1942,8 +1986,6 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 
 当通过\ ``make -j 2 test``\ 调用时，CTest连接到作业服务器，为每个测试获取一个\
 令牌，并同时运行最多2个测试。
-
-在Windows系统上，作业服务器集成尚未实现。
 
 .. _`Job Server`: https://www.gnu.org/software/make/manual/html_node/Job-Slots.html
 

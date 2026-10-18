@@ -15,6 +15,17 @@ class cmMakefile;
 
 namespace cm {
 namespace FileSetMetadata {
+enum class FileSetDomain : std::uint16_t
+{
+  // NATIVE: File set type is defined by CMake
+  NATIVE,
+  // RULE: file set type is matching a defined custom rule
+  RULE
+};
+using FileSetDomainSet = cm::enum_set<FileSetDomain, 2>;
+static FileSetDomainSet const AllFileSetDomains{ FileSetDomain::NATIVE,
+                                                 FileSetDomain::RULE };
+
 enum class Visibility
 {
   Private,
@@ -31,6 +42,8 @@ bool VisibilityIsForInterface(Visibility vis);
 // Pre-defined FileSet types
 extern cm::string_view const HEADERS;
 extern cm::string_view const SOURCES;
+extern cm::string_view const SYCL;
+extern cm::string_view const SYCL_HEADERS;
 extern cm::string_view const CXX_MODULES;
 
 enum class FileSetLookup
@@ -108,3 +121,4 @@ bool IsValidName(cm::string_view type);
 }
 
 CM_ENUM_SET_TRAITS(cm::FileSetMetadata::AttributeSet)
+CM_ENUM_SET_TRAITS(cm::FileSetMetadata::FileSetDomainSet)

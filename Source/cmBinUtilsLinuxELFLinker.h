@@ -13,7 +13,6 @@
 #include "cmBinUtilsLinker.h"
 #include "cmBinUtilsLinuxELFGetRuntimeDependenciesTool.h"
 #include "cmLDConfigTool.h"
-#include "cmStateTypes.h"
 
 class cmRuntimeDependencyArchive;
 
@@ -24,8 +23,7 @@ public:
 
   bool Prepare() override;
 
-  bool ScanDependencies(std::string const& file,
-                        cmStateEnums::TargetType type) override;
+  bool ScanDependencies(std::string const& file, cm::TargetType type) override;
 
 private:
   std::unique_ptr<cmBinUtilsLinuxELFGetRuntimeDependenciesTool> Tool;

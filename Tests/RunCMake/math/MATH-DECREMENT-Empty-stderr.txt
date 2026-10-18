@@ -1,0 +1,4 @@
+^CMake Error at MATH-DECREMENT-Empty\.cmake:[0-9]+ \(math\):
+  math sub-command DECREMENT value "" is not a valid integer
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)$

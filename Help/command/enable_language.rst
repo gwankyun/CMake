@@ -13,11 +13,15 @@ enable_language
 
 以下是对\ ``enable_language()``\ 调用位置的限制：
 
-* 它必须在文件作用域中调用，不能在 :command:`function` 调用内部，也不能在 :command:`block()` 内部。
-* 在首次调用\ :command:`project`\ 命令之前，不得调用此命令。\
-  请参阅策略\ :policy:`CMP0165`。
-* 它必须在所有直接使用指定语言编译源文件或通过链接依赖间接使用该语言的目标的公共最高级目录中\
-  调用。最简单的做法是在项目的顶层目录中启用所有需要的语言。
+* It must not be called before the first call to :command:`project`.
+  See policy :policy:`CMP0165`.
+* It must be called such that the command executes before any targets that
+  use the language directly for compiling sources or indirectly through link
+  dependencies.
+
+.. note::
+  Further restrictions apply if policy :policy:`CMP0220` is not set
+  to ``NEW``.  See the policy documentation for details.
 
 ``OPTIONAL``\ 关键字是为未来实现预留的占位符，目前不起作用。相反，你可以使用\
 :module:`CheckLanguage`\ 模块在启用语言之前验证其是否受支持。

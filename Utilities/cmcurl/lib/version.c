@@ -186,8 +186,9 @@ char *curl_version(void)
   int j;
 
 #ifdef DEBUGBUILD
-  /* Override version string when environment variable CURL_VERSION is set */
-  const char *debugversion = getenv("CURL_VERSION");
+  /* Override version string when environment variable CURL_DEBUG_VERSION is
+     set */
+  const char *debugversion = getenv("CURL_DEBUG_VERSION");
   if(debugversion) {
     curl_msnprintf(out, sizeof(out), "%s", debugversion);
     return out;
@@ -242,7 +243,9 @@ char *curl_version(void)
   src[i++] = gsasl_buf;
 #endif
 #ifdef HAVE_GSSAPI
-#ifdef HAVE_GSSGNU
+#ifdef HAVE_GSSAPPLE
+  curl_msnprintf(gss_buf, sizeof(gss_buf), "AppleGSS");
+#elif defined(HAVE_GSSGNU)
   curl_msnprintf(gss_buf, sizeof(gss_buf), "libgss/%s", GSS_VERSION);
 #elif defined(CURL_KRB5_VERSION)
   curl_msnprintf(gss_buf, sizeof(gss_buf), "mit-krb5/%s", CURL_KRB5_VERSION);
@@ -343,12 +346,6 @@ static const char * const supported_protocols[] = {
   "scp",
   "sftp",
 #endif
-#if defined(CURL_ENABLE_SMB) && defined(USE_CURL_NTLM_CORE)
-  "smb",
-#  ifdef USE_SSL
-  "smbs",
-#  endif
-#endif
 #ifndef CURL_DISABLE_SMTP
   "smtp",
 #endif
@@ -388,7 +385,7 @@ static int idn_present(curl_version_info_data *info)
   (void)info;
   return TRUE;
 #else
-  return info->libidn != NULL;
+  return !!info->libidn;
 #endif
 }
 #endif
@@ -467,6 +464,9 @@ static const struct feat features_table[] = {
   !defined(CURL_DISABLE_HTTP)
   FEATURE("HTTPS-proxy", https_proxy_present, CURL_VERSION_HTTPS_PROXY),
 #endif
+#ifndef CURL_DISABLE_HTTPSIG
+  FEATURE("HTTPSIG",     NULL,                0),
+#endif
 #ifdef USE_HTTPSRR
   FEATURE("HTTPSRR",     NULL,                0),
 #endif
@@ -490,6 +490,9 @@ static const struct feat features_table[] = {
 #endif
 #ifdef USE_NTLM
   FEATURE("NTLM",        NULL,                CURL_VERSION_NTLM),
+#endif
+#ifdef USE_PROXY_HTTP3
+  FEATURE("proxy-HTTP3", NULL,                0),
 #endif
 #ifdef USE_LIBPSL
   FEATURE("PSL",         NULL,                CURL_VERSION_PSL),
@@ -515,9 +518,6 @@ static const struct feat features_table[] = {
 #endif
 #ifdef GLOBAL_INIT_IS_THREADSAFE
   FEATURE("threadsafe",  NULL,                CURL_VERSION_THREADSAFE),
-#endif
-#ifdef USE_TLS_SRP
-  FEATURE("TLS-SRP",     NULL,                CURL_VERSION_TLSAUTH_SRP),
 #endif
 #if defined(_WIN32) && defined(UNICODE) && defined(_UNICODE)
   FEATURE("Unicode",     NULL,                CURL_VERSION_UNICODE),

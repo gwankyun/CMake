@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "cmCTest.h"
+#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmXMLWriter.h"
 
@@ -33,7 +34,7 @@ void cmCTestGlobalVC::DoRevision(Revision const& revision,
   }
 
   // Indicate we found a revision.
-  cmCTestLog(this->CTest, HANDLER_OUTPUT, "." << std::flush);
+  cmCTestLog(this->CTest, HANDLER_OUTPUT, '.');
 
   // Store the revision.
   this->Revisions.push_back(revision);
@@ -42,8 +43,8 @@ void cmCTestGlobalVC::DoRevision(Revision const& revision,
   Revision const& rev = this->Revisions.back();
   /* clang-format off */
   this->Log << "Found revision " << rev.Rev << "\n"
-            << "  author = " << rev.Author << "\n"
-            << "  date = " << rev.Date << "\n";
+               "  author = " << rev.Author << "\n"
+               "  date = " << rev.Date << '\n';
   /* clang-format on */
 
   // Update information about revisions of the changed files.
@@ -82,7 +83,7 @@ void cmCTestGlobalVC::WriteXMLDirectory(cmXMLWriter& xml,
   xml.StartElement("Directory");
   xml.Element("Name", path);
   for (auto const& f : dir) {
-    std::string const full = path + slash + f.first;
+    std::string const full = cmStrCat(path, slash, f.first);
     this->WriteXMLEntry(xml, path, f.first, full, f.second);
   }
   xml.EndElement(); // Directory
@@ -103,10 +104,9 @@ bool cmCTestGlobalVC::WriteXMLUpdates(cmXMLWriter& xml)
   bool result = true;
   cmCTestLog(this->CTest, HANDLER_OUTPUT,
              "   Gathering version information (one . per revision):\n"
-             "    "
-               << std::flush);
+             "    ");
   result = this->LoadRevisions() && result;
-  cmCTestLog(this->CTest, HANDLER_OUTPUT, std::endl);
+  cmCTestLog(this->CTest, HANDLER_OUTPUT, '\n');
 
   result = this->LoadModifications() && result;
 

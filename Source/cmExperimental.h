@@ -18,11 +18,10 @@ public:
   enum class Feature
   {
     ExportPackageDependencies,
-    CxxImportStd,
     MappedPackageInfo,
     ExportBuildDatabase,
-    GenerateSbom,
     Rust,
+    SYCL,
 
     Sentinel,
   };

@@ -10,6 +10,12 @@ endif()
 
 include(CMakeTestCompilerCommon)
 
+# work around enforced code signing and / or missing executable target type
+set(__CMAKE_SAVED_TRY_COMPILE_TARGET_TYPE ${CMAKE_TRY_COMPILE_TARGET_TYPE})
+if(_CMAKE_FEATURE_DETECTION_TARGET_TYPE)
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE ${_CMAKE_FEATURE_DETECTION_TARGET_TYPE})
+endif()
+
 # Remove any cached result from an older CMake version.
 # We now store this in CMakeCUDACompiler.cmake.
 unset(CMAKE_CUDA_COMPILER_WORKS CACHE)
@@ -48,6 +54,7 @@ endif()
 # any makefiles or projects.
 if(NOT CMAKE_CUDA_COMPILER_WORKS)
   PrintTestCompilerStatus("CUDA")
+  __TestCompiler_setTryCompileTargetType()
   string(CONCAT __TestCompiler_testCudaCompilerSource
     "#ifndef __CUDACC__\n"
     "# error \"The CMAKE_CUDA_COMPILER is set to an invalid CUDA compiler\"\n"
@@ -63,7 +70,7 @@ if(NOT CMAKE_CUDA_COMPILER_WORKS)
     NO_CACHE
     OUTPUT_VARIABLE __CMAKE_CUDA_COMPILER_OUTPUT)
   unset(__TestCompiler_testCudaCompilerSource)
-
+  __TestCompiler_restoreTryCompileTargetType()
   if(NOT CMAKE_CUDA_COMPILER_WORKS)
     PrintTestCompilerResult(CHECK_FAIL "broken")
     string(REPLACE "\n" "\n  " _output "${__CMAKE_CUDA_COMPILER_OUTPUT}")
@@ -102,4 +109,6 @@ configure_file(
   )
 include(${CMAKE_PLATFORM_INFO_DIR}/CMakeCUDACompiler.cmake)
 
+set(CMAKE_TRY_COMPILE_TARGET_TYPE ${__CMAKE_SAVED_TRY_COMPILE_TARGET_TYPE})
+unset(__CMAKE_SAVED_TRY_COMPILE_TARGET_TYPE)
 unset(__CMAKE_CUDA_COMPILER_OUTPUT)

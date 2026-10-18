@@ -2,31 +2,7 @@ include(RunCMake)
 
 cmake_policy(SET CMP0140 NEW)
 
-# Arguments after the first are the files to validate against the schema
-function(validate_fileapi_schema schema)
-  if(NOT ARGN)
-    # No files to validate against the schema
-    return()
-  endif()
-  list(JOIN ARGN "\n" file_list)
-  set(file_list_file ${RunCMake_TEST_BINARY_DIR}/check_file_list.txt)
-  file(WRITE "${file_list_file}" "${file_list}")
-  execute_process(
-    COMMAND ${Python_EXECUTABLE}
-      "${RunCMake_SOURCE_DIR}/fileapi_validate_schema.py"
-        "${file_list_file}"
-        "${schema}"
-    RESULT_VARIABLE result
-    OUTPUT_VARIABLE output
-    ERROR_VARIABLE output
-  )
-  if(NOT result STREQUAL 0)
-    string(REPLACE "\n" "\n  " output "${output}")
-    string(APPEND RunCMake_TEST_FAILED
-      "Failed to validate files against JSON schema: ${schema}\nOutput:\n${output}\n")
-  endif()
-  return(PROPAGATE RunCMake_TEST_FAILED)
-endfunction()
+include("${RunCMake_SOURCE_DIR}/../validate_json_schema.cmake")
 
 # Function called in *-check.cmake scripts to check api files.
 function(check_api expect)
@@ -73,9 +49,13 @@ in directory:
       endif()
     endforeach()
     foreach(schema_type IN LISTS schema_types)
-      validate_fileapi_schema(
-        ${schema_dir}/schema_${schema_type}.json
-        ${schema_type_${schema_type}}
+      if("${schema_type_${schema_type}}" STREQUAL "")
+        # No files to validate against the schema
+        continue()
+      endif()
+      validate_json_schema(
+        "${schema_dir}/schema_${schema_type}.json"
+        "${schema_type_${schema_type}}"
       )
     endforeach()
   endif()
@@ -95,9 +75,9 @@ function(check_stateful_queries)
     REPLACE "^(.+)$" "${prefix}-\\1/query.json"
     OUTPUT_VARIABLE query_json_files
   )
-  validate_fileapi_schema(
-    ${schema_dir}/schema_stateful_query.json
-    ${query_json_files}
+  validate_json_schema(
+    "${schema_dir}/schema_stateful_query.json"
+    "${query_json_files}"
   )
   return(PROPAGATE RunCMake_TEST_FAILED)
 endfunction()
@@ -144,6 +124,21 @@ run_cmake_with_options(InitialCache -C ${RunCMake_SOURCE_DIR}/InitialCache-scrip
 run_cmake(ProjectQueryGood)
 run_cmake(ProjectQueryBad)
 run_cmake(FailConfigure)
+run_cmake(InterfaceIncludes)
+run_cmake(InterfaceIncludesNoLanguages)
+
+# Reconfiguring with a case-only build-type change (Debug -> debug) must not
+# leave the reply index citing a target file that cleanup deleted on a
+# case-insensitive filesystem (Windows, default macOS).
+function(run_config_case)
+  if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
+    set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/ConfigCaseReconfigure-build)
+    run_cmake_with_options(ConfigCaseReconfigure -DCMAKE_BUILD_TYPE=Debug)
+    set(RunCMake_TEST_NO_CLEAN 1)
+    run_cmake_command(ConfigCaseReconfigure-recon ${CMAKE_COMMAND} . -DCMAKE_BUILD_TYPE=debug)
+  endif()
+endfunction()
+run_config_case()
 
 function(run_object object)
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/${object}-build)
@@ -164,3 +159,77 @@ run_object(cmakeFiles-v1)
 run_object(toolchains-v1)
 run_object(toolchains-v1 -DTOOLCHAINSV1_COMPILERARGS=1)
 run_object(toolchains-v1 -DTOOLCHAINSV1_COMPILERARGS=2)
+
+function(run_import_std_codemodel_test)
+  if(NOT CMake_TEST_MODULE_COMPILATION)
+    return()
+  endif()
+
+  set(stdlib_custom_json)
+  if(CMake_TEST_CXX_STDLIB_MODULES_JSON)
+    list(APPEND stdlib_custom_json
+      -DCMAKE_CXX_STDLIB_MODULES_JSON=${CMake_TEST_CXX_STDLIB_MODULES_JSON})
+  endif()
+
+  run_cmake(codemodel-v2-import-std-Inspect ${stdlib_custom_json})
+  include("${RunCMake_BINARY_DIR}/codemodel-v2-import-std-Inspect-build/info.cmake")
+
+  if(RunCMake_GENERATOR MATCHES "Ninja")
+    execute_process(
+      COMMAND "${CMAKE_MAKE_PROGRAM}" --version
+      RESULT_VARIABLE res
+      OUTPUT_VARIABLE ninja_version
+      ERROR_VARIABLE err
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_STRIP_TRAILING_WHITESPACE)
+
+    if(res)
+      message(WARNING
+        "Failed to determine `ninja` version: ${err}")
+      set(ninja_version "0")
+    endif()
+  endif()
+
+  set(generator_supports_cxx_modules 0)
+  if(RunCMake_GENERATOR MATCHES "Ninja" AND
+      ninja_version VERSION_GREATER_EQUAL "1.11" AND
+      "cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+    set(generator_supports_cxx_modules 1)
+  endif()
+
+  if(RunCMake_GENERATOR MATCHES "Visual Studio" AND
+      CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.34")
+    set(generator_supports_cxx_modules 1)
+  endif()
+
+  if(NOT generator_supports_cxx_modules)
+    return()
+  endif()
+
+  string(REPLACE "," ";" cxx_module_features "${CMake_TEST_MODULE_COMPILATION}")
+  if(RunCMake_GENERATOR MATCHES "Ninja")
+    list(APPEND cxx_module_features
+      "ninja")
+  endif()
+
+  if(NOT "import_std23" IN_LIST cxx_module_features OR
+      NOT "cxx_std_23" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+    return()
+  endif()
+
+  set(RunCMake_TEST_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/codemodel-v2-import-std")
+  set(RunCMake_TEST_BINARY_DIR "${RunCMake_BINARY_DIR}/codemodel-v2-import-std-build")
+
+  if(RunCMake_GENERATOR_IS_MULTI_CONFIG)
+    set(RunCMake_TEST_OPTIONS -DCMAKE_CONFIGURATION_TYPES=Debug)
+  else()
+    set(RunCMake_TEST_OPTIONS -DCMAKE_BUILD_TYPE=Debug)
+  endif()
+
+  list(APPEND RunCMake_TEST_OPTIONS
+    ${stdlib_custom_json}
+    "-DCMake_TEST_MODULE_COMPILATION_RULES=${CMake_TEST_MODULE_COMPILATION_RULES}")
+  run_cmake(codemodel-v2-import-std)
+endfunction()
+
+run_import_std_codemodel_test()

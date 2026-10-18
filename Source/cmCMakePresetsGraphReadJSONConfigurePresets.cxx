@@ -1,10 +1,8 @@
 /* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include <cassert>
-#include <cstddef>
 #include <functional>
 #include <map>
-#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -233,18 +231,6 @@ cm::string_view GetJSONName()
   return storage;
 }
 
-cm::string_view GetJSONName(cmDiagnosticCategory category)
-{
-  static cm::string_view const names[] = {
-    "none"_s, // CMD_NONE
-#define DIAGNOSTIC_JSON_NAME(C) GetJSONName<cmDiagnostics::C>(),
-    CM_FOR_EACH_DIAGNOSTIC_CATEGORY(DIAGNOSTIC_JSON_NAME)
-#undef DIAGNOSTIC_JSON_NAME
-  };
-  assert(category > 0 && category < cmDiagnostics::CategoryCount);
-  return names[category];
-}
-
 auto const PresetDiagnosticMapHelper =
   cmCMakePresetsGraphInternal::PresetMapToBoolHelper<cmDiagnosticCategory>;
 
@@ -297,23 +283,9 @@ auto const PresetTraceHelper =
           cmCMakePresetsGraphInternal::PresetStringHelper, false);
 
 auto const ConfigurePresetHelper =
-  JSONHelperBuilder::Object<ConfigurePreset>(
-    cmCMakePresetsErrors::INVALID_PRESET_OBJECT, false)
-    .Bind("name"_s, &ConfigurePreset::Name,
-          cmCMakePresetsGraphInternal::PresetNameHelper)
-    .Bind("inherits"_s, &ConfigurePreset::Inherits,
-          cmCMakePresetsGraphInternal::PresetVectorOneOrMoreStringHelper,
-          false)
-    .Bind("hidden"_s, &ConfigurePreset::Hidden,
-          cmCMakePresetsGraphInternal::PresetBoolHelper, false)
-    .Bind<std::nullptr_t>("vendor"_s, nullptr,
-                          cmCMakePresetsGraphInternal::VendorHelper(
-                            cmCMakePresetsErrors::INVALID_PRESET),
-                          false)
-    .Bind("displayName"_s, &ConfigurePreset::DisplayName,
-          cmCMakePresetsGraphInternal::PresetStringHelper, false)
-    .Bind("description"_s, &ConfigurePreset::Description,
-          cmCMakePresetsGraphInternal::PresetStringHelper, false)
+  cmCMakePresetsGraphInternal::BindPresetIdentityFields(
+    JSONHelperBuilder::Object<ConfigurePreset>(
+      cmCMakePresetsErrors::INVALID_PRESET_OBJECT, false))
     .Bind("generator"_s, &ConfigurePreset::Generator,
           cmCMakePresetsGraphInternal::PresetStringHelper, false)
     .Bind("architecture"_s, ArchitectureHelper, false)
@@ -335,12 +307,22 @@ auto const ConfigurePresetHelper =
     .Bind("warnings"_s, PresetWarningsHelper, false)
     .Bind("errors"_s, PresetErrorsHelper, false)
     .Bind("debug"_s, PresetDebugHelper, false)
-    .Bind("trace"_s, PresetTraceHelper, false)
-    .Bind("condition"_s, &ConfigurePreset::ConditionEvaluator,
-          cmCMakePresetsGraphInternal::PresetConditionHelper, false);
+    .Bind("trace"_s, PresetTraceHelper, false);
 }
 
 namespace cmCMakePresetsGraphInternal {
+cm::string_view GetDiagnosticJSONName(cmDiagnosticCategory category)
+{
+  static cm::string_view const names[] = {
+    "none"_s, // CMD_NONE
+#define DIAGNOSTIC_JSON_NAME(C) GetJSONName<cmDiagnostics::C>(),
+    CM_FOR_EACH_DIAGNOSTIC_CATEGORY(DIAGNOSTIC_JSON_NAME)
+#undef DIAGNOSTIC_JSON_NAME
+  };
+  assert(category > 0 && category < cmDiagnostics::CategoryCount);
+  return names[category];
+}
+
 bool ConfigurePresetsHelper(std::vector<ConfigurePreset>& out,
                             Json::Value const* value, cmJSONState* state)
 {
@@ -359,7 +341,7 @@ bool CheckDiagnostics(cmJSONState* state, int version,
     assert(i.first > 0 && i.first < cmDiagnostics::CategoryCount);
     int const minVersion = cmDiagnostics::CategoryInfo[i.first].PresetVersion;
     if (version < minVersion) {
-      cm::string_view dn = GetJSONName(i.first);
+      cm::string_view dn = GetDiagnosticJSONName(i.first);
       cmCMakePresetsErrors::DIAGNOSTIC_UNSUPPORTED(dn, group, minVersion,
                                                    state);
       return false;
@@ -395,7 +377,7 @@ bool CheckDiagnostics(cmJSONState* state, int version,
 
     for (cmDiagnosticCategory c : unsupportedErrors) {
       if (cm::contains(preset.Errors, c)) {
-        cm::string_view dn = GetJSONName(c);
+        cm::string_view dn = GetDiagnosticJSONName(c);
         cmCMakePresetsErrors::DIAGNOSTIC_UNSUPPORTED(dn, "errors"_s, 12,
                                                      state);
         return false;

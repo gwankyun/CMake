@@ -217,10 +217,32 @@ version will be generated and sent to the user |Callbacks| defined in that
 query.
 
 Currently, the only supported major version is ``1``, and the maximum supported
-minor version is also ``1``. A new major version number will be created whenever
+minor version is ``2``. A new major version number will be created whenever
 previously included data is removed or reformatted such that scripts written to
 parse this data may become incompatible with the new format. A new minor version
 number will be created whenever new data becomes available.
+
+.. versionadded:: 4.4
+
+  `API v1`_ gained Data version ``1.1``.
+
+  * The ``captureOutput`` `option <cmake-instrumentation v1 Query Files>`_ and corresponding
+    ``stderr`` and ``stdout`` snippet fields to capture command output were
+    added.
+
+  * The ``compileTrace`` `option <cmake-instrumentation v1 Query Files>`_ was added which enables
+    the collection of compiler trace files.
+
+.. versionadded:: 4.5
+
+  `API v1`_ gained Data version ``1.2``.
+
+  * An ``interruptSignal`` field was added to appropriate snippet files to flag
+    whether they exited due to interrupt.
+
+  * The ``processMetrics`` `option <cmake-instrumentation v1 Query Files>`_ and corresponding
+    ``processMetrics`` snippet field for reporting child process resource usage
+    were added.
 
 .. _`cmake-instrumentation v1 Query Files`:
 
@@ -300,6 +322,14 @@ v1查询文件
 
       Only available as of data version ``1.1``.
 
+    ``processMetrics``
+      .. versionadded:: 4.5
+
+      Enables collection of kernel-reported resource usage for the command.
+      When enabled, certain snippets will include a ``processMetrics`` field.
+
+      Only available as of data version ``1.2``.
+
     ``cdashSubmit``
       Enables including instrumentation data in CDash. This is
       equivalent to having the :envvar:`CTEST_USE_INSTRUMENTATION` environment
@@ -346,6 +376,7 @@ The JSON format is described in machine-readable form by
       "staticSystemInformation",
       "dynamicSystemInformation",
       "captureOutput",
+      "processMetrics",
       "cdashSubmit",
       "trace"
     ]
@@ -422,6 +453,17 @@ v1片段文件
   ``result``
     命令的退出码，一个整数。 This will be ``null`` when
     ``role`` is ``build``.
+
+  ``interruptSignal``
+    .. versionadded:: 4.5
+
+    The integer signal number that interrupted the command before it completed
+    (for example ``2`` for ``SIGINT`` from Ctrl+C). Only included when ``role``
+    is ``cmakeBuild``, ``cmakeInstall``, or ``ctest`` and the command was
+    interrupted. Consumers can use the presence of this field to distinguish an
+    interrupted command from one that ran to completion.
+
+    Only available as of data version ``1.2``.
 
   ``stdout``
     .. versionadded:: 4.4
@@ -520,6 +562,27 @@ v1片段文件
       在\ ``timeStart + duration``\ 时的平均CPU负载, or ``null`` if it cannot
       be determined.
 
+  ``processMetrics``
+    .. versionadded:: 4.5
+
+    Kernel-reported resource usage accumulated for the command. Only included
+    when the ``processMetrics`` `option <cmake-instrumentation v1 Query Files>`_ is enabled and the
+    snippet is one of ``compile``, ``link``, ``custom``, ``install``, or
+    ``test``.
+
+    ``maxRSS``
+      Maximum resident set size in KiB.
+
+    ``userTime``
+      User CPU time in microseconds.
+
+    ``systemTime``
+      System CPU time in microseconds.
+
+    If the data could not be collected, this object is ``null``.
+
+    Only available as of data version ``1.2``.
+
   ``cmakeContent``
     The path to a |v1 CMake Content File| located under ``data``, which
     contains information about the CMake configure and generate steps
@@ -539,7 +602,7 @@ Example:
   {
     "version": {
       "major": 1,
-      "minor": 1
+      "minor": 2
     },
     "command" : "\"/usr/bin/c++\" \"-MD\" \"-MT\" \"CMakeFiles/main.dir/main.cxx.o\" \"-MF\" \"CMakeFiles/main.dir/main.cxx.o.d\" \"-o\" \"CMakeFiles/main.dir/main.cxx.o\" \"-c\" \"<src>/main.cxx\"",
     "role" : "compile",
@@ -559,6 +622,12 @@ Example:
       "afterHostMemoryUsed" : 6635680.0
       "beforeCPULoadAverage" : 2.3500000000000001,
       "beforeHostMemoryUsed" : 6635832.0
+    },
+    "processMetrics" :
+    {
+      "maxRSS" : 21032,
+      "userTime" : 18000,
+      "systemTime" : 5000
     },
     "timeStart" : 1737053448177,
     "duration" : 31,

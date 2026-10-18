@@ -59,6 +59,12 @@
  ``-D``\ 参数设置相同的变量，\ ``-D``\ 参数将优先考虑顺序，因为非\ ``FORCE``\ \
  ``set(... CACHE ...)``\ 的本质调用。
 
+ .. note::
+
+   When passing a :ref:`semicolon-separated list <CMake Language Lists>`
+   of paths on Windows, avoid paths with a trailing ``\``, as it may
+   escape the following ``;`` during list expansion.
+
 .. option:: -U <globbing_expr>
 
  从CMake ``CACHE``\ 中删除匹配的条目。

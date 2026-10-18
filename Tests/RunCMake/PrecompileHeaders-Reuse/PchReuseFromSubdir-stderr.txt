@@ -1,0 +1,7 @@
+CMake Warning \(deprecated\) at PchReuseFromSubdir\.cmake:[0-9]+ \(subdirs\):
+  The 'subdirs' command has been superseded\.  Use the 'add_subdirectory'
+  command instead\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:3 \(include\)
+This warning is for project developers\.  Use -Wno-author or -Wno-deprecated
+to suppress it\.

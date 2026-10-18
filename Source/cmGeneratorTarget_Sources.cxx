@@ -12,7 +12,6 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <sstream>
 #include <string>
 #include <unordered_set>
 #include <utility>
@@ -41,10 +40,10 @@
 #include "cmSourceFile.h"
 #include "cmSourceFileLocation.h"
 #include "cmSourceGroup.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -62,7 +61,7 @@ void AddObjectEntries(cmGeneratorTarget const* headTarget,
     entries.HadContextSensitiveCondition = impl->HadContextSensitiveCondition;
     for (cmLinkItem const& lib : impl->Libraries) {
       if (lib.Target &&
-          lib.Target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+          lib.Target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
         std::string uniqueName =
           headTarget->GetGlobalGenerator()->IndexGeneratorTargetUniquely(
             lib.Target);
@@ -92,7 +91,11 @@ void AddFileSetEntries(cmGeneratorTarget const* headTarget,
                        cmGeneratorExpressionDAGChecker* dagChecker,
                        cm::EvaluatedTargetPropertyEntries& entries)
 {
-  auto sources = fileSets->GetSources(context, headTarget, dagChecker);
+  auto sources =
+    fileSets->GetSources(context, headTarget,
+                         cm::FileSetMetadata::FileSetDomainSet{
+                           cm::FileSetMetadata::FileSetDomain::NATIVE },
+                         dagChecker);
   entries =
     EvaluateTargetPropertyEntries(headTarget, context, dagChecker, sources);
 }
@@ -133,17 +136,19 @@ bool processSources(cmGeneratorTarget const* tgt, std::string const& config,
       }
 
       if (!targetName.empty() && !cmSystemTools::FileIsFullPath(src)) {
-        std::ostringstream err;
         if (!targetName.empty()) {
-          err << "Target \"" << targetName
-              << "\" contains relative path in its INTERFACE_SOURCES:\n  \""
-              << src << "\"";
+          tgt->GetLocalGenerator()->IssueMessage(
+            MessageType::FATAL_ERROR,
+            cmStrCat("Target \"", targetName,
+                     "\" contains relative path in its INTERFACE_SOURCES:\n  "
+                     "\"",
+                     src, '"'));
         } else {
-          err << "Found relative path while evaluating sources of \""
-              << tgt->GetName() << "\":\n  \"" << src << "\"\n";
+          tgt->GetLocalGenerator()->IssueMessage(
+            MessageType::FATAL_ERROR,
+            cmStrCat("Found relative path while evaluating sources of \"",
+                     tgt->GetName(), "\":\n  \"", src, "\"\n"));
         }
-        tgt->GetLocalGenerator()->IssueMessage(MessageType::FATAL_ERROR,
-                                               err.str());
         return contextDependent;
       }
       src = fullPath;
@@ -157,7 +162,7 @@ bool processSources(cmGeneratorTarget const* tgt, std::string const& config,
       if (uniqueSrcs.insert(src).second) {
         srcs.emplace_back(src, entry.Backtrace);
         if (debugSources) {
-          usedSources += cmStrCat(" * ", src, '\n');
+          usedSources = cmStrCat(std::move(usedSources), " * ", src, '\n');
         }
       } else {
         auto const& fileSets =
@@ -246,7 +251,7 @@ std::vector<BT<std::string>> cmGeneratorTarget::GetSourceFilePaths(
 
   // Collect TARGET_OBJECTS of direct object link-dependencies.
   bool contextDependentObjects = false;
-  if (this->GetType() != cmStateEnums::OBJECT_LIBRARY) {
+  if (this->GetType() != cm::TargetType::OBJECT_LIBRARY) {
     cm::EvaluatedTargetPropertyEntries linkObjectsEntries;
     AddObjectEntries(this, context, &dagChecker, linkObjectsEntries);
     contextDependentObjects = processSources(this, config, linkObjectsEntries,
@@ -372,12 +377,12 @@ cmGeneratorTarget::KindedSources const& cmGeneratorTarget::GetKindedSources(
   auto it = this->KindedSourcesMap.find(key);
   if (it != this->KindedSourcesMap.end()) {
     if (!it->second.Initialized) {
-      std::ostringstream e;
-      e << "The SOURCES of \"" << this->GetName()
-        << "\" use a generator expression that depends on the "
-           "SOURCES themselves.";
       this->GlobalGenerator->GetCMakeInstance()->IssueMessage(
-        MessageType::FATAL_ERROR, e.str(), this->GetBacktrace());
+        MessageType::FATAL_ERROR,
+        cmStrCat("The SOURCES of \"", this->GetName(),
+                 "\" use a generator expression that depends on the "
+                 "SOURCES themselves."),
+        this->GetBacktrace());
       static KindedSources empty;
       return empty;
     }
@@ -418,13 +423,17 @@ void cmGeneratorTarget::ComputeKindedSources(KindedSources& files,
     SourceKind kind;
     std::string ext = cmSystemTools::LowerCase(sf->GetExtension());
     cmGeneratorFileSet const* fs = this->GetFileSetForSource(config, sf);
+    sf->GetOrDetermineLanguage();
+    std::string const language = this->GetSourceFileLanguage(sf, config);
     if (sf->GetCustomCommand()) {
       kind = SourceKindCustomCommand;
     } else if (!this->Target->IsNormal() && !this->Target->IsImported() &&
                fs && (fs->GetType() == cm::FileSetMetadata::CXX_MODULES)) {
-      kind = SourceKindCxxModuleSource;
-    } else if (this->Target->GetType() == cmStateEnums::UTILITY ||
-               this->Target->GetType() == cmStateEnums::INTERFACE_LIBRARY
+      kind = this->Target->CxxModuleNeedsInterfaceObjects()
+        ? SourceKindObjectSource
+        : SourceKindCxxModuleSource;
+    } else if (this->Target->GetType() == cm::TargetType::UTILITY ||
+               this->Target->GetType() == cm::TargetType::INTERFACE_LIBRARY
                // XXX(clang-tidy): https://bugs.llvm.org/show_bug.cgi?id=44165
                // NOLINTNEXTLINE(bugprone-branch-clone)
     ) {
@@ -437,10 +446,10 @@ void cmGeneratorTarget::ComputeKindedSources(KindedSources& files,
       kind = SourceKindHeader;
     } else if (sf->GetPropertyAsBool("EXTERNAL_OBJECT")) {
       kind = SourceKindExternalObject;
-    } else if (!sf->GetOrDetermineLanguage().empty()) {
-      if (sf->GetOrDetermineLanguage() == "Rust") {
+    } else if (!language.empty()) {
+      if (language == "Rust") {
         // NOLINTNEXTLINE(bugprone-branch-clone)
-        if (this->Target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+        if (this->Target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
           // There is no main crate root for object libraries.
           kind = SourceKindObjectSource;
         } else if (!rustMainCrateRootSf) {
@@ -462,12 +471,12 @@ void cmGeneratorTarget::ComputeKindedSources(KindedSources& files,
       }
     } else if (ext == "def") {
       kind = SourceKindModuleDefinition;
-      if (this->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+      if (this->GetType() == cm::TargetType::OBJECT_LIBRARY) {
         badObjLib.push_back(sf);
       }
     } else if (ext == "idl") {
       kind = SourceKindIDL;
-      if (this->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+      if (this->GetType() == cm::TargetType::OBJECT_LIBRARY) {
         badObjLib.push_back(sf);
       }
     } else if (ext == "resx") {
@@ -495,15 +504,18 @@ void cmGeneratorTarget::ComputeKindedSources(KindedSources& files,
   }
 
   if (!badObjLib.empty()) {
-    std::ostringstream e;
-    e << "OBJECT library \"" << this->GetName() << "\" contains:\n";
+    std::string e =
+      cmStrCat("OBJECT library \"", this->GetName(), "\" contains:\n");
     for (cmSourceFile* i : badObjLib) {
-      e << "  " << i->GetLocation().GetName() << "\n";
+      e = cmStrCat(std::move(e), "  ", i->GetLocation().GetName(), '\n');
     }
-    e << "but may contain only sources that compile, header files, and "
-         "other files that would not affect linking of a normal library.";
+    e =
+      cmStrCat(std::move(e),
+               "but may contain only sources that compile, header files, and "
+               "other files that would not affect linking of a normal "
+               "library.");
     this->GlobalGenerator->GetCMakeInstance()->IssueMessage(
-      MessageType::FATAL_ERROR, e.str(), this->GetBacktrace());
+      MessageType::FATAL_ERROR, e, this->GetBacktrace());
   }
 }
 
@@ -556,11 +568,16 @@ cmGeneratorTarget::GetAllConfigSources(SourceKind kind) const
 void cmGeneratorTarget::ComputeAllConfigCompileLanguages() const
 {
   std::set<std::string> languages;
+  std::vector<std::string> const configs =
+    this->Makefile->GetGeneratorConfigs(cmMakefile::IncludeEmptyConfig);
   std::vector<AllConfigSource> const& sources = this->GetAllConfigSources();
   for (AllConfigSource const& si : sources) {
-    std::string const& lang = si.Source->GetOrDetermineLanguage();
-    if (!lang.empty()) {
-      languages.emplace(lang);
+    for (size_t const configIndex : si.Configs) {
+      std::string const lang =
+        this->GetSourceFileLanguage(si.Source, configs[configIndex]);
+      if (!lang.empty()) {
+        languages.emplace(lang);
+      }
     }
   }
   this->AllConfigCompileLanguages = languages;

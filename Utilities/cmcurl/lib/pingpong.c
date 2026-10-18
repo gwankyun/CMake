@@ -80,8 +80,11 @@ CURLcode Curl_pp_statemach(struct Curl_easy *data,
     if(timeout_ms < interval_ms)
       interval_ms = timeout_ms;
   }
-  else
+  else {
     interval_ms = 0; /* immediate */
+    /* Wake the multi socket API even when the server sends no response. */
+    Curl_expire(data, timeout_ms, EXPIRE_SERVER_RESPONSE);
+  }
 
   if(Curl_conn_data_pending(data, FIRSTSOCKET))
     rc = 1;
@@ -120,13 +123,13 @@ CURLcode Curl_pp_statemach(struct Curl_easy *data,
 /* initialize stuff to prepare for reading a fresh new response */
 void Curl_pp_init(struct pingpong *pp, const struct curltime *pnow)
 {
-  DEBUGASSERT(!pp->initialised);
+  DEBUGASSERT(!pp->initialized);
   pp->nread_resp = 0;
   pp->response = *pnow; /* start response time-out */
   pp->pending_resp = TRUE;
   curlx_dyn_init(&pp->sendbuf, DYN_PINGPPONG_CMD);
   curlx_dyn_init(&pp->recvbuf, DYN_PINGPPONG_CMD);
-  pp->initialised = TRUE;
+  pp->initialized = TRUE;
 }
 
 /***********************************************************************
@@ -152,7 +155,7 @@ CURLcode Curl_pp_vsendf(struct Curl_easy *data,
 
   DEBUGASSERT(pp->sendleft == 0);
   DEBUGASSERT(pp->sendsize == 0);
-  DEBUGASSERT(pp->sendthis == NULL);
+  DEBUGASSERT(!pp->sendthis);
 
   if(!conn)
     /* cannot send without a connection! */
@@ -182,7 +185,7 @@ CURLcode Curl_pp_vsendf(struct Curl_easy *data,
 
   Curl_debug(data, CURLINFO_HEADER_OUT, s, bytes_written);
 
-  if(bytes_written != write_len) {
+  if(bytes_written < write_len) {
     /* the whole chunk was not sent, keep it around and adjust sizes */
     pp->sendthis = s;
     pp->sendsize = write_len;
@@ -222,7 +225,7 @@ CURLcode Curl_pp_sendf(struct Curl_easy *data, struct pingpong *pp,
 }
 
 static CURLcode pingpong_read(struct Curl_easy *data,
-                              int sockindex,
+                              int8_t sockindex,
                               char *buffer,
                               size_t buflen,
                               size_t *nread)
@@ -236,7 +239,7 @@ static CURLcode pingpong_read(struct Curl_easy *data,
  * Reads a piece of a server response.
  */
 CURLcode Curl_pp_readresp(struct Curl_easy *data,
-                          int sockindex,
+                          int8_t sockindex,
                           struct pingpong *pp,
                           int *code, /* return the server code if done */
                           size_t *size) /* size of the response */
@@ -245,6 +248,7 @@ CURLcode Curl_pp_readresp(struct Curl_easy *data,
   CURLcode result = CURLE_OK;
   size_t gotbytes;
   char buffer[900];
+  int maxloops = 10;
 
   *code = 0; /* 0 for errors or not done */
   *size = 0;
@@ -262,6 +266,9 @@ CURLcode Curl_pp_readresp(struct Curl_easy *data,
       pp->nfinal = 0; /* now gone */
     }
     if(!pp->overflow) {
+      if(!maxloops--) /* don't get stuck */
+        return CURLE_OK;
+
       result = pingpong_read(data, sockindex, buffer, sizeof(buffer),
                              &gotbytes);
       if(result == CURLE_AGAIN)
@@ -291,6 +298,13 @@ CURLcode Curl_pp_readresp(struct Curl_easy *data,
         /* a newline is CRLF in pp-talk, so the CR is ignored as
            the line is not really terminated until the LF comes */
         size_t length = nl - line + 1;
+
+        if(memchr(line, 0, length)) {
+          /* The response line is passed on as a "header" below, so reject an
+             embedded NUL byte the same way verify_header() does for HTTP. */
+          failf(data, "NUL byte in server response line");
+          return CURLE_WEIRD_SERVER_REPLY;
+        }
 
         /* output debug output if that is requested */
         Curl_debug(data, CURLINFO_HEADER_IN, line, length);
@@ -375,7 +389,7 @@ CURLcode Curl_pp_flushsend(struct Curl_easy *data,
   if(result)
     return result;
 
-  if(written != pp->sendleft) {
+  if(written < pp->sendleft) {
     /* only a fraction was sent */
     pp->sendleft -= written;
   }
@@ -389,7 +403,7 @@ CURLcode Curl_pp_flushsend(struct Curl_easy *data,
 
 CURLcode Curl_pp_disconnect(struct pingpong *pp)
 {
-  if(pp->initialised) {
+  if(pp->initialized) {
     curlx_dyn_free(&pp->sendbuf);
     curlx_dyn_free(&pp->recvbuf);
     memset(pp, 0, sizeof(*pp));

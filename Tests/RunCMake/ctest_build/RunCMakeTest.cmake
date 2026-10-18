@@ -191,4 +191,27 @@ if(RunCMake_GENERATOR MATCHES "Ninja")
     run_ctest(NinjaLauncherSingleBuildFailure)
   endfunction()
   run_NinjaLauncherSingleBuildFailure()
+
+  # A build rule that is terminated by a signal (rather than exiting non-zero)
+  # must still be reported as a build error.  POSIX-only: it relies on signal
+  # semantics.
+  if(UNIX)
+    function(run_NinjaLauncherSignalBuildFailure)
+      set(RunCMake_USE_LAUNCHERS TRUE)
+      set(RunCMake_TEST_SOURCE_DIR "${RunCMake_BINARY_DIR}/NinjaLauncherSignalBuildFailure")
+      # A tiny script that terminates its own shell with SIGTERM.  Kept in a
+      # file (rather than an inline "-c" command) so the "$$" is not mangled by
+      # build-tool command-line escaping.
+      file(WRITE "${RunCMake_TEST_SOURCE_DIR}/signal.sh" "kill -s TERM $$\n")
+      set(CASE_CMAKELISTS_SUFFIX_CODE [=[
+    add_custom_command(
+      OUTPUT signal.out
+      COMMAND /bin/sh "${CMAKE_CURRENT_SOURCE_DIR}/signal.sh"
+      VERBATIM)
+    add_custom_target(signal ALL DEPENDS signal.out)
+  ]=])
+      run_ctest(NinjaLauncherSignalBuildFailure)
+    endfunction()
+    run_NinjaLauncherSignalBuildFailure()
+  endif()
 endif()

@@ -58,7 +58,7 @@
 ### Debian
 
 .debian13:
-    image: "kitware/cmake:ci-debian13-x86_64-2026-04-28"
+    image: "kitware/cmake:ci-debian13-x86_64-2026-09-30"
 
     variables:
         GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake ci"
@@ -73,7 +73,7 @@
         CMAKE_CI_NO_INSTALL: 1
 
 .debian13_aarch64:
-    image: "kitware/cmake:ci-debian13-aarch64-2026-02-08"
+    image: "kitware/cmake:ci-debian13-aarch64-2026-09-30"
 
     variables:
         GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake ci"
@@ -82,7 +82,7 @@
 ### Fedora
 
 .fedora44:
-    image: "kitware/cmake:ci-fedora44-x86_64-2026-04-30"
+    image: "kitware/cmake:ci-fedora44-x86_64-2026-10-05"
 
     variables:
         GIT_CLONE_PATH: "$CI_BUILDS_DIR/cmake ci/long file name for testing purposes"
@@ -339,6 +339,12 @@
     variables:
         CMAKE_CONFIGURATION: fedora44_ninja_clang
 
+.fedora44_ninja_dpclang:
+    extends: .fedora44
+
+    variables:
+        CMAKE_CONFIGURATION: fedora44_ninja_dpclang
+
 .fedora44_ninja_gcc_std_reloc:
     extends: .fedora44
 
@@ -575,7 +581,7 @@
 
 .cuda13.2:
     extends: .cuda
-    image: "kitware/cmake:ci-cuda13.2-x86_64-2026-05-13"
+    image: "kitware/cmake:ci-cuda13.2-x86_64-2026-09-01"
     variables:
         CMAKE_ARCH: x86_64
 
@@ -584,6 +590,12 @@
     variables:
         CMAKE_CONFIGURATION: cuda13.2_nvidia
         CTEST_NO_WARNINGS_ALLOWED: 1
+
+.cuda13.2_clang:
+    extends: .cuda13.2
+    variables:
+        CMAKE_ARCH: x86_64
+        CMAKE_CONFIGURATION: cuda13.2_clang
 
 ### HIP builds
 
@@ -650,6 +662,13 @@
         - build
         - docker
         - linux-x86_64
+
+.linux_x86_64_priv_tags:
+    tags:
+        - cmake
+        - docker
+        - linux-x86_64
+        - privileged
 
 .linux_x86_64_v3_tags:
     tags:
@@ -781,6 +800,14 @@
     script:
         - .gitlab/ci/codespell.bash
         - .gitlab/ci/typos.bash
+    interruptible: true
+
+.cmake_ast_grep_linux:
+    stage: build
+    extends: .fedora44
+    script:
+        - source .gitlab/ci/ast-grep-env.sh
+        - .gitlab/ci/ast-grep-scan.sh
     interruptible: true
 
 .cmake_build_linux:
@@ -957,8 +984,17 @@
         - cd build/
         - cmake ../Utilities/Sphinx -GNinja
           -DSPHINX_HTML=ON
+          -DSPHINX_HTML_COPYBUTTON=ON
           -DSPHINX_QTHELP=$CMAKE_CI_SPHINX_QTHELP
           -DCMake_SPHINX_CMAKE_ORG=ON
           -DCMake_SPHINX_CMAKE_ORG_OUTDATED=$CMAKE_CI_SPHINX_OUTDATED
           -DCMake_VERSION_NO_GIT=$CMAKE_CI_VERSION_NO_GIT
         - ninja
+
+### Devcontainer testing
+
+.cmake_test_devcontainer:
+    stage: test
+    script:
+        - dnf install -y --setopt=install_weak_deps=False podman
+        - .gitlab/ci/devcontainer-run.sh

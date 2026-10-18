@@ -41,6 +41,14 @@ cmake-generator-expressions(7)
   生成器表达式在许多属性的值中受支持，但并非全部。在使用之前，请检查属性的文档是否明确\
   提到了生成器表达式。
 
+.. note::
+
+  Property names specified as part of a generator expression must respect
+  the following regular expression: ``^[A-Za-z0-9_:]+$``.
+
+  .. versionchanged:: 4.5
+    The character ``:`` is now allowed.
+
 空格和引号
 ======================
 
@@ -402,7 +410,7 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
     尽可能多地匹配并将匹配结果作为列表返回。
 
   有关 ``regular_expression`` 参数的语法，
-  请参见\ :ref:`正则表达式规范 <Regex Specification>`。
+  请参见\ :ref:`CMake Language Regex Specification`。
 
 .. _`String Generating Generator Expressions`:
 
@@ -814,6 +822,25 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   ``list``\ 中匹配（\ ``INCLUDE``\ ）或不匹配（\ ``EXCLUDE``\ ）正则表达式\ ``regex``\
   的项的列表。结果与\ :genex:`$<FILTER:list,INCLUDE|EXCLUDE,regex>`\ 相同。
 
+  .. versionadded:: 4.5
+
+    The regular expression may be introduced explicitly with a ``REGEX``
+    keyword, and a ``PREDICATE`` keyword selects items using a generator
+    expression instead:
+
+    .. code-block:: cmake
+
+      $<LIST:FILTER,list,INCLUDE|EXCLUDE,REGEX,regex>
+      $<LIST:FILTER,list,INCLUDE|EXCLUDE,PREDICATE,body>
+
+    With ``PREDICATE``, ``body`` is evaluated once per item with the bound
+    operand :genex:`$<_0>` expanding to the current item.  The body must
+    evaluate to exactly ``0`` or ``1``; ``INCLUDE`` keeps items whose body
+    yields ``1`` and ``EXCLUDE`` removes them.  Use ``$<BOOL:...>`` to
+    coerce other values.  Because ``REGEX`` and ``PREDICATE`` are now keywords,
+    a bare regular expression equal to ``REGEX`` or ``PREDICATE`` must use the
+    explicit ``REGEX`` form.
+
 .. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
 
   .. versionadded:: 3.27
@@ -860,6 +887,21 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
         现在，\ ``^``\ 锚点仅匹配输入元素的起始位置，而非每次重复搜索的起始位置。\
         请参阅策略\ :policy:`CMP0186`。
 
+    :command:`APPLY <list(TRANSFORM_APPLY)>`
+      Transform each selected element by evaluating an arbitrary generator
+      expression ``<body>`` once per element.  Within ``<body>``, the bound
+      operand :genex:`$<_0>` expands to the current element.  Unlike the
+      configure-time :command:`list(TRANSFORM APPLY) <list(TRANSFORM_APPLY)>`
+      command, the genex form returns the body's value directly and has no side
+      effects.  A list-valued body result expands into multiple elements, like
+      any other list-valued generator expression.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,APPLY,body[,SELECTOR]>
+
+      .. versionadded:: 4.5
+
   ``SELECTOR``\ 决定列表中的哪些项将被转换。一次只能指定一种类型的选择器。当给定时，\
   ``SELECTOR``\ 必须是下列之一：
 
@@ -883,6 +925,22 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
       .. code-block:: cmake
 
         $<LIST:TRANSFORM,list,ACTION,REGEX,regular_expression>
+
+    ``PREDICATE``
+      Specify a generator expression ``body`` evaluated once per item with the
+      bound operand :genex:`$<_0>` expanding to the current item.  Only items
+      whose body evaluates to ``1`` are transformed; the body must evaluate to
+      exactly ``0`` or ``1``.  ``PREDICATE`` may be combined with any action,
+      including ``APPLY`` (in which case both bodies bind :genex:`$<_0>`
+      independently).
+      Like all selectors, only one selector may be given; ``PREDICATE`` cannot
+      be combined with ``AT``, ``FOR``, or ``REGEX``.
+
+      .. code-block:: cmake
+
+        $<LIST:TRANSFORM,list,ACTION,PREDICATE,body>
+
+      .. versionadded:: 4.5
 
 .. genex:: $<JOIN:list,glue>
 
@@ -958,6 +1016,57 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
   .. code-block:: cmake
 
     $<LIST:SORT,list,CASE:SENSITIVE,COMPARE:STRING,ORDER:DESCENDING>
+
+  .. versionadded:: 4.5
+
+  A ``COMPARATOR`` option sorts using a generator-expression ``body`` instead
+  of a built-in ordering:
+
+  .. code-block:: cmake
+
+    $<LIST:SORT,list,COMPARATOR,body[,ORDER:ASCENDING|DESCENDING][,CASE:SENSITIVE|INSENSITIVE]>
+
+  ``body`` is evaluated once per comparison with the two items being compared
+  bound to :genex:`$<_0>` and :genex:`$<_1>`.  It must evaluate to exactly
+  ``0`` or ``1``; ``1`` means :genex:`$<_0>` sorts before :genex:`$<_1>`.
+  ``COMPARATOR`` is incompatible with ``COMPARE:``.  ``ORDER:DESCENDING``
+  reverses the comparator and ``CASE:INSENSITIVE`` case-folds the values the
+  body sees, both as in the configure-time :command:`list(SORT)`.  The body
+  must induce a `strict weak ordering
+  <https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings>`_.
+
+.. _GenEx Bound Operands:
+
+Bound Operands
+^^^^^^^^^^^^^^
+
+.. genex:: $<_0>
+
+  .. versionadded:: 4.5
+
+  ``$<_0>`` is the *bound operand* of the enclosing *binding operation*: a
+  generator expression that evaluates a ``<body>`` once for each value it
+  supplies, with ``$<_0>`` expanding to that value.
+
+  For example, :genex:`$<LIST:TRANSFORM,...,APPLY,body>` evaluates ``body``
+  once per list element with ``$<_0>`` bound to the current element.
+
+  ``$<_0>`` is only valid inside the body of a binding operation.  Using it
+  anywhere else is an error.
+
+.. genex:: $<_1>
+
+  .. versionadded:: 4.5
+
+  The second *bound operand* of a *binding operation* that binds at least two
+  operands, expanding to the second supplied value.
+
+  For example, :genex:`$<LIST:SORT,...,COMPARATOR,body>` evaluates ``body``
+  once per comparison with :genex:`$<_0>` and ``$<_1>`` bound to the two items
+  being compared.
+
+  ``$<_1>`` is only valid inside the body of a binding operation that binds at
+  least two operands.  Using it anywhere else is an error.
 
 路径表达式
 ----------------
@@ -1037,6 +1146,12 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   当指定\ ``NORMALIZE``\ 选项时，\ ``path``\ 和\ ``input``\ 在检查之前被\
   :ref:`normalized <Normalization>`。
+
+  An empty ``path`` is not a prefix of any ``input``.
+
+  .. versionchanged:: 4.5
+    An empty ``path`` was previously a prefix of every ``input``.  See
+    policy :policy:`CMP0223`.
 
 .. _GenEx Path Decomposition:
 
@@ -1217,6 +1332,53 @@ Shell路径
   仅在\ :command:`add_custom_command`\ 和\ :command:`add_custom_target`\ 中作为参\
   数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表\
   达式在\ ``...``\ 使用自定义命令的“命令配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
+
+Global Expressions
+------------------
+
+Global Properties
+^^^^^^^^^^^^^^^^^
+
+.. genex:: $<GLOBAL_PROPERTY:prop>
+
+  .. versionadded:: 4.5
+
+  Value of the global property ``prop``, or empty if
+  the property is not set.
+
+Directory-dependent Expressions
+-------------------------------
+
+Directory Properties
+^^^^^^^^^^^^^^^^^^^^
+
+.. genex:: $<DIRECTORY_PROPERTY:dir,prop>
+
+  .. versionadded:: 4.5
+
+  Value of the property ``prop`` on the directory ``dir``, or empty if
+  the property is not set. An error will be raised if the directory is not
+  known by CMake.
+
+Rule-Dependent Expressions
+--------------------------
+
+Rule Properties
+^^^^^^^^^^^^^^^
+
+These expressions look up the values of rule properties.
+
+.. genex:: $<RULE_PROPERTY:rule,prop>
+
+  .. versionadded:: 4.5
+
+  Value of the property ``prop`` on the rule ``rule``, or empty if
+  the property is not set. An error will be raised if the rule is not
+  known by CMake.
+
+  This generator expression can only be used in the definition of a custom rule
+  (see :command:`add_custom_rule`). Moreover, ``rule`` parameter must be the
+  pattern ``<RULE>``. Any other value will raise an error.
 
 工具链和语言表达式
 ----------------------------------
@@ -1810,7 +1972,10 @@ Shell路径
 
   * 如果\ ``$<LINK_LIBRARY:...>``\ 生成器表达式出现在目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
     属性中，它将包含在由\ :command:`install(EXPORT)`\ 命令生成的导入目标中。使用此导入\
-    的环境负责定义此表达式使用的链接特性。
+    的环境负责定义此表达式使用的链接特性。Any CMake
+    target named in the ``library-list`` should be wrapped in
+    :genex:`TARGET_NAME` so that its name is namespaced on export; otherwise it
+    is exported verbatim and will not resolve as an imported target.
 
   * 链接步骤中涉及的每个目标或库最多只能有一种库特性。一个特性的缺失也与所有其他特性不兼容。\
     例如：
@@ -1959,7 +2124,10 @@ Shell路径
 
   * 如果\ ``$<LINK_GROUP:...>``\ 生成器表达式出现在目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
     属性中，它将包含在由\ :command:`install(EXPORT)`\ 命令生成的导入目标中。使用此导入\
-    的环境负责定义此表达式使用的链接特性。
+    的环境负责定义此表达式使用的链接特性。Any CMake
+    target named in the ``library-list`` should be wrapped in
+    :genex:`TARGET_NAME` so that its name is namespaced on export; otherwise it
+    is exported verbatim and will not resolve as an imported target.
 
 链接上下文
 ^^^^^^^^^^^^
@@ -2097,6 +2265,26 @@ Shell路径
   如果所使用的 HIP 链接器的 CMake 链接器标识与 ``linker_ids`` 中的
   任意一项匹配，则为 ``1``，否则为 ``0``。
 
+.. genex:: $<SYCL_COMPILER_LINKER_ID>
+
+  .. versionadded:: 4.5
+
+  .. note::
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+  CMake's linker id of the SYCL linker used.
+
+.. genex:: $<SYCL_COMPILER_LINKER_ID:linker_ids>
+
+  .. versionadded:: 4.5
+
+  .. note::
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+  where ``linker_ids`` is a comma-separated list.
+  ``1`` if CMake's linker id of the SYCL linker matches any one
+  of the entries in ``linker_ids``, otherwise ``0``.
+
 .. genex:: $<C_COMPILER_LINKER_FRONTEND_VARIANT>
 
   .. versionadded:: 4.2
@@ -2193,6 +2381,26 @@ Shell路径
 
   其中 ``variant_ids`` 是一个逗号分隔的列表。
   如果 CMake 的 HIP 链接器前端变体与 ``variant_ids`` 中的任一项匹配，则返回 ``1``，否则返回 ``0``。
+
+.. genex:: $<SYCL_COMPILER_LINKER_FRONTEND_VARIANT>
+
+  .. versionadded:: 4.5
+
+  .. note::
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+  CMake's linker frontend variant of the SYCL linker used.
+
+.. genex:: $<SYCL_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
+
+  .. versionadded:: 4.5
+
+  .. note::
+    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+
+  where ``variant_ids`` is a comma-separated list.
+  ``1`` if CMake's linker frontend variant of the SYCL linker matches
+  any one of the entries in ``variant_ids``, otherwise ``0``.
 
 
 .. _`Source-Dependent Expressions`:
@@ -2341,9 +2549,34 @@ Shell路径
 
 .. genex:: $<TARGET_NAME:tgt>
 
-  目标名称为\ ``tgt``。这将\ ``tgt``\ 标记为较大表达式中目标的名称，如果将目标导出到多个\
-  依赖导出集，则需要此名称。\ ``tgt``\ 文本必须是目标的字面名称；它不能包含生成器表达式。\
-  目标不一定存在。
+  The target name ``tgt`` as written.  This marks ``tgt`` as being the name of
+  a target wherever it appears inside a larger expression.  When the property
+  holding that expression is exported with a namespace by
+  :command:`install(EXPORT)` or :command:`export`, a marked target name is
+  rewritten to its namespaced imported target name (e.g. ``mylib::mylib``), the
+  same way a bare target name in a link-library list would be.  Marking is
+  needed when a target name is nested inside another generator expression that
+  the export machinery does not otherwise descend into, such as
+  :genex:`LINK_LIBRARY` or :genex:`LINK_GROUP`, and also when exporting targets
+  to multiple dependent export sets.
+
+  For example, a target name used inside :genex:`LINK_LIBRARY` is exported
+  verbatim unless it is marked:
+
+  .. code-block:: cmake
+
+    # Exported as bare "mylib"; a consumer would see an unresolved -lmylib.
+    target_link_libraries(myotherlib PUBLIC
+      $<LINK_LIBRARY:WHOLE_ARCHIVE,mylib>)
+
+    # Marked, so export rewrites it to the namespaced "mylib::mylib".
+    target_link_libraries(myotherlib PUBLIC
+      $<LINK_LIBRARY:WHOLE_ARCHIVE,$<TARGET_NAME:mylib>>)
+
+  The ``tgt`` text must be a literal name of a target; it may not contain
+  generator expressions.  During ordinary evaluation the target does not have
+  to exist, but when the expression is exported the marked name must resolve to
+  a target reachable from the export.
 
 .. genex:: $<TARGET_POLICY:policy>
 
@@ -3111,8 +3344,31 @@ Shell路径
         echo $<TARGET_GENEX_EVAL:foo,$<TARGET_PROPERTY:foo,CUSTOM_KEYS>>
     )
 
+Support Expressions
+-------------------
+
+Conversions
+^^^^^^^^^^^
+
+.. genex:: $<ARGS:cmake-list>
+
+  .. versionadded:: 4.5
+
+  Transform a :ref:`semicolon-separated list <CMake Language Lists>` into a
+  comma-separated list as expected by many generator expressions.
+
+  .. code-block:: cmake
+
+    # check if the current config is a debug one
+
+    ## Converting a cmake list by hand does not give the expected result
+    $<CONFIG:$<LIST:JOIN,$<GLOBAL_PROPERTY:DEBUG_CONFIGURATIONS>,$<COMMA>>>
+
+    ## correct way to proceed
+    $<CONFIG:$<ARGS:$<GLOBAL_PROPERTY:DEBUG_CONFIGURATIONS>>>
+
 转义字符
-------------------
+^^^^^^^^^^^^^^^^^^
 
 这些表达式求值为特定的字符串字面量。使用它们来代替实际的字符串字面量，以防止它们具有特殊的含义。
 

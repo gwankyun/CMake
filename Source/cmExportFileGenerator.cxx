@@ -5,7 +5,6 @@
 #include <array>
 #include <cstddef>
 #include <functional>
-#include <sstream>
 #include <utility>
 
 #include <cm/memory>
@@ -26,10 +25,10 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmPropertyMap.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmExportFileGenerator::cmExportFileGenerator() = default;
@@ -72,9 +71,8 @@ bool cmExportFileGenerator::GenerateImportFile()
   }
   if (!foutPtr || !*foutPtr) {
     std::string se = cmSystemTools::GetLastSystemError();
-    std::ostringstream e;
-    e << "cannot write to file \"" << this->MainImportFile << "\": " << se;
-    cmSystemTools::Error(e.str());
+    cmSystemTools::Error(
+      cmStrCat("cannot write to file \"", this->MainImportFile, "\": ", se));
     return false;
   }
 
@@ -152,6 +150,8 @@ bool cmExportFileGenerator::PopulateFileSetInterfaceProperties(
                                          properties);
   this->PopulateFileSetInterfaceProperty("INTERFACE_COMPILE_OPTIONS", target,
                                          fileSet, preprocessRule, properties);
+  this->PopulateFileSetInterfaceProperty("LANGUAGE", target, fileSet,
+                                         preprocessRule, properties);
 
   return true;
 }
@@ -283,7 +283,7 @@ void getCompatibleInterfaceProperties(cmGeneratorTarget const* target,
                                       std::set<std::string>& ifaceProperties,
                                       std::string const& config)
 {
-  if (target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+  if (target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
     // object libraries have no link information, so nothing to compute
     return;
   }
@@ -292,18 +292,19 @@ void getCompatibleInterfaceProperties(cmGeneratorTarget const* target,
 
   if (!info) {
     cmLocalGenerator* lg = target->GetLocalGenerator();
-    std::ostringstream e;
-    e << "Exporting the target \"" << target->GetName()
-      << "\" is not "
-         "allowed since its linker language cannot be determined";
-    lg->IssueMessage(MessageType::FATAL_ERROR, e.str());
+    lg->IssueMessage(
+      MessageType::FATAL_ERROR,
+      cmStrCat("Exporting the target \"", target->GetName(),
+               "\" is not allowed since its linker language cannot be "
+               "determined"));
     return;
   }
 
   cmComputeLinkInformation::ItemVector const& deps = info->GetItems();
 
   for (auto const& dep : deps) {
-    if (!dep.Target || dep.Target->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+    if (!dep.Target ||
+        dep.Target->GetType() == cm::TargetType::OBJECT_LIBRARY) {
       continue;
     }
     getPropertyContents(dep.Target, "COMPATIBLE_INTERFACE_BOOL",
@@ -339,7 +340,7 @@ void cmExportFileGenerator::PopulateCompatibleInterfaceProperties(
   getPropertyContents(gtarget, "COMPATIBLE_INTERFACE_NUMBER_MAX",
                       ifaceProperties);
 
-  if (gtarget->GetType() != cmStateEnums::INTERFACE_LIBRARY) {
+  if (gtarget->GetType() != cm::TargetType::INTERFACE_LIBRARY) {
     std::vector<std::string> configNames =
       gtarget->Target->GetMakefile()->GetGeneratorConfigs(
         cmMakefile::IncludeEmptyConfig);
@@ -397,6 +398,21 @@ bool cmExportFileGenerator::AddTargetNamespace(std::string& input,
     return false;
   }
 
+  std::vector<std::string> replace = tgt->Target->GetExportTargets();
+  if (!replace.empty()) {
+    std::vector<std::string> out;
+    out.reserve(replace.size());
+
+    bool result = true;
+    for (std::string& t : replace) {
+      result = this->AddTargetNamespace(t, target, lg) && result;
+      out.emplace_back(std::move(t));
+    }
+
+    input = cmJoin(out, ";"_s);
+    return result;
+  }
+
   cmFindPackageStack const& pkgStack = tgt->Target->GetFindPackageStack();
   if (!pkgStack.Empty() ||
       tgt->Target->GetProperty("EXPORT_FIND_PACKAGE_NAME")) {
@@ -446,7 +462,7 @@ void cmExportFileGenerator::ResolveTargetsInGeneratorExpressions(
     } else {
       this->ResolveTargetsInGeneratorExpression(li, target, lg);
     }
-    input += sep + li;
+    input = cmStrCat(std::move(input), sep, li);
     sep = ";";
   }
 }
@@ -571,8 +587,8 @@ void cmExportFileGenerator::SetImportDetailProperties(
   cmMakefile* mf = target->Makefile;
 
   // Add the soname for unix shared libraries.
-  if (target->GetType() == cmStateEnums::SHARED_LIBRARY ||
-      target->GetType() == cmStateEnums::MODULE_LIBRARY) {
+  if (target->GetType() == cm::TargetType::SHARED_LIBRARY ||
+      target->GetType() == cm::TargetType::MODULE_LIBRARY) {
     if (!target->IsDLLPlatform()) {
       std::string prop;
       std::string value;
@@ -737,14 +753,6 @@ bool cmExportFileGenerator::PopulateCxxModuleExportProperties(
 
   ModuleTargetPropertyTable const exportedDirectModuleProperties[] = {
     { "CXX_EXTENSIONS"_s, ExportWhen::Defined },
-    // Always define this property as it is an intrinsic property of the target
-    // and should not be inherited from the in-scope `CMAKE_CXX_MODULE_STD`
-    // variable.
-    //
-    // TODO(cxxmodules): A future policy may make this "ON" based on the target
-    // policies if unset. Add a new `ExportWhen` condition to handle it when
-    // this happens.
-    { "CXX_MODULE_STD"_s, ExportWhen::Always },
   };
   for (auto const& prop : exportedDirectModuleProperties) {
     auto const propNameStr = std::string(prop.Name);
@@ -827,18 +835,17 @@ bool cmExportFileGenerator::PopulateExportProperties(
   cmGeneratorTarget const* gte, ImportPropertyMap& properties,
   std::string& errorMessage) const
 {
-  auto const& targetProperties = gte->Target->GetProperties();
+  auto const& targetProperties = gte->Target->GetDirectProperties();
   if (cmValue exportProperties =
         targetProperties.GetPropertyValue("EXPORT_PROPERTIES")) {
     for (auto& prop : cmList{ *exportProperties }) {
       /* Black list reserved properties */
       if (cmHasLiteralPrefix(prop, "IMPORTED_") ||
           cmHasLiteralPrefix(prop, "INTERFACE_")) {
-        std::ostringstream e;
-        e << "Target \"" << gte->Target->GetName() << "\" contains property \""
-          << prop << "\" in EXPORT_PROPERTIES but IMPORTED_* and INTERFACE_* "
-          << "properties are reserved.";
-        errorMessage = e.str();
+        errorMessage = cmStrCat(
+          "Target \"", gte->Target->GetName(), "\" contains property \"", prop,
+          "\" in EXPORT_PROPERTIES but IMPORTED_* and INTERFACE_* "
+          "properties are reserved.");
         return false;
       }
       cmValue propertyValue = targetProperties.GetPropertyValue(prop);
@@ -850,11 +857,10 @@ bool cmExportFileGenerator::PopulateExportProperties(
       std::string evaluatedValue = cmGeneratorExpression::Preprocess(
         *propertyValue, cmGeneratorExpression::StripAllGeneratorExpressions);
       if (evaluatedValue != *propertyValue) {
-        std::ostringstream e;
-        e << "Target \"" << gte->Target->GetName() << "\" contains property \""
-          << prop << "\" in EXPORT_PROPERTIES but this property contains a "
-          << "generator expression. This is not allowed.";
-        errorMessage = e.str();
+        errorMessage = cmStrCat(
+          "Target \"", gte->Target->GetName(), "\" contains property \"", prop,
+          "\" in EXPORT_PROPERTIES but this property contains a "
+          "generator expression. This is not allowed.");
         return false;
       }
       properties[prop] = *propertyValue;

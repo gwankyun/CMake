@@ -45,6 +45,7 @@ function(compiler_id_detection outvar lang)
     list(APPEND ordered_compilers
       Intel
       IntelLLVM
+      DPClang
       PathScale
       Embarcadero
       Borland
@@ -105,6 +106,10 @@ function(compiler_id_detection outvar lang)
 
     if("x${lang}" STREQUAL "xHIP")
       set(ordered_compilers NVIDIA Clang)
+    endif()
+
+    if("x${lang}" STREQUAL "xSYCL")
+      list(PREPEND ordered_compilers AdaptiveCpp)
     endif()
 
     if(CID_ID_DEFINE)

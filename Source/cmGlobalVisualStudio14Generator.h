@@ -11,7 +11,6 @@
 
 #include "cmGlobalVisualStudio12Generator.h"
 
-class cmGlobalGeneratorFactory;
 class cmMakefile;
 class cmake;
 
@@ -19,10 +18,6 @@ class cmake;
 class cmGlobalVisualStudio14Generator : public cmGlobalVisualStudio12Generator
 {
 public:
-  static std::unique_ptr<cmGlobalGeneratorFactory> NewFactory();
-
-  bool MatchesGeneratorName(std::string const& name) const override;
-
   char const* GetAndroidApplicationTypeRevision() const override
   {
     return "2.0";
@@ -53,7 +48,8 @@ protected:
 
   // Used to make sure that the Windows 10 SDK selected can work with the
   // version of the toolset.
-  virtual std::string GetWindows10SDKMaxVersionDefault(cmMakefile* mf) const;
+  virtual std::string GetWindows10SDKMaxVersionDefault(
+    cmMakefile* mf) const = 0;
 
   virtual bool SelectWindows10SDK(cmMakefile* mf);
 
@@ -67,8 +63,5 @@ protected:
   std::string GetWindows10SDKVersion(cmMakefile* mf);
 
 private:
-  class Factory;
-  friend class Factory;
-
   cm::optional<std::string> GeneratorPlatformVersion;
 };

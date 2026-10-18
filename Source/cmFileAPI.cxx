@@ -6,6 +6,7 @@
 #include <cassert>
 #include <chrono>
 #include <ctime>
+#include <functional>
 #include <iomanip>
 #include <iterator>
 #include <sstream>
@@ -24,9 +25,11 @@
 #include "cmFileAPIConfigureLog.h"
 #include "cmFileAPIToolchains.h"
 #include "cmGlobalGenerator.h"
+#include "cmJSONState.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTimestamp.h"
+#include "cmUnreachable.h"
 #include "cmake.h"
 
 #if defined(__clang__) && defined(__has_warning)
@@ -53,14 +56,6 @@ cmFileAPI::cmFileAPI(cmake* cm)
         cmSystemTools::GetCMakeConfigDirectory()) {
     this->UserAPIv1 = cmStrCat(std::move(*cmakeConfigDir), "/api/v1"_s);
   }
-
-  Json::CharReaderBuilder rbuilder;
-  rbuilder["collectComments"] = false;
-  rbuilder["failIfExtra"] = true;
-  rbuilder["rejectDupKeys"] = false;
-  rbuilder["strictRoot"] = true;
-  this->JsonReader =
-    std::unique_ptr<Json::CharReader>(rbuilder.newCharReader());
 
   Json::StreamWriterBuilder wbuilder;
   wbuilder["indentation"] = "\t";
@@ -162,49 +157,39 @@ std::vector<std::string> cmFileAPI::LoadDir(std::string const& dir)
 void cmFileAPI::RemoveOldReplyFiles()
 {
   std::string const reply_dir = this->APIv1 + "/reply";
-  std::vector<std::string> files = this->LoadDir(reply_dir);
-  for (std::string const& f : files) {
-    if (this->ReplyFiles.find(f) == this->ReplyFiles.end()) {
-      std::string file = cmStrCat(reply_dir, '/', f);
-      cmSystemTools::RemoveFile(file);
-    }
+  std::vector<std::string> const files = this->LoadDir(reply_dir);
+
+  // Reply names embed the configuration verbatim, so on a case-insensitive
+  // filesystem a "debug" reply can alias a just-written "Debug" one; deleting
+  // by name would strip a file the index still cites.  Decide by identity.
+  std::vector<std::string> const toRemove =
+    cmFileAPI::FilesToRemove<cmSystemTools::FileId>(
+      files, this->ReplyFiles,
+      [&reply_dir](std::string const& name,
+                   cmSystemTools::FileId& id) -> bool {
+        return cmSystemTools::GetFileId(cmStrCat(reply_dir, '/', name), id);
+      });
+  for (std::string const& f : toRemove) {
+    cmSystemTools::RemoveFile(cmStrCat(reply_dir, '/', f));
   }
 }
 
 bool cmFileAPI::ReadJsonFile(std::string const& file, Json::Value& value,
                              std::string& error)
 {
-  std::vector<char> content;
-
-  cmsys::ifstream fin;
-  if (!cmSystemTools::FileIsDirectory(file)) {
-    fin.open(file.c_str(), std::ios::binary);
-  }
-  auto finEnd = fin.rdbuf()->pubseekoff(0, std::ios::end);
-  if (finEnd > 0) {
-    size_t finSize = finEnd;
-    try {
-      // Allocate a buffer to read the whole file.
-      content.resize(finSize);
-
-      // Now read the file from the beginning.
-      fin.seekg(0, std::ios::beg);
-      fin.read(content.data(), finSize);
-    } catch (...) {
-      fin.setstate(std::ios::failbit);
-    }
-  }
-  fin.close();
-  if (!fin) {
+  // Verify the file exists.
+  if (!cmSystemTools::FileExists(file) ||
+      cmSystemTools::FileIsDirectory(file)) {
     value = Json::Value();
     error = "failed to read from file";
     return false;
   }
 
   // Parse our buffer as json.
-  if (!this->JsonReader->parse(content.data(), content.data() + content.size(),
-                               &value, &error)) {
+  cmJSONState parseState(file, &value);
+  if (!parseState.errors.empty()) {
     value = Json::Value();
+    error = parseState.GetErrorMessage();
     return false;
   }
 
@@ -807,15 +792,14 @@ bool cmFileAPI::ReadRequestVersion(Json::Value const& version, bool inArray,
 std::string cmFileAPI::NoSupportedVersion(
   std::vector<RequestVersion> const& versions)
 {
-  std::ostringstream msg;
-  msg << "no supported version specified";
+  std::string msg = "no supported version specified";
   if (!versions.empty()) {
-    msg << " among:";
+    msg += " among:";
     for (RequestVersion const& v : versions) {
-      msg << " " << v.Major << "." << v.Minor;
+      msg = cmStrCat(std::move(msg), ' ', v.Major, '.', v.Minor);
     }
   }
-  return msg.str();
+  return msg;
 }
 
 // The "codemodel" object kind.
@@ -823,7 +807,7 @@ std::string cmFileAPI::NoSupportedVersion(
 // Update the following files as well when updating this constant:
 //   Help/manual/cmake-file-api.7.rst
 //   Tests/RunCMake/FileAPI/codemodel-v2-check.py (check_objects())
-static unsigned int const CodeModelV2Minor = 11;
+static unsigned int const CodeModelV2Minor = 12;
 
 void cmFileAPI::BuildClientRequestCodeModel(
   ClientRequest& r, std::vector<RequestVersion> const& versions)
@@ -851,7 +835,7 @@ Json::Value cmFileAPI::BuildCodeModel(Object object)
   if (object.Version == 2) {
     version = BuildVersion(2, CodeModelV2Minor);
   } else {
-    return codemodel; // should be unreachable
+    CM_UNREACHABLE;
   }
 
   return codemodel;
@@ -886,7 +870,7 @@ Json::Value cmFileAPI::BuildConfigureLog(Object object)
   if (object.Version == 1) {
     version = BuildVersion(1, ConfigureLogV1Minor);
   } else {
-    return configureLog; // should be unreachable
+    CM_UNREACHABLE;
   }
 
   return configureLog;
@@ -920,7 +904,7 @@ Json::Value cmFileAPI::BuildCache(Object object)
   if (object.Version == 2) {
     version = BuildVersion(2, CacheV2Minor);
   } else {
-    return cache; // should be unreachable
+    CM_UNREACHABLE;
   }
 
   return cache;
@@ -954,7 +938,7 @@ Json::Value cmFileAPI::BuildCMakeFiles(Object object)
   if (object.Version == 1) {
     version = BuildVersion(1, CMakeFilesV1Minor);
   } else {
-    return cmakeFiles; // should be unreachable
+    CM_UNREACHABLE;
   }
 
   return cmakeFiles;
@@ -988,7 +972,7 @@ Json::Value cmFileAPI::BuildToolchains(Object object)
   if (object.Version == 1) {
     version = BuildVersion(1, ToolchainsV1Minor);
   } else {
-    return toolchains; // should be unreachable
+    CM_UNREACHABLE;
   }
 
   return toolchains;

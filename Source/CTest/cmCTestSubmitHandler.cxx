@@ -6,8 +6,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
+#include <utility>
 
-#include <cm/iomanip>
 #include <cm/optional>
 #include <cm/string>
 #include <cm/string_view>
@@ -15,7 +15,6 @@
 #include <cmext/string_view>
 
 #include <cm3p/curl/curl.h>
-#include <cm3p/json/reader.h>
 #include <cm3p/json/value.h>
 
 #include "cmAlgorithms.h"
@@ -25,6 +24,7 @@
 #include "cmCurl.h"
 #include "cmDuration.h"
 #include "cmGeneratedFileStream.h"
+#include "cmJSONState.h"
 #include "cmState.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
@@ -141,9 +141,8 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
 
   // Add any additional headers that the user specified.
   for (std::string const& h : this->HttpHeaders) {
-    cmCTestOptionalLog(this->CTest, DEBUG,
-                       "   Add HTTP Header: \"" << h << "\"" << std::endl,
-                       this->Quiet);
+    cmCTestOptionalLog(this->CTest, DEBUG, this->Quiet,
+                       "   Add HTTP Header: \"", h, "\"\n");
     headers = ::curl_slist_append(headers, h.c_str());
   }
 
@@ -158,26 +157,22 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       if (curlOpts.TLSVersionOpt.has_value()) {
         cm::optional<std::string> tlsVersionStr =
           cmCurlPrintTLSVersion(*curlOpts.TLSVersionOpt);
-        cmCTestOptionalLog(
-          this->CTest, HANDLER_VERBOSE_OUTPUT,
-          "  Set CURLOPT_SSLVERSION to "
-            << (tlsVersionStr ? *tlsVersionStr : "unknown value") << "\n",
-          this->Quiet);
+        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                           "  Set CURLOPT_SSLVERSION to ",
+                           (tlsVersionStr ? *tlsVersionStr : "unknown value"),
+                           "\n");
         curl_easy_setopt(curl, CURLOPT_SSLVERSION, *curlOpts.TLSVersionOpt);
       }
       if (curlOpts.TLSVerifyOpt.has_value()) {
-        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                           "  Set CURLOPT_SSL_VERIFYPEER to "
-                             << (*curlOpts.TLSVerifyOpt ? "on" : "off")
-                             << "\n",
-                           this->Quiet);
+        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                           "  Set CURLOPT_SSL_VERIFYPEER to ",
+                           (*curlOpts.TLSVerifyOpt ? "on" : "off"), "\n");
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER,
                          *curlOpts.TLSVerifyOpt ? 1 : 0);
       }
       if (curlOpts.VerifyHostOff) {
-        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                           "  Set CURLOPT_SSL_VERIFYHOST to off\n",
-                           this->Quiet);
+        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                           "  Set CURLOPT_SSL_VERIFYHOST to off\n");
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
       }
 
@@ -245,21 +240,19 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
         // Provide extra arguments to CDash so that it can initialize and
         // return a buildid.
         cmCTestCurl ctest_curl(this->CTest);
-        upload_as += "&build=";
-        upload_as +=
-          ctest_curl.Escape(this->CTest->GetCTestConfiguration("BuildName"));
-        upload_as += "&site=";
-        upload_as +=
-          ctest_curl.Escape(this->CTest->GetCTestConfiguration("Site"));
-        upload_as += "&stamp=";
-        upload_as += ctest_curl.Escape(this->CTest->GetCurrentTag());
-        upload_as += "-";
-        upload_as += ctest_curl.Escape(this->CTest->GetTestGroupString());
+        upload_as = cmStrCat(
+          std::move(upload_as), "&build=",
+          ctest_curl.Escape(this->CTest->GetCTestConfiguration("BuildName")),
+          "&site=",
+          ctest_curl.Escape(this->CTest->GetCTestConfiguration("Site")),
+          "&stamp=", ctest_curl.Escape(this->CTest->GetCurrentTag()), '-',
+          ctest_curl.Escape(this->CTest->GetTestGroupString()));
         if (cmake* cm = this->CMake) {
           cmValue subproject = cm->GetState()->GetGlobalProperty("SubProject");
           if (subproject) {
-            upload_as += "&subproject=";
-            upload_as += ctest_curl.Escape(*subproject);
+            upload_as =
+              cmStrCat(std::move(upload_as),
+                       "&subproject=", ctest_curl.Escape(*subproject));
           }
         }
       }
@@ -275,18 +268,17 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
         this->CTest->GenerateDoneFile();
       }
 
-      upload_as += "&MD5=";
-
       if (this->InternalTest) {
-        upload_as += "ffffffffffffffffffffffffffffffff";
+        upload_as += "&MD5=ffffffffffffffffffffffffffffffff";
       } else {
         cmCryptoHash hasher(cmCryptoHash::AlgoMD5);
-        upload_as += hasher.HashFile(local_file);
+        upload_as =
+          cmStrCat(std::move(upload_as), "&MD5=", hasher.HashFile(local_file));
       }
 
       if (!cmSystemTools::FileExists(local_file)) {
         cmCTestLog(this->CTest, ERROR_MESSAGE,
-                   "   Cannot find file: " << local_file << std::endl);
+                   "   Cannot find file: ", local_file, '\n');
         ::curl_easy_cleanup(curl);
         ::curl_slist_free_all(headers);
         ::curl_global_cleanup();
@@ -295,11 +287,9 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       unsigned long filelen = cmSystemTools::FileLength(local_file);
 
       ftpfile = cmsys::SystemTools::Fopen(local_file, "rb");
-      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                         "   Upload file: " << local_file << " to "
-                                            << upload_as << " Size: "
-                                            << filelen << std::endl,
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                         "   Upload file: ", local_file, " to ", upload_as,
+                         " Size: ", filelen, '\n');
 
       // specify target
       ::curl_easy_setopt(curl, CURLOPT_URL, upload_as.c_str());
@@ -336,20 +326,14 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       ::curl_easy_perform(curl);
 
       if (!chunk.empty()) {
-        cmCTestOptionalLog(this->CTest, DEBUG,
-                           "CURL output: ["
-                             << cm::string_view(chunk.data(), chunk.size())
-                             << "]" << std::endl,
-                           this->Quiet);
+        cmCTestOptionalLog(this->CTest, DEBUG, this->Quiet, "CURL output: [",
+                           cm::string_view(chunk.data(), chunk.size()), "]\n");
         this->ParseResponse(chunk);
       }
       if (!chunkDebug.empty()) {
         cmCTestOptionalLog(
-          this->CTest, DEBUG,
-          "CURL debug output: ["
-            << cm::string_view(chunkDebug.data(), chunkDebug.size()) << "]"
-            << std::endl,
-          this->Quiet);
+          this->CTest, DEBUG, this->Quiet, "CURL debug output: [",
+          cm::string_view(chunkDebug.data(), chunkDebug.size()), "]\n");
       }
 
       // If curl failed for any reason, or checksum fails, wait and retry
@@ -373,20 +357,18 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
           : atoi(retryCount.c_str());
 
         for (int i = 0; i < count; i++) {
-          cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                             "   Submit failed, waiting " << delay.count()
-                                                          << " seconds...\n",
-                             this->Quiet);
+          cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                             "   Submit failed, waiting ", delay.count(),
+                             " seconds...\n");
 
           auto stop = std::chrono::steady_clock::now() + delay;
           while (std::chrono::steady_clock::now() < stop) {
             cmSystemTools::Delay(100);
           }
 
-          cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                             "   Retry submission: Attempt "
-                               << (i + 1) << " of " << count << std::endl,
-                             this->Quiet);
+          cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                             "   Retry submission: Attempt ", (i + 1), " of ",
+                             count, '\n');
 
           ::fclose(ftpfile);
           ftpfile = cmsys::SystemTools::Fopen(local_file, "rb");
@@ -399,11 +381,9 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
           ::curl_easy_perform(curl);
 
           if (!chunk.empty()) {
-            cmCTestOptionalLog(this->CTest, DEBUG,
-                               "CURL output: ["
-                                 << cm::string_view(chunk.data(), chunk.size())
-                                 << "]" << std::endl,
-                               this->Quiet);
+            cmCTestOptionalLog(
+              this->CTest, DEBUG, this->Quiet, "CURL output: [",
+              cm::string_view(chunk.data(), chunk.size()), "]\n");
             this->ParseResponse(chunk);
           }
 
@@ -418,10 +398,9 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       fclose(ftpfile);
       if (!successful_submission) {
         cmCTestLog(this->CTest, ERROR_MESSAGE,
-                   "   Error when uploading file: " << local_file
-                                                    << std::endl);
+                   "   Error when uploading file: ", local_file, '\n');
         cmCTestLog(this->CTest, ERROR_MESSAGE,
-                   "   Error message was: " << error_buffer << std::endl);
+                   "   Error message was: ", error_buffer, '\n');
         *this->LogFile << "   Error when uploading file: " << local_file
                        << std::endl
                        << "   Error message was: " << error_buffer
@@ -431,10 +410,8 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
           *this->LogFile << "   Curl output was: "
                          << cm::string_view(chunk.data(), chunk.size())
                          << std::endl;
-          cmCTestLog(this->CTest, ERROR_MESSAGE,
-                     "CURL output: ["
-                       << cm::string_view(chunk.data(), chunk.size()) << "]"
-                       << std::endl);
+          cmCTestLog(this->CTest, ERROR_MESSAGE, "CURL output: [",
+                     cm::string_view(chunk.data(), chunk.size()), "]\n");
         }
         ::curl_easy_cleanup(curl);
         ::curl_slist_free_all(headers);
@@ -443,9 +420,8 @@ bool cmCTestSubmitHandler::SubmitUsingHTTP(
       }
       // always cleanup
       ::curl_easy_cleanup(curl);
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                         "   Uploaded: " + local_file << std::endl,
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         "   Uploaded: ", local_file, '\n');
     }
   }
   ::curl_slist_free_all(headers);
@@ -465,7 +441,7 @@ void cmCTestSubmitHandler::ParseResponse(std::vector<char> chunk)
     if (parser.Status != ResponseParser::STATUS_OK) {
       this->HasErrors = true;
       cmCTestLog(this->CTest, HANDLER_OUTPUT,
-                 "   Submission failed: " << parser.Message << std::endl);
+                 "   Submission failed: ", parser.Message, '\n');
       return;
     }
     this->CTest->SetBuildID(parser.BuildID);
@@ -479,9 +455,8 @@ void cmCTestSubmitHandler::ParseResponse(std::vector<char> chunk)
   }
 
   if (this->HasWarnings || this->HasErrors) {
-    cmCTestLog(this->CTest, HANDLER_OUTPUT,
-               "   Server Response:\n"
-                 << cm::string_view(chunk.data(), chunk.size()) << "\n");
+    cmCTestLog(this->CTest, HANDLER_OUTPUT, "   Server Response:\n",
+               cm::string_view(chunk.data(), chunk.size()), '\n');
   }
 }
 
@@ -489,8 +464,8 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
                                                 std::string const& typeString)
 {
   if (!cmSystemTools::FileExists(file)) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Upload file not found: '" << file << "'\n");
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "Upload file not found: '", file,
+               "'\n");
     return -1;
   }
   cmCTestCurl curl(this->CTest);
@@ -524,8 +499,7 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
     unsigned long retryDelayValue = 0;
     if (!cmStrToULong(retryDelayString, &retryDelayValue)) {
       cmCTestLog(this->CTest, WARNING,
-                 "Invalid value for 'RETRY_DELAY' : " << retryDelayString
-                                                      << std::endl);
+                 "Invalid value for 'RETRY_DELAY' : ", retryDelayString, '\n');
     } else {
       retryDelay = std::chrono::seconds(retryDelayValue);
     }
@@ -534,8 +508,7 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
   if (!retryCountString.empty()) {
     if (!cmStrToULong(retryCountString, &retryCount)) {
       cmCTestLog(this->CTest, WARNING,
-                 "Invalid value for 'RETRY_DELAY' : " << retryCountString
-                                                      << std::endl);
+                 "Invalid value for 'RETRY_DELAY' : ", retryCountString, '\n');
     }
   }
 
@@ -575,30 +548,26 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
     fields += '&';
   }
   fields += str.str();
-  cmCTestOptionalLog(this->CTest, DEBUG,
-                     "fields: " << fields << "\nurl:" << url
-                                << "\nfile: " << file << "\n",
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, DEBUG, this->Quiet, "fields: ", fields,
+                     "\nurl:", url, "\nfile: ", file, '\n');
   std::string response;
 
   bool requestSucceeded = curl.HttpRequest(url, fields, response);
   if (!internalTest && !requestSucceeded) {
     // If request failed, wait and retry.
     for (unsigned long i = 0; i < retryCount; i++) {
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                         "   Request failed, waiting " << retryDelay.count()
-                                                       << " seconds...\n",
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         "   Request failed, waiting ", retryDelay.count(),
+                         " seconds...\n");
 
       auto stop = std::chrono::steady_clock::now() + retryDelay;
       while (std::chrono::steady_clock::now() < stop) {
         cmSystemTools::Delay(100);
       }
 
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                         "   Retry request: Attempt "
-                           << (i + 1) << " of " << retryCount << std::endl,
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         "   Retry request: Attempt ", (i + 1), " of ",
+                         retryCount, '\n');
 
       requestSucceeded = curl.HttpRequest(url, fields, response);
       if (requestSucceeded) {
@@ -607,41 +576,36 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
     }
   }
   if (!internalTest && !requestSucceeded) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Error in HttpRequest\n"
-                 << response);
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "Error in HttpRequest\n", response);
     return -1;
   }
-  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "Request upload response: [" << response << "]\n",
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                     "Request upload response: [", response, "]\n");
   Json::Value json;
-  Json::Reader reader;
-  if (!internalTest && !reader.parse(response, json)) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "error parsing json string ["
-                 << response << "]\n"
-                 << reader.getFormattedErrorMessages() << "\n");
+  std::istringstream iss(response);
+  cmJSONState parseState(response, &json, cmJSONState::StrictMode::Relaxed);
+  if (!internalTest && !parseState.errors.empty()) {
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "error parsing json string [",
+               response, "]\n", parseState.GetErrorMessage(), '\n');
     return -1;
   }
   if (!internalTest && json["status"].asInt() != 0) {
     cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Bad status returned from CDash: " << json["status"].asInt());
+               "Bad status returned from CDash: ", json["status"].asInt());
     return -1;
   }
   if (!internalTest) {
     if (json["datafilesmd5"].isArray()) {
       int datares = json["datafilesmd5"][0].asInt();
       if (datares == 1) {
-        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                           "File already exists on CDash, skip upload "
-                             << file << "\n",
-                           this->Quiet);
+        cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                           "File already exists on CDash, skip upload ", file,
+                           '\n');
         return 0;
       }
     } else {
       cmCTestLog(this->CTest, ERROR_MESSAGE,
-                 "bad datafilesmd5 value in response " << response << "\n");
+                 "bad datafilesmd5 value in response ", response, '\n');
       return -1;
     }
   }
@@ -661,20 +625,18 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
   if (!uploadSucceeded) {
     // If upload failed, wait and retry.
     for (unsigned long i = 0; i < retryCount; i++) {
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                         "   Upload failed, waiting " << retryDelay.count()
-                                                      << " seconds...\n",
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         "   Upload failed, waiting ", retryDelay.count(),
+                         " seconds...\n");
 
       auto stop = std::chrono::steady_clock::now() + retryDelay;
       while (std::chrono::steady_clock::now() < stop) {
         cmSystemTools::Delay(100);
       }
 
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                         "   Retry upload: Attempt "
-                           << (i + 1) << " of " << retryCount << std::endl,
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         "   Retry upload: Attempt ", (i + 1), " of ",
+                         retryCount, '\n');
 
       if (!internalTest) {
         uploadSucceeded = curl.UploadFile(file, url, fstr.str(), response);
@@ -686,21 +648,18 @@ int cmCTestSubmitHandler::HandleCDashUploadFile(std::string const& file,
   }
 
   if (!uploadSucceeded) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "error uploading to CDash. " << file << " " << url << " "
-                                            << fstr.str());
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "error uploading to CDash. ", file,
+               " ", url, " ", fstr.str());
     return -1;
   }
-  if (!reader.parse(response, json)) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "error parsing json string ["
-                 << response << "]\n"
-                 << reader.getFormattedErrorMessages() << "\n");
+  parseState = cmJSONState(response, &json, cmJSONState::StrictMode::Relaxed);
+  if (!parseState.errors.empty()) {
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "error parsing json string [",
+               response, "]\n", parseState.GetErrorMessage(), "\n");
     return -1;
   }
-  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "Upload file response: [" << response << "]\n",
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                     "Upload file response: [", response, "]\n");
   return 0;
 }
 
@@ -714,9 +673,9 @@ int cmCTestSubmitHandler::ProcessHandler()
   std::string const& buildDirectory =
     this->CTest->GetCTestConfiguration("BuildDirectory");
   if (buildDirectory.empty()) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Cannot find BuildDirectory  key in the DartConfiguration.tcl"
-                 << std::endl);
+    cmCTestLog(
+      this->CTest, ERROR_MESSAGE,
+      "Cannot find BuildDirectory  key in the DartConfiguration.tcl\n");
     return -1;
   }
 
@@ -727,8 +686,8 @@ int cmCTestSubmitHandler::ProcessHandler()
     this->HTTPProxyType = 1;
     this->HTTPProxy = proxy;
     if (getenv("HTTP_PROXY_PORT")) {
-      this->HTTPProxy += ":";
-      this->HTTPProxy += getenv("HTTP_PROXY_PORT");
+      this->HTTPProxy =
+        cmStrCat(std::move(this->HTTPProxy), ':', getenv("HTTP_PROXY_PORT"));
     }
     if (char const* proxy_type = getenv("HTTP_PROXY_TYPE")) {
       std::string type = proxy_type;
@@ -745,15 +704,14 @@ int cmCTestSubmitHandler::ProcessHandler()
       this->HTTPProxyAuth = getenv("HTTP_PROXY_USER");
     }
     if (getenv("HTTP_PROXY_PASSWD")) {
-      this->HTTPProxyAuth += ":";
-      this->HTTPProxyAuth += getenv("HTTP_PROXY_PASSWD");
+      this->HTTPProxyAuth = cmStrCat(std::move(this->HTTPProxyAuth), ':',
+                                     getenv("HTTP_PROXY_PASSWD"));
     }
   }
 
   if (!this->HTTPProxy.empty()) {
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                       "   Use HTTP Proxy: " << this->HTTPProxy << std::endl,
-                       this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                       "   Use HTTP Proxy: ", this->HTTPProxy, '\n');
   }
 
   std::vector<std::string> files;
@@ -777,20 +735,20 @@ int cmCTestSubmitHandler::ProcessHandler()
   if (this->CTest->AddIfExists(cmCTest::PartCoverage, "Coverage.xml")) {
     std::vector<std::string> gfiles;
     std::string gpath =
-      buildDirectory + "/Testing/" + this->CTest->GetCurrentTag();
+      cmStrCat(buildDirectory, "/Testing/", this->CTest->GetCurrentTag());
     std::string::size_type glen = gpath.size() + 1;
-    gpath = gpath + "/CoverageLog*";
-    cmCTestOptionalLog(this->CTest, DEBUG,
-                       "Globbing for: " << gpath << std::endl, this->Quiet);
+    gpath += "/CoverageLog*";
+    cmCTestOptionalLog(this->CTest, DEBUG, this->Quiet,
+                       "Globbing for: ", gpath, '\n');
     if (cmSystemTools::SimpleGlob(gpath, gfiles, 1)) {
       for (std::string& gfile : gfiles) {
         gfile = gfile.substr(glen);
-        cmCTestOptionalLog(this->CTest, DEBUG,
-                           "Glob file: " << gfile << std::endl, this->Quiet);
+        cmCTestOptionalLog(this->CTest, DEBUG, this->Quiet,
+                           "Glob file: ", gfile, '\n');
         this->CTest->AddSubmitFile(cmCTest::PartCoverage, gfile);
       }
     } else {
-      cmCTestLog(this->CTest, ERROR_MESSAGE, "Problem globbing" << std::endl);
+      cmCTestLog(this->CTest, ERROR_MESSAGE, "Problem globbing\n");
     }
   }
   this->CTest->AddIfExists(cmCTest::PartMemCheck, "DynamicAnalysis.xml");
@@ -833,22 +791,21 @@ int cmCTestSubmitHandler::ProcessHandler()
       cnt++;
     }
   }
-  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "Submit files\n",
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                     "Submit files\n");
   char const* specificGroup = this->CTest->GetSpecificGroup();
   if (specificGroup) {
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                       "   Send to group: " << specificGroup << std::endl,
-                       this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                       "   Send to group: ", specificGroup, '\n');
   }
   this->LogFile = &ofs;
 
   std::string url = this->CTest->GetSubmitURL();
-  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                     "   SubmitURL: " << url << '\n', this->Quiet);
-  if (!this->SubmitUsingHTTP(buildDirectory + "/Testing/" +
-                               this->CTest->GetCurrentTag(),
-                             files, prefix, url)) {
+  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                     "   SubmitURL: ", url, '\n');
+  if (!this->SubmitUsingHTTP(
+        cmStrCat(buildDirectory, "/Testing/", this->CTest->GetCurrentTag()),
+        files, prefix, url)) {
     cmCTestLog(this->CTest, ERROR_MESSAGE,
                "   Problems when submitting via HTTP\n");
     ofs << "   Problems when submitting via HTTP\n";
@@ -859,11 +816,9 @@ int cmCTestSubmitHandler::ProcessHandler()
                "   Errors occurred during submission.\n");
     ofs << "   Errors occurred during submission.\n";
   } else {
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                       "   Submission successful"
-                         << (this->HasWarnings ? ", with warnings." : "")
-                         << std::endl,
-                       this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                       "   Submission successful",
+                       (this->HasWarnings ? ", with warnings." : ""), '\n');
     ofs << "   Submission successful"
         << (this->HasWarnings ? ", with warnings." : "") << std::endl;
   }
@@ -875,10 +830,9 @@ std::string cmCTestSubmitHandler::GetSubmitResultsPrefix()
 {
   std::string buildname =
     cmCTest::SafeBuildIdField(this->CTest->GetCTestConfiguration("BuildName"));
-  std::string name = this->CTest->GetCTestConfiguration("Site") + "___" +
-    buildname + "___" + this->CTest->GetCurrentTag() + "-" +
-    this->CTest->GetTestGroupString() + "___XML___";
-  return name;
+  return cmStrCat(this->CTest->GetCTestConfiguration("Site"), "___", buildname,
+                  "___", this->CTest->GetCurrentTag(), '-',
+                  this->CTest->GetTestGroupString(), "___XML___");
 }
 
 void cmCTestSubmitHandler::SelectParts(std::set<cmCTest::Part> const& parts)
@@ -901,10 +855,9 @@ int cmCTestSubmitHandler::GetSubmitInactivityTimeout()
       submitInactivityTimeout = static_cast<int>(timeout);
     } else {
       cmCTestLog(this->CTest, ERROR_MESSAGE,
-                 "SubmitInactivityTimeout is invalid: "
-                   << cm::quoted(timeoutStr) << "."
-                   << " Using a default value of "
-                   << SUBMIT_TIMEOUT_IN_SECONDS_DEFAULT << "." << std::endl);
+                 "SubmitInactivityTimeout is invalid: \"",
+                 cmEscapeQuotes(timeoutStr), "\". Using a default value of ",
+                 SUBMIT_TIMEOUT_IN_SECONDS_DEFAULT, ".\n");
     }
   }
   return submitInactivityTimeout;

@@ -7,6 +7,7 @@
 
 #include "cmAddCompileDefinitionsCommand.h"
 #include "cmAddCustomCommandCommand.h"
+#include "cmAddCustomRuleCommand.h"
 #include "cmAddCustomTargetCommand.h"
 #include "cmAddDefinitionsCommand.h"
 #include "cmAddDependenciesCommand.h"
@@ -52,13 +53,10 @@
 #include "cmIncludeGuardCommand.h"
 #include "cmIncludeRegularExpressionCommand.h"
 #include "cmInstallCommand.h"
-#include "cmInstallFilesCommand.h"
-#include "cmInstallTargetsCommand.h"
 #include "cmInstrumentationCommand.h"
 #include "cmLinkDirectoriesCommand.h"
 #include "cmListCommand.h"
 #include "cmMacroCommand.h"
-#include "cmMakeDirectoryCommand.h"
 #include "cmMarkAsAdvancedCommand.h"
 #include "cmMathCommand.h"
 #include "cmMessageCommand.h"
@@ -77,7 +75,6 @@
 #include "cmSiteNameCommand.h"
 #include "cmState.h"
 #include "cmStringCommand.h"
-#include "cmSubdirCommand.h"
 #include "cmTargetCompileDefinitionsCommand.h"
 #include "cmTargetCompileFeaturesCommand.h"
 #include "cmTargetCompileOptionsCommand.h"
@@ -101,14 +98,18 @@
 #  include "cmFLTKWrapUICommand.h"
 #  include "cmFileAPICommand.h"
 #  include "cmIncludeExternalMSProjectCommand.h"
+#  include "cmInstallFilesCommand.h"
 #  include "cmInstallProgramsCommand.h"
+#  include "cmInstallTargetsCommand.h"
 #  include "cmLinkLibrariesCommand.h"
 #  include "cmLoadCacheCommand.h"
+#  include "cmMakeDirectoryCommand.h"
 #  include "cmQTWrapCPPCommand.h"
 #  include "cmQTWrapUICommand.h"
 #  include "cmRemoveCommand.h"
 #  include "cmRemoveDefinitionsCommand.h"
 #  include "cmSourceGroupCommand.h"
+#  include "cmSubdirCommand.h"
 #  include "cmTargetLinkDirectoriesCommand.h"
 #  include "cmVariableWatchCommand.h"
 #  include "cmWriteFileCommand.h"
@@ -148,7 +149,6 @@ void GetScriptingCommands(cmState* state)
   state->AddBuiltinCommand("include", cmIncludeCommand);
   state->AddBuiltinCommand("include_guard", cmIncludeGuardCommand);
   state->AddBuiltinCommand("list", cmListCommand);
-  state->AddBuiltinCommand("make_directory", cmMakeDirectoryCommand);
   state->AddBuiltinCommand("mark_as_advanced", cmMarkAsAdvancedCommand);
   state->AddBuiltinCommand("math", cmMathCommand);
   state->AddBuiltinCommand("message", cmMessageCommand);
@@ -207,6 +207,7 @@ void GetScriptingCommands(cmState* state)
                            cmCMakeHostSystemInformationCommand);
   state->AddBuiltinCommand("cmake_pkg_config", cmCMakePkgConfigCommand);
   state->AddBuiltinCommand("load_cache", cmLoadCacheCommand);
+  state->AddBuiltinCommand("make_directory", cmMakeDirectoryCommand);
   state->AddBuiltinCommand("remove", cmRemoveCommand);
   state->AddBuiltinCommand("variable_watch", cmVariableWatchCommand);
   state->AddBuiltinCommand("write_file", cmWriteFileCommand);
@@ -231,6 +232,7 @@ void GetProjectCommands(cmState* state)
                            cmAddCompileDefinitionsCommand);
   state->AddBuiltinCommand("add_custom_command", cmAddCustomCommandCommand);
   state->AddBuiltinCommand("add_custom_target", cmAddCustomTargetCommand);
+  state->AddBuiltinCommand("add_custom_rule", cmAddCustomRuleCommand);
   state->AddBuiltinCommand("add_definitions", cmAddDefinitionsCommand);
   state->AddBuiltinCommand("add_dependencies", cmAddDependenciesCommand);
   state->AddBuiltinCommand("add_executable", cmAddExecutableCommand);
@@ -251,8 +253,6 @@ void GetProjectCommands(cmState* state)
   state->AddBuiltinCommand("include_regular_expression",
                            cmIncludeRegularExpressionCommand);
   state->AddBuiltinCommand("install", cmInstallCommand);
-  state->AddBuiltinCommand("install_files", cmInstallFilesCommand);
-  state->AddBuiltinCommand("install_targets", cmInstallTargetsCommand);
   state->AddBuiltinCommand("link_directories", cmLinkDirectoriesCommand);
   state->AddBuiltinCommand("project", cmProjectCommand);
   state->AddBuiltinCommand("set_source_files_properties",
@@ -261,7 +261,6 @@ void GetProjectCommands(cmState* state)
                            cmSetTargetPropertiesCommand);
   state->AddBuiltinCommand("set_tests_properties",
                            cmSetTestsPropertiesCommand);
-  state->AddBuiltinCommand("subdirs", cmSubdirCommand);
   state->AddBuiltinCommand("target_compile_definitions",
                            cmTargetCompileDefinitionsCommand);
   state->AddBuiltinCommand("target_compile_features",
@@ -287,7 +286,9 @@ void GetProjectCommands(cmState* state)
   state->AddBuiltinCommand("fltk_wrap_ui", cmFLTKWrapUICommand);
   state->AddBuiltinCommand("include_external_msproject",
                            cmIncludeExternalMSProjectCommand);
+  state->AddBuiltinCommand("install_files", cmInstallFilesCommand);
   state->AddBuiltinCommand("install_programs", cmInstallProgramsCommand);
+  state->AddBuiltinCommand("install_targets", cmInstallTargetsCommand);
   state->AddBuiltinCommand("add_link_options", cmAddLinkOptionsCommand);
   state->AddBuiltinCommand("link_libraries", cmLinkLibrariesCommand);
   state->AddBuiltinCommand("target_link_directories",
@@ -296,6 +297,7 @@ void GetProjectCommands(cmState* state)
   state->AddBuiltinCommand("qt_wrap_ui", cmQTWrapUICommand);
   state->AddBuiltinCommand("remove_definitions", cmRemoveDefinitionsCommand);
   state->AddBuiltinCommand("source_group", cmSourceGroupCommand);
+  state->AddBuiltinCommand("subdirs", cmSubdirCommand);
   state->AddBuiltinCommand("cmake_file_api", cmFileAPICommand);
   state->AddBuiltinCommand("cmake_instrumentation", cmInstrumentationCommand);
 

@@ -2,6 +2,7 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmSubdirCommand.h"
 
+#include "cmDiagnostics.h"
 #include "cmExecutionStatus.h"
 #include "cmMakefile.h"
 #include "cmStringAlgorithms.h"
@@ -10,13 +11,18 @@
 bool cmSubdirCommand(std::vector<std::string> const& args,
                      cmExecutionStatus& status)
 {
+  cmMakefile& mf = status.GetMakefile();
+
+  mf.IssueDiagnostic(cmDiagnostics::CMD_DEPRECATED,
+                     "The 'subdirs' command has been superseded. "
+                     "Use the 'add_subdirectory' command instead.");
+
   if (args.empty()) {
     status.SetError("called with incorrect number of arguments");
     return false;
   }
   bool res = true;
   bool excludeFromAll = false;
-  cmMakefile& mf = status.GetMakefile();
 
   for (std::string const& i : args) {
     if (i == "EXCLUDE_FROM_ALL") {
@@ -29,17 +35,17 @@ bool cmSubdirCommand(std::vector<std::string> const& args,
     }
 
     // if they specified a relative path then compute the full
-    std::string srcPath = mf.GetCurrentSourceDirectory() + "/" + i;
+    std::string srcPath = cmStrCat(mf.GetCurrentSourceDirectory(), '/', i);
     if (cmSystemTools::FileIsDirectory(srcPath)) {
-      std::string binPath = mf.GetCurrentBinaryDirectory() + "/" + i;
+      std::string binPath = cmStrCat(mf.GetCurrentBinaryDirectory(), '/', i);
       mf.AddSubDirectory(srcPath, binPath, excludeFromAll, false, false);
     }
     // otherwise it is a full path
     else if (cmSystemTools::FileIsDirectory(i)) {
       // we must compute the binPath from the srcPath, we just take the last
       // element from the source path and use that
-      std::string binPath = mf.GetCurrentBinaryDirectory() + "/" +
-        cmSystemTools::GetFilenameName(i);
+      std::string binPath = cmStrCat(mf.GetCurrentBinaryDirectory(), '/',
+                                     cmSystemTools::GetFilenameName(i));
       mf.AddSubDirectory(i, binPath, excludeFromAll, false, false);
     } else {
       status.SetError(cmStrCat("Incorrect SUBDIRS command. Directory: ", i,

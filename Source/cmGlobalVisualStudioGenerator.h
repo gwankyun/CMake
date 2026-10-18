@@ -40,9 +40,6 @@ public:
   VSVersion GetVersion() const;
   void SetVersion(VSVersion v);
 
-  /** Is the installed VS an Express edition?  */
-  bool IsExpressEdition() const { return this->ExpressEdition; }
-
   void EnableLanguage(std::vector<std::string> const& languages, cmMakefile*,
                       bool optional) override;
 
@@ -159,6 +156,9 @@ public:
 protected:
   cmGlobalVisualStudioGenerator(cmake* cm);
 
+  /** Return true when using a Visual Studio clang-cl toolset.  */
+  virtual bool IsClangClToolset() const { return false; }
+
   virtual bool InitializePlatform(cmMakefile* mf);
 
   void AddExtraIDETargets() override;
@@ -171,7 +171,6 @@ protected:
   char const* GetIDEVersion() const;
 
   VSVersion Version;
-  bool ExpressEdition;
 
   std::string GeneratorPlatform;
   std::string DefaultPlatformName;

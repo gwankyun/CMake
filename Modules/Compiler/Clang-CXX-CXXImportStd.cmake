@@ -1,3 +1,10 @@
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC" OR
+    CMAKE_CXX_STANDARD_LIBRARY STREQUAL "msvc" OR
+    CMAKE_CXX_COMPILER_TARGET MATCHES "(^|-)windows-msvc($|-)")
+  include(Compiler/MSVC-CXX-CXXImportStd)
+  return()
+endif()
+
 function (_cmake_cxx_find_modules_json)
   if (NOT CMAKE_CXX_STDLIB_MODULES_JSON)
     if (CMAKE_CXX_STANDARD_LIBRARY STREQUAL "libc++")
@@ -19,7 +26,8 @@ function (_cmake_cxx_find_modules_json)
       RESULT_VARIABLE _clang_libcxx_modules_json_file_res
       OUTPUT_STRIP_TRAILING_WHITESPACE
       ERROR_STRIP_TRAILING_WHITESPACE)
-    if (_clang_libcxx_modules_json_file_res)
+    if (_clang_libcxx_modules_json_file_res OR
+        NOT EXISTS "${_clang_libcxx_modules_json_file}")
       set(CMAKE_CXX_COMPILER_IMPORT_STD_ERROR_MESSAGE "Could not find `${_clang_modules_json_impl}.modules.json` resource" PARENT_SCOPE)
       return ()
     endif ()
@@ -27,7 +35,11 @@ function (_cmake_cxx_find_modules_json)
     set(CMAKE_CXX_STDLIB_MODULES_JSON "${CMAKE_CXX_STDLIB_MODULES_JSON}" PARENT_SCOPE)
   endif ()
 
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "18.1.2" AND
+  set(_clang_version "${CMAKE_CXX_COMPILER_VERSION}")
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "DPClang")
+    set(_clang_version "${CMAKE_CXX_COMPILER_VERSION_INTERNAL}")
+  endif()
+  if (_clang_version VERSION_LESS "18.1.2" AND
       CMAKE_CXX_STANDARD_LIBRARY STREQUAL "libc++")
     # The original PR had a key spelling mismatch internally. Do not support it
     # and instead require a release known to have the fix.

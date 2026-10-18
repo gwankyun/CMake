@@ -391,6 +391,7 @@ int uv__signal_loop_fork(uv_loop_t* loop);
 
 /* platform specific */
 uint64_t uv__hrtime(uv_clocktype_t type);
+uint64_t uv__get_rlimit_max_memory(void);
 int uv__kqueue_init(uv_loop_t* loop);
 int uv__platform_loop_init(uv_loop_t* loop);
 void uv__platform_loop_delete(uv_loop_t* loop);
@@ -481,12 +482,12 @@ UV_UNUSED(static void uv__update_time(uv_loop_t* loop)) {
   loop->time = uv__hrtime(UV_CLOCK_FAST) / 1000000;
 }
 
-UV_UNUSED(static char* uv__basename_r(const char* path)) {
-  char* s;
+UV_UNUSED(static const char* uv__basename_r(const char* path)) {
+  const char* s;
 
   s = strrchr(path, '/');
   if (s == NULL)
-    return (char*) path;
+    return path;
 
   return s + 1;
 }
@@ -536,6 +537,7 @@ int uv__statx(int dirfd,
               unsigned int mask,
               struct uv__statx* statxbuf);
 void uv__statx_to_stat(const struct uv__statx* statxbuf, uv_stat_t* buf);
+int uv__iou_cancel(uv_loop_t* loop, uv_fs_t* req);
 ssize_t uv__getrandom(void* buf, size_t buflen, unsigned flags);
 unsigned uv__kernel_version(void);
 #endif
@@ -587,7 +589,7 @@ int uv__get_constrained_cpu(long long* quota);
 
 #if defined(EVFILT_USER) && defined(NOTE_TRIGGER)
 /* EVFILT_USER is available since OS X 10.6, DragonFlyBSD 4.0,
- * FreeBSD 8.1, and NetBSD 10.0.
+ * FreeBSD 8.1, NetBSD 10.0, and OpenBSD 7.8.
  *
  * Note that even though EVFILT_USER is defined on the current system,
  * it may still fail to work at runtime somehow. In that case, we fall

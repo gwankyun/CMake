@@ -24,6 +24,7 @@ set(targets
   freebsd-C-Clang-3.3.0 freebsd-CXX-Clang-3.3.0 freebsd-Fortran-GNU-4.6.4
   hand-C-empty hand-CXX-empty
   hand-C-relative hand-CXX-relative
+  hand-CXX-shared-libraries
   linux-C-GNU-7.3.0 linux-CXX-GNU-7.3.0 linux-Fortran-GNU-7.3.0
   linux-C-GNU-10.2.1-static-libgcc
     linux-CXX-GNU-10.2.1-static-libstdc++
@@ -42,6 +43,7 @@ set(targets
     linux_nostdinc-C-XL-12.1.0 linux_nostdinc-CXX-XL-12.1.0
     linux_nostdinc_i-C-XL-12.1.0 linux_nostdinc-CXX-XL-12.1.0
   linux-C-XL-16.1.0.0 linux-CXX-XL-16.1.0.0
+  linux-CUDA-Clang-23.1.0
   linux-CUDA-NVIDIA-10.1.168-CLANG linux-CUDA-NVIDIA-10.1.168-XLClang-v
     linux-CUDA-NVIDIA-9.2.148-GCC
   linux-Fortran-LLVMFlang-15.0.0
@@ -53,6 +55,9 @@ set(targets
   linux-Fortran-LFortran-0.55.0-clang
   linux-Fortran-LFortran-0.55.0-gcc
   linux-custom_clang-C-Clang-13.0.0 linux-custom_clang-CXX-Clang-13.0.0
+  linux-SYCL-AdaptiveCpp-25.10.0
+  linux-SYCL-Clang-24.0.0
+  linux-SYCL-IntelLLVM-2026.0.0
   mingw.org-C-GNU-4.9.3 mingw.org-CXX-GNU-4.9.3
   netbsd-C-GNU-4.8.5 netbsd-CXX-GNU-4.8.5
     netbsd_nostdinc-C-GNU-4.8.5 netbsd_nostdinc-CXX-GNU-4.8.5
@@ -60,6 +65,7 @@ set(targets
   sunos-C-SunPro-5.13.0 sunos-CXX-SunPro-5.13.0 sunos-Fortran-SunPro-8.8.0
   sunos5.10_sparc32-C-GNU-5.5.0 sunos5.10_sparc32-CXX-GNU-5.5.0 sunos5.10_sparc32-Fortran-GNU-5.5.0
   sunos5.11_i386-C-GNU-5.5.0 sunos5.11_i386-CXX-GNU-5.5.0 sunos5.11_i386-Fortran-GNU-5.5.0
+  windows_x86_64-C-GNU-13.2.0-space windows_x86_64-CXX-GNU-13.2.0-space windows_x86_64-Fortran-GNU-13.2.0-space
   windows_x86_64-C-MSVC-19.36.32543.0 windows_x86_64-CXX-MSVC-19.36.32543.0
   windows_x86_64-C-MSVC-19.38.33130.0-VS windows_x86_64-CXX-MSVC-19.38.33130.0-VS
   windows_x86_64-C-MSVC-19.50.35724.0 windows_x86_64-CXX-MSVC-19.50.35724.0
@@ -70,14 +76,6 @@ set(targets
   windows_x86_64-CUDA-NVIDIA-13.1.115
   windows_arm64-C-Clang-17.0.1-MSVC windows_arm64-CXX-Clang-17.0.1-MSVC windows_arm64-Fortran-LLVMFlang-17.0.1-MSVC
   )
-
-if(CMAKE_HOST_WIN32)
-  # The KWSys actual-case cache breaks case sensitivity on Windows.
-  list(FILTER targets EXCLUDE REGEX "-XL|-SunPro")
-else()
-  # Windows drive letters are not recognized as absolute on other platforms.
-  list(FILTER targets EXCLUDE REGEX "mingw")
-endif()
 
 include(${CMAKE_ROOT}/Modules/CMakeParseImplicitLinkInfo.cmake)
 include(${CMAKE_ROOT}/Modules/CMakeParseLibraryArchitecture.cmake)
@@ -156,6 +154,7 @@ foreach(t ${targets})
     set(implicit_objs "")
     set(library_arch_output "")
     set(linker_tool_output "")
+    unset(linker_arch_output)
     file(STRINGS ${outfile} outputs)
     foreach(line IN LISTS outputs)
       if(line MATCHES "libs=")
@@ -169,6 +168,9 @@ foreach(t ${targets})
       endif()
       if(line MATCHES "linker_tool=")
         string(REPLACE "linker_tool=" "" linker_tool_output "${line}")
+      endif()
+      if(line MATCHES "^linker_arch=")
+        string(REPLACE "linker_arch=" "" linker_arch_output "${line}")
       endif()
     endforeach()
 
@@ -197,7 +199,7 @@ foreach(t ${targets})
     cmake_parse_library_architecture(${lang} "${idirs}" "${implicit_objs}" library_arch)
 
     # File format
-    # file(WRITE ${outfile} "libs=${implicit_libs}\ndirs=${idirs}\nlibrary_arch=${library_arch}\nlinker_tool=${linker_tool}\n")
+    # file(WRITE ${outfile} "libs=${implicit_libs}\ndirs=${idirs}\nlibrary_arch=${library_arch}\nlinker_tool=${linker_tool}\nlinker_arch=${linker_tool_ARCH_FLAGS}\n")
 
     if(t MATCHES "windows" AND NOT CMAKE_HOST_WIN32)
       string(REPLACE "\\" "/" linker_tool "${linker_tool}")
@@ -216,6 +218,10 @@ foreach(t ${targets})
       message("${t} parse failed: state=${state}, '${library_arch}' does not match '^${library_arch_output}$'")
     elseif((linker_tool OR linker_tool_output) AND NOT "${linker_tool}" MATCHES "^${linker_tool_output}$")
       message("${t} parse failed: state=${state}, '${linker_tool}' does not match '^${linker_tool_output}$'")
+    endif()
+    if(DEFINED linker_arch_output AND
+       NOT "${linker_tool_ARCH_FLAGS}" STREQUAL "${linker_arch_output}")
+      message("${t} parse failed: linker architecture flags '${linker_tool_ARCH_FLAGS}' do not match '${linker_arch_output}'")
     endif()
   endblock()
 endforeach(t)

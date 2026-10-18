@@ -9,11 +9,14 @@
 #include <cstddef> // IWYU pragma: keep
 #include <cstdlib>
 #include <functional>
-#include <iomanip>
+#include <initializer_list>
 #include <iostream>
 #include <list>
+#include <map>
+#include <set>
 #include <sstream>
 #include <stack>
+#include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -21,6 +24,7 @@
 #include <cm/memory>
 #include <cm/optional>
 #include <cm/string_view>
+#include <cm/vector>
 #include <cmext/algorithm>
 
 #include <cm3p/json/value.h>
@@ -35,12 +39,15 @@
 #include "cmCTestBinPacker.h"
 #include "cmCTestRunTest.h"
 #include "cmCTestTestHandler.h"
+#include "cmCTestTypes.h"
+#include "cmInstrumentationInterrupt.h"
 #include "cmJSONState.h"
 #include "cmListFileCache.h"
 #include "cmRange.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmUVJobServerClient.h"
+#include "cmUnreachable.h"
 #include "cmWorkingDirectory.h"
 
 namespace {
@@ -94,6 +101,36 @@ cm::optional<CostEntry> splitCostLine(cm::string_view line)
   return CostEntry{ line.substr(0, pos1), prev, cost };
 }
 
+std::string FixtureRepeatModeString(cmCTestTestHandler::FixtureRepeatMode mode)
+{
+  switch (mode) {
+    case cmCTestTestHandler::FixtureRepeatMode::AroundAllRepeats:
+      return "AROUND_ALL_REPEATS";
+    case cmCTestTestHandler::FixtureRepeatMode::AroundEachRepeat:
+      return "AROUND_EACH_REPEAT";
+    case cmCTestTestHandler::FixtureRepeatMode::EachTestSeparately:
+      return "EACH_TEST_SEPARATELY";
+  }
+  CM_UNREACHABLE;
+}
+
+// A fixture and everything ctest needs to decide how it repeats.
+struct Fixture
+{
+  // The fixture's own setup and cleanup tests.
+  std::set<int> SetupAndCleanupTests;
+  // Those tests and the tests requiring the fixture, which together are
+  // everything that repeats with it in AROUND_EACH_REPEAT mode.
+  std::set<int> AllTests;
+  // The modes the setup and cleanup tests request.  Each is mapped to one
+  // test that requests it, so that a report of conflicting modes can name
+  // the tests responsible.
+  std::map<cmCTestTestHandler::FixtureRepeatMode, int> RequestedModes;
+  // The mode CMake recorded as the CMP0224 default, taken from the first
+  // setup or cleanup test that carries one.
+  cm::optional<cmCTestTestHandler::FixtureRepeatMode> DefaultMode;
+};
+
 }
 
 namespace cmsys {
@@ -143,12 +180,165 @@ bool cmCTestMultiProcessHandler::SetTests(TestMap tests,
     this->HasCycles = !this->CheckCycles();
     this->HasInvalidGeneratedResourceSpec =
       !this->CheckGeneratedResourceSpec();
-    if (this->HasCycles || this->HasInvalidGeneratedResourceSpec) {
+    if (this->HasCycles || this->HasInvalidGeneratedResourceSpec ||
+        !this->ComputeFixtureRepetition()) {
       return false;
     }
     this->CreateTestCostList();
   }
   return true;
+}
+
+bool cmCTestMultiProcessHandler::ComputeFixtureRepetition()
+{
+  using Mode = cmCTestTestHandler::FixtureRepeatMode;
+
+  if (this->RepeatMode == cmCTest::Repeat::Never || this->RepeatCount <= 1) {
+    return true;
+  }
+
+  // Collect the tests taking part in each fixture and the modes its own
+  // setup and cleanup tests ask for.
+  std::map<std::string, Fixture> fixtures;
+  for (auto const& p : this->Properties) {
+    int const test = p.first;
+    auto const& props = *p.second;
+    for (std::string const& name : props.FixturesRequired) {
+      fixtures[name].AllTests.insert(test);
+    }
+    for (std::set<std::string> const* own :
+         { &props.FixturesSetup, &props.FixturesCleanup }) {
+      for (std::string const& name : *own) {
+        Fixture& fixture = fixtures[name];
+        fixture.SetupAndCleanupTests.insert(test);
+        fixture.AllTests.insert(test);
+        if (props.RequestedFixtureRepeatMode) {
+          fixture.RequestedModes.emplace(*props.RequestedFixtureRepeatMode,
+                                         test);
+        } else if (!fixture.DefaultMode) {
+          fixture.DefaultMode = props.DefaultFixtureRepeatMode;
+        }
+      }
+    }
+  }
+
+  // Resolve each fixture's mode.  A mode requested by one of its own tests
+  // applies to the whole fixture, so its own tests must agree.
+  std::map<std::string, Mode> fixtureMode;
+  for (auto const& fi : fixtures) {
+    Fixture const& fixture = fi.second;
+    if (fixture.RequestedModes.size() > 1) {
+      std::string e =
+        cmStrCat("Error: the setup and cleanup tests of fixture \"", fi.first,
+                 "\" request conflicting FIXTURE_REPEAT_MODE values:\n");
+      for (auto const& r : fixture.RequestedModes) {
+        e = cmStrCat(std::move(e), "  \"", this->GetName(r.second),
+                     "\" requests ", FixtureRepeatModeString(r.first), '\n');
+      }
+      e += "All setup and cleanup tests of a fixture must request the same "
+           "mode.\n";
+      cmCTestLog(this->CTest, ERROR_MESSAGE, e);
+      return false;
+    }
+    fixtureMode[fi.first] = !fixture.RequestedModes.empty()
+      ? fixture.RequestedModes.begin()->first
+      : fixture.DefaultMode.value_or(Mode::EachTestSeparately);
+  }
+
+  // Fixtures that share a test repeat together, so they must agree as well.
+  // Otherwise a test could repeat with one fixture after another fixture it
+  // takes part in has been cleaned up.
+  for (auto const& p : this->Properties) {
+    auto const& props = *p.second;
+    std::map<Mode, std::string> modes;
+    for (std::set<std::string> const* used :
+         { &props.FixturesSetup, &props.FixturesCleanup,
+           &props.FixturesRequired }) {
+      for (std::string const& name : *used) {
+        modes.emplace(fixtureMode[name], name);
+      }
+    }
+    if (modes.size() > 1) {
+      std::string e = cmStrCat("Error: test \"", this->GetName(p.first),
+                               "\" takes part in fixtures with conflicting "
+                               "FIXTURE_REPEAT_MODE values:\n");
+      for (auto const& m : modes) {
+        e = cmStrCat(std::move(e), "  fixture \"", m.second, "\" uses ",
+                     FixtureRepeatModeString(m.first), '\n');
+      }
+      e += "Fixtures that share a test must use the same mode.\n";
+      cmCTestLog(this->CTest, ERROR_MESSAGE, e);
+      return false;
+    }
+  }
+
+  // Record what the resolved modes ask of each fixture's tests.
+  for (auto const& fi : fixtures) {
+    switch (fixtureMode[fi.first]) {
+      case Mode::AroundAllRepeats:
+        this->TestsRunOnce.insert(fi.second.SetupAndCleanupTests.begin(),
+                                  fi.second.SetupAndCleanupTests.end());
+        break;
+      case Mode::AroundEachRepeat:
+        this->AddRepeatGroup(fi.second.AllTests);
+        break;
+      case Mode::EachTestSeparately:
+        break;
+    }
+  }
+
+  // Record what each group needs to repeat itself.
+  for (auto& group : this->RepeatGroups) {
+    group.RepetitionsLeft = this->RepeatCount - 1;
+    group.Unfinished = group.Tests.size();
+    for (auto& t : group.Tests) {
+      // Keep only dependencies within the group.  Dependencies on other
+      // tests are satisfied once, by the group's first repetition.
+      for (int depend : this->PendingTests[t.first].Depends) {
+        if (group.Tests.count(depend) != 0) {
+          t.second.insert(depend);
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+void cmCTestMultiProcessHandler::AddRepeatGroup(std::set<int> const& tests)
+{
+  // Reuse the group of any test that is already in one, so that fixtures
+  // sharing a test end up repeating together.
+  int groupNumber = -1;
+  for (int test : tests) {
+    auto const gi = this->RepeatGroupOfTest.find(test);
+    if (gi != this->RepeatGroupOfTest.end()) {
+      groupNumber = gi->second;
+      break;
+    }
+  }
+  if (groupNumber < 0) {
+    groupNumber = static_cast<int>(this->RepeatGroups.size());
+    this->RepeatGroups.emplace_back();
+  }
+  RepeatGroup& group = this->RepeatGroups[groupNumber];
+
+  for (int test : tests) {
+    auto const gi = this->RepeatGroupOfTest.find(test);
+    if (gi == this->RepeatGroupOfTest.end()) {
+      this->RepeatGroupOfTest[test] = groupNumber;
+      group.Tests[test];
+    } else if (gi->second != groupNumber) {
+      // Move the tests of the other group over.  It is left behind empty in
+      // RepeatGroups, where no test refers to it any more.
+      RepeatGroup& other = this->RepeatGroups[gi->second];
+      for (auto const& t : other.Tests) {
+        this->RepeatGroupOfTest[t.first] = groupNumber;
+      }
+      group.Tests.insert(other.Tests.begin(), other.Tests.end());
+      other.Tests.clear();
+    }
+  }
 }
 
 // Set the max number of tests that can be run at the same time.
@@ -220,8 +410,7 @@ void cmCTestMultiProcessHandler::InitializeLoop()
     *this->Loop, /*onToken=*/[this]() { this->JobServerReceivedToken(); },
     /*onDisconnect=*/nullptr);
   if (this->JobServerClient) {
-    cmCTestLog(this->CTest, OUTPUT,
-               "Connected to MAKE jobserver" << std::endl);
+    cmCTestLog(this->CTest, OUTPUT, "Connected to MAKE jobserver\n");
   }
 }
 
@@ -246,26 +435,41 @@ void cmCTestMultiProcessHandler::RunTests()
   uv_run(this->Loop, UV_RUN_DEFAULT);
   this->FinalizeLoop();
 
-  if (!this->StopTimePassed && !this->CheckStopOnFailure()) {
+  // A user interrupt (e.g. Ctrl+C) deliberately stops scheduling with tests
+  // still pending, so skip the completion asserts in that case.  Canceled
+  // launches release their resources, so AllResourcesAvailable() still holds.
+  if (!this->StopTimePassed && !this->CheckStopOnFailure() &&
+      cmInstrumentationInterrupt::PendingInterruptSignal() == 0) {
     assert(this->Complete());
     assert(this->PendingTests.empty());
   }
   assert(this->AllResourcesAvailable());
 
-  this->MarkFinished();
+  // On interrupt, leave the checkpoint file intact so a later `ctest -F` can
+  // resume from where this run left off; MarkFinished() would delete it.
+  if (cmInstrumentationInterrupt::PendingInterruptSignal() == 0) {
+    this->MarkFinished();
+  }
   this->UpdateCostData();
 }
 
 void cmCTestMultiProcessHandler::StartTestProcess(int test)
 {
-  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "test " << test << "\n", this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet, "test ",
+                     test, "\n");
 
   auto testRun = cm::make_unique<cmCTestRunTest>(*this, test);
 
   if (this->RepeatMode != cmCTest::Repeat::Never) {
-    testRun->SetRepeatMode(this->RepeatMode);
-    testRun->SetNumberOfRuns(this->RepeatCount);
+    auto const gi = this->RepeatGroupOfTest.find(test);
+    if (gi != this->RepeatGroupOfTest.end()) {
+      // The group repeats the test, so report the repetition it is running.
+      int const left = this->RepeatGroups[gi->second].RepetitionsLeft;
+      testRun->SetRunNumber(this->RepeatCount - left, this->RepeatCount);
+    } else if (this->TestsRunOnce.count(test) == 0) {
+      testRun->SetRepeatMode(this->RepeatMode);
+      testRun->SetRunNumber(1, this->RepeatCount);
+    }
   }
   if (this->UseResourceSpec) {
     testRun->SetUseAllocatedResources(true);
@@ -313,8 +517,19 @@ void cmCTestMultiProcessHandler::StartTestProcess(int test)
       e << "\n";
     }
     e << "Resource spec file:\n\n  " << this->ResourceSpecFile;
-    cmCTestRunTest::StartFailure(std::move(testRun), this->Total, e.str(),
-                                 "Insufficient resources");
+
+    // Handle insufficient resources
+    auto const errorAction =
+      this->Properties[test]->ResourceErrorAction.value_or(
+        this->TestHandler->TestOptions.ResourceErrorAction);
+
+    if (errorAction == cmCTestTypes::ResourceErrorAction::Skip) {
+      cmCTestRunTest::StartFailure(std::move(testRun), this->Total, "",
+                                   "SKIP_INSUFFICIENT_RESOURCES");
+    } else { // "FAIL"
+      cmCTestRunTest::StartFailure(std::move(testRun), this->Total, e.str(),
+                                   "Insufficient resources");
+    }
     return;
   }
 
@@ -477,8 +692,7 @@ void cmCTestMultiProcessHandler::SetStopTimePassed()
   if (!this->StopTimePassed) {
     cmCTestLog(this->CTest, ERROR_MESSAGE,
                "The stop time has been passed. "
-               "Stopping all tests."
-                 << std::endl);
+               "Stopping all tests.\n");
     this->StopTimePassed = true;
   }
 }
@@ -583,6 +797,17 @@ void cmCTestMultiProcessHandler::JobServerReceivedToken()
   assert(!this->JobServerQueuedTests.empty());
   int test = this->JobServerQueuedTests.front();
   this->JobServerQueuedTests.pop_front();
+  if (cmInstrumentationInterrupt::PendingInterruptSignal() != 0) {
+    // Interrupted (e.g. Ctrl+C): do not launch this queued test.  Its
+    // resources were locked when it was queued in StartNextTests, and this
+    // callback runs holding a job server token, so release both to keep the
+    // scheduler's bookkeeping balanced (see the AllResourcesAvailable() and
+    // token invariants checked after the loop).
+    this->DeallocateResources(test);
+    this->UnlockResources(test);
+    this->JobServerClient->ReleaseToken();
+    return;
+  }
   this->StartTestProcess(test);
 }
 
@@ -594,7 +819,11 @@ void cmCTestMultiProcessHandler::StartNextTests()
   this->StartNextTestsOnTimer_.stop();
 
   if (this->PendingTests.empty() || this->CheckStopTimePassed() ||
-      (this->CheckStopOnFailure() && !this->Failed->empty())) {
+      (this->CheckStopOnFailure() && !this->Failed->empty()) ||
+      cmInstrumentationInterrupt::PendingInterruptSignal() != 0) {
+    // A user interrupt (e.g. Ctrl+C) stops scheduling: launch no further
+    // tests. Tests already running receive the interrupt too and unwind on
+    // their own.
     return;
   }
 
@@ -650,6 +879,7 @@ void cmCTestMultiProcessHandler::StartNextTests()
   // Start tests in the preferred order, each subject to readiness checks.
   auto ti = this->OrderedTests.begin();
   while (numToStart > 0 && !this->SerialTestRunning &&
+         cmInstrumentationInterrupt::PendingInterruptSignal() == 0 &&
          ti != this->OrderedTests.end()) {
     // Increment the test iterator now because the current list
     // entry may be deleted below.
@@ -681,10 +911,9 @@ void cmCTestMultiProcessHandler::StartNextTests()
 
       // We found a test that fits in the spare load.
       allTestsFailedTestLoadCheck = false;
-      cmCTestLog(this->CTest, DEBUG,
-                 "OK to run "
-                   << this->GetName(test) << ", it requires " << processors
-                   << " procs & system load is: " << systemLoad << std::endl);
+      cmCTestLog(this->CTest, DEBUG, "OK to run ", this->GetName(test),
+                 ", it requires ", processors,
+                 " procs & system load is: ", systemLoad, '\n');
     }
 
     // Exclude tests that are too big to fit in the concurrency limit.
@@ -732,19 +961,19 @@ void cmCTestMultiProcessHandler::StartNextTests()
     } else if (!testWithMinProcessors.empty()) {
       /* clang-format off */
       cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                 "System Load: " << systemLoad << ", "
-                 "Max Allowed Load: " << this->TestLoad << ", "
-                 "Smallest test " << testWithMinProcessors <<
-                 " requires " << minProcessorsRequired);
+        "System Load: ", systemLoad, ", "
+        "Max Allowed Load: ", this->TestLoad, ", "
+        "Smallest test ", testWithMinProcessors,
+        " requires ", minProcessorsRequired);
       /* clang-format on */
     } else {
       /* clang-format off */
       cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                 "System Load: " << systemLoad << ", "
-                 "Max Allowed Load: " << this->TestLoad);
+        "System Load: ", systemLoad, ", "
+        "Max Allowed Load: ", this->TestLoad);
       /* clang-format on */
     }
-    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, "*****" << std::endl);
+    cmCTestLog(this->CTest, HANDLER_VERBOSE_OUTPUT, "*****\n");
 
     // Try again later when the load might be lower.
     this->StartNextTestsOnTimer();
@@ -791,6 +1020,7 @@ void cmCTestMultiProcessHandler::FinishTestProcess(
   }
   if (started) {
     if (!this->StopTimePassed &&
+        cmInstrumentationInterrupt::PendingInterruptSignal() == 0 &&
         cmCTestRunTest::StartAgain(std::move(runner), this->Completed)) {
       this->Completed--; // remove the completed test because run again
       return;
@@ -803,13 +1033,35 @@ void cmCTestMultiProcessHandler::FinishTestProcess(
     this->Failed->push_back(properties->Name);
   }
 
-  for (auto& t : this->PendingTests) {
-    t.second.Depends.erase(test);
+  // Let the tests waiting on this one start.  A test that its fixture
+  // repeats releases only the other tests of its group; the tests outside
+  // it have to wait for the group's last repetition, so FinishRepeatGroup
+  // releases those.
+  auto const group = this->RepeatGroupOfTest.find(test);
+  bool const repeatsWithFixture = group != this->RepeatGroupOfTest.end();
+  for (auto& pending : this->PendingTests) {
+    if (repeatsWithFixture) {
+      auto const pendingGroup = this->RepeatGroupOfTest.find(pending.first);
+      if (pendingGroup == this->RepeatGroupOfTest.end() ||
+          pendingGroup->second != group->second) {
+        continue;
+      }
+    }
+    pending.second.Depends.erase(test);
   }
 
-  this->WriteCheckpoint(test);
+  // A test killed by the interrupt (e.g. Ctrl+C) never truly finished, so do
+  // not record it in the checkpoint; otherwise `ctest -F` would skip it when
+  // resuming this interrupted run.  A test that its fixture repeats is
+  // recorded by FinishRepeatGroup instead, once its group is done.
+  if (cmInstrumentationInterrupt::PendingInterruptSignal() == 0 &&
+      !repeatsWithFixture) {
+    this->WriteCheckpoint(test);
+  }
   this->DeallocateResources(test);
   this->UnlockResources(test);
+
+  this->FinishRepeatGroupTest(test, testResult.TestStatus);
 
   runner.reset();
 
@@ -817,6 +1069,88 @@ void cmCTestMultiProcessHandler::FinishTestProcess(
     this->JobServerClient->ReleaseToken();
   }
   this->StartNextTestsOnIdle();
+}
+
+void cmCTestMultiProcessHandler::FinishRepeatGroupTest(int test,
+                                                       int testStatus)
+{
+  auto const gi = this->RepeatGroupOfTest.find(test);
+  if (gi == this->RepeatGroupOfTest.end()) {
+    return;
+  }
+  RepeatGroup& group = this->RepeatGroups[gi->second];
+
+  group.AllCompleted &= testStatus == cmCTestTestHandler::COMPLETED;
+  group.AnyTimedOut |= testStatus == cmCTestTestHandler::TIMEOUT;
+  if (--group.Unfinished > 0) {
+    return;
+  }
+
+  // The group finished a repetition.  Repeat it under the same conditions
+  // that make an individual test repeat.  See cmCTestRunTest::NeedsToRepeat.
+  bool const conditionMet =
+    (this->RepeatMode == cmCTest::Repeat::UntilFail && group.AllCompleted) ||
+    (this->RepeatMode == cmCTest::Repeat::UntilPass && !group.AllCompleted) ||
+    (this->RepeatMode == cmCTest::Repeat::AfterTimeout && group.AnyTimedOut);
+  bool const runEnding = this->StopTimePassed ||
+    (this->CheckStopOnFailure() && !this->Failed->empty()) ||
+    cmInstrumentationInterrupt::PendingInterruptSignal() != 0;
+  if (group.RepetitionsLeft == 0 || !conditionMet || runEnding) {
+    this->FinishRepeatGroup(group);
+    return;
+  }
+
+  group.RepetitionsLeft--;
+  group.Unfinished = group.Tests.size();
+  group.AllCompleted = true;
+  group.AnyTimedOut = false;
+  this->RequeueRepeatGroup(group);
+}
+
+void cmCTestMultiProcessHandler::FinishRepeatGroup(RepeatGroup const& group)
+{
+  // The group has run its last repetition, so record its tests the way a
+  // test repeating on its own is recorded once it stops repeating: in the
+  // checkpoint, unless the interrupt cut the group short, and as satisfying
+  // the tests outside the group that were waiting on them.
+  bool const interrupted =
+    cmInstrumentationInterrupt::PendingInterruptSignal() != 0;
+  for (auto const& t : group.Tests) {
+    if (!interrupted) {
+      this->WriteCheckpoint(t.first);
+    }
+    for (auto& pending : this->PendingTests) {
+      pending.second.Depends.erase(t.first);
+    }
+  }
+}
+
+void cmCTestMultiProcessHandler::RequeueRepeatGroup(RepeatGroup const& group)
+{
+  // Only the last repetition of the group counts, as for a test repeating on
+  // its own, so drop the results of the repetition just finished.  Leaving a
+  // failure behind would also keep the tests requiring the fixture from
+  // running again, since their dependency on it has to have succeeded.
+  for (auto const& t : group.Tests) {
+    std::string const& name = this->Properties[t.first]->Name;
+    cm::erase(*this->Passed, name);
+    cm::erase(*this->Failed, name);
+  }
+  cm::erase_if(*this->TestResults,
+               [&group](cmCTestTestHandler::cmCTestTestResult const& result) {
+                 return group.Tests.count(result.TestCount) != 0;
+               });
+  this->Completed -= group.Tests.size();
+
+  for (auto const& t : group.Tests) {
+    TestInfo info;
+    info.Depends = t.second;
+    this->PendingTests[t.first] = std::move(info);
+    this->OrderedTests.push_back(t.first);
+  }
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                     "Re-queued ", group.Tests.size(),
+                     " tests to repeat their fixture\n");
 }
 
 void cmCTestMultiProcessHandler::UpdateCostData()
@@ -1139,134 +1473,210 @@ static Json::Value DumpCTestProperty(std::string const& name,
   return property;
 }
 
+static Json::Value DumpCTestPropertyRaw(std::string const& name,
+                                        std::string const& value)
+{
+  Json::Value property = Json::objectValue;
+  property["name"] = name;
+  property["value"] = value;
+  return property;
+}
+
 static Json::Value DumpCTestProperties(
-  cmCTestTestHandler::cmCTestTestProperties& testProperties)
+  cmCTestTestHandler::cmCTestTestProperties& testProperties, bool raw)
 {
   Json::Value properties = Json::arrayValue;
+  std::unordered_map<std::string, std::string>& rawProperties =
+    testProperties.RawProperties;
   if (!testProperties.AttachOnFail.empty()) {
-    properties.append(DumpCTestProperty(
-      "ATTACHED_FILES_ON_FAIL", DumpToJsonArray(testProperties.AttachOnFail)));
+    properties.append(
+      DumpCTestProperty("ATTACHED_FILES_ON_FAIL",
+                        raw ? rawProperties["ATTACHED_FILES_ON_FAIL"]
+                            : DumpToJsonArray(testProperties.AttachOnFail)));
   }
   if (!testProperties.AttachedFiles.empty()) {
-    properties.append(DumpCTestProperty(
-      "ATTACHED_FILES", DumpToJsonArray(testProperties.AttachedFiles)));
+    properties.append(
+      DumpCTestProperty("ATTACHED_FILES",
+                        raw ? rawProperties["ATTACHED_FILES"]
+                            : DumpToJsonArray(testProperties.AttachedFiles)));
   }
   if (testProperties.Cost != 0.0f) {
-    properties.append(
-      DumpCTestProperty("COST", static_cast<double>(testProperties.Cost)));
+    properties.append(DumpCTestProperty(
+      "COST",
+      raw ? rawProperties["COST"]
+          : Json::Value(static_cast<double>(testProperties.Cost))));
   }
   if (!testProperties.Depends.empty()) {
     properties.append(
-      DumpCTestProperty("DEPENDS", DumpToJsonArray(testProperties.Depends)));
+      DumpCTestProperty("DEPENDS",
+                        raw ? rawProperties["DEPENDS"]
+                            : DumpToJsonArray(testProperties.Depends)));
   }
   if (testProperties.Disabled) {
-    properties.append(DumpCTestProperty("DISABLED", testProperties.Disabled));
+    properties.append(DumpCTestProperty(
+      "DISABLED",
+      raw ? rawProperties["DISABLED"] : Json::Value(testProperties.Disabled)));
   }
   if (!testProperties.Environment.empty()) {
-    properties.append(DumpCTestProperty(
-      "ENVIRONMENT", DumpToJsonArray(testProperties.Environment)));
+    properties.append(
+      DumpCTestProperty("ENVIRONMENT",
+                        raw ? rawProperties["ENVIRONMENT"]
+                            : DumpToJsonArray(testProperties.Environment)));
   }
   if (!testProperties.EnvironmentModification.empty()) {
     properties.append(DumpCTestProperty(
       "ENVIRONMENT_MODIFICATION",
-      DumpToJsonArray(testProperties.EnvironmentModification)));
+      raw ? rawProperties["ENVIRONMENT_MODIFICATION"]
+          : DumpToJsonArray(testProperties.EnvironmentModification)));
   }
   if (!testProperties.ErrorRegularExpressions.empty()) {
     properties.append(DumpCTestProperty(
       "FAIL_REGULAR_EXPRESSION",
-      DumpRegExToJsonArray(testProperties.ErrorRegularExpressions)));
+      raw ? rawProperties["FAIL_REGULAR_EXPRESSION"]
+          : DumpRegExToJsonArray(testProperties.ErrorRegularExpressions)));
   }
   if (!testProperties.SkipRegularExpressions.empty()) {
     properties.append(DumpCTestProperty(
       "SKIP_REGULAR_EXPRESSION",
-      DumpRegExToJsonArray(testProperties.SkipRegularExpressions)));
+      raw ? rawProperties["SKIP_REGULAR_EXPRESSION"]
+          : DumpRegExToJsonArray(testProperties.SkipRegularExpressions)));
   }
   if (!testProperties.FixturesCleanup.empty()) {
     properties.append(DumpCTestProperty(
-      "FIXTURES_CLEANUP", DumpToJsonArray(testProperties.FixturesCleanup)));
+      "FIXTURES_CLEANUP",
+      raw ? rawProperties["FIXTURES_CLEANUP"]
+          : DumpToJsonArray(testProperties.FixturesCleanup)));
   }
   if (!testProperties.FixturesRequired.empty()) {
     properties.append(DumpCTestProperty(
-      "FIXTURES_REQUIRED", DumpToJsonArray(testProperties.FixturesRequired)));
+      "FIXTURES_REQUIRED",
+      raw ? rawProperties["FIXTURES_REQUIRED"]
+          : DumpToJsonArray(testProperties.FixturesRequired)));
   }
   if (!testProperties.FixturesSetup.empty()) {
-    properties.append(DumpCTestProperty(
-      "FIXTURES_SETUP", DumpToJsonArray(testProperties.FixturesSetup)));
+    properties.append(
+      DumpCTestProperty("FIXTURES_SETUP",
+                        raw ? rawProperties["FIXTURES_SETUP"]
+                            : DumpToJsonArray(testProperties.FixturesSetup)));
+  }
+  if (testProperties.RequestedFixtureRepeatMode) {
+    properties.append(
+      DumpCTestProperty("FIXTURE_REPEAT_MODE",
+                        raw ? rawProperties["FIXTURE_REPEAT_MODE"]
+                            : Json::Value(FixtureRepeatModeString(
+                                *testProperties.RequestedFixtureRepeatMode))));
   }
   if (!testProperties.GeneratedResourceSpecFile.empty()) {
     properties.append(
       DumpCTestProperty("GENERATED_RESOURCE_SPEC_FILE",
-                        testProperties.GeneratedResourceSpecFile));
+                        raw ? rawProperties["GENERATED_RESOURCE_SPEC_FILE"]
+                            : testProperties.GeneratedResourceSpecFile));
+  }
+  if (testProperties.ResourceErrorAction) {
+    properties.append(DumpCTestProperty(
+      "RESOURCE_ERROR_ACTION",
+      raw ? rawProperties["RESOURCE_ERROR_ACTION"]
+          : ResourceErrorActionToString(*testProperties.ResourceErrorAction)));
   }
   if (!testProperties.Labels.empty()) {
-    properties.append(
-      DumpCTestProperty("LABELS", DumpToJsonArray(testProperties.Labels)));
+    properties.append(DumpCTestProperty(
+      "LABELS",
+      raw ? rawProperties["LABELS"] : DumpToJsonArray(testProperties.Labels)));
   }
   if (!testProperties.Measurements.empty()) {
     properties.append(DumpCTestProperty(
-      "MEASUREMENT", DumpMeasurementToJsonArray(testProperties.Measurements)));
+      "MEASUREMENT",
+      raw ? rawProperties["MEASUREMENT"]
+          : DumpMeasurementToJsonArray(testProperties.Measurements)));
   }
   if (!testProperties.RequiredRegularExpressions.empty()) {
     properties.append(DumpCTestProperty(
       "PASS_REGULAR_EXPRESSION",
-      DumpRegExToJsonArray(testProperties.RequiredRegularExpressions)));
+      raw ? rawProperties["PASS_REGULAR_EXPRESSION"]
+          : DumpRegExToJsonArray(testProperties.RequiredRegularExpressions)));
   }
   if (!testProperties.ResourceGroups.empty()) {
     properties.append(DumpCTestProperty(
       "RESOURCE_GROUPS",
-      DumpResourceGroupsToJsonArray(testProperties.ResourceGroups)));
+      raw ? rawProperties["RESOURCE_GROUPS"]
+          : DumpResourceGroupsToJsonArray(testProperties.ResourceGroups)));
   }
   if (testProperties.WantAffinity) {
     properties.append(
-      DumpCTestProperty("PROCESSOR_AFFINITY", testProperties.WantAffinity));
+      DumpCTestProperty("PROCESSOR_AFFINITY",
+                        raw ? rawProperties["PROCESSOR_AFFINITY"]
+                            : Json::Value(testProperties.WantAffinity)));
   }
   if (testProperties.Processors != 1) {
     properties.append(
-      DumpCTestProperty("PROCESSORS", testProperties.Processors));
+      DumpCTestProperty("PROCESSORS",
+                        raw ? rawProperties["PROCESSORS"]
+                            : Json::Value(testProperties.Processors)));
   }
   if (!testProperties.RequiredFiles.empty()) {
-    properties.append(DumpCTestProperty(
-      "REQUIRED_FILES", DumpToJsonArray(testProperties.RequiredFiles)));
+    properties.append(
+      DumpCTestProperty("REQUIRED_FILES",
+                        raw ? rawProperties["REQUIRED_FILES"]
+                            : DumpToJsonArray(testProperties.RequiredFiles)));
   }
   if (!testProperties.ProjectResources.empty()) {
     properties.append(DumpCTestProperty(
-      "RESOURCE_LOCK", DumpToJsonArray(testProperties.ProjectResources)));
+      "RESOURCE_LOCK",
+      raw ? rawProperties["RESOURCE_LOCK"]
+          : DumpToJsonArray(testProperties.ProjectResources)));
   }
   if (testProperties.RunSerial) {
     properties.append(
-      DumpCTestProperty("RUN_SERIAL", testProperties.RunSerial));
+      DumpCTestProperty("RUN_SERIAL",
+                        raw ? rawProperties["RUN_SERIAL"]
+                            : Json::Value(testProperties.RunSerial)));
   }
   if (testProperties.SkipReturnCode != -1) {
     properties.append(
-      DumpCTestProperty("SKIP_RETURN_CODE", testProperties.SkipReturnCode));
+      DumpCTestProperty("SKIP_RETURN_CODE",
+                        raw ? rawProperties["SKIP_RETURN_CODE"]
+                            : Json::Value(testProperties.SkipReturnCode)));
   }
   if (testProperties.Timeout) {
     properties.append(
-      DumpCTestProperty("TIMEOUT", testProperties.Timeout->count()));
+      DumpCTestProperty("TIMEOUT",
+                        raw ? rawProperties["TIMEOUT"]
+                            : Json::Value(testProperties.Timeout->count())));
   }
   if (testProperties.TimeoutSignal) {
-    properties.append(DumpCTestProperty("TIMEOUT_SIGNAL_NAME",
-                                        testProperties.TimeoutSignal->Name));
+    properties.append(
+      DumpCTestProperty("TIMEOUT_SIGNAL_NAME",
+                        raw ? rawProperties["TIMEOUT_SIGNAL_NAME"]
+                            : testProperties.TimeoutSignal->Name));
   }
   if (testProperties.TimeoutGracePeriod) {
-    properties.append(
-      DumpCTestProperty("TIMEOUT_SIGNAL_GRACE_PERIOD",
-                        testProperties.TimeoutGracePeriod->count()));
+    properties.append(DumpCTestProperty(
+      "TIMEOUT_SIGNAL_GRACE_PERIOD",
+      raw ? rawProperties["TIMEOUT_SIGNAL_GRACE_PERIOD"]
+          : Json::Value(testProperties.TimeoutGracePeriod->count())));
   }
   if (!testProperties.TimeoutRegularExpressions.empty()) {
-    properties.append(DumpCTestProperty(
-      "TIMEOUT_AFTER_MATCH", DumpTimeoutAfterMatch(testProperties)));
+    properties.append(
+      DumpCTestProperty("TIMEOUT_AFTER_MATCH",
+                        raw ? rawProperties["TIMEOUT_AFTER_MATCH"]
+                            : DumpTimeoutAfterMatch(testProperties)));
   }
   if (testProperties.WillFail) {
-    properties.append(DumpCTestProperty("WILL_FAIL", testProperties.WillFail));
+    properties.append(
+      DumpCTestProperty("WILL_FAIL",
+                        raw ? rawProperties["WILL_FAIL"]
+                            : Json::Value(testProperties.WillFail)));
   }
   if (!testProperties.Directory.empty()) {
-    properties.append(
-      DumpCTestProperty("WORKING_DIRECTORY", testProperties.Directory));
+    properties.append(DumpCTestProperty(
+      "WORKING_DIRECTORY",
+      raw ? rawProperties["WORKING_DIRECTORY"] : testProperties.Directory));
   }
   if (!testProperties.CustomProperties.empty()) {
     for (auto const& it : testProperties.CustomProperties) {
-      properties.append(DumpCTestProperty(it.first, it.second));
+      Json::Value property = raw ? DumpCTestPropertyRaw(it.first, it.second)
+                                 : DumpCTestProperty(it.first, it.second);
+      properties.append(std::move(property));
     }
   }
   return properties;
@@ -1378,7 +1788,8 @@ static Json::Value DumpCTestInfo(
     }
     testInfo["command"] = DumpToJsonArray(commandAndArgs);
   }
-  Json::Value properties = DumpCTestProperties(testProperties);
+  Json::Value properties = DumpCTestProperties(
+    testProperties, testRun.GetCTest()->GetOutputAsJsonRaw());
   if (!properties.empty()) {
     testInfo["properties"] = properties;
   }
@@ -1454,45 +1865,40 @@ void cmCTestMultiProcessHandler::PrintTestList()
 
     if (!p.Labels.empty()) // print the labels
     {
-      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                         "Labels:", this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                         "Labels:");
     }
     for (std::string const& label : p.Labels) {
-      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, " " << label,
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet, " ",
+                         label);
     }
     if (!p.Labels.empty()) // print the labels
     {
-      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, std::endl,
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                         '\n');
     }
 
     if (this->TestHandler->MemCheck) {
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "  Memory Check",
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         "  Memory Check");
     } else {
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "  Test", this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet, "  Test");
     }
-    std::ostringstream indexStr;
-    indexStr << " #" << p.Index << ":";
+    std::string indexStr = cmStrCat(" #", p.Index, ':');
     cmCTestOptionalLog(
-      this->CTest, HANDLER_OUTPUT,
-      std::setw(3 + getNumWidth(this->TestHandler->GetMaxIndex()))
-        << indexStr.str(),
-      this->Quiet);
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, " " << p.Name,
-                       this->Quiet);
+      this->CTest, HANDLER_OUTPUT, this->Quiet,
+      cmPadToWidth(3 + getNumWidth(this->TestHandler->GetMaxIndex()),
+                   std::move(indexStr)));
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet, ' ', p.Name);
     if (p.Disabled) {
-      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, " (Disabled)",
-                         this->Quiet);
+      cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                         " (Disabled)");
     }
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, std::endl, this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet, '\n');
   }
 
-  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                     std::endl
-                       << "Total Tests: " << this->Total << std::endl,
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet, '\n',
+                     "Total Tests: ", this->Total, '\n');
 }
 
 void cmCTestMultiProcessHandler::PrintLabels()
@@ -1504,15 +1910,15 @@ void cmCTestMultiProcessHandler::PrintLabels()
   }
 
   if (!allLabels.empty()) {
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "All Labels:" << std::endl,
-                       this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                       "All Labels:\n");
   } else {
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT,
-                       "No Labels Exist" << std::endl, this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet,
+                       "No Labels Exist\n");
   }
   for (std::string const& label : allLabels) {
-    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, "  " << label << std::endl,
-                       this->Quiet);
+    cmCTestOptionalLog(this->CTest, HANDLER_OUTPUT, this->Quiet, "  ", label,
+                       '\n');
   }
 }
 
@@ -1543,8 +1949,13 @@ void cmCTestMultiProcessHandler::CheckResume()
 
 void cmCTestMultiProcessHandler::RemoveTest(int index)
 {
-  this->OrderedTests.erase(
-    std::find(this->OrderedTests.begin(), this->OrderedTests.end(), index));
+  auto const oi =
+    std::find(this->OrderedTests.begin(), this->OrderedTests.end(), index);
+  if (oi == this->OrderedTests.end()) {
+    // The checkpoint names a test this run does not have pending.
+    return;
+  }
+  this->OrderedTests.erase(oi);
   this->PendingTests.erase(index);
   this->Properties.erase(index);
   this->Completed++;
@@ -1564,9 +1975,8 @@ int cmCTestMultiProcessHandler::FindMaxIndex()
 // Returns true if no cycles exist in the dependency graph
 bool cmCTestMultiProcessHandler::CheckCycles()
 {
-  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "Checking test dependency graph..." << std::endl,
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                     "Checking test dependency graph...\n");
   for (auto const& it : this->PendingTests) {
     // DFS from each element to itself
     int root = it.first;
@@ -1580,12 +1990,11 @@ bool cmCTestMultiProcessHandler::CheckCycles()
         for (auto const& d : this->PendingTests[test].Depends) {
           if (d == root) {
             // cycle exists
-            cmCTestLog(
-              this->CTest, ERROR_MESSAGE,
-              "Error: a cycle exists in the test dependency graph "
-              "for the test \""
-                << this->Properties[root]->Name
-                << "\".\nPlease fix the cycle and run ctest again.\n");
+            cmCTestLog(this->CTest, ERROR_MESSAGE,
+                       "Error: a cycle exists in the test dependency graph "
+                       "for the test \"",
+                       this->Properties[root]->Name,
+                       "\".\nPlease fix the cycle and run ctest again.\n");
             return false;
           }
           s.push(d);
@@ -1593,9 +2002,8 @@ bool cmCTestMultiProcessHandler::CheckCycles()
       }
     }
   }
-  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT,
-                     "Checking test dependency graph end" << std::endl,
-                     this->Quiet);
+  cmCTestOptionalLog(this->CTest, HANDLER_VERBOSE_OUTPUT, this->Quiet,
+                     "Checking test dependency graph end\n");
   return true;
 }
 
@@ -1604,26 +2012,16 @@ bool cmCTestMultiProcessHandler::CheckGeneratedResourceSpec()
   for (auto& test : this->Properties) {
     if (!test.second->GeneratedResourceSpecFile.empty()) {
       if (this->ResourceSpecSetupTest) {
-        cmCTestLog(
-          this->CTest, ERROR_MESSAGE,
-          "Only one test may define the GENERATED_RESOURCE_SPEC_FILE property"
-            << std::endl);
+        cmCTestLog(this->CTest, ERROR_MESSAGE,
+                   "Only one test may define the GENERATED_RESOURCE_SPEC_FILE "
+                   "property\n");
         return false;
       }
 
       if (test.second->FixturesSetup.size() != 1) {
         cmCTestLog(this->CTest, ERROR_MESSAGE,
                    "Test that defines GENERATED_RESOURCE_SPEC_FILE must have "
-                   "exactly one FIXTURES_SETUP"
-                     << std::endl);
-        return false;
-      }
-
-      if (!cmSystemTools::FileIsFullPath(
-            test.second->GeneratedResourceSpecFile)) {
-        cmCTestLog(this->CTest, ERROR_MESSAGE,
-                   "GENERATED_RESOURCE_SPEC_FILE must be an absolute path"
-                     << std::endl);
+                   "exactly one FIXTURES_SETUP\n");
         return false;
       }
 
@@ -1637,10 +2035,10 @@ bool cmCTestMultiProcessHandler::CheckGeneratedResourceSpec()
       if (!test.second->ResourceGroups.empty() &&
           !test.second->FixturesRequired.count(
             this->ResourceSpecSetupFixture)) {
-        cmCTestLog(this->CTest, ERROR_MESSAGE,
-                   "All tests that have RESOURCE_GROUPS must include the "
-                   "resource spec generator fixture in their FIXTURES_REQUIRED"
-                     << std::endl);
+        cmCTestLog(
+          this->CTest, ERROR_MESSAGE,
+          "All tests that have RESOURCE_GROUPS must include the "
+          "resource spec generator fixture in their FIXTURES_REQUIRED\n");
         return false;
       }
     }
@@ -1650,13 +2048,12 @@ bool cmCTestMultiProcessHandler::CheckGeneratedResourceSpec()
     if (this->ResourceSpecSetupTest) {
       cmCTestLog(this->CTest, ERROR_MESSAGE,
                  "GENERATED_RESOURCE_SPEC_FILE test property cannot be used "
-                 "in conjunction with ResourceSpecFile option"
-                   << std::endl);
+                 "in conjunction with ResourceSpecFile option\n");
       return false;
     }
     std::string error;
     if (!this->InitResourceAllocator(error)) {
-      cmCTestLog(this->CTest, ERROR_MESSAGE, error << std::endl);
+      cmCTestLog(this->CTest, ERROR_MESSAGE, error, '\n');
       return false;
     }
   }

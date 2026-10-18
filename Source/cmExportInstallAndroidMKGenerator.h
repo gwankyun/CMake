@@ -10,7 +10,6 @@
 
 #include "cmExportAndroidMKGenerator.h"
 #include "cmExportInstallFileGenerator.h"
-#include "cmStateTypes.h"
 
 class cmGeneratorTarget;
 class cmInstallExportGenerator;
@@ -47,9 +46,9 @@ protected:
   bool GenerateMainFile(std::ostream& os) override;
   void GenerateImportHeaderCode(std::ostream& os,
                                 std::string const& config = "") override;
-  void GenerateImportTargetCode(
-    std::ostream& os, cmGeneratorTarget const* target,
-    cmStateEnums::TargetType /*targetType*/) override;
+  void GenerateImportTargetCode(std::ostream& os,
+                                cmGeneratorTarget const* target,
+                                cm::TargetType /*targetType*/) override;
 
   void ComplainAboutMissingTarget(cmGeneratorTarget const* depender,
                                   cmGeneratorTarget const* dependee,

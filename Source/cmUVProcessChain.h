@@ -118,6 +118,9 @@ public:
   std::vector<Status const*> GetStatus() const;
   Status const& GetStatus(std::size_t index) const;
   bool Finished() const;
+  /** Return a borrowed Windows process handle, valid until chain destruction
+      even after the child exits, or nullptr if unavailable.  */
+  void* GetNativeProcessHandle(std::size_t index) const;
 
   /** Terminate any remaining child processes.
       Call this only after exiting the event loop, and at most once.  */

@@ -72,7 +72,7 @@ public:
   std::string const& GetPlatformToolsetString() const;
 
   /** Return true when using a Visual Studio clang-cl toolset.  */
-  bool IsClangClToolset() const;
+  bool IsClangClToolset() const override;
 
   /** The toolset version props file, if any.  */
   std::string const& GetPlatformToolsetVersionProps() const;
@@ -234,6 +234,7 @@ protected:
   std::string GeneratorToolsetCuda;
   std::string GeneratorToolsetCudaCustomDir;
   std::string GeneratorToolsetCudaNvccSubdir;
+  std::string GeneratorToolsetCudaVSIntegrationFolder;
   std::string GeneratorToolsetCudaVSIntegrationSubdir;
   cm::optional<std::string> GeneratorToolsetFortran;
   cm::optional<std::string> DefaultToolsetFortran;
@@ -276,7 +277,6 @@ private:
   std::string MSBuildCommand;
   std::set<std::string> AndroidExecutableWarnings;
   virtual std::string FindMSBuildCommand();
-  std::string FindDevEnvCommand() override;
   std::string GetVSMakeProgram() override { return this->GetMSBuildCommand(); }
 
   std::string GeneratorToolsetVersion;

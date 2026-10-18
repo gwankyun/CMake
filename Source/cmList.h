@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <functional>
 #include <initializer_list>
 #include <iterator>
 #include <memory>
@@ -873,6 +874,9 @@ public:
   };
   cmList& sort(SortConfiguration config = SortConfiguration{});
   cmList& sort(SortConfiguration config, cmMakefile& makefile);
+  cmList& sort(
+    SortConfiguration config,
+    std::function<bool(std::string const&, std::string const&)> comparator);
 
   // exception raised on error during transform operations
   class transform_error : public std::runtime_error
@@ -974,6 +978,11 @@ public:
   cmList& transform(TransformAction action, std::string const& arg,
                     cmMakefile& makefile,
                     std::unique_ptr<TransformSelector> = {});
+
+  // Return, for each element of this list, whether `selector` selects it.
+  // Throws transform_error on a malformed selector (e.g. an out-of-range
+  // index), like transform().
+  std::vector<bool> GetTransformSelection(TransformSelector& selector) const;
 
   std::string join(cm::string_view glue) const
   {

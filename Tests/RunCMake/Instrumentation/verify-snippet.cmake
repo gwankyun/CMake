@@ -2,13 +2,15 @@
 include_guard()
 
 include(${CMAKE_CURRENT_LIST_DIR}/json.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/validate_schema.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../validate_json_schema.cmake)
 
 function(snippet_has_fields snippet contents)
   get_filename_component(filename "${snippet}" NAME)
   json_has_key("${snippet}" "${contents}" role)
   json_has_key("${snippet}" "${contents}" workingDir)
   json_has_key("${snippet}" "${contents}" result)
+  # Only an interrupted build records this; completed commands must omit it.
+  json_missing_key("${snippet}" "${contents}" interruptSignal)
   if (NOT filename MATCHES "^build-*")
     json_has_key("${snippet}" "${contents}" command)
   else()
@@ -78,8 +80,8 @@ function(verify_snippet_data snippet contents)
   snippet_valid_timing("${contents}")
   string(JSON version_major GET "${contents}" version major)
   string(JSON version_minor GET "${contents}" version minor)
-  if (NOT version_major EQUAL 1 OR NOT version_minor LESS_EQUAL 1)
-    json_error("${snippet}" "Version must be <= 1.1, got: ${version_major}.${version_minor}")
+  if (NOT version_major EQUAL 1 OR NOT version_minor LESS_EQUAL 2)
+    json_error("${snippet}" "Version must be <= 1.2, got: ${version_major}.${version_minor}")
   endif()
   get_filename_component(filename "${snippet}" NAME)
   string(JSON result GET "${contents}" result)
@@ -109,14 +111,15 @@ function(verify_snippet_file snippet contents)
     json_error("${snippet}" "Role \"${role}\" doesn't match snippet filename")
   endif()
 
-  validate_schema(
-    "${snippet}"
-    "${CMAKE_CURRENT_LIST_DIR}/../../../Help/manual/instrumentation/snippet-v1-schema.json"
-    # We expect to always generate valid snippet files.
-    0
-  )
-  if (RunCMake_TEST_FAILED)
-    add_error("${RunCMake_TEST_FAILED}")
+  set(snippet_schema "${CMAKE_CURRENT_LIST_DIR}/../../../Help/manual/instrumentation/snippet-v1-schema.json")
+  block(SCOPE_FOR VARIABLES PROPAGATE schema_error)
+    # Capture only the error message from this validate_json_chema call
+    set(RunCMake_TEST_FAILED "")
+    validate_json_schema("${snippet_schema}" "${snippet}")
+    set(schema_error "${RunCMake_TEST_FAILED}")
+  endblock()
+  if (schema_error)
+    add_error("${schema_error}")
   endif()
 
   return(PROPAGATE ERROR_MESSAGE RunCMake_TEST_FAILED role)

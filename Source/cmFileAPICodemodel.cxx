@@ -26,6 +26,7 @@
 #include "cmFileSetMetadata.h"
 #include "cmGenExContext.h"
 #include "cmGeneratorExpression.h"
+#include "cmGeneratorExpressionDAGChecker.h"
 #include "cmGeneratorFileSet.h"
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
@@ -60,6 +61,7 @@
 #include "cmTarget.h"
 #include "cmTargetDepend.h"
 #include "cmTargetExport.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -315,7 +317,7 @@ std::string TargetId(cmGeneratorTarget const* gt, std::string const& topBuild)
     topBuild, gt->GetLocalGenerator()->GetCurrentBinaryDirectory());
   std::string hash = hasher.HashString(path);
   hash.resize(20, '0');
-  return gt->GetName() + CMAKE_DIRECTORY_ID_SEP + hash;
+  return cmStrCat(gt->GetName(), CMAKE_DIRECTORY_ID_SEP, hash);
 }
 
 struct CompileData
@@ -510,6 +512,7 @@ class Target
   Json::Value DumpSources(FileSetDatabase const& fsdb);
   Json::Value DumpSource(cmGeneratorTarget::SourceAndKind const& sk,
                          Json::ArrayIndex si, FileSetDatabase const& fsdb);
+  Json::Value DumpInterfaceIncludes();
   Json::Value DumpInterfaceSources(FileSetDatabase const& fsdb);
   Json::Value DumpInterfaceSource(std::string path, Json::ArrayIndex si,
                                   FileSetDatabase const& fsdb);
@@ -727,7 +730,7 @@ CodemodelConfig::DumpedTargets CodemodelConfig::DumpTargets()
             });
 
   for (cmGeneratorTarget* gt : targetList) {
-    if (gt->GetType() == cmStateEnums::GLOBAL_TARGET) {
+    if (gt->GetType() == cm::TargetType::GLOBAL_TARGET) {
       continue;
     }
 
@@ -753,7 +756,7 @@ Json::Value CodemodelConfig::DumpTarget(cmGeneratorTarget* gt,
   std::replace(safeTargetName.begin(), safeTargetName.end(), ':', '_');
   std::string prefix = "target-" + safeTargetName;
   if (!this->Config.empty()) {
-    prefix += "-" + this->Config;
+    prefix = cmStrCat(std::move(prefix), '-', this->Config);
   }
   Json::Value target = this->FileAPI.MaybeJsonFile(t.Dump(), prefix);
   target["name"] = gt->GetName();
@@ -844,9 +847,9 @@ Json::Value CodemodelConfig::DumpDirectoryObject(Directory& d)
   std::string buildDirRel = RelativeIfUnder(
     this->TopBuild, d.Snapshot.GetDirectory().GetCurrentBinary());
   if (!cmSystemTools::FileIsFullPath(buildDirRel)) {
-    prefix = cmStrCat(prefix, '-', buildDirRel);
+    prefix = cmStrCat(std::move(prefix), '-', buildDirRel);
   } else if (!cmSystemTools::FileIsFullPath(sourceDirRel)) {
-    prefix = cmStrCat(prefix, '-', sourceDirRel);
+    prefix = cmStrCat(std::move(prefix), '-', sourceDirRel);
   }
   for (char& c : prefix) {
     if (c == '/' || c == '\\') {
@@ -854,7 +857,7 @@ Json::Value CodemodelConfig::DumpDirectoryObject(Directory& d)
     }
   }
   if (!this->Config.empty()) {
-    prefix += "-" + this->Config;
+    prefix = cmStrCat(std::move(prefix), '-', this->Config);
   }
 
   DirectoryObject dir(d.LocalGenerator, this->VersionMajor, this->VersionMinor,
@@ -1265,7 +1268,7 @@ Json::Value Target::Dump()
 {
   Json::Value target = Json::objectValue;
 
-  cmStateEnums::TargetType const type = this->GT->GetType();
+  cm::TargetType const type = this->GT->GetType();
 
   target["codemodelVersion"] =
     cmFileAPI::BuildVersion(this->VersionMajor, this->VersionMinor);
@@ -1302,21 +1305,21 @@ Json::Value Target::Dump()
     }
   }
 
-  if (type == cmStateEnums::EXECUTABLE ||
-      type == cmStateEnums::SHARED_LIBRARY ||
-      type == cmStateEnums::MODULE_LIBRARY) {
+  if (type == cm::TargetType::EXECUTABLE ||
+      type == cm::TargetType::SHARED_LIBRARY ||
+      type == cm::TargetType::MODULE_LIBRARY) {
     target["nameOnDisk"] = this->GT->GetFullName(this->Config);
     if (!this->GT->IsImported()) {
       target["link"] = this->DumpLink();
     }
-  } else if (type == cmStateEnums::STATIC_LIBRARY) {
+  } else if (type == cm::TargetType::STATIC_LIBRARY) {
     target["nameOnDisk"] = this->GT->GetFullName(this->Config);
     if (!this->GT->IsImported()) {
       target["archive"] = this->DumpArchive();
     }
   }
 
-  if (type == cmStateEnums::EXECUTABLE) {
+  if (type == cm::TargetType::EXECUTABLE) {
     Json::Value launchers = this->DumpLaunchers();
     if (!launchers.empty()) {
       target["launchers"] = std::move(launchers);
@@ -1378,6 +1381,11 @@ Json::Value Target::Dump()
     auto interfaceSources = this->DumpInterfaceSources(fileSetInfo.second);
     if (!interfaceSources.empty()) {
       target["interfaceSources"] = std::move(interfaceSources);
+    }
+
+    auto interfaceIncludes = this->DumpInterfaceIncludes();
+    if (!interfaceIncludes.empty()) {
+      target["interfaceIncludes"] = std::move(interfaceIncludes);
     }
 
     Json::Value folder = this->DumpFolder();
@@ -1490,7 +1498,7 @@ CompileData Target::BuildCompileData(cmSourceFile* sf)
 {
   CompileData fd;
 
-  fd.Language = sf->GetOrDetermineLanguage();
+  fd.Language = this->GT->GetSourceFileLanguage(sf, this->Config);
   if (fd.Language.empty()) {
     return fd;
   }
@@ -1926,8 +1934,8 @@ Json::Value Target::DumpSource(cmGeneratorTarget::SourceAndKind const& sk,
     }
   }
 
-  if (cmSourceGroup const* sg =
-        this->GT->LocalGenerator->FindSourceGroup(path)) {
+  if (cmSourceGroup const* sg = this->GT->LocalGenerator->FindSourceGroup(
+        this->GT, sf, this->Config)) {
     Json::ArrayIndex const groupIndex = this->AddSourceGroup(sg);
     source["sourceGroupIndex"] = groupIndex;
     this->SourceGroups[groupIndex].SourceIndexes.append(si);
@@ -1996,6 +2004,104 @@ Json::Value Target::DumpInterfaceSources(FileSetDatabase const& fsdb)
   return interfaceSources;
 }
 
+Json::Value Target::DumpInterfaceIncludes()
+{
+  Json::Value interfaceIncludes = Json::arrayValue;
+
+  cmValue prop = this->GT->GetProperty("INTERFACE_INCLUDE_DIRECTORIES");
+  cmValue systemIncludesProp =
+    this->GT->GetProperty("INTERFACE_SYSTEM_INCLUDE_DIRECTORIES");
+  if (!prop) {
+    return interfaceIncludes;
+  }
+
+  struct InterfaceInclude
+  {
+    std::string Path;
+    bool IsSystem;
+    std::set<std::string> Languages;
+  };
+
+  // Get enabled languages
+  std::vector<std::string> languages =
+    this->GT->Makefile->GetState()->GetEnabledLanguages();
+  languages.erase(std::remove(languages.begin(), languages.end(), "NONE"),
+                  languages.end());
+  if (languages.empty()) {
+    languages.emplace_back();
+  }
+
+  // Evaluate an INCLUDE_DIRECTORIES property with language context
+  auto evaluateIncludes =
+    [this](cmCompiledGeneratorExpression const& expression,
+           cm::GenEx::Context const& context) {
+      cmGeneratorExpressionDAGChecker dagChecker{ this->GT,
+                                                  "INCLUDE_DIRECTORIES",
+                                                  nullptr, nullptr, context };
+      return cmList{ expression.Evaluate(context, &dagChecker, this->GT,
+                                         this->GT) };
+    };
+
+  cmGeneratorExpression ge(*this->GT->Makefile->GetCMakeInstance());
+  auto includesExpression = ge.Parse(*prop);
+  auto systemIncludesExpression =
+    systemIncludesProp ? ge.Parse(*systemIncludesProp) : nullptr;
+  bool const targetTreatsOwnIncludesAsSystem =
+    this->GT->GetPropertyAsBool("SYSTEM") &&
+    (!this->GT->IsImported() ||
+     !this->GT->GetPropertyAsBool("IMPORTED_NO_SYSTEM"));
+  std::vector<InterfaceInclude> includes;
+
+  // Get includes for each enabled language and merge results
+  for (std::string const& language : languages) {
+    cm::GenEx::Context context(this->GT->GetLocalGenerator(), this->Config,
+                               language);
+    // Get per-language system include set
+    std::set<std::string> systemIncludes;
+    if (systemIncludesExpression) {
+      for (std::string include :
+           evaluateIncludes(*systemIncludesExpression, context)) {
+        cmSystemTools::ConvertToUnixSlashes(include);
+        systemIncludes.emplace(std::move(include));
+      }
+    }
+
+    // Get per-language includes
+    for (std::string include :
+         evaluateIncludes(*includesExpression, context)) {
+      cmSystemTools::ConvertToUnixSlashes(include);
+      bool const isSystem = targetTreatsOwnIncludesAsSystem ||
+        systemIncludes.find(include) != systemIncludes.end();
+      auto entry = std::find_if(
+        includes.begin(), includes.end(),
+        [&include, isSystem](InterfaceInclude const& candidate) {
+          return candidate.Path == include && candidate.IsSystem == isSystem;
+        });
+      if (entry == includes.end()) {
+        entry = includes.insert(includes.end(),
+                                { std::move(include), isSystem, {} });
+      }
+      entry->Languages.insert(language);
+    }
+  }
+
+  // Build JSON from InterfaceInclude vector
+  for (InterfaceInclude const& include : includes) {
+    Json::Value entry =
+      this->DumpInclude({ JBT<std::string>(include.Path), include.IsSystem });
+    if (include.Languages.size() != languages.size()) {
+      Json::Value entryLanguages = Json::arrayValue;
+      for (std::string const& language : include.Languages) {
+        entryLanguages.append(language);
+      }
+      entry["languages"] = std::move(entryLanguages);
+    }
+    interfaceIncludes.append(std::move(entry));
+  }
+
+  return interfaceIncludes;
+}
+
 Json::Value Target::DumpInterfaceSource(std::string path, Json::ArrayIndex si,
                                         FileSetDatabase const& fsdb)
 {
@@ -2017,8 +2123,8 @@ Json::Value Target::DumpInterfaceSource(std::string path, Json::ArrayIndex si,
     }
   }
 
-  if (cmSourceGroup const* sg =
-        this->GT->LocalGenerator->FindSourceGroup(path)) {
+  if (cmSourceGroup const* sg = this->GT->LocalGenerator->FindSourceGroup(
+        this->GT, sf, this->Config)) {
     Json::ArrayIndex const groupIndex = this->AddSourceGroup(sg);
     source["sourceGroupIndex"] = groupIndex;
     this->SourceGroups[groupIndex].InterfaceSourceIndexes.append(si);
@@ -2208,7 +2314,7 @@ Json::Value Target::DumpArtifacts()
   Json::Value artifacts = Json::arrayValue;
 
   // Object libraries have only object files as artifacts.
-  if (this->GT->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+  if (this->GT->GetType() == cm::TargetType::OBJECT_LIBRARY) {
     if (!this->GT->Target->HasKnownObjectFileLocation(nullptr)) {
       return artifacts;
     }
@@ -2265,7 +2371,7 @@ Json::Value Target::DumpArtifacts()
     }
   }
   if (this->GT->IsDLLPlatform() &&
-      this->GT->GetType() != cmStateEnums::STATIC_LIBRARY) {
+      this->GT->GetType() != cm::TargetType::STATIC_LIBRARY) {
     cmGeneratorTarget::OutputInfo const* output =
       this->GT->GetOutputInfo(this->Config);
     if (output && !output->PdbDir.empty()) {

@@ -412,6 +412,18 @@ CMake为提供CMake文件的所有构建系统提供了一些内置目标。
 依赖项不会被检查，若过期也不会重新构建。\
 :ref:`Ninja Generators`\ 在依赖项检查方面速度足够快，因此该生成器不提供此类目标。
 
+.. note::
+
+  Shell tab-completion of ``make`` target names is provided
+  by the external ``bash-completion`` package, not by CMake.
+  Some versions of it hide the plain ``<target>`` name when a
+  ``<target>/fast`` variant also exists, treating the ``/`` as
+  a directory separator.  The targets themselves remain
+  available to build.  To complete project target names
+  reliably, use :option:`--target <cmake--build --target>`
+  completion instead, e.g. tab-completion after
+  ``cmake --build <dir> --target``.
+
 :ref:`Makefile Generators`\ 的系统还提供构建目标来预处理、组装和编译特定目录中的单个文件。
 
 .. code-block:: console

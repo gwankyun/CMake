@@ -25,6 +25,35 @@
 #  include "qt_windows.h" // For SetErrorMode
 #endif
 
+static QString sanitizedDirPath(QString const& dir)
+{
+  QString result = QString::fromStdString(
+    cmSystemTools::GetActualCaseForPath(dir.toStdString()));
+  if (result.size() > 1 && result.endsWith(QDir::separator())) {
+    result = result.left(result.size() - 1);
+  }
+  return result;
+}
+
+namespace {
+// Holds a flag set for the duration of a scope; clears it even on early exit.
+class ScopedFlag
+{
+public:
+  explicit ScopedFlag(bool& flag)
+    : Flag(flag)
+  {
+    this->Flag = true;
+  }
+  ~ScopedFlag() { this->Flag = false; }
+  ScopedFlag(ScopedFlag const&) = delete;
+  ScopedFlag& operator=(ScopedFlag const&) = delete;
+
+private:
+  bool& Flag;
+};
+}
+
 QCMake::QCMake(QObject* p)
   : QObject(p)
   , StartEnvironment(QProcessEnvironment::systemEnvironment())
@@ -34,6 +63,7 @@ QCMake::QCMake(QObject* p)
   qRegisterMetaType<QCMakePropertyList>();
   qRegisterMetaType<QProcessEnvironment>();
   qRegisterMetaType<QVector<QCMakePreset>>();
+  qRegisterMetaType<quint64>("quint64");
 
   cmSystemTools::DisableRunCommandOutput();
   cmSystemTools::SetRunCommandHideConsole(true);
@@ -75,8 +105,7 @@ void QCMake::loadCache(QString const& dir)
 
 void QCMake::setSourceDirectory(QString const& _dir)
 {
-  QString dir = QString::fromStdString(
-    cmSystemTools::GetActualCaseForPath(_dir.toStdString()));
+  QString dir = sanitizedDirPath(_dir);
   if (this->SourceDirectory != dir) {
     this->SourceDirectory = QDir::fromNativeSeparators(dir);
     emit this->sourceDirChanged(this->SourceDirectory);
@@ -92,8 +121,7 @@ void QCMake::setSourceDirectory(QString const& _dir)
 
 void QCMake::setBinaryDirectory(QString const& _dir)
 {
-  QString dir = QString::fromStdString(
-    cmSystemTools::GetActualCaseForPath(_dir.toStdString()));
+  QString dir = sanitizedDirPath(_dir);
 
   QString absDir = dir;
 
@@ -127,7 +155,9 @@ void QCMake::setBinaryDirectory(QString const& _dir)
     }
 
     QCMakePropertyList props = this->properties();
-    emit this->propertiesChanged(props);
+    if (!this->ApplyingPreset) {
+      emit this->propertiesChanged(props);
+    }
     cmValue homeDir = state->GetCacheEntryValue("CMAKE_HOME_DIRECTORY");
     if (homeDir) {
       setSourceDirectory(QString(homeDir->c_str()));
@@ -160,7 +190,9 @@ void QCMake::setPreset(QString const& name, bool setBinary)
 {
   if (this->PresetName != name) {
     this->PresetName = name;
-    emit this->presetChanged(this->PresetName);
+    if (!this->ApplyingPreset) {
+      emit this->presetChanged(this->PresetName);
+    }
 
     if (!name.isNull()) {
       std::string presetName(name.toStdString());
@@ -183,8 +215,22 @@ void QCMake::setPreset(QString const& name, bool setBinary)
         }
       }
     }
-    emit this->propertiesChanged(this->properties());
+    if (!this->ApplyingPreset) {
+      emit this->propertiesChanged(this->properties());
+    }
   }
+}
+
+void QCMake::applyPreset(QString const& name, bool setBinary,
+                         quint64 requestId)
+{
+  {
+    // Silence the intermediate, untagged notifications so the completion below
+    // is the only model update the UI trusts for this request.
+    ScopedFlag applying(this->ApplyingPreset);
+    this->setPreset(name, setBinary);
+  }
+  emit this->presetApplied(requestId, this->PresetName, this->properties());
 }
 
 void QCMake::setGenerator(QString const& gen)
@@ -462,6 +508,14 @@ QCMakePropertyList QCMake::properties() const
     auto const& p =
       this->CMakePresetsGraph.ConfigurePresets.at(presetName).Expanded;
     if (p) {
+      for (auto const& v : p->CacheVariables) {
+        if (!v.second) {
+          continue;
+        }
+        auto prop = cache_to_property(v);
+        add_to_property_list(ret, std::move(prop));
+      }
+      // Dedicated fields override same-named cacheVariables, so apply last.
       if (!p->ToolchainFile.empty()) {
         using CacheVariable = cmCMakePresetsGraph::CacheVariable;
         CacheVariable var{ "FILEPATH", p->ToolchainFile };
@@ -471,11 +525,13 @@ QCMakePropertyList QCMake::properties() const
         auto prop = cache_to_property(value);
         add_to_property_list(ret, std::move(prop));
       }
-      for (auto const& v : p->CacheVariables) {
-        if (!v.second) {
-          continue;
-        }
-        auto prop = cache_to_property(v);
+      if (!p->InstallDir.empty()) {
+        using CacheVariable = cmCMakePresetsGraph::CacheVariable;
+        CacheVariable var{ "PATH", p->InstallDir };
+        std::pair<std::string, cm::optional<CacheVariable>> value = {
+          "CMAKE_INSTALL_PREFIX", var
+        };
+        auto prop = cache_to_property(value);
         add_to_property_list(ret, std::move(prop));
       }
     }

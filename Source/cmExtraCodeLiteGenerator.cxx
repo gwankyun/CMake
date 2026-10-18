@@ -17,9 +17,9 @@
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmSourceFile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
+#include "cmTargetTypes.h"
 #include "cmXMLWriter.h"
 #include "cmake.h"
 
@@ -120,7 +120,7 @@ std::vector<std::string> cmExtraCodeLiteGenerator::CreateProjectsByTarget(
   auto const& lgs = this->GlobalGenerator->GetLocalGenerators();
   for (auto const& lg : lgs) {
     for (auto const& lt : lg->GetGeneratorTargets()) {
-      cmStateEnums::TargetType type = lt->GetType();
+      cm::TargetType type = lt->GetType();
       std::string const& outputDir = lg->GetCurrentBinaryDirectory();
       std::string targetName = lt->GetName();
       std::string filename = cmStrCat(outputDir, '/', targetName, ".project");
@@ -130,12 +130,12 @@ std::vector<std::string> cmExtraCodeLiteGenerator::CreateProjectsByTarget(
         cmSystemTools::RelativePath(this->WorkspacePath, filename);
       std::string visualname = targetName;
       switch (type) {
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::STATIC_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-          visualname = cmStrCat("lib", visualname);
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::STATIC_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+          visualname = cmStrCat("lib", std::move(visualname));
           CM_FALLTHROUGH;
-        case cmStateEnums::EXECUTABLE:
+        case cm::TargetType::EXECUTABLE:
           xml->StartElement("Project");
           xml->Attribute("Name", visualname);
           xml->Attribute("Path", relafilename);
@@ -197,14 +197,14 @@ std::string cmExtraCodeLiteGenerator::CollectSourceFiles(
 {
   std::string projectType;
   switch (gt->GetType()) {
-    case cmStateEnums::EXECUTABLE: {
+    case cm::TargetType::EXECUTABLE: {
       projectType = "Executable";
     } break;
-    case cmStateEnums::STATIC_LIBRARY: {
+    case cm::TargetType::STATIC_LIBRARY: {
       projectType = "Static Library";
     } break;
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY: {
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY: {
       projectType = "Dynamic Library";
     } break;
     default:
@@ -212,10 +212,10 @@ std::string cmExtraCodeLiteGenerator::CollectSourceFiles(
   }
 
   switch (gt->GetType()) {
-    case cmStateEnums::EXECUTABLE:
-    case cmStateEnums::STATIC_LIBRARY:
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY: {
+    case cm::TargetType::EXECUTABLE:
+    case cm::TargetType::STATIC_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY: {
       cmake const* cm = makefile->GetCMakeInstance();
       std::vector<cmSourceFile*> sources;
       gt->GetSourceFiles(sources,
@@ -551,9 +551,9 @@ void cmExtraCodeLiteGenerator::CreateNewProjectFile(
   std::string targetName = gt->GetName();
   std::string visualname = targetName;
   switch (gt->GetType()) {
-    case cmStateEnums::STATIC_LIBRARY:
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       visualname = "lib" + targetName;
       break;
     default:
@@ -647,14 +647,11 @@ std::string cmExtraCodeLiteGenerator::GetCleanCommand(
   cmMakefile const* mf, std::string const& targetName) const
 {
   std::string generator = mf->GetSafeDefinition("CMAKE_GENERATOR");
-  std::ostringstream ss;
   std::string buildcommand = this->GetBuildCommand(mf, "");
   if (!targetName.empty() && generator == "Ninja") {
-    ss << buildcommand << " -t clean " << targetName;
-  } else {
-    ss << buildcommand << " clean";
+    return cmStrCat(std::move(buildcommand), " -t clean ", targetName);
   }
-  return ss.str();
+  return cmStrCat(std::move(buildcommand), " clean");
 }
 
 std::string cmExtraCodeLiteGenerator::GetRebuildCommand(
@@ -671,13 +668,13 @@ std::string cmExtraCodeLiteGenerator::GetSingleFileBuildCommand(
   std::string const& make = mf->GetRequiredDefinition("CMAKE_MAKE_PROGRAM");
   std::string const& generator = mf->GetSafeDefinition("CMAKE_GENERATOR");
   if (generator == "Unix Makefiles" || generator == "MinGW Makefiles") {
-    std::ostringstream ss;
 #if defined(_WIN32)
-    ss << make << " -f$(ProjectPath)/Makefile -B $(CurrentFileFullName).obj";
+    buildCommand = cmStrCat(
+      make, " -f$(ProjectPath)/Makefile -B $(CurrentFileFullName).obj");
 #else
-    ss << make << " -f$(ProjectPath)/Makefile -B $(CurrentFileFullName).o";
+    buildCommand =
+      cmStrCat(make, " -f$(ProjectPath)/Makefile -B $(CurrentFileFullName).o");
 #endif
-    buildCommand = ss.str();
   }
   return buildCommand;
 }

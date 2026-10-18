@@ -20,6 +20,21 @@ if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "_asan")
     )
 endif()
 
+if ("$ENV{CMAKE_CI_BUILD_NAME}" MATCHES "^intel20(16|17|18|19|20)")
+  list(APPEND test_exclusions
+    # The Intel Classic toolchain spuriously crashes on PCH.
+    "^RunCMake.PrecompileHeaders$"
+    "^RunCMake.PrecompileHeaders-Reuse$"
+    )
+endif()
+
+if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "_novs")
+  list(APPEND test_exclusions
+    # BundleUtilities works only in a VS development environment.
+    "^BundleUtilities$"
+    )
+endif()
+
 if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "_jom")
   list(APPEND test_exclusions
     # JOM often fails with "Couldn't change working directory to ...".
@@ -30,12 +45,13 @@ endif()
 if ("$ENV{CMAKE_CONFIGURATION}" MATCHES "_valgrind")
   list(APPEND test_exclusions
     # Tests that timeout under valgrind.
-    "^RunCMake.NinjaMultiConfig$"
     "^RunCMake.Autogen_Qt6_1$"
-    "^RunCMake.GoogleTest$"
-    "^RunCMake.CXXModules$"
-    "^RunCMake.CXXModulesCompile$"
     "^RunCMake.CommandLine$"
+    "^RunCMake.ctest_test$"
+    "^RunCMake.CXXModules$"
+    "^RunCMake.GoogleTest$"
+    "^RunCMake.Instrumentation$"
+    "^RunCMake.NinjaMultiConfig$"
 
     # Too spurious under Valgrind.
     "^RunCMake.testUVProcessChain$"

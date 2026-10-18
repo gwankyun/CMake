@@ -23,9 +23,12 @@ cmake-properties(7)
    /prop_gbl/AUTORCC_SOURCE_GROUP
    /prop_gbl/AUTOUIC_SOURCE_GROUP
    /prop_gbl/CMAKE_C_KNOWN_FEATURES
+   /prop_gbl/CMAKE_COMPILE_WRAPPER_NAME
    /prop_gbl/CMAKE_CUDA_KNOWN_FEATURES
    /prop_gbl/CMAKE_CXX_KNOWN_FEATURES
    /prop_gbl/CMAKE_HIP_KNOWN_FEATURES
+   /prop_gbl/CMAKE_LINK_WRAPPER_NAME
+   /prop_gbl/CMAKE_SYCL_KNOWN_FEATURES
    /prop_gbl/CMAKE_ROLE
    /prop_gbl/DEBUG_CONFIGURATIONS
    /prop_gbl/DISABLED_FEATURES
@@ -72,6 +75,7 @@ cmake-properties(7)
    /prop_dir/CACHE_VARIABLES
    /prop_dir/CLEAN_NO_CUSTOM
    /prop_dir/CMAKE_CONFIGURE_DEPENDS
+   /prop_dir/CMAKE_TEST_BUILD_DEPENDS
    /prop_dir/COMPILE_DEFINITIONS
    /prop_dir/COMPILE_OPTIONS
    /prop_dir/DEFINITIONS
@@ -88,6 +92,7 @@ cmake-properties(7)
    /prop_dir/RULE_LAUNCH_COMPILE
    /prop_dir/RULE_LAUNCH_CUSTOM
    /prop_dir/RULE_LAUNCH_LINK
+   /prop_dir/RULES
    /prop_dir/SOURCE_DIR
    /prop_dir/SUBDIRECTORIES
    /prop_dir/SYSTEM
@@ -98,6 +103,39 @@ cmake-properties(7)
    /prop_dir/VS_GLOBAL_SECTION_PRE_section
    /prop_dir/VS_SOLUTION_ITEMS
    /prop_dir/VS_STARTUP_PROJECT
+
+.. _`Rule Properties`:
+
+Properties on Rules
+===================
+
+.. toctree::
+   :maxdepth: 1
+
+   /prop_rule/BYPRODUCTS
+   /prop_rule/COMMAND
+   /prop_rule/COMMAND_INDEX
+   /prop_rule/COMMAND_COUNT
+   /prop_rule/COMMAND_EXPAND_LISTS
+   /prop_rule/COMMENT
+   /prop_rule/COMPILE_DEFINITIONS
+   /prop_rule/COMPILE_OPTIONS
+   /prop_rule/DEPENDS_EXPLICIT_ONLY
+   /prop_rule/DEPENDS
+   /prop_rule/DEPFILE
+   /prop_rule/FILE_SET_CONFIGURATORS
+   /prop_rule/GLOBAL
+   /prop_rule/INCLUDE_DIRECTORIES
+   /prop_rule/JOB_POOL_COMPILE
+   /prop_rule/JOB_SERVER_AWARE
+   /prop_rule/NAME
+   /prop_rule/OUTPUT
+   /prop_rule/OUTPUT_FILE_SET
+   /prop_rule/PARENT_RULE
+   /prop_rule/SOURCE_CONFIGURATORS
+   /prop_rule/USES_TERMINAL
+   /prop_rule/VERBATIM
+   /prop_rule/WORKING_DIRECTORY
 
 .. _`Target Properties`:
 
@@ -179,6 +217,7 @@ cmake-properties(7)
    /prop_tgt/COMPILE_PDB_OUTPUT_DIRECTORY
    /prop_tgt/COMPILE_PDB_OUTPUT_DIRECTORY_CONFIG
    /prop_tgt/COMPILE_WARNING_AS_ERROR
+   /prop_tgt/COMPILE_WRAPPERS
    /prop_tgt/CONFIG_OUTPUT_NAME
    /prop_tgt/CONFIG_POSTFIX
    /prop_tgt/CROSSCOMPILING_EMULATOR
@@ -199,7 +238,6 @@ cmake-properties(7)
    /prop_tgt/CXX_MODULE_SET
    /prop_tgt/CXX_MODULE_SET_NAME
    /prop_tgt/CXX_MODULE_SETS
-   /prop_tgt/CXX_MODULE_STD
    /prop_tgt/CXX_SCAN_FOR_MODULES
    /prop_tgt/CXX_STANDARD
    /prop_tgt/CXX_STANDARD_REQUIRED
@@ -227,6 +265,8 @@ cmake-properties(7)
    /prop_tgt/EXPORT_PROPERTIES
    /prop_tgt/FASTBUILD_CACHING
    /prop_tgt/FASTBUILD_DISTRIBUTION
+   /prop_tgt/FILE_SET_TYPES
+   /prop_tgt/FILE_SETS_TYPE
    /prop_tgt/FOLDER
    /prop_tgt/Fortran_BUILDING_INTRINSIC_MODULES
    /prop_tgt/Fortran_FORMAT
@@ -294,7 +334,9 @@ cmake-properties(7)
    /prop_tgt/INTERFACE_COMPILE_DEFINITIONS
    /prop_tgt/INTERFACE_COMPILE_FEATURES
    /prop_tgt/INTERFACE_COMPILE_OPTIONS
+   /prop_tgt/INTERFACE_COMPILE_WRAPPERS
    /prop_tgt/INTERFACE_CXX_MODULE_SETS
+   /prop_tgt/INTERFACE_FILE_SETS_TYPE
    /prop_tgt/INTERFACE_HEADER_SETS
    /prop_tgt/INTERFACE_HEADER_SETS_TO_VERIFY
    /prop_tgt/INTERFACE_INCLUDE_DIRECTORIES
@@ -304,6 +346,7 @@ cmake-properties(7)
    /prop_tgt/INTERFACE_LINK_LIBRARIES_DIRECT
    /prop_tgt/INTERFACE_LINK_LIBRARIES_DIRECT_EXCLUDE
    /prop_tgt/INTERFACE_LINK_OPTIONS
+   /prop_tgt/INTERFACE_LINK_WRAPPERS
    /prop_tgt/INTERFACE_POSITION_INDEPENDENT_CODE
    /prop_tgt/INTERFACE_PRECOMPILE_HEADERS
    /prop_tgt/INTERFACE_SOURCE_SETS
@@ -354,6 +397,7 @@ cmake-properties(7)
    /prop_tgt/LINK_SEARCH_START_STATIC
    /prop_tgt/LINK_WARNING_AS_ERROR
    /prop_tgt/LINK_WHAT_YOU_USE
+   /prop_tgt/LINK_WRAPPERS
    /prop_tgt/LINKER_LANGUAGE
    /prop_tgt/LINKER_TYPE
    /prop_tgt/LOCATION
@@ -428,6 +472,13 @@ cmake-properties(7)
    /prop_tgt/Swift_MODULE_NAME
    /prop_tgt/Swift_PACKAGE_NAME
    /prop_tgt/Swift_SEPARATE_MODULE_EMISSION
+   /prop_tgt/SYCL_CXX_STANDARD
+   /prop_tgt/SYCL_CXX_STANDARD_REQUIRED
+   /prop_tgt/SYCL_DEVICE_TARGETS
+   /prop_tgt/SYCL_EXTENSIONS
+   /prop_tgt/SYCL_EXTENSION_MODE
+   /prop_tgt/SYCL_RESOLVE_DEVICE_SYMBOLS
+   /prop_tgt/SYCL_SEPARABLE_COMPILATION
    /prop_tgt/SYMBOLIC
    /prop_tgt/SYSTEM
    /prop_tgt/TEST_LAUNCHER
@@ -545,6 +596,7 @@ Properties on File Sets
    /prop_fs/COMPILE_DEFINITIONS
    /prop_fs/COMPILE_OPTIONS
    /prop_fs/CXX_SCAN_FOR_MODULES
+   /prop_fs/LANGUAGE
    /prop_fs/JOB_POOL_COMPILE
    /prop_fs/INCLUDE_DIRECTORIES
    /prop_fs/INDEPENDENT_FILES
@@ -552,11 +604,13 @@ Properties on File Sets
    /prop_fs/INTERFACE_COMPILE_OPTIONS
    /prop_fs/INTERFACE_INCLUDE_DIRECTORIES
    /prop_fs/INTERFACE_SOURCES
+   /prop_fs/RULE_PATTERNS
    /prop_fs/SCOPE
    /prop_fs/SKIP_LINTING
    /prop_fs/SKIP_PRECOMPILE_HEADERS
    /prop_fs/SKIP_UNITY_BUILD_INCLUSION
    /prop_fs/SOURCES
+   /prop_fs/SOURCE_GROUP
    /prop_fs/TYPE
 
 .. _`Test Properties`:
@@ -575,6 +629,7 @@ Properties on File Sets
    /prop_test/ENVIRONMENT
    /prop_test/ENVIRONMENT_MODIFICATION
    /prop_test/FAIL_REGULAR_EXPRESSION
+   /prop_test/FIXTURE_REPEAT_MODE
    /prop_test/FIXTURES_CLEANUP
    /prop_test/FIXTURES_REQUIRED
    /prop_test/FIXTURES_SETUP
@@ -585,6 +640,7 @@ Properties on File Sets
    /prop_test/PROCESSOR_AFFINITY
    /prop_test/PROCESSORS
    /prop_test/REQUIRED_FILES
+   /prop_test/RESOURCE_ERROR_ACTION
    /prop_test/RESOURCE_GROUPS
    /prop_test/RESOURCE_LOCK
    /prop_test/RUN_SERIAL
@@ -628,6 +684,7 @@ Properties on File Sets
    /prop_sf/OBJECT_DEPENDS
    /prop_sf/OBJECT_NAME
    /prop_sf/OBJECT_OUTPUTS
+   /prop_sf/RULE_PATTERNS
    /prop_sf/Rust_EMIT
    /prop_sf/SKIP_AUTOGEN
    /prop_sf/SKIP_AUTOMOC
@@ -636,6 +693,7 @@ Properties on File Sets
    /prop_sf/SKIP_LINTING
    /prop_sf/SKIP_PRECOMPILE_HEADERS
    /prop_sf/SKIP_UNITY_BUILD_INCLUSION
+   /prop_sf/SOURCE_GROUP
    /prop_sf/Swift_DEPENDENCIES_FILE
    /prop_sf/Swift_DIAGNOSTICS_FILE
    /prop_sf/SYMBOLIC

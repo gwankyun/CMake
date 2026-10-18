@@ -3,13 +3,11 @@
 #include "cmGlobalVisualStudio14Generator.h"
 
 #include <cstring>
-#include <sstream>
 
 #include <cm/vector>
 #include <cmext/string_view>
 
 #include "cmGlobalGenerator.h"
-#include "cmGlobalGeneratorFactory.h"
 #include "cmGlobalVisualStudioGenerator.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
@@ -18,105 +16,10 @@
 #include "cmSystemTools.h"
 #include "cmValue.h"
 
-static char const vs14generatorName[] = "Visual Studio 14 2015";
-
-// Map generator name without year to name with year.
-static char const* cmVS14GenName(std::string const& name, std::string& genName)
-{
-  if (strncmp(name.c_str(), vs14generatorName,
-              sizeof(vs14generatorName) - 6) != 0) {
-    return nullptr;
-  }
-  char const* p = name.c_str() + sizeof(vs14generatorName) - 6;
-  if (cmHasLiteralPrefix(p, " 2015")) {
-    p += 5;
-  }
-  genName = std::string(vs14generatorName) + p;
-  return p;
-}
-
-class cmGlobalVisualStudio14Generator::Factory
-  : public cmGlobalGeneratorFactory
-{
-public:
-  std::unique_ptr<cmGlobalGenerator> CreateGlobalGenerator(
-    std::string const& name, cmake* cm) const override
-  {
-    std::string genName;
-    char const* p = cmVS14GenName(name, genName);
-    if (!p) {
-      return std::unique_ptr<cmGlobalGenerator>();
-    }
-    if (!*p) {
-      return std::unique_ptr<cmGlobalGenerator>(
-        new cmGlobalVisualStudio14Generator(cm, genName));
-    }
-    return std::unique_ptr<cmGlobalGenerator>();
-  }
-
-  cmDocumentationEntry GetDocumentation() const override
-  {
-    return { std::string(vs14generatorName),
-             "Deprecated.  Generates Visual Studio 2015 project files.  "
-             "Use -A option to specify architecture." };
-  }
-
-  std::vector<std::string> GetGeneratorNames() const override
-  {
-    std::vector<std::string> names;
-    names.push_back(vs14generatorName);
-    return names;
-  }
-
-  bool SupportsToolset() const override { return true; }
-  bool SupportsPlatform() const override { return true; }
-
-  std::vector<std::string> GetKnownPlatforms() const override
-  {
-    std::vector<std::string> platforms;
-    platforms.emplace_back("x64");
-    platforms.emplace_back("Win32");
-    platforms.emplace_back("ARM");
-    return platforms;
-  }
-
-  std::string GetDefaultPlatformName() const override { return "Win32"; }
-};
-
-std::unique_ptr<cmGlobalGeneratorFactory>
-cmGlobalVisualStudio14Generator::NewFactory()
-{
-  return std::unique_ptr<cmGlobalGeneratorFactory>(new Factory);
-}
-
 cmGlobalVisualStudio14Generator::cmGlobalVisualStudio14Generator(
   cmake* cm, std::string const& name)
   : cmGlobalVisualStudio12Generator(cm, name)
 {
-  std::string vc14Express;
-  this->ExpressEdition = cmSystemTools::ReadRegistryValue(
-    "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VCExpress\\14.0\\Setup\\VC;"
-    "ProductDir",
-    vc14Express, cmSystemTools::KeyWOW64_32);
-  this->DefaultPlatformToolset = "v140";
-  this->DefaultAndroidToolset = "Clang_3_8";
-  this->DefaultCLFlagTableName = "v140";
-  this->DefaultCSharpFlagTableName = "v140";
-  this->DefaultLibFlagTableName = "v14";
-  this->DefaultLinkFlagTableName = "v140";
-  this->DefaultMasmFlagTableName = "v14";
-  this->DefaultRCFlagTableName = "v14";
-  this->Version = VSVersion::VS14;
-}
-
-bool cmGlobalVisualStudio14Generator::MatchesGeneratorName(
-  std::string const& name) const
-{
-  std::string genName;
-  if (cmVS14GenName(name, genName)) {
-    return genName == this->GetName();
-  }
-  return false;
 }
 
 bool cmGlobalVisualStudio14Generator::InitializePlatformWindows(cmMakefile* mf)
@@ -222,18 +125,19 @@ bool cmGlobalVisualStudio14Generator::VerifyNoGeneratorPlatformVersion(
   if (!this->GeneratorPlatformVersion) {
     return true;
   }
-  std::ostringstream e;
-  /* clang-format off */
-  e <<
-    "Generator\n"
-    "  " << this->GetName() << "\n"
-    "given platform specification containing a\n"
-    "  version=" << *this->GeneratorPlatformVersion << "\n"
-    "field.  The version field is not supported when targeting\n"
-    "  " << this->SystemName << ' ' << this->SystemVersion << '\n'
-    ;
-  /* clang-format on */
-  mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
+  mf->IssueMessage(
+    MessageType::FATAL_ERROR,
+    cmStrCat("Generator\n"
+             "  ",
+             this->GetName(),
+             "\n"
+             "given platform specification containing a\n"
+             "  version=",
+             *this->GeneratorPlatformVersion,
+             "\n"
+             "field.  The version field is not supported when targeting\n"
+             "  ",
+             this->SystemName, ' ', this->SystemVersion, '\n'));
   return false;
 }
 
@@ -381,17 +285,6 @@ std::string cmGlobalVisualStudio14Generator::GetWindows10SDKMaxVersion(
   }
 
   return this->GetWindows10SDKMaxVersionDefault(mf);
-}
-
-std::string cmGlobalVisualStudio14Generator::GetWindows10SDKMaxVersionDefault(
-  cmMakefile*) const
-{
-  // The last Windows 10 SDK version that VS 2015 can target is 10.0.14393.0.
-  //
-  // "VS 2015 Users: The Windows 10 SDK (15063, 16299, 17134, 17763) is
-  // officially only supported for VS 2017." From:
-  // https://blogs.msdn.microsoft.com/chuckw/2018/10/02/windows-10-october-2018-update/
-  return "10.0.14393.0";
 }
 
 #if defined(_WIN32) && !defined(__CYGWIN__)

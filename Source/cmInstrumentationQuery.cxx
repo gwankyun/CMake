@@ -18,6 +18,7 @@ std::vector<std::string> const cmInstrumentationQuery::OptionString{
   "staticSystemInformation",
   "dynamicSystemInformation",
   "captureOutput",
+  "processMetrics",
   "compileTrace",
   "cdashSubmit",
   "cdashVerbose",
@@ -173,6 +174,6 @@ Version cmInstrumentationQuery::LatestDataVersion()
 {
   Version latest;
   latest.Major = 1;
-  latest.Minor = 1;
+  latest.Minor = 2;
   return latest;
 }

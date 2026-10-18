@@ -7,7 +7,15 @@ INTERFACE_CXX_MODULE_SETS
 C++模块集中列出的文件可以用\ :command:`install(TARGETS)`\ 安装，用\
 :command:`install(EXPORT)`\ 和\ :command:`export`\ 导出。
 
-C++ module sets may be defined using the :command:`target_sources` command
-``FILE_SET`` option with type ``CXX_MODULES``.
+See Also
+^^^^^^^^
 
-See also :prop_tgt:`CXX_MODULE_SETS`.
+Related properties:
+
+* :prop_tgt:`INTERFACE_FILE_SETS_<TYPE>`
+* :prop_tgt:`FILE_SETS_<TYPE>`
+* :prop_tgt:`CXX_MODULE_SETS`
+
+Related commands:
+
+* :command:`target_sources` to define file sets of type ``CXX_MODULES``

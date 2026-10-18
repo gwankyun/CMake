@@ -12,6 +12,9 @@ link_libraries
 目录或目录下稍后创建的任何目标时要使用的库或标志。有关参数的含义，请参见\
 :command:`target_link_libraries`\ 命令。
 
+.. |command_name| replace:: ``link_libraries``
+.. |target_command_name| replace:: :command:`target_link_libraries`
 .. note::
-  只要可能，应该优先使用\ :command:`target_link_libraries`\ 命令。库依赖关系是自动链接的，\
+  .. include:: include/NON_TARGET_NOTE_BODY.rst
+  库依赖关系是自动链接的，\
   因此很少需要在目录范围内指定链接库。

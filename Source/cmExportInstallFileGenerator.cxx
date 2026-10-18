@@ -123,9 +123,8 @@ bool cmExportInstallFileGenerator::GenerateImportFileConfig(
   cmGeneratedFileStream exportFileStream(fileName, true);
   if (!exportFileStream) {
     std::string se = cmSystemTools::GetLastSystemError();
-    std::ostringstream e;
-    e << "cannot write to file \"" << fileName << "\": " << se;
-    cmSystemTools::Error(e.str());
+    cmSystemTools::Error(
+      cmStrCat("cannot write to file \"", fileName, "\": ", se));
     return false;
   }
   exportFileStream.SetCopyIfDifferent(true);
@@ -174,7 +173,7 @@ void cmExportInstallFileGenerator::SetImportLocationProperty(
     // Store the property.
     properties[prop] = value;
     importedLocations.insert(prop);
-  } else if (itgen->GetTarget()->GetType() == cmStateEnums::OBJECT_LIBRARY) {
+  } else if (itgen->GetTarget()->GetType() == cm::TargetType::OBJECT_LIBRARY) {
     // Construct the property name.
     std::string prop = cmStrCat("IMPORTED_OBJECTS", suffix);
 
@@ -183,7 +182,7 @@ void cmExportInstallFileGenerator::SetImportLocationProperty(
     std::vector<std::string> objects;
     itgen->GetInstallObjectNames(config, objects);
     for (std::string& obj : objects) {
-      obj = cmStrCat(value, obj);
+      obj = cmStrCat(value, std::move(obj));
     }
 
     // Store the property.
@@ -225,15 +224,15 @@ void cmExportInstallFileGenerator::SetImportLocationProperty(
   }
 }
 
-cmStateEnums::TargetType cmExportInstallFileGenerator::GetExportTargetType(
+cm::TargetType cmExportInstallFileGenerator::GetExportTargetType(
   cmTargetExport const* targetExport) const
 {
-  cmStateEnums::TargetType targetType = targetExport->Target->GetType();
+  cm::TargetType targetType = targetExport->Target->GetType();
   // An OBJECT library installed with no OBJECTS DESTINATION
   // is transformed to an INTERFACE library.
-  if (targetType == cmStateEnums::OBJECT_LIBRARY &&
+  if (targetType == cm::TargetType::OBJECT_LIBRARY &&
       !targetExport->ObjectsGenerator) {
-    targetType = cmStateEnums::INTERFACE_LIBRARY;
+    targetType = cm::TargetType::INTERFACE_LIBRARY;
   }
   return targetType;
 }
@@ -303,11 +302,10 @@ void cmExportInstallFileGenerator::ComplainAboutMissingTarget(
 void cmExportInstallFileGenerator::ComplainAboutDuplicateTarget(
   std::string const& targetName) const
 {
-  std::ostringstream e;
-  e << "install(" << this->IEGen->InstallSubcommand() << " \""
-    << this->GetExportName() << "\" ...) " << "includes target \""
-    << targetName << "\" more than once in the export set.";
-  this->ReportError(e.str());
+  this->ReportError(cmStrCat("install(", this->IEGen->InstallSubcommand(),
+                             " \"", this->GetExportName(),
+                             "\" ...) includes target \"", targetName,
+                             "\" more than once in the export set."));
 }
 
 void cmExportInstallFileGenerator::IssueMessage(
@@ -446,14 +444,12 @@ bool cmExportInstallFileGenerator::CheckInterfaceDirs(
       hadFatalError = true;
     }
     if (!cmSystemTools::FileIsFullPath(li)) {
-      std::ostringstream e;
-      /* clang-format off */
-      e << "Target \"" << target->GetName() << "\" " << prop <<
-           " property contains relative path:\n"
-           "  \"" << li << "\"";
-      /* clang-format on */
-      target->GetLocalGenerator()->IssueMessage(MessageType::FATAL_ERROR,
-                                                e.str());
+      target->GetLocalGenerator()->IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat("Target \"", target->GetName(), "\" ", prop,
+                 " property contains relative path:\n"
+                 "  \"",
+                 li, '"'));
     }
     bool inBinary = isSubDirectory(li, topBinaryDir);
     bool inSource = isSubDirectory(li, topSourceDir);
@@ -468,24 +464,21 @@ bool cmExportInstallFileGenerator::CheckInterfaceDirs(
       }
     }
     if (inBinary) {
-      std::ostringstream e;
-      /* clang-format off */
-      e << "Target \"" << target->GetName() << "\" " << prop <<
-           " property contains path:\n"
-           "  \"" << li << "\"\nwhich is prefixed in the build directory.";
-      /* clang-format on */
-      target->GetLocalGenerator()->IssueMessage(MessageType::FATAL_ERROR,
-                                                e.str());
+      target->GetLocalGenerator()->IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat("Target \"", target->GetName(), "\" ", prop,
+                 " property contains path:\n"
+                 "  \"",
+                 li, "\"\nwhich is prefixed in the build directory."));
     }
     if (!inSourceBuild) {
       if (inSource) {
-        std::ostringstream e;
-        e << "Target \"" << target->GetName() << "\" " << prop
-          << " property contains path:\n"
-             "  \""
-          << li << "\"\nwhich is prefixed in the source directory.";
-        target->GetLocalGenerator()->IssueMessage(MessageType::FATAL_ERROR,
-                                                  e.str());
+        target->GetLocalGenerator()->IssueMessage(
+          MessageType::FATAL_ERROR,
+          cmStrCat("Target \"", target->GetName(), "\" ", prop,
+                   " property contains path:\n"
+                   "  \"",
+                   li, "\"\nwhich is prefixed in the source directory."));
       }
     }
   }
@@ -580,14 +573,14 @@ void cmExportInstallFileGenerator::PopulateIncludeDirectoriesInterface(
 
   if (cge->GetHadContextSensitiveCondition()) {
     cmLocalGenerator* lg = target->GetLocalGenerator();
-    std::ostringstream e;
-    e << "Target \"" << target->GetName()
-      << "\" is installed with "
-         "INCLUDES DESTINATION set to a context sensitive path.  Paths which "
-         "depend on the configuration, policy values or the link interface "
-         "are "
-         "not supported.  Consider using target_include_directories instead.";
-    lg->IssueMessage(MessageType::FATAL_ERROR, e.str());
+    lg->IssueMessage(
+      MessageType::FATAL_ERROR,
+      cmStrCat("Target \"", target->GetName(),
+               "\" is installed with "
+               "INCLUDES DESTINATION set to a context sensitive path.  Paths "
+               "which depend on the configuration, policy values or the link "
+               "interface are not supported.  Consider using "
+               "target_include_directories instead."));
     return;
   }
 
@@ -605,7 +598,7 @@ void cmExportInstallFileGenerator::PopulateIncludeDirectoriesInterface(
 
   std::string includes = (input ? *input : "");
   char const* const sep = input ? ";" : "";
-  includes += sep + exportDirs;
+  includes = cmStrCat(std::move(includes), sep, exportDirs);
   std::string prepro = cmGeneratorExpression::Preprocess(
     includes, preprocessRule, this->GetImportPrefixWithSlash());
   if (!prepro.empty()) {

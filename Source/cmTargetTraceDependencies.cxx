@@ -2,7 +2,6 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmTargetTraceDependencies.h"
 
-#include <sstream>
 #include <utility>
 
 #include <cmext/algorithm>
@@ -17,10 +16,10 @@
 #include "cmMakefile.h"
 #include "cmMessageType.h"
 #include "cmSourceFile.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 cmTargetTraceDependencies::cmTargetTraceDependencies(cmGeneratorTarget* target)
@@ -43,12 +42,11 @@ cmTargetTraceDependencies::cmTargetTraceDependencies(cmGeneratorTarget* target)
       std::set<cmGeneratorTarget const*> const tgts =
         this->GlobalGenerator->GetFilenameTargetDepends(sf);
       if (cm::contains(tgts, this->GeneratorTarget)) {
-        std::ostringstream e;
-        e << "Evaluation output file\n  \"" << sf->ResolveFullPath()
-          << "\"\ndepends on the sources of a target it is used in.  This "
-             "is a dependency loop and is not allowed.";
         this->GeneratorTarget->LocalGenerator->IssueMessage(
-          MessageType::FATAL_ERROR, e.str());
+          MessageType::FATAL_ERROR,
+          cmStrCat("Evaluation output file\n  \"", sf->ResolveFullPath(),
+                   "\"\ndepends on the sources of a target it is used in.  "
+                   "This is a dependency loop and is not allowed."));
         return;
       }
       if (emitted.insert(sf).second && this->SourcesQueued.insert(sf).second) {
@@ -183,8 +181,8 @@ bool cmTargetTraceDependencies::IsUtility(std::string const& dep)
     // then make sure it was not a full path to something else, and
     // the fact that the name matched a target was just a coincidence.
     if (cmSystemTools::FileIsFullPath(dep)) {
-      if (t->GetType() >= cmStateEnums::EXECUTABLE &&
-          t->GetType() <= cmStateEnums::MODULE_LIBRARY) {
+      if (t->GetType() >= cm::TargetType::EXECUTABLE &&
+          t->GetType() <= cm::TargetType::MODULE_LIBRARY) {
         // This is really only for compatibility so we do not need to
         // worry about configuration names and output names.
         std::string tLocation = t->GetLocationForBuild();

@@ -74,8 +74,7 @@ bool cmCTestGIT::NoteOldRevision()
 {
   this->OldRevision = this->GetWorkingRevision();
   cmCTestLog(this->CTest, HANDLER_OUTPUT,
-             "   Old revision of repository is: " << this->OldRevision
-                                                  << "\n");
+             "   Old revision of repository is: ", this->OldRevision, '\n');
   this->PriorRev.Rev = this->OldRevision;
   return true;
 }
@@ -84,8 +83,7 @@ bool cmCTestGIT::NoteNewRevision()
 {
   this->NewRevision = this->GetWorkingRevision();
   cmCTestLog(this->CTest, HANDLER_OUTPUT,
-             "   New revision of repository is: " << this->NewRevision
-                                                  << "\n");
+             "   New revision of repository is: ", this->NewRevision, '\n');
   return true;
 }
 
@@ -110,7 +108,7 @@ std::string cmCTestGIT::FindGitDir()
   // Git reports a relative path only when the .git directory is in
   // the current directory.
   if (git_dir[0] == '.') {
-    git_dir = this->SourceDirectory + "/" + git_dir;
+    git_dir = cmStrCat(this->SourceDirectory, '/', std::move(git_dir));
   }
 #if defined(_WIN32) && !defined(__CYGWIN__)
   else if (git_dir[0] == '/') {
@@ -602,7 +600,7 @@ char const cmCTestGIT::CommitParser::SectionSep[SectionCount] = { '\n', '\n',
 bool cmCTestGIT::LoadRevisions()
 {
   // Use 'git rev-list ... | git diff-tree ...' to get revisions.
-  std::string range = this->OldRevision + ".." + this->NewRevision;
+  std::string range = cmStrCat(this->OldRevision, "..", this->NewRevision);
   std::string git = this->CommandLineTool;
   std::vector<std::string> git_rev_list = { git, "rev-list", "--reverse",
                                             range, "--" };

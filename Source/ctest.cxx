@@ -31,7 +31,8 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
     "Read arguments from a test preset." },
   { "--presets-file <file>, --presets-file=<file>",
     "Load test presets from the given file." },
-  { "--list-presets", "List available test presets." },
+  { "--list-presets[=defined]",
+    "List available or all defined test presets." },
   { "-C <cfg>, --build-config <cfg>", "Choose configuration to test." },
   { "--progress", "Enable short progress output from tests." },
   { "-V,--verbose", "Enable verbose output from tests." },
@@ -60,7 +61,8 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
   { "-N,--show-only[=format]",
     "Disable actual execution of tests. The optional 'format' defines the "
     "format of the test information and can be 'human' for the current text "
-    "format or 'json-v1' for json format. Defaults to 'human'." },
+    "format, 'json-v1' for json format, or 'json-v1-raw' where the json "
+    "format stores the raw test property values. Defaults to 'human'." },
   { "-L <regex>, --label-regex <regex>",
     "Run tests with labels matching regular expression. "
     "With multiple -L, run tests where each "
@@ -117,6 +119,8 @@ cmDocumentationEntry const cmDocumentationOptions[] = {
     "Run a specific number of tests by number." },
   { "-U, --union", "Take the Union of -I and -R" },
   { "--rerun-failed", "Run only the tests that failed previously" },
+  { "--out-of-date",
+    "Run only tests whose build dependencies changed since they last ran" },
   { "--tests-from-file <file>", "Run the tests listed in the given file" },
   { "--exclude-from-file <file>",
     "Run tests except those listed in the given file" },
@@ -205,6 +209,10 @@ int main(int argc, char const* const* argv)
   // Dispatch 'ctest --instrument' mode directly.
   if (argc >= 2 && strcmp(argv[1], "--instrument") == 0) {
     return cmCTestLaunch::Main(argc, argv, cmCTestLaunch::Op::Instrument);
+  }
+
+  if (argc >= 2 && strcmp(argv[1], "--instrument-test") == 0) {
+    return cmCTestLaunch::Main(argc, argv, cmCTestLaunch::Op::InstrumentTest);
   }
 
   // Dispatch post-build instrumentation daemon for ninja

@@ -79,7 +79,7 @@ def assert_fields_look_good(line):
     assert isinstance(line['frame'], int)
     assert isinstance(line['global_frame'], int)
     assert isinstance(line['line'], int)
-    assert isinstance(line['time'], float)
+    assert isinstance(line['time'], float) or isinstance(line['time'], int)
 
 
 with open(trace_file, 'r') as fp:

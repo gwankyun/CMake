@@ -4,6 +4,7 @@
 #include "cmLinkLineDeviceComputer.h"
 
 #include <algorithm>
+#include <initializer_list>
 #include <set>
 #include <utility>
 #include <vector>
@@ -14,20 +15,23 @@
 #include "cmGeneratorTarget.h"
 #include "cmGlobalGenerator.h"
 #include "cmLinkItem.h"
+#include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmLocalGenerator.h"
 #include "cmMakefile.h"
 #include "cmStateDirectory.h"
 #include "cmStateSnapshot.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
 class cmOutputConverter;
 
 cmLinkLineDeviceComputer::cmLinkLineDeviceComputer(
-  cmOutputConverter* outputConverter, cmStateDirectory const& stateDir)
+  cmOutputConverter* outputConverter, cmStateDirectory const& stateDir,
+  std::string language)
   : cmLinkLineComputer(outputConverter, stateDir)
+  , Language(std::move(language))
 {
 }
 
@@ -60,12 +64,14 @@ bool cmLinkLineDeviceComputer::ComputeRequiresDeviceLinking(
   ItemVector const& items = cli.GetItems();
   return std::any_of(
     items.begin(), items.end(),
-    [](cmComputeLinkInformation::Item const& item) -> bool {
+    [this](cmComputeLinkInformation::Item const& item) -> bool {
       return item.Target &&
-        item.Target->GetType() == cmStateEnums::STATIC_LIBRARY &&
+        item.Target->GetType() == cm::TargetType::STATIC_LIBRARY &&
         // this dependency requires us to device link it
-        !item.Target->GetPropertyAsBool("CUDA_RESOLVE_DEVICE_SYMBOLS") &&
-        item.Target->GetPropertyAsBool("CUDA_SEPARABLE_COMPILATION");
+        !item.Target->GetPropertyAsBool(
+          cmStrCat(this->Language, "_RESOLVE_DEVICE_SYMBOLS")) &&
+        item.Target->GetPropertyAsBool(
+          cmStrCat(this->Language, "_SEPARABLE_COMPILATION"));
     });
 }
 
@@ -79,13 +85,15 @@ bool cmLinkLineDeviceComputer::ComputeRequiresDeviceLinkingIPOFlag(
   std::string config = cli.GetConfig();
   return std::any_of(
     items.begin(), items.end(),
-    [config](cmComputeLinkInformation::Item const& item) -> bool {
+    [this, config](cmComputeLinkInformation::Item const& item) -> bool {
       return item.Target &&
-        item.Target->GetType() == cmStateEnums::STATIC_LIBRARY &&
+        item.Target->GetType() == cm::TargetType::STATIC_LIBRARY &&
         // this dependency requires us to device link it
-        !item.Target->GetPropertyAsBool("CUDA_RESOLVE_DEVICE_SYMBOLS") &&
-        item.Target->GetPropertyAsBool("CUDA_SEPARABLE_COMPILATION") &&
-        item.Target->IsIPOEnabled("CUDA", config);
+        !item.Target->GetPropertyAsBool(
+          cmStrCat(this->Language, "_RESOLVE_DEVICE_SYMBOLS")) &&
+        item.Target->GetPropertyAsBool(
+          cmStrCat(this->Language, "_SEPARABLE_COMPILATION")) &&
+        item.Target->IsIPOEnabled(this->Language, config);
     });
 }
 
@@ -102,6 +110,16 @@ void cmLinkLineDeviceComputer::ComputeLinkLibraries(
   ItemVector const& items = cli.GetItems();
   std::string config = cli.GetConfig();
   bool skipItemAfterFramework = false;
+  auto const librariesBegin = linkLibraries.size();
+  cmMakefile const* mf = cli.GetTarget()->Makefile;
+  std::string const wholeArchive =
+    cmJoin(cmList(mf->GetSafeDefinition(cmStrCat(
+             "CMAKE_", this->Language, "_DEVICE_LINK_OPTIONS_WHOLE_ARCHIVE"))),
+           " ");
+  std::string const noWholeArchive = cmJoin(
+    cmList(mf->GetSafeDefinition(cmStrCat(
+      "CMAKE_", this->Language, "_DEVICE_LINK_OPTIONS_NO_WHOLE_ARCHIVE"))),
+    " ");
 
   for (auto const& item : items) {
     if (skipItemAfterFramework) {
@@ -112,14 +130,15 @@ void cmLinkLineDeviceComputer::ComputeLinkLibraries(
     if (item.Target) {
       bool skip = false;
       switch (item.Target->GetType()) {
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::OBJECT_LIBRARY:
-        case cmStateEnums::INTERFACE_LIBRARY:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::OBJECT_LIBRARY:
+        case cm::TargetType::INTERFACE_LIBRARY:
           skip = true;
           break;
-        case cmStateEnums::STATIC_LIBRARY:
-          skip = item.Target->GetPropertyAsBool("CUDA_RESOLVE_DEVICE_SYMBOLS");
+        case cm::TargetType::STATIC_LIBRARY:
+          skip = item.Target->GetPropertyAsBool(
+            cmStrCat(this->Language, "_RESOLVE_DEVICE_SYMBOLS"));
           break;
         default:
           break;
@@ -153,7 +172,7 @@ void cmLinkLineDeviceComputer::ComputeLinkLibraries(
       linkLib.Value = item.Value.Value;
     }
 
-    if (emitted.insert(linkLib.Value).second) {
+    if (!linkLib.Value.empty() && emitted.insert(linkLib.Value).second) {
       linkLib.Value += " ";
 
       cmLinkImplementation const* linkImpl =
@@ -162,7 +181,7 @@ void cmLinkLineDeviceComputer::ComputeLinkLibraries(
 
       for (cmLinkItem const& iter : linkImpl->Libraries) {
         if (iter.Target &&
-            iter.Target->GetType() != cmStateEnums::INTERFACE_LIBRARY) {
+            iter.Target->GetType() != cm::TargetType::INTERFACE_LIBRARY) {
           std::string libPath = iter.Target->GetLocation(cli.GetConfig());
           if (item.Value == libPath) {
             linkLib.Backtrace = iter.Backtrace;
@@ -178,31 +197,39 @@ void cmLinkLineDeviceComputer::ComputeLinkLibraries(
   if (!stdLibString.empty()) {
     linkLibraries.emplace_back(cmStrCat(stdLibString, ' '));
   }
+
+  if (linkLibraries.size() > librariesBegin && !wholeArchive.empty()) {
+    linkLibraries.insert(linkLibraries.begin() + librariesBegin,
+                         BT<std::string>(cmStrCat(wholeArchive, ' ')));
+    linkLibraries.emplace_back(cmStrCat(noWholeArchive, ' '));
+  }
 }
 
 std::string cmLinkLineDeviceComputer::GetLinkerLanguage(cmGeneratorTarget*,
                                                         std::string const&)
 {
-  return "CUDA";
+  return this->Language;
 }
 
-bool requireDeviceLinking(cmGeneratorTarget& target, cmLocalGenerator& lg,
-                          std::string const& config)
+bool requireDeviceLinking(cmGeneratorTarget const& target,
+                          cmLocalGenerator& lg, std::string const& config,
+                          std::string const& language)
 {
-  if (!target.GetGlobalGenerator()->GetLanguageEnabled("CUDA")) {
+  if (!target.GetGlobalGenerator()->GetLanguageEnabled(language)) {
     return false;
   }
 
-  if (target.GetType() == cmStateEnums::OBJECT_LIBRARY) {
+  if (target.GetType() == cm::TargetType::OBJECT_LIBRARY) {
     return false;
   }
 
-  if (!lg.GetMakefile()->IsOn("CMAKE_CUDA_COMPILER_HAS_DEVICE_LINK_PHASE")) {
+  if (!lg.GetMakefile()->IsOn(
+        cmStrCat("CMAKE_", language, "_COMPILER_HAS_DEVICE_LINK_PHASE"))) {
     return false;
   }
 
   if (cmValue resolveDeviceSymbols =
-        target.GetProperty("CUDA_RESOLVE_DEVICE_SYMBOLS")) {
+        target.GetProperty(cmStrCat(language, "_RESOLVE_DEVICE_SYMBOLS"))) {
     // If CUDA_RESOLVE_DEVICE_SYMBOLS has been explicitly set we need
     // to honor the value no matter what it is.
     return resolveDeviceSymbols.IsOn();
@@ -213,13 +240,14 @@ bool requireDeviceLinking(cmGeneratorTarget& target, cmLocalGenerator& lg,
   cmGeneratorTarget::LinkClosure const* closure =
     target.GetLinkClosure(config);
 
-  if (cm::contains(closure->Languages, "CUDA")) {
-    if (target.GetProperty("CUDA_SEPARABLE_COMPILATION").IsOn()) {
+  if (cm::contains(closure->Languages, language)) {
+    if (target.GetProperty(cmStrCat(language, "_SEPARABLE_COMPILATION"))
+          .IsOn()) {
       bool doDeviceLinking = false;
       switch (target.GetType()) {
-        case cmStateEnums::SHARED_LIBRARY:
-        case cmStateEnums::MODULE_LIBRARY:
-        case cmStateEnums::EXECUTABLE:
+        case cm::TargetType::SHARED_LIBRARY:
+        case cm::TargetType::MODULE_LIBRARY:
+        case cm::TargetType::EXECUTABLE:
           doDeviceLinking = true;
           break;
         default:
@@ -231,10 +259,21 @@ bool requireDeviceLinking(cmGeneratorTarget& target, cmLocalGenerator& lg,
     cmComputeLinkInformation* pcli = target.GetLinkInformation(config);
     if (pcli) {
       cmLinkLineDeviceComputer deviceLinkComputer(
-        &lg, lg.GetStateSnapshot().GetDirectory());
+        &lg, lg.GetStateSnapshot().GetDirectory(), language);
       return deviceLinkComputer.ComputeRequiresDeviceLinking(*pcli);
     }
     return true;
   }
   return false;
+}
+
+std::string deviceLinkLanguage(cmGeneratorTarget& target, cmLocalGenerator& lg,
+                               std::string const& config)
+{
+  for (auto const* language : { "CUDA", "SYCL" }) {
+    if (requireDeviceLinking(target, lg, config, language)) {
+      return language;
+    }
+  }
+  return {};
 }

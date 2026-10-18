@@ -11,6 +11,8 @@
 #include <cmext/algorithm>
 #include <cmext/string_view>
 
+#include "cmExperimental.h"
+#include "cmGeneratorExpression.h"
 #include "cmList.h"
 #include "cmListFileCache.h"
 #include "cmMakefile.h"
@@ -28,6 +30,8 @@ cmFileSet::cmFileSet(cmMakefile* makefile, cmTarget* target, std::string name,
   , Target(target)
   , Name(std::move(name))
   , Type(std::move(type))
+  , Domain(Metadata::IsKnownType(this->Type) ? Metadata::FileSetDomain::NATIVE
+                                             : Metadata::FileSetDomain::RULE)
   , Visibility(visibility)
 {
 }
@@ -179,6 +183,7 @@ cm::string_view const INTERFACE_COMPILE_DEFINITIONS =
 cm::string_view const COMPILE_OPTIONS = "COMPILE_OPTIONS"_s;
 cm::string_view const INTERFACE_COMPILE_OPTIONS =
   "INTERFACE_COMPILE_OPTIONS"_s;
+cm::string_view const LANGUAGE = "LANGUAGE"_s;
 }
 
 void cmFileSet::SetProperty(std::string const& prop, cmValue value)
@@ -265,6 +270,32 @@ void cmFileSet::SetProperty(std::string const& prop, cmValue value)
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->InterfaceCompileDefinitions.emplace_back(value, lfbt);
     }
+  } else if (prop == LANGUAGE) {
+    if (this->GetDomain() != Metadata::FileSetDomain::RULE &&
+        this->GetType() != Metadata::SOURCES &&
+        this->GetType() != Metadata::HEADERS) {
+      this->Makefile->IssueMessage(
+        MessageType::FATAL_ERROR,
+        "LANGUAGE property may only be set on a SOURCES, HEADERS, or custom "
+        "rule file set.");
+      return;
+    }
+    if (this->GetType() == Metadata::HEADERS &&
+        !cmExperimental::HasSupportEnabled(*this->Makefile,
+                                           cmExperimental::Feature::SYCL)) {
+      this->Makefile->IssueMessage(
+        MessageType::FATAL_ERROR,
+        "LANGUAGE property on a HEADERS file set is experimental and must be "
+        "enabled by the CMAKE_EXPERIMENTAL_SYCL gate.");
+      return;
+    }
+    if (value && cmGeneratorExpression::Find(*value) != std::string::npos) {
+      this->Makefile->IssueMessage(
+        MessageType::FATAL_ERROR,
+        "LANGUAGE file set property does not support generator expressions.");
+      return;
+    }
+    this->Properties.SetProperty(prop, value);
   } else {
     this->Properties.SetProperty(prop, value);
   }
@@ -346,6 +377,10 @@ void cmFileSet::AppendProperty(std::string const& prop,
       cmListFileBacktrace lfbt = this->GetMakefile()->GetBacktrace();
       this->InterfaceCompileDefinitions.emplace_back(value, lfbt);
     }
+  } else if (prop == LANGUAGE) {
+    this->Makefile->IssueMessage(
+      MessageType::FATAL_ERROR,
+      "LANGUAGE file set property does not support appending values.");
   } else {
     this->Properties.AppendProperty(prop, value, asString);
   }

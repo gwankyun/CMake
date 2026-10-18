@@ -5,9 +5,11 @@
 
 #include <string>
 
-#include "cmStateTypes.h"
-
 class cmRuntimeDependencyArchive;
+
+namespace cm {
+enum class TargetType;
+} // namespace cm
 
 class cmBinUtilsLinker
 {
@@ -18,7 +20,7 @@ public:
   virtual bool Prepare() { return true; }
 
   virtual bool ScanDependencies(std::string const& file,
-                                cmStateEnums::TargetType type) = 0;
+                                cm::TargetType type) = 0;
 
 protected:
   cmRuntimeDependencyArchive* Archive;

@@ -6,7 +6,6 @@
 #include <cstdio>
 #include <functional>
 #include <set>
-#include <sstream>
 #include <utility>
 
 #include <cm/string_view>
@@ -29,9 +28,11 @@
 #include "cmRange.h"
 #include "cmScriptGenerator.h"
 #include "cmState.h"
+#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmVersion.h"
 #include "cmake.h"
@@ -39,7 +40,7 @@
 namespace {
 constexpr char const* unique_binary_directory = "CMAKE_BINARY_DIR_USE_MKDTEMP";
 
-std::array<cm::string_view, 9> const kLanguageNames{ {
+std::array<cm::string_view, 10> const kLanguageNames{ {
   "C"_s,
   "CUDA"_s,
   "CXX"_s,
@@ -48,6 +49,7 @@ std::array<cm::string_view, 9> const kLanguageNames{ {
   "ISPC"_s,
   "OBJC"_s,
   "OBJCXX"_s,
+  "SYCL"_s,
   "Swift"_s,
 } };
 
@@ -169,6 +171,9 @@ auto const TryCompileBaseSourcesArgParser =
     .BIND_LANG_PROPS(HIP)
     .BIND_LANG_PROPS(OBJC)
     .BIND_LANG_PROPS(OBJCXX)
+    .Bind("SYCL_CXX_STANDARD"_s, TryCompileLangProp)
+    .Bind("SYCL_CXX_STANDARD_REQUIRED"_s, TryCompileLangProp)
+    .Bind("SYCL_EXTENSIONS"_s, TryCompileLangProp)
   /* keep semicolon on own line */;
 
 auto const TryCompileBaseNewSourcesArgParser =
@@ -246,7 +251,7 @@ Arguments cmCoreTryCompile::ParseArgs(
       !unparsedArguments.empty()) {
     std::string m = "Unknown arguments:";
     for (auto const& i : unparsedArguments) {
-      m = cmStrCat(m, "\n  \"", i, '"');
+      m = cmStrCat(std::move(m), "\n  \"", i, '"');
     }
     this->Makefile->IssueDiagnostic(cmDiagnostics::CMD_AUTHOR, m);
   }
@@ -312,7 +317,7 @@ Arguments cmCoreTryCompile::ParseArgs(
 }
 
 cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
-  Arguments& arguments, cmStateEnums::TargetType targetType)
+  Arguments& arguments, cm::TargetType targetType)
 {
   this->OutputFile.clear();
   // which signature were we called with ?
@@ -376,12 +381,12 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     for (std::string const& i : *arguments.LinkLibraries) {
       if (cmTarget* tgt = this->Makefile->FindTargetToUse(i)) {
         switch (tgt->GetType()) {
-          case cmStateEnums::SHARED_LIBRARY:
-          case cmStateEnums::STATIC_LIBRARY:
-          case cmStateEnums::INTERFACE_LIBRARY:
-          case cmStateEnums::UNKNOWN_LIBRARY:
+          case cm::TargetType::SHARED_LIBRARY:
+          case cm::TargetType::STATIC_LIBRARY:
+          case cm::TargetType::INTERFACE_LIBRARY:
+          case cm::TargetType::UNKNOWN_LIBRARY:
             break;
-          case cmStateEnums::EXECUTABLE:
+          case cm::TargetType::EXECUTABLE:
             if (tgt->IsExecutableWithExports()) {
               break;
             }
@@ -489,10 +494,11 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
 
   // do not allow recursive try Compiles
   if (this->BinaryDirectory == this->Makefile->GetHomeOutputDirectory()) {
-    std::ostringstream e;
-    e << "Attempt at a recursive or nested TRY_COMPILE in directory\n"
-      << "  " << this->BinaryDirectory << "\n";
-    this->Makefile->IssueMessage(MessageType::FATAL_ERROR, e.str());
+    this->Makefile->IssueMessage(
+      MessageType::FATAL_ERROR,
+      cmStrCat("Attempt at a recursive or nested TRY_COMPILE in directory\n"
+               "  ",
+               this->BinaryDirectory, '\n'));
     return cm::nullopt;
   }
 
@@ -578,19 +584,19 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       if (!lang.empty()) {
         testLangs.insert(std::string(lang));
       } else {
-        std::ostringstream err;
-        err << "Unknown extension \"" << ext
-            << "\" for file\n"
-               "  "
-            << si
-            << "\n"
-               "try_compile() works only for enabled languages.  "
-               "Currently these are:\n  ";
         std::vector<std::string> langs;
         gg->GetEnabledLanguages(langs);
-        err << cmJoin(langs, " ");
-        err << "\nSee project() command to enable other languages.";
-        this->Makefile->IssueMessage(MessageType::FATAL_ERROR, err.str());
+        this->Makefile->IssueMessage(
+          MessageType::FATAL_ERROR,
+          cmStrCat("Unknown extension \"", ext,
+                   "\" for file\n"
+                   "  ",
+                   si,
+                   "\n"
+                   "try_compile() works only for enabled languages.  "
+                   "Currently these are:\n  ",
+                   cmJoin(langs, " "),
+                   "\nSee project() command to enable other languages."));
         return cm::nullopt;
       }
     }
@@ -598,7 +604,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     // when the only language is ISPC we know that the output
     // type must by a static library
     if (testLangs.size() == 1 && testLangs.count("ISPC") == 1) {
-      targetType = cmStateEnums::STATIC_LIBRARY;
+      targetType = cm::TargetType::STATIC_LIBRARY;
     }
 
     std::string const tcConfig =
@@ -685,6 +691,12 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       fprintf(fout, "cmake_policy(SET CMP0128 OLD)\n");
     }
 
+    // Set LINKER: prefix expansion to match outer project.
+    if (this->Makefile->GetPolicyStatus(cmPolicies::CMP0181) !=
+        cmPolicies::NEW) {
+      fprintf(fout, "cmake_policy(SET CMP0181 OLD)\n");
+    }
+
     /* Set MSVC link -machine: policy to match outer project.  */
     if (cmValue cmp0197 = this->Makefile->GetDefinition(kCMAKE_MSVC_CMP0197)) {
       fprintf(fout, "cmake_policy(SET CMP0197 %s)\n",
@@ -700,7 +712,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
 
     std::string projectLangs;
     for (std::string const& li : testLangs) {
-      projectLangs += cmStrCat(' ', li);
+      projectLangs = cmStrCat(std::move(projectLangs), ' ', li);
       std::string rulesOverrideBase = "CMAKE_USER_MAKE_RULES_OVERRIDE";
       std::string rulesOverrideLang = cmStrCat(rulesOverrideBase, '_', li);
       if (cmValue rulesOverridePath =
@@ -867,7 +879,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
             auto const& aliasTarget =
               this->Makefile->FindTargetToUse(alias->second);
             // Create equivalent library/executable alias
-            if (aliasTarget->GetType() == cmStateEnums::EXECUTABLE) {
+            if (aliasTarget->GetType() == cm::TargetType::EXECUTABLE) {
               fprintf(fout, "add_executable(\"%s\" ALIAS \"%s\")\n", i.c_str(),
                       alias->second.c_str());
             } else {
@@ -905,15 +917,6 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
         ? "OLD"
         : "NEW");
 
-    /* Set the appropriate policy information for the LINKER: prefix
-     * expansion
-     */
-    fprintf(fout, "cmake_policy(SET CMP0181 %s)\n",
-            this->Makefile->GetPolicyStatus(cmPolicies::CMP0181) ==
-                cmPolicies::NEW
-              ? "NEW"
-              : "OLD");
-
     // Honor CMAKE_EXE_LINKER_FLAGS in Swift if the outer project does.
     fprintf(fout, "cmake_policy(SET CMP0214 %s)\n",
             this->Makefile->GetPolicyStatus(cmPolicies::CMP0214) ==
@@ -927,13 +930,13 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
             "include(\"${CMAKE_ROOT}/Modules/Internal/"
             "HeaderpadWorkaround.cmake\")\n");
 
-    if (targetType == cmStateEnums::EXECUTABLE) {
+    if (targetType == cm::TargetType::EXECUTABLE) {
       /* Put the executable at a known location (for COPY_FILE).  */
       fprintf(fout, "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY \"%s\")\n",
               this->BinaryDirectory.c_str());
       /* Create the actual executable.  */
       fprintf(fout, "add_executable(%s)\n", targetName.c_str());
-    } else // if (targetType == cmStateEnums::STATIC_LIBRARY)
+    } else // if (targetType == cm::TargetType::STATIC_LIBRARY)
     {
       /* Put the static library at a known location (for COPY_FILE).  */
       fprintf(fout, "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY \"%s\")\n",
@@ -1011,8 +1014,8 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     std::vector<std::string> warnCMP0067Variables;
 
     if (honorStandard || warnCMP0067) {
-      static std::array<std::string, 6> const possibleLangs{
-        { "C", "CXX", "CUDA", "HIP", "OBJC", "OBJCXX" }
+      static std::array<std::string, 7> const possibleLangs{
+        { "C", "CXX", "CUDA", "HIP", "OBJC", "OBJCXX", "SYCL" }
       };
       static std::array<cm::string_view, 3> const langPropSuffixes{
         { "_STANDARD"_s, "_STANDARD_REQUIRED"_s, "_EXTENSIONS"_s }
@@ -1022,7 +1025,10 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
           continue;
         }
         for (cm::string_view propSuffix : langPropSuffixes) {
-          std::string langProp = cmStrCat(lang, propSuffix);
+          std::string langProp = cmStrCat(
+            lang == "SYCL" && propSuffix != "_EXTENSIONS"_s ? "SYCL_CXX"
+                                                            : lang,
+            propSuffix);
           if (!arguments.LangProps.count(langProp)) {
             std::string langPropVar = cmStrCat("CMAKE_"_s, langProp);
             std::string value = this->Makefile->GetSafeDefinition(langPropVar);
@@ -1039,13 +1045,12 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     }
 
     if (!warnCMP0067Variables.empty()) {
-      std::ostringstream w;
-      w << "For compatibility with older versions of CMake, try_compile is "
-           "not honoring language standard variables in the test project:\n"_s;
-      for (std::string const& vi : warnCMP0067Variables) {
-        w << "  " << vi << "\n";
-      }
-      this->Makefile->IssuePolicyWarning(cmPolicies::CMP0067, {}, w.str());
+      this->Makefile->IssuePolicyWarning(
+        cmPolicies::CMP0067, {},
+        cmStrCat("For compatibility with older versions of CMake, try_compile "
+                 "is not honoring language standard variables in the test "
+                 "project:\n",
+                 cmWrap("  ", warnCMP0067Variables, "\n", "")));
     }
 
     for (auto const& p : arguments.LangProps) {
@@ -1065,7 +1070,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
         options.emplace_back(cmScriptGenerator::Quote(option));
       }
 
-      if (targetType == cmStateEnums::STATIC_LIBRARY) {
+      if (targetType == cm::TargetType::STATIC_LIBRARY) {
         fprintf(fout,
                 "set_property(TARGET %s PROPERTY STATIC_LIBRARY_OPTIONS %s)\n",
                 targetName.c_str(), cmJoin(options, " ").c_str());
@@ -1080,8 +1085,8 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
       if (testLangs.find(LinkerLanguage) == testLangs.end()) {
         this->Makefile->IssueMessage(
           MessageType::FATAL_ERROR,
-          "Linker language '" + LinkerLanguage +
-            "' must be enabled in project(LANGUAGES).");
+          cmStrCat("Linker language '", LinkerLanguage,
+                   "' must be enabled in project(LANGUAGES)."));
       }
 
       fprintf(fout, "set_property(TARGET %s PROPERTY LINKER_LANGUAGE %s)\n",
@@ -1091,7 +1096,8 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     if (arguments.LinkLibraries) {
       std::string libsToLink = " ";
       for (std::string const& i : *arguments.LinkLibraries) {
-        libsToLink += cmStrCat('"', cmTrimWhitespace(i), "\" ");
+        libsToLink =
+          cmStrCat(std::move(libsToLink), '"', cmTrimWhitespace(i), "\" ");
       }
       fprintf(fout, "target_link_libraries(%s %s)\n", targetName.c_str(),
               libsToLink.c_str());
@@ -1103,6 +1109,12 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
   }
 
   // Forward a set of variables to the inner project cache.
+  if (cmValue val = this->Makefile->GetDefinition("CMAKE_EXPERIMENTAL_SYCL")) {
+    arguments.CMakeFlags.emplace_back(
+      cmStrCat("-DCMAKE_EXPERIMENTAL_SYCL=", *val));
+    cmakeVariables.emplace("CMAKE_EXPERIMENTAL_SYCL", *val);
+  }
+
   if ((this->SrcFileSignature ||
        this->Makefile->GetPolicyStatus(cmPolicies::CMP0137) ==
          cmPolicies::NEW) &&
@@ -1133,6 +1145,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
     vars.insert(kCMAKE_SYSROOT);
     vars.insert(kCMAKE_SYSROOT_COMPILE);
     vars.insert(kCMAKE_SYSROOT_LINK);
+    vars.insert("CMAKE_SYCL_DEVICE_TARGETS");
     vars.emplace("CMAKE_MSVC_RUNTIME_LIBRARY"_s);
     vars.emplace("CMAKE_WATCOM_RUNTIME_LIBRARY"_s);
     vars.emplace("CMAKE_MSVC_DEBUG_INFORMATION_FORMAT"_s);
@@ -1293,10 +1306,10 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
         std::string err = status.GetString();
         switch (status.Path) {
           case cmsys::SystemTools::CopyStatus::SourcePath:
-            err = cmStrCat(err, " (input)");
+            err = cmStrCat(std::move(err), " (input)");
             break;
           case cmsys::SystemTools::CopyStatus::DestPath:
-            err = cmStrCat(err, " (output)");
+            err = cmStrCat(std::move(err), " (output)");
             break;
           default:
             break;
@@ -1308,7 +1321,7 @@ cm::optional<cmTryCompileResult> cmCoreTryCompile::TryCompileCode(
           "to destination specified by COPY_FILE:\n"
           "  '", copyFile, "'\n"
           "because:\n"
-          "  ", err, '\n',
+          "  ", std::move(err), '\n',
           this->FindErrorMessage);
         /* clang-format on */
         if (!arguments.CopyFileError) {
@@ -1419,16 +1432,16 @@ void cmCoreTryCompile::FindOutputFile(std::string const& targetName)
     std::string const cfg = !tcConfig.empty()
       ? cmSystemTools::UpperCase(tcConfig)
       : TryCompileDefaultConfig;
-    tmpOutputFile = cmStrCat(tmpOutputFile, '_', cfg);
+    tmpOutputFile = cmStrCat(std::move(tmpOutputFile), '_', cfg);
   }
   tmpOutputFile += "_loc";
 
   std::string command = cmStrCat(this->BinaryDirectory, tmpOutputFile);
   if (!cmSystemTools::FileExists(command)) {
-    std::ostringstream emsg;
-    emsg << "Unable to find the recorded try_compile output location:\n";
-    emsg << cmStrCat("  ", command, '\n');
-    this->FindErrorMessage = emsg.str();
+    this->FindErrorMessage =
+      cmStrCat("Unable to find the recorded try_compile output location:\n"
+               "  ",
+               command, '\n');
     return;
   }
 
@@ -1436,10 +1449,10 @@ void cmCoreTryCompile::FindOutputFile(std::string const& targetName)
   cmsys::ifstream ifs(command.c_str());
   cmSystemTools::GetLineFromStream(ifs, outputFileLocation);
   if (!cmSystemTools::FileExists(outputFileLocation)) {
-    std::ostringstream emsg;
-    emsg << "Recorded try_compile output location doesn't exist:\n";
-    emsg << cmStrCat("  ", outputFileLocation, '\n');
-    this->FindErrorMessage = emsg.str();
+    this->FindErrorMessage =
+      cmStrCat("Recorded try_compile output location doesn't exist:\n"
+               "  ",
+               outputFileLocation, '\n');
     return;
   }
 

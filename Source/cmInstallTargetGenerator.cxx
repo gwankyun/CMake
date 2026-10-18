@@ -32,6 +32,8 @@
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
+#include "cmUnreachable.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -41,12 +43,9 @@ std::string computeInstallObjectDir(cmGeneratorTarget* gt,
 {
   std::string objectDir = "objects";
   if (!config.empty()) {
-    objectDir += "-";
-    objectDir += config;
+    objectDir = cmStrCat(std::move(objectDir), '-', config);
   }
-  objectDir += "/";
-  objectDir += gt->GetName();
-  return objectDir;
+  return cmStrCat(std::move(objectDir), '/', gt->GetName());
 }
 
 void computeFilesToInstall(
@@ -161,7 +160,7 @@ void cmInstallTargetGenerator::GenerateScriptForConfig(
   // Compute the effective install destination.
   std::string dest = this->GetDestination(config);
   if (!files.ToDir.empty()) {
-    dest = cmStrCat(dest, '/', files.ToDir);
+    dest = cmStrCat(std::move(dest), '/', files.ToDir);
   }
 
   // Tweak files located in the destination directory.
@@ -206,7 +205,8 @@ void cmInstallTargetGenerator::GenerateScriptForConfig(
   } else {
     char const* no_rename = nullptr;
     if (!files.FromDir.empty()) {
-      literalArgs += " FILES_FROM_DIR \"" + files.FromDir + "\"";
+      literalArgs = cmStrCat(std::move(literalArgs), " FILES_FROM_DIR \"",
+                             files.FromDir, '"');
     }
     this->AddInstallRule(os, dest, files.Type, files.From, optional,
                          this->FilePermissions.c_str(), no_dir_permissions,
@@ -228,28 +228,27 @@ cmInstallTargetGenerator::Files cmInstallTargetGenerator::GetFiles(
 {
   Files files;
 
-  cmStateEnums::TargetType targetType = this->Target->GetType();
+  cm::TargetType targetType = this->Target->GetType();
   switch (targetType) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       files.Type = cmInstallType_EXECUTABLE;
       break;
-    case cmStateEnums::STATIC_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
       files.Type = cmInstallType_STATIC_LIBRARY;
       break;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       files.Type = cmInstallType_SHARED_LIBRARY;
       break;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       files.Type = cmInstallType_MODULE_LIBRARY;
       break;
-    case cmStateEnums::INTERFACE_LIBRARY:
+    case cm::TargetType::INTERFACE_LIBRARY:
       // Not reachable. We never create a cmInstallTargetGenerator for
       // an INTERFACE_LIBRARY.
-      assert(false &&
-             "INTERFACE_LIBRARY targets have no installable outputs.");
+      CM_UNREACHABLE;
       break;
 
-    case cmStateEnums::OBJECT_LIBRARY: {
+    case cm::TargetType::OBJECT_LIBRARY: {
       // Compute all the object files inside this target
       std::vector<std::pair<cmObjectLocation, cmObjectLocation>> objects;
       auto storeObjectLocations = [&objects](cmObjectLocation const& build,
@@ -273,9 +272,9 @@ cmInstallTargetGenerator::Files cmInstallTargetGenerator::GetFiles(
       return files;
     }
 
-    case cmStateEnums::UTILITY:
-    case cmStateEnums::GLOBAL_TARGET:
-    case cmStateEnums::UNKNOWN_LIBRARY:
+    case cm::TargetType::UTILITY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::UNKNOWN_LIBRARY:
       this->Target->GetLocalGenerator()->IssueMessage(
         MessageType::INTERNAL_ERROR,
         "cmInstallTargetGenerator created with non-installable target.");
@@ -296,7 +295,7 @@ cmInstallTargetGenerator::Files cmInstallTargetGenerator::GetFiles(
       cmStrCat(this->Target->GetDirectory(config, artifact), '/');
   }
 
-  if (targetType == cmStateEnums::EXECUTABLE) {
+  if (targetType == cm::TargetType::EXECUTABLE) {
     // There is a bug in cmInstallCommand if this fails.
     assert(this->NamelinkMode == NamelinkModeNone);
 
@@ -335,13 +334,10 @@ cmInstallTargetGenerator::Files cmInstallTargetGenerator::GetFiles(
         // Install the whole app bundle directory.
         files.Type = cmInstallType_DIRECTORY;
         files.UseSourcePermissions = true;
-        from1 += ".";
-        from1 += ext;
+        from1 = cmStrCat(std::move(from1), '.', ext);
 
         // Tweaks apply to the binary inside the bundle.
-        to1 += ".";
-        to1 += ext;
-        to1 += "/";
+        to1 = cmStrCat(std::move(to1), '.', ext, '/');
         if (!mf->PlatformIsAppleEmbedded()) {
           to1 += "Contents/MacOS/";
         }
@@ -502,7 +498,7 @@ std::string cmInstallTargetGenerator::GetInstallFilename(
 {
   std::string fname;
   // Compute the name of the library.
-  if (target->GetType() == cmStateEnums::EXECUTABLE) {
+  if (target->GetType() == cm::TargetType::EXECUTABLE) {
     cmGeneratorTarget::Names targetNames = target->GetExecutableNames(config);
     if (nameType == NameImplib) {
       // Use the import library name.
@@ -562,6 +558,15 @@ bool cmInstallTargetGenerator::Compute(cmLocalGenerator* lg)
   return true;
 }
 
+void cmInstallTargetGenerator::GetInstallBuildDependencies(
+  std::string const& config, std::vector<BuildDependency>& dependencies) const
+{
+  if (!this->GetFiles(config).From.empty()) {
+    dependencies.push_back(
+      { this->Target, BuildDependencyType::InstallArtifact });
+  }
+}
+
 void cmInstallTargetGenerator::PreReplacementTweaks(std::ostream& os,
                                                     Indent indent,
                                                     std::string const& config,
@@ -587,9 +592,9 @@ void cmInstallTargetGenerator::AddInstallNamePatchRule(
   std::string const& toDestDirPath)
 {
   if (this->ImportLibrary || this->NamelinkMode == NamelinkModeOnly ||
-      !(this->Target->GetType() == cmStateEnums::SHARED_LIBRARY ||
-        this->Target->GetType() == cmStateEnums::MODULE_LIBRARY ||
-        this->Target->GetType() == cmStateEnums::EXECUTABLE)) {
+      !(this->Target->GetType() == cm::TargetType::SHARED_LIBRARY ||
+        this->Target->GetType() == cm::TargetType::MODULE_LIBRARY ||
+        this->Target->GetType() == cm::TargetType::EXECUTABLE)) {
     return;
   }
 
@@ -640,7 +645,7 @@ void cmInstallTargetGenerator::AddInstallNamePatchRule(
 
   // Edit the install_name of the target itself if necessary.
   std::string new_id;
-  if (this->Target->GetType() == cmStateEnums::SHARED_LIBRARY) {
+  if (this->Target->GetType() == cm::TargetType::SHARED_LIBRARY) {
     std::string for_build =
       this->Target->GetInstallNameDirForBuildTree(config);
     std::string for_install = this->Target->GetInstallNameDirForInstallTree(
@@ -766,15 +771,17 @@ void cmInstallTargetGenerator::AddChrpathPatchRule(
     ss >> darwin_major_version;
     if (!ss.fail() && darwin_major_version <= 9 &&
         (!oldRuntimeDirs.empty() || !newRuntimeDirs.empty())) {
-      std::ostringstream msg;
-      msg
-        << "WARNING: Target \"" << this->Target->GetName()
-        << "\" has runtime paths which cannot be changed during install.  "
-        << "To change runtime paths, OS X version 10.6 or newer is required.  "
-        << "Therefore, runtime paths will not be changed when installing.  "
-        << "CMAKE_BUILD_WITH_INSTALL_RPATH may be used to work around"
-           " this limitation.";
-      mf->IssueMessage(MessageType::WARNING, msg.str());
+      mf->IssueMessage(
+        MessageType::WARNING,
+        cmStrCat("WARNING: Target \"", this->Target->GetName(),
+                 "\" has runtime paths which cannot be changed during "
+                 "install.  "
+                 "To change runtime paths, OS X version 10.6 or newer is "
+                 "required.  "
+                 "Therefore, runtime paths will not be changed when "
+                 "installing.  "
+                 "CMAKE_BUILD_WITH_INSTALL_RPATH may be used to work around"
+                 " this limitation."));
     } else {
       // To be consistent with older versions, runpath changes must be ordered,
       // deleted first, then added, *and* the same path must only appear once.
@@ -871,7 +878,7 @@ void cmInstallTargetGenerator::AddStripRule(std::ostream& os, Indent indent,
 
   // don't strip static and import libraries, because it removes the only
   // symbol table they have so you can't link to them anymore
-  if (this->Target->GetType() == cmStateEnums::STATIC_LIBRARY ||
+  if (this->Target->GetType() == cm::TargetType::STATIC_LIBRARY ||
       this->ImportLibrary || this->NamelinkMode == NamelinkModeOnly) {
     return;
   }
@@ -890,11 +897,11 @@ void cmInstallTargetGenerator::AddStripRule(std::ostream& os, Indent indent,
 
   std::string stripArgs;
   if (this->Target->IsApple()) {
-    if (this->Target->GetType() == cmStateEnums::SHARED_LIBRARY ||
-        this->Target->GetType() == cmStateEnums::MODULE_LIBRARY) {
+    if (this->Target->GetType() == cm::TargetType::SHARED_LIBRARY ||
+        this->Target->GetType() == cm::TargetType::MODULE_LIBRARY) {
       // Strip tools need '-x' to strip Apple dylibs correctly.
       stripArgs = "-x ";
-    } else if (this->Target->GetType() == cmStateEnums::EXECUTABLE &&
+    } else if (this->Target->GetType() == cm::TargetType::EXECUTABLE &&
                this->Target->GetGlobalGenerator()->GetStripCommandStyle(
                  strip) == cmGlobalGenerator::StripCommandStyle::Apple) {
       // Apple's strip tool needs '-u -r' to strip executables correctly.
@@ -912,7 +919,7 @@ void cmInstallTargetGenerator::AddRanlibRule(std::ostream& os, Indent indent,
                                              std::string const& toDestDirPath)
 {
   // Static libraries need ranlib on this platform.
-  if (this->Target->GetType() != cmStateEnums::STATIC_LIBRARY) {
+  if (this->Target->GetType() != cm::TargetType::STATIC_LIBRARY) {
     return;
   }
 
@@ -948,10 +955,10 @@ void cmInstallTargetGenerator::AddUniversalInstallRule(
   }
 
   switch (this->Target->GetType()) {
-    case cmStateEnums::EXECUTABLE:
-    case cmStateEnums::STATIC_LIBRARY:
-    case cmStateEnums::SHARED_LIBRARY:
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::EXECUTABLE:
+    case cm::TargetType::STATIC_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       break;
 
     default:
@@ -983,12 +990,14 @@ void cmInstallTargetGenerator::IssueCMP0095Warning(
   if (potentially_affected) {
     cmake const* const cm =
       this->Target->GetGlobalGenerator()->GetCMakeInstance();
-    std::ostringstream w;
-    w << cmPolicies::GetPolicyWarning(cmPolicies::CMP0095) << "\n";
-    w << "RPATH entries for target '" << this->Target->GetName() << "' "
-      << "will not be escaped in the intermediary "
-      << "cmake_install.cmake script.";
-    cm->IssueDiagnostic(cmDiagnostics::CMD_POLICY, w.str(),
-                        this->GetBacktrace());
+    cm->IssueDiagnostic(
+      cmDiagnostics::CMD_POLICY,
+      cmStrCat(cmPolicies::GetPolicyWarning(cmPolicies::CMP0095),
+               "\n"
+               "RPATH entries for target '",
+               this->Target->GetName(),
+               "' will not be escaped in the intermediary "
+               "cmake_install.cmake script."),
+      this->GetBacktrace());
   }
 }

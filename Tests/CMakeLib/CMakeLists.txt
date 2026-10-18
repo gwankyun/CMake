@@ -12,8 +12,13 @@ set(CMakeLib_TESTS
   testDateTime.cxx
   testDebug.cxx
   testDocumentationFormatter.cxx
+  testCMFileAPI.cxx
   testGccDepfileReader.cxx
   testGeneratedFileStream.cxx
+  testGenExBoundOperand.cxx
+  testGenExTransformApply.cxx
+  testGenExListPredicate.cxx
+  testGenExListSortComparator.cxx
   testJSONHelpers.cxx
   testRST.cxx
   testRange.cxx

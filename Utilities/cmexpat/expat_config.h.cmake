@@ -24,11 +24,11 @@
 /* Define to 1 if you have the `getrandom' function. */
 #cmakedefine HAVE_GETRANDOM
 
+/* Define to 1 if you have the `getentropy' function. */
+#cmakedefine HAVE_GETENTROPY
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H
-
-/* Define to 1 if you have the `bsd' library (-lbsd). */
-#cmakedefine HAVE_LIBBSD
 
 /* Define to 1 if you have the <memory.h> header file. */
 #cmakedefine HAVE_MEMORY_H
@@ -67,10 +67,6 @@
 
 /* whether byteorder is bigendian */
 #cmakedefine WORDS_BIGENDIAN
-
-/* Define to allow retrieving the byte offsets for attribute names and values.
- */
-#cmakedefine XML_ATTR_INFO
 
 /* Define to specify how much context to retain around the current parse
    point, 0 to disable. */

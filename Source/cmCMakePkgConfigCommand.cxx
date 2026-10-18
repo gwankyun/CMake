@@ -30,6 +30,7 @@
 #include "cmSubcommandTable.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include <cmllpkgc/llpkgc.h>
 
@@ -183,7 +184,7 @@ std::vector<std::string> GetPkgConfSysCflags(cmMakefile& mf)
       std::string tmp;
       cmSystemTools::GetEnv(var, tmp);
       if (!tmp.empty()) {
-        paths += ";" + tmp;
+        paths = cmStrCat(std::move(paths), ';', tmp);
       }
     }
   };
@@ -450,27 +451,64 @@ struct ImportEnv
   bool required;
   bool quiet;
   bool exact;
-  bool err;
   CommonArguments::StrictnessType strictness;
-  cmExecutionStatus& status;
 };
 
-void warn_or_error(std::string const& err, ImportEnv& imEnv)
+struct ImportState
+{
+  cmExecutionStatus& status;
+  bool err;
+};
+
+void warn_or_error(std::string const& err, ImportEnv imEnv, ImportState& state)
 {
   if (imEnv.required) {
-    imEnv.status.SetError(err);
+    state.status.SetError(err);
     cmSystemTools::SetFatalErrorOccurred();
   } else if (!imEnv.quiet) {
-    imEnv.status.GetMakefile().IssueMessage(MessageType::WARNING, err);
+    state.status.GetMakefile().IssueMessage(MessageType::WARNING, err);
   }
-  imEnv.err = true;
+  state.err = true;
 }
 
-cm::optional<cmPkgConfigResult> ReadPackage(std::string const& package,
-                                            ImportEnv& imEnv,
-                                            cmPkgConfigEnv& pcEnv)
+cm::optional<cmPkgConfigDependencySpec> MakeVersionRequirement(
+  std::string const& version)
 {
-  cm::optional<cmPkgConfigResult> result;
+  std::string requirement = cmTrimWhitespace(version);
+  std::string expression = "cmake_pkg_config_version";
+  expression += ' ';
+
+  if (requirement.empty()) {
+    expression += '=';
+  } else {
+    char const first = requirement.front();
+    if (first != '<' && first != '>' && first != '=' && first != '!') {
+      expression += "= ";
+    }
+    expression += requirement;
+  }
+
+  cmPkgConfigDependencyParser parser;
+  auto err = parser.Parse(expression.data(), expression.size());
+  if (err != PDEP_OK || parser.Finish() != PDEP_OK) {
+    return {};
+  }
+
+  auto const& dependencies = parser.Dependencies();
+  if (dependencies.size() != 1 ||
+      dependencies.front().Name != "cmake_pkg_config_version") {
+    return {};
+  }
+
+  return dependencies.front();
+}
+
+cm::optional<cmPkgConfigResolver> ReadPackage(std::string const& package,
+                                              ImportEnv imEnv,
+                                              cmPkgConfigEnv const& pcEnv,
+                                              ImportState& state)
+{
+  cm::optional<cmPkgConfigResolver> result;
   cm::filesystem::path path{ package };
 
   if (path.extension() == ".pc") {
@@ -509,7 +547,7 @@ cm::optional<cmPkgConfigResult> ReadPackage(std::string const& package,
 
   if (!ifs) {
     warn_or_error(cmStrCat("Could not open file '", path.string(), '\''),
-                  imEnv);
+                  imEnv, state);
     return result;
   }
 
@@ -519,7 +557,7 @@ cm::optional<cmPkgConfigResult> ReadPackage(std::string const& package,
   // Shouldn't have hit eof on previous read, should hit eof now
   if (ifs.fail() || ifs.eof() || ifs.get() != EOF) {
     warn_or_error(cmStrCat("Error while reading file '", path.string(), '\''),
-                  imEnv);
+                  imEnv, state);
     return result;
   }
 
@@ -529,38 +567,45 @@ cm::optional<cmPkgConfigResult> ReadPackage(std::string const& package,
   auto err = parser.Finish(buf.get(), len);
 
   if (imEnv.strictness != StrictnessType::STRICTNESS_BEST_EFFORT &&
-      err != PCE_OK) {
+      err != PFCE_OK) {
     warn_or_error(cmStrCat("Parsing failed for file '", path.string(), '\''),
-                  imEnv);
+                  imEnv, state);
     return result;
   }
 
+  std::string const pcFileDir = cmSystemTools::GetFilenamePath(
+    cmSystemTools::CollapseFullPath(path.string()));
+
   if (imEnv.strictness == StrictnessType::STRICTNESS_STRICT) {
-    result = cmPkgConfigResolver::ResolveStrict(parser.Data(), pcEnv);
+    result =
+      cmPkgConfigResolver::ResolveStrict(std::move(parser), pcEnv, pcFileDir);
   } else if (imEnv.strictness == StrictnessType::STRICTNESS_PERMISSIVE) {
-    result = cmPkgConfigResolver::ResolvePermissive(parser.Data(), pcEnv);
+    result = cmPkgConfigResolver::ResolvePermissive(std::move(parser), pcEnv,
+                                                    pcFileDir);
   } else {
-    result = cmPkgConfigResolver::ResolveBestEffort(parser.Data(), pcEnv);
+    result = cmPkgConfigResolver::ResolveBestEffort(std::move(parser), pcEnv,
+                                                    pcFileDir);
   }
 
   if (!result) {
     warn_or_error(
-      cmStrCat("Resolution failed for file '", path.string(), '\''), imEnv);
+      cmStrCat("Resolution failed for file '", path.string(), '\''), imEnv,
+      state);
   }
 
   return result;
 }
 
-cm::optional<cmPkgConfigResult> ImportPackage(
+cm::optional<cmPkgConfigResolver> ImportPackage(
   std::string const& package, cm::optional<std::string> version,
-  ImportEnv& imEnv, cmPkgConfigEnv& pcEnv)
+  ImportEnv imEnv, cmPkgConfigEnv const& pcEnv, ImportState& state)
 {
-  auto result = ReadPackage(package, imEnv, pcEnv);
+  auto result = ReadPackage(package, imEnv, pcEnv, state);
 
   if (!result) {
-    if (!imEnv.err) {
+    if (!state.err) {
       warn_or_error(cmStrCat("Could not find pkg-config: '", package, '\''),
-                    imEnv);
+                    imEnv, state);
     }
     return result;
   }
@@ -569,53 +614,64 @@ cm::optional<cmPkgConfigResult> ImportPackage(
     std::string ver;
 
     if (version) {
-      ver = cmPkgConfigResolver::ParseVersion(*version).Version;
+      auto req = MakeVersionRequirement(*version);
+      if (!req) {
+        warn_or_error(
+          cmStrCat("Invalid version requirement '", *version, '\''), imEnv,
+          state);
+        return {};
+      }
+      ver = req->Version;
     }
 
     if (ver != result->Version()) {
       warn_or_error(
         cmStrCat("Package '", package, "' version '", result->Version(),
                  "' does not meet exact version requirement '", ver, '\''),
-        imEnv);
+        imEnv, state);
       return {};
     }
 
   } else if (version) {
-    auto rv = cmPkgConfigResolver::ParseVersion(*version);
-    if (!cmPkgConfigResolver::CheckVersion(rv, result->Version())) {
+    auto req = MakeVersionRequirement(*version);
+    if (!req) {
+      warn_or_error(cmStrCat("Invalid version requirement '", *version, '\''),
+                    imEnv, state);
+      return {};
+    }
+    if (!cmPkgConfigResolver::CheckVersion(*req, result->Version())) {
       warn_or_error(
         cmStrCat("Package '", package, "' version '", result->Version(),
                  "' does not meet version requirement '", *version, '\''),
-        imEnv);
+        imEnv, state);
       return {};
     }
   }
 
-  result->env = &pcEnv;
   return result;
 }
 
 struct pkgStackEntry
 {
-  cmPkgConfigVersionReq ver;
+  cmPkgConfigDependencySpec Dependency;
   std::string parent;
 };
 
-cm::optional<cmPkgConfigResult> ImportPackage(
+cm::optional<cmPkgConfigResolver> ImportPackage(
   std::string const& package, std::vector<pkgStackEntry> const& reqs,
-  ImportEnv& imEnv, cmPkgConfigEnv& pcEnv)
+  ImportEnv imEnv, cmPkgConfigEnv const& pcEnv, ImportState& state)
 {
-  auto result = ReadPackage(package, imEnv, pcEnv);
+  auto result = ReadPackage(package, imEnv, pcEnv, state);
 
   if (!result) {
-    if (!imEnv.err) {
+    if (!state.err) {
       std::string req_str = cmStrCat('\'', reqs.begin()->parent, '\'');
       for (auto it = reqs.begin() + 1; it != reqs.end(); ++it) {
-        req_str = cmStrCat(req_str, ", '", it->parent, '\'');
+        req_str = cmStrCat(std::move(req_str), ", '", it->parent, '\'');
       }
       warn_or_error(cmStrCat("Could not find pkg-config: '", package,
                              "' required by: ", req_str),
-                    imEnv);
+                    imEnv, state);
     }
     return result;
   }
@@ -623,16 +679,17 @@ cm::optional<cmPkgConfigResult> ImportPackage(
   auto ver = result->Version();
   for (auto const& req : reqs) {
 
-    if (!cmPkgConfigResolver::CheckVersion(req.ver, ver)) {
-      warn_or_error(cmStrCat("Package '", package, "' version '", ver,
-                             "' does not meet version requirement '",
-                             req.ver.string(), "' of '", req.parent, '\''),
-                    imEnv);
+    if (!cmPkgConfigResolver::CheckVersion(req.Dependency, ver)) {
+      warn_or_error(
+        cmStrCat("Package '", package, "' version '", ver,
+                 "' does not meet version requirement '",
+                 cmPkgConfigResolver::VersionReqString(req.Dependency),
+                 "' of '", req.parent, '\''),
+        imEnv, state);
       return {};
     }
   }
 
-  result->env = &pcEnv;
   return result;
 }
 
@@ -678,8 +735,7 @@ cm::optional<std::pair<cmPkgConfigEnv, ImportEnv>> HandleCommon(
   }
 
   return std::pair<cmPkgConfigEnv, ImportEnv>{
-    pcEnv,
-    { args.Required, args.Quiet, args.Exact, false, args.Strictness, status }
+    pcEnv, { args.Required, args.Quiet, args.Exact, args.Strictness }
   };
 }
 
@@ -713,10 +769,11 @@ bool HandleExtractCommand(std::vector<std::string> const& args,
     return !parsedArgs.Required;
   }
   auto& pcEnv = maybeEnv->first;
-  auto& imEnv = maybeEnv->second;
+  auto const& imEnv = maybeEnv->second;
+  ImportState state{ status, false };
 
-  auto maybePackage =
-    ImportPackage(*parsedArgs.Package, parsedArgs.Version, imEnv, pcEnv);
+  auto maybePackage = ImportPackage(*parsedArgs.Package, parsedArgs.Version,
+                                    imEnv, pcEnv, state);
   if (!maybePackage) {
     return !parsedArgs.Required;
   }
@@ -744,7 +801,7 @@ bool HandleExtractCommand(std::vector<std::string> const& args,
   mf.AddDefinition("CMAKE_PKG_CONFIG_VERSION", package.Version());
 
   auto make_list = [&](char const* def,
-                       std::vector<cmPkgConfigDependency> const& deps) {
+                       std::vector<cmPkgConfigDependencySpec> const& deps) {
     std::vector<cm::string_view> vec;
     vec.reserve(deps.size());
 
@@ -799,11 +856,12 @@ using pkgStack = std::unordered_map<std::string, std::vector<pkgStackEntry>>;
 using pkgProviders = std::unordered_map<std::string, std::string>;
 
 cmTarget* CreateCMakeTarget(std::string const& name, std::string const& prefix,
-                            cmPkgConfigResult& pkg, pkgProviders& providers,
-                            cmMakefile& mf)
+                            cmPkgConfigResolver const& pkg,
+                            pkgProviders const& providers, cmMakefile& mf)
 {
   auto* tgt = mf.AddForeignTarget("pkgcfg", cmStrCat(prefix, name));
 
+  tgt->SetForeignPackageName(name);
   tgt->AppendProperty("VERSION", pkg.Version());
 
   auto libs = pkg.Libs();
@@ -823,7 +881,7 @@ cmTarget* CreateCMakeTarget(std::string const& name, std::string const& prefix,
   tgt->AppendProperty("INTERFACE_COMPILE_OPTIONS",
                       cmList::to_string(cflags.CompileOptions));
 
-  for (auto& dep : pkg.Requires()) {
+  for (auto const& dep : pkg.Requires()) {
     auto it = providers.find(dep.Name);
     if (it != providers.end()) {
       tgt->AppendProperty("INTERFACE_LINK_LIBRARIES", it->second);
@@ -837,27 +895,28 @@ cmTarget* CreateCMakeTarget(std::string const& name, std::string const& prefix,
 }
 
 bool CheckPackageDependencies(
-  std::string const& name, std::string const& prefix, cmPkgConfigResult& pkg,
-  pkgStack& inStack,
-  std::unordered_map<std::string, cmPkgConfigResult>& outStack,
-  pkgProviders& providers, ImportEnv& imEnv)
+  std::string const& name, std::string const& prefix,
+  cmPkgConfigResolver const& pkg, pkgStack& inStack,
+  std::unordered_map<std::string, cmPkgConfigResolver> const& outStack,
+  pkgProviders const& providers, ImportEnv imEnv, ImportState& state)
 {
-  for (auto& dep : pkg.Requires()) {
+  for (auto const& dep : pkg.Requires()) {
     auto prov_it = providers.find(dep.Name);
     if (prov_it != providers.end()) {
       continue;
     }
 
-    auto* tgt = imEnv.status.GetMakefile().FindTargetToUse(
+    auto* tgt = state.status.GetMakefile().FindTargetToUse(
       cmStrCat("@foreign_pkgcfg::", prefix, dep.Name),
-      cmStateEnums::TargetDomain::FOREIGN);
+      cm::TargetDomain::FOREIGN);
     if (tgt) {
       auto ver = tgt->GetProperty("VERSION");
-      if (!cmPkgConfigResolver::CheckVersion(dep.VerReq, *ver)) {
+      if (!cmPkgConfigResolver::CheckVersion(dep, *ver)) {
         warn_or_error(cmStrCat("Package '", dep.Name, "' version '", *ver,
                                "' does not meet version requirement '",
-                               dep.VerReq.string(), "' of '", name, '\''),
-                      imEnv);
+                               cmPkgConfigResolver::VersionReqString(dep),
+                               "' of '", name, '\''),
+                      imEnv, state);
         return false;
       }
       continue;
@@ -866,18 +925,18 @@ bool CheckPackageDependencies(
     auto it = outStack.find(dep.Name);
     if (it != outStack.end()) {
       auto ver = it->second.Version();
-      if (!cmPkgConfigResolver::CheckVersion(dep.VerReq, ver)) {
+      if (!cmPkgConfigResolver::CheckVersion(dep, ver)) {
         warn_or_error(cmStrCat("Package '", dep.Name, "' version '", ver,
                                "' does not meet version requirement '",
-                               dep.VerReq.string(), "' of '", name, '\''),
-                      imEnv);
+                               cmPkgConfigResolver::VersionReqString(dep),
+                               "' of '", name, '\''),
+                      imEnv, state);
         return false;
       }
       continue;
     }
 
-    inStack[dep.Name].emplace_back(
-      pkgStackEntry{ std::move(dep.VerReq), name });
+    inStack[dep.Name].emplace_back(pkgStackEntry{ dep, name });
   }
 
   return true;
@@ -909,10 +968,12 @@ std::pair<bool, bool> PopulatePCTarget(PopulateArguments& args,
     return { !args.Required, false };
   }
   auto& pcEnv = maybeEnv->first;
-  auto& imEnv = maybeEnv->second;
 
   pcEnv.AllowSysCflags = true;
   pcEnv.AllowSysLibs = true;
+
+  auto const& imEnv = maybeEnv->second;
+  ImportState state{ status, false };
 
   pkgProviders providers;
   if (args.Providers) {
@@ -922,7 +983,7 @@ std::pair<bool, bool> PopulatePCTarget(PopulateArguments& args,
         providers.emplace(provider_str.substr(0, assignment),
                           provider_str.substr(assignment + 1));
       } else {
-        imEnv.status.SetError(cmStrCat(
+        state.status.SetError(cmStrCat(
           "No '=' found in BIND_PC_REQUIRES argument '", provider_str, '\''));
         cmSystemTools::SetFatalErrorOccurred();
         return { false, false };
@@ -931,33 +992,35 @@ std::pair<bool, bool> PopulatePCTarget(PopulateArguments& args,
   }
 
   pkgStack inStack;
-  std::unordered_map<std::string, cmPkgConfigResult> outStack;
+  std::unordered_map<std::string, cmPkgConfigResolver> outStack;
 
-  auto maybePackage = ImportPackage(*args.Package, args.Version, imEnv, pcEnv);
+  auto maybePackage =
+    ImportPackage(*args.Package, args.Version, imEnv, pcEnv, state);
   if (!maybePackage) {
     return { !args.Required, false };
   }
-  imEnv.exact = false;
+  ImportEnv depEnv = imEnv;
+  depEnv.exact = false;
 
   if (!CheckPackageDependencies(*args.Package, prefix, *maybePackage, inStack,
-                                outStack, providers, imEnv)) {
+                                outStack, providers, depEnv, state)) {
     return { !args.Required, false };
   }
-  outStack[*args.Package] = std::move(*maybePackage);
+  outStack.emplace(*args.Package, std::move(*maybePackage));
 
   while (!inStack.empty()) {
     auto name = inStack.begin()->first;
     auto reqs = inStack.begin()->second;
-    maybePackage = ImportPackage(name, reqs, imEnv, pcEnv);
+    maybePackage = ImportPackage(name, reqs, depEnv, pcEnv, state);
     if (!maybePackage) {
       return { !args.Required, false };
     }
     if (!CheckPackageDependencies(name, prefix, *maybePackage, inStack,
-                                  outStack, providers, imEnv)) {
+                                  outStack, providers, depEnv, state)) {
       return { !args.Required, false };
     }
     inStack.erase(name);
-    outStack[std::move(name)] = std::move(*maybePackage);
+    outStack.emplace(std::move(name), std::move(*maybePackage));
   }
 
   for (auto& entry : outStack) {
@@ -982,7 +1045,7 @@ bool HandlePopulateCommand(std::vector<std::string> const& args,
 
   auto& mf = status.GetMakefile();
 
-  if (mf.FindTargetToUse(foreign_name, cmStateEnums::TargetDomain::FOREIGN)) {
+  if (mf.FindTargetToUse(foreign_name, cm::TargetDomain::FOREIGN)) {
     mf.AddDefinition(found_var, "TRUE");
     return true;
   }
@@ -1022,7 +1085,7 @@ bool HandleImportCommand(std::vector<std::string> const& args,
     return true;
   }
 
-  if (!mf.FindTargetToUse(foreign_name, cmStateEnums::TargetDomain::FOREIGN)) {
+  if (!mf.FindTargetToUse(foreign_name, cm::TargetDomain::FOREIGN)) {
     auto result = PopulatePCTarget(parsedArgs, status);
     if (!result.second) {
       mf.AddDefinition(found_var, "FALSE");
@@ -1031,13 +1094,92 @@ bool HandleImportCommand(std::vector<std::string> const& args,
   }
 
   mf.AddDefinition(found_var, "TRUE");
-  auto* tgt = mf.AddImportedTarget(
-    local_name, cmStateEnums::TargetType::INTERFACE_LIBRARY, false);
+  auto* tgt =
+    mf.AddImportedTarget(local_name, cm::TargetType::INTERFACE_LIBRARY,
+                         cm::ImportedTargetScope::Local);
   tgt->AppendProperty("INTERFACE_LINK_LIBRARIES", foreign_name);
+  if (auto* ft = mf.FindTargetToUse(foreign_name, cm::TargetDomain::FOREIGN)) {
+    tgt->SetForeignTarget(ft);
+  }
+  return true;
+}
+
+bool PkgConfigImportPackageImpl(cmMakefile& mf, cmExecutionStatus& status,
+                                std::string const& name)
+{
+  std::string const prefix;
+
+  // A pkg-config package is referenced in CPS as "<name>:<name>" and linked
+  // directly as the foreign target which provides it, so there is no
+  // interface target to create here.
+  auto const foreignName = cmStrCat("@foreign_pkgcfg::", prefix, name);
+  if (mf.FindTargetToUse(foreignName, cm::TargetDomain::FOREIGN)) {
+    return true;
+  }
+
+  cmPkgConfigEnv pcEnv;
+  CollectEnv(mf, pcEnv, CommonArguments::EnvModeType::ENVMODE_PKGCONF);
+  if (pcEnv.Path) {
+    pcEnv.search = *pcEnv.Path;
+    if (pcEnv.LibDirs) {
+      pcEnv.search += *pcEnv.LibDirs;
+    }
+  } else if (pcEnv.LibDirs) {
+    pcEnv.search = *pcEnv.LibDirs;
+  }
+
+  ImportEnv imEnv{ false, true, false,
+                   CommonArguments::StrictnessType::STRICTNESS_PERMISSIVE };
+  ImportState state{ status, false };
+
+  cm::optional<cmPkgConfigResolver> maybePackage =
+    ImportPackage(name, cm::optional<std::string>{}, imEnv, pcEnv, state);
+  if (!maybePackage) {
+    return false;
+  }
+
+  pkgProviders providers;
+  pkgStack inStack;
+  std::unordered_map<std::string, cmPkgConfigResolver> outStack;
+
+  ImportEnv depEnv = imEnv;
+  depEnv.exact = false;
+
+  if (!CheckPackageDependencies(name, prefix, *maybePackage, inStack, outStack,
+                                providers, depEnv, state)) {
+    return false;
+  }
+  outStack.emplace(name, std::move(*maybePackage));
+
+  while (!inStack.empty()) {
+    auto depName = inStack.begin()->first;
+    auto reqs = inStack.begin()->second;
+    maybePackage = ImportPackage(depName, reqs, depEnv, pcEnv, state);
+    if (!maybePackage) {
+      return false;
+    }
+    if (!CheckPackageDependencies(depName, prefix, *maybePackage, inStack,
+                                  outStack, providers, depEnv, state)) {
+      return false;
+    }
+    inStack.erase(depName);
+    outStack.emplace(std::move(depName), std::move(*maybePackage));
+  }
+
+  for (auto& entry : outStack) {
+    CreateCMakeTarget(entry.first, prefix, entry.second, providers, mf);
+  }
+
   return true;
 }
 
 } // namespace
+
+bool cmImportPkgConfigPackage(cmMakefile& mf, cmExecutionStatus& status,
+                              std::string const& name)
+{
+  return PkgConfigImportPackageImpl(mf, status, name);
+}
 
 bool cmCMakePkgConfigCommand(std::vector<std::string> const& args,
                              cmExecutionStatus& status)

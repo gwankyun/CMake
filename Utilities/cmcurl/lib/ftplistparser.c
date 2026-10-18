@@ -196,13 +196,11 @@ void Curl_wildcard_dtor(struct WildcardData **wcp)
     wc->dtor = ZERO_NULL;
     wc->ftpwc = NULL;
   }
-  DEBUGASSERT(wc->ftpwc == NULL);
+  DEBUGASSERT(!wc->ftpwc);
 
   Curl_llist_destroy(&wc->filelist, NULL);
-  curlx_free(wc->path);
-  wc->path = NULL;
-  curlx_free(wc->pattern);
-  wc->pattern = NULL;
+  curlx_safefree(wc->path);
+  curlx_safefree(wc->pattern);
   wc->state = CURLWC_INIT;
   curlx_free(wc);
   *wcp = NULL;
@@ -312,8 +310,9 @@ static CURLcode ftp_pl_insert_finfo(struct Curl_easy *data,
                           str + parser->offsets.group : NULL;
   finfo->strings.perm   = parser->offsets.perm ?
                           str + parser->offsets.perm : NULL;
-  finfo->strings.target = parser->offsets.symlink_target ?
-                          str + parser->offsets.symlink_target : NULL;
+  finfo->strings.target = parser->offsets.symlink_target &&
+    (finfo->filetype == CURLFILETYPE_SYMLINK) ?
+    str + parser->offsets.symlink_target : NULL;
   finfo->strings.time   = str + parser->offsets.time;
   finfo->strings.user   = parser->offsets.user ?
                           str + parser->offsets.user : NULL;
@@ -324,18 +323,24 @@ static CURLcode ftp_pl_insert_finfo(struct Curl_easy *data,
     compare = Curl_fnmatch;
 
   /* filter pattern-corresponding filenames */
-  Curl_set_in_callback(data, TRUE);
-  if(compare(data->set.fnmatch_data, wc->pattern, finfo->filename) == 0) {
-    /* discard symlink which is containing multiple " -> " */
-    if((finfo->filetype == CURLFILETYPE_SYMLINK) && finfo->strings.target &&
-       (strstr(finfo->strings.target, " -> "))) {
+  if(strchr(finfo->filename, '/'))
+    add = FALSE;
+  else {
+    /* a real file name cannot contain a slash */
+    struct Curl_mapi_guard guard;
+    CURL_CBAPI_START(&guard, data, easy_fnmatch_data);
+    if(compare(data->set.fnmatch_data, wc->pattern, finfo->filename) == 0) {
+      /* discard symlink which is containing multiple " -> " */
+      if((finfo->filetype == CURLFILETYPE_SYMLINK) && finfo->strings.target &&
+         strstr(finfo->strings.target, " -> ")) {
+        add = FALSE;
+      }
+    }
+    else {
       add = FALSE;
     }
+    CURL_CBAPI_END(&guard);
   }
-  else {
-    add = FALSE;
-  }
-  Curl_set_in_callback(data, FALSE);
 
   if(add) {
     Curl_llist_append(llist, finfo, &infop->list);
@@ -940,7 +945,7 @@ static CURLcode parse_winnt(struct Curl_easy *data,
       parser->item_length++;
       if(c == ' ') {
         mem[parser->item_offset + parser->item_length - 1] = 0;
-        if(strcmp("<DIR>", mem + parser->item_offset) == 0) {
+        if(!strcmp("<DIR>", mem + parser->item_offset)) {
           finfo->filetype = CURLFILETYPE_DIRECTORY;
           finfo->size = 0;
         }
@@ -1008,6 +1013,16 @@ static CURLcode parse_winnt(struct Curl_easy *data,
   }
 
   return CURLE_OK;
+}
+
+/* returns TRUE if in wildcard listing mode */
+bool Curl_ftp_listmode(struct Curl_easy *data)
+{
+  if(data->state.wildcardmatch) {
+    struct WildcardData * const wildcard = data->wildcard;
+    return wildcard && (wildcard->state == CURLWC_MATCHING);
+  }
+  return FALSE;
 }
 
 size_t Curl_ftp_parselist(char *buffer, size_t size, size_t nmemb,

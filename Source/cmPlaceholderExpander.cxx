@@ -4,7 +4,8 @@
 
 #include "cmsys/String.h"
 
-std::string& cmPlaceholderExpander::ExpandVariables(std::string& s)
+std::string& cmPlaceholderExpander::ExpandVariables(std::string& s,
+                                                    HandleGenex handleGenex)
 {
   std::string::size_type start = s.find('<');
   // no variables to expand
@@ -14,16 +15,26 @@ std::string& cmPlaceholderExpander::ExpandVariables(std::string& s)
   std::string::size_type pos = 0;
   std::string expandedInput;
   while (start != std::string::npos && start < s.size() - 2) {
+    if (handleGenex == HandleGenex::Yes && start != 0 && s[start - 1] == '$') {
+      // this is a generator expression
+      // skip it and try to find the next < in the string
+      start = s.find('<', start + 1);
+      continue;
+    }
+
     std::string::size_type end = s.find('>', start);
     // if we find a < with no > we are done
     if (end == std::string::npos) {
       s = expandedInput;
       return s;
     }
-    char c = s[start + 1];
-    // if the next char after the < is not A-Za-z then
+
+    // if the previous character is a '$',  this is a generator expression
+    // or if the next char after the < is not A-Za-z then
     // skip it and try to find the next < in the string
-    if (!cmsysString_isalpha(c)) {
+    if ((handleGenex == HandleGenex::Yes && start != 0 &&
+         s[start - 1] == '$') ||
+        !cmsysString_isalpha(s[start + 1])) {
       start = s.find('<', start + 1);
     } else {
       // extract the var

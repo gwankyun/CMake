@@ -2,7 +2,6 @@
    file LICENSE.rst or https://cmake.org/licensing for details.  */
 #include "cmInstallImportedRuntimeArtifactsGenerator.h"
 
-#include <cassert>
 #include <string>
 #include <utility>
 #include <vector>
@@ -14,8 +13,9 @@
 #include "cmGlobalGenerator.h"
 #include "cmInstallType.h"
 #include "cmLocalGenerator.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
+#include "cmTargetTypes.h"
+#include "cmUnreachable.h"
 
 namespace {
 cmsys::RegularExpression const FrameworkRegularExpression(
@@ -57,6 +57,12 @@ bool cmInstallImportedRuntimeArtifactsGenerator::Compute(cmLocalGenerator* lg)
   return true;
 }
 
+void cmInstallImportedRuntimeArtifactsGenerator::GetInstallBuildDependencies(
+  std::string const&, std::vector<BuildDependency>& dependencies) const
+{
+  dependencies.push_back({ this->Target, BuildDependencyType::Normal });
+}
+
 std::string cmInstallImportedRuntimeArtifactsGenerator::GetDestination(
   std::string const& config) const
 {
@@ -72,7 +78,7 @@ void cmInstallImportedRuntimeArtifactsGenerator::GenerateScriptForConfig(
   auto location = this->Target->GetFullPath(config);
 
   switch (this->Target->GetType()) {
-    case cmStateEnums::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       if (this->Target->IsBundleOnApple()) {
         cmsys::RegularExpressionMatch match;
         if (BundleRegularExpression.find(location.c_str(), match)) {
@@ -92,7 +98,7 @@ void cmInstallImportedRuntimeArtifactsGenerator::GenerateScriptForConfig(
                              nullptr, nullptr, nullptr, indent);
       }
       break;
-    case cmStateEnums::SHARED_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
       if (this->Target->IsFrameworkOnApple()) {
         cmsys::RegularExpressionMatch match;
         if (FrameworkRegularExpression.find(location.c_str(), match)) {
@@ -122,7 +128,7 @@ void cmInstallImportedRuntimeArtifactsGenerator::GenerateScriptForConfig(
                              nullptr, nullptr, nullptr, indent);
       }
       break;
-    case cmStateEnums::MODULE_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
       if (this->Target->IsCFBundleOnApple()) {
         cmsys::RegularExpressionMatch match;
         if (CFBundleRegularExpression.find(location.c_str(), match)) {
@@ -143,7 +149,7 @@ void cmInstallImportedRuntimeArtifactsGenerator::GenerateScriptForConfig(
       }
       break;
     default:
-      assert(false && "This should never happen");
+      CM_UNREACHABLE;
       break;
   }
 }

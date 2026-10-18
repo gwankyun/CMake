@@ -1031,8 +1031,22 @@ void uv__io_stop(uv_loop_t* loop, uv__io_t* w, unsigned int events) {
       loop->watchers[w->fd] = NULL;
       loop->nfds--;
     }
+    return;
   }
-  else if (uv__queue_empty(&w->watcher_queue))
+
+#if !defined(__sun)
+  /* Short-circuit if the event mask is unchanged, like uv__io_start() does.
+   * Without this, stopping an event that was never started (e.g. the
+   * uv__io_stop(POLLOUT) in uv__drain() after a write that completed
+   * synchronously) needlessly re-registers the file descriptor with the
+   * kernel on the next loop iteration and makes uv_backend_timeout() report
+   * zero in the meantime.
+   */
+  if (w->events == w->pevents)
+    return;
+#endif
+
+  if (uv__queue_empty(&w->watcher_queue))
     uv__queue_insert_tail(&loop->watcher_queue, &w->watcher_queue);
 }
 
@@ -2191,4 +2205,28 @@ int uv__sock_reuseport(int fd) {
 #endif
 
   return 0;
+}
+
+/* Check if rlimit has any expressed restrictions on usable memory. */
+uint64_t uv__get_rlimit_max_memory(void) {
+  struct rlimit rl;
+  uint64_t result = 0;
+  uint64_t rlimit_value;
+
+#if defined(RLIMIT_AS)
+  if (getrlimit(RLIMIT_AS, &rl) == 0 && rl.rlim_cur != RLIM_INFINITY) {
+    rlimit_value = rl.rlim_cur;
+    result = rlimit_value;
+  }
+#endif
+
+#if defined(RLIMIT_DATA)
+  if (getrlimit(RLIMIT_DATA, &rl) == 0 && rl.rlim_cur != RLIM_INFINITY) {
+    rlimit_value = rl.rlim_cur;
+    if (result == 0 || rlimit_value < result)
+      result = rlimit_value;
+  }
+#endif
+
+  return result;
 }

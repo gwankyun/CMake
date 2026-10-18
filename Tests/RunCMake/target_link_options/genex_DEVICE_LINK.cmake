@@ -36,7 +36,6 @@ if (CMake_TEST_CUDA)
   target_link_options(LinkOptions_CMP0105_OLD PRIVATE $<DEVICE_LINK:${pre}BADFLAG_DEVICE_LINK${obj}>)
 
   cmake_policy(SET CMP0105 NEW)
-
   add_executable(LinkOptions_CMP0105_NEW LinkOptionsDevice.cu)
   set_property(TARGET LinkOptions_CMP0105_NEW PROPERTY CUDA_SEPARABLE_COMPILATION ON)
   target_link_options(LinkOptions_CMP0105_NEW PRIVATE $<DEVICE_LINK:${pre}BADFLAG_DEVICE_LINK${obj}>)
@@ -45,16 +44,24 @@ if (CMake_TEST_CUDA)
   set_property(TARGET LinkOptions_device PROPERTY CUDA_SEPARABLE_COMPILATION ON)
   target_link_options(LinkOptions_device PRIVATE $<DEVICE_LINK:${pre}BADFLAG_DEVICE_LINK${obj}>
                                                  $<HOST_LINK:${pre}BADFLAG_NORMAL_LINK${obj}>)
-
   add_executable(LinkOptions_host_link_options LinkOptionsDevice.cu)
   set_property(TARGET LinkOptions_host_link_options PROPERTY CUDA_SEPARABLE_COMPILATION ON)
   if(CMake_TEST_CUDA STREQUAL "NVIDIA")
     target_link_options(LinkOptions_host_link_options PRIVATE -Wl,OPT1 -Xlinker=OPT2 "SHELL:-Xlinker OPT3" "SHELL:LINKER:OPT4 LINKER:OPT5")
   elseif(CMake_TEST_CUDA STREQUAL "Clang")
-    target_link_options(LinkOptions_host_link_options PRIVATE -Wl,OPT1 "SHELL:-Xlinker OPT2" "SHELL:LINKER:OPT3 LINKER:OPT4")
+    if(CMAKE_CUDA_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+      target_link_options(LinkOptions_host_link_options PRIVATE OPT1 "SHELL:OPT2" "SHELL:LINKER:OPT3 LINKER:OPT4")
+    else()
+      target_link_options(LinkOptions_host_link_options PRIVATE -Wl,OPT1 "SHELL:-Xlinker OPT2" "SHELL:LINKER:OPT3 LINKER:OPT4")
+    endif()
   endif()
 
   add_executable(LinkOptions_no_device LinkOptionsDevice.cu)
   target_link_options(LinkOptions_no_device PRIVATE $<DEVICE_LINK:${pre}BADFLAG_DEVICE_LINK${obj}>
                                                     $<HOST_LINK:${pre}BADFLAG_NORMAL_LINK${obj}>)
+
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/info.cmake"
+    "set(CMAKE_CUDA_COMPILER_HAS_DEVICE_LINK_PHASE \"${CMAKE_CUDA_COMPILER_HAS_DEVICE_LINK_PHASE}\")\n"
+    "set(CMAKE_CUDA_COMPILER_FRONTEND_VARIANT \"${CMAKE_CUDA_COMPILER_FRONTEND_VARIANT}\")\n"
+  )
 endif()

@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <chrono>
-#include <sstream>
 #include <string>
 
 #include <cm/vector>
@@ -16,6 +15,7 @@
 #include "cmGeneratedFileStream.h"
 #include "cmMakefile.h"
 #include "cmMessageType.h"
+#include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmVersion.h"
 #include "cmXMLWriter.h"
@@ -31,10 +31,10 @@ bool cmCTestUploadCommand::ExecuteUpload(UploadArguments& args,
 
   cm::erase_if(args.Files, [&mf](std::string const& arg) -> bool {
     if (!cmSystemTools::FileExists(arg)) {
-      std::ostringstream e;
-      e << "File \"" << arg << "\" does not exist. Cannot submit "
-        << "a non-existent file.";
-      mf.IssueMessage(MessageType::FATAL_ERROR, e.str());
+      mf.IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat("File \"", arg,
+                 "\" does not exist. Cannot submit a non-existent file."));
       return true;
     }
     return false;
@@ -43,8 +43,7 @@ bool cmCTestUploadCommand::ExecuteUpload(UploadArguments& args,
   cmGeneratedFileStream ofs;
   if (!this->CTest->OpenOutputFile(this->CTest->GetCurrentTag(), "Upload.xml",
                                    ofs)) {
-    cmCTestLog(this->CTest, ERROR_MESSAGE,
-               "Cannot open Upload.xml file" << std::endl);
+    cmCTestLog(this->CTest, ERROR_MESSAGE, "Cannot open Upload.xml file\n");
     return false;
   }
   std::string buildname =
@@ -59,8 +58,8 @@ bool cmCTestUploadCommand::ExecuteUpload(UploadArguments& args,
   xml.StartElement("Site");
   xml.Attribute("BuildName", buildname);
   xml.Attribute("BuildStamp",
-                this->CTest->GetCurrentTag() + "-" +
-                  this->CTest->GetTestGroupString());
+                cmStrCat(this->CTest->GetCurrentTag(), '-',
+                         this->CTest->GetTestGroupString()));
   xml.Attribute("Name", mf.GetSafeDefinition("CTEST_SITE"));
   xml.Attribute("Generator",
                 std::string("ctest-") + cmVersion::GetCMakeVersion());
@@ -69,8 +68,8 @@ bool cmCTestUploadCommand::ExecuteUpload(UploadArguments& args,
   xml.Element("Time", std::chrono::system_clock::now());
 
   for (std::string const& file : args.Files) {
-    cmCTestOptionalLog(this->CTest, OUTPUT,
-                       "\tUpload file: " << file << std::endl, args.Quiet);
+    cmCTestOptionalLog(this->CTest, OUTPUT, args.Quiet,
+                       "\tUpload file: ", file, '\n');
     xml.StartElement("File");
     xml.Attribute("filename", file);
     xml.StartElement("Content");

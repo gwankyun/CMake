@@ -9,7 +9,7 @@
 
 # find out on which system cmake runs
 if(CMAKE_HOST_UNIX)
-  find_program(CMAKE_UNAME NAMES uname PATHS /bin /usr/bin /usr/local/bin)
+  find_program(CMAKE_UNAME NAMES uname PATHS /bin /usr/bin /usr/local/bin NO_CMAKE_FIND_ROOT_PATH)
   if(CMAKE_UNAME)
     if(CMAKE_HOST_SYSTEM_NAME STREQUAL "AIX")
       execute_process(COMMAND ${CMAKE_UNAME} -v
@@ -145,6 +145,8 @@ endif()
 # variables around so they can be used in CMakeLists.txt.
 # In all other cases, the host and target platform are the same.
 if(CMAKE_TOOLCHAIN_FILE)
+  # Retain input value to detect changes requiring re-configuration.
+  set(_CMAKE_INPUT_TOOLCHAIN_FILE "${CMAKE_TOOLCHAIN_FILE}")
   if(IS_ABSOLUTE "${CMAKE_TOOLCHAIN_FILE}" AND EXISTS "${CMAKE_TOOLCHAIN_FILE}")
     # Normalize the absolute path.
     set(CMAKE_TOOLCHAIN_FILE "${CMAKE_TOOLCHAIN_FILE}" CACHE FILEPATH "The CMake toolchain file" FORCE)
@@ -224,7 +226,11 @@ if(CMAKE_BINARY_DIR)
   # so settings done there are also available if they don't go in the cache and in try_compile()
   set(INCLUDE_CMAKE_TOOLCHAIN_FILE_IF_REQUIRED)
   if(CMAKE_TOOLCHAIN_FILE)
-    set(INCLUDE_CMAKE_TOOLCHAIN_FILE_IF_REQUIRED "include(\"${CMAKE_TOOLCHAIN_FILE}\")")
+    string(CONCAT INCLUDE_CMAKE_TOOLCHAIN_FILE_IF_REQUIRED
+      "set(_CMAKE_INPUT_TOOLCHAIN_FILE [==[${_CMAKE_INPUT_TOOLCHAIN_FILE}]==])\n"
+      "set(_CMAKE_SYSTEM_TOOLCHAIN_FILE \"${CMAKE_TOOLCHAIN_FILE}\")\n"
+      "include(\"\${_CMAKE_SYSTEM_TOOLCHAIN_FILE}\")"
+    )
   endif()
 
   # configure variables set in this file for fast reload, the template file is defined at the top of this file

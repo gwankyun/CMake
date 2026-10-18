@@ -21,11 +21,11 @@
 #include "cmSourceFile.h"
 #include "cmSourceFileLocationKind.h"
 #include "cmState.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetDepend.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -313,7 +313,7 @@ void cmComputeTargetDepends::AddInterfaceDepends(
   // Skip targets that will not really be linked.  This is probably a
   // name conflict between an external library and an executable
   // within the project.
-  if (dependee && dependee->GetType() == cmStateEnums::EXECUTABLE &&
+  if (dependee && dependee->GetType() == cm::TargetType::EXECUTABLE &&
       !dependee->IsExecutableWithExports()) {
     dependee = nullptr;
   }
@@ -339,11 +339,11 @@ void cmComputeTargetDepends::AddObjectDepends(size_t depender_index,
   cmLinkItem const& objItem =
     depender->ResolveLinkItem(BT<std::string>(objLib));
   if (emitted.insert(objItem).second) {
-    if (depender->GetType() != cmStateEnums::EXECUTABLE &&
-        depender->GetType() != cmStateEnums::STATIC_LIBRARY &&
-        depender->GetType() != cmStateEnums::SHARED_LIBRARY &&
-        depender->GetType() != cmStateEnums::MODULE_LIBRARY &&
-        depender->GetType() != cmStateEnums::OBJECT_LIBRARY) {
+    if (depender->GetType() != cm::TargetType::EXECUTABLE &&
+        depender->GetType() != cm::TargetType::STATIC_LIBRARY &&
+        depender->GetType() != cm::TargetType::SHARED_LIBRARY &&
+        depender->GetType() != cm::TargetType::MODULE_LIBRARY &&
+        depender->GetType() != cm::TargetType::OBJECT_LIBRARY) {
       this->GlobalGenerator->GetCMakeInstance()->IssueMessage(
         MessageType::FATAL_ERROR,
         "Only executables and libraries may reference target objects.",
@@ -367,7 +367,7 @@ void cmComputeTargetDepends::AddTargetDepend(size_t depender_index,
   cmGeneratorTarget const* dependee = dependee_name.Target;
 
   if (!dependee && !linking &&
-      (depender->GetType() != cmStateEnums::GLOBAL_TARGET)) {
+      (depender->GetType() != cm::TargetType::GLOBAL_TARGET)) {
     this->GlobalGenerator->GetCMakeInstance()->IssueMessage(
       MessageType::FATAL_ERROR,
       cmStrCat("The dependency target \"", dependee_name.AsStr(),
@@ -378,7 +378,8 @@ void cmComputeTargetDepends::AddTargetDepend(size_t depender_index,
   // Skip targets that will not really be linked.  This is probably a
   // name conflict between an external library and an executable
   // within the project.
-  if (linking && dependee && dependee->GetType() == cmStateEnums::EXECUTABLE &&
+  if (linking && dependee &&
+      dependee->GetType() == cm::TargetType::EXECUTABLE &&
       !dependee->IsExecutableWithExports()) {
     dependee = nullptr;
   }
@@ -465,8 +466,8 @@ void cmComputeTargetDepends::ComputeIntermediateGraph()
     auto const& initialEdges = this->InitialGraph[i];
     auto& intermediateEdges = this->IntermediateGraph[i];
     cmGeneratorTarget const* gt = this->Targets[i];
-    if (gt->GetType() != cmStateEnums::STATIC_LIBRARY &&
-        gt->GetType() != cmStateEnums::OBJECT_LIBRARY) {
+    if (gt->GetType() != cm::TargetType::STATIC_LIBRARY &&
+        gt->GetType() != cm::TargetType::OBJECT_LIBRARY) {
       intermediateEdges = initialEdges;
     } else {
       if (cmValue optimizeDependencies =
@@ -614,7 +615,7 @@ bool cmComputeTargetDepends::CheckComponents(
 
     // Make sure the component is all STATIC_LIBRARY targets.
     for (size_t ni : nl) {
-      if (this->Targets[ni]->GetType() != cmStateEnums::STATIC_LIBRARY) {
+      if (this->Targets[ni]->GetType() != cm::TargetType::STATIC_LIBRARY) {
         this->ComplainAboutBadComponent(ccg, c);
         return false;
       }

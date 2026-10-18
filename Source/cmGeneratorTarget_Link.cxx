@@ -9,7 +9,6 @@
 #include <cstdio>
 #include <map>
 #include <set>
-#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -39,11 +38,11 @@
 #include "cmRange.h"
 #include "cmSourceFile.h"
 #include "cmSourceFileLocationKind.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetLinkLibraryType.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 #include "cmake.h"
 
@@ -176,17 +175,15 @@ public:
       return "";
     }
     if (this->Preferred.size() > 1) {
-      std::ostringstream e;
-      e << "Target " << this->Target->GetName()
-        << " contains multiple languages with the highest linker preference"
-        << " (" << this->Preference << "):\n";
-      for (std::string const& li : this->Preferred) {
-        e << "  " << li << "\n";
-      }
-      e << "Set the LINKER_LANGUAGE property for this target.";
       cmake* cm = this->Target->GetLocalGenerator()->GetCMakeInstance();
-      cm->IssueMessage(MessageType::FATAL_ERROR, e.str(),
-                       this->Target->GetBacktrace());
+      cm->IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat(
+          "Target ", this->Target->GetName(),
+          " contains multiple languages with the highest linker preference (",
+          this->Preference, "):\n", cmWrap("  ", this->Preferred, "\n", ""),
+          "Set the LINKER_LANGUAGE property for this target."),
+        this->Target->GetBacktrace());
     }
     return *this->Preferred.begin();
   }
@@ -270,12 +267,11 @@ void cmGeneratorTarget::ComputeLinkClosure(std::string const& config,
 
     // linker language must not be changed between the two passes
     if (this->LinkerLanguage != lc.LinkerLanguage) {
-      std::ostringstream e;
-      e << "Evaluation of $<LINK_LANGUAGE:...> or $<LINK_LAND_AND_ID:...> "
-           "changes\nthe linker language for target \""
-        << this->GetName() << "\" (from '" << this->LinkerLanguage << "' to '"
-        << lc.LinkerLanguage << "') which is invalid.";
-      cmSystemTools::Error(e.str());
+      cmSystemTools::Error(cmStrCat(
+        "Evaluation of $<LINK_LANGUAGE:...> or $<LINK_LAND_AND_ID:...> "
+        "changes\nthe linker language for target \"",
+        this->GetName(), "\" (from '", this->LinkerLanguage, "' to '",
+        lc.LinkerLanguage, "') which is invalid."));
     }
   }
 }
@@ -446,12 +442,13 @@ bool cmGeneratorTarget::VerifyLinkItemColons(LinkItemRole role,
   }
   std::string e;
   if (role == LinkItemRole::Implementation) {
-    e = cmStrCat(e, "Target \"", this->GetName(), "\" links to");
+    e = cmStrCat(std::move(e), "Target \"", this->GetName(), "\" links to");
   } else {
-    e = cmStrCat(e, "The link interface of target \"", this->GetName(),
-                 "\" contains");
+    e = cmStrCat(std::move(e), "The link interface of target \"",
+                 this->GetName(), "\" contains");
   }
-  e = cmStrCat(e, ":\n  ", item.AsStr(), "\nbut the target was not found.  ",
+  e = cmStrCat(std::move(e), ":\n  ", item.AsStr(),
+               "\nbut the target was not found.  ",
                missingTargetPossibleReasons);
   cmListFileBacktrace backtrace = item.Backtrace;
   if (backtrace.Empty()) {
@@ -637,7 +634,7 @@ cmLinkInterface const* cmGeneratorTarget::GetLinkInterface(
 
   // Link interfaces are not supported for executables that do not
   // export symbols.
-  if (this->GetType() == cmStateEnums::EXECUTABLE &&
+  if (this->GetType() == cm::TargetType::EXECUTABLE &&
       !this->IsExecutableWithExports()) {
     return nullptr;
   }
@@ -675,23 +672,23 @@ void cmGeneratorTarget::ComputeLinkInterface(std::string const& config,
                                              cmOptionalLinkInterface& iface,
                                              bool secondPass) const
 {
-  if (this->GetType() == cmStateEnums::SHARED_LIBRARY ||
-      this->GetType() == cmStateEnums::STATIC_LIBRARY ||
-      this->GetType() == cmStateEnums::INTERFACE_LIBRARY) {
+  if (this->GetType() == cm::TargetType::SHARED_LIBRARY ||
+      this->GetType() == cm::TargetType::STATIC_LIBRARY ||
+      this->GetType() == cm::TargetType::INTERFACE_LIBRARY) {
     // Shared libraries may have runtime implementation dependencies
     // on other shared libraries that are not in the interface.
     std::set<cmLinkItem> emitted;
     for (cmLinkItem const& lib : iface.Libraries) {
       emitted.insert(lib);
     }
-    if (this->GetType() != cmStateEnums::INTERFACE_LIBRARY) {
+    if (this->GetType() != cm::TargetType::INTERFACE_LIBRARY) {
       cmLinkImplementation const* impl =
         this->GetLinkImplementation(config, UseTo::Link, secondPass);
       for (cmLinkItem const& lib : impl->Libraries) {
         if (emitted.insert(lib).second) {
           if (lib.Target) {
             // This is a runtime dependency on another shared library.
-            if (lib.Target->GetType() == cmStateEnums::SHARED_LIBRARY) {
+            if (lib.Target->GetType() == cm::TargetType::SHARED_LIBRARY) {
               iface.SharedDeps.push_back(lib);
             }
           } else {
@@ -713,7 +710,7 @@ void cmGeneratorTarget::ComputeLinkInterface(std::string const& config,
     }
   }
 
-  if (this->GetType() == cmStateEnums::STATIC_LIBRARY) {
+  if (this->GetType() == cm::TargetType::STATIC_LIBRARY) {
     // Construct the property name suffix for this configuration.
     std::string suffix = "_";
     if (!config.empty()) {
@@ -744,7 +741,7 @@ cmLinkInterfaceLibraries const* cmGeneratorTarget::GetLinkInterfaceLibraries(
 
   // Link interfaces are not supported for executables that do not
   // export symbols.
-  if (this->GetType() == cmStateEnums::EXECUTABLE &&
+  if (this->GetType() == cm::TargetType::EXECUTABLE &&
       !this->IsExecutableWithExports()) {
     return nullptr;
   }
@@ -793,8 +790,8 @@ void cmGeneratorTarget::ComputeLinkInterfaceLibraries(
   // There is no implicit link interface for executables or modules
   // so if none was explicitly set then there is no link interface.
   if (!haveExplicitLibraries &&
-      (this->GetType() == cmStateEnums::EXECUTABLE ||
-       (this->GetType() == cmStateEnums::MODULE_LIBRARY))) {
+      (this->GetType() == cm::TargetType::EXECUTABLE ||
+       (this->GetType() == cm::TargetType::MODULE_LIBRARY))) {
     return;
   }
   iface.Exists = true;
@@ -1172,8 +1169,8 @@ void cmGeneratorTarget::ComputeLinkImplementationLibraries(
       std::string name = this->CheckCMP0004(lib);
       if (this->GetPolicyStatusCMP0108() == cmPolicies::NEW) {
         // resolve alias name
-        auto* target = this->Makefile->FindTargetToUse(
-          name, cmStateEnums::AllTargetDomains);
+        auto* target =
+          this->Makefile->FindTargetToUse(name, cm::AllTargetDomains);
         if (target) {
           name = target->GetName();
         }
@@ -1292,21 +1289,20 @@ cmLinkItem cmGeneratorTarget::ResolveLinkItem(
 
   // Check deprecation, issue message with `bt` backtrace.
   if (resolved.Target->IsDeprecated()) {
-    std::ostringstream w;
-    /* clang-format off */
-    w <<
-      "The library that is being linked to, "  << resolved.Target->GetName() <<
-      ", is marked as being deprecated by the owner.  The message provided by "
-      "the developer is: \n" << resolved.Target->GetDeprecation() << "\n";
-    /* clang-format on */
-    this->LocalGenerator->IssueDiagnostic(cmDiagnostics::CMD_AUTHOR, w.str(),
-                                          bt);
+    this->LocalGenerator->IssueDiagnostic(
+      cmDiagnostics::CMD_AUTHOR,
+      cmStrCat("The library that is being linked to, ",
+               resolved.Target->GetName(),
+               ", is marked as being deprecated by the owner.  The message "
+               "provided by the developer is: \n",
+               resolved.Target->GetDeprecation(), '\n'),
+      bt);
   }
 
   // Skip targets that will not really be linked.  This is probably a
   // name conflict between an external library and an executable
   // within the project.
-  if (resolved.Target->GetType() == cmStateEnums::EXECUTABLE &&
+  if (resolved.Target->GetType() == cm::TargetType::EXECUTABLE &&
       !resolved.Target->IsExecutableWithExports()) {
     return cmLinkItem(resolved.Target->GetName(), false, bt, linkFeature);
   }

@@ -4,8 +4,9 @@ CMAKE_SYSTEM_NAME
 CMake要为之构建的操作系统的名称。操作系统版本请参考\ :variable:`CMAKE_SYSTEM_VERSION`\
 变量。
 
-Note that ``CMAKE_SYSTEM_NAME`` is not set to anything by default when running
-in script mode, since it's not building anything.
+When run in :option:`cmake -P` script mode, CMake sets
+:variable:`CMAKE_HOST_SYSTEM_NAME` but does not set ``CMAKE_SYSTEM_NAME`` by
+default, since it's not building anything.
 
 System Name for Host Builds
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

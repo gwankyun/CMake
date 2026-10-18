@@ -3,7 +3,7 @@
 
 if(NOT CMake_SOURCE_DIR)
   set(CMakeHelp_STANDALONE 1)
-  cmake_minimum_required(VERSION 3.13...4.2 FATAL_ERROR)
+  cmake_minimum_required(VERSION 3.13...4.3 FATAL_ERROR)
   get_filename_component(tmp "${CMAKE_CURRENT_SOURCE_DIR}" PATH)
   get_filename_component(CMake_SOURCE_DIR "${tmp}" PATH)
   include(${CMake_SOURCE_DIR}/Modules/CTestUseLaunchers.cmake)
@@ -22,6 +22,7 @@ project(CMakeHelp NONE)
 option(SPHINX_INFO "Build Info manual with Sphinx" OFF)
 option(SPHINX_MAN "Build man pages with Sphinx" OFF)
 option(SPHINX_HTML "Build html help with Sphinx" OFF)
+option(SPHINX_HTML_COPYBUTTON "Build html help with the sphinx-copybutton extension" OFF)
 option(SPHINX_SINGLEHTML "Build html single page help with Sphinx" OFF)
 option(SPHINX_LINKCHECK "Check external links mentioned in documentation" OFF)
 option(SPHINX_QTHELP "Build Qt help with Sphinx" OFF)
@@ -70,8 +71,14 @@ else()
   set(conf_cmakeorg "False")
 endif()
 
+set(conf_copybutton_ext)
+if (SPHINX_HTML_COPYBUTTON)
+  set(conf_copybutton_ext "\'sphinx_copybutton\',")
+endif()
+
 set(conf_docs "${CMake_SOURCE_DIR}/Help")
 set(conf_path "${CMAKE_CURRENT_SOURCE_DIR}")
+set(conf_qthelp_static "${CMAKE_CURRENT_BINARY_DIR}/static-qthelp")
 set(conf_version "${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}.${CMake_VERSION_PATCH}")
 set(conf_release "${CMake_VERSION}")
 configure_file(conf.py.in conf.py @ONLY)
@@ -132,6 +139,11 @@ if(SPHINX_QTHELP)
     message(FATAL_ERROR "QHELPGENERATOR_EXECUTABLE (qhelpgenerator) not found!")
   endif()
   list(APPEND doc_formats qthelp)
+
+  # Generate the light and dark stylesheets, and tell `conf.py` to link them.
+  set(qthelp_css_outdir "${conf_qthelp_static}")
+  include("${CMAKE_CURRENT_SOURCE_DIR}/qthelp_css.cmake")
+  set(doc_qthelp_opts -t qthelp)
 
   set(qthelp_post_commands
     # Workaround for assistant prior to

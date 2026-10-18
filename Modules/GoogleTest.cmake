@@ -42,6 +42,9 @@ usually considered as more beneficial.  By default, the CTest test name is the
 same as the Google Test name (i.e. ``suite.testcase``); see also
 ``TEST_PREFIX`` and ``TEST_SUFFIX``.
 
+Commands
+^^^^^^^^
+
 .. command:: gtest_add_tests
 
   Automatically add tests with CTest by scanning source code for Google Test
@@ -256,6 +259,11 @@ same as the Google Test name (i.e. ``suite.testcase``); see also
     Specifies additional properties to be set on all tests discovered by this
     invocation of ``gtest_discover_tests()``.
 
+    .. versionchanged:: 4.5
+      If the properties make the discovered tests part of a test fixture, and
+      they do not set :prop_test:`FIXTURE_REPEAT_MODE`, policy :policy:`CMP0224`
+      determines the behavior when the :ctest-option:`--repeat` option is used.
+
   ``TEST_LIST var``
     Make the list of tests available in the variable ``var``, rather than the
     default ``<target>_TESTS``.  This can be useful when the same test
@@ -309,7 +317,7 @@ same as the Google Test name (i.e. ``suite.testcase``); see also
     dependencies.
 
     ``DISCOVERY_MODE`` defaults to the value of the
-    ``CMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE`` variable if it is not
+    :variable:`CMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE` variable if it is not
     passed when calling ``gtest_discover_tests()``. This provides a mechanism
     for globally selecting a preferred test discovery behavior without having
     to modify each call site.
@@ -327,6 +335,17 @@ same as the Google Test name (i.e. ``suite.testcase``); see also
     Empty values in the :prop_tgt:`TEST_LAUNCHER` and
     :prop_tgt:`CROSSCOMPILING_EMULATOR` target properties are preserved,
     see policy :policy:`CMP0178`.
+
+Variables
+^^^^^^^^^
+
+.. variable:: CMAKE_GTEST_DISCOVER_TESTS_DISCOVERY_MODE
+
+  .. versionadded:: 3.18
+
+  Default value for the ``DISCOVERY_MODE`` option of
+  :command:`gtest_discover_tests`.  The value must be one of ``POST_BUILD``
+  or ``PRE_TEST``.  If this variable is not set, ``POST_BUILD`` is used.
 
 #]=======================================================================]
 
@@ -595,6 +614,17 @@ function(gtest_discover_tests target)
     endif()
   endif()
 
+  # For policy CMP0224, only NEW needs carrying through.  With nothing
+  # recorded, ctest already uses the EACH_TEST_SEPARATELY behavior of
+  # CMake 4.4 and below.
+  cmake_policy(GET CMP0224 _CMP0224
+    PARENT_SCOPE # undocumented, do not use outside of CMake
+  )
+  if(_CMP0224 STREQUAL "NEW")
+    list(APPEND arg_PROPERTIES
+      _CMAKE_DEFAULT_FIXTURE_REPEAT_MODE AROUND_EACH_REPEAT)
+  endif()
+
   get_property(test_launcher
     TARGET ${target}
     PROPERTY TEST_LAUNCHER
@@ -723,6 +753,10 @@ function(gtest_discover_tests target)
     ")"                                                                     "\n"
   )
   file(GENERATE OUTPUT "${discovery_file}" CONTENT "${discovery_content}")
+
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_TEST_BUILD_DEPENDS
+    "${target}"
+  )
 
   set(ctest_include_content)
   if(arg_DISCOVERY_MODE STREQUAL "POST_BUILD")

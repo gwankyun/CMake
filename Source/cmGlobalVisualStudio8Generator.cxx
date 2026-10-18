@@ -47,23 +47,6 @@ cmGlobalVisualStudio8Generator::cmGlobalVisualStudio8Generator(
     cmGlobalVisualStudio8Generator::GetExtraFlagTableVS8();
 }
 
-std::string cmGlobalVisualStudio8Generator::FindDevEnvCommand()
-{
-  // First look for VCExpress.
-  std::string vsxcmd;
-  std::string vsxkey =
-    cmStrCat(R"(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VCExpress\)",
-             this->GetIDEVersion(), ";InstallDir");
-  if (cmSystemTools::ReadRegistryValue(vsxkey, vsxcmd,
-                                       cmSystemTools::KeyWOW64_32)) {
-    cmSystemTools::ConvertToUnixSlashes(vsxcmd);
-    vsxcmd += "/VCExpress.exe";
-    return vsxcmd;
-  }
-  // Now look for devenv.
-  return this->cmGlobalVisualStudio7Generator::FindDevEnvCommand();
-}
-
 void cmGlobalVisualStudio8Generator::EnableLanguage(
   std::vector<std::string> const& lang, cmMakefile* mf, bool optional)
 {
@@ -138,47 +121,47 @@ bool cmGlobalVisualStudio8Generator::ParseGeneratorPlatform(
   for (; fi != fields.end(); ++fi) {
     std::string::size_type pos = fi->find('=');
     if (pos == fi->npos) {
-      std::ostringstream e;
-      /* clang-format off */
-      e <<
-        "Generator\n"
-        "  " << this->GetName() << "\n"
-        "given platform specification\n"
-        "  " << p << "\n"
-        "that contains a field after the first ',' with no '='."
-        ;
-      /* clang-format on */
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
+      mf->IssueMessage(
+        MessageType::FATAL_ERROR,
+        cmStrCat("Generator\n"
+                 "  ",
+                 this->GetName(),
+                 "\n"
+                 "given platform specification\n"
+                 "  ",
+                 p,
+                 "\n"
+                 "that contains a field after the first ',' with no '='."));
       return false;
     }
     std::string const key = fi->substr(0, pos);
     std::string const value = fi->substr(pos + 1);
     if (!handled.insert(key).second) {
-      std::ostringstream e;
-      /* clang-format off */
-      e <<
-        "Generator\n"
-        "  " << this->GetName() << "\n"
-        "given platform specification\n"
-        "  " << p << "\n"
-        "that contains duplicate field key '" << key << "'."
-        ;
-      /* clang-format on */
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
+      mf->IssueMessage(MessageType::FATAL_ERROR,
+                       cmStrCat("Generator\n"
+                                "  ",
+                                this->GetName(),
+                                "\n"
+                                "given platform specification\n"
+                                "  ",
+                                p,
+                                "\n"
+                                "that contains duplicate field key '",
+                                key, "'."));
       return false;
     }
     if (!this->ProcessGeneratorPlatformField(key, value)) {
-      std::ostringstream e;
-      /* clang-format off */
-      e <<
-        "Generator\n"
-        "  " << this->GetName() << "\n"
-        "given platform specification\n"
-        "  " << p << "\n"
-        "that contains invalid field '" << *fi << "'."
-        ;
-      /* clang-format on */
-      mf->IssueMessage(MessageType::FATAL_ERROR, e.str());
+      mf->IssueMessage(MessageType::FATAL_ERROR,
+                       cmStrCat("Generator\n"
+                                "  ",
+                                this->GetName(),
+                                "\n"
+                                "given platform specification\n"
+                                "  ",
+                                p,
+                                "\n"
+                                "that contains invalid field '",
+                                *fi, "'."));
       return false;
     }
   }
@@ -358,9 +341,10 @@ void cmGlobalVisualStudio8Generator::AddExtraIDETargets()
 bool cmGlobalVisualStudio8Generator::NeedsDeploy(
   cmGeneratorTarget const& target, char const* config) const
 {
-  cmStateEnums::TargetType const type = target.GetType();
-  if (type != cmStateEnums::EXECUTABLE &&
-      type != cmStateEnums::SHARED_LIBRARY && type != cmStateEnums::UTILITY) {
+  cm::TargetType const type = target.GetType();
+  if (type != cm::TargetType::EXECUTABLE &&
+      type != cm::TargetType::SHARED_LIBRARY &&
+      type != cm::TargetType::UTILITY) {
     // deployment only valid on executables, shared libraries, and utilities.
     return false;
   }

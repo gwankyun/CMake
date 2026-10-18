@@ -8,9 +8,12 @@
 #include <vector>
 
 #include <cm/optional>
+#include <cm/string_view>
+#include <cmext/string_view>
 
 #include <cm3p/json/value.h>
 
+#include "cmCMakePresetsErrors.h"
 #include "cmCMakePresetsGraph.h"
 #include "cmJSONHelpers.h"
 #include "cmSystemTools.h"
@@ -58,6 +61,8 @@ class cmCMakePresetsGraph::Condition
 public:
   virtual ~Condition() = default;
 
+  std::string ConditionJson;
+
   virtual bool Evaluate(
     cmCMakePresetsGraphInternal::MacroExpanderVector const& expanders,
     int version, cm::optional<bool>& out) const = 0;
@@ -87,6 +92,36 @@ public:
 };
 
 template <typename T>
+std::string const* GetConfigurePresetName(T const& /*preset*/)
+{
+  return nullptr;
+}
+
+inline std::string const* GetConfigurePresetName(
+  cmCMakePresetsGraph::ConfigurePreset const& preset)
+{
+  return &preset.Name;
+}
+
+inline std::string const* GetConfigurePresetName(
+  cmCMakePresetsGraph::BuildPreset const& preset)
+{
+  return &preset.ConfigurePreset;
+}
+
+inline std::string const* GetConfigurePresetName(
+  cmCMakePresetsGraph::TestPreset const& preset)
+{
+  return &preset.ConfigurePreset;
+}
+
+inline std::string const* GetConfigurePresetName(
+  cmCMakePresetsGraph::PackagePreset const& preset)
+{
+  return &preset.ConfigurePreset;
+}
+
+template <typename T>
 class PresetMacroExpander : public MacroExpander
 {
   cmCMakePresetsGraph const& Graph;
@@ -107,6 +142,16 @@ public:
       if (macroName == "presetName") {
         macroOut += Preset.Name;
         return ExpandMacroResult::Ok;
+      }
+      if (macroName == "configurePresetName") {
+        if (version < 13) {
+          return ExpandMacroResult::Error;
+        }
+        if (auto const* configurePresetName = GetConfigurePresetName(Preset)) {
+          macroOut += *configurePresetName;
+          return ExpandMacroResult::Ok;
+        }
+        return ExpandMacroResult::Error;
       }
       if (macroName == "generator") {
         // Generator only makes sense if preset is not hidden.
@@ -306,6 +351,8 @@ bool WorkflowPresetsHelper(
   std::vector<cmCMakePresetsGraph::WorkflowPreset>& out,
   Json::Value const* value, cmJSONState* state);
 
+cm::string_view GetDiagnosticJSONName(cmDiagnosticCategory category);
+
 cmJSONHelper<std::nullptr_t> VendorHelper(ErrorGenerator const& error);
 
 bool PresetConditionHelper(
@@ -324,4 +371,41 @@ cmJSONHelper<std::nullptr_t> SchemaHelper();
 
 bool CheckDiagnostics(cmJSONState* state, int version,
                       cmCMakePresetsGraph::ConfigurePreset& preset);
+
+// Binds the fields common to every preset kind.
+template <typename T>
+cmJSONHelperBuilder::Object<T> BindPresetIdentityFields(
+  cmJSONHelperBuilder::Object<T> obj)
+{
+  obj.Bind("name"_s, &cmCMakePresetsGraph::Preset::Name, PresetNameHelper)
+    .Bind("inherits"_s, &cmCMakePresetsGraph::Preset::Inherits,
+          PresetVectorOneOrMoreStringHelper, false)
+    .Bind("hidden"_s, &cmCMakePresetsGraph::Preset::Hidden, PresetBoolHelper,
+          false)
+    .template Bind<std::nullptr_t>(
+      "vendor"_s, nullptr, VendorHelper(cmCMakePresetsErrors::INVALID_PRESET),
+      false)
+    .Bind("displayName"_s, &cmCMakePresetsGraph::Preset::DisplayName,
+          PresetStringHelper, false)
+    .Bind("description"_s, &cmCMakePresetsGraph::Preset::Description,
+          PresetStringHelper, false)
+    .Bind("condition"_s, &cmCMakePresetsGraph::Preset::ConditionEvaluator,
+          PresetConditionHelper, false);
+  return obj;
+}
+
+// Binds the fields shared by build, test, and package presets, which resolve
+// against a configure preset.
+template <typename T>
+cmJSONHelperBuilder::Object<T> BindDependentPresetFields(
+  cmJSONHelperBuilder::Object<T> obj)
+{
+  obj
+    .Bind("environment"_s, &cmCMakePresetsGraph::Preset::Environment,
+          EnvironmentMapHelper, false)
+    .Bind("configurePreset"_s, &T::ConfigurePreset, PresetStringHelper, false)
+    .Bind("inheritConfigureEnvironment"_s, &T::InheritConfigureEnvironment,
+          PresetOptionalBoolHelper, false);
+  return obj;
+}
 }

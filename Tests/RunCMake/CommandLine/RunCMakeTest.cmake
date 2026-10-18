@@ -14,16 +14,10 @@ function(version_json_check_python v is_json_ready)
     set(actual_stdout "" PARENT_SCOPE)
   endif()
 
-  execute_process(
-    COMMAND ${Python_EXECUTABLE} "${RunCMake_SOURCE_DIR}/version_json_validate_schema.py" "${json_file}"
-    RESULT_VARIABLE result
-    OUTPUT_VARIABLE output
-    ERROR_VARIABLE output
-  )
-  if(NOT result STREQUAL 0)
-    string(REPLACE "\n" "\n  " output "${output}")
-    string(APPEND RunCMake_TEST_FAILED "Failed to validate version ${v} JSON schema for file: ${json_file}\nOutput:\n${output}\n")
-  endif()
+  include("${RunCMake_SOURCE_DIR}/../validate_json_schema.cmake")
+  set(schema_file "${RunCMake_SOURCE_DIR}/../../../Help/manual/cmake/version-schema.json")
+  validate_json_schema("${schema_file}" "${json_file}")
+
   return(PROPAGATE RunCMake_TEST_FAILED)
 endfunction()
 
@@ -48,6 +42,7 @@ run_cmake_command(versionVJsonNoArg ${CMAKE_COMMAND} /V=json-v1)
 run_cmake_command(NoArgs ${CMAKE_COMMAND})
 run_cmake_command(InvalidArg1 ${CMAKE_COMMAND} -invalid)
 run_cmake_command(InvalidArg2 ${CMAKE_COMMAND} --invalid)
+run_cmake_command(InvalidArg3 ${CMAKE_COMMAND} --toolchan)
 run_cmake_command(Wizard ${CMAKE_COMMAND} -i)
 run_cmake_command(C-no-arg ${CMAKE_COMMAND} -B DummyBuildDir -C)
 run_cmake_command(C-no-arg2 ${CMAKE_COMMAND} -B DummyBuildDir -C -T)
@@ -66,6 +61,7 @@ run_cmake_command(U-no-arg ${CMAKE_COMMAND} -B DummyBuildDir -U)
 run_cmake_command(U-no-src ${CMAKE_COMMAND} -B DummyBuildDir -U VAR)
 run_cmake_command(Uno-src ${CMAKE_COMMAND} -B DummyBuildDir -UVAR)
 run_cmake_command(E-no-arg ${CMAKE_COMMAND} -E)
+run_cmake_command(E_unknown-command-did-you-mean ${CMAKE_COMMAND} -E enviroment)
 run_cmake_command(E_capabilities ${CMAKE_COMMAND} -E capabilities)
 run_cmake_command(E_capabilities-arg ${CMAKE_COMMAND} -E capabilities --extra-arg)
 run_cmake_command(E_compare_files-different-eol ${CMAKE_COMMAND} -E compare_files ${RunCMake_SOURCE_DIR}/compare_files/lf ${RunCMake_SOURCE_DIR}/compare_files/crlf)
@@ -92,6 +88,26 @@ run_cmake_command(E___run_co_compile-bad-iwyu ${CMAKE_COMMAND} -E __run_co_compi
 run_cmake_command(E___run_co_compile-no--- ${CMAKE_COMMAND} -E __run_co_compile --iwyu=iwyu-does-not-exist command-does-not-exist)
 run_cmake_command(E___run_co_compile-no-cc ${CMAKE_COMMAND} -E __run_co_compile --iwyu=iwyu-does-not-exist --)
 run_cmake_command(E___run_co_compile-tidy-remove-fixes ${CMAKE_COMMAND} -E __run_co_compile "--tidy=${CMAKE_COMMAND}\\;-E\\;true\\;--export-fixes=${RunCMake_BINARY_DIR}/tidy-fixes.yaml" -- ${CMAKE_COMMAND} -E true)
+
+block()
+  set(RunCMake_TEST_BINARY_DIR
+    ${RunCMake_BINARY_DIR}/E___create_def-build)
+  run_cmake(E___create_def)
+  set(RunCMake_TEST_NO_CLEAN 1)
+
+  # bitcode.obj contains LLVM bitcode magic followed by padding.
+  run_cmake_command(E___create_def-nm-not-found ${CMAKE_COMMAND} -E __create_def nm-not-found.def nm-not-found.objs --nm=cmake-nm-does-not-exist)
+
+  if(CMAKE_HOST_UNIX)
+    set(fake_nm ${RunCMake_SOURCE_DIR}/fake-nm.sh)
+    set(RunCMake-check-file E___create_def-nm-check.cmake)
+    run_cmake_command(E___create_def-nm-single ${CMAKE_COMMAND} -E __create_def single.def single.objs --nm=${fake_nm})
+    run_cmake_command(E___create_def-nm-symbol-types ${CMAKE_COMMAND} -E __create_def symbol-types.def symbol-types.objs --nm=${fake_nm})
+    run_cmake_command(E___create_def-nm-multiple ${CMAKE_COMMAND} -E __create_def multiple.def multiple.objs --nm=${fake_nm})
+    run_cmake_command(E___create_def-nm-spaces ${CMAKE_COMMAND} -E __create_def spaces.def spaces.objs --nm=${fake_nm})
+    run_cmake_command(E___create_def-nm-mixed ${CMAKE_COMMAND} -E __create_def mixed.def mixed.objs --nm=${fake_nm})
+  endif()
+endblock()
 
 block()
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/list-cache-build)
@@ -131,6 +147,8 @@ run_cmake_command(build-unknown-command-long
   ${CMAKE_COMMAND} --build ${RunCMake_SOURCE_DIR} --invalid-command)
 run_cmake_command(build-unknown-command-partial-match
   ${CMAKE_COMMAND} --build ${RunCMake_SOURCE_DIR} --targetinvalid)
+run_cmake_command(build-unknown-command-did-you-mean
+  ${CMAKE_COMMAND} --build ${RunCMake_SOURCE_DIR} --targe)
 run_cmake_command(build-invalid-target-syntax
   ${CMAKE_COMMAND} --build ${RunCMake_SOURCE_DIR} --target=invalid)
 run_cmake_command(build-no-generator
@@ -150,6 +168,8 @@ run_cmake_command(install-unknown-command-short
   ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR} -invalid-command)
 run_cmake_command(install-unknown-command-long
   ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR} --invalid-command)
+run_cmake_command(install-unknown-command-did-you-mean
+  ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR} --compnent)
 run_cmake_command(install-options-to-vars
   ${CMAKE_COMMAND} --install ${RunCMake_SOURCE_DIR}/dir-install-options-to-vars
   --strip --prefix /var/test --config sample --component pack)
@@ -253,6 +273,7 @@ message(STATUS "CMAKE_BINARY_DIR='${CMAKE_BINARY_DIR}'")
   file(REMOVE_RECURSE "${binary_dir}")
   run_cmake_with_options(ExplicitDirs-S-arg -S ${source_dir} ${binary_dir})
   run_cmake_with_options(ExplicitDirs-S-arg-reverse-order ${binary_dir} -S${source_dir} )
+  run_cmake_with_options(ExplicitDirs-H-arg -H${source_dir} ${binary_dir})
   run_cmake_with_options(ExplicitDirs-S-no-arg -S )
   run_cmake_with_options(ExplicitDirs-S-no-arg2 -S -T)
   run_cmake_with_raw_args(ExplicitDirs-S-no-arg3 [[-S ""]])
@@ -1118,6 +1139,7 @@ unset(RunCMake_TEST_OPTIONS)
 
 set(RunCMake_TEST_OPTIONS -Wno-deprecated -Wuninitialized)
 run_cmake(Wuninitialized)
+run_cmake(WuninitializedCMakeRoot)
 unset(RunCMake_TEST_OPTIONS)
 
 run_cmake_command(W_bad-arg1 ${CMAKE_COMMAND} -B DummyBuildDir -W)
@@ -1230,16 +1252,6 @@ function(run_llvm_rc)
   endif()
   file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}/ExpandSourceDir")
   run_cmake_command(llvm_rc_full_run ${CMAKE_COMMAND} -E cmake_llvm_rc ${RunCMake_TEST_BINARY_DIR}/ExpandSourceDir/source_file test.tmp ${CMAKE_COMMAND} -E echo "This is a test" ++ ${LLVM_RC} -bad /FO SOURCE_DIR/llvmrc.result test.tmp )
-  if(EXISTS ${RunCMake_TEST_BINARY_DIR}/ExpandSourceDir/test.tmp)
-      message(SEND_ERROR "${test} - FAILED:\n"
-        "test.tmp was not deleted")
-  endif()
-  file(READ ${RunCMake_TEST_BINARY_DIR}/ExpandSourceDir/llvmrc.result LLVMRC_RESULT)
-  if(NOT "${LLVMRC_RESULT}" STREQUAL "This is a test\n")
-    message(SEND_ERROR "${test} - FAILED:\n"
-        "llvmrc.result was not created")
-  endif()
-  unset(LLVMRC_RESULT)
 endfunction()
 run_llvm_rc()
 
@@ -1281,10 +1293,3 @@ if (WIN32 OR DEFINED ENV{HOME})
 endif()
 set(ENV{CMAKE_CONFIG_DIR} cmake_config_dir)
 run_cmake_command(print-config-dir-env ${CMAKE_COMMAND} "--print-config-dir")
-
-if(RunCMake_GENERATOR MATCHES "^Visual Studio 14 2015")
-  run_cmake_with_options(DeprecateVS14-WARN-ON -DCMAKE_WARN_VS14=ON)
-  unset(ENV{CMAKE_WARN_VS14})
-  run_cmake(DeprecateVS14-WARN-ON)
-  run_cmake_with_options(DeprecateVS14-WARN-OFF -DCMAKE_WARN_VS14=OFF)
-endif()

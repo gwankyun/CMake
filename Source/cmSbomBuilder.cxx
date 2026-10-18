@@ -8,7 +8,6 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -32,28 +31,28 @@
 #include "cmSbomObject.h"
 #include "cmSpdx.h"
 #include "cmSpdxSerializer.h"
-#include "cmStateTypes.h"
 #include "cmStringAlgorithms.h"
 #include "cmSystemTools.h"
 #include "cmTarget.h"
 #include "cmTargetExport.h"
+#include "cmTargetTypes.h"
 #include "cmValue.h"
 
-cmSpdxPackage::PurposeId GetPurpose(cmStateEnums::TargetType type)
+cmSpdxPackage::PurposeId GetPurpose(cm::TargetType type)
 {
   switch (type) {
-    case cmStateEnums::TargetType::EXECUTABLE:
+    case cm::TargetType::EXECUTABLE:
       return cmSpdxPackage::PurposeId::APPLICATION;
-    case cmStateEnums::TargetType::STATIC_LIBRARY:
-    case cmStateEnums::TargetType::SHARED_LIBRARY:
-    case cmStateEnums::TargetType::MODULE_LIBRARY:
-    case cmStateEnums::TargetType::OBJECT_LIBRARY:
-    case cmStateEnums::TargetType::INTERFACE_LIBRARY:
+    case cm::TargetType::STATIC_LIBRARY:
+    case cm::TargetType::SHARED_LIBRARY:
+    case cm::TargetType::MODULE_LIBRARY:
+    case cm::TargetType::OBJECT_LIBRARY:
+    case cm::TargetType::INTERFACE_LIBRARY:
       return cmSpdxPackage::PurposeId::LIBRARY;
-    case cmStateEnums::TargetType::UTILITY:
+    case cm::TargetType::UTILITY:
       return cmSpdxPackage::PurposeId::SOURCE;
-    case cmStateEnums::TargetType::GLOBAL_TARGET:
-    case cmStateEnums::TargetType::UNKNOWN_LIBRARY:
+    case cm::TargetType::GLOBAL_TARGET:
+    case cm::TargetType::UNKNOWN_LIBRARY:
     default:
       return cmSpdxPackage::PurposeId::ARCHIVE;
   }
@@ -70,7 +69,8 @@ cmSbomBuilder::cmSbomBuilder(cmSbomArguments args,
   , PackageDescription(std::move(args.Description))
   , PackageWebsite(std::move(args.Website))
   , PackageUrl(std::move(args.PackageUrl))
-  , PackageLicense(std::move(args.License))
+  , DataLicense(std::move(args.DataLicense))
+  , DefaultLicense(std::move(args.DefaultLicense))
   , PackageFormat(args.GetFormat())
 {
 }
@@ -115,10 +115,11 @@ bool cmSbomBuilder::CoversExportSet(cmExportSet const* set) const
 }
 
 bool cmSbomBuilder::GenerateForTargets(
-  std::ostream& os, cmGeneratorExpression::PreprocessContext preprocessContext)
+  std::ostream& os, std::string const& config,
+  cmGeneratorExpression::PreprocessContext preprocessContext)
 {
   cmSbomDocument doc;
-  doc.Graph.reserve(256);
+  doc.Graph.reserve(512);
 
   cmSpdxCreationInfo const* ci =
     insert_back(doc.Graph, this->GenerateCreationInfo());
@@ -131,19 +132,23 @@ bool cmSbomBuilder::GenerateForTargets(
     this->PopulateLinkLibrariesProperty(target, preprocessContext, properties);
     this->PopulateInterfaceLinkLibrariesProperty(target, preprocessContext,
                                                  properties);
-
-    targetProps.push_back(
-      TargetProperties{ insert_back(project->RootElements,
-                                    this->GenerateImportTarget(ci, target)),
-                        target, std::move(properties) });
+    targetProps.push_back(TargetProperties{
+      insert_back(project->RootElements,
+                  this->GenerateImportTarget(ci, target)),
+      target,
+      std::move(properties),
+    });
   }
 
+  bool status = true;
   for (TargetProperties const& target : targetProps) {
-    this->GenerateProperties(doc, project, ci, target, targetProps);
+    status &=
+      this->GenerateProperties(doc, project, ci, target, targetProps, config);
   }
-
-  this->WriteSbom(doc, os);
-  return true;
+  if (status) {
+    this->WriteSbom(doc, os);
+  }
+  return status;
 }
 
 void cmSbomBuilder::WriteSbom(cmSbomDocument& doc, std::ostream& os) const
@@ -189,7 +194,7 @@ bool cmSbomBuilder::AddPackageInformation(
 
   artifact.BuiltTime = cmSystemTools::GetCurrentDateTime("%FT%TZ");
   cmSpdxExternalRef externalRef;
-  externalRef.Locator = cmStrCat("cmake:find_package(", name, ")");
+  externalRef.Locator = cmStrCat("cmake:find_package(", name, ')');
   externalRef.ExternalRefType = "buildSystem";
   return true;
 }
@@ -217,8 +222,12 @@ cmSpdxDocument cmSbomBuilder::GenerateSbom(cmSpdxCreationInfo const* ci) const
     proj.Description = this->PackageDescription;
   }
 
-  if (!this->PackageLicense.empty()) {
-    proj.DataLicense = this->PackageLicense;
+  if (!this->DataLicense.empty()) {
+    cmSpdxLicenseExpression license;
+    license.SpdxId = cmStrCat("urn:", PackageName, "#LicenseExpression");
+    license.CreationInfo = ci;
+    license.LicenseExpression = this->DataLicense;
+    proj.DataLicense = license;
   }
 
   return proj;
@@ -248,23 +257,31 @@ cmSpdxPackage cmSbomBuilder::GenerateImportTarget(
   return package;
 }
 
-void cmSbomBuilder::GenerateLinkProperties(
+bool cmSbomBuilder::GenerateLinkProperties(
   cmSbomDocument& doc, cmSpdxDocument* project, cmSpdxCreationInfo const* ci,
   std::string const& libraries, TargetProperties const& current,
-  std::vector<TargetProperties> const& allTargets) const
+  std::vector<TargetProperties> const& allTargets,
+  std::string const& config) const
 {
   auto itProp = current.Properties.find(libraries);
   if (itProp == current.Properties.end()) {
-    return;
+    return true;
   }
 
-  std::map<std::string, std::vector<std::string>> allowList = { { "LINK_ONLY",
-                                                                  {} } };
-  std::string interfaceLinkLibraries;
-  if (!cmGeneratorExpression::ForbidGeneratorExpressions(
-        current.Target, itProp->first, itProp->second, interfaceLinkLibraries,
-        allowList)) {
-    return;
+  cmGeneratorExpression ge(*current.Target->Makefile->GetCMakeInstance());
+  std::unique_ptr<cmCompiledGeneratorExpression> cge =
+    ge.Parse(itProp->second);
+  std::string evaluatedLibraries =
+    cge->Evaluate(current.Target->GetLocalGenerator(), config, current.Target);
+
+  if (cge->GetHadHeadSensitiveCondition()) {
+    current.Target->Makefile->IssueMessage(
+      MessageType::FATAL_ERROR,
+      cmStrCat("Property \"", libraries, "\" of target \"",
+               current.Target->GetName(),
+               "\" contains a generator expression that is not allowed for "
+               "SBOM generation."));
+    return false;
   }
 
   auto makeRel = [&](char const* id, char const* desc) {
@@ -294,7 +311,7 @@ void cmSbomBuilder::GenerateLinkProperties(
         }
       }
       std::string pkgName =
-        cmStrCat(linkInfo.Package, ":", linkInfo.Component);
+        cmStrCat(linkInfo.Package, ':', linkInfo.Component);
       cmSpdxPackage pkg;
       pkg.Name = pkgName;
       pkg.SpdxId = cmStrCat("urn:", pkgName, "#Package");
@@ -306,7 +323,31 @@ void cmSbomBuilder::GenerateLinkProperties(
           this->AddPackageInformation(pkg, pkgIt->first, pkgIt->second);
         }
       }
-      return { true, insert_back(project->Elements, std::move(pkg)) };
+
+      cmSpdxPackage const* pkgPtr =
+        insert_back(project->Elements, std::move(pkg));
+      if (!linkInfo.License.empty() &&
+          !cm::contains(this->GeneratedLinkLicenses, name)) {
+        this->GeneratedLinkLicenses.emplace(name);
+
+        cmSpdxLicenseExpression license;
+        license.SpdxId = cmStrCat("urn:", name, "#LicenseExpression");
+        license.CreationInfo = ci;
+        license.LicenseExpression = linkInfo.License;
+
+        cmSpdxRelationship relHasLicense;
+        relHasLicense.SpdxId =
+          cmStrCat("urn:", name, "#DeclaredLicenseRelationship");
+        relHasLicense.CreationInfo = ci;
+        relHasLicense.RelationshipType =
+          cmSpdxRelationship::HAS_DECLARED_LICENSE;
+        relHasLicense.From = pkgPtr;
+        relHasLicense.To.emplace_back(std::move(license));
+
+        insert_back(doc.Graph, std::move(relHasLicense));
+      }
+
+      return { true, pkgPtr };
     }
 
     cmSpdxPackage pkg;
@@ -316,26 +357,21 @@ void cmSbomBuilder::GenerateLinkProperties(
     return { false, insert_back(project->Elements, std::move(pkg)) };
   };
 
-  auto handleDependencies = [&](std::vector<std::string> const& names,
-                                cmSpdxRelationship& internalDeps,
-                                cmSpdxRelationship& externalDeps) {
-    for (auto const& n : names) {
-      auto res = addArtifact(n);
-      if (!res.second) {
-        continue;
-      }
-
-      if (res.first) {
-        internalDeps.To.push_back(res.second);
-      } else {
-        externalDeps.To.push_back(res.second);
-      }
+  cmList names{ evaluatedLibraries };
+  names.sort();
+  names.remove_duplicates();
+  for (std::string const& n : names) {
+    auto res = addArtifact(n);
+    if (!res.second) {
+      continue;
     }
-  };
 
-  handleDependencies(allowList["LINK_ONLY"], linkLibraries, linkRequires);
-  handleDependencies(cmList{ interfaceLinkLibraries }, linkLibraries,
-                     buildRequires);
+    if (res.first) {
+      linkLibraries.To.push_back(res.second);
+    } else {
+      buildRequires.To.push_back(res.second);
+    }
+  }
 
   if (!linkLibraries.To.empty()) {
     insert_back(doc.Graph, std::move(linkLibraries));
@@ -346,17 +382,51 @@ void cmSbomBuilder::GenerateLinkProperties(
   if (!buildRequires.To.empty()) {
     insert_back(doc.Graph, std::move(buildRequires));
   }
+  return true;
 }
 
 bool cmSbomBuilder::GenerateProperties(
   cmSbomDocument& doc, cmSpdxDocument* proj, cmSpdxCreationInfo const* ci,
   TargetProperties const& current,
-  std::vector<TargetProperties> const& allTargets) const
+  std::vector<TargetProperties> const& allTargets,
+  std::string const& config) const
 {
-  this->GenerateLinkProperties(doc, proj, ci, "LINK_LIBRARIES", current,
-                               allTargets);
-  this->GenerateLinkProperties(doc, proj, ci, "INTERFACE_LINK_LIBRARIES",
-                               current, allTargets);
+  bool status = true;
+  status &= this->GenerateLinkProperties(doc, proj, ci, "LINK_LIBRARIES",
+                                         current, allTargets, config);
+  status &= this->GenerateLinkProperties(
+    doc, proj, ci, "INTERFACE_LINK_LIBRARIES", current, allTargets, config);
+  status &= this->GenerateMetaProperties(doc, proj, ci, current);
+  return status;
+}
+
+bool cmSbomBuilder::GenerateMetaProperties(
+  cmSbomDocument& doc, cmSpdxDocument* /*project*/,
+  cmSpdxCreationInfo const* ci, TargetProperties const& current) const
+{
+  std::string licenseExpr = this->DefaultLicense;
+  cmValue licenseExprProp = current.Target->GetProperty("SPDX_LICENSE");
+  if (licenseExprProp) {
+    licenseExpr = licenseExprProp;
+  }
+  if (!licenseExpr.empty()) {
+    auto const& tgtName = current.Target->GetName();
+
+    cmSpdxLicenseExpression license;
+    license.SpdxId = cmStrCat("urn:", tgtName, "#LicenseExpression");
+    license.CreationInfo = ci;
+    license.LicenseExpression = std::move(licenseExpr);
+
+    cmSpdxRelationship relHasLicense;
+    relHasLicense.SpdxId =
+      cmStrCat("urn:", tgtName, "#DeclaredLicenseRelationship");
+    relHasLicense.CreationInfo = ci;
+    relHasLicense.RelationshipType = cmSpdxRelationship::HAS_DECLARED_LICENSE;
+    relHasLicense.From = current.Package;
+    relHasLicense.To.emplace_back(std::move(license));
+
+    insert_back(doc.Graph, std::move(relHasLicense));
+  }
   return true;
 }
 
@@ -365,10 +435,11 @@ bool cmSbomBuilder::PopulateLinkLibrariesProperty(
   cmGeneratorExpression::PreprocessContext preprocessRule,
   ImportPropertyMap& properties)
 {
-  static std::array<std::string, 3> const linkIfaceProps = {
-    { "LINK_LIBRARIES", "LINK_LIBRARIES_DIRECT",
-      "LINK_LIBRARIES_DIRECT_EXCLUDE" }
-  };
+  static std::array<std::string, 3> const linkIfaceProps = { {
+    "LINK_LIBRARIES",
+    "LINK_LIBRARIES_DIRECT",
+    "LINK_LIBRARIES_DIRECT_EXCLUDE",
+  } };
   bool hadLINK_LIBRARIES = false;
   for (std::string const& linkIfaceProp : linkIfaceProps) {
     if (cmValue input = target->GetProperty(linkIfaceProp)) {
@@ -415,9 +486,12 @@ bool cmSbomBuilder::NoteLinkedTarget(cmGeneratorTarget const* target,
                                      std::string const& linkedName,
                                      cmGeneratorTarget const* linkedTarget)
 {
+  auto linkedLicense = linkedTarget->GetSafeProperty("SPDX_LICENSE");
+
   if (cm::contains(this->SbomTargets, linkedTarget)) {
-    this->LinkTargets.emplace(linkedName,
-                              LinkInfo{ "", linkedTarget->GetExportName() });
+    this->LinkTargets.emplace(
+      linkedName,
+      LinkInfo{ "", linkedTarget->GetExportName(), linkedLicense });
     return true;
   }
 
@@ -455,7 +529,8 @@ bool cmSbomBuilder::NoteLinkedTarget(cmGeneratorTarget const* target,
     } else {
       component = linkedName.substr(prefix.length());
     }
-    this->LinkTargets.emplace(linkedName, LinkInfo{ pkgName, component });
+    this->LinkTargets.emplace(linkedName,
+                              LinkInfo{ pkgName, component, linkedLicense });
     cmPackageInformation& req =
       this->Requirements.insert(std::move(*pkgInfo)).first->second;
     req.Components.emplace(std::move(component));
@@ -481,9 +556,11 @@ bool cmSbomBuilder::NoteLinkedTarget(cmGeneratorTarget const* target,
     std::string pkgName{ linkNamespace.data(), linkNamespace.size() - 2 };
     std::string component = linkedTarget->GetExportName();
     if (pkgName == this->GetPackageName()) {
-      this->LinkTargets.emplace(linkedName, LinkInfo{ "", component });
+      this->LinkTargets.emplace(linkedName,
+                                LinkInfo{ "", component, linkedLicense });
     } else {
-      this->LinkTargets.emplace(linkedName, LinkInfo{ pkgName, component });
+      this->LinkTargets.emplace(linkedName,
+                                LinkInfo{ pkgName, component, linkedLicense });
       this->Requirements[pkgName].Components.emplace(std::move(component));
     }
     return true;
@@ -522,26 +599,26 @@ bool cmSbomBuilder::NoteLinkedTarget(cmGeneratorTarget const* target,
           "\" (first alphabetically)."));
     }
     std::string component = linkedTarget->GetExportName();
-    this->LinkTargets.emplace(linkedName, LinkInfo{ pkgName, component });
+    this->LinkTargets.emplace(linkedName,
+                              LinkInfo{ pkgName, component, linkedLicense });
     this->Requirements[pkgName].Components.emplace(std::move(component));
     return true;
   }
 
-  std::ostringstream e;
-  e << "Target \"" << target->GetName() << "\" references target \""
-    << linkedName << "\" ";
-  if (exportInfo.Sets.size() == 1) {
-    e << "that is in an export set which is exported multiple times "
-         "with different namespaces: ";
-  } else {
-    e << "that is in multiple export sets: ";
-  }
-  e << cmJoin(exportInfo.Files, ", ") << ".\n"
-    << "An SBOM cannot attribute a dependency exported in more than one "
-       "export set or with more than one namespace.  Consider "
-       "consolidating the exports of the \""
-    << linkedTarget->GetName() << "\" target to a single export.";
-  target->Makefile->IssueMessage(MessageType::FATAL_ERROR, e.str());
+  target->Makefile->IssueMessage(
+    MessageType::FATAL_ERROR,
+    cmStrCat("Target \"", target->GetName(), "\" references target \"",
+             linkedName, "\" ",
+             exportInfo.Sets.size() == 1
+               ? "that is in an export set which is exported multiple times "
+                 "with different namespaces: "
+               : "that is in multiple export sets: ",
+             cmJoin(exportInfo.Files, ", "),
+             ".\n"
+             "An SBOM cannot attribute a dependency exported in more than one "
+             "export set or with more than one namespace.  Consider "
+             "consolidating the exports of the \"",
+             linkedTarget->GetName(), "\" target to a single export."));
   return false;
 }
 
@@ -576,7 +653,7 @@ void cmSbomBuilder::ResolveTargetsInGeneratorExpressions(
     } else {
       this->ResolveTargetsInGeneratorExpression(li, target, lg);
     }
-    input += sep + li;
+    input = cmStrCat(std::move(input), sep, li);
     sep = ";";
   }
 }

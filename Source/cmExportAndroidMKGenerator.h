@@ -11,9 +11,12 @@
 #include <cm/string_view>
 
 #include "cmExportFileGenerator.h"
-#include "cmStateTypes.h"
 
 class cmGeneratorTarget;
+
+namespace cm {
+enum class TargetType;
+} // namespace cm
 
 /** \class cmExportAndroidMKGenerator
  * \brief Generate CMake configuration files exporting targets from a build or
@@ -51,9 +54,9 @@ protected:
   bool GenerateImportFile(std::ostream& os) override;
   virtual void GenerateImportHeaderCode(std::ostream& os,
                                         std::string const& config = "") = 0;
-  virtual void GenerateImportTargetCode(
-    std::ostream& os, cmGeneratorTarget const* target,
-    cmStateEnums::TargetType targetType) = 0;
+  virtual void GenerateImportTargetCode(std::ostream& os,
+                                        cmGeneratorTarget const* target,
+                                        cm::TargetType targetType) = 0;
 
   void GenerateImportTargetsConfig(std::ostream& /*os*/,
                                    std::string const& /*config*/,

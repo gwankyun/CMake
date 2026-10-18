@@ -177,15 +177,13 @@ Exporting Software Bill of Materials (SBOM) Documents
          [FORMAT <string>]
          [PROJECT <project-name>|NO_PROJECT_METADATA]
          [VERSION <major>[.<minor>[.<patch>[.<tweak>]]]]
-         [LICENSE <license-string>]
+         [DATA_LICENSE <license-string>]
+         [DEFAULT_LICENSE <license-string>]
          [DESCRIPTION <description-string>]
          [HOMEPAGE_URL <url-string>]
          [PACKAGE_URL <url-string>])
 
-.. versionadded:: 4.3
-.. note::
-
-  Experimental. Gated by ``CMAKE_EXPERIMENTAL_GENERATE_SBOM``.
+.. versionadded:: 4.5
 
 Generates a software bill of materials (SBOM) document describing the targets
 in the listed ``<export-names>`` export sets and their dependencies in the

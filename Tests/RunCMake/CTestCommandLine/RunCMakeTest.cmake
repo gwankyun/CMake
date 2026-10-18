@@ -104,6 +104,84 @@ endfunction()
 run_repeat_until_fail_tests(--repeat-until-fail 3)
 run_repeat_until_fail_tests(--repeat until-fail:3)
 
+function(run_repeat_fixture_test case)
+  # Each case runs one fixture around one test with `--repeat until-fail:3`.
+  # The FIXTURE_REPEAT_MODE property and policy CMP0224 decide whether the
+  # fixture repeats with the test, around it, or on its own.
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/repeat-fixture-${case}-build)
+  run_cmake_with_options(repeat-fixture-${case}-cmake ${ARGN})
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command(repeat-fixture-${case}-ctest
+    ${CMAKE_CTEST_COMMAND} -C Debug --repeat until-fail:3
+    )
+endfunction()
+# CMP0224 selects the default mode for fixture tests with no explicit mode.
+# Its warning is off by default, so the WARN case asks for it.
+run_repeat_fixture_test(default) # not set, and silent
+run_repeat_fixture_test(warn -DCMAKE_POLICY_WARNING_CMP0224=ON)
+run_repeat_fixture_test(old)  # OLD: EACH_TEST_SEPARATELY
+run_repeat_fixture_test(new)  # NEW: AROUND_EACH_REPEAT
+# An explicit FIXTURE_REPEAT_MODE property applies whatever the policy says.
+run_repeat_fixture_test(around-all)
+run_repeat_fixture_test(around-each)
+run_repeat_fixture_test(separately)
+# The property describes the fixture, so one of its tests may carry it alone.
+run_repeat_fixture_test(setup-only)
+run_repeat_fixture_test(cleanup-only)
+# Fixtures that share a test repeat as one unit.
+run_repeat_fixture_test(merge)
+# A test depending on one inside the group waits for the last repetition.
+run_repeat_fixture_test(depends)
+
+block()
+  # A repeat group records its tests in the checkpoint once, when it stops
+  # repeating, so that `ctest -F` re-runs an interrupted group from its first
+  # repetition.  A checkpoint naming a test twice, or naming one this run
+  # does not have, must not upset the resume either.
+  set(RunCMake_TEST_BINARY_DIR
+    ${RunCMake_BINARY_DIR}/repeat-fixture-resume-build)
+  run_cmake(repeat-fixture-resume-cmake)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/Testing/Temporary/CTestCheckpoint.txt"
+    "1\n2\n3\n1\n99\n")
+  run_cmake_command(repeat-fixture-resume-ctest
+    ${CMAKE_CTEST_COMMAND} -C Debug -F --repeat until-fail:3
+    )
+endblock()
+
+function(run_repeat_fixture_until_pass_test)
+  set(RunCMake_TEST_BINARY_DIR
+    ${RunCMake_BINARY_DIR}/repeat-fixture-until-pass-build)
+  run_cmake(repeat-fixture-until-pass-cmake)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command(repeat-fixture-until-pass-ctest
+    ${CMAKE_CTEST_COMMAND} -C Debug --repeat until-pass:3
+    )
+endfunction()
+run_repeat_fixture_until_pass_test()
+
+function(run_repeat_fixture_conflict_test case)
+  # Fixtures that repeat together must agree on the mode; ctest refuses to
+  # run when they do not.
+  set(RunCMake_TEST_BINARY_DIR
+    ${RunCMake_BINARY_DIR}/repeat-fixture-conflict-${case}-build)
+  run_cmake(repeat-fixture-conflict-${case}-cmake)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command(repeat-fixture-conflict-${case}-ctest
+    ${CMAKE_CTEST_COMMAND} -C Debug --repeat until-fail:3
+    )
+endfunction()
+run_repeat_fixture_conflict_test(fixture) # one fixture, disagreeing tests
+run_repeat_fixture_conflict_test(shared)  # two fixtures sharing a test
+
+function(run_repeat_fixture_bad_mode_test)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/repeat-fixture-bad-mode-build)
+  run_cmake(repeat-fixture-bad-mode-cmake)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  run_cmake_command(repeat-fixture-bad-mode-ctest ${CMAKE_CTEST_COMMAND} -C Debug)
+endfunction()
+run_repeat_fixture_bad_mode_test()
+
 block()
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/rerun)
   set(RunCMake_TEST_NO_CLEAN 1)
@@ -115,6 +193,59 @@ add_test(fails \"${CMAKE_COMMAND}\" -E false)
 ")
   run_cmake_command(rerun-init ${CMAKE_CTEST_COMMAND})
   run_cmake_command(rerun-failed ${CMAKE_CTEST_COMMAND} --rerun-failed)
+endblock()
+
+block()
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/out-of-date)
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  set(out_of_date_build_dir "${RunCMake_TEST_BINARY_DIR}/build")
+  set(out_of_date_config "Debug")
+  if(NOT RunCMake_GENERATOR_IS_MULTI_CONFIG)
+    set(out_of_date_config "")
+  endif()
+  set(out_of_date_build_config_args)
+  set(out_of_date_ctest_config_args)
+  if(out_of_date_config)
+    set(out_of_date_build_config_args --config ${out_of_date_config})
+    set(out_of_date_ctest_config_args -C ${out_of_date_config})
+  endif()
+  file(COPY "${RunCMake_SOURCE_DIR}/out-of-date-src"
+       DESTINATION "${RunCMake_TEST_BINARY_DIR}")
+  set(RunCMake_TEST_SOURCE_DIR "${RunCMake_TEST_BINARY_DIR}/out-of-date-src")
+  set(RunCMake_TEST_BINARY_DIR "${out_of_date_build_dir}")
+  run_cmake(out-of-date-configure)
+  run_cmake_command(out-of-date-build "${CMAKE_COMMAND}" --build "${out_of_date_build_dir}" ${out_of_date_build_config_args})
+  # file_gen is created below, so file-test is initially Not Run.
+  set(RunCMake_TEST_EXPECT_RESULT 8)
+  set(RunCMake_TEST_EXPECT_stdout "file-test.*Not Run")
+  set(RunCMake_TEST_EXPECT_stderr "Unable to find build dependency: [^\n]*file_gen")
+  run_cmake_command(out-of-date-initial-test
+    "${CMAKE_CTEST_COMMAND}" ${out_of_date_ctest_config_args} -V --test-dir "${out_of_date_build_dir}")
+  unset(RunCMake_TEST_EXPECT_RESULT)
+  unset(RunCMake_TEST_EXPECT_stdout)
+  unset(RunCMake_TEST_EXPECT_stderr)
+
+  # Sleep for timestamp compare
+  execute_process(COMMAND "${CMAKE_COMMAND}" -E sleep 1.125)
+
+  execute_process(
+    COMMAND "${CMAKE_COMMAND}" -P
+    "${RunCMake_TEST_SOURCE_DIR}/update-deps.cmake"
+    COMMAND_ERROR_IS_FATAL ANY)
+  execute_process(COMMAND "${CMAKE_COMMAND}" -E touch
+    "${RunCMake_TEST_BINARY_DIR}/file_gen"
+    COMMAND_ERROR_IS_FATAL ANY)
+  run_cmake_command(out-of-date-rebuild
+    "${CMAKE_COMMAND}" --build "${out_of_date_build_dir}" ${out_of_date_build_config_args})
+  set(RunCMake_TEST_COMMAND_WORKING_DIRECTORY "${out_of_date_build_dir}")
+
+  # Sleep for timestamp compare
+  execute_process(COMMAND "${CMAKE_COMMAND}" -E sleep 1.125)
+
+  run_cmake_command(out-of-date ${CMAKE_CTEST_COMMAND} ${out_of_date_ctest_config_args} -V --out-of-date)
+  run_cmake_command(up-to-date ${CMAKE_CTEST_COMMAND} ${out_of_date_ctest_config_args} -V --out-of-date)
+  unset(RunCMake_TEST_COMMAND_WORKING_DIRECTORY)
 endblock()
 
 function(run_BadCTestTestfile)
@@ -466,18 +597,9 @@ function(show_only_json_check_python v)
   file(WRITE "${json_file}" "${actual_stdout}")
   set(actual_stdout "" PARENT_SCOPE)
 
-  if(CMake_TEST_JSON_SCHEMA)
-    execute_process(
-      COMMAND ${Python_EXECUTABLE} "${RunCMake_SOURCE_DIR}/show-only_json_validate_schema.py" "${json_file}"
-      RESULT_VARIABLE result
-      OUTPUT_VARIABLE output
-      ERROR_VARIABLE output
-    )
-    if(NOT result STREQUAL 0)
-      string(REPLACE "\n" "\n  " output "${output}")
-      string(APPEND RunCMake_TEST_FAILED "Failed to validate version ${v} JSON schema for file: ${file}\nOutput:\n${output}\n")
-    endif()
-  endif()
+  include("${RunCMake_SOURCE_DIR}/../validate_json_schema.cmake")
+  set(schema_file "${RunCMake_SOURCE_DIR}/../../../Help/manual/ctest/show-only-schema.json")
+  validate_json_schema("${schema_file}" "${json_file}")
 
   execute_process(
     COMMAND ${Python_EXECUTABLE} "${RunCMake_SOURCE_DIR}/show-only_json-v${v}_check.py" "${json_file}"
@@ -517,6 +639,7 @@ function(run_ShowOnly)
     add_test(ShowOnly \"${CMAKE_COMMAND}\" -E echo)
     set_tests_properties(ShowOnly PROPERTIES
       GENERATED_RESOURCE_SPEC_FILE \"/Path/Does/Not/Exist\"
+      LABELS TestLabel
       RESOURCE_GROUPS \"2,threads:2,gpus:4;gpus:2,threads:4\"
       REQUIRED_FILES RequiredFileDoesNotExist
       _BACKTRACE_TRIPLES \"file1;1;add_test;file0;;\"
@@ -527,11 +650,19 @@ function(run_ShowOnly)
       USER_DEFINED_A \"User defined property A value\"
       USER_DEFINED_B \"User defined property B value\"
       )
+    set_tests_properties(ShowOnly PROPERTIES
+      REQUIRED_FILES AnotherRequiredFileDoesNotExist
+      )
+    set_directory_properties(PROPERTIES
+      LABELS DirectoryLabel
+      )
     add_test(ShowOnlyNotAvailable NOT_AVAILABLE)
 ")
   run_cmake_command(show-only_human ${CMAKE_CTEST_COMMAND} --show-only=human)
   run_cmake_command(show-only_bad ${CMAKE_CTEST_COMMAND} --show-only=bad)
   run_cmake_command(show-only_json-v1 ${CMAKE_CTEST_COMMAND} --show-only=json-v1)
+  run_cmake_command(show-only_json-v1-raw
+    ${CMAKE_CTEST_COMMAND} --show-only=json-v1-raw)
 endfunction()
 run_ShowOnly()
 
@@ -795,6 +926,7 @@ function(run_ctest_configure_cli_preset CASE_NAME)
       -D "CTEST_SITE=cli-site")
   endif()
   set(RunCMake_TEST_SOURCE_DIR "${src}")
+  set(RunCMake_TEST_SOURCE_DIR "${src}")
   set(RunCMake_TEST_BINARY_DIR "${bin}")
   set(RunCMake_TEST_NO_CLEAN 1)
   run_cmake_command(${CASE_NAME}
@@ -947,6 +1079,59 @@ block()
     -T Test)
 endblock()
 
+# CTest itself and the tests it runs must agree on the debug mode: tests see
+# only that mode's environment marker and, on Windows, its error mode.
+function(run_InteractiveDebugMode case mode)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/InteractiveDebugMode-${case})
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  if(mode STREQUAL "interactive")
+    set(expect_env "CTEST_INTERACTIVE_DEBUG_MODE=1")
+    set(reject_env "DASHBOARD_TEST_FROM_CTEST=")
+  else()
+    set(expect_env "DASHBOARD_TEST_FROM_CTEST=")
+    set(reject_env "CTEST_INTERACTIVE_DEBUG_MODE=")
+  endif()
+  set(tests "
+add_test(env \"${CMAKE_COMMAND}\" -E environment)
+set_tests_properties(env PROPERTIES
+  PASS_REGULAR_EXPRESSION \"${expect_env}\"
+  FAIL_REGULAR_EXPRESSION \"${reject_env}\")
+")
+  if(TEST_ERROR_MODE)
+    string(APPEND tests "add_test(error-mode \"${TEST_ERROR_MODE}\" ${mode})\n")
+  endif()
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "${tests}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/DartConfiguration.tcl"
+    "BuildDirectory: ${RunCMake_TEST_BINARY_DIR}\n"
+    "SourceDirectory: ${RunCMake_TEST_BINARY_DIR}\n")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/script.cmake" "
+set(CTEST_SOURCE_DIRECTORY \"${RunCMake_TEST_BINARY_DIR}\")
+set(CTEST_BINARY_DIRECTORY \"${RunCMake_TEST_BINARY_DIR}\")
+ctest_start(Experimental)
+ctest_test(RETURN_VALUE rv)
+if(rv)
+  message(FATAL_ERROR \"ctest_test failed: \${rv}\")
+endif()
+")
+  set(presets "${RunCMake_SOURCE_DIR}/InteractiveDebugMode-${case}-CMakePresets.json.in")
+  if(EXISTS "${presets}")
+    configure_file("${presets}" "${RunCMake_TEST_BINARY_DIR}/CMakePresets.json" @ONLY)
+  endif()
+  # CTest never unsets these, so an outer CTest would leak them into the case.
+  unset(ENV{DASHBOARD_TEST_FROM_CTEST})
+  unset(ENV{DART_TEST_FROM_DART})
+  unset(ENV{CTEST_INTERACTIVE_DEBUG_MODE})
+  run_cmake_command(InteractiveDebugMode-${case} ${CMAKE_CTEST_COMMAND} ${ARGN})
+endfunction()
+run_InteractiveDebugMode(Default interactive)
+run_InteractiveDebugMode(PresetOff non-interactive --preset=default)
+run_InteractiveDebugMode(Script non-interactive -S script.cmake)
+run_InteractiveDebugMode(ScriptOn interactive -S script.cmake --interactive-debug-mode 1)
+run_InteractiveDebugMode(DashT non-interactive -T Test)
+run_InteractiveDebugMode(OnDashD interactive --interactive-debug-mode 1 -D ExperimentalTest)
+
 # Test --output-junit
 function(run_output_junit)
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/output-junit)
@@ -982,6 +1167,7 @@ endfunction()
 run_output_junit_invalid()
 
 run_cmake_command(invalid-ctest-argument ${CMAKE_CTEST_COMMAND} --not-a-valid-ctest-argument)
+run_cmake_command(invalid-ctest-argument-did-you-mean ${CMAKE_CTEST_COMMAND} --parallell 2)
 
 block()
   set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/TimeoutDefault)
@@ -1160,3 +1346,36 @@ block()
     -D CTEST_SUBMIT_PARTS=BadPart
   )
 endblock()
+
+# Test the --max-width/-W flag.
+function(run_TestMaxWidth name kind lastName args)
+  set(RunCMake_TEST_BINARY_DIR ${RunCMake_BINARY_DIR}/TestMaxWidth${kind})
+  set(RunCMake_TEST_NO_CLEAN 1)
+  file(REMOVE_RECURSE "${RunCMake_TEST_BINARY_DIR}")
+  file(MAKE_DIRECTORY "${RunCMake_TEST_BINARY_DIR}")
+  file(WRITE "${RunCMake_TEST_BINARY_DIR}/CTestTestfile.cmake" "
+  add_test(test1 \"${CMAKE_COMMAND}\" -E echo test)
+  add_test(test2 \"${CMAKE_COMMAND}\" -E echo test)
+  add_test(${lastName} \"${CMAKE_COMMAND}\" -E echo test)
+")
+  run_cmake_command(${name} ${CMAKE_CTEST_COMMAND} ${args})
+endfunction()
+
+function(run_TestMaxWidthShort name width)
+  run_TestMaxWidth(${name} Short test3 "${width}")
+endfunction()
+function(run_TestMaxWidthLong name width)
+  run_TestMaxWidth(
+    ${name}
+    Long
+    TestNameIsLongerThanTheDefault30CharactersSoTheMaxWidthIncreases
+    "${width}"
+  )
+endfunction()
+
+run_TestMaxWidthShort(MaxWidthShortUnset "")
+run_TestMaxWidthShort(MaxWidthShort10 "--max-width 10")
+run_TestMaxWidthShort(MaxWidthShort0 "--max-width 0")
+run_TestMaxWidthLong(MaxWidthLongUnset "")
+run_TestMaxWidthLong(MaxWidthLong70 "-W 70")
+run_TestMaxWidthLong(MaxWidthLong30 "-W 30")
