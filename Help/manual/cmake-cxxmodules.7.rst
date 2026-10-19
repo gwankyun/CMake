@@ -72,8 +72,8 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
 * Clang 18.1.2及更高版本，搭配标准库\ ``libc++``\ 或\ ``libstdc++`` 
 * MSVC toolset 14.36及更高版本（随Visual Studio 17.6及更高版本提供）
-* GCC 15 and newer, with the exception of MacOS
-* GCC 16 and newer on MacOS
+* GCC 15 及更新版本，MacOS 除外
+* MacOS 上需 GCC 16 及更新版本
 
   .. note::
 
@@ -82,12 +82,12 @@ CMake支持扫描C++模块源文件的编译器列表包括：
 
 .. _`Ubuntu issue 2141579`: https://bugs.launchpad.net/ubuntu/+source/gcc-15/+bug/2141579
 
-Only the :ref:`Ninja Generators` currently support ``import std`` because
-:ref:`Visual Studio Generators` do not support building :term:`BMIs <BMI>`
-for ``IMPORTED`` targets.
+目前仅 :ref:`Ninja Generators` 支持 ``import std``，因为
+:ref:`Visual Studio Generators` 不支持为 ``IMPORTED`` 目标构建
+:term:`BMIs <BMI>`。
 
-``import std`` is available for all language standards which support C++ module
-scanning (ie, C++20 and newer).
+``import std`` 适用于所有支持 C++ 模块扫描的语言标准
+（即 C++20 及更新版本）。
 
 生成器支持
 =================

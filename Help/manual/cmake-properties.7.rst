@@ -106,7 +106,7 @@ cmake-properties(7)
 
 .. _`Rule Properties`:
 
-Properties on Rules
+规则属性
 ===================
 
 .. toctree::
@@ -586,7 +586,7 @@ Properties on Rules
 
 .. _`File Set Properties`:
 
-Properties on File Sets
+文件集属性
 =======================
 
 .. toctree::

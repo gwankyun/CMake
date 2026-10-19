@@ -29,8 +29,7 @@ CMake生成器
 
 这些生成器支持命令行构建工具。为了使用它们，必须从命令行提示符启动CMake，\
 命令行提示符的环境已经为所选的编译器和构建工具配置好了。
-Additionally,
-the build itself must be launched from the same environment.
+此外，构建过程本身也必须在相同的环境下启动。
 
 .. _`Makefile Generators`:
 
