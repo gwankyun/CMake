@@ -23,7 +23,7 @@ cmake-compile-features(7)
 变量包含CMake知道的编译器所知道的所有特性，不管使用它们需要的语言标准或编译标志。
 
 .. note::
-   SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+   SYCL 支持是实验性的，并由 ``CMAKE_EXPERIMENTAL_SYCL`` 控制。
 
 CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有一些例外，比如CMake使用\
 ``cxx_final``\ 和\ ``cxx_override``\ 而不是Clang使用的单个\ ``cxx_override_control``。
@@ -31,14 +31,13 @@ CMake特性的命名规则与Clang特性测试宏的命名规则相同。也有�
 注意，对于\ ``OBJC``\ 或\ ``OBJCXX``\ 语言，没有单独的编译特性、属性或变量。它们分别基于\
 ``C``\ 或\ ``C++``，因此应该使用它们对应的基本语言的属性和变量。
 
-SYCL uses the ``cxx_*`` names for granular C++ compile features in addition to
-the ``sycl_cxx_std_*`` meta-features.  For a target containing only SYCL sources,
-these granular features select the target's :prop_tgt:`SYCL_CXX_STANDARD` rather
-than its :prop_tgt:`CXX_STANDARD`.
+除了 ``sycl_cxx_std_*`` 元特性（meta-features）之外，SYCL 还使用 ``cxx_*``
+名称来表示细粒度的 C++ 编译特性。对于仅包含 SYCL 源文件的目标，
+这些细粒度特性会选择目标的 :prop_tgt:`SYCL_CXX_STANDARD`，
+而不是它的 :prop_tgt:`CXX_STANDARD`。
 
 .. note::
-   SYCL compile features are experimental and gated by
-   ``CMAKE_EXPERIMENTAL_SYCL``.
+   SYCL 编译特性是实验性的，并由 ``CMAKE_EXPERIMENTAL_SYCL`` 控制。
 
 编译特性需求
 ============================
@@ -251,17 +250,15 @@ CMake目前知道的\ :prop_tgt:`CUDA标准 <CUDA_STANDARD>`\ 及其相关的元
 * ``Clang``: Clang 编译器 5.0+。
 * ``NVIDIA``: NVIDIA nvcc 编译器 7.5+。
 
-CMake is currently aware of the
-:prop_tgt:`C++ standards for SYCL <SYCL_CXX_STANDARD>` and their compile
-features available from the following
-:variable:`compiler ids <CMAKE_<LANG>_COMPILER_ID>`:
+CMake 目前可以识别以下 :variable:`编译器标识 <CMAKE_<LANG>_COMPILER_ID>` 所提供的
+:prop_tgt:`SYCL 的 C++ 标准 <SYCL_CXX_STANDARD>` 及其编译特性：
 
-* ``AdaptiveCpp``: AdaptiveCpp compiler.
-* ``Clang``: SYCL-capable Clang distributions.
-* ``IntelLLVM``: Intel oneAPI DPC++/C++ compiler.
+* ``AdaptiveCpp``：AdaptiveCpp 编译器。
+* ``Clang``：支持 SYCL 的 Clang 发行版。
+* ``IntelLLVM``：Intel oneAPI DPC++/C++ 编译器。
 
 .. note::
-   SYCL support is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+   SYCL 支持是实验性的，并由 ``CMAKE_EXPERIMENTAL_SYCL`` 控制。
 
 .. _`Language Standard Flags`:
 

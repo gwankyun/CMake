@@ -124,9 +124,8 @@ cpack(1)
 
 .. option:: --list-presets[=defined]
 
-  列出可用的包预设。 With ``defined``, all non-hidden
-  defined package presets are listed, including unavailable presets with the
-  reason they cannot be used.
+  列出可用的包预设。使用 ``defined`` 时，会列出所有已定义且未隐藏的打包预设，
+  包括不可用的预设及其无法使用的原因。
 
   .. versionchanged:: 4.4
     如果指定了 :cpack-option:`--presets-file`，则 ``CMakePresets.json`` 和
@@ -134,7 +133,7 @@ cpack(1)
     它们必须存在于顶层源目录中。在之前的版本中，这是严格要求的。
 
   .. versionadded:: 4.5
-    Support for the ``defined`` value.
+    对 ``defined`` 取值的支持。
 
 .. include:: include/OPTIONS_HELP.rst
 

@@ -32,44 +32,40 @@ cmake-buildsystem(7)
 
 .. _`Target Names`:
 
-Target Names
+目标名称
 ------------
 
-Targets are addressed by name throughout the buildsystem.  A target name
-must be non-empty and contain only ASCII letters, digits, ``_``, ``.``, ``+``,
-and ``-``.  As a special case, ``ALIAS`` and :prop_tgt:`IMPORTED`
-targets may also contain ``:``.  By convention, a double colon (``::``) is used
-as a namespace separator, such as ``Upstream::lib1``, to distinguish
-``ALIAS`` and ``IMPORTED`` targets from targets of other types, and to reduce
-the likelihood of naming collisions.  See the :manual:`cmake-packages(7)`
-manual for more details.
+在整个构建系统中，目标通过名称来引用。目标名称必须非空，且只能包含
+ASCII 字母、数字、 ``_``、 ``.``、 ``+`` 和 ``-``。作为特例，
+``ALIAS`` 和 :prop_tgt:`IMPORTED` 目标还可以包含 ``:``。按照惯例，
+双冒号（ ``::`` ）被用作命名空间分隔符，例如 ``Upstream::lib1``，
+以将 ``ALIAS`` 和 ``IMPORTED`` 目标与其他类型的目标区分开，
+并降低发生命名冲突的可能性。更多细节参见
+:manual:`cmake-packages(7)` 手册。
 
-Target names must be globally unique.  Non-``GLOBAL`` :prop_tgt:`IMPORTED`
-targets are visible only in the directory that defines them and their
-subdirectories.
+目标名称必须全局唯一。非 ``GLOBAL`` 的 :prop_tgt:`IMPORTED`
+目标仅在其定义所在的目录及其子目录中可见。
 
-CMake reserves some names for special targets created by the build tools and
-project-wide convenience targets.
+CMake 保留了一些名称，用于构建工具创建的特殊目标以及项目级的便捷目标。
 
-* The names ``all``, ``ALL_BUILD``, ``help``, ``install``, ``INSTALL``,
-  ``preinstall``, ``clean``, ``edit_cache``, ``rebuild_cache``, and
-  ``ZERO_CHECK`` are always reserved.
-* Some modules reserve additional names: e.g., ``test`` when :module:`CTest`
-  is enabled, and ``package`` when :module:`CPack` is enabled.
-* Generators may also create their own convenience targets, such as
-  ``install/parallel`` with the :ref:`Ninja Generators`.  See the
-  :manual:`cmake-generators(7)` manual for the target names documented by
-  each generator.
+* 名称 ``all``、 ``ALL_BUILD``、 ``help``、 ``install``、 ``INSTALL``、
+  ``preinstall``、 ``clean``、 ``edit_cache``、 ``rebuild_cache`` 和
+  ``ZERO_CHECK`` 始终被保留。
+* 某些模块会保留额外的名称：例如，启用 :module:`CTest` 时的 ``test``，
+  以及启用 :module:`CPack` 时的 ``package``。
+* 生成器也可能创建自己的便捷目标，例如
+  :ref:`Ninja Generators` 中的 ``install/parallel``。关于各生成器
+  所记录的目标名称，参见 :manual:`cmake-generators(7)` 手册。
 
-Some convenience targets derive their names from other names in the project:
+一些便捷目标的名称派生自项目中的其他名称：
 
-* The ``test_prep/<name>`` targets use test names, which have their own
-  representability rules beyond those above.  The :ref:`Makefile Generators` do
-  not allow ``:``.  See also :ref:`Test Preparation Targets`.
-* The ``install_prep/<component>`` targets use install component names.
-  A component name may contain the characters allowed in target names above,
-  plus ``:`` and ``/``.  The :ref:`Makefile Generators` do not allow ``:``.
-  See also :ref:`Install Preparation Targets`.
+* ``test_prep/<name>`` 目标使用测试名称，而测试名称在上述规则之外
+  还有其自身的可表示性规则。:ref:`Makefile Generators`
+  不允许使用 ``:``。另请参阅 :ref:`Test Preparation Targets`。
+* ``install_prep/<component>`` 目标使用安装组件名称。
+  组件名称可以包含上述目标名称中允许的字符，
+  外加 ``:`` 和 ``/``。:ref:`Makefile Generators` 不允许使用 ``:``。
+  另请参阅 :ref:`Install Preparation Targets`。
 
 .. _`Executables`:
 

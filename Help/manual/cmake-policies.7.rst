@@ -80,19 +80,19 @@ CMake策略在引入行为变更的同时，会保留现有项目版本的兼容
 
 以下策略是受支持的。
 
-Policies Introduced by CMake 4.5
+CMake 4.5引入的策略
 --------------------------------
 
 .. toctree::
    :maxdepth: 1
 
-   CMP0226: Apply Swift module name to targets when using the Xcode generator. </policy/CMP0226>
-   CMP0225: ExternalProject sets CMAKE_INSTALL_PREFIX to <INSTALL_DIR> in the default configure command. </policy/CMP0225>
-   CMP0224: Test fixtures use AROUND_EACH_REPEAT mode by default with ctest --repeat. </policy/CMP0224>
-   CMP0223: An empty path is not a prefix of any path. </policy/CMP0223>
-   CMP0222: The if() command supports path prefix tests using PATH_IS_PREFIX operator. </policy/CMP0222>
-   CMP0221: cmake_host_system_information() DISTRIB_* queries read the host os-release. </policy/CMP0221>
-   CMP0220: Languages enabled in subdirectories propagate to the top-level directory. </policy/CMP0220>
+   CMP0226: 使用 Xcode 生成器时将 Swift 模块名应用于目标。 </policy/CMP0226>
+   CMP0225: ExternalProject 在默认配置命令中将 CMAKE_INSTALL_PREFIX 设置为 <INSTALL_DIR>。 </policy/CMP0225>
+   CMP0224: 使用 ctest --repeat 时，测试夹具默认使用 AROUND_EACH_REPEAT 模式。 </policy/CMP0224>
+   CMP0223: 空路径不是任何路径的前缀。 </policy/CMP0223>
+   CMP0222: if() 命令支持使用 PATH_IS_PREFIX 操作符进行路径前缀测试。 </policy/CMP0222>
+   CMP0221: cmake_host_system_information() 的 DISTRIB_* 查询会读取主机的 os-release。 </policy/CMP0221>
+   CMP0220: 在子目录中启用的语言会传播到顶层目录。 </policy/CMP0220>
 
 CMake 4.4引入的策略
 --------------------------------
