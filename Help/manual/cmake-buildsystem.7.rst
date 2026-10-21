@@ -363,107 +363,100 @@ CMake会生成构建规则，将源文件编译为目标文件。
 
 .. _`File Sets`:
 
-File Sets
+文件集
 ^^^^^^^^^
 
 .. versionadded:: 3.23
 
-File sets associate files with a target as structured groups. A target has
-zero or more named file sets. Each file set has:
+文件集以结构化分组的形式将文件与目标相关联。一个目标可以拥有零个或多个命名的文件集。\
+每个文件集包含：
 
-* a name
-* a type
-* a scope of ``INTERFACE``, ``PUBLIC``, or ``PRIVATE``
-* one or more base directories
-* files within those directories
+* 一个名称
+* 一个类型
+* 一个 ``INTERFACE``、 ``PUBLIC`` 或 ``PRIVATE`` 的作用域
+* 一个或多个基础目录
+* 这些目录中的文件
 
-File sets are added to targets with :command:`target_sources` using the
-``FILE_SET`` signature. See :command:`target_sources` for argument syntax and
-validation details.
+文件集通过 :command:`target_sources` 的 ``FILE_SET`` 签名添加到目标上。\
+有关参数语法和验证细节，请参阅 :command:`target_sources`。
 
 .. versionchanged:: 4.4
-  A file may belong to at most one non-``HEADERS`` file set in a target.
-  See policy :policy:`CMP0211`.
+  在一个目标中，一个文件最多只能属于一个非 ``HEADERS`` 的文件集。\
+  参见策略 :policy:`CMP0211`。
 
-Acceptable file set types are:
+可接受的文件集类型包括：
 
 ``HEADERS``
 
-  Sources intended to be used via a language's ``#include`` mechanism.
+  旨在通过语言的 ``#include`` 机制使用的源文件。
 
 ``SOURCES``
   .. versionadded:: 4.4
 
-  Specifies sources to use when building a target and/or its dependents.
-  With the scope ``PRIVATE`` and ``PUBLIC``, items populate the
-  :prop_fs:`SOURCES` property of the file set, which is used when building the
-  target itself. With the scope ``PUBLIC`` and ``INTERFACE``, items populate
-  the :prop_fs:`INTERFACE_SOURCES` property of the file set, which is used
-  when building dependents. Sources specified by
-  :prop_fs:`INTERFACE_SOURCES` propagate transitively to dependents.
+  指定在构建目标及其依赖者时使用的源文件。
+  当作用域为 ``PRIVATE`` 和 ``PUBLIC`` 时，这些条目会填充文件集的
+  :prop_fs:`SOURCES` 属性，该属性在构建目标自身时使用。当作用域为
+  ``PUBLIC`` 和 ``INTERFACE`` 时，这些条目会填充文件集的
+  :prop_fs:`INTERFACE_SOURCES` 属性，该属性在构建依赖者时使用。
+  由 :prop_fs:`INTERFACE_SOURCES` 指定的源文件会传递性地传播给依赖者。
 
 ``SYCL``
   .. versionadded:: 4.5
 
-  An alias for ``SOURCES`` that initializes the file set's
-  :prop_fs:`LANGUAGE` property to ``SYCL``.  Files in the set are compiled as
-  SYCL sources even when their file name extension would normally select
-  another language.  The source file's :prop_sf:`LANGUAGE` property is not
-  changed.
+  ``SOURCES`` 的别名，它将文件集的 :prop_fs:`LANGUAGE` 属性初始化为
+  ``SYCL``。即使集合中文件的扩展名通常会选择另一种语言，
+  它们也会被作为 SYCL 源文件编译。源文件自身的
+  :prop_sf:`LANGUAGE` 属性不会被更改。
 
-  The file set is recorded as type ``SOURCES`` and otherwise has the same
-  behavior and target properties as that type.
+  该文件集会被记录为 ``SOURCES`` 类型，在其他方面具有与该类型相同的
+  行为和目标属性。
 
-  This alias is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+  此别名是实验性的，由 ``CMAKE_EXPERIMENTAL_SYCL`` 控制。
 
 ``SYCL_HEADERS``
   .. versionadded:: 4.5
 
-  An alias for ``HEADERS`` that initializes the file set's
-  :prop_fs:`LANGUAGE` property to ``SYCL``.  A target compiles all of its C++
-  sources as SYCL when this file set is visible to its own build, or is
-  reachable through the interface of a linked target.  This behavior
-  propagates transitively through linked target interfaces.
+  ``HEADERS`` 的别名，它将文件集的 :prop_fs:`LANGUAGE` 属性初始化为
+  ``SYCL``。当此文件集对目标自身的构建可见，或者可通过某个被链接目标的
+  接口访问时，该目标会将其所有 C++ 源文件作为 SYCL 编译。此行为会通过
+  被链接目标的接口传递性地传播。
 
-  The file set is recorded as type ``HEADERS`` and otherwise has the same
-  behavior and target properties as that type.  The header files themselves
-  are not compiled.
+  该文件集会被记录为 ``HEADERS`` 类型，在其他方面具有与该类型相同的
+  行为和目标属性。头文件本身不会被编译。
 
-  This alias is experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+  此别名是实验性的，由 ``CMAKE_EXPERIMENTAL_SYCL`` 控制。
 
 ``CXX_MODULES``
   .. versionadded:: 3.28
 
-  Sources which contain C++ interface module or partition units (i.e., those
-  using the ``export`` keyword). This file set type may not have an
-  ``INTERFACE`` scope except on ``IMPORTED`` targets.
+  包含 C++ 接口模块或分区单元（即使用 ``export`` 关键字的单元）的
+  源文件。此文件集类型不可以具有 ``INTERFACE`` 作用域，
+  除非是在 ``IMPORTED`` 目标上。
 
 ``<rule>``
   .. versionadded:: 4.5
 
-  Specifies sources which will be processed by the custom rule defined by the
-  :command:`add_custom_rule` command.
+  指定将由 :command:`add_custom_rule` 命令定义的自定义规则来处理的源文件。
 
-For ``HEADERS``, ``SOURCES``, and ``CXX_MODULES`` types, the optional default
-file sets are named after their type.
+对于 ``HEADERS``、 ``SOURCES`` 和 ``CXX_MODULES`` 类型，可选的默认
+文件集以它们的类型名称命名。
 
-For ``<rule>`` types, the target may be a custom target.
+对于 ``<rule>`` 类型，目标可以是自定义目标。
 
-For ``HEADERS`` and ``CXX_MODULES`` types, the target may not be a
-:prop_tgt:`FRAMEWORK` target.
+对于 ``HEADERS`` 和 ``CXX_MODULES`` 类型，目标不可以是
+:prop_tgt:`FRAMEWORK` 目标。
 
-Files in a ``PRIVATE`` or ``PUBLIC`` file set are marked as source files for
-IDE integration. Additionally, files in ``HEADERS`` file sets have their
-:prop_sf:`HEADER_FILE_ONLY` property set to ``TRUE``.
+``PRIVATE`` 或 ``PUBLIC`` 文件集中的文件会被标记为源文件，
+以便用于 IDE 集成。此外， ``HEADERS`` 文件集中的文件的
+:prop_sf:`HEADER_FILE_ONLY` 属性会被设置为 ``TRUE``。
 
-Files in an ``INTERFACE`` or ``PUBLIC`` file set can be installed by
-:command:`install(TARGETS)` and exported by :command:`install(EXPORT)` and
-:command:`export`.
+``INTERFACE`` 或 ``PUBLIC`` 文件集中的文件可以通过
+:command:`install(TARGETS)` 安装，并可通过 :command:`install(EXPORT)`
+和 :command:`export` 导出。
 
-The following target properties are set by file sets and should not generally
-be manipulated directly:
+以下目标属性由文件集设置，通常不应直接操作它们：
 
-For file sets of type ``HEADERS``:
+对于 ``HEADERS`` 类型的文件集：
 
 * :prop_tgt:`HEADER_SETS`
 * :prop_tgt:`INTERFACE_HEADER_SETS`
@@ -472,7 +465,7 @@ For file sets of type ``HEADERS``:
 * :prop_tgt:`HEADER_DIRS`
 * :prop_tgt:`HEADER_DIRS_<NAME>`
 
-For file sets of type ``SOURCES``:
+对于 ``SOURCES`` 类型的文件集：
 
 * :prop_tgt:`SOURCE_SETS`
 * :prop_tgt:`INTERFACE_SOURCE_SETS`
@@ -481,7 +474,7 @@ For file sets of type ``SOURCES``:
 * :prop_tgt:`SOURCE_DIRS`
 * :prop_tgt:`SOURCE_DIRS_<NAME>`
 
-For file sets of type ``CXX_MODULES``:
+对于 ``CXX_MODULES`` 类型的文件集：
 
 * :prop_tgt:`CXX_MODULE_SETS`
 * :prop_tgt:`INTERFACE_CXX_MODULE_SETS`
@@ -490,24 +483,23 @@ For file sets of type ``CXX_MODULES``:
 * :prop_tgt:`CXX_MODULE_DIRS`
 * :prop_tgt:`CXX_MODULE_DIRS_<NAME>`
 
-Target properties related to include directories are also modified by file
-sets as follows:
+与包含目录相关的目标属性也会被文件集如下修改：
 
 :prop_tgt:`INCLUDE_DIRECTORIES`
 
-  If the type is ``HEADERS``, and the scope of the file set is ``PRIVATE`` or
-  ``PUBLIC``, all ``BASE_DIRS`` of the file set are wrapped in
-  :genex:`$<BUILD_INTERFACE>` and appended to this property.
+  如果类型为 ``HEADERS``，且文件集的作用域为 ``PRIVATE`` 或
+  ``PUBLIC``，则文件集的所有 ``BASE_DIRS`` 会被包裹在
+  :genex:`$<BUILD_INTERFACE>` 中并追加到此属性。
 
 :prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES`
 
-  If the type is ``HEADERS``, and the scope of the file set is ``INTERFACE``
-  or ``PUBLIC``, all ``BASE_DIRS`` of the file set are wrapped in
-  :genex:`$<BUILD_INTERFACE>` and appended to this property.
+  如果类型为 ``HEADERS``，且文件集的作用域为 ``INTERFACE`` 或
+  ``PUBLIC``，则文件集的所有 ``BASE_DIRS`` 会被包裹在
+  :genex:`$<BUILD_INTERFACE>` 中并追加到此属性。
 
-File sets do not populate the :prop_tgt:`SOURCES` or
-:prop_tgt:`INTERFACE_SOURCES` target properties. They are represented by
-their own file set and type-specific properties.
+文件集不会填充 :prop_tgt:`SOURCES` 或
+:prop_tgt:`INTERFACE_SOURCES` 目标属性。文件集中的文件由
+各自的文件集属性及类型特定的属性来表示。
 
 .. _`Target Build Specification`:
 
@@ -568,8 +560,8 @@ their own file set and type-specific properties.
 :prop_tgt:`COMPILE_WRAPPERS`
   .. versionadded:: 4.5
 
-  List of wrapper names to be prepended to the compile commands for a target's
-  sources. See also :prop_gbl:`CMAKE_COMPILE_WRAPPER_<NAME>`.
+  在目标源文件的编译命令前添加的包装器名称列表。
+  另请参见 :prop_gbl:`CMAKE_COMPILE_WRAPPER_<NAME>`。
 
 :prop_tgt:`AUTOMOC_MACRO_NAMES`
   .. versionadded:: 3.10
@@ -590,12 +582,12 @@ their own file set and type-specific properties.
 
 :prop_tgt:`LINK_LIBRARIES`
   用于链接目标的链接库列表，如果目标是可执行文件、共享库或模块库。\
-  `Static Libraries`_\ 和\ `Shared Libraries`_\ 的条目要么通过链接工件的路径传递给链接器，要么带有\
-  ``-l``\ 标志或等价的参数。\ `对象库 <Object Libraries>`_\ 的条目通过对象文件的路径\
-  传递给链接器。
+  `静态库 <Static Libraries>`_\ 和\ `共享库 <Shared Libraries>`_\ 的条目要么通过链接\
+  工件的路径传递给链接器，要么带有\ ``-l``\ 标志或等价的参数。\ `对象库 <Object Libraries>`_\
+  的条目通过对象文件的路径传递给链接器。
 
   此外，对于编译和链接目标本身，\ `使用需求 <Target Usage Requirements_>`_\ 从\
-  ``LINK_LIBRARIES``\ 项传播，这些项分别命名\ `Static Libraries`_、\ `Shared Libraries`_、\
+  ``LINK_LIBRARIES``\ 项传播，这些项分别命名\ `静态库 <Static Libraries>`_、\ `共享库 <Shared Libraries>`_、\
   `接口库 <Interface Libraries>`_、\ `对象库 <Object Libraries>`_\ 和\
   `导入目标 <Imported Targets>`_，通过它们的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
   属性的传递闭包收集。
@@ -621,9 +613,8 @@ their own file set and type-specific properties.
 :prop_tgt:`LINK_WRAPPERS`
   .. versionadded:: 4.5
 
-  List of wrapper names to be prepended to the link command for a target's
-  output artifact, if it is an executable, shared library, or module library.
-  See also :prop_gbl:`CMAKE_LINK_WRAPPER_<NAME>`.
+  在目标的输出产物的链接命令前添加的包装器名称列表，仅当该产物是可执行文件、共享库或模块库时适用。
+  另请参见 :prop_gbl:`CMAKE_LINK_WRAPPER_<NAME>`。
 
 .. _`Target Usage Requirements`:
 
@@ -737,9 +728,8 @@ their own file set and type-specific properties.
 :prop_tgt:`INTERFACE_COMPILE_WRAPPERS`
   .. versionadded:: 4.5
 
-  List of wrapper names to be prepended to the compile commands when compiling
-  sources in the target's consumers. See also
-  :prop_gbl:`CMAKE_COMPILE_WRAPPER_<NAME>`.
+  在编译目标的消费者中的源文件时，添加在编译命令前的包装器名称列表。另请参见
+  :prop_gbl:`CMAKE_COMPILE_WRAPPER_<NAME>`。
 
 :prop_tgt:`INTERFACE_AUTOMOC_MACRO_NAMES`
   .. versionadded:: 3.27
@@ -764,7 +754,7 @@ their own file set and type-specific properties.
 
   此外，为了编译和链接目标的使用者，\ `使用需求 <Target Usage Requirements_>`_\ 从\
   ``INTERFACE_LINK_LIBRARIES``\ 条目的传递闭包中收集，这些条目命名为\
-  `Static Libraries`_、\ `Shared Libraries`_、\ `接口库 <Interface Libraries>`_、\
+  `静态库 <Static Libraries>`_、\ `共享库 <Shared Libraries>`_、\ `接口库 <Interface Libraries>`_、\
   `对象库 <Object Libraries>`_\ 和\ `导入目录 <Imported Targets>`_。
 
 :prop_tgt:`INTERFACE_LINK_DIRECTORIES`
