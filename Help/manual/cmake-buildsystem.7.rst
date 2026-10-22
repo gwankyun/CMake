@@ -775,9 +775,8 @@ CMake会生成构建规则，将源文件编译为目标文件。
 :prop_tgt:`INTERFACE_LINK_WRAPPERS`
   .. versionadded:: 4.5
 
-  List of wrapper names to be prepended to the link commands for a target's
-  consumers' output artifact, for those that are executables, shared libraries,
-  and module libraries. See also :prop_gbl:`CMAKE_LINK_WRAPPER_<NAME>`.
+  要添加到目标的使用者链接命令前面的包装器名称列表，这些使用者的输出工件为可执行文件、\
+  共享库或模块库。另请参阅 :prop_gbl:`CMAKE_LINK_WRAPPER_<NAME>`。
 
 .. _`Custom Transitive Properties`:
 
@@ -1410,15 +1409,13 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 ``ALIAS``\ 目标是不可变的、不可安装的或不可导出的。它们完全局限于构建系统描述。
 
 .. versionchanged:: 4.5
-  ``ALIAS`` targets may be used as the operand for :command:`set_property` and
-  similar commands used to modify properties of targets.  The
-  :command:`install` and :command:`export` commands may also use an ``ALIAS``
-  target as the operand.  The commands operate on the target which the alias
-  references.  CMake 4.4 and earlier did not allow modifying, installing,
-  or exporting targets via an ``ALIAS``.
+  ``ALIAS`` 目标现在可以作为 :command:`set_property` 及类似用于修改目标属性的
+  命令的操作对象。:command:`install` 和 :command:`export` 命令同样可以将
+  ``ALIAS`` 目标作为操作对象。这些命令将作用于别名所引用的目标。
+  CMake 4.4 及更早版本不允许通过 ``ALIAS`` 修改、安装或导出目标。
 
-A name can be tested for whether it is an ``ALIAS`` name by reading the
-:prop_tgt:`ALIASED_TARGET` property from it:
+可以通过从某个名称读取 :prop_tgt:`ALIASED_TARGET` 属性来测试它是否是一个
+``ALIAS`` 名称：
 
 .. code-block:: cmake
 
