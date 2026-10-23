@@ -1523,92 +1523,81 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
   :prop_tgt:`MAP_IMPORTED_CONFIG_<CONFIG>`。
 
 * .. versionadded:: 3.11
-    Properties named with a leading underscore (``_``)
-    or lowercase ASCII character.
+    以 Leading 下划线（ ``_`` ）或小写 ASCII 字符开头的属性。
 
-Preparation Targets
+准备目标
 ===================
 
-The :ref:`Ninja Generators`, :ref:`Makefile Generators`, and
-:generator:`FASTBuild` generator provide convenience targets that build only
-the prerequisites of a later step, such as running tests or installing.
+:ref:`Ninja 生成器 <Ninja Generators>`、:ref:`Makefile 生成器 <Makefile Generators>`
+以及 :generator:`FASTBuild` 生成器提供了一些便利目标，用于仅构建后续步骤
+（例如运行测试或安装）所需的前置条件。
 
 .. _`Test Preparation Targets`:
 
-Test Preparation Targets
+测试准备目标
 ------------------------
 
 .. versionadded:: 4.4
 
-The generators which support preparation targets provide convenience build
-targets that build the known prerequisites of tests before running the tests,
-unless :variable:`CMAKE_SKIP_TEST_PREP_TARGETS` is enabled:
+支持准备目标的生成器提供了便利的构建目标，用于在运行测试之前构建测试的已知前置条件，
+除非启用了 :variable:`CMAKE_SKIP_TEST_PREP_TARGETS`：
 
 ``test_prep/all``
-  Prepare to run all tests.
+  准备运行所有测试。
 
 ``test_prep/<name>``
-  Prepare to run the test ``<name>``.  If multiple tests in different
-  directories share the same name, their dependencies are merged into a single
-  ``test_prep/<name>`` target.
+  准备运行测试 ``<name>``。如果不同目录中的多个测试共享同一个名称，
+  它们的依赖项会被合并到单独一个 ``test_prep/<name>`` 目标中。
 
-Building a test preparation target ensures that the test executable is
-up-to-date before the test runs.
+构建测试准备目标可以确保在测试运行之前，测试的可执行文件是最新的。
 
-A test preparation target is generated only when its name can be represented
-safely by the native build tool, as described under :ref:`Target Names`.
-CMake warns about a test that has build dependencies but whose name cannot be
-represented.
+只有当目标名称能够被原生构建工具安全地表示时（如 :ref:`Target Names` 中所述），
+才会生成测试准备目标。对于存在构建依赖项、但其名称无法被表示的测试，CMake 会发出警告。
 
-CMake infers dependencies associated with tests from the test executable, as
-well as any targets referenced by the test command via generator expressions.
-The ``BUILD_DEPENDS`` option of the :command:`add_test` command can be used to
-add explicit build dependencies.
+CMake 会从测试的可执行文件，以及测试命令通过生成器表达式引用的任何目标中，
+推断与测试相关联的依赖项。可以使用 :command:`add_test` 命令的 ``BUILD_DEPENDS`` 选项
+添加显式的构建依赖项。
 
-How file dependencies are prepared depends on how the file is produced.  See
-:ref:`Preparation Target File Dependencies`.
+文件依赖项如何被准备取决于该文件是如何产生的。
+参见 :ref:`Preparation Target File Dependencies`。
 
 .. versionadded:: 4.5
 
-  Modules may also extend ``test_prep/all`` with directory-scoped dependencies
-  via the :prop_dir:`CMAKE_TEST_BUILD_DEPENDS` directory property.
+  模块还可以通过 :prop_dir:`CMAKE_TEST_BUILD_DEPENDS` 目录属性，
+  以目录作用域的依赖项来扩展 ``test_prep/all``。
 
 .. versionchanged:: 4.5
 
-  Test preparation targets are enabled by default.  :generator:`FASTBuild` and
-  the :ref:`Makefile Generators` gained support for test preparation targets.
-  Previously, test preparation targets were only enabled if the
-  :variable:`CMAKE_TEST_BUILD_DEPENDS` variable was enabled.
+  测试准备目标现在默认启用。:generator:`FASTBuild` 和
+  :ref:`Makefile 生成器 <Makefile Generators>` 也获得了对测试
+  准备目标的支持。此前，只有启用了
+  :variable:`CMAKE_TEST_BUILD_DEPENDS` 变量时，才会启用测试准备目标。
 
 .. _`Install Preparation Targets`:
 
-Install Preparation Targets
+安装准备目标
 ---------------------------
 
 .. versionadded:: 4.5
 
-If the project has install rules, the generators which support preparation
-targets provide convenience build targets that build the known prerequisites
-of an installation before running the installation, unless
-:variable:`CMAKE_SKIP_INSTALL_PREP_TARGETS` or
-:variable:`CMAKE_SKIP_INSTALL_RULES` is enabled:
+如果项目定义了安装规则，支持准备目标的生成器会提供便利的构建目标，用于在执行安装之前构建\
+安装的已知前置条件，除非启用了 :variable:`CMAKE_SKIP_INSTALL_PREP_TARGETS` 或
+:variable:`CMAKE_SKIP_INSTALL_RULES`：
 
 ``install_prep/all``
-  Prepare for an installation that does not select a component, such as
-  :option:`cmake --install \<build-dir\> <cmake --install>` without
-  :cmake-install-option:`--component`.  This includes rules of every component,
-  but omits :command:`install` rules using the ``EXCLUDE_FROM_ALL`` option.
+  为不选择组件的安装做准备，例如不带 :cmake-install-option:`--component` 选项的
+  :option:`cmake --install \<build-dir\> <cmake --install>`。这会包括每个组件的规则，
+  但会省略使用 ``EXCLUDE_FROM_ALL`` 选项的 :command:`install` 规则。
 
 ``install_prep/<component>``
-  Prepare to install ``<component>``.  Rules for that component are included
-  even when they use the ``EXCLUDE_FROM_ALL`` option.
+  准备安装 ``<component>``。即使该组件的规则使用了
+  ``EXCLUDE_FROM_ALL`` 选项，这些规则也会被包含在内。
 
-Building ``install_prep/all`` does not necessarily prepare the installation
-of a particular component, because installing a component also runs that
-component's ``EXCLUDE_FROM_ALL`` rules.  Build the matching
-``install_prep/<component>`` target before installing a specific component.
+构建 ``install_prep/all`` 并不一定能为某个特定组件的安装做好准备，因为安装某个组件时\
+还会运行该组件的 ``EXCLUDE_FROM_ALL`` 规则。在安装特定组件之前，请先构建与之对应的
+``install_prep/<component>`` 目标。
 
-For example:
+例如：
 
 .. code-block:: console
 
