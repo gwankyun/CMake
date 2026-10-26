@@ -1604,66 +1604,52 @@ CMake 会从测试的可执行文件，以及测试命令通过生成器表达�
   cmake --build <build-dir> --config Release --target install_prep/Runtime
   cmake --install <build-dir> --config Release --component Runtime
 
-Only install rules active for the selected configuration contribute build
-dependencies.  For multi-config generators, the same configuration should
-be used for the preparation and installation steps.
+只有对所选配置生效的安装规则才会贡献构建依赖。对于多配置生成器，
+准备步骤和安装步骤应使用相同的配置。
 
-A component preparation target is generated only when its name can be
-represented safely by the native build tool, as described under
-:ref:`Target Names`.  CMake warns about a component that has build
-dependencies but whose name cannot be represented.
+只有当组件的名称能够被原生构建工具安全地表示时（如 :ref:`Target Names`
+中所述），才会生成该组件的准备目标。如果某个组件具有构建依赖，但其名称
+无法被表示，CMake 会发出警告。
 
 .. note::
-  A component named ``all`` does not get its own target because its name would
-  conflict with ``install_prep/all``.  Its rules contribute to
-  ``install_prep/all`` only when they do not use the ``EXCLUDE_FROM_ALL``
-  option.
+  名为 ``all`` 的组件不会获得自己的目标，因为其名称会与 ``install_prep/all`` 冲突。
+  只有当其规则未使用 ``EXCLUDE_FROM_ALL`` 选项时，这些规则才会贡献给
+  ``install_prep/all``。
 
-CMake infers dependencies associated with installed target artifacts,
-imported runtime artifacts, runtime dependency sets, C++ module BMIs, and
-C++ module export metadata.  Preparing BMIs or module export metadata builds
-the targets that produce them.
+CMake 会推断与已安装的目标产物、导入的运行时产物、运行时依赖集、
+C++ 模块 BMI 以及 C++ 模块导出元数据相关联的依赖。准备 BMI 或模块
+导出元数据会构建产生它们的目标。
 
-Installing files with the ``FILES`` or ``PROGRAMS`` signatures of the
-:command:`install` command, or a target's file sets or its
-:prop_tgt:`PUBLIC_HEADER`, :prop_tgt:`PRIVATE_HEADER`, or :prop_tgt:`RESOURCE`
-files, implies build dependencies only for files that the build produces,
-i.e., target output artifacts, and outputs and byproducts of custom commands
-and custom targets.  How such a file is prepared depends on how it is produced.
-See :ref:`Preparation Target File Dependencies`.
+使用 :command:`install` 命令的 ``FILES`` 或 ``PROGRAMS`` 签名安装文件，
+或安装目标的文件集或其 :prop_tgt:`PUBLIC_HEADER` 、:prop_tgt:`PRIVATE_HEADER`
+或 :prop_tgt:`RESOURCE` 文件时，仅对构建所生成的文件隐含构建依赖，即
+目标输出产物，以及自定义命令和自定义目标的输出和副产品。此类文件的
+准备方式取决于其生成方式。参见 :ref:`Preparation Target File Dependencies`。
 
 .. _`Preparation Target File Dependencies`:
 
-Preparation Target File Dependencies
+准备目标的文件依赖项
 ------------------------------------
 
-The manner in which a file dependency of a test or install preparation target
-is prepared depends on how it is produced:
+测试或安装准备目标的文件依赖项以何种方式被准备，取决于该文件是如何产生的：
 
-* A target's output artifact, such as one named by :genex:`TARGET_FILE`, is
-  prepared by building that target.
+* 目标的输出工件（例如由 :genex:`TARGET_FILE` 命名的工件），通过构建该目标来准备。
 
-* A file that is the output of a custom command attached to exactly one
-  target is prepared by running that custom command.  The
-  :ref:`Makefile Generators` cannot depend on individual files, so they build
-  the target owning the custom command instead.
+* 作为附加于恰好一个目标的自定义命令之输出的文件，通过运行该自定义命令来准备。
+  :ref:`Makefile 生成器 <Makefile Generators>` 无法依赖于单个文件，
+  因此它们改为构建拥有该自定义命令的目标。
 
-  The target which installs the file (or the file set to which the file
-  belongs), if any, is not built by installation preparation targets.
+  安装该文件的目标（或该文件所属的文件集），如果存在的话，不会被安装准备目标所构建。
 
-* Any other generated file, such as a byproduct or the output of a custom
-  command attached to more than one target, is prepared by depending on the
-  file itself, which runs whatever produces it.  The
-  :ref:`Makefile Generators` and :generator:`FASTBuild` cannot do so, so they
-  warn.
+* 任何其他生成的文件，例如副产物，或附加于多个目标的自定义命令的输出，通过依赖该文件本身来准备，
+  这会运行产生它的任何内容。:ref:`Makefile 生成器 <Makefile Generators>`
+  和 :generator:`FASTBuild` 无法做到这一点，因此它们会发出警告。
 
-  For install preparation targets, if a target installs the file (or the file
-  set to which the file belongs), the preparation target will build that target
-  instead, which must therefore depend on the producer, e.g., through
-  :command:`add_dependencies`.  Otherwise, the preparation target does not
-  prepare the file.
+  对于安装准备目标，如果某个目标安装该文件（或该文件所属的文件集），则准备目标将改为构建该目标，
+  因此该目标必须依赖于产生该文件的生成者，例如通过 :command:`add_dependencies` 实现。
+  否则，准备目标不会准备该文件。
 
-For example:
+例如：
 
 .. code-block:: cmake
 
