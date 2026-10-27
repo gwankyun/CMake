@@ -251,10 +251,10 @@ CMake会生成构建规则，将源文件编译为目标文件。
   add_library(archive SHARED archive.cpp zip.cpp)
 
   if (LZMA_FOUND)
-    # Add a source implementing support for lzma.
+    # 添加实现 lzma 支持的源文件。
     target_sources(archive PRIVATE lzma.cpp)
 
-    # Compile the 'archive' library sources with '-DBUILDING_WITH_LZMA'.
+    # 使用 '-DBUILDING_WITH_LZMA' 编译 'archive' 库的源文件。
     target_compile_definitions(archive PRIVATE BUILDING_WITH_LZMA)
   endif()
 
@@ -262,8 +262,8 @@ CMake会生成构建规则，将源文件编译为目标文件。
 
   add_executable(consumer consumer.cpp)
 
-  # Link 'consumer' to 'archive'.  This also consumes its usage requirements,
-  # so 'consumer.cpp' is compiled with '-DUSING_ARCHIVE_LIB'.
+  # 将 'consumer' 链接到 'archive'。这同时会消费它的使用要求，
+  # 因此 'consumer.cpp' 会使用 '-DUSING_ARCHIVE_LIB' 编译。
   target_link_libraries(consumer archive)
 
 
@@ -645,11 +645,11 @@ CMake会生成构建规则，将源文件编译为目标文件。
   add_library(archiveExtras extras.cpp)
   target_link_libraries(archiveExtras PUBLIC archive)
   target_link_libraries(archiveExtras PRIVATE serialization)
-  # archiveExtras is compiled with -DUSING_ARCHIVE_LIB
-  # and -DUSING_SERIALIZATION_LIB
+  # archiveExtras 编译时会带上 -DUSING_ARCHIVE_LIB
+  # 和 -DUSING_SERIALIZATION_LIB
 
   add_executable(consumer consumer.cpp)
-  # consumer is compiled with -DUSING_ARCHIVE_LIB
+  # consumer 编译时会带上 -DUSING_ARCHIVE_LIB
   target_link_libraries(consumer archiveExtras)
 
 因为\ ``archive``\ 是\ ``archiveExtras``\ 的\ ``PUBLIC``\ 依赖项，所以它的使用需求也\
@@ -821,16 +821,16 @@ CMake会生成构建规则，将源文件编译为目标文件。
 
   add_custom_target(print ALL VERBATIM
     COMMAND ${CMAKE_COMMAND} -E echo
-      # Prints "MYLIB_PRIVATE_CUSTOM_C;EXAMPLE_CUSTOM_C"
+      # 打印 "MYLIB_PRIVATE_CUSTOM_C;EXAMPLE_CUSTOM_C"
       "$<TARGET_PROPERTY:mylib,CUSTOM_C>"
 
-      # Prints "MYLIB_PRIVATE_CUSTOM_L;EXAMPLE_CUSTOM_L"
+      # 打印 "MYLIB_PRIVATE_CUSTOM_L;EXAMPLE_CUSTOM_L"
       "$<TARGET_PROPERTY:mylib,CUSTOM_L>"
 
-      # Prints "MYEXE_CUSTOM_C"
+      # 打印 "MYEXE_CUSTOM_C"
       "$<TARGET_PROPERTY:myexe,CUSTOM_C>"
 
-      # Prints "MYEXE_CUSTOM_L;MYLIB_IFACE_CUSTOM_L;EXAMPLE_CUSTOM_L"
+      # 打印 "MYEXE_CUSTOM_L;MYLIB_IFACE_CUSTOM_L;EXAMPLE_CUSTOM_L"
       "$<TARGET_PROPERTY:myexe,CUSTOM_L>"
     )
 
@@ -927,10 +927,10 @@ CMake会生成构建规则，将源文件编译为目标文件。
   set_property(TARGET lib1Version3 PROPERTY INTERFACE_LIB_VERSION 3)
 
   add_executable(exe1 exe1.cpp)
-  target_link_libraries(exe1 lib1Version2) # LIB_VERSION will be "2"
+  target_link_libraries(exe1 lib1Version2) # LIB_VERSION 将为 "2"
 
   add_executable(exe2 exe2.cpp)
-  target_link_libraries(exe2 lib1Version2 lib1Version3) # Diagnostic
+  target_link_libraries(exe2 lib1Version2 lib1Version3) # 诊断
 
 :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MAX`\ 目标属性指定内容将被数值计算，并且将计算\
 所有指定的最大值：
@@ -947,11 +947,11 @@ CMake会生成构建规则，将源文件编译为目标文件。
   set_property(TARGET lib1Version3 PROPERTY INTERFACE_CONTAINER_SIZE_REQUIRED 1000)
 
   add_executable(exe1 exe1.cpp)
-  # CONTAINER_SIZE_REQUIRED will be "200"
+  # CONTAINER_SIZE_REQUIRED 将为 "200"
   target_link_libraries(exe1 lib1Version2)
 
   add_executable(exe2 exe2.cpp)
-  # CONTAINER_SIZE_REQUIRED will be "1000"
+  # CONTAINER_SIZE_REQUIRED 将为 "1000"
   target_link_libraries(exe2 lib1Version2 lib1Version3)
 
 类似地，可以使用\ :prop_tgt:`COMPATIBLE_INTERFACE_NUMBER_MIN`\ 从依赖项中计算属性的最\
@@ -1262,8 +1262,8 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 .. code-block:: cmake
 
-  # WARNING: This is wrong for multi-config generators because they don't use
-  #          and typically don't even set CMAKE_BUILD_TYPE
+  # 警告：对于多配置生成器而言，这种做法是错误的，因为它们并不使用
+  #        CMAKE_BUILD_TYPE，通常甚至根本不会设置它
   string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
   if (build_type STREQUAL debug)
     target_compile_definitions(exe1 PRIVATE DEBUG_BUILD)
@@ -1274,7 +1274,7 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 .. code-block:: cmake
 
-  # Works correctly for both single and multi-config generators
+  # 对单配置和多配置生成器都能正确工作
   target_compile_definitions(exe1 PRIVATE
     $<$<CONFIG:Debug>:DEBUG_BUILD>
   )
@@ -1293,21 +1293,21 @@ CMake提供了与包含目录使用需求相关的两个便捷API。\
 
 .. code-block:: cmake
 
-  # NOTE: Don't use these patterns, they are for illustration purposes only.
+  # 注意：不要使用这些模式，它们仅用于演示目的。
 
   set(CMAKE_BUILD_TYPE Debug)
   if(CMAKE_BUILD_TYPE STREQUAL DEBUG)
-    # ... will never get here, "Debug" != "DEBUG"
+    # ……永远不会执行到这里，"Debug" != "DEBUG"
   endif()
   add_custom_target(print_config ALL
-    # Prints "Config is Debug" in this single-config case
+    # 在此单配置情形下打印 "Config is Debug"
     COMMAND ${CMAKE_COMMAND} -E echo "Config is $<CONFIG>"
     VERBATIM
   )
 
   set(CMAKE_CONFIGURATION_TYPES Debug Release)
   if(DEBUG IN_LIST CMAKE_CONFIGURATION_TYPES)
-    # ... will never get here, "Debug" != "DEBUG"
+    # ……永远不会执行到这里，"Debug" != "DEBUG"
   endif()
 
 相比之下，CMake在内部根据配置修改行为的地方使用配置类型时不区分大小写。例如，\
@@ -1653,38 +1653,36 @@ C++ 模块 BMI 以及 C++ 模块导出元数据相关联的依赖。准备 BMI �
 
 .. code-block:: cmake
 
-  # Preparation which depends on `generated.h` runs only the custom command,
-  # not the library build.
+  # 依赖 `generated.h` 的准备只会运行自定义命令，
+  # 而不会构建库。
   add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/generated.h"
     COMMAND ...)
   add_library(A a.c "${CMAKE_CURRENT_BINARY_DIR}/generated.h")
   set_property(TARGET A PROPERTY PUBLIC_HEADER
     "${CMAKE_CURRENT_BINARY_DIR}/generated.h")
 
-  # Preparation which depends on `byproduct.h` runs `gen`, or with some
-  # generators builds `B` instead, so `B` must depend on the producer of its
-  # byproduct.
+  # 依赖 `byproduct.h` 的准备会运行 `gen`，而在某些生成器下
+  # 则改为构建 `B`，因此 `B` 必须依赖其副产物的生成者。
   add_custom_target(gen COMMAND ...
     BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/byproduct.h")
   add_library(B b.c)
   add_dependencies(B gen)
 
-  # The preparation target for an install which installs `B` will implicitly
-  # depend on `byproduct.h` when it appears in an associated file set.
+  # 当 `byproduct.h` 出现在关联的文件集中时，
+  # 安装 `B` 的准备目标会隐式依赖该文件。
   set_property(TARGET B PROPERTY PUBLIC_HEADER
     "${CMAKE_CURRENT_BINARY_DIR}/byproduct.h")
 
-  # A test depending on `byproduct.h` needs to express that dependency
-  # explicitly using `BUILD_DEPENDS`.
+  # 依赖 `byproduct.h` 的测试需要使用 `BUILD_DEPENDS`
+  # 显式表达该依赖。
   add_test(test_B COMMAND test_B BUILD_DEPENDS
     "${CMAKE_CURRENT_BINARY_DIR}/byproduct.h")
 
-The ``BUILD_DEPENDS`` option of the ``FILES``, ``PROGRAMS``, ``DIRECTORY``,
-``SCRIPT``, and ``CODE`` signatures of the :command:`install` command can
-be used to specify targets or files that CMake cannot infer.  ``DIRECTORY``,
-``SCRIPT``, and ``CODE`` rules do not imply build dependencies without
-``BUILD_DEPENDS``.  The deprecated :command:`install_targets` command does not
-contribute dependencies.
+:command:`install` 命令的 ``FILES``、 ``PROGRAMS``、 ``DIRECTORY``、
+``SCRIPT`` 和 ``CODE`` 签名的 ``BUILD_DEPENDS`` 选项，可用于指定
+CMake 无法推断的目标或文件。若不使用 ``BUILD_DEPENDS``，
+``DIRECTORY``、 ``SCRIPT`` 和 ``CODE`` 规则不会隐含任何构建依赖。
+已弃用的 :command:`install_targets` 命令不会贡献依赖。
 
-Install rules below a directory added with :prop_dir:`EXCLUDE_FROM_ALL` are
-ignored, matching installation from the parent directory.
+位于以 :prop_dir:`EXCLUDE_FROM_ALL` 排除的目录之下的安装规则
+会被忽略，这与从父目录执行安装时的行为一致。
