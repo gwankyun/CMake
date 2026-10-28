@@ -2,9 +2,11 @@ cmake_minimum_required(VERSION 3.15)
 project(MathFunctions)
 
 # make cache variables for install destinations
+# 为安装目录创建缓存变量
 include(GNUInstallDirs)
 
 # specify the C++ standard
+# 指定 C++ 标准
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -52,6 +54,7 @@ set_property(TARGET MathFunctions APPEND PROPERTY
 )
 
 # generate the version file for the config file
+# 为配置文件生成版本文件
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/MathFunctionsConfigVersion.cmake"
   VERSION "${version}"

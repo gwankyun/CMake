@@ -249,7 +249,7 @@ CMake在何处安装这些目标。
 
 .. code-block:: cmake
 
-  # Create imported target MathFunctions::MathFunctions
+  # 创建导入目标 MathFunctions::MathFunctions
   add_library(MathFunctions::MathFunctions STATIC IMPORTED)
 
   set_target_properties(MathFunctions::MathFunctions PROPERTIES
@@ -291,7 +291,7 @@ CMake在何处安装这些目标。
   add_library(foo STATIC foo1.c)
   install(TARGETS foo DESTINATION lib EXPORTS myproj-targets)
 
-  # Top CMakeLists.txt
+  # 顶层 CMakeLists.txt
   add_subdirectory (A)
   add_subdirectory (B)
   install(EXPORT myproj-targets DESTINATION lib/myproj)
@@ -459,12 +459,12 @@ CMakeLists文件中，我们将添加：
 .. code-block:: cmake
 
   target_include_directories(tgt INTERFACE
-    # Wrong, not relocatable:
+    # 错误，不可重定位：
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include/TgtName>
   )
 
   target_include_directories(tgt INTERFACE
-    # Ok, relocatable:
+    # 正确，可重定位：
     $<INSTALL_INTERFACE:include/TgtName>
   )
 
@@ -474,7 +474,7 @@ CMakeLists文件中，我们将添加：
 .. code-block:: cmake
 
   target_include_directories(tgt INTERFACE
-    # Ok, relocatable:
+    # 正确，可重定位：
     $<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include/TgtName>
   )
 
