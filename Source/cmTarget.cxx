@@ -661,6 +661,7 @@ public:
   bool IsForTryCompile = false;
   bool IsExportPassthrough = false;
   bool CxxModuleNeedsInterfaceObjects = false;
+  std::vector<BT<std::string>> CxxModuleSynthCompileOptions;
   cmTarget::Visibility TargetVisibility;
   std::string ForeignPackageName;
   cmTarget* ForeignTarget = nullptr;
@@ -1287,6 +1288,16 @@ bool cmTarget::CxxModuleNeedsInterfaceObjects() const
 void cmTarget::SetCxxModuleNeedsInterfaceObjects(bool v)
 {
   this->impl->CxxModuleNeedsInterfaceObjects = v;
+}
+
+void cmTarget::AddCxxModuleSynthCompileOption(BT<std::string> option)
+{
+  this->impl->CxxModuleSynthCompileOptions.push_back(std::move(option));
+}
+
+cmBTStringRange cmTarget::GetCxxModuleSynthCompileOptions() const
+{
+  return cmMakeRange(this->impl->CxxModuleSynthCompileOptions);
 }
 
 BTs<std::string> const* cmTarget::GetLanguageStandardProperty(
@@ -2095,6 +2106,10 @@ cmBTStringRange cmTarget::GetFileSetsEntries(cm::string_view type) const
   if (cm::contains(this->impl->FileSetTypes, type)) {
     return cmMakeRange(this->impl->FileSetTypes.at(type).SelfEntries.Entries);
   }
+  auto strType = std::string{ type };
+  if (cm::contains(this->impl->FileSetRules, strType)) {
+    return cmMakeRange(this->impl->FileSetRules.at(strType).SelfEntries);
+  }
   return cmMakeRange(EmptyEntries);
 }
 
@@ -2104,6 +2119,10 @@ cmBTStringRange cmTarget::GetInterfaceFileSetsEntries(
   if (cm::contains(this->impl->FileSetTypes, type)) {
     return cmMakeRange(
       this->impl->FileSetTypes.at(type).InterfaceEntries.Entries);
+  }
+  auto strType = std::string{ type };
+  if (cm::contains(this->impl->FileSetRules, strType)) {
+    return cmMakeRange(this->impl->FileSetRules.at(strType).InterfaceEntries);
   }
   return cmMakeRange(EmptyEntries);
 }
@@ -2942,6 +2961,12 @@ cmValue cmTarget::GetProperty(std::string const& prop) const
       if (!fileSetType.second.SelfEntries.Entries.empty() ||
           !fileSetType.second.InterfaceEntries.Entries.empty()) {
         types.push_back(fileSetType.first);
+      }
+    }
+    for (auto const& fileSetRule : this->impl->FileSetRules) {
+      if (!fileSetRule.second.SelfEntries.empty() ||
+          !fileSetRule.second.InterfaceEntries.empty()) {
+        types.push_back(fileSetRule.first);
       }
     }
     std::sort(types.begin(), types.end());

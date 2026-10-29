@@ -23,6 +23,7 @@
 #include "cmsys/String.h"
 
 #include "cmCustomCommand.h"
+#include "cmCustomCommandGenerator.h"
 #include "cmCxxModuleMapper.h"
 #include "cmDiagnostics.h"
 #include "cmDyndepCollation.h"
@@ -1704,17 +1705,35 @@ void cmGlobalNinjaGenerator::AppendTargetDependsClosure(
   outputs.insert(outs.begin(), outs.end());
 }
 
+void cmGlobalNinjaGenerator::AppendCodegenOutputs(
+  cmGeneratorTarget const* target, cmNinjaDeps& deps,
+  std::string const& config)
+{
+  std::vector<cmSourceFile const*> customCommandSources;
+  target->GetCustomCommands(customCommandSources, config);
+  for (cmSourceFile const* sf : customCommandSources) {
+    cmCustomCommand const* cc = sf->GetCustomCommand();
+    if (cc->GetCodegen()) {
+      cmCustomCommandGenerator ccg(*cc, config, target->GetLocalGenerator());
+      std::vector<std::string> const& outputs = ccg.GetOutputs();
+      std::transform(outputs.begin(), outputs.end(), std::back_inserter(deps),
+                     this->MapToNinjaPath());
+    }
+  }
+}
+
 void cmGlobalNinjaGenerator::AppendCodegenTargetDepends(
   cmGeneratorTarget const* target, cmNinjaDeps& deps,
-  std::string const& config) const
+  std::string const& config, std::set<cmGeneratorTarget const*>& visited)
 {
   std::set<std::string> const& codegenDeps = target->Target->GetCodegenDeps();
   for (cmTargetDepend const& targetDep :
        this->GetTargetDirectDepends(target)) {
     if (targetDep->IsInBuildSystem() &&
-        codegenDeps.count(targetDep->GetName())) {
-      this->AppendTargetOutputs(targetDep, deps, config,
-                                DependOnTargetArtifact);
+        codegenDeps.count(targetDep->GetName()) &&
+        visited.insert(targetDep).second) {
+      this->AppendCodegenOutputs(targetDep, deps, config);
+      this->AppendCodegenTargetDepends(targetDep, deps, config, visited);
     }
   }
 }
@@ -1884,25 +1903,18 @@ void cmGlobalNinjaGenerator::WriteFolderTargets(std::ostream& os)
         build.Outputs.front() =
           this->BuildAlias(buildDirCodegenTarget, config);
 
+        std::set<cmGeneratorTarget const*> visited;
+
         for (DirectoryTarget::Target const& t : dt.Targets) {
           if (this->IsExcludedFromAllInConfig(t, config)) {
             continue;
           }
 
-          this->AppendCodegenTargetDepends(t.GT, build.ExplicitDeps, config);
-
-          std::vector<cmSourceFile const*> customCommandSources;
-          t.GT->GetCustomCommands(customCommandSources, config);
-          for (cmSourceFile const* sf : customCommandSources) {
-            cmCustomCommand const* cc = sf->GetCustomCommand();
-            if (cc->GetCodegen()) {
-              auto const& outputs = cc->GetOutputs();
-
-              std::transform(outputs.begin(), outputs.end(),
-                             std::back_inserter(build.ExplicitDeps),
-                             this->MapToNinjaPath());
-            }
+          if (visited.insert(t.GT).second) {
+            this->AppendCodegenOutputs(t.GT, build.ExplicitDeps, config);
           }
+          this->AppendCodegenTargetDepends(t.GT, build.ExplicitDeps, config,
+                                           visited);
         }
 
         for (DirectoryTarget::Dir const& d : dt.Children) {
@@ -1947,8 +1959,7 @@ void cmGlobalNinjaGenerator::WriteFolderTargets(std::ostream& os)
           build.ExplicitDeps.push_back(
             this->BuildAlias(buildDirCodegenTarget, config));
         }
-        build.Outputs.front() =
-          this->BuildAlias(buildDirCodegenTarget, "codegen");
+        build.Outputs.front() = this->BuildAlias(buildDirCodegenTarget, "all");
         this->WriteBuild(os, build);
       }
     }
@@ -3243,18 +3254,23 @@ bool cmGlobalNinjaGenerator::WriteDyndepFile(
     forward_info(transitiveInterfaceObjects, fmft["interface-objects"]);
   }
 
-  // Compute the set of modules actually imported by sources in this target.
+  // Compute the set of modules imported directly or transitively by sources in
+  // this target.
   std::set<std::string> usedModules;
   for (cmScanDepInfo const& object : objects) {
     for (auto const& r : object.Requires) {
       usedModules.insert(r.LogicalName);
+      auto usage = usages.Usage.find(r.LogicalName);
+      if (usage != usages.Usage.end()) {
+        usedModules.insert(usage->second.begin(), usage->second.end());
+      }
     }
   }
 
-  // Merge direct interface objects into the accumulated set.
-  // Direct objects are filtered: only keep those for modules that are
-  // actually imported by sources in this target. Transitive objects from
-  // linked targets were already filtered in their originating target.
+  // Merge interface objects into the accumulated set.
+  // Objects are filtered: only keep those for modules that are imported
+  // directly or transitively by sources in this target. Transitive objects
+  // from linked targets were already filtered in their originating target.
   if (cxx_interface_objects && cxx_interface_objects->isObject()) {
     Json::Value const& directObjects =
       (*cxx_interface_objects)["module-objects"];

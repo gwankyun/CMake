@@ -929,6 +929,12 @@ with members:
   ``SHARED_LIBRARY``、\ ``MODULE_LIBRARY``、\ ``OBJECT_LIBRARY``、\
   ``INTERFACE_LIBRARY``\ 或\ ``UTILITY``\ 中的一个。
 
+  .. codemodel-versionchanged:: 2.9
+
+    ``UNKNOWN_LIBRARY`` is now also a possible value.  It corresponds to a
+    library created using :command:`add_library(IMPORTED)` with the ``UNKNOWN``
+    library type.
+
 ``imported``
   .. codemodel-versionadded:: 2.9
 

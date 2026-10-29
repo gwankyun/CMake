@@ -544,7 +544,15 @@ ctest(1)
 查看帮助
 =========
 
-要打印版本详细信息或从CMake文档中选择的页面，使用以下选项之一：
+.. program:: ctest
+
+To print selected pages from the CMake documentation, use
+
+.. code-block:: shell
+
+  ctest --help[-<topic>]
+
+with one of the following options:
 
 .. include:: include/OPTIONS_HELP.rst
 
@@ -1981,7 +1989,7 @@ when the test finishes.
 
 例如，考虑\ ``Makefile``：
 
-.. literalinclude:: CTEST_EXAMPLE_MAKEFILE_JOB_SERVER.make
+.. literalinclude:: include/CTEST_EXAMPLE_MAKEFILE_JOB_SERVER.make
   :language: make
 
 当通过\ ``make -j 2 test``\ 调用时，CTest连接到作业服务器，为每个测试获取一个\

@@ -53,8 +53,10 @@ Generating Files
   custom command will be declared as part of a file set attached to
   the same target. The type of this file set, as well as its name, are
   controlled by the :prop_rule:`OUTPUT_FILE_SET` rule property. This output
-  file set will have the same scope (``PRIVATE``, ``PUBLIC``, or ``INTERFACE``)
-  as the input file set.
+  file set will be created in the same directory and will have the same scope
+  (``PRIVATE``, ``PUBLIC``, or ``INTERFACE``) as the input file set. The base
+  directories can be specified by the :prop_rule:`OUTPUT_FILE_SET_BASE_DIRS`
+  rule property.
 
   To parameterize the template, some patterns are defined which can be used as
   part of the ``add_custom_rule`` arguments as well as the :ref:`rule's
@@ -90,6 +92,12 @@ Generating Files
   ``<CURRENT_BINARY_DIR>``
     The path to the binary directory of the file set creation.
 
+  ``<OUTPUT_CURRENT_SOURCE_DIR>``
+    The path to the source directory of the output file set creation.
+
+  ``<OUTPUT_CURRENT_BINARY_DIR>``
+    The path to the binary directory of the output file set creation.
+
   ``<SOURCE>``
     The full path of the current source file being processed.
 
@@ -110,7 +118,7 @@ Generating Files
 
     Because CMake is not aware of the tool involved by the rule, there is
     no specific processing regarding this pattern. This is the user's
-    responsibility to format, using  :manual:`generator expressions
+    responsibility to format, using :manual:`generator expressions
     <cmake-generator-expressions(7)>`, the content of pattern to be compatible
     with the tool.
 
@@ -129,7 +137,7 @@ Generating Files
 
     Because CMake is not aware of the tool involved by the rule, there is
     no specific processing regarding this pattern. This is the user's
-    responsibility to format, using  :manual:`generator expressions
+    responsibility to format, using :manual:`generator expressions
     <cmake-generator-expressions(7)>`, the content of pattern to be compatible
     with the tool.
 
@@ -143,7 +151,7 @@ Generating Files
 
   ``<COMPILE_OPTIONS>``
     Content, in this order, of the :prop_rule:`COMPILE_OPTIONS` rule property,
-    :prop_sf:`COMPILE_OPTIONS` source property, and:prop_fs:`COMPILE_OPTIONS`
+    :prop_sf:`COMPILE_OPTIONS` source property, and :prop_fs:`COMPILE_OPTIONS`
     file set property.
 
   The options, which have the same semantics as those of the
@@ -170,9 +178,9 @@ Generating Files
     usually emitted by the custom command itself.
 
   ``CONFIGURATOR``
-    Specify one or two CMake functions which will be called at the generation
-    step, in the context of the file set directory, before the effective
-    instantiation and custom commands definition.
+    Specify one or two CMake functions which will be called at the
+    configuration step, in the context of the file set directory, before the
+    effective instantiation and custom commands definition.
 
     .. note::
 
@@ -192,10 +200,10 @@ Generating Files
 
       The ``patterns`` argument holds the name of the variable which can be
       used to enrich the list of patterns. The expected value is a
-      :ref:`semicolon-separated list <CMake Language Lists>` of  items having
+      :ref:`semicolon-separated list <CMake Language Lists>` of items having
       the syntax ``PATTERN=VALUE`` or ``PATTERN=``. More precisely, each item
       must match the regular expression ``(^[A-Z][A-Z0-9_]+)=(.*)$``. Items
-      which does not this regular expression will be ignored.
+      which do not match this regular expression will be ignored.
 
     ``FOR_SOURCE``
       The specified function will be called for each file of the file set.
@@ -209,10 +217,10 @@ Generating Files
 
       The ``patterns`` argument holds the name of the variable which can be
       used to enrich the list of patterns. The expected value is a
-      :ref:`semicolon-separated list <CMake Language Lists>` of  items having
+      :ref:`semicolon-separated list <CMake Language Lists>` of items having
       the syntax ``PATTERN=VALUE`` or ``PATTERN=``. More precisely, each item
       must match the regular expression ``(^[A-Z][A-Z0-9_]+)=(.*)$``. Items
-      which does not this regular expression will be ignored.
+      which do not match this regular expression will be ignored.
 
       .. note::
 
@@ -222,7 +230,7 @@ Generating Files
 
     .. note::
 
-      Any patterns specified through The :prop_fs:`RULE_PATTERNS` file set
+      Any patterns specified through the :prop_fs:`RULE_PATTERNS` file set
       and :prop_sf:`<RULE>_PATTERNS` source file properties will take
       precedence over, respectively, the file set and the source configurators.
 
@@ -306,8 +314,9 @@ Derived Rule
     Specify the rule from which this new rule will inherit.
 
   ``CONFIGURATOR``
-    Specify one or two CMake functions which will be called at the generation
-    step before the effective instantiation and custom commands definition.
+    Specify one or two CMake functions which will be called at the
+    configuration step, in the context of the file set directory, before the
+    effective instantiation and custom commands definition.
 
     .. note::
 
@@ -360,7 +369,7 @@ Derived Rule
 Example
 =======
 
-By reusing the previous defined rule ``swig``, we can provide a more simple way
+By reusing the previously defined rule ``swig``, we can provide a simpler way
 to compile swig sources by creating a more specialized rule:
 
 
