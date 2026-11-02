@@ -1,5 +1,4 @@
 
-Arguments to |command_name| may use
-:manual:`generator expressions <cmake-generator-expressions(7)>` with the
-syntax ``$<...>``.  See the :manual:`cmake-buildsystem(7)` manual for more on
-defining buildsystem properties.
+|command_name| 的参数可以使用语法为 ``$<...>`` 的
+:manual:`生成器表达式 <cmake-generator-expressions(7)>`。
+有关定义构建系统属性的更多信息，请参阅 :manual:`cmake-buildsystem(7)` 手册。

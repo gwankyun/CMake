@@ -1,6 +1,3 @@
-Use of the |command_name| command for new development is discouraged.
-Unencapsulated alterations to the build environment can have unintentionally
-broad effect, potentially resulting in unnecessary build dependencies.
-Additionally, the |command_name| command cannot be used to express interface
-usage requirements.  It is recommended that new development use the
-|target_command_name| command instead.
+不建议在新的开发中使用 |command_name| 命令。对构建环境的未封装修改可能产生意想不到的
+广泛影响，进而导致不必要的构建依赖。此外，|command_name| 命令无法用于表达接口使用
+要求。建议新的开发改用 |target_command_name| 命令。

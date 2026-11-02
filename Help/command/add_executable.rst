@@ -91,13 +91,13 @@ add_executable
 :command:`if(TARGET)`\ 子命令测试它们是否存在。
 
 .. versionchanged:: 4.5
-  The ``<name>`` may be used as the operand of :command:`set_property`,
-  :command:`set_target_properties`, :command:`target_link_libraries`, etc. to
-  modify properties of ``<target>``.  If an ``ALIAS`` executable is passed to
-  an :command:`install` or :command:`export` command, the executable that the
-  alias references is installed or exported.  CMake 4.4 and earlier did not
-  allow using the ``<name>`` to modify properties of ``<target>``, or using
-  the ``<name>`` in :command:`install` and :command:`export` commands.
+  ``<name>`` 可用作 :command:`set_property`、
+  :command:`set_target_properties`、 :command:`target_link_libraries`
+  等命令的操作数，以修改 ``<target>`` 的属性。如果将 ``ALIAS``
+  可执行目标传递给 :command:`install` 或 :command:`export` 命令，
+  则别名所引用的那个可执行目标会被安装或导出。CMake 4.4 及更早
+  版本不允许使用 ``<name>`` 修改 ``<target>`` 的属性，也不允许在
+  :command:`install` 和 :command:`export` 命令中使用 ``<name>``。
 
 另请参阅
 ^^^^^^^^

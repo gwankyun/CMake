@@ -3,13 +3,13 @@ add_custom_rule
 
 .. versionadded:: 4.5
 
-Add a custom template rule to the generated build system.
+向生成的构建系统添加自定义模板规则。
 
-Synopsis
+概要
 ^^^^^^^^
 
 .. parsed-literal::
-  `Generating Files`_
+  :ref:`Generating Files`
     add_custom_rule(<name> `OUTPUT`_ <output1> [<output2> ...]
                     COMMAND <command1> [<args1>...]
                     [...])
@@ -18,7 +18,9 @@ Synopsis
     add_custom_rule(<name> `FROM_RULE`_ <rule>
                     [...])
 
-Generating Files
+.. _`Generating Files`:
+
+生成文件
 ^^^^^^^^^^^^^^^^
 
 .. signature::
@@ -28,7 +30,7 @@ Generating Files
   :target:
     OUTPUT
 
-  Add a custom template rule to produce an output:
+  添加一个用于产生输出的自定义模板规则：
 
   .. code-block:: cmake
 
@@ -42,26 +44,20 @@ Generating Files
                                          [FOR_SOURCE <configurator>]]
                            [GLOBAL])
 
-  This defines a template rule ``<name>`` to generate specified ``OUTPUT``
-  file(s). Rule names defined in all uppercase are reserved for CMake's own
-  built-in rules.
+  这会定义一个名为 ``<name>`` 的模板规则，用于生成指定的 ``OUTPUT``
+  文件。以全大写字母定义的规则名称保留供 CMake 自身的内置规则使用。
 
-  The association of source files with the template rule is done by creating
-  :ref:`file sets <File Sets>` of type ``<name>``. For each file of the file
-  set, a :command:`custom command <add_custom_command>` will be created in the
-  same directory as the target owning the file set and the output files of this
-  custom command will be declared as part of a file set attached to
-  the same target. The type of this file set, as well as its name, are
-  controlled by the :prop_rule:`OUTPUT_FILE_SET` rule property. This output
-  file set will be created in the same directory and will have the same scope
-  (``PRIVATE``, ``PUBLIC``, or ``INTERFACE``) as the input file set. The base
-  directories can be specified by the :prop_rule:`OUTPUT_FILE_SET_BASE_DIRS`
-  rule property.
+  源文件与模板规则的关联，是通过创建类型为 ``<name>`` 的 :ref:`文件集 <File Sets>`
+  来完成的。对于文件集中的每个文件，都会在拥有该文件集的目标所在的目录中创建一个
+  :command:`自定义命令 <add_custom_command>`，并且该自定义命令的输出文件将被声明为附加
+  到同一目标的某个文件集的一部分。该输出文件集的类型及名称由 :prop_rule:`OUTPUT_FILE_SET`
+  规则属性控制。它会在同一目录中创建，并具有与输入文件集相同的作用域（ ``PRIVATE``、 ``PUBLIC``
+  或 ``INTERFACE``）。其基础目录可以通过 :prop_rule:`OUTPUT_FILE_SET_BASE_DIRS`
+  规则属性指定。
 
-  To parameterize the template, some patterns are defined which can be used as
-  part of the ``add_custom_rule`` arguments as well as the :ref:`rule's
-  properties <Rule Properties>`. These patterns will be
-  instantiated for each source file. The supported patterns are:
+  为了对模板进行参数化，定义了一些模式，它们既可以用作 ``add_custom_rule`` 参数的
+  一部分，也可以用于 :ref:`规则属性 <Rule Properties>`。这些模式会针对每个源文件
+  进行实例化。支持的模式有：
 
   .. note::
 
