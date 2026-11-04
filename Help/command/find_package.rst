@@ -828,7 +828,7 @@ CPS包或CMake脚本包来解析CPS包依赖。处理CPS组件依赖的方式有
 检查会认为该包未找到。
 
 .. _CPS: https://cps-org.github.io/cps/
-.. |CPS| replace:: Common Package Specification
+.. |CPS| replace:: 通用包规范
 
 .. _cps-compat_version: https://cps-org.github.io/cps/schema.html#compat-version
 .. |cps-compat_version| replace:: ``compat_version``
