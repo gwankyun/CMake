@@ -158,8 +158,8 @@ if
     若需确认非缓存变量是否存在，需同时测试两个表达式：\
     ``if(DEFINED someName AND NOT DEFINED CACHE{someName})``。
 
- .. versionadded:: 3.14
-  新增对\ ``CACHE{<名称>}``\ 变量的支持。
+  .. versionadded:: 3.14
+   新增对\ ``CACHE{<名称>}``\ 变量的支持。
 
 .. signature:: if(<variable|string> IN_LIST <variable>)
   :target: IN_LIST

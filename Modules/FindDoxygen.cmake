@@ -1177,9 +1177,9 @@ function(_doxygen_collect_output_dirs outputDirs)
     set(_doxygen_output_dirs "")
     foreach(_format IN LISTS _doxygen_output_formats)
         set(_doxygen_generate_format "DOXYGEN_GENERATE_${_format}")
-        if(DEFINED "${_doxygen_generate_format}" AND ${${_doxygen_generate_format}})
+        if(${_doxygen_generate_format})
             set(_doxygen_format_output "DOXYGEN_${_format}_OUTPUT")
-            if(DEFINED _doxygen_format_output)
+            if(DEFINED ${_doxygen_format_output})
                 list(APPEND _doxygen_output_dirs "${${_doxygen_format_output}}" )
             endif()
             unset(_doxygen_format_output)
@@ -1558,12 +1558,11 @@ doxygen_add_docs() for target ${targetName}")
         add_custom_target(${targetName}
             ${_all}
             DEPENDS ${__stamp_file}
-            ${_uses_terminal}
             SOURCES ${_sources}
         )
         unset(__stamp_file)
     else()
-        add_custom_target( ${targetName}
+        add_custom_target(${targetName}
             ${_all}
             VERBATIM
             COMMAND ${CMAKE_COMMAND} -E make_directory ${_doxygen_resolved_output_dirs}
