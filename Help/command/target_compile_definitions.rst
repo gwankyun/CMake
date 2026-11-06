@@ -9,13 +9,12 @@ target_compile_definitions
     <INTERFACE|PUBLIC|PRIVATE> <definition>...
     [<INTERFACE|PUBLIC|PRIVATE> <definition>... ...])
 
-Specifies compile definitions to use when compiling a given ``<target>``.  The
-named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library`.
+指定在编译给定的 ``<target>`` 时使用的编译定义。该 ``<target>`` 必须已由诸如
+:command:`add_executable` 或 :command:`add_library` 之类的命令创建。
 
 .. versionchanged:: 4.5
-  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
-  operates on the target which the alias references.
+  如果 ``<target>`` 是一个 :ref:`别名目标 <Alias Targets>`，
+  则该命令会作用于别名所引用的那个目标。
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字用于指定下列参数的\
 :ref:`作用域 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\

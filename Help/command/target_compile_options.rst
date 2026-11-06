@@ -14,8 +14,8 @@ target_compile_options
 :command:`add_executable`\ 或\ :command:`add_library`\ 等命令创建的。
 
 .. versionchanged:: 4.5
-  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
-  operates on the target which the alias references.
+  如果 ``<target>`` 是一个 :ref:`别名目标 <Alias Targets>`，则该命令
+  会作用于别名所引用的那个目标。
 
 .. note::
 

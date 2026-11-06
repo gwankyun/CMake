@@ -14,8 +14,7 @@ set_target_properties
 命令提取它。
 
 .. versionchanged:: 4.5
-  If ``<targets>`` contains :ref:`Alias Targets`, properties are set on the
-  corresponding target referenced by each alias.
+  如果 ``<targets>`` 中包含 :ref:`别名目标 <Alias Targets>`，则会在每个别名所引用的对应目标上设置属性。
 
 另请参阅
 ^^^^^^^^
