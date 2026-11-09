@@ -40,8 +40,7 @@ get_property
 ``RULE``
   .. versionadded:: 4.5
 
-  Scope must name one existing rule in the current directory, created
-  by the :command:`add_custom_rule` command.
+  作用域必须命名当前目录中由 :command:`add_custom_rule` 命令创建的一条已有规则。
 
 ``TARGET``
   作用域必须指定一个已存在的目标。\

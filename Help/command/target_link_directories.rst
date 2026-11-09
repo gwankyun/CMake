@@ -14,12 +14,12 @@ target_link_directories
 指定链接器在链接给定目标时搜索库的路径。每个项可以是绝对路径或相对路径，后者被解释为相对于当\
 前源目录。这些项将被添加到link命令中。
 
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library`.
+命名的 ``<target>`` 必须已由诸如 :command:`add_executable` 或
+:command:`add_library` 之类的命令创建。
 
 .. versionchanged:: 4.5
-  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
-  operates on the target which the alias references.
+  如果 ``<target>`` 是一个 :ref:`别名目标 <Alias Targets>`，该命令
+  将作用于别名所引用的目标。
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PUBLIC``\ 关键字用于指定它们后面的项目的\
 :ref:`范围 <Target Command Scope>`。\ ``PRIVATE``\ 和\ ``PUBLIC``\ 项将填充\

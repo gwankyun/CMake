@@ -11,12 +11,12 @@ target_link_options
     {INTERFACE|PUBLIC|PRIVATE} <item>...
     [{INTERFACE|PUBLIC|PRIVATE} <item>...]...)
 
-The named ``<target>`` must have been created by a command such as
-:command:`add_executable` or :command:`add_library`.
+命名的 ``<target>`` 必须已由诸如 :command:`add_executable` 或
+:command:`add_library` 之类的命令创建。
 
 .. versionchanged:: 4.5
-  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
-  operates on the target which the alias references.
+  如果 ``<target>`` 是一个 :ref:`别名目标 <Alias Targets>`，该命令
+  将作用于别名所引用的目标。
 
 这个命令可以用来添加任何链接选项，但也有其他添加库的命令（\
 :command:`target_link_libraries`\ 或\ :command:`link_libraries`\ ）。请参阅\
@@ -64,8 +64,7 @@ The named ``<target>`` must have been created by a command such as
   添加传递给编译器所有调用的语言范围内的标志。这包括驱动编译的调用和驱动链接的调用。
 
 * .. versionadded:: 4.3
-    :variable:`CMAKE_<LANG>_LINK_FLAGS` and
-    :variable:`CMAKE_<LANG>_LINK_FLAGS_<CONFIG>` add language-wide flags passed
-    to all invocations of the compiler which drive linking.
+    :variable:`CMAKE_<LANG>_LINK_FLAGS` 和 :variable:`CMAKE_<LANG>_LINK_FLAGS_<CONFIG>`
+    添加传递给所有驱动链接的编译器调用的语言级标志。
 
 * :module:`CheckLinkerFlag`\ 模块用于检查编译器是否支持某个链接器标志。

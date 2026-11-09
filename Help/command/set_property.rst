@@ -40,16 +40,15 @@ set_property
 ``RULE``
   .. versionadded:: 4.5
 
-  Scope may name zero or more existing rules in the current directory, created
-  by the :command:`add_custom_rule` command.
+  作用域可以命名当前目录中由 :command:`add_custom_rule` 命令创建的零条或多条已有规则。
 
 ``TARGET``
   作用域可以指定零个或多个已存在的目标。\
   另请参阅\ :command:`set_target_properties`\ 命令。
 
   .. versionchanged:: 4.5
-    If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, properties are
-    set on the target which the alias references.
+    如果 ``<target>`` 是一个 :ref:`别名目标 <Alias Targets>`，属性将
+    设置到别名所引用的目标上。
 
 ``FILE_SET``
   .. versionadded:: 4.3

@@ -1,9 +1,9 @@
 math
 ----
 
-Perform mathematical operations.
+执行数学运算。
 
-Expression Evaluation
+表达式求值
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
@@ -36,7 +36,7 @@ Expression Evaluation
   math(EXPR value "100 * 0xA" OUTPUT_FORMAT DECIMAL)      # value is set to "1000"
   math(EXPR value "100 * 0xA" OUTPUT_FORMAT HEXADECIMAL)  # value is set to "0x3e8"
 
-Increment/Decrement
+递增/递减
 ^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: cmake
@@ -46,5 +46,5 @@ Increment/Decrement
 
 .. versionadded:: 4.5
 
-Take the value of ``<variable>``, increment/decrement it, and store the result back
-in ``<variable>``. The variable must be defined and be a valid base-10 integer.
+取 ``<variable>`` 的值，将其递增/递减，并把结果存回
+``<variable>``。该变量必须已定义，且是一个有效的十进制整数。
