@@ -76,31 +76,27 @@ discover_tests
   为每个发现的测试指定要设置的测试属性。值为替换字符串，可引用 ``DISCOVERY_MATCH`` 中的捕获组。
 
   .. versionchanged:: 4.5
-    If the properties make the discovered tests part of a test fixture, and
-    they do not set :prop_test:`FIXTURE_REPEAT_MODE`, policy :policy:`CMP0224`
-    determines the behavior when the :ctest-option:`--repeat` option is used.
+    如果这些属性使被发现的测试成为某个测试夹具的一部分，而它们又未设置
+    :prop_test:`FIXTURE_REPEAT_MODE`，则当使用 :ctest-option:`--repeat` 选项时，
+    由策略 :policy:`CMP0224` 决定其行为。
 
 ``BUILD_DEPENDS``
   .. versionadded:: 4.5
 
-  Specify a list of targets or files that must be built before the test
-  discovery can run.  A relative file path is interpreted with respect to the
-  current source directory if the file exists there, and otherwise with respect
-  to the current binary directory.
+  指定一组必须在测试发现运行之前构建好的目标或文件。相对文件路径若所指的文件存在于当前源目录中，
+  则相对于当前源目录解释，否则相对于当前二进制目录解释。
 
-  When :ref:`Test Preparation Targets` are not disabled, these dependencies are
-  built by the ``test_prep/all`` target.  If ``COMMAND`` names an executable
-  target created by :command:`add_executable`, that target is also added
-  automatically.
+  当 :ref:`测试准备目标 <Test Preparation Targets>` 未被禁用时，这些依赖由
+  ``test_prep/all`` 目标构建。如果 ``COMMAND`` 指定了一个由 :command:`add_executable`
+  创建的可执行目标，该目标也会被自动添加。
 
-  Individual ``test_prep/<test-name>`` targets are not created for discovered
-  tests because their names are not known at generation time.
+  不会为被发现的测试创建单独的 ``test_prep/<test-name>`` 目标，
+  因为在生成阶段无法得知这些测试的名称。
 
-  Build dependencies added by this argument, and an executable target
-  named by ``COMMAND``, also enable the
-  :ctest-option:`--out-of-date` behavior of :manual:`ctest(1)`.
+  由此参数添加的构建依赖，以及由 ``COMMAND`` 指定的可执行目标，还会启用
+  :manual:`ctest(1)` 的 :ctest-option:`--out-of-date` 行为。
 
-  Tests with missing build dependencies will not be run.
+  构建依赖缺失的测试将不会运行。
 
 CTest 执行发现步骤以获取测试列表，然后使用由 ``COMMAND`` 和 ``TEST_ARGS`` 生成的命令行\
 来运行每个发现的测试。每个发现的测试的通过/失败行为遵循常规 CTest 规则（退出码 ``0`` 表示成功，\
