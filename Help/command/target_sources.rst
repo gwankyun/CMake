@@ -20,8 +20,8 @@ target_sources
   ``<target>``\ 可以是自定义目标。
 
 .. versionchanged:: 4.5
-  If ``<target>`` is an :ref:`Alias Target <Alias Targets>`, the command
-  operates on the target which the alias references.
+  如果 ``<target>`` 是一个 :ref:`别名目标 <Alias Targets>`，则该命令
+  会作用于别名所引用的那个目标。
 
 ``INTERFACE``、\ ``PUBLIC``\ 和\ ``PRIVATE``\ 关键字需要指定源文件路径的\
 :ref:`范围 <Target Command Scope>` （\ ``<source>...``\ ）。\ ``PRIVATE``\ 和\ ``PUBLIC``\
@@ -70,9 +70,8 @@ target_sources
 
 将文件集添加到目标，或将文件添加到现有文件集。目标有零个或多个命名文件集。
 
-See the :manual:`cmake-buildsystem(7)` manual for more on :ref:`File Sets`,
-including their types and scope semantics, properties, and installation/export
-behavior.
+有关 :ref:`文件集 <File Sets>` 的更多信息，包括其类型与作用域语义、属性，以及安装/导出行为，
+请参阅 :manual:`cmake-buildsystem(7)` 手册。
 
 每个\ ``target_sources(FILE_SET)``\ 项都以\ ``INTERFACE``、\ ``PUBLIC``\ 或\
 ``PRIVATE``\ 开头，接受下列参数：
@@ -85,25 +84,22 @@ behavior.
 
 ``TYPE <type>``
 
-  Every file set is associated with a particular type of file. Only types
-  listed under :ref:`File Sets` may be used and it is an error to specify
-  anything else. As a special case, if the name of the file set is one of these
-  types, the type does not need to be specified and the ``TYPE <type>``
-  arguments can be omitted. For all other file set names, ``TYPE`` is required.
+  每个文件集都与某种特定类型的文件相关联。只能使用 :ref:`文件集 <File Sets>` 中列出的类型，
+  指定任何其他类型都会导致错误。作为一种特例，如果文件集的名称本身就是这些类型之一，则无需
+  再指定类型，可以省略 ``TYPE <type>`` 参数。对于使用其他名称的文件集， ``TYPE`` 是必需的。
 
   .. versionadded:: 4.5
-    ``SYCL`` may be specified as an alias for ``SOURCES``.  It initializes the
-    file set's :prop_fs:`LANGUAGE` property to ``SYCL``.
+    可以将 ``SYCL`` 指定为 ``SOURCES`` 的别名。它会将文件集的
+    :prop_fs:`LANGUAGE` 属性初始化为 ``SYCL``。
 
-    ``SYCL_HEADERS`` may be specified as an alias for ``HEADERS``.  It also
-    initializes :prop_fs:`LANGUAGE` to ``SYCL``.  A target with such a file set
-    in its own build specification, or reachable through linked interface
-    properties, compiles all of its C++ sources as SYCL.
+    可以将 ``SYCL_HEADERS`` 指定为 ``HEADERS`` 的别名，它同样会将 :prop_fs:`LANGUAGE`
+    初始化为 ``SYCL``。如果某个目标自身的构建说明中含有此类文件集，或能够通过链接接口属性访问
+    到此类文件集，那么该目标的所有 C++ 源文件都将作为 SYCL 编译。
 
-    The canonical spellings ``FILE_SET SYCL TYPE SOURCES`` and
-    ``FILE_SET SYCL_HEADERS TYPE HEADERS`` are also accepted.
+    规范写法 ``FILE_SET SYCL TYPE SOURCES`` 和
+    ``FILE_SET SYCL_HEADERS TYPE HEADERS`` 也同样受支持。
 
-    Both aliases are experimental and gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+    这两个别名均为实验性功能，须通过 ``CMAKE_EXPERIMENTAL_SYCL`` 启用。
 
 ``BASE_DIRS <dirs>...``
 
