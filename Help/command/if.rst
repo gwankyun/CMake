@@ -132,8 +132,8 @@ if
 
   .. versionadded:: 4.5
 
-  True if the given name is an existing rule created by a call to the
-  :command:`add_custom_rule` command and is visible in the current directory.
+  如果给定的名称是一个由 :command:`add_custom_rule` 命令调用所
+  创建、且在当前目录中可见的现存规则，则为真。
 
 .. signature:: if(TARGET <target-name>)
 
@@ -385,37 +385,33 @@ if
 
   .. versionadded:: 4.5
 
-  True if the path on the left is a prefix of the path on the right.
+  如果左侧路径是右侧路径的前缀，则为真。
 
   .. code-block:: cmake
 
-    # comparison is TRUE
+    # 比较为真
     if ("/a/b" PATH_IS_PREFIX "/a/b/c")
        ...
     endif()
 
-    # comparison is FALSE: '/a/bc' is a sibling, not a child
+    # 比较为假：'/a/bc' 是同级路径，而非子路径
     if ("/a/b" PATH_IS_PREFIX "/a/bc")
        ...
     endif()
 
-  Component-wise comparison is superior to a regular expression match
-  against the start of the path.  The ``if (<path> MATCHES "^<prefix>")``
-  idiom mishandles regex metacharacters in ``<prefix>`` and accepts
-  siblings.
+  基于路径组件的比较要优于对路径开头做正则表达式匹配。
+  ``if (<path> MATCHES "^<prefix>")`` 这一惯用法无法正确处理
+  ``<prefix>`` 中的正则表达式元字符，并且会接受同级路径。
 
-  The test is lexical, not a containment check.  No
-  :ref:`path normalization <Normalization>` is performed, so a ``..``
-  escape still tests true: ``"/a/b" PATH_IS_PREFIX "/a/b/../../etc"``.
-  Normalize with :command:`cmake_path(NORMAL_PATH)` first if that must be
-  rejected.
+  该测试是基于词法的，并非包含关系检查。它不会执行
+  :ref:`路径规范化 <Normalization>`，因此含 ``..`` 的逃逸路径仍会测试为真：
+  ``"/a/b" PATH_IS_PREFIX "/a/b/../../etc"``。如果必须拒绝这种情况，请先用
+  :command:`cmake_path(NORMAL_PATH)` 进行规范化。
 
-  An empty prefix is not a prefix of any path.  See policy
-  :policy:`CMP0223`.
+  空前缀不是任何路径的前缀。参见策略 :policy:`CMP0223`。
 
-  Equivalent to :command:`cmake_path(IS_PREFIX)` and
-  ``$<PATH:IS_PREFIX>`` without their ``NORMALIZE`` option.  See
-  :command:`cmake_path(IS_PREFIX)` for more details.
+  等价于不带 ``NORMALIZE`` 选项的 :command:`cmake_path(IS_PREFIX)`
+  和 ``$<PATH:IS_PREFIX>``。详见 :command:`cmake_path(IS_PREFIX)`。
 
 变量展开
 ^^^^^^^^^^^^^^^^^^

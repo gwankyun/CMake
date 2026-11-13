@@ -49,30 +49,27 @@ function
 参数
 ^^^^^^^^^
 
-当调用该函数时，记录的\ ``<commands>``\ 首先通过用传递的参数替换形式参数（\ ``${arg1}``\
-等）来修改，然后作为普通命令调用。The following
-variables are set in the scope of the function:
+当调用该函数时，记录的 ``<commands>`` 首先通过用传递的参数替换形式参数（ ``${arg1}``
+等）来修改，然后作为普通命令调用。以下变量会被设置在函数的作用域中：
 
 ``ARGC``
-  The number of arguments passed into the function.
+  传递给函数的参数个数。
 
 ``ARGV``
-  The list of all arguments given to the function.
+  传递给函数的所有参数的列表。
 
 ``ARGV#``
-  The variables ``ARGV0``, ``ARGV1``, ``ARGV2``, ...  which will have the
-  actual values of the arguments passed in. References to ``ARGV#``
-  arguments beyond ``ARGC`` have undefined behavior.  Checking that
-  ``ARGC`` is greater than ``#`` is the only way to ensure that ``ARGV#``
-  was passed to the function as an extra argument.
+  变量 ``ARGV0``、 ``ARGV1``、 ``ARGV2``、……，它们将持有传入参数的实际值。
+  引用超出 ``ARGC`` 范围的 ``ARGV#`` 属于未定义行为。要确保 ``ARGV#`` 确实
+  作为额外参数传递给了函数，唯一的办法是检查 ``ARGC`` 是否大于 ``#``。
 
 ``ARGN``
-  The list of arguments past the last expected argument.
+  排在最后一个形参之后的参数列表。
 
 ``ARGNC``
   .. versionadded:: 4.5
 
-  The number of arguments past the last expected argument.
+  排在最后一个形参之后的参数个数。
 
 另请参阅
 ^^^^^^^^
