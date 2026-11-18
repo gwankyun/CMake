@@ -61,9 +61,9 @@
 
  .. note::
 
-   When passing a :ref:`semicolon-separated list <CMake Language Lists>`
-   of paths on Windows, avoid paths with a trailing ``\``, as it may
-   escape the following ``;`` during list expansion.
+   在 Windows 上以 :ref:`以分号分隔的列表 <CMake Language Lists>`
+   的形式传递路径时，应避免使用以 ``\`` 结尾的路径，因为在列表
+   展开时，该 ``\`` 可能会转义紧随其后的 ``;``。
 
 .. option:: -U <globbing_expr>
 

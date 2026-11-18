@@ -566,106 +566,92 @@ CMake有意义的变量。
 
 .. _`CMake Language Regex Specification`:
 
-Regex Specification
+正则表达式规范
 ===================
 
-Several CMake commands accept regular expressions, including
-:command:`string(REGEX ...) <string>`, :command:`if(MATCHES)`,
-:command:`list(FILTER)`, and others, as well as command-line options such as
-:option:`ctest -L` and related modes.
+多个 CMake 命令接受正则表达式，包括
+:command:`string(REGEX ...) <string>`、:command:`if(MATCHES)`、
+:command:`list(FILTER)` 等，此外还有诸如 :option:`ctest -L` 之类的
+命令行选项及相关模式。
 
-The following characters have special meaning in regular expressions:
+以下字符在正则表达式中具有特殊含义：
 
 ``^``
-  Matches at beginning of input
+  匹配输入的开头
 ``$``
-  Matches at end of input
+  匹配输入的结尾
 ``.``
-  Matches any single character
+  匹配任意单个字符
 ``\<char>``
-  Matches the single character specified by ``<char>``.  Use this to
-  match special regex characters, e.g. ``\.`` for a literal ``.``
-  or ``\\`` for a literal backslash ``\``.  Escaping a non-special
-  character is unnecessary but allowed, e.g. ``\a`` matches ``a``.
+  匹配 ``<char>`` 所指定的单个字符。用它来匹配正则表达式的特殊字符，例如
+  ``\.`` 匹配字面 ``.``，``\\`` 匹配字面反斜杠 ``\``。对非特殊字符进行
+  转义没有必要，但也是允许的，例如 ``\a`` 匹配 ``a``。
 ``[ ]``
-  Matches any single character inside the brackets.
-  To match a literal ``]``, make it the first character, e.g., ``[]ab]``.
+  匹配方括号内的任意单个字符。若要匹配字面 ``]``，将其放在首位，例如 ``[]ab]``。
 ``[^ ]``
-  Matches any single character not inside the brackets.
-  To not match a literal ``]``, make it the first character, e.g., ``[^]ab]``.
+  匹配不在方括号内的任意单个字符。若要将字面 ``]`` 也排除在外，
+  将其放在首位，例如 ``[^]ab]``。
 ``-``
-  Inside brackets, specifies an inclusive range between characters on
-  either side, e.g., ``[a-f]`` is ``[abcdef]``.
-  To match a literal ``-`` using brackets, make it the first or the last
-  character, e.g., ``[+*/-]`` matches basic mathematical operators.
+  在方括号内，指定其两侧字符之间的闭区间范围，例如 ``[a-f]`` 等价于 ``[abcdef]``。
+  若要在方括号中匹配字面 ``-``，将其放在首位或末位，例如 ``[+*/-]`` 可匹配基本数学运算符。
 ``*``
-  Matches preceding pattern zero or more times
+  匹配前面的模式零次或多次
 ``+``
-  Matches preceding pattern one or more times
+  匹配前面的模式一次或多次
 ``?``
-  Matches preceding pattern zero or once only
+  匹配前面的模式零次或仅一次
 ``|``
-  Matches a pattern on either side of the ``|``
+  匹配 ``|`` 任意一侧的模式
 ``()``
-  Groups a subexpression and captures the text it matches.
+  将子表达式分组，并捕获其匹配的文本。
 
   .. versionadded:: 3.9
-    All regular expression-related commands, including e.g.
-    :command:`if(MATCHES)`, save subgroup matches in the variables
-    :variable:`CMAKE_MATCH_<n>` for ``<n>`` 0..9.
+    所有与正则表达式相关的命令（包括 :command:`if(MATCHES)` 等）都会将子组
+    匹配结果保存到变量 :variable:`CMAKE_MATCH_<n>` 中，其中 ``<n>`` 为 0..9。
 
 .. noqa: spellcheck off
 
-``*``, ``+`` and ``?`` have higher precedence than concatenation.  ``|``
-has lower precedence than concatenation.  This means that the regular
-expression ``^ab+d$`` matches ``abbd`` but not ``ababd``, and the regular
-expression ``^(ab|cd)$`` matches ``ab`` but not ``abd``.
+``*``、 ``+`` 和 ``?`` 的优先级高于串接。``|`` 的优先级低于串接。这意味着正则表达式
+``^ab+d$`` 匹配 ``abbd``，但不匹配 ``ababd``；而正则表达式 ``^(ab|cd)$`` 匹配
+``ab``，但不匹配 ``abd``。
 
 .. noqa: spellcheck on
 
-Character Classes
+字符类
 -----------------
 
-Backslashes are literal inside brackets and do not escape the following
-character.  Furthermore, regex escapes do not provide shorthand character
-classes such as ``\d``, ``\w``, or ``\s``, or word boundaries such as ``\b``.
-For example, ``\d+`` matches one or more literal ``d`` characters, not digits.
-POSIX character classes such as ``[[:alpha:]]`` are also not supported.  Use
-explicit ranges such as ``[A-Za-z]`` or ``[0-9]`` instead.
+在方括号内，反斜杠是字面字符，不会转义其后的字符。此外，正则表达式的转义序列不提供诸如
+``\d``、``\w``、``\s`` 之类的简写字符类，也不提供诸如 ``\b`` 之类的单词边界。例如，
+``\d+`` 匹配一个或多个字面的 ``d`` 字符，而非数字。诸如 ``[[:alpha:]]`` 这样的
+POSIX 字符类同样不受支持。请改用诸如 ``[A-Za-z]`` 或 ``[0-9]`` 的显式范围。
 
-Escaping
+转义
 --------
 
-When a regex is written in CMake code, CMake parses the argument before
-the regex engine sees it.  In particular, regex backslashes must be doubled
-in a :ref:`Quoted Argument`, while a :ref:`Bracket Argument` preserves them
-literally.
+在 CMake 代码中书写正则表达式时，参数会先被 CMake 解析，然后才交给正则引擎。具体而言，
+在 :ref:`带引号的参数 <Quoted Argument>` 中，正则的反斜杠必须写成双份；而
+:ref:`方括号参数 <Bracket Argument>` 则会按字面保留它们。
 
-CMake language :ref:`Escape Sequences` such as ``\t``, ``\r``, ``\n``,
-and ``\\`` may be used to construct literal tabs, carriage returns,
-newlines, and backslashes (respectively) to pass in a regex.  For example:
+可以使用 CMake 语言的 :ref:`转义序列 <Escape Sequences>` （如 ``\t``、``\r``、
+``\n`` 和 ``\\``）来构造要传入正则表达式的字面制表符、回车符、换行符和反斜杠（依次对应）。
+例如：
 
-* The quoted argument ``"[ \t\r\n]"`` specifies a regex that matches
-  any single whitespace character.
-* The quoted argument ``"[/\\]"`` specifies a regex that matches
-  a single forward slash ``/`` or backslash ``\``.
-* The quoted argument ``"[A-Za-z0-9_]"`` specifies a regex that matches
-  any single "word" character in the C locale.
-* The quoted argument ``"\\(\\a\\+b\\)"`` specifies a regex that matches
-  the exact string ``(a+b)``.  Each ``\\`` is parsed in a quoted argument
-  as just ``\``, so the regex itself is actually ``\(\a\+\b\)``.  This
-  can alternatively be specified in a :ref:`bracket argument` without
-  having to escape the backslashes, e.g. ``[[\(\a\+\b\)]]``.
+* 带引号的参数 ``"[ \t\r\n]"`` 指定了一个匹配任意单个空白字符的正则表达式。
+* 带引号的参数 ``"[/\\]"`` 指定了一个匹配单个正斜杠 ``/`` 或反斜杠 ``\`` 的正则表达式。
+* 带引号的参数 ``"[A-Za-z0-9_]"`` 指定了一个匹配 C locale 中任意单个“单词”字符的正则表达式。
+* 带引号的参数 ``"\\(\\a\\+b\\)"`` 指定了一个精确匹配字符串 ``(a+b)`` 的正则表达式。
+  在带引号的参数中，每个 ``\\`` 都会被解析为单独一个 ``\``，因此该正则表达式实际上是
+  ``\(\a\+\b\)``。 也可以改在 :ref:`方括号参数 <Bracket Argument>` 中指定它，
+  无需转义反斜杠，例如 ``[[\(\a\+\b\)]]``。
 
-Other Regex Syntaxes
+其他正则表达式语法
 --------------------
 
-Backreferences such as ``\1`` through ``\9`` are supported in the replacement
-expression of :command:`string(REGEX REPLACE)`, but not in regex patterns.
-For example, ``(a)\1`` matches ``a1``, not ``aa``.
+诸如 ``\1`` 至 ``\9`` 的反向引用在 :command:`string(REGEXREPLACE)` 的替换表达式中受支持，
+但在正则表达式模式中不受支持。例如，``(a)\1`` 匹配 ``a1``，而非 ``aa``。
 
-CMake's regex syntax does not support counted repetition such as ``{2}``.
-For example, ``a{2}`` matches the literal text ``a{2}``, rather than ``aa``.
+CMake 的正则表达式语法不支持诸如 ``{2}`` 的定量重复。
+例如， ``a{2}`` 匹配的是字面文本 ``a{2}``，而非 ``aa``。
 
-Lazy or possessive repetition, such as ``*?`` or ``*+``, and special group
-forms, such as ``(?:...)`` or ``(?=...)``, are not supported.
+惰性重复或占有式重复（如 ``*?`` 或 ``*+``），以及特殊分组
+形式（如 ``(?:...)`` 或 ``(?=...)``），均不受支持。

@@ -74,30 +74,29 @@
 
  .. versionadded:: 4.4
 
- Print help for one diagnostic and exit.
+ 打印某一条诊断的帮助信息并退出。
 
- The :manual:`cmake-diagnostics(7)` manual entry for ``<diag>`` is
- printed in a human-readable text format.
+ 将以人类可读的文本格式打印 ``<diag>`` 对应的
+ :manual:`cmake-diagnostics(7)` 手册条目。
  |file|
 
 .. option:: --help-diagnostic-list [<file>]
 
  .. versionadded:: 4.4
 
- List diagnostics with help available and exit.
+ 列出可获得帮助信息的诊断并退出。
 
- The list contains all diagnostics for which help may be obtained by
- using the ``--help-diagnostic`` option followed by a command name.
+ 该列表包含所有这样的诊断：在 ``--help-diagnostic`` 选项后
+ 跟命令名即可获取它们的帮助。
  |file|
 
 .. option:: --help-diagnostics [<file>]
 
  .. versionadded:: 4.4
 
- Print cmake-diagnostics manual and exit.
+ 打印 cmake-diagnostics 手册并退出。
 
- The :manual:`cmake-diagnostics(7)` manual is printed in a
- human-readable text format.
+ 将以人类可读的文本格式打印 :manual:`cmake-diagnostics(7)` 手册。
  |file|
 
 .. option:: --help-module <mod> [<file>]
