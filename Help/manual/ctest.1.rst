@@ -91,10 +91,9 @@ ctest(1)
 
 .. option:: --list-presets[=defined]
 
- Lists the available test presets. With ``defined``, all non-hidden defined
- test presets are listed, including unavailable presets with the reason they
- cannot be used. The current working directory must contain
- ``CMakePresets.json`` and/or ``CMakeUserPresets.json``.
+ 列出可用的测试预设。若指定 ``defined``，则会列出所有未隐藏的已定义测试预设，其中包括
+ 不可用的预设以及它们无法使用的原因。当前工作目录必须包含 ``CMakePresets.json`` 和/或
+ ``CMakeUserPresets.json``。
 
  .. versionchanged:: 4.4
    如果指定了 :ctest-option:`--presets-file`，则不要求 ``CMakePresets.json`` 或
@@ -102,7 +101,7 @@ ctest(1)
    它们必须存在于顶层源目录中。在之前的版本中，这是严格要求的。
 
  .. versionadded:: 4.5
-   Support for the ``defined`` value.
+   对 ``defined`` 值的支持。
 
 .. option:: -C <cfg>, --build-config <cfg>
 
@@ -237,8 +236,8 @@ ctest(1)
 
      .. versionadded:: 4.5
 
-     Dump the test information in JSON format, but leaves test property
-     values as raw strings. See `Show as JSON Object Model`_.
+     以 JSON 格式转储测试信息，但将测试属性的值保留为原始字符串。
+     参见 `Show as JSON Object Model`_。
 
 .. option:: -L <regex>, --label-regex <regex>
 
@@ -523,36 +522,29 @@ ctest(1)
 
  .. versionadded:: 4.5
 
- Run only tests whose build dependencies are newer than the last time the
- test ran.
+ 仅运行构建依赖自测试上次运行以来有所更新的测试。
 
- This option tells CTest to skip tests that are already up to date with
- respect to their recorded build dependencies. Build dependencies include
- executables and targets in generator expressions as part of the test
- ``COMMAND``, as well as the outputs of targets or files added as explicit
- dependencies with the ``BUILD_DEPENDS`` argument of :command:`add_test` or
- :command:`discover_tests`. Tests discovered by
- :command:`gtest_discover_tests` also record their test executable as a build
- dependency.
+ 此选项让 CTest 跳过那些相对于已记录的构建依赖而言已经最新的测试。构建依赖包括：测试
+ ``COMMAND`` 中以生成器表达式形式出现的可执行文件和目标；以及通过 :command:`add_test`
+ 或 :command:`discover_tests` 的 ``BUILD_DEPENDS`` 参数显式添加为依赖的目标输出或文件。
+ 由 :command:`gtest_discover_tests` 发现的测试还会将其测试可执行文件记录为构建依赖。
 
- A test is selected to run when any of its recorded build dependencies are
- newer than the test's last-run timestamp, when any dependency is missing, or
- when the test has not been run before. Selected tests with missing build
- dependencies are reported as ``Not Run``. Tests without any known build
- dependencies are excluded when this argument is provided.
+ 在下列情况下，测试会被选中运行：其任一已记录的构建依赖比该测试上次运行的时间戳更新；
+ 任一依赖缺失；或该测试此前从未运行过。被选中但构建依赖缺失的测试会报告为 ``Not Run``。
+ 当给出此选项时，没有任何已知构建依赖的测试会被排除在外。
 
 查看帮助
 =========
 
 .. program:: ctest
 
-To print selected pages from the CMake documentation, use
+要打印 CMake 文档中的指定页面，请使用
 
 .. code-block:: shell
 
   ctest --help[-<topic>]
 
-with one of the following options:
+并搭配以下选项之一：
 
 .. include:: include/OPTIONS_HELP.rst
 
@@ -1799,9 +1791,8 @@ CTest资源分配特性由最少两个输入组成：
 用\ :prop_test:`SKIP_RETURN_CODE`\ 或\ :prop_test:`SKIP_REGULAR_EXPRESSION`\ 属性\
 来指示跳过的测试。
 
-The :prop_test:`RESOURCE_ERROR_ACTION` test property can be used to steer the
-behavior in case the resources requested cannot be satisfied. By default the
-test is marked as failed.
+:prop_test:`RESOURCE_ERROR_ACTION` 测试属性可用于控制当所请求的
+资源无法得到满足时的行为。默认情况下，测试会被标记为失败。
 
 .. _`ctest-resource-specification-file`:
 
@@ -1979,13 +1970,11 @@ GPU 3默认有1个槽位。还有一个带4插槽的密码芯片。
 .. versionadded:: 3.29
 
 .. versionadded:: 4.5
-  Integration is now implemented on Windows.
+  该集成现已支持 Windows。
 
-When running under the context of a `Job Server`_, CTest shares its job slots.
-This is independent of the :prop_test:`PROCESSORS` test property, which still
-counts against CTest's :ctest-option:`-j` parallel level.  CTest acquires
-exactly one token from the job server before running each test, and returns it
-when the test finishes.
+在 `Job Server`_ 的上下文中运行时，CTest 会共享其任务槽位。这与 :prop_test:`PROCESSORS`
+测试属性相互独立，后者仍然计入CTest 的 :ctest-option:`-j` 并行级别。CTest 在运行每个测试
+之前会从任务服务器获取恰好一个令牌，并在测试结束后将其归还。
 
 例如，考虑\ ``Makefile``：
 
