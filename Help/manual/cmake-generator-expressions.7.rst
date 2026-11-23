@@ -43,11 +43,10 @@ cmake-generator-expressions(7)
 
 .. note::
 
-  Property names specified as part of a generator expression must respect
-  the following regular expression: ``^[A-Za-z0-9_:]+$``.
+  在生成器表达式中指定的属性名必须符合以下正则表达式： ``^[A-Za-z0-9_:]+$``。
 
   .. versionchanged:: 4.5
-    The character ``:`` is now allowed.
+    现在允许使用字符 ``:``。
 
 空格和引号
 ======================
@@ -824,22 +823,20 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 4.5
 
-    The regular expression may be introduced explicitly with a ``REGEX``
-    keyword, and a ``PREDICATE`` keyword selects items using a generator
-    expression instead:
+    正则表达式可以通过 ``REGEX`` 关键字显式引入，而 ``PREDICATE``
+    关键字则改为使用生成器表达式来选择条目：
 
     .. code-block:: cmake
 
       $<LIST:FILTER,list,INCLUDE|EXCLUDE,REGEX,regex>
       $<LIST:FILTER,list,INCLUDE|EXCLUDE,PREDICATE,body>
 
-    With ``PREDICATE``, ``body`` is evaluated once per item with the bound
-    operand :genex:`$<_0>` expanding to the current item.  The body must
-    evaluate to exactly ``0`` or ``1``; ``INCLUDE`` keeps items whose body
-    yields ``1`` and ``EXCLUDE`` removes them.  Use ``$<BOOL:...>`` to
-    coerce other values.  Because ``REGEX`` and ``PREDICATE`` are now keywords,
-    a bare regular expression equal to ``REGEX`` or ``PREDICATE`` must use the
-    explicit ``REGEX`` form.
+    使用 ``PREDICATE`` 时， ``body`` 会对每个条目求值一次，其中绑定操作数
+    :genex:`$<_0>` 会展开为当前条目。 ``body`` 的求值结果必须恰好为 ``0`` 或 ``1``；
+    ``INCLUDE`` 保留 ``body`` 结果为 ``1`` 的条目， ``EXCLUDE`` 则将其移除。请使用
+    ``$<BOOL:...>`` 对其他值进行强制转换。由于 ``REGEX`` 和 ``PREDICATE`` 现在成了
+    关键字，内容恰为 ``REGEX`` 或 ``PREDICATE`` 的裸正则表达式必须改用显式的 ``REGEX``
+    形式。
 
 .. genex:: $<LIST:TRANSFORM,list,ACTION[,SELECTOR]>
 
@@ -888,13 +885,11 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
         请参阅策略\ :policy:`CMP0186`。
 
     :command:`APPLY <list(TRANSFORM_APPLY)>`
-      Transform each selected element by evaluating an arbitrary generator
-      expression ``<body>`` once per element.  Within ``<body>``, the bound
-      operand :genex:`$<_0>` expands to the current element.  Unlike the
-      configure-time :command:`list(TRANSFORM APPLY) <list(TRANSFORM_APPLY)>`
-      command, the genex form returns the body's value directly and has no side
-      effects.  A list-valued body result expands into multiple elements, like
-      any other list-valued generator expression.
+      对每个选定的元素求值一次任意生成器表达式 ``<body>``，以完成变换。在 ``<body>``
+      内部，绑定操作数 :genex:`$<_0>` 会展开为当前元素。与配置阶段执行的
+      :command:`list(TRANSFORM APPLY) <list(TRANSFORM_APPLY)>` 命令不同，生成器
+      表达式形式直接返回 ``<body>`` 的值，且没有副作用。与其他值为列表的生成器表达式一样，
+      若 ``<body>`` 的求值结果为列表，则会展开成多个元素。
 
       .. code-block:: cmake
 
@@ -927,14 +922,11 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
         $<LIST:TRANSFORM,list,ACTION,REGEX,regular_expression>
 
     ``PREDICATE``
-      Specify a generator expression ``body`` evaluated once per item with the
-      bound operand :genex:`$<_0>` expanding to the current item.  Only items
-      whose body evaluates to ``1`` are transformed; the body must evaluate to
-      exactly ``0`` or ``1``.  ``PREDICATE`` may be combined with any action,
-      including ``APPLY`` (in which case both bodies bind :genex:`$<_0>`
-      independently).
-      Like all selectors, only one selector may be given; ``PREDICATE`` cannot
-      be combined with ``AT``, ``FOR``, or ``REGEX``.
+      指定一个生成器表达式 ``body``，它对每个条目求值一次，其中绑定操作数 :genex:`$<_0>`
+      会展开为当前条目。只有 ``body`` 求值结果为 ``1`` 的条目才会被变换； ``body``
+      的求值结果必须恰好为 ``0`` 或 ``1``。 ``PREDICATE`` 可以与任何动作组合使用，包括
+      ``APPLY`` （此时两个 ``body`` 各自独立地绑定 :genex:`$<_0>`）。与所有选择器一样，
+      只能给出一个选择器； ``PREDICATE`` 不能与 ``AT``、 ``FOR`` 或 ``REGEX`` 组合使用。
 
       .. code-block:: cmake
 
