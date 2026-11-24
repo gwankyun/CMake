@@ -37,7 +37,7 @@
     add_library(lib SHARED ...)
     target_link_libraries(lib PRIVATE "$<LINK_LIBRARY:FRAMEWORK,/path/to/my_framework>")
 
-    # The constructed linker command line will contain:
+    # 构造出的链接器命令行将包含：
     #   -F/path/to -framework my_framework
 
   文件路径必须符合以下模式之一（``*``\ 为通配符，可选部分显示为\ ``[...]``）：
@@ -72,22 +72,21 @@
   这类似于\ ``NEEDED_FRAMEWORK``\ 特性，除了它用于非框架目标或库。
   This feature is only supported on the following platforms:
 
+  此特性仅支持以下平台：
+
   Apple
-    Uses the ``-needed_library`` or ``-needed-l`` option as appropriate,
-    with the same linker constraints as ``NEEDED_FRAMEWORK``.
+    视情况使用 ``-needed_library`` 或 ``-needed-l`` 选项，
+    其链接器约束与 ``NEEDED_FRAMEWORK`` 相同。
 
   Linux
     .. versionadded:: 4.5
 
-    Wraps the library with ``--no-as-needed`` / ``--as-needed`` to force
-    an entry in the binary's ``DT_NEEDED`` list regardless of whether any
-    symbols from the library are directly referenced.  When the linker
-    supports ``--push-state`` / ``--pop-state`` (GNU ld >= 2.25, gold,
-    LLD, MOLD), the state-stacking form is used instead to correctly
-    restore the pre-existing ``--as-needed`` state rather than
-    unconditionally enabling it after the library.  This feature is only
-    meaningful for shared libraries; applying it to a static library
-    produces a developer warning and has no effect.
+    用 ``--no-as-needed`` / ``--as-needed`` 包裹该库，从而无论该库中的任何符号
+    是否被直接引用，都强制在二进制文件的 ``DT_NEEDED`` 列表中生成一个条目。当链接器
+    支持 ``--push-state`` / ``--pop-state`` 时（GNU ld >= 2.25、gold、LLD、
+    MOLD），会改用状态堆叠形式，以正确恢复此前已有的 ``--as-needed`` 状态，
+    而不是在该库之后无条件地启用它。此特性仅对共享库有意义；
+    将其应用于静态库会产生开发者警告，且没有任何效果。
 
 ``REEXPORT_LIBRARY``
   这类似于\ ``REEXPORT_FRAMEWORK``\ 特性，除了它用于非框架目标或库（仅限苹果平台）。\

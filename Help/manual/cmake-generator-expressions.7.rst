@@ -1011,54 +1011,46 @@ CMake支持各种生成器表达式进行比较。本节将介绍主要的和最
 
   .. versionadded:: 4.5
 
-  A ``COMPARATOR`` option sorts using a generator-expression ``body`` instead
-  of a built-in ordering:
+  ``COMPARATOR`` 选项使用生成器表达式 ``body`` 来完成排序，而不使用内置排序：
 
   .. code-block:: cmake
 
     $<LIST:SORT,list,COMPARATOR,body[,ORDER:ASCENDING|DESCENDING][,CASE:SENSITIVE|INSENSITIVE]>
 
-  ``body`` is evaluated once per comparison with the two items being compared
-  bound to :genex:`$<_0>` and :genex:`$<_1>`.  It must evaluate to exactly
-  ``0`` or ``1``; ``1`` means :genex:`$<_0>` sorts before :genex:`$<_1>`.
-  ``COMPARATOR`` is incompatible with ``COMPARE:``.  ``ORDER:DESCENDING``
-  reverses the comparator and ``CASE:INSENSITIVE`` case-folds the values the
-  body sees, both as in the configure-time :command:`list(SORT)`.  The body
-  must induce a `strict weak ordering
-  <https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings>`_.
+  ``body`` 在每次比较时求值一次，参与比较的两个条目分别绑定到 :genex:`$<_0>` 和
+  :genex:`$<_1>`。其求值结果必须恰好为 ``0`` 或 ``1``； ``1`` 表示 :genex:`$<_0>`
+  排在 :genex:`$<_1>` 之前。 ``COMPARATOR`` 与 ``COMPARE:`` 不兼容。
+  ``ORDER:DESCENDING`` 会反转比较器的结果， ``CASE:INSENSITIVE`` 会对 body 所见的
+  值做大小写折叠，两者的行为均与配置阶段的 :command:`list(SORT)` 一致。body 必须构成一个
+  `严格弱序 <https://en.wikipedia.org/wiki/Weak_ordering#Strict_weak_orderings>`_。
 
 .. _GenEx Bound Operands:
 
-Bound Operands
+绑定操作数
 ^^^^^^^^^^^^^^
 
 .. genex:: $<_0>
 
   .. versionadded:: 4.5
 
-  ``$<_0>`` is the *bound operand* of the enclosing *binding operation*: a
-  generator expression that evaluates a ``<body>`` once for each value it
-  supplies, with ``$<_0>`` expanding to that value.
+  ``$<_0>`` 是外层 *绑定操作* 的 *绑定操作数* ：绑定操作是指这样的生成器表达式——它对其
+  提供的每个值求值一次 ``<body>``，并将 ``$<_0>`` 展开为该值。
 
-  For example, :genex:`$<LIST:TRANSFORM,...,APPLY,body>` evaluates ``body``
-  once per list element with ``$<_0>`` bound to the current element.
+  例如，:genex:`$<LIST:TRANSFORM,...,APPLY,body>` 对每个列表
+  元素求值一次 ``body``，并将 ``$<_0>`` 绑定到当前元素。
 
-  ``$<_0>`` is only valid inside the body of a binding operation.  Using it
-  anywhere else is an error.
+  ``$<_0>`` 仅在绑定操作的 body 内部有效。在其他任何位置使用它都是错误的。
 
 .. genex:: $<_1>
 
   .. versionadded:: 4.5
 
-  The second *bound operand* of a *binding operation* that binds at least two
-  operands, expanding to the second supplied value.
+  这是至少绑定两个操作数的 *绑定操作* 的第二个 *绑定操作数*，会展开为所提供的第二个值。
 
-  For example, :genex:`$<LIST:SORT,...,COMPARATOR,body>` evaluates ``body``
-  once per comparison with :genex:`$<_0>` and ``$<_1>`` bound to the two items
-  being compared.
+  例如，:genex:`$<LIST:SORT,...,COMPARATOR,body>` 在每次比较时求值一次 ``body``，
+  并将 :genex:`$<_0>` 和 ``$<_1>`` 绑定到参与比较的两个条目。
 
-  ``$<_1>`` is only valid inside the body of a binding operation that binds at
-  least two operands.  Using it anywhere else is an error.
+  ``$<_1>`` 仅在绑定了至少两个操作数的绑定操作的 body 内部有效。在其他任何位置使用它都是错误的。
 
 路径表达式
 ----------------
@@ -1139,11 +1131,10 @@ Bound Operands
   当指定\ ``NORMALIZE``\ 选项时，\ ``path``\ 和\ ``input``\ 在检查之前被\
   :ref:`normalized <Normalization>`。
 
-  An empty ``path`` is not a prefix of any ``input``.
+  空的 ``path`` 不是任何 ``input`` 的前缀。
 
   .. versionchanged:: 4.5
-    An empty ``path`` was previously a prefix of every ``input``.  See
-    policy :policy:`CMP0223`.
+    此前，空的 ``path`` 是每个 ``input`` 的前缀。参见策略 :policy:`CMP0223`。
 
 .. _GenEx Path Decomposition:
 
@@ -1325,52 +1316,48 @@ Shell路径
   数中的最外层生成器表达式有效。对于\ :generator:`Ninja Multi-Config`\ 生成器，生成器表\
   达式在\ ``...``\ 使用自定义命令的“命令配置”进行计算。使用其他生成器，\ ``...``\ 正常计算。
 
-Global Expressions
+全局表达式
 ------------------
 
-Global Properties
+全局属性
 ^^^^^^^^^^^^^^^^^
 
 .. genex:: $<GLOBAL_PROPERTY:prop>
 
   .. versionadded:: 4.5
 
-  Value of the global property ``prop``, or empty if
-  the property is not set.
+  全局属性 ``prop`` 的值；若该属性未设置，则为空。
 
-Directory-dependent Expressions
+依赖目录的表达式
 -------------------------------
 
-Directory Properties
+目录属性
 ^^^^^^^^^^^^^^^^^^^^
 
 .. genex:: $<DIRECTORY_PROPERTY:dir,prop>
 
   .. versionadded:: 4.5
 
-  Value of the property ``prop`` on the directory ``dir``, or empty if
-  the property is not set. An error will be raised if the directory is not
-  known by CMake.
+  目录 ``dir`` 上属性 ``prop`` 的值；若该属性未设置，则为空。
+  如果 CMake 无法识别该目录，将引发错误。
 
-Rule-Dependent Expressions
+依赖规则的表达式
 --------------------------
 
-Rule Properties
+规则属性
 ^^^^^^^^^^^^^^^
 
-These expressions look up the values of rule properties.
+这些表达式用于查找规则属性的值。
 
 .. genex:: $<RULE_PROPERTY:rule,prop>
 
   .. versionadded:: 4.5
 
-  Value of the property ``prop`` on the rule ``rule``, or empty if
-  the property is not set. An error will be raised if the rule is not
-  known by CMake.
+  规则 ``rule`` 上属性 ``prop`` 的值；若该属性未设置，则为空。
+  如果 CMake 无法识别该规则，将引发错误。
 
-  This generator expression can only be used in the definition of a custom rule
-  (see :command:`add_custom_rule`). Moreover, ``rule`` parameter must be the
-  pattern ``<RULE>``. Any other value will raise an error.
+  此生成器表达式只能在自定义规则的定义中使用（参见 :command:`add_custom_rule`）。
+  此外， ``rule`` 参数必须为 ``<RULE>`` 模式。任何其他值都会引发错误。
 
 工具链和语言表达式
 ----------------------------------
@@ -1964,10 +1951,9 @@ These expressions look up the values of rule properties.
 
   * 如果\ ``$<LINK_LIBRARY:...>``\ 生成器表达式出现在目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
     属性中，它将包含在由\ :command:`install(EXPORT)`\ 命令生成的导入目标中。使用此导入\
-    的环境负责定义此表达式使用的链接特性。Any CMake
-    target named in the ``library-list`` should be wrapped in
-    :genex:`TARGET_NAME` so that its name is namespaced on export; otherwise it
-    is exported verbatim and will not resolve as an imported target.
+    的环境负责定义此表达式使用的链接特性。``library-list`` 中指定的任何 CMake 目标都应当包裹在
+    :genex:`TARGET_NAME` 中，以便在导出时为其名称加上命名空间；否则它会被原样导出，
+    从而无法解析为导入目标。
 
   * 链接步骤中涉及的每个目标或库最多只能有一种库特性。一个特性的缺失也与所有其他特性不兼容。\
     例如：
@@ -2116,10 +2102,9 @@ These expressions look up the values of rule properties.
 
   * 如果\ ``$<LINK_GROUP:...>``\ 生成器表达式出现在目标的\ :prop_tgt:`INTERFACE_LINK_LIBRARIES`\
     属性中，它将包含在由\ :command:`install(EXPORT)`\ 命令生成的导入目标中。使用此导入\
-    的环境负责定义此表达式使用的链接特性。Any CMake
-    target named in the ``library-list`` should be wrapped in
-    :genex:`TARGET_NAME` so that its name is namespaced on export; otherwise it
-    is exported verbatim and will not resolve as an imported target.
+    的环境负责定义此表达式使用的链接特性。 ``library-list`` 中指定的任何 CMake 目标都应当包裹在
+    :genex:`TARGET_NAME` 中，以便在导出时为其名称加上命名空间；
+    否则它会被原样导出，从而无法解析为导入目标。
 
 链接上下文
 ^^^^^^^^^^^^
@@ -2262,20 +2247,20 @@ These expressions look up the values of rule properties.
   .. versionadded:: 4.5
 
   .. note::
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+    实验性功能。须通过 ``CMAKE_EXPERIMENTAL_SYCL`` 启用。
 
-  CMake's linker id of the SYCL linker used.
+  所使用的 SYCL 链接器的 CMake 链接器标识。
 
 .. genex:: $<SYCL_COMPILER_LINKER_ID:linker_ids>
 
   .. versionadded:: 4.5
 
   .. note::
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+    实验性功能。须通过 ``CMAKE_EXPERIMENTAL_SYCL`` 启用。
 
-  where ``linker_ids`` is a comma-separated list.
-  ``1`` if CMake's linker id of the SYCL linker matches any one
-  of the entries in ``linker_ids``, otherwise ``0``.
+  其中 ``linker_ids`` 是以逗号分隔的列表。如果所使用的 SYCL
+  链接器的 CMake 链接器标识与 ``linker_ids`` 中的任一条目匹配，
+  则为 ``1``，否则为 ``0``。
 
 .. genex:: $<C_COMPILER_LINKER_FRONTEND_VARIANT>
 
@@ -2379,20 +2364,20 @@ These expressions look up the values of rule properties.
   .. versionadded:: 4.5
 
   .. note::
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+    实验性功能。须通过 ``CMAKE_EXPERIMENTAL_SYCL`` 启用。
 
-  CMake's linker frontend variant of the SYCL linker used.
+  所使用的 SYCL 链接器的 CMake 链接器前端变体。
 
 .. genex:: $<SYCL_COMPILER_LINKER_FRONTEND_VARIANT:variant_ids>
 
   .. versionadded:: 4.5
 
   .. note::
-    Experimental. Gated by ``CMAKE_EXPERIMENTAL_SYCL``.
+    实验性功能。须通过 ``CMAKE_EXPERIMENTAL_SYCL`` 启用。
 
-  where ``variant_ids`` is a comma-separated list.
-  ``1`` if CMake's linker frontend variant of the SYCL linker matches
-  any one of the entries in ``variant_ids``, otherwise ``0``.
+  其中 ``variant_ids`` 是以逗号分隔的列表。如果所使用的 SYCL
+  链接器的 CMake 链接器前端变体与 ``variant_ids`` 中的任一条目
+  匹配，则为 ``1``，否则为 ``0``。
 
 
 .. _`Source-Dependent Expressions`:
