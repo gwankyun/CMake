@@ -70,8 +70,6 @@
 
 ``NEEDED_LIBRARY``
   这类似于\ ``NEEDED_FRAMEWORK``\ 特性，除了它用于非框架目标或库。
-  This feature is only supported on the following platforms:
-
   此特性仅支持以下平台：
 
   Apple

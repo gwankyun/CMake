@@ -2526,34 +2526,27 @@ Shell路径
 
 .. genex:: $<TARGET_NAME:tgt>
 
-  The target name ``tgt`` as written.  This marks ``tgt`` as being the name of
-  a target wherever it appears inside a larger expression.  When the property
-  holding that expression is exported with a namespace by
-  :command:`install(EXPORT)` or :command:`export`, a marked target name is
-  rewritten to its namespaced imported target name (e.g. ``mylib::mylib``), the
-  same way a bare target name in a link-library list would be.  Marking is
-  needed when a target name is nested inside another generator expression that
-  the export machinery does not otherwise descend into, such as
-  :genex:`LINK_LIBRARY` or :genex:`LINK_GROUP`, and also when exporting targets
-  to multiple dependent export sets.
+  按原样书写的目标名 ``tgt``。它将 ``tgt`` 标记为目标名，无论它出现在更大的表达式中的哪个位置。
+  当持有该表达式的属性被 :command:`install(EXPORT)` 或 :command:`export` 带命名空间
+  导出时，被标记的目标名会被改写为其带命名空间的导入目标名（例如 ``mylib::mylib``），
+  处理方式与链接库列表中的裸目标名相同。当目标名嵌套在诸如 :genex:`LINK_LIBRARY` 或
+  :genex:`LINK_GROUP` 这类导出机制通常不会深入解析的生成器表达式中时，以及在将目标
+  导出到多个相互依赖的导出集时，都需要进行标记。
 
-  For example, a target name used inside :genex:`LINK_LIBRARY` is exported
-  verbatim unless it is marked:
+  例如，在 :genex:`LINK_LIBRARY` 内部使用的目标名，若未标记，则会被原样导出：
 
   .. code-block:: cmake
 
-    # Exported as bare "mylib"; a consumer would see an unresolved -lmylib.
+    # 被导出为裸 "mylib"；使用者会看到无法解析的 -lmylib。
     target_link_libraries(myotherlib PUBLIC
       $<LINK_LIBRARY:WHOLE_ARCHIVE,mylib>)
 
-    # Marked, so export rewrites it to the namespaced "mylib::mylib".
+    # 已标记，因此导出时会将其改写为带命名空间的 "mylib::mylib"。
     target_link_libraries(myotherlib PUBLIC
       $<LINK_LIBRARY:WHOLE_ARCHIVE,$<TARGET_NAME:mylib>>)
 
-  The ``tgt`` text must be a literal name of a target; it may not contain
-  generator expressions.  During ordinary evaluation the target does not have
-  to exist, but when the expression is exported the marked name must resolve to
-  a target reachable from the export.
+  ``tgt`` 文本必须是目标的字面名称；它不能包含生成器表达式。在普通求值过程中，该目标不必存在；
+  但在导出该表达式时，被标记的名称必须能解析为一个可从该导出访问到的目标。
 
 .. genex:: $<TARGET_POLICY:policy>
 
@@ -2706,18 +2699,15 @@ Shell路径
   .. versionadded:: 3.15
 
   .. versionadded:: 4.2
-    The ``POSTFIX`` option can be used to control the inclusion or not
-    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
-    base name. The default is ``POSTFIX:INCLUDE``.
+    ``POSTFIX`` 选项可用于控制是否将 :prop_tgt:`<CONFIG>_POSTFIX`
+    目标属性的值作为基名的一部分。默认值为 ``POSTFIX:INCLUDE``。
 
-  Base name of ``tgt``, i.e. ``$<TARGET_FILE_NAME:tgt>`` without prefix and
-  suffix and, optionally, postfix.
-  For example, if the ``tgt`` filename is ``libbase_postfix.so``, the base name
-  is:
+  ``tgt`` 的基名，即 ``$<TARGET_FILE_NAME:tgt>`` 去除前缀、后缀，以及可选去除的
+  尾缀（postfix）之后的名称。 例如，若 ``tgt`` 的文件名为 ``libbase_postfix.so``，则基名为：
 
-    * ``base_postfix`` for ``$<TARGET_FILE_BASE_NAME:tgt>`` or
-      ``$<TARGET_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
-    * ``base`` for ``$<TARGET_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+    * ``base_postfix``：对应 ``$<TARGET_FILE_BASE_NAME:tgt>`` 或
+      ``$<TARGET_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``。
+    * ``base``：对应 ``$<TARGET_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`、\
   :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 和\ :prop_tgt:`RUNTIME_OUTPUT_NAME`\ 目标属性，\
@@ -2775,18 +2765,15 @@ Shell路径
   .. versionadded:: 3.27
 
   .. versionadded:: 4.2
-    The ``POSTFIX`` option can be used to control the inclusion or not
-    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
-    base name. The default is ``POSTFIX:INCLUDE``.
+    ``POSTFIX`` 选项可用于控制是否将 :prop_tgt:`<CONFIG>_POSTFIX`
+    目标属性的值作为基名的一部分。默认值为 ``POSTFIX:INCLUDE``。
 
-  Base name of the linker import file of the target ``tgt`` without prefix or
-  suffix and, optionally, postfix.
-  For example, if the target file name is ``libbase_postfix.tbd``, the base
-  name is:
+  目标 ``tgt`` 的链接器导入文件的基名，即去除前缀、后缀，以及可选去除的尾缀（postfix）
+  之后的名称。例如，若目标文件名为 ``libbase_postfix.tbd``，则基名为：
 
-    * ``base_postfix`` for ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt>`` or
-      ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
-    * ``base`` for ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+    * ``base_postfix``：对应 ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt>``
+      或 ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``。
+    * ``base``：对应 ``$<TARGET_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性、\
   它们特定于配置的变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
@@ -2848,19 +2835,16 @@ Shell路径
   .. versionadded:: 3.15
 
   .. versionadded:: 4.2
-    The ``POSTFIX`` option can be used to control the inclusion or not
-    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
-    base name. The default is ``POSTFIX:INCLUDE``.
+    ``POSTFIX`` 选项可用于控制是否将 :prop_tgt:`<CONFIG>_POSTFIX`
+    目标属性的值作为基名的一部分。默认值为 ``POSTFIX:INCLUDE``。
 
-  Base name of file used to link the target ``tgt``, i.e.
-  :genex:`$<TARGET_LINKER_FILE_NAME:tgt>` without prefix and suffix, and,
-  optionally, postfix.
-  For example, if the target file name is ``libbase_postfix.a``, the base name
-  is:
+  用于链接目标 ``tgt`` 的文件的基名，即 :genex:`$<TARGET_LINKER_FILE_NAME:tgt>`
+  去除前缀、后缀，以及可选去除的尾缀（postfix）之后的名称。例如，若目标文件名为
+  ``libbase_postfix.a``，则基名为：
 
-    * ``base_postfix`` for ``$<TARGET_LINKER_FILE_BASE_NAME:tgt>`` or
-      ``$<TARGET_LINKER_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
-    * ``base`` for ``$<TARGET_LINKER_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+    * ``base_postfix``：对应 ``$<TARGET_LINKER_FILE_BASE_NAME:tgt>``
+      或 ``$<TARGET_LINKER_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``。
+    * ``base``：对应 ``$<TARGET_LINKER_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
   :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性，以及它们特定于配置的变体\
@@ -2916,20 +2900,16 @@ Shell路径
   .. versionadded:: 3.27
 
   .. versionadded:: 4.2
-    The ``POSTFIX`` option can be used to control the inclusion or not
-    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
-    base name. The default is ``POSTFIX:INCLUDE``.
+    ``POSTFIX`` 选项可用于控制是否将 :prop_tgt:`<CONFIG>_POSTFIX`
+    目标属性的值作为基名的一部分。默认值为 ``POSTFIX:INCLUDE``。
 
-  Base name of library file used to link the target ``tgt``, i.e.
-  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>` without prefix and
-  suffix,and, optionally, postfix.
-  For example, if the target file name is ``libbase_postfix.a``, the base name
-  is:
+  用于链接目标 ``tgt`` 的库文件的基名，即
+  :genex:`$<TARGET_LINKER_LIBRARY_FILE_NAME:tgt>` 去除前缀、后缀，以及可选去除的
+  尾缀（postfix）之后的名称。例如，若目标文件名为 ``libbase_postfix.a``，则基名为：
 
-    * ``base_postfix`` for ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>`` or
-      ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
-    * ``base`` for
-      ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+    * ``base_postfix``：对应 ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt>`` 或
+      ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``。
+    * ``base``：对应 ``$<TARGET_LINKER_LIBRARY_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`、\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 和\
   :prop_tgt:`LIBRARY_OUTPUT_NAME`\ 目标属性，以及它们特定于配置的变体\
@@ -2989,20 +2969,16 @@ Shell路径
   .. versionadded:: 3.27
 
   .. versionadded:: 4.2
-    The ``POSTFIX`` option can be used to control the inclusion or not
-    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
-    base name. The default is ``POSTFIX:INCLUDE``.
+    ``POSTFIX`` 选项可用于控制是否将 :prop_tgt:`<CONFIG>_POSTFIX`
+    目标属性的值作为基名的一部分。默认值为 ``POSTFIX:INCLUDE``。
 
-  Base name of the import file used to link the target ``tgt``, i.e.
-  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>` without prefix and suffix,
-  and, optionally, postfix.
-  For example, if the target file name is ``libbase_postfix.tbd``, the base
-  name is
+  用于链接目标 ``tgt`` 的导入文件的基名，即
+  :genex:`$<TARGET_LINKER_IMPORT_FILE_NAME:tgt>` 去除前缀、后缀，以及可选去除的
+  尾缀（postfix）之后的名称。例如，若目标文件名为 ``libbase_postfix.tbd``，则基名为：
 
-    * ``base_postfix`` for ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>`` or
-      ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
-    * ``base`` for
-      ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+    * ``base_postfix``：对应 ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt>`` 或
+      ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``。
+    * ``base``：对应 ``$<TARGET_LINKER_IMPORT_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``。
 
   另请参阅\ :prop_tgt:`OUTPUT_NAME`\ 和\ :prop_tgt:`ARCHIVE_OUTPUT_NAME`\ 目标属性、\
   它们的特定配置变体\ :prop_tgt:`OUTPUT_NAME_<CONFIG>`\ 和\
@@ -3094,9 +3070,8 @@ Shell路径
   链接器生成的程序数据库文件（.pdb）的完整路径，其中\ ``tgt``\ 是目标的名称。
 
   .. versionchanged:: 4.2
-    The postfix, as specified by :prop_tgt:`DEBUG_POSTFIX` or
-    :prop_tgt:`<CONFIG>_POSTFIX` target properties, is always included in the
-    ``PDB`` file name. See the policy :policy:`CMP0202`.
+    由 :prop_tgt:`DEBUG_POSTFIX` 或 :prop_tgt:`<CONFIG>_POSTFIX` 目标属性指定的
+    尾缀现在总会包含在 ``PDB`` 文件名中。参见策略 :policy:`CMP0202`。
 
   另请参阅\ :prop_tgt:`PDB_NAME`\ 和\ :prop_tgt:`PDB_OUTPUT_DIRECTORY`\ 目标属性及\
   其特定于配置的变体\ :prop_tgt:`PDB_NAME_<CONFIG>`\ 和\
@@ -3109,29 +3084,25 @@ Shell路径
   链接器生成的程序数据库文件（.pdb）的基本名称，其中\ ``tgt``\ 是目标的名称。
 
   .. versionadded:: 4.2
-    The ``POSTFIX`` option can be used to control the inclusion or not
-    of the :prop_tgt:`<CONFIG>_POSTFIX` target property value as part of the
-    base name. The default is ``POSTFIX:INCLUDE``.
+    ``POSTFIX`` 选项可用于控制是否将 :prop_tgt:`<CONFIG>_POSTFIX`
+    目标属性的值作为基名的一部分。默认值为 ``POSTFIX:INCLUDE``。
 
   .. versionchanged:: 4.2
-    The postfix, as specified by :prop_tgt:`DEBUG_POSTFIX` or
-    :prop_tgt:`<CONFIG>_POSTFIX` target properties, is always included in the
-    ``PDB`` base name, except if the ``POSTFIX`` option has the value
-    ``EXCLUDE``.  See the policy :policy:`CMP0202`.
+    由 :prop_tgt:`DEBUG_POSTFIX` 或 :prop_tgt:`<CONFIG>_POSTFIX` 目标属性指定的
+    尾缀现在总会包含在 ``PDB`` 基名中，除非 ``POSTFIX`` 选项的值为 ``EXCLUDE``。
+    参见策略 :policy:`CMP0202`。
 
-  The base name corresponds to the target PDB file name (see
-  ``$<TARGET_PDB_FILE_NAME:tgt>``) without prefix and suffix, and, optionally,
-  postfix.  For example, if the target file name is ``base_postfix.pdb``, the
-  base name is
+  该基名对应于目标 PDB 文件名（参见 ``$<TARGET_PDB_FILE_NAME:tgt>``）去除前缀、后缀，
+  以及可选去除的尾缀（postfix）之后的名称。例如，若目标文件名为 ``base_postfix.pdb``，
+  则基名为：
 
-    * ``base_postfix`` for ``$<TARGET_PDB_FILE_BASE_NAME:tgt>`` or
-      ``$<TARGET_PDB_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``.
-    * ``base`` for ``$<TARGET_PDB_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``.
+    * ``base_postfix``：对应 ``$<TARGET_PDB_FILE_BASE_NAME:tgt>``
+      或 ``$<TARGET_PDB_FILE_BASE_NAME:tgt,POSTFIX:INCLUDE>``。
+    * ``base``：对应 ``$<TARGET_PDB_FILE_BASE_NAME:tgt,POSTFIX:EXCLUDE>``。
 
-  See also the :prop_tgt:`OUTPUT_NAME` and :prop_tgt:`PDB_NAME` target
-  properties, their configuration-specific variants
-  :prop_tgt:`OUTPUT_NAME_<CONFIG>` and :prop_tgt:`PDB_NAME_<CONFIG>`, and the
-  :prop_tgt:`<CONFIG>_POSTFIX` and :prop_tgt:`DEBUG_POSTFIX` target properties.
+  另请参阅 :prop_tgt:`OUTPUT_NAME` 和 :prop_tgt:`PDB_NAME` 目标属性、它们的配置专属变体
+  :prop_tgt:`OUTPUT_NAME_<CONFIG>` 和 :prop_tgt:`PDB_NAME_<CONFIG>`，以及
+  :prop_tgt:`<CONFIG>_POSTFIX` 和 :prop_tgt:`DEBUG_POSTFIX` 目标属性。
 
   请注意，\ ``tgt``\ 并没有作为计算该表达式的目标的依赖项添加。
 
@@ -3187,15 +3158,14 @@ Shell路径
 
   构建\ ``tgt``\ 产生的对象列表。这通常用于\ :ref:`对象库 <Object Libraries>`\ 目标。
 
-  Additional arguments:
+  附加参数：
 
   ``SOURCE_FILES:source_file[;source_file]...``
 
     .. versionadded:: 4.4
 
-    An optional list of one or more source files for the target. Only the
-    object files built from those source files will be returned (but not
-    necessarily in the same order they were specified).
+    目标的一个或多个源文件组成的可选列表。只有从这些源文件构建出的对象文件才会被返回，
+    但不一定按它们被指定的顺序返回。
 
 .. genex:: $<TARGET_RUNTIME_DLLS:tgt>
 
@@ -3246,8 +3216,7 @@ Shell路径
 
   .. versionadded:: 4.2
 
-  The full path to the directory where intermediate target files, such as
-  object and dependency files, are stored.
+  存储诸如对象文件、依赖文件这类目标中间文件的目录的完整路径。
 
 导出和安装表达式
 ------------------------------
@@ -3321,27 +3290,27 @@ Shell路径
         echo $<TARGET_GENEX_EVAL:foo,$<TARGET_PROPERTY:foo,CUSTOM_KEYS>>
     )
 
-Support Expressions
+辅助表达式
 -------------------
 
-Conversions
+转换
 ^^^^^^^^^^^
 
 .. genex:: $<ARGS:cmake-list>
 
   .. versionadded:: 4.5
 
-  Transform a :ref:`semicolon-separated list <CMake Language Lists>` into a
-  comma-separated list as expected by many generator expressions.
+  将 :ref:`以分号分隔的列表 <CMake Language Lists>` 转换为许多
+  生成器表达式所要求的以逗号分隔的列表。
 
   .. code-block:: cmake
 
-    # check if the current config is a debug one
+    # 检查当前配置是否为调试配置
 
-    ## Converting a cmake list by hand does not give the expected result
+    ## 手工转换 cmake 列表得不到期望的结果
     $<CONFIG:$<LIST:JOIN,$<GLOBAL_PROPERTY:DEBUG_CONFIGURATIONS>,$<COMMA>>>
 
-    ## correct way to proceed
+    ## 正确的做法
     $<CONFIG:$<ARGS:$<GLOBAL_PROPERTY:DEBUG_CONFIGURATIONS>>>
 
 转义字符
