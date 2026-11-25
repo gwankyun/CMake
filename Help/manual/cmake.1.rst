@@ -792,16 +792,6 @@ CMake提供了一个命令行签名来构建已经生成的项目二叉树：
 
   一些本地构建工具总是并行构建。\ ``<jobs>``\ 值\ ``1``\ 的使用可用于限制为单个作业。
 
-  .. versionadded:: 4.5
-    When CMake is the one passing the parallel flag to the build tool (through
-    this option or the :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` environment
-    variable) and that tool is GNU Make 4.0 or newer, the output of each
-    recipe is grouped so that concurrent jobs do not interleave.  Request
-    parallelism natively, e.g. ``cmake --build . -- -j``, to opt out and
-    stream output as it is produced.  Since
-    :envvar:`CMAKE_BUILD_PARALLEL_LEVEL` likewise enables grouping, unset it
-    to opt out when it is set.
-
 .. option:: -t <tgt>..., --target <tgt>...
 
   构建\ ``<tgt>``\ 而不是默认目标。可以给出多个目标，用空格分隔。

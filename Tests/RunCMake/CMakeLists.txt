@@ -203,8 +203,7 @@ if(NOT CMAKE_GENERATOR MATCHES "Visual Studio|Xcode")
 endif()
 add_executable(detect_jobserver detect_jobserver.c)
 if(CMAKE_GENERATOR MATCHES "Make")
-  add_executable(fake_make Make/fake_make.c)
-  add_RunCMake_test(Make -DMAKE_IS_GNU=${MAKE_IS_GNU} -DDETECT_JOBSERVER=$<TARGET_FILE:detect_jobserver> -DFAKE_MAKE=$<TARGET_FILE:fake_make>)
+  add_RunCMake_test(Make -DMAKE_IS_GNU=${MAKE_IS_GNU} -DDETECT_JOBSERVER=$<TARGET_FILE:detect_jobserver>)
 endif()
 unset(ninja_test_with_qt_version)
 unset(ninja_qt_args)
@@ -828,7 +827,10 @@ if(COVERAGE_COMMAND)
   add_RunCMake_test(ctest_coverage -DCOVERAGE_COMMAND=${COVERAGE_COMMAND})
 endif()
 add_RunCMake_test(ctest_start)
-add_RunCMake_test(ctest_submit)
+add_RunCMake_test(ctest_submit
+  -DPython_EXECUTABLE=${Python_EXECUTABLE}
+  -DPython_VERSION=${Python_VERSION}
+)
 add_RunCMake_test(ctest_test
   -DIMAGE_DIR=${CMAKE_SOURCE_DIR}/Utilities/Sphinx/static
 )
