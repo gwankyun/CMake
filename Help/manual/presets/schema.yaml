@@ -155,20 +155,16 @@ definitions:
             An optional string representing the name of the preset from which
             to inherit.
     sphinxDescription: |
-      An optional array of strings representing the names of presets from which
-      to inherit. This field can also be a string, which is equivalent to an
-      array containing one string.
+      一个可选的字符串数组，表示要继承的预设的名称。此字段也可以
+      是单个字符串，等价于只包含一个字符串的数组。
 
-      The preset will inherit all of the fields from the ``inherits`` presets
-      by default (except ``name``, ``hidden``, ``inherits``, ``description``,
-      and ``displayName``), but can override them as desired. If multiple
-      ``inherits`` presets provide conflicting values for the same field, the
-      earlier preset in the ``inherits`` array will be preferred.
+      默认情况下，该预设会继承 ``inherits`` 所列预设的全部字段，但 ``name``、``hidden``、
+      ``inherits``、``description`` 和 ``displayName`` 除外；其余字段可以按需覆盖。
+      如果多个 ``inherits`` 预设为同一字段提供了相互冲突的值，将优先采用 ``inherits``
+      数组中靠前的预设。
 
-      A preset can only inherit from another preset that is defined in the same
-      file or in one of the files it includes (directly or indirectly). Presets
-      in ``CMakePresets.json`` may not inherit from presets in
-      ``CMakeUserPresets.json``.
+      预设只能继承在同一个文件中、或在该文件（直接或间接）包含的文件中定义的预设。
+      ``CMakePresets.json`` 中的预设不能继承 ``CMakeUserPresets.json`` 中的预设。
   vendor: &preset-vendor
     type: object
     minLength: 1
@@ -178,21 +174,18 @@ definitions:
       it does exist. However, it should follow the same conventions as the
       root-level vendor field.
     sphinxDescription: |
-      An optional map containing vendor-specific information. CMake does not
-      interpret the contents of this field except to verify that it is a map if
-      it does exist. However, it should follow the same conventions as the
-      root-level ``vendor`` field. If vendors use their own per-preset
-      ``vendor`` field, they should implement inheritance in a sensible manner
-      when appropriate.
+      一个可选映射，包含供应商专属信息。CMake 不会解释此字段的内容，只在该字段存在时验证它
+      是否为映射。不过，它应当遵循与根级 ``vendor`` 字段相同的约定。如果供应商使用自己的
+      预设级 ``vendor`` 字段，则应在适当的时候以合理的方式实现继承。
     properties: {}
   displayName: &preset-displayName
     type: string
     description:
-      An optional string with a human-friendly name of the preset.
+      一个可选字符串，表示该预设便于人类阅读的名称。
   description: &preset-description
     type: string
     description:
-      An optional string with a human-friendly description of the preset.
+      一个可选字符串，表示该预设便于人类阅读的描述。
   environment: &preset-environment
     type: object
     description: &environment-description
@@ -286,7 +279,7 @@ definitions:
           Null indicates that the condition always evaluates to true and is not
           inherited.
     sphinxDescription: |
-      An optional |condition| object.
+      一个可选的 |condition| 对象。
 description:
   The presets specify the generator and the build directory, and optionally an
   array of variables and other arguments to pass to CMake.
@@ -305,30 +298,27 @@ properties:
     description:
       A required integer representing the version of the JSON schema.
     sphinxDescription: |
-      A required integer representing the version of the JSON schema. See
-      |Versions| for discussion of the supported versions and the
-      corresponding version of CMake in which they were added.
+      一个必需的整数，表示该 JSON schema 的版本。有关受支持的版本，
+      以及引入这些版本时对应的 CMake 版本的讨论，请参见 |Versions|。
   cmakeMinimumRequired:
     type: object
     description:
       An optional object representing the minimum version of CMake
       needed to build this project.
     sphinxDescription: |
-      An optional object representing the minimum version of CMake
-      needed to build this project. This object consists of the following
-      fields:
+      一个可选对象，表示构建此项目所需的最低 CMake 版本。该对象由以下字段组成：
 
       .. include:: presets/cmakeMinimumRequired-properties.rst
     properties:
       major:
         type: integer
-        description: An optional integer representing the major version.
+        description: 一个可选整数，表示主版本号。
       minor:
         type: integer
-        description: An optional integer representing the minor version.
+        description: 一个可选整数，表示次版本号。
       patch:
         type: integer
-        description: An optional integer representing the patch version.
+        description: 一个可选整数，表示修订版本号。
     unevaluatedProperties: false
   include:
     since: 4
@@ -340,10 +330,8 @@ properties:
       filenames are not absolute, they are considered relative to the current
       file.
     sphinxDescription: |
-      An optional array of strings representing files to include. If the
-      filenames are not absolute, they are considered relative to the current
-      file. See |includes| for discussion of the constraints on included
-      files.
+      一个可选的字符串数组，表示要包含的文件。如果文件名不是绝对路径，则视为相对于当前文件。
+      有关被包含文件的约束条件的讨论，请参见 |includes|。
   vendor:
     type: object
     description:
@@ -354,19 +342,17 @@ properties:
       use example.com/ExampleIDE/1.0. The value of each field can be anything
       desired by the vendor, though will typically be a map.
     sphinxDescription: |
-      An optional map containing vendor-specific information. CMake does not
-      interpret the contents of this field except to verify that it is a map if
-      it does exist. However, the keys should be a vendor-specific domain name
-      followed by a ``/``-separated path. For example, the Example IDE 1.0
-      could use ``example.com/ExampleIDE/1.0``. The value of each field can be
-      anything desired by the vendor, though will typically be a map.
+      一个可选映射，包含供应商专属信息。CMake 不会解释此字段的内容，只在该字段存在时验证它
+      是否为映射。不过，键名应当是供应商专属的域名，后跟以 ``/`` 分隔的路径。例如，
+      Example IDE 1.0 可以使用 ``example.com/ExampleIDE/1.0``。每个字段的值
+      可以是供应商想要的任何内容，不过通常也是映射。
     properties: {}
   configurePresets:
     type: array
     description:
       An optional array of configure preset objects.
     sphinxDescription: |
-      An optional array of `Configure Preset`_ objects.
+      一个可选数组，元素为 :ref:`配置预设 <Configure Preset>` 对象。
     items:
       type: object
       description:
@@ -384,12 +370,10 @@ properties:
             with the same name. However, a configure preset may have the same
             name as a build, test, package, or workflow preset.
           sphinxDescription: |
-            A required string representing the machine-friendly name of the
-            preset. This identifier is used in the :option:`cmake --preset`
-            option. There must not be two configure presets in the union of
-            ``CMakePresets.json`` and ``CMakeUserPresets.json`` in the same
-            directory with the same name. However, a configure preset may have
-            the same name as a build, test, package, or workflow preset.
+            一个必需字符串，表示该预设便于机器处理的名称。此标识符用于
+            :option:`cmake --preset` 选项。在 ``CMakePresets.json`` 与
+            ``CMakeUserPresets.json`` 于同一目录下的并集中，不得存在两个同名的配置预设。
+            不过，配置预设可以与构建、测试、打包或工作流预设同名。
         hidden:
           type: boolean
           description:
@@ -400,13 +384,11 @@ properties:
             presets are intended to be used as a base for other presets to
             inherit via the inherits field.
           sphinxDescription: |
-            An optional boolean specifying whether or not a preset should be
-            hidden. If a preset is hidden, it cannot be used in the
-            :cmake-option:`--preset` argument, will not show up in the
-            :manual:`CMake GUI <cmake-gui(1)>`, and does not have to have a
-            valid ``generator`` or ``binaryDir``, even from inheritance.
-            ``hidden`` presets are intended to be used as a base for other
-            presets to inherit via the ``inherits`` field.
+            一个可选布尔值，指定是否隐藏该预设。如果预设被隐藏，它便不能用于
+            :cmake-option:`--preset` 参数，不会显示在
+            :manual:`CMake GUI <cmake-gui(1)>` 中，而且即使通过继承也不必具有有效的
+            ``generator`` 或 ``binaryDir``。``hidden`` 预设旨在作为基础，供其他预设通过
+            ``inherits`` 字段继承。
         inherits: *preset-inherits
         condition: *condition
         vendor: *preset-vendor
@@ -923,7 +905,7 @@ properties:
     description:
       An optional array of build preset objects.
     sphinxDescription: |
-      An optional array of `Build Preset`_ objects.
+      一个可选数组，元素为 :ref:`构建预设 <Build Preset>` 对象。
     items:
       type: object
       description:
@@ -1145,7 +1127,7 @@ properties:
       An optional array of test preset objects. Used to specify arguments to
       ctest.
     sphinxDescription: |
-      An optional array of `Test Preset`_ objects.
+      一个可选数组，元素为 :ref:`测试预设 <Test Preset>` 对象。
     items:
       type: object
       description:
@@ -1800,7 +1782,7 @@ properties:
       An optional array of package preset objects. Used to specify arguments to
       cpack.
     sphinxDescription: |
-      An optional array of `Package Preset`_ objects.
+      一个可选数组，元素为 :ref:`包预设 <Package Preset>` 对象。
     items:
       type: object
       description:
@@ -1979,7 +1961,7 @@ properties:
       An optional array of workflow preset objects. Used to execute configure,
       build, test, and package presets in order.
     sphinxDescription: |
-      An optional array of `Workflow Preset`_ objects.
+      一个可选数组，元素为 :ref:`工作流预设 <Workflow Preset>` 对象。
     items:
       type: object
       description:

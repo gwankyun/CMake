@@ -11,16 +11,13 @@
 .. _`CMakePresets.version`:
 
 ``version``
-  A required integer representing the version of the JSON schema. See
-  |Versions| for discussion of the supported versions and the
-  corresponding version of CMake in which they were added.
+  一个必需的整数，表示该 JSON schema 的版本。有关受支持的版本，
+  以及引入这些版本时对应的 CMake 版本的讨论，请参见 |Versions|。
 
 .. _`CMakePresets.cmakeMinimumRequired`:
 
 ``cmakeMinimumRequired``
-  An optional object representing the minimum version of CMake
-  needed to build this project. This object consists of the following
-  fields:
+  一个可选对象，表示构建此项目所需的最低 CMake 版本。该对象由以下字段组成：
 
   .. include:: presets/cmakeMinimumRequired-properties.rst
 
@@ -29,50 +26,46 @@
 ``include``
   .. presets-versionadded:: 4
 
-  An optional array of strings representing files to include. If the
-  filenames are not absolute, they are considered relative to the current
-  file. See |includes| for discussion of the constraints on included
-  files.
+  一个可选的字符串数组，表示要包含的文件。如果文件名不是绝对路径，则视为相对于当前文件。
+  有关被包含文件的约束条件的讨论，请参见 |includes|。
 
 .. _`CMakePresets.vendor`:
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map if
-  it does exist. However, the keys should be a vendor-specific domain name
-  followed by a ``/``-separated path. For example, the Example IDE 1.0
-  could use ``example.com/ExampleIDE/1.0``. The value of each field can be
-  anything desired by the vendor, though will typically be a map.
+  一个可选映射，包含供应商专属信息。CMake 不会解释此字段的内容，只在该字段存在时验证它
+  是否为映射。不过，键名应当是供应商专属的域名，后跟以 ``/`` 分隔的路径。例如，
+  Example IDE 1.0 可以使用 ``example.com/ExampleIDE/1.0``。每个字段的值
+  可以是供应商想要的任何内容，不过通常也是映射。
 
 .. _`CMakePresets.configurePresets`:
 
 ``configurePresets``
-  An optional array of `Configure Preset`_ objects.
+  一个可选数组，元素为 :ref:`配置预设 <Configure Preset>` 对象。
 
 .. _`CMakePresets.buildPresets`:
 
 ``buildPresets``
   .. presets-versionadded:: 2
 
-  An optional array of `Build Preset`_ objects.
+  一个可选数组，元素为 :ref:`构建预设 <Build Preset>` 对象。
 
 .. _`CMakePresets.testPresets`:
 
 ``testPresets``
   .. presets-versionadded:: 2
 
-  An optional array of `Test Preset`_ objects.
+  一个可选数组，元素为 :ref:`测试预设 <Test Preset>` 对象。
 
 .. _`CMakePresets.packagePresets`:
 
 ``packagePresets``
   .. presets-versionadded:: 6
 
-  An optional array of `Package Preset`_ objects.
+  一个可选数组，元素为 :ref:`包预设 <Package Preset>` 对象。
 
 .. _`CMakePresets.workflowPresets`:
 
 ``workflowPresets``
   .. presets-versionadded:: 6
 
-  An optional array of `Workflow Preset`_ objects.
+  一个可选数组，元素为 :ref:`工作流预设 <Workflow Preset>` 对象。

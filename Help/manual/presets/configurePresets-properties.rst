@@ -4,68 +4,57 @@
 .. _`CMakePresets.configurePresets.name`:
 
 ``name``
-  A required string representing the machine-friendly name of the
-  preset. This identifier is used in the :option:`cmake --preset`
-  option. There must not be two configure presets in the union of
-  ``CMakePresets.json`` and ``CMakeUserPresets.json`` in the same
-  directory with the same name. However, a configure preset may have
-  the same name as a build, test, package, or workflow preset.
+  一个必需字符串，表示该预设便于机器处理的名称。此标识符用于
+  :option:`cmake --preset` 选项。在 ``CMakePresets.json`` 与
+  ``CMakeUserPresets.json`` 于同一目录下的并集中，不得存在两个同名的配置预设。
+  不过，配置预设可以与构建、测试、打包或工作流预设同名。
 
 .. _`CMakePresets.configurePresets.hidden`:
 
 ``hidden``
-  An optional boolean specifying whether or not a preset should be
-  hidden. If a preset is hidden, it cannot be used in the
-  :cmake-option:`--preset` argument, will not show up in the
-  :manual:`CMake GUI <cmake-gui(1)>`, and does not have to have a
-  valid ``generator`` or ``binaryDir``, even from inheritance.
-  ``hidden`` presets are intended to be used as a base for other
-  presets to inherit via the ``inherits`` field.
+  一个可选布尔值，指定是否隐藏该预设。如果预设被隐藏，它便不能用于
+  :cmake-option:`--preset` 参数，不会显示在
+  :manual:`CMake GUI <cmake-gui(1)>` 中，而且即使通过继承也不必具有有效的
+  ``generator`` 或 ``binaryDir``。``hidden`` 预设旨在作为基础，供其他预设通过
+  ``inherits`` 字段继承。
 
 .. _`CMakePresets.configurePresets.inherits`:
 
 ``inherits``
-  An optional array of strings representing the names of presets from which
-  to inherit. This field can also be a string, which is equivalent to an
-  array containing one string.
+  一个可选的字符串数组，表示要继承的预设的名称。此字段也可以
+  是单个字符串，等价于只包含一个字符串的数组。
 
-  The preset will inherit all of the fields from the ``inherits`` presets
-  by default (except ``name``, ``hidden``, ``inherits``, ``description``,
-  and ``displayName``), but can override them as desired. If multiple
-  ``inherits`` presets provide conflicting values for the same field, the
-  earlier preset in the ``inherits`` array will be preferred.
+  默认情况下，该预设会继承 ``inherits`` 所列预设的全部字段，但 ``name``、``hidden``、
+  ``inherits``、``description`` 和 ``displayName`` 除外；其余字段可以按需覆盖。
+  如果多个 ``inherits`` 预设为同一字段提供了相互冲突的值，将优先采用 ``inherits``
+  数组中靠前的预设。
 
-  A preset can only inherit from another preset that is defined in the same
-  file or in one of the files it includes (directly or indirectly). Presets
-  in ``CMakePresets.json`` may not inherit from presets in
-  ``CMakeUserPresets.json``.
+  预设只能继承在同一个文件中、或在该文件（直接或间接）包含的文件中定义的预设。
+  ``CMakePresets.json`` 中的预设不能继承 ``CMakeUserPresets.json`` 中的预设。
 
 .. _`CMakePresets.configurePresets.condition`:
 
 ``condition``
   .. presets-versionadded:: 3
 
-  An optional |condition| object.
+  一个可选的 |condition| 对象。
 
 .. _`CMakePresets.configurePresets.vendor`:
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map if
-  it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field. If vendors use their own per-preset
-  ``vendor`` field, they should implement inheritance in a sensible manner
-  when appropriate.
+  一个可选映射，包含供应商专属信息。CMake 不会解释此字段的内容，只在该字段存在时验证它
+  是否为映射。不过，它应当遵循与根级 ``vendor`` 字段相同的约定。如果供应商使用自己的
+  预设级 ``vendor`` 字段，则应在适当的时候以合理的方式实现继承。
 
 .. _`CMakePresets.configurePresets.displayName`:
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，表示该预设便于人类阅读的名称。
 
 .. _`CMakePresets.configurePresets.description`:
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选字符串，表示该预设便于人类阅读的描述。
 
 .. _`CMakePresets.configurePresets.generator`:
 

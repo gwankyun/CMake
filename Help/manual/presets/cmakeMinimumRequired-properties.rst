@@ -4,14 +4,14 @@
 .. _`CMakePresets.cmakeMinimumRequired.major`:
 
 ``major``
-  An optional integer representing the major version.
+  一个可选整数，表示主版本号。
 
 .. _`CMakePresets.cmakeMinimumRequired.minor`:
 
 ``minor``
-  An optional integer representing the minor version.
+  一个可选整数，表示次版本号。
 
 .. _`CMakePresets.cmakeMinimumRequired.patch`:
 
 ``patch``
-  An optional integer representing the patch version.
+  一个可选整数，表示修订版本号。

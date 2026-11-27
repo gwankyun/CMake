@@ -15,22 +15,19 @@
 .. _`CMakePresets.workflowPresets.vendor`:
 
 ``vendor``
-  An optional map containing vendor-specific information. CMake does not
-  interpret the contents of this field except to verify that it is a map if
-  it does exist. However, it should follow the same conventions as the
-  root-level ``vendor`` field. If vendors use their own per-preset
-  ``vendor`` field, they should implement inheritance in a sensible manner
-  when appropriate.
+  一个可选映射，包含供应商专属信息。CMake 不会解释此字段的内容，只在该字段存在时验证它
+  是否为映射。不过，它应当遵循与根级 ``vendor`` 字段相同的约定。如果供应商使用自己的
+  预设级 ``vendor`` 字段，则应在适当的时候以合理的方式实现继承。
 
 .. _`CMakePresets.workflowPresets.displayName`:
 
 ``displayName``
-  An optional string with a human-friendly name of the preset.
+  一个可选字符串，表示该预设便于人类阅读的名称。
 
 .. _`CMakePresets.workflowPresets.description`:
 
 ``description``
-  An optional string with a human-friendly description of the preset.
+  一个可选字符串，表示该预设便于人类阅读的描述。
 
 .. _`CMakePresets.workflowPresets.steps`:
 

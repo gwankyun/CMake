@@ -528,15 +528,15 @@
     },
     "cmakeMinimumRequired.major@v1..": {
       "type": "integer",
-      "description": "An optional integer representing the major version."
+      "description": "一个可选整数，表示主版本号。"
     },
     "cmakeMinimumRequired.minor@v1..": {
       "type": "integer",
-      "description": "An optional integer representing the minor version."
+      "description": "一个可选整数，表示次版本号。"
     },
     "cmakeMinimumRequired.patch@v1..": {
       "type": "integer",
-      "description": "An optional integer representing the patch version."
+      "description": "一个可选整数，表示修订版本号。"
     },
     "$comment@v10..": {
       "$ref": "#/definitions/comment@v10.."
@@ -1074,11 +1074,11 @@
     },
     "configurePresets.displayName@v1..": {
       "type": "string",
-      "description": "An optional string with a human-friendly name of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的名称。"
     },
     "configurePresets.description@v1..": {
       "type": "string",
-      "description": "An optional string with a human-friendly description of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的描述。"
     },
     "configurePresets.generator@v1..v2": {
       "type": "string",
@@ -2092,11 +2092,11 @@
     },
     "buildPresets.displayName@v2..": {
       "type": "string",
-      "description": "An optional string with a human-friendly name of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的名称。"
     },
     "buildPresets.description@v2..": {
       "type": "string",
-      "description": "An optional string with a human-friendly description of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的描述。"
     },
     "buildPresets.environment@v2..": {
       "type": "object",
@@ -2651,11 +2651,11 @@
     },
     "testPresets.displayName@v2..": {
       "type": "string",
-      "description": "An optional string with a human-friendly name of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的名称。"
     },
     "testPresets.description@v2..": {
       "type": "string",
-      "description": "An optional string with a human-friendly description of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的描述。"
     },
     "testPresets.environment@v2..": {
       "type": "object",
@@ -3676,11 +3676,11 @@
     },
     "packagePresets.displayName@v6..": {
       "type": "string",
-      "description": "An optional string with a human-friendly name of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的名称。"
     },
     "packagePresets.description@v6..": {
       "type": "string",
-      "description": "An optional string with a human-friendly description of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的描述。"
     },
     "packagePresets.environment@v6..": {
       "type": "object",
@@ -3872,11 +3872,11 @@
     },
     "workflowPresets.displayName@v6..": {
       "type": "string",
-      "description": "An optional string with a human-friendly name of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的名称。"
     },
     "workflowPresets.description@v6..": {
       "type": "string",
-      "description": "An optional string with a human-friendly description of the preset."
+      "description": "一个可选字符串，表示该预设便于人类阅读的描述。"
     },
     "workflowPresets.steps@v6..v9": {
       "type": "array",
